@@ -1,0 +1,72 @@
+verification results:: 99 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs:188:1
+    |
+188 | pub proof fn theorem_iterated_mass(c:Context,old:Seq<real>,left:nat,tol:real)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs:190:10
+    |
+190 |    ensures iterate(c,old,left,tol).ranks.len()==c.nodes.len(),sum(iterate(c,old,left,tol).ranks)==1real,
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+193 | /  if left>0 {theorem_step_mass_from_raw_outgoing(c,old);assert(sum(next(c,old))==1real) by(nonlinear_arith) requires sum(next(c,ol...
+194 | |   if !(delta(next(c,old),old)<(held(next(c,old)) as real)*tol || left==1){theorem_iterated_mass(c,next(c,old),(left-1) as nat,tol);}
+195 | |  }
+    | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs:190:61
+    |
+190 |    ensures iterate(c,old,left,tol).ranks.len()==c.nodes.len(),sum(iterate(c,old,left,tol).ranks)==1real,
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+193 | /  if left>0 {theorem_step_mass_from_raw_outgoing(c,old);assert(sum(next(c,old))==1real) by(nonlinear_arith) requires sum(next(c,ol...
+194 | |   if !(delta(next(c,old),old)<(held(next(c,old)) as real)*tol || left==1){theorem_iterated_mass(c,next(c,old),(left-1) as nat,tol);}
+195 | |  }
+    | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs:198:10
+    |
+198 |  ensures iterate(c,old,left,tol).iterations<=left,left>0 ==> iterate(c,old,left,tol).iterations>0,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+199 |  decreases left,
+200 | {if left>1 && !(delta(next(c,old),old)<(held(next(c,old)) as real)*tol){theorem_iteration_cap(c,next(c,old),(left-1) as nat,tol);}}
+    |  --------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs:387:1
+    |
+387 | pub proof fn theorem_strict_held_change_decides(c:Context,old:Seq<real>,left:nat,tol:real)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs:389:10
+    |
+387 | pub proof fn theorem_strict_held_change_decides(c:Context,old:Seq<real>,left:nat,tol:real)
+    | ------------------------------------------------------------------------------------------ at the end of the function body
+388 |  requires left>0,delta(next(c,old),old)<(held(next(c,old)) as real)*tol,
+389 |  ensures iterate(c,old,left,tol).iterations==1,iterate(c,old,left,tol).ranks==next(c,old),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs:389:48
+    |
+387 | pub proof fn theorem_strict_held_change_decides(c:Context,old:Seq<real>,left:nat,tol:real)
+    | ------------------------------------------------------------------------------------------ at the end of the function body
+388 |  requires left>0,delta(next(c,old),old)<(held(next(c,old)) as real)*tol,
+389 |  ensures iterate(c,old,left,tol).iterations==1,iterate(c,old,left,tol).ranks==next(c,old),
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs:540:10
+    |
+539 | pub proof fn theorem_held_zero_node_does_not_inflate_stop_threshold()
+    | --------------------------------------------------------------------- at the end of the function body
+540 |  ensures iterate(tiny(0.5real),initial(tiny(0.5real)),5,0.4real).iterations==2,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 6 previous errors
+

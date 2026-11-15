@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_finish_correct"
+    ],
+    "find": "else if c.bound>0 && s.best_hops>c.bound{actual_json_cost(c)}",
+    "name": "bounded-hop-fallback-removed",
+    "replace": "else if false{actual_json_cost(c)}",
+    "why": "Globally cheapest recorded path may exceed the positive hop bound."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_finish_correct"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/model.json": "245f915a1dc287e07a45067b8bc4671a8f58a59b58758a51cfec67963dd71fa6",
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "aba5b84b26ecd516b0c56a38152b470400311779de13d067d013a5db930292c6",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/bounded-hop-fallback-removed/20261115T195806Z/models/weighted_cost/weighted_cost.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_finish_correct": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/20261115T195806Z-control-bounded-hop-fallback-removed-theorem_finish_correct.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/20261115T195806Z-control-bounded-hop-fallback-removed.log",
+    "timed_out": false,
+    "verified": 80
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_cost/20261115T195823Z-control-bounded-hop-fallback-removed/logs/20261115T195806Z-control-bounded-hop-fallback-removed-theorem_finish_correct.log": "832b1423920a44d8340c78d324695e52d60a415756dae0dafb19b1caaee94060",
+    ".g5/Verus_verification/results/weighted_cost/20261115T195823Z-control-bounded-hop-fallback-removed/logs/20261115T195806Z-control-bounded-hop-fallback-removed.log": "e6762b5c72acf054ba761e0749afc4ca0ac8bd310ddad356e8069792d26b724f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

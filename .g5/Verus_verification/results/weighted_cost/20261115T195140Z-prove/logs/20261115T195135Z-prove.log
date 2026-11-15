@@ -1,0 +1,85 @@
+verification results:: 67 verified, 2 errors
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:159:56
+    |
+159 |     requires frame(c),base(c,b,z),z.done.contains(e.1),z.dist[e.1]==e.0,
+    |                                                        ^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:160:13
+    |
+160 |       ensures base(c,b,decrease(c,b,z,e,a)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+163 | /     if t!=z{
+164 | |         assert(t.witness[v]==z.witness[e.1].push(a));
+165 | |         reveal(base);assert(z.dist.contains_key(e.1));
+166 | |         assert(walk(c,b,root(c,b),e.1,z.witness[e.1]));lemma_walk_push(c,b,root(c,b),e.1,v,z.witness[e.1],a);
+...   |
+176 | |     }
+    | |_____- at the end of the function body
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:164:30
+    |
+164 |         assert(t.witness[v]==z.witness[e.1].push(a));
+    |                              ^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:316:1
+    |
+316 | pub proof fn theorem_continue_preserves(c:json::Config,s:State,t:State)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:324:46
+    |
+324 |     let accepted=put(s,b,accept(z,e));assert(stage(c,accepted,b,z.done));
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:325:56
+    |
+325 |     assert(side(accepted,b).done.contains(e.1));assert(side(accepted,b).dist[e.1]==e.0);
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:328:88
+    |
+328 |     assert forall|u:int,a:Arc|side(t,b).done.contains(u) && select(c,b,a) && a.2==u && side(t,b).dist[u]+json::weight(c,a)<=c.cap i...
+    |                                                                                        ^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:329:66
+    |
+329 |         side(t,b).dist.contains_key(a.4) && side(t,b).dist[a.4]<=side(t,b).dist[u]+json::weight(c,a) by {
+    |                                                                  ^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:332:20
+    |
+332 |             assert(neighbors(c,b,e.1).contains(a));
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

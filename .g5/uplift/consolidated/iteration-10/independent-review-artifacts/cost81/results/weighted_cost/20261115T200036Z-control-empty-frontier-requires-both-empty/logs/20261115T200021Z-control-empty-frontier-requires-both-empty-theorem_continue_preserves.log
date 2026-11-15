@@ -1,0 +1,41 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/empty-frontier-requires-both-empty/20261115T200021Z/models/weighted_cost/weighted_cost.rs:329:12
+    |
+329 |     assert(s.forward.queue.len()>0 && s.backward.queue.len()>0);let f=minimum(s.forward.queue);let r=minimum(s.backward.queue);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/empty-frontier-requires-both-empty/20261115T200021Z/models/weighted_cost/weighted_cost.rs:336:56
+    |
+336 |     assert(side(accepted,b).done.contains(e.1));assert(side(accepted,b).dist[e.1]==e.0);
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/empty-frontier-requires-both-empty/20261115T200021Z/models/weighted_cost/weighted_cost.rs:339:88
+    |
+339 |     assert forall|u:int,a:Arc|side(t,b).done.contains(u) && select(c,b,a) && a.2==u && side(t,b).dist[u]+json::weight(c,a)<=c.cap i...
+    |                                                                                        ^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/empty-frontier-requires-both-empty/20261115T200021Z/models/weighted_cost/weighted_cost.rs:340:66
+    |
+340 |         side(t,b).dist.contains_key(a.4) && side(t,b).dist[a.4]<=side(t,b).dist[u]+json::weight(c,a) by {
+    |                                                                  ^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: aborting due to 1 previous error
+

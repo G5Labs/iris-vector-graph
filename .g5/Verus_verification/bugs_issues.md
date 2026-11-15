@@ -3498,6 +3498,29 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `sim-fcs01-minimal`, 
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
+<a id="bug-plt-104"></a>
+### A PPR limit above the native cap can turn truncated positive scores into zero
+
+Severity: Medium · Decision: Open
+
+Run: Consolidated iteration10, 2026-11-15
+
+Found by: iteration9 frozen producer/final-reader panel, PPR builder's source cap/limit trace, [four actual native/DB cases](../uplift/consolidated/iteration-10/root-ppr-cap-native.json), [provenance](../uplift/consolidated/iteration-10/root-ppr-cap-provenance.json) and [independent intent/dedup review](../uplift/consolidated/iteration-10/root-ppr-review-cap.md).
+
+Reproduced by: `root-ppr-cap-native.py` on the identity-guarded task-owned IRIS: ordinary successful1002-node bulk write without index disable/rebuild; actual public native/store PPR entry and actual private Python fallback using the same real DB. No external service/security scenario or physical unavailable-provider dispatch reproduction.
+
+Expected: [algorithms.op.ppr.completion](../ontology/features/algorithms.g5.md#algorithms.op.ppr.completion), the documented PPR recurrence and return_top_k contract. Every valid isolated seed in a uniform seed set has positive1/N after one iteration: its dangling mass restarts uniformly. A row limit may omit nodes, but a completed answer must not label an omitted positive score as unreachable0.
+
+Observed: with1002 isolated persisted valid seeds, damping1/2, one iteration/tolerance0, exclude_predicates=None and return_top_k1002, the actual public method returns1002 rows:1000positive scores near1/1002 and two fabricatedzeros. With an explicit empty exclusion list and the same limit, all1002 scores are positive; public limit1000 retains1000positive rows; the actual fallback at1002 gives all1002positive. All four source-derived predictions agree. Samples and zero IDs are retained in the native receipt; arithmetic comparisons allow1e-12 rounding.
+
+Cause: kg_PERSONALIZED_PAGERANK sends the requested row limit to the store/native Owner only when exclude_predicates is notNone. The native producer otherwise retains its1000 cap (also when a custom tolerance is sent). _ppr_every_node then prefers the larger positive caller top_k over the producer cap and treats absent scored nodes as0. The inference is invalid when that absence was caused by truncation. The class fast-path is analogous by source inspection, not an additional native route reproduction.
+
+Consequence: a completed PPR result reports genuinely scored/reachable seeds as0, and the numerical answer changes when an empty exclusion list is supplied. This is distinct from F-1003's global PageRank10000 row omission, F-1004/bug-plt-017's node-token cache issue, and bug-plt-103's tiny-positive ordering policy. Intentional cap1000 mass below1 is not itself the finding; fabrication inside a1002-row answer is.
+
+Repair proposal (not implemented): propagate the actual requested producer limit independently of exclusions, or carry enough completeness information to prevent zero-filling a truncated score set. Preserve intentionally capped answers and the None/[] compatibility behavior explicitly. No repair or simplification is approved here.
+
+Formal corroboration: [ppr_walk](models/ppr_walk/NOTES.md) `theorem_public_default_cap_gap_from_raw_seeds` starts from arbitrary distinct isolated valid raw seeds N>1000, derives their positive one-step scores, the actual public default1000 cap and a missing ID emitted as0. The three-node/cap2 structural witness is not the only closure of actual1000. Native floating/database/cache correspondence remains separately qualified.
+
 <a id="bug-str-006"></a>
 ### Concurrent writers of one multigraph triple can lose its multiplicity or leave a ghost edge entry
 
@@ -8036,6 +8059,29 @@ Consequence: a legal keep-alive prematurely ends an otherwise usable WebSocket B
 
 Repair proposal (not implemented): distinguish end-of-connection from empty keep-alive bytes, or consume NOOP in the receive layer. A copy of the WebSocket run method using a None-only end check fixes canonical-NOOP cases, while retaining the fragmented/separate HELLO failure from the other root. Both local changes together pass all packetization neighbors. No product file was edited.
 
+
+<a id="bug-plt-103"></a>
+### PPR native/store and Python fallback can retain different top-k nodes at a rounded zero tie
+
+Severity: Low · Decision: Open
+
+Run: Consolidated iteration10, 2026-11-15
+
+Found by: iteration9 frozen PPR final-reader/tie panel; iteration10 source trace, [six actual native/Python neighbors](../uplift/consolidated/iteration-10/root-ppr-tie-native.json), [source provenance](../uplift/consolidated/iteration-10/root-ppr-tie-provenance.json) and [independent intent/dedup review](../uplift/consolidated/iteration-10/root-ppr-review-intent.md).
+
+Reproduced by: `root-ppr-tie-native.py`, actual ordinary graph writes and native RunJson/WithUnscored/public store route plus actual private Python fallback with real database reads on the hostname-guarded task-owned IRIS. Physical provider unavailability and the outer public-to-fallback dispatch were not reproduced; the two actual implementations and final selected rows were. No external service or security scenario.
+
+Expected: the documented common PPR answer and ordering for shared options/explicit supported limit (USER_GUIDE547-552/590-600; API_REFERENCE1661-1678; `_collation.rank_key`). The12-decimal tie rule and the more specific zeros-after-scored statement conflict at tiny positives; [q-iter-008](open_questions.md#q-iter-008) keeps that policy undecided. Under either eventual choice, matching native/store and fallback calls should retain the same ordered node set.
+
+Observed: for s:seed->t:tiny plus disconnected0:zero, damping1e-13, one iteration/tolerance0 and limit2, native RunJson returns sparse seed/tiny and WithUnscored/public store retains both. Scores are seed0.9999999999999/tiny1e-13. The actual fallback sorts the full map by unchanged rank_key, where tiny and true zero both round to0 and0:zero sorts before t:tiny, retaining seed/zero. Full uncapped orders differ too. Limit1, damping1e-11, and zero ID z:zero give matching answers. All six source-derived predictions agree; this is not merely comparing a changed observation with its baseline.
+
+Cause: `_ppr_every_node` sorts scored rows then appends zeros (or returns early once scored rows fill the limit); native WithUnscored likewise appends/early-returns. The fallback sorts all nodes together before cutting. Tiny positive scores in the zero rounding bucket make those different selection algorithms. This differs from the inherited node-token/cache root F-1004/bug-plt-017 and global row cap F-1003; no matching existing finding was located.
+
+Consequence: a caller's explicit top-k result can change with the available execution route even when graph, seeds and walk values are unchanged. Finite native evidence and the actual source readers establish this sampled consequence; arbitrary floating equivalence and all fallback configurations remain unproved.
+
+Repair proposal (not implemented): choose the zero-tie policy, then apply the same ordering and cut to both final readers. If the global rounded-tie rule governs, merge eligible zeros with scored rows before the final sort/cut; if positive-first governs, align the fallback and clarify the ranking statement. Neither policy nor repair is approved here.
+
+Formal corroboration: [ppr_walk](models/ppr_walk/NOTES.md) `theorem_request_tiny_readers_differ` derives the raw one-step recurrence, ideal zero bucket and selected-set inequality; the larger-score neighbor agrees. This does not resolve q-iter-008 or certify arbitrary native rounding.
 
 <a id="bug-tmp-012"></a>
 ### Without the adjacency index, deleting a temporal edge removes the adjacency of an explicit edge on the same triple

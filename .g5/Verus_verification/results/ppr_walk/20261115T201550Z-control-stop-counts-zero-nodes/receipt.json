@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_held_zero_node_does_not_inflate_stop_threshold"
+    ],
+    "find": "if d<(h as real)*tol || left==1",
+    "name": "stop-counts-zero-nodes",
+    "replace": "if d<(c.nodes.len() as real)*tol || left==1",
+    "why": "Threshold counts nonzero holders."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_held_zero_node_does_not_inflate_stop_threshold"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "b1924009ca6e72c4b4e667f3899ac611806a79070844b351179afa3080995f71",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-counts-zero-nodes/20261115T201543Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_held_zero_node_does_not_inflate_stop_threshold": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201543Z-control-stop-counts-zero-nodes-theorem_held_zero_node_does_not_inflate_stop_threshold.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201543Z-control-stop-counts-zero-nodes.log",
+    "timed_out": false,
+    "verified": 99
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201550Z-control-stop-counts-zero-nodes/logs/20261115T201543Z-control-stop-counts-zero-nodes-theorem_held_zero_node_does_not_inflate_stop_threshold.log": "3b084769c3e7aedb6884b6da5a6d59f08ae50a4b63080732e021121a7b9b846f",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201550Z-control-stop-counts-zero-nodes/logs/20261115T201543Z-control-stop-counts-zero-nodes.log": "41402184928c742328808601048fa5126197d3bc406de9ea5b8843d34ecef013"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

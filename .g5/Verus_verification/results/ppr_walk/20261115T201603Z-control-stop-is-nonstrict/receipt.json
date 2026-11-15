@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_zero_tolerance_does_not_stop_on_zero_change"
+    ],
+    "find": "if d<(h as real)*tol || left==1",
+    "name": "stop-is-nonstrict",
+    "replace": "if d<=(h as real)*tol || left==1",
+    "why": "Zero change does not pass zero strict tolerance."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_zero_tolerance_does_not_stop_on_zero_change"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "b1924009ca6e72c4b4e667f3899ac611806a79070844b351179afa3080995f71",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stop-is-nonstrict/20261115T201557Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_zero_tolerance_does_not_stop_on_zero_change": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201557Z-control-stop-is-nonstrict-theorem_zero_tolerance_does_not_stop_on_zero_change.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201557Z-control-stop-is-nonstrict.log",
+    "timed_out": false,
+    "verified": 102
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201603Z-control-stop-is-nonstrict/logs/20261115T201557Z-control-stop-is-nonstrict-theorem_zero_tolerance_does_not_stop_on_zero_change.log": "fe793099f8b1d85513246822b481f465e1127ec37129dced18b7ba3624575565",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201603Z-control-stop-is-nonstrict/logs/20261115T201557Z-control-stop-is-nonstrict.log": "8a5c530913d2630b799934c4487db2bdab1f62dcd23889a5ad50109c94f70f4d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

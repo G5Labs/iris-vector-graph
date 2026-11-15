@@ -1,0 +1,14 @@
+verification results:: 1 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/stop-is-nonstrict/20261115T202437Z/models/ppr_walk/ppr_walk.rs:393:10
+    |
+393 | ...es iterate(c,old,left,0real).iterations==left,
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+396 | ..._delta_self(old);assert((held(old) as real)*0real==0real) by(nonlinear_arith);reveal_with_fuel(iterate,2);if left>2{theorem_zero_tolerance_does_not_stop_on_zero_change(c,old,(left-1) as nat);}
+    |                                                                                                              -------------------------------------------------------------------------------------- at the end of the function body
+
+error: aborting due to 1 previous error
+

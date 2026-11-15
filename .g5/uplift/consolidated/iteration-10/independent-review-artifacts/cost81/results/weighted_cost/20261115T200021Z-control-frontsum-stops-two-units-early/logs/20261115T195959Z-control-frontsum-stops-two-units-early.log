@@ -1,0 +1,27 @@
+verification results:: 80 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/frontsum-stops-two-units-early/20261115T195959Z/models/weighted_cost/weighted_cost.rs:379:1
+    |
+379 | pub proof fn theorem_terminal_minimum(c:json::Config,s:State,p:Seq<Arc>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/frontsum-stops-two-units-early/20261115T195959Z/models/weighted_cost/weighted_cost.rs:386:44
+    |
+386 | ...ry,Entry)|s.forward.queue.contains(pair.0) && s.backward.queue.contains(pair.1) && pair.0.0+pair.1.0<=json::cost(c,p);
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/frontsum-stops-two-units-early/20261115T195959Z/models/weighted_cost/weighted_cost.rs:390:16
+    |
+390 |         assert(f.0<=pair.0.0);assert(r.0<=pair.1.0);assert(false);
+    |                ^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/frontsum-stops-two-units-early/20261115T195959Z/models/weighted_cost/weighted_cost.rs:390:60
+    |
+390 |         assert(f.0<=pair.0.0);assert(r.0<=pair.1.0);assert(false);
+    |                                                            ^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,14 @@
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:674:10
+    |
+672 |   pub proof fn theorem_public_default_cap_gap_from_raw_seeds(ns:Seq<int>)
+    |   ----------------------------------------------------------------------- at the end of the function body
+673 |    requires ns.no_duplicates(),ns.len()>1000,
+674 |    ensures ({let raw=ns.map_values(|id:int|Node{graph:0,id});let q=Request{graph:0,seeds:ns,alpha:0.5real,iterations:1,tolerance:0real,reverse:false,weight:1real,excluded:None,top:ns.len() as int};
+    |  __________^
+675 | |  match public(raw,seq![],q,Reader::Fast){Answer::Rows{values,iterations}=> iterations==1 && exists|i:int,j:int|0<=i<values.len() && 0<=j<ns.len() && values[i].id==ns[j] && values[i].score==0real && next(source_context(raw,seq![],q),initial(source_context(raw,seq![],q)))[j]>0real,_=>false}}),
+    | |___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________^ failed this postcondition
+
+verification results:: 102 verified, 1 errors
+error: aborting due to 1 previous error
+

@@ -1,0 +1,52 @@
+verification results:: 100 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/initial-share-not-normalized/20261115T201531Z/models/ppr_walk/ppr_walk.rs:98:1
+   |
+98 | pub proof fn theorem_initial_uniform_mass(c:Context) requires closed(c), ensures initial(c).len()==c.nodes.len(),sum(initial(c))==1r...
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/initial-share-not-normalized/20261115T201531Z/models/ppr_walk/ppr_walk.rs:98:82
+   |
+98 | pub proof fn theorem_initial_uniform_mass(c:Context) requires closed(c), ensures initial(c).len()==c.nodes.len(),sum(initial(c))==1r...
+   | ----------------------------------------------------                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+   | |
+   | at the end of the function body
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/initial-share-not-normalized/20261115T201531Z/models/ppr_walk/ppr_walk.rs:98:114
+   |
+98 | pub proof fn theorem_initial_uniform_mass(c:Context) requires closed(c), ensures initial(c).len()==c.nodes.len(),sum(initial(c))==1real {
+   | ---------------------------------------------------- at the end of the function body                             ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/initial-share-not-normalized/20261115T201531Z/models/ppr_walk/ppr_walk.rs:450:51
+    |
+450 |  assert(zeros(3)==seq![0real,0real,0real]);assert(initial(c)==seq![v,v,v]);
+    |                                                   ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/initial-share-not-normalized/20261115T201531Z/models/ppr_walk/ppr_walk.rs:592:1
+    |
+592 | pub proof fn lemma_isolated_seed_scores_positive(ns:Seq<int>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/initial-share-not-normalized/20261115T201531Z/models/ppr_walk/ppr_walk.rs:594:10
+    |
+592 |   pub proof fn lemma_isolated_seed_scores_positive(ns:Seq<int>)
+    |   ------------------------------------------------------------- at the end of the function body
+593 |    requires ns.len()>0,ns.no_duplicates(),
+594 |    ensures ({let c=Context{nodes:ns,edges:seq![],graph:0,seeds:ns,excluded:seq![],reverse:false,weight:1real,alpha:0.5real};
+    |  __________^
+595 | |  initial(c)==next(c,initial(c)) && initial(c).len()==ns.len() && forall|j:int|0<=j<ns.len() ==> initial(c)[j]>0real}),
+    | |_____________________________________________________________________________________________________________________^ failed this postcondition
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/initial-share-not-normalized/20261115T201531Z/models/ppr_walk/ppr_walk.rs:601:44
+    |
+601 |  assert forall|j:int|0<=j<ns.len() implies initial(c)[j]>0real by {
+    |                                            ^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors
+

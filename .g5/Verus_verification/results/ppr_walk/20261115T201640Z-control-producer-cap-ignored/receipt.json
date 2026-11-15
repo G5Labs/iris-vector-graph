@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_recurrence_cap_fabricates_zero"
+    ],
+    "find": "if limit>0 && limit<rs.len(){rs.take(limit)}else{rs}",
+    "name": "producer-cap-ignored",
+    "replace": "rs",
+    "why": "Producer truncates before zero completion."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_recurrence_cap_fabricates_zero"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "b1924009ca6e72c4b4e667f3899ac611806a79070844b351179afa3080995f71",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/producer-cap-ignored/20261115T201630Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": true,
+    "per_function": {
+      "theorem_recurrence_cap_fabricates_zero": {
+        "errors": 0,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201630Z-control-producer-cap-ignored-theorem_recurrence_cap_fabricates_zero.log",
+        "timed_out": false,
+        "verified": 2
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201630Z-control-producer-cap-ignored.log",
+    "timed_out": false,
+    "verified": 99
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201640Z-control-producer-cap-ignored/logs/20261115T201630Z-control-producer-cap-ignored-theorem_recurrence_cap_fabricates_zero.log": "4f6ce291155d120decdc81081994fd416fffb784f283b271a9963f64ad75a1d1",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201640Z-control-producer-cap-ignored/logs/20261115T201630Z-control-producer-cap-ignored.log": "3af2c4700d49e207597795c0056d4f89486fd0476b5261b62a3b4508ae22f5b6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "FAIL_ELSEWHERE",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,37 @@
+verification results:: 80 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:365:1
+    |
+365 | pub proof fn lemma_two_frontiers(c:json::Config,s:State,from:int,before:nat,p:Seq<Arc>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:379:48
+    |
+379 | ...y)|s.forward.queue.contains(pair.0) && s.backward.queue.contains(pair.1) && pair.0.0+pair.1.0<=before+json::weight(c,a)+json::cost(c,p.drop_first());
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:385:20
+    |
+385 |             assert(s.backward.dist[from]<=json::cost(c,rev)) by {reveal(optimal);}
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:386:20
+    |
+386 |             assert(s.best.is_some() && s.best.unwrap()<=s.forward.dist[from]+s.backward.dist[from]) by {reveal(best_inv);}
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:386:78
+    |
+386 |             assert(s.best.is_some() && s.best.unwrap()<=s.forward.dist[from]+s.backward.dist[from]) by {reveal(best_inv);}
+    |                                                                              ^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: aborting due to 2 previous errors
+

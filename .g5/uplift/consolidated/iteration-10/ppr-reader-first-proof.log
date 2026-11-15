@@ -1,0 +1,39 @@
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:189:10
+    |
+189 |    ensures valid_seeds(raw,ns).contains(id) <==> raw.contains(id) && ns.contains(id),valid_seeds(raw,ns).no_duplicates(),
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+192 | /  if raw.len()>0 {
+193 | |   let t=valid_seeds(raw.drop_first(),ns);theorem_valid_seed_set(raw.drop_first(),ns,id);
+194 | |   if ns.contains(raw[0]) && !t.contains(raw[0]) {
+195 | |    assert((seq![raw[0]]+t).no_duplicates()) by {
+...   |
+201 | |  }
+    | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:207:10
+    |
+207 |    ensures scoped(raw,g).contains(id) <==> exists|i:int|0<=i<raw.len() && raw[i].graph==g && raw[i].id==id,
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+210 | /  if raw.len()>0 {theorem_scoped_members(raw.drop_first(),g,id);
+211 | |   if scoped(raw,g).contains(id) && !(raw[0].graph==g && raw[0].id==id){
+212 | |    let i=choose|i:int|0<=i<raw.drop_first().len() && raw.drop_first()[i].graph==g && raw.drop_first()[i].id==id;
+213 | |    assert(raw[i+1].graph==g && raw[i+1].id==id);
+...   |
+219 | |  }
+    | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:297:10
+    |
+297 |  ensures insert(r,rs).contains(v) <==> v==r || rs.contains(v), decreases rs.len(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+298 | {if rs.len()>0{lemma_insert_member(r,rs.drop_first(),v);}}
+    |  -------------------------------------------------------- at the end of the function body
+
+verification results:: 47 verified, 3 errors
+error: aborting due to 3 previous errors
+

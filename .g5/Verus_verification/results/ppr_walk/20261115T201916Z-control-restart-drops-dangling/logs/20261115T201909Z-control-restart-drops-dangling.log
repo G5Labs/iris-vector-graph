@@ -1,0 +1,62 @@
+verification results:: 98 verified, 5 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:165:1
+    |
+165 | pub proof fn theorem_step_mass_from_raw_outgoing(c:Context,old:Seq<real>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:167:10
+    |
+165 | pub proof fn theorem_step_mass_from_raw_outgoing(c:Context,old:Seq<real>)
+    | ------------------------------------------------------------------------- at the end of the function body
+166 |  requires closed(c),unit(c),old.len()==c.nodes.len(),
+167 |  ensures next(c,old).len()==c.nodes.len(),sum(next(c,old))==1real-c.alpha+c.alpha*sum(old),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:167:43
+    |
+165 | pub proof fn theorem_step_mass_from_raw_outgoing(c:Context,old:Seq<real>)
+    | ------------------------------------------------------------------------- at the end of the function body
+166 |  requires closed(c),unit(c),old.len()==c.nodes.len(),
+167 |  ensures next(c,old).len()==c.nodes.len(),sum(next(c,old))==1real-c.alpha+c.alpha*sum(old),
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:414:10
+    |
+413 | pub proof fn theorem_reverse_zero_uses_dangling_restart()
+    | --------------------------------------------------------- at the end of the function body
+414 |  ensures next(reverse_fixture(0real),seq![0real,1real])==seq![0real,1real],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:444:74
+    |
+443 | pub proof fn lemma_isolated3_recurrence()
+    | ----------------------------------------- at the end of the function body
+444 |  ensures initial(isolated3())==seq![1real/3real,1real/3real,1real/3real],next(isolated3(),initial(isolated3()))==initial(isolated3()),
+    |                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:530:10
+    |
+529 | pub proof fn lemma_second_tiny_step()
+    | ------------------------------------- at the end of the function body
+530 |  ensures next(tiny(0.5real),seq![0real,0.5real,0.5real])==seq![0real,0.75real,0.25real],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:594:10
+    |
+592 |   pub proof fn lemma_isolated_seed_scores_positive(ns:Seq<int>)
+    |   ------------------------------------------------------------- at the end of the function body
+593 |    requires ns.len()>0,ns.no_duplicates(),
+594 |    ensures ({let c=Context{nodes:ns,edges:seq![],graph:0,seeds:ns,excluded:seq![],reverse:false,weight:1real,alpha:0.5real};
+    |  __________^
+595 | |  initial(c)==next(c,initial(c)) && initial(c).len()==ns.len() && forall|j:int|0<=j<ns.len() ==> initial(c)[j]>0real}),
+    | |_____________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 6 previous errors
+

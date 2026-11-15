@@ -1,0 +1,29 @@
+verification results:: 1 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:165:1
+    |
+165 | pub proof fn theorem_step_mass_from_raw_outgoing(c:Context,old:Seq<real>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:167:10
+    |
+165 | pub proof fn theorem_step_mass_from_raw_outgoing(c:Context,old:Seq<real>)
+    | ------------------------------------------------------------------------- at the end of the function body
+166 |  requires closed(c),unit(c),old.len()==c.nodes.len(),
+167 |  ensures next(c,old).len()==c.nodes.len(),sum(next(c,old))==1real-c.alpha+c.alpha*sum(old),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs:167:43
+    |
+165 | pub proof fn theorem_step_mass_from_raw_outgoing(c:Context,old:Seq<real>)
+    | ------------------------------------------------------------------------- at the end of the function body
+166 |  requires closed(c),unit(c),old.len()==c.nodes.len(),
+167 |  ensures next(c,old).len()==c.nodes.len(),sum(next(c,old))==1real-c.alpha+c.alpha*sum(old),
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

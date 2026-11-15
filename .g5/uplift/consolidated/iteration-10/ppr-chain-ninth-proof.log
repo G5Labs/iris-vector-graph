@@ -1,0 +1,17 @@
+error: assertion failed
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:517:67
+    |
+517 |  assert(ordered(seq![x,y]));lemma_rank_identity(seq![x,y]);assert(rank(seq![z,x,y])==seq![x,y,z]);assert(missing(seq![0,1,2],seq![x...
+    |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:520:10
+    |
+519 | pub proof fn lemma_second_tiny_step()
+    | ------------------------------------- at the end of the function body
+520 |  ensures next(tiny(0.5real),seq![0real,0.5real,0.5real])==seq![0real,0.75real,0.25real],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+verification results:: 83 verified, 2 errors
+error: aborting due to 2 previous errors
+

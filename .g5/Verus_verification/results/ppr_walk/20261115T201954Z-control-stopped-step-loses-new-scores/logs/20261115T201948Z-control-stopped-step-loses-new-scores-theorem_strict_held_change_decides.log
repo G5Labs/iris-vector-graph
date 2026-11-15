@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stopped-step-loses-new-scores/20261115T201948Z/models/ppr_walk/ppr_walk.rs:389:48
+    |
+387 | pub proof fn theorem_strict_held_change_decides(c:Context,old:Seq<real>,left:nat,tol:real)
+    | ------------------------------------------------------------------------------------------ at the end of the function body
+388 |  requires left>0,delta(next(c,old),old)<(held(next(c,old)) as real)*tol,
+389 |  ensures iterate(c,old,left,tol).iterations==1,iterate(c,old,left,tol).ranks==next(c,old),
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

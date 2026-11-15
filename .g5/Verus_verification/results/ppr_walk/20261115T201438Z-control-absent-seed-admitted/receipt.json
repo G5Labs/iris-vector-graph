@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_valid_seed_set"
+    ],
+    "find": "if ns.contains(raw[0]) && !t.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+    "name": "absent-seed-admitted",
+    "replace": "if !t.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+    "why": "Membership comes from the selected node table."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_valid_seed_set"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "b1924009ca6e72c4b4e667f3899ac611806a79070844b351179afa3080995f71",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/absent-seed-admitted/20261115T201432Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_valid_seed_set": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201432Z-control-absent-seed-admitted-theorem_valid_seed_set.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201432Z-control-absent-seed-admitted.log",
+    "timed_out": false,
+    "verified": 102
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201438Z-control-absent-seed-admitted/logs/20261115T201432Z-control-absent-seed-admitted-theorem_valid_seed_set.log": "b610d1eaa884f77b08718511e0d89c4623bf2e28ef982c320876e0da1886e05a",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201438Z-control-absent-seed-admitted/logs/20261115T201432Z-control-absent-seed-admitted.log": "9dcd25f4b670083825b68b77913ec96dcd9bd08f22c3674e61f994f0292b7887"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

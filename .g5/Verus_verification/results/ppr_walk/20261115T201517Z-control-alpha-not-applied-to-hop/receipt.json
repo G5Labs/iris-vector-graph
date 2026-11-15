@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_scatter"
+    ],
+    "find": "ship(out,c.nodes,hs,c.alpha*old[i as int]/(hs.len() as real))",
+    "name": "alpha-not-applied-to-hop",
+    "replace": "ship(out,c.nodes,hs,old[i as int]/(hs.len() as real))",
+    "why": "Follow-edge probability scales each transfer."
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_scatter"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "b1924009ca6e72c4b4e667f3899ac611806a79070844b351179afa3080995f71",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/alpha-not-applied-to-hop/20261115T201510Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_scatter": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201510Z-control-alpha-not-applied-to-hop-lemma_scatter.log",
+        "timed_out": false,
+        "verified": 3
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201510Z-control-alpha-not-applied-to-hop.log",
+    "timed_out": false,
+    "verified": 99
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201517Z-control-alpha-not-applied-to-hop/logs/20261115T201510Z-control-alpha-not-applied-to-hop-lemma_scatter.log": "24645c5d5597c95864124e808fce1642fd4206beafb4b2eb8e91fc4e49052187",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201517Z-control-alpha-not-applied-to-hop/logs/20261115T201510Z-control-alpha-not-applied-to-hop.log": "21976544ec5eab8371f0140263545fcd7e05fc715eb8600794ea8be053296df7"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

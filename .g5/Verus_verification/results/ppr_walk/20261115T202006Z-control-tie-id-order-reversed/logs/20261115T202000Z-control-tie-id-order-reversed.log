@@ -1,0 +1,24 @@
+verification results:: 100 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/tie-id-order-reversed/20261115T202000Z/models/ppr_walk/ppr_walk.rs:349:10
+    |
+347 | pub proof fn lemma_tiny_readers(a:real,b:real)
+    | ---------------------------------------------- at the end of the function body
+348 |  requires a>0real,b>0real,decimal12(a)>0,decimal12(b)==0,
+349 |  ensures full_reader(seq![0,1,2],seq![0real,a,b],2)==seq![Row{id:1,score:a},Row{id:0,score:0real}],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/tie-id-order-reversed/20261115T202000Z/models/ppr_walk/ppr_walk.rs:372:37
+    |
+372 |  assert(decimal12(0real)==0);assert(ordered(seq![x,y]));lemma_rank_identity(seq![x,y]);
+    |                                     ^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/tie-id-order-reversed/20261115T202000Z/models/ppr_walk/ppr_walk.rs:461:9
+    |
+461 |  assert(ordered(seq![x,y,z]));lemma_rank_identity(seq![x,y,z]);assert(sparse(seq![x,y,z])==seq![x,y,z]);
+    |         ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

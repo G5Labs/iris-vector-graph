@@ -1,4 +1,4 @@
-Latest checkpoint: [iteration 9](iteration-9/HANDOFF.md), continuing into iteration 10.
+Latest checkpoint: [iteration 10](iteration-10/HANDOFF.md), continuing into iteration 11.
 
 # IVG consolidated uplift — handoff
 

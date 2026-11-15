@@ -1,0 +1,17 @@
+verification results:: 102 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/repeated-seeds-count-twice/20261115T201438Z/models/ppr_walk/ppr_walk.rs:209:84
+    |
+209 |    ensures valid_seeds(raw,ns).contains(id) <==> raw.contains(id) && ns.contains(id),valid_seeds(raw,ns).no_duplicates(),
+    |                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+212 | /  if raw.len()>0 {
+213 | |   let t=valid_seeds(raw.drop_first(),ns);theorem_valid_seed_set(raw.drop_first(),ns,id);theorem_valid_seed_set(raw.drop_first(),n...
+214 | |   assert(raw==seq![raw[0]]+raw.drop_first());lemma_prepend_contains(raw[0],raw.drop_first(),id);lemma_prepend_contains(raw[0],t,id);
+215 | |   if ns.contains(raw[0]) && !t.contains(raw[0]) {
+...   |
+222 | |  }
+    | |__- at the end of the function body
+
+error: aborting due to 1 previous error
+

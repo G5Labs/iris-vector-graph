@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_positive_readers"
+    ],
+    "find": "cut(scored+rank(missing(ns,scored)),limit)",
+    "name": "zero-completion-removed",
+    "replace": "cut(scored,limit)",
+    "why": "Reader appends persisted absent nodes."
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_positive_readers"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/zero-completion-removed/20261115T202025Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_positive_readers": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T202025Z-control-zero-completion-removed-lemma_positive_readers.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T202025Z-control-zero-completion-removed.log",
+    "timed_out": false,
+    "verified": 100
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202031Z-control-zero-completion-removed/logs/20261115T202025Z-control-zero-completion-removed-lemma_positive_readers.log": "2a4db3b5aa05bdadb1d35eaa5f36bf052b35e0f3123c9fe967b554feabe625c9",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202031Z-control-zero-completion-removed/logs/20261115T202025Z-control-zero-completion-removed.log": "70ef1597a16e0fbe69d502f2adae23923765e121a1b244f1ead52e3c772a5ccd"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

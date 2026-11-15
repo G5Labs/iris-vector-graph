@@ -1,0 +1,21 @@
+verification results:: 81 verified, 2 errors
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/empty-frontier-requires-both-empty/20261115T200454Z/models/weighted_cost/weighted_cost.rs:335:12
+    |
+335 |     assert(s.forward.queue.len()>0 && s.backward.queue.len()>0);let f=minimum(s.forward.queue);let r=minimum(s.backward.queue);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/empty-frontier-requires-both-empty/20261115T200454Z/models/weighted_cost/weighted_cost.rs:331:1
+    |
+331 | pub proof fn theorem_continue_preserves(c:json::Config,s:State,t:State)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/empty-frontier-requires-both-empty/20261115T200454Z/models/weighted_cost/weighted_cost.rs:436:12
+    |
+436 |     assert(s.forward.queue.len()>0 && s.backward.queue.len()>0);let f=minimum(s.forward.queue);let r=minimum(s.backward.queue);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

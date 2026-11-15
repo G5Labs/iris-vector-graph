@@ -1,0 +1,24 @@
+verification results:: 79 verified, 2 errors
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/admitted-self-zero-lost/20261115T195840Z/models/weighted_cost/weighted_cost.rs:400:1
+    |
+400 | pub proof fn theorem_continue_rank(c:json::Config,s:State,t:State)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/admitted-self-zero-lost/20261115T195840Z/models/weighted_cost/weighted_cost.rs:533:13
+    |
+533 |       ensures correct_result(c,answer(c)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+536 | /     if c.src==c.dst{
+537 | |         json::theorem_admitted_self_is_zero(c);let p=Seq::<Arc>::empty();assert(json::feasible(c,p));assert(json::cost(c,p)==0);
+538 | |     }else{
+539 | |         theorem_initial_search_terminates(c);assert(exists|tr:Seq<State>|terminal_trace(c,initial(c),tr));
+540 | |         let tr=actual_cost_trace(c);assert(terminal_trace(c,initial(c),tr));lemma_cost_trace_inv(c,tr,(tr.len()-1) as nat);
+541 | |         theorem_finish_correct(c,tr.last());
+542 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

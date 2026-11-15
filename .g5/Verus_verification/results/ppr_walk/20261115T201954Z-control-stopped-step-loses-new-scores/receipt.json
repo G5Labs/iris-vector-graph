@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_strict_held_change_decides"
+    ],
+    "find": "Walk{ranks:nr,iterations:1,change:d,holding:h}",
+    "name": "stopped-step-loses-new-scores",
+    "replace": "Walk{ranks:old,iterations:1,change:d,holding:h}",
+    "why": "Final iteration installs its new scores."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_strict_held_change_decides"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stopped-step-loses-new-scores/20261115T201948Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_strict_held_change_decides": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201948Z-control-stopped-step-loses-new-scores-theorem_strict_held_change_decides.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201948Z-control-stopped-step-loses-new-scores.log",
+    "timed_out": false,
+    "verified": 100
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201954Z-control-stopped-step-loses-new-scores/logs/20261115T201948Z-control-stopped-step-loses-new-scores-theorem_strict_held_change_decides.log": "ea7ee4e3b571ea0d038383f487164bb6624a09572c33e8563be20aa2bb97e57d",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201954Z-control-stopped-step-loses-new-scores/logs/20261115T201948Z-control-stopped-step-loses-new-scores.log": "4dedbac3f8f3fb122cefc38fe2df21076622f8c1a06772a068ed99b2835a0dcc"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

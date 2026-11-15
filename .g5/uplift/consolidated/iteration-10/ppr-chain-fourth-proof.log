@@ -1,0 +1,28 @@
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:343:10
+    |
+342 |   pub proof fn theorem_recurrence_tiny_zero_cut_differs()
+    |   ------------------------------------------------------- at the end of the function body
+343 |    ensures ({let c=tiny(0.0000000000001real);let r=iterate(c,initial(c),1,0real).ranks;
+    |  __________^
+344 | |   full_reader(c.nodes,r,2)==seq![Row{id:1,score:0.9999999999999real},Row{id:0,score:0real}]
+345 | |   && fast_reader(c.nodes,r,1000,2,1000)==seq![Row{id:1,score:0.9999999999999real},Row{id:2,score:0.0000000000001real}]}),
+    | |________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: assertion failed
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:360:9
+    |
+360 |  assert(rank(seq![z,x,y])==seq![x,y,z]);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:365:10
+    |
+364 | pub proof fn theorem_positive_rank_and_zeros_read_together()
+    | ------------------------------------------------------------ at the end of the function body
+365 |  ensures ({let c=tiny(0.5real);let r=next(c,initial(c));full_reader(c.nodes,r,3)==fast_reader(c.nodes,r,1000,3,1000)}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+verification results:: 67 verified, 3 errors
+error: aborting due to 3 previous errors
+

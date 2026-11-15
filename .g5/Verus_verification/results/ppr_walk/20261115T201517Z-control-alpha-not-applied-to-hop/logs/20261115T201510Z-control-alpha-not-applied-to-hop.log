@@ -1,0 +1,58 @@
+verification results:: 99 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/alpha-not-applied-to-hop/20261115T201510Z/models/ppr_walk/ppr_walk.rs:138:1
+    |
+138 | pub proof fn lemma_scatter(c:Context,old:Seq<real>,i:nat,out:Seq<real>,dang:real)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/alpha-not-applied-to-hop/20261115T201510Z/models/ppr_walk/ppr_walk.rs:140:10
+    |
+140 |    ensures scatter(c,old,i,out,dang).values.len()==out.len(),
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+145 | /  if i<c.nodes.len(){
+146 | |   let hs=hops(c.edges,c.graph,c.nodes[i as int],c.excluded,c.reverse,c.weight);
+147 | |   let rest=old.subrange((i+1) as int,old.len() as int);let tail=old.subrange(i as int,old.len() as int);
+148 | |   assert(tail.drop_first()==rest);assert(sum(tail)==old[i as int]+sum(rest));
+...   |
+162 | |   assert(a*v+a*t==a*(v+t)) by(nonlinear_arith);
+163 | |  }
+    | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/alpha-not-applied-to-hop/20261115T201510Z/models/ppr_walk/ppr_walk.rs:141:3
+    |
+141 | /   sum(scatter(c,old,i,out,dang).values)+c.alpha*scatter(c,old,i,out,dang).dangling
+142 | |    ==sum(out)+c.alpha*dang+c.alpha*sum(old.subrange(i as int,old.len() as int)),
+    | |_______________________________________________________________________________^ failed this postcondition
+...
+145 | /  if i<c.nodes.len(){
+146 | |   let hs=hops(c.edges,c.graph,c.nodes[i as int],c.excluded,c.reverse,c.weight);
+147 | |   let rest=old.subrange((i+1) as int,old.len() as int);let tail=old.subrange(i as int,old.len() as int);
+148 | |   assert(tail.drop_first()==rest);assert(sum(tail)==old[i as int]+sum(rest));
+...   |
+162 | |   assert(a*v+a*t==a*(v+t)) by(nonlinear_arith);
+163 | |  }
+    | |__- at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/alpha-not-applied-to-hop/20261115T201510Z/models/ppr_walk/ppr_walk.rs:342:9
+    |
+342 |  assert(next(tiny(a),v)==seq![0real,1real-a,a]);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/alpha-not-applied-to-hop/20261115T201510Z/models/ppr_walk/ppr_walk.rs:411:9
+    |
+411 |  assert(scatter(c,seq![0real,1real],0,zeros(2),0real)==Sweep{values:seq![0.5real*w,0real],dangling:0real});
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/alpha-not-applied-to-hop/20261115T201510Z/models/ppr_walk/ppr_walk.rs:537:9
+    |
+537 |  assert(scatter(c,seq![0real,0.5real,0.5real],0,zeros(3),0real)==Sweep{values:seq![0real,0real,0.25real],dangling:0.5real});
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors
+

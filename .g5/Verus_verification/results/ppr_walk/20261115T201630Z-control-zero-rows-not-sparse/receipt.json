@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_empty_scores_do_not_invent_zero_nodes"
+    ],
+    "find": "if rs[0].score!=0real",
+    "name": "zero-rows-not-sparse",
+    "replace": "if true",
+    "why": "An empty score map does not invent a walk."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_scores_do_not_invent_zero_nodes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "b1924009ca6e72c4b4e667f3899ac611806a79070844b351179afa3080995f71",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/zero-rows-not-sparse/20261115T201621Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_scores_do_not_invent_zero_nodes": {
+        "errors": 0,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201621Z-control-zero-rows-not-sparse-theorem_empty_scores_do_not_invent_zero_nodes.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201621Z-control-zero-rows-not-sparse.log",
+    "timed_out": false,
+    "verified": 100
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201630Z-control-zero-rows-not-sparse/logs/20261115T201621Z-control-zero-rows-not-sparse-theorem_empty_scores_do_not_invent_zero_nodes.log": "06aee624ceefb0f504401bde45618b53b002b11f413534c07dd4771d593a2dc7",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201630Z-control-zero-rows-not-sparse/logs/20261115T201621Z-control-zero-rows-not-sparse.log": "9abc3a8c486bc8f8acd7817415e404e16763ae64f16b99125835741655040180"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "FAIL_ELSEWHERE",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

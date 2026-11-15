@@ -1,0 +1,25 @@
+verification results:: 1 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/initial-share-not-normalized/20261115T202411Z/models/ppr_walk/ppr_walk.rs:98:1
+   |
+98 | pub proof fn theorem_initial_uniform_mass(c:Context) requires closed(c), ensures initial(c).len()==c.nodes.len(),sum(initial(c))==1r...
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/initial-share-not-normalized/20261115T202411Z/models/ppr_walk/ppr_walk.rs:98:82
+   |
+98 | pub proof fn theorem_initial_uniform_mass(c:Context) requires closed(c), ensures initial(c).len()==c.nodes.len(),sum(initial(c))==1r...
+   | ----------------------------------------------------                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+   | |
+   | at the end of the function body
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/initial-share-not-normalized/20261115T202411Z/models/ppr_walk/ppr_walk.rs:98:114
+   |
+98 | pub proof fn theorem_initial_uniform_mass(c:Context) requires closed(c), ensures initial(c).len()==c.nodes.len(),sum(initial(c))==1real {
+   | ---------------------------------------------------- at the end of the function body                             ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_actual_json_fallback_correct"
+    ],
+    "find": "json::Event::Returned{state:_,entry:e}=>Some(e.0)",
+    "name": "json-fallback-reader-zeroes-cost",
+    "replace": "json::Event::Returned{state:_,entry:e}=>Some(0)",
+    "why": "Fallback must project the actual imported returned entry cost."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_actual_json_fallback_correct"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/model.json": "245f915a1dc287e07a45067b8bc4671a8f58a59b58758a51cfec67963dd71fa6",
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "aba5b84b26ecd516b0c56a38152b470400311779de13d067d013a5db930292c6",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/json-fallback-reader-zeroes-cost/20261115T195823Z/models/weighted_cost/weighted_cost.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_actual_json_fallback_correct": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/20261115T195823Z-control-json-fallback-reader-zeroes-cost-theorem_actual_json_fallback_correct.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/20261115T195823Z-control-json-fallback-reader-zeroes-cost.log",
+    "timed_out": false,
+    "verified": 80
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_cost/20261115T195840Z-control-json-fallback-reader-zeroes-cost/logs/20261115T195823Z-control-json-fallback-reader-zeroes-cost-theorem_actual_json_fallback_correct.log": "6010f6a0df20187c69fa20701090def806345d6268c57ff16fa221c95ba8dc69",
+    ".g5/Verus_verification/results/weighted_cost/20261115T195840Z-control-json-fallback-reader-zeroes-cost/logs/20261115T195823Z-control-json-fallback-reader-zeroes-cost.log": "67adb2d587ba2829f826915f57bfad2349b63a28205a06491c21ccc598f7f7d2"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

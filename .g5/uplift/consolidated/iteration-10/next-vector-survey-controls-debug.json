@@ -1,0 +1,108 @@
+{
+  "base": {
+    "label": "base",
+    "method": "kg_KNN_VEC",
+    "query": "'[1,2,3]'",
+    "dimension": "4",
+    "catalog": {},
+    "present": true,
+    "output": {
+      "kind": "error",
+      "type": "ValueError",
+      "message": "query vector has 3 dimensions, but graph 'g' is routed to kg_emb_survey, which stores 4-dimensional vectors. A vector from one model cannot be scored against another model's space: pass the graph's own model_key and a vector of its width, or query the graph the vector belongs to."
+    },
+    "score_statements": 0,
+    "metadata_statements": 0,
+    "registry_statements": 1,
+    "sql": [
+      [
+        "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+        [
+          "g",
+          "node",
+          "m"
+        ]
+      ]
+    ],
+    "cache_keys": [
+      [
+        "Graph_KG.embedding_registry",
+        "g",
+        "m",
+        "node"
+      ]
+    ]
+  },
+  "changed": {
+    "label": "guard-removed",
+    "method": "kg_KNN_VEC",
+    "query": "'[1,2,3]'",
+    "dimension": "4",
+    "catalog": {},
+    "present": true,
+    "output": {
+      "kind": "error",
+      "type": "ValueError",
+      "message": "Table 'kg_emb_survey' is not in the allowlist"
+    },
+    "score_statements": 0,
+    "metadata_statements": 0,
+    "registry_statements": 1,
+    "sql": [
+      [
+        "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+        [
+          "g",
+          "node",
+          "m"
+        ]
+      ]
+    ],
+    "cache_keys": [
+      [
+        "Graph_KG.embedding_registry",
+        "g",
+        "m",
+        "node"
+      ]
+    ]
+  },
+  "precedence": {
+    "label": "precedence",
+    "method": "kg_KNN_VEC",
+    "query": "'[1,2,3]'",
+    "dimension": "4",
+    "catalog": {
+      "params": [
+        "LEN,3"
+      ]
+    },
+    "present": true,
+    "output": {
+      "kind": "error",
+      "type": "ValueError",
+      "message": "Table 'kg_emb_survey' is not in the allowlist"
+    },
+    "score_statements": 0,
+    "metadata_statements": 0,
+    "registry_statements": 1,
+    "sql": [
+      [
+        "SELECT table_name, dimension, dtype, index_state, index_error FROM Graph_KG.embedding_registry WHERE (COALESCE(graph_id, '') = COALESCE(?, '')) AND COALESCE(kind, 'node') = ? AND model_key = ?",
+        [
+          "g",
+          "node",
+          "m"
+        ]
+      ]
+    ],
+    "cache_keys": [
+      [
+        "Graph_KG.embedding_registry",
+        "g",
+        "m",
+        "node"
+      ]
+    ]
+  }
+}

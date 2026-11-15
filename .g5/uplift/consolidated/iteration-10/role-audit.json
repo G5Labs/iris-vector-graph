@@ -1,0 +1,263 @@
+{
+  "rows": [
+    {
+      "block": "algorithms.op.paths.weighted",
+      "role": "cost-only search transition",
+      "path": "iris_src/src/Graph/KG/TraversalPaths.cls",
+      "symbol": "DijkstraCost",
+      "formal_item": ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs::theorem_actual_dijkstra_cost_complete",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "exact integer selected mirrored scalar graph; historical BestHop/actual JSON fallback; writer/native numeric/codec unproved",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "recurrence writer",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "Run",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::theorem_raw_walk_mass",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "exact recurrence; stable closed nodes, correct Degree provider, exact real arithmetic",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "multiplicity reader",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "Multiplicity",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::mult",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "admitted absent-or-count scalar; native ordinary positive counters, not writer correctness",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "seed membership decision",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "NodeSeeds",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::theorem_valid_seed_set",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "shared valid member-set projection only; not ordering/wire",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "positive producer rank and cut",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "RunJson",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::cut",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "typed positive score projection, ideal decimal key/ID order and integer limit; generic codec external",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "zero completion reader",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "WithUnscored",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::fast_reader",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "ranked input then missing-node zero fill and final cut; SQL enumeration provider",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "fallback recurrence writer",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin._kg_PERSONALIZED_PAGERANK_python_fallback",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::theorem_raw_walk_mass",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "raw scoped members/physical multiplicities to exact recurrence and full reader; float/SQL providers",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "final public reader",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin._ppr_every_node",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::fast_reader",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "capped positive input then zero fill; SQL TOP enumeration provider",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "typed request composition",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin.kg_PERSONALIZED_PAGERANK",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::theorem_public_default_cap_gap_from_raw_seeds",
+      "relation": "models",
+      "grade": "Observed (bounded native + actual Python/source-port)",
+      "limit": "ordinary typed request and faithful chosen owner/reader only; dynamic dispatch/cache/type carriers external",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "wire limit context",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "_runjson_tail",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::source_limit",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "combined numeric effect only; omitted tuple carrier unproved",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr.completion",
+      "role": "store owner context",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore._execute_ppr",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::source_limit",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "public composition effect only; direct-store limit carrier differs",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr.zero_ties",
+      "role": "decimal key context",
+      "path": "iris_vector_graph/_collation.py",
+      "symbol": "rank_key",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::decimal12",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "finite actual key observations; ideal decimal theorem not all binary float",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr.zero_ties",
+      "role": "ID collation context",
+      "path": "iris_vector_graph/_collation.py",
+      "symbol": "collation_key",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::rank",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "integer ordered atom idealization; arbitrary IRIS collation external",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "list wrapper context",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin.ppr",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::full_reader",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "nine actual wrappers observed; distinct raw-score sort not formalized",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "argument guard context",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "check_ppr_args",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::public",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "typed refusals observed; whole-number float range mismatch outside typed model",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "seed guard context",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "_check_seeds",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::valid_seeds",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "typed raw parser not newly proved",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "exclusion guard context",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "_check_exclusions",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::hops",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "prefix parser context only",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "exclusion matching context",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "_exclude_matches",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::hops",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "bare predicate fragment modeled; Type.p parsing outside",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "native guard context",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "CheckArgs",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::public",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "finite native/source checks; raw validation unproved",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "native exclusion parser",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "ParseExclude",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::hops",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "bare predicate fragment modeled; generic parser unproved",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "native exclusion reader",
+      "path": "iris_src/src/Graph/KG/PageRank.cls",
+      "symbol": "Excluded",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::hops",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "typed selected predicate fragment only",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "degree provider",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "Degree",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::hops",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "Degree must equal recount; cache/global writers existing obligations",
+      "checked": true
+    },
+    {
+      "block": "algorithms.op.ppr",
+      "role": "cached owner wrapper",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.execute_ppr",
+      "formal_item": ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs::public",
+      "relation": "observes",
+      "grade": "Observed (qualified context)",
+      "limit": "correct cached score map or fresh owner premise; no new cache writer reach",
+      "checked": true
+    }
+  ],
+  "new_active_role_rows": 9,
+  "new_observation_role_rows": 14,
+  "new_rows": 23,
+  "active_fragment_roles_checked": 9,
+  "direct_body_verified": 0,
+  "scope": "Independent review accepted Cost1/PPR8 necessary deciding/producing/reading fragment roles. PPR wire/store carriers, raw parsers, cache/Degree writers and arbitrary native numerical/codec/collation providers remain observations or existing obligations. Inherited188 not exhaustively reaudited."
+}

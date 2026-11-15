@@ -1,0 +1,12 @@
+verification results:: 87 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/run/verus/weighted_cost/controls/empty-frontier-requires-both-empty/20261115T201514Z/models/weighted_cost/weighted_cost.rs:357:13
+    |
+355 | pub proof fn lemma_continue_has_frontiers(c:json::Config,s:State,t:State)
+    | ------------------------------------------------------------------------- at the end of the function body
+356 |     requires step(c,s)==Event::Continue(t),
+357 |     ensures s.forward.queue.len()>0 && s.backward.queue.len()>0,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

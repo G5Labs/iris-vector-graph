@@ -1,0 +1,26 @@
+verification results:: 102 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/empty-exclusion-does-not-lift-cap/20261115T202046Z/models/ppr_walk/ppr_walk.rs:494:1
+    |
+494 | pub proof fn theorem_producer_limit_is_derived(q:Request)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/empty-exclusion-does-not-lift-cap/20261115T202046Z/models/ppr_walk/ppr_walk.rs:495:57
+    |
+494 | pub proof fn theorem_producer_limit_is_derived(q:Request)
+    | --------------------------------------------------------- at the end of the function body
+495 |  ensures q.excluded.is_none() ==> source_limit(q)==1000,q.excluded.is_some() && q.top>0 ==> source_limit(q)==q.top,
+    |                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/empty-exclusion-does-not-lift-cap/20261115T202046Z/models/ppr_walk/ppr_walk.rs:496:2
+    |
+494 | pub proof fn theorem_producer_limit_is_derived(q:Request)
+    | --------------------------------------------------------- at the end of the function body
+495 |  ensures q.excluded.is_none() ==> source_limit(q)==1000,q.excluded.is_some() && q.top>0 ==> source_limit(q)==q.top,
+496 |  q.excluded.is_some() && q.top<=0 ==> source_limit(q)==0,q.top>0 ==> effective_limit(q.top,1000)==q.top,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

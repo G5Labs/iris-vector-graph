@@ -1,0 +1,28 @@
+verification results:: 100 verified, 3 errors
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/stopped-step-loses-new-scores/20261115T202443Z/models/ppr_walk/ppr_walk.rs:364:9
+    |
+364 |  assert(iterate(c,initial(c),1,0real).ranks==next(c,initial(c)));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/stopped-step-loses-new-scores/20261115T202443Z/models/ppr_walk/ppr_walk.rs:389:48
+    |
+387 | pub proof fn theorem_strict_held_change_decides(c:Context,old:Seq<real>,left:nat,tol:real)
+    | ------------------------------------------------------------------------------------------ at the end of the function body
+388 |  requires left>0,delta(next(c,old),old)<(held(next(c,old)) as real)*tol,
+389 |  ensures iterate(c,old,left,tol).iterations==1,iterate(c,old,left,tol).ranks==next(c,old),
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/stopped-step-loses-new-scores/20261115T202443Z/models/ppr_walk/ppr_walk.rs:521:10
+    |
+520 |   pub proof fn theorem_above_zero_bucket_readers_agree()
+    |   ------------------------------------------------------ at the end of the function body
+521 |    ensures ({let c=tiny(0.00000000001real);let r=iterate(c,initial(c),1,0real).ranks;
+    |  __________^
+522 | |  full_reader(c.nodes,r,2)==fast_reader(c.nodes,r,1000,2,1000)}),
+    | |_______________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

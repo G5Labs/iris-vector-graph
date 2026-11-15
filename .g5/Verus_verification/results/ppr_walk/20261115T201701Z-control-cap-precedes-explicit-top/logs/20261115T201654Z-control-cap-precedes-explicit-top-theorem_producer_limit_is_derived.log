@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/cap-precedes-explicit-top/20261115T201654Z/models/ppr_walk/ppr_walk.rs:496:58
+    |
+494 | pub proof fn theorem_producer_limit_is_derived(q:Request)
+    | --------------------------------------------------------- at the end of the function body
+495 |  ensures q.excluded.is_none() ==> source_limit(q)==1000,q.excluded.is_some() && q.top>0 ==> source_limit(q)==q.top,
+496 |  q.excluded.is_some() && q.top<=0 ==> source_limit(q)==0,q.top>0 ==> effective_limit(q.top,1000)==q.top,
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

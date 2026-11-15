@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_valid_seed_set"
+    ],
+    "find": "if ns.contains(raw[0]) && !t.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+    "name": "repeated-seeds-count-twice",
+    "replace": "if ns.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+    "why": "Repeated valid IDs have one restart share."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_valid_seed_set"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "b1924009ca6e72c4b4e667f3899ac611806a79070844b351179afa3080995f71",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/repeated-seeds-count-twice/20261115T201438Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_valid_seed_set": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201438Z-control-repeated-seeds-count-twice-theorem_valid_seed_set.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201438Z-control-repeated-seeds-count-twice.log",
+    "timed_out": false,
+    "verified": 102
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201445Z-control-repeated-seeds-count-twice/logs/20261115T201438Z-control-repeated-seeds-count-twice-theorem_valid_seed_set.log": "ecdb7aab7f587767858df59c03820088d7d6c94ec1616e9ff38d84a7aae3a800",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201445Z-control-repeated-seeds-count-twice/logs/20261115T201438Z-control-repeated-seeds-count-twice.log": "67e35e560b490405b571dfd2850c3c919b7406625add4b37300bf2ab0ab8ffa6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

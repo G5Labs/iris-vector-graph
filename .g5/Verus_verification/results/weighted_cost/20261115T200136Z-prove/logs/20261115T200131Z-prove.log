@@ -1,0 +1,29 @@
+verification results:: 80 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:365:1
+    |
+365 | pub proof fn lemma_two_frontiers(c:json::Config,s:State,from:int,before:nat,p:Seq<Arc>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:368:13
+    |
+368 |       ensures exists|pair:(Entry,Entry)|s.forward.queue.contains(pair.0) && s.backward.queue.contains(pair.1) && pair.0.0+pair.1.0<=before+json::cost(c,p),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+372 | /     if s.forward.done.contains(from){
+373 | |         if p.len()==0{assert(from==c.dst);assert(s.backward.dist.contains_key(from));assert(s.backward.dist[from]==0);
+374 | |             assert(s.best.is_some() && s.best.unwrap()<=s.forward.dist[from]+s.backward.dist[from]) by {reveal(best_inv);}
+375 | |             assert(false);}
+...   |
+395 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:387:20
+    |
+387 |             assert(s.backward.dist[from]<=json::cost(c,rev)) by {reveal(optimal);}
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

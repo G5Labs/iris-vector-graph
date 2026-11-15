@@ -1,0 +1,47 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/scope-ignores-graph/20261115T201809Z/models/ppr_walk/ppr_walk.rs:227:1
+    |
+227 | pub proof fn theorem_scoped_members(raw:Seq<Node>,g:int,id:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/scope-ignores-graph/20261115T201809Z/models/ppr_walk/ppr_walk.rs:228:10
+    |
+228 |    ensures scoped(raw,g).contains(id) <==> exists|i:int|0<=i<raw.len() && raw[i].graph==g && raw[i].id==id,
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+231 | /  if raw.len()>0 {theorem_scoped_members(raw.drop_first(),g,id);
+232 | |   lemma_prepend_contains(raw[0].id,scoped(raw.drop_first(),g),id);
+233 | |   if scoped(raw,g).contains(id) && !(raw[0].graph==g && raw[0].id==id){
+234 | |    let i=choose|i:int|0<=i<raw.drop_first().len() && raw.drop_first()[i].graph==g && raw.drop_first()[i].id==id;
+...   |
+241 | |  }
+    | |__- at the end of the function body
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/scope-ignores-graph/20261115T201809Z/models/ppr_walk/ppr_walk.rs:234:23
+    |
+234 |    let i=choose|i:int|0<=i<raw.drop_first().len() && raw.drop_first()[i].graph==g && raw.drop_first()[i].id==id;
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/scope-ignores-graph/20261115T201809Z/models/ppr_walk/ppr_walk.rs:235:11
+    |
+235 |    assert(raw[i+1].graph==g && raw[i+1].id==id);
+    |           ^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/scope-ignores-graph/20261115T201809Z/models/ppr_walk/ppr_walk.rs:235:11
+    |
+235 |    assert(raw[i+1].graph==g && raw[i+1].id==id);
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

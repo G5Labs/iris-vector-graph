@@ -1,0 +1,37 @@
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:401:10
+    |
+400 | pub proof fn theorem_reverse_zero_uses_dangling_restart()
+    | --------------------------------------------------------- at the end of the function body
+401 |  ensures next(reverse_fixture(0real),seq![0real,1real])==seq![0real,1real],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:447:10
+    |
+446 |   pub proof fn theorem_recurrence_cap_fabricates_zero()
+    |   ----------------------------------------------------- at the end of the function body
+447 |    ensures ({let c=isolated3();let r=iterate(c,initial(c),1,0real).ranks;
+    |  __________^
+448 | |   r[2]==1real/3real && fast_reader(c.nodes,r,2,3,2)[2]==Row{id:3,score:0real}}),
+    | |_______________________________________________________________________________^ failed this postcondition
+
+note: recommendation not met
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:448:24
+    |
+448 |   r[2]==1real/3real && fast_reader(c.nodes,r,2,3,2)[2]==Row{id:3,score:0real}}),
+    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:450:56
+    |
+450 |  lemma_isolated3_recurrence();let v=1real/3real;assert(v>0real) by(nonlinear_arith);lemma_capped_positive_row_becomes_zero(v);revea...
+    |                                                        ^^^^^^^ assertion failed
+
+verification results:: 72 verified, 3 errors
+error: aborting due to 3 previous errors
+

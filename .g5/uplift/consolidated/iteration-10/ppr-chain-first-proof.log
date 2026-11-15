@@ -1,0 +1,91 @@
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:316:1
+    |
+316 | pub proof fn lemma_tiny_recurrence(a:real)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:320:32
+    |
+320 |  let v=initial(tiny(a));assert(v==seq![0real,1real,0real]);assert(zeros(3)==seq![0real,0real,0real]);
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:321:9
+    |
+321 |  assert(next(tiny(a),v)==seq![0real,1real-a,a]);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:323:1
+    |
+323 | pub proof fn theorem_recurrence_tiny_zero_cut_differs()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:331:1
+    |
+331 | pub proof fn theorem_positive_rank_and_zeros_read_together()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:342:10
+    |
+342 |  ensures iterate(c,old,left,0real).iterations==left,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+345 |  lemma_delta_self(old);if left>2{theorem_zero_tolerance_does_not_stop_on_zero_change(c,old,(left-1) as nat);}
+    |                        -------------------------------------------------------------------------------------- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:349:1
+    |
+349 | pub proof fn theorem_reverse_weight_scales_contribution_only(w:real)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:351:10
+    |
+349 | pub proof fn theorem_reverse_weight_scales_contribution_only(w:real)
+    | -------------------------------------------------------------------- at the end of the function body
+350 |  requires w>0real,
+351 |  ensures next(reverse_fixture(w),seq![0real,1real])==seq![0.5real*w,0.5real],sum(next(reverse_fixture(w),seq![0real,1real]))==0.5re...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:351:78
+    |
+349 | pub proof fn theorem_reverse_weight_scales_contribution_only(w:real)
+    | -------------------------------------------------------------------- at the end of the function body
+350 |  requires w>0real,
+351 |  ensures next(reverse_fixture(w),seq![0real,1real])==seq![0.5real*w,0.5real],sum(next(reverse_fixture(w),seq![0real,1real]))==0.5real*w+0.5real,
+    |                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:357:10
+    |
+356 | pub proof fn theorem_reverse_zero_uses_dangling_restart()
+    | --------------------------------------------------------- at the end of the function body
+357 |  ensures next(reverse_fixture(0real),seq![0real,1real])==seq![0real,1real],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:363:3
+    |
+361 | pub proof fn theorem_multiplicity_divisor_not_distinct_neighbors()
+    | ------------------------------------------------------------------ at the end of the function body
+362 |  ensures hops(seq![Edge{graph:0,src:1,pred:7,dst:2,count:Some(2)},Edge{graph:0,src:1,pred:8,dst:3,count:None}],0,1,seq![],false,1real).len()...
+363 |   hops(seq![Edge{graph:0,src:1,pred:7,dst:2,count:Some(2)},Edge{graph:0,src:1,pred:8,dst:3,count:None}],0,1,seq![7],false,1real).len()==1,
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:371:58
+    |
+371 | pub proof fn lemma_zero_rows_sparse(ns:Seq<int>) ensures sparse(rows(ns,zeros(ns.len()))).len()==0, decreases ns.len(), {
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+372 |  if ns.len()>0{assert(zeros(ns.len()).drop_first()==zeros((ns.len()-1) as nat));lemma_zero_rows_sparse(ns.drop_first());}
+    |  ------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+
+verification results:: 56 verified, 8 errors
+error: aborting due to 10 previous errors
+

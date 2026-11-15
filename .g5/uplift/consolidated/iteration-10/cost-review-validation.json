@@ -1,0 +1,424 @@
+{
+  "time": "2026-11-15T20:16:03.341959+00:00",
+  "verdict": "ACCEPT_BOUNDED_FRAGMENT",
+  "scratch": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri",
+  "units": {
+    "total": 88,
+    "new": 43,
+    "imported_rechecked": 45,
+    "new_proof_functions": 40,
+    "new_recursive_spec_checks": 3
+  },
+  "threads": 4,
+  "receipts": [
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201446Z-binding/receipt.json",
+      "receipt_sha256": "2acf3ab4b3beac09bade9ba876987483ac9645afcf69411a9605872b88d920c4",
+      "kind": "binding",
+      "verdict": "AGREES",
+      "inputs_fresh": true,
+      "stale": [],
+      "comparisons": 21168,
+      "mismatch_count": 0,
+      "sensitivity": {
+        "actual_cost_reader_zeroed": true,
+        "actual_hop_producer_removed": true,
+        "actual_zero_reader_drops_self": true,
+        "backward_both_order_trace_rejected": true,
+        "changed_observed_cost_rejected": true,
+        "source_port_early-frontsum": true,
+        "source_port_no-fallback": true,
+        "source_port_old_queue_trace_changed": true,
+        "source_port_zero-best-hop": true
+      },
+      "socket_connect_calls": 0,
+      "elapsed": 0.9003985419985838,
+      "both_order_contrast": {
+        "altered_order": {
+          "agrees": false,
+          "calls": [
+            [
+              "s",
+              "t",
+              20.0,
+              "both",
+              "[]",
+              "g",
+              3
+            ]
+          ],
+          "expected": [
+            [
+              "",
+              8.0
+            ]
+          ],
+          "input": [
+            "s",
+            "t",
+            20,
+            3,
+            "both",
+            [],
+            "g"
+          ],
+          "model_fallback": [
+            [
+              "s",
+              "t",
+              "",
+              20.0,
+              3,
+              "both",
+              "[]",
+              "g"
+            ]
+          ],
+          "model_terminal_best": [
+            8,
+            4
+          ],
+          "port_fallback": [],
+          "port_terminal_best": [
+            8,
+            3
+          ],
+          "rows": [
+            [
+              "",
+              8.0
+            ]
+          ],
+          "trace_steps": 6
+        },
+        "meaning": "Same cost8; source BestHop4 calls Json, wrong backward tag order BestHop3 skips fallback. Trace/branch comparison detects what cost oracle alone misses.",
+        "rows": [
+          [
+            "g",
+            "s",
+            "R",
+            "a",
+            2
+          ],
+          [
+            "g",
+            "a",
+            "R",
+            "v",
+            2
+          ],
+          [
+            "g",
+            "v",
+            "R",
+            "u",
+            2
+          ],
+          [
+            "g",
+            "u",
+            "R",
+            "t",
+            2
+          ],
+          [
+            "g",
+            "u",
+            "R",
+            "w",
+            3
+          ],
+          [
+            "g",
+            "s",
+            "R",
+            "w",
+            3
+          ]
+        ],
+        "source_order": {
+          "agrees": true,
+          "calls": [
+            [
+              "s",
+              "t",
+              20.0,
+              "both",
+              "[]",
+              "g",
+              3
+            ]
+          ],
+          "expected": [
+            [
+              "",
+              8.0
+            ]
+          ],
+          "input": [
+            "s",
+            "t",
+            20,
+            3,
+            "both",
+            [],
+            "g"
+          ],
+          "model_fallback": [
+            [
+              "s",
+              "t",
+              "",
+              20.0,
+              3,
+              "both",
+              "[]",
+              "g"
+            ]
+          ],
+          "model_terminal_best": [
+            8,
+            4
+          ],
+          "port_fallback": [
+            [
+              "s",
+              "t",
+              "",
+              20.0,
+              3,
+              "both",
+              "[]",
+              "g"
+            ]
+          ],
+          "port_terminal_best": [
+            8,
+            4
+          ],
+          "rows": [
+            [
+              "",
+              8.0
+            ]
+          ],
+          "trace_steps": 6
+        }
+      },
+      "product_inputs_equal": true
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201450Z-prove/receipt.json",
+      "receipt_sha256": "c700bab690b314ecccab34670f30500fa3b063f6df421e13726fc4aeba96624f",
+      "kind": "proof",
+      "verdict": "PASS",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 5.0,
+      "verified": 88,
+      "errors": 0,
+      "full_resource": false
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201456Z-control-old-queue-entry-retained/receipt.json",
+      "receipt_sha256": "0cd95685cb3e30c186d48582b4ca43289dbe6983284a4fb85534e96d44965c55",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 11.0,
+      "name": "old-queue-entry-retained",
+      "full_resource": false,
+      "named": {
+        "lemma_decrease_base": {
+          "errors": 1,
+          "timed_out": false,
+          "ordinary_assert_or_post": true,
+          "resource_limit": false,
+          "raw_sha256": "32c5e87b20622ae92a7c74001aa2775bf92e1c7d2de320e2cbd349c1733a4f4a"
+        }
+      }
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201502Z-control-best-hop-omits-backward-half/receipt.json",
+      "receipt_sha256": "eca870a5d5fb15e23e44cfec9fa03ee11e36164a2e54a352d84c2c2ae44a02f7",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 6.0,
+      "name": "best-hop-omits-backward-half",
+      "full_resource": false,
+      "named": {
+        "lemma_relax_best": {
+          "errors": 1,
+          "timed_out": false,
+          "ordinary_assert_or_post": true,
+          "resource_limit": false,
+          "raw_sha256": "201edf94dbe7d7bad184a11c3def64cf9e63fd9ed4bd4743448267c87cc319e8"
+        }
+      }
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201508Z-control-best-prefers-more-expensive-meeting/receipt.json",
+      "receipt_sha256": "482382868d7ba44183d2f877d9e58fc5aa47d555f874b0493b88485b8213890f",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 6.0,
+      "name": "best-prefers-more-expensive-meeting",
+      "full_resource": false,
+      "named": {
+        "lemma_relax_best": {
+          "errors": 1,
+          "timed_out": false,
+          "ordinary_assert_or_post": true,
+          "resource_limit": false,
+          "raw_sha256": "91f2e5005155d2495c2c7c852010a0156f82caf82b0a0c8b4b13d74cb539834c"
+        }
+      }
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201514Z-control-frontsum-stops-two-units-early/receipt.json",
+      "receipt_sha256": "08a106afb51688e48139cabd1a6b530edf594bc6397d57ad33bd13eae28b628c",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 6.0,
+      "name": "frontsum-stops-two-units-early",
+      "full_resource": false,
+      "named": {
+        "theorem_terminal_minimum": {
+          "errors": 1,
+          "timed_out": false,
+          "ordinary_assert_or_post": true,
+          "resource_limit": false,
+          "raw_sha256": "aa128a26b760f475258289c0d43d999323eda492e4fa545c87ba781cdc1b2100"
+        }
+      }
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201519Z-control-empty-frontier-requires-both-empty/receipt.json",
+      "receipt_sha256": "0e9612ceb138983ae7f74737f7950160fe7d3bf50dfc0aadfb9da20df296882e",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 5.0,
+      "name": "empty-frontier-requires-both-empty",
+      "full_resource": false,
+      "named": {
+        "lemma_continue_has_frontiers": {
+          "errors": 1,
+          "timed_out": false,
+          "ordinary_assert_or_post": true,
+          "resource_limit": false,
+          "raw_sha256": "7c395f562dffb905b864b4862e91de5506ae2ae71816796072e88c2a65029366"
+        }
+      }
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201525Z-control-bounded-hop-fallback-removed/receipt.json",
+      "receipt_sha256": "aaba1d5a8aac3d103c4a863a6c8db9ec0d14f1ffa07d29c0bc929ee1f92a277d",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 6.0,
+      "name": "bounded-hop-fallback-removed",
+      "full_resource": false,
+      "named": {
+        "theorem_finish_correct": {
+          "errors": 1,
+          "timed_out": false,
+          "ordinary_assert_or_post": true,
+          "resource_limit": false,
+          "raw_sha256": "418f75ddfc6805288f311353febd31c7f9a8b57e6b099586beb6dbe8f7a765b5"
+        }
+      }
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201531Z-control-json-fallback-reader-zeroes-cost/receipt.json",
+      "receipt_sha256": "43211286c3a4dc6276856e61ced44eed6af85f3819d42d0391b0fc630b0b5db4",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 6.0,
+      "name": "json-fallback-reader-zeroes-cost",
+      "full_resource": false,
+      "named": {
+        "theorem_actual_json_fallback_correct": {
+          "errors": 1,
+          "timed_out": false,
+          "ordinary_assert_or_post": true,
+          "resource_limit": false,
+          "raw_sha256": "e1a09aabc3f2a15f3d51c568a87a6313f0f6bff92ff8228c2e00f5b932dcfe3a"
+        }
+      }
+    },
+    {
+      "receipt": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/.g5/Verus_verification/results/weighted_cost/20261115T201538Z-control-admitted-self-zero-lost/receipt.json",
+      "receipt_sha256": "c2799893febf2b75dae5cd8b28f1216a1447248b72d649e4b58720c68c1f9218",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "inputs_fresh": true,
+      "stale": [],
+      "wall_s_timestamp_resolution": 7.0,
+      "name": "admitted-self-zero-lost",
+      "full_resource": false,
+      "named": {
+        "theorem_actual_dijkstra_cost_complete": {
+          "errors": 1,
+          "timed_out": false,
+          "ordinary_assert_or_post": true,
+          "resource_limit": false,
+          "raw_sha256": "17620d6996cf4ec5227d49a636c4e9dcaddf177c8d2b8349d2a660cf793ece55"
+        }
+      }
+    }
+  ],
+  "current_package_equals_scratch": {
+    ".g5/Verus_verification/models/weighted_cost/binding.py": true,
+    ".g5/Verus_verification/models/weighted_cost/model.json": true,
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": true,
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": true,
+    ".g5/Verus_verification/run_verus.py": true,
+    ".g5/Verus_verification/tools/binding_common.py": true,
+    ".g5/uplift/consolidated/iteration-10/root-cost-native.json": true,
+    ".g5/uplift/consolidated/iteration-10/root-cost-native.log": true,
+    ".g5/uplift/consolidated/iteration-10/root-cost-native.py": true,
+    ".g5/uplift/consolidated/iteration-9/weighted-cost-next-probe.py": true,
+    ".g5/uplift/consolidated/iteration-9/weighted-mirror-native.json": true,
+    ".g5/uplift/consolidated/iteration-9/weighted-mirror-native.py": true,
+    ".g5/uplift/consolidated/iteration-9/weighted-native.json": true,
+    ".g5/uplift/consolidated/iteration-9/weighted-native.py": true,
+    "iris_src/src/Graph/KG/AdjIndex.cls": true,
+    "iris_src/src/Graph/KG/Adjacency.cls": true,
+    "iris_src/src/Graph/KG/GraphMode.cls": true,
+    "iris_src/src/Graph/KG/Traversal.cls": true,
+    "iris_src/src/Graph/KG/TraversalPaths.cls": true,
+    "iris_vector_graph/_engine/nodes_edges.py": true,
+    "iris_vector_graph/cypher/ast.py": true,
+    "iris_vector_graph/cypher/translator.py": true,
+    "iris_vector_graph/engine.py": true
+  },
+  "notes_sha256": "deccdcf85dce4adc87579dc798ffd70bf214532d0685302f3009701184f8ebe1",
+  "notes_current_equal": true,
+  "builder_ledger_sha256": "2175e75771e83e401984e0aa2cd8393107e09f5377ec7e9d555f383889985bd5",
+  "final_verifier_wall_sum_s_timestamp_resolution": 58.0,
+  "cost_limits": "Sum of proof/control start/end filename timestamps at one-second resolution; includes full+isolated controls, excludes waiting and LLM/native costs; final proof/controls ran concurrently. Binding duration separately measured.",
+  "prior_attempts": {
+    "unordered81": "cost-review-replay-start.json",
+    "corrected83": "cost-review-attempt83-validation.json",
+    "preparation31104": "cost-review-preparation-replay.json"
+  },
+  "review_harness_attempts": [
+    "Native-input audit initially assumed all_equal key; corrected field reader, retained in cost-review-native-input-audit.json.",
+    "One documentation patch context failed without changing files, then corrected.",
+    "83 final collector freshness assertion caught concurrent85 helper change; archived83attempt instead of accepting stalepackage."
+  ],
+  "scope": "Independent source/proof architecture review and scratch proof/control/Python replay; no native/runtime/network/Git/product/shared edits; no private holdout."
+}

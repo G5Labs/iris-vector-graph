@@ -1,0 +1,18 @@
+verification results:: 73 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:214:13
+    |
+214 |     ensures base(c,b,accept(z,e)),!z.done.contains(e.1),z.dist[e.1]==e.0,
+    |             ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+219 |     assert forall|q:Entry|t.queue.contains(q) <==> t.dist.contains_key(q.1) && !t.done.contains(q.1) && t.dist[q.1]==q.0 by {
+    |     ------ at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_cost/weighted_cost.rs:436:71
+    |
+436 |     theorem_initial(c);theorem_search_terminates(c,initial(c));assert(rank(c,initial(c))==2*nodes(c).len());
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

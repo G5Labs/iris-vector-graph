@@ -1,0 +1,33 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/run/verus/weighted_cost/controls/best-prefers-more-expensive-meeting/20261115T201502Z/models/weighted_cost/weighted_cost.rs:271:1
+    |
+271 | pub proof fn lemma_relax_best(c:json::Config,s:State,b:bool,e:Entry,a:Arc)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/run/verus/weighted_cost/controls/best-prefers-more-expensive-meeting/20261115T201502Z/models/weighted_cost/weighted_cost.rs:273:38
+    |
+273 |         side(s,b).done.contains(e.1),side(s,b).dist[e.1]==e.0,
+    |                                      ^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/run/verus/weighted_cost/controls/best-prefers-more-expensive-meeting/20261115T201502Z/models/weighted_cost/weighted_cost.rs:287:20
+    |
+287 |             assert(t.best==Some(n));assert(t.best_path==p+reverse_path(q));
+    |                    ^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/run/verus/weighted_cost/controls/best-prefers-more-expensive-meeting/20261115T201502Z/models/weighted_cost/weighted_cost.rs:292:12
+    |
+292 |     assert(s.best.is_some() ==> t.best.is_some() && t.best.unwrap()<=s.best.unwrap());
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

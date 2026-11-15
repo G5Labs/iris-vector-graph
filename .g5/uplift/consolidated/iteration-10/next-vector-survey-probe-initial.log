@@ -1,0 +1,9 @@
+{"verdict": "CHECK_FAILED", "cases": 94, "checks": {"three_direct_mismatch_no_score": true, "absent_pair_empty": true, "other_engine_create_visible": true, "ivf_no_route_no_table_or_build": true}, "sensitivities": {"actual_width_guard_removed": false, "actual_route_width_precedence_lost": false, "actual_cache_graph_key_removed": true}, "elapsed": 4.581438458000775, "sockets": 0}
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-10/next-vector-survey-probe.py", line 130, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-10/next-vector-survey-probe.py", line 129, in main
+    Path(__file__).with_suffix('.json').write_text(json.dumps(out,indent=2,default=str)+'\n');print(json.dumps({'verdict':out['verdict'],'cases':len(cases),'checks':checks,'sensitivities':sensitivity,'elapsed':out['elapsed'],'sockets':CONNECT.call_count}));assert out['verdict']=='OBSERVED'
+                                                                                                                                                                                                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

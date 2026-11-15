@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_multiplicity_divisor_not_distinct_neighbors"
+    ],
+    "find": "e.count.unwrap_or(1)",
+    "name": "stored-multiplicity-ignored",
+    "replace": "1nat",
+    "why": "Stored keyed multiplicity changes outgoing slots."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_multiplicity_divisor_not_distinct_neighbors"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/stored-multiplicity-ignored/20261115T201829Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_multiplicity_divisor_not_distinct_neighbors": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201829Z-control-stored-multiplicity-ignored-theorem_multiplicity_divisor_not_distinct_neighbors.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201829Z-control-stored-multiplicity-ignored.log",
+    "timed_out": false,
+    "verified": 102
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201834Z-control-stored-multiplicity-ignored/logs/20261115T201829Z-control-stored-multiplicity-ignored-theorem_multiplicity_divisor_not_distinct_neighbors.log": "3ed60e121f0964f1135b68bac7b850f759889d0d43b8af4cc6ee365a6cf98c7c",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201834Z-control-stored-multiplicity-ignored/logs/20261115T201829Z-control-stored-multiplicity-ignored.log": "1e2292735aad2357a18654d82f398539e40f6cf4308185f42f1b220c4cd8da0b"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

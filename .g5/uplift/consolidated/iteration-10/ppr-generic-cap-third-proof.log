@@ -1,0 +1,35 @@
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:603:10
+    |
+603 |  ensures has(missing(ns,rs),id) <==> ns.contains(id) && !(has(rs,id)),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+606 |  if ns.len()>0 {lemma_missing_has(ns.drop_first(),rs,id);assert(ns==seq![ns[0]]+ns.drop_first());lemma_prepend_contains(ns[0],ns.drop_first(),id);reveal_with_fuel(has,2);}
+    |  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: assertion failed
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:644:118
+    |
+644 | ...0<=i<ns.len() implies rows(ns,scores)[i].id==ns[i] && rows(ns,scores)[i].score==scores[i] by {if i>0{assert(rows(ns,scores)[i]==...
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:658:100
+    |
+658 |  let rs=rows(ns,scores);lemma_rows_properties(ns,scores);assert forall|i:int|0<=i<rs.len() implies rs[i].score>0real by {}
+    |                                                                                                    ^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:668:10
+    |
+666 |   pub proof fn theorem_public_default_cap_gap_from_raw_seeds(ns:Seq<int>)
+    |   ----------------------------------------------------------------------- at the end of the function body
+667 |    requires ns.no_duplicates(),ns.len()>1000,
+668 |    ensures ({let raw=ns.map_values(|id:int|Node{graph:0,id});let q=Request{graph:0,seeds:ns,alpha:0.5real,iterations:1,tolerance:0real,reverse:false,weight:1real,excluded:None,top:ns.len() as int};
+    |  __________^
+669 | |  match public(raw,seq![],q,Reader::Fast){Answer::Rows{values,iterations}=> iterations==1 && exists|i:int,j:int|0<=i<values.len() && 0<=j<ns.len() && values[i].id==ns[j] && values[i].score==0real && next(source_context(raw,seq![],q),initial(source_context(raw,seq![],q)))[j]>0real,_=>false}}),
+    | |___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________^ failed this postcondition
+
+verification results:: 98 verified, 4 errors
+error: aborting due to 4 previous errors
+

@@ -1,0 +1,43 @@
+{
+  "scope": "Read-only audit of deferred integer-vs-whole-float iteration observation; no rerun, no formal credit/new issue/native inference.",
+  "inputs_fresh": {
+    ".g5/Verus_verification/models/ppr_walk/binding.py": true,
+    "iris_vector_graph/_engine/algorithms.py": true
+  },
+  "probe_sha256": "7e29314f01c8d3c6f52c65ecf80071a299d8074d9f61c939fbc1cd387cd443cc",
+  "receipt_sha256": "a85ad69d93b02b1f062891eb29f524d3779a75269cbbaa12ace884df149b2cb4",
+  "carriers": [
+    {
+      "carrier": "1",
+      "outcome": {
+        "value": {
+          "seed": 1.0,
+          "zero": 0.0
+        }
+      }
+    },
+    {
+      "carrier": "1.0",
+      "outcome": {
+        "error_type": "TypeError",
+        "error": "'float' object cannot be interpreted as an integer"
+      }
+    },
+    {
+      "carrier": "2",
+      "outcome": {
+        "value": {
+          "seed": 1.0,
+          "zero": 0.0
+        }
+      }
+    },
+    {
+      "carrier": "2.0",
+      "outcome": {
+        "error_type": "TypeError",
+        "error": "'float' object cannot be interpreted as an integer"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+verification results:: 99 verified, 4 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/producer-cap-ignored/20261115T202510Z/models/ppr_walk/ppr_walk.rs:326:10
+    |
+325 | pub proof fn theorem_cap_is_actual_prefix(rs:Seq<Row>,limit:int)
+    | ---------------------------------------------------------------- at the end of the function body
+326 |  ensures limit>0 && limit<rs.len() ==> cut(rs,limit)==rs.take(limit),cut(rs,limit).len()<=rs.len(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/producer-cap-ignored/20261115T202510Z/models/ppr_walk/ppr_walk.rs:349:10
+    |
+347 | pub proof fn lemma_tiny_readers(a:real,b:real)
+    | ---------------------------------------------- at the end of the function body
+348 |  requires a>0real,b>0real,decimal12(a)>0,decimal12(b)==0,
+349 |  ensures full_reader(seq![0,1,2],seq![0real,a,b],2)==seq![Row{id:1,score:a},Row{id:0,score:0real}],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/producer-cap-ignored/20261115T202510Z/models/ppr_walk/ppr_walk.rs:347:1
+    |
+347 | pub proof fn lemma_tiny_readers(a:real,b:real)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/producer-cap-ignored/20261115T202510Z/models/ppr_walk/ppr_walk.rs:462:9
+    |
+462 |  assert(cut(seq![x,y,z],2)==seq![x,y]);assert(ordered(seq![x,y]));lemma_rank_identity(seq![x,y]);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/producer-cap-ignored/20261115T202510Z/models/ppr_walk/ppr_walk.rs:678:82
+    |
+678 |  lemma_sparse_positive(rs);theorem_rank_order(rs);let p=cut(rank(rs),cap);assert(p.len()==cap);lemma_cut_order(rank(rs),cap);lemma_...
+    |                                                                                  ^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_initial_uniform_mass"
+    ],
+    "find": "pub open spec fn initial(c:Context)->Seq<real> {seed_add(zeros(c.nodes.len()),c.nodes,c.seeds,1real/(c.seeds.len() as real))}",
+    "name": "initial-share-not-normalized",
+    "replace": "pub open spec fn initial(c:Context)->Seq<real> {seed_add(zeros(c.nodes.len()),c.nodes,c.seeds,1real)}",
+    "why": "Initial share divides by distinct valid seed count."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_initial_uniform_mass"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/initial-share-not-normalized/20261115T201916Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_initial_uniform_mass": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201916Z-control-initial-share-not-normalized-theorem_initial_uniform_mass.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201916Z-control-initial-share-not-normalized.log",
+    "timed_out": false,
+    "verified": 100
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201923Z-control-initial-share-not-normalized/logs/20261115T201916Z-control-initial-share-not-normalized-theorem_initial_uniform_mass.log": "739bb20d398af8f0787b8fbaa11e7964f762a3ebbf28d76dd203529a46d1090a",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201923Z-control-initial-share-not-normalized/logs/20261115T201916Z-control-initial-share-not-normalized.log": "6dbf50d2f7424c9ce3239db7b2604747c4394f1b3432031bcc2f65322056213d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

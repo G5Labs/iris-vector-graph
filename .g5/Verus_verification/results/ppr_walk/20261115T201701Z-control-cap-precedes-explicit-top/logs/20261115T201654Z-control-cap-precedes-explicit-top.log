@@ -1,0 +1,45 @@
+verification results:: 98 verified, 5 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/cap-precedes-explicit-top/20261115T201654Z/models/ppr_walk/ppr_walk.rs:350:3
+    |
+347 | pub proof fn lemma_tiny_readers(a:real,b:real)
+    | ---------------------------------------------- at the end of the function body
+...
+350 |   fast_reader(seq![0,1,2],seq![0real,a,b],1000,2,1000)==seq![Row{id:1,score:a},Row{id:2,score:b}],
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/cap-precedes-explicit-top/20261115T201654Z/models/ppr_walk/ppr_walk.rs:369:10
+    |
+367 | pub proof fn lemma_positive_readers(a:real,b:real,top:int)
+    | ---------------------------------------------------------- at the end of the function body
+368 |  requires a>0real,b>0real,decimal12(a)>=decimal12(b)>0,
+369 |  ensures full_reader(seq![0,1,2],seq![0real,a,b],top)==fast_reader(seq![0,1,2],seq![0real,a,b],1000,top,1000),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/cap-precedes-explicit-top/20261115T201654Z/models/ppr_walk/ppr_walk.rs:457:10
+    |
+455 | pub proof fn lemma_capped_positive_row_becomes_zero(v:real)
+    | ----------------------------------------------------------- at the end of the function body
+456 |  requires v>0real,
+457 |  ensures fast_reader(seq![1,2,3],seq![v,v,v],2,3,2)==seq![Row{id:1,score:v},Row{id:2,score:v},Row{id:3,score:0real}],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/cap-precedes-explicit-top/20261115T201654Z/models/ppr_walk/ppr_walk.rs:496:58
+    |
+494 | pub proof fn theorem_producer_limit_is_derived(q:Request)
+    | --------------------------------------------------------- at the end of the function body
+495 |  ensures q.excluded.is_none() ==> source_limit(q)==1000,q.excluded.is_some() && q.top>0 ==> source_limit(q)==q.top,
+496 |  q.excluded.is_some() && q.top<=0 ==> source_limit(q)==0,q.top>0 ==> effective_limit(q.top,1000)==q.top,
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/cap-precedes-explicit-top/20261115T201654Z/models/ppr_walk/ppr_walk.rs:682:64
+    |
+682 |  let out=fast_reader(ns,scores,cap,ns.len() as int,cap);assert(out==cut(p+zeros,ns.len() as int));assert(out.len()>cap);assert(out[...
+    |                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors
+

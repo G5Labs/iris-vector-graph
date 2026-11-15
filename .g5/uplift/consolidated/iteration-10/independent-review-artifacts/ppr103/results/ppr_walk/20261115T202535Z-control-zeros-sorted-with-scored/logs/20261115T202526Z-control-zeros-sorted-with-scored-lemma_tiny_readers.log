@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/zeros-sorted-with-scored/20261115T202526Z/models/ppr_walk/ppr_walk.rs:350:3
+    |
+347 | pub proof fn lemma_tiny_readers(a:real,b:real)
+    | ---------------------------------------------- at the end of the function body
+...
+350 |   fast_reader(seq![0,1,2],seq![0real,a,b],1000,2,1000)==seq![Row{id:1,score:a},Row{id:2,score:b}],
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,37 @@
+verification results:: 79 verified, 2 errors
+note: recommendation not met
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/old-queue-entry-retained/20261115T195909Z/models/weighted_cost/weighted_cost.rs:159:56
+    |
+159 |     requires frame(c),base(c,b,z),z.done.contains(e.1),z.dist[e.1]==e.0,
+    |                                                        ^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/old-queue-entry-retained/20261115T195909Z/models/weighted_cost/weighted_cost.rs:164:30
+    |
+164 |         assert(t.witness[v]==z.witness[e.1].push(a));
+    |                              ^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/old-queue-entry-retained/20261115T195909Z/models/weighted_cost/weighted_cost.rs:176:42
+    |
+176 |             if q.1==v{if q!=(n,v){assert(!t.queue.contains(q));}}
+    |                                          ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-review-jzr4wcwn/run/verus/weighted_cost/controls/old-queue-entry-retained/20261115T195909Z/models/weighted_cost/weighted_cost.rs:220:56
+    |
+220 |       assert forall|v:int|t.dist.contains_key(v) implies t.dist[v]<=c.cap && nodes(c).contains(v)
+    |  ________________________________________________________^
+221 | |         && walk(c,b,root(c,b),v,t.witness[v]) && json::cost(c,t.witness[v])==t.dist[v] && t.witness[v].len()==t.hop[v] by {
+    | |______________________________________________________________________________________________________________________^ assertion failed
+
+error: aborting due to 2 previous errors
+

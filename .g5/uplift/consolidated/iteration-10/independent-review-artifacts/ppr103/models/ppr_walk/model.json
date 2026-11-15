@@ -1,0 +1,224 @@
+{
+  "name": "ppr_walk",
+  "root": "ppr_walk.rs",
+  "expected_verified": 103,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "scope-ignores-graph",
+      "find": "if raw[0].graph==g {seq![raw[0].id]+t}",
+      "replace": "if true {seq![raw[0].id]+t}",
+      "expect_fail_in": [
+        "theorem_scoped_members"
+      ],
+      "why": "Other graph nodes must not enter this walk."
+    },
+    {
+      "name": "absent-seed-admitted",
+      "find": "if ns.contains(raw[0]) && !t.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+      "replace": "if !t.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+      "expect_fail_in": [
+        "theorem_valid_seed_set"
+      ],
+      "why": "Membership comes from the selected node table."
+    },
+    {
+      "name": "repeated-seeds-count-twice",
+      "find": "if ns.contains(raw[0]) && !t.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+      "replace": "if ns.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+      "expect_fail_in": [
+        "theorem_valid_seed_set"
+      ],
+      "why": "Repeated valid IDs have one restart share."
+    },
+    {
+      "name": "stored-multiplicity-ignored",
+      "find": "e.count.unwrap_or(1)",
+      "replace": "1nat",
+      "expect_fail_in": [
+        "theorem_multiplicity_divisor_not_distinct_neighbors"
+      ],
+      "why": "Stored keyed multiplicity changes outgoing slots."
+    },
+    {
+      "name": "excluded-edge-kept",
+      "find": "\n  let keep=e.graph==g && !ex.contains(e.pred);",
+      "replace": "\n  let keep=e.graph==g;",
+      "expect_fail_in": [
+        "theorem_multiplicity_divisor_not_distinct_neighbors"
+      ],
+      "why": "Eligible edges determine numerator and divisor alike."
+    },
+    {
+      "name": "zero-weight-reverse-enabled",
+      "find": "let r=if keep && rev && w>0real && e.dst==u {copies(Hop{dst:e.src,weight:w},mult(e))}else{seq![]};\n  f+r+tail",
+      "replace": "let r=if keep && rev && e.dst==u {copies(Hop{dst:e.src,weight:w},mult(e))}else{seq![]};\n  f+r+tail",
+      "expect_fail_in": [
+        "theorem_reverse_zero_uses_dangling_restart"
+      ],
+      "why": "Weight zero disables reverse traversal."
+    },
+    {
+      "name": "divisor-added-one",
+      "find": "ship(out,c.nodes,hs,c.alpha*old[i as int]/(hs.len() as real))",
+      "replace": "ship(out,c.nodes,hs,c.alpha*old[i as int]/((hs.len() as real)+1real))",
+      "expect_fail_in": [
+        "lemma_scatter"
+      ],
+      "why": "Divisor is derived eligible slot count."
+    },
+    {
+      "name": "alpha-not-applied-to-hop",
+      "find": "ship(out,c.nodes,hs,c.alpha*old[i as int]/(hs.len() as real))",
+      "replace": "ship(out,c.nodes,hs,old[i as int]/(hs.len() as real))",
+      "expect_fail_in": [
+        "lemma_scatter"
+      ],
+      "why": "Follow-edge probability scales each transfer."
+    },
+    {
+      "name": "dangling-score-discarded",
+      "find": "if hs.len()==0 {scatter(c,old,i+1,out,dang+old[i as int])}else{",
+      "replace": "if hs.len()==0 {scatter(c,old,i+1,out,dang)}else{",
+      "expect_fail_in": [
+        "lemma_scatter"
+      ],
+      "why": "A zero degree sends its score to restart."
+    },
+    {
+      "name": "restart-drops-dangling",
+      "find": "let restart=((1real-c.alpha)+c.alpha*s.dangling)/(c.seeds.len() as real);\n seed_add",
+      "replace": "let restart=(1real-c.alpha)/(c.seeds.len() as real);\n seed_add",
+      "expect_fail_in": [
+        "theorem_step_mass_from_raw_outgoing"
+      ],
+      "why": "Dangling score returns to distinct seeds."
+    },
+    {
+      "name": "initial-share-not-normalized",
+      "find": "pub open spec fn initial(c:Context)->Seq<real> {seed_add(zeros(c.nodes.len()),c.nodes,c.seeds,1real/(c.seeds.len() as real))}",
+      "replace": "pub open spec fn initial(c:Context)->Seq<real> {seed_add(zeros(c.nodes.len()),c.nodes,c.seeds,1real)}",
+      "expect_fail_in": [
+        "theorem_initial_uniform_mass"
+      ],
+      "why": "Initial share divides by distinct valid seed count."
+    },
+    {
+      "name": "reverse-weight-ignored",
+      "find": "else{ship(deposit(v,pos(ns,hs[0].dst),share*hs[0].weight),ns,hs.drop_first(),share)}",
+      "replace": "else{ship(deposit(v,pos(ns,hs[0].dst),share*1real),ns,hs.drop_first(),share)}",
+      "expect_fail_in": [
+        "theorem_reverse_weight_scales_contribution_only"
+      ],
+      "why": "Reverse contribution scales independently of divisor."
+    },
+    {
+      "name": "stop-counts-zero-nodes",
+      "find": "if d<(h as real)*tol || left==1",
+      "replace": "if d<(c.nodes.len() as real)*tol || left==1",
+      "expect_fail_in": [
+        "theorem_held_zero_node_does_not_inflate_stop_threshold"
+      ],
+      "why": "Threshold counts nonzero holders."
+    },
+    {
+      "name": "stop-tolerance-ignored",
+      "find": "if d<(h as real)*tol || left==1",
+      "replace": "if d<0real || left==1",
+      "expect_fail_in": [
+        "theorem_strict_held_change_decides"
+      ],
+      "why": "Tolerance materially decides early stop."
+    },
+    {
+      "name": "stop-is-nonstrict",
+      "find": "if d<(h as real)*tol || left==1",
+      "replace": "if d<=(h as real)*tol || left==1",
+      "expect_fail_in": [
+        "theorem_zero_tolerance_does_not_stop_on_zero_change"
+      ],
+      "why": "Zero change does not pass zero strict tolerance."
+    },
+    {
+      "name": "stopped-step-loses-new-scores",
+      "find": "Walk{ranks:nr,iterations:1,change:d,holding:h}",
+      "replace": "Walk{ranks:old,iterations:1,change:d,holding:h}",
+      "expect_fail_in": [
+        "theorem_strict_held_change_decides"
+      ],
+      "why": "Final iteration installs its new scores."
+    },
+    {
+      "name": "decimal-key-too-coarse",
+      "find": "let y=x*1000000000000real;",
+      "replace": "let y=x*10real;",
+      "expect_fail_in": [
+        "theorem_above_zero_bucket_readers_agree"
+      ],
+      "why": "Above-zero twelve-decimal bucket stays distinct."
+    },
+    {
+      "name": "tie-id-order-reversed",
+      "find": "a.id<=b.id",
+      "replace": "a.id>=b.id",
+      "expect_fail_in": [
+        "lemma_tiny_readers"
+      ],
+      "why": "Full reader ties use ID order."
+    },
+    {
+      "name": "zero-rows-not-sparse",
+      "find": "if rs[0].score!=0real",
+      "replace": "if true",
+      "expect_fail_in": [
+        "lemma_zero_rows_sparse"
+      ],
+      "why": "An empty score map does not invent a walk."
+    },
+    {
+      "name": "producer-cap-ignored",
+      "find": "if limit>0 && limit<rs.len(){rs.take(limit)}else{rs}",
+      "replace": "rs",
+      "expect_fail_in": [
+        "lemma_capped_positive_row_becomes_zero"
+      ],
+      "why": "Producer truncates before zero completion."
+    },
+    {
+      "name": "zero-completion-removed",
+      "find": "cut(scored+rank(missing(ns,scored)),limit)",
+      "replace": "cut(scored,limit)",
+      "expect_fail_in": [
+        "lemma_positive_readers"
+      ],
+      "why": "Reader appends persisted absent nodes."
+    },
+    {
+      "name": "zeros-sorted-with-scored",
+      "find": "cut(scored+rank(missing(ns,scored)),limit)",
+      "replace": "cut(rank(scored+rank(missing(ns,scored))),limit)",
+      "expect_fail_in": [
+        "lemma_tiny_readers"
+      ],
+      "why": "Fast completion appends zeros after ranked rows."
+    },
+    {
+      "name": "cap-precedes-explicit-top",
+      "find": "if top>0{top}else{cap}",
+      "replace": "if cap>0{cap}else{top}",
+      "expect_fail_in": [
+        "theorem_producer_limit_is_derived"
+      ],
+      "why": "Positive caller top remains the reader limit."
+    },
+    {
+      "name": "empty-exclusion-does-not-lift-cap",
+      "find": "if q.excluded.is_some(){if q.top>0{q.top}else{0}}else{1000}",
+      "replace": "if q.excluded.is_some(){1000}else{1000}",
+      "expect_fail_in": [
+        "theorem_producer_limit_is_derived"
+      ],
+      "why": "Explicit empty exclusion forwards caller limit."
+    }
+  ]
+}

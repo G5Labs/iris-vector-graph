@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_relax_best"
+    ],
+    "find": "s.best.is_some() && s.best.unwrap()<=n",
+    "name": "best-prefers-more-expensive-meeting",
+    "replace": "s.best.is_some() && s.best.unwrap()>=n",
+    "why": "Reverses the best-update comparison."
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_relax_best"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/model.json": "245f915a1dc287e07a45067b8bc4671a8f58a59b58758a51cfec67963dd71fa6",
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "aba5b84b26ecd516b0c56a38152b470400311779de13d067d013a5db930292c6",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/best-prefers-more-expensive-meeting/20261115T195713Z/models/weighted_cost/weighted_cost.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_relax_best": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/20261115T195713Z-control-best-prefers-more-expensive-meeting-lemma_relax_best.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/20261115T195713Z-control-best-prefers-more-expensive-meeting.log",
+    "timed_out": false,
+    "verified": 80
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_cost/20261115T195730Z-control-best-prefers-more-expensive-meeting/logs/20261115T195713Z-control-best-prefers-more-expensive-meeting-lemma_relax_best.log": "89fa3ec9326f0fb2e0fdcba233d7c6473c664afe8e766da15bddc47a38603a82",
+    ".g5/Verus_verification/results/weighted_cost/20261115T195730Z-control-best-prefers-more-expensive-meeting/logs/20261115T195713Z-control-best-prefers-more-expensive-meeting.log": "1f136b8be0b121bd59b28536f3b091d13f637f281661e689b67eac1ce732380e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

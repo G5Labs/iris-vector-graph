@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_step_mass_from_raw_outgoing"
+    ],
+    "find": "let restart=((1real-c.alpha)+c.alpha*s.dangling)/(c.seeds.len() as real);\n seed_add",
+    "name": "restart-drops-dangling",
+    "replace": "let restart=(1real-c.alpha)/(c.seeds.len() as real);\n seed_add",
+    "why": "Dangling score returns to distinct seeds."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_step_mass_from_raw_outgoing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/restart-drops-dangling/20261115T201909Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_step_mass_from_raw_outgoing": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201909Z-control-restart-drops-dangling-theorem_step_mass_from_raw_outgoing.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/20261115T201909Z-control-restart-drops-dangling.log",
+    "timed_out": false,
+    "verified": 98
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T201916Z-control-restart-drops-dangling/logs/20261115T201909Z-control-restart-drops-dangling-theorem_step_mass_from_raw_outgoing.log": "1345451cabc1dc1d803071493bfc3a9bd0bf78d177cbfcd682d61b7b51e53dd6",
+    ".g5/Verus_verification/results/ppr_walk/20261115T201916Z-control-restart-drops-dangling/logs/20261115T201909Z-control-restart-drops-dangling.log": "163ac7759722da9320e2d9104eb61cab4f87fa95caacb6d0a1b85da753d8792c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

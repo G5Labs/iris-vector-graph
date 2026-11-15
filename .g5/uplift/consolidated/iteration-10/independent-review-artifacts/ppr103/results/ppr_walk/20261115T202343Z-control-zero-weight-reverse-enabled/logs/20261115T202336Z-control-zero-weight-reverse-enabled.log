@@ -1,0 +1,23 @@
+verification results:: 101 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/zero-weight-reverse-enabled/20261115T202336Z/models/ppr_walk/ppr_walk.rs:109:10
+    |
+109 |    ensures forall|j:int|0<=j<hops(es,g,u,ex,rev,w).len() ==> hops(es,g,u,ex,rev,w)[j].weight==1real,
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+112 | /  if es.len()>0 {
+113 | |   let e=es[0];let keep=e.graph==g && !ex.contains(e.pred);
+114 | |   let f=if keep && e.src==u {copies(Hop{dst:e.dst,weight:1real},mult(e))}else{seq![]};
+115 | |   let r=if keep && rev && w>0real && e.dst==u {copies(Hop{dst:e.src,weight:w},mult(e))}else{seq![]};
+...   |
+122 | |  }
+    | |__- at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/zero-weight-reverse-enabled/20261115T202336Z/models/ppr_walk/ppr_walk.rs:418:84
+    |
+418 |  assert(hops(c.edges,0,1,seq![],true,0real)==seq![Hop{dst:2,weight:1real}]);assert(hops(c.edges,0,2,seq![],true,0real)==seq![]);
+    |                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

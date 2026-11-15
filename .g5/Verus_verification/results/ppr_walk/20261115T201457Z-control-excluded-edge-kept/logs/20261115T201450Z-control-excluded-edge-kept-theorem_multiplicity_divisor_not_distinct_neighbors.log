@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration10-ppr-20261115/verus/ppr_walk/controls/excluded-edge-kept/20261115T201450Z/models/ppr_walk/ppr_walk.rs:426:3
+    |
+424 | pub proof fn theorem_multiplicity_divisor_not_distinct_neighbors()
+    | ------------------------------------------------------------------ at the end of the function body
+425 |  ensures hops(seq![Edge{graph:0,src:1,pred:7,dst:2,count:Some(2)},Edge{graph:0,src:1,pred:8,dst:3,count:None}],0,1,seq![],false,1real).len()...
+426 |   hops(seq![Edge{graph:0,src:1,pred:7,dst:2,count:Some(2)},Edge{graph:0,src:1,pred:8,dst:3,count:None}],0,1,seq![7],false,1real).len()==1,
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

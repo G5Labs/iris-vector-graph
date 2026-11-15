@@ -1,0 +1,27 @@
+error[E0425]: cannot find function `hasnt` in this scope
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:600:57
+    |
+600 |  ensures has(missing(ns,rs),id) <==> ns.contains(id) && !has(rs,id),
+    |                                                         ^^^^ not found in this scope
+
+error[E0425]: cannot find function `hasnt` in this scope
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:606:124
+    |
+606 | ...re==0real && ns.contains(missing(ns,rs)[j].id) && !has(rs,missing(ns,rs)[j].id),
+    |                                                      ^^^^ not found in this scope
+
+error[E0425]: cannot find function `hasnt` in this scope
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:610:128
+    |
+610 | ...re==0real && ns.contains(missing(ns,rs)[j].id) && !has(rs,missing(ns,rs)[j].id) by {
+    |                                                      ^^^^ not found in this scope
+
+error[E0425]: cannot find function `hasnt` in this scope
+   --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:628:42
+    |
+628 |  let id=choose|id:int|ns.contains(id) && !has(rs,id);lemma_missing_has(ns,rs,id);
+    |                                          ^^^^ not found in this scope
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0425`.

@@ -841,6 +841,19 @@ Evidence: USER_GUIDE631-644 promises cheapest path by edge weight. Spec234 FR004
 Plausible answers: define weighted paths over the lowest-key projection for compatibility, stating that graph to callers; or optimize over all parallel rows, changing the reader to select the minimum admissible effective weight while preserving the storage layout. Neither answer is chosen here. The new queue proof is a minimum over its actual raw scalar graph and remains useful under either future producer choice; it is not a proof of the unresolved all-relationships interpretation. No new weighted bug, accepted repair or policy decision is counted.
 
 
+<a id="q-iter-008"></a>
+### Should tiny positive PPR scores share the rounded zero tie or always precede true zeros?
+
+Severity: Low · Decision: Open
+
+Run: Consolidated iteration10, 2026-11-15
+
+Owner: [algorithms.op.ppr.zero_ties](../ontology/features/algorithms.g5.md#algorithms.op.ppr.zero_ties). No provisional owner answer.
+
+Evidence: USER_GUIDE550-552 and rank_key define ties at12 decimal places; USER_GUIDE593 says unscored zeros come after scored nodes. The actual native/store append/early-cut reader and the fallback full-map sort implement different answers when positive1e-13 rounds to0. The [six-case native panel](../uplift/consolidated/iteration-10/root-ppr-tie-native.json) retains a limit2 selected-set difference and matching limit1/larger-score/later-zero neighbors. [Independent review](../uplift/consolidated/iteration-10/root-ppr-review-intent.md) finds no source assigning precedence between these two statements.
+
+Plausible answers: use one rounded-score/ID ordering over every node, including zeros; or put every genuinely scored positive node before unscored nodes and apply rounded ties within that group. No choice is made. [bug-plt-103](bugs_issues.md#bug-plt-103) is the independent route inconsistency, which remains a defect under either policy until both readers agree. No repair or human decision is accepted by this question.
+
 <a id="HD-0001"></a>
 ### How to read "defined by its ancestors or an earlier same-level statement"
 

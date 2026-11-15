@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_actual_dijkstra_cost_complete"
+    ],
+    "find": "if c.src==c.dst{Some(0)}else{finish",
+    "name": "admitted-self-zero-lost",
+    "replace": "if c.src==c.dst{None}else{finish",
+    "why": "Actual self request returns zero before search."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_actual_dijkstra_cost_complete"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/model.json": "97dd80c14a14ed02ad845b06201b71339cf5ede2a9694da586fb2a77a3692973",
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "602722835a1367bf97d2c548d3e256ddbdd96c8020fe775fbc0e7d88e7950093",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/controls/admitted-self-zero-lost/20261115T201329Z/models/weighted_cost/weighted_cost.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_actual_dijkstra_cost_complete": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/20261115T201329Z-control-admitted-self-zero-lost-theorem_actual_dijkstra_cost_complete.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration10-cost-20261115/verus/weighted_cost/20261115T201329Z-control-admitted-self-zero-lost.log",
+    "timed_out": false,
+    "verified": 87
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_cost/20261115T201335Z-control-admitted-self-zero-lost/logs/20261115T201329Z-control-admitted-self-zero-lost-theorem_actual_dijkstra_cost_complete.log": "14e6bd60c259b9225dc20d72862d1dbdeb00e1b66d5d4b62cd781ba3a80c5ddf",
+    ".g5/Verus_verification/results/weighted_cost/20261115T201335Z-control-admitted-self-zero-lost/logs/20261115T201329Z-control-admitted-self-zero-lost.log": "7a03349faf3eb715cad2798872ba6f1c4068210366c89eadf1708e612d6499ad"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

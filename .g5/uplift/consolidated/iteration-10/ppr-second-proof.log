@@ -1,0 +1,28 @@
+error: assertion failed
+  --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:58:23
+   |
+58 |  if ns[0]!=id {assert(ns.drop_first().contains(id));lemma_pos(ns.drop_first(),id);}
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+  --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:71:45
+   |
+71 |    ensures seed_add(v,ns,ss,a).len()==v.len(),sum(seed_add(v,ns,ss,a))==sum(v)+(ss.len() as real)*a,
+   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+74 | /  if ss.len()>0 {
+75 | |   lemma_pos(ns,ss[0]);lemma_deposit(v,pos(ns,ss[0]),a);
+76 | |   assert forall|i:int|0<=i<ss.drop_first().len() implies ns.contains(ss.drop_first()[i]) by {assert(ss.drop_first()[i]==ss[i+1]);}
+77 | |   lemma_seed_add(deposit(v,pos(ns,ss[0]),a),ns,ss.drop_first(),a);
+78 | |  }
+   | |__- at the end of the function body
+
+error: assertion failed
+  --> .g5/Verus_verification/models/ppr_walk/ppr_walk.rs:83:9
+   |
+83 |  assert((c.seeds.len() as real)*(1real/(c.seeds.len() as real))==1real) by(nonlinear_arith);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+verification results:: 12 verified, 3 errors
+error: aborting due to 3 previous errors
+

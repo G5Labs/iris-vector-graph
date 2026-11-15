@@ -1,0 +1,83 @@
+{
+  "name": "weighted_cost",
+  "root": "weighted_cost.rs",
+  "additional_inputs": [
+    "../weighted_paths/weighted_paths.rs"
+  ],
+  "expected_verified": 83,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "old-queue-entry-retained",
+      "why": "Cost strict decrease removes old entry, unlike JSON stale-entry policy.",
+      "find": "z.queue.remove((z.dist[v],v))",
+      "replace": "z.queue",
+      "expect_fail_in": [
+        "lemma_decrease_base"
+      ]
+    },
+    {
+      "name": "best-hop-omits-backward-half",
+      "why": "The fitting-hop branch needs a witness for both halves.",
+      "find": "best_hops:side(t,false).hop[v]+side(t,true).hop[v]",
+      "replace": "best_hops:side(t,false).hop[v]",
+      "expect_fail_in": [
+        "lemma_relax_best"
+      ]
+    },
+    {
+      "name": "best-prefers-more-expensive-meeting",
+      "why": "Reverses the best-update comparison.",
+      "find": "s.best.is_some() && s.best.unwrap()<=n",
+      "replace": "s.best.is_some() && s.best.unwrap()>=n",
+      "expect_fail_in": [
+        "lemma_relax_best"
+      ]
+    },
+    {
+      "name": "frontsum-stops-two-units-early",
+      "why": "A still-cheaper route may remain between the frontiers.",
+      "find": "f.0+r.0>=s.best.unwrap()",
+      "replace": "f.0+r.0+2>=s.best.unwrap()",
+      "expect_fail_in": [
+        "theorem_terminal_minimum"
+      ]
+    },
+    {
+      "name": "empty-frontier-requires-both-empty",
+      "why": "Source halts when either frontier is empty.",
+      "find": "s.forward.queue.len()==0 || s.backward.queue.len()==0",
+      "replace": "s.forward.queue.len()==0 && s.backward.queue.len()==0",
+      "expect_fail_in": [
+        "theorem_continue_preserves"
+      ]
+    },
+    {
+      "name": "bounded-hop-fallback-removed",
+      "why": "Globally cheapest recorded path may exceed the positive hop bound.",
+      "find": "else if c.bound>0 && s.best_hops>c.bound{actual_json_cost(c)}",
+      "replace": "else if false{actual_json_cost(c)}",
+      "expect_fail_in": [
+        "theorem_finish_correct"
+      ]
+    },
+    {
+      "name": "json-fallback-reader-zeroes-cost",
+      "why": "Fallback must project the actual imported returned entry cost.",
+      "find": "json::Event::Returned{state:_,entry:e}=>Some(e.0)",
+      "replace": "json::Event::Returned{state:_,entry:e}=>Some(0)",
+      "expect_fail_in": [
+        "theorem_actual_json_fallback_correct"
+      ]
+    },
+    {
+      "name": "admitted-self-zero-lost",
+      "why": "Actual self request returns zero before search.",
+      "find": "if c.src==c.dst{Some(0)}else{finish",
+      "replace": "if c.src==c.dst{None}else{finish",
+      "expect_fail_in": [
+        "theorem_actual_dijkstra_cost_complete"
+      ]
+    }
+  ]
+}
