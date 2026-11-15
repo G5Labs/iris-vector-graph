@@ -24,6 +24,32 @@ export PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=$RUN_DIR/pycache
 
 Raw logs and scratch output go to `$RUN_DIR` (`~/runs/iris-vector-graph-g5-verus-20261113`): `verus/` (Verus logs, control copies, the compiled twin), `native/` (probe observations), `tests/` (upstream suite logs). Receipts with input hashes are kept under `results/<model>/<stamp>-<label>/receipt.json` (final candidate; the viewer's layout). Earlier receipts of this uplift are preserved under `receipts/<model>/`, and earlier native observations under `receipts/native/earlier/`.
 
+## On this machine (consolidated uplift, 2026-11-14)
+
+The commands below run on the consolidating Mac (arm64) and need no IRIS. The section after this one is the guidance arm's original runbook; its proof and control steps run here unchanged with the variables below, while its native steps (4 and 6) need that arm's IRIS. Provenance of this machine's toolchain: [SOURCE-consolidated.json](SOURCE-consolidated.json). Handoff: [HANDOFF](../uplift/consolidated/HANDOFF.md).
+
+```sh
+export IVG_REPO=$PWD RUN_DIR=$HOME/runs/ivg-consolidated-20261114
+export VERUS_DIR=$HOME/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos VERUS_BIN=$VERUS_DIR/verus
+export ACTORS_DIR=$HOME/.cache/g5-verification/ivg-actors-c03f9fa G5_GUIDE=/Users/ziniuw/Desktop/research/G5-Lean-V2/.agents/guidance
+export PATH=$VERUS_DIR:$PATH VERUS_RUN_THREADS=4 PYTHONDONTWRITEBYTECODE=1
+mkdir -p $RUN_DIR/pin && git archive 3eaa79cf | tar -x -C $RUN_DIR/pin          # the exported pin, for bindings
+(cd $RUN_DIR/pin && UV_PROJECT_ENVIRONMENT=$RUN_DIR/venv uv sync --frozen --all-extras)
+```
+
+**One real obligation end to end (guidance arm): tenant redaction.** `python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/ledger_redaction` → `PASS (41 verified, 0 errors)` in seconds; `CONTROL=no-blockscommit python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/ledger_redaction` → `no-blockscommit EXPECTED_FAIL`. Each receipt now carries a copy of its raw log under `logs/`.
+
+**One new contract end to end: the paged temporal window reader** ([NOTES](models/temporal_window_reader/NOTES.md)).
+
+1. Proof: `python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/temporal_window_reader` → `PASS (16 verified, 0 errors)`.
+2. One control: `CONTROL=stop-on-empty-page python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/temporal_window_reader` → `stop-on-empty-page EXPECTED_FAIL` (fails in `lemma_drain`); all eight: omit `CONTROL` (about 10 s).
+3. Product comparison: `$RUN_DIR/venv/bin/python -I .g5/Verus_verification/models/temporal_window_reader/binding.py` → `AGREES (640 cursor + 45 window_spec comparisons, 0 mismatches; detection {... all True})`; receipt `results/temporal_window_reader/<stamp>-binding/receipt.json`.
+4. The other new contracts the same way: `freshness_stamp`, `embedded_no_data`, `rel_prop_text`, `index_declaration` (each has `binding.py`).
+
+**A playbook-arm crate:** `python3 .g5/Verus_verification/tools/run_playbook_crate.py proofs-d1e baseline control_f1004_create_moves_no_token` → `PASS (115 verified …; record match: True)` and `EXPECTED_FAIL (114 verified, 1 errors; record match: True)` with errors at `src/acache_l2.rs:188-189`. It archives the crate from `2d59e578` into `$RUN_DIR/pb`, changes only the two dependency lines, cleans the package, and runs `cargo verus verify --offline --fwd-verus-args-to roots [--features F] -- --no-cheating --triggers-mode silent`. `--all-controls` runs every control the crate's Cargo.toml names.
+
+**The gate:** `python3 .g5/Verus_verification/tools/check_consolidated.py` → `PASS` (confinement, inherited model hashes, freshness incl. bindings and playbook reruns, the G5 ontology and findings checkers, the register ratchet, the four crosswalks and the code links). Regenerate derived files with `tools/make_crosswalk.py`, `make_statements.py`, `make_families.py`, `make_findings_index.py`, `inventory.py` (each idempotent).
+
 ## One real obligation end to end: tenant redaction
 
 Obligation: [redaction](../ontology/features/redaction.g5.md) — after erasure, redaction turns every record of the target into its tombstone in place, leaves every other record byte-identical, clears the four metadata fields of each revision it touched, unbinds those revisions' idempotency keys, appends one content-free redaction revision, and makes `verify()` equal again.

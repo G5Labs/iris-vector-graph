@@ -5,7 +5,7 @@ from pathlib import Path
 
 D = Path(__file__).resolve().parents[1]
 DOMAINS = {"led": "ledger/erasure/redaction", "str": "graph structure", "tmp": "temporal", "srch": "search",
-           "plt": "platform/access/install", "cyp": "Cypher", "doc": "documentation", "test": "test suite"}
+           "plt": "platform/access/install", "cyp": "Cypher", "con": "consolidated uplift", "adp": "adapters", "doc": "documentation", "test": "test suite"}
 
 
 def parse(name):
@@ -21,7 +21,21 @@ def parse(name):
     return out
 
 
+MODULES = {"00": "system", "01": "install", "02": "graph identity", "03": "writes", "04": "adjacency", "05": "temporal",
+           "06": "vectors", "07": "text search", "08": "Cypher", "09": "native executor", "10": "algorithms", "11": "ledger",
+           "12": "erasure", "13": "redaction", "14": "replay", "15": "integrations", "16": "interfaces", "17": "operations",
+           "18": "snapshot"}
+
+
 def dom(i):
+    # consolidated uplift: playbook IDs (F-NNNN, F-CNNNN, HD-NNNN by module; RC- root causes) and new families
+    m = re.match(r"^(?:F-C?|HD-)(\d{2})", i)
+    if m:
+        return "playbook: " + MODULES.get(m.group(1), m.group(1))
+    if i.startswith("RC-"):
+        return "playbook: root cause"
+    if i.startswith(("bug-adp", "q-adp")):
+        return "adapters"
     parts = i.split("-")
     return DOMAINS.get(parts[1], DOMAINS["led"]) if len(parts) >= 3 else DOMAINS["led"]
 
@@ -29,10 +43,11 @@ def dom(i):
 def main():
     B, S, Q = parse("bugs_issues.md"), parse("design_simplification.md"), parse("open_questions.md")
     cnt = lambda es, sev: sum(1 for e in es if e["sev"] == sev and e["open"])
-    L = ["# Findings register — IVG initial Verus uplift (2026-11-13)", "",
+    L = ["# Findings register — IVG Verus uplift, consolidated (2026-11-14)", "",
          "Product baseline `3eaa79cf`. The register covers every bug, design simplification and unresolved question found during "
          "intent recovery, modeling, native observation and the independent review rounds. Proposed repairs are not implemented: "
-         "the product was read-only for this uplift. The [final report](../uplift/ivg-verus-initial/final-report.md) summarises them; "
+         "the product was read-only for this uplift. The consolidated uplift (2026-11-14) imported every playbook-arm "
+         "finding, root cause and decision; each source ID maps to one entry in the [crosswalk](crosswalk/). The [final report](../uplift/ivg-verus-initial/final-report.md) summarises them; "
          "statuses of the claims they affect are in the [coverage map](coverage.md).", "",
          "| File | Entries | High | Medium | Low | Observations / drift | Natively reproduced |",
          "|---|---:|---:|---:|---:|---:|---:|",

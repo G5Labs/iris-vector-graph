@@ -210,7 +210,7 @@ def check_register_crosswalks() -> None:
     # completeness against the sources (the counts the reviewed plan states)
     try:
         f_rows = read_tsv(V / "crosswalk/findings.tsv")
-        p_f = {r["source_id"] for r in f_rows if r["source_arm"] == "P" and r["source_id"].startswith("F-")}
+        p_f = {r["source_id"] for r in f_rows if r["source_arm"] == "P" and r["source_path"].startswith("experiment/playbook-completion/findings/audit/")}
         g_old = {}
         for name in REGISTERS:
             g_old[name] = anchors(git("show", f"{G_TIP}:.g5/Verus_verification/{name}"))
@@ -222,9 +222,9 @@ def check_register_crosswalks() -> None:
             if miss:
                 fail(f"{reg}: guidance-arm entries with no crosswalk row: {miss[:10]}")
         if len(p_f) < 313:
-            fail(f"findings.tsv: {len(p_f)} distinct playbook F- IDs, expected 313")
+            fail(f"findings.tsv: {len(p_f)} distinct playbook audit finding IDs, expected 313")
         else:
-            ok(f"findings.tsv: {len(p_f)} distinct playbook finding IDs (expected 313)")
+            ok(f"findings.tsv: {len(p_f)} distinct playbook audit finding IDs (expected 313); every guidance-arm entry has a row")
     except FileNotFoundError:
         pass
 
