@@ -4,14 +4,14 @@ Lane reflection, product pin `3eaa79cf`, IRIS 2026.1 Community in the dedicated 
 
 ## A. The audit's own tests that this reflection cites
 
-217 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
+222 distinct registered runs are cited below (premise tests, proof-debt coverage, detections), by kind and result:
 
 | Kind | Runs | Results |
 |---|---|---|
-| live | 75 | fail 58, pass 17 |
+| live | 77 | fail 58, pass 19 |
 | probe | 38 | blocked 1, expected-violation 7, fail 14, pass 16 |
+| check | 30 | fail 5, incomplete 2, pass 23 |
 | run | 28 | fail 19, pass 9 |
-| check | 27 | fail 3, incomplete 2, pass 22 |
 | mc | 21 | expected-violation 19, pass 2 |
 | control | 14 | expected-violation 11, pass 3 |
 | trace | 8 | fail 3, pass 5 |
@@ -373,8 +373,8 @@ Contract features outside the validated subset are summarised after the table.
 | proofs-sys:PS-2 | the operator re-runs the erasure of a target found live and resumes a parked redaction (actions ReErase, Resume) | tested-partial | live-fc1303-bounded-resume, fu-r03-marker-held-open | That the operator does re-run and resume is an operator premise; a test would script the re-erase/resume loop through the product and count the calls to completion (the pin's re-run does not progress, so none exists at the pin). |
 | proofs-sys:PS-3 | AX-14 is AG EF ('can finish'): the theorem exhibits a finishing schedule; a scheduler that runs it (fairness) is not modelled | untested | - | A soak through the product with concurrent committers, erasures and redactions asserting each redaction's marker clears within a bound (fair-scheduling progress), and a fairness version of the theorem. |
 | proofs-sys:PS-4 | AX-01, AX-09 and AX-13 are outside the composition; their laws are proofs-mech's M-12/M-01, M-08 and M-11 theorems | tested-partial | proofs-mech-baseline, proofs-sys-baseline | A bridge in proofs-sys that proves the AX-01, AX-09 and AX-13 check predicates equal to the proofs-mech laws (as bridge_m02..m10 do for the composed mechanisms); today the correspondence is by inspection. |
-| proofs-env2:ENV2-2 | the extended Verus subset covers the clauses the proof premises use; 9 families stay executable evidence only | tested-partial | proofs-env2-premise-map | Bringing X-DDL, X-STAR, X-FX, X-NOINDEX, X-VEC $VECTOR, X2-JSON, X2-LIST, X2-TOP and X2-QUERY/MERGE/ZKILL into the specification (proofs-env2/PROOFS.md section 6). |
-| proofs-env2:ENV2-4 | no liveness clause: the progress premises are not implied by the contract | untested | proofs-env2-premise-map | Progress tests under IRIS scheduling (D-8). |
+| proofs-env2:ENV2-2 | the extended Verus subset covers the clauses the proof premises use; 9 families stay executable evidence only | tested-partial | proofs-env2-premise-map-r2 | Bringing X-DDL, X-STAR, X-FX, X-NOINDEX, X-VEC $VECTOR, X2-JSON, X2-LIST, X2-TOP and X2-QUERY/MERGE/ZKILL into the specification (proofs-env2/PROOFS.md section 6). |
+| proofs-env2:ENV2-4 | no liveness clause: the progress premises are not implied by the contract | untested | proofs-env2-premise-map-r2 | Progress tests under IRIS scheduling (D-8). |
 | proofs-env2:ENV2-5 | batch_probe (the batch-atomic mutant's dry run) depends only on the globals: an INSERT's outcome depends only on its table's existence and its row's visibility | tested-partial | proofs-env2-differential, proofs-env2-mutants | A frame lemma in the specification that insert_many's per-row outcome depends only on table existence and row visibility, replacing the dry run. |
 
 Outside the contract's validated subset (23 features, all untested as engine clauses; the modules relying on each are listed in `iris-contract/CONTRACT.md`): $LIST semantics, $NAME, $LISTVALID; $ZF callouts; %Regex; EMBEDDING(); SQL text parsing; generat; %DynamicObject / JSON functions; HNSW vector index maintenance and build; IRISTEMP globals; JOB / WorkMgr processes; SQLCODEs other than -30, -110, -119, -201, -359, -400; Task Manager; absent on Community 2026.1: InterSystems FHIR server storage; catalog views other than TABLES / COLUMNS, default-schema re; class dictionary and run-time compilation (compiling is out ; compiled SQL routines (CREATE FUNCTION / PROCEDURE, [SqlProc; embedded Python (needs irispython in the container); engine limits (long strings, subscript length, bound-paramet; iFind search semantics (tokenizer %iFind.Utils.Analyze, word; journaling (the audit's oracle, not a clause); management APIs (%SYS.ProcessQuery, KillProcess, GetVersion,; named-index %IGNOREINDEX forms (only %IGNOREINDEX * is exerc; object filing (%OpenId / %Save concurrency), triggers, forei; pure functions and clocks ($ZCRC, SHA, GUID, $RANDOM, $HOROL; result-prefix queries (TOP / LIMIT / FETCH FIRST); streams; web dispatch, roles and SQL privileges. Test that should exist for each: $NAME and $LISTVALID remain outside (contract-2 family 'list' residual)..

@@ -8010,8 +8010,7 @@
     "ws-live-ins-store_write_edges",
     "ws-live-ins-store_write_nodes",
     "ws-live-migrations",
-    "ws-live-noindex",
-    "ws-live-sql-fallback-priv"
+    "ws-live-noindex"
    ],
    "evidence": [
     "experiment/playbook-completion/writesets/DISCHARGES.json",
@@ -8031,7 +8030,6 @@
     "run:ws-live-migrations",
     "run:ws-live-gap-marker",
     "run:ws-live-noindex",
-    "run:ws-live-sql-fallback-priv",
     "run:ws-check-r5"
    ],
    "evidence_grade": "registered-run",
@@ -8072,8 +8070,7 @@
      "run ws-live-ins-store_write_edges (fail)",
      "run ws-live-ins-store_write_nodes (fail)",
      "run ws-live-migrations (fail)",
-     "run ws-live-noindex (fail)",
-     "run ws-live-sql-fallback-priv (fail)"
+     "run ws-live-noindex (fail)"
     ],
     "intent_undecided": []
    },
@@ -15198,6 +15195,7 @@
     "proofs-env2-ctl-statement-not-atomic",
     "proofs-env2-mutants",
     "proofs-env2-premise-map",
+    "proofs-env2-premise-map-r2",
     "rf-closure-check-r3",
     "rf-closure-selftest-r3",
     "rf-premise-map-check-r3"
@@ -15237,6 +15235,7 @@
     "experiment/playbook-completion/proofs-env/premise_map.json",
     "experiment/playbook-completion/proofs-env/src/premises.rs",
     "experiment/playbook-completion/proofs-env/PROOFS.md",
+    "run:proofs-env2-premise-map-r2",
     "run:proofs-env2-premise-map",
     "run:proofs-env2-baseline",
     "run:proofs-env2-mutants",
@@ -15272,7 +15271,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "65 assumed and 51 partly validated conditions keep their consequences; none of their missing tests was run; the ledger-state writers outside every modelled action (corr-closure-scan, followup-writer-census; F-1801, F-1114) stay as the existing cell records [proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan) stay assumed or executable-only (embedded SQL, E-1, is proved by proofs-env2); several locks / regions are linked premise by premise, not composed into one invariant [proofs-env2, D-7 remainder] supplement to proofs-env's 3.6-closure cell: TRUST's new premise 'Embedded SQL (&sql) behaves as dynamic SQL for the clauses used' moves from outside-contract to proved (premise_trust_e1: same effect and answer, same visibility, same waits, same Freedom; 4 located controls with counterexamples; its 121 recorded cases in the subset and its 6 mutants killed); proofs-d1e P-M2 moves from outside-contract to proved in part (premise_d1e_p_m2_stmt_atomic: a failing multi-row INSERT ... SELECT writes nothing, control ctl_statement_not_atomic); the 'IRIS environment contract' row's linked subset grows; the new closure rows proofs-env:ENV-4, proofs-sys:PS-2 and PS-3 mapped (progress). Closure verdicts: outside-contract 7, product-discipline 5, progress 39, proved 10, proved-in-part 11, shown-false 3. Still outside: as proofs-env (disc against the code, progress premises, uncomposed locks); premises resting on the 9 families still outside: none found in closure.json",
+   "remaining": "65 assumed and 51 partly validated conditions keep their consequences; none of their missing tests was run; the ledger-state writers outside every modelled action (corr-closure-scan, followup-writer-census; F-1801, F-1114) stay as the existing cell records [proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan) stay assumed or executable-only (embedded SQL, E-1: proved by proofs-env2 in the specification, where the embedded statements are defined as the dynamic ones (proofs-env2/src/ext.rs:386-401); its link to IRIS is the E-1 rounds (c2-e1-r1, -r2: 121 cases, differential) and the 6 E-1 mutants); several locks / regions are linked premise by premise, not composed into one invariant [proofs-env2, D-7 remainder] supplement to proofs-env's 3.6-closure cell: TRUST's new premise 'Embedded SQL (&sql) behaves as dynamic SQL for the clauses used' moves from outside-contract to proved in the specification, where the embedded statements are defined as the dynamic ones (proofs-env2/src/ext.rs:386-401); its link to IRIS is the E-1 rounds (c2-e1-r1, -r2: 121 cases, differential) and the 6 E-1 mutants (premise_trust_e1: same effect and answer, same visibility, same waits, same Freedom; 4 located controls with counterexamples; its 121 recorded cases in the subset and its 6 mutants killed); proofs-d1e P-M2 moves from outside-contract to proved in part (premise_d1e_p_m2_stmt_atomic: a multi-row INSERT ... SELECT that fails on a key while no other process holds row locks writes nothing and answers -119, control ctl_statement_not_atomic); the 'IRIS environment contract' row's linked subset grows; the new closure rows proofs-env:ENV-4, proofs-sys:PS-2, PS-3 and proofs-env2:ENV2-4 mapped (progress). Closure verdicts over the 76 conditions (proofs-env2-premise-map-r2): outside-contract 7, product-discipline 5, progress 40, proved 10, proved-in-part 11, shown-false 3. Still outside: as proofs-env (disc against the code, progress premises, uncomposed locks); premises resting on the 9 families still outside: none (a keyword search over the 76 closure conditions, proofs-env2-premise-map-r2: 0 hits)",
    "source": "matrix-input/reflection.json",
    "status": "closed",
    "supplemented_by": [
@@ -17754,6 +17753,8 @@
    "cited_runs": [],
    "evidence": [
     "tools/locks.sh",
+    "tools/locks_rec.py",
+    "tools/hygiene_check.py",
     "incidents/IVG460SNAP.md",
     "incidents/HEALTH-ALERT-0119.md",
     "incidents/superseded-logs.json"
@@ -17762,7 +17763,7 @@
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "tools/locks.sh enforces one heavy job and one IRIS user at a time (flock) with a 3 h wait timeout, and verify.sh caps every step with timeout; but lock holds are not logged, so per-job time caps and stop-by-PID are not mechanically auditable, and the disk floor is checked by hand (151 GB free on 2026-11-14). Recorded lapses: uncoordinated connections 23:02:53-23:03:40 UTC (IVG460SNAP), a heavy-lock deadlock from wrapping a self-locking proof runner (stopped by PID), licence exhaustion by the scratch-236 suites (HEALTH-ALERT-0119), and overwritten proof logs (superseded-logs.json). Not claimed closed.",
+   "remaining": "From the commit after d293fb6b, tools/locks.sh logs every hold to $RUN_DIR/locks/holds.jsonl (request with the command, parent pid, free disk and the wait cap; acquired with the wait and the holder's own pid and process group, so a job is stopped by that pid; released with the exit code; timeout), refuses a lock when free disk is below a floor (LOCK_DISK_FLOOR_GB, 20), and tools/hygiene_check.py checks the log (H1 one holder at a time per lock, H2 every hold released or its holder alive, H3 hold time <= 3 h, H4 disk floor, H5 a stoppable pid, H6 wait caps and outcomes, H7 well-formed lines; self-test with seeded violations); verify.sh runs the self-test in every mode and the check over its own window at the end. Open until a registered gate has run the check. Not covered: a job that never goes through locks.sh. Recorded lapses before the log: uncoordinated connections 23:02:53-23:03:40 UTC (IVG460SNAP), a heavy-lock deadlock from wrapping a self-locking proof runner (stopped by PID), licence exhaustion by the scratch-236 suites (HEALTH-ALERT-0119), and overwritten proof logs (superseded-logs.json).",
    "status": "open"
   },
   {
@@ -25884,15 +25885,13 @@
    ],
    "cited_runs": [
     "core-m2-as-built-bypass-rollback",
-    "core-m2-as-built-commit-rollback",
-    "ws-live-sql-fallback-priv"
+    "core-m2-as-built-commit-rollback"
    ],
    "discharge": "finding",
    "discharge_evidence": [
     "run:core-m2-as-built-bypass-rollback",
     "run:core-m2-as-built-commit-rollback",
     "iris_vector_graph/stores/iris_sql_store.py:1363-1418",
-    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py:1307-1318",
     "iris_vector_graph/stores/iris_sql_store.py:1320-1361",
     "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
@@ -25907,7 +25906,6 @@
     "run:core-m2-as-built-bypass-rollback",
     "run:core-m2-as-built-commit-rollback",
     "iris_vector_graph/stores/iris_sql_store.py",
-    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
@@ -25934,13 +25932,12 @@
     "fails": [
      "finding F-C1301",
      "run core-m2-as-built-bypass-rollback (expected-violation)",
-     "run core-m2-as-built-commit-rollback (expected-violation)",
-     "run ws-live-sql-fallback-priv (fail)"
+     "run core-m2-as-built-commit-rollback (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "discharged by finding (inspected): The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (ws-live-sql-fallback-priv): with a writing role that lacks %Native_ClassExecution, the probe's dictionary SELECT is refused (-99), its native IDKEYExists raises <PROTECT>, and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
+   "remaining": "discharged by finding (inspected): The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (the run ws-live-sql-fallback-priv, cited here as context: it exercised INV-stmt only): with a writing role that lacks %Native_ClassExecution, the probe's native IDKEYExists raises <PROTECT> (logged at DEBUG; the dictionary SELECT's -99 refusal before it is read from _dictionary.py:48-56) and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -25954,15 +25951,13 @@
    ],
    "cited_runs": [
     "core-m2-as-built-bypass-rollback",
-    "core-m2-as-built-commit-rollback",
-    "ws-live-sql-fallback-priv"
+    "core-m2-as-built-commit-rollback"
    ],
    "discharge": "finding",
    "discharge_evidence": [
     "run:core-m2-as-built-bypass-rollback",
     "run:core-m2-as-built-commit-rollback",
     "iris_vector_graph/stores/iris_sql_store.py:1363-1418",
-    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py:1307-1318",
     "iris_vector_graph/stores/iris_sql_store.py:1320-1361",
     "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
@@ -25977,7 +25972,6 @@
     "run:core-m2-as-built-bypass-rollback",
     "run:core-m2-as-built-commit-rollback",
     "iris_vector_graph/stores/iris_sql_store.py",
-    "run:ws-live-sql-fallback-priv",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
     "iris_vector_graph/stores/iris_sql_store.py",
@@ -26004,13 +25998,12 @@
     "fails": [
      "finding F-C1301",
      "run core-m2-as-built-bypass-rollback (expected-violation)",
-     "run core-m2-as-built-commit-rollback (expected-violation)",
-     "run ws-live-sql-fallback-priv (fail)"
+     "run core-m2-as-built-commit-rollback (expected-violation)"
     ],
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "discharged by finding (inspected): The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (ws-live-sql-fallback-priv): with a writing role that lacks %Native_ClassExecution, the probe's dictionary SELECT is refused (-99), its native IDKEYExists raises <PROTECT>, and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
+   "remaining": "discharged by finding (inspected): The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (the run ws-live-sql-fallback-priv, cited here as context: it exercised INV-stmt only): with a writing role that lacks %Native_ClassExecution, the probe's native IDKEYExists raises <PROTECT> (logged at DEBUG; the dictionary SELECT's -99 refusal before it is read from _dictionary.py:48-56) and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
    "source": "matrix-input/writer-census-obligations.json",
    "status": "closed",
    "stores": [
@@ -36076,6 +36069,14 @@
     {
      "kind": "inspected",
      "ref": "iris_vector_graph/_dictionary.py:1-64"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:119-143"
+    },
+    {
+     "kind": "inspected",
+     "ref": "iris_vector_graph/schema.py:2822-2830"
     }
    ],
    "gates": [
@@ -38540,7 +38541,7 @@
   "n/a": 33,
   "unknown": 186
  },
- "registry_runs": 1547,
+ "registry_runs": 1566,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,

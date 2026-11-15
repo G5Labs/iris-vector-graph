@@ -141,3 +141,24 @@ Final state after each round (`rx-live-priv-final`, `$RUN_DIR/refusals/priv/fina
 - `IVGAUDIT_RO_ROLE` resources are `%DB_%DEFAULT:R,%Native_ClassExecution:U,%Native_GlobalAccess:U`, as recorded before.
 - 0 SQL privilege rows for the user or the role in AUDITE.
 - `CheckPrivilege` is 0 for the user and the role on every Graph_KG table of AUDITE, for s, i, u and d.
+
+## Orchestrator: AUDITB window for the write-set fallback cells (2026-11-15, `ws-live-sql-fallback-priv`)
+
+The orchestrator used the same principal, within the authorisation and the precedent above, to settle the census cells
+WS-OBL-147/148/150/154 (`writesets/live/sql_fallback_priv.py`, wrapper `writesets/live/run_sql_fallback.sh`). One
+`tools/locks.sh iris` hold, at most 3 connections, in AUDITB (one database, `/usr/irissys/mgr/auditb/`, globals and
+routines, resource `%DB_%DEFAULT`). The password reached the process only as `IVGAUDIT_PW`, passed by name; the
+wrapper's `grep -F -f` of the password over `$RUN_DIR/writesets/sql-fallback/` finds it nowhere (`run-r1.out`).
+
+| Window (UTC) | Variant | Grants in AUDITB (all revoked) | Role resources during the variant |
+|---|---|---|---|
+| 00:11:18-00:11:20 | doc (ADMIN_GUIDE section 3's writing row, the control) | INSERT, UPDATE, DELETE ON SCHEMA Graph_KG (grantor `_SYSTEM`), revoked `AS "_SYSTEM"`; the two existing grants (SELECT, EXECUTE ON SCHEMA) untouched | `%DB_%DEFAULT:RW,%Native_ClassExecution:U,%Native_GlobalAccess:U`, restored to R |
+| | noexec | the same, revoked the same way | `%DB_%DEFAULT:RW,%Native_GlobalAccess:U` (no `%Native_ClassExecution`), restored |
+
+- The user was enabled only inside each variant and disabled in the harness's `finally`.
+- While the role held `%DB_%DEFAULT:RW` (about one second per variant) it could write every database that shares that
+  resource; only this harness's process used the login, under the IRIS lock.
+- Final state (`$RUN_DIR/writesets/sql-fallback/results-r1.json`, `principal_restored` true for user, role, privilege
+  count and grants; events `principal-initial` / `principal-final`): `IVGAUDIT_RO` Enabled 0; role resources
+  `%DB_%DEFAULT:R,%Native_ClassExecution:U,%Native_GlobalAccess:U`; in AUDITB the same 2 grants as before.
+- Result: F-C1750 (the store's SQL-fallback deletes leave live ledger statements when the Eraser probe is refused).

@@ -1,6 +1,6 @@
 # Lane checkpoint (orchestrator; read by the hourly monitor)
 
-Updated: 2026-11-15 ~00:45 UTC: proofs-sys integrated (792b8d6f; fresh-checkout fast gate verify-fast-export-792b8d6f 40/40); proofs-env2 (D-7 remainder) done and integrated; write-set fallback cells resolved live (ws-live-sql-fallback-priv, new finding F-C1750, cells 13/17 closed; disposable principal restored and disabled); no lane running; next: commit, periodic full verification (verify.sh --live --clean) on the committed candidate, merge gate from a fresh checkout, scoped review addendum.
+Updated: 2026-11-15 ~01:30 UTC (steer 14): full verification `verify.sh --live --clean` on d293fb6b running (57 steps done, 0 nonzero; $RUN_DIR/verify/20261115T001916Z/). Review addendum 2 received (sign-off extends to d293fb6b on A2-01/A2-02, both S3); all A2 items fixed in the working tree (review/RESPONSE-6-ADDENDUM-2.md; runs ws-check-r6, proofs-env2-premise-map-r2, independent-review-6-addendum-2), to be committed after the gate. Running lanes: lockplans (Q18n), proofs-stmt (Q18o, D-2 against the Verus contract). Staged: 5-hygiene hold log (Q18p). Next: gate result, commit, merge gate from a fresh checkout, integrate lanes. Operator: only O-2.
 previous account is live: `ListAgents` empty, no audit process running, IRIS and heavy locks free, container healthy,
 product scope check passes). Last checkpoint commit before the switch: `1564a673`.
 

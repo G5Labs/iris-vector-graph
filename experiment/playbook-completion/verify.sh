@@ -23,7 +23,7 @@ for a in "$@"; do case "$a" in --clean) clean=1;; --fast|--full|--live|--merge) 
 if [[ "$mode" == merge && -z "${VERIFY_ENVELOPED:-}" ]]; then
   exec timeout --kill-after=10 1200 env VERIFY_ENVELOPED=1 bash "$0" "$@"
 fi
-stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+stamp="$(date -u +%Y%m%dT%H%M%SZ)"; t_start="$(date +%s)"
 out="$RUN_DIR/verify/$stamp"; mkdir -p "$out"
 summary="$out/summary.jsonl"; : > "$summary"
 T="$RUN_DIR/target"
@@ -106,6 +106,7 @@ step conformance-recheck  600 python "$here/traces/conformance.py" --check "$RUN
 step conformance-controls 600 python "$here/traces/conformance.py" --self-test "$RUN_DIR/traces/conf2/trace.json"
 step lostack-oracle-selftest 60 python "$here/traces/lost_ack.py" --self-test-oracle
 step verus-json-selftest  60 python3 "$here/tools/verus_json.py" --self-test
+step hygiene-selftest     60 python3 "$here/tools/hygiene_check.py" --self-test
 
 # ---------------------------------------------------------------- merge: the bounded merge gate (hard 1200 s)
 if [[ "$mode" == merge ]]; then
@@ -206,6 +207,8 @@ if [[ "$mode" == live ]]; then
   step lost-ack-live    5400 $L python "$here/traces/lost_ack.py" "$out/lost-ack"
 fi
 
+# §5 hygiene of this run: every lock hold it (and anything else) took since it started, from the hold log
+step hygiene-check       120 python3 "$here/tools/hygiene_check.py" --since "$t_start" --json "$out/hygiene.json"
 step product-scope-final 60 bash "$here/check-product-scope.sh"
 python3 - "$summary" <<'EOF'
 import json, sys

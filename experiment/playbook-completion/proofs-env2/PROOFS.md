@@ -75,15 +75,15 @@ New theorems (each one call of a generic lemma whose precondition is the clause 
 
 | Premise | Verdict | Theorem | Controls |
 |---|---|---|---|
-| TRUST (new) "Embedded SQL (&sql) behaves as dynamic SQL for the clauses used" | **proved** (was outside-contract): the embedded DML has the dynamic statement's effect and answer; its SELECT INTO sees uncommitted rows as a dynamic SELECT does; its DELETE waits exactly when the dynamic DELETE does; its INSERT over another's uncommitted DELETE is the same Freedom | `premise_trust_e1` (`gen_e1`) | `ctl_emb_own_txn`, `ctl_emb_ignores_autocommit`, `ctl_emb_select_committed_only`, `ctl_emb_ignores_row_locks` |
-| proofs-d1e P-M2 "each SQL statement and global operation is one atomic step" | **proved in part** (was outside-contract): the part the contract states (X-STMT) -- a multi-row INSERT ... SELECT that fails on a row writes none of its rows and answers -119; the step granularity itself stays the contract's own, Cypher's mode read product code | `premise_d1e_p_m2_stmt_atomic` (`gen_stmt_atomic`) | `ctl_statement_not_atomic` |
+| TRUST (new) "Embedded SQL (&sql) behaves as dynamic SQL for the clauses used" | **proved in the specification** (was outside-contract), where the embedded statements are defined as the dynamic ones (`src/ext.rs:386-401`; `gen_e1` needs nothing beyond that definition); its link to IRIS is the E-1 rounds (c2-e1-r1, -r2: 121 cases, differential) and the 6 E-1 mutants: the embedded DML has the dynamic statement's effect and answer; its SELECT INTO sees uncommitted rows as a dynamic SELECT does; its DELETE waits exactly when the dynamic DELETE does; its INSERT over another's uncommitted DELETE is the same Freedom | `premise_trust_e1` (`gen_e1`) | `ctl_emb_own_txn`, `ctl_emb_ignores_autocommit`, `ctl_emb_select_committed_only`, `ctl_emb_ignores_row_locks` |
+| proofs-d1e P-M2 "each SQL statement and global operation is one atomic step" | **proved in part** (was outside-contract): the part the contract states (X-STMT) -- a multi-row INSERT ... SELECT that fails on a key while no other process holds row locks writes none of its rows and answers -119; the step granularity itself stays the contract's own, Cypher's mode read product code | `premise_d1e_p_m2_stmt_atomic` (`gen_stmt_atomic`) | `ctl_statement_not_atomic` |
 | TRUST "IRIS environment contract" | proved in part, with the larger subset (`e_ext_step` added to the linked functions); the remaining families of section 6 stay executable evidence | `exec::e_run`, `exec::e_step`, `ext_exec::e_ext_step` | -- |
-| new closure rows proofs-env ENV-4, proofs-sys PS-2, PS-3 | progress | -- | -- |
+| new closure rows proofs-env ENV-4, proofs-sys PS-2, PS-3, and proofs-env2 ENV2-4 (mapped at integration, `proofs-env2-premise-map-r2`) | progress | -- | -- |
 
-No other closure premise depends on the new clauses (checked: the 75 proof-premise conditions of
+No other closure premise depends on the new clauses (checked by hand at the lane's run: the 75 proof-premise conditions of
 `reflection/closure.json` searched for NULL / collation / $ZSTRIP / INSERT ... SELECT / executemany / INSERT OR
 UPDATE / JSON / $LIST / TOP / MERGE / $QUERY / vector / DDL / index / embedded). `premise_map.json`
-(`proofs-env2-premise-map`): 75 closure conditions -- outside-contract 7, product-discipline 5, progress 39, proved 10, proved-in-part 11, shown-false 3; 82 rows with the PROOFS.md premises; problems 0.
+(`proofs-env2-premise-map-r2`, after ENV2-4 was added at integration): 76 closure conditions -- outside-contract 7, product-discipline 5, progress 40, proved 10, proved-in-part 11, shown-false 3; 83 rows with the PROOFS.md premises; problems 0. Since that run the map itself searches the 76 conditions for the words of the 9 families still outside (section 6): 0 hits. The lane's own run (`proofs-env2-premise-map`) mapped the 75 conditions of its time.
 
 ## 3a. This crate's own premises
 
@@ -92,8 +92,8 @@ one modelling choice section 8 names.
 
 | Id | Premise | Status |
 |---|---|---|
-| ENV2-1 | The recorded rounds are faithful observations of IRIS 2026.1 (proofs-env ENV-1), now for all 11 rounds the extended subset reads, contract-2's included | the drivers' self-tests and mutants (`env-contract-selftest`, `env-ext-r6`, `env2-e1-r1`, `env2-x2-r1`); the exec model agrees with the contract binaries on every in-subset case (`proofs-env2-differential`) |
-| ENV2-2 | The Verus subset covers the clauses the proof premises use (proofs-env ENV-2); the 9 families of section 6 stay executable evidence only | stated; `proofs-env2-premise-map` gives each premise a verdict and finds no closure premise resting on the 9 families |
+| ENV2-1 | The recorded rounds are faithful observations of IRIS 2026.1 (proofs-env ENV-1), now for the 11 rounds the extended subset reads (r2, r4, r5, r6, c2-e1-r1, c2-e1-r2, c2-x2-r1, contract-2's regressions of r2 and r6, estop-gap, dml-single), contract-2's included | each round's registered validation run (`env-contract-r2`, `env-ext-r4`, `-r5`, `-r6`, `env2-e1-r1`, `env2-e1-r2`, `env2-x2-r1`, `env2-regress`, `env-estop-gap`, `env-dml-single`; r4 and r5 failed against their contract models of the time, which the r6 model reproduces with 0 outside), the drivers' self-tests and mutants (`env-contract-selftest`, `env-ext-r6`, `env2-e1-r1`, `env2-x2-r1`); the exec model agrees with the contract binaries on every in-subset case (`proofs-env2-differential`) |
+| ENV2-2 | The Verus subset covers the clauses the proof premises use (proofs-env ENV-2); the 9 families of section 6 stay executable evidence only | stated; `proofs-env2-premise-map-r2` gives each closure premise a verdict, and its keyword search finds no closure premise naming the 9 families (0 hits over 76) |
 | ENV2-3 | The product discipline `disc` (proofs-env ENV-3) | a hypothesis of the head-lock theorems; violated at the pin by EraseGraph (F-1201) |
 | ENV2-4 | No liveness clause (proofs-env ENV-4): the progress premises are not implied by the contract | stated; they stay assumed (PROOF-DEBT D-8) |
 | ENV2-5 | `batch_probe` (the batch-atomic mutant's dry run) is stated on the globals alone: an INSERT's outcome depends only on its table's existence and its row's visibility | a modelling choice the differential checks (`proofs-env2-differential`, `proofs-env2-mutants`), not proved |

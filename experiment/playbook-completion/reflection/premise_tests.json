@@ -6838,34 +6838,74 @@
    "key": "proofs-env2:ENV2-1",
    "source": "experiment/playbook-completion/proofs-env2/PROOFS.md",
    "id": "ENV2-1",
-   "premise": "the recorded rounds (11, contract-2's included) are faithful observations of IRIS 2026.1",
+   "premise": "the 11 recorded rounds the extended subset reads (r2, r4, r5, r6, c2-e1-r1, c2-e1-r2, c2-x2-r1, contract-2's regressions of r2 and r6, estop-gap, dml-single) are faithful observations of IRIS 2026.1",
    "pin_status": "engine observation",
    "class": "harness",
    "tests": [
     {
      "kind": "run",
      "ref": "env-contract-selftest",
-     "what": "the contract's self-test"
+     "what": "the contract driver's self-test"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-selftest-r6",
+     "what": "the extension driver's self-test"
+    },
+    {
+     "kind": "run",
+     "ref": "env-contract-r2",
+     "what": "round r2: 283 cases, 0 outside"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r4",
+     "what": "round r4's observations (its model then missed 2 outcomes; the r6 model reproduces r4 with 0 outside)"
+    },
+    {
+     "kind": "run",
+     "ref": "env-ext-r5",
+     "what": "round r5's observations (its model then missed 1 outcome; the r6 model reproduces r5 with 0 outside)"
     },
     {
      "kind": "run",
      "ref": "env-ext-r6",
-     "what": "516 cases, 0 outside, 42/42 mutants"
+     "what": "round r6: 516 cases, 0 outside, 42/42 mutants"
     },
     {
      "kind": "run",
      "ref": "env2-e1-r1",
-     "what": "E-1: 67 cases, 0 outside, 14/14 mutants"
+     "what": "round c2-e1-r1: E-1 on the pin's compiled embedded SQL, 0 outside"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-e1-r2",
+     "what": "round c2-e1-r2: S-1 and Txn_* on the caller's transaction, 0 outside"
     },
     {
      "kind": "run",
      "ref": "env2-x2-r1",
-     "what": "X2: 190 cases, 0 outside"
+     "what": "round c2-x2-r1: 190 cases, 0 outside"
+    },
+    {
+     "kind": "run",
+     "ref": "env2-regress",
+     "what": "contract-2's model reproduces r2 and r6 (the two regression rounds)"
+    },
+    {
+     "kind": "run",
+     "ref": "env-estop-gap",
+     "what": "round estop-gap"
+    },
+    {
+     "kind": "run",
+     "ref": "env-dml-single",
+     "what": "round dml-single"
     },
     {
      "kind": "run",
      "ref": "proofs-env2-differential",
-     "what": "exec model = contract on 2,430 in-subset case runs, 0 disagreements"
+     "what": "exec model = contract binaries on the 2,430 in-subset case runs of the 11 rounds"
     }
    ],
    "verdict": "tested-holds",
@@ -6881,8 +6921,8 @@
    "tests": [
     {
      "kind": "run",
-     "ref": "proofs-env2-premise-map",
-     "what": "every closure premise has a verdict; none rests on the 9 outside families"
+     "ref": "proofs-env2-premise-map-r2",
+     "what": "76 closure conditions each mapped to a theorem or a verdict; a keyword search for the 9 outside families over them finds 0 hits"
     }
    ],
    "verdict": "tested-partial",
@@ -6915,8 +6955,8 @@
    "tests": [
     {
      "kind": "run",
-     "ref": "proofs-env2-premise-map",
-     "what": "39 progress rows carry the verdict 'progress'"
+     "ref": "proofs-env2-premise-map-r2",
+     "what": "40 progress rows carry the verdict 'progress'"
     }
    ],
    "verdict": "untested",

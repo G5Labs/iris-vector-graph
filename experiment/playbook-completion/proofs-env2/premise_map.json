@@ -1,11 +1,11 @@
 {
  "generated_by": "proofs-env2/tools/premise_map.py",
- "closure_conditions": 75,
+ "closure_conditions": 76,
  "closure_verdicts": {
   "proved": 10,
   "shown-false": 3,
   "outside-contract": 7,
-  "progress": 39,
+  "progress": 40,
   "proved-in-part": 11,
   "product-discipline": 5
  },
@@ -13,10 +13,25 @@
   "proved": 13,
   "shown-false": 3,
   "outside-contract": 7,
-  "progress": 39,
+  "progress": 40,
   "proved-in-part": 11,
   "product-discipline": 8,
   "permitted-not-implied": 1
+ },
+ "outside_family_search": {
+  "families": [
+   "X-DDL",
+   "X-FX",
+   "X-NOINDEX",
+   "X-STAR",
+   "X-VEC $VECTOR",
+   "X2-JSON",
+   "X2-LIST",
+   "X2-QUERY/MERGE/ZKILL",
+   "X2-TOP"
+  ],
+  "conditions_searched": 76,
+  "hits": []
  },
  "rows": [
   {
@@ -989,6 +1004,16 @@
    "lemmas": [],
    "controls": [],
    "note": "fairness of the scheduler (AX-14 as AG EF): not implied by any clause"
+  },
+  {
+   "id": "proof-premise:proofs-env2:ENV2-4",
+   "condition": "no liveness clause: the progress premises are not implied by the contract [progress]",
+   "closure_status": "assumed",
+   "source": "closure.json",
+   "verdict": "progress",
+   "lemmas": [],
+   "controls": [],
+   "note": "proofs-env2's own premise (as ENV-4, added at integration): the contract has no liveness clause, so the progress premises are not implied (D-8)"
   },
   {
    "id": "proofs:P-C04 (an erasure is not rolled back between its two steps)",

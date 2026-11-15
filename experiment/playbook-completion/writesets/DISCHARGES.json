@@ -3170,7 +3170,6 @@
    "run:core-m2-as-built-bypass-rollback",
    "run:core-m2-as-built-commit-rollback",
    "iris_vector_graph/stores/iris_sql_store.py:1363-1418",
-   "run:ws-live-sql-fallback-priv",
    "iris_vector_graph/stores/iris_sql_store.py:1307-1318",
    "iris_vector_graph/stores/iris_sql_store.py:1320-1361",
    "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
@@ -3186,7 +3185,7 @@
   "invariant": "INV-marker",
   "kind": "WS-OBL",
   "module": "17",
-  "reason": "The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (ws-live-sql-fallback-priv): with a writing role that lacks %Native_ClassExecution, the probe's dictionary SELECT is refused (-99), its native IDKEYExists raises <PROTECT>, and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
+  "reason": "The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (the run ws-live-sql-fallback-priv, cited here as context: it exercised INV-stmt only): with a writing role that lacks %Native_ClassExecution, the probe's native IDKEYExists raises <PROTECT> (logged at DEBUG; the dictionary SELECT's -99 refusal before it is read from _dictionary.py:48-56) and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
   "writer": "iris_vector_graph/stores/iris_sql_store.py::_delete_nodes_sql"
  },
  "WS-OBL-148": {
@@ -3195,7 +3194,6 @@
    "run:core-m2-as-built-bypass-rollback",
    "run:core-m2-as-built-commit-rollback",
    "iris_vector_graph/stores/iris_sql_store.py:1363-1418",
-   "run:ws-live-sql-fallback-priv",
    "iris_vector_graph/stores/iris_sql_store.py:1307-1318",
    "iris_vector_graph/stores/iris_sql_store.py:1320-1361",
    "iris_vector_graph/stores/iris_sql_store.py:1474-1518",
@@ -3211,7 +3209,7 @@
   "invariant": "INV-no-live-tombstone",
   "kind": "WS-OBL",
   "module": "17",
-  "reason": "The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (ws-live-sql-fallback-priv): with a writing role that lacks %Native_ClassExecution, the probe's dictionary SELECT is refused (-99), its native IDKEYExists raises <PROTECT>, and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
+  "reason": "The writer deletes node rows (or the only rows) of a target inside a transaction that can roll back (its own TSTART/TROLLBACK or WriteTxn, nested in a caller's transaction). LiveRows reads uncommitted data, so while the delete is uncommitted another connection's redaction sees the target not live, tombstones it (and sets the marker); the rollback then makes the target live again: F-C1301. Graded inspected for this writer (F-C1301 is live for delete_reification, ws-live-fc1301-delete-reification; model for any writer). Reachable at the pin (the run ws-live-sql-fallback-priv, cited here as context: it exercised INV-stmt only): with a writing role that lacks %Native_ClassExecution, the probe's native IDKEYExists raises <PROTECT> (logged at DEBUG; the dictionary SELECT's -99 refusal before it is read from _dictionary.py:48-56) and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).",
   "writer": "iris_vector_graph/stores/iris_sql_store.py::_delete_nodes_sql"
  },
  "WS-OBL-149": {
@@ -3608,18 +3606,20 @@
    "experiment/playbook-completion/writesets/DISCHARGES.json",
    "run:ws-live-stmt-collision",
    "run:ws-live-stmt-purge",
-   "run:ws-live-fhir-blocked"
+   "run:ws-live-fhir-blocked",
+   "run:ws-live-sql-fallback-priv"
   ],
   "findings": [
    "F-C0450",
    "F-C0151",
-   "F-C1301"
+   "F-C1301",
+   "F-C1750"
   ],
   "grade": "open",
-  "reason": "INV-stmt (ERS-I2/I3) is module 12's: every census INV-stmt obligation has a discharge except WS-OBL-029, WS-OBL-033, WS-OBL-041 (FHIR DropNode/DeleteEdge/ResyncKey: blocked-access, HS_FHIRServer absent; iris_sql_store SQL fallbacks: unreached at the pin's deploy). Module 12's own 4 cells (DeleteBareSet) are discharged (F-C1301 inspected, lemmas)."
+  "reason": "INV-stmt (ERS-I2/I3) is module 12's: every census INV-stmt obligation has a discharge except WS-OBL-029, WS-OBL-033, WS-OBL-041 (FHIR DropNode/DeleteEdge/ResyncKey: blocked-access, HS_FHIRServer absent); the iris_sql_store SQL fallbacks of _delete_nodes_sql and delete_edges are discharged by F-C1750 (live, ws-live-sql-fallback-priv). Module 12's own 4 cells (DeleteBareSet) are discharged (F-C1301 inspected, lemmas)."
  },
  "module:13": {
-  "discharge": "open",
+  "discharge": "finding",
   "evidence": [
    "experiment/playbook-completion/writesets/DISCHARGES.json",
    "run:ws-live-ins-store_node",
@@ -3635,8 +3635,8 @@
    "F-C0150",
    "F-C1850"
   ],
-  "grade": "open",
-  "reason": "INV-marker and INV-no-live-tombstone are module 13's: every census obligation on them has a discharge except  (_delete_nodes_sql's SQL fallback, unreached at the pin's deploy). The product fails both: 12 bypass inserters live (F-C1350, F-C1307), a bypass deleter live (F-C1301), add_graph_id_to_nodes (F-C0150), restore (F-C1850)."
+  "grade": "inspected",
+  "reason": "INV-marker and INV-no-live-tombstone are module 13's: every census obligation on them has a discharge (_delete_nodes_sql's SQL fallback, reachable when the Eraser probe is refused, F-C1750, by F-C1301 at inspected grade). Verification cell closes; product obligation fails: 12 bypass inserters live (F-C1350, F-C1307), a bypass deleter live (F-C1301), add_graph_id_to_nodes (F-C0150), restore (F-C1850)."
  },
  "module:14": {
   "discharge": "finding",
@@ -3663,13 +3663,19 @@
   "reason": "28 census cells of module 15, each with one discharge in DISCHARGES.json; 3 of them open (WS-OBL-029, WS-OBL-033, WS-OBL-041). FHIR writers: live blocked (ws-live-fhir-blocked), discharged at inspected grade or open; reify_edge live, delete_reification live. Still open in module 15's cell and outside the census: the (invariant, plan) pairs of FHIR Rebuild/SyncOnce/Reinterpret/Schedule and the table-map/crosswalk writers it names."
  },
  "module:17": {
-  "discharge": "open",
+  "discharge": "finding",
   "evidence": [
-   "experiment/playbook-completion/writesets/DISCHARGES.json"
+   "experiment/playbook-completion/writesets/DISCHARGES.json",
+   "run:ws-live-sql-fallback-priv"
   ],
-  "findings": [],
-  "grade": "open",
-  "reason": "21 census cells of module 17, each with one discharge in DISCHARGES.json; 0 of them open (none). iris_sql_store write_nodes/write_edges live; the SQL fallbacks of _delete_nodes_sql and delete_edges are open (unreached at the pin's deploy); insert_vector's conditional cells are resolved (no product caller)."
+  "findings": [
+   "F-C1307",
+   "F-C1350",
+   "F-C1301",
+   "F-C1750"
+  ],
+  "grade": "inspected",
+  "reason": "21 census cells of module 17, each with one discharge in DISCHARGES.json; 0 of them open (none). iris_sql_store write_nodes/write_edges live; the SQL fallbacks of _delete_nodes_sql and delete_edges are reachable when the Eraser probe is refused and are discharged by F-C1750 (INV-stmt, live, ws-live-sql-fallback-priv) and, for _delete_nodes_sql's INV-marker/INV-no-live-tombstone, by F-C1301 (inspected); insert_vector's conditional cells are resolved (no product caller). Verification cell closes; product obligation fails (F-C1307, F-C1350, F-C1301, F-C1750)."
  },
  "module:18": {
   "discharge": "finding",

@@ -22,6 +22,7 @@
    "gate": "3.6-closure",
    "module": "product",
    "add_evidence": [
+    "run:proofs-env2-premise-map-r2",
     "run:proofs-env2-premise-map",
     "run:proofs-env2-baseline",
     "run:proofs-env2-mutants",
@@ -34,7 +35,7 @@
     "experiment/playbook-completion/proofs-env2/src/premises.rs",
     "experiment/playbook-completion/proofs-env2/PROOFS.md"
    ],
-   "add_remaining": "[proofs-env2, D-7 remainder] supplement to proofs-env's 3.6-closure cell: TRUST's new premise 'Embedded SQL (&sql) behaves as dynamic SQL for the clauses used' moves from outside-contract to proved (premise_trust_e1: same effect and answer, same visibility, same waits, same Freedom; 4 located controls with counterexamples; its 121 recorded cases in the subset and its 6 mutants killed); proofs-d1e P-M2 moves from outside-contract to proved in part (premise_d1e_p_m2_stmt_atomic: a failing multi-row INSERT ... SELECT writes nothing, control ctl_statement_not_atomic); the 'IRIS environment contract' row's linked subset grows; the new closure rows proofs-env:ENV-4, proofs-sys:PS-2 and PS-3 mapped (progress). Closure verdicts: outside-contract 7, product-discipline 5, progress 39, proved 10, proved-in-part 11, shown-false 3. Still outside: as proofs-env (disc against the code, progress premises, uncomposed locks); premises resting on the 9 families still outside: none found in closure.json"
+   "add_remaining": "[proofs-env2, D-7 remainder] supplement to proofs-env's 3.6-closure cell: TRUST's new premise 'Embedded SQL (&sql) behaves as dynamic SQL for the clauses used' moves from outside-contract to proved in the specification, where the embedded statements are defined as the dynamic ones (proofs-env2/src/ext.rs:386-401); its link to IRIS is the E-1 rounds (c2-e1-r1, -r2: 121 cases, differential) and the 6 E-1 mutants (premise_trust_e1: same effect and answer, same visibility, same waits, same Freedom; 4 located controls with counterexamples; its 121 recorded cases in the subset and its 6 mutants killed); proofs-d1e P-M2 moves from outside-contract to proved in part (premise_d1e_p_m2_stmt_atomic: a multi-row INSERT ... SELECT that fails on a key while no other process holds row locks writes nothing and answers -119, control ctl_statement_not_atomic); the 'IRIS environment contract' row's linked subset grows; the new closure rows proofs-env:ENV-4, proofs-sys:PS-2, PS-3 and proofs-env2:ENV2-4 mapped (progress). Closure verdicts over the 76 conditions (proofs-env2-premise-map-r2): outside-contract 7, product-discipline 5, progress 40, proved 10, proved-in-part 11, shown-false 3. Still outside: as proofs-env (disc against the code, progress premises, uncomposed locks); premises resting on the 9 families still outside: none (a keyword search over the 76 closure conditions, proofs-env2-premise-map-r2: 0 hits)"
   }
  ]
 }

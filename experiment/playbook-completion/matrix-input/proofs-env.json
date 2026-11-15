@@ -56,7 +56,7 @@
     "experiment/playbook-completion/proofs-env/src/premises.rs",
     "experiment/playbook-completion/proofs-env/PROOFS.md"
    ],
-   "add_remaining": "[proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan) stay assumed or executable-only (embedded SQL, E-1, is proved by proofs-env2); several locks / regions are linked premise by premise, not composed into one invariant"
+   "add_remaining": "[proofs-env, D-7] the discipline 'disc' against the product's code (D-3/D-4; violated by EraseGraph at the pin, F-1201); progress premises (36 rows) not implied by any clause; outside-contract premises (CreateGUID, sha256, caller identity, durability, statement granularity, %ID, multi-row DELETE scan) stay assumed or executable-only (embedded SQL, E-1: proved by proofs-env2 in the specification, where the embedded statements are defined as the dynamic ones (proofs-env2/src/ext.rs:386-401); its link to IRIS is the E-1 rounds (c2-e1-r1, -r2: 121 cases, differential) and the 6 E-1 mutants); several locks / regions are linked premise by premise, not composed into one invariant"
   }
  ]
 }

@@ -415,9 +415,10 @@ deleter(f"{NE}::_drop_orphaned_props", [f"{NE}:1617-1646", f"{NE}:1761-1866", PR
 
 # SQL fallbacks of the store's deleters: reachable when the Eraser probe fails (F-C1750) ----------------------
 # Originally open as "unreached at the pin's deploy" (fallback_open below, kept for the record). The orchestrator's
-# live probe ws-live-sql-fallback-priv reached them through the pin's public API: a writing role without
-# %Native_ClassExecution is refused the dictionary SELECT (-99) and the native IDKEYExists (<PROTECT>), and
-# _has_eraser_method caches the exception as "absent" (iris_sql_store.py:1307-1318).
+# live probe ws-live-sql-fallback-priv reached them through the pin's public API: for a writing role without
+# %Native_ClassExecution the probe's native IDKEYExists raises <PROTECT> (the run's DEBUG line; the dictionary
+# SELECT's -99 refusal before it is read from _dictionary.py:48-56, not logged), and _has_eraser_method caches the
+# exception as "absent" (iris_sql_store.py:1307-1318). Any other probe exception takes the same path.
 
 def fallback_open(what):
     return (f"open: unreached at the pin's deploy. {what} runs only when IRISGraphStore._has_eraser_method answers "
@@ -430,10 +431,11 @@ def fallback_open(what):
 
 R_SFP = "run:ws-live-sql-fallback-priv"
 SQLF = [f"{ST}:1307-1318", f"{ST}:1320-1361", f"{ST}:1474-1518", "iris_vector_graph/_dictionary.py:46-64"]
-SFP_REACH = (" Reachable at the pin (ws-live-sql-fallback-priv): with a writing role that lacks "
-             "%Native_ClassExecution, the probe's dictionary SELECT is refused (-99), its native IDKEYExists raises "
-             "<PROTECT>, and _has_eraser_method caches the exception as 'absent' (iris_sql_store.py:1307-1318), so "
-             "engine.delete_node / delete_nodes take this SQL path (F-C1750).")
+SFP_REACH = (" Reachable at the pin (the run ws-live-sql-fallback-priv, cited here as context: it exercised INV-stmt "
+             "only): with a writing role that lacks %Native_ClassExecution, the probe's native IDKEYExists raises "
+             "<PROTECT> (logged at DEBUG; the dictionary SELECT's -99 refusal before it is read from "
+             "_dictionary.py:48-56) and _has_eraser_method caches the exception as 'absent' "
+             "(iris_sql_store.py:1307-1318), so engine.delete_node / delete_nodes take this SQL path (F-C1750).")
 
 
 def sfp_stmt(what, sites):
@@ -445,8 +447,8 @@ def sfp_stmt(what, sites):
 
 
 W[f"{ST}::_delete_nodes_sql"] = {
-    "INV-marker": fc1301([f"{ST}:1363-1418", R_SFP] + SQLF, None, SFP_REACH),
-    "INV-no-live-tombstone": fc1301([f"{ST}:1363-1418", R_SFP] + SQLF, None, SFP_REACH),
+    "INV-marker": fc1301([f"{ST}:1363-1418"] + SQLF, None, SFP_REACH),
+    "INV-no-live-tombstone": fc1301([f"{ST}:1363-1418"] + SQLF, None, SFP_REACH),
     "INV-replay": replay_lemma([f"{ST}:1363-1418"], None),
     "INV-stmt": sfp_stmt("engine.delete_node('sfp|a') (store.delete_nodes -> _delete_nodes_sql, "
                          "iris_sql_store.py:1363-1418)", [f"{ST}:1363-1418"]),
@@ -681,21 +683,25 @@ def module_entries(census_ids_by_module, open_ids_by_module):
                         "(modules/11.json). Verification cell closes; product obligation fails (F-1806, F-C1306, F-C1850, "
                         "and the SQL INSERT wedge F-C1150)."}
     out["module:12"] = {"discharge": "open", "grade": "open",
-                        "evidence": ["experiment/playbook-completion/writesets/DISCHARGES.json", R_COLL, R_PURGE, R_FHIR],
-                        "findings": ["F-C0450", "F-C0151", "F-C1301"],
+                        "evidence": ["experiment/playbook-completion/writesets/DISCHARGES.json", R_COLL, R_PURGE, R_FHIR,
+                                     R_SFP],
+                        "findings": ["F-C0450", "F-C0151", "F-C1301", "F-C1750"],
                         "reason": "INV-stmt (ERS-I2/I3) is module 12's: every census INV-stmt obligation has a discharge "
                         f"except {', '.join(sorted(open_ids_by_module.get('_stmt', [])))} (FHIR DropNode/DeleteEdge/ResyncKey: "
-                        "blocked-access, HS_FHIRServer absent; iris_sql_store SQL fallbacks: unreached at the pin's "
-                        "deploy). Module 12's own 4 cells (DeleteBareSet) are discharged (F-C1301 inspected, lemmas)."}
-    out["module:13"] = {"discharge": "open", "grade": "open",
+                        "blocked-access, HS_FHIRServer absent); the iris_sql_store SQL fallbacks of _delete_nodes_sql "
+                        "and delete_edges are discharged by F-C1750 (live, ws-live-sql-fallback-priv). Module 12's own "
+                        "4 cells (DeleteBareSet) are discharged (F-C1301 inspected, lemmas)."}
+    mnlt_open = sorted(open_ids_by_module.get("_mnlt", []))
+    out["module:13"] = {"discharge": "open" if mnlt_open else "finding", "grade": "open" if mnlt_open else "inspected",
                         "evidence": ["experiment/playbook-completion/writesets/DISCHARGES.json"] +
                         [ins_run(n) for n in ("store_node", "store_edge")] + [R_FC1301, R_MIG, "run:ws-live-gap-marker"],
                         "findings": ["F-C1350", "F-C1307", "F-C1301", "F-C0150", "F-C1850"],
                         "reason": "INV-marker and INV-no-live-tombstone are module 13's: every census obligation on them "
-                        "has a discharge except "
-                        f"{', '.join(sorted(open_ids_by_module.get('_mnlt', [])))} (_delete_nodes_sql's SQL fallback, "
-                        "unreached at the pin's deploy). The product fails both: 12 bypass inserters live (F-C1350, "
-                        "F-C1307), a bypass deleter live (F-C1301), add_graph_id_to_nodes (F-C0150), restore (F-C1850)."}
+                        + (f"has a discharge except {', '.join(mnlt_open)}. " if mnlt_open else
+                           "has a discharge (_delete_nodes_sql's SQL fallback, reachable when the Eraser probe is refused, "
+                           "F-C1750, by F-C1301 at inspected grade). Verification cell closes; product obligation fails: ")
+                        + "12 bypass inserters live (F-C1350, F-C1307), a bypass deleter live (F-C1301), "
+                        "add_graph_id_to_nodes (F-C0150), restore (F-C1850)."}
     out["module:14"] = {"discharge": "finding", "grade": "inspected",
                         "evidence": ["experiment/playbook-completion/writesets/DISCHARGES.json"] +
                         [ins_run(n) for n in ("store_node", "import_rdf")] + [R_COLL, "run:ws-live-snap-importglobals"],
@@ -713,8 +719,10 @@ def module_entries(census_ids_by_module, open_ids_by_module):
                "live, delete_reification live. Still open in module 15's cell and outside the census: the (invariant, "
                "plan) pairs of FHIR Rebuild/SyncOnce/Reinterpret/Schedule and the table-map/crosswalk writers it names."),
         "17": ("iris_sql_store write_nodes/write_edges live; the SQL fallbacks of _delete_nodes_sql and delete_edges "
-               "are open (unreached at the pin's deploy); insert_vector's conditional cells are resolved (no product "
-               "caller)."),
+               "are reachable when the Eraser probe is refused and are discharged by F-C1750 (INV-stmt, live, "
+               "ws-live-sql-fallback-priv) and, for _delete_nodes_sql's INV-marker/INV-no-live-tombstone, by F-C1301 "
+               "(inspected); insert_vector's conditional cells are resolved (no product caller). Verification cell "
+               "closes; product obligation fails (F-C1307, F-C1350, F-C1301, F-C1750)."),
         "18": ("Snapshot.ImportGlobals: finding F-1806 (live), Snapshot.SetNodeJSON: guard (live), import_rdf live, "
                "restore's three write-set gaps live (F-C1850). snapshot.restore_merge (not a plan) now has 9 discharges "
                "in BREADTH-A-DISCHARGES.json (m18|...): INV-text/INV-retry/INV-marker live (F-C1850 with merge=True, "
@@ -722,12 +730,14 @@ def module_entries(census_ids_by_module, open_ids_by_module):
     }
     for m in ("15", "17", "18"):
         op = opened(m)
-        closed18 = (m == "18" and not op)
+        closes = (m in ("17", "18") and not op)
         out[f"module:{m}"] = {
-            "discharge": "finding" if closed18 else "open", "grade": "inspected" if closed18 else "open",
+            "discharge": "finding" if closes else "open", "grade": "inspected" if closes else "open",
             "evidence": ["experiment/playbook-completion/writesets/DISCHARGES.json"]
-                        + (["experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json"] if m == "18" else []),
-            "findings": ["F-1806", "F-C1850", "F-1801", "F-1805"] if closed18 else [],
+                        + (["experiment/playbook-completion/writesets/BREADTH-A-DISCHARGES.json"] if m == "18" else [])
+                        + ([R_SFP] if m == "17" else []),
+            "findings": ({"17": ["F-C1307", "F-C1350", "F-C1301", "F-C1750"],
+                          "18": ["F-1806", "F-C1850", "F-1801", "F-1805"]}[m] if closes else []),
             "reason": (f"{len(ids(m))} census cells of module {m}, each with one discharge in DISCHARGES.json; "
                        f"{len(op)} of them open ({', '.join(op) or 'none'}). " + rest[m]),
         }
@@ -836,8 +846,7 @@ RUN_PAIRS.update({
     "ws-live-sql-fallback-priv": {"journal": False, "lane": "orchestrator", "exercised": [
         _ex("INV-stmt", "_delete_nodes_sql", "fail", "role without %Native_ClassExecution: the Eraser probe cached "
             "absent; the statement of the deleted edge stays live (F-C1750)"),
-        _ex("INV-stmt", "delete_edges", "fail", "same role, IRISGraphStore.delete_edges' SQL DELETE (F-C1750)")],
-        "context_for": [[i, _w("_delete_nodes_sql")] for i in ("INV-marker", "INV-no-live-tombstone")]},
+        _ex("INV-stmt", "delete_edges", "fail", "same role, IRISGraphStore.delete_edges' SQL DELETE (F-C1750)")]},
 })
 
 

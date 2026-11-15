@@ -218,13 +218,12 @@
     "run:ws-live-migrations",
     "run:ws-live-gap-marker",
     "run:ws-live-noindex",
-    "run:ws-live-sql-fallback-priv",
     "run:ws-check-r5"
    ],
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "INV-marker and INV-no-live-tombstone census obligations: 12 bypass inserters (F-C1307, F-C1350, live), a bypass deleter in a caller transaction (F-C1301, now live), add_graph_id_to_nodes (F-C0150), restore (F-C1850); outside the census, %NOINDEX bulk loads defeat the liveness check (F-C1351) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live); the SQL fallback of IRISGraphStore.delete_nodes (_delete_nodes_sql) is reachable (ws-live-sql-fallback-priv, F-C1750) and has the F-C1301 shape (WS-OBL-147/148, inspected); 23 census discharges by finding are graded inspected (FHIR writers live-blocked, _mirror_node, DeleteBareSet, DropRows, _drop_orphaned_props, add_graph_id_to_nodes' INV-no-live-tombstone)",
+   "product_basis": "INV-marker and INV-no-live-tombstone census obligations: 12 bypass inserters (F-C1307, F-C1350, live), a bypass deleter in a caller transaction (F-C1301, now live), add_graph_id_to_nodes (F-C0150), restore (F-C1850); outside the census, %NOINDEX bulk loads defeat the liveness check (F-C1351) (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live); the SQL fallback of IRISGraphStore.delete_nodes (_delete_nodes_sql) is reachable (shown by ws-live-sql-fallback-priv, which exercised INV-stmt only; F-C1750) and has the F-C1301 shape (WS-OBL-147/148, inspected); 23 census discharges by finding are graded inspected (FHIR writers live-blocked, _mirror_node, DeleteBareSet, DropRows, _drop_orphaned_props, add_graph_id_to_nodes' INV-no-live-tombstone)",
    "as_built_findings": [
     "F-C1350",
     "F-C1307",
@@ -286,7 +285,7 @@
    "evidence_grade": "inspected",
    "level": "product",
    "product_obligation": "fails",
-   "product_basis": "census obligations of this module's writers discharged by findings where the as-built writer breaks the invariant (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live); the SQL fallbacks of _delete_nodes_sql and delete_edges are reachable when the Eraser probe is refused and leave live statements (F-C1750, live; WS-OBL-150/154) and have the F-C1301 shape (WS-OBL-147/148, inspected); insert_vector's 5 conditional cells resolved (no product caller)",
+   "product_basis": "census obligations of this module's writers discharged by findings where the as-built writer breaks the invariant (grade is the weakest of the cell's discharges; DISCHARGES.json grades each, many live); the SQL fallbacks of _delete_nodes_sql and delete_edges are reachable when the Eraser probe is refused and leave live statements (F-C1750, live; WS-OBL-150/154), and the fallback of _delete_nodes_sql has the F-C1301 shape (WS-OBL-147/148, inspected); insert_vector's 5 conditional cells resolved (no product caller)",
    "as_built_findings": [
     "F-C1301",
     "F-C1307",

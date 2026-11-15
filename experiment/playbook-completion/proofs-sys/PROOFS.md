@@ -8,7 +8,7 @@ the same build, and included in the trust scan and the sources hash). Logs `$RUN
 
 **Every result is about the semantics lane's composed module-00 model** (`models/semantics/src/sys00.rs` at its commit
 `50911c4a`, SHA-256 `ca7c21e74f3d6e06663589bd7620fdb3951570e06f5c9b59bed89cb8bfddcd35`; axioms as
-`semantics/axioms.json` states them, SHA-256 `95fe2736ea3492d3466e15d03c597df632dc5652f87d42a3984b8f59e14d67ed`),
+`semantics/axioms.json` stated them at `792b8d6f`, SHA-256 `95fe2736ea3492d3466e15d03c597df632dc5652f87d42a3984b8f59e14d67ed`; the file changed at `d293fb6b` when F-C1750's axiom classes were added, the axiom texts did not),
 not about the product. The pin's as-built composition stays failed: it is a located control whose broken axioms each
 have a proved counterexample run.
 
@@ -34,7 +34,7 @@ M-04 whether erasure maintains the derived store; M-05 which records redaction t
 delete), whether it moves the binding, when it writes the receipt; M-10 whether a refusal writes, whether the erasure
 is two stoppable steps. The four programs are computed from the choices (`w_step`, `e_step`, `r_step`), and each
 explorer design is exactly one choice vector (src/inst.rs; the generator asserts that each design's broken
-obligations are the explorer's `violates` list). There are 3,072 choice vectors; every theorem below holds for all of
+obligations are the explorer's violated laws: its `violates` list, and for the AX-14 progress control its `found`, since no safety complement is computed for a progress check). There are 3,072 choice vectors; every theorem below holds for all of
 them that meet its obligation.
 
 **Axioms** (the explorer's checks, word for word): AX-02 (action: a step of the B committer leaves A, every other step
@@ -123,6 +123,12 @@ checks only tombstones of live content and the marker; F-1201's lost statement e
 Each broken axiom's counterexample is `cx::cx_<design>_<axiom>`, a run of the composed machine from the initial state; each refutation `inst::refute_<design>_<axiom>`.
 <!--/CONTROL-TABLE-->
 
+The AX-14 control's CONTROL line (`src/ctl_sys.rs:251`) records `violates=AX-14`. The explorer's record of that
+check (`models/semantics/RESULTS.json`, `sys00-control-ax14-marker-never-cleared`) has `violates: null` and finds
+AX-14: it is a progress check, for which no safety complement is computed, so the line carries the explorer's `found`,
+not a copied `violates` (review A2-06). The refutation is proved independently (`cx.rs`, `lemma_never_cleared`: no
+continuation of the reached state finishes).
+
 ## Premises
 
 | Id | Premise | Status |
@@ -140,7 +146,7 @@ what AX-14 means, PS-4 states the scope.
 - Records are kept per tenant (`recs[t]`) instead of one list of (tenant, live) pairs: every operation acts on one
   tenant's records and every law reads one tenant's, so AX-05's global form and its per-tenant form agree.
 - The 13 designs are 13 points of the 3,072 choice vectors; the theorems cover all choice vectors meeting each
-  obligation, and each obligation is exact for the 13 designs (the located laws equal the explorer's `violates`).
+  obligation, and each obligation is exact for the 13 designs (the located laws equal the explorer's `violates`; for the AX-14 progress control, its `found`).
 - Counterexamples are stated on the generic machine and proved by evaluating the run for the design's parameters
   (`lemma_run_cfg`, then `compute`); for AX-05, AX-07 and AX-12 the computed facts are concrete (lengths, entries) and
   the solver derives the violation.
@@ -151,8 +157,9 @@ what AX-14 means, PS-4 states the scope.
 2. No refinement from sys00 to the proofs-mech machines (they abstract the mechanisms differently); the reuse is the
    proved equality of obligations and the instantiated mechanism theorems (bridge), not a composition theorem over
    the mechanism machines themselves.
-3. M-07 (queue) and M-13 (read epoch) are not in sys00's composition; AX-14 here is the composed AG EF, M07-L4's
-   fair-service and resume theorems are proofs-mech's.
+3. Seven mechanisms are not in sys00's composition: M-06, M-07 (queue), M-08, M-09, M-11, M-12 and M-13 (read
+   epoch). Their laws are proofs-mech's, proved one at a time (AX-01, AX-09 and AX-13 through M-12/M-01, M-08 and M-11,
+   PS-4); AX-14 here is the composed AG EF, M07-L4's fair-service and resume theorems are proofs-mech's.
 4. sys00's fixed small world (PS-1) and its axiom checks' scope (the observation above: no check covers M03-L2).
 5. AX-14 under fair scheduling (PS-3) instead of AG EF.
 

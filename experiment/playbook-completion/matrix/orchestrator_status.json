@@ -384,11 +384,13 @@
    "status": "open",
    "evidence": [
     "tools/locks.sh",
+    "tools/locks_rec.py",
+    "tools/hygiene_check.py",
     "incidents/IVG460SNAP.md",
     "incidents/HEALTH-ALERT-0119.md",
     "incidents/superseded-logs.json"
    ],
-   "remaining": "tools/locks.sh enforces one heavy job and one IRIS user at a time (flock) with a 3 h wait timeout, and verify.sh caps every step with timeout; but lock holds are not logged, so per-job time caps and stop-by-PID are not mechanically auditable, and the disk floor is checked by hand (151 GB free on 2026-11-14). Recorded lapses: uncoordinated connections 23:02:53-23:03:40 UTC (IVG460SNAP), a heavy-lock deadlock from wrapping a self-locking proof runner (stopped by PID), licence exhaustion by the scratch-236 suites (HEALTH-ALERT-0119), and overwritten proof logs (superseded-logs.json). Not claimed closed.",
+   "remaining": "From the commit after d293fb6b, tools/locks.sh logs every hold to $RUN_DIR/locks/holds.jsonl (request with the command, parent pid, free disk and the wait cap; acquired with the wait and the holder's own pid and process group, so a job is stopped by that pid; released with the exit code; timeout), refuses a lock when free disk is below a floor (LOCK_DISK_FLOOR_GB, 20), and tools/hygiene_check.py checks the log (H1 one holder at a time per lock, H2 every hold released or its holder alive, H3 hold time <= 3 h, H4 disk floor, H5 a stoppable pid, H6 wait caps and outcomes, H7 well-formed lines; self-test with seeded violations); verify.sh runs the self-test in every mode and the check over its own window at the end. Open until a registered gate has run the check. Not covered: a job that never goes through locks.sh. Recorded lapses before the log: uncoordinated connections 23:02:53-23:03:40 UTC (IVG460SNAP), a heavy-lock deadlock from wrapping a self-locking proof runner (stopped by PID), licence exhaustion by the scratch-236 suites (HEALTH-ALERT-0119), and overwritten proof logs (superseded-logs.json).",
    "level": "method"
   },
   {

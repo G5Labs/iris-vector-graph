@@ -206,6 +206,9 @@ MAP = {
          "an erasure that takes the head lock (the reviewed HD-1201); at the pin EraseGraph does not (F-1201)"),
     "proof-premise:proofs-env:ENV-4": ("progress", [], [], "proofs-env's (and proofs-env2's) own premise: the contract "
                                        "has no liveness clause, so the progress premises are not implied (D-8)"),
+    "proof-premise:proofs-env2:ENV2-4": ("progress", [], [], "proofs-env2's own premise (as ENV-4, added at integration): "
+                                         "the contract has no liveness clause, so the progress premises are not implied "
+                                         "(D-8)"),
     "proof-premise:proofs-sys:PS-2": ("progress", [], [], "operator action (ReErase, Resume): the contract has no "
                                       "liveness clause"),
     "proof-premise:proofs-sys:PS-3": ("progress", [], [], "fairness of the scheduler (AX-14 as AG EF): not implied by "
@@ -240,6 +243,35 @@ EXTRA = {
 }
 
 
+# The 9 clause families still outside the Verus subset (PROOFS.md section 6), as the words a closure condition resting
+# on one of them would use (case-sensitive, whole words). A closure proof-premise condition that names one is reported:
+# "no closure premise rests on the nine families" is checked here, not asserted (review A2-05).
+import re  # noqa: E402
+
+OUTSIDE_WORDS = {
+    "X-DDL": r"\bDDL\b|\bCREATE TABLE\b|\bDROP TABLE\b|\bALTER TABLE\b|\bADD COLUMN\b",
+    "X-STAR": r"SELECT \*",
+    "X-FX": r"functional index|%FIND\b",
+    "X-NOINDEX": r"NOINDEX|NOCHECK|BUILD INDEX",
+    "X-VEC $VECTOR": r"\$VECTOR",
+    "X2-JSON": r"\bJSON\b|%ToJSON|%FromJSON",
+    "X2-LIST": r"\$LIST|\$LB\b|\$LISTBUILD",
+    "X2-TOP": r"\bTOP\b|\bLIMIT\b|\bOFFSET\b",
+    "X2-QUERY/MERGE/ZKILL": r"\$QUERY|\bMERGE\b|\bZKILL\b",
+}
+
+
+def outside_hits(conditions: list) -> list:
+    hits = []
+    for c in conditions:
+        text = f"{c.get('id', '')} {c.get('condition', '')}"
+        for fam, pat in OUTSIDE_WORDS.items():
+            m = re.search(pat, text)
+            if m:
+                hits.append(f"{c.get('id')}: names {m.group(0)!r} ({fam})")
+    return hits
+
+
 def build(results: dict) -> tuple[dict, list[str]]:
     problems = []
     closure = json.loads((COMPLETION / "reflection" / "closure.json").read_text())
@@ -255,6 +287,8 @@ def build(results: dict) -> tuple[dict, list[str]]:
     for k in MAP:
         if k not in {c["id"] for c in pp}:
             problems.append(f"map entry not in closure.json: {k}")
+    fam_hits = outside_hits(pp)
+    problems += [f"closure condition rests on a family outside the Verus subset? {h}" for h in fam_hits]
     for k, v in EXTRA.items():
         rows.append((k, k, None, v, "PROOFS.md"))
     out = []
@@ -278,7 +312,10 @@ def build(results: dict) -> tuple[dict, list[str]]:
         if r["source"] == "closure.json":
             closure_counts[r["verdict"]] = closure_counts.get(r["verdict"], 0) + 1
     return {"generated_by": "proofs-env2/tools/premise_map.py", "closure_conditions": len(pp),
-            "closure_verdicts": closure_counts, "all_verdicts": counts, "rows": out}, problems
+            "closure_verdicts": closure_counts, "all_verdicts": counts,
+            "outside_family_search": {"families": sorted(OUTSIDE_WORDS), "conditions_searched": len(pp),
+                                      "hits": fam_hits},
+            "rows": out}, problems
 
 
 def self_test() -> int:
@@ -297,6 +334,10 @@ def self_test() -> int:
     bad += not any("no_such_lemma" in x for x in p)
     MAP.clear()
     MAP.update(saved)
+    # the family search must catch a condition that names an outside clause, and must not hit the word STOP
+    bad += not outside_hits([{"id": "x", "condition": "the export writes the rows as JSON"}])
+    bad += not outside_hits([{"id": "y", "condition": "SELECT TOP 1 ... picks the newest"}])
+    bad += bool(outside_hits([{"id": "z", "condition": "a STOP rolls back every level; LISTEN"}]))
     print("self-test", "pass" if not bad else "FAIL")
     return 1 if bad else 0
 
@@ -315,7 +356,8 @@ if __name__ == "__main__":
     if a.out:
         Path(a.out).write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n")
     print(f"premise map: {m['closure_conditions']} closure conditions, verdicts {m['closure_verdicts']}; all rows "
-          f"{len(m['rows'])} {m['all_verdicts']}; problems {len(problems)}")
+          f"{len(m['rows'])} {m['all_verdicts']}; outside-family search over {m['closure_conditions']} conditions: "
+          f"{len(m['outside_family_search']['hits'])} hit(s); problems {len(problems)}")
     for p in problems:
         print("PROBLEM:", p)
     sys.exit(1 if problems else 0)

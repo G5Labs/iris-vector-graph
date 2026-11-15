@@ -23,7 +23,8 @@ Pattern of proofs-d9b/tools/run_proofs.py, adapted to mechanism instances:
    own discharge_<axiom> functions of those axioms, every other function must verify and the set of other functions must
    equal the baseline's, and its refutations and counterexamples must verify in the same build. The broken laws
    (LOCATE lines) must equal the laws the semantics lane's explorer check reports violated (`violates=` in the
-   CONTROL line, copied from models/semantics/RESULTS.json).
+   CONTROL line, taken from models/semantics/RESULTS.json: its `violates` list, and for the AX-14 progress control its
+   `found`, since no safety complement is computed for a progress check; review A2-06).
 
 Every Verus run is `bash experiment/playbook-completion/tools/locks.sh heavy timeout 3600 cargo verus verify ...` after
 `cargo clean -p ivg-proofs-sys` (a cached build replays old diagnostics without verifying). A timeout, a resource
