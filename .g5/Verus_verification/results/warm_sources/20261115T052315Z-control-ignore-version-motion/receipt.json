@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_version_moves_invalidates"
+    ],
+    "find": "filled(sources)==sources.len() && before==after",
+    "name": "ignore-version-motion",
+    "replace": "filled(sources)==sources.len()",
+    "why": "stamp a fill while the global token moved"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_version_moves_invalidates"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/warm_sources/model.json": "e9bd7814d69979311dd405c83327eecb34961e76a1f74e0e48fc038089a51bfa",
+    ".g5/Verus_verification/models/warm_sources/warm_sources.rs": "d4cbb45a49b1d5b5eaa8dcb15f18d6731bee6e43498273e5b1a0b43f3b535620"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/controls/ignore-version-motion/warm_sources.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_version_moves_invalidates": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/20261115T052314Z-control-ignore-version-motion-theorem_version_moves_invalidates.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/20261115T052314Z-control-ignore-version-motion.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/warm_sources/20261115T052315Z-control-ignore-version-motion/logs/20261115T052314Z-control-ignore-version-motion-theorem_version_moves_invalidates.log": "538cf986d1eb06d9edcd9c9b80ccaf4a63b219cabdd92213145daac29af11f86",
+    ".g5/Verus_verification/results/warm_sources/20261115T052315Z-control-ignore-version-motion/logs/20261115T052314Z-control-ignore-version-motion.log": "fa6cc5e2f7fcee4171eab3167b546c4eeb81938cb82fdeaf506040e7aebaccf0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

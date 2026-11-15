@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_numeric_writer_and_reader"
+    ],
+    "find": "if in64(n) { Stored::Number { payload: n, double: false } } else { Stored::BigText(n) }",
+    "name": "numeric-writer-as-text",
+    "replace": "Stored::BigText(n)",
+    "why": "legacy writer stores every integer as text"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_numeric_writer_and_reader"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/model.json": "fff7bb743d69532da2923d6e76ded58586dae421cc8b8731034ec82bd3946822",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "2108fc843ceed75d568359c25979f7602bfebf259a3320095428542982d235ed"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/numeric-writer-as-text/node_read.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_numeric_writer_and_reader": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T051827Z-control-numeric-writer-as-text-theorem_numeric_writer_and_reader.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T051827Z-control-numeric-writer-as-text.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/node_read/20261115T051828Z-control-numeric-writer-as-text/logs/20261115T051827Z-control-numeric-writer-as-text-theorem_numeric_writer_and_reader.log": "2466127bce30f62652a08874784ea8a006c3ccbec9f7f6ef08bf760f24b25f48",
+    ".g5/Verus_verification/results/node_read/20261115T051828Z-control-numeric-writer-as-text/logs/20261115T051827Z-control-numeric-writer-as-text.log": "ef39730fac7d826e5025e715a45077b2d9e5c123f51dad781320d39b615c9931"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/count-created-rows/ndjson_import.rs:75:13
+   |
+74 | pub proof fn theorem_duplicate_count_not_upsert(id: int,a: int,b: int)
+   | ---------------------------------------------------------------------- at the end of the function body
+75 |     ensures run(start(Map::empty()),seq![node(id,a),node(id,b)]).nodes==2,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

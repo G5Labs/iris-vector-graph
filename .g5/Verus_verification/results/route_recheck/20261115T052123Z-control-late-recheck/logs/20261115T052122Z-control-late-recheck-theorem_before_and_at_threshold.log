@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/route_recheck/controls/late-recheck/route_recheck.rs:29:1
+   |
+29 | pub proof fn theorem_before_and_at_threshold(r: Route,n: nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/route_recheck/controls/late-recheck/route_recheck.rs:32:9
+   |
+29 | pub proof fn theorem_before_and_at_threshold(r: Route,n: nat)
+   | ------------------------------------------------------------- at the end of the function body
+...
+32 |         held_run(held_run(r,r.held,Some(n)),r.held,Some(n)).trial,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/route_recheck/controls/late-recheck/route_recheck.rs:33:9
+   |
+29 | pub proof fn theorem_before_and_at_threshold(r: Route,n: nat)
+   | ------------------------------------------------------------- at the end of the function body
+...
+33 |         next_path(held_run(held_run(r,r.held,Some(n)),r.held,Some(n)))==Path::Native,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

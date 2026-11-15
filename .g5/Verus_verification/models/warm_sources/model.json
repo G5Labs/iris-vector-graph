@@ -1,0 +1,6 @@
+{"name":"warm_sources","root":"warm_sources.rs","expected_verified":7,"product_baseline":"3eaa79cf77d3e0a879b2cced634cf2729d81499e","controls":[
+{"name":"count-cache-entries","why":"return entries instead of sources filled","find":"(if stores(sources[0])>0 { 1nat } else { 0nat })","replace":"stores(sources[0])","expect_fail_in":["theorem_count_sources_not_entries"]},
+{"name":"ignore-failed-probe","why":"cache a count despite active writer lock","find":"if s.probe && !s.no_lock","replace":"if !s.no_lock","expect_fail_in":["theorem_failed_probe_leaves_no_stamp"]},
+{"name":"ignore-version-motion","why":"stamp a fill while the global token moved","find":"filled(sources)==sources.len() && before==after","replace":"filled(sources)==sources.len()","expect_fail_in":["theorem_version_moves_invalidates"]},
+{"name":"skip-generation-recheck","why":"keep entries after generation moves during storage","find":"&& s.gen_after==s.gen_before","replace":"","expect_fail_in":["theorem_generation_moves_discard_fill"]}
+]}

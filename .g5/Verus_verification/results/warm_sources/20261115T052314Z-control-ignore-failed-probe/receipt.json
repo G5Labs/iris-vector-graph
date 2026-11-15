@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_failed_probe_leaves_no_stamp"
+    ],
+    "find": "if s.probe && !s.no_lock",
+    "name": "ignore-failed-probe",
+    "replace": "if !s.no_lock",
+    "why": "cache a count despite active writer lock"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failed_probe_leaves_no_stamp"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/warm_sources/model.json": "e9bd7814d69979311dd405c83327eecb34961e76a1f74e0e48fc038089a51bfa",
+    ".g5/Verus_verification/models/warm_sources/warm_sources.rs": "d4cbb45a49b1d5b5eaa8dcb15f18d6731bee6e43498273e5b1a0b43f3b535620"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/controls/ignore-failed-probe/warm_sources.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_failed_probe_leaves_no_stamp": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/20261115T052314Z-control-ignore-failed-probe-theorem_failed_probe_leaves_no_stamp.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/20261115T052314Z-control-ignore-failed-probe.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/warm_sources/20261115T052314Z-control-ignore-failed-probe/logs/20261115T052314Z-control-ignore-failed-probe-theorem_failed_probe_leaves_no_stamp.log": "f7dfc8f3d0670e35018637ab9ea22abfb9d2ee38167e577f59e690e1fc509255",
+    ".g5/Verus_verification/results/warm_sources/20261115T052314Z-control-ignore-failed-probe/logs/20261115T052314Z-control-ignore-failed-probe.log": "9699517a166a03d31bd200ad64d6c8688e5847efffeefd756f4e251d61a0e04e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

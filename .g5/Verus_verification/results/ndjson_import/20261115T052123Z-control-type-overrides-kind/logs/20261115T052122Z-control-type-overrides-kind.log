@@ -1,0 +1,21 @@
+verification results:: 7 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/type-overrides-kind/ndjson_import.rs:55:9
+   |
+52 | pub proof fn theorem_raw_kind_precedence()
+   | ------------------------------------------ at the end of the function body
+...
+55 |         selected(Kind::Other,Kind::Node) is Other,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/type-overrides-kind/ndjson_import.rs:60:9
+   |
+57 | pub proof fn theorem_unknown_malformed_and_blank(s: State)
+   | ---------------------------------------------------------- at the end of the function body
+...
+60 |         step(s,Line::Object { kind: Kind::Other, etype: Kind::Node, id: Some(1), chars: 1, value: 4 }).skipped == s.skipped+1,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,13 @@
+# Node writer and batched reader
+
+As-built transcription at product `3eaa79cf`; 11 Verus obligations, four controlled departures. Owners: `query.values`, `structure.node.read`, `.aliases`. Raw Python input types decide `prop_value`'s numeric/text storage; `CY_TYPED` selects D/N/S from that storage; `read_node_value` consumes those tags. `journey` derives both numeric and numeric-looking-text results instead of receiving a decoded answer. Signed 64-bit boundary and boolean-before-integer branches are represented. `get_nodes`' inclusion predicate covers bare nodes, absent IDs, orphan children, ordered duplicate requests and structural-key aliases. `witness_alias_collision` derives the same last-row-wins collision as the real reader comparison.
+
+## Binding and trust
+
+- Writer: `iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_node:968-1107`; `prop_values.py::prop_value:110-126`. The binding invokes the real writer and captures bound property values, then feeds those values into the actual consumer.
+- Provider: `schema.py::GraphSchema.get_procedures_sql_list:2241` creates CY_TYPED. Numeric type test and S escape inspected. Storage/transactions, numeric spelling and its parse identity are substituted. The model's numeric payload is an abstract identity; it proves no IEEE arithmetic/rounding property and no ObjectScript body.
+- Consumer: `NodesEdgesMixin.get_nodes:621-702`, `get_node:563-585`; `prop_values.py::decode_typed_text:211-231`, `read_node_value:278-286`. The actual reader, decoder and writer execute from an exported product pin. Comparison uses Python value **and type**. No live cross-graph probe.
+- The plain-text formal branch excludes JSON-looking containers; JSON/J tags, N fractional/exponent parsing, null skipping, nonfinite values and the entire Cypher finishing pipeline remain formal gaps. Supplemental native Python cases preserve JSON and nonfinite behavior without claiming it proved. Malformed numeric tags are not produced by the represented provider; their exceptions are not modeled.
+- Trust inventory: no `assume`, `admit`, external body or uninterpreted axiom. Bundled vstd only. The environment mapping and binding oracle are unverified Python; numeric parse identity is a source-inspected premise, not a theorem about IRIS.
+
+Run from repo root with the runbook environment: `python3 .g5/Verus_verification/run_verus.py prove|controls .g5/Verus_verification/models/node_read`; `$RUN_DIR/venv/bin/python -I .g5/Verus_verification/models/node_read/binding.py`. The runner retains receipts and logs. The alias witness is a unit-level observation with substituted row order, not a live database reproduction.

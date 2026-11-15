@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/controls/skip-generation-recheck/warm_sources.rs:33:13
+   |
+31 | pub proof fn theorem_generation_moves_discard_fill(s: Source)
+   | ------------------------------------------------------------- at the end of the function body
+32 |     requires s.gen_before!=s.gen_store || s.gen_before!=s.gen_after || s.no_lock,
+33 |     ensures stores(s)==0,
+   |             ^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

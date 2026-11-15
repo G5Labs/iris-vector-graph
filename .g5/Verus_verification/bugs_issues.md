@@ -1869,6 +1869,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `breadth-a-live-04-ad
 - Remedy proposed by the playbook arm (not implemented): Make AllWarm require an entry, or document killing ^KG('degw') with ^KG('degc').
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
 
+Iteration 1 comparison: warm_sources models WarmAll's source census and stamp admission, not independent cache deletion. The inherited clear-cache/current-stamp witness remains a product gap; the new proof must not be read as repairing it. The canonical warm owner now states globals-only enumeration and this exception.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="F-0502"></a>
@@ -2278,7 +2280,7 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `b-08-live-f0810`, `b
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="F-0813"></a>
-### Values carry no stored type
+### Relationship filters conflate numeric-looking strings and numbers
 
 Severity: Medium · Decision: Open
 
@@ -2293,6 +2295,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `b-08-live-f0813`, `b
 - Source severity S2, confidence high; module 08; governing page here: `query.`.
 - Remedy proposed by the playbook arm (not implemented): Typed storage (planned 4.8.0) and the TCK typed runs on mixed data.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
+
+Iteration 1 scope reconciliation: the original title 'Values carry no stored type' is too broad at 3eaa79cf. Its live witness concerns relationship qualifier filters and remains valid. Nodes written as numbers retain D/N types, numeric-looking node strings stay strings, and 4.7.0 node filters distinguish them (KNOWN_ISSUES.md:183-240; prop_values.py:110-126,211-231). The new node_read contract/binding corroborates that narrower boundary; it does not withdraw the relationship finding or establish all sorting/arithmetic semantics. Owner: query.conformance and query.values.
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
@@ -4501,6 +4505,27 @@ Observed: the first pass runs rows in order; an unsupported-path error at row k 
 Consequence: an INSERT batch can write rows twice or fail on a key it wrote itself; an UPDATE batch reapplies changes.
 
 Repair proposal (not implemented): resume the fallback at the row that failed (the model's `fallback_start(failed_at)`), or run the whole batch through one path chosen at prepare time. Governing statement: [adapters.embedded.no_data](../ontology/concepts/adapters.g5.md#adapters.embedded.no_data).
+
+<a id="bug-str-101"></a>
+### Flat node property aliases lose one stored value when id and p_id coexist
+
+Severity: Low · Decision: Open
+
+Run: Uplift improvement iteration 1, 2026-11-15
+
+**Suspected** end to end: the real Python writer accepts both keys and the real reader loses one; IRIS persistence and row ordering were substituted. The read docstring promises the node's properties, without reserving the alias keys.
+
+Found by: tracing the sampled bare-node reader into its property assignments, `nodes_edges.py:670-676`; [node_read](models/node_read/NOTES.md) `witness_alias_collision`.
+
+Reproduced by: none on live IRIS; [node_read binding](models/node_read/binding.py) calls the actual `create_node` with `id=stored-id` and `p_id=user-value`, captures both bound properties and feeds both permitted row orders into actual `get_nodes`.
+
+Expected: structural ID/labels stay intact, and every accepted property can be recovered without an unspecified row order choosing which value survives (`get_node` docstring, `nodes_edges.py:563-568`).
+
+Observed: the node's structural `id` remains `n`; property `id` maps to `p_id`, colliding with the caller's own `p_id`. Forward order yields `user-value`; reverse order yields `stored-id`. The same issue applies to `labels`/`p_labels`.
+
+Comparison with inherited findings: F-0206/RC-01 lose values by mixing graphs; F-0813/RC-17 concern value types. Neither has this single-graph key-remapping trigger or loss. No matching alias finding was found in the three registers; this is a builder-discovered candidate, not a held-out result.
+
+Recommendation (not implemented): preserve properties in a separate map, or reserve and validate a documented alias namespace. Owner/default/alternative: [structure.node.read.aliases](../ontology/features/graph-structure.g5.md#structure.node.read.aliases), [q-iter-001](open_questions.md#q-iter-001). No human has chosen the API migration.
 
 <a id="bug-cyp-101"></a>
 ### Relationship property text with a trailing line break or non-ASCII digits is read back as a number

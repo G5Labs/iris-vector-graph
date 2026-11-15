@@ -733,6 +733,17 @@ Evidence: `verify()` checks the redaction marker once, reads the ledger and the 
 Interpretations: (a) verify is best-effort; run it when writes are quiet (document it); (b) verify reads under the head lock, or retries until the head did not move.
 
 Decision needed: which. Open statement: [ledger.verify.consistency](../ontology/features/ledger.g5.md#ledger.verify.consistency).
+<a id="q-iter-001"></a>
+### How should flat node reads preserve colliding property aliases?
+
+Severity: Low · Decision: Open
+
+Run: Uplift improvement iteration 1, 2026-11-15
+
+Classification: settled as built (both keys are accepted and one is lost at the flat reader); intended replacement needs ratification. `create_node` validates key width but reserves neither `p_id` nor `p_labels`; `get_nodes` renames only `id` and `labels` (`nodes_edges.py:1013-1014,670-676`). The writer/reader unit witness and Verus witness are in [node_read](models/node_read/NOTES.md).
+
+Working answer: keep structural fields and return every property under a separate property map. Alternative: keep flat results but reserve and validate an alias namespace before writes; existing colliding data then requires a migration or explicit refusal. The product owner must choose compatibility and rollout. Owner: [structure.node.read.aliases](../ontology/features/graph-structure.g5.md#structure.node.read.aliases); finding [bug-str-101](bugs_issues.md#bug-str-101).
+
 <a id="q-con-001"></a>
 ### Must the streaming history reader bound its memory, or only its delivery?
 

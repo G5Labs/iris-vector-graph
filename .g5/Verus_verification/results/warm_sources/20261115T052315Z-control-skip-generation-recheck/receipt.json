@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_generation_moves_discard_fill"
+    ],
+    "find": "&& s.gen_after==s.gen_before",
+    "name": "skip-generation-recheck",
+    "replace": "",
+    "why": "keep entries after generation moves during storage"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_generation_moves_discard_fill"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/warm_sources/model.json": "e9bd7814d69979311dd405c83327eecb34961e76a1f74e0e48fc038089a51bfa",
+    ".g5/Verus_verification/models/warm_sources/warm_sources.rs": "d4cbb45a49b1d5b5eaa8dcb15f18d6731bee6e43498273e5b1a0b43f3b535620"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/controls/skip-generation-recheck/warm_sources.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_generation_moves_discard_fill": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/20261115T052315Z-control-skip-generation-recheck-theorem_generation_moves_discard_fill.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/20261115T052315Z-control-skip-generation-recheck.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/warm_sources/20261115T052315Z-control-skip-generation-recheck/logs/20261115T052315Z-control-skip-generation-recheck-theorem_generation_moves_discard_fill.log": "e6d01c9113cc4e4a1c0fb5e3cebbbde4d1c3a573ce2250619015659bfdd077d1",
+    ".g5/Verus_verification/results/warm_sources/20261115T052315Z-control-skip-generation-recheck/logs/20261115T052315Z-control-skip-generation-recheck.log": "9ad1902875bb20e1fa5e113130de0b438475cd1cc6439b1a8775e54852f40e11"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

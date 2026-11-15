@@ -1,0 +1,21 @@
+verification results:: 7 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/duplicate-is-upsert/ndjson_import.rs:72:9
+   |
+68 | pub proof fn theorem_new_vs_duplicate(s: State,id: int,v: int)
+   | -------------------------------------------------------------- at the end of the function body
+...
+72 |         step(s,node(id,v)).props[id] == if s.props.contains_key(id) { s.props[id] } else { v },
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/duplicate-is-upsert/ndjson_import.rs:76:9
+   |
+74 | pub proof fn theorem_duplicate_count_not_upsert(id: int,a: int,b: int)
+   | ---------------------------------------------------------------------- at the end of the function body
+75 |     ensures run(start(Map::empty()),seq![node(id,a),node(id,b)]).nodes==2,
+76 |         run(start(Map::empty()),seq![node(id,a),node(id,b)]).props[id]==a,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

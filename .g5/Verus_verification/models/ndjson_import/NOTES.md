@@ -1,0 +1,13 @@
+# NDJSON node flow and cross-call read
+
+As-built projection at `3eaa79cf`, owner `install.import.ndjson`. Nine Verus obligations include the recursive termination obligation; four controls. `selected` derives kind from raw kind/type (explicit kind wins), `admit` separates blank/invalid/non-object/unknown/missing-ID/node records, `step` invokes the represented node writer and derives counters, and `run` folds a sequence until a writer width error. The persistent map determines duplicate behavior: duplicate node lines count but do not overwrite. A 257-character ID derives refusal from the actual width rule, rather than receiving a supplied failure bit; earlier successful nodes remain. No counts are returned after failure.
+
+## Boundary and excluded scope
+
+`Line` abstracts JSON parsing, raw kind truthiness and ID truthiness. JSON parser correctness is not proved; real parsing is exercised in the binding. Node properties here are scalar identities, one graph is fixed, and only node-flow projections can rely on `run`. `OutsideScope` is an explicit projection marker for edge/temporal records; its stutter is **not** an importer semantics claim. Edge graph selection, source aliases, quals, temporal endpoint writes, attrs conversion, buffering and failed-batch atomicity remain formal gaps, though representative real Python comparisons are retained. Caller transaction semantics and every other native writer refusal remain conditional on the existing write contract. `upsert_nodes` never turns a duplicate node line into an update at this pin.
+
+## Exact binding
+
+`iris_vector_graph/_engine/snapshot.py::SnapshotMixin.import_graph_ndjson:1727-1855` -> `NodesEdgesMixin.create_node:968-1107` -> `prop_value:110-126` -> `NodesEdgesMixin.get_nodes:621-702` -> `read_node_value:278-286`. The binding runs all those Python bodies from the exported pin. IRIS persistence, rowcount, transactions and CY_TYPED are scripted. Fresh and duplicate rowcounts are legitimate responses at the pinned guard. The oracle derives expected state from input lines; a mutant that lets `type` override explicit `kind` must disagree. Supplemental edge default-graph override and temporal 2+1 flush observations are labeled separately. No server or cross-graph native execution.
+
+Trust inventory: empty proof trust; bundled vstd only. Unverified binding and its imported `node_read/binding.py` are hashed in each receipt, as is snapshot.py. Commands follow the shared prove/controls runner and `binding.py` pattern in the runbook. The first proof receipt had 9 verified/0 errors but expected count 8; that mismatch is retained and superseded, not a failed semantic proof.

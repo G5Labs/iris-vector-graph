@@ -1,0 +1,20 @@
+verification results:: 9 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/numeric-writer-as-text/node_read.rs:45:13
+   |
+43 | pub proof fn theorem_numeric_writer_and_reader(n: int)
+   | ------------------------------------------------------ at the end of the function body
+44 |     requires in64(n),
+45 |     ensures journey(Input::Integer(n)) == Value::Integer(n),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/numeric-writer-as-text/node_read.rs:52:13
+   |
+51 | pub proof fn theorem_numeric_looking_text_distinct()
+   | ---------------------------------------------------- at the end of the function body
+52 |     ensures journey(Input::Integer(29)) == Value::Integer(29),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

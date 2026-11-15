@@ -528,6 +528,8 @@ Comparison: none — the playbook arm's remedy is prose only; no model compares 
 - Caller behavior to preserve and a distinguishing case: not stated by the playbook arm beyond the remedy; see each member finding's `Expected` line.
 - Source: [reflection/ROOT-CAUSES.md](../../experiment/playbook-completion/reflection/ROOT-CAUSES.md). Not yet compared with the guidance arm's simplifications.
 
+Iteration 1 scope reconciliation: retain the seven inherited member findings and the proposed shared encoding, but do not read this burden as absence of all node typing. The Python numeric writer, CY_TYPED D/N/S protocol and batched reader already share one typed numeric path (models/node_read/NOTES.md). Preserve integer versus float, numeric-looking text, escaped marks, booleans and legacy text if simplifying it. Relationship qualifier filters remain the decisive F-0813 contrast. No shared-storage repair was implemented or proved here.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="RC-18"></a>

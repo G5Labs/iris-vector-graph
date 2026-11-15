@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_duplicate_count_not_upsert"
+    ],
+    "find": "nodes: s.nodes+1, ..s",
+    "name": "count-created-rows",
+    "replace": "nodes: s.nodes+(if s.props.contains_key(id) { 0nat } else { 1nat }), ..s",
+    "why": "counter tracks inserted rows rather than processed lines"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_duplicate_count_not_upsert"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ndjson_import/model.json": "4a61162edf36cef0555b58805d066bee27744eebf46adea9a49c7a33acda8bd9",
+    ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs": "13b271835ec609f11372f795bf35a898d8ea5afa6d54074a4d796e0ce7e14020"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/count-created-rows/ndjson_import.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_duplicate_count_not_upsert": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/20261115T052124Z-control-count-created-rows-theorem_duplicate_count_not_upsert.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/20261115T052124Z-control-count-created-rows.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ndjson_import/20261115T052124Z-control-count-created-rows/logs/20261115T052124Z-control-count-created-rows-theorem_duplicate_count_not_upsert.log": "0ab542c212a6cc970733c3820f3c666d372057cc512617ff10988c509ecadb72",
+    ".g5/Verus_verification/results/ndjson_import/20261115T052124Z-control-count-created-rows/logs/20261115T052124Z-control-count-created-rows.log": "324dc0aa71ba6eb58d9dd4cca9185047e181d13b19845e0d789ef8b69e122f88"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

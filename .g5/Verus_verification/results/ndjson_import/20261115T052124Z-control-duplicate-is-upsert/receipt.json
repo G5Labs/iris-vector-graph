@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_new_vs_duplicate"
+    ],
+    "find": "if s.props.contains_key(id) { s.props } else { s.props.insert(id,value) }",
+    "name": "duplicate-is-upsert",
+    "replace": "s.props.insert(id,value)",
+    "why": "duplicate lines overwrite existing node properties"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_new_vs_duplicate"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ndjson_import/model.json": "4a61162edf36cef0555b58805d066bee27744eebf46adea9a49c7a33acda8bd9",
+    ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs": "13b271835ec609f11372f795bf35a898d8ea5afa6d54074a4d796e0ce7e14020"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/duplicate-is-upsert/ndjson_import.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_new_vs_duplicate": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/20261115T052123Z-control-duplicate-is-upsert-theorem_new_vs_duplicate.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/20261115T052123Z-control-duplicate-is-upsert.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ndjson_import/20261115T052124Z-control-duplicate-is-upsert/logs/20261115T052123Z-control-duplicate-is-upsert-theorem_new_vs_duplicate.log": "f7db7f76e75c69484aa46dd7ad6b8b323efc1fa6883fc4c37addeb5b935915ba",
+    ".g5/Verus_verification/results/ndjson_import/20261115T052124Z-control-duplicate-is-upsert/logs/20261115T052123Z-control-duplicate-is-upsert.log": "4968145469c0fc82eaec3ece1402785d8706c176d745b16cf272ef458d676dd5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

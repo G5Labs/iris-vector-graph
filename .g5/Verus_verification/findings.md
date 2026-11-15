@@ -4,9 +4,9 @@ Product baseline `3eaa79cf`. The register covers every bug, design simplificatio
 
 | File | Entries | High | Medium | Low | Observations / drift | Natively reproduced |
 |---|---:|---:|---:|---:|---:|---:|
-| [Bugs and issues](bugs_issues.md) | 427 | 48 | 129 | 219 | 31 | 239 of 396 |
+| [Bugs and issues](bugs_issues.md) | 428 | 48 | 129 | 220 | 31 | 239 of 397 |
 | [Design simplifications](design_simplification.md) | 55 | 16 | 25 | 13 | 1 | n/a |
-| [Open questions](open_questions.md) | 138 | 1 | 19 | 38 | 16 | n/a |
+| [Open questions](open_questions.md) | 139 | 1 | 19 | 39 | 16 | n/a |
 
 How to read an entry: a bug cites the governing source of the expected behavior (**Expected**), what the baseline does (**Observed**) and the evidence (**Found by** — model witness, source review or reviewer — and **Reproduced by** — native probe receipt under `receipts/native/` or an upstream test). An entry whose product reachability was not shown natively says **Suspected** and its severity is one level lower than its consequence. A simplification states the proposal, why it helps, the behavior to preserve and a distinguishing case. A question states the evidence, the plausible interpretations and the decision needed.
 

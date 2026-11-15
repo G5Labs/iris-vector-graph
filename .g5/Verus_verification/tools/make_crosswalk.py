@@ -35,6 +35,22 @@ G_TIP = "24c6b0c03e1c84cac6691de45c183fa1cf73940b"
 REL_PC = "../../experiment/playbook-completion"
 REL_PU = "../../experiment/playbook-uplift"
 GEN_MARK = "_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._"
+RECONCILIATIONS = {
+    "F-0813": "Iteration 1 scope reconciliation: the original title 'Values carry no stored type' is too broad at 3eaa79cf. Its live witness concerns relationship qualifier filters and remains valid. Nodes written as numbers retain D/N types, numeric-looking node strings stay strings, and 4.7.0 node filters distinguish them (KNOWN_ISSUES.md:183-240; prop_values.py:110-126,211-231). The new node_read contract/binding corroborates that narrower boundary; it does not withdraw the relationship finding or establish all sorting/arithmetic semantics. Owner: query.conformance and query.values.",
+    "RC-17": "Iteration 1 scope reconciliation: retain the seven inherited member findings and the proposed shared encoding, but do not read this burden as absence of all node typing. The Python numeric writer, CY_TYPED D/N/S protocol and batched reader already share one typed numeric path (models/node_read/NOTES.md). Preserve integer versus float, numeric-looking text, escaped marks, booleans and legacy text if simplifying it. Relationship qualifier filters remain the decisive F-0813 contrast. No shared-storage repair was implemented or proved here.",
+    "F-0406": "Iteration 1 comparison: warm_sources models WarmAll's source census and stamp admission, not independent cache deletion. The inherited clear-cache/current-stamp witness remains a product gap; the new proof must not be read as repairing it. The canonical warm owner now states globals-only enumeration and this exception.",
+}
+
+def reconciled(text):
+    """Preserve explicit scope corrections when regenerating imported entries."""
+    for fid,note in RECONCILIATIONS.items():
+        pattern = r'(<a id="' + re.escape(fid) + r'"></a>\n.*?)(?=\n<a id=|\Z)'
+        def add(m):
+            entry=m.group(1)
+            if note in entry: return entry
+            return entry.replace(GEN_MARK,note + "\n\n" + GEN_MARK)
+        text=re.sub(pattern,add,text,flags=re.S)
+    return text
 ALSO_MARK = "(crosswalk)"
 SEVS = ["Critical", "High", "Medium", "Low", "Unranked"]
 MAP_SEV = {"S1": "High", "S2": "Medium", "S3": "Low", "S4": "Low"}
@@ -254,7 +270,8 @@ def finding_entry(fid, rec, also_ids, ctl, title_prefix=""):
     obs = x.get("observed") or {}
     verdict = obs.get("verdict") if isinstance(obs, dict) else obs
     mod = str(x.get("module", ""))
-    lines = [f'<a id="{fid}"></a>', f"### {title_prefix}{one_line(x.get('title'), 200)}", "",
+    title = "Relationship filters conflate numeric-looking strings and numbers" if fid == "F-0813" else x.get("title")
+    lines = [f'<a id="{fid}"></a>', f"### {title_prefix}{one_line(title, 200)}", "",
              f"Severity: {sev} · Decision: Open", "", "Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)", ""]
     if not native:
         lines += [f"**Suspected** here: the playbook arm's disposition is `{disp}`, not a native reproduction; severity is one level below the mapped {mapped}.", ""]
@@ -346,7 +363,7 @@ def main():
     wd = ["## Withdrawn, refuted and not reproduced (playbook arm)", "",
           "Playbook-arm finding records whose own disposition withdraws them. They stay here with the recorded reason.", "", *withdrawn]
     out = pre + "".join(e for _, _, e in acts) + trailing.rstrip("\n") + "\n\n" + "\n".join(wd).rstrip("\n") + "\n\n" + "\n".join(cand).rstrip("\n") + "\n"
-    (V / name).write_text(out)
+    (V / name).write_text(reconciled(out))
     anchors_now = set(re.findall(r'<a id="([^"]+)"></a>', out))
     for gid in sorted(anchors_now):
         if gid in audit or gid in UNFILED:
@@ -419,7 +436,7 @@ def main():
     acts = [(entry_sev(e), i, e) for i, e in enumerate(entries)] + [(s, 10 ** 6 + n, t) for n, (s, _, t) in enumerate(new_act)]
     acts.sort(key=lambda a: (SEVS.index(a[0]), a[1]))
     out = pre + "".join(e for _, _, e in acts) + trailing.rstrip("\n") + "\n"
-    (V / name).write_text(out)
+    (V / name).write_text(reconciled(out))
     for gid in sorted(set(re.findall(r'<a id="([^"]+)"></a>', out))):
         if gid in rcs:
             continue
@@ -479,7 +496,7 @@ def main():
         debt_lines += [f'<a id="{did}"></a>', f"### Proof debt {did}: {md_safe(cells[0])[:180]}", "", "Severity: Unranked", "",
                        f"- {md_safe(' | '.join(cells[1:]))[:900]}", "", GEN_MARK, "", ""]
     out = pre + "".join(e for _, _, e in acts) + trailing.rstrip("\n") + ("\n\n" if trailing.strip() else "\n") + "\n".join(debt_lines).rstrip("\n") + "\n"
-    (V / name).write_text(out)
+    (V / name).write_text(reconciled(out))
     for gid in sorted(set(re.findall(r'<a id="([^"]+)"></a>', out))):
         if gid in hds or gid in reach or gid in debt:
             continue

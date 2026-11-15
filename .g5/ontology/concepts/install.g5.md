@@ -310,6 +310,16 @@ Is the `BulkLoader` class meant to run as the only writer, on single-edge graphs
 
 Imports write as they go. `load_networkx`, `import_graph_ndjson` and `load_obo` write one node or relationship at a time, and `import_rdf` commits one batch at a time, so a failure keeps what was already written. Every import, and materializing or retracting inference, is refused in ledger strict mode.
 
+<a id="install.import.ndjson"></a>
+[D · install.import.ndjson]
+
+An NDJSON import ignores blank lines; logs and counts malformed JSON, non-object JSON, unknown kinds, nodes without IDs and edges without all endpoints and predicate as skipped; and continues to later lines. A writer exception stops the call and returns no counts; without a caller transaction, earlier successful writes remain.
+
+- `kind: node|edge|temporal_edge` selects a record. Without a kind, the ledger export's `type: node|rel` selects nodes or edges, with `props` or `s/p/o/quals` respectively. An explicit kind takes precedence over `type`.
+- Node and edge counters count processed lines, even when `create_node` or `create_edge` returns False for an existing item. Duplicate node lines leave the existing node's properties unchanged; `upsert_nodes` controls creation of temporal endpoints, not updating duplicate node records.
+- Node lines use the caller's graph (default if omitted). Edge lines use the caller's graph if supplied, otherwise the line's graph; an explicitly empty caller graph overrides a named line graph. Temporal batches and any endpoints they create use the default graph even when the caller supplies a graph.
+- Temporal lines buffer until `batch_size` or end of file. Their counter advances by the flushed batch length, independently of the writer's return count; an exception prevents that increment and prevents the final pending flush. These counters do not establish rows created or atomicity of a failed temporal batch.
+
 ## Metadata
 
 ### install.namespace
@@ -731,9 +741,19 @@ Findings: [Rebuild adjacency once after load_networkx](../../Verus_verification/
 Findings: [Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?](../../Verus_verification/open_questions.md#q-plt-005)
 
 ### install.import
+- Children: [NDJSON](#install.import.ndjson)
 
 - Sources: [snapshot.py load_networkx](../../../iris_vector_graph/_engine/snapshot.py#L446-L556), [import_rdf](../../../iris_vector_graph/_engine/snapshot.py#L557-L720), [import_graph_ndjson](../../../iris_vector_graph/_engine/snapshot.py#L1727-L1856), [load_obo](../../../iris_vector_graph/_engine/snapshot.py#L1694-L1726), [materialize_inference](../../../iris_vector_graph/_engine/schema.py#L2966), [ledger strict list](../features/ledger.g5.md#ledger.strict), [operations inventory G7](../../uplift/ivg-verus-initial/intent/operations.md#L150-L158)
 - agent
 - data-integrity, operations
 
 Added by review round 3 R3-reader M23 (the stage-A reconstruction check items 3, 4 and 7 had raised it). `import_rdf`'s docstring says it "commits per batch"; inside a caller's transaction each batch is an IVG level nested in it, and a non-indexed install refuses the caller's transaction. Whether re-running an import after a failure finishes it cleanly was not checked. The inference commit boundary was not traced. Not modelled and not observed natively.
+
+### install.import.ndjson
+- Sources: [`SnapshotMixin.import_graph_ndjson`](../../../iris_vector_graph/_engine/snapshot.py#L1727-L1855), [`NodesEdgesMixin.create_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1107), [unit tests](../../../tests/unit/test_edgeprop_ndjson.py#L45-L95)
+- Playbook: [WRT-B7.86](../../../experiment/playbook-completion/ontology/03-writes.md#L221), [WRT-T7.87](../../../experiment/playbook-completion/ontology/03-writes.md#L222), [WRT-B2.80](../../../experiment/playbook-completion/ontology/03-writes.md#L92)
+- Verus: [ndjson_import](../../Verus_verification/models/ndjson_import/NOTES.md), as-built node admission, width refusal, prefix preservation and duplicate counts. Edge routing and temporal batching are unit observations only and remain formal gaps; parser behavior is a scoped boundary assumption.
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+- Expands: [imports](#install.import)

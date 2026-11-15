@@ -81,9 +81,27 @@ def main():
         f = fam.replace("P-proofs-", "playbook-proofs-")
         return fams.get(f, "").startswith("active")
     direct, indirect = set(), set()
+    support_inputs, unresolved = set(), set()
     blocks_roles = {}
     for r in links:
         key = (r["path"], r["symbol"])
+        path, symbol = key
+        definitions = py.get(path, []) if path.endswith(".py") else os_members.get(path, [])
+        if definitions.count(symbol) != 1:
+            # Constants are valid supporting inputs, but are not function/method definitions in this denominator.
+            src = git("show", f"{PIN}:{path}")
+            assignments = {n.id for top in ast.parse(src).body if isinstance(top, (ast.Assign, ast.AnnAssign))
+                           for target in (top.targets if isinstance(top, ast.Assign) else [top.target])
+                           for n in ast.walk(target) if isinstance(n, ast.Name)} if path.endswith(".py") else set()
+            (support_inputs if symbol in assignments else unresolved).add(key)
+            continue
+        item = r["formal item"]
+        if item not in ("", "-"):
+            formal_path, _, fn = item.partition("::")
+            f = REPO / formal_path
+            if not f.is_file() or len(re.findall(rf"\bfn\s+{re.escape(fn)}\b", f.read_text())) != 1:
+                unresolved.add(key)
+                continue
         is_direct = r["relation"] in ("models", "proves", "witnesses") and r["formal item"] not in ("", "-") and active(r["family"])
         (direct if is_direct else indirect).add(key)
         blocks_roles.setdefault(r["block"], set()).add(r["role"])
@@ -93,6 +111,8 @@ def main():
         "decision_links_rows": len(links),
         "direct": {"python": lang(direct, ".py"), "objectscript": lang(direct, ".cls")},
         "indirect_only": {"python": lang(indirect, ".py"), "objectscript": lang(indirect, ".cls")},
+        "support_inputs_excluded_from_definition_counts": [f"{p}::{s}" for p,s in sorted(support_inputs)],
+        "unresolved_excluded_from_definition_counts": [f"{p}::{s}" for p,s in sorted(unresolved)],
         "blocks_linked": len(blocks_roles),
         "blocks_with_writer_or_producer_and_reader_or_consumer": sorted(
             b for b, roles in blocks_roles.items() if roles & {"writer", "producer"} and roles & {"reader", "consumer"}),
@@ -115,6 +135,7 @@ def main():
     print(f"indirect only: Python {L['indirect_only']['python']}; ObjectScript {L['indirect_only']['objectscript']}")
     print(f"blocks linked: {L['blocks_linked']}; writer and reader both linked: {len(L['blocks_with_writer_or_producer_and_reader_or_consumer'])}")
     print("implementation-verified: 0")
+    print(f"support inputs outside definition denominator: {len(support_inputs)}; unresolved: {len(unresolved)}")
     return 0
 
 

@@ -177,6 +177,10 @@ P = [
 ]
 
 C = [  # this consolidation's new model directories: (name, scope, design, status, premises/notes)
+    ("node_read", "numeric Python writer, CY_TYPED tag/escape and batched node inclusion/aliases; scalar subset", "as-built transcription", "active"),
+    ("ndjson_import", "raw kind selection, node admission, width refusal, duplicate counts and prefix state; node projection only", "as-built transcription", "active"),
+    ("route_recheck", "NativeRoute held-call counter, trial reset, next-path selection and permanent SQL failure; drift disabled", "as-built transcription", "active"),
+    ("warm_sources", "WarmFill guard, globals source census/count and whole-graph stamp; ObjectScript inspected only", "as-built transcription", "active"),
     ("temporal_window_reader", "the paged temporal window reader: window_spec, the Python cursor's paging and handle release, the server's filter and page producer", "as-built transcription", "active"),
     ("freshness_stamp", "Freshness and TraversalKHop.Fresh: a rebuilt store is current only when stamped and equal to the token", "as-built transcription", "active"),
     ("embedded_no_data", "the embedded cursor's no-row rule and row counts over its three execution paths and the batch call", "as-built transcription", "active"),

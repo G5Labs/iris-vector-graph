@@ -1,0 +1,36 @@
+verification results:: 9 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/skip-structural-alias/node_read.rs:94:1
+   |
+94 | pub proof fn theorem_structural_keys_kept(m: Map<int,int>, k: int, v: int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/skip-structural-alias/node_read.rs:96:13
+   |
+94 | pub proof fn theorem_structural_keys_kept(m: Map<int,int>, k: int, v: int)
+   | -------------------------------------------------------------------------- at the end of the function body
+95 |     requires k >= 0, m.contains_key(0), m.contains_key(1),
+96 |     ensures assign(m,k,v)[0] == m[0], assign(m,k,v)[1] == m[1],
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/skip-structural-alias/node_read.rs:96:39
+   |
+94 | pub proof fn theorem_structural_keys_kept(m: Map<int,int>, k: int, v: int)
+   | -------------------------------------------------------------------------- at the end of the function body
+95 |     requires k >= 0, m.contains_key(0), m.contains_key(1),
+96 |     ensures assign(m,k,v)[0] == m[0], assign(m,k,v)[1] == m[1],
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/skip-structural-alias/node_read.rs:101:9
+    |
+ 98 | pub proof fn witness_alias_collision(a: int, b: int)
+    | ---------------------------------------------------- at the end of the function body
+...
+101 |         assign(assign(Map::empty(),2,b),0,a)[2] == a,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

@@ -74,7 +74,7 @@ A native answer must equal the SQL path's answer:
 <a id="query.native.sql-first"></a>
 [D · query.native.sql-first]
 
-A defect found on the SQL path while building the native executor is fixed on the SQL path first, and the native executor copies the fixed behavior. IVG's deliberate rules stay on both paths, such as untyped stored values and numeric-looking text ordered as a number.
+A defect found on the SQL path while building the native executor is fixed on the SQL path first, and the native executor copies the fixed behavior. Both paths preserve the stored node value types described in [values](#query.values), and both retain the documented comparison and sorting limits in [conformance](#query.conformance).
 
 <a id="query.native.fallback"></a>
 [I · query.native.fallback]
@@ -84,7 +84,14 @@ If the native executor fails for any reason, the SQL path answers the query inst
 <a id="query.native.route"></a>
 [D · query.native.route]
 
-For a read both paths can answer, the engine may send later runs of the same query shape to whichever path measured faster. This is safe only because both paths give the same answer.
+For a read both paths can answer, the engine may send later runs of the same query shape to whichever path measured faster. It measures the paths again after 1,000 calls on the held path by default, and sooner after sustained timing drift; shadow mode bypasses this routing.
+
+- A trial first warms native and takes two native timings. If their median reaches `small_ms`, SQL is not tried; otherwise SQL is warmed and the paths are timed in turn, up to five timings each by default.
+- The held path keeps a near tie: the other path wins only when its median is strictly more than the configured margin faster (20% by default). A timed SQL run slower than four times native's slowest timing ends the trial on native.
+- Only calls on the held path advance its recheck counter. The threshold call resets the trial; the next call starts with native again, even if SQL had held the shape. A SQL failure assigns the shape to native permanently for that route object, so later calls do not restart a trial.
+- By default drift starts a trial after at least 50 held calls when the median of the last 20 calls exceeds twice the held path's trial median. Recheck and drift may each be disabled; route eviction or a new engine creates a new trial.
+
+This routing relies on [equal answers](#query.native.equal-answers); the timing rules alone do not prove that equality.
 
 ## Shadow mode
 
@@ -287,7 +294,8 @@ IVG holds its Cypher to the openCypher TCK and lists each known deviation in its
 - A `CALL { }` subquery's columns come first in the result.
 - `MERGE ... ON CREATE SET n = {...}` and `ON MATCH SET n = {...}` on a node are refused.
 - A relationship property computed from the row is refused when creating between matched nodes.
-- Stored values are untyped text: a number and a string that spells it cannot be told apart.
+- Node reads distinguish a stored number from the string spelling it, and node filters use that stored type from 4.7.0. Earlier Python writes stored numbers as text; setup does not retype them. Relationship qualifier text still loses the number/string distinction, and its decoder follows [relationship text](#query.values.relationship_text).
+- Sorting and arithmetic still coerce numeric-looking text, on nodes and relationships; typed reads do not remove those documented deviations.
 - Two `OPTIONAL MATCH` variable-length shapes are refused, and a variable-length read from a large hub can exceed IRIS's string limit.
 - A `CREATE` or `MERGE` after `UNWIND $p AS e WITH e` fails.
 
@@ -296,7 +304,11 @@ IVG holds its Cypher to the openCypher TCK and lists each known deviation in its
 <a id="query.values"></a>
 [D · query.values]
 
-A Cypher result gives each value back with the type it was written with. Node properties already arrive typed; a relationship property is stored inside the edge's qualifier text, so its reader turns that text back into a value.
+A node property read preserves its stored numeric type: a D-marked IRIS double becomes a Python float, and an N-marked integer becomes an int (a fractional or exponent N spelling becomes a float). Unmarked numeric-looking node text stays text; a string beginning with the mark is escaped with S and unwrapped once, so its contents are not decoded again.
+
+- Since 4.6.4 the Python node writers bind signed 64-bit integers and finite floats as numbers; booleans become `true`/`false` text, lists and maps JSON text, and larger integers and nonfinite floats text. Earlier Python numeric text stays text after setup. The engine's node read API decodes stored booleans and valid JSON lists/maps; a string spelling a list/map also reads as one.
+- `CY_TYPED` decides the tag from the stored IRIS value, rather than the driver's column type. SQL result decoding and the node read API consume that tag. The [batched node reader](graph-structure.g5.md#structure.node.read) also protects its structural keys.
+- Relationship properties are stored in qualifier text and follow their separately owned decoder; preserving a node's stored type does not establish that relationship values preserve their original type.
 
 <a id="query.values.relationship_text"></a>
 [I · query.values.relationship_text]
@@ -391,6 +403,8 @@ Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no
 Sources: [spec 253 US4 and FR-007](../../../specs/253-native-cypher-executor/spec.md#L71-L81), [`_try_native`](../../../iris_vector_graph/_engine/query.py#L2144-L2152), [`Exec.Run`](../../../iris_src/src/Graph/KG/Cypher/Exec.cls#L32-L52).
 
 ### query.native.route
+- Playbook: [NAT-T7](../../../experiment/playbook-completion/ontology/09-native-executor.md)
+- Verus: [route_recheck](../../Verus_verification/models/route_recheck/NOTES.md), as-built held-call recheck/reset and permanent SQL-failure rules; trial medians, drift selection and SQL/native answer equality remain unmodeled.
 - agent
 - architecture-decision
 - Expands: [Native executor](#query.native).
@@ -647,6 +661,7 @@ Findings: [A write inside CALL { } is refused with a raw SQL syntax error instea
 ### query.values
 - Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
 - Children: [relationship property text](#query.values.relationship_text)
+- Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md), as-built numeric writer, D/N tag selection, S escape and numeric/text read distinctions. JSON/J tags, N fractional/exponent parsing, nonfinite values, and the full SQL result finishing pipeline are open modeling gaps. Numeric spelling/parse identity in `CY_TYPED` is an inspected provider premise, not a proved IRIS function.
 - agent
 - user-facing-behavior
 

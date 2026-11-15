@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_count_sources_not_entries"
+    ],
+    "find": "(if stores(sources[0])>0 { 1nat } else { 0nat })",
+    "name": "count-cache-entries",
+    "replace": "stores(sources[0])",
+    "why": "return entries instead of sources filled"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_count_sources_not_entries"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/warm_sources/model.json": "e9bd7814d69979311dd405c83327eecb34961e76a1f74e0e48fc038089a51bfa",
+    ".g5/Verus_verification/models/warm_sources/warm_sources.rs": "d4cbb45a49b1d5b5eaa8dcb15f18d6731bee6e43498273e5b1a0b43f3b535620"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/controls/count-cache-entries/warm_sources.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_count_sources_not_entries": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/20261115T052314Z-control-count-cache-entries-theorem_count_sources_not_entries.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/20261115T052314Z-control-count-cache-entries.log",
+    "timed_out": false,
+    "verified": 5
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/warm_sources/20261115T052314Z-control-count-cache-entries/logs/20261115T052314Z-control-count-cache-entries-theorem_count_sources_not_entries.log": "f6c73dc420a2aa917a4266069bdbc7564f44d5c5aca9841ab919d7f4c9ad9bf6",
+    ".g5/Verus_verification/results/warm_sources/20261115T052314Z-control-count-cache-entries/logs/20261115T052314Z-control-count-cache-entries.log": "abc3d2a82346654112cf3718380f2ecb536c05890ad0c902f7da6a96fd42c810"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

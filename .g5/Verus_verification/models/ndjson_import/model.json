@@ -1,0 +1,6 @@
+{"name":"ndjson_import","root":"ndjson_import.rs","expected_verified":9,"product_baseline":"3eaa79cf77d3e0a879b2cced634cf2729d81499e","controls":[
+{"name":"type-overrides-kind","why":"fallback type is incorrectly used despite explicit unknown kind","find":"if k is Missing && t is Node { Kind::Node }","replace":"if t is Node { Kind::Node }","expect_fail_in":["theorem_raw_kind_precedence"]},
+{"name":"duplicate-is-upsert","why":"duplicate lines overwrite existing node properties","find":"if s.props.contains_key(id) { s.props } else { s.props.insert(id,value) }","replace":"s.props.insert(id,value)","expect_fail_in":["theorem_new_vs_duplicate"]},
+{"name":"count-created-rows","why":"counter tracks inserted rows rather than processed lines","find":"nodes: s.nodes+1, ..s","replace":"nodes: s.nodes+(if s.props.contains_key(id) { 0nat } else { 1nat }), ..s","expect_fail_in":["theorem_duplicate_count_not_upsert"]},
+{"name":"ignore-width-refusal","why":"writer accepts too-wide IDs","find":"if chars > 256 { State { stopped: true, ..s } }","replace":"if false { State { stopped: true, ..s } }","expect_fail_in":["theorem_wide_writer_refusal_preserves_prefix"]}
+]}

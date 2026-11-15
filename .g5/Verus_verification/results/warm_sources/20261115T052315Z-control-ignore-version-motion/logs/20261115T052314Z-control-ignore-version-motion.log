@@ -1,0 +1,12 @@
+verification results:: 6 verified, 1 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/warm_sources/controls/ignore-version-motion/warm_sources.rs:37:13
+   |
+35 | pub proof fn theorem_version_moves_invalidates(sources: Seq<Source>,a: int,b: int)
+   | ---------------------------------------------------------------------------------- at the end of the function body
+36 |     requires a!=b,
+37 |     ensures stamp(sources,a,b)==None,!all_warm(Some(a),b),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_raw_kind_precedence"
+    ],
+    "find": "if k is Missing && t is Node { Kind::Node }",
+    "name": "type-overrides-kind",
+    "replace": "if t is Node { Kind::Node }",
+    "why": "fallback type is incorrectly used despite explicit unknown kind"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_raw_kind_precedence"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ndjson_import/model.json": "4a61162edf36cef0555b58805d066bee27744eebf46adea9a49c7a33acda8bd9",
+    ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs": "13b271835ec609f11372f795bf35a898d8ea5afa6d54074a4d796e0ce7e14020"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/type-overrides-kind/ndjson_import.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_raw_kind_precedence": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/20261115T052122Z-control-type-overrides-kind-theorem_raw_kind_precedence.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/20261115T052122Z-control-type-overrides-kind.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ndjson_import/20261115T052123Z-control-type-overrides-kind/logs/20261115T052122Z-control-type-overrides-kind-theorem_raw_kind_precedence.log": "804952e4a53aa2103b1e885b9b12b5782dadfea0d637bb7a996f1631e4a138c4",
+    ".g5/Verus_verification/results/ndjson_import/20261115T052123Z-control-type-overrides-kind/logs/20261115T052122Z-control-type-overrides-kind.log": "ed9659b926eca84c9eb4e38087e10bc0a18c5d72aa314d829546a5745d9dc585"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

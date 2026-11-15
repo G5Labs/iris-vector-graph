@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_bare_node_vs_absent"
+    ],
+    "find": "r.label_rows > 0 || r.property_rows > 0 || r.node_row",
+    "name": "discard-bare-node",
+    "replace": "r.label_rows > 0 || r.property_rows > 0",
+    "why": "reader assumes no labels or properties means absent"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bare_node_vs_absent"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/model.json": "fff7bb743d69532da2923d6e76ded58586dae421cc8b8731034ec82bd3946822",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "2108fc843ceed75d568359c25979f7602bfebf259a3320095428542982d235ed"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/discard-bare-node/node_read.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bare_node_vs_absent": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T051828Z-control-discard-bare-node-theorem_bare_node_vs_absent.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T051828Z-control-discard-bare-node.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/node_read/20261115T051828Z-control-discard-bare-node/logs/20261115T051828Z-control-discard-bare-node-theorem_bare_node_vs_absent.log": "7689938460d6d8ef1d38b904c4dba7cb89a985fad2d0109c97b24972795534a5",
+    ".g5/Verus_verification/results/node_read/20261115T051828Z-control-discard-bare-node/logs/20261115T051828Z-control-discard-bare-node.log": "bb163152aff28771ea885e01e8e9055015367addd6d87f46c7c3ee20b77b612c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

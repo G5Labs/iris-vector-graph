@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/ndjson_import/controls/duplicate-is-upsert/ndjson_import.rs:72:9
+   |
+68 | pub proof fn theorem_new_vs_duplicate(s: State,id: int,v: int)
+   | -------------------------------------------------------------- at the end of the function body
+...
+72 |         step(s,node(id,v)).props[id] == if s.props.contains_key(id) { s.props[id] } else { v },
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

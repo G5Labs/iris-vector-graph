@@ -73,6 +73,19 @@ Writing a node with `store_node` creates its row if it is missing and always rep
 - The node gets an `id` property equal to its ID only when it has none yet.
 - The row, properties and labels are one transaction, and a duplicate node or label is not an error.
 
+<a id="structure.node.read"></a>
+[D · structure.node.read]
+
+`get_node` and `get_nodes` read the named graph, or the default graph when none is named, using that graph's labels and typed properties. Batched results follow the requested ID order and preserve repeated IDs; an existing node with no labels or properties is returned, while an absent ID with no child rows is omitted (`get_node` returns None).
+
+- Properties named `id` and `labels` are returned as `p_id` and `p_labels`, keeping the structural ID and label list intact. If the caller also stored `p_id` or `p_labels`, today's flat result loses one value according to property row order; see [the unresolved alias rule](#structure.node.read.aliases).
+- A node with child rows is included without a separate node-row check; orphan child rows can therefore appear as a node. Reads fail if a database read fails, rather than returning a fabricated empty node.
+
+<a id="structure.node.read.aliases"></a>
+[Q · structure.node.read.aliases]
+
+How should the flat node read preserve both `id` and `p_id` properties (and both `labels` and `p_labels`)? Working answer: preserve every stored property in a separate property map; the alternative is a documented reserved alias namespace with validation before writing. Today either colliding property can win, while the structural fields remain intact; the product owner must choose the compatible API change.
+
 ## Edges
 
 <a id="structure.edge"></a>
@@ -240,6 +253,11 @@ Erasing a node or a graph clears its generations and cached degrees. No count ca
 
 A rebuild leaves the degree cache filled, so the first reads after it do not recount.
 
+- Standalone `WarmAll(graph)` also fills graphs that exist only in adjacency globals: it enumerates that graph's outgoing sources directly, without SQL node or edge rows. It fills an all-predicate entry and each predicate entry and returns the number of sources filled, not the number of entries; target-only nodes are not sources.
+- A failed exclusive writer-lock probe, a no-lock-writer flag, or a generation change prevents that source from being counted as filled. A generation change detected after storing removes the source's new entries.
+- The whole-graph stamp is replaced only when every visited source filled and the graph-version token stayed equal. Otherwise it is removed and readers use their per-source checks. Empty outgoing globals return zero and may have a current whole-graph stamp; a subsequent token change makes that stamp stale.
+- At the pin a rebuild bumps the token after warming, making the whole-graph stamp stale at once even though the per-source entries remain valid; this departure remains [simp-str-003](../../Verus_verification/design_simplification.md#simp-str-003). Clearing entries alone while keeping a current stamp can return zeros ([F-0406](../../Verus_verification/bugs_issues.md#F-0406)).
+
 ## Rebuilt stores and the graph-version token
 
 <a id="structure.rebuilt"></a>
@@ -326,7 +344,7 @@ Observed for the graph erase ([erasure_caller_transaction_from_connect](../../Ve
 Findings: [Should whether a write joins the caller's transaction depend on how the engine was opened?](../../Verus_verification/open_questions.md#q-plt-006)
 ### structure.node
 - Sources: [create_node](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1104), [a concurrent duplicate reports False](../../../iris_vector_graph/_engine/nodes_edges.py#L1095-L1104), [ledger reserved names](../../../iris_src/src/Graph/KG/LedgerApply.cls#L68-L71), [API reference](../../../docs/API_REFERENCE.md)
-- Children: [deleting a node](#structure.node.delete), [writing a node](#structure.node.update)
+- Children: [deleting a node](#structure.node.delete), [writing a node](#structure.node.update), [reading nodes](#structure.node.read)
 - agent
 - user-facing-behavior
 
@@ -347,6 +365,27 @@ Observed: the reifier nodes are deleted in later transactions, and a failure the
 - user-facing-behavior
 
 Added after the stage-A reconstruction check (gap G15). The docstring and API reference state this contract. Before 4.5.0 a failed property was skipped after the node row had committed. Cypher `SET` and ledger property and label operations are the other ways to change a node, owned by the Cypher and ledger pages.
+
+### structure.node.read
+- Sources: [`NodesEdgesMixin.get_nodes`](../../../iris_vector_graph/_engine/nodes_edges.py#L621-L702), [`::get_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L563-L585), [`::create_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1107), [typed node values](../../../iris_vector_graph/prop_values.py#L211-L232)
+- Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md) `theorem_bare_node_vs_absent`, `theorem_requested_duplicates_remain`, `theorem_structural_keys_kept`, `witness_alias_collision` (as-built); real Python writer/reader comparison with substituted storage and `CY_TYPED`. Graph isolation remains the existing graph owner's obligation, not a new live cross-graph claim.
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+- Expands: [nodes](#structure.node)
+- Children: [aliases](#structure.node.read.aliases)
+
+Findings: [Colliding flat property aliases](../../Verus_verification/bugs_issues.md#bug-str-101).
+
+### structure.node.read.aliases
+- agent
+- uncertain
+- user-facing-behavior, architecture-decision
+- Expands: [reading nodes](#structure.node.read)
+
+Evidence and choices: [q-iter-001](../../Verus_verification/open_questions.md#q-iter-001). No human has ratified a replacement representation.
+
+Findings: [Colliding flat property aliases](../../Verus_verification/bugs_issues.md#bug-str-101).
 
 ### structure.edge
 - Sources: [CONTEXT.md, Structural Edge](../../../CONTEXT.md#L60-L63), [create_edge](../../../iris_vector_graph/_engine/nodes_edges.py#L1151-L1255), [rdf_edges DDL](../../../iris_vector_graph/schema.py#L34-L45)
@@ -601,6 +640,8 @@ Live coverage: [erase clears generations and cached degrees](../../../tests/e2e/
 Findings: [A degree cached before a node is deleted and re-created can be served afterwards as current](../../Verus_verification/bugs_issues.md#bug-str-003)
 
 ### structure.degree.cache.warm
+- Playbook: [ADJ-B5.17](../../../experiment/playbook-completion/ontology/04-adjacency.md#L235), [ADJ-B5.17.2](../../../experiment/playbook-completion/ontology/04-adjacency.md#L241), [ADJ-B5.17.4](../../../experiment/playbook-completion/ontology/04-adjacency.md#L243)
+- Verus: [warm_sources](../../Verus_verification/models/warm_sources/NOTES.md), as-built source fill/count and stamp contracts with failed-probe, token-motion and generation-motion controls. ObjectScript binding is inspected only; source enumeration completeness during concurrent changes remains an environment premise.
 - Sources: [ADR-0012 consequences](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md#L29-L35), [Adjacency.EndRebuild](../../../iris_src/src/Graph/KG/Adjacency.cls#L857-L869), [Adj.WarmAll](../../../iris_src/src/Graph/KG/Adj.cls#L177-L205)
 - Expands: [degree cache](#structure.degree.cache)
 - agent
