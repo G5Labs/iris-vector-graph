@@ -82,10 +82,27 @@ def load_model(model_dir: Path) -> dict:
     return spec
 
 
+def _raw_logs(observed: dict) -> list[str]:
+    logs = [observed.get("raw_log")] + [v.get("raw_log") for v in (observed.get("per_function") or {}).values()]
+    return [p for p in logs if p]
+
+
 def write_receipt(model: dict, label: str, body: dict) -> Path:
     # G5 viewer layout: results/<model>/<run>/receipt.json (earlier runs of this uplift are kept under receipts/)
     out = HERE / "results" / model["name"] / f"{stamp()}-{label}" / "receipt.json"
     out.parent.mkdir(parents=True, exist_ok=True)
+    # Consolidated uplift (2026-11-14): keep a copy of every raw Verus log beside its receipt, so the verdict can be
+    # audited from the repository. The copies are evidence, not receipt inputs; the receipt records their SHA-256.
+    copies = {}
+    for raw in _raw_logs(body.get("observed") or {}):
+        src = Path(raw)
+        if src.exists():
+            dst = out.parent / "logs" / src.name
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, dst)
+            copies[str(dst.relative_to(REPO))] = sha256(dst)
+    if copies:
+        body["raw_log_copies"] = copies
     out.write_text(json.dumps(body, indent=2, sort_keys=True) + "\n")
     return out
 
