@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_server_full_page_nonempty",
+      "witness_exact_multiple_ends_with_empty_done_page"
+    ],
+    "find": "    if remaining < k { (remaining, true) } else { (k, false) }",
+    "name": "server-empty-page-not-done",
+    "replace": "    if remaining < k && remaining > 0 { (remaining, true) } else if remaining == 0 { (0nat, false) } else { (k, false) }",
+    "why": "Page answers an empty page without done when the walk has run out"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_server_full_page_nonempty",
+      "witness_exact_multiple_ends_with_empty_done_page"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_window_reader/model.json": "f2195d7d71681f08282f65b2e3d5428137a6e82f76bfbd8057321e4d8889a80f",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/server-empty-page-not-done/temporal_window_reader.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_server_full_page_nonempty": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042158Z-control-server-empty-page-not-done-theorem_server_full_page_nonempty.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_exact_multiple_ends_with_empty_done_page": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042158Z-control-server-empty-page-not-done-witness_exact_multiple_ends_with_empty_done_page.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042158Z-control-server-empty-page-not-done.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042159Z-control-server-empty-page-not-done/logs/20261115T042158Z-control-server-empty-page-not-done-theorem_server_full_page_nonempty.log": "cebf95598bb13dd979c8b57e8d72d88318540a18ec5e1c8a97649baf4376622a",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042159Z-control-server-empty-page-not-done/logs/20261115T042158Z-control-server-empty-page-not-done-witness_exact_multiple_ends_with_empty_done_page.log": "759fc983eb543eff75c57ddd3f75017b8ad748e354eed05b1654eb8b6fd22d9e",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042159Z-control-server-empty-page-not-done/logs/20261115T042158Z-control-server-empty-page-not-done.log": "30e5a61e08e83a4dc76876bddcab14d6421b159e232da5a6374ad4418bd3e423"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

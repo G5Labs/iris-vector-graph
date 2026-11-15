@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_failed_page_closes_once"
+    ],
+    "find": "            let c2 = close(c1);",
+    "name": "skip-close-on-failure",
+    "replace": "            let c2 = c1;",
+    "why": "a failed Next raises without calling close() (temporal_window.py:108-110): the handle stays open"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failed_page_closes_once"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_window_reader/model.json": "f2195d7d71681f08282f65b2e3d5428137a6e82f76bfbd8057321e4d8889a80f",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/skip-close-on-failure/temporal_window_reader.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_failed_page_closes_once": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042155Z-control-skip-close-on-failure-theorem_failed_page_closes_once.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042155Z-control-skip-close-on-failure.log",
+    "timed_out": false,
+    "verified": 15
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042156Z-control-skip-close-on-failure/logs/20261115T042155Z-control-skip-close-on-failure-theorem_failed_page_closes_once.log": "debcaa250dada555bb585202f724b47f3a88edd884af899cf670e34ff9e3d9bf",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042156Z-control-skip-close-on-failure/logs/20261115T042155Z-control-skip-close-on-failure.log": "5d952d45a96896c4140a11fd3b9a5f3fbbf49b093808389d397b27479b5b9933"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

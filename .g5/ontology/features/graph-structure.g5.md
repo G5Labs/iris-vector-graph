@@ -150,6 +150,9 @@ A triple with one edge looks the same in the adjacency index in either mode.
 [D · structure.multigraph.count]
 
 Degree counts every edge of a multigraph triple, while the interned snapshot keeps one entry per triple. Edge embeddings stay per triple, so parallel edges share one.
+- A one-hop read answers one row per relationship. Two edges of one type between the same two nodes are two rows, and `count()` counts both.
+- The one-hop ID shortcut keeps this rule: it repeats a target once for each edge the triple holds.
+- Cypher tells relationships apart by edge ID, so two equal parallel edges stay two; asking for distinct answers folds them.
 
 <a id="structure.multigraph.create_edge"></a>
 [Q · structure.multigraph.create_edge]
@@ -199,6 +202,15 @@ A bulk path that writes rows without index upkeep must leave no duplicate rows a
 
 ## Degree
 
+<a id="structure.adjacency.declare"></a>
+[D · structure.adjacency.declare]
+
+Setup declares the two adjacency indexes only once their prerequisites exist, declares each one once, and leaves an index that is already declared alone.
+- Nothing is declared while the callback classes are not compiled, while the schema's own procedure class is not compiled, before the edge table has its edge key column, or before both tables have the graph column. Setup skips with a reason, and a later setup declares them.
+- Once every prerequisite exists, both are declared: the edge index first, then the label index.
+- An index already declared as the adjacency index is left alone. A plain index with the same name is dropped and replaced.
+- Before the edge index is built, every triple that has temporal events but no row gets its marked row. The build then fills the index from every row, which also repairs drift.
+
 <a id="structure.degree"></a>
 [D · structure.degree]
 
@@ -239,6 +251,14 @@ The interned snapshot, the two-hop statistics, the accelerator's snapshot and ca
 [I · structure.rebuilt.token]
 
 Every change to the adjacency index, to its edges or to its labels, increases the graph-version token; a write to node rows or properties alone does not. The token never decreases and a value is never reused, even when the write rolls back. A cached answer that also depends on other content must key on that content too or not be cached ([algorithm cache](algorithms.g5.md#algorithms.cache.token)).
+
+<a id="structure.rebuilt.stamp"></a>
+[I · structure.rebuilt.stamp]
+
+A rebuilt store is current only when it carries a build stamp and that stamp equals the live token. A store that was never stamped is stale even while the token is still zero, and a store stamped at zero is current until the token moves.
+- An unset token reads as zero, but an unset or empty stamp means "not known", never zero.
+- Asking which of several stores are stale applies the same rule to each store, in the order asked.
+- The two-hop count reader in ObjectScript and the Python freshness module apply this one rule.
 
 <a id="structure.rebuilt.valid"></a>
 [I · structure.rebuilt.valid]
@@ -435,7 +455,9 @@ Key allocation and the retry come from [spec 234 FR-007 and edge cases](../../..
 Findings: [Deleting one of several parallel edges through the ledger removes the adjacency of the edges that remain](../../Verus_verification/bugs_issues.md#bug-str-001); [Concurrent writers of one multigraph triple can lose its multiplicity or leave a ghost edge entry](../../Verus_verification/bugs_issues.md#bug-str-006); [A ledger qualifier update reweights a multigraph triple's leaf to an edge that is not the lowest](../../Verus_verification/bugs_issues.md#bug-str-012)
 
 ### structure.multigraph.count
-- Sources: [spec 234 clarifications](../../../specs/234-multigraph-parallel-edges/spec.md#L47-L51), [ADR-0010](../../../docs/adr/0010-degree-is-counted-never-stored.md), [Adj.Count](../../../iris_src/src/Graph/KG/Adj.cls#L108-L133)
+- Sources: [spec 234 clarifications](../../../specs/234-multigraph-parallel-edges/spec.md#L47-L51), [ADR-0010](../../../docs/adr/0010-degree-is-counted-never-stored.md), [Adj.Count](../../../iris_src/src/Graph/KG/Adj.cls#L108-L133); one-hop rows: [`iris_src/src/Graph/KG/TraversalKHop.cls::KHopNeighborIds`](../../../iris_src/src/Graph/KG/TraversalKHop.cls#L28-L66) (repeats a target `#` times, `:42-44`), [`iris_vector_graph/_engine/query.py::_try_khop_fast_path`](../../../iris_vector_graph/_engine/query.py#L4294-L4330) (answers only when the default graph alone holds edges); live test [test_460_one_hop_parallel_edges_e2e.py](../../../tests/e2e/test_460_one_hop_parallel_edges_e2e.py)
+- Playbook: [GID-B5.4](../../../experiment/playbook-completion/ontology/02-graph-identity.md#L131), [GID-B5.5](../../../experiment/playbook-completion/ontology/02-graph-identity.md#L132), [NAT-B1.6](../../../experiment/playbook-completion/ontology/09-native-executor.md#L75)
+- Verus: no formal contract for the one-hop projection in either arm. `graph_structure` (as-built) models the keyed layout and counts; the playbook's `proofs-d1d` `nread_l2` models native reads of a reviewed design. Neither derives the one-hop row list.
 - Expands: [multigraph mode](#structure.multigraph)
 - agent
 - user-facing-behavior
@@ -479,7 +501,7 @@ Findings: [Restoring a multigraph archive into an indexed namespace loses its pa
 
 ### structure.adjacency
 - Sources: [CONTEXT.md, Adjacency Index](../../../CONTEXT.md#L88-L95), [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md), [Graph.KG.Adjacency](../../../iris_src/src/Graph/KG/Adjacency.cls)
-- Children: [declared](#structure.adjacency.declared), [not declared](#structure.adjacency.undeclared), [one writer](#structure.adjacency.one_writer), [bulk loads](#structure.adjacency.bulk)
+- Children: [declared](#structure.adjacency.declared), [not declared](#structure.adjacency.undeclared), [one writer](#structure.adjacency.one_writer), [bulk loads](#structure.adjacency.bulk), [declaration](#structure.adjacency.declare)
 - agent
 - architecture-decision
 
@@ -524,6 +546,17 @@ Coverage is a source scan of the ObjectScript classes: [single-writer guard](../
 Rewritten after the stage-A reconstruction check (gap G7, G34 and section 3 item 16). FR-008 covers every bulk path that writes `%NOINDEX`, the bulk loader included, so the reviewer's proposal to limit it to the engine's paths was not applied. "No duplicate rows" means none within the load and none against rows already present, because a `%NOINDEX` insert also skips the unique key (ADR-0008 consequences). Observed divergence: the engine paths rebuild in a `finally`, but an index that does not come back is only logged; the bulk loader uses `%NOCHECK`, commits per batch, and rebuilds only after both its node and edge phases succeed, so a failed phase leaves committed rows unindexed until a manual rebuild.
 
 Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leaves a partial adjacency index](../../Verus_verification/bugs_issues.md#bug-str-009), [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/bugs_issues.md#bug-plt-027)
+
+### structure.adjacency.declare
+- Sources: [spec 252](../../../specs/252-adjacency-functional-index/spec.md), [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L40-L41), [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md); [`iris_vector_graph/schema.py::GraphSchema.ensure_adjacency_index`](../../../iris_vector_graph/schema.py#L821-L898) (prerequisites `:831-860`; per index `:863-897`; backfill before the edge index `:879-884`), [`::GraphSchema.adjacency_index_kind`](../../../iris_vector_graph/schema.py#L785-L818), called last by [`::GraphSchema.ensure_indexes`](../../../iris_vector_graph/schema.py#L600-L731) (`:726`); [`iris_src/src/Graph/KG/TemporalIndex.cls`](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L226-L235) (the backfill); unit tests [test_252_index_declaration.py](../../../tests/unit/test_252_index_declaration.py#L52-L135)
+- Playbook: [ADJ-B2.9](../../../experiment/playbook-completion/ontology/04-adjacency.md#L98), [TMP-B11.3](../../../experiment/playbook-completion/ontology/05-temporal.md#L301)
+- Verus: see [index_declaration](../../Verus_verification/models/index_declaration/NOTES.md) (`theorem_no_prereq_no_ddl`, `theorem_prereqs_declare_both`, `theorem_declared_left_alone`, `theorem_backfill_before_edge_index`; as-built; controls `skip-ekey-check`, `backfill-after-build`, `redeclare-functional`)
+- Expands: [adjacency index](#structure.adjacency)
+- agent
+- architecture-decision, operations
+- test-coverage
+
+Public cases M16 and J07. The playbook's `TMP-B11.3` sits in its temporal module, which is why the baseline found no canonical owner for the backfill order.
 
 ### structure.degree
 - Sources: [CONTEXT.md, Degree (decided in the 2026-10-12 architecture review)](../../../CONTEXT.md#L103-L107), [ADR-0010](../../../docs/adr/0010-degree-is-counted-never-stored.md)
@@ -578,7 +611,7 @@ Findings: [Bump the version token before ending a rebuild so the warm stamp surv
 
 ### structure.rebuilt
 - Sources: [CONTEXT.md, Rebuilt store](../../../CONTEXT.md#L109-L114), [ADR-0008 decision](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L23-L26), [freshness module](../../../iris_vector_graph/freshness.py), [two-hop stamps](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L939-L992)
-- Children: [token](#structure.rebuilt.token), [valid results](#structure.rebuilt.valid), [rollback](#structure.rebuilt.rollback), [stale snapshot reads](#structure.rebuilt.stale_read)
+- Children: [token](#structure.rebuilt.token), [stamp](#structure.rebuilt.stamp), [valid results](#structure.rebuilt.valid), [rollback](#structure.rebuilt.rollback), [stale snapshot reads](#structure.rebuilt.stale_read)
 - agent
 - architecture-decision, data-integrity
 
@@ -594,6 +627,17 @@ The interned snapshot's graph scope is stated in [graph scope](../concepts/graph
 Live coverage: [every write path moves the token](../../../tests/integration/test_236_token_write_paths.py). Restated after the stage-A reconstruction check (gap G5, section 3 item 12). CONTEXT.md words it as "every write path able to change what an algorithm answers". The token audit narrows the token to every change of the adjacency index and has the cache admit only answers that depend on nothing else: PageRank, PPR, WCC and CDLP, with PageRank also keyed on the node set. The [algorithm cache](algorithms.g5.md#algorithms.cache.token) owns that admission rule. The reviewer's claim that label writes do not move the token was not applied: since the label index (4.3.0), every label row change raises it. The comment in `algo_cache.py` that no token moves for labels predates that. Observed: while a restore is running, the token can briefly hold a value read from the archive before it is raised past both. Observed divergence (review round 2, code reading only): without the declared adjacency index, a temporal write to a triple that already has an adjacency entry rewrites its stored weight without moving the token ([Adjacency.cls](../../../iris_src/src/Graph/KG/Adjacency.cls#L128-L136)); a token-validated cache could serve the old weight. The algorithm cache admits only PageRank, PPR, WCC and CDLP, which ignore weights, so it is unaffected; whether any `^ArnoKG` reader uses weights is not traced (the Arno library is not in this repository). Suspected, non-indexed installs only, not run.
 
 Findings: [Without the adjacency index, a temporal write to an existing triple changes its stored weight without moving the version token](../../Verus_verification/bugs_issues.md#bug-str-016)
+
+### structure.rebuilt.stamp
+- Sources: [CONTEXT.md, Rebuilt store](../../../CONTEXT.md#L109-L114), [spec 244 freshness](../../../specs/244-alt-freshness-module/spec.md#L70-L74); [`iris_vector_graph/freshness.py::Freshness._read_int`](../../../iris_vector_graph/freshness.py#L45-L52), [`::Freshness.token`](../../../iris_vector_graph/freshness.py#L54-L57), [`::Freshness.built_from`](../../../iris_vector_graph/freshness.py#L66-L68), [`::Freshness.is_current`](../../../iris_vector_graph/freshness.py#L70-L72), [`::Freshness.stale_stores`](../../../iris_vector_graph/freshness.py#L74-L77); [`iris_src/src/Graph/KG/TraversalKHop.cls::Fresh`](../../../iris_src/src/Graph/KG/TraversalKHop.cls#L237-L243); unit tests [test_freshness.py](../../../tests/unit/test_freshness.py)
+- Playbook: [ADJ-B7](../../../experiment/playbook-completion/ontology/04-adjacency.md#L255), [ADJ-B7.1](../../../experiment/playbook-completion/ontology/04-adjacency.md#L256)
+- Verus: see [freshness_stamp](../../Verus_verification/models/freshness_stamp/NOTES.md) (`theorem_is_current_iff_stamped_equal`, `theorem_unstamped_stale_at_zero`, `theorem_stamped_zero_current`; as-built; control `unset-stamp-reads-zero`)
+- Expands: [rebuilt stores](#structure.rebuilt)
+- agent
+- data-integrity
+- test-coverage
+
+Public case M09. The Python `Freshness` class has no caller inside the product package (no module imports `iris_vector_graph.freshness`); the reader that decides freshness at run time is `TraversalKHop.Fresh` for the two-hop counts. Both are bound: the Python class by an enumerated comparison against the model's twin, the ObjectScript method by inspection only.
 
 ### structure.rebuilt.valid
 - Sources: [CONTEXT.md, Graph-Version Token](../../../CONTEXT.md#L116-L119), [AlgoCache](../../../iris_src/src/Graph/KG/AlgoCache.cls#L1-L51), [the store's cache path](../../../iris_vector_graph/stores/iris_sql_store.py#L921-L987)

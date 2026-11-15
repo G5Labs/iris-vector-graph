@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_close_mid_read_once",
+      "theorem_exhaustion_frees_without_close"
+    ],
+    "find": "    if c.closed {\n        C { buf: Seq::empty(), ..c }\n    } else {",
+    "name": "close-not-idempotent",
+    "replace": "    if false {\n        C { buf: Seq::empty(), ..c }\n    } else {",
+    "why": "close() does not check `closed` (temporal_window.py:118-119): a second close, or a close after the end, sends Close again"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_close_mid_read_once",
+      "theorem_exhaustion_frees_without_close"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_window_reader/model.json": "f2195d7d71681f08282f65b2e3d5428137a6e82f76bfbd8057321e4d8889a80f",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/close-not-idempotent/temporal_window_reader.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_close_mid_read_once": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042156Z-control-close-not-idempotent-theorem_close_mid_read_once.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_exhaustion_frees_without_close": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042156Z-control-close-not-idempotent-theorem_exhaustion_frees_without_close.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042156Z-control-close-not-idempotent.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042157Z-control-close-not-idempotent/logs/20261115T042156Z-control-close-not-idempotent-theorem_close_mid_read_once.log": "dc8895912037022587047d806571eb655e8e694fa2fc431a808449d0c9517fc6",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042157Z-control-close-not-idempotent/logs/20261115T042156Z-control-close-not-idempotent-theorem_exhaustion_frees_without_close.log": "60667bba78620238c112a50286fb00caa7810e194d2461fbfedab432b7e7cfad",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042157Z-control-close-not-idempotent/logs/20261115T042156Z-control-close-not-idempotent.log": "31c504300f0c5dd5b56a8740c2f461bc05c72f80aa9eb921b6b7963c054a7c41"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

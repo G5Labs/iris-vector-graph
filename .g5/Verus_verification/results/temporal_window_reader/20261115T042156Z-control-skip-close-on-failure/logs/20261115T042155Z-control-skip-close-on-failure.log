@@ -1,0 +1,27 @@
+verification results:: 15 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/skip-close-on-failure/temporal_window_reader.rs:360:1
+    |
+360 | pub proof fn theorem_failed_page_closes_once(script: Seq<Resp>, c: C, k: nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/skip-close-on-failure/temporal_window_reader.rs:365:9
+    |
+360 | pub proof fn theorem_failed_page_closes_once(script: Seq<Resp>, c: C, k: nat)
+    | ----------------------------------------------------------------------------- at the end of the function body
+...
+365 |         step(c, script).closes == 1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/skip-close-on-failure/temporal_window_reader.rs:366:9
+    |
+360 | pub proof fn theorem_failed_page_closes_once(script: Seq<Resp>, c: C, k: nat)
+    | ----------------------------------------------------------------------------- at the end of the function body
+...
+366 |         !step(c, script).srv_open,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

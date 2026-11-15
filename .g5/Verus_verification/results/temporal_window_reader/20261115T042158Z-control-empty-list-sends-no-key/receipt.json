@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_spec_sources_omitted_vs_empty",
+      "theorem_server_filter_sources"
+    ],
+    "find": "pub open spec fn sources_key(s: Option<Seq<Seq<char>>>) -> Option<Seq<Seq<char>>> {\n    s\n}",
+    "name": "empty-list-sends-no-key",
+    "replace": "pub open spec fn sources_key(s: Option<Seq<Seq<char>>>) -> Option<Seq<Seq<char>>> {\n    if s is Some && s->0.len() == 0 { None } else { s }\n}",
+    "why": "window_spec drops an empty sources list (`if sources:` instead of `is not None`): the server then reads every source"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_spec_sources_omitted_vs_empty",
+      "theorem_server_filter_sources"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_window_reader/model.json": "f2195d7d71681f08282f65b2e3d5428137a6e82f76bfbd8057321e4d8889a80f",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/empty-list-sends-no-key/temporal_window_reader.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_server_filter_sources": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042157Z-control-empty-list-sends-no-key-theorem_server_filter_sources.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_spec_sources_omitted_vs_empty": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042157Z-control-empty-list-sends-no-key-theorem_spec_sources_omitted_vs_empty.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042157Z-control-empty-list-sends-no-key.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042158Z-control-empty-list-sends-no-key/logs/20261115T042157Z-control-empty-list-sends-no-key-theorem_server_filter_sources.log": "67d17879447e5350d878d07701b877e028607c1e45ad92e5b030eff5e2aa7a67",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042158Z-control-empty-list-sends-no-key/logs/20261115T042157Z-control-empty-list-sends-no-key-theorem_spec_sources_omitted_vs_empty.log": "7b166150237bbd61d8a4e50a5842a99294873909e4f5464cb656a1bf98655923",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042158Z-control-empty-list-sends-no-key/logs/20261115T042157Z-control-empty-list-sends-no-key.log": "3c08fd10f83185f16c622d6896d03a9769b9518abe2c76e4cd807de12c8eb316"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

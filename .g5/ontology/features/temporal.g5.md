@@ -265,12 +265,32 @@ A window read returns the temporal edges whose timestamps fall in a range, both 
 - In the inbound direction the source filter names the target.
 - The older one-call reads keep their arguments and output, and raise when a window is too large for one answer (about 35,000 edges).
 
+<a id="temporal.window.sources"></a>
+[I · temporal.window.sources]
+
+Leaving the source filter out and passing an empty list of sources are different requests. Left out, the read covers every source in the window; an empty list covers none and returns nothing.
+- The Python reader sends no `sources` key when the caller passes none, and sends an empty list when the caller passes one.
+- The server reads every source only when the request names no source, no list and no prefix. A list that names nothing, or names only empty strings, reads nothing.
+- Naming more than one of a source, a list and a prefix is refused before any server call.
+
 <a id="temporal.window.paging"></a>
 [D · temporal.window.paging]
 
-Each page is read live from where the last page stopped, so the server holds only a resume point between pages.
+Each page is read live from where the last page stopped, so the server holds only a resume point between pages. A reader is closed when the iteration ends or is abandoned; [releasing the reader](#temporal.window.paging.release) says exactly when its server handle is freed.
 - An edge removed after a page was read is not returned later.
-- A reader is closed when the iteration ends or is abandoned.
+- Only a page marked done ends the read. An empty page that is not marked done does not end it: the reader asks for the next page.
+- The events returned are the rows of every page, in order, up to and including the page marked done.
+
+<a id="temporal.window.paging.release"></a>
+[I · temporal.window.paging.release]
+
+The server handle of a paged read is freed exactly once, by whichever comes first: the server's last page, the caller's close, a failed page, the end of a `with` block, or garbage collection.
+- A window that fits the first page is answered and freed inside the opening call. That costs one round trip, and no close call follows.
+- When a later page comes back marked done, the server has freed the handle itself, so the reader makes no close call either.
+- Closing before the end sends one close call. Closing again, or after the last page, sends nothing, and the closed reader returns no more events.
+- A failed page raises a temporal window error after one close call has freed the handle. A failed opening call raises at the call, and there is no reader to close.
+- On the server, closing a handle that is not open does nothing, and asking for the next page of one raises an error instead of returning an empty page.
+- Today's server never sends an empty page that is not marked done: a page stops only at its row count, its size limit or the end of the window, and each of the first two holds at least one row.
 
 <a id="temporal.window.concurrent-writes"></a>
 [Q · temporal.window.concurrent-writes]
@@ -606,22 +626,47 @@ Findings: [Making a temporal-only predicate structural again before dropping its
 
 ### temporal.window
 - Sources: [spec 255 update and US2](../../../specs/255-temporal-window-reader/spec.md#L15-L87), [FR-001 to FR-009](../../../specs/255-temporal-window-reader/spec.md#L121-L138), [TemporalWindow](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L1-L91); live tests: [US1](../../../tests/e2e/test_255_window_reader_us1_e2e.py), [US2](../../../tests/e2e/test_255_window_reader_us2_e2e.py)
-- Children: [paging](#temporal.window.paging), [concurrent writes](#temporal.window.concurrent-writes)
+- Children: [sources](#temporal.window.sources), [paging](#temporal.window.paging), [concurrent writes](#temporal.window.concurrent-writes)
 - human-verified
 - user-facing-behavior
 - test-coverage
 
 The spec records Tom's go-ahead (2026-10-22) for this reader.
 
-### temporal.window.paging
-- Sources: [spec 255 Decisions](../../../specs/255-temporal-window-reader/spec.md#L162-L168), [edge cases](../../../specs/255-temporal-window-reader/spec.md#L107-L118), [Page](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L123-L193), [cursor](../../../iris_vector_graph/_engine/temporal_window.py#L74-L136); live tests: [US1](../../../tests/e2e/test_255_window_reader_us1_e2e.py), [US2](../../../tests/e2e/test_255_window_reader_us2_e2e.py)
+### temporal.window.sources
+- Sources: [spec 255 FR-003, FR-004](../../../specs/255-temporal-window-reader/spec.md#L127-L130); [`iris_vector_graph/_engine/temporal_window.py::window_spec`](../../../iris_vector_graph/_engine/temporal_window.py#L37-L58); [`iris_src/src/Graph/KG/TemporalWindow.cls::Open`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L44-L81) (filter mode 0 only with no source, list or prefix; a list stores its non-empty names, `:56-66`); [`TemporalWindow.cls::NextKey`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L196-L239); unit test [`test_an_empty_source_list_is_a_list_not_every_source`](../../../tests/unit/test_255_temporal_window_reader.py#L99-L101), live test `test_255_window_reader_us1_e2e.py::test_an_empty_list_reads_nothing`
+- Playbook: [TMP-B6.11](../../../experiment/playbook-completion/ontology/05-temporal.md#L217) (same rule; the omitted half added from `window_spec`)
+- Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_spec_sources_omitted_vs_empty`, `theorem_server_filter_sources`, both as-built; controls `empty-list-sends-no-key`, `server-empty-list-reads-all`)
 - Expands: [Window reads](#temporal.window)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+The omitted-versus-empty distinction is public case M06. The server half (an absent key reads every source) is inspected at the pin, not observed here.
+
+### temporal.window.paging
+- Sources: [spec 255 Decisions](../../../specs/255-temporal-window-reader/spec.md#L162-L168), [edge cases](../../../specs/255-temporal-window-reader/spec.md#L107-L118), [Page](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L123-L193), [cursor](../../../iris_vector_graph/_engine/temporal_window.py#L74-L136); live tests: [US1](../../../tests/e2e/test_255_window_reader_us1_e2e.py), [US2](../../../tests/e2e/test_255_window_reader_us2_e2e.py); empty middle page: [`iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__next__`](../../../iris_vector_graph/_engine/temporal_window.py#L102-L113), unit test [`test_an_empty_middle_page_does_not_end_the_read`](../../../tests/unit/test_255_temporal_window_reader.py#L160-L162)
+- Playbook: [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201), [TMP-B6.3](../../../experiment/playbook-completion/ontology/05-temporal.md#L209), [TMP-B6.4](../../../experiment/playbook-completion/ontology/05-temporal.md#L210)
+- Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_yield_is_concat_to_done`, as-built transcription of the Python cursor; control `stop-on-empty-page`)
+- Expands: [Window reads](#temporal.window)
+- Children: [releasing the reader](#temporal.window.paging.release)
 - human-verified
 - architecture-decision
 - test-coverage
 
 
-Spec 255 FR-009 says the cursor "is closed when the iteration ends or is abandoned"; the earlier wording "when its connection ends" was an agent inference (review round 3 R3-reader L6).
+Spec 255 FR-009 says the cursor "is closed when the iteration ends or is abandoned"; the earlier wording "when its connection ends" was an agent inference (review round 3 R3-reader L6). The empty-middle-page rule (public case M08) was in neither prior ontology; it is the cursor's loop at `temporal_window.py:103-112`.
+
+### temporal.window.paging.release
+- Sources: [spec 255 FR-006, FR-009](../../../specs/255-temporal-window-reader/spec.md#L131-L138); [`iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__init__`](../../../iris_vector_graph/_engine/temporal_window.py#L82-L93), [`::TemporalWindowCursor.__next__`](../../../iris_vector_graph/_engine/temporal_window.py#L102-L113), [`::TemporalWindowCursor.close`](../../../iris_vector_graph/_engine/temporal_window.py#L115-L124), [`::TemporalWindowCursor.__exit__`](../../../iris_vector_graph/_engine/temporal_window.py#L129-L130), [`::TemporalWindowCursor.__del__`](../../../iris_vector_graph/_engine/temporal_window.py#L132-L136), [`::_server_call`](../../../iris_vector_graph/_engine/temporal_window.py#L67-L71); server: [`TemporalWindow.cls::Next`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L85-L91), [`::Close`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L94-L97), [`::Page`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L128-L193) (frees at `done`, `:187-191`; a full page stops at `:185`); unit tests [test_255_temporal_window_reader.py `TestCursor`](../../../tests/unit/test_255_temporal_window_reader.py#L131-L201)
+- Playbook: [TMP-B6.6](../../../experiment/playbook-completion/ontology/05-temporal.md#L212), [TMP-B6.8](../../../experiment/playbook-completion/ontology/05-temporal.md#L214), [TMP-B6.15](../../../experiment/playbook-completion/ontology/05-temporal.md#L221), [TMP-B6.16](../../../experiment/playbook-completion/ontology/05-temporal.md#L222), [TMP-B6.7](../../../experiment/playbook-completion/ontology/05-temporal.md#L213)
+- Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_exhaustion_frees_without_close`, `theorem_close_mid_read_once`, `theorem_failed_page_closes_once`, `theorem_server_full_page_nonempty`; as-built; controls `close-after-exhaustion`, `skip-close-on-failure`, `close-not-idempotent`)
+- Expands: [paging](#temporal.window.paging)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+Public cases M07 and M08. The client half is bound to the real `TemporalWindowCursor` by an enumerated comparison with a scripted server (the server substituted); the server's free-inside-Open and free-at-done are inspected at the pin, not observed here.
 ### temporal.window.concurrent-writes
 - Sources: [spec 255 edge cases](../../../specs/255-temporal-window-reader/spec.md#L107-L118), [Page](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L123-L193); stage-A question: [Q5](../../uplift/ivg-verus-initial/intent/temporal.md)
 - Expands: [Window reads](#temporal.window)

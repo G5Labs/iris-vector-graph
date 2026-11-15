@@ -1,0 +1,43 @@
+verification results:: 14 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/empty-list-sends-no-key/temporal_window_reader.rs:93:9
+   |
+90 |   pub proof fn theorem_spec_sources_omitted_vs_empty()
+   |   ---------------------------------------------------- at the end of the function body
+...
+93 | /         window_spec(plain(Some(Seq::<Seq<char>>::empty())))
+94 | |             == (Sent::Spec { source: None, sources: Some(Seq::<Seq<char>>::empty()), prefix: None }),
+   | |____________________________________________________________________________________________________^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/empty-list-sends-no-key/temporal_window_reader.rs:99:1
+   |
+99 | pub proof fn theorem_server_filter_sources(s: Seq<char>, l: Seq<Seq<char>>)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/empty-list-sends-no-key/temporal_window_reader.rs:105:9
+    |
+105 |           !server_admits(window_spec(plain(Some(Seq::<Seq<char>>::empty()))), s),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+109 | /     if l.contains(s) {
+110 | |         let i = choose|i: int| 0 <= i < l.len() && l[i] == s;
+111 | |         assert(l[i].len() == 0);
+112 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/empty-list-sends-no-key/temporal_window_reader.rs:106:9
+    |
+106 |           !server_admits(window_spec(plain(Some(l))), s),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+109 | /     if l.contains(s) {
+110 | |         let i = choose|i: int| 0 <= i < l.len() && l[i] == s;
+111 | |         assert(l[i].len() == 0);
+112 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 3 previous errors
+

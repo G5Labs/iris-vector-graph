@@ -1,0 +1,21 @@
+verification results:: 14 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/close-not-idempotent/temporal_window_reader.rs:340:9
+    |
+336 | pub proof fn theorem_exhaustion_frees_without_close(script: Seq<Resp>, k: nat)
+    | ------------------------------------------------------------------------------ at the end of the function body
+...
+340 |         close(drain(open(script), script)).closes == 0,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/close-not-idempotent/temporal_window_reader.rs:353:9
+    |
+348 | pub proof fn theorem_close_mid_read_once(script: Seq<Resp>)
+    | ----------------------------------------------------------- at the end of the function body
+...
+353 |         close(close(open(script))).closes == 1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

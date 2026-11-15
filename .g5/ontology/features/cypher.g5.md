@@ -291,6 +291,22 @@ IVG holds its Cypher to the openCypher TCK and lists each known deviation in its
 - Two `OPTIONAL MATCH` variable-length shapes are refused, and a variable-length read from a large hub can exceed IRIS's string limit.
 - A `CREATE` or `MERGE` after `UNWIND $p AS e WITH e` fails.
 
+## Values in results
+
+<a id="query.values"></a>
+[D · query.values]
+
+A Cypher result gives each value back with the type it was written with. Node properties already arrive typed; a relationship property is stored inside the edge's qualifier text, so its reader turns that text back into a value.
+
+<a id="query.values.relationship_text"></a>
+[I · query.values.relationship_text]
+
+A relationship property read in a Cypher result is decoded from its stored text. `true` and `false` become booleans, canonical integer text becomes an integer, canonical decimal text becomes a float, list or map text becomes a list or map, and any other text stays the string it is.
+- Canonical integer text is an optional minus sign, then `0` or a digit 1 to 9 followed by more digits. Canonical decimal text adds a point and at least one digit.
+- So `01`, `+1`, `1.`, `.5`, `1e5` and text with spaces stay text. `True`, `1` and `0` are not booleans here; `1` and `0` become integers.
+- Only the columns the translator marks as relationship property reads are decoded, and only when the row has as many values as the result has columns.
+- Today a text with one trailing line break, or with non-ASCII digits after its first digit, is also read as a number: `"12\n"` and `"1٢"` both read back as 12.
+
 ## Metadata
 
 ### query.paths
@@ -624,3 +640,24 @@ Findings: [Should a call to an unknown apoc, db or dbms procedure be refused?](.
 Sources: [TCK.md](../../../docs/dev/TCK.md#L157-L256), [KNOWN_ISSUES, application developers](../../../docs/KNOWN_ISSUES.md#L23-L117), [KNOWN_ISSUES, untyped values](../../../docs/KNOWN_ISSUES.md#L183-L190), [KNOWN_ISSUES, variable-length limits](../../../docs/KNOWN_ISSUES.md#L452-L481), [KNOWN_ISSUES, UNWIND then CREATE](../../../docs/KNOWN_ISSUES.md#L585-L596), [spec 229](../../../specs/229-tck-write-verification/spec.md). Recorded runs: 3896 of 3896 eligible scenarios at 4.6.0 with multigraph on and the native executor on; seven fail with multigraph off. The TCK at the pinned revision has no `CALL { }` write scenarios, and a dropped `CALL { }` write is not a listed deviation: it is held to [query.writes.subquery](#query.writes.subquery) instead.
 
 Findings: [A write inside CALL { } is refused with a raw SQL syntax error instead of a clear refusal](../../Verus_verification/bugs_issues.md#bug-cyp-004); [Does a Cypher path value come back as JSON text or as a map, and may that depend on the driver or execution path?](../../Verus_verification/open_questions.md#q-cyp-004)
+
+### query.values
+- Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
+- Children: [relationship property text](#query.values.relationship_text)
+- agent
+- user-facing-behavior
+
+New owner in the consolidated uplift. Node values and the typed-value marks are the playbook's `CYP-B17` family.
+
+### query.values.relationship_text
+- Sources: [`iris_vector_graph/prop_values.py::parse_rel_prop_text`](../../../iris_vector_graph/prop_values.py#L141-L168), [`::parse_prop_text`](../../../iris_vector_graph/prop_values.py#L129-L138), [`::decode_json_list_map`](../../../iris_vector_graph/prop_values.py#L234-L248), the two patterns [`_CANONICAL_INT_RE`, `_CANONICAL_FLOAT_RE`](../../../iris_vector_graph/prop_values.py#L90-L91); [`iris_vector_graph/_engine/query.py::_decode_rel_prop_text_columns`](../../../iris_vector_graph/_engine/query.py#L1200-L1216) (arity guard `:1207`); [`iris_vector_graph/cypher/translator.py::_rel_prop_text_columns`](../../../iris_vector_graph/cypher/translator.py#L7517-L7556); unit tests [test_relationship_property_typing.py](../../../tests/unit/test_relationship_property_typing.py)
+- Playbook: no statement for this decoder in either arm; neighbor [CYP-B17.1](../../../experiment/playbook-completion/ontology/08-cypher-sql.md#L307) (finding F-0811: no 64-bit cap on this path)
+- Verus: see [rel_prop_text](../../Verus_verification/models/rel_prop_text/NOTES.md) (`theorem_decode_classes`, `theorem_noncanonical_stays_text`; reviewed design over ASCII text; control `leading-zero-canonical`). The as-built divergence is recorded as a finding and is observed at unit level on the real function.
+- Expands: [Values in results](#query.values)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+Public case M18. The canonical rule is the decoder's own docstring and patterns; Python's `\d` also matches non-ASCII digits and `$` matches before a final line break, which is where the pin departs from it.
+
+Findings: [Relationship property text with a trailing line break or non-ASCII digits is read back as a number](../../Verus_verification/bugs_issues.md#bug-cyp-101)

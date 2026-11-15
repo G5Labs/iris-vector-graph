@@ -1,0 +1,83 @@
+{
+  "name": "temporal_window_reader",
+  "root": "temporal_window_reader.rs",
+  "expected_verified": 16,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "stop-on-empty-page",
+      "why": "__next__ treats an empty page as the end of the read (the pre-255 shape the unit test test_an_empty_middle_page_does_not_end_the_read guards): the read stops early",
+      "find": "pub open spec fn page_ends_read(r: Resp) -> bool {\n    r.done\n}",
+      "replace": "pub open spec fn page_ends_read(r: Resp) -> bool {\n    r.done || r.rows.len() == 0\n}",
+      "expect_fail_in": [
+        "lemma_drain"
+      ]
+    },
+    {
+      "name": "close-after-exhaustion",
+      "why": "the cursor calls Close after the server's done page although the server already freed the handle (a second free; an extra round trip)",
+      "find": "C { closed: page_ends_read(r), srv_open: c.srv_open && !r.done, buf: c.buf + r.rows, ..c }",
+      "replace": "C { closed: page_ends_read(r), srv_open: c.srv_open && !r.done, buf: c.buf + r.rows, closes: if r.done { c.closes + 1 } else { c.closes }, ..c }",
+      "expect_fail_in": [
+        "lemma_drain"
+      ]
+    },
+    {
+      "name": "server-keeps-handle-at-done",
+      "why": "the server does not free the handle on the done page (Page :187-188 removed): the handle outlives the read",
+      "find": "C { closed: page_ends_read(r), srv_open: c.srv_open && !r.done, buf: c.buf + r.rows, ..c }",
+      "replace": "C { closed: page_ends_read(r), srv_open: c.srv_open, buf: c.buf + r.rows, ..c }",
+      "expect_fail_in": [
+        "lemma_drain"
+      ]
+    },
+    {
+      "name": "skip-close-on-failure",
+      "why": "a failed Next raises without calling close() (temporal_window.py:108-110): the handle stays open",
+      "find": "            let c2 = close(c1);",
+      "replace": "            let c2 = c1;",
+      "expect_fail_in": [
+        "theorem_failed_page_closes_once"
+      ]
+    },
+    {
+      "name": "close-not-idempotent",
+      "why": "close() does not check `closed` (temporal_window.py:118-119): a second close, or a close after the end, sends Close again",
+      "find": "    if c.closed {\n        C { buf: Seq::empty(), ..c }\n    } else {",
+      "replace": "    if false {\n        C { buf: Seq::empty(), ..c }\n    } else {",
+      "expect_fail_in": [
+        "theorem_close_mid_read_once",
+        "theorem_exhaustion_frees_without_close"
+      ]
+    },
+    {
+      "name": "empty-list-sends-no-key",
+      "why": "window_spec drops an empty sources list (`if sources:` instead of `is not None`): the server then reads every source",
+      "find": "pub open spec fn sources_key(s: Option<Seq<Seq<char>>>) -> Option<Seq<Seq<char>>> {\n    s\n}",
+      "replace": "pub open spec fn sources_key(s: Option<Seq<Seq<char>>>) -> Option<Seq<Seq<char>>> {\n    if s is Some && s->0.len() == 0 { None } else { s }\n}",
+      "expect_fail_in": [
+        "theorem_spec_sources_omitted_vs_empty",
+        "theorem_server_filter_sources"
+      ]
+    },
+    {
+      "name": "server-empty-list-reads-all",
+      "why": "the server reads an empty list as no filter (mode 0 instead of mode 2)",
+      "find": "    s.len() > 0 && l.contains(s)\n}",
+      "replace": "    s.len() > 0 && (l.len() == 0 || l.contains(s))\n}",
+      "expect_fail_in": [
+        "theorem_server_filter_sources"
+      ]
+    },
+    {
+      "name": "server-empty-page-not-done",
+      "why": "Page answers an empty page without done when the walk has run out",
+      "find": "    if remaining < k { (remaining, true) } else { (k, false) }",
+      "replace": "    if remaining < k && remaining > 0 { (remaining, true) } else if remaining == 0 { (0nat, false) } else { (k, false) }",
+      "expect_fail_in": [
+        "theorem_server_full_page_nonempty",
+        "witness_exact_multiple_ends_with_empty_done_page"
+      ]
+    }
+  ]
+}

@@ -250,6 +250,21 @@ What should restore do when the namespace already has a live ledger? There is no
 - Today the archive's ledger entries are written over the live ones without removing the live revisions.
 - Plausible answers: refuse while a ledger is live, or replace the ledger wholesale.
 
+
+<a id="install.snapshot.routes"></a>
+[I · install.snapshot.routes]
+
+A snapshot saves each routed vector table and restores it at the width the archive records, with each graph's vectors kept to that graph. After a restore, a width-checked vector search on each route reads its own table at its own width.
+- A route is saved from its registry row. A row whose table name is not the routed shape, or that has no positive width, is not saved, and a warning says so.
+- A restore creates each routed table at the archived width, not at the restoring engine's width, then loads it, builds its index and records the index state the database really has.
+- A routed table found in the archive with no width entry takes its width from the restored registry row.
+- Node vectors and routed vectors are matched on graph and node, so two graphs' rows stay apart. Edge vectors match on source, predicate and target with no graph.
+
+<a id="install.snapshot.temporal"></a>
+[I · install.snapshot.temporal]
+
+A temporal event saved in a snapshot answers a [window read](../features/temporal.g5.md#temporal.window) after a restore, not only a row count. The native subtrees the archive holds are read from the same store plan the restore uses, so every temporal subtree goes out and comes back.
+- The temporal subtrees saved are the events by time in both directions, the time buckets and their aggregates, the edge attributes, and the latest-event index.
 ## Bulk loading
 
 <a id="install.bulk_load"></a>
@@ -270,6 +285,8 @@ The `BulkLoader` class trades per-row checks for speed.
 - It drops duplicates within a load and skips rows already stored, so loading the same data again changes nothing.
 - It refuses a caller's open transaction and commits per batch.
 - It writes and rebuilds in the namespace's recorded IVG Schema, like every other IVG writer.
+- Before its unindexed edge load writes any edge, it adds each edge's two end nodes to the loader's graph, so every edge it writes has both endpoints.
+- A row that IRIS refuses for a reason other than a repeat stops the load with a bulk load error that says how many rows went in first. It is never reported as zero rows inserted.
 
 <a id="install.bulk_load.ledger"></a>
 [D · install.bulk_load.ledger]
@@ -585,7 +602,7 @@ Findings: [May a data migration run before any setup has recorded the namespace'
 ### install.snapshot
 
 - Sources: [USER_GUIDE §10](../../../docs/USER_GUIDE.md); [ADMIN_GUIDE: backups and snapshots](../../../docs/ADMIN_GUIDE.md); [_engine/snapshot.py STORE_PLAN](../../../iris_vector_graph/_engine/snapshot.py); [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md)
-- Children: [scope](#install.snapshot.scope), [failure](#install.snapshot.failure), [derived](#install.snapshot.derived), [ledger](#install.snapshot.ledger)
+- Children: [scope](#install.snapshot.scope), [failure](#install.snapshot.failure), [derived](#install.snapshot.derived), [ledger](#install.snapshot.ledger), [routed vectors](#install.snapshot.routes), [temporal events](#install.snapshot.temporal)
 - agent
 - user-facing-behavior, operations
 - test-coverage
@@ -638,6 +655,28 @@ Findings: [A restore swallows a global line that fails to import](../../Verus_ve
 
 Findings: [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004)
 
+### install.snapshot.routes
+- Sources: [`iris_vector_graph/_engine/snapshot.py::routed_export_plan`](../../../iris_vector_graph/_engine/snapshot.py#L299-L344); [`iris_vector_graph/_engine/snapshot.py::SnapshotMixin.restore_snapshot`](../../../iris_vector_graph/_engine/snapshot.py#L1077-L1611) (routed tables at the archived width `:1372-1500`; node and routed vectors matched on graph and node `:1341-1350`, `:1473-1480`); live tests [test_snapshot_routed_embeddings.py](../../../tests/integration/test_snapshot_routed_embeddings.py#L152-L200), unit [test_snapshot_inventory.py](../../../tests/unit/test_snapshot_inventory.py)
+- Playbook: [SNP-B1.7](../../../experiment/playbook-completion/ontology/18-snapshot.md#L51), [SNP-B2.11](../../../experiment/playbook-completion/ontology/18-snapshot.md#L84), [SNP-B4.5](../../../experiment/playbook-completion/ontology/18-snapshot.md#L119)
+- Verus: no formal contract from restore to the width-checked reader in either arm. The playbook's `proofs-d1b` `snap_l2` (reviewed design) stores abstract contents without per-table width or the per-graph reader (control `control_fc1804_edge_routes_omitted`); `search` (as-built) has route logic but no restore transition. Missing: a restore transition over (route, declared width, per-graph rows) composed with the width check.
+- Expands: [Snapshots](#install.snapshot)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+Public case J01. Edge vectors matching with no graph is the playbook's finding F-1803.
+
+### install.snapshot.temporal
+- Sources: [`iris_vector_graph/_engine/snapshot.py::snapshot_globals`](../../../iris_vector_graph/_engine/snapshot.py#L387-L408), [`::kg_export_subscripts`](../../../iris_vector_graph/_engine/snapshot.py#L425-L437), `STORE_PLAN` temporal entries [`snapshot.py`](../../../iris_vector_graph/_engine/snapshot.py#L136-L144); live tests [`test_the_restored_temporal_edge_answers_a_window_query`](../../../tests/integration/test_snapshot_inventory.py#L116-L130), unit `tests/unit/test_snapshot_inventory.py::test_the_globals_export_is_derived_from_the_plan`
+- Playbook: [SNP-I1.1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L40), [SNP-B1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L42), [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201)
+- Verus: the window reader after restore reuses [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) for the read; no formal contract connects a save, a restore and that read. The playbook's `proofs-d1b` `snap_l2` restores generic rows, not the decoded window.
+- Expands: [Snapshots](#install.snapshot)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+Public case J02. A hand-kept second list of exported subtrees once dropped all five temporal subtrees from every archive (playbook note on SNP-I1.1); the list is now derived.
+
 ### install.bulk_load
 
 - Sources: [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md); [_engine/nodes_edges.py](../../../iris_vector_graph/_engine/nodes_edges.py); [bulk_loader.py](../../../iris_vector_graph/bulk_loader.py); [structure.adjacency.bulk](../features/graph-structure.g5.md#structure.adjacency.bulk)
@@ -652,12 +691,14 @@ Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading ski
 
 ### install.bulk_load.loader
 
-- Sources: [bulk_loader.py](../../../iris_vector_graph/bulk_loader.py); [USER_GUIDE](../../../docs/USER_GUIDE.md); [ADR-0016](../../../docs/adr/0016-one-ivg-schema-per-namespace.md)
+- Sources: [bulk_loader.py](../../../iris_vector_graph/bulk_loader.py); [USER_GUIDE](../../../docs/USER_GUIDE.md); [ADR-0016](../../../docs/adr/0016-one-ivg-schema-per-namespace.md); endpoints: [`iris_vector_graph/bulk_loader.py::BulkLoader._register_endpoints`](../../../iris_vector_graph/bulk_loader.py#L201-L228) (indexed insert into the loader's graph); refusals: [`::BulkLoader._executemany_batched`](../../../iris_vector_graph/bulk_loader.py#L83-L154) (batch failure or short count goes row by row `:118-143`; `BulkLoadError` `:126`, `:142`); live tests [test_bulk_loader_endpoints.py](../../../tests/integration/test_bulk_loader_endpoints.py), unit `tests/unit/test_bulk_loader_unit.py::TestExecutemanyBatched::test_non_unique_error_raises`
+- Playbook: [WRT-B7.12](../../../experiment/playbook-completion/ontology/03-writes.md#L207), [WRT-B7.14](../../../experiment/playbook-completion/ontology/03-writes.md#L209)
+- Verus: no formal contract for endpoint registration or the refusal path in either arm. The playbook's `proofs-d1c` `bulk_l2` (reviewed design) models chunk checkpoints and atomicity only (control `control_f0305_chunks_commit_alone`).
 - Expands: [Bulk loading](#install.bulk_load)
 - agent
 - user-facing-behavior, operations
 
-Suspected divergence: if a load fails after the node rows commit, a re-run that skips existing nodes never adds their labels and properties. Observed divergence: the loader defaults to `Graph_KG`, and its index rebuild names the `Graph_KG` table classes whatever schema it was given.
+Public case M23. A repeat is told from a refusal by the error text: SQLCODE -119 or the word "unique" in the message (`bulk_loader.py:105-106`), so a non-repeat refusal whose message happens to contain "unique" would be skipped as a repeat (code reading; not run). Suspected divergence: if a load fails after the node rows commit, a re-run that skips existing nodes never adds their labels and properties. Observed divergence: the loader defaults to `Graph_KG`, and its index rebuild names the `Graph_KG` table classes whatever schema it was given.
 
 Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/bugs_issues.md#bug-plt-012)
 

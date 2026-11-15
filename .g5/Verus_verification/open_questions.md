@@ -167,6 +167,8 @@ Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
+Also recorded as: HD-1801 (playbook decision: what should a restore do to the live ledger; [decisions/18.md](../../experiment/playbook-uplift/decisions/18.md), intent [HD-1801](../../experiment/playbook-completion/intent/HD-1801.md)); the matching finding is F-1801 in the bugs register. (crosswalk)
+
 Evidence: `erase_all` keeps `^IVG.Ledger("rec")`, the head and the meta (`Eraser.cls:810-812`), and the replacing restore's global import only sets values (`_engine/snapshot.py:1654-1692`), so the archive's ledger entries are written over the live ones without removing the live revisions (A-platform F-B3; A-ops candidate finding). Restoring an earlier archive also brings back content a later redaction removed ([q-led-002](#q-led-002)).
 
 Interpretations: (a) refuse while a ledger is live; (b) replace the live ledger wholesale; (c) keep the live ledger and skip the archive's.
@@ -731,3 +733,1155 @@ Evidence: `verify()` checks the redaction marker once, reads the ledger and the 
 Interpretations: (a) verify is best-effort; run it when writes are quiet (document it); (b) verify reads under the head lock, or retries until the head did not move.
 
 Decision needed: which. Open statement: [ledger.verify.consistency](../ontology/features/ledger.g5.md#ledger.verify.consistency).
+<a id="HD-0001"></a>
+### How to read "defined by its ancestors or an earlier same-level statement"
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the playbook's definitions-first rule, read literally, forbids a child from using a term its parent's earlier sibling defined. The uplift reads it as lexical scope (ancestors, and earlier siblings of the statement or of any ancestor). Accept this reading, or require literal ancestry?
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: lexical scope (`tools/ontology_index.py`, `in_scope`). ## Decisions from the worked example (modules ERS, RED, RPL).
+- Intent recovery: [intent/HD-0001.md](../../experiment/playbook-completion/intent/HD-0001.md) (status supported(literal reading) · Confidence: high · Changed from decisions.md: no); decision text [DECISIONS.md](../../experiment/playbook-uplift/DECISIONS.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0101"></a>
+### Should an engine that cannot read the schema record be refused?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: spec 262 FR-006 says an engine whose schema differs from the namespace's record must be refused on first access. When the record cannot be read (a user without %Native_GlobalAccess, or any other exception), the engine logs a WARNING and skips the check, so an engine built for another schema may write into the namespace beside the recorded one and share its globals.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0101.md](../../experiment/playbook-completion/intent/HD-0101.md) (status assumption· Confidence: medium · Changed from decisions.md: yes (decisions.md marked this Supported because ADMIN_GUIDE documents the skip. The doc's commit (0bf9fc2c) treats the skip as a role misconfiguration and fixes it by requiring the resource. It does not choose fail-open, and the accepted AD); decision text [01.md](../../experiment/playbook-uplift/decisions/01.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0102"></a>
+### Should setup save the schema record when the class deploy failed or was turned off?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: initialize_schema writes ^IVG.Deploy("schema") after any run that is not a preview, even when the deploy raised, a class failed, or auto_deploy_objectscript=False. From then on every engine is accepted by the first-use check, though the per-graph erase, the ledger and the adjacency index need the classes. The warning in the reply is the only signal.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0102.md](../../experiment/playbook-completion/intent/HD-0102.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Same reading and status. Added evidence: data-model.md transitions (binding only), spec 262 edge cases (record after objects), and maintainer R299 (report failures in the reply).)); decision text [01.md](../../experiment/playbook-uplift/decisions/01.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0103"></a>
+### Are the files under sql/ part of the product?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: sql/ holds schema.sql (a pre-spec-227 schema with single-column keys and no graph_id), globals_schema.sql (an unqualified procedure and two stub triggers on Graph_KG.rdf_edges), graph_path_globals.sql and graph_walk_tvf.sql (unqualified procedures), migrations/000-002 (the 2025 NodePK migration) and procedures/ kg_PageRank.sql (comments only). Setup runs none of them; the sdist ships them; scripts/deploy_production.py still runs sql/schema.sql and sql/operators_fixed.sql. The index of this upli…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0103.md](../../experiment/playbook-completion/intent/HD-0103.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Same status and gist. Refined with the maintainer's 'one schema path' statement, the 4.7.0 maintenance and test of the legacy deployer, the fact that the sdist ships sql/ but not scripts/, and fraud_sample_data.sql as live demo data.)); decision text [01.md](../../experiment/playbook-uplift/decisions/01.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0201"></a>
+### What does a Python read with no graph argument read?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the USER_GUIDE says Python methods that read take `graph=` and, omitted, mean the default graph, never every graph (docs/USER_GUIDE.md:466-467). Several readers take no `graph=` at all and read every graph: `get_node_ids_by_label`, `get_node_ids_by_property`, `get_property_pairs`, `get_property_values`, `property_value_exists`, `get_node_ids_like`, `count_subjects_with_property`, `nodes_exist` (iris_vector_graph/_engine/nodes_edges.py:760-966, 2590-2625). Their docstrings say "all graphs" or "n…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0201.md](../../experiment/playbook-completion/intent/HD-0201.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Same status and choice. Strengthened by maintainer tasks R219/R249 (one rule for the Python API), the explicit HTTP /schema exception in ADMIN_API, and the third rule found on delete_node. The live probe confirms F-0206.)); decision text [02.md](../../experiment/playbook-uplift/decisions/02.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0202"></a>
+### In a multigraph, does a direct edge delete remove one parallel edge or all of them?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `delete_edge(s, p, o, graph=g)` deletes every row of the triple in `g` (iris_vector_graph/_engine/nodes_edges.py:1429-1433). Spec 234 gives the direct API `create_edge` a multigraph rule (FR-007) and Cypher `DELETE r` a per-edge rule (US1 scenario 2), but says nothing about `delete_edge`.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0202.md](../../experiment/playbook-completion/intent/HD-0202.md) (status supported· Confidence: medium · Changed from decisions.md: yes (decisions.md said spec 234 leaves the direct delete ambiguous, and so marked it an assumption. The spec's plan.md:160-162 addresses delete_edge explicitly and names the triple-wide meaning as the no-edge_id contract, so the status is no); decision text [02.md](../../experiment/playbook-uplift/decisions/02.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0301"></a>
+### Does ledger strict mode cover the standalone bulk loader?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: strict mode refuses the engine's direct writes (docs/USER_GUIDE.md:1107-1121) through a check in each engine method (`ledger_check`, iris_vector_graph/_engine/ledger.py:72-79). `iris_vector_graph.bulk_loader.BulkLoader` takes a DB-API connection, not an engine, and has no such check (bulk_loader.py:56-78, 252-272, 380-402), so it writes nodes, labels, properties and edges with no ledger record while strict mode is on. Is that intended?
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0301.md](../../experiment/playbook-completion/intent/HD-0301.md) (status supported· Confidence: high · Changed from decisions.md: no (Same status and reading. Added the contradiction that the promised documentation of the exclusion is missing from the user guides.)); decision text [03.md](../../experiment/playbook-uplift/decisions/03.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0302"></a>
+### May a direct edge delete remove an edge row that a temporal edge still implies?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: ADR-0009 says every temporal edge implies a structural edge for its triple, kept as a marked row that only the temporal side removes (CONTEXT.md:66-73). `delete_edge(s, p, o, graph=g)` deletes the triple's rows whether or not they are marked (iris_vector_graph/_engine/nodes_edges.py:1429-1433), leaving the temporal events with no structural edge.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0302.md](../../experiment/playbook-completion/intent/HD-0302.md) (status assumption· Confidence: medium · Changed from decisions.md: yes (decisions.md marked this Supported. The accepted ADR does not cover a structural delete, and maintainer test test_delete_edge_then_purge (7374d3b4) exercises and accepts the opposite outcome. So the status is now assumption. The workin); decision text [03.md](../../experiment/playbook-uplift/decisions/03.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0401"></a>
+### How should erase and rebuild retire a source generation?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the degree cache's reader protocol (ADR-0012, `Graph.KG.Adj.Degree`) assumes a source generation only moves forward. `Adjacency.RemoveSource`, `RemoveGraph` and `RemoveAll` kill `^KG("gen")` instead, so a generation can return to a value an in-flight reader already read (finding F-0401). Which rule should hold?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0401.md](../../experiment/playbook-completion/intent/HD-0401.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Live evidence confirms the ABA precondition; the spike's 'or kill' explains why the maintainer accepted the kill for stale entries, but neither source covers an in-flight reader, so the working answer stands.)); decision text [04.md](../../experiment/playbook-uplift/decisions/04.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0402"></a>
+### May two adjacency rebuilds run at the same time?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `TraversalBuild.BuildKG` takes the writer lock on the parent name in shared mode (`Adjacency.BeginRebuild`), which keeps readers from caching but does not keep a second `BuildKG` out. Only the interned snapshot's build has its own exclusive lock (`^IVG.NKGBuild`). `docs/ADMIN_GUIDE.md:1049-1050` says "One rebuild runs at a time", naming that lock. Is a second `sync()` while one runs supported (and if so, what must the result be), or should it wait or be refused?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0402.md](../../experiment/playbook-completion/intent/HD-0402.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Live check confirms the decisions.md reading (the cited lock protects only the ^NKG path); no new authority.)); decision text [04.md](../../experiment/playbook-uplift/decisions/04.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0501"></a>
+### Are the end nodes a temporal write creates governed by the ledger?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: with the adjacency index, every structural temporal write inserts its two endpoint rows into `Graph_KG.nodes` when they are missing (`Adjacency.AssertTemporalRow`, `Adjacency.cls:591-602`). Node rows are governed content: `verify()` reads every one (`replay.py:590-597`). Neither the engine path nor a changeset's `create_temporal_edge` op records them, and strict mode does not refuse the write. Should those nodes be recorded, refused, or excluded from what `verify()` compares?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0501.md](../../experiment/playbook-completion/intent/HD-0501.md) (status assumption· Confidence: medium · Changed from decisions.md: yes (decisions.md left 'record them or derived provenance' open. Commit 43efd473 ('temporal writes still create no revisions', mirror 'no longer an unrecorded write', endpoints asserted by the same commit) argues against recording engine-pa); decision text [05.md](../../experiment/playbook-uplift/decisions/05.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0502"></a>
+### Is the temporal index inside the ledger's guarantee?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: CONTEXT.md:75-76 says a temporal edge is "subject to the revision ledger (via a Changeset temporal op)". At the pin a changeset can write temporal edges in the ledger's transaction and records `create_temporal_edge` with the triple, graph and time only (`LedgerApply.cls:637-640`). There is no op for a temporal delete, purge, bucket purge or row drop; engine temporal writes make no revision (`test_ledger_us11_temporal_coexist.py::test_temporal_writes_and_purges_create_no_revisions`); replay igno…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0502.md](../../experiment/playbook-completion/intent/HD-0502.md) (status assumption· Confidence: medium · Changed from decisions.md: yes (Status lowered from supported to assumption: the only decision (43efd473) settles 'temporal writes create no revisions'; the exclusion of changeset temporal ops from reconstruct/verify rests on implementation and tests, and the accepte); decision text [05.md](../../experiment/playbook-uplift/decisions/05.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0601"></a>
+### Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promise?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: erasure is defined as removing a graph's content "from every store" (CONTEXT.md:198-208, ADR-0004), but `^IVF`, `^VecIdx` and `^PLAID` are keyed by index name only, hold no graph, and are named nowhere in `Graph.KG.Eraser` or the `Graph.KG.GraphStores` inventory. The 4.0.0 migration guide calls the IVF index a "remaining gap" (docs/migration/v4.0.0.md:742-750). After `EraseGraph(g)`, must these indexes stop answering g's node ids and stop holding g's vectors?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0601.md](../../experiment/playbook-completion/intent/HD-0601.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Live reproduction and the Eraser/GraphStores precedents strengthen the working answer; no authority decides it.)); decision text [06.md](../../experiment/playbook-uplift/decisions/06.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0602"></a>
+### May an index build be seen half-done, and may a stopped build leave a partial index?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `ivf_build` calls `Build` (which kills `^IVF(name)`), then `AddBatch` per 500 rows, then `FinalizeIndex`, each a separate call with no lock and no transaction; `VecIndex.Build` kills the trees and rebuilds them; `PLAIDSearch.Build` kills `^PLAID(name)` and refills it. A search during the build sees an empty or partial index, and a stopped build leaves one. Is that acceptable?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0602.md](../../experiment/playbook-completion/intent/HD-0602.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Live evidence confirms the baseline; no source settles the service level.)); decision text [06.md](../../experiment/playbook-uplift/decisions/06.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0603"></a>
+### Should the vector-and-graph search keep its k best candidates?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `kg_VECTOR_GRAPH_SEARCH` puts vector hits, their one-hop neighbours and text hits in a Python set, keeps `all_entities[:k]` (any k, set order), then sorts those k by vector similarity (`iris_vector_graph/_engine/vector.py:1513-1543`). The best vector hits can be dropped before the sort. The docstring admits "keeps k of that set in no particular order". Is that the intended contract?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0603.md](../../experiment/playbook-completion/intent/HD-0603.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Live evidence quantifies the baseline; the R025 documentation is a description, not a decision.)); decision text [06.md](../../experiment/playbook-uplift/decisions/06.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0604"></a>
+### May two embed queue workers run at once?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the queue has no claim state (`ClaimPendingBatch` is "a plain ordered scan", `EmbedQueue.cls:22-25`), yet a namespace can run the IRIS task (`start_background_embedding`) and the Python `process_embed_queue` at the same time, or two Python workers. Both then process the same PENDING entries: double model calls, last writer wins on the vector, and status races between DONE and ERROR.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0604.md](../../experiment/playbook-completion/intent/HD-0604.md) (status supported· Confidence: high · Changed from decisions.md: yes (Status assumption -> supported for the single-consumer design premise: commit 5bb149ed states 'Single-processor' explicitly. The enforcement question stays open.)); decision text [06.md](../../experiment/playbook-uplift/decisions/06.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0701"></a>
+### Must a BM25 Build (and Drop) exclude writers and be all-or-nothing?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: ADR-0007 says schema 2 "does every write under an index-level lock in a transaction", but the spec's requirement (FR-019) names only Insert and Delete. `Build` kills `^BM25Idx(name)` and rewrites it with no lock and no transaction; `Drop` kills with no lock. While a Build runs, what may an Insert, a Delete, a second Build, a Drop or an Upgrade on the same name do, and may a stopped Build leave a partial index?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0701.md](../../experiment/playbook-completion/intent/HD-0701.md) (status assumption· Confidence: medium (intent), high (as-built) · Changed from decisions.md: no (evidence now live; status unchanged)); decision text [07.md](../../experiment/playbook-uplift/decisions/07.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0702"></a>
+### Which reciprocal-rank-fusion rule is the product's?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: five surfaces fuse a vector list with a text list by rank, with three rules for an item one list lacks and two different text lists: engine `kg_RRF_FUSE` (BM25 index; missing item at place `len(leg) + c`, so it adds `1/(2c + len)`), SQL `kg_RRF_FUSE` and `/hybridSearch` (docs-table term counts from `kg_TXT`; missing item at place 10^9), `CALL ivg.retrieve` and `RRFFusion.fuse_results` (missing item adds 0). The engine method and the SQL procedure share a name and can rank the same query differe…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0702.md](../../experiment/playbook-completion/intent/HD-0702.md) (status assumption· Confidence: medium (intent), high (as-built) · Changed from decisions.md: no); decision text [07.md](../../experiment/playbook-uplift/decisions/07.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0703"></a>
+### Is spec 044's kg_TXT-to-BM25 fallback still wanted?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: spec 044 FR-012 and User Story 5 say that when iFind is unavailable `kg_TXT` uses a BM25 index named `default` before the LIKE fallback. No code does this at the pin: `kg_TXT` goes straight to LIKE. Spec 230 later re-keyed `docs` and gave `kg_TXT` a graph, and a BM25 index named `default` covers one graph only.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0703.md](../../experiment/playbook-completion/intent/HD-0703.md) (status assumption· Confidence: medium · Changed from decisions.md: **yes** (was "Supported. Honor the documented); decision text [07.md](../../experiment/playbook-uplift/decisions/07.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0704"></a>
+### Is `__stop__` a reserved BM25 index name?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the stopword list lives at `^BM25Idx("__stop__")`, beside the indexes. `Build`, `Insert`, `Drop` and `Search` accept the name `__stop__`; `Drop("__stop__")` deletes the stopword list (rebuilt on the next tokenize) and `Build("__stop__", ...)` mixes an index into it. `List()` skips the name. Should writers refuse it, or should the stopword list move out of the index global?
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0704.md](../../experiment/playbook-completion/intent/HD-0704.md) (status supported(outcome: `^BM25Idx("__stop__")` is the stopword list, not an index) · mechanism: assumption ·); decision text [07.md](../../experiment/playbook-uplift/decisions/07.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0705"></a>
+### Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` supported public API?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: all three are exported from `iris_vector_graph` (`__all__`) but none is in `docs/API_REFERENCE.md`. `TextSearchEngine` still uses the `%FIND(col, ?)` predicate the repo calls invalid elsewhere, reads an unqualified table, and has no graph scope. Fix them to the product's rules, deprecate them, or remove them?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0705.md](../../experiment/playbook-completion/intent/HD-0705.md) (status assumption· Confidence: medium · Changed from decisions.md: no (refined per class; one factual correction to); decision text [07.md](../../experiment/playbook-uplift/decisions/07.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0801"></a>
+### Where and how should ledger strict mode refuse a Cypher write?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: strict mode is enforced only by the Python `LedgerGuard` of each engine (`iris_vector_graph/ledger/guard.py:38-80`). It caches the ledger's setting for 5 s and fails open when the probe fails. IRIS itself does not refuse (`Graph.KG.Ledger.SetStrict` only sets `^IVG.Ledger("meta","strict")`). The contract (`specs/213-graph-revision-ledger/contracts/ledger-api.md:82-92`) says the guarded calls "raise `LedgerStrictModeError` and change nothing", with no window and no fail-open case. The redaction…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0801.md](../../experiment/playbook-completion/intent/HD-0801.md) (status assumption· Confidence: medium · Changed from decisions.md: yes (Sharpened. decisions.md left 'the gap needs explicit treatment' and called the failure modes 'documented'. They are undocumented outside the code. The window is now reproduced live against the contract. The R206 commit shows a maintain); decision text [08.md](../../experiment/playbook-uplift/decisions/08.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0802"></a>
+### Does a mapped label belong to every graph?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `map_sql_table` maps a label to an outside SQL table for the whole namespace. The graph filter of a scoped query is added only to the four graph tables (`translator.py:404`, `719-779`), so under `USE GRAPH 'g'` a mapped label still answers every row of its table. The glossary says graphs are isolation units (CONTEXT.md:27-37); the mapping docs say nothing about graphs.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0802.md](../../experiment/playbook-completion/intent/HD-0802.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Same reading. The live probe confirms global visibility, even under a graph that holds nothing. No new authoritative source found.)); decision text [08.md](../../experiment/playbook-uplift/decisions/08.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0803"></a>
+### Is `sql/operators.sql` product code?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `sql/operators.sql` defines `kg_KNN_VEC`, `kg_TXT`, `kg_RRF_FUSE`, `kg_GRAPH_PATH`, `kg_RERANK` and `kg_PPR` with no graph argument, unqualified table names and a label join without `graph_id`. Nothing in the package or setup loads it (the live procedures are in `iris_vector_graph/schema.py:2437-2526`; `scripts/deploy_production.py` loads `sql/operators_fixed.sql`). The uplift's denominator counts it as product SQL.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0803.md](../../experiment/playbook-completion/intent/HD-0803.md) (status assumption· Confidence: medium · Changed from decisions.md: yes (Status changed from supported to assumption. The deployment paths are facts (now also live) that identify what runs. Whether the file is product code is a maintainer decision that no source states. Same classification otherwise.)); decision text [08.md](../../experiment/playbook-uplift/decisions/08.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0804"></a>
+### Should `CREATE CONSTRAINT` / `CREATE INDEX` be refused rather than accepted as a no-op?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `execute_cypher` answers any text that starts with `CREATE CONSTRAINT`, `DROP CONSTRAINT`, `CREATE INDEX`, `CREATE TEXT INDEX`, `CREATE RANGE INDEX`, `CREATE POINT INDEX`, `DROP INDEX`, `CREATE FULLTEXT` or `CREATE LOOKUP` with an empty result and does nothing (`iris_vector_graph/_engine/query.py:1886-1897`). A client that creates a uniqueness constraint believes it is enforced. It exists so that Neo4j tools that send such DDL keep working.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0804.md](../../experiment/playbook-completion/intent/HD-0804.md) (status supported· Confidence: high · Changed from decisions.md: yes (Status changed from assumption to supported. The maintainer commit f4a13d75 states that skipping the DDL is correct behaviour, which settles refuse-vs-accept. 'Make it visible' remains a proposal.)); decision text [08.md](../../experiment/playbook-uplift/decisions/08.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0901"></a>
+### Should a running engine notice a revoked table right or a dropped adjacency index?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the native gate asks three facts once per engine and keeps them: SELECT on the four graph tables (`engine._native_privileges`, never asked again), the adjacency index (`_adjacency_indexed`, asked again only by `initialize_schema`) and the executor's plan version (same). The native path reads globals, which SQL rights do not guard (ADMIN_GUIDE, "What is the boundary"). After `REVOKE SELECT` on `rdf_props`, or after another process drops `idx_edges_adj`, a long-lived engine keeps reading natively…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0901.md](../../experiment/playbook-completion/intent/HD-0901.md) (status assumption· Confidence: medium · Changed from decisions.md: yes (decisions.md required authorization at use for both facts. FR-011 itself permits caching per process and user, and the later R280 maintainer statement makes the database resource the native boundary. Authorization at use via SQL grants); decision text [09.md](../../experiment/playbook-uplift/decisions/09.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0902"></a>
+### Should shadow mode fail when the native path raises an error?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: spec 253 US1 says shadow mode "fails on any difference"; US4 and FR-007 say any native failure falls back to SQL with a warning once per reason. In shadow mode a native exception today makes `_try_native` answer None, the SQL path answers, and nothing is compared (`query.py:2071-2073`), so a native defect that raises is invisible to a shadow run except for one warning line. Should shadow mode raise `NativeMismatch` (or another error) when the native path raises?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0902.md](../../experiment/playbook-completion/intent/HD-0902.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Same reading. Strengthened by the live probe and by the code's own asymmetry (a SQL error already counts as a mismatch).)); decision text [09.md](../../experiment/playbook-uplift/decisions/09.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0903"></a>
+### What may a native read answer while another writer's transaction is open?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: a native read takes no lock and no snapshot (NAT-T4.6). It reads `^KG` (adjacency and labels), the `rdf_props` storage globals and, for an id or property start, the node and property rows through SQL, at moments spread over the walk. A writer's open transaction is visible to it (P-0002), and may be visible in part: a new edge's `^KG` entry before its far node's label, or a property changed between two reads of the same run. Spec 253 speaks only of the caller's own transaction. Is "whatever each…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0903.md](../../experiment/playbook-completion/intent/HD-0903.md) (status assumption· Confidence: medium · Changed from decisions.md: no (Same reading. decisions.md's caveat that the earlier probe 'does not establish every SQL read has the same isolation' is now answered for this pattern: the SQL path matched native at every step, and USER_GUIDE:260-262 documents dirty vi); decision text [09.md](../../experiment/playbook-uplift/decisions/09.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-0904"></a>
+### Should a compiled plan that fails while running be set aside?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: ADR-0014 says the interpreter answers every shape that is not compiled, failed to compile or cannot be recorded. A compiled class that compiles but raises while it runs (a generator defect, a class deleted under a running read) is not covered: the error leaves `Run`, the engine falls back to the SQL path (NAT-T6.1), and the entry stays "ok", so every later read of that shape fails natively first and is answered by SQL. Should such a failure mark the entry so the interpreter answers the shape ne…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-0904.md](../../experiment/playbook-completion/intent/HD-0904.md) (status assumption· Confidence: medium · Changed from decisions.md: yes (Refined. decisions.md said 'a fallback outcome' without naming one. ADR-0014's invariant and spec 257 FR-004 name the interpreter as the fallback, and Gen's 'a failed build is not tried again' rule is the existing quarantine precedent.); decision text [09.md](../../experiment/playbook-uplift/decisions/09.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1001"></a>
+### What should `random_walk` answer, and over which graph?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `random_walk` needs the Arno library and answers `[]` without it, although the walk it calls (`NKGAccelTraversal.RandomWalkJson`) is ObjectScript; with the library it walks `^NKG`, every graph merged (F-1002). No spec states its intent.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1001.md](../../experiment/playbook-completion/intent/HD-1001.md) (status assumption. random_walk takes no graph, so it walks the default graph (USER_GUIDE), and it answers with or without the library (ADMIN_GUIDE, CONTEXT). Neither [] for a missing library nor a merged-graph walk meets both. No spec covers random_walk; the docstring describes the [] behaviour but was wri); decision text [10.md](../../experiment/playbook-uplift/decisions/10.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1002"></a>
+### Should label propagation say when its labels did not settle?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `kg_CDLP` returns the last round's labels after `max_iterations`, and labels often swap every round (`docs/COMMUNITIES.md:192-208`); `kg_WCC` and `eigenvector_centrality` raise when they do not converge.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1002.md](../../experiment/playbook-completion/intent/HD-1002.md) (status supported. The current public contract is option (c): a fixed-iteration synchronous CDLP that returns the last round with no in-band signal. The documented diagnostic is to compare k with k+1. The maintainer documented this deliberately (af2bc84e W6). A settledness flag would be a compatible strengt); decision text [10.md](../../experiment/playbook-uplift/decisions/10.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1003"></a>
+### Should the shortest-path routines refuse a direction they do not walk?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `TraversalPaths.ShortestPathJson` walks only `"out"` and `"both"` and answers no path for anything else; `ShortestLength` reads any value but `"both"` as `"out"`. The store and query callers guard (they turn `"in"` round), but both are callable class methods. `DijkstraJson` and `DijkstraCost` refuse through `CheckDirection`.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1003.md](../../experiment/playbook-completion/intent/HD-1003.md) (status supported. A routine must not answer an unsupported direction as 'no path' or as another direction's path. It refuses a direction outside its set or implements it; this is maintainer policy in 99b00ce9. Whether the class methods implement 'in' or refuse it is open. Python store methods carry the pub); decision text [10.md](../../experiment/playbook-uplift/decisions/10.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1004"></a>
+### How many nodes should global PageRank list?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the ObjectScript owner stops at 10,000 rows; the native reader lists every node (F-1003). The method takes no top-k, and the docs promise neither.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1004.md](../../experiment/playbook-completion/intent/HD-1004.md) (status supported. (a): every node of the default graph is listed on every route, and the scores sum to 1 over node_count(). The 4.6.0 R306 docstring (a node with no edge used to have 'no pair') and spec 236's same-node-set rule settle it. The 10,000 cap is an undocumented 2026-03 leftover.); decision text [10.md](../../experiment/playbook-uplift/decisions/10.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1101"></a>
+### What should a node change do when only a named graph holds the id?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the ledger keeps nodes in the default graph (4.6.0 R281/R290) but asks whether a node exists by id in any graph (`Graph.KG.LedgerApply.NodeExists`, `iris_src/src/Graph/KG/LedgerApply.cls:79-84`), on purpose for edge end nodes (`:86-95`). For a node id that only a named graph holds, what should `create_node`, `upsert_node`, `set_prop`, `add_label`, `remove_*` and `delete_node` (plain and detach) do?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1101.md](../../experiment/playbook-completion/intent/HD-1101.md) (status none); decision text [11.md](../../experiment/playbook-uplift/decisions/11.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1102"></a>
+### Should disable() and set_strict() refuse a caller's open transaction, as enable() does?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: 4.7.0 made `enable()` and `redact()` refuse a caller transaction that holds a write (`iris_vector_graph/ledger/client.py:268-279`), because over a separate Native API connection they ran outside it. `disable()` and `set_strict()` were not changed (`:299-309`): they run `Graph.KG.Ledger.Disable` / `SetStrict` through `engine._iris_obj()`, which is the caller's own process for an engine made on a connection without stored credentials and another process for a `from_connect` engine (`iris_vector_g…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1102.md](../../experiment/playbook-completion/intent/HD-1102.md) (status none); decision text [11.md](../../experiment/playbook-uplift/decisions/11.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1103"></a>
+### Should strict mode be enforced by the server, or stay a Python-only check?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: strict mode is checked only by `iris_vector_graph.ledger.guard.LedgerGuard` before engine writes (`iris_vector_graph/ledger/guard.py:75-80`). It caches the state for 5 s per engine and fails open when it cannot read it (`:38-59`). The server's own writers (`Graph.KG.Eraser`, `Graph.KG.TemporalIndex`, the SQL procedures), raw SQL, `BulkLoader`, the GraphQL mutations and other clients are not held to it. The contract documents "BulkLoader and raw SQL are not guarded" (`specs/213-graph-revision-le…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1103.md](../../experiment/playbook-completion/intent/HD-1103.md) (status none); decision text [11.md](../../experiment/playbook-uplift/decisions/11.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1104"></a>
+### Should the ledger's settings be changeable after the genesis?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `max_ops` (the size limit) and `recon_bound` are written only by the genesis (`iris_src/src/Graph/KG/Ledger.cls:289-292`). `enable()` on an enabled ledger ignores every argument (`:254-260`). Re-enable after disable ignores `max_ops` and `recon_bound` but overwrites strict mode with the value passed, which defaults to off (`:271-275`), so `set_strict(True)`, `disable()`, `enable()` leaves strict off, and a `set_strict(True)` made while disabled is lost on re-enable. Is this the intended lifecyc…
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1104.md](../../experiment/playbook-completion/intent/HD-1104.md) (status none); decision text [11.md](../../experiment/playbook-uplift/decisions/11.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1105"></a>
+### Should post-commit properties be recorded by the ledger?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `post_commit_properties` (spec 218, "Approach A: direct SQL, no new revision", `iris_vector_graph/ledger/client.py:430-487`) write `rdf_props` rows outside the revision: they are unrecorded writes to a governed store, so `verify()` reports them (upstream comment in `tests/e2e/test_470_ledger_caller_txn_e2e.py:218-219`), redaction's liveness check sees them, and replay never rebuilds them. They are written outside the head lock and, with no caller transaction, in a second transaction.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1105.md](../../experiment/playbook-completion/intent/HD-1105.md) (status none); decision text [11.md](../../experiment/playbook-uplift/decisions/11.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1201"></a>
+### Should a graph erasure take the ledger head lock?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: EraseGraph/EraseNodes take no head lock (F-1201). Take it for the whole erasure transaction, or document that erasure needs a quiet graph? Also: may a redaction run start while an erasure of its target is open (its liveness check reads the erasure's uncommitted deletes)?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1201.md](../../experiment/playbook-completion/intent/HD-1201.md) (status assumption. Outcome supported: a redaction must never complete against content whose erasure has not committed (ADR-0013:17, FR-005, CONTEXT.md:212), and an erasure must not leave a live row without its statement (ADR-0004:79-80 classifies such a write path as a bug). The mechanism is not settled: n); decision text [DECISIONS.md](../../experiment/playbook-uplift/DECISIONS.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Related here: q-004 (related, not the same question).
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1302"></a>
+### Which rule clears a revision's free text: any tombstone or every record?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: F-1301. The code and ADR-0013 follow Decision 2 (any). Amend spec 256 FR-004?
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1302.md](../../experiment/playbook-completion/intent/HD-1302.md) (status supported. Clear the free text of any revision with at least one redacted record (Decision 2, accepted ADR-0013). FR-004's 'every' and acceptance scenario 2's wording are stale.); decision text [DECISIONS.md](../../experiment/playbook-uplift/DECISIONS.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1303"></a>
+### Can an unfinished redaction be abandoned, and what may a default-graph target touch?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: (a) a run stuck on a live target (RED-B8.2) blocks every ledger write into it until the target is erased again; should an operator be able to abandon a run? (b) should a default-graph target with no prefix count node rows of every graph, or be refused (F-1304)?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1303.md](../../experiment/playbook-completion/intent/HD-1303.md) (status assumption(by part: (a) assumption, (b) supported). (b) supported: the maintainer's plan (2b8ea46d, plan.md:10) makes the node-liveness check for a default-graph target graph-blind, and the code gives the reason (145-148); so a no-prefix default-graph target must be refused while any node row of any); decision text [DECISIONS.md](../../experiment/playbook-uplift/DECISIONS.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1304"></a>
+### How is a tenant's node history redacted when nodes live in the tenant's own graph?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: F-1305. Record the node's graph in ledger node records (a layout change), or require tenant id prefixes and say so in the redaction docs?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1304.md](../../experiment/playbook-completion/intent/HD-1304.md) (status assumption. Supported at this pin that node records are addressable only by id prefix (accepted ADR-0013:37), so the documented tenant procedure presupposes tenant-prefixed ids. What a graph-per-tenant tenant with unprefixed ids should get is not settled: the spec promises erasure for exactly that d); decision text [DECISIONS.md](../../experiment/playbook-uplift/DECISIONS.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1305"></a>
+### Should a replayed commit apply its post-commit properties?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: F-1306 / F-1101. A replay currently re-applies them, which can revive erased content between erasure and redaction.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1305.md](../../experiment/playbook-completion/intent/HD-1305.md) (status supported. Supported: a replay returns the original outcome and applies nothing (spec 213 API contract, upstream test), and a retry must not re-create an erased tenant (ADR-0013:15, spec 256 edge case). The mechanism (skip on replayed=True, or record durable completion of post-commit writes) is not ); decision text [DECISIONS.md](../../experiment/playbook-uplift/DECISIONS.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Related here: q-010 (related, not the same question).
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1401"></a>
+### Verification and record readers: node identity and redaction checks
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: (a) verification compares nodes by id across graphs while a ledger delete removes only the default graph's node (F-1401): which should change? (b) should record readers check for a redaction again after reading (F-1402)?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1401.md](../../experiment/playbook-completion/intent/HD-1401.md) (status assumption(by part: (a) assumption, (b) supported (outcome)). (b) outcome supported: a reader returns a pre- or post-redaction view or refuses, never a half-done one (Decision 3, which replaced 'atomic from a reader's view', and the client's own message). The mechanism is not settled. (a) undecided ); decision text [DECISIONS.md](../../experiment/playbook-uplift/DECISIONS.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1501"></a>
+### Should a FHIR sync be governed by the ledger?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: a FHIR sync, rebuild and reinterpret write nodes, labels, properties and edges of the FHIR graph from ObjectScript (`Graph.KG.FHIRGraph`), with no ledger record. Strict mode is enforced only in the Python guard (`iris_vector_graph/ledger/guard.py:75-80`), and `FHIRGraph.cls` never reads `^IVG.Ledger("meta","strict")`, so strict mode does not refuse them. `docs/USER_GUIDE.md:1107-1109` says strict mode refuses writes outside the ledger.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1501.md](../../experiment/playbook-completion/intent/HD-1501.md) (status assumption. No authoritative source decides. The FHIR guide describes a projection that converges on the repository (supports exemption); the user guide and glossary describe strict mode/ledger coverage broadly enough to include it.); decision text [15.md](../../experiment/playbook-uplift/decisions/15.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1502"></a>
+### Should erasing a FHIR graph stop its sync task?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `EraseGraph` keeps the `fhir_graphs` row and sets both watermarks to 0 (`Eraser.cls:1151-1180`). A scheduled `Graph.KG.FHIRGraphSyncTask` keeps running, and its next run re-projects the whole repository into the graph. When the FHIR graph is erased for a tenant (and then to be redacted), the content comes back on the next tick, and redaction refuses a live target.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1502.md](../../experiment/playbook-completion/intent/HD-1502.md) (status supported. Erase of a FHIR graph is a transient content clear that keeps registration (supported: Eraser.cls comment, CHANGELOG 4.1.0, ADR-0015:29, upstream E2E test). Whether a durable tenant removal must also stop the feed is not stated anywhere.); decision text [15.md](../../experiment/playbook-uplift/decisions/15.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1503"></a>
+### What happens when an erase runs during a FHIR sync?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `Graph.KG.Eraser.EraseGraph` takes no lock, and in particular not the sync lock `^IVG.FHIRGraph(graph)`. A sync running in another process can commit its next batch, and move its watermark, after the erase commits. The graph then holds the rows of that batch only, with a watermark past rows it no longer has, until a rebuild. This is reasoned from the code (`Eraser.cls:47-57`, `FHIRGraph.cls:1964-1966`), not observed.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1503.md](../../experiment/playbook-completion/intent/HD-1503.md) (status assumption. The outcome is documented (after erase, syncs re-project the repository and converge on a rebuild); the mechanism under concurrency (lock, compare-and-set, or quiescence premise) is not stated.); decision text [15.md](../../experiment/playbook-uplift/decisions/15.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1504"></a>
+### Should one unreadable FHIR resource block its graph's sync?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: a resource whose body is not JSON, nests deeper than 64 levels, or has more than 10,000 json-link matches makes `ResyncKey` throw (`FHIRGraph.cls:2380-2397`, `:2976-2977`, `:2983-2988`). Its batch rolls back and the watermark stays, so every later sync fails on the same batch and no later change reaches the graph. With the default json links (they include an extension entry) every resource body is read.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1504.md](../../experiment/playbook-completion/intent/HD-1504.md) (status supported. Fail the batch, name the key, keep the watermark, repeat on the next sync (no skip). Stated for the walk limits (FHIR_GRAPH.md:196-199) and for any failed batch (:255-257). The resulting indefinite stall and its recovery are not documented.); decision text [15.md](../../experiment/playbook-uplift/decisions/15.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1601"></a>
+### Should a server limit which graphs a caller may name?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: every interface uses whatever graph a caller names (GraphQL `graph:`, the FHIR event `graph` field, the REST dispatcher's `graph`, `USE GRAPH` in Cypher over HTTP, Bolt and MCP). The docs say a graph ID is not a security boundary and tenants need separate namespaces (`docs/USER_GUIDE.md:467-468`, `docs/FHIR_GRAPH.md:553-556`), while `CONTEXT.md:248-250` plans an Execution Context that binds a session to one graph, and spec 256 models a tenant as a named graph plus an id prefix inside one namesp…
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1601.md](../../experiment/playbook-completion/intent/HD-1601.md) (status supported. The IRIS namespace is the only isolation and authorization boundary. Graph ids scope data operations and confer no authorization. The Execution Context is a planned guard against accidental cross-graph writes, not an access-control feature.); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1602"></a>
+### Should admin work need a different key from reading?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: the Cypher HTTP server has one `IVG_API_KEY`. The same value that runs a read also runs `/admin/schema/init`, `/admin/load`, `/admin/indexes/rebuild` and `DELETE /admin/queries/{id}`, which ends any IRIS process the server's IRIS user may kill.
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1602.md](../../experiment/playbook-completion/intent/HD-1602.md) (status supported. The documented contract is one key for every route. Admin writes, including kill, are disabled only through IVG_READ_ONLY, which also refuses Cypher writes. The privilege of IRIS_USERNAME bounds what the server can do. A separate admin credential has never been specified.); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1603"></a>
+### Should the Cypher HTTP server run a failed query a second time?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `_run_cypher` (`iris_vector_graph/cypher_api.py:239-250`) resets the engine and runs the query again after any exception, writes included. A write whose commit reached IRIS before the error (for example a dropped connection after commit) would then be applied twice; a refused write is attempted twice.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1603.md](../../experiment/playbook-completion/intent/HD-1603.md) (status assumption. No spec or doc states the policy. The earliest maintainer code retried only connection or licence failures, which is evidence for (b). The widening was not explained. Re-running a write whose commit outcome is unknown conflicts with the project's own idempotency design, which keeps it in); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1604"></a>
+### Should the REST dispatcher's `/metaPath` take a graph?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `/vectorSearch` and `/hybridSearch` gained a `graph` field (spec 230 FR-014); `/metaPath` has none and always walks the default graph (`iris_src/src/Graph/KG/Service.cls:304-319`), though `Traversal.BFSJSON` accepts one.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1604.md](../../experiment/playbook-completion/intent/HD-1604.md) (status assumption. Default-graph-only is consistent with the general rule that an omitted graph means the default graph. No source requires /metaPath to take a graph, and spec 230, which the search routes cite, is not available. Accepting `graph` would be a compatible extension. Ignoring a supplied `graph`); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1605"></a>
+### Should the generated GraphQL server match the sample API's safety limits?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `iris_vector_graph.gql.create_app` has the key gate but no depth limit (its `Node.outgoing` -> `Relationship.node` -> `Node.outgoing` nests without bound), no read-only middleware (only its `cypher` field checks), and a health route that always answers healthy (F-1611). The sample API has `QueryDepthLimiter` with `IVG_GRAPHQL_MAX_DEPTH`.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1605.md](../../experiment/playbook-completion/intent/HD-1605.md) (status assumption. Undecided between (a) a developer server and (b) parity. The 4.6.0 releases already apply the shared HTTP gates (key, read-only) to create_app and fix its schema reading. That treats it as a deployable surface and makes (b) the better-supported direction. No source requires the depth lim); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1701"></a>
+### Should the SQL adapter's pass-through refuse a write when called read-only?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `IRISGraphStore.execute_sql(sql, params, read_only=True)` and the `GraphStore` protocol carry a `read_only` flag, but nothing reads it (`iris_vector_graph/stores/iris_sql_store.py:1522-1554`). Is the flag a promise (refuse INSERT/UPDATE/DELETE/DDL when True) or a leftover?
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1701.md](../../experiment/playbook-completion/intent/HD-1701.md) (status assumption. Undocumented flag; the protocol's design rule (raise rather than ignore a semantic parameter) and the enforced engine-level read_only point to 'a requested guarantee', but no source defines execute_sql's flag.); decision text [17.md](../../experiment/playbook-uplift/decisions/17.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1702"></a>
+### Should the HTTP client resend a write query after a server error?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `IVGClient._post` retries `POST /api/cypher` up to `max_retries` (3) times on a 5xx, a connect error or a timeout, with 0.5 s, 1 s backoff (`iris_vector_graph/sdk.py:209-228`). A Cypher `CREATE` whose first attempt committed on the server and then failed to answer (a 5xx after the commit, or a timeout) is sent again.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1702.md](../../experiment/playbook-completion/intent/HD-1702.md) (status assumption. Retry on 5xx/connect/timeout is a deliberate, documented client feature (commit aaa54a44, docstrings, tests). No source addresses whether a non-idempotent write may be resent after an ambiguous outcome.); decision text [17.md](../../experiment/playbook-uplift/decisions/17.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1703"></a>
+### Should the SQL adapter's capability list say what this namespace can run?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `IRISGraphStore.capabilities()` returns `_FULL_CAPABILITIES`, every algorithm `True`, whether or not the ObjectScript classes are deployed or the accelerator is loaded; only the `*_arno` keys vary (`iris_vector_graph/stores/iris_sql_store.py:29-52`, `:2991-3000`). The engine uses it to choose store calls over Python fallbacks.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1703.md](../../experiment/playbook-completion/intent/HD-1703.md) (status assumption. Undocumented. The product keeps two facts: engine.capabilities (documented: what is deployed) and store.capabilities() (undocumented: what the adapter implements).); decision text [17.md](../../experiment/playbook-uplift/decisions/17.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1704"></a>
+### Should the low-level vector helper refuse a vector of the wrong width?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `dbapi_utils.normalize_vector` pads a short vector with zeros, truncates a long one and turns NaN/Inf into 0.0 (logged only under `IRIS_VECTOR_DEBUG`); `insert_vector` then writes it (`iris_vector_graph/dbapi_utils.py:29-98`). The engine's own writers refuse a width mismatch (ADR-0006, `EmbeddingIdentityConflict`). Which rule do the public helpers follow?
+- Classification: settled by authority, as the playbook arm recorded it (not re-checked here).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1704.md](../../experiment/playbook-completion/intent/HD-1704.md) (status supported. The helper contract is lossy coercion (docstring); registry-aware engine writes are strict (ADR-0006). Two boundaries, both stated.); decision text [17.md](../../experiment/playbook-uplift/decisions/17.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1705"></a>
+### Should server start refuse to listen on every address without an API key?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `deploy/README.md:86` says the server refuses `auth: none` with `host: 0.0.0.0` unless `--force-no-auth`; `docs/ADMIN_GUIDE.md` section 5 says that with `IVG_API_KEY` unset the server asks for no key and listens on `0.0.0.0:8200`. The code does the latter (`iris_vector_graph/cli.py:419-441`, no `--force-no-auth` option).
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1705.md](../../experiment/playbook-completion/intent/HD-1705.md) (status assumption. Document precedence is settled toward ADMIN_GUIDE (R032), which describes the open default as the product's behaviour and advises setting a key on any reachable server; deploy/README.md:86 is a stale, never-implemented claim. Whether the product should refuse is not decided.); decision text [17.md](../../experiment/playbook-uplift/decisions/17.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="HD-1802"></a>
+### Should a snapshot be a point-in-time view?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook uplift, decisions for the human (imported 2026-11-14)
+
+- Question: `save_snapshot` reads each table, then each global, one after another, with no transaction, lock or ledger head check (`snapshot.py:864-1034`). Writes that land during a save can appear in one store and not another (a row without its vector, a ledger head ahead of the rows). The guides describe a snapshot as a copy "of every graph's rows and globals" without saying when.
+- Classification: needs ratification (the playbook arm's working assumption).
+- Working answer: see the intent file.
+- Intent recovery: [intent/HD-1802.md](../../experiment/playbook-completion/intent/HD-1802.md) (status none); decision text [18.md](../../experiment/playbook-uplift/decisions/18.md).
+- Owner: the maintainer (a human decision; no human has decided it).
+- Not yet compared with the guidance arm's questions.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="REACH-1"></a>
+### Should erasure and redaction reach the store in REACH-1?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook completion audit, residual maintainer questions (imported 2026-11-14)
+
+- Today: ERS-B95: A graph erasure or a node erasure leaves the queued embedding requests of the erased nodes in place. So does erasing everything. / ERS-B95: A graph erasure or a node erasure leaves the queued embedding requests of the erased nodes in place. So does erasing everything.
+- Classification: needs ratification; the playbook arm's working answer is to name every store a removal does not reach ([STATUS.md](../../experiment/playbook-completion/STATUS.md)).
+- Owner: the maintainer. Related: HD-1304, HD-1101, HD-1401.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="REACH-2"></a>
+### Should erasure and redaction reach the store in REACH-2?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook completion audit, residual maintainer questions (imported 2026-11-14)
+
+- Today: ERS-B96: A graph erasure or a node erasure leaves the table of documents that an upgrade could not place in a graph. So does erasing everything. / ERS-B96: A graph erasure or a node erasure leaves the table of documents that an upgrade could not place in a graph. So does erasing everything.
+- Classification: needs ratification; the playbook arm's working answer is to name every store a removal does not reach ([STATUS.md](../../experiment/playbook-completion/STATUS.md)).
+- Owner: the maintainer. Related: HD-1304, HD-1101, HD-1401.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="REACH-3"></a>
+### Should erasure and redaction reach the store in REACH-3?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook completion audit, residual maintainer questions (imported 2026-11-14)
+
+- Today: ERS-B97: A graph erasure or a node erasure leaves the table of vectors of edges that an upgrade could not place in a graph. So does erasing everything. / ERS-B97: A graph erasure or a node erasure leaves the table of vectors of edges that an upgrade could not place in a graph. So does erasing everything.
+- Classification: needs ratification; the playbook arm's working answer is to name every store a removal does not reach ([STATUS.md](../../experiment/playbook-completion/STATUS.md)).
+- Owner: the maintainer. Related: HD-1304, HD-1101, HD-1401.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="REACH-4"></a>
+### Should erasure and redaction reach the store in REACH-4?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook completion audit, residual maintainer questions (imported 2026-11-14)
+
+- Today: ERS-B98: A graph erasure or a node erasure only marks the saved copy of the default graph as old. The copy stays until one of the three calls that read it builds a new one. Erasing everything removes it. / ERS-B98: A graph erasure or a node erasure only marks the saved copy of the default graph as old. The copy stays until one of the three calls that read it builds a new one. Erasing everything removes it.
+- Classification: needs ratification; the playbook arm's working answer is to name every store a removal does not reach ([STATUS.md](../../experiment/playbook-completion/STATUS.md)).
+- Owner: the maintainer. Related: HD-1304, HD-1101, HD-1401.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+<a id="REACH-5"></a>
+### Should erasure and redaction reach the store in REACH-5?
+
+Severity: Unranked · Decision: Open
+
+Run: Playbook completion audit, residual maintainer questions (imported 2026-11-14)
+
+- Today: ERS-B99: A graph erasure or a node erasure leaves the two tables where an upgrade from version 3.2 kept copies of edges. So does erasing everything. / ERS-B99: A graph erasure or a node erasure leaves the two tables where an upgrade from version 3.2 kept copies of edges. So does erasing everything.
+- Classification: needs ratification; the playbook arm's working answer is to name every store a removal does not reach ([STATUS.md](../../experiment/playbook-completion/STATUS.md)).
+- Owner: the maintainer. Related: HD-1304, HD-1101, HD-1401.
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+## Inherited verification debt (playbook arm)
+
+Proof debt the playbook arm recorded in [PROOF-DEBT.md](../../experiment/playbook-completion/PROOF-DEBT.md). These are verification gaps, not product questions; they stay visible here.
+
+<a id="D-1"></a>
+### Proof debt D-1: L1/L2 refinement proofs for every module with operations: **paid at model level** for 01-11 and 15-18 (`proofs-breadth`, `proofs-d1b`..`proofs-d1f`, 94+92+111+118+115+115 verified,
+
+Severity: Unranked
+
+- all modules | — | the code-to-model link is D-2/D-3 |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-2"></a>
+### Proof debt D-2: Statement lemmas: each IRIS SQL statement and ObjectScript global operation equals its model evaluation (§3.4)
+
+Severity: Unranked
+
+- every writer and reader | journal-validated footprints (breadth lanes, `trace-conformance-ledger`), source inspection | no Verus frontend or IRIS SQL semantics library exists (PGspec is PostgreSQL and is skipped). The IRIS contract now has a Verus specification for its subset (`proofs-env`, `proofs-env2`, D-7), so a statement program can be proved against it once hand-translated; what this experiment did not provide is automated source-level verification of the product's ObjectScript/Python (no supported frontend was integrated here), so the translation is a trusted step to be checked against…
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-3"></a>
+### Proof debt D-3: Handler proofs: each Python/ObjectScript entry point performs its spec step (§3.5)
+
+Severity: Unranked
+
+- all handlers | trace conformance of one two-tenant scenario; correspondence lane's map and unchecked-line list (`correspondence/`) | no automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here) |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-4"></a>
+### Proof debt D-4: Lock-plan obligations per handler (§3.5)
+
+Severity: Unranked
+
+- writers of modules 11-14 and AdjW users | controlled lock probes and journal order; IRIS contract lock clauses | as D-3; F-1201 shows the eraser's plan is incomplete at the pin. Lane `lockplans` (modules 01, 05, 06, 08, 10, 16, 17) stopped at the finish request: explorer models 46/46 in 5 families (`lockplans-mc-*`, `lockplans-control-*`), live `lockplans-08-17-guarded-insert` (+`-r3`) with candidate findings F-C0811/F-C1711 not yet filed; probes for 01, 05, 10, 16 not run (`lockplans/PARTIAL.md`, not integrated) |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-5"></a>
+### Proof debt D-5: Composition: a committed IRIS transaction refines the serial step, chained over executions (§3.6)
+
+Severity: Unranked
+
+- product | `proofs/` composes participant **contracts**; trace conformance checks committed transactions of one scenario | needs D-2 and D-3 |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-6"></a>
+### Proof debt D-6: Frame, key, FK, capacity, row-permutation conditions (§3.6)
+
+Severity: Unranked
+
+- every module | executable checks with self-tests across all modules (structural lane: ownership, storage order, row permutation, keys, FK, capacity probes, a catalog/dictionary frame oracle and a non-interference read oracle; `st-*`), correspondence checks for 11-14 (`corr-*`), CLOSURE.md's condition list | as D-2: no proof over IRIS SQL or ObjectScript |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-7"></a>
+### Proof debt D-7: The IRIS environment contract as a Verus specification linked to the participant contracts: **paid at model level for the contract's Verus subset** by `proofs-env` (305 verified, 0
+
+Severity: Unranked
+
+- environment | executable contract r6 and contract-2 (differential, mutants) | still open: the discipline `disc` against the code (D-3/D-4); 9 clause families outside the Verus subset (X-DDL, X-STAR, X-FX, X-NOINDEX, X-VEC `$VECTOR` set/get, X2-JSON, X2-LIST, X2-TOP, X2-QUERY/MERGE/ZKILL: 513 recorded case runs, exact obligations in proofs-env2/PROOFS.md section 6; no closure premise rests on them); progress premises; several locks / regions not composed into one invariant; the Freedom's proceeding branch unobserved How each part is linked (review A-04): the Verus spec to the executable contra…
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-8"></a>
+### Proof debt D-8: Progress premises: fair scheduling of enabled steps, operator re-runs after a stop, ledger re-enabled, no write outside the ledger, a weakly fair queue worker (`proofs-mech` M07-L4
+
+Severity: Unranked
+
+- `progress.rs` of `proofs/`, `proofs-d9*`; `proofs-mech` M-07; core models' AG EF | none derived or tested against IRIS scheduling; "no writer makes a marked target live" (P-C02/PF-6) is violated at the pin (F-C1307, F-C1350) | premises, named in `TRUST.md` and `reflection/CLOSURE.md` |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-9"></a>
+### Proof debt D-9: Reviewed protocol under the pin's real premises (bypass writers, three distinct target predicates, erasure rollback, readers, statement history, Decision 2, retry-key movement): **
+
+Severity: Unranked
+
+- erase/redact/replay | explorer core M1-M3 as before | still open: G-BM is a working assumption (whether content re-created outside the ledger is 'live' is a maintainer question; its cost at the pin not assessed); premises P-LV (the liveness check sees every row, violated by F-C1351) and P-D9-3 not modelled; P-D9-5 graph-blind replay, the HD-1304 receipt, P-D9b-3 and the unreproduced mixed-revision case (`proofs-d9b/PROOFS.md` section 10); verify()'s table read, its two-read coherence and node identity (F-1401); readers' progress; post-commit property recovery; F-CS01's reviewed design is inte…
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-10"></a>
+### Proof debt D-10: M1 targeting with 2 pre-enable writes and 2 commits: **paid (mc, exhaustive within bounds)** by `models/core-partition`: 43 pieces by pre-enable world whose union is checked to be 
+
+Severity: Unranked
+
+- core models | — | still open: profiles beyond (2,2) and (0,3); M1's small world (3 ids, 2 graphs, 3 edges); the as-built RPL-B3 check not re-run per piece |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-11"></a>
+### Proof debt D-11: Original proof `l2.rs` refinement covers the reviewed design only
+
+Severity: Unranked
+
+- modules 12-14 | original 53 verified, 6 controls rejected (submission 9c3719c1) | by design; product violates it (F-1302, F-1303) |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-12"></a>
+### Proof debt D-12: Progress-only control for reviewed-design element D-2 (scan bound fixed at marking): **paid at model level**: `control_bound_follows_tail` (the pin's tail-following bound) fails on
+
+Severity: Unranked
+
+- `proofs-d9b/src/progress.rs` | — | the variant needs an attached process to resume to continue; the located failure does not depend on it |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-13"></a>
+### Proof debt D-13: The breadth proofs (modules 04 and 11) without premise P-A3: **paid at model level** by `proofs-pa3` (108 verified, 0 errors, `proofs-pa3-baseline`, recheck `proofs-pa3-recheck`): 
+
+Severity: Unranked
+
+- `proofs-pa3/` | — | still open: modules 04 and 11 not composed; one erase at a time; erases inside a caller transaction, EraseNodes/EraseAll, FK rollback and progress under R04-5 not modelled; neither guard exists at the pin |
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
+
+
+<a id="D-14"></a>
+### Proof debt D-14: Shared mechanism laws proved once over a trait: **paid at model level** by `proofs-mech` (1,149 verified, 0 errors, `--no-cheating`, empty trust inventory; all 45 laws of 13 mechan
+
+Severity: Unranked
+
+- 13 mechanisms, 45 laws | explorer checks (`sem-mc-*`) alongside | composition **paid at model level** by `proofs-sys` (256 verified, 0 errors, `--no-cheating`, empty trust inventory including the proofs-mech dependency, `proofs-sys-baseline`, recheck `proofs-sys-recheck`): the 12 module-00 axiom checks proved once over a design trait whose parameters are the instance choices of M-01, M-02, M-03, M-04, M-05 and M-10 (all 3,072 choice vectors meeting each obligation); 12 located controls, the pin's as-built composition breaking AX-06, AX-07, AX-08, AX-10, AX-11 and AX-11M, each control's broken…
+
+_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._

@@ -46,6 +46,16 @@ def main():
             elif any(h(p) != x for p, x in r["inputs"].items()):
                 problems.append(f"{m}: control {c['name']} receipt is stale")
         print(f"{m}: prove {d['observed']['verified']} verified, {len(spec['controls'])} controls checked")
+        # Consolidated uplift: a model with a unit-level binding harness needs a fresh AGREES binding receipt.
+        if os.path.exists(os.path.join(os.path.dirname(spec_path), "binding.py")):
+            binds = sorted(glob.glob(f"{V}/results/{m}/*-binding/receipt.json"))
+            if not binds:
+                problems.append(f"{m}: binding.py has no binding receipt")
+            else:
+                b = json.load(open(binds[-1]))
+                if b.get("verdict") != "AGREES":
+                    problems.append(f"{m}: latest binding {b.get('verdict')}")
+                problems += [f"{m}: binding input changed: {p}" for p, x in b["inputs"].items() if h(p) != x]
     obs = sorted(glob.glob(f"{V}/receipts/native/*.json"))
     for f in obs:
         d = json.load(open(f))

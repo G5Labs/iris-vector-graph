@@ -227,6 +227,31 @@ The walk operations follow outbound edges from one start node.
 - A graph path returns the two-hop paths start, first type, middle, second type, end, one row per step.
 - A random walk returns `num_walks` (10) walks of up to `length` (20) steps from a seed.
 
+<a id="algorithms.op.paths"></a>
+[I · algorithms.op.paths]
+
+Path search finds a shortest path between two nodes inside one graph. A path from a node to itself has length zero, and an empty source or target answers no path.
+- The search can follow the edges, go against them, or do both.
+- The unweighted path routines answer no path for a direction they do not walk, instead of refusing it ([open question](#algorithms.op.paths.direction)).
+
+<a id="algorithms.op.paths.weighted"></a>
+[I · algorithms.op.paths.weighted]
+
+A weighted path search returns a path with the lowest total cost, even when that path has more hops than another, and returns no row when no path joins the two nodes.
+- Each edge costs its stored weight. A weight of zero or less, or no weight, costs one.
+- Only the stored weight can be used: naming another weight property, or a direction other than out, in or both, is refused.
+- A path that costs more than the cost limit, or has more hops than a positive hop limit, is not an answer. A hop limit of zero or less means no limit.
+- With a graph named, it searches that graph. With none, it searches each graph that has edges and gives one row for each graph where it finds a path.
+- Costs come back as decimal numbers, so a weight of one reads back as 1.0. A failed search raises instead of answering no row.
+
+<a id="algorithms.op.paths.direction"></a>
+[Q · algorithms.op.paths.direction]
+
+Should the unweighted path routines refuse a direction they do not walk?
+- Today `ShortestPathJson` answers no path for any direction but out and both, and `ShortestLength` reads any direction but both as out.
+- Provisional answer: refuse it, as the weighted search does.
+- Alternative: keep today's behavior and document it.
+
 ## Cached answers
 
 <a id="algorithms.cache"></a>
@@ -385,7 +410,7 @@ Changed in 4.6.0. Before that, procedures and methods disagreed: some answered e
 ### algorithms.op
 
 - Sources: [USER_GUIDE §6 Graph algorithms](../../../docs/USER_GUIDE.md); [API_REFERENCE: Graph algorithms](../../../docs/API_REFERENCE.md); [_engine/algorithms.py](../../../iris_vector_graph/_engine/algorithms.py)
-- Children: [PageRank](#algorithms.op.pagerank), [PPR](#algorithms.op.ppr), [WCC](#algorithms.op.wcc), [CDLP](#algorithms.op.cdlp), [subgraph](#algorithms.op.subgraph), [degree](#algorithms.op.degree), [betweenness](#algorithms.op.betweenness), [closeness](#algorithms.op.closeness), [eigenvector](#algorithms.op.eigenvector), [Leiden](#algorithms.op.leiden), [triangles](#algorithms.op.triangles), [SCC](#algorithms.op.scc), [k-core](#algorithms.op.kcore), [k-hop](#algorithms.op.khop), [walks](#algorithms.op.walks)
+- Children: [PageRank](#algorithms.op.pagerank), [PPR](#algorithms.op.ppr), [WCC](#algorithms.op.wcc), [CDLP](#algorithms.op.cdlp), [subgraph](#algorithms.op.subgraph), [degree](#algorithms.op.degree), [betweenness](#algorithms.op.betweenness), [closeness](#algorithms.op.closeness), [eigenvector](#algorithms.op.eigenvector), [Leiden](#algorithms.op.leiden), [triangles](#algorithms.op.triangles), [SCC](#algorithms.op.scc), [k-core](#algorithms.op.kcore), [k-hop](#algorithms.op.khop), [walks](#algorithms.op.walks), [paths](#algorithms.op.paths)
 - agent
 - user-facing-behavior
 
@@ -519,7 +544,39 @@ The Owner answers with or without Arno, so the result has one shape (4.6.0). A f
 - agent
 - user-facing-behavior
 
-Observed divergence: `random_walk` needs Arno, and without it returns an empty list after a warning, against the promise that every algorithm has an Owner. The graph path's `max_hops` argument is not used. Weighted shortest paths are a Cypher procedure and use each edge's `weight` property, 1.0 when absent.
+Observed divergence: `random_walk` needs Arno, and without it returns an empty list after a warning, against the promise that every algorithm has an Owner. The graph path's `max_hops` argument is not used. Weighted shortest paths are a Cypher procedure and use each edge's `weight` property, 1.0 when absent; [weighted path search](#algorithms.op.paths.weighted) owns that rule.
+
+### algorithms.op.paths
+- Sources: [CHANGELOG 4.6.0 paths](../../../CHANGELOG.md#L525-L535); [`iris_src/src/Graph/KG/TraversalPaths.cls::ShortestPathJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L5-L116), [`::ShortestLength`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L117-L175)
+- Playbook: [ALG-B10](../../../experiment/playbook-completion/ontology/10-algorithms.md#L219), [ALG-B10.2](../../../experiment/playbook-completion/ontology/10-algorithms.md#L221)
+- Verus: the playbook's `proofs-d1e` `atrav_l2` (reviewed design) proves the direction contract; its control `control_hd1003_direction_unchecked` reintroduces the pin's behavior (finding HD-1003). No as-built model.
+- Expands: [Operations](#algorithms.op)
+- Children: [weighted](#algorithms.op.paths.weighted), [direction](#algorithms.op.paths.direction)
+- agent
+- user-facing-behavior
+- test-coverage
+
+### algorithms.op.paths.weighted
+- Sources: [`iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L256-L346) (cost order and settling `:293-342`; weight of zero or less is one `:329-331`; hop bound `:265`, `:312`; no path `"{}"` `:344-345`), [`::DijkstraCost`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L378-L448), [`::CheckDirection`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L350-L355), [`::CheckWeightProp`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L359-L365); [`iris_vector_graph/engine.py::IRISGraphEngine._proc_ivg_shortestpath_weighted`](../../../iris_vector_graph/engine.py#L1201-L1313) (one search per graph `:1275-1282`); tests [test_weighted_shortest_path.py](../../../tests/unit/test_weighted_shortest_path.py) (they drive a live engine)
+- Playbook: [ALG-B10.5](../../../experiment/playbook-completion/ontology/10-algorithms.md#L225), [ALG-B10.6](../../../experiment/playbook-completion/ontology/10-algorithms.md#L226), [ALG-B10.7](../../../experiment/playbook-completion/ontology/10-algorithms.md#L227), [ALG-B10.8](../../../experiment/playbook-completion/ontology/10-algorithms.md#L228), [ALG-B10.90](../../../experiment/playbook-completion/ontology/10-algorithms.md#L229)
+- Verus: no formal contract in either arm. Missing: an optimality proof of the ObjectScript Dijkstra over (node, hops) states, and of the two-sided `DijkstraCost`; the public case M12 rests on the live tests and inspection.
+- Expands: [Path search](#algorithms.op.paths)
+- agent
+- user-facing-behavior
+- test-coverage
+
+Public case M12. The cost-ordered queue settles each (node, hops) state once at its lowest cost, so a cheaper longer path wins; `"{}"` (no path) becomes no row.
+
+### algorithms.op.paths.direction
+- Sources: [`iris_src/src/Graph/KG/TraversalPaths.cls::ShortestPathJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L5-L116), [`::ShortestLength`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L117-L175)
+- Playbook: [ALG-Q4](../../../experiment/playbook-completion/ontology/10-algorithms.md#L224), decision [HD-1003](../../../experiment/playbook-completion/intent/HD-1003.md)
+- Verus: the playbook's `proofs-d1e` `atrav_l2` (reviewed design, control `control_hd1003_direction_unchecked`).
+- Expands: [Path search](#algorithms.op.paths)
+- agent
+- uncertain
+- user-facing-behavior
+
+Findings: [HD-1003](../../Verus_verification/open_questions.md#HD-1003)
 
 ### algorithms.cache
 

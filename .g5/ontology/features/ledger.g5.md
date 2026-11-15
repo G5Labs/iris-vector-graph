@@ -75,6 +75,8 @@ A commit applies a whole changeset as one new revision, or applies nothing. The 
 - A relationship to a node that exists in no graph fails with `NodeNotFoundError`, unless the changeset asks for missing nodes to be created.
 - Creating a relationship that already exists in its graph fails, unless the operation is an upsert, which merges the qualifiers. A temporal edge's plain row is taken over by the create instead.
 - A revision, its records and its changes become visible together.
+- The changes apply in order, each on top of the last. Two writes of one property in a changeset keep both records, prior value and new value each time, and the property shows the last value. Writing the value a property already has records nothing.
+- The first change that fails stops the commit, and every earlier change of the changeset is rolled back with it: no revision, no record and no content change remains.
 
 <a id="ledger.commit.admission"></a>
 [D · ledger.commit.admission]
@@ -300,7 +302,9 @@ Live test: `test_ledger_us02_rollback.py::test_reserved_property_rejected_before
 
 ### ledger.commit
 
-- Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [USER_GUIDE section 9](../../../docs/USER_GUIDE.md#L1052-L1115), [errors.py](../../../iris_vector_graph/ledger/errors.py)
+- Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [USER_GUIDE section 9](../../../docs/USER_GUIDE.md#L1052-L1115), [errors.py](../../../iris_vector_graph/ledger/errors.py); ordered application and stop at the first failure: [`iris_src/src/Graph/KG/LedgerApply.cls::ApplyAll`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L18-L48); set property records prior and new, same value writes nothing: [`LedgerApply.cls`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L265-L317); live tests [`test_duplicate_set_property_records_both_and_last_wins`, `test_failing_op_mid_changeset_leaves_everything_unchanged`](../../../tests/integration/test_ledger_us02_rollback.py#L62-L136)
+- Playbook: [LED-B4.10](../../../experiment/playbook-completion/ontology/11-ledger.md#L190), [LED-B5.9](../../../experiment/playbook-completion/ontology/11-ledger.md#L236), record fold [RPL-T90](../../../experiment/playbook-completion/ontology/14-replay.md#L61)
+- Verus: active family for the composed rule (public case M03) is the playbook's `proofs-pa3` `ledger_l2` (reviewed design: ordered `rec_put` with sequence and ordinal, ordered fold, abort; the copy of `proofs-breadth` without premise P-A3), with `ledger_redaction` (as-built) [`redaction.rs`](../../Verus_verification/models/ledger_redaction/redaction.rs) `apply`/replay and the commit-admission theorems as overlapping evidence that covers ordered records and rejection separately. See [families](../../Verus_verification/families.tsv).
 - Children: [Admission order](#ledger.commit.admission), [One at a time](#ledger.commit.serial), [Expected head](#ledger.commit.expected-head), [Size](#ledger.commit.size), [Commit kind](#ledger.commit.kind), [Caller's transaction](#ledger.commit.caller-transaction), [Post-commit properties](#ledger.commit.post-commit)
 - agent
 - user-facing-behavior, data-integrity

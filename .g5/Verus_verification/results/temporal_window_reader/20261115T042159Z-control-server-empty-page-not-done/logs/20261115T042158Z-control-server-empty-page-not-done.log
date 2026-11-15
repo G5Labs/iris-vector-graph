@@ -1,0 +1,20 @@
+verification results:: 14 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/server-empty-page-not-done/temporal_window_reader.rs:146:13
+    |
+144 | pub proof fn theorem_server_full_page_nonempty(remaining: nat, n: nat, lim: nat)
+    | -------------------------------------------------------------------------------- at the end of the function body
+145 |     requires n >= 1, lim >= 1,
+146 |     ensures !page(remaining, n, lim).1 ==> page(remaining, n, lim).0 >= 1,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/server-empty-page-not-done/temporal_window_reader.rs:152:47
+    |
+151 | pub proof fn witness_exact_multiple_ends_with_empty_done_page()
+    | --------------------------------------------------------------- at the end of the function body
+152 |     ensures page(2, 2, 100) == (2nat, false), page(0, 2, 100) == (0nat, true),
+    |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

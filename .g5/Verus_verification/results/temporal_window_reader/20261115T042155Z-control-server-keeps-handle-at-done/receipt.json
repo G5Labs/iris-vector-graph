@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_drain"
+    ],
+    "find": "C { closed: page_ends_read(r), srv_open: c.srv_open && !r.done, buf: c.buf + r.rows, ..c }",
+    "name": "server-keeps-handle-at-done",
+    "replace": "C { closed: page_ends_read(r), srv_open: c.srv_open, buf: c.buf + r.rows, ..c }",
+    "why": "the server does not free the handle on the done page (Page :187-188 removed): the handle outlives the read"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_drain"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_window_reader/model.json": "f2195d7d71681f08282f65b2e3d5428137a6e82f76bfbd8057321e4d8889a80f",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/server-keeps-handle-at-done/temporal_window_reader.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_drain": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042155Z-control-server-keeps-handle-at-done-lemma_drain.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042155Z-control-server-keeps-handle-at-done.log",
+    "timed_out": false,
+    "verified": 15
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042155Z-control-server-keeps-handle-at-done/logs/20261115T042155Z-control-server-keeps-handle-at-done-lemma_drain.log": "0d33b3226de7be80a79cb07a043a863d2e3f8eedcfc18032e5e3ab16b5c721ed",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042155Z-control-server-keeps-handle-at-done/logs/20261115T042155Z-control-server-keeps-handle-at-done.log": "c48e8cdfc458ef39974e81e5c610767d24e985bed257666b4e935fd20761831a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

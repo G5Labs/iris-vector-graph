@@ -48,6 +48,8 @@ A table's width is the width its vector column declares, and the registry copies
 - Setup never changes the width of a table that holds vectors. It changes an empty table's width only when asked.
 - A writer that reuses a table whose column declares another width is refused before any record claims its width.
 - A query vector is never padded or cut to fit a table. A query of the wrong width raises an error instead of returning scores.
+- That refusal comes before any search statement runs, and it names both widths. The width compared is the route's, or the column's declared width when the route records none.
+- No check is made when there is nothing to compare: for a seed node ID, whose vector comes from the route itself; for a route and column with no declared width; or for a literal that cannot be parsed. IRIS then decides, and its refusal is raised, not turned into an empty answer.
 
 <a id="search.embedding.check_on_write"></a>
 [I · search.embedding.check_on_write]
@@ -104,6 +106,8 @@ Each graph's vectors of one model and one kind live in one route. The registry i
 [I · search.routes.no_fallback]
 
 A read for a graph and model that has no route answers nothing, never vectors from another graph, model or table. The default pair is the exception, because its vectors are in the original tables.
+- The route is looked up first, so a search of an unrouted pair is an empty answer even when its query vector has the wrong width: it is never a width error.
+- Reading one node's vector through an unrouted pair answers no vector.
 
 <a id="search.routes.create_on_write"></a>
 [D · search.routes.create_on_write]
@@ -339,7 +343,9 @@ What must erasing one graph do to a VecIndex, PLAID or IVF index, which records 
 - agent
 - data-integrity
 ### search.embedding.width
-- Sources: [ADR-0005 consequences](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L62-L73), [reconcile_recorded_dimensions](../../../iris_vector_graph/_engine/schema.py#L1688-L1710), [reused-route width check](../../../iris_vector_graph/_engine/embeddings.py#L589-L641), [USER_GUIDE on setup and width](../../../docs/USER_GUIDE.md#L897-L910), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), query width: [ADR-0005](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L7-L48), [query width check](../../../iris_vector_graph/_engine/vector.py#L455-L502), [test_to_vector_width_regression_e2e.py](../../../tests/integration/test_to_vector_width_regression_e2e.py)
+- Sources: query width before search: [`iris_vector_graph/_engine/vector.py::_assert_query_width`](../../../iris_vector_graph/_engine/vector.py#L455-L502), called first in [`::kg_KNN_VEC`](../../../iris_vector_graph/_engine/vector.py#L504-L545) (route lookup `:536-538`, check `:542`, first statement `:557`), unit tests [test_227_query_width.py](../../../tests/unit/test_227_query_width.py#L100-L132), live `tests/e2e/test_460_r223_vector_width_e2e.py`; [ADR-0005 consequences](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L62-L73), [reconcile_recorded_dimensions](../../../iris_vector_graph/_engine/schema.py#L1688-L1710), [reused-route width check](../../../iris_vector_graph/_engine/embeddings.py#L589-L641), [USER_GUIDE on setup and width](../../../docs/USER_GUIDE.md#L897-L910), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), query width: [ADR-0005](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L7-L48), [query width check](../../../iris_vector_graph/_engine/vector.py#L455-L502), [test_to_vector_width_regression_e2e.py](../../../tests/integration/test_to_vector_width_regression_e2e.py)
+- Playbook: [VEC-X5.5](../../../experiment/playbook-completion/ontology/06-vectors.md#L184)
+- Verus: `search` (as-built) `read_route`/`read_table` model route absence, not the query-width preflight; the playbook's `vec_route_batch` explorer and `proofs-d1b` `vq_l2` (reviewed) do not either. No formal contract for the order "route, then width, then search".
 - Expands: [Embedding identity](#search.embedding)
 - Observed divergence: several query paths, such as [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L360-L370), declare the query's own length in `TO_VECTOR`, which keeps ADR-0005's intent but not its letter.
 - agent
@@ -421,7 +427,9 @@ Findings: [The embedding queue marks entries done without a stored vector](../..
 Findings: [Claiming the default embedding table for a model that already has a default-graph route makes that model's stored vectors unreadable](../../Verus_verification/bugs_issues.md#bug-srch-007); [Named-graph edge vectors placed by the 4.0.0 migration cannot be found by edge vector search](../../Verus_verification/bugs_issues.md#bug-srch-009)
 
 ### search.routes.no_fallback
-- Sources: [_route_for_read](../../../iris_vector_graph/_engine/embeddings.py#L652-L679), [_is_default_pair](../../../iris_vector_graph/_engine/embeddings.py#L743-L753), [unrouted pair test](../../../tests/e2e/test_227_two_models.py#L204-L215)
+- Sources: [_route_for_read](../../../iris_vector_graph/_engine/embeddings.py#L652-L679), [_is_default_pair](../../../iris_vector_graph/_engine/embeddings.py#L743-L753), [unrouted pair test](../../../tests/e2e/test_227_two_models.py#L204-L215); [`iris_vector_graph/_engine/vector.py::kg_KNN_VEC`](../../../iris_vector_graph/_engine/vector.py#L535-L538), [`iris_vector_graph/_engine/embeddings.py::get_embedding`](../../../iris_vector_graph/_engine/embeddings.py#L1694-L1745); unit tests [`test_an_unrouted_pair_still_reads_empty_rather_than_raising`](../../../tests/unit/test_227_query_width.py#L122-L132), [test_227_routed_reads.py](../../../tests/unit/test_227_routed_reads.py#L149-L183)
+- Playbook: [VEC-B4](../../../experiment/playbook-completion/ontology/06-vectors.md#L168)
+- Verus: `search` (as-built) [`search.rs`](../../Verus_verification/models/search/search.rs) `read_route` / `read_table` (route absence answers nothing; controls in its [model.json](../../Verus_verification/models/search/model.json))
 - Expands: [Routes](#search.routes)
 - Note: the vector case of [no fall-through](../concepts/graph-scope.g5.md#graph.no_fallthrough).
 - agent

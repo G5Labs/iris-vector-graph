@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_drain"
+    ],
+    "find": "pub open spec fn page_ends_read(r: Resp) -> bool {\n    r.done\n}",
+    "name": "stop-on-empty-page",
+    "replace": "pub open spec fn page_ends_read(r: Resp) -> bool {\n    r.done || r.rows.len() == 0\n}",
+    "why": "__next__ treats an empty page as the end of the read (the pre-255 shape the unit test test_an_empty_middle_page_does_not_end_the_read guards): the read stops early"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_drain"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_window_reader/model.json": "f2195d7d71681f08282f65b2e3d5428137a6e82f76bfbd8057321e4d8889a80f",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/stop-on-empty-page/temporal_window_reader.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_drain": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042154Z-control-stop-on-empty-page-lemma_drain.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/20261115T042154Z-control-stop-on-empty-page.log",
+    "timed_out": false,
+    "verified": 15
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042154Z-control-stop-on-empty-page/logs/20261115T042154Z-control-stop-on-empty-page-lemma_drain.log": "a1b467cb63a309698513f541bb8e86dc981485011b6862c03647966da8b8354e",
+    ".g5/Verus_verification/results/temporal_window_reader/20261115T042154Z-control-stop-on-empty-page/logs/20261115T042154Z-control-stop-on-empty-page.log": "f68670ed3052deae1d44375cea9a934b097f2edff0357ae4204eabdb658c693f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

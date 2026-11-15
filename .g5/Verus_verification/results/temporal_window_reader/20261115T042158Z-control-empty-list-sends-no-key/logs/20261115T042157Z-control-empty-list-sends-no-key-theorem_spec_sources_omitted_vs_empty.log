@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal_window_reader/controls/empty-list-sends-no-key/temporal_window_reader.rs:93:9
+   |
+90 |   pub proof fn theorem_spec_sources_omitted_vs_empty()
+   |   ---------------------------------------------------- at the end of the function body
+...
+93 | /         window_spec(plain(Some(Seq::<Seq<char>>::empty())))
+94 | |             == (Sent::Spec { source: None, sources: Some(Seq::<Seq<char>>::empty()), prefix: None }),
+   | |____________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+
