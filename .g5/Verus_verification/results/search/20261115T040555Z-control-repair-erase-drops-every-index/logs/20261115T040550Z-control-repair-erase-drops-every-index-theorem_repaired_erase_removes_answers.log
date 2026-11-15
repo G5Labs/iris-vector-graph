@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/repair-erase-drops-every-index/search.rs:2939:9
+     |
+2936 |   pub proof fn theorem_repaired_erase_removes_answers(s: GSys, g: Graph)
+     |   ---------------------------------------------------------------------- at the end of the function body
+...
+2939 | /         forall|name: IxName| #[trigger] s.bm25.contains_key(name) && s.bm25[name].graph != g ==>
+2940 | |             erase_graph(s, g, true).bm25.contains_key(name) && erase_graph(s, g, true).bm25[name] == s.bm25[name],
+     | |_________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

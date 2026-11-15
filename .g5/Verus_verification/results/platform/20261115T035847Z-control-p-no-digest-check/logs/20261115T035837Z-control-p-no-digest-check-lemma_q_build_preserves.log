@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-digest-check/platform.rs:2890:9
+     |
+2890 |           q_inv(build(s, h, d, gs, gst, p_repaired())),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2897 | /     if !s.entries.contains_key(h) || s.entries[h].status != Status::Pending || !s.src.contains_key(h) {
+2898 | |     } else if digest(s.src[h]) != d || s.entries[h].shape != gs || s.entries[h].stamp != gst {
+2899 | |         assert forall|k: int| #[trigger] s2.entries.contains_key(k) implies q_entry_ok(s2.entries[k]) by {
+2900 | |             assert(q_entry_ok(s.entries[k]));
+...    |
+2909 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

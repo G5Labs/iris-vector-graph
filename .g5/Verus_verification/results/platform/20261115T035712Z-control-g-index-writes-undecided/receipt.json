@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_exempt_and_out_of_scope_writes_are_permitted"
+    ],
+    "find": "        Path::IndexWrite => PathClass::OutsideScope,",
+    "name": "g-index-writes-undecided",
+    "replace": "        Path::IndexWrite => PathClass::Undecided,",
+    "why": "R1-11: embedding/vector/BM25 writes reclassified from outside-scope (ADR-0006) to undecided: the out-of-scope witness must catch it"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_exempt_and_out_of_scope_writes_are_permitted"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-index-writes-undecided/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_exempt_and_out_of_scope_writes_are_permitted": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035703Z-control-g-index-writes-undecided-witness_exempt_and_out_of_scope_writes_are_permitted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035703Z-control-g-index-writes-undecided.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T035712Z-control-g-index-writes-undecided/logs/20261115T035703Z-control-g-index-writes-undecided-witness_exempt_and_out_of_scope_writes_are_permitted.log": "469cb0f1f4f8ba2bdebc362f39afb4ea9fbe065742831e144df0fbeac60afab5",
+    ".g5/Verus_verification/results/platform/20261115T035712Z-control-g-index-writes-undecided/logs/20261115T035703Z-control-g-index-writes-undecided.log": "5ed18d10840e0f363936a1c93a743ea096a3caad0e59eed67492a784e1cfc650"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

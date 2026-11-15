@@ -1,0 +1,224 @@
+verification results:: 2059 verified, 0 errors
+verification results:: 121 verified, 0 errors
+verification results:: 1149 verified, 0 errors
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling verus_prettyplease v0.0.0-2026-09-06-0133
+   Compiling equivalent v1.0.3
+   Compiling hashbrown v0.17.1
+   Compiling vstd v0.0.0-2026-09-20-0158
+   Compiling convert_case v0.4.0
+    Checking verus_builtin v0.0.0-2026-09-16-0054
+    Checking explorer v0.1.0 (/Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/explorer)
+   Compiling indexmap v2.14.2
+   Compiling verus_syn v0.0.0-2026-09-06-0133
+   Compiling syn v2.0.119
+   Compiling synstructure v0.13.2
+   Compiling verus_state_machines_macros v0.0.0-2026-09-06-0133
+   Compiling verus_builtin_macros v0.0.0-2026-09-20-0158 (/Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/verification-tools/builtin-macros)
+    Checking actors v0.1.0 (/Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors)
+note: automatically chose triggers for this expression:
+  --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:40:12
+   |
+40 |         && forall |i: int| 0 <= i < labels.len() && i != k ==> M::lab(labels[i]) is None
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note:   trigger 1 of 1:
+  --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:40:71
+   |
+40 |         && forall |i: int| 0 <= i < labels.len() && i != k ==> M::lab(labels[i]) is None
+   |                                                                       ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+  --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:38:37
+   |
+38 |       segment::<M>(states, labels) && exists |k: int| 0 <= k < labels.len()
+   |  _____________________________________^
+39 | |         && M::lab(labels[k]) == Some(l)
+40 | |         && forall |i: int| 0 <= i < labels.len() && i != k ==> M::lab(labels[i]) is None
+   | |________________________________________________________________________________________^
+
+note:   trigger 1 of 1:
+  --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:39:19
+   |
+39 |         && M::lab(labels[k]) == Some(l)
+   |                   ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:216:16
+    |
+216 |         assert(forall |i:int| 0 <= i < labels.len() && i != 1 ==> Self::lab(labels[i]) is None);
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:216:77
+    |
+216 |         assert(forall |i:int| 0 <= i < labels.len() && i != 1 ==> Self::lab(labels[i]) is None);
+    |                                                                             ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+  --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:74:44
+   |
+74 |     requires segment::<C>(states, labels), forall |i: int| 0 <= i < labels.len() ==> C::work(labels[i]),
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note:   trigger 1 of 1:
+  --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:74:94
+   |
+74 |     requires segment::<C>(states, labels), forall |i: int| 0 <= i < labels.len() ==> C::work(labels[i]),
+   |                                                                                              ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:118:5
+    |
+118 |     assert forall |i: int| 0 <= i < labels.len() implies
+    |     ^^^^^^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:119:56
+    |
+119 |         step_or_stutter::<C>(M::abs(states[i]), M::lab(labels[i]), M::abs(states[i + 1])) by {
+    |                                                        ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:142:13
+    |
+142 |     ensures forall |i: int| 0 <= i < states.len() ==> C::inv(M::abs(states[i])),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:142:69
+    |
+142 |     ensures forall |i: int| 0 <= i < states.len() ==> C::inv(M::abs(states[i])),
+    |                                                                     ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:147:5
+    |
+147 |     assert forall |i: int| 0 <= i < states.len() implies C::inv(M::abs(states[i])) by {
+    |     ^^^^^^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:147:72
+    |
+147 |     assert forall |i: int| 0 <= i < states.len() implies C::inv(M::abs(states[i])) by {
+    |                                                                        ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:154:13
+    |
+154 |       ensures forall |i: int| 0 <= i < states.len() ==>
+    |  _____________^
+155 | |         M::observe(states[i]) == M::observe_abstract(M::abs(states[i])),
+    | |_______________________________________________________________________^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:155:20
+    |
+155 |         M::observe(states[i]) == M::observe_abstract(M::abs(states[i])),
+    |                    ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:157:5
+    |
+157 |     assert forall |i: int| 0 <= i < states.len() implies
+    |     ^^^^^^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy.rs:158:20
+    |
+158 |         M::observe(states[i]) == M::observe_abstract(M::abs(states[i])) by {
+    |                    ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy_example.rs:108:13
+    |
+108 |       ensures exists |t: CounterState| t.value == s.value + 1 && !t.prepared &&
+    |  _____________^
+109 | |         (ConcreteCounter::next(s, true, t) || exists |p: CounterState|
+110 | |             ConcreteCounter::next(s, false, p) && ConcreteCounter::next(p, true, t)),
+    | |____________________________________________________________________________________^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/hierarchy_example.rs:109:10
+    |
+109 |         (ConcreteCounter::next(s, true, t) || exists |p: CounterState|
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/cluster.rs:288:8
+    |
+288 |       || (exists |key: nat, r: D::Req| post.dom == D::step(pre.dom, r).0 && post.hist == pre.hist.push(post.dom)
+    |  ________^
+289 | |             && post.log == pre.log.push(Act::Req { key: key, req: r }) && !pre.replies.contains_key(key))
+    | |_________________________________________________________________________________________________________^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/cluster.rs:289:28
+    |
+289 |             && post.log == pre.log.push(Act::Req { key: key, req: r }) && !pre.replies.contains_key(key))
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/cluster.rs:290:8
+    |
+290 |       || (exists |id: nat, j: D::Job| post.dom == D::run_job(pre.dom, j).0 && post.hist == pre.hist.push(post.dom)
+    |  ________^
+291 | |             && post.log == pre.log.push(Act::Job { id: id, job: j })
+292 | |             && pre.jobs.contains_key(id) && !pre.jobs[id].done && post.jobs[id].done)
+    | |_____________________________________________________________________________________^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/cluster.rs:291:28
+    |
+291 |             && post.log == pre.log.push(Act::Job { id: id, job: j })
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/guarded.rs:171:156
+    |
+171 | ...labels[k])==Some(l) && forall |i:int| 0<=i<labels.len() && i!=k ==> Tracked::<C>::lab(labels[i]) is None) by {assert(Tracked::<C...
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/guarded.rs:171:219
+    |
+171 | ...ll |i:int| 0<=i<labels.len() && i!=k ==> Tracked::<C>::lab(labels[i]) is None) by {assert(Tracked::<C>::lab(labels[2])==Some(l));}}
+    |                                                               ^^^^^^^^^
+
+note: automatically chose triggers for this expression:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/guarded.rs:171:79
+    |
+171 | ...rt(exists |k:int| 0<=k<labels.len() && Tracked::<C>::lab(labels[k])==Some(l) && forall |i:int| 0<=i<labels.len() && i!=k ==> Tracked::<C>::lab(labels[i]) is None) b...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note:   trigger 1 of 1:
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/guarded.rs:171:133
+    |
+171 | ...sert(exists |k:int| 0<=k<labels.len() && Tracked::<C>::lab(labels[k])==Some(l) && forall |i:int| 0<=i<labels.len() && i!=k ==> T...
+    |                                                               ^^^^^^^^^
+
+note: Verus printed one or more automatically chosen quantifier triggers
+      because it had low confidence in the chosen triggers.
+      To suppress these messages, do one of the following:
+        (1) manually annotate a single desired trigger using #[trigger]
+            (example: forall|i: int, j: int| f(i) && #[trigger] g(i) && #[trigger] h(j)),
+        (2) manually annotate multiple desired triggers using #![trigger ...]
+            (example: forall|i: int| #![trigger f(i)] #![trigger g(i)] f(i) && g(i)),
+        (3) accept the automatically chosen trigger using #![auto]
+            (example: forall|i: int, j: int| #![auto] f(i) && g(i) && h(j))
+        (4) use the --triggers-mode silent command-line option to suppress all printing of triggers.
+      (Note: triggers are used by the underlying SMT theorem prover to instantiate quantifiers;
+      the theorem prover instantiates a quantifier whenever some expression matches the
+      pattern specified by one of the quantifier's triggers.)
+   --> /Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/crates/actors/src/cluster.rs:290:8
+    |
+290 |       || (exists |id: nat, j: D::Job| post.dom == D::run_job(pre.dom, j).0 && post.hist == pre.hist.push(post.dom)
+    |  ________^
+291 | |             && post.log == pre.log.push(Act::Job { id: id, job: j })
+292 | |             && pre.jobs.contains_key(id) && !pre.jobs[id].done && post.jobs[id].done)
+    | |_____________________________________________________________________________________^
+
+    Checking ivg-proofs-mech v0.1.0 (/Users/ziniuw/runs/ivg-consolidated-20261114/pb/experiment/playbook-completion/proofs-mech)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 29.22s

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_upgrade_step_preserves"
+    ],
+    "find": "                Some(USys { ix: Ix { upgrading: true, ..s.ix }, ups: s.ups.insert(p, UpPc::Flagged), ..s })",
+    "name": "upgrade-no-flag",
+    "replace": "                Some(USys { ups: s.ups.insert(p, UpPc::Flagged), ..s })",
+    "why": "Upgrade does not set cfg 'upgrading' (l.533): writers are not refused while it runs (FR-023)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_upgrade_step_preserves"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-no-flag/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_upgrade_step_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040426Z-control-upgrade-no-flag-theorem_upgrade_step_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040426Z-control-upgrade-no-flag.log",
+    "timed_out": false,
+    "verified": 52
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040439Z-control-upgrade-no-flag/logs/20261115T040426Z-control-upgrade-no-flag-theorem_upgrade_step_preserves.log": "5ce4d71d3be099b10b922799a7fc62398ec90601342ca63c495dbd41e351382a",
+    ".g5/Verus_verification/results/search/20261115T040439Z-control-upgrade-no-flag/logs/20261115T040426Z-control-upgrade-no-flag.log": "478c3ec18f50d037e9b0590d4c40a67e2354fd5fb2718528adc626061223e72f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

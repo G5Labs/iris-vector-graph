@@ -1,0 +1,30 @@
+verification results:: 110 verified, 3 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/write-ignores-registry/temporal.rs:2117:9
+     |
+2115 |   pub proof fn lemma_write_shape(s: St, c: Coord, w: int, attrs: Option<int>, mode: Mode, f: Fail, v: Variant)
+     |   ------------------------------------------------------------------------------------------------------------ at the end of the function body
+2116 |       ensures
+2117 | /         ({
+2118 | |             let s2 = write_stores(s, c, w, attrs, mode, f, v).0;
+2119 | |             &&& s2.optout == s.optout
+2120 | |             &&& s2.txn == s.txn
+...    |
+2125 | |             &&& (!structural(s, c.g, c.p) ==> s2.rows == s.rows && s2.nodes == s.nodes)
+2126 | |         }),
+     | |__________^ failed this postcondition
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/write-ignores-registry/temporal.rs:3117:12
+     |
+3117 |     assert(s1.rows == s0.rows);
+     |            ^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/write-ignores-registry/temporal.rs:3341:12
+     |
+3341 |     assert(s2.rows == s1.rows);
+     |            ^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

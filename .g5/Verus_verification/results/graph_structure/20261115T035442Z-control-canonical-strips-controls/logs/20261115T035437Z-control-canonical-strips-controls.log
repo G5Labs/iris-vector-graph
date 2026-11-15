@@ -1,0 +1,43 @@
+verification results:: 64 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/canonical-strips-controls/graph_structure.rs:177:9
+    |
+177 |           strip_nul(seq![c]) == (if c == '\0' { Seq::<char>::empty() } else { seq![c] }),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+182 | /     if c != '\0' {
+183 | |         assert(Seq::<char>::empty().push(c) =~= seq![c]);
+184 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/canonical-strips-controls/graph_structure.rs:202:9
+    |
+202 |           canonical(n) == nul_free(n),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+206 | /     if n.len() > 0 {
+207 | |         lemma_canonical_is_nul_free(n.drop_last());
+208 | |     }
+    | |_____- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/canonical-strips-controls/graph_structure.rs:424:1
+    |
+424 | pub proof fn theorem_control_names_never_merge() {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/canonical-strips-controls/graph_structure.rs:436:16
+    |
+436 |         assert(canonical(a1) =~= a1);
+    |                ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/canonical-strips-controls/graph_structure.rs:441:16
+    |
+441 |         assert(canonical(a85) =~= a85);
+    |                ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

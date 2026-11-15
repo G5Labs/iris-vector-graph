@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_check"
+    ],
+    "find": "if rd.got && (!v.nolock_check || !s.nolock) && (!v.gen_check || same(s, rd, v)) {",
+    "name": "degree-no-nolock-check",
+    "replace": "if rd.got && (!v.gen_check || same(s, rd, v)) {",
+    "why": "Adj.Degree's store test without '$Data(^IVG.AdjNoLock(g)) (Adj.cls:75; 4.7.0 row 17): a lockless writer's uncommitted entry is cached"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_check"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "bda2567865779c90aa5ef3e84b2e77baf1d7468d3404c7ded9f2e30395ff6481",
+    ".g5/Verus_verification/models/graph_structure/model.json": "f4be757a33fc5a88a8752327e47764b36086a4cb6c3767144a721bd035b9cdfa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/degree-no-nolock-check/graph_structure.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_check": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035351Z-control-degree-no-nolock-check-lemma_check.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035351Z-control-degree-no-nolock-check.log",
+    "timed_out": false,
+    "verified": 66
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/graph_structure/20261115T035354Z-control-degree-no-nolock-check/logs/20261115T035351Z-control-degree-no-nolock-check-lemma_check.log": "45b4931c80528b221062aeb66621d45f7842cb327e9eede369e282a85af3375d",
+    ".g5/Verus_verification/results/graph_structure/20261115T035354Z-control-degree-no-nolock-check/logs/20261115T035351Z-control-degree-no-nolock-check.log": "d1e27b4d4a4c4e1d0ce269379c0be477f3adcc749514c53d6b40315b385323e9"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

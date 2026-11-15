@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/removedoc-keeps-df/search.rs:358:70
+    |
+358 |       assert forall|t: Term| #[trigger] ix2.tf.contains_key(t) implies ix2.tf[t].dom().len() > 0
+    |  ______________________________________________________________________^
+359 | |         && ix2.df[t] == ix2.tf[t].dom().len() by {
+    | |_____________________________________________^ assertion failed
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_write_exact"
+    ],
+    "find": "        rebuild(s, k)\n    } else {",
+    "name": "update-rebuild-ignored-in-tagg",
+    "replace": "        St { cnt: s.cnt.insert(k, get0(s.cnt, k) + 1), sum: s.sum.insert(k, get0(s.sum, k) + w), ..s }\n    } else {",
+    "why": "Q1(b) repair half-done: 'update' leaves ^KG(\"bucket\") but still $Increments tagg"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_write_exact"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/update-rebuild-ignored-in-tagg/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_write_exact": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040115Z-control-update-rebuild-ignored-in-tagg-lemma_write_exact.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040115Z-control-update-rebuild-ignored-in-tagg.log",
+    "timed_out": false,
+    "verified": 112
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040119Z-control-update-rebuild-ignored-in-tagg/logs/20261115T040115Z-control-update-rebuild-ignored-in-tagg-lemma_write_exact.log": "d81ac3e59bd1714229a5eb1ccb24ad08474c42db5ea22e0cab58b5f51ac5d019",
+    ".g5/Verus_verification/results/temporal/20261115T040119Z-control-update-rebuild-ignored-in-tagg/logs/20261115T040115Z-control-update-rebuild-ignored-in-tagg.log": "93a4963187fa128eb3368da0dcd833835360e09b64eba7522001f194f184c71a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

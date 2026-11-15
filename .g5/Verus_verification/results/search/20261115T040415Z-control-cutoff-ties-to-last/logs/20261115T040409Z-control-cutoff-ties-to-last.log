@@ -1,0 +1,24 @@
+verification results:: 55 verified, 1 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/cutoff-ties-to-last/search.rs:2256:13
+     |
+2256 |       ensures ({
+     |  _____________^
+2257 | |         let s = cut_scan(q, df, n, f, i);
+2258 | |         &&& forall|t: Term| #[trigger] s.known.contains(t) <==> known_at(q, df, t, i)
+2259 | |         &&& forall|t: Term| #[trigger] s.skip.contains(t) <==> (known_at(q, df, t, i) && over(df(t), n, f))
+...    |
+2262 | |                 && s.min->Some_0.1 == df(q[m]))
+2263 | |     }),
+     | |______^ failed this postcondition
+...
+2266 | /     if i > 0 {
+2267 | |         lemma_cut_scan(q, df, n, f, i - 1);
+2268 | |         let s0 = cut_scan(q, df, n, f, i - 1);
+2269 | |         let s = cut_scan(q, df, n, f, i);
+...    |
+2326 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

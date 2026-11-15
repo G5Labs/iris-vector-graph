@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_purge_leaves_registered_rows",
+      "witness_optin_strands_marked_row"
+    ],
+    "find": "    t.g == g && structural(s, g, t.p)\n",
+    "name": "purge-ignores-registry",
+    "replace": "    t.g == g\n",
+    "why": "RetireExpired without IsStructuralKey (:966): the purge retracts a registered predicate's old rows, against ADR-0015's decision"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_purge_leaves_registered_rows",
+      "witness_optin_strands_marked_row"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/purge-ignores-registry/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_purge_leaves_registered_rows": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040152Z-control-purge-ignores-registry-lemma_purge_leaves_registered_rows.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_optin_strands_marked_row": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040152Z-control-purge-ignores-registry-witness_optin_strands_marked_row.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040152Z-control-purge-ignores-registry.log",
+    "timed_out": false,
+    "verified": 108
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040157Z-control-purge-ignores-registry/logs/20261115T040152Z-control-purge-ignores-registry-lemma_purge_leaves_registered_rows.log": "80872700d03c766f2a1289f20fa330bd4f442974be96085b2cdc31fbcf27e1cf",
+    ".g5/Verus_verification/results/temporal/20261115T040157Z-control-purge-ignores-registry/logs/20261115T040152Z-control-purge-ignores-registry-witness_optin_strands_marked_row.log": "ee02a81b831d69855709bc6820c686fcefdd1f9300a1a1156204f2d9d3c8ca67",
+    ".g5/Verus_verification/results/temporal/20261115T040157Z-control-purge-ignores-registry/logs/20261115T040152Z-control-purge-ignores-registry.log": "503fcb791059d72c1e62931ddfc70379173ac3bb2346818d78033260ab4729ec"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

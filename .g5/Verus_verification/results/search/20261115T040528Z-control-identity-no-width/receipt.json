@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_store_routes_and_refuses"
+    ],
+    "find": "    ||| (rec.width is Some && off.width is Some && rec.width != off.width)\n    ||| rec.dtype != off.dtype\n}",
+    "name": "identity-no-width",
+    "replace": "    ||| false\n    ||| rec.dtype != off.dtype\n}",
+    "why": "conflicts() without the width comparison: a wrong-width writer is admitted (ADR-0005/0006, FR-014 width in all four cells)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_store_routes_and_refuses"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/identity-no-width/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_store_routes_and_refuses": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040522Z-control-identity-no-width-theorem_store_routes_and_refuses.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040522Z-control-identity-no-width.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040528Z-control-identity-no-width/logs/20261115T040522Z-control-identity-no-width-theorem_store_routes_and_refuses.log": "2a2e9451fcfeae63256dd1e05e328a417347603eaf42c1d187b0c6937e3525bb",
+    ".g5/Verus_verification/results/search/20261115T040528Z-control-identity-no-width/logs/20261115T040522Z-control-identity-no-width.log": "2ffeb3df5cab3e06157ebb14d78c20a2defdb6c19ae69f4195696c374bf4365f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_collision_leaves_another_shapes_code_under_an_ok_entry",
+      "witness_reader_forges_a_collision_and_poisons_a_shape"
+    ],
+    "find": "    PVariant { build_checks: false, unique_names: false, readback_checks: false }",
+    "name": "p-as-built-with-build-check",
+    "replace": "    PVariant { build_checks: true, unique_names: false, readback_checks: false }",
+    "why": "as built plus Build's shape/stamp check: the persistent poisoning (W-O2b) and the forged-collision attack disappear"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_collision_leaves_another_shapes_code_under_an_ok_entry",
+      "witness_reader_forges_a_collision_and_poisons_a_shape"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-as-built-with-build-check/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_collision_leaves_another_shapes_code_under_an_ok_entry": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T040007Z-control-p-as-built-with-build-check-witness_collision_leaves_another_shapes_code_under_an_ok_entry.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_reader_forges_a_collision_and_poisons_a_shape": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T040007Z-control-p-as-built-with-build-check-witness_reader_forges_a_collision_and_poisons_a_shape.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T040007Z-control-p-as-built-with-build-check.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T040022Z-control-p-as-built-with-build-check/logs/20261115T040007Z-control-p-as-built-with-build-check-witness_collision_leaves_another_shapes_code_under_an_ok_entry.log": "95cf42235d442b14a1c912532bebb94e3471e270bc13e16713a314ca42ea622f",
+    ".g5/Verus_verification/results/platform/20261115T040022Z-control-p-as-built-with-build-check/logs/20261115T040007Z-control-p-as-built-with-build-check-witness_reader_forges_a_collision_and_poisons_a_shape.log": "bd3a81a6df87de07f8bbb961e2f1007f001d09129b339a72c55628d6dcba8052",
+    ".g5/Verus_verification/results/platform/20261115T040022Z-control-p-as-built-with-build-check/logs/20261115T040007Z-control-p-as-built-with-build-check.log": "a74c6a8f1026a9662d0feaa3f83f496e7a0e306c73bd5f4854d61dce97220e4c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

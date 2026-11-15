@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:1908:9
+     |
+1908 |           uinv_core(ustep(s, a, upgrade_repaired())->Some_0),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1916 | /     match a {
+1917 | |         UAct::Start { p } => {
+1918 | |             if s2 != s {
+1919 | |                 lemma_s1ok_frame(s.ix, s2.ix);
+...    |
+2003 | |         },
+2004 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

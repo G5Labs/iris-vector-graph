@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_batch_split"
+    ],
+    "find": "        Counts { st: s, written: 0, collided: 0, skipped: 0, threw: false }",
+    "name": "batch-level-side-effect",
+    "replace": "        Counts { st: St { bucket: s.bucket.insert(BKey { g: 0, b: 0, s: 0 }, get0(s.bucket, BKey { g: 0, b: 0, s: 0 }) + 1), ..s }, written: 0, collided: 0, skipped: 0, threw: false }",
+    "why": "FR-004: a store write made once per BulkInsertCounts call (here a per-batch counter) makes batch boundaries observable"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_batch_split"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/batch-level-side-effect/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_batch_split": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040132Z-control-batch-level-side-effect-lemma_batch_split.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040132Z-control-batch-level-side-effect.log",
+    "timed_out": false,
+    "verified": 111
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040136Z-control-batch-level-side-effect/logs/20261115T040132Z-control-batch-level-side-effect-lemma_batch_split.log": "bc6662fac2baa9656e1b6fff7eca57bb900a4b1bcce9a3ac0dc65fd534fa0159",
+    ".g5/Verus_verification/results/temporal/20261115T040136Z-control-batch-level-side-effect/logs/20261115T040132Z-control-batch-level-side-effect.log": "6fd706e4d448809fbf01a326719de7ce0d88278d2c0105c507bfc0d4e0cb6881"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

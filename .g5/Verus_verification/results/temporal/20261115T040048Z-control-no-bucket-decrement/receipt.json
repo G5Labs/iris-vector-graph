@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_remove_raw_shape"
+    ],
+    "find": "    let s1 = St { tout: s.tout.remove(c), eprop: s.eprop.remove(c), bucket: s.bucket.insert(bk, nb), ..s };\n    if nb",
+    "name": "no-bucket-decrement",
+    "replace": "    let s1 = St { tout: s.tout.remove(c), eprop: s.eprop.remove(c), bucket: s.bucket, ..s };\n    if nb",
+    "why": "RemoveTemporalRow without $Increment(bucket,-1) (:357): a deleted edge stays in the per-source count (the decrement is stated in lemma_remove_raw_shape, which lemma_delete_exact consumes)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_remove_raw_shape"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/no-bucket-decrement/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_remove_raw_shape": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040043Z-control-no-bucket-decrement-lemma_remove_raw_shape.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040043Z-control-no-bucket-decrement.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040048Z-control-no-bucket-decrement/logs/20261115T040043Z-control-no-bucket-decrement-lemma_remove_raw_shape.log": "67d09675456118447772eeaff484591730a5c6f5709e6fbc9a6d64fc5beed1c1",
+    ".g5/Verus_verification/results/temporal/20261115T040048Z-control-no-bucket-decrement/logs/20261115T040043Z-control-no-bucket-decrement.log": "eb2c1c4089cf0b154a9f813b9b90c0543168418a8c09da98fe96c00902ba2bfc"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_build_insert_breaks_n",
+      "witness_build_insert_double_df"
+    ],
+    "find": "pub open spec fn as_built_writers() -> WVariant { WVariant { build_locked: false, delete_under_lock: false } }",
+    "name": "as-built-build-locked",
+    "replace": "pub open spec fn as_built_writers() -> WVariant { WVariant { build_locked: true, delete_under_lock: false } }",
+    "why": "The F2 witnesses depend on Build taking no lock: with the lock the interleaving is not enabled"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_build_insert_breaks_n",
+      "witness_build_insert_double_df"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/as-built-build-locked/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_build_insert_breaks_n": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040353Z-control-as-built-build-locked-witness_build_insert_breaks_n.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_build_insert_double_df": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040353Z-control-as-built-build-locked-witness_build_insert_double_df.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040353Z-control-as-built-build-locked.log",
+    "timed_out": false,
+    "verified": 53
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040409Z-control-as-built-build-locked/logs/20261115T040353Z-control-as-built-build-locked-witness_build_insert_breaks_n.log": "5a63039ac5020c6482c48d50b1242dcfabcc54ea57fe29fafc245909eb9d283f",
+    ".g5/Verus_verification/results/search/20261115T040409Z-control-as-built-build-locked/logs/20261115T040353Z-control-as-built-build-locked-witness_build_insert_double_df.log": "700b0e594e8fd0ec5f205f5a10cd863dcc5baf7e7c064b35263f7ff9a04c30b9",
+    ".g5/Verus_verification/results/search/20261115T040409Z-control-as-built-build-locked/logs/20261115T040353Z-control-as-built-build-locked.log": "51c8e2128bcd1af87dc49a2924e9db1c4156cbc380da7578343a29575dda1a7a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

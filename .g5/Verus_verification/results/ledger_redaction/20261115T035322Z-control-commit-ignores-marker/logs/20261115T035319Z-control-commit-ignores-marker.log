@@ -1,0 +1,31 @@
+verification results:: 39 verified, 2 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/commit-ignores-marker/redaction.rs:1574:13
+     |
+1573 |   pub proof fn theorem_commit_writes_only_when_admitted(c: CommitIn)
+     |   ------------------------------------------------------------------ at the end of the function body
+1574 |       ensures writes(commit_outcome(c)) ==> c.locked && c.state_enabled && !c.never_enabled
+     |  _____________^
+1575 | |         && (c.key is Some ==> c.bound is None && !c.key_redacted)
+1576 | |         && (c.expected_head is Some ==> c.head_known && c.expected_head->Some_0 == c.head)
+1577 | |         && 0 < c.n_ops <= c.max_ops && c.apply_ok && !c.blocked,
+     | |_______________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/commit-ignores-marker/redaction.rs:1586:13
+     |
+1583 |   pub proof fn lemma_commit_admits_matches_outcome(s: St, new: Seq<Live>, key: Option<int>, fp: int, max_ops: nat)
+     |   ---------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+1586 |       ensures ({
+     |  _____________^
+1587 | |         let blocked = match s.marker {
+1588 | |             Some(t) => exists|j: int| 0 <= j < new.len() && matches(Rec::Live(#[trigger] new[j]), t, K()) == Tri::Yes,
+1589 | |             None => false,
+...    |
+1597 | |         writes(commit_outcome(c)) == commit_admits(s, new, key, true)
+1598 | |     }),
+     | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

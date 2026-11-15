@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_acme_does_not_select_acme_health",
+      "lemma_match_string_has_separator_boundary"
+    ],
+    "find": "    } else {\n        prefix + sep\n    }",
+    "name": "no-separator",
+    "replace": "    } else {\n        prefix\n    }",
+    "why": "MatchString without the separator: prefix 'acme' would select 'acme-health|1' (spec 256 US1 neighbouring prefix)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_acme_does_not_select_acme_health",
+      "lemma_match_string_has_separator_boundary"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/no-separator/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_acme_does_not_select_acme_health": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035251Z-control-no-separator-lemma_acme_does_not_select_acme_health.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_match_string_has_separator_boundary": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035251Z-control-no-separator-lemma_match_string_has_separator_boundary.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035251Z-control-no-separator.log",
+    "timed_out": false,
+    "verified": 38
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035254Z-control-no-separator/logs/20261115T035251Z-control-no-separator-lemma_acme_does_not_select_acme_health.log": "c3194eb1ae8e0cddcdc4f5d2426146d5608d0aa640161793d17ae22b3959525b",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035254Z-control-no-separator/logs/20261115T035251Z-control-no-separator-lemma_match_string_has_separator_boundary.log": "99dfd24a7c59463df436b8b2f0730e1b3ad83f0dde4be647d106511edc5d9dde",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035254Z-control-no-separator/logs/20261115T035251Z-control-no-separator.log": "d055ba1f1d3f3966f54ac2783054063bcf907a1a4326640806ea90d910fd6ebf"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

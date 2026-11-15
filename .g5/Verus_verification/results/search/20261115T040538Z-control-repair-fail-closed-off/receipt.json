@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_identity_fail_open"
+    ],
+    "find": "            let id_refused = (fail_closed && ir is Error) || (recorded is Some && conflicts(recorded->Some_0, off));",
+    "name": "repair-fail-closed-off",
+    "replace": "            let id_refused = recorded is Some && conflicts(recorded->Some_0, off);",
+    "why": "W-O3d's refusal under the proposed repair comes from the fail-closed read: without it the cached-route write is admitted"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_identity_fail_open"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/repair-fail-closed-off/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_identity_fail_open": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040533Z-control-repair-fail-closed-off-witness_identity_fail_open.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040533Z-control-repair-fail-closed-off.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040538Z-control-repair-fail-closed-off/logs/20261115T040533Z-control-repair-fail-closed-off-witness_identity_fail_open.log": "a213a6bd8ad7fea790e0f6900f393f46290065b3fd9ee690ceb3bc486a869522",
+    ".g5/Verus_verification/results/search/20261115T040538Z-control-repair-fail-closed-off/logs/20261115T040533Z-control-repair-fail-closed-off.log": "6d8aa3822d9268b807885c67c5d0cc1f665db46c50b98009eef033f9d066f7a4"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

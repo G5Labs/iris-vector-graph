@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_row_put_keeps_layout"
+    ],
+    "find": "let kids1 = if !has_hash { t.kids.union(others) } else { t.kids };",
+    "name": "put-keyed-ignores-other-rows",
+    "replace": "let kids1 = t.kids;",
+    "why": "PutKeyed's 1->2 transition without OtherEdgeKeys' children (Adjacency.cls:226-250): the first edge gets no child"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_row_put_keeps_layout"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "bda2567865779c90aa5ef3e84b2e77baf1d7468d3404c7ded9f2e30395ff6481",
+    ".g5/Verus_verification/models/graph_structure/model.json": "f4be757a33fc5a88a8752327e47764b36086a4cb6c3767144a721bd035b9cdfa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/put-keyed-ignores-other-rows/graph_structure.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_row_put_keeps_layout": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035416Z-control-put-keyed-ignores-other-rows-lemma_row_put_keeps_layout.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035416Z-control-put-keyed-ignores-other-rows.log",
+    "timed_out": false,
+    "verified": 66
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/graph_structure/20261115T035420Z-control-put-keyed-ignores-other-rows/logs/20261115T035416Z-control-put-keyed-ignores-other-rows-lemma_row_put_keeps_layout.log": "ae871a4b5b0b963439ef69a52420c4c0602442ae3b0bd607292ee64132263bbf",
+    ".g5/Verus_verification/results/graph_structure/20261115T035420Z-control-put-keyed-ignores-other-rows/logs/20261115T035416Z-control-put-keyed-ignores-other-rows.log": "fd24cf1d65506857bfe08c0107f065727450f03074790fb5331b86cbafcbb7b4"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

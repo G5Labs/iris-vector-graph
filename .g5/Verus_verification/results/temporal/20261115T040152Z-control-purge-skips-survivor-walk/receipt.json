@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_marked_row_goes_with_last_timestamp"
+    ],
+    "find": "    purge_candidate(s, t, g, lo, hi) && !has_ts(tout_after_purge(s, g, lo, hi), t)\n",
+    "name": "purge-skips-survivor-walk",
+    "replace": "    purge_candidate(s, t, g, lo, hi)\n",
+    "why": "RetireExpired without the walk of surviving timestamps (:990-1022): a row is retired while a timestamp outside the range holds it (spec 254 US1 scenario 2)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_marked_row_goes_with_last_timestamp"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/purge-skips-survivor-walk/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_marked_row_goes_with_last_timestamp": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040147Z-control-purge-skips-survivor-walk-lemma_marked_row_goes_with_last_timestamp.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040147Z-control-purge-skips-survivor-walk.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040152Z-control-purge-skips-survivor-walk/logs/20261115T040147Z-control-purge-skips-survivor-walk-lemma_marked_row_goes_with_last_timestamp.log": "5be0cebfaf45472eef1779625cecf4263114e71d32e88e644da9fa58999c59cd",
+    ".g5/Verus_verification/results/temporal/20261115T040152Z-control-purge-skips-survivor-walk/logs/20261115T040147Z-control-purge-skips-survivor-walk.log": "ca5c43c4a79e3394534dbcc24cf671bb7dfc85042c168aa1509234801681a6dc"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

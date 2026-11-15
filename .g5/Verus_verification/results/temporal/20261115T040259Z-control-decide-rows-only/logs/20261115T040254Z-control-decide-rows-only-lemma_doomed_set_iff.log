@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/decide-rows-only/temporal.rs:706:9
+    |
+706 |           doomed_set(s, g, lo, hi).contains(t) == (purge_candidate(s, t, g, lo, hi) && !has_ts(tout_after_purge(s, g, lo, hi), t)),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+714 | /     if purge_candidate(s, t, g, lo, hi) && !has_ts(tout_after_purge(s, g, lo, hi), t) {
+715 | |         let c = choose|c: Coord| #[trigger] s.tout.contains_key(c) && in_range(c, g, lo, hi) && tri(c) == t;
+716 | |         assert(f.contains(c));
+717 | |         assert(f.map(|x: Coord| tri(x)).contains(tri(c)));
+718 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

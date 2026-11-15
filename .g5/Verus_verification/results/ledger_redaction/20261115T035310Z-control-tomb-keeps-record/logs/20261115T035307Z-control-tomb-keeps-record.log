@@ -1,0 +1,18 @@
+verification results:: 39 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/tomb-keeps-record/redaction.rs:312:9
+    |
+310 | pub proof fn lemma_tomb_never_matches(l: Live, pos: nat, t: Target, k: Know)
+    | ---------------------------------------------------------------------------- at the end of the function body
+311 |     ensures
+312 |         matches(tomb(l, pos), t, k) == Tri::No,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/tomb-keeps-record/redaction.rs:1372:20
+     |
+1372 |             assert(entity(ra.last()) is None);
+     |                    ^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

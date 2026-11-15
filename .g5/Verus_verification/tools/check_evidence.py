@@ -55,6 +55,33 @@ def main():
             continue
         problems += [f"native {os.path.basename(f)}: input changed: {p}" for p, x in ins.items() if h(p) != x]
     print(f"native observations checked: {len(obs)}")
+    # Consolidated uplift (2026-11-14): playbook-arm crate reruns (tools/run_playbook_crate.py). For each family and
+    # label the latest receipt must carry the expected verdict (PASS for the baseline, EXPECTED_FAIL for a control) and
+    # match the arm's recorded result where it recorded one; the crate's tree at HEAD must still be the tree it ran.
+    # Earlier ERROR receipts superseded by a later verdict for the same label are kept and not counted.
+    import subprocess
+    pb = 0
+    for fam_dir in sorted(glob.glob(f"{V}/results/playbook-*")):
+        latest = {}
+        for f in sorted(glob.glob(f"{fam_dir}/*/receipt.json")):
+            d = json.load(open(f))
+            if d.get("kind") == "playbook-crate-rerun":
+                latest[d["label"]] = (f, d)
+        for label, (f, d) in latest.items():
+            pb += 1
+            want = "PASS" if label == "baseline" else "EXPECTED_FAIL"
+            if d["verdict"] != want:
+                problems.append(f"{os.path.basename(fam_dir)} {label}: {d['verdict']} (expected {want}) in {f}")
+            if d.get("recorded") and not d.get("matches_record"):
+                problems.append(f"{os.path.basename(fam_dir)} {label}: differs from the arm's RESULTS.json")
+            try:
+                tree = subprocess.check_output(["git", "rev-parse", f"HEAD:{d['crate']}"], text=True,
+                                               stderr=subprocess.DEVNULL).strip()
+            except subprocess.CalledProcessError:
+                tree = None
+            if tree != d["sources"]["tree_at_source"]:
+                problems.append(f"{os.path.basename(fam_dir)} {label}: crate tree at HEAD {tree} != the tree it ran")
+    print(f"playbook crate reruns checked: {pb} (family, label) pairs")
     for p in problems:
         print("STALE/WRONG:", p)
     print("FRESH" if not problems else f"{len(problems)} problem(s)")

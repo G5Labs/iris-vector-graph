@@ -1,0 +1,79 @@
+verification results:: 45 verified, 6 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:1921:9
+     |
+1918 |   pub proof fn lemma_for_hit_checks(s: PSt, rr: Run)
+     |   -------------------------------------------------- at the end of the function body
+...
+1921 | /         ({
+1922 | |             let out = for_check(s, rr, p_as_built());
+1923 | |             let h = hash_of(rr.shape);
+1924 | |             out.gen is Some ==> {
+...    |
+1932 | |         }),
+     | |__________^ failed this postcondition
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2429:12
+     |
+2429 |     assert(s10.runs[2].phase == RPhase::Write1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2751:12
+     |
+2751 |     assert(s10.runs[2].phase == RPhase::Write1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2791:12
+     |
+2791 |     assert(s8.runs[2].phase == RPhase::Write1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2811:1
+     |
+2811 | pub proof fn witness_repair_keeps_both_colliding_plans(a: Shape, b: Shape, st: Stamp)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2839:12
+     |
+2839 |     assert(s13.entries[h].status == Status::Pending && s13.entries[h].shape == b && s13.src[h] == lines_of(b, st));
+     |            ^^^^^^^^^^^^^^
+     |
+    --> map.rs:87:12
+     |
+     = note: recommendation not met
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2839:12
+     |
+2839 |     assert(s13.entries[h].status == Status::Pending && s13.entries[h].shape == b && s13.src[h] == lines_of(b, st));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2839:56
+     |
+2839 |     assert(s13.entries[h].status == Status::Pending && s13.entries[h].shape == b && s13.src[h] == lines_of(b, st));
+     |                                                        ^^^^^^^^^^^^^^
+     |
+    --> map.rs:87:12
+     |
+     = note: recommendation not met
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2840:12
+     |
+2840 |     assert(s13.runs[2].digest == db);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-shape-check/platform.rs:2940:78
+     |
+2940 |             assert forall|k: nat| #[trigger] s2.runs.contains_key(k) implies q_run_ok(s2.runs[k]) by {
+     |                                                                              ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 7 previous errors
+

@@ -1,0 +1,15 @@
+verification results:: 49 verified, 2 errors
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/r-no-unique-names/platform.rs:2831:12
+     |
+2831 |     assert(s7.runs[1].gen == Some(CName::D(da)));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/r-no-unique-names/platform.rs:2906:77
+     |
+2906 |         assert forall|k: int| #[trigger] s2.entries.contains_key(k) implies q_entry_ok(s2.entries[k]) by {
+     |                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_step_stats",
+      "witness_counters_undone_keep_exact"
+    ],
+    "find": "            bucket: if v.incr_undone { sn.bucket } else { restore_j(s.bucket, sn.jbucket) },",
+    "name": "rollback-keeps-bucket-anyway",
+    "replace": "            bucket: if v.incr_undone { s.bucket } else { restore_j(s.bucket, sn.jbucket) },",
+    "why": "P-INCR control: if TROLLBACK leaves ^KG(\"bucket\") even in the counters-undone variant, the refused changeset is no longer exact \u2014 the F3 violation rests on $Increment surviving rollback"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_step_stats",
+      "witness_counters_undone_keep_exact"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/rollback-keeps-bucket-anyway/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_step_stats": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040103Z-control-rollback-keeps-bucket-anyway-lemma_step_stats.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_counters_undone_keep_exact": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040103Z-control-rollback-keeps-bucket-anyway-witness_counters_undone_keep_exact.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040103Z-control-rollback-keeps-bucket-anyway.log",
+    "timed_out": false,
+    "verified": 109
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040109Z-control-rollback-keeps-bucket-anyway/logs/20261115T040103Z-control-rollback-keeps-bucket-anyway-lemma_step_stats.log": "c62a5edbffa052a9a87a3f4c943a6a0a4fbb1312c9552d365ee701767bdcc60a",
+    ".g5/Verus_verification/results/temporal/20261115T040109Z-control-rollback-keeps-bucket-anyway/logs/20261115T040103Z-control-rollback-keeps-bucket-anyway-witness_counters_undone_keep_exact.log": "db9cf7f455270da64bc484201534ccded7218ed8b9c946a61d3e1fda7a0fd8ee",
+    ".g5/Verus_verification/results/temporal/20261115T040109Z-control-rollback-keeps-bucket-anyway/logs/20261115T040103Z-control-rollback-keeps-bucket-anyway.log": "c8db980b2a1e83a7aea06b6caaf2b9a5053befa96031dbca16293a4b6a9eae2b"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

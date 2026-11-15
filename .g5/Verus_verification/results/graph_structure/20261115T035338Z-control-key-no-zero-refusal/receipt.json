@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_index_key_injective",
+      "theorem_cross_store_key_reads_nothing_foreign",
+      "theorem_refusals"
+    ],
+    "find": "    &&& c != zero_name()\n    &&& !contains_ctrl(c)\n}",
+    "name": "key-no-zero-refusal",
+    "replace": "    &&& !contains_ctrl(c)\n}",
+    "why": "GraphKey.Validate without the \"0\" refusal (GraphKey.cls:42-43): the graph named \"0\" gets the default graph's ^KG key (IRIS canonicalizes subscript \"0\" to 0), so one index key names two graphs"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_index_key_injective",
+      "theorem_cross_store_key_reads_nothing_foreign",
+      "theorem_refusals"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "bda2567865779c90aa5ef3e84b2e77baf1d7468d3404c7ded9f2e30395ff6481",
+    ".g5/Verus_verification/models/graph_structure/model.json": "f4be757a33fc5a88a8752327e47764b36086a4cb6c3767144a721bd035b9cdfa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/key-no-zero-refusal/graph_structure.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cross_store_key_reads_nothing_foreign": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035334Z-control-key-no-zero-refusal-theorem_cross_store_key_reads_nothing_foreign.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_index_key_injective": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035334Z-control-key-no-zero-refusal-theorem_index_key_injective.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_refusals": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035334Z-control-key-no-zero-refusal-theorem_refusals.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035334Z-control-key-no-zero-refusal.log",
+    "timed_out": false,
+    "verified": 64
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/graph_structure/20261115T035338Z-control-key-no-zero-refusal/logs/20261115T035334Z-control-key-no-zero-refusal-theorem_cross_store_key_reads_nothing_foreign.log": "8c9f892062a6b273f8b5e4b12c12e84dd527b9f3c829bf1810bb9a31385b3c9f",
+    ".g5/Verus_verification/results/graph_structure/20261115T035338Z-control-key-no-zero-refusal/logs/20261115T035334Z-control-key-no-zero-refusal-theorem_index_key_injective.log": "bbfc57bba40ae81750b9b9f5e007d9a393bb1c9a26d92c05948ac0060e321c61",
+    ".g5/Verus_verification/results/graph_structure/20261115T035338Z-control-key-no-zero-refusal/logs/20261115T035334Z-control-key-no-zero-refusal-theorem_refusals.log": "5dbc52f4d59004f29470eac2033cf0f17a27eae05add85b464eb997de8bb8636",
+    ".g5/Verus_verification/results/graph_structure/20261115T035338Z-control-key-no-zero-refusal/logs/20261115T035334Z-control-key-no-zero-refusal.log": "04f0313509f9982d93199ca5ceffac7b29a42bce69e3303eec55fed110962a4d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

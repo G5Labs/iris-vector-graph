@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_identity_check_ignores_ledger"
+    ],
+    "find": "            if id_refused || width_refused {",
+    "name": "identity-reads-ledger",
+    "replace": "            if (id_refused || width_refused) && s.ledger_on {",
+    "why": "An identity check that only runs with the ledger enabled (ADR-0006: refusable on an install with no history feature enabled)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_identity_check_ignores_ledger"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/identity-reads-ledger/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_identity_check_ignores_ledger": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040605Z-control-identity-reads-ledger-theorem_identity_check_ignores_ledger.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040605Z-control-identity-reads-ledger.log",
+    "timed_out": false,
+    "verified": 53
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040610Z-control-identity-reads-ledger/logs/20261115T040605Z-control-identity-reads-ledger-theorem_identity_check_ignores_ledger.log": "068167ee6eff00c9e0a3f43dd4fabf959db698149b023eb6ff4fafd8a226a637",
+    ".g5/Verus_verification/results/search/20261115T040610Z-control-identity-reads-ledger/logs/20261115T040605Z-control-identity-reads-ledger.log": "79f36faf019ddfd31673f9684d470fdce08bfde22002f0cc6eae2b92cad25b1f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

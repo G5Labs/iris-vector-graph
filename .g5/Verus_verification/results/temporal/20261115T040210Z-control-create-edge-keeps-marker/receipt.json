@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_explicit_create_clears_marker"
+    ],
+    "find": "    St { rows: s.rows.insert(t, false), nodes: s.nodes.insert((t.g, t.s)).insert((t.g, t.o)), ..s }\n}",
+    "name": "create-edge-keeps-marker",
+    "replace": "    St { rows: s.rows.insert(t, true), nodes: s.nodes.insert((t.g, t.s)).insert((t.g, t.o)), ..s }\n}",
+    "why": "create_edge without the adoption UPDATE (nodes_edges._adopt_temporal_row): the marker stays and a temporal delete can remove an explicit edge"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_explicit_create_clears_marker"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/create-edge-keeps-marker/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_explicit_create_clears_marker": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040206Z-control-create-edge-keeps-marker-lemma_explicit_create_clears_marker.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040206Z-control-create-edge-keeps-marker.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040210Z-control-create-edge-keeps-marker/logs/20261115T040206Z-control-create-edge-keeps-marker-lemma_explicit_create_clears_marker.log": "3f141a46d520256f9a60370d73c2ace8ef1c1101f4cd56c0391c956f12f6d0f8",
+    ".g5/Verus_verification/results/temporal/20261115T040210Z-control-create-edge-keeps-marker/logs/20261115T040206Z-control-create-edge-keeps-marker.log": "1dccc1fee7e327209f2d48f13ccb45c29d82617826904007b5a14372c186d4c2"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

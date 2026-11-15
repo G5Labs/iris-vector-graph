@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/ledger-key-skips-canonical/graph_structure.rs:248:9
+    |
+248 |         for_ledger(a + seq!['\0'] + b) == for_ledger(a + b),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+256 |     assert(Seq::<char>::empty() != zero_name()) by { assert(zero_name().len() == 1); }
+    |     ------ at the end of the function body
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/canonical-strips-controls/graph_structure.rs:202:9
+    |
+202 |           canonical(n) == nul_free(n),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+206 | /     if n.len() > 0 {
+207 | |         lemma_canonical_is_nul_free(n.drop_last());
+208 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

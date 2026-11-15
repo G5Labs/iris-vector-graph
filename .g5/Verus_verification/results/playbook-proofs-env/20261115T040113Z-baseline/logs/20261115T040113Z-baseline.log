@@ -1,0 +1,235 @@
+verification results:: 2059 verified, 0 errors
+verification results:: 305 verified, 0 errors
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling verus_prettyplease v0.0.0-2026-09-06-0133
+   Compiling equivalent v1.0.3
+   Compiling hashbrown v0.17.1
+   Compiling vstd v0.0.0-2026-09-20-0158
+   Compiling convert_case v0.4.0
+    Checking verus_builtin v0.0.0-2026-09-16-0054
+   Compiling indexmap v2.14.2
+   Compiling verus_syn v0.0.0-2026-09-06-0133
+   Compiling syn v2.0.119
+   Compiling synstructure v0.13.2
+   Compiling verus_state_machines_macros v0.0.0-2026-09-06-0133
+   Compiling verus_builtin_macros v0.0.0-2026-09-20-0158 (/Users/ziniuw/.cache/g5-verification/ivg-actors-c03f9fa/verification-tools/builtin-macros)
+    Checking ivg-proofs-env v0.1.0 (/Users/ziniuw/runs/ivg-consolidated-20261114/pb/experiment/playbook-completion/proofs-env)
+warning: using ==> in `assert forall` does not currently assume the antecedent in the body; consider using `implies` instead of `==>`
+   --> src/effects.rs:622:9
+    |
+622 | ...   assert forall|r2: int| 0 <= r2 < s.g.len() implies (#[trigger] s2.procs[x as int].rlocks[r2] ==> s.procs[x as int].rlocks[r2]...
+    |       ^^^^^^
+    |
+    = help: to suppress this warning, use `#[verifier::allow(assert_forall_implication)]` on the surrounding function, datatype, or module or `#![verifier::allow(assert_forall_implication)]` in the module or crate
+    = help: If you didn't mean to assume the antecedent, we're very curious to hear why! To tell us, please open an issue on the Verus issue tracker on github with the title `Don't always make assert forall assume the antecedent`. If no one opens such an issue, we'll soon change the behavior of Verus to always assume the antecedent of the outermost implication
+
+warning: variable `R` should have a snake case name
+  --> src/headlock.rs:24:39
+   |
+24 | pub open spec fn has_r(es: Seq<Undo>, R: spec_fn(int) -> bool) -> bool {
+   |                                       ^ help: convert the identifier to snake case: `r`
+   |
+   = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: variable `R` should have a snake case name
+  --> src/headlock.rs:37:43
+   |
+37 | pub open spec fn rown(s: State, h: usize, R: spec_fn(int) -> bool) -> bool {
+   |                                           ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/headlock.rs:46:60
+   |
+46 | pub open spec fn inv_h(sem: Sem, u: U, s: State, h: usize, R: spec_fn(int) -> bool) -> bool {
+   |                                                            ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/headlock.rs:54:67
+   |
+54 | pub open spec fn disc(u: U, s: State, p: usize, op: Op, h: usize, R: spec_fn(int) -> bool) -> bool {
+   |                                                                   ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/headlock.rs:60:31
+   |
+60 | pub open spec fn r_glob(u: U, R: spec_fn(int) -> bool) -> bool {
+   |                               ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/headlock.rs:77:65
+   |
+77 | pub open spec fn eq_r(a: Seq<Option<Val>>, b: Seq<Option<Val>>, R: spec_fn(int) -> bool) -> bool {
+   |                                                                 ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:377:92
+    |
+377 | pub proof fn theorem_inv_h(sem: Sem, u: U, s: State, p: usize, op: Op, ch: bool, h: usize, R: spec_fn(int) -> bool)
+    |                                                                                            ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:532:68
+    |
+532 | pub open spec fn holder_rel(sem: Sem, s: State, s2: State, h: int, R: spec_fn(int) -> bool) -> bool {
+    |                                                                    ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:538:98
+    |
+538 | pub proof fn lemma_end_levels_base(sem: Sem, u: U, s: State, x: usize, ends: Ends, commit: bool, R: spec_fn(int) -> bool)
+    |                                                                                                  ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:558:74
+    |
+558 | pub proof fn lemma_holder_commit_top(sem: Sem, u: U, s: State, h: usize, R: spec_fn(int) -> bool)
+    |                                                                          ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:571:72
+    |
+571 | pub proof fn lemma_holder_undo_top(sem: Sem, u: U, s: State, h: usize, R: spec_fn(int) -> bool)
+    |                                                                        ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:579:82
+    |
+579 | pub proof fn lemma_holder_rollback_n(sem: Sem, u: U, s: State, h: usize, k: nat, R: spec_fn(int) -> bool)
+    |                                                                                  ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:587:80
+    |
+587 | pub proof fn lemma_holder_commit_n(sem: Sem, u: U, s: State, h: usize, k: nat, R: spec_fn(int) -> bool)
+    |                                                                                ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:595:79
+    |
+595 | pub proof fn lemma_holder_same(sem: Sem, u: U, s: State, s2: State, h: usize, R: spec_fn(int) -> bool)
+    |                                                                               ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:603:75
+    |
+603 | pub proof fn lemma_holder_txn(sem: Sem, u: U, s: State, h: usize, op: Op, R: spec_fn(int) -> bool)
+    |                                                                           ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:643:84
+    |
+643 | pub proof fn lemma_holder_autocommit(sem: Sem, u: U, s: State, h: usize, on: bool, R: spec_fn(int) -> bool)
+    |                                                                                    ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:660:85
+    |
+660 | pub proof fn lemma_holder_txn_begin(sem: Sem, u: U, s: State, h: usize, hold: bool, R: spec_fn(int) -> bool)
+    |                                                                                     ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:697:85
+    |
+697 | pub proof fn lemma_holder_own(sem: Sem, u: U, s: State, h: usize, op: Op, ch: bool, R: spec_fn(int) -> bool)
+    |                                                                                     ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:723:76
+    |
+723 | pub proof fn lemma_holder_glob(sem: Sem, u: U, s: State, h: usize, op: Op, R: spec_fn(int) -> bool)
+    |                                                                            ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:791:85
+    |
+791 | pub proof fn lemma_holder_row(sem: Sem, u: U, s: State, h: usize, op: Op, ch: bool, R: spec_fn(int) -> bool)
+    |                                                                                     ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:816:69
+    |
+816 | pub proof fn lemma_holder_await(sem: Sem, u: U, s: State, h: usize, R: spec_fn(int) -> bool)
+    |                                                                     ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:856:94
+    |
+856 | pub proof fn theorem_atomic(sem: Sem, u: U, s: State, p: usize, op: Op, ch: bool, hl: usize, R: spec_fn(int) -> bool, h: usize)
+    |                                                                                              ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+   --> src/headlock.rs:926:77
+    |
+926 | pub proof fn theorem_reader_under_lock(sem: Sem, u: U, s: State, hl: usize, R: spec_fn(int) -> bool, q: usize)
+    |                                                                             ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/gen.rs:26:80
+   |
+26 | pub open spec fn hl_hyp(sem: Sem, u: U, s: State, p: usize, op: Op, hl: usize, R: spec_fn(int) -> bool, h: usize) -> bool {
+   |                                                                                ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/gen.rs:38:92
+   |
+38 | pub open spec fn hl_concl(sem: Sem, u: U, s: State, p: usize, op: Op, ch: bool, hl: usize, R: spec_fn(int) -> bool, h: usize) -> bool {
+   |                                                                                            ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/gen.rs:46:93
+   |
+46 | pub proof fn gen_head_lock(sem: Sem, u: U, s: State, p: usize, op: Op, ch: bool, hl: usize, R: spec_fn(int) -> bool, h: usize)
+   |                                                                                             ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/gen.rs:55:68
+   |
+55 | pub proof fn gen_init_inv_h(sem: Sem, u: U, case: Case, hl: usize, R: spec_fn(int) -> bool)
+   |                                                                    ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/premises.rs:23:90
+   |
+23 | pub proof fn premise_proofs_p_c01(u: U, s: State, p: usize, op: Op, ch: bool, hl: usize, R: spec_fn(int) -> bool, h: usize)
+   |                                                                                          ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/premises.rs:33:87
+   |
+33 | pub proof fn premise_d9_p_d9_1(u: U, s: State, p: usize, op: Op, ch: bool, hl: usize, R: spec_fn(int) -> bool, h: usize)
+   |                                                                                       ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/premises.rs:51:90
+   |
+51 | pub proof fn premise_breadth_p_l3(u: U, s: State, p: usize, op: Op, ch: bool, hl: usize, R: spec_fn(int) -> bool, h: usize)
+   |                                                                                          ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/premises.rs:59:86
+   |
+59 | pub proof fn premise_d1b_p_s1(u: U, s: State, p: usize, op: Op, ch: bool, hl: usize, R: spec_fn(int) -> bool, h: usize)
+   |                                                                                      ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/premises.rs:68:66
+   |
+68 | pub proof fn premise_head_lock_init(u: U, case: Case, hl: usize, R: spec_fn(int) -> bool)
+   |                                                                  ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/premises.rs:77:74
+   |
+77 | pub proof fn premise_d9_g_l_reader_under_lock(u: U, s: State, hl: usize, R: spec_fn(int) -> bool, q: usize)
+   |                                                                          ^ help: convert the identifier to snake case: `r`
+
+warning: variable `R` should have a snake case name
+  --> src/cx.rs:65:47
+   |
+65 | pub proof fn lemma_cu_inv(sem: Sem, s: State, R: spec_fn(int) -> bool)
+   |                                               ^ help: convert the identifier to snake case: `r`
+
+warning: `ivg-proofs-env` (lib) generated 35 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 23.13s

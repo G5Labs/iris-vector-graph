@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_remove_temporal_row_shape",
+      "witness_rolled_back_delete_undercounts"
+    ],
+    "find": "    rebuild(journal_agg(remove_raw(s, c), akey(c)), akey(c))\n}",
+    "name": "rebuild-not-journaled",
+    "replace": "    rebuild(remove_raw(s, c), akey(c))\n}",
+    "why": "R1-9 fidelity: if RebuildBucketAggregate's Sets/Kill were not journaled, the rolled-back delete would also lose tagg; the witness rests on journaling them"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_remove_temporal_row_shape",
+      "witness_rolled_back_delete_undercounts"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/rebuild-not-journaled/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_remove_temporal_row_shape": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040244Z-control-rebuild-not-journaled-lemma_remove_temporal_row_shape.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_rolled_back_delete_undercounts": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040244Z-control-rebuild-not-journaled-witness_rolled_back_delete_undercounts.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040244Z-control-rebuild-not-journaled.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040250Z-control-rebuild-not-journaled/logs/20261115T040244Z-control-rebuild-not-journaled-lemma_remove_temporal_row_shape.log": "525bbf4ef58b584a01bf4e5471744399e5ec61296f2b20345b8adc15a4a02677",
+    ".g5/Verus_verification/results/temporal/20261115T040250Z-control-rebuild-not-journaled/logs/20261115T040244Z-control-rebuild-not-journaled-witness_rolled_back_delete_undercounts.log": "c7824a176fc27f5e8600f1c9670409b6e3d975483efc64f343629924ff9602ac",
+    ".g5/Verus_verification/results/temporal/20261115T040250Z-control-rebuild-not-journaled/logs/20261115T040244Z-control-rebuild-not-journaled.log": "686f0f919e989cc87b92a0f1447b7330774e46fa767964b7f518bd48349abd25"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

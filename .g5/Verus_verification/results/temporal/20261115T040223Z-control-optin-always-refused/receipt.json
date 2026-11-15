@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_optin_guard_allows_clean_optin"
+    ],
+    "find": "        if v.optin_guard && stranded(s, g, p) { s } else { St { optout: s.optout.remove((g, p)), ..s } }",
+    "name": "optin-always-refused",
+    "replace": "        if v.optin_guard { s } else { St { optout: s.optout.remove((g, p)), ..s } }",
+    "why": "Valid outcome: a guard that refuses every opt-in keeps L1-ROW by stuttering; the clean opt-in witness must catch it"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_optin_guard_allows_clean_optin"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/optin-always-refused/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_optin_guard_allows_clean_optin": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040220Z-control-optin-always-refused-witness_optin_guard_allows_clean_optin.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040220Z-control-optin-always-refused.log",
+    "timed_out": false,
+    "verified": 112
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040223Z-control-optin-always-refused/logs/20261115T040220Z-control-optin-always-refused-witness_optin_guard_allows_clean_optin.log": "a0242a8c57e6182f3dc58e73d0dc12c64dfe8e76bc730ba57ed1b0a034b65a27",
+    ".g5/Verus_verification/results/temporal/20261115T040223Z-control-optin-always-refused/logs/20261115T040220Z-control-optin-always-refused.log": "0748cd462a42c711cafbf0065d4fe8073ffae6eeae50c6980658aa0af31c3753"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

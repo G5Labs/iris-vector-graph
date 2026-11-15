@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_keep_iff_entity_not_target"
+    ],
+    "find": "                && (l.op == Op::CreateRel || l.op == Op::DeleteRel ==> l.ends == Some(truth[l.stmt]))",
+    "name": "independence-broken",
+    "replace": "                && (l.op == Op::CreateRel || l.op == Op::DeleteRel ==> l.ends is Some)",
+    "why": "A qualifier record attributed to a statement other than its own (endpoints disagree with the statement map): replay equality must fail"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_keep_iff_entity_not_target"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/independence-broken/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_keep_iff_entity_not_target": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035315Z-control-independence-broken-lemma_keep_iff_entity_not_target.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035315Z-control-independence-broken.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035317Z-control-independence-broken/logs/20261115T035315Z-control-independence-broken-lemma_keep_iff_entity_not_target.log": "50be112580b2ca12a269a99e89f081ef15f48fff3accb61fe597a1472917ec6a",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035317Z-control-independence-broken/logs/20261115T035315Z-control-independence-broken.log": "b31256969ab1b8c064c75ed47306975557caa8b771fae7d37d946020ed746a59"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

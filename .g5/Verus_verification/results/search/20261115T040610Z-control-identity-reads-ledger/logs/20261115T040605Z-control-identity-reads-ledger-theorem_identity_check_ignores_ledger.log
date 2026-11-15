@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/identity-reads-ledger/search.rs:2667:9
+     |
+2664 | / pub proof fn theorem_identity_check_ignores_ledger(s: ESys, g: Graph, node: Node, off: Ident,
+2665 | |     cached: Option<(Tbl, Ident)>, rr: Read, ir: Read)
+     | |_____________________________________________________- at the end of the function body
+2666 |       ensures
+2667 | /         store(ESys { ledger_on: true, ..s }, g, node, off, cached, rr, ir, false) is Refused
+2668 | |             == store(ESys { ledger_on: false, ..s }, g, node, off, cached, rr, ir, false) is Refused,
+     | |____________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

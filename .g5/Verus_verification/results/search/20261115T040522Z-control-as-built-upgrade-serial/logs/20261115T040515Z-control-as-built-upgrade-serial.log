@@ -1,0 +1,21 @@
+verification results:: 55 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/as-built-upgrade-serial/search.rs:2049:1
+     |
+2049 | pub proof fn witness_concurrent_upgrades() {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/as-built-upgrade-serial/search.rs:2057:12
+     |
+2057 |     assert(s2.ups.contains_key(2) && s2.ups[2] == UpPc::Flagged);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/as-built-upgrade-serial/search.rs:2065:12
+     |
+2065 |     assert(s8.lock is None && !s8.ix.upgrading && schema_of(s8.ix) == 2);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

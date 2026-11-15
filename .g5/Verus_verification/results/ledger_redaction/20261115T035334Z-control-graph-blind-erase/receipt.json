@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_erase_stays_in_target_graph"
+    ],
+    "find": "        Item::NodeRow { g, id } => g == t.g && (t.m.len() == 0 || has_prefix(id, t.m)),\n        // EraseGraph deletes",
+    "name": "graph-blind-erase",
+    "replace": "        Item::NodeRow { g, id } => (t.g.len() == 0 || g == t.g) && (t.m.len() == 0 || has_prefix(id, t.m)),\n        // EraseGraph deletes",
+    "why": "An erase of the default graph that also removed node rows of every graph (graph-blind, as the redaction's L1 content is): the erase frame must fail (lemma_erase_keeps_other_graphs consumes the frame lemma's contract, so the failure is attributed to the frame lemma itself; first attempt FAIL_ELSEWHERE is kept)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_erase_stays_in_target_graph"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/graph-blind-erase/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_erase_stays_in_target_graph": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035331Z-control-graph-blind-erase-lemma_erase_stays_in_target_graph.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035331Z-control-graph-blind-erase.log",
+    "timed_out": false,
+    "verified": 39
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035334Z-control-graph-blind-erase/logs/20261115T035331Z-control-graph-blind-erase-lemma_erase_stays_in_target_graph.log": "50e07732d0bea17669bfd0c8b7715f1b52b16dd99ad71e80673c0a8d4993a667",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035334Z-control-graph-blind-erase/logs/20261115T035331Z-control-graph-blind-erase.log": "a59856b98e08c6869dc7d00a6a22f2beda4ba58c2d115736fda3e51836b3a321"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

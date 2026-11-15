@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-no-flag/search.rs:1636:9
+     |
+1636 |           uinv(ustep(s, a, upgrade_as_built())->Some_0),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1640 | /     match a {
+1641 | |         UAct::Start { p } => {
+1642 | |             if s2 != s {
+1643 | |                 lemma_dom_empty(s.ups);
+...    |
+1756 | |         },
+1757 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

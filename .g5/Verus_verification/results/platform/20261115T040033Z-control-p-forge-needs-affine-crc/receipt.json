@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_forge_collision"
+    ],
+    "find": "        0 <= x1 < 0x1_0000_0000 && 0 <= x2 < 0x1_0000_0000 && x1 != x2 ==> crc32(forged(base, x1)) != crc32(forged(base, x2))",
+    "name": "p-forge-needs-affine-crc",
+    "replace": "        0 <= x1 < 0x1_0000_0000 && 0 <= x2 < 0x1_0000_0000 && x1 != x2 ==> true",
+    "why": "the forging lemma rests on P-CRC-AFFINE: without the suffix bijection no target is guaranteed to be hit"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_forge_collision"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-forge-needs-affine-crc/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_forge_collision": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T040022Z-control-p-forge-needs-affine-crc-lemma_forge_collision.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T040022Z-control-p-forge-needs-affine-crc.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T040033Z-control-p-forge-needs-affine-crc/logs/20261115T040022Z-control-p-forge-needs-affine-crc-lemma_forge_collision.log": "cefe7c44dd802b1369b5303c8c7e550e3dede77381db791362c9261644f0cbeb",
+    ".g5/Verus_verification/results/platform/20261115T040033Z-control-p-forge-needs-affine-crc/logs/20261115T040022Z-control-p-forge-needs-affine-crc.log": "0e1858f22919bd1506bc54564b5df9947a2f9c74e59dfbc96c4834fca6d74ef3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/key-no-nul-strip/graph_structure.rs:245:1
+    |
+245 | pub proof fn theorem_nul_is_stripped(a: Name, b: Name)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/key-no-nul-strip/graph_structure.rs:247:9
+    |
+247 |         for_index(a + seq!['\0'] + b) == for_index(a + b),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+256 |     assert(Seq::<char>::empty() != zero_name()) by { assert(zero_name().len() == 1); }
+    |     ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/key-no-nul-strip/graph_structure.rs:248:9
+    |
+248 |         for_ledger(a + seq!['\0'] + b) == for_ledger(a + b),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+256 |     assert(Seq::<char>::empty() != zero_name()) by { assert(zero_name().len() == 1); }
+    |     ------ at the end of the function body
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_step_preserves_inv",
+      "witness_erase_then_redact_completes"
+    ],
+    "find": "                            marker: if s.marker is None { Some(r.t) } else { s.marker },",
+    "name": "no-marker",
+    "replace": "                            marker: s.marker,",
+    "why": "BatchInLock never writes ^IVG.Ledger(\"redacting\"): readers and target commits are not refused between batches (Decision 3)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_step_preserves_inv",
+      "witness_erase_then_redact_completes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/no-marker/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035254Z-control-no-marker-lemma_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_erase_then_redact_completes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035254Z-control-no-marker-witness_erase_then_redact_completes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035254Z-control-no-marker.log",
+    "timed_out": false,
+    "verified": 36
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035258Z-control-no-marker/logs/20261115T035254Z-control-no-marker-lemma_step_preserves_inv.log": "e1885532b883ce86366220fdc4d903d423fc464ef5b3d304632e6bd8f8ec85bd",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035258Z-control-no-marker/logs/20261115T035254Z-control-no-marker-witness_erase_then_redact_completes.log": "d7602ca2439335a9a9720133e112dc5aee3c453a8ef313cb30889fd7b2417079",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035258Z-control-no-marker/logs/20261115T035254Z-control-no-marker.log": "e271b7ace3040753c1d91c155649c4ac808a196cf1bd3d4b791fb283656ea4f6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

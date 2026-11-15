@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_prefix_erase_leaves_temporal_only_content"
+    ],
+    "find": "            (has_prefix(s, t.m) && live.contains(Item::NodeRow { g, id: s }))\n            || (has_prefix(o, t.m) && live.contains(Item::NodeRow { g, id: o }))),",
+    "name": "prefix-erase-reaches-temporal",
+    "replace": "            has_prefix(s, t.m) || has_prefix(o, t.m)),",
+    "why": "An erase-by-prefix that also removed temporal-only entries whose endpoints have no node row (what ADR-0004 requires, not what EraseNodes does): W5 must then fail, showing the witness depends on the product-faithful erase"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_prefix_erase_leaves_temporal_only_content"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/prefix-erase-reaches-temporal/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_prefix_erase_leaves_temporal_only_content": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035327Z-control-prefix-erase-reaches-temporal-witness_prefix_erase_leaves_temporal_only_content.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035327Z-control-prefix-erase-reaches-temporal.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035329Z-control-prefix-erase-reaches-temporal/logs/20261115T035327Z-control-prefix-erase-reaches-temporal-witness_prefix_erase_leaves_temporal_only_content.log": "6509be1c0188233c3affc2d6803658e255271dcbfa1cc60df9ae213bd57f0877",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035329Z-control-prefix-erase-reaches-temporal/logs/20261115T035327Z-control-prefix-erase-reaches-temporal.log": "1c8bba53f9a9c8ea1f4409cabae6c409bbc1ac76601b9747f18208632e90fc01"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

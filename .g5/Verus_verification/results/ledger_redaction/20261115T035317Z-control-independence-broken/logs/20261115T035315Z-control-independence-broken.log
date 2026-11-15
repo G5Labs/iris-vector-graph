@@ -1,0 +1,15 @@
+verification results:: 40 verified, 1 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/independence-broken/redaction.rs:1410:9
+     |
+1410 |           keep(r, t, k) == !ent_of_target(entity(r)->Some_0, t, sg, truth),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1413 | /     if is_node_op(l.op) {
+1414 | |         if t.g.len() == 0 { assert(t.g =~= Seq::<char>::empty()); }
+1415 | |         assert(l.graph == Seq::<char>::empty());
+1416 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

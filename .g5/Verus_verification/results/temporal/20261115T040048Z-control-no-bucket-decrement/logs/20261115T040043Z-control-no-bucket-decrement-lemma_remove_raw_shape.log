@@ -1,0 +1,22 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/no-bucket-decrement/temporal.rs:1199:9
+     |
+1199 | /         ({
+1200 | |             let r = remove_raw(s, c);
+1201 | |             let nb = get0(s.bucket, bkey(c)) - 1;
+1202 | |             &&& r.tout == s.tout.remove(c) && r.eprop == s.eprop.remove(c)
+...    |
+1207 | |             &&& forall|k: BKey| k != bkey(c) ==> #[trigger] get0(r.bucket, k) == get0(s.bucket, k)
+1208 | |         }),
+     | |__________^ failed this postcondition
+...
+1214 | /     if nb <= 0 {
+1215 | |         lemma_journal_bucket_shape(s1, bk, Some(nb));
+1216 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

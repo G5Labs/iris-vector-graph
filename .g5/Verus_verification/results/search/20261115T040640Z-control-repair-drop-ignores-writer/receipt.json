@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_locked_build_preserves"
+    ],
+    "find": "            if v.build_locked && (s.build is Some || s.run is Some) {",
+    "name": "repair-drop-ignores-writer",
+    "replace": "            if v.build_locked && s.build is Some {",
+    "why": "The repair's Drop must wait for the writer's lock too: a Drop that only waits for a Build lands inside an Insert (W-O1c)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_locked_build_preserves"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/repair-drop-ignores-writer/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_locked_build_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040629Z-control-repair-drop-ignores-writer-theorem_locked_build_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040629Z-control-repair-drop-ignores-writer.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040640Z-control-repair-drop-ignores-writer/logs/20261115T040629Z-control-repair-drop-ignores-writer-theorem_locked_build_preserves.log": "d33457c2e045ed3e3a18696af3e6fb6ad471590a9413435274c43a9943c79392",
+    ".g5/Verus_verification/results/search/20261115T040640Z-control-repair-drop-ignores-writer/logs/20261115T040629Z-control-repair-drop-ignores-writer.log": "88fd8363b245b6cb2c7607a7e047e385481e7a3a5c3a0c4b64bbc377baabfb85"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

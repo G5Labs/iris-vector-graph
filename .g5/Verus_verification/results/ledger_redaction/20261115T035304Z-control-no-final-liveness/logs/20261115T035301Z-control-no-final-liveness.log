@@ -1,0 +1,19 @@
+verification results:: 40 verified, 1 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/no-final-liveness/redaction.rs:994:13
+     |
+ 994 |       ensures ({
+     |  _____________^
+ 995 | |         let s2 = step(s, Action::Final { p }, as_built())->Some_0;
+ 996 | |         let t = s.runs[p].t;
+ 997 | |         &&& s.marker == Some(t)
+...    |
+1003 | |         &&& !any_checked(s.live, t)
+1004 | |     }),
+     | |______^ failed this postcondition
+...
+1010 |       assert forall|i: int| 0 <= i < s.recs.len() implies matches(#[trigger] s2.recs[i], t, K()) != Tri::Yes by {
+     |       ------ at the end of the function body
+
+error: aborting due to 1 previous error
+

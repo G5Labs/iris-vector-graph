@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_writers_refused_while_upgrading"
+    ],
+    "find": "            if !tok_ok(bag, dlen) || s.lock is Some || !writable(s.ix) { None } else {",
+    "name": "upgrade-writer-ignores-flag",
+    "replace": "            if !tok_ok(bag, dlen) || s.lock is Some { None } else {",
+    "why": "An Insert that does not run RequireWritable is not refused while an Upgrade is in flight (FR-022/FR-023)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_writers_refused_while_upgrading"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-writer-ignores-flag/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_writers_refused_while_upgrading": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040555Z-control-upgrade-writer-ignores-flag-theorem_writers_refused_while_upgrading.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040555Z-control-upgrade-writer-ignores-flag.log",
+    "timed_out": false,
+    "verified": 52
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040605Z-control-upgrade-writer-ignores-flag/logs/20261115T040555Z-control-upgrade-writer-ignores-flag-theorem_writers_refused_while_upgrading.log": "c68532c93ec8c41d7933492e4780ae4c40803173efdf987cfc587c514135d61c",
+    ".g5/Verus_verification/results/search/20261115T040605Z-control-upgrade-writer-ignores-flag/logs/20261115T040555Z-control-upgrade-writer-ignores-flag.log": "c4a4bcce3044ac5ecd5293c9c03e43a816007ca3f420c4ae24704f70f84d2b4b"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

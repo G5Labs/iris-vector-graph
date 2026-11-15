@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_q_build_preserves",
+      "witness_repair_keeps_both_colliding_plans"
+    ],
+    "find": "    PVariant { build_checks: true, unique_names: true, readback_checks: true }",
+    "name": "r-no-unique-names",
+    "replace": "    PVariant { build_checks: true, unique_names: false, readback_checks: true }",
+    "why": "the repair with IVGC.P<CRC-32> names: the build lemma fails (a name no longer determines its code) and two colliding plans cannot coexist; the semantic counterexample is witness_build_check_leaves_the_mid_run_swap"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_q_build_preserves",
+      "witness_repair_keeps_both_colliding_plans"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/r-no-unique-names/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_q_build_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035945Z-control-r-no-unique-names-lemma_q_build_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_repair_keeps_both_colliding_plans": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035945Z-control-r-no-unique-names-witness_repair_keeps_both_colliding_plans.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035945Z-control-r-no-unique-names.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T035955Z-control-r-no-unique-names/logs/20261115T035945Z-control-r-no-unique-names-lemma_q_build_preserves.log": "6fb91e4cb25903899ccbb7145aebdc512a8f39fadd3b6e2f8c07c05cb04bf3f6",
+    ".g5/Verus_verification/results/platform/20261115T035955Z-control-r-no-unique-names/logs/20261115T035945Z-control-r-no-unique-names-witness_repair_keeps_both_colliding_plans.log": "e3b97cba5944b359d1e86b7dc473b80575f0284bddeddf76c8d3a3066fb4022a",
+    ".g5/Verus_verification/results/platform/20261115T035955Z-control-r-no-unique-names/logs/20261115T035945Z-control-r-no-unique-names.log": "4df709ee3638eb951ee4ef5112ca822c38d6942e81b637e32518c1eb5b2389b6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

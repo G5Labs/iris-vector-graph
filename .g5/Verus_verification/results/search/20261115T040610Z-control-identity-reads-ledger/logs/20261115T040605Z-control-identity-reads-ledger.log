@@ -1,0 +1,42 @@
+verification results:: 53 verified, 3 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/identity-reads-ledger/search.rs:2601:13
+     |
+2601 |       ensures ({
+     |  _____________^
+2602 | |         let out = store(s, g, node, off, None, Read::Ok, Read::Ok, false);
+2603 | |         let key = off.model;
+2604 | |         &&& (out is Refused <==> (target_row(s.reg, g, key) is Some
+...    |
+2608 | |                 && one_row(out->s.reg) && routed_rows_ok(out->s.reg)
+2609 | |     }),
+     | |______^ failed this postcondition
+...
+2613 | /     match read_route(s.reg, g, key) {
+2614 | |         Some(t) => {
+2615 | |             if row_for(s.reg, legacy(), g, key) {
+2616 | |                 assert(t == legacy());
+...    |
+2658 | |         },
+2659 | |     }
+     | |_____- at the end of the function body
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/identity-reads-ledger/search.rs:2667:9
+     |
+2664 | / pub proof fn theorem_identity_check_ignores_ledger(s: ESys, g: Graph, node: Node, off: Ident,
+2665 | |     cached: Option<(Tbl, Ident)>, rr: Read, ir: Read)
+     | |_____________________________________________________- at the end of the function body
+2666 |       ensures
+2667 | /         store(ESys { ledger_on: true, ..s }, g, node, off, cached, rr, ir, false) is Refused
+2668 | |             == store(ESys { ledger_on: false, ..s }, g, node, off, cached, rr, ir, false) is Refused,
+     | |____________________________________________________________________________________________________^ failed this postcondition
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/identity-reads-ledger/search.rs:2822:12
+     |
+2822 |     assert(store(s0, default_graph(), 1, off, Some((legacy(), row)), Read::Ok, Read::Error, true) is Refused);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

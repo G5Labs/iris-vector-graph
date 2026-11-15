@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:517:9
+    |
+517 |           s.engines.contains_key(e) && s.engines[e].sch == t ==> s_step(s, SAction::SetupRead { p, e }, s_proved()) is None,
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+521 | /     if s.engines.contains_key(e) && s.engines[e].accepted {
+522 | |         assert(s.marker.contains(s.engines[e].sch));
+523 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

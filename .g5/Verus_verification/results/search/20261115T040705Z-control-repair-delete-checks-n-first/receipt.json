@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_repair_delete_takes_effect",
+      "witness_repair_delete_after_build"
+    ],
+    "find": "pub open spec fn locked_build() -> WVariant { WVariant { build_locked: true, delete_under_lock: true } }",
+    "name": "repair-delete-checks-n-first",
+    "replace": "pub open spec fn locked_build() -> WVariant { WVariant { build_locked: true, delete_under_lock: false } }",
+    "why": "R2-1: with Build and Drop locked but Delete still testing cfg N before the lock (the round-1 repair), a Delete issued during a Build returns 0 and the Build republishes the document"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_repair_delete_takes_effect",
+      "witness_repair_delete_after_build"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/repair-delete-checks-n-first/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_repair_delete_takes_effect": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040652Z-control-repair-delete-checks-n-first-theorem_repair_delete_takes_effect.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_repair_delete_after_build": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040652Z-control-repair-delete-checks-n-first-witness_repair_delete_after_build.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040652Z-control-repair-delete-checks-n-first.log",
+    "timed_out": false,
+    "verified": 54
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040705Z-control-repair-delete-checks-n-first/logs/20261115T040652Z-control-repair-delete-checks-n-first-theorem_repair_delete_takes_effect.log": "5f7f81d6064994ad5ba1d324e9587b8ec31eb05d2ab93f18edcbef7a2dcd91c2",
+    ".g5/Verus_verification/results/search/20261115T040705Z-control-repair-delete-checks-n-first/logs/20261115T040652Z-control-repair-delete-checks-n-first-witness_repair_delete_after_build.log": "451cdea2a33c88828f39df379b1bac82819ef8e62c6062ff27fb072bb68619ea",
+    ".g5/Verus_verification/results/search/20261115T040705Z-control-repair-delete-checks-n-first/logs/20261115T040652Z-control-repair-delete-checks-n-first.log": "fc9beeae47811f45d71652cf12b7338f8cc673d0c87088702146bba841cdafec"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

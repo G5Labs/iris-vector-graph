@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_waiver_releases_a_mismatch"
+    ],
+    "find": "        SAction::Waive { e } =>\n            if !s.engines.contains_key(e) {",
+    "name": "s-waive-checks",
+    "replace": "        SAction::Waive { e } =>\n            if !s.engines.contains_key(e) || (s.record is Some && s.record != Some(s.engines[e].sch)) {",
+    "why": "_waive_schema_check that waives only the no-record case (R1-5 proposal): the migration engine stays refused on a mismatch"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_waiver_releases_a_mismatch"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-waive-checks/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_waiver_releases_a_mismatch": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035551Z-control-s-waive-checks-witness_waiver_releases_a_mismatch.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035551Z-control-s-waive-checks.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T035600Z-control-s-waive-checks/logs/20261115T035551Z-control-s-waive-checks-witness_waiver_releases_a_mismatch.log": "3f9b7d9dc3b42be791f7e9cd0562f028813a2626be7a4360febcaff0dc6cf4d4",
+    ".g5/Verus_verification/results/platform/20261115T035600Z-control-s-waive-checks/logs/20261115T035551Z-control-s-waive-checks.log": "795c1661217b86d94d1c618a57db377579b6340ac77934a02dfc4726af4ae919"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

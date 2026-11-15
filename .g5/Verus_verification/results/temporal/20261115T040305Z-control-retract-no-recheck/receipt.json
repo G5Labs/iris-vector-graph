@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_recheck_closes_race_row_at_decide",
+      "witness_recheck_closes_race_rowless_route",
+      "witness_recheck_closes_delete_race"
+    ],
+    "find": "                && (!v.race_recheck || still_doomed(s, pl, t)))), |t: Triple| s.rows[t]),",
+    "name": "retract-no-recheck",
+    "replace": "                )), |t: Triple| s.rows[t]),",
+    "why": "bug-tmp-011 repair without its retract-time re-test of survivors: RACE-1, the rowless route and RACE-3 are open again"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_recheck_closes_race_row_at_decide",
+      "witness_recheck_closes_race_rowless_route",
+      "witness_recheck_closes_delete_race"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/retract-no-recheck/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_recheck_closes_delete_race": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040259Z-control-retract-no-recheck-witness_recheck_closes_delete_race.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_recheck_closes_race_row_at_decide": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040259Z-control-retract-no-recheck-witness_recheck_closes_race_row_at_decide.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_recheck_closes_race_rowless_route": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040259Z-control-retract-no-recheck-witness_recheck_closes_race_rowless_route.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040259Z-control-retract-no-recheck.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040305Z-control-retract-no-recheck/logs/20261115T040259Z-control-retract-no-recheck-witness_recheck_closes_delete_race.log": "37f4e6d9013505714e6e4ddb11975f6bfceb738992dd833d03697b2e55331c31",
+    ".g5/Verus_verification/results/temporal/20261115T040305Z-control-retract-no-recheck/logs/20261115T040259Z-control-retract-no-recheck-witness_recheck_closes_race_row_at_decide.log": "6beef66e93a7dd621949d038a3ac3bf298969e46513c56f714ceee2fc65b5ea8",
+    ".g5/Verus_verification/results/temporal/20261115T040305Z-control-retract-no-recheck/logs/20261115T040259Z-control-retract-no-recheck-witness_recheck_closes_race_rowless_route.log": "344d5cc31ed952669dd232a6107b804396a0c913cba3a65416d4590cc03580d3",
+    ".g5/Verus_verification/results/temporal/20261115T040305Z-control-retract-no-recheck/logs/20261115T040259Z-control-retract-no-recheck.log": "bf285514885e78cd5a0e6faf479bb22aed604ecd39ac14b2debece5260e2dc3f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

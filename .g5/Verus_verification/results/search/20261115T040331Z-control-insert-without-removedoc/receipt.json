@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_insert_preserves_counters"
+    ],
+    "find": "    let ix1 = remove_doc(init_ix(ix), d);\n    if dlen > 0 { add_doc(ix1, d, bag, dlen) } else { ix1 }",
+    "name": "insert-without-removedoc",
+    "replace": "    let ix1 = init_ix(ix);\n    if dlen > 0 { add_doc(ix1, d, bag, dlen) } else { ix1 }",
+    "why": "Insert adds without RemoveDoc first (O1, FR-016/FR-018 'including after a replace'): a replace counts the document twice"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_insert_preserves_counters"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/insert-without-removedoc/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_insert_preserves_counters": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040321Z-control-insert-without-removedoc-theorem_insert_preserves_counters.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040321Z-control-insert-without-removedoc.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040331Z-control-insert-without-removedoc/logs/20261115T040321Z-control-insert-without-removedoc-theorem_insert_preserves_counters.log": "763f8fb028845f05957d374a074f4bed8d94ea09499962a7eafb269d98c15d56",
+    ".g5/Verus_verification/results/search/20261115T040331Z-control-insert-without-removedoc/logs/20261115T040321Z-control-insert-without-removedoc.log": "87156bc650debfa4e571c70a8dc693a457a5cac49e9fbcc8aebc98e0f7e80b75"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

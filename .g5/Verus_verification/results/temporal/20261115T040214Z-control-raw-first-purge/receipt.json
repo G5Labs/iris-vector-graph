@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_purge_rows",
+      "lemma_purge_rerun_finishes"
+    ],
+    "find": "    if stop_after_rows {\n        St { rows: rows1, ..s }",
+    "name": "raw-first-purge",
+    "replace": "    if stop_after_rows {\n        St { tout: tout_after_purge(s, g, lo, hi), ..s }",
+    "why": "ADR-0009 'rows first': a purge that kills the raw entries first and fails before its row step leaves marked rows no purge can find"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_purge_rows",
+      "lemma_purge_rerun_finishes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/raw-first-purge/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_purge_rerun_finishes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040210Z-control-raw-first-purge-lemma_purge_rerun_finishes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_purge_rows": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040210Z-control-raw-first-purge-lemma_purge_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040210Z-control-raw-first-purge.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040214Z-control-raw-first-purge/logs/20261115T040210Z-control-raw-first-purge-lemma_purge_rerun_finishes.log": "9de144dd9345bfe7a20afe9d5f17cfe0d9f04b178f9f9d06aac94ddfb7318e5b",
+    ".g5/Verus_verification/results/temporal/20261115T040214Z-control-raw-first-purge/logs/20261115T040210Z-control-raw-first-purge-lemma_purge_rows.log": "51d9bed3ad470094c14cf47886d9340e47b77d0dcf049690d1c64baaa2e5561d",
+    ".g5/Verus_verification/results/temporal/20261115T040214Z-control-raw-first-purge/logs/20261115T040210Z-control-raw-first-purge.log": "580414f4013c6dc6de737c8da2e0453ec1df0787c1cfb8a36cd3dc3611268288"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

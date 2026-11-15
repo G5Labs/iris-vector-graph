@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_upgrade_step_preserves",
+      "theorem_repaired_upgrade_preserves"
+    ],
+    "find": "            if !s.ups.contains_key(p) || s.ups[p] != UpPc::Counted { None } else {\n                Some(USys { ix: Ix { schema: Some(2), ..s.ix }",
+    "name": "upgrade-flip-before-count",
+    "replace": "            if !s.ups.contains_key(p) || s.ups[p] != UpPc::Rebuilt { None } else {\n                Some(USys { ix: Ix { schema: Some(2), ..s.ix }",
+    "why": "schema = 2 set before N/totalLen/vocab_size are recomputed (FR-023 'set schema to 2 only after ... are complete')"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_upgrade_step_preserves",
+      "theorem_repaired_upgrade_preserves"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 6,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_repaired_upgrade_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040439Z-control-upgrade-flip-before-count-theorem_repaired_upgrade_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_upgrade_step_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040439Z-control-upgrade-flip-before-count-theorem_upgrade_step_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040439Z-control-upgrade-flip-before-count.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040456Z-control-upgrade-flip-before-count/logs/20261115T040439Z-control-upgrade-flip-before-count-theorem_repaired_upgrade_preserves.log": "bc5123972890681377712fcf94a97ac0cbb71bd1d64b89fdb59170b796e32e54",
+    ".g5/Verus_verification/results/search/20261115T040456Z-control-upgrade-flip-before-count/logs/20261115T040439Z-control-upgrade-flip-before-count-theorem_upgrade_step_preserves.log": "aaf6929d0c1f5ae155918a4de18cb52e06bff85ba5794f6f3851fd10e5f8d0b2",
+    ".g5/Verus_verification/results/search/20261115T040456Z-control-upgrade-flip-before-count/logs/20261115T040439Z-control-upgrade-flip-before-count.log": "8972a06de28b0d7eca05003d3bd3a877f6db58859eb79a96ca4335b71b639336"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

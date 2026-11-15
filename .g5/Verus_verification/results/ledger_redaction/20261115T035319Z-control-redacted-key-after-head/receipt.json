@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_redacted_key_refused_before_apply"
+    ],
+    "find": "    else if c.key is Some && c.key_redacted { Outcome::IdempotencyRedacted }\n    else if c.expected_head is Some && !c.head_known { Outcome::UnknownHead }\n    else if c.expected_head is Some && c.expected_head->Some_0 != c.head { Outcome::StaleHead }",
+    "name": "redacted-key-after-head",
+    "replace": "    else if c.expected_head is Some && !c.head_known { Outcome::UnknownHead }\n    else if c.expected_head is Some && c.expected_head->Some_0 != c.head { Outcome::StaleHead }\n    else if c.key is Some && c.key_redacted { Outcome::IdempotencyRedacted }",
+    "why": "CommitInTxn checking expected_head before the idemRedacted refusal: a stale-head retry with a redacted key gets stale_head (and a later fresh-head retry would get through to apply) instead of idempotency_redacted"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_redacted_key_refused_before_apply"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/redacted-key-after-head/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_redacted_key_refused_before_apply": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035317Z-control-redacted-key-after-head-theorem_redacted_key_refused_before_apply.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035317Z-control-redacted-key-after-head.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035319Z-control-redacted-key-after-head/logs/20261115T035317Z-control-redacted-key-after-head-theorem_redacted_key_refused_before_apply.log": "b94652b9d41d5b3c3f803694caa22020dd42f461be930e93d272a0d7fcfe3661",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035319Z-control-redacted-key-after-head/logs/20261115T035317Z-control-redacted-key-after-head.log": "f7035a0ecb1cf36388558cd3a83d5a1f3ba72eb5f6f3eff66bc127d4ee537da6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

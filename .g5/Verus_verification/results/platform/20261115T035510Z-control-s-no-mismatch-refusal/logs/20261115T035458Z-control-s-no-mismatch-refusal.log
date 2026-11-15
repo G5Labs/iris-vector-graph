@@ -1,0 +1,44 @@
+verification results:: 47 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:342:1
+    |
+342 | pub proof fn lemma_s_step_preserves_inv(s: SSt, a: SAction)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:425:76
+    |
+425 |             assert forall|x: Sch| #[trigger] s2.marker.contains(x) implies x == st.sch by {
+    |                                                                            ^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:436:20
+    |
+436 |             assert(setup_ok(s2, st));
+    |                    ^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:517:9
+    |
+517 |           s.engines.contains_key(e) && s.engines[e].sch == t ==> s_step(s, SAction::SetupRead { p, e }, s_proved()) is None,
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+521 | /     if s.engines.contains_key(e) && s.engines[e].accepted {
+522 | |         assert(s.marker.contains(s.engines[e].sch));
+523 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:579:12
+    |
+579 |     assert(s_step(s7, SAction::SetupRead { p: 2, e: 2 }, v) is None);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:689:12
+    |
+689 |     assert(s_step(s6, SAction::SetupRead { p: 2, e: 2 }, v) is None);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors
+

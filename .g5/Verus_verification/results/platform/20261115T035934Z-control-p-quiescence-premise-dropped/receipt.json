@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_p_step_preserves_inv"
+    ],
+    "find": "        PAction::LayoutChange => s.runs == Map::<nat, Run>::empty() && s.jobs == Map::<nat, Job>::empty(),",
+    "name": "p-quiescence-premise-dropped",
+    "replace": "        PAction::LayoutChange => true,",
+    "why": "P-QUIESCENT removed for rdf_props recompiles: a run in flight keeps an older layout"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_p_step_preserves_inv"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-quiescence-premise-dropped/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_p_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035924Z-control-p-quiescence-premise-dropped-lemma_p_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035924Z-control-p-quiescence-premise-dropped.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T035934Z-control-p-quiescence-premise-dropped/logs/20261115T035924Z-control-p-quiescence-premise-dropped-lemma_p_step_preserves_inv.log": "da5e5925131ef46b30306b5772be8ea03653e5683f2d667e0b0e175b859421ad",
+    ".g5/Verus_verification/results/platform/20261115T035934Z-control-p-quiescence-premise-dropped/logs/20261115T035924Z-control-p-quiescence-premise-dropped.log": "497b24f8adb44d6c033c4c9290066b0f09b6a5d697f04391765f07ef06d78200"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

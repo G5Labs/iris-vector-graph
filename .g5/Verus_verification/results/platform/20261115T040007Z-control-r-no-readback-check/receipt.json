@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_q_step_preserves_inv"
+    ],
+    "find": "    PVariant { build_checks: true, unique_names: true, readback_checks: true }",
+    "name": "r-no-readback-check",
+    "replace": "    PVariant { build_checks: true, unique_names: true, readback_checks: false }",
+    "why": "the repair with the read-back as built (Gen.cls:102-103): a sync run can be given a colliding shape's class"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_q_step_preserves_inv"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/r-no-readback-check/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_q_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035955Z-control-r-no-readback-check-lemma_q_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035955Z-control-r-no-readback-check.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T040007Z-control-r-no-readback-check/logs/20261115T035955Z-control-r-no-readback-check-lemma_q_step_preserves_inv.log": "251eed7b29bfac97206186162007626ff74c91d629c72632ac6bfbdc5aa61a45",
+    ".g5/Verus_verification/results/platform/20261115T040007Z-control-r-no-readback-check/logs/20261115T035955Z-control-r-no-readback-check.log": "3ae58f029c66161b001fc7517b6deee05f21f06fe482af08a959b9c8a9c77538"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

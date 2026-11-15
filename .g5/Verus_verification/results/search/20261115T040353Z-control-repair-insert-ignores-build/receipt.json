@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_locked_build_preserves"
+    ],
+    "find": "            if !tok_ok(bag, dlen) || s.run is Some || (v.build_locked && s.build is Some) || !writable(s.ix) {",
+    "name": "repair-insert-ignores-build",
+    "replace": "            if !tok_ok(bag, dlen) || s.run is Some || !writable(s.ix) {",
+    "why": "The proposed repair (Build holds the write lock) is what keeps an Insert out of a running Build: without the guard the locked-build theorem fails"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_locked_build_preserves"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/repair-insert-ignores-build/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_locked_build_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040342Z-control-repair-insert-ignores-build-theorem_locked_build_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040342Z-control-repair-insert-ignores-build.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040353Z-control-repair-insert-ignores-build/logs/20261115T040342Z-control-repair-insert-ignores-build-theorem_locked_build_preserves.log": "7f4f25cf71dbfb8217b1e7f2b0b09bb374709001787c9eeddd90288b526c429c",
+    ".g5/Verus_verification/results/search/20261115T040353Z-control-repair-insert-ignores-build/logs/20261115T040342Z-control-repair-insert-ignores-build.log": "625f26128e51d85c848643c012bd91467c926643f2747e860590bd7876f3f463"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

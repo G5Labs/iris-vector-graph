@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_cut_scan"
+    ],
+    "find": "        if d == 0 {\n            s\n        } else {\n            CutSt {",
+    "name": "cutoff-counts-unknown-terms",
+    "replace": "        if false {\n            s\n        } else {\n            CutSt {",
+    "why": "Terms with df 0 are taken as known (the `If tD = 0 Continue` removed): FR-044-C2 'terms with df 0 are neither skipped nor kept'"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_cut_scan"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/cutoff-counts-unknown-terms/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_cut_scan": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040420Z-control-cutoff-counts-unknown-terms-lemma_cut_scan.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040420Z-control-cutoff-counts-unknown-terms.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040426Z-control-cutoff-counts-unknown-terms/logs/20261115T040420Z-control-cutoff-counts-unknown-terms-lemma_cut_scan.log": "ce4df68c453b35cebad1665411b163c842e2b2ac44a05dc3561d1e515214624b",
+    ".g5/Verus_verification/results/search/20261115T040426Z-control-cutoff-counts-unknown-terms/logs/20261115T040420Z-control-cutoff-counts-unknown-terms.log": "7257b755c5423009b95eac4704b3515a5b5a42490a1d4510fa9acd53cba3d2c8"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

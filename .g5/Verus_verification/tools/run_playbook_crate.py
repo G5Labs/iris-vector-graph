@@ -201,6 +201,12 @@ def run(rel: str, label: str) -> int:
     env = dict(os.environ)
     env["PATH"] = f"{VERUS_DIR}:{env.get('PATH', '')}"
     env["CARGO_TARGET_DIR"] = str(RUN_DIR / "target" / rel.split("/")[-1])
+    # git archive keeps the commit's mtimes, so cargo would take a repeated run with the same features as up to date
+    # and verify nothing (no result line: ERROR, never a pass). Clean the root package first, as the arm's runner did.
+    pkg = re.search(r'^name *= *"([^"]+)"', (crate_dir / "Cargo.toml").read_text(), re.M)
+    if pkg:
+        subprocess.run(["cargo", "clean", "--offline", "-p", pkg.group(1)], cwd=str(crate_dir), env=env,
+                       capture_output=True, text=True)
     st = stamp()
     log = RUN_DIR / "pb-logs" / fam / f"{st}-{label}.log"
     log.parent.mkdir(parents=True, exist_ok=True)
@@ -218,6 +224,12 @@ def run(rel: str, label: str) -> int:
     root = results[-1] if results else None
     errs = parse_errors(text)
     named = control_files(rel).get(feature) if feature else None
+    rec = recorded_for(recorded(rel), label)
+    if feature and not named and rec:
+        # a feature whose Cargo.toml comment names no file: fall back to the one file the arm's recorded errors name
+        files = {(l if isinstance(l, str) else f"{l.get('file')}:{l.get('line')}").rsplit(":", 1)[0]
+                 for l in (rec.get("error_locations") or [])}
+        named = files.pop() if len(files) == 1 else None
     if timed_out:
         verdict = "TIMEOUT"
     elif root is None:
@@ -230,7 +242,6 @@ def run(rel: str, label: str) -> int:
         verdict = "EXPECTED_FAIL"
     else:
         verdict = "FAIL_ELSEWHERE"
-    rec = recorded_for(recorded(rel), label)
     cmp = None
     if rec is not None and root is not None:
         rec_locs = rec.get("error_locations") or []

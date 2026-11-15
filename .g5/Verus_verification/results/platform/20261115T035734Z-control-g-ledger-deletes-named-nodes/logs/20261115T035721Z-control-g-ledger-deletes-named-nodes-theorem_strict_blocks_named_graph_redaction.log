@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-ledger-deletes-named-nodes/platform.rs:1499:9
+     |
+1499 |           locked(g_step(s, a, g_as_built())->Some_0),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1504 | /     match a {
+1505 | |         GAction::Begin { c, e, path, probe_ok, class_present } => {
+1506 | |             if guarded(path) {
+1507 | |                 assert(!blind_after(s, e, class_present).contains(e));
+...    |
+1525 | |         _ => {}
+1526 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,12 @@
+verification results:: 40 verified, 1 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/redacted-key-after-head/redaction.rs:1569:13
+     |
+1567 | pub proof fn theorem_redacted_key_refused_before_apply(c: CommitIn)
+     | ------------------------------------------------------------------- at the end of the function body
+1568 |     requires c.locked, !c.never_enabled, c.state_enabled, c.key is Some, c.bound is None, c.key_redacted,
+1569 |     ensures commit_outcome(c) == Outcome::IdempotencyRedacted, !writes(commit_outcome(c)),
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

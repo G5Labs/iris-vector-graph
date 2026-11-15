@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_step_rows",
+      "witness_optin_guard_refuses"
+    ],
+    "find": "        if v.optin_guard && stranded(s, g, p) { s } else { St { optout: s.optout.remove((g, p)), ..s } }",
+    "name": "optin-guard-off",
+    "replace": "        if false { s } else { St { optout: s.optout.remove((g, p)), ..s } }",
+    "why": "Q4 repair removed: opting back in is no longer refused while a marked row is stranded"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_step_rows",
+      "witness_optin_guard_refuses"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/optin-guard-off/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_step_rows": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040214Z-control-optin-guard-off-lemma_step_rows.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_optin_guard_refuses": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040214Z-control-optin-guard-off-witness_optin_guard_refuses.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040214Z-control-optin-guard-off.log",
+    "timed_out": false,
+    "verified": 111
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040220Z-control-optin-guard-off/logs/20261115T040214Z-control-optin-guard-off-lemma_step_rows.log": "33deadf756aba462c0ed71b155dcce83651f8e556eff9a152212fc78c58dfbf8",
+    ".g5/Verus_verification/results/temporal/20261115T040220Z-control-optin-guard-off/logs/20261115T040214Z-control-optin-guard-off-witness_optin_guard_refuses.log": "bd44cea2ca80eb09a1c31b85882f120a0126515296b9af4eee053b77e6b72c5b",
+    ".g5/Verus_verification/results/temporal/20261115T040220Z-control-optin-guard-off/logs/20261115T040214Z-control-optin-guard-off.log": "191db64384fa277f64158f3f9132afa4a874415270aa91e8aeed712e0dd57a9d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

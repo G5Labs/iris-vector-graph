@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_repaired_cache_sound",
+      "witness_repair_refuses_the_aba_store"
+    ],
+    "find": "pub open spec fn dv_repaired() -> DV {\n    DV { probe: true, gen_check: true, nolock_check: true, bump: true, epoch_stamp: true, quiet_kills: false, kill_in_tx: false, set_gen: false, kill_bumps: false }\n}",
+    "name": "repair-epoch-off",
+    "replace": "pub open spec fn dv_repaired() -> DV {\n    DV { probe: true, gen_check: true, nolock_check: true, bump: true, epoch_stamp: false, quiet_kills: false, kill_in_tx: false, set_gen: false, kill_bumps: false }\n}",
+    "why": "The proposed repair without its epoch stamp: the repaired variant is the as-built one without P-QUIET (theorem_repaired_cache_sound then fails at covered(v), a scope precondition; the witness fails on the trace itself)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_repaired_cache_sound",
+      "witness_repair_refuses_the_aba_store"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "bda2567865779c90aa5ef3e84b2e77baf1d7468d3404c7ded9f2e30395ff6481",
+    ".g5/Verus_verification/models/graph_structure/model.json": "f4be757a33fc5a88a8752327e47764b36086a4cb6c3767144a721bd035b9cdfa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/repair-epoch-off/graph_structure.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_repaired_cache_sound": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035401Z-control-repair-epoch-off-theorem_repaired_cache_sound.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_repair_refuses_the_aba_store": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035401Z-control-repair-epoch-off-witness_repair_refuses_the_aba_store.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/20261115T035401Z-control-repair-epoch-off.log",
+    "timed_out": false,
+    "verified": 64
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/graph_structure/20261115T035406Z-control-repair-epoch-off/logs/20261115T035401Z-control-repair-epoch-off-theorem_repaired_cache_sound.log": "6fac0cca505fc96cb6dd71169deaf35b60f70a147e4087c1d5c90e38ea09755f",
+    ".g5/Verus_verification/results/graph_structure/20261115T035406Z-control-repair-epoch-off/logs/20261115T035401Z-control-repair-epoch-off-witness_repair_refuses_the_aba_store.log": "4196dc34969af1b4bd06e935c0378abeef7de76190df40eb8e347ef52d97122f",
+    ".g5/Verus_verification/results/graph_structure/20261115T035406Z-control-repair-epoch-off/logs/20261115T035401Z-control-repair-epoch-off.log": "e0dff7c471b8b8293ae7ac46b723e5762a12bf07e26fa43dd188f85f34beef35"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_s_step_preserves_inv"
+    ],
+    "find": "    SVariant { serial: true, refuse_explicit_over_marker: true, deploy_refusal_aborts: false, cas: false, cas_raises: false }",
+    "name": "s-explicit-over-marker-allowed",
+    "replace": "    SVariant { serial: true, refuse_explicit_over_marker: false, deploy_refusal_aborts: false, cas: false, cas_raises: false }",
+    "why": "the proof's premise P-NO-EXPLICIT-OVER-MARKER removed: FR-009's explicit path records a second schema over another 4.6 setup (F-S3)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_s_step_preserves_inv"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-explicit-over-marker-allowed/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_s_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035531Z-control-s-explicit-over-marker-allowed-lemma_s_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035531Z-control-s-explicit-over-marker-allowed.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T035540Z-control-s-explicit-over-marker-allowed/logs/20261115T035531Z-control-s-explicit-over-marker-allowed-lemma_s_step_preserves_inv.log": "b050de2ada704d5da034b1fdcbf3614d3ff9a858dd7c4e5612317f8f5d7a5e3f",
+    ".g5/Verus_verification/results/platform/20261115T035540Z-control-s-explicit-over-marker-allowed/logs/20261115T035531Z-control-s-explicit-over-marker-allowed.log": "4c74c0b73cd6f0eaf92f241a754171e98b356079fe88f88696d5829186aa270b"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

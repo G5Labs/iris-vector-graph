@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_phased_delete_serial"
+    ],
+    "find": "        let d = if !has_ts(s1.tout, tri(c)) { set![tri(c)] } else { Set::<Triple>::empty() };",
+    "name": "delete-decide-always-dooms",
+    "replace": "        let d = set![tri(c)];",
+    "why": "Binding check for the phased delete: a decision that skips HasTemporalEdge no longer composes to DeleteTemporalEdge run serially"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_phased_delete_serial"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/delete-decide-always-dooms/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_phased_delete_serial": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040241Z-control-delete-decide-always-dooms-lemma_phased_delete_serial.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040241Z-control-delete-decide-always-dooms.log",
+    "timed_out": false,
+    "verified": 112
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040244Z-control-delete-decide-always-dooms/logs/20261115T040241Z-control-delete-decide-always-dooms-lemma_phased_delete_serial.log": "cdd0112a8858f399672b69fd259b306ab7eae661aa59b2713dbe5d22cf968b5e",
+    ".g5/Verus_verification/results/temporal/20261115T040244Z-control-delete-decide-always-dooms/logs/20261115T040241Z-control-delete-decide-always-dooms.log": "e461f5e24ab97db9ba9bdb86d364ece2dc1fde725eb6a257970175dbf31e2ad4"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

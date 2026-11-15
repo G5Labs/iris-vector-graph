@@ -1,0 +1,24 @@
+verification results:: 111 verified, 2 errors
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/optin-guard-off/temporal.rs:2272:9
+     |
+2272 |           rows_ok(step(s, a, v)),
+     |           ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2276 | /     match a {
+2277 | |         Action::Write { c, w, attrs, mode, f } => {
+2278 | |             lemma_write_rows(s, c, w, attrs, mode, f, v);
+2279 | |             lemma_write_shape(s, c, w, attrs, mode, f, v);
+...    |
+2341 | |         },
+2342 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/optin-guard-off/temporal.rs:2577:12
+     |
+2577 |     assert(step(s2, Action::SetStructural { g: 0, p: 2, enabled: true }, v) == s2);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

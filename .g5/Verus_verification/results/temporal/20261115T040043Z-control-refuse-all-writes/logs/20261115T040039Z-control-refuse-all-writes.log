@@ -1,0 +1,174 @@
+verification results:: 85 verified, 28 errors
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1770:12
+     |
+1770 |     assert(r1 == WRes::Written);
+     |            ^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1805:12
+     |
+1805 |     assert(r1 == WRes::Threw);
+     |            ^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1832:12
+     |
+1832 |     assert(r1 == WRes::Threw);
+     |            ^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1857:12
+     |
+1857 |     assert(ra == WRes::Written);
+     |            ^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1903:12
+     |
+1903 |     assert(r1 == WRes::Written);
+     |            ^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1927:12
+     |
+1927 |     assert(get0(sb.cnt, akey(c)) == 1 && get0(sb.bucket, bkey(c)) == 1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1965:12
+     |
+1965 |     assert(get0(s1.cnt, akey(c)) == 1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1978:12
+     |
+1978 |     assert(r1 == Out::Threw);
+     |            ^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:1993:12
+     |
+1993 |     assert(get0(s2.cnt, akey(c)) == 1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:2070:12
+     |
+2070 |     assert(s2.tout.contains_key(c) && s2.txn.len() == 1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:2084:12
+     |
+2084 |     assert(!guard_stops(s0, c, Mode::Insert));  // writer 1 reads $Data(tout) = 0
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:2718:12
+     |
+2718 |     assert(s1.nodes.contains((0int, 3int)));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:2736:12
+     |
+2736 |     assert(s1.nodes.contains((0int, 3int)));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:2757:12
+     |
+2757 |     assert(sb.nodes.contains((0int, 3int)));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:2820:12
+     |
+2820 |     assert(s1.nodes.contains((7int, 3int)));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3106:12
+     |
+3106 |     assert(s1.tout.contains_key(c) && !s1.optout.contains((c.g, c.p)) && !s1.rows.contains_key(tri(c)));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3118:12
+     |
+3118 |     assert(s1.tout.contains_key(c));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3144:12
+     |
+3144 |     assert(s2.rows.contains_key(tri(c)));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3224:12
+     |
+3224 |     assert(s2.rows == s0.rows && s2.tout.contains_key(cl) && s2.plans == s1.plans);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3253:12
+     |
+3253 |     assert(s3.rows.contains_key(t) && s3.rows[t]);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3277:12
+     |
+3277 |     assert(s3.tout.contains_key(cl) && !s3.rows.contains_key(t));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3313:12
+     |
+3313 |     assert(s2.rows.contains_key(t));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3332:9
+     |
+3330 | pub proof fn lemma_rowless_shape()
+     | ---------------------------------- at the end of the function body
+3331 |     ensures
+3332 |         s_rowless().tout == Map::<Coord, int>::empty().insert(c1(), 1),
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3393:12
+     |
+3393 |     assert(s3.rows.contains_key(tn) && s3.rows[tn]);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3429:12
+     |
+3429 |     assert(tout_after_purge(s2, 0, 0, 1000).contains_key(cl));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3478:12
+     |
+3478 |     assert(s2.tout.contains_key(cl));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3502:12
+     |
+3502 |     assert(s3.rows.contains_key(t) && s3.rows[t]);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/refuse-all-writes/temporal.rs:3545:12
+     |
+3545 |     assert(s1.tout == Map::<Coord, int>::empty().insert(c, 2));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 28 previous errors
+

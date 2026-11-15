@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_step_preserves_inv"
+    ],
+    "find": "        idem_redacted: if first && has_key { s.idem_redacted.insert(s.key_of[rv]) } else { s.idem_redacted },",
+    "name": "key-not-moved",
+    "replace": "        idem_redacted: s.idem_redacted,",
+    "why": "ClearRevision leaves ^IVG.Ledger(\"idem\", key) bound and records no idemRedacted entry: a retry replays the redacted revision"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_step_preserves_inv"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/key-not-moved/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035304Z-control-key-not-moved-lemma_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035304Z-control-key-not-moved.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035307Z-control-key-not-moved/logs/20261115T035304Z-control-key-not-moved-lemma_step_preserves_inv.log": "8a8689ae706e5c771d5e4ae7e5ba7d27bdf42498dce7ca09d426e553f5744ca6",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035307Z-control-key-not-moved/logs/20261115T035304Z-control-key-not-moved.log": "2930032e7fde91ffb5f23449d78512d0f63b892f0f4fb55c1a6d14d2da771343"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

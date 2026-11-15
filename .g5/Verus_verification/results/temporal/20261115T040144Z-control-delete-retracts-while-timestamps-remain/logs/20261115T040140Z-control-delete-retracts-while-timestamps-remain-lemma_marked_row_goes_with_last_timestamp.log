@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/delete-retracts-while-timestamps-remain/temporal.rs:2434:9
+     |
+2434 |           !has_ts(step(s, a, v).tout, t),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+2435 |   {
+2436 | /     match a {
+2437 | |         Action::Delete { c } => {
+2438 | |             if s.tout.contains_key(c) {
+2439 | |                 lemma_remove_temporal_row_shape(s, c);
+...    |
+2446 | |         _ => {},
+2447 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

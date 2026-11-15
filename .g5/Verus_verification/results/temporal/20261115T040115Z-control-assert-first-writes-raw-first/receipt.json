@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_write_exact",
+      "witness_assert_first_repairs_the_retry"
+    ],
+    "find": "        if fails {\n            (assert_row_partial(s, t, f), WRes::Threw)",
+    "name": "assert-first-writes-raw-first",
+    "replace": "        if fails {\n            (assert_row_partial(raw_part(s, c, w, mode, v), t, f), WRes::Threw)",
+    "why": "S2 repair undone: the structural step throws after tout/bucket were Set \u2014 the repaired retry no longer completes"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_write_exact",
+      "witness_assert_first_repairs_the_retry"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/assert-first-writes-raw-first/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_write_exact": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040109Z-control-assert-first-writes-raw-first-lemma_write_exact.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_assert_first_repairs_the_retry": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040109Z-control-assert-first-writes-raw-first-witness_assert_first_repairs_the_retry.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040109Z-control-assert-first-writes-raw-first.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040115Z-control-assert-first-writes-raw-first/logs/20261115T040109Z-control-assert-first-writes-raw-first-lemma_write_exact.log": "507e5f83a85da1136b294b5ddc609bea40c53be4b8979ab0de86c2bf2970cf99",
+    ".g5/Verus_verification/results/temporal/20261115T040115Z-control-assert-first-writes-raw-first/logs/20261115T040109Z-control-assert-first-writes-raw-first-witness_assert_first_repairs_the_retry.log": "747b342aacf54d1624c449dff6515efda4295805b7523a6f1a757673b756e52b",
+    ".g5/Verus_verification/results/temporal/20261115T040115Z-control-assert-first-writes-raw-first/logs/20261115T040109Z-control-assert-first-writes-raw-first.log": "e9715d2553dfac61b11cca8cd9d00f881c982a5009d25c2d36c9e52bea5c7907"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

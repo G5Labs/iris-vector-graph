@@ -1,0 +1,55 @@
+verification results:: 64 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/ledger-key-skips-canonical/graph_structure.rs:239:9
+    |
+234 | pub proof fn theorem_key_is_function_of_graph(n1: Name, n2: Name)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+239 |         for_ledger(n1) == for_ledger(n2),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/ledger-key-skips-canonical/graph_structure.rs:248:9
+    |
+248 |         for_ledger(a + seq!['\0'] + b) == for_ledger(a + b),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+256 |     assert(Seq::<char>::empty() != zero_name()) by { assert(zero_name().len() == 1); }
+    |     ------ at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/ledger-key-skips-canonical/graph_structure.rs:367:1
+    |
+367 | pub proof fn theorem_cross_store_key_reads_nothing_foreign(n1: Name, n2: Name)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/ledger-key-skips-canonical/graph_structure.rs:373:9
+    |
+373 |           canonical(n1) == canonical(n2),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+383 | /     if c1.len() == 0 {
+384 | |         if c2.len() == 0 {
+385 | |             // int 0 vs $Char(1)
+386 | |             lemma_sub_of_injective(zero_name(), ledger_default_text());
+...   |
+398 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/graph_structure/controls/ledger-key-skips-canonical/graph_structure.rs:374:9
+    |
+374 |           l1_same_graph(n1, n2),
+    |           ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+383 | /     if c1.len() == 0 {
+384 | |         if c2.len() == 0 {
+385 | |             // int 0 vs $Char(1)
+386 | |             lemma_sub_of_injective(zero_name(), ledger_default_text());
+...   |
+398 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 4 previous errors
+

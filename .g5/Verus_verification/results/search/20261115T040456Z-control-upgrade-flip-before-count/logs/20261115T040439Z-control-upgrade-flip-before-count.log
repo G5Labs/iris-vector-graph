@@ -1,0 +1,109 @@
+verification results:: 50 verified, 6 errors
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:1700:20
+     |
+1700 |             assert(uinv_core(s2));
+     |                    ^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:1820:1
+     |
+1820 | pub proof fn theorem_upgrade_completes(s: USys, p: nat)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:1847:12
+     |
+1847 |     assert(s7.ix == canonical(s.ix));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:1850:12
+     |
+1850 |     assert(s7.ups.dom() =~= Set::<nat>::empty());
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:1908:9
+     |
+1908 |           uinv_core(ustep(s, a, upgrade_repaired())->Some_0),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1916 | /     match a {
+1917 | |         UAct::Start { p } => {
+1918 | |             if s2 != s {
+1919 | |                 lemma_s1ok_frame(s.ix, s2.ix);
+...    |
+2003 | |         },
+2004 | |     }
+     | |_____- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2049:1
+     |
+2049 | pub proof fn witness_concurrent_upgrades() {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2064:12
+     |
+2064 |     assert(s8.ups.contains_key(2) && s8.ups[2] == UpPc::Flagged);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2065:12
+     |
+2065 |     assert(s8.lock is None && !s8.ix.upgrading && schema_of(s8.ix) == 2);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2083:1
+     |
+2083 | pub proof fn witness_crash_after_flip_rerun() {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2094:12
+     |
+2094 |     assert(ustep(s5, UAct::Crash { p: 1 }, v) is Some);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2095:12
+     |
+2095 |     assert(s6.ups.dom() =~= Set::<nat>::empty());
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2111:1
+     |
+2111 | pub proof fn witness_repair_rerun_keeps_index() {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2124:12
+     |
+2124 |     assert(s8.ups[2] == UpPc::Flipped);
+     |            ^^^^^^^^^
+     |
+    --> map.rs:87:12
+     |
+     = note: recommendation not met
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2124:12
+     |
+2124 |     assert(s8.ups[2] == UpPc::Flipped);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/upgrade-flip-before-count/search.rs:2127:5
+     |
+1403 |         a.tf == b.tf,
+     |         ------------ failed precondition
+...
+2127 |     lemma_cons_frame(counted(rebuilt(s1_index())), s8.ix);
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 10 previous errors
+

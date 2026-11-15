@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_undocumented_bypasses_break_the_contract"
+    ],
+    "find": "        Path::CreateNode | Path::CypherDml | Path::EraseGraph | Path::OtherGuarded => PathClass::Guarded,\n        Path::BulkDeleteAdjacency | Path::ApiSample => PathClass::UndocumentedBypass,",
+    "name": "g-bda-guarded",
+    "replace": "        Path::CreateNode | Path::CypherDml | Path::EraseGraph | Path::OtherGuarded | Path::BulkDeleteAdjacency => PathClass::Guarded,\n        Path::ApiSample => PathClass::UndocumentedBypass,",
+    "why": "binding check: if bulk_delete_adjacency called ledger_check, its bypass witness must fail"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_undocumented_bypasses_break_the_contract"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-bda-guarded/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_undocumented_bypasses_break_the_contract": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035645Z-control-g-bda-guarded-witness_undocumented_bypasses_break_the_contract.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035645Z-control-g-bda-guarded.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T035654Z-control-g-bda-guarded/logs/20261115T035645Z-control-g-bda-guarded-witness_undocumented_bypasses_break_the_contract.log": "5d8ce64bc0633f4c31e982f870fbffdd48e92a7a23dba50120008df740dc4147",
+    ".g5/Verus_verification/results/platform/20261115T035654Z-control-g-bda-guarded/logs/20261115T035645Z-control-g-bda-guarded.log": "6fd12c093aacf630025ee1ada9fc0208756405ba749c07aa8aae5ad1a4d0db4f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

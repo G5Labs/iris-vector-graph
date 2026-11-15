@@ -1,0 +1,28 @@
+verification results:: 39 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/blockscommit-first-record-only/redaction.rs:756:9
+    |
+756 |         inv(append_commit(s, new, key, adds)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+769 |     assert(tombs_cleared(s2)) by {
+    |     ------ at the end of the function body
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/blockscommit-first-record-only/redaction.rs:1587:13
+     |
+1584 |   pub proof fn lemma_commit_admits_matches_outcome(s: St, new: Seq<Live>, key: Option<int>, fp: int, max_ops: nat)
+     |   ---------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+1587 |       ensures ({
+     |  _____________^
+1588 | |         let blocked = match s.marker {
+1589 | |             Some(t) => exists|j: int| 0 <= j < new.len() && matches(Rec::Live(#[trigger] new[j]), t, K()) == Tri::Yes,
+1590 | |             None => false,
+...    |
+1598 | |         writes(commit_outcome(c)) == commit_admits(s, new, key, true)
+1599 | |     }),
+     | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

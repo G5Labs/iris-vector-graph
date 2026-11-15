@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/verify-reads-marked-rows/temporal.rs:2663:9
+     |
+2663 |         verify_equal(write_stores(s, c, w, attrs, mode, f, v).0),
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2679 |     assert forall|t: Triple| #![trigger s2.rows.contains_key(t)] #![trigger s.rows.contains_key(t)] (s2.rows.contains_key(t) && !s...
+     |     ------ at the end of the function body
+
+error: aborting due to 1 previous error
+

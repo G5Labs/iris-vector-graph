@@ -1,0 +1,17 @@
+verification results:: 54 verified, 2 errors
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/removedoc-keeps-df/search.rs:358:70
+    |
+358 |       assert forall|t: Term| #[trigger] ix2.tf.contains_key(t) implies ix2.tf[t].dom().len() > 0
+    |  ______________________________________________________________________^
+359 | |         && ix2.df[t] == ix2.tf[t].dom().len() by {
+    | |_____________________________________________^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/removedoc-keeps-df/search.rs:995:12
+    |
+995 |     assert(s8.ix.df.contains_key(7) && s8.ix.df[7] == 1);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-first-access-check/platform.rs:533:9
+    |
+527 |   pub proof fn theorem_refusal_changes_nothing(s: SSt, r: Sch, e: Eid, t: Sch, explicit: bool)
+    |   -------------------------------------------------------------------------------------------- at the end of the function body
+...
+533 | /         ({
+534 | |             let s2 = s_step(s, SAction::NewEngine { e, sch: t, explicit, native_ok: true }, s_as_built())->Some_0;
+535 | |             &&& !s2.engines[e].accepted
+536 | |             &&& s2.record == s.record && s2.tables == s.tables && s2.marker == s.marker
+537 | |             &&& s2.classes_for == s.classes_for && s2.post_writers == s.post_writers
+538 | |         }),
+    | |__________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

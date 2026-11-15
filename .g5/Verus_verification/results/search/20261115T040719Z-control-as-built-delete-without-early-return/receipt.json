@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_delete_during_build_lost",
+      "witness_round1_repair_loses_delete"
+    ],
+    "find": "            } else if s.ix.n is None {\n                Some(WSys { gone: s.gone.insert(d), ..s })  // returns 0 without locking (l.498)",
+    "name": "as-built-delete-without-early-return",
+    "replace": "            } else if false {\n                Some(WSys { gone: s.gone.insert(d), ..s })  // returns 0 without locking (l.498)",
+    "why": "R2-1: the lost delete comes from Delete's early return when cfg N is absent (l.498); without it the Delete removes the flushed document"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_delete_during_build_lost",
+      "witness_round1_repair_loses_delete"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/as-built-delete-without-early-return/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_delete_during_build_lost": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040705Z-control-as-built-delete-without-early-return-witness_delete_during_build_lost.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_round1_repair_loses_delete": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040705Z-control-as-built-delete-without-early-return-witness_round1_repair_loses_delete.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040705Z-control-as-built-delete-without-early-return.log",
+    "timed_out": false,
+    "verified": 54
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040719Z-control-as-built-delete-without-early-return/logs/20261115T040705Z-control-as-built-delete-without-early-return-witness_delete_during_build_lost.log": "fae716cdcd71f7eeeb2468b3bd8beef8bfe3e5ab3a17f36dccc712afb028826e",
+    ".g5/Verus_verification/results/search/20261115T040719Z-control-as-built-delete-without-early-return/logs/20261115T040705Z-control-as-built-delete-without-early-return-witness_round1_repair_loses_delete.log": "94dc68387e4dddb3c278fc965553ecdb9dfb2ac5d2a8c0e473161657ec627b8a",
+    ".g5/Verus_verification/results/search/20261115T040719Z-control-as-built-delete-without-early-return/logs/20261115T040705Z-control-as-built-delete-without-early-return.log": "015d2d024d851b88c9cee1dee959744e9725acfbd9a719f7579afe3a25502ca9"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

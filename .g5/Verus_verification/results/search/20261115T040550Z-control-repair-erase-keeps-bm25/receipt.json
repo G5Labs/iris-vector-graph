@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_repaired_erase_removes_answers",
+      "witness_erase_leaves_bm25"
+    ],
+    "find": "            Map::new(s.bm25.dom().filter(|x: IxName| s.bm25[x].graph != g), |x: IxName| s.bm25[x])",
+    "name": "repair-erase-keeps-bm25",
+    "replace": "            s.bm25",
+    "why": "The proposed repair (EraseGraph drops the BM25 indexes recorded for the graph) is what removes the erased answers (ADR-0004)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_repaired_erase_removes_answers",
+      "witness_erase_leaves_bm25"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/repair-erase-keeps-bm25/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_repaired_erase_removes_answers": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040544Z-control-repair-erase-keeps-bm25-theorem_repaired_erase_removes_answers.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_erase_leaves_bm25": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040544Z-control-repair-erase-keeps-bm25-witness_erase_leaves_bm25.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040544Z-control-repair-erase-keeps-bm25.log",
+    "timed_out": false,
+    "verified": 54
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040550Z-control-repair-erase-keeps-bm25/logs/20261115T040544Z-control-repair-erase-keeps-bm25-theorem_repaired_erase_removes_answers.log": "546135b94cd9737e24b2505aa727d3141af44b722cdea36549f941468fdab107",
+    ".g5/Verus_verification/results/search/20261115T040550Z-control-repair-erase-keeps-bm25/logs/20261115T040544Z-control-repair-erase-keeps-bm25-witness_erase_leaves_bm25.log": "9ae0be6adc7c3c4ed73a82661d7e43814e6db9497372216e4a8fdc2b1ab3f097",
+    ".g5/Verus_verification/results/search/20261115T040550Z-control-repair-erase-keeps-bm25/logs/20261115T040544Z-control-repair-erase-keeps-bm25.log": "394e7bfb6ceca6621f55a4060ac419ba5e694484337daa3208de01203504a149"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

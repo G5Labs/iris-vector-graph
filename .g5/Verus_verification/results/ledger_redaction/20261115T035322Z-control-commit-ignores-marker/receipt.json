@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_commit_writes_only_when_admitted",
+      "lemma_commit_admits_matches_outcome"
+    ],
+    "find": "    else if c.blocked { Outcome::RedactionInProgress }\n",
+    "name": "commit-ignores-marker",
+    "replace": "",
+    "why": "CommitInTxn without the BlocksCommit call: a changeset into the target commits while the marker exists"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_commit_writes_only_when_admitted",
+      "lemma_commit_admits_matches_outcome"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/commit-ignores-marker/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_commit_admits_matches_outcome": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035319Z-control-commit-ignores-marker-lemma_commit_admits_matches_outcome.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_commit_writes_only_when_admitted": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035319Z-control-commit-ignores-marker-theorem_commit_writes_only_when_admitted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035319Z-control-commit-ignores-marker.log",
+    "timed_out": false,
+    "verified": 39
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035322Z-control-commit-ignores-marker/logs/20261115T035319Z-control-commit-ignores-marker-lemma_commit_admits_matches_outcome.log": "2ca458623d678be4cfb390aaf69dbc0f7986fb4c744f38d7d03ee3084654dd7b",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035322Z-control-commit-ignores-marker/logs/20261115T035319Z-control-commit-ignores-marker-theorem_commit_writes_only_when_admitted.log": "ff0e770d7bc008990c859273d7b9abba036a1afe639853bf18046f471d6a704d",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035322Z-control-commit-ignores-marker/logs/20261115T035319Z-control-commit-ignores-marker.log": "a29c0e6603a1bf3818732e357150632ae57556bb56d8607f832f315bc17bc94e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

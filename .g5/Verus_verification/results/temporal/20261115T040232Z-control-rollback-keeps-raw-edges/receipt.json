@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_refused_commit_restores_journaled"
+    ],
+    "find": "            tout: sn.tout, eprop: sn.eprop, rows: sn.rows, nodes: sn.nodes, optout: sn.optout,",
+    "name": "rollback-keeps-raw-edges",
+    "replace": "            tout: s.tout, eprop: sn.eprop, rows: sn.rows, nodes: sn.nodes, optout: sn.optout,",
+    "why": "TROLLBACK that leaves the Set of ^KG(\"tout\") in place: a refused changeset's temporal edge survives (spec 224 'atomically with all structural ops')"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_refused_commit_restores_journaled"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/controls/rollback-keeps-raw-edges/temporal.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 12,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_refused_commit_restores_journaled": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040227Z-control-rollback-keeps-raw-edges-lemma_refused_commit_restores_journaled.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/temporal/20261115T040227Z-control-rollback-keeps-raw-edges.log",
+    "timed_out": false,
+    "verified": 101
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261115T040232Z-control-rollback-keeps-raw-edges/logs/20261115T040227Z-control-rollback-keeps-raw-edges-lemma_refused_commit_restores_journaled.log": "d8fb570e47b2e518b0e882b0bc4493ff266a8f6c228bd2116139b6cde9b20b42",
+    ".g5/Verus_verification/results/temporal/20261115T040232Z-control-rollback-keeps-raw-edges/logs/20261115T040227Z-control-rollback-keeps-raw-edges.log": "ddc142e8fb5053acb67f71ba03dffed37751b59b13cdbef33759dfed4d6486d0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

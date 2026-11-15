@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_build_preserves",
+      "lemma_q_build_preserves"
+    ],
+    "find": "    } else if digest(s.src[h]) != d {\n        // \"refused: its lines",
+    "name": "p-no-digest-check",
+    "replace": "    } else if false {\n        // \"refused: its lines",
+    "why": "Gen.Build without the R311 digest check (Gen.cls:177-182): planted lines are compiled"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_build_preserves",
+      "lemma_q_build_preserves"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-digest-check/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_build_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035837Z-control-p-no-digest-check-lemma_build_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_q_build_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035837Z-control-p-no-digest-check-lemma_q_build_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035837Z-control-p-no-digest-check.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T035847Z-control-p-no-digest-check/logs/20261115T035837Z-control-p-no-digest-check-lemma_build_preserves.log": "d6a82849cf1baae6fb2cf03bbd0124543c2ed69ac5b883ace1b420766b7cabd3",
+    ".g5/Verus_verification/results/platform/20261115T035847Z-control-p-no-digest-check/logs/20261115T035837Z-control-p-no-digest-check-lemma_q_build_preserves.log": "395b6b51c225d6f03a9c823298a716f53e3b35958698220f7a241aaffe740f24",
+    ".g5/Verus_verification/results/platform/20261115T035847Z-control-p-no-digest-check/logs/20261115T035837Z-control-p-no-digest-check.log": "3b8f8b69280b336d0b1327d4d461b2888b4686bba5abda087e15397d0667b43c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

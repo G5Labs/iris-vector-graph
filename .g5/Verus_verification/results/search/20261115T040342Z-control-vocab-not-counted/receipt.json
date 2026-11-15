@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_add_doc_preserves"
+    ],
+    "find": "        vocab: ix.vocab + fresh_terms(ix, bag).len(),",
+    "name": "vocab-not-counted",
+    "replace": "        vocab: ix.vocab,",
+    "why": "The add loop never increments vocab_size for a new term (O1, FR-018)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_add_doc_preserves"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/controls/vocab-not-counted/search.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_add_doc_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040331Z-control-vocab-not-counted-lemma_add_doc_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/search/20261115T040331Z-control-vocab-not-counted.log",
+    "timed_out": false,
+    "verified": 54
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261115T040342Z-control-vocab-not-counted/logs/20261115T040331Z-control-vocab-not-counted-lemma_add_doc_preserves.log": "9d5cf1142b105cfa91bbd41b156c9ccf2003b0415bdee2b2d31bc1b6aab9783d",
+    ".g5/Verus_verification/results/search/20261115T040342Z-control-vocab-not-counted/logs/20261115T040331Z-control-vocab-not-counted.log": "56e573a95c47ff143c5ddf80938fa57fe6716ee83e85b387fb3cb8162eabddcd"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

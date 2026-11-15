@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:342:1
+    |
+342 | pub proof fn lemma_s_step_preserves_inv(s: SSt, a: SAction)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:425:76
+    |
+425 |             assert forall|x: Sch| #[trigger] s2.marker.contains(x) implies x == st.sch by {
+    |                                                                            ^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/s-no-mismatch-refusal/platform.rs:436:20
+    |
+436 |             assert(setup_ok(s2, st));
+    |                    ^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

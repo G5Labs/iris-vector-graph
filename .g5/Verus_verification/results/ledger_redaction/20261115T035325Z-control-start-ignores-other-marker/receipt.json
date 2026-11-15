@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_step_preserves_inv"
+    ],
+    "find": "            } else if s.marker is Some && s.marker != Some(t) {\n                None  // redaction_in_progress",
+    "name": "start-ignores-other-marker",
+    "replace": "            } else if false {\n                None  // redaction_in_progress",
+    "why": "Redact() without the entry refusal of another target's marker (review A1): a run starts under a marker that names another target"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_step_preserves_inv"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_redaction/model.json": "fc153e50dcf4bf45ecb6091bbad3fde9b31ff4a915be20ac87179cede95a2012",
+    ".g5/Verus_verification/models/ledger_redaction/redaction.rs": "9de526d282101d25486ef68fe8cb7f5986511e545ccb47d3cbd36bf2a18513c9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/controls/start-ignores-other-marker/redaction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035322Z-control-start-ignores-other-marker-lemma_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/ledger_redaction/20261115T035322Z-control-start-ignores-other-marker.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035325Z-control-start-ignores-other-marker/logs/20261115T035322Z-control-start-ignores-other-marker-lemma_step_preserves_inv.log": "99a5ce04fdd0ec1585e4430f5477090e0ca3c2e9b92fcebe987a84c679488ea4",
+    ".g5/Verus_verification/results/ledger_redaction/20261115T035325Z-control-start-ignores-other-marker/logs/20261115T035322Z-control-start-ignores-other-marker.log": "20ea38f750e3bf4719623845c8b037bff8cba4c9811628cec1cfceef8f37f436"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

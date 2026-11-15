@@ -1,0 +1,58 @@
+verification results:: 44 verified, 7 errors
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-no-refusal/platform.rs:1168:109
+     |
+1168 | ...y(k) && s2.calls[k].started_strict implies exempt(s2.calls[k].path) by {
+     |                                               ^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-no-refusal/platform.rs:1240:9
+     |
+1240 | /         guarded(p) ==> ({
+1241 | |             let s1 = g_step(s, GAction::Begin { c, e, path: p, probe_ok: true, class_present: true }, g_as_built())->Some_0;
+1242 | |             &&& !s1.calls.contains_key(c)
+1243 | |             &&& s1.log == s.log && s1.g_nodes == s.g_nodes && s1.g_edges == s.g_edges
+1244 | |             &&& s1.refusals == s.refusals + 1
+1245 | |         }),
+     | |__________^ failed this postcondition
+...
+1256 | /     if guarded(p) {
+1257 | |         assert(!blind_after(s, e, true).contains(e));
+1258 | |     } else {
+1259 | |         let s1 = g_step(s, GAction::Begin { c, e, path: p, probe_ok: true, class_present: true }, v)->Some_0;
+...    |
+1276 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-no-refusal/platform.rs:1318:12
+     |
+1318 |     assert(!s4.calls.contains_key(2) && s4.refusals == 1 && s4.log == s3.log);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-no-refusal/platform.rs:1346:12
+     |
+1346 |     assert(!s9.calls.contains_key(3) && s9.refusals == s8.refusals + 1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-no-refusal/platform.rs:1382:12
+     |
+1382 |     assert(!s7.calls.contains_key(3) && s7.refusals == s6.refusals + 1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-no-refusal/platform.rs:1510:79
+     |
+1510 |             assert forall|k: nat| #[trigger] s2.calls.contains_key(k) implies !removes_g(s2.calls[k].path) by {
+     |                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/g-no-refusal/platform.rs:1540:12
+     |
+1540 |     assert(!s3.calls.contains_key(1) && s3.g_nodes == 2);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 7 previous errors
+

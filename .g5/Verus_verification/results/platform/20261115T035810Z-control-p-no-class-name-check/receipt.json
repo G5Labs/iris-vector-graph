@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_for_hit_checks",
+      "witness_readback_trusts_the_entrys_class"
+    ],
+    "find": "            Run { phase: RPhase::Running, gen: if name_ok(e.cls, h, v) { e.cls } else { None }, ..rr }",
+    "name": "p-no-class-name-check",
+    "replace": "            Run { phase: RPhase::Running, gen: e.cls, ..rr }",
+    "why": "Gen.For line 73 without the IVGC.P<h> check: an ok entry naming another class is run"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_for_hit_checks",
+      "witness_readback_trusts_the_entrys_class"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/controls/p-no-class-name-check/platform.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_for_hit_checks": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035757Z-control-p-no-class-name-check-lemma_for_hit_checks.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_readback_trusts_the_entrys_class": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035757Z-control-p-no-class-name-check-witness_readback_trusts_the_entrys_class.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-consolidated-20261114/verus/platform/20261115T035757Z-control-p-no-class-name-check.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261115T035810Z-control-p-no-class-name-check/logs/20261115T035757Z-control-p-no-class-name-check-lemma_for_hit_checks.log": "961a93bb9dec083320441e00fa6de0ac97582dfdb63633d3d7981ffdee6572c6",
+    ".g5/Verus_verification/results/platform/20261115T035810Z-control-p-no-class-name-check/logs/20261115T035757Z-control-p-no-class-name-check-witness_readback_trusts_the_entrys_class.log": "3daa0a7b590ca37e58080a158201fb56231d2113671d2fdedc089de77dd86727",
+    ".g5/Verus_verification/results/platform/20261115T035810Z-control-p-no-class-name-check/logs/20261115T035757Z-control-p-no-class-name-check.log": "148c471f27e632163e53a46390ff69bd586b1d0fb514b7bc511a1fc78fbbdc60"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
