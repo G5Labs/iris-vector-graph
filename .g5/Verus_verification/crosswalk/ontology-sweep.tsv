@@ -1,20 +1,20 @@
-p_module	statements	refusal rows (X)	contrast rows (not, unless, only, before, instead, empty, refuse, raise)	rows examined	lifted	already present	deferred	refusal or contrast rows not examined	status
-00-system.md	47	0	8	0				8	not swept
-01-install-schema.md	259	29	78	0				107	not swept
-02-graph-identity.md	136	16	31	2	GID-B5.4;GID-B5.5			47	Tier 1 rows only
-03-writes.md	210	18	59	2	WRT-B7.12;WRT-B7.14			75	Tier 1 rows only
-04-adjacency.md	300	3	69	6	ADJ-B2.9;ADJ-B7;ADJ-B7.1;ADJ-I5.17.5;ADJ-I5.8;ADJ-I5.9			69	Tier 1 rows only
-05-temporal.md	307	17	64	16	TMP-B11.3;TMP-B6.11;TMP-B6.14;TMP-B6.15;TMP-B6.16;TMP-B6.6;TMP-B6.7;TMP-B6.8;TMP-B6.9	TMP-B6;TMP-B6.1;TMP-B6.3;TMP-B6.4;TMP-B6.12	TMP-B6.2 (attribute types survive; related F-1804);TMP-B6.17 (diagnostic state call)	73	swept: the window-reader rows, row by row
-06-vectors.md	320	41	65	3	VEC-B1.8;VEC-B4;VEC-X5.5			105	Tier 1 rows only
-07-text-search.md	227	27	34	0				61	not swept
-08-cypher-sql.md	278	36	62	1	CYP-B17.1			98	Tier 1 rows only
-09-native-executor.md	224	14	51	3	NAT-B1.6;NAT-B5.1;NAT-T5.1			64	Tier 1 rows only
-10-algorithms.md	297	34	90	12	ALG-B10;ALG-B10.2;ALG-B10.5;ALG-B10.6;ALG-B10.7;ALG-B10.8;ALG-B10.90;ALG-B16;ALG-B16.3;ALG-B16.6;ALG-B16.7;ALG-Q4			121	Tier 1 rows only
-11-ledger.md	356	32	56	7	LED-B4.1;LED-B4.10;LED-B4.7;LED-B4.7.4;LED-B4.7.5;LED-B4.7.6;LED-B5.9			86	Tier 1 rows only
-12-erasure.md	49	2	11	0				13	not swept
-13-redaction.md	99	5	25	0				30	not swept
-14-replay.md	45	2	11	1	RPL-T90			13	Tier 1 rows only
-15-integrations.md	351	40	77	0				117	not swept
-16-interfaces.md	287	25	67	0				92	not swept
-17-operations.md	322	30	95	3	OPS-B4.6;OPS-B4.6.90;OPS-T4.6.5			123	Tier 1 rows only
-18-snapshot.md	102	10	25	5	SNP-B1;SNP-B1.7;SNP-B2.11;SNP-B4.5;SNP-I1.1			33	Tier 1 rows only
+p_module	statements	refusal rows (X)	contrast rows (not, unless, only, before, instead, empty, refuse, raise)	rows examined	lifted	already present	deferred	refusal or contrast rows not examined at checkpoint 0	status	iteration 1 additional subset inspected
+00-system.md	47	0	8	0				8	not swept	-
+01-install-schema.md	259	29	78	0				107	not swept	-
+02-graph-identity.md	136	16	31	2	GID-B5.4;GID-B5.5			47	Tier 1 rows only	-
+03-writes.md	210	18	59	2	WRT-B7.12;WRT-B7.14			75	Tier 1 rows only	WRT-B2.80;WRT-B7.86;WRT-T7.87
+04-adjacency.md	300	3	69	6	ADJ-B2.9;ADJ-B7;ADJ-B7.1;ADJ-I5.17.5;ADJ-I5.8;ADJ-I5.9			69	Tier 1 rows only	ADJ-B5.17;ADJ-B5.17.1;ADJ-B5.17.2;ADJ-B5.17.3;ADJ-B5.17.4;ADJ-I5.17.5
+05-temporal.md	307	17	64	16	TMP-B11.3;TMP-B6.11;TMP-B6.14;TMP-B6.15;TMP-B6.16;TMP-B6.6;TMP-B6.7;TMP-B6.8;TMP-B6.9	TMP-B6;TMP-B6.1;TMP-B6.3;TMP-B6.4;TMP-B6.12	TMP-B6.2 (attribute types survive; related F-1804);TMP-B6.17 (diagnostic state call)	73	swept: the window-reader rows, row by row	-
+06-vectors.md	320	41	65	3	VEC-B1.8;VEC-B4;VEC-X5.5			105	Tier 1 rows only	-
+07-text-search.md	227	27	34	0				61	not swept	-
+08-cypher-sql.md	278	36	62	1	CYP-B17.1			98	Tier 1 rows only	CYP-B17; typed-node source/tests and current source producer/consumer (not a full module resweep)
+09-native-executor.md	224	14	51	3	NAT-B1.6;NAT-B5.1;NAT-T5.1			64	Tier 1 rows only	NAT-T7;NAT-T7.3;NAT-T7.5;NAT-T7.6;NAT-T7.7;NAT-T7.8;NAT-T7.9
+10-algorithms.md	297	34	90	12	ALG-B10;ALG-B10.2;ALG-B10.5;ALG-B10.6;ALG-B10.7;ALG-B10.8;ALG-B10.90;ALG-B16;ALG-B16.3;ALG-B16.6;ALG-B16.7;ALG-Q4			121	Tier 1 rows only	-
+11-ledger.md	356	32	56	7	LED-B4.1;LED-B4.10;LED-B4.7;LED-B4.7.4;LED-B4.7.5;LED-B4.7.6;LED-B5.9			86	Tier 1 rows only	-
+12-erasure.md	49	2	11	0				13	not swept	-
+13-redaction.md	99	5	25	0				30	not swept	-
+14-replay.md	45	2	11	1	RPL-T90			13	Tier 1 rows only	-
+15-integrations.md	351	40	77	0				117	not swept	-
+16-interfaces.md	287	25	67	0				92	not swept	-
+17-operations.md	322	30	95	3	OPS-B4.6;OPS-B4.6.90;OPS-T4.6.5			123	Tier 1 rows only	-
+18-snapshot.md	102	10	25	5	SNP-B1;SNP-B1.7;SNP-B2.11;SNP-B4.5;SNP-I1.1			33	Tier 1 rows only	-

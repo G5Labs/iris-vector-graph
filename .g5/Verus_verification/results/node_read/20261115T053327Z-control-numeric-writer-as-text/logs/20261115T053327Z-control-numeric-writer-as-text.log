@@ -1,0 +1,29 @@
+verification results:: 10 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/numeric-writer-as-text/node_read.rs:45:13
+   |
+43 | pub proof fn theorem_numeric_writer_and_reader(n: int)
+   | ------------------------------------------------------ at the end of the function body
+44 |     requires in64(n),
+45 |     ensures journey(Input::Integer(n)) == Value::Integer(n),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/numeric-writer-as-text/node_read.rs:52:13
+   |
+51 | pub proof fn theorem_numeric_looking_text_distinct()
+   | ---------------------------------------------------- at the end of the function body
+52 |     ensures journey(Input::Integer(29)) == Value::Integer(29),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/numeric-writer-as-text/node_read.rs:77:13
+   |
+75 | pub proof fn theorem_sql_scalar_read_reaches_result(n: int)
+   | ----------------------------------------------------------- at the end of the function body
+76 |     requires in64(n),
+77 |     ensures finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Integer(n))))==Cell::Decoded(Value::Integer(n)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

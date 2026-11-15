@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_sql_scalar_read_reaches_result"
+    ],
+    "find": "if typed_column(e,nodes) { Cell::Decoded(read(w)) } else { Cell::Raw(w) }",
+    "name": "omit-final-column-decode",
+    "replace": "Cell::Raw(w)",
+    "why": "selected Cypher result leaves numeric tag as raw text"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_sql_scalar_read_reaches_result"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/model.json": "6f1895edb5cd6758a6721344d2b8df1cdb9f739758b3da80003122b265c8f97a",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/omit-final-column-decode/node_read.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_sql_scalar_read_reaches_result": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T053329Z-control-omit-final-column-decode-theorem_sql_scalar_read_reaches_result.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T053329Z-control-omit-final-column-decode.log",
+    "timed_out": false,
+    "verified": 12
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/node_read/20261115T053329Z-control-omit-final-column-decode/logs/20261115T053329Z-control-omit-final-column-decode-theorem_sql_scalar_read_reaches_result.log": "f550e4baeb63cb9cfa5fffee19f6c50f68d7452460a321a0cc76c7e89b7cfca1",
+    ".g5/Verus_verification/results/node_read/20261115T053329Z-control-omit-final-column-decode/logs/20261115T053329Z-control-omit-final-column-decode.log": "e3baad63f6b6bc1a475704a38696cb6890acef0fde3f341d166bb5dd93cffaa7"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/discard-bare-node/node_read.rs:100:13
+    |
+ 99 | pub proof fn theorem_bare_node_vs_absent(id: int)
+    | ------------------------------------------------- at the end of the function body
+100 |     ensures included(Row { id, label_rows: 0, property_rows: 0, node_row: true }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,30 @@
+verification results:: 10 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/double-tag-lost/node_read.rs:46:9
+   |
+43 | pub proof fn theorem_numeric_writer_and_reader(n: int)
+   | ------------------------------------------------------ at the end of the function body
+...
+46 |         journey(Input::Double(n)) == Value::Double(n),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/double-tag-lost/node_read.rs:54:9
+   |
+51 | pub proof fn theorem_numeric_looking_text_distinct()
+   | ---------------------------------------------------- at the end of the function body
+...
+54 |         journey(Input::Double(5)) == Value::Double(5),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/double-tag-lost/node_read.rs:78:9
+   |
+75 | pub proof fn theorem_sql_scalar_read_reaches_result(n: int)
+   | ----------------------------------------------------------- at the end of the function body
+...
+78 |         finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Double(n))))==Cell::Decoded(Value::Double(n)),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

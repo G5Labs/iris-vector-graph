@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_unselected_scalar_not_decoded"
+    ],
+    "find": "Expr::Literal => false",
+    "name": "decode-unselected-literal",
+    "replace": "Expr::Literal => true",
+    "why": "translator marks a literal as a typed node property"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_unselected_scalar_not_decoded"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/model.json": "6f1895edb5cd6758a6721344d2b8df1cdb9f739758b3da80003122b265c8f97a",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/decode-unselected-literal/node_read.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_unselected_scalar_not_decoded": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T053329Z-control-decode-unselected-literal-theorem_unselected_scalar_not_decoded.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T053329Z-control-decode-unselected-literal.log",
+    "timed_out": false,
+    "verified": 12
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/node_read/20261115T053330Z-control-decode-unselected-literal/logs/20261115T053329Z-control-decode-unselected-literal-theorem_unselected_scalar_not_decoded.log": "ef2e9682613d04563f96c166ef5869108c418595ef27f0544a647ead14109bda",
+    ".g5/Verus_verification/results/node_read/20261115T053330Z-control-decode-unselected-literal/logs/20261115T053329Z-control-decode-unselected-literal.log": "3df1766bc82224f989a7a0536eab9a01e3fd82c0a5c1982709243e7da90da939"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

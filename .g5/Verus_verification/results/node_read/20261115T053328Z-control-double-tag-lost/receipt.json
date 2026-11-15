@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_numeric_writer_and_reader"
+    ],
+    "find": "if double { Wire::D(payload) } else { Wire::N(payload) }",
+    "name": "double-tag-lost",
+    "replace": "Wire::N(payload)",
+    "why": "provider loses the D/N distinction"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_numeric_writer_and_reader"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/model.json": "6f1895edb5cd6758a6721344d2b8df1cdb9f739758b3da80003122b265c8f97a",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/controls/double-tag-lost/node_read.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_numeric_writer_and_reader": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T053327Z-control-double-tag-lost-theorem_numeric_writer_and_reader.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115/verus/node_read/20261115T053327Z-control-double-tag-lost.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/node_read/20261115T053328Z-control-double-tag-lost/logs/20261115T053327Z-control-double-tag-lost-theorem_numeric_writer_and_reader.log": "6098942a6aea0becf86fce84b016a208353f3d0db01ed33f66a65e3e95a24373",
+    ".g5/Verus_verification/results/node_read/20261115T053328Z-control-double-tag-lost/logs/20261115T053327Z-control-double-tag-lost.log": "2529ca2de7c2af3bc1c3b0148e3c97fdaa987b0a8047203c312cc92ac2ae812d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

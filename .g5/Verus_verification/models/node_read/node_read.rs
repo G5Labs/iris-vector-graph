@@ -62,6 +62,27 @@ pub proof fn theorem_boolean_precedes_integer(b: bool)
     ensures journey(Input::Bool(b)) == Value::Bool(b),
 { assert(bool_text(true) != bool_text(false)); }
 
+// Scalar SQL-result slice: raw AST property reference and node bindings determine whether
+// the translator selects CY_TYPED decoding. Other result passes do not change these scalars.
+pub enum Expr { Property(int), Literal }
+pub enum Cell { Decoded(Value), Raw(Wire) }
+pub open spec fn typed_column(e: Expr, node_bindings: Set<int>) -> bool {
+    match e { Expr::Property(var) => node_bindings.contains(var), Expr::Literal => false }
+}
+pub open spec fn finish_scalar(e: Expr, nodes: Set<int>, w: Wire) -> Cell {
+    if typed_column(e,nodes) { Cell::Decoded(read(w)) } else { Cell::Raw(w) }
+}
+pub proof fn theorem_sql_scalar_read_reaches_result(n: int)
+    requires in64(n),
+    ensures finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Integer(n))))==Cell::Decoded(Value::Integer(n)),
+        finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Double(n))))==Cell::Decoded(Value::Double(n)),
+        finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Text(seq!['2','9']))))==Cell::Decoded(Value::Text(seq!['2','9'])),
+{}
+pub proof fn theorem_unselected_scalar_not_decoded(w: Wire)
+    ensures finish_scalar(Expr::Literal,Set::empty(),w)==Cell::Raw(w),
+        finish_scalar(Expr::Property(1),set![0],w)==Cell::Raw(w),
+{}
+
 pub struct Row { pub id: int, pub label_rows: nat, pub property_rows: nat, pub node_row: bool }
 pub open spec fn included(r: Row) -> bool {
     r.label_rows > 0 || r.property_rows > 0 || r.node_row

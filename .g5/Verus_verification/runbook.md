@@ -50,6 +50,29 @@ mkdir -p $RUN_DIR/pin && git archive 3eaa79cf | tar -x -C $RUN_DIR/pin          
 
 **The gate:** `python3 .g5/Verus_verification/tools/check_consolidated.py` → `PASS` (confinement, inherited model hashes, freshness incl. bindings and playbook reruns, the G5 ontology and findings checkers, the register ratchet, the four crosswalks and the code links). Regenerate derived files with `tools/make_crosswalk.py`, `make_statements.py`, `make_families.py`, `make_findings_index.py`, `inventory.py` (each idempotent).
 
+## Improvement iteration 1 on this Mac
+
+Current handoff: [iteration-1/HANDOFF.md](../uplift/consolidated/iteration-1/HANDOFF.md). New families use only bundled vstd; the imported actors checkout/pins are unchanged and were not reverified this round.
+
+```sh
+export IVG_REPO=/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph
+export RUN_DIR=/Users/ziniuw/.cache/g5-verification/ivg-iteration-1-20261115
+export IVG_PIN_DIR=/Users/ziniuw/runs/ivg-consolidated-20261114/pin
+export IVG_PYTHON=/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python
+export VERUS_BIN=/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus
+export VERUS_RUN_THREADS=4 PYTHONDONTWRITEBYTECODE=1
+cd "$IVG_REPO"
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/node_read
+CONTROL=omit-final-column-decode python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/node_read
+"$IVG_PYTHON" -B -I .g5/Verus_verification/models/node_read/binding.py
+```
+
+Expected: **13 verified / 0 errors**, control **EXPECTED_FAIL** in `theorem_sql_scalar_read_reaches_result`, binding **AGREES / 90 comparisons**, exact scalar result `[float 0.95, int 29, str "0.95"]`, alias collision witness present and four detection checks true. The binding reads writer-bound values, uses the real translator's typed-column metadata, and runs the real final result finisher. IRIS storage, transactions and CY_TYPED are substituted. Proof/control receipts retain raw logs; binding receipts retain mismatches/detection, input hashes and pin identities.
+
+Repeat the prove/controls pattern for `ndjson_import` (9 / 4 controls), `route_recheck` (6 / 3), `warm_sources` (7 / 4). Run `binding.py` for the first two (73 sequences; 1,092 comparisons). `warm_sources` has no Python binding: ObjectScript observation remains pending. Omit CONTROL to run each complete control suite. The first five model roots, imported trees and historical receipts remain immutable.
+
+Replay the exact final product suite command from [upstream-unit.json](../uplift/consolidated/iteration-1/upstream-unit.json), with cwd `$IVG_PIN_DIR`: expected **383 passed, 4 skipped**. Product pin source hashes are checked by the bindings; the full consolidated gate checks confinement. Final gates: `python3 .g5/Verus_verification/tools/check_consolidated.py` and `git diff --check`.
+
 ## One real obligation end to end: tenant redaction
 
 Obligation: [redaction](../ontology/features/redaction.g5.md) — after erasure, redaction turns every record of the target into its tombstone in place, leaves every other record byte-identical, clears the four metadata fields of each revision it touched, unbinds those revisions' idempotency keys, appends one content-free redaction revision, and makes `verify()` equal again.

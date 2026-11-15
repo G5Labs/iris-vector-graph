@@ -1,5 +1,7 @@
 # IVG consolidated uplift — handoff
 
+**Current continuation: iteration 1 (2026-11-15)** — [sealed iteration handoff](iteration-1/HANDOFF.md), [controlled pairs](iteration-1/PAIRS.md), [current coverage](../../Verus_verification/coverage.md#improvement-iteration-1-2026-11-15). The clean `consolidated_uplift` tip with subject `Seal iteration 1 with scalar reader evidence and handoff` is the next-round input. New contracts: 35 obligations / 17 controls; final product suites: 383 passed / 4 skipped. Published M03/M21/J04 formal corrections remain partial. The sections below preserve checkpoint 0's original account and predictions; the current handoff and public feedback supersede conflicting scope/count claims (including the old 26-Python-definition figure).
+
 Branch `consolidated_uplift`, product pin `3eaa79cf` (v4.7.0), from the guidance arm `24c6b0c0` with the playbook arm `2d59e578` imported verbatim. Assignment: `reviewed-plan.md` (2026-11-14). Nothing outside `.g5/` and the imported `experiment/playbook-*` trees changed; the product, `.agents/` and `experiment/g5-verus/` are byte-identical to their sources (gate check 1). Nothing was pushed or posted. No statement is `implementation-verified`: no product body is verified here.
 
 ## 1. Commits, environment, gate
