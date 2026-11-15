@@ -1,4 +1,6 @@
 source_arm	source_id	source_path	canonical_id	relation	trigger key	effect key	source disposition	source severity	mapped severity	evidence strength	owning block
+C	hist-012	.g5/Verus_verification/open_questions.md	hist-012	same		Upstream #12: bulk-created nodes had no id property, so directed patterns from {id: ...} found nothing (4.4.2)	observation	Unranked	Unranked		
+C	hist-013	.g5/Verus_verification/open_questions.md	hist-013	same		Upstream #13: count(DISTINCT) with ORDER BY and LIMIT failed on a from_connect() engine on IRIS 2026.1 (4.5.1)	observation	Unranked	Unranked		
 G	q-001	.g5/Verus_verification/open_questions.md	q-001	same		Should another tenant's retry of a revision it shared with a redacted tenant be refused?	Open	Medium	Medium		redaction.idempotency.other-tenant
 G	q-002	.g5/Verus_verification/open_questions.md	q-002	same		Which ledger readers must refuse while a redaction is unfinished?	Open	Low	Low		redaction.batches.readers
 G	q-003	.g5/Verus_verification/open_questions.md	q-003	same		How should strict mode and the erase-then-redact path fit together?	Open	Medium	Medium		redaction.strict-mode
@@ -9,6 +11,8 @@ G	q-007	.g5/Verus_verification/open_questions.md	q-007	same		What does erasure's
 G	q-008	.g5/Verus_verification/open_questions.md	q-008	same		Should erase-by-prefix and redact-by-prefix use the same prefix rule?	Open	Medium	Medium		erasure.prefix-match
 G	q-009	.g5/Verus_verification/open_questions.md	q-009	same		Should redaction count a target's temporal-only edges as live content?	Open	Medium	Medium		redaction.after-erasure.temporal
 G	q-010	.g5/Verus_verification/open_questions.md	q-010	same		Should post-commit properties be recorded, excluded from verify, or documented as unrecorded writes?	Open	Medium	Medium		ledger.commit.post-commit.recorded
+C	q-con-001	.g5/Verus_verification/open_questions.md	q-con-001	same		Must the streaming history reader bound its memory, or only its delivery?	Open	Low	Low		
+C	q-con-002	.g5/Verus_verification/open_questions.md	q-con-002	same		Is a ledger diff an ordered script or an unordered set of net changes?	Open	Low	Low		
 G	q-cyp-001	.g5/Verus_verification/open_questions.md	q-cyp-001	same		When a write without USE GRAPH creates a relationship between nodes its MATCH bound in a named graph, which graph gets…	Open	Medium	Medium		query.graph-scope.bound-create
 G	q-cyp-002	.g5/Verus_verification/open_questions.md	q-cyp-002	same		In shadow mode, should a native failure be raised instead of answered by SQL?	Open	Low	Low		query.shadow.native-failure
 G	q-cyp-003	.g5/Verus_verification/open_questions.md	q-cyp-003	same		Should a bulk load by another process close the native query path while indexes lag the rows?	Open	Low	Low		query.native.index-current

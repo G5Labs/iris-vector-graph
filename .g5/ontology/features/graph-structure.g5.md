@@ -578,6 +578,8 @@ Findings: [A degree cached before a node is deleted and re-created can be served
 
 ### structure.degree.cache.uncommitted
 - Sources: [ADR-0012](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md#L10-L27), [Adjacency.WriterLock](../../../iris_src/src/Graph/KG/Adjacency.cls#L51-L73), [changelog 4.7.0 adjacency lock](../../../CHANGELOG.md#L174-L178)
+- Playbook: [ADJ-I5.8](../../../experiment/playbook-completion/ontology/04-adjacency.md#L222), [ADJ-I5.9](../../../experiment/playbook-completion/ontology/04-adjacency.md#L223)
+- Verus: active (public M10): `G-graph_structure` (as-built) [`graph_structure.rs`](../../Verus_verification/models/graph_structure/graph_structure.rs) `theorem_as_built_cache_sound` with witnesses `witness_aba_delete_and_recreate_serves_stale_degree`, `witness_gen0_erase_alone_serves_stale_degree` and repaired `theorem_repaired_cache_sound`. Overlapping: the playbook's `proofs-pa3` `adj_l2` (reviewed design; controls `control_fc0401_write_before_gen`, `control_hd0401_erase_kills_gen`).
 - Expands: [degree cache](#structure.degree.cache)
 - agent
 - data-integrity

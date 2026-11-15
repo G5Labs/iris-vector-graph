@@ -315,6 +315,8 @@ Relationship create, upsert and the take-over of a temporal edge's plain row: [L
 ### ledger.commit.admission
 
 - Sources: [Ledger.cls CommitInTxn](../../../iris_src/src/Graph/KG/Ledger.cls#L419-L528), [Ledger.cls header](../../../iris_src/src/Graph/KG/Ledger.cls#L16-L17)
+- Playbook: [LED-B4.1](../../../experiment/playbook-completion/ontology/11-ledger.md#L144), [LED-B4.7](../../../experiment/playbook-completion/ontology/11-ledger.md#L153)
+- Verus: active for the replay-versus-conflict outcomes (public M01): `G-ledger_redaction` (as-built) [`redaction.rs`](../../Verus_verification/models/ledger_redaction/redaction.rs) `theorem_retry_replays_first`, `theorem_commit_writes_only_when_admitted`, `lemma_commit_admits_matches_outcome` (controls in its model.json); overlapping: the playbook's `proofs-pa3` `ledger_l1.rs::theorem_replay_returns_bound_revision`, `theorem_key_binds_one_fingerprint` (reviewed design). See [families](../../Verus_verification/families.tsv).
 - Expands: [Commit](#ledger.commit)
 - agent
 - architecture-decision
@@ -325,6 +327,8 @@ The precedence is spec 213 FR-019, cited by the code; the spec text itself is no
 ### ledger.commit.serial
 
 - Sources: [Ledger.cls LOCKTIMEOUT and lock](../../../iris_src/src/Graph/KG/Ledger.cls#L21), [errors.py LedgerLockTimeoutError](../../../iris_vector_graph/ledger/errors.py#L78-L79)
+- Playbook: [LED-B4.7.5](../../../experiment/playbook-completion/ontology/11-ledger.md#L162), [LED-B4.7.6](../../../experiment/playbook-completion/ontology/11-ledger.md#L166)
+- Verus: active for one winner among concurrent same-key writers (public J05): the playbook's `proofs-pa3` `ledger_l2.rs` head lock and binding steps (**reviewed design**; the pin's departure for erasure, which takes no head lock, is control `control_f1201_erase_no_head_lock`, finding F-1201, rerun here). Overlapping: `G-ledger_redaction` (as-built), which takes the lock and the binding as inputs.
 - Expands: [Commit](#ledger.commit)
 - agent
 - data-integrity, operations
@@ -402,6 +406,8 @@ Findings: [Should post-commit properties be recorded, excluded from verify, or d
 ### ledger.idempotency
 
 - Sources: [Ledger.cls idempotency](../../../iris_src/src/Graph/KG/Ledger.cls#L454-L473), [changeset.py fingerprint](../../../iris_vector_graph/ledger/changeset.py#L365-L386), [ledger API contract commit](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L26)
+- Playbook: [LED-B4.7](../../../experiment/playbook-completion/ontology/11-ledger.md#L153), [LED-B4.7.4](../../../experiment/playbook-completion/ontology/11-ledger.md#L161)
+- Verus: active for the binding history across refused and successful attempts (public M02): the playbook's `proofs-pa3` [`ledger_l2.rs`](../../../experiment/playbook-completion/proofs-pa3/src/ledger_l2.rs) `commit_glob`, `lay_idem` with [`ledger_l1.rs`](../../../experiment/playbook-completion/proofs-pa3/src/ledger_l1.rs) `theorem_key_binds_one_fingerprint`, `theorem_replay_returns_bound_revision` (**reviewed design**; no control in that family reintroduces a pin departure for the binding, so the design and the pin agree there by the playbook's audit, not by proof). Overlapping: `G-ledger_redaction` `theorem_retry_replays_first` (as-built), which reads a supplied binding instead of deriving it.
 - Children: [Key required](#ledger.idempotency.key-required)
 - agent
 - user-facing-behavior, data-integrity
@@ -483,6 +489,8 @@ Findings: [When the strict-mode guard cannot read the ledger's state, should it 
 - test-coverage
 
 The diff order is [replay.py _sort_key](../../../iris_vector_graph/ledger/replay.py#L404-L405); the reconstruct bound counts nodes plus relationships while folding ([replay.py reconstruct](../../../iris_vector_graph/ledger/replay.py#L544-L558)). Live tests: `test_ledger_us06_history.py`, `test_ledger_us07_diff.py`, `test_ledger_us08_reconstruct.py`. While a redaction is unfinished some readers refuse ([rule](redaction.g5.md#redaction.batches.readers)).
+
+Findings: [The reverse diff of a range where a node is deleted and re-created reports the earlier revision's property as absent](../../Verus_verification/bugs_issues.md#bug-led-101); questions [Must the streaming history reader bound its memory?](../../Verus_verification/open_questions.md#q-con-001), [Is a ledger diff an ordered script?](../../Verus_verification/open_questions.md#q-con-002). Public cases M04, M05 and J03 read this block; `diff(a, b)` returns `compute_diff(b..a).inverse()` when `a` is later (`ledger/client.py:706-718`), so "the reverse is the inverse" and "the same revision is empty" hold by construction of the selector, and no formal contract here relates `compute_diff` to the two reconstructed states (reviewed plan C, not built).
 
 ### ledger.verify
 

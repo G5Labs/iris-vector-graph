@@ -433,6 +433,7 @@ Sources: [ADR-0014](../../../docs/adr/0014-native-plans-are-compiled-to-classes-
 Findings: [A caller with Cypher read access can forge a CRC-32 collision so that another shape's queries run its compiled code](../../Verus_verification/bugs_issues.md#bug-cyp-001)
 
 ### query.compiled.modes
+- Verus: see [compiled fallback](#query.compiled.fallback): `proofs-d1d` `planc_l2` (reviewed design) is active for job-mode answers during a build (public J08); `G-platform` (as-built) overlaps for stamps.
 - agent
 - operations
 - test-coverage
@@ -459,6 +460,8 @@ Findings: [A caller with Cypher read access can forge a CRC-32 collision so that
 Sources: [ADR-0014](../../../docs/adr/0014-native-plans-are-compiled-to-classes-at-run-time.md#L22-L23), [CONTEXT.md, Compiled plan](../../../CONTEXT.md#L243-L246), [setup calls `DropAll` when it deployed](../../../iris_vector_graph/schema.py#L2935-L2941), [`Gen.DropAll`](../../../iris_src/src/Graph/KG/Cypher/Gen.cls#L224-L230). Live: the `DropAll` test in `test_257_compiled_plans_e2e.py`; the deploy's call is checked by a mocked unit test ([`test_257_deploy_drops_compiled_plans.py`](../../../tests/unit/test_257_deploy_drops_compiled_plans.py)). The developer `compile` scripts do not drop plans and rely on [never stale](#query.compiled.never-stale).
 
 ### query.compiled.fallback
+- Playbook: [NAT-B5.1](../../../experiment/playbook-completion/ontology/09-native-executor.md#L172), [NAT-T5.1](../../../experiment/playbook-completion/ontology/09-native-executor.md#L173)
+- Verus: active for failed and pending builds answering through the interpreter (public J08, M20): the playbook's `proofs-d1d` [`planc_l2.rs`](../../../experiment/playbook-completion/proofs-d1d/src/planc_l2.rs) `theorem_ok_entry_runs_its_shapes_class`, `lemma_bcompile`, `lemma_for` (**reviewed design**; controls `control_f0901_shared_class_name`, `control_fc0901_mark_any_entry`, rerun here). Overlapping: `G-platform` (as-built) [`platform.rs`](../../Verus_verification/models/platform/platform.rs) stamps and eligibility (`witness_compiled_plan_is_used`).
 - agent
 - user-facing-behavior, operations
 - test-coverage

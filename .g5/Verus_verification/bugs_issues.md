@@ -4523,6 +4523,27 @@ Consequence: a relationship property stored as such a string comes back from `RE
 
 Repair proposal (not implemented): compile both patterns with `re.ASCII` and end them with `\Z`; the controls `as-built-ascii-digits` and `as-built-without-final-newline-match` show each change removes one half. Governing statement: [query.values.relationship_text](../ontology/features/cypher.g5.md#query.values.relationship_text).
 
+<a id="bug-led-101"></a>
+### The reverse diff of a range where a node is deleted and re-created reports the earlier revision's property as absent
+
+Severity: Low · Decision: Open
+
+Run: Consolidated uplift 2026-11-14
+
+**Suspected** end to end: observed on the pin's real `compute_diff` and `Diff.inverse` over hand-built records; `GraphLedger.diff` was read, not run, against a ledger. Severity is lowered one level from Medium.
+
+Found by: [l2-inverse-order unit probe](results/unit-probes/20261115T043637Z-l2-inverse-order/receipt.json) ([probe](native/unit_probes/l2_inverse_order.py)), settling lead L2 of the reviewed plan; neither arm recorded it.
+
+Reproduced by: none natively.
+
+Expected: `diff(b, a)` with `b` later is the net change from `b` back to `a`, lifecycle-aware (`specs/213-graph-revision-ledger/contracts/ledger-api.md:29`; public case M05; playbook `RPL-B92.1`, `RPL-B92.3`).
+
+Observed: with node `n` holding `k=1` at revision 1, deleted at 2 and re-created with `k=2` at 3, `diff(3, 1)` is `compute_diff(2..3).inverse()` (`ledger/client.py:706-718`, `ledger/replay.py:417-418`): it lists `n` created, then `n` deleted, then `prop:k` from `2` to absent. The deletion entry of the first life carries no attributes (`replay.py:467-477`), so the reverse cannot say that `k` was `1`; and because `_sort_key` (`:406-407`) ties the two existence entries, the inverse keeps the forward order, creation before deletion.
+
+Consequence: a reader of the reverse diff learns a wrong value (`k` absent) for the earlier revision; applied in order as a script, the inverse ends with `n` present and `k` absent instead of `k=1`. The upstream test `test_reverse_diff_is_exact_inverse` asserts `rev == fwd.inverse()`, which holds by construction and cannot see this.
+
+Repair proposal (not implemented): record the deleted life's attributes in its deletion entry (as `before` values), and order the inverse by reversing the forward order for entries with equal keys; or document that a diff is a set of net changes with no values for a deleted life. Related question: [q-con-002](open_questions.md#q-con-002). Governing statement: the ledger readers (`ledger.readers`).
+
 <a id="F-0101"></a>
 ### Legacy removal reports objects removed that may still be there
 

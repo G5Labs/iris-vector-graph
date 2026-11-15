@@ -733,6 +733,30 @@ Evidence: `verify()` checks the redaction marker once, reads the ledger and the 
 Interpretations: (a) verify is best-effort; run it when writes are quiet (document it); (b) verify reads under the head lock, or retries until the head did not move.
 
 Decision needed: which. Open statement: [ledger.verify.consistency](../ontology/features/ledger.g5.md#ledger.verify.consistency).
+<a id="q-con-001"></a>
+### Must the streaming history reader bound its memory, or only its delivery?
+
+Severity: Low · Decision: Open
+
+Run: Consolidated uplift 2026-11-14
+
+Evidence: `reconstruct(..., stream=True)` folds every record into one in-memory state and only then yields its entities (`ledger/replay.py:550-566`); the entity bound is enforced only when `stream=False` (`:555-556`), as the contract says (`specs/213-graph-revision-ledger/contracts/ledger-api.md:30`). `export_reconstruction` passes no bound and also materializes the whole state before writing NDJSON (`ledger/client.py:731-739`), while the contract says it "streams to NDJSON; never bounded" (`ledger-api.md:31`). The requirement text behind the bound (FR-035 to FR-037) is not in the repository.
+
+Classification: settled as built (the bound applies to the materialized reader only; neither reader bounds memory); what was promised needs ratification.
+
+Working answer: "streaming" describes delivery, not memory; the bound protects callers of the materialized reader. Material alternative: the bound exists to cap memory, so the streaming reader and the export should fold incrementally (or be bounded too). Claims that depend on it: public case J03's "streaming export path under its documented scope". Lead L1 of the reviewed plan; neither arm recorded it.
+
+<a id="q-con-002"></a>
+### Is a ledger diff an ordered script or an unordered set of net changes?
+
+Severity: Low · Decision: Open
+
+Run: Consolidated uplift 2026-11-14
+
+Evidence: `compute_diff` sorts entries by kind, ID and attribute (`ledger/replay.py:406-407`, `:535`); for one node deleted and re-created in the range the two existence entries tie and keep their forward order, so the inverse lists the creation before the deletion ([unit probe](results/unit-probes/20261115T043637Z-l2-inverse-order/receipt.json)). The contract calls the diff "sorted net, lifecycle-aware" (`ledger-api.md:29`).
+
+Classification: needs ratification. Working answer: an unordered set of net changes (the contract's "net"), in which case order does not matter but the reverse diff's attribute values still do ([bug-led-101](bugs_issues.md#bug-led-101)). Alternative: an ordered script that a client may apply, which would require the inverse to reverse the order of tied entries. Lead L2 of the reviewed plan.
+
 <a id="HD-0001"></a>
 ### How to read "defined by its ancestors or an earlier same-level statement"
 
@@ -1742,6 +1766,23 @@ Run: Playbook completion audit, residual maintainer questions (imported 2026-11-
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
+## Historical upstream reports, resolved at the pin
+
+Two public reports against older releases ([#12](https://github.com/intersystems-community/iris-vector-graph/issues/12), [#13](https://github.com/intersystems-community/iris-vector-graph/issues/13)). The pinned changelog records both fixed; they are kept as controls and leads, not as current defects.
+
+<a id="hist-012"></a>
+### Upstream #12: bulk-created nodes had no id property, so directed patterns from {id: ...} found nothing (4.4.2)
+
+Severity: Unranked
+
+Settled as built: `CHANGELOG.md:59-60` records it fixed in 4.6.0 (R089) and checked again for 4.7.0; at the pin `create_node` sets `props["id"]` (`_engine/nodes_edges.py:1057`) and `bulk_create_nodes` (`:1648`) feeds the server loader `Graph.KG.EdgeScan.BulkIngestNodesSQL`. Not re-observed here (no IRIS). Planned use as the control of a writer-path model (reviewed plan F1); not built in this consolidation.
+
+<a id="hist-013"></a>
+### Upstream #13: count(DISTINCT) with ORDER BY and LIMIT failed on a from_connect() engine on IRIS 2026.1 (4.5.1)
+
+Severity: Unranked
+
+Settled as built: `CHANGELOG.md:52-58` records the fix in 4.7.0: the `from_connect()` probe also tries the aggregate shape and answers with TOP when it is refused (`engine.py::_detect_fetch_first_unsafe`, `:772`). Not re-observed here. Planned use as the control of a row-limit selector model (reviewed plan F2); not built in this consolidation.
 
 ## Inherited verification debt (playbook arm)
 

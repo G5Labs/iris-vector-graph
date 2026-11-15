@@ -1,0 +1,86 @@
+{
+  "inputs": {
+    ".g5/Verus_verification/native/unit_probes/l2_inverse_order.py": "29840b0e0bc34392f62e40b8a6d1b62e5ddff4ccb70da71c048ef223c57d74a0"
+  },
+  "kind": "unit-probe",
+  "observation": {
+    "forward": [
+      {
+        "after": null,
+        "attr": "",
+        "before": "",
+        "entity_id": "n",
+        "entity_kind": "node"
+      },
+      {
+        "after": "",
+        "attr": "",
+        "before": null,
+        "entity_id": "n",
+        "entity_kind": "node"
+      },
+      {
+        "after": "2",
+        "attr": "prop:k",
+        "before": null,
+        "entity_id": "n",
+        "entity_kind": "node"
+      }
+    ],
+    "forward_applied_to_1": {
+      "n": {
+        "prop:k": "2"
+      }
+    },
+    "forward_log": [],
+    "inverse": [
+      {
+        "after": "",
+        "attr": "",
+        "before": null,
+        "entity_id": "n",
+        "entity_kind": "node"
+      },
+      {
+        "after": null,
+        "attr": "",
+        "before": "",
+        "entity_id": "n",
+        "entity_kind": "node"
+      },
+      {
+        "after": null,
+        "attr": "prop:k",
+        "before": "2",
+        "entity_id": "n",
+        "entity_kind": "node"
+      }
+    ],
+    "inverse_applied_to_3": {
+      "n": {
+        "prop:k": null
+      }
+    },
+    "inverse_log": [
+      "create of present n",
+      "set on absent n"
+    ],
+    "state_at_1": {
+      "n": {
+        "prop:k": "1"
+      }
+    }
+  },
+  "pin_dir": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin",
+  "probe": ".g5/Verus_verification/native/unit_probes/l2_inverse_order.py",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "real": [
+    "iris_vector_graph/ledger/replay.py::compute_diff",
+    "::Diff.inverse",
+    "::DiffEntry.inverse",
+    "::_sort_key",
+    "::MutationRecord"
+  ],
+  "substituted": "the ledger records (built by hand: create n with k=1 at revision 1, delete n at 2, re-create n with k=2 at 3); GraphLedger.diff's selection (client.py:706-718) is inspected, not run",
+  "verdict": "OBSERVED_AS_DESCRIBED: the inverse lists the creation before the deletion, and its prop:k entry reports the value at revision 1 as absent (None) although revision 1 holds k=1"
+}

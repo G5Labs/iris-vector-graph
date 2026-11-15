@@ -581,6 +581,8 @@ Findings: [HD-1003](../../Verus_verification/open_questions.md#HD-1003)
 ### algorithms.cache
 
 - Sources: [Spec 236 FR-016, FR-017, FR-022, Story 4](../../../specs/236-arno-callout-adoption/spec.md); [algo_cache.py](../../../iris_vector_graph/algo_cache.py); [AlgoCache.cls](../../../iris_src/src/Graph/KG/AlgoCache.cls)
+- Playbook: [ALG-B16](../../../experiment/playbook-completion/ontology/10-algorithms.md#L309), [ALG-B16.3](../../../experiment/playbook-completion/ontology/10-algorithms.md#L312)
+- Verus: active for parameterized keys and repeated calls (public M21): the playbook's `proofs-d1e` [`acache_l1.rs`](../../../experiment/playbook-completion/proofs-d1e/src/acache_l1.rs) `theorem_answer_is_fresh` and `acache_l2.rs` (**reviewed design**: freshness is keyed on a node token `nver` the pin does not have; the pin's behavior is control `control_f1004_create_moves_no_token`, finding F-1004, rerun here). Its theorem supports "the reviewed design returns fresh answers", not "the product does". Overlapping: `G-graph_structure` (as-built) algorithm-cache token model, which omits the parameters from the key; its witness of a rolled-back write is finding bug-str-002.
 - Children: [token](#algorithms.cache.token), [erasure](#algorithms.cache.erasure), [concurrency](#algorithms.cache.concurrency)
 - agent
 - data-integrity
@@ -593,6 +595,8 @@ Findings: [A cached personalized PageRank answer does not notice a node created 
 ### algorithms.cache.token
 
 - Sources: [Spec 236 FR-017, FR-018, FR-019, research R2](../../../specs/236-arno-callout-adoption/spec.md); [Spec 236 token audit](../../../specs/236-arno-callout-adoption/research-token-audit.md); [algo_cache.py](../../../iris_vector_graph/algo_cache.py); [Adjacency.cls](../../../iris_src/src/Graph/KG/Adjacency.cls); [structure.rebuilt.token](graph-structure.g5.md#structure.rebuilt.token)
+- Playbook: [ALG-B16.6](../../../experiment/playbook-completion/ontology/10-algorithms.md#L315), [ALG-B16.7](../../../experiment/playbook-completion/ontology/10-algorithms.md#L316)
+- Verus: active for a shared hit across connections and recompute after a write (public J04): the playbook's `proofs-d1e` `acache_l2.rs` (**reviewed design**, see [algorithm cache](#algorithms.cache); control `control_f1004_create_moves_no_token`). As-built evidence: `G-graph_structure` `theorem_as_built_cache_sound` and the rollback witness behind bug-str-002 (not the same defect as F-1004).
 - Expands: [Algorithm cache](#algorithms.cache)
 - agent
 - data-integrity
