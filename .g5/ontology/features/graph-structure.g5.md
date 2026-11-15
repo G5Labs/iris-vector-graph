@@ -105,7 +105,7 @@ An edge connects two nodes of the same graph and may carry qualifiers. Creating 
 <a id="structure.edge.single"></a>
 [I · structure.edge.single]
 
-Outside multigraph mode a graph holds at most one edge per triple. Writing an existing edge again adds nothing and reports False; a duplicate is never an error.
+Outside multigraph mode a graph holds at most one ordinary edge per triple. An ordinary duplicate changes no edge values: `create_edge` reports False, while `store_edge` accepts it and reports True; neither treats it as an error.
 
 <a id="structure.edge.weight"></a>
 [D · structure.edge.weight]
@@ -418,6 +418,7 @@ Before 4.5.0 a refused edge left its endpoint rows committed and answered False.
 ### structure.edge.single
 - Sources: [USER_GUIDE, parallel edges](../../../docs/USER_GUIDE.md#L469-L473), [Known issue: CREATE of an existing relationship](../../../docs/KNOWN_ISSUES.md#a-cypher-create-of-a-relationship-that-already-exists-adds-nothing), [spec 234 context](../../../specs/234-multigraph-parallel-edges/spec.md#L11-L35)
 - Expands: [edges](#structure.edge)
+- Formal contract: [edge acceptance](../../Verus_verification/models/edge_acceptance/edge_acceptance.rs)
 - agent
 - user-facing-behavior
 

@@ -6685,6 +6685,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `ws-live-ba-marker-qu
 - Remedy proposed by the playbook arm (not implemented): Reserve the marker key: refuse (or strip) a caller qualifier named 'temporal' in every explicit writer, as the ledger reserves 'id' and '__graph', so the marker can only come from the temporal side.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
 
+Iteration 4 strengthening, not a new discovery: independent review of edge_acceptance found the caller marker input missing from its first transcription. The extended run/theorem_caller_marker_retained and 56 actual Python/SQLite cases now include temporal=True on insertion and repeated adoption: True/True, one row, final caller value and marker retained. The prior live verify omission remains inherited, not rerun. temporal.structural.adopt preserves ADR-0009's intended unmarked explicit edge and names this observed exception. No reserve/strip repair is implemented; the SQL/provider boundary remains conditional.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="F-C0401"></a>

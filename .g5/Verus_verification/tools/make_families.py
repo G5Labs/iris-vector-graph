@@ -177,6 +177,7 @@ P = [
 ]
 
 C = [  # this consolidation's new model directories: (name, scope, design, status, premises/notes)
+    ("edge_acceptance", "ordinary create/store duplicate returns, temporal adoption, endpoint/refusal and SQL/adjacency distinction; one triple", "as-built transcription", "active"),
     ("vector_threshold", "optional inclusive cosine predicate and binds before row limit; adapted SQLite provider, no IRIS claim", "as-built transcription", "active"),
     ("aql_frontend", "numeric suffix lexer, typed depth AST/hops and literal null/text-null operators; query execution unproved", "as-built transcription", "active"),
     ("pagerank_admission", "COUNT:MAX node key, lazy hit/miss census and raw self-loop/isolate producer; numerics and concurrency unproved", "as-built transcription", "active"),

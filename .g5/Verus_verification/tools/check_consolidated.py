@@ -303,6 +303,11 @@ def main(argv: list[str]) -> int:
                                                              ".g5/Verus_verification", ".g5/ontology"])
     print("6. register ratchet"); check_ratchet()
     print("7. crosswalks"); check_statements(); check_register_crosswalks(); check_decision_links()
+    stamps = list((REPO / '.g5/uplift/consolidated').glob('iteration-*/correspondence-inputs.json'))
+    if stamps:
+        latest = max(stamps, key=lambda p: int(p.parent.name.split('-')[-1]))
+        print('8. proof/product input distinction')
+        run_tool('correspondence_gate.py', [sys.executable, str(V / 'tools/correspondence_gate.py'), 'check', str(latest)])
     print(f"\n{'PASS' if not failures else f'{len(failures)} FAILURE(S)'}")
     return 1 if failures else 0
 

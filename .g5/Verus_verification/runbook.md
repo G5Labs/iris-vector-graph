@@ -199,3 +199,28 @@ The [iteration 3 handoff](../uplift/consolidated/iteration-3/HANDOFF.md),
 [upstream command/log](../uplift/consolidated/iteration-3/upstream-unit.json)
 retain the sealed scope, inputs and limitations. Expected upstream result:
 164 passed, no skips. Independent review remains pending.
+
+## Improvement iteration 4 on this Mac
+
+[Checkpoint and limits](../uplift/consolidated/iteration-4/HANDOFF.md).
+From `/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph`:
+
+```sh
+export RUN_DIR=/Users/ziniuw/runs/ivg-iteration4-20261115
+export VERUS_BIN=/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus
+export VERUS_RUN_THREADS=4 PYTHONDONTWRITEBYTECODE=1
+export IVG_PIN_DIR=/Users/ziniuw/runs/ivg-consolidated-20261114/pin
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/edge_acceptance
+CONTROL=caller-marker-discarded python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/edge_acceptance
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/edge_acceptance/binding.py
+python3 .g5/Verus_verification/tools/correspondence_gate.py check .g5/uplift/consolidated/iteration-4/correspondence-inputs.json
+python3 .g5/Verus_verification/tools/member_reach.py --out "$RUN_DIR/reach-replay"
+python3 .g5/Verus_verification/tools/check_consolidated.py
+```
+
+Expected 7 verified; the control fails theorem_caller_marker_retained; binding
+AGREES56 with both detections true. Omit CONTROL for all six. Proof-input and
+product-input mutation witnesses are in iteration-4/freshness-controls.json.
+The source reverse lookup is after-reach/bindings.json keyed by path::symbol;
+NOTES.md gives each formal role and its narrower evidence. Added product writers
+reopen correspondence globally while leaving unchanged theorem inputs reusable.

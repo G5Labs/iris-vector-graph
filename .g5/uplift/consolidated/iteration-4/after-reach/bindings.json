@@ -1,0 +1,1684 @@
+{
+  "iris_vector_graph/_engine/temporal_window.py::window_spec": [
+    {
+      "block": "temporal.window.sources",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "window_spec",
+      "pin lines": "37-58",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::window_spec",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "temporal.window.sources",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "window_spec",
+      "pin lines": "37-58",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_spec_sources_omitted_vs_empty",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Open": [
+    {
+      "block": "temporal.window.sources",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Open",
+      "pin lines": "44-81",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::server_admits",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::NextKey": [
+    {
+      "block": "temporal.window.sources",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "NextKey",
+      "pin lines": "196-239",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_server_filter_sources",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__next__": [
+    {
+      "block": "temporal.window.paging",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__next__",
+      "pin lines": "102-113",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::step",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "temporal.window.paging",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__next__",
+      "pin lines": "102-113",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_yield_is_concat_to_done",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__init__": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__init__",
+      "pin lines": "82-93",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::open",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.close": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.close",
+      "pin lines": "115-124",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_close_mid_read_once",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__exit__": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__exit__",
+      "pin lines": "129-130",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::close",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__del__": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "TemporalWindowCursor.__del__",
+      "pin lines": "132-136",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::close",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/_engine/temporal_window.py::_server_call": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/temporal_window.py",
+      "symbol": "_server_call",
+      "pin lines": "67-71",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_failed_page_closes_once",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Page": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Page",
+      "pin lines": "128-193",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::theorem_server_full_page_nonempty",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Next": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Next",
+      "pin lines": "85-91",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::after_page",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_src/src/Graph/KG/TemporalWindow.cls::Close": [
+    {
+      "block": "temporal.window.paging.release",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/TemporalWindow.cls",
+      "symbol": "Close",
+      "pin lines": "94-97",
+      "family": "C-temporal_window_reader",
+      "formal item": ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs::close",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness.is_current": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness.is_current",
+      "pin lines": "70-72",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::theorem_unstamped_stale_at_zero",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness.token": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness.token",
+      "pin lines": "54-57",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::token",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness.built_from": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness.built_from",
+      "pin lines": "66-68",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::built_from",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness._read_int": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness._read_int",
+      "pin lines": "45-52",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::read_int",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/freshness.py::Freshness.stale_stores": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_vector_graph/freshness.py",
+      "symbol": "Freshness.stale_stores",
+      "pin lines": "74-77",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::theorem_stale_stores_exact",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/TraversalKHop.cls::Fresh": [
+    {
+      "block": "structure.rebuilt.stamp",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/TraversalKHop.cls",
+      "symbol": "Fresh",
+      "pin lines": "237-243",
+      "family": "C-freshness_stamp",
+      "formal item": ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs::theorem_python_agrees_with_objectscript",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_vector_graph/embedded.py::_is_no_data": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "_is_no_data",
+      "pin lines": "193-196",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::is_no_data",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::_no_data_ok": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "_no_data_ok",
+      "pin lines": "199-206",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::first_pass_row",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::_exec_inline": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "_exec_inline",
+      "pin lines": "265-277",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::exec_inline",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::EmbeddedCursor.execute": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "EmbeddedCursor.execute",
+      "pin lines": "312-385",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::theorem_no_data_is_empty",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "EmbeddedCursor.execute",
+      "pin lines": "312-385",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::theorem_other_error_raises",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::EmbeddedCursor.executemany": [
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "writer",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "EmbeddedCursor.executemany",
+      "pin lines": "387-413",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::theorem_batch_counts_rows",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "adapters.embedded.no_data",
+      "role": "writer",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "EmbeddedCursor.executemany",
+      "pin lines": "387-413",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::witness_ddtab_mid_batch_reruns_rows",
+      "relation": "witnesses",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/embedded.py::_is_ddtab_error": [
+    {
+      "block": "adapters.embedded",
+      "role": "reader",
+      "path": "iris_vector_graph/embedded.py",
+      "symbol": "_is_ddtab_error",
+      "pin lines": "209-211",
+      "family": "C-embedded_no_data",
+      "formal item": ".g5/Verus_verification/models/embedded_no_data/embedded_no_data.rs::chain",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::parse_rel_prop_text": [
+    {
+      "block": "query.values.relationship_text",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "parse_rel_prop_text",
+      "pin lines": "141-168",
+      "family": "C-rel_prop_text",
+      "formal item": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs::as_built",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "query.values.relationship_text",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "parse_rel_prop_text",
+      "pin lines": "141-168",
+      "family": "C-rel_prop_text",
+      "formal item": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs::theorem_as_built_agrees_on_plain_ascii",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::parse_prop_text": [
+    {
+      "block": "query.values.relationship_text",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "parse_prop_text",
+      "pin lines": "129-138",
+      "family": "C-rel_prop_text",
+      "formal item": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs::decode",
+      "relation": "models",
+      "design": "reviewed",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::decode_json_list_map": [
+    {
+      "block": "query.values.relationship_text",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "decode_json_list_map",
+      "pin lines": "234-248",
+      "family": "C-rel_prop_text",
+      "formal item": ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs::shaped",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/schema.py::GraphSchema.ensure_adjacency_index": [
+    {
+      "block": "structure.adjacency.declare",
+      "role": "writer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.ensure_adjacency_index",
+      "pin lines": "821-898",
+      "family": "C-index_declaration",
+      "formal item": ".g5/Verus_verification/models/index_declaration/index_declaration.rs::plan",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "structure.adjacency.declare",
+      "role": "writer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.ensure_adjacency_index",
+      "pin lines": "821-898",
+      "family": "C-index_declaration",
+      "formal item": ".g5/Verus_verification/models/index_declaration/index_declaration.rs::theorem_backfill_before_edge_index",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    },
+    {
+      "block": "structure.adjacency.declare",
+      "role": "writer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.ensure_adjacency_index",
+      "pin lines": "821-898",
+      "family": "C-index_declaration",
+      "formal item": ".g5/Verus_verification/models/index_declaration/index_declaration.rs::theorem_no_prereq_no_ddl",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_vector_graph/schema.py::GraphSchema.adjacency_index_kind": [
+    {
+      "block": "structure.adjacency.declare",
+      "role": "reader",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.adjacency_index_kind",
+      "pin lines": "785-818",
+      "family": "C-index_declaration",
+      "formal item": ".g5/Verus_verification/models/index_declaration/index_declaration.rs::theorem_plain_replaced",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (unit binding)"
+    }
+  ],
+  "iris_src/src/Graph/KG/AlgoCache.cls::Get": [
+    {
+      "block": "algorithms.cache",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/AlgoCache.cls",
+      "symbol": "Get",
+      "pin lines": "39-51",
+      "family": "P-proofs-d1e",
+      "formal item": "experiment/playbook-completion/proofs-d1e/src/acache_l1.rs::theorem_answer_is_fresh",
+      "relation": "models",
+      "design": "reviewed",
+      "grade": "Inspected (the reviewed design keys on nver; the pin is control_f1004_create_moves_no_token)"
+    }
+  ],
+  "iris_src/src/Graph/KG/Ledger.cls::CommitInTxn": [
+    {
+      "block": "ledger.idempotency",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "CommitInTxn",
+      "pin lines": "419-528",
+      "family": "P-proofs-pa3",
+      "formal item": "experiment/playbook-completion/proofs-pa3/src/ledger_l1.rs::theorem_key_binds_one_fingerprint",
+      "relation": "models",
+      "design": "reviewed",
+      "grade": "Inspected"
+    },
+    {
+      "block": "ledger.commit.admission",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "CommitInTxn",
+      "pin lines": "419-528",
+      "family": "G-ledger_redaction",
+      "formal item": ".g5/Verus_verification/models/ledger_redaction/redaction.rs::theorem_retry_replays_first",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed on the guidance VM (native probes)"
+    },
+    {
+      "block": "ledger.commit",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "CommitInTxn",
+      "pin lines": "419-531",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::commit",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected transaction/global provider"
+    }
+  ],
+  "iris_src/src/Graph/KG/Adj.cls::Degree": [
+    {
+      "block": "structure.degree.cache.uncommitted",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "Degree",
+      "pin lines": "52",
+      "family": "G-graph_structure",
+      "formal item": ".g5/Verus_verification/models/graph_structure/graph_structure.rs::theorem_as_built_cache_sound",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed on the guidance VM (native probes)"
+    }
+  ],
+  "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin._route_for_write": [
+    {
+      "block": "search.embedding.other_model",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/embeddings.py",
+      "symbol": "EmbeddingsMixin._route_for_write",
+      "pin lines": "755-792",
+      "family": "G-search",
+      "formal item": ".g5/Verus_verification/models/search/search.rs::theorem_store_routes_and_refuses",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed on the guidance VM (native probes)"
+    }
+  ],
+  "iris_src/src/Graph/KG/Cypher/Gen.cls::For": [
+    {
+      "block": "query.compiled.fallback",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/Cypher/Gen.cls",
+      "symbol": "For",
+      "pin lines": "61-105",
+      "family": "P-proofs-d1d",
+      "formal item": "experiment/playbook-completion/proofs-d1d/src/planc_l2.rs::theorem_ok_entry_runs_its_shapes_class",
+      "relation": "models",
+      "design": "reviewed",
+      "grade": "Inspected"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::prop_value": [
+    {
+      "block": "query.values",
+      "role": "producer",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "prop_value",
+      "pin lines": "106-126",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_node": [
+    {
+      "block": "query.values",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_node",
+      "pin lines": "968-1104",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::theorem_numeric_writer_and_reader",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "structure.node.read",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_node",
+      "pin lines": "968-1104",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "structure.node.read.aliases",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_node",
+      "pin lines": "968-1104",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::assign",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "install.import.ndjson",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_node",
+      "pin lines": "968-1104",
+      "family": "C-ndjson_import",
+      "formal item": ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs::step",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list": [
+    {
+      "block": "query.values",
+      "role": "producer",
+      "path": "iris_vector_graph/schema.py",
+      "symbol": "GraphSchema.get_procedures_sql_list",
+      "pin lines": "2144-2775",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::cy_typed",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected CY_TYPED subsection only; numeric spelling premise"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::decode_typed_text": [
+    {
+      "block": "query.values",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "decode_typed_text",
+      "pin lines": "204-231",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::read",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/prop_values.py::read_node_value": [
+    {
+      "block": "query.values",
+      "role": "reader",
+      "path": "iris_vector_graph/prop_values.py",
+      "symbol": "read_node_value",
+      "pin lines": "273-279",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::journey",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::_finish_sql_result": [
+    {
+      "block": "query.values",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "_finish_sql_result",
+      "pin lines": "332-350",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::finish_scalar",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed scalar node-property subset; remaining pipeline not modeled"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.get_nodes": [
+    {
+      "block": "structure.node.read",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_nodes",
+      "pin lines": "621-697",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::theorem_bare_node_vs_absent",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "structure.node.read.aliases",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_nodes",
+      "pin lines": "621-697",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::witness_alias_collision",
+      "relation": "witnesses",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    },
+    {
+      "block": "install.import.ndjson",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_nodes",
+      "pin lines": "621-697",
+      "family": "C-ndjson_import",
+      "formal item": ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs::theorem_skip_then_node_reaches_reader",
+      "relation": "proves",
+      "design": "as-built",
+      "grade": "Observed cross-call binding; formal reader is map lookup only"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.get_node": [
+    {
+      "block": "structure.node.read",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.get_node",
+      "pin lines": "563-582",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::included",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/_engine/snapshot.py::SnapshotMixin.import_graph_ndjson": [
+    {
+      "block": "install.import.ndjson",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "symbol": "SnapshotMixin.import_graph_ndjson",
+      "pin lines": "1727-1855",
+      "family": "C-ndjson_import",
+      "formal item": ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs::selected",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/native_route.py::NativeRoute._start_trial": [
+    {
+      "block": "query.native.route",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/native_route.py",
+      "symbol": "NativeRoute._start_trial",
+      "pin lines": "57-61",
+      "family": "C-route_recheck",
+      "formal item": ".g5/Verus_verification/models/route_recheck/route_recheck.rs::start_trial",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/native_route.py::NativeRoute._held_run": [
+    {
+      "block": "query.native.route",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher/native_route.py",
+      "symbol": "NativeRoute._held_run",
+      "pin lines": "109-123",
+      "family": "C-route_recheck",
+      "formal item": ".g5/Verus_verification/models/route_recheck/route_recheck.rs::held_run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/native_route.py::NativeRoute.next_path": [
+    {
+      "block": "query.native.route",
+      "role": "reader",
+      "path": "iris_vector_graph/cypher/native_route.py",
+      "symbol": "NativeRoute.next_path",
+      "pin lines": "76-83",
+      "family": "C-route_recheck",
+      "formal item": ".g5/Verus_verification/models/route_recheck/route_recheck.rs::next_path",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/native_route.py::NativeRoute.sql_failed": [
+    {
+      "block": "query.native.route",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher/native_route.py",
+      "symbol": "NativeRoute.sql_failed",
+      "pin lines": "71-74",
+      "family": "C-route_recheck",
+      "formal item": ".g5/Verus_verification/models/route_recheck/route_recheck.rs::sql_failed",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; IRIS substituted)"
+    }
+  ],
+  "iris_src/src/Graph/KG/Adj.cls::WarmFill": [
+    {
+      "block": "structure.degree.cache.warm",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "WarmFill",
+      "pin lines": "138-175",
+      "family": "C-warm_sources",
+      "formal item": ".g5/Verus_verification/models/warm_sources/warm_sources.rs::stores",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; not executed here"
+    }
+  ],
+  "iris_src/src/Graph/KG/Adj.cls::WarmAll": [
+    {
+      "block": "structure.degree.cache.warm",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "WarmAll",
+      "pin lines": "184-205",
+      "family": "C-warm_sources",
+      "formal item": ".g5/Verus_verification/models/warm_sources/warm_sources.rs::filled",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; not executed here"
+    },
+    {
+      "block": "structure.degree.cache.warm",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "WarmAll",
+      "pin lines": "184-205",
+      "family": "C-warm_sources",
+      "formal item": ".g5/Verus_verification/models/warm_sources/warm_sources.rs::stamp",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; not executed here"
+    }
+  ],
+  "iris_src/src/Graph/KG/Adj.cls::AllWarm": [
+    {
+      "block": "structure.degree.cache.warm",
+      "role": "reader",
+      "path": "iris_src/src/Graph/KG/Adj.cls",
+      "symbol": "AllWarm",
+      "pin lines": "214-217",
+      "family": "C-warm_sources",
+      "formal item": ".g5/Verus_verification/models/warm_sources/warm_sources.rs::all_warm",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; not executed here"
+    }
+  ],
+  "iris_vector_graph/cypher/translator.py::_reads_node_value": [
+    {
+      "block": "query.values",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/translator.py",
+      "symbol": "_reads_node_value",
+      "pin lines": "7644-7678",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::typed_column",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed scalar node-property subset; metadata normalization not modeled"
+    }
+  ],
+  "iris_vector_graph/cypher/translator.py::translate_to_sql": [
+    {
+      "block": "query.values",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/translator.py",
+      "symbol": "translate_to_sql",
+      "pin lines": "7090-7106",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::typed_column",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed scalar node-property subset; metadata normalization not modeled"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::_decode_typed_value_columns": [
+    {
+      "block": "query.values",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "_decode_typed_value_columns",
+      "pin lines": "1137-1154",
+      "family": "C-node_read",
+      "formal item": ".g5/Verus_verification/models/node_read/node_read.rs::theorem_sql_scalar_read_reaches_result",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed scalar node-property subset; metadata normalization not modeled"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::ApplyAll": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "ApplyAll",
+      "pin lines": "18-51",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::apply_all",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::NodeExists": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "NodeExists",
+      "pin lines": "79-96",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::fails",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::OpSetProp": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "OpSetProp",
+      "pin lines": "309-318",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::fails",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::SetProp": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "SetProp",
+      "pin lines": "266-285",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    },
+    {
+      "block": "ledger.readers.diff",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "SetProp",
+      "pin lines": "266",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::writer",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected prior/new projection; no-op emission abstracted"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::OpCreateRel": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "OpCreateRel",
+      "pin lines": "450-530",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::fails",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::OpCreateNode": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "OpCreateNode",
+      "pin lines": "215-252",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::OpAddLabel": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "OpAddLabel",
+      "pin lines": "286-293",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::Rec": [
+    {
+      "block": "ledger.commit",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "Rec",
+      "pin lines": "62-67",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::write",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected ObjectScript; no native writer"
+    }
+  ],
+  "iris_src/src/Graph/KG/Ledger.cls::Commit": [
+    {
+      "block": "ledger.commit",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "Commit",
+      "pin lines": "397-418",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::commit",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected transaction/global provider"
+    }
+  ],
+  "iris_src/src/Graph/KG/Ledger.cls::WriteRevision": [
+    {
+      "block": "ledger.commit",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/Ledger.cls",
+      "symbol": "WriteRevision",
+      "pin lines": "532-571",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::revision",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected transaction/global provider"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.get_revision": [
+    {
+      "block": "ledger.commit",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.get_revision",
+      "pin lines": "695-704",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::revision",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python reader; reference record producer substituted"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger._commit": [
+    {
+      "block": "ledger.commit",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger._commit",
+      "pin lines": "402-443",
+      "family": "C-ledger_apply",
+      "formal item": ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs::theorem_mid_failure_rolls_back_prefix",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed error mapping only; no native rollback"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.reconstruct": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "producer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.reconstruct",
+      "pin lines": "720-728",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::effective",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::contributes": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "contributes",
+      "pin lines": "24-26",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::apply",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::GraphState.apply": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "GraphState.apply",
+      "pin lines": "170-209",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::apply",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    },
+    {
+      "block": "ledger.readers.diff",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "GraphState.apply",
+      "pin lines": "170-209",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::continuous",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed endpoint per-property projection only"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::reconstruct": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "reconstruct",
+      "pin lines": "544-566",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.export_reconstruction": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.export_reconstruction",
+      "pin lines": "730-739",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::theorem_stream_and_export_fold",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::iter_records_sql": [
+    {
+      "block": "ledger.readers.bound",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "iter_records_sql",
+      "pin lines": "252-269",
+      "family": "C-reconstruction",
+      "formal item": ".g5/Verus_verification/models/reconstruction/reconstruction.rs::selected",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python; SQL/meta substituted; structural count projection"
+    }
+  ],
+  "iris_vector_graph/fusion.py::RRFFusion.fuse_results": [
+    {
+      "block": "search.fusion.python",
+      "role": "producer",
+      "path": "iris_vector_graph/fusion.py",
+      "symbol": "RRFFusion.fuse_results",
+      "pin lines": "27-64",
+      "family": "C-fusion_ranking",
+      "formal item": ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs::rank",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual Python rank/score producer"
+    }
+  ],
+  "iris_vector_graph/fusion.py::HybridSearchFusion.multi_modal_search": [
+    {
+      "block": "search.fusion.python",
+      "role": "consumer",
+      "path": "iris_vector_graph/fusion.py",
+      "symbol": "HybridSearchFusion.multi_modal_search",
+      "pin lines": "109-252",
+      "family": "C-fusion_ranking",
+      "formal item": ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs::top_two",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed strict pair winner; general sort/details not proved"
+    },
+    {
+      "block": "search.fusion.failed_leg",
+      "role": "consumer",
+      "path": "iris_vector_graph/fusion.py",
+      "symbol": "HybridSearchFusion.multi_modal_search",
+      "pin lines": "109-252",
+      "family": "C-fusion_ranking",
+      "formal item": ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs::collect",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual Python catches; providers substituted"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_delete_nodes": [
+    {
+      "block": "structure.node.delete.bulk",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.bulk_delete_nodes",
+      "pin lines": "2270-2299",
+      "family": "C-bulk_delete",
+      "formal item": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs::normalize",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python orchestration; storage/reifier census/guard substituted"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._delete_in_scope": [
+    {
+      "block": "structure.node.delete.bulk",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._delete_in_scope",
+      "pin lines": "2176-2200",
+      "family": "C-bulk_delete",
+      "formal item": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs::batches",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python orchestration; storage/reifier census/guard substituted"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::DeleteResult.__int__": [
+    {
+      "block": "structure.node.delete.bulk",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "DeleteResult.__int__",
+      "pin lines": "107-108",
+      "family": "C-bulk_delete",
+      "formal item": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs::as_int",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python orchestration; storage/reifier census/guard substituted"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::DeleteResult.__bool__": [
+    {
+      "block": "structure.node.delete.bulk",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "DeleteResult.__bool__",
+      "pin lines": "110-111",
+      "family": "C-bulk_delete",
+      "formal item": ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs::as_bool",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python orchestration; storage/reifier census/guard substituted"
+    }
+  ],
+  "iris_vector_graph/ledger/client.py::GraphLedger.diff": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/client.py",
+      "symbol": "GraphLedger.diff",
+      "pin lines": "706-718",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::diff",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed named Python reader; SQL provider substituted"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::compute_diff": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "reader",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "compute_diff",
+      "pin lines": "453-536",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::track",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed per-attribute lifecycle projection"
+    }
+  ],
+  "iris_vector_graph/ledger/replay.py::Diff.inverse": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "consumer",
+      "path": "iris_vector_graph/ledger/replay.py",
+      "symbol": "Diff.inverse",
+      "pin lines": "417-418",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::inverse",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::NodeSnapshotJson": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "producer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "NodeSnapshotJson",
+      "pin lines": "337",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::writer",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected selected property projection; full JSON unproved"
+    }
+  ],
+  "iris_src/src/Graph/KG/LedgerApply.cls::DeleteNodeRows": [
+    {
+      "block": "ledger.readers.diff",
+      "role": "writer",
+      "path": "iris_src/src/Graph/KG/LedgerApply.cls",
+      "symbol": "DeleteNodeRows",
+      "pin lines": "354",
+      "family": "C-history_diff",
+      "formal item": ".g5/Verus_verification/models/history_diff/history_diff.rs::writer",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Inspected snapshot producer; no IRIS execution"
+    }
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin._node_set_token": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin._node_set_token",
+      "pin lines": "179-193",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::token",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin._kg_pagerank_global": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/algorithms.py",
+      "symbol": "AlgorithmsMixin._kg_pagerank_global",
+      "pin lines": "781-804",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::call",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/_edgeless.py::edgeless": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "producer",
+      "path": "iris_vector_graph/_edgeless.py",
+      "symbol": "edgeless",
+      "pin lines": "58-60",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::edgeless",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_pagerank": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "writer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore.execute_pagerank",
+      "pin lines": "2362-2386",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::key",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._cached_algorithm": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "reader",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore._cached_algorithm",
+      "pin lines": "921-988",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::call",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._execute_pagerank": [
+    {
+      "block": "algorithms.cache.pagerank",
+      "role": "consumer",
+      "path": "iris_vector_graph/stores/iris_sql_store.py",
+      "symbol": "IRISGraphStore._execute_pagerank",
+      "pin lines": "2388-2417",
+      "family": "C-pagerank_admission",
+      "formal item": ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs::call",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed (Python unit binding; server substituted)"
+    }
+  ],
+  "iris_vector_graph/cypher/aql/lexer.py::AQLLexer._read_number": [
+    {
+      "block": "query.aql",
+      "role": "producer",
+      "path": "iris_vector_graph/cypher/aql/lexer.py",
+      "symbol": "AQLLexer._read_number",
+      "pin lines": "164-174",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::lex",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/cypher/aql/parser.py::AQLParser.parse": [
+    {
+      "block": "query.aql",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher/aql/parser.py",
+      "symbol": "AQLParser.parse",
+      "pin lines": "32-168",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::depth",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/cypher/aql/translator.py::AQLTranslator._resolve_binop": [
+    {
+      "block": "query.aql",
+      "role": "writer",
+      "path": "iris_vector_graph/cypher/aql/translator.py",
+      "symbol": "AQLTranslator._resolve_binop",
+      "pin lines": "95-109",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::resolve",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/cypher/aql/translator.py::AQLTranslator._translate_traversal": [
+    {
+      "block": "query.aql",
+      "role": "consumer",
+      "path": "iris_vector_graph/cypher/aql/translator.py",
+      "symbol": "AQLTranslator._translate_traversal",
+      "pin lines": "156-224",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::hops",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/_engine/query.py::QueryMixin.execute_aql": [
+    {
+      "block": "query.aql",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/query.py",
+      "symbol": "QueryMixin.execute_aql",
+      "pin lines": "1730-1744",
+      "family": "C-aql_frontend",
+      "formal item": ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs::hops",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed actual frontend; Cypher execution recorder"
+    }
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.vector_search": [
+    {
+      "block": "search.knn.threshold",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.vector_search",
+      "pin lines": "1169-1287",
+      "family": "C-vector_threshold",
+      "formal item": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs::build",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python with adapted SQLite SQL provider; cosine premise"
+    },
+    {
+      "block": "search.knn.threshold",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.vector_search",
+      "pin lines": "1169-1287",
+      "family": "C-vector_threshold",
+      "formal item": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs::search",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python with adapted SQLite SQL provider; cosine premise"
+    }
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.edge_vector_search": [
+    {
+      "block": "search.knn.threshold",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.edge_vector_search",
+      "pin lines": "333-398",
+      "family": "C-vector_threshold",
+      "formal item": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs::build",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python with adapted SQLite SQL provider; cosine premise"
+    },
+    {
+      "block": "search.knn.threshold",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/vector.py",
+      "symbol": "VectorMixin.edge_vector_search",
+      "pin lines": "333-398",
+      "family": "C-vector_threshold",
+      "formal item": ".g5/Verus_verification/models/vector_threshold/vector_threshold.rs::search",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Observed Python with adapted SQLite SQL provider; cosine premise"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.create_edge": [
+    {
+      "block": "structure.edge.single",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.create_edge",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.store_edge": [
+    {
+      "block": "structure.edge.single",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.store_edge",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::run",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._ensure_edge_endpoints": [
+    {
+      "block": "structure.edge.single",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._ensure_edge_endpoints",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::theorem_new_edge_registers_endpoints",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::_swallow_duplicate": [
+    {
+      "block": "structure.edge.single",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "_swallow_duplicate",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::theorem_duplicate_returns_differ",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._adopt_temporal_row": [
+    {
+      "block": "structure.edge.single",
+      "role": "writer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._adopt_temporal_row",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::theorem_temporal_adoption",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.edge_count": [
+    {
+      "block": "structure.edge.single",
+      "role": "consumer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin.edge_count",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::count",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin._count_in_graph": [
+    {
+      "block": "structure.edge.single",
+      "role": "reader",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "NodesEdgesMixin._count_in_graph",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::count",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; IRIS/callback providers conditional; specific single-triple behavior"
+    }
+  ],
+  "iris_vector_graph/_engine/nodes_edges.py::_qualifiers_json": [
+    {
+      "block": "temporal.structural.adopt",
+      "role": "producer",
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "symbol": "_qualifiers_json",
+      "pin lines": "see exact symbol at product pin",
+      "family": "C-edge_acceptance",
+      "formal item": ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs::theorem_caller_marker_retained",
+      "relation": "models",
+      "design": "as-built",
+      "grade": "Actual Python/SQLite agreement; caller Boolean temporal marker preservation only; not general JSON equivalence"
+    }
+  ]
+}

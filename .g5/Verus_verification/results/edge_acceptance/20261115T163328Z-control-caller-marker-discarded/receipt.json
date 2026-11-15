@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_caller_marker_retained"
+    ],
+    "find": "row:true,temporal:marker,value",
+    "name": "caller-marker-discarded",
+    "replace": "row:true,temporal:false,value"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_caller_marker_retained"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs": "ef7c54c202ec2330605b8152cde61162775ab0c5cff0a1d11328d1a8c8375d79",
+    ".g5/Verus_verification/models/edge_acceptance/model.json": "18f69052abd4e16647e739c17708645eeba661f3a2c976299ba0d59482766bb0"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/caller-marker-discarded/edge_acceptance.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_caller_marker_retained": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/20261115T163327Z-control-caller-marker-discarded-theorem_caller_marker_retained.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/20261115T163327Z-control-caller-marker-discarded.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/edge_acceptance/20261115T163328Z-control-caller-marker-discarded/logs/20261115T163327Z-control-caller-marker-discarded-theorem_caller_marker_retained.log": "5f7a88956953ec0e7fcd5efc0e5a579a609ae280d452c2b4022482667e233f3c",
+    ".g5/Verus_verification/results/edge_acceptance/20261115T163328Z-control-caller-marker-discarded/logs/20261115T163327Z-control-caller-marker-discarded.log": "8deba998c671f40a8fdd9fefd2d9c100d91e769ef783687ce7c32e43f57fd055"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "latest_edge_receipts": {
+    "proof": {
+      "path": ".g5/Verus_verification/results/edge_acceptance/20261115T163323Z-prove/receipt.json",
+      "verdict": "PASS"
+    },
+    "binding": {
+      "path": ".g5/Verus_verification/results/edge_acceptance/20261115T163322Z-binding/receipt.json",
+      "verdict": "AGREES"
+    },
+    "same-duplicate-return": {
+      "path": ".g5/Verus_verification/results/edge_acceptance/20261115T163324Z-control-same-duplicate-return/receipt.json",
+      "verdict": "EXPECTED_FAIL"
+    },
+    "duplicate-overwrites": {
+      "path": ".g5/Verus_verification/results/edge_acceptance/20261115T163324Z-control-duplicate-overwrites/receipt.json",
+      "verdict": "EXPECTED_FAIL"
+    },
+    "refusal-leaks-row": {
+      "path": ".g5/Verus_verification/results/edge_acceptance/20261115T163325Z-control-refusal-leaks-row/receipt.json",
+      "verdict": "EXPECTED_FAIL"
+    },
+    "adoption-forgot-marker": {
+      "path": ".g5/Verus_verification/results/edge_acceptance/20261115T163326Z-control-adoption-forgot-marker/receipt.json",
+      "verdict": "EXPECTED_FAIL"
+    },
+    "store-writes-adjacency": {
+      "path": ".g5/Verus_verification/results/edge_acceptance/20261115T163327Z-control-store-writes-adjacency/receipt.json",
+      "verdict": "EXPECTED_FAIL"
+    },
+    "caller-marker-discarded": {
+      "path": ".g5/Verus_verification/results/edge_acceptance/20261115T163328Z-control-caller-marker-discarded/receipt.json",
+      "verdict": "EXPECTED_FAIL"
+    }
+  },
+  "freshness_controls": [
+    {
+      "label": "fresh-inputs",
+      "exit": 0,
+      "proof": "REUSABLE_INPUTS",
+      "correspondence": "REUSABLE_INPUTS",
+      "changed_product": [],
+      "changed_formal": [],
+      "scope": "all scoped model bindings; full file/name manifest discovers competing/new writers; no provider freshness claim"
+    },
+    {
+      "label": "product-only-return",
+      "exit": 1,
+      "proof": "REUSABLE_INPUTS",
+      "correspondence": "STALE_ALL",
+      "changed_product": [
+        "iris_vector_graph/_engine/nodes_edges.py"
+      ],
+      "changed_formal": [],
+      "scope": "all scoped model bindings; full file/name manifest discovers competing/new writers; no provider freshness claim"
+    },
+    {
+      "label": "formal-only-return",
+      "exit": 1,
+      "proof": "STALE_ALL",
+      "correspondence": "STALE_ALL",
+      "changed_product": [],
+      "changed_formal": [
+        ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs"
+      ],
+      "scope": "all scoped model bindings; full file/name manifest discovers competing/new writers; no provider freshness claim"
+    },
+    {
+      "label": "newly-registered-writer",
+      "exit": 1,
+      "proof": "REUSABLE_INPUTS",
+      "correspondence": "STALE_ALL",
+      "changed_product": [
+        "iris_vector_graph/new_writer_fixture.py"
+      ],
+      "changed_formal": [],
+      "scope": "all scoped model bindings; full file/name manifest discovers competing/new writers; no provider freshness claim"
+    }
+  ],
+  "direct_product_body_verification": 0,
+  "inherited_evidence": "unchanged-input reuse; no rerun beyond noted packages",
+  "registers": {
+    "bugs_issues": 428,
+    "simplifications": 55,
+    "questions": 140,
+    "new": 0,
+    "strengthened": [
+      "F-C0351"
+    ],
+    "owner_decisions": 0,
+    "simplifications_considered": "unifying duplicate bool results would change supported API behavior; no repair proposed"
+  },
+  "costs": {
+    "started": "2026-11-15T16:26:48.646440+00:00",
+    "recorded_now": "2026-11-15T16:34:30.358683+00:00",
+    "solver_cpu_tokens_cache_currency": "unavailable",
+    "grader": "no independent grader execution; read-only reviewer separate"
+  }
+}

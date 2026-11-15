@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_refusal_leaves_state"
+    ],
+    "find": "if refused { Result{state:s,answer:None} }",
+    "name": "refusal-leaks-row",
+    "replace": "if refused { Result{state:State{row:true,..s},answer:None} }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_refusal_leaves_state"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs": "ef7c54c202ec2330605b8152cde61162775ab0c5cff0a1d11328d1a8c8375d79",
+    ".g5/Verus_verification/models/edge_acceptance/model.json": "18f69052abd4e16647e739c17708645eeba661f3a2c976299ba0d59482766bb0"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/refusal-leaks-row/edge_acceptance.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_refusal_leaves_state": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/20261115T163324Z-control-refusal-leaks-row-theorem_refusal_leaves_state.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/20261115T163324Z-control-refusal-leaks-row.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/edge_acceptance/20261115T163325Z-control-refusal-leaks-row/logs/20261115T163324Z-control-refusal-leaks-row-theorem_refusal_leaves_state.log": "5112a22ce8af9634e8bc50bb808f0ab410b69d791e249065f9e89461ef60ff46",
+    ".g5/Verus_verification/results/edge_acceptance/20261115T163325Z-control-refusal-leaks-row/logs/20261115T163324Z-control-refusal-leaks-row.log": "40e3a83bb31df11b99eaab1b824376a86ecb559fa7c54bc9bd90af0c0ea324fa"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

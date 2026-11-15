@@ -563,3 +563,24 @@ Unmapped strata remain algorithms numerics, full ledger content/lifecycle and
 database transactions, restore-to-readers, bulk label/property producer equivalence,
 CALL row evaluation, warm-cache content/concurrency, FHIR and broad HTTP/Bolt/query
 semantics. No repository-wide behavioral percentage or independent discovery score.
+
+## Improvement iteration 4 (2026-11-15)
+
+[Sealed evidence](../uplift/consolidated/iteration-4/HANDOFF.md): edge_acceptance
+corrects ordinary create/store duplicate returns and models caller marker retention,
+including F-C0351's as-built exception to intended adoption. Seven proved model
+obligations, six named failing controls, 56 Python/SQLite agreement cases; no direct
+product-body proof or native IRIS execution. Eight added behavior links connect
+marker producer, both writers, endpoints, duplicate handling, adoption and final
+SQL count. Whole-source correspondence and separate formal-input reuse controls
+are decisive, including an added registered writer.
+
+Revised deterministic named-member instrument: 4130 scoped members; 95 ->103 active
+behavior locators, eight newly audited/qualified roles, zero direct body proofs.
+Historical4129/93 and citation+mapping union335 are preserved as different instruments.
+Exact census, specific unlinked members by subsystem, rejected links, ambiguity and
+exclusions are in iteration-4/{before,after}-reach. This is not a whole-method or
+population fidelity claim; inherited links were not exhaustively semantically audited.
+Builder E1 known-repair five scores and limits are in builder-scores.json.
+Bulk children and routed restore readers remain material gaps, independently
+surveyed and source-frozen; convergence is not claimed.

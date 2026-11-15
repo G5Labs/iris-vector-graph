@@ -1,0 +1,45 @@
+verification results:: 3 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/duplicate-overwrites/edge_acceptance.rs:20:1
+   |
+20 | pub proof fn theorem_duplicate_returns_differ(s:State,value:int,indexed:bool)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/duplicate-overwrites/edge_acceptance.rs:24:9
+   |
+20 | pub proof fn theorem_duplicate_returns_differ(s:State,value:int,indexed:bool)
+   | ----------------------------------------------------------------------------- at the end of the function body
+...
+24 |         run(s,Api::Create,value,indexed,false).state==s,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/duplicate-overwrites/edge_acceptance.rs:25:9
+   |
+20 | pub proof fn theorem_duplicate_returns_differ(s:State,value:int,indexed:bool)
+   | ----------------------------------------------------------------------------- at the end of the function body
+...
+25 |         run(s,Api::Store,value,indexed,false).state==s,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/duplicate-overwrites/edge_acceptance.rs:30:9
+   |
+27 | pub proof fn theorem_repeat_counts_one(s:State,api:Api,v:int,w:int,indexed:bool)
+   | -------------------------------------------------------------------------------- at the end of the function body
+...
+30 |         run(run(s,api,v,indexed,false).state,api,w,indexed,false).state.value==v,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/duplicate-overwrites/edge_acceptance.rs:47:9
+   |
+40 | pub proof fn theorem_temporal_adoption(s:State,v:int,indexed:bool)
+   | ------------------------------------------------------------------ at the end of the function body
+...
+47 |         run(s,Api::Store,v,indexed,false).state.value==s.value,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_adjacency_distinction"
+    ],
+    "find": "indexed || matches!(api,Api::Create) || s.adjacency",
+    "name": "store-writes-adjacency",
+    "replace": "true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_adjacency_distinction"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs": "ef7c54c202ec2330605b8152cde61162775ab0c5cff0a1d11328d1a8c8375d79",
+    ".g5/Verus_verification/models/edge_acceptance/model.json": "18f69052abd4e16647e739c17708645eeba661f3a2c976299ba0d59482766bb0"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/store-writes-adjacency/edge_acceptance.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_adjacency_distinction": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/20261115T163326Z-control-store-writes-adjacency-theorem_adjacency_distinction.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/20261115T163326Z-control-store-writes-adjacency.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/edge_acceptance/20261115T163327Z-control-store-writes-adjacency/logs/20261115T163326Z-control-store-writes-adjacency-theorem_adjacency_distinction.log": "5db5734276f0c827ae84da6c85719efe458ea14599d7e00f220eed8a93c8fbcd",
+    ".g5/Verus_verification/results/edge_acceptance/20261115T163327Z-control-store-writes-adjacency/logs/20261115T163326Z-control-store-writes-adjacency.log": "268ec49875e89973322266a8f3d2e4a464520d12f51d8990bfd9eab41919046c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -164,6 +164,7 @@ An explicit structural write of a triple that has a marked structural edge adopt
 - After adoption, no temporal delete or purge removes the edge.
 - An adopting `create_edge` reports True, unlike writing an existing unmarked edge again, which reports False.
 - An explicit edge written before any temporal edge is never marked.
+- Observed exception in Python `create_edge` and `store_edge`: caller qualifiers can supply `temporal=True`. A new row then keeps the mark; an adopting `create_edge` also keeps it when supplied again, and repeated marked creates report True and replace qualifiers. This conflicts with the unmarked explicit-edge rule above.
 
 <a id="temporal.structural.end"></a>
 [I · temporal.structural.end]
@@ -521,6 +522,8 @@ Findings: [May an explicit delete_edge remove a marked structural row while its 
 ### temporal.structural.adopt
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [spec 254 sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L80), [create_edge adopt](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1300), [ledger adopt](../../../iris_src/src/Graph/KG/LedgerApply.cls#L465-L475); live tests: [purge path matrix](../../../tests/e2e/test_254_purge_e2e.py), [ledger adopt](../../../tests/integration/test_ledger_us11_temporal_coexist.py)
 - Expands: [Implied structural edge](#temporal.structural)
+- Formal contract: [Python marker and adoption cases](../../Verus_verification/models/edge_acceptance/edge_acceptance.rs)
+- Findings: [caller-supplied marker](../../Verus_verification/bugs_issues.md#F-C0351)
 - agent
 - data-integrity
 - test-coverage

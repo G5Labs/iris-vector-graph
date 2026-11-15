@@ -1,0 +1,27 @@
+verification results:: 6 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/caller-marker-discarded/edge_acceptance.rs:55:1
+   |
+55 | pub proof fn theorem_caller_marker_retained(s:State,v:int,w:int,indexed:bool)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/caller-marker-discarded/edge_acceptance.rs:57:13
+   |
+55 | pub proof fn theorem_caller_marker_retained(s:State,v:int,w:int,indexed:bool)
+   | ----------------------------------------------------------------------------- at the end of the function body
+56 |     requires !s.row,
+57 |     ensures run(s,Api::Create,v,true,indexed,false).state.temporal,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration4-20261115/verus/edge_acceptance/controls/caller-marker-discarded/edge_acceptance.rs:58:9
+   |
+55 | pub proof fn theorem_caller_marker_retained(s:State,v:int,w:int,indexed:bool)
+   | ----------------------------------------------------------------------------- at the end of the function body
+...
+58 |         run(run(s,Api::Create,v,true,indexed,false).state,Api::Create,w,true,indexed,false).answer==Some(true),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

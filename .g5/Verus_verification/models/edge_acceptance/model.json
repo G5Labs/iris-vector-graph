@@ -1,0 +1,56 @@
+{
+  "name": "edge_acceptance",
+  "root": "edge_acceptance.rs",
+  "expected_verified": 7,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "same-duplicate-return",
+      "find": "Some(matches!(api,Api::Store))",
+      "replace": "Some(false)",
+      "expect_fail_in": [
+        "theorem_duplicate_returns_differ"
+      ]
+    },
+    {
+      "name": "duplicate-overwrites",
+      "find": "State{endpoints:true,..s}",
+      "replace": "State{endpoints:true,value,..s}",
+      "expect_fail_in": [
+        "theorem_repeat_counts_one"
+      ]
+    },
+    {
+      "name": "refusal-leaks-row",
+      "find": "if refused { Result{state:s,answer:None} }",
+      "replace": "if refused { Result{state:State{row:true,..s},answer:None} }",
+      "expect_fail_in": [
+        "theorem_refusal_leaves_state"
+      ]
+    },
+    {
+      "name": "adoption-forgot-marker",
+      "find": "State{temporal:marker,value,..s}",
+      "replace": "State{temporal:true,value,..s}",
+      "expect_fail_in": [
+        "theorem_temporal_adoption"
+      ]
+    },
+    {
+      "name": "store-writes-adjacency",
+      "find": "indexed || matches!(api,Api::Create) || s.adjacency",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_adjacency_distinction"
+      ]
+    },
+    {
+      "name": "caller-marker-discarded",
+      "find": "row:true,temporal:marker,value",
+      "replace": "row:true,temporal:false,value",
+      "expect_fail_in": [
+        "theorem_caller_marker_retained"
+      ]
+    }
+  ]
+}
