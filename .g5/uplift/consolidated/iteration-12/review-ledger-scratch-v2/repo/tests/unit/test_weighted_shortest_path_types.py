@@ -1,0 +1,51 @@
+"""`ivg.shortestPath.weighted(..., direction, types)` limits Dijkstra to the named relationship types.
+
+Without it DijkstraJson walked every predicate out of every node: from an SNB Person that is
+each post, comment and like, so a KNOWS path (Memgraph: `-[r:KNOWS *WSHORTEST ...]-`) cost
+565 ms at SF0.1 against Memgraph's 29. The seventh argument reaches DijkstraJson as a JSON
+array; omitted, it is "[]" (every type), followed by the graph searched (4.6.0 R154).
+"""
+
+# The queries yield the path too: YIELD totalCost alone takes TraversalPaths.DijkstraCost (test_weighted_cost_route),
+# whose arguments are held there.
+from unittest.mock import MagicMock, patch
+
+from iris_vector_graph import engine as engine_module
+from iris_vector_graph.engine import IRISGraphEngine
+
+
+def _dijkstra_args(query, params=None):
+    calls = []
+
+    def fake(conn, cls, method, *args):
+        calls.append((method, args))
+        return '{"nodes": ["a", "b"], "totalCost": 3.0}'
+
+    eng = IRISGraphEngine(MagicMock())
+    with patch.object(engine_module, "_call_classmethod", fake):
+        eng.execute_cypher(query, params or {})
+    return [a for m, a in calls if m == "DijkstraJson"][0]
+
+
+def test_a_type_list_reaches_dijkstra_as_json():
+    args = _dijkstra_args("CALL ivg.shortestPath.weighted('a', 'b', 'weight', 9999, 10, 'both', ['KNOWS']) YIELD path, totalCost RETURN totalCost")
+    assert args[6] == '["KNOWS"]'
+
+
+def test_a_single_type_string_is_a_one_item_list():
+    args = _dijkstra_args("CALL ivg.shortestPath.weighted('a', 'b', 'weight', 9999, 10, 'both', 'KNOWS') YIELD path, totalCost RETURN totalCost")
+    assert args[6] == '["KNOWS"]'
+
+
+def test_a_type_parameter_is_its_value():
+    args = _dijkstra_args(
+        "CALL ivg.shortestPath.weighted('a', 'b', 'weight', 9999, 10, 'both', $types) YIELD path, totalCost RETURN totalCost",
+        {"types": ["KNOWS", "LIKES"]},
+    )
+    assert args[6] == '["KNOWS", "LIKES"]'
+
+
+def test_without_types_the_call_sends_an_empty_list_and_the_graph():
+    # 4.6.0 R154: the eighth argument is the graph searched, so the seventh is always sent ("[]" walks every type)
+    args = _dijkstra_args("CALL ivg.shortestPath.weighted('a', 'b', 'weight', 9999, 10, 'both') YIELD path, totalCost RETURN totalCost")
+    assert args[6:] == ("[]", "")

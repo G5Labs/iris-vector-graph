@@ -1,0 +1,298 @@
+"""Spec 253, T030 (family B, first slice): variable-length ends and DISTINCT / count(DISTINCT), natively.
+
+The SNB IC1 and IC3 shapes: a variable-length relationship whose paths nothing downstream can tell apart (RETURN
+DISTINCT over the far node's properties, or count(DISTINCT far node)), so the walk yields each end once
+(Graph.KG.VarLength). Plus `<>` filters and count(*). Each query runs in shadow mode and must be answered natively.
+
+Run against `IVG_NAMESPACE=TCKJ`.
+"""
+
+from __future__ import annotations
+
+import os
+import uuid
+
+import pytest
+
+from iris_vector_graph.engine import IRISGraphEngine
+from tests.helpers.dev_classes import EXEC, ensure_dev_classes
+
+SKIP_IRIS_TESTS = os.environ.get("SKIP_IRIS_TESTS", "false").lower() == "true"
+pytestmark = pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+
+T = uuid.uuid4().hex[:6]
+
+
+def n(x):
+    return f"fb{T}_{x}"
+
+
+PEOPLE = {"a": "Ann", "b": "Bo", "c": "Ann", "d": "Di", "e": "Ann", "f": "Fe"}
+POSTS = {"p1": ("b", "Tx"), "p2": ("c", "Tx"), "p3": ("c", "Ty"), "p4": ("d", "Ty"), "p5": ("f", "Tz")}
+
+
+def load(e):
+    """The cases' graph (test_257_compiled_plans_e2e runs the same cases on it)."""
+    # rank: strings a range compares as the SQL path does (canonical numbers before other strings, numerically)
+    ranks = {"a": "9", "b": "10", "c": "01", "d": "1.5", "e": "x"}
+    for k, first in PEOPLE.items():
+        props = {"sid": n(k), "firstName": first, "joined": f"2011-0{ord(k) - 96}-15"}
+        if k in ranks:
+            props["rank"] = ranks[k]
+        if k != "f":
+            props["lastName"] = f"L{k}"
+        # a grouping key long enough (400+ characters) to be found by its JSON rather than its values
+        if k in "abc":
+            props["bio"] = "b" * 450 + ("1" if k in "ab" else "2")
+        # FbStar: a second, smaller label (c, and e with its self-loop), so a label scan may start there
+        e.create_node(n(k), labels=["FbPerson", "FbStar"] if k in "ce" else ["FbPerson"], properties=props)
+    # a-b-c triangle, c-d-e chain, e-e self-loop, a-f
+    for x, y in (("a", "b"), ("b", "c"), ("c", "a"), ("c", "d"), ("d", "e"), ("e", "e"), ("a", "f")):
+        e.create_edge(n(x), "FB_KNOWS", n(y))
+    # posts, each by one person: two by c, none by a
+    for k, (by, title) in POSTS.items():
+        e.create_node(n(k), labels=["FbPost"], properties={"sid": n(k), "title": title})
+        e.create_edge(n(k), "FB_BY", n(by))
+
+
+def unload(e):
+    for k in [*PEOPLE, *POSTS]:
+        e.delete_node(n(k))
+
+
+@pytest.fixture(scope="module")
+def engine(iris_connection):
+    e = IRISGraphEngine(iris_connection, native_cypher=True)
+    load(e)
+    e._native_privileges_cached = True
+    e.cypher_shadow = True
+    yield e
+    e.cypher_shadow = False
+    unload(e)
+
+
+IC1 = (
+    "MATCH (p:FbPerson)-[:FB_KNOWS*1..3]-(f:FbPerson) WHERE p.sid = $id AND f.firstName = $first AND f.sid <> $id "
+    "RETURN DISTINCT f.sid, f.lastName ORDER BY f.sid LIMIT 20"
+)
+IC3 = "MATCH (p:FbPerson)-[:FB_KNOWS*2..2]-(f:FbPerson) WHERE p.sid = $id AND f.sid <> $id RETURN count(DISTINCT f)"
+
+CASES = [
+    ("IC1 shape", IC1, {"id": "a", "first": "Ann"}),
+    ("IC1 from the chain end", IC1, {"id": "e", "first": "Ann"}),
+    # the start's own name differs, so the far ends are found by their name and checked against the start's neighbourhood
+    ("IC1 shape, the named ends found by their name", IC1, {"id": "b", "first": "Ann"}),
+    ("IC1 shape, a name no one in reach has", IC1, {"id": "b", "first": "Fe"}),
+    (
+        "named ends over a directed walk",
+        "MATCH (p:FbPerson)-[:FB_KNOWS*1..2]->(f:FbPerson) WHERE p.sid = $id AND f.firstName = $first "
+        "RETURN DISTINCT f.sid ORDER BY f.sid",
+        {"id": "b", "first": "Ann"},
+    ),
+    (
+        "named ends counted",
+        "MATCH (p:FbPerson)-[:FB_KNOWS*1..3]-(f:FbPerson) WHERE p.sid = $id AND f.firstName = $first RETURN count(DISTINCT f)",
+        {"id": "d", "first": "Ann"},
+    ),
+    ("IC3 shape", IC3, {"id": "a"}),
+    ("IC3 from the self-loop", IC3, {"id": "e"}),
+    (
+        "directed ends",
+        "MATCH (p:FbPerson)-[:FB_KNOWS*1..2]->(f) WHERE p.sid = $id RETURN DISTINCT f.sid ORDER BY f.sid",
+        {"id": "c"},
+    ),
+    (
+        "min zero includes the source",
+        "MATCH (p:FbPerson)-[:FB_KNOWS*0..1]->(f) WHERE p.sid = $id RETURN DISTINCT f.sid ORDER BY f.sid",
+        {"id": "a"},
+    ),
+    ("count star over a hop", "MATCH (p:FbPerson)-[:FB_KNOWS]-(f) WHERE p.sid = $id RETURN count(*)", {"id": "a"}),
+    (
+        "grouped count, ordered by the count",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]->(f:FbPerson) RETURN p.firstName AS name, count(f) AS n ORDER BY n DESC, name LIMIT 10",
+        {},
+    ),
+    (
+        "grouped count with a missing key",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) RETURN f.lastName AS last, count(p) AS n ORDER BY last",
+        {},
+    ),
+    (
+        "grouped count(DISTINCT)",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) RETURN p.firstName AS name, count(DISTINCT f) AS c ORDER BY c DESC, name",
+        {},
+    ),
+    # filtered: a whole-label count with no filter is left to the SQL path's index count
+    ("ungrouped count over a label", "MATCH (p:FbPerson) WHERE p.firstName <> 'zz' RETURN count(p)", {}),
+    (
+        "a date window",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f) WHERE p.sid = $id AND f.joined > $lo AND f.joined <= $hi RETURN f.sid ORDER BY f.sid",
+        {"id": "a", "lo": "2011-02-01", "hi": "2011-06-15"},
+    ),
+    (
+        "a range on numeric-looking strings",
+        "MATCH (p:FbPerson) WHERE p.rank < $r RETURN p.sid ORDER BY p.sid",
+        {"r": "10"},
+    ),
+    (
+        "a mirrored range, and >= on a missing property",
+        "MATCH (p:FbPerson) WHERE '9' <= p.rank AND p.lastName >= 'Lb' RETURN p.sid ORDER BY p.sid",
+        {},
+    ),
+    (
+        "a range feeding a grouped count",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) WHERE f.joined < $hi RETURN p.firstName AS name, count(f) AS n ORDER BY n DESC, name",
+        {"hi": "2011-04-01"},
+    ),
+    (
+        "IC9 shape: variable length, then a hop, DISTINCT",
+        "MATCH (p:FbPerson)-[:FB_KNOWS*1..2]-(f:FbPerson)<-[:FB_BY]-(m:FbPost) WHERE p.sid = $id AND f.sid <> $id "
+        "RETURN DISTINCT f.sid, m.sid ORDER BY m.sid DESC LIMIT 3",
+        {"id": "a"},
+    ),
+    (
+        "IC5 shape: variable length, then a hop, grouped count(DISTINCT)",
+        "MATCH (p:FbPerson)-[:FB_KNOWS*1..2]-(f:FbPerson)<-[:FB_BY]-(m:FbPost) WHERE p.sid = $id AND f.sid <> $id "
+        "RETURN m.title AS title, count(DISTINCT f) AS c ORDER BY c DESC, title",
+        {"id": "a"},
+    ),
+    (
+        "a hop, then variable length from the post's side",
+        "MATCH (m:FbPost)-[:FB_BY]->(f:FbPerson)-[:FB_KNOWS*2..2]->(g:FbPerson) WHERE m.title = $t RETURN DISTINCT g.sid ORDER BY g.sid",
+        {"t": "Tx"},
+    ),
+    (
+        "a label scan started from the smaller label (posts), not the first (people)",
+        "MATCH (p:FbPerson)<-[:FB_BY]-(m:FbPost) RETURN p.sid AS s, count(m) AS n ORDER BY n DESC, s",
+        {},
+    ),
+    (
+        "two hops of one type from the smaller label: each relationship once per match",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f)-[:FB_KNOWS]-(s:FbStar) RETURN count(*)",
+        {},
+    ),
+    (
+        "the same, grouped and tallied",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f)-[:FB_KNOWS]-(s:FbStar) RETURN s.sid AS s, count(p) AS n ORDER BY s",
+        {},
+    ),
+    (
+        "a tallied last hop",
+        "MATCH (p:FbPerson)<-[:FB_BY]-(m:FbPost) RETURN p.firstName AS name, count(m) AS n ORDER BY name",
+        {},
+    ),
+    (
+        "count(DISTINCT) of the ends from three anchors, whose ends overlap",
+        "MATCH (p:FbPerson)-[:FB_KNOWS*1..2]-(f:FbPerson) WHERE p.firstName = 'Ann' RETURN count(DISTINCT f)",
+        {},
+    ),
+    (
+        "BI12 shape: people by their number of posts",
+        "MATCH (p:FbPerson)<-[:FB_BY]-(m:FbPost) WITH p, count(m) AS n "
+        "RETURN n AS posts, count(p) AS people ORDER BY people DESC, posts",
+        {},
+    ),
+    (
+        "BI13 shape: a filter on the first stage's count",
+        "MATCH (p:FbPerson)<-[:FB_BY]-(m:FbPost) WITH p, count(m) AS n WHERE n < 2 RETURN count(p)",
+        {},
+    ),
+    (
+        "a filter no first-stage row passes",
+        "MATCH (p:FbPerson)<-[:FB_BY]-(m:FbPost) WITH p, count(m) AS n WHERE n > 100 RETURN count(p)",
+        {},
+    ),
+    (
+        "count(DISTINCT) of a first-stage property key",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) WITH p.firstName AS name, count(f) AS k RETURN count(DISTINCT name)",
+        {},
+    ),
+    (
+        "a grouped second stage over friend counts",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) WITH p, count(f) AS k WHERE k >= 2 RETURN k, count(*) AS c ORDER BY k",
+        {},
+    ),
+    (
+        "BI01 shape: a substring of a property as the grouping key",
+        "MATCH (p:FbPerson) WHERE p.joined < $hi RETURN substring(p.joined, 0, 7) AS month, count(p) AS n ORDER BY month",
+        {"hi": "2011-05-01"},
+    ),
+    (
+        "a substring key over a missing property, and to the end of the value",
+        "MATCH (p:FbPerson) RETURN substring(p.lastName, 1) AS rest, count(*) AS n ORDER BY rest",
+        {},
+    ),
+    (
+        "BI11 shape: triangles, each counted once by ordered ids",
+        "MATCH (a:FbPerson)-[:FB_KNOWS]-(b:FbPerson)-[:FB_KNOWS]-(c:FbPerson)-[:FB_KNOWS]-(a) "
+        "WHERE a.sid < b.sid AND b.sid < c.sid RETURN count(*)",
+        {},
+    ),
+    (
+        "every walk round a triangle, each relationship once per match",
+        "MATCH (a:FbPerson)-[:FB_KNOWS]-(b:FbPerson)-[:FB_KNOWS]-(c:FbPerson)-[:FB_KNOWS]-(a) RETURN count(*)",
+        {},
+    ),
+    (
+        "a directed cycle",
+        "MATCH (a:FbPerson)-[:FB_KNOWS]->(b)-[:FB_KNOWS]->(c)-[:FB_KNOWS]->(a) RETURN a.sid, b.sid, c.sid ORDER BY a.sid",
+        {},
+    ),
+    (
+        "a comparison between two nodes' properties",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) WHERE p.firstName = f.firstName AND p.sid < f.sid "
+        "RETURN p.sid, f.sid ORDER BY p.sid, f.sid",
+        {},
+    ),
+    (
+        "a last-hop key of numeric-looking strings and a missing value, BI04's shape",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) RETURN f.rank AS rank, count(DISTINCT p) AS n ORDER BY n DESC, rank LIMIT 4",
+        {},
+    ),
+    (
+        "a key of 400+ characters, found by its JSON",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) RETURN f.bio AS bio, count(DISTINCT p) AS n ORDER BY n DESC, bio",
+        {},
+    ),
+    (
+        "a first-stage key of a node and another node's property",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f:FbPerson) WITH f, p.firstName AS name, count(*) AS k "
+        "RETURN k, count(*) AS c ORDER BY k",
+        {},
+    ),
+    (
+        "not-equals on a missing property",
+        "MATCH (p:FbPerson)-[:FB_KNOWS]-(f) WHERE p.sid = $id AND f.lastName <> 'Lb' RETURN f.sid ORDER BY f.sid",
+        {"id": "a"},
+    ),
+]
+
+
+@pytest.mark.parametrize("name,cypher,params", CASES, ids=[c[0] for c in CASES])
+def test_family_b_native_equals_sql(engine, name, cypher, params):
+    params = {k: (n(v) if k == "id" else v) for k, v in params.items()}
+    before = engine.__dict__.get("_native_answers", 0)
+    r = engine.execute_cypher(cypher, params)
+    assert getattr(r, "error", None) is None, r.error
+    assert engine.__dict__.get("_native_answers", 0) == before + 1, "the native path did not answer"
+
+
+def test_named_ends_are_found_by_their_name(engine):
+    """IC1: the far ends filtered by an equality are looked up by it, then checked against the start's neighbourhood,
+    instead of walking out to every node in reach (^||IVG.CypherNamedEnds counts the walks answered that way)."""
+    import iris
+
+    native = ensure_dev_classes(iris.createIRIS(engine.conn), EXEC)
+    run = lambda code: native.classMethodVoid("User.Exec", "Run", code)  # noqa: E731
+    run("Kill ^||IVG.CypherNamedEnds")
+    r = engine.execute_cypher(IC1, {"id": n("b"), "first": "Ann"})
+    assert getattr(r, "error", None) is None, r.error
+    run(f"Set ^IVGNamed{T}=+$Get(^||IVG.CypherNamedEnds)")
+    assert int(native.get(f"IVGNamed{T}")) == 1
+    native.kill(f"IVGNamed{T}")
+    # the start is one of the named: its own end needs the walk (a cycle back to it), which answers as before
+    run("Kill ^||IVG.CypherNamedEnds")
+    engine.execute_cypher(IC1, {"id": n("a"), "first": "Ann"})
+    run(f"Set ^IVGNamed{T}=+$Get(^||IVG.CypherNamedEnds)")
+    assert int(native.get(f"IVGNamed{T}")) == 0
+    native.kill(f"IVGNamed{T}")

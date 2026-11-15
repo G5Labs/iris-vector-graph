@@ -1,0 +1,42 @@
+verification results:: 71 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/live-completion-omitted/20261115T231429Z/models/communities/communities.rs:413:1
+    |
+413 | pub proof fn theorem_complete_preserves_core_and_adds_only_absent(core:Labels,loners:Map<Node,bool>,u:Node)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/live-completion-omitted/20261115T231429Z/models/communities/communities.rs:414:13
+    |
+413 | pub proof fn theorem_complete_preserves_core_and_adds_only_absent(core:Labels,loners:Map<Node,bool>,u:Node)
+    | ----------------------------------------------------------------------------------------------------------- at the end of the function body
+414 |     ensures complete(core,loners).dom()==core.dom().union(loners.dom()),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/live-completion-omitted/20261115T231429Z/models/communities/communities.rs:416:9
+    |
+413 | pub proof fn theorem_complete_preserves_core_and_adds_only_absent(core:Labels,loners:Map<Node,bool>,u:Node)
+    | ----------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+416 |         (!core.contains_key(u) && loners.contains_key(u)) ==> complete(core,loners)[u]==u,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/live-completion-omitted/20261115T231429Z/models/communities/communities.rs:416:63
+    |
+416 |         (!core.contains_key(u) && loners.contains_key(u)) ==> complete(core,loners)[u]==u,
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/live-completion-omitted/20261115T231429Z/models/communities/communities.rs:426:12
+    |
+426 |     assert(complete(core,sql_loners(n,e)).dom() =~= live(n));
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

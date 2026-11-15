@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_foreign_graph_coordinates_do_not_enter_default_core"
+    ],
+    "find": "selected(a:Coord)->bool {a.graph==0}",
+    "name": "foreign-graph-admitted",
+    "replace": "selected(a:Coord)->bool {true}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_foreign_graph_coordinates_do_not_enter_default_core"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_foreign_graph_coordinates_do_not_enter_default_core": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231414Z-control-foreign-graph-admitted-theorem_foreign_graph_coordinates_do_not_enter_default_core.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231414Z-control-foreign-graph-admitted.log",
+    "timed_out": false,
+    "verified": 71
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/communities/20261115T231416Z-control-foreign-graph-admitted/logs/20261115T231414Z-control-foreign-graph-admitted-theorem_foreign_graph_coordinates_do_not_enter_default_core.log": "98a66f3088f7808493e4d39edd8acdd5a804ad9afe475c8b5b957ca4be2fac56",
+    ".g5/Verus_verification/results/communities/20261115T231416Z-control-foreign-graph-admitted/logs/20261115T231414Z-control-foreign-graph-admitted.log": "a545180f618b60fca30df7d1ddce277cea0f783f594d78b3977a3d40c9148055"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

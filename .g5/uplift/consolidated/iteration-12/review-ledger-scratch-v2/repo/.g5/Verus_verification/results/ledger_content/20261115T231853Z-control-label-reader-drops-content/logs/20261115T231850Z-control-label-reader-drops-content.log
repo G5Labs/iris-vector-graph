@@ -1,0 +1,66 @@
+verification results:: 105 verified, 3 errors
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/label-reader-drops-content/20261115T231850Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/label-reader-drops-content/20261115T231850Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/label-reader-drops-content/20261115T231850Z/models/ledger_content/ledger_content.rs:95:10
+   |
+94 | pub proof fn theorem_primitive_records_replay_full_content(s:State,o:Op)
+   | ------------------------------------------------------------------------ at the end of the function body
+95 |  ensures fold(s,produce(s,o).records)==produce(s,o).state,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/label-reader-drops-content/20261115T231850Z/models/ledger_content/ledger_content.rs:419:10
+    |
+419 |            produce(s,o).records.len()==1 ==> valid_attr_step(s,produce(s,o).records[0]),
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+423 | /  if rs.len()==1{
+424 | |   let r=rs[0];let a=attr_record(r).unwrap();
+425 | |   assert forall|f:Field|f!=a.0 implies field(s,f)==field(apply(s,r),f) by {}
+426 | |  }
+    | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/label-reader-drops-content/20261115T231850Z/models/ledger_content/alternate.rs:148:10
+    |
+148 |    ensures fold(g.state,capture_step(g,row).records)==capture_step(g,row).store.state,
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+151 | /  match row {
+152 | |   Row::Edge{s,p,o,raw_graph,quals}=>if !temporal_marked(quals){let qs=parsed_pairs(quals);if !(exists|i:int|0<=i<qs.len() && qs[i...
+153 | |    let id=g.next as int;let t=tuple(s,p,o,raw_graph);let n=State{rels:g.state.rels.insert(id,Stmt{tuple:t,quals:Map::empty()}),by...
+154 | |    lemma_qual_record_fold(n,id,qs);lemma_fold_concat(g.state,seq![rec(Action::CreateRel(id,t))],qual_records(id,qs));
+...   |
+160 | |   }},_=>{reveal_with_fuel(fold,2);},
+161 | |  }
+    | |__- at the end of the function body
+
+error: aborting due to 3 previous errors; 2 warnings emitted
+

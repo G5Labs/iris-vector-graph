@@ -1,0 +1,93 @@
+verification results:: 32 verified, 5 errors
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:32:7
+   |
+32 |     g.filter_lemma(|a:Coord|selected(a));let xs=g.filter(|a:Coord|selected(a));assert(xs.contains(g[i]));
+   |       ^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:262:1
+    |
+262 | pub proof fn theorem_raw_coordinate_counting(g:Seq<Coord>,u:Node,l:Labels,c:Counts)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:263:13
+    |
+263 |     ensures forall|x:Node|#[trigger] count(count_fold(g,u,l,c),x)==count(c,x)+frequency(g,u,l,x),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+267 |     if g.len()>0{let a=g[0];let x=get(l,a.neighbor);theorem_raw_coordinate_counting(g.drop_first(),u,l,if vote(a,u){c.insert(x,count(c,x)+1)}else{c});}
+    |     --------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:264:9
+    |
+264 |         forall|x:Node|#[trigger] count_fold(g,u,l,c).contains_key(x) <==> c.contains_key(x) || frequency(g,u,l,x)>0,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+267 |     if g.len()>0{let a=g[0];let x=get(l,a.neighbor);theorem_raw_coordinate_counting(g.drop_first(),u,l,if vote(a,u){c.insert(x,count(c,x)+1)}else{c});}
+    |     --------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:270:13
+    |
+270 |     ensures frequency(g,u,l,x)>0 <==> exists|i:int|0<=i<g.len() && vote(g[i],u) && get(l,g[i].neighbor)==x,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+271 |     decreases g.len(),
+272 | {if g.len()>0{lemma_frequency_witness(g.drop_first(),u,l,x);if frequency(g.drop_first(),u,l,x)>0{let i=choose|i:int|0<=i<g.drop_first().len() && vote(g.drop_first()[i],u) && get(l,g.drop_first()[i].neighbor)==x;assert(g[i+1]==g.drop_first()[i]);}}}
+    |  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:285:117
+    |
+285 | ...,c,b),(v,count(c,v))) by {if v!=x{assert(keys.drop_first().contains(v));}}
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:289:1
+    |
+289 | pub proof fn lemma_ordered_count_keys(c:Counts)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:290:13
+    |
+289 | pub proof fn lemma_ordered_count_keys(c:Counts)
+    | ----------------------------------------------- at the end of the function body
+290 |     ensures keys(c).to_set()==c.dom(),keys(c).len()==c.dom().len(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:290:39
+    |
+289 | pub proof fn lemma_ordered_count_keys(c:Counts)
+    | ----------------------------------------------- at the end of the function body
+290 |     ensures keys(c).to_set()==c.dom(),keys(c).len()==c.dom().len(),
+    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:294:1
+    |
+294 | pub proof fn theorem_cdlp_most_votes_then_least_label(g:Seq<Coord>,u:Node,l:Labels)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:297:9
+    |
+297 |         forall|x:Node|#[trigger] frequency(g,u,l,x)>0 ==> frequency(g,u,l,winner(g,u,l))>=frequency(g,u,l,x) && (frequency(g,u,l,winner(g,u,l))==frequency(g,u,l,x) ==> winner(g,u,l)<=x),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+300 |     if c.dom().len()>0{let x=c.dom().choose();assert(keys(c).contains(x));assert(count(c,x)>0);assert(best_fold(keys(c),c,(get(l,u),0)).1>0);}
+    |     ------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:300:103
+    |
+300 | ...ains(x));assert(count(c,x)>0);assert(best_fold(keys(c),c,(get(l,u),0)).1>0);}
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 8 previous errors; 1 warning emitted
+

@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_raw_coordinate_count_at"
+    ],
+    "find": "c.insert(x,count(c,x)+1)",
+    "name": "cdlp-count-overwrite",
+    "replace": "c.insert(x,1)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_raw_coordinate_count_at"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/cdlp-count-overwrite/20261115T231422Z/models/communities/communities.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_raw_coordinate_count_at": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231422Z-control-cdlp-count-overwrite-lemma_raw_coordinate_count_at.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231422Z-control-cdlp-count-overwrite.log",
+    "timed_out": false,
+    "verified": 72
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/communities/20261115T231424Z-control-cdlp-count-overwrite/logs/20261115T231422Z-control-cdlp-count-overwrite-lemma_raw_coordinate_count_at.log": "1a9d8ebde0c40d4b717e20612f86175b1156030a48630eacef197bafa93f1dc5",
+    ".g5/Verus_verification/results/communities/20261115T231424Z-control-cdlp-count-overwrite/logs/20261115T231422Z-control-cdlp-count-overwrite.log": "0fb4517970724d177468cd45a4a2888cf17168e0db51c064d4133c804d63e559"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

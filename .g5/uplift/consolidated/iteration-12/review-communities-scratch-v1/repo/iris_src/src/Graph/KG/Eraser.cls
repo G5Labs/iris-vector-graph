@@ -1,0 +1,1361 @@
+/// Graph.KG.Eraser - the one path by which graph content is removed.
+///
+/// Before this class there were three deletion paths and none of them agreed.
+/// Engine.drop_graph deleted rows from five tables and said so in its own
+/// comment — "BYPASS: SQL rows deleted without touching ^KG/^NKG; flag stale" —
+/// leaving the adjacency answering traversals for a graph that no longer had a
+/// row, and the whole temporal index untouched. Engine.restore_snapshot cleared a
+/// different six tables and killed whichever globals the snapshot metadata
+/// happened to name, so restoring from a snapshot written without global metadata
+/// left the previous database's ^KG in place. Graph.KG.EdgeScan:BulkDeleteAdjacency
+/// removed globals without touching rows, producing the mirror-image drift.
+///
+/// Every one of those lists was maintained by hand and none was ever complete.
+/// This class reaches every store Graph.KG.GraphStores declares, and derives the
+/// list from it rather than restating it, so a store added to the inventory
+/// cannot be silently missed here (see tests/unit/test_eraser_inventory_coverage.py).
+///
+/// TRANSACTION. The transaction is owned here rather than in Python. The Native
+/// API rides the same connection as the DBAPI cursor, so Kill and SQL DELETE
+/// share one transaction context — but $TLevel is invisible from Python, leaving a
+/// caller unable to reason about the state after a mid-flight failure. Erasure
+/// either completes or leaves the graph untouched: a partial erasure is a defect,
+/// not an outcome, so this throws rather than returning a count on failure. A
+/// returned 0 means nothing matched. See ADR-0004.
+///
+/// HISTORY. ^IVG.Ledger("rec", seq, ordinal) is never touched. It carries the
+/// graph per record, so one revision's ordinals can belong to several graphs, and
+/// pruning it by graph would punch holes in the ordinal sequence of revisions
+/// describing graphs the caller did not ask to erase. The live statement and
+/// tuple indexes ARE removed, because a ^IVG.Ledger("stmt") entry with an empty
+/// deletedSeq asserts that a statement is live when its row is gone, and the next
+/// ledger operation touching it fails. The invariant is therefore narrower than
+/// "no trace remains": no live statement outlives its content.
+Class Graph.KG.Eraser Extends %RegisteredObject
+{
+
+/// Remove one graph's content from every store that holds it.
+///
+/// Returns the number of Graph_KG.nodes and Graph_KG.rdf_edges rows removed,
+/// which is what Engine.drop_graph returned. The count deliberately does not
+/// include the globals: those are derived from the rows, so adding them would make
+/// the number mean "work done" instead of "content removed", and no caller can act
+/// on that.
+///
+/// Throws when the graph name cannot be represented as a subscript (ADR-0003),
+/// before anything is deleted, and when any step fails, after rolling back.
+ClassMethod EraseGraph(pGraph As %String = "") As %Integer
+{
+	// Both derivations, before TSTART: an invalid name must not open a transaction.
+	Set tKey = ##class(Graph.KG.GraphKey).ForIndex(pGraph)
+	Set tName = ##class(Graph.KG.GraphKey).ForName(pGraph)
+
+	Set tRemoved = 0
+	Set tTxnLevel = $TLevel
+	Try {
+		TSTART
+
+		// --- what this graph names ------------------------------------------
+		//
+		// Nothing to collect. Spec 230 gave ^KG("prop"), ^KG("label"), ^KG("deg2p")
+		// and ^KG("deg2p_exact") a graph subscript, so this erase no longer reaches
+		// them through the node ids it is deleting — which it could not do correctly:
+		// since the re-key to UNIQUE (graph_id, node_id) a node id lives in two
+		// graphs, and killing ^KG("prop", nodeId) took both graphs' entries. The two
+		// cursors that collected those ids are gone with the walk they fed.
+
+		// --- which physical tables hold this graph's vectors ------------------
+		//
+		// From the registry, restricted to routed tables. Never recomputed from the
+		// (graph, model) hash: the registry row is the authority (FR-011), and a
+		// recomputed name that finds nothing leaves a table full of this graph's
+		// vectors standing after the erase.
+		//
+		// %STARTSWITH, not LIKE 'kg_emb_%': in LIKE, `_` is a single-character
+		// wildcard, so the pattern would also match a legacy name and turn a
+		// registry row for kg_NodeEmbeddings into a DROP TABLE.
+		//
+		// Both prefixes. A node route is kg_emb_<hash> and an edge route is
+		// kg_eemb_<hash> (FR-006), and 'kg_eemb_x' does not start with 'kg_emb_' — so
+		// an erase matching the node prefix alone left every edge route standing with
+		// this graph's vectors in it.
+		Kill tRoute
+		Set tT = ""
+		&sql(DECLARE ivgEraseRoutes CURSOR FOR
+			SELECT table_name INTO :tT
+			FROM Graph_KG.embedding_registry
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, '')
+			  AND ((table_name %STARTSWITH 'kg_emb_') OR (table_name %STARTSWITH 'kg_eemb_')))
+		&sql(OPEN ivgEraseRoutes)
+		If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseRoutes", SQLCODE, $Get(%msg))) }
+		For {
+			&sql(FETCH ivgEraseRoutes)
+			If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseRoutes", SQLCODE, $Get(%msg))) }
+			Quit:SQLCODE'=0
+			// a registry row is data; only a route's own shape is pasted into the DELETE and DROP below (4.6.0)
+			Set:..IsRouteName(tT) tRoute(tT) = "claimed"
+		}
+		&sql(CLOSE ivgEraseRoutes)
+
+		// ...and then from the catalog, for the tables the registry does not name.
+		//
+		// A routed table outlives its registry row: CREATE TABLE is DDL and is durable
+		// the moment it runs, while the row is an ordinary INSERT, so any rollback after
+		// the create leaves an orphan. The orphan still carries its FK on
+		// (graph_id, node_id), and a foreign key does not consult the registry — so a
+		// route collected only from the registry is never emptied, the DELETE from
+		// Graph_KG.nodes below fails its referential check with SQLCODE -124, and this
+		// whole transaction rolls back. One orphan anywhere in the namespace makes every
+		// erase fail and erase nothing.
+		//
+		// The registry stays the authority for what may be DROPPED (FR-011) — that is
+		// why the two are told apart here, and why only "claimed" reaches the DDL below.
+		Do ..CollectOrphanRoutes(.tRoute)
+
+		// --- the rows, in FK-safe order -------------------------------------
+		//
+		// COALESCE on BOTH sides of every predicate. Left side: graph_id is
+		// nullable and the default graph has two spellings — create_edge writes
+		// '' explicitly, an INSERT omitting the column leaves NULL. Right side: in
+		// IRIS embedded SQL an empty host variable binds as SQL NULL, not as the
+		// empty string, so "graph_id = :tName" for the default graph compiles to
+		// "graph_id = NULL" and matches nothing. Either omission erases half the
+		// default graph and returns a count that looks like success.
+		//
+		// Every child table names its own graph. Reaching them through
+		// "s IN (SELECT node_id FROM nodes WHERE graph_id = ...)" was correct while a
+		// node id belonged to exactly one graph; after the re-key that subquery
+		// returns the shared id and the DELETE takes both graphs' children with it,
+		// then reports a count that reads like success.
+		&sql(DELETE FROM Graph_KG.rdf_labels
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, ''))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_labels", SQLCODE)) }
+
+		&sql(DELETE FROM Graph_KG.rdf_props
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, ''))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_props", SQLCODE)) }
+
+		// The BM25 corpus. No erase path touched it before spec 230, so a graph's
+		// documents outlived the graph itself and the next kg_BM25_SEARCH scored
+		// text belonging to nothing — and once docs.id means a node id
+		// (FR-004), the id it named came back attached to whoever created that
+		// node next. It carries no FK, so its position here is free; it is deleted
+		// with the other content tables rather than after the commit because a
+		// half-erased corpus is worse than none.
+		&sql(DELETE FROM Graph_KG.docs
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, ''))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("docs", SQLCODE)) }
+
+		// The legacy tables keep their rows scoped and keep their schema: both are
+		// named statically by kg_KNN_VEC, by the bulk insert templates and by route
+		// adoption, so dropping either would take the schema with the content. Only
+		// the routed kg_emb_ and kg_eemb_ tables are dropped, further down.
+		&sql(DELETE FROM Graph_KG.kg_NodeEmbeddings
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, ''))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_NodeEmbeddings", SQLCODE)) }
+
+		&sql(DELETE FROM Graph_KG.kg_NodeEmbeddings_optimized
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, ''))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_NodeEmbeddings_optimized", SQLCODE)) }
+
+		// Each routed table is emptied inside the transaction and dropped after the
+		// commit. A routed table carries a FK on (graph_id, node_id), so its rows
+		// have to go before the node rows in any case; emptying it first also means
+		// that if the DDL later fails, what survives is an empty route at its
+		// original width rather than an orphan table a later create=True would adopt
+		// at the wrong width and then fail every INSERT with SQLCODE -104.
+		Set tT = ""
+		For {
+			Set tT = $Order(tRoute(tT))
+			Quit:tT=""
+			Set tSql = "DELETE FROM Graph_KG." _ tT _ " WHERE COALESCE(graph_id, '') = COALESCE(?, '')"
+			Set tRs = ##class(%SQL.Statement).%ExecDirect(, tSql, tName)
+			// -30 is "table not found": the registry named a route whose table is
+			// already gone, and the row itself is removed after the commit.
+			If (tRs.%SQLCODE < 0) && (tRs.%SQLCODE '= -30) {
+				$$$ThrowStatus(..SqlErr(tT, tRs.%SQLCODE))
+			}
+		}
+
+		// A FHIR graph's unresolved references go with it, and its watermarks drop
+		// to zero so the next SyncOnce or Rebuild re-projects the repository rather
+		// than resuming past rows that are no longer in the graph (spec 231).
+		Do ..EraseFHIRGraphRows(tName, 0)
+
+		// Reifications name an edge id, so they have to go before the edge rows.
+		&sql(DELETE FROM Graph_KG.rdf_reifications
+			WHERE edge_id IN (SELECT %ID FROM Graph_KG.rdf_edges
+				WHERE COALESCE(graph_id, '') = COALESCE(:tName, '')))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_reifications", SQLCODE)) }
+
+		// The table names its own graph since spec 230 (FR-006), so this is an
+		// ordinary scoped delete. It used to reach the rows through a correlated
+		// EXISTS against rdf_edges on (s, p, o_id) — which was only ever as correct
+		// as the assumption that a triple belonged to one graph, and stopped being
+		// correct the moment two graphs could hold the same node ids: an edge
+		// embedding written for graph B survived B's erase if A held the same
+		// triple, and vanished during A's.
+		&sql(DELETE FROM Graph_KG.kg_EdgeEmbeddings
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, ''))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_EdgeEmbeddings", SQLCODE)) }
+
+		// Whether ^NKG can hold any edge of this graph, decided HERE and not after the
+		// delete below. Since spec 252 the functional index on rdf_edges clears
+		// ^KG("out", graph) row by row as the rows go, so a read of ^KG afterwards finds
+		// nothing for a graph whose edges are rows. That read (it was
+		// $Data(^KG("out", key))) was always 0, InvalidateDerived never dropped ^NKG, and
+		// the sketches and edgeCount of the erased edges stayed behind: a sketch cannot
+		// have an element taken out, so CountDistinctKHop went on counting the far ends
+		// of edges that no longer exist. The rows and ^KG("out") are both still whole at
+		// this point, and this is the last statement before the rows go: the window left
+		// is the delete itself.
+		// Its nodes too: ^NKG's dictionary keeps a node after its last edge goes, and the
+		// readers that list every interned node (SCC, closeness, Leiden in IRIS's Python)
+		// answered a graph erased after its edges had been deleted (4.6.0 R268).
+		Set tNkgAtRisk = ..GraphEdgesInNKG(tKey, tName) || ..GraphNodesInNKG(tName)
+
+		&sql(DELETE FROM Graph_KG.rdf_edges
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, ''))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_edges", SQLCODE)) }
+		Set tRemoved = tRemoved + %ROWCOUNT
+
+		&sql(DELETE FROM Graph_KG.nodes
+			WHERE COALESCE(graph_id, '') = COALESCE(:tName, ''))
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("nodes", SQLCODE)) }
+		Set tRemoved = tRemoved + %ROWCOUNT
+
+		// --- the graph-scoped globals ---------------------------------------
+		//
+		// One Kill per store, because the graph key is the FIRST subscript in every
+		// one of them. That is the whole return on ADR-0001: erasing a graph from
+		// ^KG is thirteen Kills rather than thirteen walks.
+		// out, in and the degree cache (gen, degc) belong to Graph.KG.Adjacency (spec 248),
+		// which kills them under the writer lock inside this transaction.
+		Set tSC = ##class(Graph.KG.Adjacency).RemoveGraph(tKey)
+		$$$ThrowOnError(tSC)
+		// The temporal subtrees belong to Graph.KG.TemporalIndex (ADR-0002).
+		Set tSC = ##class(Graph.KG.TemporalIndex).EraseGraph(pGraph)
+		$$$ThrowOnError(tSC)
+		Kill ^KG("prop", tKey)
+		Kill ^KG("label", tKey)
+		Kill ^KG("deg2p", tKey)
+		Kill ^KG("deg2p_exact", tKey)
+		// Spec 234: an erased graph is no longer a multigraph.
+		Kill ^IVG.GraphMode(tKey)
+		// ADR-0015: ^IVG.TemporalStructural(tKey, predicate), which predicates are temporal-only, is
+		// configuration and not content, so it is NOT killed here (as the registration in fhir_graphs
+		// outlives an erase): a re-ingest after the erase must stay temporal-only. EraseAll empties it.
+		// Spec 236: cached algorithm answers derived from the erased content.
+		Kill ^IVG.AlgoCache(tKey)
+		// ^KG("labelset") is content-addressed interning of temporal label sets and
+		// is deliberately append-only — Graph.KG.TemporalIndex documents that no
+		// purge touches it. A surviving entry is a hash with no referent, not
+		// content, so it is left alone here and emptied only by EraseAll.
+
+		Do ..InvalidateDerived(tNkgAtRisk)
+		Do ..EraseLedgerFor(tName)
+
+		TCOMMIT
+	} Catch tEx {
+		While $TLevel > tTxnLevel { TROLLBACK 1 }
+		Throw tEx
+	}
+
+	// --- after the commit: the routed tables themselves --------------------
+	//
+	// DDL is outside the transaction because a DDL rollback is not dependable in
+	// IRIS: a DROP TABLE that participated in a rolled-back transaction can leave
+	// the class definition and the table disagreeing. The content is already gone by
+	// the time this runs, so the worst outcome here is a route that exists and is
+	// empty — recoverable, and visible in the inventory.
+	//
+	// The drop comes first and the registry row second: dropping its table takes the
+	// route's ANN index with it (research R3), and a registry row removed before a
+	// failed drop would leave an orphan table nothing knows about.
+	//
+	// Only the routes the registry claims. An orphan was emptied of this graph's rows
+	// above because a foreign key forced the issue, but it may still hold another
+	// graph's vectors, and nothing here knows its declared width. Dropping a table on
+	// the strength of its name alone is how a graph loses vectors it never asked to
+	// erase; the orphan is left standing and shows up in the inventory as a route with
+	// no identity.
+	Set tT = ""
+	For {
+		Set tT = $Order(tRoute(tT))
+		Quit:tT=""
+		Continue:tRoute(tT)'="claimed"
+		Try {
+			Set tRs = ##class(%SQL.Statement).%ExecDirect(, "DROP TABLE Graph_KG." _ tT)
+			If (tRs.%SQLCODE < 0) && (tRs.%SQLCODE '= -30) {
+				$$$ThrowStatus(..SqlErr(tT, tRs.%SQLCODE))
+			}
+			&sql(DELETE FROM Graph_KG.embedding_registry
+				WHERE table_name = :tT)
+		} Catch tDrop {
+			// Left deliberately: the route's rows are gone, and keeping its registry
+			// row means the next resolve reuses the route at its recorded width
+			// instead of adopting a table whose width nothing has checked.
+		}
+	}
+	// Graph_KG.embedding_quarantine is not named anywhere above. A quarantined row
+	// is there precisely because nobody could say which graph it belongs to, so no
+	// graph's erase can claim it (FR-039).
+
+	Quit tRemoved
+}
+
+/// Remove every node in one graph whose node_id starts with pPrefix, and
+/// everything that hangs off those nodes in that graph.
+///
+/// The same stores EraseNodeIds reaches, for the ids a prefix selects. The match is
+/// exact and case-sensitive: node_id is %EXACT, and each candidate is re-checked
+/// with $Extract so a collation change on a legacy table cannot widen it.
+///
+/// An empty prefix is refused. It would select every node in the graph, and a
+/// whole-graph erase has its own entry point (EraseGraph) because it also drops the
+/// graph's routed tables, resets FHIR watermarks and kills whole ^KG subtrees —
+/// work this per-node path does not do. Refusing is cheaper than a caller who built
+/// the prefix from an empty variable finding out afterwards.
+///
+/// Returns the number of Graph_KG.nodes rows removed. Throws, after rolling back,
+/// when any step fails.
+ClassMethod EraseNodes(pGraph As %String = "", pPrefix As %String = "") As %Integer
+{
+	If pPrefix = "" {
+		$$$ThrowStatus($$$ERROR($$$GeneralError, "EraseNodes refuses an empty prefix, which would erase the whole graph; use EraseGraph for that"))
+	}
+	// Both derivations before anything is read: an invalid name must fail first.
+	Set tKey = ##class(Graph.KG.GraphKey).ForIndex(pGraph)
+	Set tName = ##class(Graph.KG.GraphKey).ForName(pGraph)
+
+	Kill ^||IVG.EraseIds
+	Set tId = ""
+	&sql(DECLARE ivgErasePrefix CURSOR FOR
+		SELECT node_id INTO :tId
+		FROM Graph_KG.nodes
+		WHERE COALESCE(graph_id, '') = COALESCE(:tName, '')
+		  AND node_id %STARTSWITH :pPrefix)
+	&sql(OPEN ivgErasePrefix)
+	If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgErasePrefix", SQLCODE, $Get(%msg))) }
+	For {
+		&sql(FETCH ivgErasePrefix)
+		If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgErasePrefix", SQLCODE, $Get(%msg))) }
+		Quit:SQLCODE'=0
+		Continue:tId=""
+		Continue:$Extract(tId, 1, $Length(pPrefix))'=pPrefix
+		Set ^||IVG.EraseIds(tId) = ""
+	}
+	&sql(CLOSE ivgErasePrefix)
+
+	Quit ..EraseIdSet(tKey, tName)
+}
+
+/// Remove the nodes named by pIdsJson (a JSON array of node ids) from one graph,
+/// with their labels, props, documents, embeddings, incident edges in that graph
+/// (both directions) and the edges' reifications and embeddings, and their
+/// ^KG("out"/"in"/"gen"/"degc"/"prop"/"label") entries.
+///
+/// Scoped to one graph. Since the re-key to UNIQUE (graph_id, node_id) a node id
+/// can live in several graphs, and an unscoped delete takes it out of all of them.
+///
+/// Ids not present are not an error; they are not counted. The ^KG sweep runs for
+/// every id named, present or not, so adjacency left behind by an earlier
+/// SQL-only delete is removed too.
+///
+/// ^NKG is dropped when edges went AND an erased id (or both ends of a removed edge) is
+/// interned in it. A purge of ids that were never interned leaves ^NKG standing: none
+/// of their edges can be in it (NKGMayHoldAny). ^KG("__version") and the cached
+/// algorithm answers are invalidated either way.
+///
+/// Returns the number of Graph_KG.nodes rows removed. One transaction for the
+/// whole list: the caller bounds the list, not this method.
+ClassMethod EraseNodeIds(pGraph As %String = "", pIdsJson As %String = "[]") As %Integer
+{
+	Set tKey = ##class(Graph.KG.GraphKey).ForIndex(pGraph)
+	Set tName = ##class(Graph.KG.GraphKey).ForName(pGraph)
+
+	Set tArr = ##class(%DynamicAbstractObject).%FromJSON(pIdsJson)
+	If '$IsObject(tArr) || 'tArr.%IsA("%DynamicArray") {
+		$$$ThrowStatus($$$ERROR($$$GeneralError, "EraseNodeIds expects a JSON array of node ids"))
+	}
+	Kill ^||IVG.EraseIds
+	Set tIter = tArr.%GetIterator()
+	While tIter.%GetNext(.tIdx, .tVal) {
+		Continue:tVal=""
+		Set ^||IVG.EraseIds(tVal) = ""
+	}
+	Quit ..EraseIdSet(tKey, tName)
+}
+
+/// Remove the edges named by pEdgesJson — a JSON array of {"s","p","o"} — from one
+/// graph, with their reifications, embeddings, ^KG adjacency and live ledger
+/// statement. Nodes are left alone.
+///
+/// Returns the number of Graph_KG.rdf_edges rows removed.
+ClassMethod EraseEdges(pGraph As %String = "", pEdgesJson As %String = "[]") As %Integer
+{
+	Set tKey = ##class(Graph.KG.GraphKey).ForIndex(pGraph)
+	Set tName = ##class(Graph.KG.GraphKey).ForName(pGraph)
+
+	Set tArr = ##class(%DynamicAbstractObject).%FromJSON(pEdgesJson)
+	If '$IsObject(tArr) || 'tArr.%IsA("%DynamicArray") {
+		$$$ThrowStatus($$$ERROR($$$GeneralError, "EraseEdges expects a JSON array of {s, p, o}"))
+	}
+	Kill tRoute
+	Do ..CollectOrphanRoutes(.tRoute)
+
+	Set tRemoved = 0
+	// 1 once an edge this call names was in ^KG("out") before it was touched. The row count
+	// alone cannot say: an adjacency entry with no row behind it removes nothing from the
+	// table, yet its ^NKG sketch and edgeCount are exactly as stale as a row's.
+	Set tHadAdj = 0
+	Set tTxnLevel = $TLevel
+	Try {
+		TSTART
+		Set tIter = tArr.%GetIterator()
+		While tIter.%GetNext(.tIdx, .tE) {
+			Continue:'$IsObject(tE)
+			Set tS = tE.%Get("s")
+			Set tP = tE.%Get("p")
+			Set tO = tE.%Get("o")
+			Continue:(tS="")||(tP="")||(tO="")
+			Kill tEdge
+			Set tEid = ""
+			&sql(DECLARE ivgEraseEdgeRows CURSOR FOR
+				SELECT edge_id INTO :tEid
+				FROM Graph_KG.rdf_edges
+				WHERE COALESCE(graph_id, '') = COALESCE(:tName, '')
+				  AND s = :tS AND p = :tP AND o_id = :tO)
+			&sql(OPEN ivgEraseEdgeRows)
+			If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseEdgeRows", SQLCODE, $Get(%msg))) }
+			For {
+				&sql(FETCH ivgEraseEdgeRows)
+				If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseEdgeRows", SQLCODE, $Get(%msg))) }
+				Quit:SQLCODE'=0
+				Set tEdge(tEid) = ""
+			}
+			&sql(CLOSE ivgEraseEdgeRows)
+			// Read before EraseEdgeRow: the per-row index clears the entry as the row goes.
+			If $Data(^KG("out", tKey, tS, tP, tO)) {
+				Set tHadAdj = 1
+			}
+			Set tEid = ""
+			For {
+				Set tEid = $Order(tEdge(tEid))
+				Quit:tEid=""
+				Set tRemoved = tRemoved + ..EraseEdgeRow(tEid, $ListBuild(tS, tP, tO), tKey, tName, .tRoute)
+			}
+			// Adjacency with no row behind it goes too; Remove is a no-op
+			// when the entry is already gone.
+			Do ##class(Graph.KG.Adjacency).Remove(tKey, tS, tP, tO)
+		}
+		If (tRemoved > 0) || tHadAdj {
+			Kill ^KG("deg2p", tKey)
+			Kill ^KG("deg2p_exact", tKey)
+			Do ..InvalidateDerived(1)
+		}
+		TCOMMIT
+	} Catch tEx {
+		While $TLevel > tTxnLevel { TROLLBACK 1 }
+		Throw tEx
+	}
+	Quit tRemoved
+}
+
+/// The shared body of EraseNodes and EraseNodeIds: erase every id in
+/// ^||IVG.EraseIds from graph pName (index key pKey), in one transaction.
+ClassMethod EraseIdSet(pKey, pName As %String) As %Integer [ Private ]
+{
+	// Every routed table the catalog knows, claimed or not: each is visited with a
+	// graph predicate, so another graph's vectors are never touched, and an orphan
+	// route's FK on (graph_id, node_id) blocks the nodes DELETE just as a claimed
+	// one does. Routes are only emptied here, never dropped — other nodes of the
+	// graph still live in them.
+	Kill tRoute
+	Do ..CollectOrphanRoutes(.tRoute)
+
+	Set tRemoved = 0
+	Set tHadEdges = 0
+	// 1 once anything this erase removed could be in ^NKG (see NKGMayHoldAny). Starts
+	// at 0: the answer is "no" until a node or an edge proves otherwise.
+	Set tNkgAtRisk = 0
+	Set tTxnLevel = $TLevel
+	Try {
+		TSTART
+		Set tId = ""
+		For {
+			Set tId = $Order(^||IVG.EraseIds(tId))
+			Quit:tId=""
+
+			// --- incident edges in this graph, both directions ---------------
+			//
+			// Two cursors rather than "s = :id OR o_id = :id": each uses its own
+			// index, and a self-loop is collected once because tEdge is keyed by
+			// edge_id.
+			Kill tEdge
+			Set (tEid, tS, tP, tO) = ""
+			&sql(DECLARE ivgEraseOut CURSOR FOR
+				SELECT edge_id, s, p, o_id INTO :tEid, :tS, :tP, :tO
+				FROM Graph_KG.rdf_edges
+				WHERE COALESCE(graph_id, '') = COALESCE(:pName, '') AND s = :tId)
+			&sql(OPEN ivgEraseOut)
+			If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseOut", SQLCODE, $Get(%msg))) }
+			For {
+				&sql(FETCH ivgEraseOut)
+				If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseOut", SQLCODE, $Get(%msg))) }
+				Quit:SQLCODE'=0
+				Set tEdge(tEid) = $ListBuild(tS, tP, tO)
+			}
+			&sql(CLOSE ivgEraseOut)
+			&sql(DECLARE ivgEraseIn CURSOR FOR
+				SELECT edge_id, s, p, o_id INTO :tEid, :tS, :tP, :tO
+				FROM Graph_KG.rdf_edges
+				WHERE COALESCE(graph_id, '') = COALESCE(:pName, '') AND o_id = :tId)
+			&sql(OPEN ivgEraseIn)
+			If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseIn", SQLCODE, $Get(%msg))) }
+			For {
+				&sql(FETCH ivgEraseIn)
+				If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseIn", SQLCODE, $Get(%msg))) }
+				Quit:SQLCODE'=0
+				Set tEdge(tEid) = $ListBuild(tS, tP, tO)
+			}
+			&sql(CLOSE ivgEraseIn)
+
+			Set tEid = ""
+			For {
+				Set tEid = $Order(tEdge(tEid))
+				Quit:tEid=""
+				// An edge is in ^NKG only if both its ends are interned (every ^NKG writer
+				// interns both). Looked at on the row's own spelling of the ends, not on tId:
+				// a legacy column with a case-folding collation can match this id to a row
+				// that spells it differently.
+				If 'tNkgAtRisk && ..NodeInterned($ListGet(tEdge(tEid), 1)) && ..NodeInterned($ListGet(tEdge(tEid), 3)) {
+					Set tNkgAtRisk = 1
+				}
+				Do ..EraseEdgeRow(tEid, tEdge(tEid), pKey, pName, .tRoute)
+				Set tHadEdges = 1
+			}
+
+			// --- adjacency with no row behind it, in either direction ----------
+			//
+			// Graph.KG.Adjacency removes the node as a source and as a target, and with
+			// it the node's generation and cache entries (spec 248): a stale entry would
+			// still claim the node is in the graph.
+			If $Data(^KG("out", pKey, tId)) || $Data(^KG("in", pKey, tId)) {
+				Set tHadEdges = 1
+			}
+			Set tSC = ##class(Graph.KG.Adjacency).RemoveNode(pKey, tId)
+			$$$ThrowOnError(tSC)
+
+			// --- the node's own rows, FK-safe order ---------------------------
+			&sql(DELETE FROM Graph_KG.rdf_labels
+				WHERE COALESCE(graph_id, '') = COALESCE(:pName, '') AND s = :tId)
+			If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_labels", SQLCODE)) }
+			&sql(DELETE FROM Graph_KG.rdf_props
+				WHERE COALESCE(graph_id, '') = COALESCE(:pName, '') AND s = :tId)
+			If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_props", SQLCODE)) }
+			&sql(DELETE FROM Graph_KG.docs
+				WHERE COALESCE(graph_id, '') = COALESCE(:pName, '') AND id = :tId)
+			If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("docs", SQLCODE)) }
+			&sql(DELETE FROM Graph_KG.kg_NodeEmbeddings
+				WHERE COALESCE(graph_id, '') = COALESCE(:pName, '') AND node_id = :tId)
+			If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_NodeEmbeddings", SQLCODE)) }
+			&sql(DELETE FROM Graph_KG.kg_NodeEmbeddings_optimized
+				WHERE COALESCE(graph_id, '') = COALESCE(:pName, '') AND node_id = :tId)
+			If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_NodeEmbeddings_optimized", SQLCODE)) }
+			Set tT = ""
+			For {
+				Set tT = $Order(tRoute(tT))
+				Quit:tT=""
+				Continue:$Extract(tT, 1, 8)="kg_eemb_"
+				Set tRs = ##class(%SQL.Statement).%ExecDirect(, "DELETE FROM Graph_KG." _ tT _ " WHERE COALESCE(graph_id, '') = COALESCE(?, '') AND node_id = ?", pName, tId)
+				If (tRs.%SQLCODE < 0) && (tRs.%SQLCODE '= -30) {
+					$$$ThrowStatus(..SqlErr(tT, tRs.%SQLCODE))
+				}
+			}
+			Do ..EraseFHIRNodeRows(pName, tId)
+
+			// --- the node's globals ------------------------------------------
+			Kill ^KG("prop", pKey, tId)
+			Set tL = ""
+			For {
+				Set tL = $Order(^KG("label", pKey, tL))
+				Quit:tL=""
+				Kill ^KG("label", pKey, tL, tId)
+			}
+
+			&sql(DELETE FROM Graph_KG.nodes
+				WHERE COALESCE(graph_id, '') = COALESCE(:pName, '') AND node_id = :tId)
+			If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("nodes", SQLCODE)) }
+			Set tRemoved = tRemoved + %ROWCOUNT
+		}
+
+		// --- the temporal index -----------------------------------------------
+		//
+		// Graph.KG.TemporalIndex owns the temporal subtrees (ADR-0002). One walk for the
+		// whole id set, after the per-id structural removal above, so the structural
+		// counters are not decremented twice.
+		Kill tNodeIds
+		Set tId = ""
+		For {
+			Set tId = $Order(^||IVG.EraseIds(tId))
+			Quit:tId=""
+			Set tNodeIds(tId) = ""
+		}
+		Set tSC = ##class(Graph.KG.TemporalIndex).EraseNodes(pName, .tNodeIds)
+		$$$ThrowOnError(tSC)
+
+		// The two-hop counts of every surviving neighbour may have changed. Their
+		// readers $Get with a -1 default and recompute, so dropping the graph's
+		// subtree is correct where decrementing is not possible.
+		If tHadEdges {
+			Kill ^KG("deg2p", pKey)
+			Kill ^KG("deg2p_exact", pKey)
+		}
+		If (tRemoved > 0) || tHadEdges {
+			// ^NKG is dropped only for an erase that removed something AND could have changed
+			// it: an edge, or a node its dictionary holds. A node keeps its dictionary entry
+			// after its last edge goes, and the readers that list every interned node answered
+			// it after the node was gone (4.6.0 R268: before, an erase with no edge kept ^NKG).
+			// The ids are looked at here, after every removal above and not before: the
+			// interning is permanent, so a writer that interned an id while this loop ran
+			// is seen, and the window left is the few instructions to the TCOMMIT.
+			If 'tNkgAtRisk {
+				Set tNkgAtRisk = ..NKGMayHoldAny()
+			}
+			Do ..InvalidateDerived(tNkgAtRisk)
+		}
+		TCOMMIT
+	} Catch tEx {
+		While $TLevel > tTxnLevel { TROLLBACK 1 }
+		Kill ^||IVG.EraseIds
+		Throw tEx
+	}
+	Kill ^||IVG.EraseIds
+	Quit tRemoved
+}
+
+/// Delete one rdf_edges row and everything that hangs off it in graph pName:
+/// reifications, kg_EdgeEmbeddings, edge routes, ^KG adjacency, and the live
+/// ledger statement for the triple. Returns the rdf_edges rows removed (0 or 1).
+ClassMethod EraseEdgeRow(pEdgeId As %Integer, pSpo As %List, pKey, pName As %String, ByRef pRoute) As %Integer [ Private ]
+{
+	Set tS = $ListGet(pSpo, 1)
+	Set tP = $ListGet(pSpo, 2)
+	Set tO = $ListGet(pSpo, 3)
+
+	&sql(DELETE FROM Graph_KG.rdf_reifications WHERE edge_id = :pEdgeId)
+	If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_reifications", SQLCODE)) }
+	&sql(DELETE FROM Graph_KG.kg_EdgeEmbeddings
+		WHERE COALESCE(graph_id, '') = COALESCE(:pName, '')
+		  AND s = :tS AND p = :tP AND o_id = :tO)
+	If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_EdgeEmbeddings", SQLCODE)) }
+	Set tT = ""
+	For {
+		Set tT = $Order(pRoute(tT))
+		Quit:tT=""
+		Continue:$Extract(tT, 1, 8)'="kg_eemb_"
+		Set tRs = ##class(%SQL.Statement).%ExecDirect(, "DELETE FROM Graph_KG." _ tT _ " WHERE COALESCE(graph_id, '') = COALESCE(?, '') AND s = ? AND p = ? AND o_id = ?", pName, tS, tP, tO)
+		If (tRs.%SQLCODE < 0) && (tRs.%SQLCODE '= -30) {
+			$$$ThrowStatus(..SqlErr(tT, tRs.%SQLCODE))
+		}
+	}
+	&sql(DELETE FROM Graph_KG.rdf_edges WHERE edge_id = :pEdgeId)
+	If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_edges", SQLCODE)) }
+	Set tN = %ROWCOUNT
+
+	If (tS '= "") && (tP '= "") && (tO '= "") {
+		Do ##class(Graph.KG.Adjacency).Remove(pKey, tS, tP, tO)
+		// The live ledger statement, for the reason EraseLedgerFor gives: a
+		// statement with an empty deletedSeq asserts a row that is gone. Found
+		// through the tuple index directly, since the triple and graph are known.
+		Set tGL = ##class(Graph.KG.GraphKey).ForLedger(pName)
+		Set tStmt = $Get(^IVG.Ledger("tuple", tS, tP, tO, tGL), "")
+		If tStmt '= "" {
+			Kill ^IVG.Ledger("stmt", tStmt)
+		}
+		Kill ^IVG.Ledger("tuple", tS, tP, tO, tGL)
+	}
+	Quit tN
+}
+
+/// One node's rows in the FHIR side tables of graph pName. Dynamic SQL, tolerating
+/// -30 (table not found) and -29 (column not found) for namespaces initialised
+/// before those tables existed.
+ClassMethod EraseFHIRNodeRows(pName As %String, pId As %String) [ Private ]
+{
+	Set tStores = $ListBuild($ListBuild("Graph_KG.fhir_unresolved", "source"), $ListBuild("Graph_KG.fhir_canonical_refs", "source"), $ListBuild("Graph_KG.fhir_definitions", "rsrc_key"))
+	For tStep = 1:1:$ListLength(tStores) {
+		Set tStore = $ListGet($List(tStores, tStep), 1)
+		Set tCol = $ListGet($List(tStores, tStep), 2)
+		Set tSql = "DELETE FROM " _ tStore _ " WHERE COALESCE(graph_id, '') = COALESCE(?, '') AND " _ tCol _ " = ?"
+		Set tRs = ##class(%SQL.Statement).%ExecDirect(, tSql, pName, pId)
+		If (tRs.%SQLCODE < 0) && (tRs.%SQLCODE '= -30) && (tRs.%SQLCODE '= -29) {
+			$$$ThrowStatus(..SqlErr(tStore, tRs.%SQLCODE))
+		}
+	}
+}
+
+/// Remove every graph's content from every store, including the stores no
+/// per-graph erase can reach.
+///
+/// Some stores cannot be split by graph at all: ^NKG's graph-blind interning,
+/// ^KG("labelset")'s append-only hashes, ^KG("deg2p_exact_merged")'s counts over
+/// ^NKG, ^ArnoKG's whole-database snapshot. "All" has no attribution problem, so one
+/// inventory serves both operations and this is the only place those stores can be
+/// emptied honestly.
+///
+/// Returns the number of Graph_KG.nodes and Graph_KG.rdf_edges rows removed.
+ClassMethod EraseAll() As %Integer
+{
+	Set tRemoved = 0
+	Set tTxnLevel = $TLevel
+	Try {
+		TSTART
+
+		// Every routed table, whichever graph it belongs to, and both prefixes:
+		// kg_emb_ for node routes, kg_eemb_ for edge routes (FR-006). Collected
+		// before the registry is emptied, because the registry row is the only record
+		// of the name (FR-011) — %STARTSWITH for the same reason as in EraseGraph:
+		// `_` is a LIKE wildcard, and kg_NodeEmbeddings must not become a DROP TABLE.
+		Kill tRoute
+		Set tT = ""
+		&sql(DECLARE ivgEraseAllRoutes CURSOR FOR
+			SELECT table_name INTO :tT
+			FROM Graph_KG.embedding_registry
+			WHERE (table_name %STARTSWITH 'kg_emb_') OR (table_name %STARTSWITH 'kg_eemb_'))
+		&sql(OPEN ivgEraseAllRoutes)
+		If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseAllRoutes", SQLCODE, $Get(%msg))) }
+		For {
+			&sql(FETCH ivgEraseAllRoutes)
+			If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgEraseAllRoutes", SQLCODE, $Get(%msg))) }
+			Quit:SQLCODE'=0
+			// a registry row is data; only a route's own shape is pasted into the DELETE and DROP below (4.6.0)
+			Set:..IsRouteName(tT) tRoute(tT) = "claimed"
+		}
+		&sql(CLOSE ivgEraseAllRoutes)
+
+		// Plus the orphans, for the reason given in EraseGraph: their FK on
+		// (graph_id, node_id) blocks the DELETE from Graph_KG.nodes below whether or not
+		// a registry row names them.
+		Do ..CollectOrphanRoutes(.tRoute)
+
+		Set tT = ""
+		For {
+			Set tT = $Order(tRoute(tT))
+			Quit:tT=""
+			Set tRs = ##class(%SQL.Statement).%ExecDirect(, "DELETE FROM Graph_KG." _ tT)
+			If (tRs.%SQLCODE < 0) && (tRs.%SQLCODE '= -30) {
+				$$$ThrowStatus(..SqlErr(tT, tRs.%SQLCODE))
+			}
+		}
+
+		// The whole registry, not only the routed rows: a legacy table's identity row
+		// describes vectors that no longer exist once this method has emptied it, and
+		// a surviving row would make the next write conflict with a model nothing in
+		// the namespace was written by. Graph_KG.embedding_quarantine is left alone —
+		// it is the only copy of vectors whose graph could not be recovered, which is
+		// evidence, not content (FR-039, FR-040).
+		&sql(DELETE FROM Graph_KG.embedding_registry)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("embedding_registry", SQLCODE)) }
+
+		Do ..EraseFHIRGraphRows("", 1)
+		&sql(DELETE FROM Graph_KG.rdf_reifications)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_reifications", SQLCODE)) }
+		&sql(DELETE FROM Graph_KG.rdf_labels)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_labels", SQLCODE)) }
+		&sql(DELETE FROM Graph_KG.rdf_props)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_props", SQLCODE)) }
+		&sql(DELETE FROM Graph_KG.docs)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("docs", SQLCODE)) }
+		&sql(DELETE FROM Graph_KG.kg_NodeEmbeddings)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_NodeEmbeddings", SQLCODE)) }
+		&sql(DELETE FROM Graph_KG.kg_NodeEmbeddings_optimized)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_NodeEmbeddings_optimized", SQLCODE)) }
+		&sql(DELETE FROM Graph_KG.kg_EdgeEmbeddings)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("kg_EdgeEmbeddings", SQLCODE)) }
+		&sql(DELETE FROM Graph_KG.rdf_edges)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("rdf_edges", SQLCODE)) }
+		Set tRemoved = tRemoved + %ROWCOUNT
+		&sql(DELETE FROM Graph_KG.nodes)
+		If (SQLCODE '= 0) && (SQLCODE '= 100) { $$$ThrowStatus(..SqlErr("nodes", SQLCODE)) }
+		Set tRemoved = tRemoved + %ROWCOUNT
+
+		// Named subtrees rather than Kill ^KG, because ^KG also carries
+		// ^KG("__version"), the stamp ^ArnoKG's cache is compared against.
+		// Killing it would make a stale cache look current.
+		// out, in and the degree cache (gen, degc) belong to Graph.KG.Adjacency (spec 248).
+		Set tSC = ##class(Graph.KG.Adjacency).RemoveAll()
+		$$$ThrowOnError(tSC)
+		// The temporal subtrees belong to Graph.KG.TemporalIndex (ADR-0002).
+		Set tSC = ##class(Graph.KG.TemporalIndex).EraseAll()
+		$$$ThrowOnError(tSC)
+		Kill ^KG("label")
+		Kill ^KG("prop")
+		Kill ^KG("labelset")
+		// The two-hop stores. Absent from this list until spec 230, so EraseAll
+		// reported its row count and left ^KG("deg2p") holding the previous graph's
+		// counts — and the next KHop2CountFast answered from them for a database with
+		// no edges at all. "deg2p_exact_merged" is Arno's graph-blind sketch of the
+		// same statistic and is content like the rest.
+		Kill ^KG("deg2p")
+		Kill ^KG("deg2p_exact")
+		Kill ^KG("deg2p_exact_merged")
+
+		Do ..InvalidateDerived(1, 0)
+		Kill ^ArnoKG
+		Kill ^IVG.GraphMode
+		Kill ^IVG.TemporalStructural
+		Kill ^IVG.AlgoCache
+		Kill ^IVG.Ledger("stmt")
+		Kill ^IVG.Ledger("tuple")
+		// ^IVG.Ledger("rec") survives: erasure removes content, not history.
+
+		TCOMMIT
+	} Catch tEx {
+		While $TLevel > tTxnLevel { TROLLBACK 1 }
+		Throw tEx
+	}
+
+	// After the commit, for the same reason as in EraseGraph: an emptied route that
+	// survives the drop is reported by the inventory and can be reused at its
+	// recorded width, whereas a DDL rollback is not dependable.
+	//
+	// Claimed routes only, as in EraseGraph. An orphan has been emptied by the loop
+	// above and stays standing: this method wipes the whole registry, so after it every
+	// surviving kg_emb_ table is unclaimed by definition, and dropping tables on the
+	// strength of their names is not something an erase should start doing here.
+	Set tT = ""
+	For {
+		Set tT = $Order(tRoute(tT))
+		Quit:tT=""
+		Continue:tRoute(tT)'="claimed"
+		Try {
+			Set tRs = ##class(%SQL.Statement).%ExecDirect(, "DROP TABLE Graph_KG." _ tT)
+			If (tRs.%SQLCODE < 0) && (tRs.%SQLCODE '= -30) {
+				$$$ThrowStatus(..SqlErr(tT, tRs.%SQLCODE))
+			}
+		} Catch tDrop {
+			// An empty table left standing is not content; it is visible in the
+			// inventory as a route with no rows.
+		}
+	}
+
+	Quit tRemoved
+}
+
+/// 1 when ^NKG may hold an edge of graph pName (index key pKey), 0 when it cannot.
+///
+/// The same argument as NKGMayHoldAny, put to a whole graph: every writer of an ^NKG edge
+/// interns BOTH its ends, so an edge is in ^NKG only if both ends have an
+/// ^NKG("$NI", id) entry. A graph none of whose edges has two interned ends has none in
+/// ^NKG, nor any count or sketch built from one, and erasing it leaves ^NKG as correct as
+/// it was. ^NKG has no graph dimension, so an edge the graph shares with a survivor is
+/// found here too (same ends, same spelling): the answer is then 1 and ^NKG is dropped,
+/// which is the safe direction.
+///
+/// Both homes of an edge are read, because neither implies the other: the adjacency
+/// (^KG("out"), which also holds edges with no row behind them) and the rows (which can
+/// be ahead of an adjacency that was never built). Either one finding an edge with two
+/// interned ends answers 1 and stops.
+///
+/// Called before the rows go: the per-row index (spec 252) clears ^KG("out", graph) as
+/// they do, and a read of either afterwards sees an empty graph.
+///
+/// The failure mode is a drop that was not needed (NodeInterned answers 1 when it cannot
+/// tell), never a stale index kept. The cost is one walk of the graph's edges, against an
+/// erase that already removes each of them from six stores.
+ClassMethod GraphEdgesInNKG(pKey, pName As %String) As %Boolean [ Private ]
+{
+	// The adjacency. A source that is not interned has no edge in ^NKG, so its subtree is
+	// not walked at all.
+	Set tS = ""
+	For {
+		Set tS = $Order(^KG("out", pKey, tS))
+		Quit:tS=""
+		If '..NodeInterned(tS) {
+			Continue
+		}
+		Set tP = ""
+		For {
+			Set tP = $Order(^KG("out", pKey, tS, tP))
+			Quit:tP=""
+			Set tO = ""
+			For {
+				Set tO = $Order(^KG("out", pKey, tS, tP, tO))
+				Quit:tO=""
+				If ..NodeInterned(tO) {
+					Return 1
+				}
+			}
+		}
+	}
+
+	// The rows. COALESCE on both sides, as everywhere in this class: the default graph has
+	// two spellings in graph_id, and an empty host variable binds as NULL.
+	Set tRowS = ""
+	Set tRowO = ""
+	Set tHit = 0
+	&sql(DECLARE ivgEraseGraphEnds CURSOR FOR
+		SELECT s, o_id INTO :tRowS, :tRowO
+		FROM Graph_KG.rdf_edges
+		WHERE COALESCE(graph_id, '') = COALESCE(:pName, ''))
+	&sql(OPEN ivgEraseGraphEnds)
+	If SQLCODE < 0 {
+		// Cannot read the rows, cannot say: the drop is the safe answer.
+		Return 1
+	}
+	For {
+		&sql(FETCH ivgEraseGraphEnds)
+		If SQLCODE < 0 { Return 1 }
+		Quit:SQLCODE'=0
+		If ..NodeInterned(tRowS) && ..NodeInterned(tRowO) {
+			Set tHit = 1
+			Quit
+		}
+	}
+	&sql(CLOSE ivgEraseGraphEnds)
+	Quit tHit
+}
+
+/// 1 when ^NKG's dictionary may hold a node of graph pName, 0 when it cannot.
+///
+/// GraphEdgesInNKG asks about edges. A node stays interned after its last edge goes
+/// (interning is append-only), and SCCJson, ClosenessGlobal and LeidenJsonPy list every
+/// interned node: a graph whose edges were deleted before the graph was erased left its
+/// nodes in their answers (4.6.0 R268). Called before the node rows go. ^NKG has no graph
+/// dimension, so a node id another graph also holds answers 1 too: a drop that was not
+/// needed, the safe direction.
+ClassMethod GraphNodesInNKG(pName As %String) As %Boolean [ Private ]
+{
+	If $Order(^NKG("$NI", "")) = "" {
+		Quit 0
+	}
+	Set tNode = ""
+	Set tHit = 0
+	&sql(DECLARE ivgEraseGraphNodes CURSOR FOR
+		SELECT node_id INTO :tNode
+		FROM Graph_KG.nodes
+		WHERE COALESCE(graph_id, '') = COALESCE(:pName, ''))
+	&sql(OPEN ivgEraseGraphNodes)
+	If SQLCODE < 0 {
+		// Cannot read the rows, cannot say: the drop is the safe answer.
+		Return 1
+	}
+	For {
+		&sql(FETCH ivgEraseGraphNodes)
+		If SQLCODE < 0 { Return 1 }
+		Quit:SQLCODE'=0
+		If ..NodeInterned(tNode) {
+			Set tHit = 1
+			Quit
+		}
+	}
+	&sql(CLOSE ivgEraseGraphNodes)
+	Quit tHit
+}
+
+/// 1 when any id in ^||IVG.EraseIds is interned in ^NKG.
+///
+/// WHY THIS IS THE TEST. Every writer of an ^NKG edge interns BOTH of its ends first:
+/// Graph.KG.Adjacency:Put, Graph.KG.Traversal:BuildNKG and the Rust kg_build_nkg all
+/// do, and nothing else writes ^NKG(-1), ^NKG(-2), ^NKG(-3) or ^NKG("$agg") (the
+/// per-source sketch is keyed by interned indexes too). So an edge with an end that
+/// has no ^NKG("$NI", id) entry is not in ^NKG, and neither is any count or sketch
+/// built from it. An erase whose ids are all un-interned removes only such edges and
+/// leaves ^NKG exactly as correct as it was.
+///
+/// The converse is why the drop stays for an interned id: its edges are in ^NKG, and
+/// Graph.KG.GraphIndex:DeleteIndex (reached from Adjacency:Remove) takes only the
+/// adjacency entries, not $meta edgeCount or the sketches.
+///
+/// ^NKG("$NI") is the only interning table. Interning is append-only (an id keeps its
+/// index when its last edge goes), so a "yes" can be an id whose edges are gone, and
+/// the drop is then merely not needed. Never the other way round.
+ClassMethod NKGMayHoldAny() As %Boolean [ Private ]
+{
+	Set tId = ""
+	For {
+		Set tId = $Order(^||IVG.EraseIds(tId))
+		Quit:tId=""
+		If ..NodeInterned(tId) {
+			Quit
+		}
+	}
+	Quit (tId '= "")
+}
+
+/// 1 when pId has an entry in ^NKG("$NI"), or when that cannot be told.
+///
+/// A subscript ^NKG could not hold raises <SUBSCRIPT> on the read. Interning such an id
+/// would have raised the same, so it is not interned; but "cannot tell" answers 1, so
+/// that the failure mode of this check is a drop that was not needed and never a
+/// stale index kept. An empty id is no node and is never an edge end.
+ClassMethod NodeInterned(pId As %String) As %Boolean [ Private ]
+{
+	If pId = "" {
+		Quit 0
+	}
+	Set tInterned = 1
+	Try {
+		Set tInterned = ($Data(^NKG("$NI", pId)) > 0)
+	} Catch {
+		Set tInterned = 1
+	}
+	Quit tInterned
+}
+
+/// Drop the derived indexes that cannot be attributed to one graph.
+///
+/// pTouchedStructural is "this erase may have changed what ^NKG holds", not "this erase
+/// removed an edge": EraseIdSet passes 0 for an erase none of whose removed nodes or edges
+/// can be in ^NKG (NKGMayHoldAny), and EraseGraph for a graph none of whose edges or nodes
+/// can be (GraphEdgesInNKG, GraphNodesInNKG). EraseEdges and EraseAll pass 1. The version
+/// bump and the AlgoCache purge below do not depend on it.
+///
+/// ^NKG interns node identifiers with no graph dimension and its counters are
+/// append-only, so there is no subtree to kill and no way to decrement it. The
+/// choice is between an absent ^NKG and a stale one. Absent is a state every
+/// reader handles — Graph.KG.EdgeScan:WriteAdjacency checks
+/// $Data(^NKG("$meta","nodeCount")) before interning and the fast paths fall back
+/// — while stale is not: the BFS fast path would traverse erased edges. This is
+/// deliberately not the _nkg_dirty flag drop_graph set, which deferred a known
+/// inconsistency into a rebuild that might never run.
+///
+/// pReadersRebuild: a built ^NKG that is dropped here is marked
+/// ^NKG("$meta","invalidated"), and the algorithm readers (the Communities and
+/// NKGAccelCentrality classes) rebuild it from ^KG on their next read, through
+/// TraversalBuild's EnsureNKG. (Class names are left unqualified here: the deploy's
+/// dependency scan reads comments too, and Communities needs embedded Python.) Before,
+/// every CALL of an ^NKG procedure failed with "^NKG not built" after an erase until the
+/// caller ran sync() (4.6.0 R268). EraseAll passes 0: an emptied namespace is a new one,
+/// and a new one is synced by its caller.
+///
+/// ^ArnoKG caches a whole-database JSON snapshot and invalidates by comparing
+/// ^KG("__version"), so bumping the stamp is what makes the cache notice. Killing
+/// the snapshot outright is EraseAll's business; a per-graph erase cannot say
+/// which parts of it are gone.
+ClassMethod InvalidateDerived(pTouchedStructural As %Boolean, pReadersRebuild As %Boolean = 1) [ Private ]
+{
+	If pTouchedStructural {
+		Set tWasBuilt = ($Order(^NKG("$NI", "")) '= "")
+		Do ##class(Graph.KG.GraphIndex).DropNKG()
+		If tWasBuilt && pReadersRebuild {
+			Set ^NKG("$meta", "invalidated") = 1
+		}
+	}
+	Do ##class(Graph.KG.ArnoAccel).BumpVersion()
+	// Spec 236: the bump already makes every cached algorithm answer a miss. The entries
+	// go too, because an answer that names erased content must not survive on disk
+	// waiting to be read by mistake (ADR-0004). Every graph's, since the token is global
+	// and the callers here do not all know which graph they touched.
+	Kill ^IVG.AlgoCache
+}
+
+/// Is pName a routed embedding table's name: kg_emb_ (a node route) or kg_eemb_ (an edge route) and 16 hex
+/// digits, what routing.route_table_name and edge_route_table_name make (4.6.0). The erase pastes a route's name into
+/// DELETE and DROP; a registry row naming anything else is not a route and is left alone.
+ClassMethod IsRouteName(pName As %String) As %Boolean [ Private ]
+{
+	Quit $Match(pName, "(?i)kg_e?emb_[0-9a-f]{16}")
+}
+
+/// Add every routed table the catalog knows and pRoute does not, marked "orphan".
+///
+/// Both prefixes: kg_emb_ for a node route, kg_eemb_ for an edge route (FR-006).
+/// An edge route carries no foreign key on the nodes table, so an orphaned one does
+/// not block the erase the way a node route does — it just keeps its vectors, which
+/// is the thing this whole class exists to prevent.
+///
+/// A routed table can outlive its registry row. CREATE TABLE is DDL and is durable the
+/// moment it runs; the row that names it is an ordinary INSERT, so a rollback anywhere
+/// after the create — the writer's own, the lost-race handler in
+/// EmbeddingsMixin._create_route, a test fixture's — leaves a table nothing knows
+/// about. The orphan keeps its foreign key on (graph_id, node_id), and a foreign key
+/// does not read the registry: unless its rows go first, DELETE FROM Graph_KG.nodes
+/// fails with SQLCODE -124 and the erase rolls back having removed nothing. One orphan
+/// is enough to break every erase in the namespace.
+///
+/// Callers keep the distinction: "claimed" rows may be dropped, "orphan" rows may only
+/// be emptied. The registry remains the authority for DDL (FR-011).
+///
+/// %STARTSWITH rather than LIKE 'kg_emb_%' for the same reason as the registry cursors:
+/// in LIKE, `_` is a single-character wildcard, and kg_NodeEmbeddings must never be
+/// collected as a route.
+ClassMethod CollectOrphanRoutes(ByRef pRoute) [ Private ]
+{
+	Set tT = ""
+	&sql(DECLARE ivgCatalogRoutes CURSOR FOR
+		SELECT TABLE_NAME INTO :tT
+		FROM INFORMATION_SCHEMA.TABLES
+		WHERE TABLE_SCHEMA = 'Graph_KG'
+		  AND ((TABLE_NAME %STARTSWITH 'kg_emb_') OR (TABLE_NAME %STARTSWITH 'kg_eemb_')))
+	&sql(OPEN ivgCatalogRoutes)
+	If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgCatalogRoutes", SQLCODE, $Get(%msg))) }
+	For {
+		&sql(FETCH ivgCatalogRoutes)
+		If SQLCODE < 0 { $$$ThrowStatus(..SqlErr("cursor ivgCatalogRoutes", SQLCODE, $Get(%msg))) }
+		Quit:SQLCODE'=0
+		Continue:tT=""
+		Continue:$Data(pRoute(tT))
+		Continue:'..IsRouteName(tT)
+		Set pRoute(tT) = "orphan"
+	}
+	&sql(CLOSE ivgCatalogRoutes)
+}
+
+/// Remove one graph's live statements and their tuple entries.
+///
+/// One pass over ("stmt"), never over ("tuple"): the tuple index spells the graph
+/// key LAST — ^IVG.Ledger("tuple", s, p, o, graphKey) — so it cannot be $Ordered
+/// or Killed by graph. That is the shape ADR-0001 rejects for ^KG, for this exact
+/// reason. ("stmt") carries the graph in value position 4, so each tuple key is
+/// derived from the statement being removed. One scan, both trees consistent.
+///
+/// Collect first, kill after: killing inside the walk mutates the tree being
+/// walked.
+ClassMethod EraseLedgerFor(pName As %String) As %Integer [ Private ]
+{
+	Kill tDoomed
+	Set tId = ""
+	For {
+		Set tId = $Order(^IVG.Ledger("stmt", tId))
+		Quit:tId=""
+		Set tRow = $Get(^IVG.Ledger("stmt", tId), "")
+		Continue:tRow=""
+		// Compared as names, not as keys: position 4 holds the canonical graph
+		// name, which is what Graph.KG.LedgerApply passes to GKey() to build the
+		// tuple subscript.
+		Continue:##class(Graph.KG.GraphKey).ForName($ListGet(tRow, 4))'=pName
+		Set tDoomed(tId) = tRow
+	}
+
+	Set tCount = 0
+	Set tId = ""
+	For {
+		Set tId = $Order(tDoomed(tId))
+		Quit:tId=""
+		Set tRow = tDoomed(tId)
+		Kill ^IVG.Ledger("tuple", $ListGet(tRow, 1), $ListGet(tRow, 2), $ListGet(tRow, 3), ##class(Graph.KG.GraphKey).ForLedger($ListGet(tRow, 4)))
+		Kill ^IVG.Ledger("stmt", tId)
+		Set tCount = tCount + 1
+	}
+	Quit tCount
+}
+
+/// Graph_KG.fhir_unresolved, fhir_definitions and fhir_canonical_refs rows and the
+/// Graph_KG.fhir_graphs watermarks for one graph, or for all when pAll. Dynamic SQL,
+/// and a missing table is nothing to do: a namespace initialised before 4.1.0, or one
+/// that never ran FHIR setup, has none of these tables. The registry row itself
+/// survives, like the ledger's history: erasing content does not unregister.
+ClassMethod EraseFHIRGraphRows(pName As %String, pAll As %Boolean) [ Private ]
+{
+	Set tWhere = $Select(pAll: "", 1: " WHERE COALESCE(graph_id, '') = COALESCE(?, '')")
+	Set tStores = $ListBuild("Graph_KG.fhir_unresolved", "Graph_KG.fhir_definitions", "Graph_KG.fhir_canonical_refs", "Graph_KG.fhir_graphs")
+	For tStep = 1:1:$ListLength(tStores) {
+		Set tStore = $List(tStores, tStep)
+		// Asked, not inferred from the SQLCODE: on 2026.2.0AI an UPDATE of a missing
+		// table whose SET list holds `col = NULL` reports -400, not -30.
+		Continue:'$SYSTEM.SQL.Schema.TableExists(tStore)
+		If tStore = "Graph_KG.fhir_graphs" {
+			// interp_version = NULL makes the next sync re-derive (spec 235). A table
+			// from before spec 235 has no such column (-29) and is reset without it.
+			Set tSql = "UPDATE " _ tStore _ " SET wm_rsrc = 0, wm_ver = 0, interp_version = NULL" _ tWhere
+		} Else {
+			Set tSql = "DELETE FROM " _ tStore _ tWhere
+		}
+		For tTry = 1, 2 {
+			If pAll {
+				Set tRs = ##class(%SQL.Statement).%ExecDirect(, tSql)
+			} Else {
+				Set tRs = ##class(%SQL.Statement).%ExecDirect(, tSql, pName)
+			}
+			Quit:(tRs.%SQLCODE '= -29)||(tStore '= "Graph_KG.fhir_graphs")
+			Set tSql = $Replace(tSql, ", interp_version = NULL", "")
+		}
+		If (tRs.%SQLCODE < 0) && (tRs.%SQLCODE '= -30) {
+			$$$ThrowStatus(..SqlErr(tStore, tRs.%SQLCODE))
+		}
+	}
+}
+
+/// Remove the nodes of one graph that are BARE: no edge names them (as source or target), and they hold no
+/// label, property, document or embedding (the two legacy tables and every routed one). The maintenance sweep for
+/// the nodes a temporal workload leaves behind (opsreview, 4.4.1: one per span, for ever).
+///
+/// pGraph       the graph; "" is the default graph. Another graph's row of the same id is not touched.
+/// pBatch       nodes per transaction (default 10000); the list of what to delete is built first, so a
+///              node that stays (see below) is not looked at again in the same call.
+/// pDryRun      1 counts and changes nothing at all: no row, no global, not ^KG("__version").
+/// pMinAgeSec   leave nodes created less than this long ago. A writer that has just inserted its endpoint
+///              nodes and not yet its edge is the only one that can lose a race here, and it loses loudly
+///              (its edge INSERT fails the foreign key); this keeps a sweep off such nodes altogether.
+///
+/// RACE SAFETY. The statement that removes a node carries every bareness test again, and the table's own
+/// constraints decide the rest: fk_edges_source, fk_edges_dest, fk_labels_node and the embedding tables'
+/// foreign keys refuse a DELETE of a node with a dependant (SQLCODE -124), and they see a dependant another
+/// connection has written and not committed. The two child tables with no foreign key (properties,
+/// documents) are covered by the statement's NOT EXISTS only: a writer that finds the node present, and
+/// writes a property after this statement has evaluated it, leaves a property row without a node. Writers
+/// insert the node first, so that needs a node this sweep is already deleting; the age floor keeps the sweep
+/// off every node created since.
+///
+/// A node whose ^KG("out"/"in") entry exists is left (it is not bare, whatever the rows say).
+///
+/// Returns JSON {"graph", "bare", "erased", "kept", "batches", "dry_run"}. bare: nodes found bare;
+/// erased: removed; kept: found bare and left (adjacency present, a dependant appeared, a foreign key).
+/// Throws, after rolling back the batch it was in, when a statement fails; earlier batches stay committed.
+ClassMethod EraseBareNodes(pGraph As %String = "", pBatch As %Integer = 10000, pDryRun As %Boolean = 0, pMinAgeSec As %Integer = 0) As %String
+{
+	Set tKey = ##class(Graph.KG.GraphKey).ForIndex(pGraph)
+	Set tName = ##class(Graph.KG.GraphKey).ForName(pGraph)
+	Set pBatch = $Select(+pBatch < 1: 10000, 1: +pBatch \ 1)
+	Kill tRoute
+	Do ..CollectOrphanRoutes(.tRoute)
+	Set tAge = ""
+	If +pMinAgeSec > 0 {
+		Set tAge = " AND (n.created_at IS NULL OR n.created_at <= DATEADD(ss, -" _ (+pMinAgeSec \ 1) _ ", CURRENT_TIMESTAMP))"
+	}
+	Set tWhere = " FROM Graph_KG.nodes n WHERE COALESCE(n.graph_id, '') = COALESCE(?, '')" _ ..BareClauses(.tRoute) _ tAge
+	Set tBare = 0, tErased = 0, tKept = 0, tBatches = 0
+	Try {
+		If pDryRun {
+			Set tRS = ##class(%SQL.Statement).%ExecDirect(, "SELECT COUNT(*)" _ tWhere, tName)
+			If tRS.%SQLCODE < 0 {
+				$$$ThrowStatus($$$ERROR($$$GeneralError, "EraseBareNodes count: SQLCODE " _ tRS.%SQLCODE _ " " _ tRS.%Message))
+			}
+			If tRS.%Next() {
+				Set tBare = +tRS.%GetData(1)
+			}
+		} Else {
+			Kill ^||IVG.BareNodes
+			Set tRS = ##class(%SQL.Statement).%ExecDirect(, "SELECT n.node_id" _ tWhere, tName)
+			If tRS.%SQLCODE < 0 {
+				$$$ThrowStatus($$$ERROR($$$GeneralError, "EraseBareNodes scan: SQLCODE " _ tRS.%SQLCODE _ " " _ tRS.%Message))
+			}
+			While tRS.%Next() {
+				Set ^||IVG.BareNodes(tRS.%GetData(1)) = ""
+				Set tBare = tBare + 1
+			}
+			Set tErased = ..DeleteBareSet(tKey, tName, $Name(^||IVG.BareNodes), pBatch, .tKept, .tBatches)
+			Kill ^||IVG.BareNodes
+		}
+	} Catch tEx {
+		Kill ^||IVG.BareNodes
+		Throw tEx
+	}
+	Quit {"graph": (tName), "bare": (tBare), "erased": (tErased), "kept": (tKept), "batches": (tBatches), "dry_run": (+pDryRun)}.%ToJSON()
+}
+
+/// Retire the nodes named in @pRoot@(id) from graph pName (index key pKey) that are bare, as EraseBareNodes
+/// defines it; the others stay. For a purge that has just retracted the triples those ids were ends of
+/// (Graph.KG.TemporalIndex.RetireExpired). One transaction per 10,000 ids. Returns the nodes removed.
+ClassMethod RetireBareNodes(pKey, pName As %String, pRoot As %String) As %Integer
+{
+	Quit ..DeleteBareSet(pKey, pName, pRoot, 10000, .tKept, .tBatches)
+}
+
+/// The shared body: delete each id of @pRoot@(id) from graph pName while it is bare, pBatch ids to a
+/// transaction. pKept: ids left. pBatches: transactions run. Returns the number of nodes removed.
+ClassMethod DeleteBareSet(pKey, pName As %String, pRoot As %String, pBatch As %Integer, Output pKept As %Integer, Output pBatches As %Integer) As %Integer [ Private ]
+{
+	Set pKept = 0, pBatches = 0
+	Set tId = $Order(@pRoot@(""))
+	If tId = "" {
+		Quit 0
+	}
+	Kill tRoute
+	Do ..CollectOrphanRoutes(.tRoute)
+	Set tDel = ##class(%SQL.Statement).%New()
+	$$$ThrowOnError(tDel.%Prepare("DELETE FROM Graph_KG.nodes AS n WHERE n.node_id = ? AND COALESCE(n.graph_id, '') = COALESCE(?, '')" _ ..BareClauses(.tRoute)))
+	Set tErased = 0, tN = 0
+	Kill tDone
+	Set tTxnLevel = $TLevel
+	Try {
+		TSTART
+		While tId '= "" {
+			// an adjacency entry says the node has an edge, whatever the rows say
+			If $Data(^KG("out", pKey, tId)) || $Data(^KG("in", pKey, tId)) {
+				Set pKept = pKept + 1
+			} Else {
+				Set tRS = tDel.%Execute(tId, pName)
+				If tRS.%SQLCODE = 0 {
+					If tRS.%ROWCOUNT > 0 {
+						Set tErased = tErased + 1, tN = tN + 1, tDone(tId) = ""
+					}
+				} ElseIf tRS.%SQLCODE = 100 {
+					// no row: gone already, or another statement's dependant appeared
+				} ElseIf tRS.%SQLCODE = -124 {
+					// a foreign key found a dependant a writer added since the scan: the node stays
+					Set pKept = pKept + 1
+				} Else {
+					$$$ThrowStatus($$$ERROR($$$GeneralError, "bare node delete of " _ tId _ ": SQLCODE " _ tRS.%SQLCODE _ " " _ tRS.%Message))
+				}
+			}
+			Set tId = $Order(@pRoot@(tId))
+			If (tN >= pBatch) || (tId = "") {
+				TCOMMIT
+				Set pBatches = pBatches + 1
+				Do ..ForgetNodes(pKey, .tDone)
+				Kill tDone
+				Set tN = 0
+				If tId '= "" {
+					TSTART
+				}
+			}
+		}
+	} Catch tEx {
+		While $TLevel > tTxnLevel { TROLLBACK 1 }
+		Throw tEx
+	}
+	If tErased > 0 {
+		Do ..InvalidateDerived(0)
+	}
+	Quit tErased
+}
+
+/// The derived entries of nodes that no longer exist: Adjacency.RemoveSource kills the generation, the cached
+/// degrees and the stored counters an older version left (ADR-0011: Adjacency is their only writer), and the
+/// property mirror goes here. A bare node has no edge, so RemoveSource finds no adjacency to remove.
+ClassMethod ForgetNodes(pKey, ByRef pIds) [ Private ]
+{
+	Set tId = ""
+	For {
+		Set tId = $Order(pIds(tId))
+		Quit:tId=""
+		$$$ThrowOnError(##class(Graph.KG.Adjacency).RemoveSource(pKey, tId))
+		Kill ^KG("prop", pKey, tId)
+	}
+}
+
+/// The "has none of these" tests for a node n (alias n, Graph_KG.nodes) as SQL text: no edge either way, no label,
+/// no property, no document, no embedding in the legacy tables or a routed node table.
+ClassMethod BareClauses(ByRef pRoute) As %String [ Private ]
+{
+	Set tEq = "COALESCE(x.graph_id, '') = COALESCE(n.graph_id, '')"
+	Set tC = " AND NOT EXISTS (SELECT 1 FROM Graph_KG.rdf_edges x WHERE x.s = n.node_id AND " _ tEq _ ")"
+	Set tC = tC _ " AND NOT EXISTS (SELECT 1 FROM Graph_KG.rdf_edges x WHERE x.o_id = n.node_id AND " _ tEq _ ")"
+	Set tC = tC _ " AND NOT EXISTS (SELECT 1 FROM Graph_KG.rdf_labels x WHERE x.s = n.node_id AND " _ tEq _ ")"
+	Set tC = tC _ " AND NOT EXISTS (SELECT 1 FROM Graph_KG.rdf_props x WHERE x.s = n.node_id AND " _ tEq _ ")"
+	Set tC = tC _ " AND NOT EXISTS (SELECT 1 FROM Graph_KG.docs x WHERE x.id = n.node_id AND " _ tEq _ ")"
+	Set tC = tC _ " AND NOT EXISTS (SELECT 1 FROM Graph_KG.kg_NodeEmbeddings x WHERE x.node_id = n.node_id AND " _ tEq _ ")"
+	Set tC = tC _ " AND NOT EXISTS (SELECT 1 FROM Graph_KG.kg_NodeEmbeddings_optimized x WHERE x.node_id = n.node_id AND " _ tEq _ ")"
+	Set tT = ""
+	For {
+		Set tT = $Order(pRoute(tT))
+		Quit:tT=""
+		Continue:$Extract(tT, 1, 8)="kg_eemb_"
+		Continue:'##class(%SYSTEM.SQL.Schema).TableExists("Graph_KG." _ tT)
+		Set tC = tC _ " AND NOT EXISTS (SELECT 1 FROM Graph_KG." _ tT _ " x WHERE x.node_id = n.node_id AND " _ tEq _ ")"
+	}
+	Quit tC
+}
+
+/// One error shape for every failed step, so the rollback path has one reason. pMsg is the statement's %msg; the
+/// cursors pass it, because a failed lookup read as the end of its rows hid the table it would have found.
+ClassMethod SqlErr(pStore As %String, pCode As %Integer, pMsg As %String = "") As %Status [ Private ]
+{
+	Quit $$$ERROR($$$GeneralError, "erase failed on " _ pStore _ " with SQLCODE " _ pCode _ $Select(pMsg = "": "", 1: " (" _ pMsg _ ")") _ "; nothing was erased")
+}
+
+}

@@ -1,0 +1,69 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/named-cutoff-ignored/20261115T231916Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/named-cutoff-ignored/20261115T231916Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/named-cutoff-ignored/20261115T231916Z/models/ledger_content/ledger_content.rs:312:1
+    |
+312 | pub proof fn theorem_later_records_cannot_change_full_content(s:State,a:Seq<Record>,later:Seq<Record>,through:nat,b:Option<nat>,stream:bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/named-cutoff-ignored/20261115T231916Z/models/ledger_content/ledger_content.rs:314:10
+    |
+314 |    ensures named_fold(s,a+later,through)==named_fold(s,a,through),run(s,a+later,through,b,stream)==run(s,a,through,b,stream),
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+317 | /  if a.len()>0{
+318 | |   theorem_later_records_cannot_change_full_content(next(s,a[0],through),a.drop_first(),later,through,b,stream);
+319 | |   assert((a+later).drop_first() =~= a.drop_first()+later);
+320 | |  }else if later.len()>0{
+321 | |   assert forall|i:int|0<=i<later.drop_first().len() implies later.drop_first()[i].seq>through by {assert(later.drop_firs...
+322 | |   theorem_later_records_cannot_change_full_content(s,seq![],later.drop_first(),through,b,stream);
+323 | |  }
+    | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/named-cutoff-ignored/20261115T231916Z/models/ledger_content/ledger_content.rs:314:65
+    |
+314 |    ensures named_fold(s,a+later,through)==named_fold(s,a,through),run(s,a+later,through,b,stream)==run(s,a,through,b,stream),
+    |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+317 | /  if a.len()>0{
+318 | |   theorem_later_records_cannot_change_full_content(next(s,a[0],through),a.drop_first(),later,through,b,stream);
+319 | |   assert((a+later).drop_first() =~= a.drop_first()+later);
+320 | |  }else if later.len()>0{
+321 | |   assert forall|i:int|0<=i<later.drop_first().len() implies later.drop_first()[i].seq>through by {assert(later.drop_firs...
+322 | |   theorem_later_records_cannot_change_full_content(s,seq![],later.drop_first(),through,b,stream);
+323 | |  }
+    | |__- at the end of the function body
+
+error: aborting due to 2 previous errors; 2 warnings emitted
+

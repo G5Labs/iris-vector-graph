@@ -1,0 +1,208 @@
+from typing import List, Optional, Any, Dict, Union
+import strawberry
+import json
+from decimal import Decimal
+from datetime import datetime, date
+from .pooling import connection_context
+from .constants import DYNAMIC_TYPES, RESERVED_KEYWORDS
+
+
+async def resolve_stats(info: strawberry.Info) -> Any:
+    from .schema import GraphStats
+    engine = info.context["engine"]
+    schema = engine._ivg_schema  # the engine's IVG Schema (spec 262, R079)
+    cursor = engine.conn.cursor()
+    cursor.execute(f"SELECT COUNT(*) FROM {schema}.nodes")
+    node_count = cursor.fetchone()[0] or 0
+    cursor.execute(f"SELECT COUNT(*) FROM {schema}.rdf_edges")
+    edge_count = cursor.fetchone()[0] or 0
+    cursor.execute(f"SELECT COUNT(DISTINCT label) FROM {schema}.rdf_labels")
+    label_count = cursor.fetchone()[0] or 0
+    return GraphStats(node_count=node_count, edge_count=edge_count, label_count=label_count)
+
+
+async def resolve_node(info: strawberry.Info, id: strawberry.ID) -> Optional[Any]:
+    """Resolves a single node by ID."""
+    engine = info.context["engine"]
+    node_data = engine.get_node(str(id))
+    if not node_data:
+        return None
+    return map_node_data(node_data, info)
+
+async def resolve_nodes(info: strawberry.Info, label: str, limit: int = 10, offset: int = 0) -> List[Any]:
+    """Resolves nodes by label."""
+    engine = info.context["engine"]
+    conn = engine.conn
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"SELECT s FROM {engine._ivg_schema}.rdf_labels WHERE label = ?", [label])
+        all_ids = [row[0] for row in cursor.fetchall()]
+        target_ids = all_ids[offset : offset + limit]
+        if not target_ids:
+            return []
+        nodes_data = engine.get_nodes(target_ids)
+        return [map_node_data(n, info) for n in nodes_data]
+    finally:
+        cursor.close()
+
+async def resolve_semantic_search(
+    info: strawberry.Info, 
+    query: str, 
+    label: Optional[str] = None, 
+    limit: int = 5
+) -> List[Any]:
+    """Resolves semantic search results."""
+    engine = info.context["engine"]
+    try:
+        # Determine if we should vectorize in Python or let IRIS handle it (Mode 2)
+        query_input = query
+        is_vector = query.strip().startswith('[') and query.strip().endswith(']')
+        
+        if not is_vector:
+            if engine.embedding_config and engine._probe_embedding_support():
+                # Mode 2: Pass raw text directly, engine.kg_KNN_VEC will use SQL EMBEDDING()
+                query_input = query
+            else:
+                # Mode 1 Fallback: Embed in Python
+                try:
+                    vector = engine.embed_text(query)
+                    query_input = json.dumps(vector)
+                except Exception as e:
+                    import logging
+                    logging.getLogger(__name__).warning(f"Failed to embed query text: {e}. Passing raw text as last resort.")
+        
+        results = engine.kg_KNN_VEC(query_input, k=limit, label_filter=label)
+        from .schema import SemanticSearchResult
+        node_ids = [r[0] for r in results]
+        nodes_data = engine.get_nodes(node_ids)
+        node_map = {n["id"]: n for n in nodes_data}
+        output = []
+        for node_id, score in results:
+            if node_id in node_map:
+                node_obj = map_node_data(node_map[node_id], info)
+                output.append(SemanticSearchResult(score=score, node=node_obj))
+        return output
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Semantic search failed: {e}")
+        return []
+
+async def resolve_outgoing(
+    info: strawberry.Info, 
+    root: Any, 
+    predicate: Optional[str] = None, 
+    limit: int = 10
+) -> List[Any]:
+    """Resolves outgoing relationships."""
+    engine = info.context["engine"]
+    conn = engine.conn
+    cursor = conn.cursor()
+    try:
+        sql = f"SELECT p, o_id FROM {engine._ivg_schema}.rdf_edges WHERE s = ?"
+        params = [str(root.id)]
+        if predicate:
+            sql += " AND p = ?"
+            params.append(predicate)
+        cursor.execute(sql, params)
+        rows = cursor.fetchmany(limit)
+        from .schema import Relationship
+        return [Relationship(predicate=row[0], target_id=row[1]) for row in rows]
+    finally:
+        cursor.close()
+
+async def resolve_incoming(
+    info: strawberry.Info, 
+    root: Any, 
+    predicate: Optional[str] = None, 
+    limit: int = 10
+) -> List[Any]:
+    """Resolves incoming relationships."""
+    engine = info.context["engine"]
+    conn = engine.conn
+    cursor = conn.cursor()
+    try:
+        sql = f"SELECT p, s FROM {engine._ivg_schema}.rdf_edges WHERE o_id = ?"
+        params = [str(root.id)]
+        if predicate:
+            sql += " AND p = ?"
+            params.append(predicate)
+        cursor.execute(sql, params)
+        rows = cursor.fetchmany(limit)
+        from .schema import Relationship
+        return [Relationship(predicate=row[0], target_id=row[1]) for row in rows]
+    finally:
+        cursor.close()
+
+async def resolve_cypher(
+    info: strawberry.Info, 
+    query: str, 
+    parameters: Optional[strawberry.scalars.JSON] = None
+) -> Any:
+    """Resolves raw Cypher queries; a mutation is refused under ``IVG_READ_ONLY=true``."""
+    from ..api_auth import read_only_enabled
+    from ..cypher.read_only import writes_cypher
+
+    if read_only_enabled() and writes_cypher(query):
+        # The REST and Bolt routes' check: this field ran a CREATE in read-only mode (R112).
+        raise PermissionError("mutation queries not allowed in read-only mode (IVG_READ_ONLY)")
+    engine = info.context["engine"]
+    # engine.execute_cypher returns {"columns": [...], "rows": [...], ...}
+    result = engine.execute_cypher(query, parameters=parameters)
+    if getattr(result, "error", None):
+        # A failed read is the field's GraphQL error, as REST answers it 400: it answered no rows and no error (4.6.0
+        # fixes84; execute_cypher folds a failed statement into result.error)
+        raise RuntimeError(result.error)
+    
+    # Apply recursive serialization to rows
+    serialized_rows = []
+    for row in result.rows:
+        serialized_rows.append(serialize_value(row))
+
+    from .schema import CypherResult
+    return CypherResult(
+        columns=result.columns,
+        rows=serialized_rows
+    )
+
+def serialize_value(val: Any) -> Any:
+    """Recursively serializes IRIS/Python values to JSON-compatible format. The engine answers a list or map as the list
+    or dict (4.6.0 R311), so a string is a string: decoding one that spells JSON answered `RETURN '{"a":1}'` as a map."""
+    if isinstance(val, (list, tuple)):
+        return [serialize_value(item) for item in val]
+    if isinstance(val, dict):
+        return {str(k): serialize_value(v) for k, v in val.items()}
+    if isinstance(val, (datetime, date)):
+        return val.isoformat()
+    if isinstance(val, Decimal):
+        return float(val)
+    return val
+
+def map_node_data(node_data: Dict[str, Any], info) -> Any:
+    """Maps raw IRIS node data to a Strawberry dynamic type instance."""
+    labels = node_data.get("labels", [])
+    node_id = node_data.get("id")
+    primary_label = labels[0] if labels else "Node"
+    dynamic_class = DYNAMIC_TYPES.get(primary_label)
+
+    properties = node_data.get("properties")
+    if properties is None:
+        properties = {k: v for k, v in node_data.items() if k not in ("id", "labels")}
+
+    mapped_props = {}
+    for k, v in properties.items():
+        field_name = k
+        if k.lower() in RESERVED_KEYWORDS:
+            field_name = f"p_{k}"
+        mapped_props[field_name] = str(v) if v is not None else None
+    if dynamic_class:
+        kwargs = {"id": node_id, "labels": labels, **mapped_props}
+        obj = dynamic_class(**kwargs)
+        obj._primary_label = primary_label
+        return obj
+    class GenericNode:
+        def __init__(self, **kwargs):
+            for k, v in kwargs.items(): setattr(self, k, v)
+        def properties(self) -> List[Any]:
+            from .schema import Property
+            return [Property(key=k, value=str(v)) for k, v in properties.items()]
+    return GenericNode(id=node_id, labels=labels, _primary_label=primary_label, **mapped_props)

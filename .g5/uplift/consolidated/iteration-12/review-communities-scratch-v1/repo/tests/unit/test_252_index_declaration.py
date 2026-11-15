@@ -1,0 +1,134 @@
+"""Spec 252, T011: ensure_indexes declares the two adjacency functional indexes.
+
+Only where Graph.KG.AdjIndex and Graph.KG.LabelIndex are compiled (a DDL-only namespace has no
+callbacks to run), only once the ekey column exists (the edge index reads it) and both tables carry
+graph_id (a 3.x namespace gains it in upgrade_to_4_0_0), only when the index is not there yet, and
+with a warning, because CREATE INDEX builds it over every existing row.
+"""
+
+import logging
+
+from iris_vector_graph.schema import GraphSchema
+
+EDGE_DDL = "CREATE INDEX idx_edges_adj ON Graph_KG.rdf_edges (graph_id, s, p, o_id, qualifiers, ekey) AS Graph.KG.AdjIndex"
+LABEL_DDL = "CREATE INDEX idx_labels_adj ON Graph_KG.rdf_labels (graph_id, s, label) AS Graph.KG.LabelIndex"
+
+
+class _Cursor:
+    def __init__(self, classes=2, ekey=True, present=(), graph_id=2, plain=()):
+        self.classes, self.ekey, self.present, self.sql, self._row = classes, ekey, set(present), [], None
+        self.graph_id = graph_id  # how many of rdf_edges and rdf_labels carry graph_id
+        self.plain, self._rows = set(plain), []  # 4.7.0: indexes of the name that are not functional ones
+
+    def execute(self, sql, args=None):
+        self.sql.append(sql)
+        if "%Dictionary.CompiledIndex" in sql:
+            # the index kind probe (GraphSchema.adjacency_index_kind): its TypeClass, None for a plain index
+            name = args[0] if args else ""
+            self._rows = ([("Graph.KG.AdjIndex",)] if name in self.present
+                          else [(None,)] if name in self.plain else [])
+        elif "%Dictionary.CompiledClass" in sql:
+            self._row = (self.classes,)
+        elif "COLUMN_NAME = 'ekey'" in sql:
+            self._row = (1,) if self.ekey else None
+        elif "COLUMN_NAME = 'graph_id'" in sql:
+            self._row = (self.graph_id,)
+        elif "INFORMATION_SCHEMA.INDEXES" in sql:
+            name = args[0] if args else ""
+            self._row = (1,) if name in self.present else None
+        elif "backfill_temporal_rows" in sql:
+            self._row = (3,)
+
+    def fetchone(self):
+        return self._row
+
+    def fetchall(self):
+        return self._rows
+
+    def ddl(self):
+        return [s for s in self.sql if s.startswith("CREATE INDEX")]
+
+
+def test_both_indexes_are_declared_on_a_deployed_namespace(caplog):
+    cur = _Cursor()
+    with caplog.at_level(logging.INFO, logger="iris_vector_graph.schema"):  # a heads-up, not an action (4.6.0)
+        status = GraphSchema.ensure_adjacency_index(cur)
+    assert cur.ddl() == [EDGE_DDL, LABEL_DDL]
+    assert status == {"idx_edges_adj": "created", "idx_labels_adj": "created", "temporal_rows_backfilled": 3}
+    assert any("rebuild" in r.getMessage().lower() for r in caplog.records)
+
+
+def test_nothing_is_declared_without_the_callback_classes():
+    cur = _Cursor(classes=1)
+    assert GraphSchema.ensure_adjacency_index(cur) == {"skipped": "Graph.KG.AdjIndex / LabelIndex not compiled"}
+    assert cur.ddl() == []
+
+
+def test_nothing_is_declared_before_the_ekey_column_exists():
+    cur = _Cursor(ekey=False)
+    assert "skipped" in GraphSchema.ensure_adjacency_index(cur)
+    assert cur.ddl() == []
+
+
+def test_nothing_is_declared_on_a_namespace_from_before_graph_scoping():
+    # a 3.x namespace: rdf_labels has no graph_id until upgrade_to_4_0_0 runs, and CREATE INDEX on it fails
+    # (SQLCODE -31), which broke initialize_schema() on the upgrade path
+    cur = _Cursor(graph_id=1)
+    assert GraphSchema.ensure_adjacency_index(cur) == {"skipped": "rdf_edges / rdf_labels have no graph_id column yet"}
+    assert cur.ddl() == []
+
+
+def test_a_declared_index_is_left_alone(caplog):
+    cur = _Cursor(present={"idx_edges_adj", "idx_labels_adj"})
+    with caplog.at_level(logging.WARNING, logger="iris_vector_graph.schema"):
+        status = GraphSchema.ensure_adjacency_index(cur)
+    assert cur.ddl() == []
+    assert status == {"idx_edges_adj": "present", "idx_labels_adj": "present"}
+    assert not [r for r in caplog.records if r.levelname == "WARNING"]
+
+
+def test_ensure_indexes_runs_it_after_the_ekey_migration():
+    from tests.unit import _code
+
+    t = _code.tokens(GraphSchema.ensure_indexes)
+    assert t.index("_spo_constraint_status") < t.index("ensure_adjacency_index")
+
+
+def test_temporal_rows_are_backfilled_before_the_edge_index_is_built():
+    # ADR-0009: CREATE INDEX builds ^KG from rows, so a pre-ADR-0009 temporal edge needs its row first
+    cur = _Cursor()
+    status = GraphSchema.ensure_adjacency_index(cur)
+    backfill = [i for i, s in enumerate(cur.sql) if "backfill_temporal_rows" in s]
+    edge = [i for i, s in enumerate(cur.sql) if s == EDGE_DDL]
+    assert backfill and edge and backfill[0] < edge[0]
+    assert status["temporal_rows_backfilled"] == 3
+
+
+def test_no_backfill_once_the_edge_index_exists():
+    cur = _Cursor(present={"idx_edges_adj", "idx_labels_adj"})
+    GraphSchema.ensure_adjacency_index(cur)
+    assert not [s for s in cur.sql if "backfill_temporal_rows" in s]
+
+
+def test_initialize_schema_declares_it_once_the_classes_are_deployed():
+    # a fresh namespace: ensure_indexes (step 3) runs before the deploy (step 6) compiles AdjIndex, so its
+    # ensure_adjacency_index skips ("not compiled"); without a second call the first initialize_schema never declares it
+    from iris_vector_graph._engine.schema import SchemaMixin
+    from tests.unit import _code
+
+    t = _code.tokens(SchemaMixin._initialize_schema)
+    deploy = t.index("deploy_objectscript_classes")
+    assert len(t) - 1 - t[::-1].index("ensure_adjacency_index") > deploy
+    assert "adjacency_index" in t[deploy:]
+
+
+def test_a_plain_index_of_the_name_is_replaced(caplog):
+    """4.7.0 row 16: a plain idx_edges_adj keeps no ^KG; it was "present", so the functional one was never declared
+    (tests/e2e/test_470_adjacency_index_kind_e2e.py has it against IRIS)."""
+    cur = _Cursor(present={"idx_labels_adj"}, plain={"idx_edges_adj"})
+    with caplog.at_level(logging.WARNING, logger="iris_vector_graph.schema"):
+        status = GraphSchema.ensure_adjacency_index(cur)
+    assert "DROP INDEX idx_edges_adj ON Graph_KG.rdf_edges" in cur.sql
+    assert cur.ddl() == [EDGE_DDL]
+    assert status["idx_edges_adj"] == "created" and status["idx_edges_adj_replaced_plain"] is True
+    assert any("plain index" in r.getMessage() for r in caplog.records if r.levelname == "WARNING")

@@ -1,0 +1,13 @@
+/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/ledger-content-evidence.py:85: SyntaxWarning: "\[" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\["? A raw string is also an option.
+  attempts.append(dict(path=str(d.relative_to(REPO)),snapshot_inputs=len(entries),snapshot_hashes_equal=True,raw_log=log.is_file(),verified=int(m[1]) if m else None,errors=int(m[2]) if m else None,resource_failure='resource limit' in text.lower() or ('rlimit' in text.lower() and 'exceeded' in text.lower()),syntax_or_type_failure=bool(re.search('SyntaxError|error\[E\d+\]',text)),wall_span_s_including_snapshot_record_overhead=max(0,end-begin) if begin is not None else None,observed=json.loads(obs.read_text()) if obs.is_file() else None))
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/ledger-content-evidence.py", line 83, in <module>
+    begin=dt.datetime.strptime(d.name[:23],'%Y%m%dT%H%M%S.%f').replace(tzinfo=dt.timezone.utc).timestamp() if '.' in d.name[:23] else None
+          ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.5/Frameworks/Python.framework/Versions/3.14/lib/python3.14/_strptime.py", line 815, in _strptime_datetime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.5/Frameworks/Python.framework/Versions/3.14/lib/python3.14/_strptime.py", line 558, in _strptime
+    raise ValueError("unconverted data remains: %s" %
+                      data_string[found.end():])
+ValueError: unconverted data remains: Z

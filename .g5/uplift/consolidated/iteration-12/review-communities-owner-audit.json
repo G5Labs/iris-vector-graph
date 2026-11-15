@@ -1,0 +1,51 @@
+{
+  "verdict": "SOURCE_AUTHORITY_SUPPORTS_SCOPING_OLD_GENERIC_CLAUSE",
+  "utc": "2026-11-15T22:46:08.285563+00:00",
+  "original_owner": "algorithms.op",
+  "original_exact_bullet": "- A damping factor outside (0, 1), an iteration count below 1 or an unknown direction raises `ValueError` before anything is read.",
+  "original_bullet_sha256": "a4dae17a9cd09f4379702549b350c88c2fdacbf083d413f1b1afc67e08b22c94",
+  "preserved_whole_before_file": ".g5/uplift/consolidated/iteration-12/algorithms-owner-before-scope-correction.md",
+  "preserved_before_sha256": "58a9057cc821f08da7200eb785c86beb46be4587d149ac5d08f4a7a99705e031",
+  "matches_pre_candidate_canonical_hash": true,
+  "original_block_before_next_anchor": "\n[I \u00b7 algorithms.op]\n\nEvery algorithm answer includes every node of the graph, nodes with no edge too, and the n in any formula is the graph's node count. Ranked answers come highest first, and ties go by node ID in IRIS collation; two scores equal to 12 decimal places are a tie.\n\n- A direction is `out` (along edges), `in` (against them) or `both` (the graph read as undirected).\n- A damping factor outside (0, 1), an iteration count below 1 or an unknown direction raises `ValueError` before anything is read.\n- The exceptions to \"every node\" are betweenness, which lists only nodes that score above 0, and walks and subgraphs, which list what they reach.\n\n",
+  "current_block_before_next_anchor": "\n[I \u00b7 algorithms.op]\n\nEvery algorithm answer includes every node of the graph, nodes with no edge too, and the n in any formula is the graph's node count. Ranked answers come highest first, and ties go by node ID in IRIS collation; two scores equal to 12 decimal places are a tie.\n\n- A direction is `out` (along edges), `in` (against them) or `both` (the graph read as undirected).\n- PageRank and PPR reject a damping factor outside (0, 1) or an iteration count below 1 with `ValueError` before reading data.\n- Operations with a direction reject an unknown direction with `ValueError` before reading data.\n- The exceptions to \"every node\" are betweenness, which lists only nodes that score above 0, and walks and subgraphs, which list what they reach.\n\n",
+  "source_files": {
+    ".g5/ontology/features/algorithms.g5.md": "14fac58353fd4041751df60c070beeb83dca87b56e7c4c6e7bd64dd997a059ee",
+    "docs/USER_GUIDE.md": "4ca75aef844ec8122126d941677dd8e05a55f142f15c7adce36ac7bbec385551",
+    "docs/COMMUNITIES.md": "1ab3d8146a0a54f25380610f7c770e7a571f800985dcbde876bbb225e1c1d335",
+    "docs/API_REFERENCE.md": "1e3a84f292e027ff090f47ef77b01daa5fda56d3922eb1bb1c4cec4a2f4a359d",
+    "CHANGELOG.md": "fbcdbbbf67ee887a3bfae34eb59817b2fb99efc737e2b0ad99dc9fb9767f5e0b",
+    "iris_vector_graph/_engine/algorithms.py": "e39a9164f19bb67f1c2b0f686a3ac5a01208c1f5c2da15f937820fe6c47853de",
+    "iris_src/src/Graph/KG/Algorithms.cls": "442161ae5574d89f8669090e9d20b7a55f8f239b353fdd9243210f8e2b2f2a61"
+  },
+  "authority": [
+    {
+      "path": "docs/USER_GUIDE.md",
+      "lines": "598-600",
+      "scope": "PPR paragraph names PageRank/PPR surfaces for damping/minimum1."
+    },
+    {
+      "path": "CHANGELOG.md",
+      "lines": "41-43",
+      "scope": "Explicit PageRank and personalized PageRank validation."
+    },
+    {
+      "path": "docs/COMMUNITIES.md",
+      "lines": "164-210",
+      "scope": "WCC safety/confirmation; CDLP stopping/parity; no pre-read <1 ValueError promise."
+    },
+    {
+      "path": "docs/API_REFERENCE.md",
+      "lines": "1579-1585,1731-1737",
+      "scope": "Specific CDLP/WCC contracts do not extend PageRank/PPR admission rule."
+    }
+  ],
+  "recommendation": "Name PageRank/PPR for damping/minimum iteration clause; preserve unknown direction separately. Correct reconstructed attribution, not specific valid intent or policy.",
+  "as_built_qualification": "Raw Owner WCC nonpositive limit checked after membership; raw Owner CDLP0rounds. Public backend/cache/native/error behavior separate; no reviewer nativezero call.",
+  "capture_note": "First attempted current-file old-bullet capture raced the authorized root correction and stopped at assertion before writing JSON. Audited exact root-preserved whole before file instead; hash equals pre-candidate source frame.",
+  "native_calls": 0,
+  "product_or_shared_edits": 0,
+  "private_evaluator_access": false,
+  "new_bug_claims": 0,
+  "new_policy_answer": false
+}

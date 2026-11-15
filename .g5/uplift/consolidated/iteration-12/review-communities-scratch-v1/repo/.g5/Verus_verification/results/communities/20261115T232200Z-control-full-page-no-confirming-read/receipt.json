@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_full_final_page_requires_empty_page"
+    ],
+    "find": "limit>0 && ids.len()>=limit",
+    "name": "full-page-no-confirming-read",
+    "replace": "limit>0 && ids.len()>limit"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_full_final_page_requires_empty_page"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/controls/full-page-no-confirming-read/20261115T232158Z/models/communities/communities.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_full_final_page_requires_empty_page": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/20261115T232158Z-control-full-page-no-confirming-read-theorem_full_final_page_requires_empty_page.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/20261115T232158Z-control-full-page-no-confirming-read.log",
+    "timed_out": false,
+    "verified": 71
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/communities/20261115T232200Z-control-full-page-no-confirming-read/logs/20261115T232158Z-control-full-page-no-confirming-read-theorem_full_final_page_requires_empty_page.log": "ed0ead359353dc43e55279d320edde426f857c5c935a6611698f8f707f3af080",
+    ".g5/Verus_verification/results/communities/20261115T232200Z-control-full-page-no-confirming-read/logs/20261115T232158Z-control-full-page-no-confirming-read.log": "4d691a279bd1bc0e31e249d1f2deee228b72244d6f24b4e8be2dde5c21506fa8"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

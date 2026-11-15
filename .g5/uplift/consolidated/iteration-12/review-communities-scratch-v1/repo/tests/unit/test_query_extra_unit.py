@@ -1,0 +1,388 @@
+"""
+Extra coverage for _engine/query.py miss lines not covered by existing tests.
+All tests use mocked connections — no live IRIS required.
+"""
+import json
+import pytest
+from unittest.mock import MagicMock, patch
+from iris_vector_graph.engine import IRISGraphEngine
+from iris_vector_graph.result import IVGResult
+
+
+def _make_eng(dim=4):
+    conn = MagicMock()
+    cursor = MagicMock()
+    conn.cursor.return_value = cursor
+    cursor.execute.return_value = None
+    cursor.fetchall.return_value = []
+    cursor.fetchone.return_value = (0,)
+    cursor.description = []
+    cursor.close.return_value = None
+    return IRISGraphEngine(conn, embedding_dimension=dim), conn, cursor
+
+
+# ---------------------------------------------------------------------------
+# Semicolon multi-part: exception in sub-execute is swallowed (lines 114-115)
+# ---------------------------------------------------------------------------
+
+class TestSemicolonMultiPartException:
+
+    def test_sub_execute_exception_propagates(self):
+        """A part that raises fails the whole call (result.error, or raised with raise_on_error): 4.5.1 swallowed it and
+        answered with the other parts."""
+        eng, conn, cursor = _make_eng()
+
+        # Use a real semicolon+CALL query so the branch triggers
+        # Patch _execute_parsed to raise on the first call, succeed on the second
+        call_count = [0]
+
+        def fake_parsed(cypher, *args, **kw):
+            call_count[0] += 1
+            if call_count[0] == 1:
+                raise RuntimeError("first sub fails")
+            return IVGResult(columns=["x"], rows=[["ok"]])
+
+        with patch.object(eng, "_execute_parsed", side_effect=fake_parsed):
+            r = eng.execute_cypher("CALL apoc.something(); CALL apoc.other()", parameters={})
+        # the failing part is the answer: its error and no rows, not the other part's rows (4.6.0 contract A)
+        assert r.rows == [] and "first sub fails" in r.error and call_count[0] == 1
+        call_count[0] = 0
+        with patch.object(eng, "_execute_parsed", side_effect=fake_parsed):
+            with pytest.raises(RuntimeError, match="first sub fails"):
+                eng.execute_cypher("CALL apoc.something(); CALL apoc.other()", parameters={}, raise_on_error=True)
+        assert call_count[0] == 1, "no part runs after one that failed"
+
+
+# ---------------------------------------------------------------------------
+# _execute_shortest_path_cypher: parameter resolve paths (lines 396-428)
+# ---------------------------------------------------------------------------
+
+class TestExecuteShortestPathCypherPaths:
+
+    def _make_sq(self, src="$src", dst="$dst", all_shortest=False):
+        sq = MagicMock()
+        sq.var_length_paths = [{
+            "src_id_param": src, "dst_id_param": dst,
+            "types": [], "max_hops": 5, "direction": "both",
+            "all_shortest": all_shortest, "return_path_funcs": [],
+            "source_var": "src", "target_var": "dst",
+        }]
+        sq.query_metadata = {}
+        return sq
+
+    def test_all_shortest_path(self):
+        """Line 396: all_shortest=True → find_all=1."""
+        eng, conn, cursor = _make_eng()
+        # the store calls ShortestPathJson through its own _call_classmethod
+        with patch.object(eng._store, "_call_classmethod", return_value='[]') as mock_call:
+            sq = self._make_sq(all_shortest=True)
+            result = eng._execute_shortest_path_cypher(sq, {"src": "n1", "dst": "n2"})
+        assert isinstance(result, IVGResult)
+        args = mock_call.call_args.args
+        # find_all, then the graph walked (4.6.2: "" the default graph)
+        assert args[1] == "ShortestPathJson" and args[2:4] == ("n1", "n2") and args[-2:] == ("1", "")
+
+    def test_source_resolved_from_source_var(self):
+        """Line 408: source_id resolved from source_var in parameters."""
+        eng, conn, cursor = _make_eng()
+        sq = MagicMock()
+        sq.var_length_paths = [{
+            "src_id_param": None, "dst_id_param": "$dst",
+            "types": [], "max_hops": 5, "direction": "both",
+            "all_shortest": False, "return_path_funcs": [],
+            "source_var": "src", "target_var": "dst",
+        }]
+        sq.query_metadata = {}
+        with patch.object(eng._store, "_call_classmethod", return_value='[]') as mock_call:
+            result = eng._execute_shortest_path_cypher(sq, {"src": "n1", "dst": "n2"})
+        assert isinstance(result, IVGResult)
+        assert mock_call.call_args.args[1:4] == ("ShortestPathJson", "n1", "n2")
+
+    def test_source_from_first_param_value(self):
+        """Line 417: source_id from first parameters value (no source_var match)."""
+        eng, conn, cursor = _make_eng()
+        sq = MagicMock()
+        sq.var_length_paths = [{
+            "src_id_param": None, "dst_id_param": "$dst",
+            "types": [], "max_hops": 5, "direction": "both",
+            "all_shortest": False, "return_path_funcs": [],
+            "source_var": "missing_var", "target_var": "dst",
+        }]
+        sq.query_metadata = {}
+        with patch.object(eng._store, "_call_classmethod", return_value='[]') as mock_call:
+            result = eng._execute_shortest_path_cypher(sq, {"dst": "n2", "other": "n1"})
+        assert isinstance(result, IVGResult)
+        # source: the first string parameter value; target: $dst
+        assert mock_call.call_args.args[1:4] == ("ShortestPathJson", "n2", "n2")
+
+    def test_source_none_raises(self):
+        """Lines 426-428: source_id None → ValueError."""
+        eng, conn, cursor = _make_eng()
+        sq = MagicMock()
+        sq.var_length_paths = [{
+            "src_id_param": None, "dst_id_param": None,
+            "types": [], "max_hops": 5, "direction": "both",
+            "all_shortest": False, "return_path_funcs": [],
+            "source_var": None, "target_var": None,
+        }]
+        sq.query_metadata = {}
+        with pytest.raises(ValueError):
+            eng._execute_shortest_path_cypher(sq, {})
+
+
+# ---------------------------------------------------------------------------
+# _execute_var_length_cypher: source_id from source_var (lines 499-503)
+# ---------------------------------------------------------------------------
+
+class TestExecuteVarLengthSource:
+
+    def test_source_id_from_source_var(self):
+        """Lines 499-503: source_id from source_var in parameters."""
+        eng, conn, cursor = _make_eng()
+        eng._arno_capabilities = {}
+
+        sq = MagicMock()
+        sq.var_length_paths = [{
+            "types": ["TREATS"], "max_hops": 2, "direction": "out",
+            "min_hops": 1, "properties": None, "return_path_funcs": [],
+            "weighted": False, "shortest": False, "all_shortest": False,
+            "source_var": "src", "is_count": False,
+        }]
+        sq.parameters = []
+        sq.sql = "SELECT DISTINCT b.node_id AS node_id"
+        sq.query_metadata = {}
+
+        with patch("iris_vector_graph.schema._call_classmethod", return_value="[]"):
+            result = eng._execute_var_length_cypher(sq, {"src": "n1"})
+        assert isinstance(result, IVGResult)
+
+
+# ---------------------------------------------------------------------------
+# BFS SORTED paths (lines 558-568, 590-596)
+# ---------------------------------------------------------------------------
+
+class TestBfsSortedPaths:
+
+    def _make_sq(self, source_id="n1", sql="SELECT DISTINCT b.node_id AS node_id LIMIT 10"):
+        sq = MagicMock()
+        sq.var_length_paths = [{
+            "types": ["TREATS"], "max_hops": 3, "direction": "out",
+            "min_hops": 1, "properties": None, "return_path_funcs": [],
+            "weighted": False, "shortest": False, "all_shortest": False,
+            "source_var": None, "is_count": False,
+        }]
+        sq.parameters = [[source_id]]
+        sq.sql = sql
+        sq.query_metadata = {}
+        return sq
+
+    def test_arno_bfs_sorted_tag_with_max_results(self):
+        """Lines 558-568: SORTED: tag + max_results > 0 → ReadBFSResults."""
+        eng, conn, cursor = _make_eng()
+        eng._arno_capabilities = {"arno": True, "bfs_json": True}
+        sq = self._make_sq()
+
+        call_results = {}
+        def cm(conn_arg, cls, method, *args):
+            call_results[method] = call_results.get(method, 0) + 1
+            if method == "BFSJson":
+                return "SORTED:abc123"
+            if method == "ReadBFSResults":
+                return json.dumps([{"o": "n2", "s": 1}])
+            return "[]"
+
+        with patch("iris_vector_graph.schema._call_classmethod", side_effect=cm):
+            with patch.object(eng, "_detect_arno", return_value=True):
+                result = eng._execute_var_length_cypher(sq, {})
+        assert isinstance(result, IVGResult)
+
+    def test_bfs_fast_json_sorted_tag_with_max_results(self):
+        """Lines 590-596: BFSFastJsonSorted SORTED: tag + max_results → ReadBFSResults."""
+        eng, conn, cursor = _make_eng()
+        eng._arno_capabilities = {}
+        sq = self._make_sq()
+
+        def cm(conn_arg, cls, method, *args):
+            if method == "BFSFastJsonSorted":
+                return "SORTED:xyz789"
+            if method == "ReadBFSResults":
+                return json.dumps([{"o": "n2", "s": 1}])
+            return "[]"
+
+        with patch("iris_vector_graph.schema._call_classmethod", side_effect=cm):
+            result = eng._execute_var_length_cypher(sq, {})
+        assert isinstance(result, IVGResult)
+
+    def test_bfs_fast_json_sorted_plain_results(self):
+        """Line 572: Arno fails → fallback to BFSFastJsonSorted with plain JSON."""
+        eng, conn, cursor = _make_eng()
+        eng._arno_capabilities = {}
+        sq = self._make_sq(sql="SELECT DISTINCT b.node_id AS node_id")
+
+        results_json = json.dumps([{"o": "n2", "s": 1}])
+
+        def cm(conn_arg, cls, method, *args):
+            if method == "BFSFastJsonSorted":
+                return results_json
+            return "[]"
+
+        with patch("iris_vector_graph.schema._call_classmethod", side_effect=cm):
+            result = eng._execute_var_length_cypher(sq, {})
+        assert isinstance(result, IVGResult)
+
+
+# ---------------------------------------------------------------------------
+# rel_props_filter + count_match (lines 618, 643-644)
+# ---------------------------------------------------------------------------
+
+class TestVarLengthFiltersAndCount:
+
+    def test_rel_props_filter_applied(self):
+        """Line 618: rel_props_filter → _filter_edges_by_properties called via Arno plain JSON."""
+        eng, conn, cursor = _make_eng()
+        # Use Arno path so plain JSON populates bfs_results (reaches line 618)
+        eng._arno_capabilities = {"arno": True, "bfs": True, "rust_callout": True}
+
+        sq = MagicMock()
+        sq.var_length_paths = [{
+            "types": ["TREATS"], "max_hops": 2, "direction": "out",
+            "min_hops": 1, "properties": {"weight": 0.5},
+            "return_path_funcs": [],
+            "weighted": False, "shortest": False, "all_shortest": False,
+            "source_var": "src", "is_count": False,
+        }]
+        sq.parameters = []
+        sq.sql = "SELECT DISTINCT b.node_id AS node_id"
+        sq.query_metadata = {}
+
+        bfs_results = [{"o": "n2", "s": 1, "weight": 0.9}]
+
+        with patch("iris_vector_graph.schema._call_classmethod", return_value="[]"):
+            with patch.object(eng, "_detect_arno", return_value=True):
+                with patch.object(eng, "_arno_call", return_value=json.dumps(bfs_results)):
+                    with patch.object(eng, "_filter_edges_by_properties", return_value=bfs_results) as mock_filter:
+                        result = eng._execute_var_length_cypher(sq, {"src": "n1"})
+
+        mock_filter.assert_called()
+        assert isinstance(result, IVGResult)
+
+    def test_count_match_early_path_returns_count(self):
+        """COUNT(DISTINCT) early path → VarLength.EndsCount with the hop bounds → returns immediately."""
+        eng, conn, cursor = _make_eng()
+        eng._arno_capabilities = {}
+
+        sq = MagicMock()
+        sq.var_length_paths = [{
+            "types": ["TREATS"], "max_hops": 2, "direction": "out",
+            "min_hops": 1, "properties": None, "return_path_funcs": [],
+            "weighted": False, "shortest": False, "all_shortest": False,
+            "source_var": "src", "is_count": False,
+        }]
+        sq.parameters = []
+        sq.sql = "SELECT COUNT(DISTINCT b.node_id) AS cnt FROM ..."
+        sq.query_metadata = {}
+
+        calls = []
+
+        def cm(conn_arg, cls, method, *args):
+            if (cls, method) == ("Graph.KG.VarLength", "EndsCount"):
+                calls.append(args)
+                return "7"
+            return "[]"
+
+        sq.graph_context = None
+        with patch("iris_vector_graph.schema._call_classmethod", side_effect=cm):
+            result = eng._execute_var_length_cypher(sq, {"src": "n1"})
+
+        assert isinstance(result, IVGResult)
+        assert result.columns == ["cnt"]
+        assert result.rows[0][0] == 7
+        # the minimum hops reach the walk: BFSFastCountDistinct took only the maximum
+        assert calls == [("n1", '["TREATS"]', "out", 1, 2, 0, "")]
+
+
+# ---------------------------------------------------------------------------
+# _try_khop_fast_path: src_id=None branches (lines 743, 766-767, 776)
+# ---------------------------------------------------------------------------
+
+class TestKhopSrcNone:
+
+    def test_1hop_ids_src_none_returns_none(self):
+        """Line 743: 1-hop IDs match but src_id=None → return None."""
+        eng, conn, cursor = _make_eng()
+        q = "MATCH (n {node_id: $missing})-[:TREATS]->(m) RETURN m.node_id"
+        iris_obj = MagicMock()
+        iris_obj.classMethodValue.return_value = "hop1\nhop2"
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            result = eng._try_khop_fast_path(q, {})  # 'missing' not in params
+        assert result is None
+
+
+# ---------------------------------------------------------------------------
+# NKG accel: exception + limit path (lines 815-816, 832)
+# ---------------------------------------------------------------------------
+
+class TestNkgAccelPaths:
+
+    def test_a_populated_nkg_does_not_answer_a_variable_length_read(self):
+        """4.6.0 #80: the ^NKG k-hop shortcut answered each node once, under `node_id`, over every predicate."""
+        eng, conn, cursor = _make_eng()
+        q = "MATCH (n {node_id: $src})-[*1..2]->(m) RETURN m.node_id LIMIT 1"
+        iris_obj = MagicMock()
+        iris_obj.classMethodValue.side_effect = lambda cls, method, *a: "1" if method == "NKGPopulated" else "{}"
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            assert eng._try_khop_fast_path(q, {"src": "seed"}) is None
+        assert not [c for c in iris_obj.classMethodValue.call_args_list if c.args[1] == "KHopNeighbors"]
+
+
+# ---------------------------------------------------------------------------
+# _execute_approx_count_distinct (lines 850-875)
+# ---------------------------------------------------------------------------
+
+class TestExecuteApproxCountDistinct:
+
+    def _make_match(self, col_name="approx_cnt"):
+        import re
+        m = re.search(r"approx_count_distinct\((\w+)\)", f"approx_count_distinct({col_name})")
+        # Wrap to provide group(2) which the method uses for col_name
+        class FakeMatch:
+            def group(self, n):
+                return {"1": "approx_count_distinct", "2": col_name}[str(n)]
+        return FakeMatch()
+
+    def test_parse_error_goes_to_the_exact_path(self):
+        """parse_query raises: the exact path runs the query and reports its error, rather than answering 0."""
+        eng, conn, cursor = _make_eng()
+        failed = IVGResult(columns=[], rows=[], error="parse fail")
+
+        with patch("iris_vector_graph._engine.query.parse_query", side_effect=Exception("parse fail")), patch.object(
+            eng, "execute_cypher", return_value=failed
+        ):
+            result = eng._execute_approx_count_distinct(
+                "INVALID CYPHER", {}, self._make_match("cnt")
+            )
+        assert result.error == "parse fail"
+
+class TestArnoEmptyAnswer:
+    """`BFSJson` answers an empty result as the text "SORTED:0". The caller used to parse
+    that as JSON, log "Arno BFSJson failed ... Expecting value" and run the ObjectScript
+    BFS as well, so every empty answer cost a failed native attempt and a second query."""
+
+    def test_sorted_zero_is_an_empty_answer_and_not_a_failure(self, caplog):
+        eng, conn, cursor = _make_eng()
+        eng._arno_capabilities = {"bfs": True, "rust_callout": True}
+        sq = TestBfsSortedPaths()._make_sq()
+        calls = []
+
+        def cm(conn_arg, cls, method, *args):
+            calls.append(method)
+            return "[]"
+
+        with patch("iris_vector_graph.schema._call_classmethod", side_effect=cm), patch.object(
+            eng, "_detect_arno", return_value=True
+        ), patch.object(eng, "_arno_call", return_value="SORTED:0"):
+            with caplog.at_level("WARNING"):
+                result = eng._execute_var_length_cypher(sq, {})
+        assert isinstance(result, IVGResult)
+        assert "BFSFastJsonSorted" not in calls, "an empty native answer was answered a second time"
+        assert not [r for r in caplog.records if "Arno BFSJson failed" in r.getMessage()]

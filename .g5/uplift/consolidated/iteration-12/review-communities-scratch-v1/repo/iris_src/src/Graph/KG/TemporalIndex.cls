@@ -1,0 +1,1651 @@
+Class Graph.KG.TemporalIndex Extends %RegisteredObject
+{
+
+Parameter BUCKET = 300;
+
+/// Timestamp precision unit. "" = seconds (default). "ms" = milliseconds.
+Parameter TSUNIT As %String = "";
+
+/// Bucket width in milliseconds when TSUNIT="ms". Derived: BUCKET * 1000.
+Parameter BUCKETMS As %Integer = 300000;
+
+/// Render a numeric value as valid JSON.
+/// ObjectScript renders 0.5 as ".5" and -0.5 as "-.5" — both are not JSON.
+/// Empty string is stored as null.
+ClassMethod jsonNum(pValue As %String) As %String [ Internal ]
+{
+	If pValue = "" { Return "null" }
+	If $Extract(pValue, 1, 2) = "-." { Return "-0" _ $Extract(pValue, 2, *) }
+	If $Extract(pValue, 1) = "." { Return "0" _ pValue }
+	Return pValue
+}
+
+/// Escape a string for embedding inside a JSON double-quoted value.
+/// Handles backslash, double-quote, and ASCII control characters.
+ClassMethod jsonEsc(pValue As %String) As %String [ Internal ]
+{
+	// RFC 8259 §7: U+0000–U+001F must be escaped. Named escapes for the 5
+	// common ones; \uXXXX for the rest (NUL, SOH … ETB, EM … US).
+	Set result = $Replace(pValue, "\", "\\")
+	Set result = $Replace(result, """", "\""")
+	Set result = $Replace(result, $Char(8),  "\b")
+	Set result = $Replace(result, $Char(9),  "\t")
+	Set result = $Replace(result, $Char(10), "\n")
+	Set result = $Replace(result, $Char(12), "\f")
+	Set result = $Replace(result, $Char(13), "\r")
+	// Remaining control chars U+0000–U+001F (NUL and 0x01–0x07, 0x0B, 0x0E–0x1F)
+	For i = 0:1:7,11,14:1:31 {
+		If result [ $Char(i) {
+			Set hex = $Select(i<16: "000"_$ZHex(i), 1: "00"_$ZHex(i))
+			Set result = $Replace(result, $Char(i), "\u"_hex)
+		}
+	}
+	Return result
+}
+
+ClassMethod InsertEdge(graphId As %String = "", source As %String, predicate As %String, target As %String, timestamp As %Integer = "", weight As %Double = 1.0, attrsJSON As %String = "", upsert As %Boolean = 0, suppressReverseIndex As %Boolean = 0, mode As %String = "") As %Status
+{
+	// Spec-223: graphId is the first subscript of all temporal globals.
+	// Empty string normalises to integer 0 (default graph) — same convention as spec-214.
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	If timestamp = "" Set timestamp = ##class(%SYSTEM.SQL).DATEDIFF("ss", "1970-01-01 00:00:00", $ZDateTime($ZTimeStamp, 3, 1))
+	// Coerce empty weight to 1 — same guard as the batch path.
+	If weight = "" Set weight = 1
+	// Resolve effective mode: explicit mode overrides legacy upsert boolean.
+	If mode = "" { Set mode = $Select(upsert: "update", 1: "insert") }
+	Set tAttrs = ""
+	If attrsJSON '= "" { Set tAttrs = ##class(%DynamicObject).%FromJSON(attrsJSON) }
+	// The stores are written in one place. Spec-221 fixed the upsert semantics
+	// here while BulkInsert kept a copy of this body and kept the old meaning;
+	// two copies of the write is what let one path be fixed and the other not.
+	Do ..WriteStores(tGKey, timestamp, source, predicate, target, weight, suppressReverseIndex, mode, tAttrs)
+	// 1 whether or not the edge was written: a skip or a collision (spec 254) is not an
+	// error, and LedgerApply reads this as a status. BulkInsertCounts reports the counts.
+	Return 1
+}
+
+/// Write one temporal edge into every store the index maintains.
+/// Returns 1 when the edge was written; 0 when <var>pMode</var> is "skip" and an
+/// edge already sits at those coordinates; -1 for a collision, the same in mode
+/// "insert" (or ""). <var>pAttrs</var> is a %DynamicObject or "".
+///
+/// A collision changes no store (spec 254, FR-003): before, an "insert" at occupied
+/// coordinates overwrote tout/tin, merged its keys into edgeprop and was counted a
+/// second time in bucket, tagg and the sketch, which then described two edges where
+/// the raw store held one. The first write at a coordinate wins.
+///
+/// Known limitation (spec-221 FR-004/FR-011): "update" overwrites the weight in
+/// ^KG("tout") and ^KG("tin") but does not adjust the ^KG("tagg") bucket
+/// aggregates or the HLL sketch, which still carry the original weight.
+ClassMethod WriteStores(pGKey, pTs As %Integer, pS As %String, pP As %String, pO As %String, pW As %Double, pSuppR As %Boolean = 0, pMode As %String = "insert", pAttrs = "", ByRef pNodes) As %Integer [ Private ]
+{
+	If pMode = "update" {
+		Kill ^KG("edgeprop", pGKey, pTs, pS, pP, pO)
+	} ElseIf $Data(^KG("tout", pGKey, pTs, pS, pP, pO)) {
+		Return $Select(pMode = "skip": 0, 1: -1)
+	}
+	// Spec 255: ^KG("tlast", g) = 1 says the latest-event index is complete for the graph. The first write into an
+	// empty graph sets it (whatever an earlier graph of that name left there is stale); a graph that held edges before
+	// the index existed gets entries but no flag, until RebuildLatest.
+	If '$Data(^KG("tout", pGKey)) {
+		Kill ^KG("tlast", pGKey)
+		Set ^KG("tlast", pGKey) = 1
+	}
+	// Canonical number: InsertEdge receives "2.0" from Python, BulkInsert 2 from JSON, and the
+	// stores (tout, tin, tagg min/max) kept whichever spelling arrived (spec 254, FR-004).
+	Set pW = +pW
+	Set ^KG("tout", pGKey, pTs, pS, pP, pO) = pW
+	Do ..NoteLatest(pGKey, pTs, pS, pP)
+	If 'pSuppR { Set ^KG("tin", pGKey, pTs, pO, pP, pS) = pW }
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set tBucket = pTs \ tBucketDiv
+	Set tmp = $Increment(^KG("bucket", pGKey, tBucket, pS))
+	// Structural adjacency shadow, in this graph, so BFS and traversal see the
+	// edge. Owned by Graph.KG.Adjacency: several timestamps are one structural edge,
+	// and PutShadow moves the degree cache's generation only for a new one.
+	// ADR-0009 with the adjacency functional index (spec 252): the temporal edge asserts its marked
+	// structural row, and the row's index writes ^KG; a shadow with no row would not survive a rebuild.
+	// ADR-0015: a predicate registered temporal-only in this graph gets the temporal stores and nothing structural.
+	If ##class(Graph.KG.TemporalPolicy).IsStructuralKey(pGKey, pP) {
+		If ##class(Graph.KG.Adjacency).Indexed() {
+			$$$ThrowOnError(##class(Graph.KG.Adjacency).AssertTemporalRow(pGKey, pS, pP, pO, pW, 1, .pNodes))
+		} Else {
+			Do ##class(Graph.KG.Adjacency).PutShadow(pGKey, pS, pP, pO, pW)
+		}
+	}
+	// count and sum are atomic via $Increment
+	Set tmp = $Increment(^KG("tagg", pGKey, tBucket, pS, pP, "count"))
+	Set tmp = $Increment(^KG("tagg", pGKey, tBucket, pS, pP, "sum"), pW)
+	If '$Data(^KG("tagg", pGKey, tBucket, pS, pP, "min")) || (pW < ^KG("tagg", pGKey, tBucket, pS, pP, "min")) {
+		Set ^KG("tagg", pGKey, tBucket, pS, pP, "min") = pW
+	}
+	If '$Data(^KG("tagg", pGKey, tBucket, pS, pP, "max")) || (pW > ^KG("tagg", pGKey, tBucket, pS, pP, "max")) {
+		Set ^KG("tagg", pGKey, tBucket, pS, pP, "max") = pW
+	}
+	Do ..UpdateHLL(pGKey, tBucket, pS, pP, pO)
+	If $IsObject(pAttrs) {
+		Set iter = pAttrs.%GetIterator()
+		While iter.%GetNext(.key, .val) {
+			Set ^KG("edgeprop", pGKey, pTs, pS, pP, pO, key) = val
+		}
+	}
+	Return 1
+}
+
+/// Write a batch of temporal edges. <var>mode</var> means what it means on
+/// InsertEdge: "update" overwrites an edge already at those coordinates, "skip"
+/// keeps the first write, "insert" keeps the first write and reports the second
+/// as a collision (spec 254). Empty defers to the legacy <var>upsert</var>
+/// boolean: "update" when true, else "insert".
+/// Returns the number of edges written; a skipped or colliding edge is not
+/// counted. BulkInsertCounts reports the three counts.
+ClassMethod BulkInsert(graphId As %String = "", batchJSON As %String, upsert As %Boolean = 0, mode As %String = "") As %Integer
+{
+	Return +$Piece(..BulkInsertCounts(graphId, batchJSON, upsert, mode), ":", 1)
+}
+
+/// BulkInsert, reporting "written:collisions:skipped" (spec 254, FR-003). A
+/// collision is an "insert" at coordinates that already hold an edge, from an
+/// earlier call or earlier in this batch; it changes no store. "skipped" counts
+/// mode "skip" finding its coordinates occupied.
+ClassMethod BulkInsertCounts(graphId As %String = "", batchJSON As %String, upsert As %Boolean = 0, mode As %String = "") As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set arr = ##class(%DynamicArray).%FromJSON(batchJSON)
+	Set n = arr.%Size()
+	Set tWritten = 0, tCollided = 0, tSkipped = 0
+	// the endpoint nodes this batch has written a row for: a source shared by many edges is inserted once
+	// (Adjacency.AssertTemporalRow recovers if one is deleted meanwhile)
+	Kill tNodes
+	// Resolved once for the batch, the same way InsertEdge resolves it per edge.
+	If mode = "" { Set mode = $Select(upsert: "update", 1: "insert") }
+	For i = 0:1:(n-1) {
+		Set item = arr.%Get(i)
+		Set source = item.%Get("s")
+		Set predicate = item.%Get("p")
+		Set target = item.%Get("o")
+		Set ts = +item.%Get("ts")
+		Set weight = item.%Get("w")
+		If weight = "" Set weight = 1
+		If ts = 0 Set ts = ##class(%SYSTEM.SQL).DATEDIFF("ss", "1970-01-01 00:00:00", $ZDateTime($ZTimeStamp, 3, 1))
+		Set attrs = item.%Get("attrs")
+		If '$IsObject(attrs) { Set attrs = "" }
+		Set tRC = ..WriteStores(tGKey, ts, source, predicate, target, weight, +item.%Get("sri"), mode, attrs, .tNodes)
+		If tRC = 1 {
+			Set tWritten = tWritten + 1
+		} ElseIf tRC = -1 {
+			Set tCollided = tCollided + 1
+		} Else {
+			Set tSkipped = tSkipped + 1
+		}
+	}
+	Return tWritten_":"_tCollided_":"_tSkipped
+}
+
+ClassMethod UpdateHLL(graphKey, bucket As %Integer, source As %String, predicate As %String, value As %String) [ Private ]
+{
+	Set hll = $Get(^KG("tagg", graphKey, bucket, source, predicate, "hll"), ..HLLEmpty())
+	Set before = hll
+	Do ..HLLAdd(.hll, value)
+	If hll '= before {
+		Set ^KG("tagg", graphKey, bucket, source, predicate, "hll") = hll
+	}
+}
+
+/// An all-zero 16-register sketch.
+ClassMethod HLLEmpty() As %String [ Private ]
+{
+	Quit $ListBuild(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+}
+
+/// Fold one value into a 16-register HLL sketch, in place.
+///
+/// SHA1 first byte -> register index, second byte -> leading-zero count.
+///
+/// Lives apart from UpdateHLL because the sketch is not invertible: a register
+/// only ever moves up, so removing one edge means rebuilding the bucket's sketch
+/// from the edges that survive. A rebuild that computed registers even slightly
+/// differently from the write would report drift that was not there, so both
+/// paths share this one implementation.
+ClassMethod HLLAdd(ByRef pHLL, pValue As %String) [ Private ]
+{
+	Set tHashBytes = $SYSTEM.Encryption.SHA1Hash(pValue)
+	Set tRegIdx = ($ASCII(tHashBytes, 1) # 16) + 1
+	Set tB1 = $ASCII(tHashBytes, 2)
+	Set tLZ = 1
+	If tB1 = 0 {
+		Set tLZ = 9
+	} Else {
+		While (tB1 # 2) = 0 { Set tLZ = tLZ + 1, tB1 = tB1 \ 2 }
+	}
+	If tLZ > $List(pHLL, tRegIdx) {
+		Set $List(pHLL, tRegIdx) = tLZ
+	}
+}
+
+/// ADR-0009 upgrade: give every temporal triple that has no structural row a marked one (spec 252).
+/// Walks ^KG("tout", graph, ts, s, p, o) once and asserts each distinct triple's row without trusting
+/// ^KG("out"), which on an older install holds row-less shadows. A predicate registered temporal-only in
+/// its graph (ADR-0015) is skipped: an application that registers before the upgrade pays for none of
+/// its rows. Returns the number of triples asserted.
+/// Callable from SQL as SELECT Graph_KG.backfill_temporal_rows().
+ClassMethod BackfillStructuralRows() As %Integer
+{
+	Quit ..BackfillWalk("", 0, "", 100000).asserted
+}
+
+/// BackfillStructuralRows for one predicate of one graph (ADR-0015's way back from temporal-only, via
+/// Graph.KG.TemporalPolicy.BackfillRows). pPredicate "" means every predicate of the graph; a registered
+/// temporal-only predicate is skipped whatever is asked. pSeenLimit bounds the memory of triples already
+/// asserted: a triple forgotten past it is asserted again, which is idempotent and costs one existence
+/// check, where remembering every distinct triple took memory proportional to the graph (6.79 million for
+/// opsreview). Returns JSON {"asserted", "seen_peak", "skipped_optout"}.
+ClassMethod BackfillRows(pGraph As %String = "", pPredicate As %String = "", pSeenLimit As %Integer = 100000) As %String
+{
+	Quit ..BackfillWalk(##class(Graph.KG.GraphKey).ForIndex(pGraph), 1, pPredicate, pSeenLimit).%ToJSON()
+}
+
+/// The walk behind both. pOneGraph 1: only graph key pKey; 0: every graph.
+ClassMethod BackfillWalk(pKey, pOneGraph As %Boolean, pPredicate As %String, pSeenLimit As %Integer) As %DynamicObject [ Private ]
+{
+	Set pSeenLimit = $Select(+pSeenLimit < 1: 100000, 1: +pSeenLimit \ 1)
+	Set tN = 0, tPeak = 0, tOptOut = 0, tSeenN = 0
+	Set tG = $Select(pOneGraph: $Order(^KG("tout", pKey), -1), 1: "")
+	For {
+		Set tG = $Order(^KG("tout", tG))
+		Quit:tG=""
+		If pOneGraph && (tG '= pKey) {
+			Quit
+		}
+		Kill tSeen, tNodes
+		Set tSeenN = 0
+		Set tTs = ""
+		For {
+			Set tTs = $Order(^KG("tout", tG, tTs))
+			Quit:tTs=""
+			Set tS = ""
+			For {
+				Set tS = $Order(^KG("tout", tG, tTs, tS))
+				Quit:tS=""
+				Set tP = ""
+				For {
+					Set tP = $Order(^KG("tout", tG, tTs, tS, tP))
+					Quit:tP=""
+					If (pPredicate '= "") && (tP '= pPredicate) {
+						Continue
+					}
+					If '##class(Graph.KG.TemporalPolicy).IsStructuralKey(tG, tP) {
+						Set tOptOut = tOptOut + 1
+						Continue
+					}
+					Set tO = ""
+					For {
+						Set tO = $Order(^KG("tout", tG, tTs, tS, tP, tO), 1, tW)
+						Quit:tO=""
+						Continue:$Data(tSeen(tS, tP, tO))
+						If tSeenN >= pSeenLimit {
+							Kill tSeen
+							Set tSeenN = 0
+						}
+						Set tSeen(tS, tP, tO) = "", tSeenN = tSeenN + 1
+						If tSeenN > tPeak { Set tPeak = tSeenN }
+						$$$ThrowOnError(##class(Graph.KG.Adjacency).AssertTemporalRow(tG, tS, tP, tO, tW, 0, .tNodes))
+						Set tN = tN + 1
+						// bounded: a source repeats, a span id does not
+						If tN # 5000 = 0 { Kill tNodes }
+					}
+				}
+			}
+		}
+	}
+	Quit {"asserted": (tN), "seen_peak": (tPeak), "skipped_optout": (tOptOut)}
+}
+
+/// Remove one timestamped edge, and everything InsertEdge derived from it.
+///
+/// The inverse of InsertEdge. Before this existed the only ways to remove a
+/// temporal edge were time-based and coarse — Purge, PurgeBefore, PurgeRawBefore,
+/// PurgeBucketRange — so removing one edge meant removing every other edge that
+/// shared its window, and deleting a structural edge left its temporal entries
+/// behind permanently.
+///
+/// Returns 0 when no edge existed at those coordinates, so a caller can tell a
+/// delete from a no-op instead of treating both as success.
+///
+/// Three of the nine stores InsertEdge writes cannot be run backwards: min and max
+/// are running extremes, and the distinct-count sketch is a HyperLogLog whose
+/// registers only move up. Those are recomputed from the bucket's surviving edges
+/// by RebuildBucketAggregate rather than adjusted. That is why this is one
+/// classmethod and not a set of decrements a caller could compose: which stores
+/// are invertible is not something the caller can know.
+///
+/// The structural shadow goes only when no temporal edge for this
+/// (source, predicate, target) survives in this graph, because the shadow means
+/// "this edge exists at some time".
+ClassMethod DeleteTemporalEdge(graphId As %String = "", timestamp As %Integer, source As %String, predicate As %String, target As %String) As %Boolean
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tTS = +timestamp
+	If '$Data(^KG("tout", tGKey, tTS, source, predicate, target)) { Quit 0 }
+	Do ..RemoveTemporalRow(tGKey, tTS, source, predicate, target)
+	Kill tPairs
+	Set tPairs(source, predicate) = ""
+	Do ..Relatest(tGKey, .tPairs)
+	If '..HasTemporalEdge(tGKey, source, predicate, target) {
+		If ##class(Graph.KG.Adjacency).Indexed() {
+			// ADR-0009: the marked row goes (its index removes ^KG); an explicitly created edge stays.
+			$$$ThrowOnError(##class(Graph.KG.Adjacency).RetractTemporalRow(tGKey, source, predicate, target))
+		} Else {
+			Do ##class(Graph.KG.Adjacency).Remove(tGKey, source, predicate, target)
+		}
+	}
+	Quit 1
+}
+
+/// Remove one temporal row and keep its bucket consistent. Structural adjacency is
+/// not touched here: the callers decide whether the (source, predicate, target)
+/// shadow goes, because a node erase has already removed it.
+ClassMethod RemoveTemporalRow(pGKey, pTs As %Integer, pSource As %String, pPredicate As %String, pTarget As %String) [ Private ]
+{
+	Kill ^KG("tout", pGKey, pTs, pSource, pPredicate, pTarget)
+	Kill ^KG("tin", pGKey, pTs, pTarget, pPredicate, pSource)
+	Kill ^KG("edgeprop", pGKey, pTs, pSource, pPredicate, pTarget)
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set tBucket = pTs \ tBucketDiv
+	// A zero counter is not neutral: it still claims the source was active in this
+	// bucket, which is what FindBursts and GetVelocity read.
+	Set tCount = $Increment(^KG("bucket", pGKey, tBucket, pSource), -1)
+	If tCount <= 0 { Kill ^KG("bucket", pGKey, tBucket, pSource) }
+	Do ..RebuildBucketAggregate(pGKey, tBucket, pSource, pPredicate)
+}
+
+/// Erase one graph's temporal index: every edge, bucket, aggregate and edge property.
+///
+/// Called by Graph.KG.Eraser inside its own transaction, so this does not open one.
+/// graph=0 is the default graph; pGraph is mapped by GraphKey.ForIndex as everywhere else.
+ClassMethod EraseGraph(pGraph As %String) As %Status
+{
+	Set tSC = $$$OK
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(pGraph)
+	Kill ^KG("tout", tGKey)
+	Kill ^KG("tin", tGKey)
+	Kill ^KG("bucket", tGKey)
+	Kill ^KG("tagg", tGKey)
+	Kill ^KG("edgeprop", tGKey)
+	Kill ^KG("tlast", tGKey)
+	Quit tSC
+}
+
+/// Erase the whole temporal index, every graph. ^KG("labelset") is not part of it:
+/// that interning is append-only and the Eraser's EraseAll empties it.
+ClassMethod EraseAll() As %Status
+{
+	Set tSC = $$$OK
+	Kill ^KG("tout")
+	Kill ^KG("tin")
+	Kill ^KG("bucket")
+	Kill ^KG("tagg")
+	Kill ^KG("edgeprop")
+	Kill ^KG("tlast")
+	Quit tSC
+}
+
+/// Remove every temporal edge in one graph that starts or ends at a node in pNodeIds.
+///
+/// pNodeIds is a local array keyed by node id, collected by the caller so that one walk
+/// serves the whole set. Rows are collected before any is removed, because the walk
+/// must not mutate the tree it is reading. Structural adjacency is not touched: the
+/// Eraser removes it per node, with its generation and cache entries, and a second Remove
+/// here would be a second owner.
+ClassMethod EraseNodes(pGraph As %String, ByRef pNodeIds) As %Status
+{
+	Set tSC = $$$OK
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(pGraph)
+	Kill tDoomed
+	Set tTs = ""
+	For {
+		Set tTs = $Order(^KG("tout", tGKey, tTs))
+		Quit:tTs=""
+		Set tS = ""
+		For {
+			Set tS = $Order(^KG("tout", tGKey, tTs, tS))
+			Quit:tS=""
+			Set tP = ""
+			For {
+				Set tP = $Order(^KG("tout", tGKey, tTs, tS, tP))
+				Quit:tP=""
+				Set tO = ""
+				For {
+					Set tO = $Order(^KG("tout", tGKey, tTs, tS, tP, tO))
+					Quit:tO=""
+					If ($Data(pNodeIds(tS)) || $Data(pNodeIds(tO))) {
+						Set tDoomed($Increment(tDoomed)) = $ListBuild(tTs, tS, tP, tO)
+					}
+				}
+			}
+		}
+	}
+	Kill tPairs
+	For tI = 1:1:$Get(tDoomed) {
+		Set tRow = tDoomed(tI)
+		Set tS = $ListGet(tRow, 2), tP = $ListGet(tRow, 3)
+		Do ..RemoveTemporalRow(tGKey, $ListGet(tRow, 1), tS, tP, $ListGet(tRow, 4))
+		// an erased source has no edge left; a surviving one that pointed at an erased node may have lost its newest
+		Set:'$Data(pNodeIds(tS)) tPairs(tS, tP) = ""
+	}
+	Set tS = ""
+	For {
+		Set tS = $Order(pNodeIds(tS))
+		Quit:tS=""
+		Kill ^KG("tlast", tGKey, tS)
+	}
+	Do ..Relatest(tGKey, .tPairs)
+	Quit tSC
+}
+
+/// Recompute one bucket's count/sum/min/max/hll from the edges still in it.
+///
+/// Per-bucket is the right granularity because GetAggregate merges count and sum
+/// and takes the extremes across every bucket in the requested range: a bucket
+/// that is individually correct composes into a correct answer for any window.
+///
+/// count and sum could have been decremented. min, max and the sketch could not,
+/// so recomputing all five keeps one rule ("the aggregate describes the surviving
+/// edges") instead of two that can disagree.
+ClassMethod RebuildBucketAggregate(pGraphKey, pBucket As %Integer, pSource As %String, pPredicate As %String) [ Private ]
+{
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set tTSLow = pBucket * tBucketDiv
+	Set tTSHigh = tTSLow + tBucketDiv - 1
+	Set tCount = 0, tSum = 0, tMin = "", tMax = ""
+	Set tHLL = ..HLLEmpty()
+	Set tTS = tTSLow - 1
+	For {
+		Set tTS = $Order(^KG("tout", pGraphKey, tTS))
+		Quit:(tTS = "")||(tTS > tTSHigh)
+		Set tO = ""
+		For {
+			Set tO = $Order(^KG("tout", pGraphKey, tTS, pSource, pPredicate, tO), 1, tW)
+			Quit:tO=""
+			Set tCount = tCount + 1
+			Set tSum = tSum + tW
+			If (tMin = "") || (+tW < tMin) { Set tMin = +tW }
+			If (tMax = "") || (+tW > tMax) { Set tMax = +tW }
+			Do ..HLLAdd(.tHLL, tO)
+		}
+	}
+	If tCount = 0 {
+		Kill ^KG("tagg", pGraphKey, pBucket, pSource, pPredicate)
+		Quit
+	}
+	Set ^KG("tagg", pGraphKey, pBucket, pSource, pPredicate, "count") = tCount
+	Set ^KG("tagg", pGraphKey, pBucket, pSource, pPredicate, "sum") = tSum
+	Set ^KG("tagg", pGraphKey, pBucket, pSource, pPredicate, "min") = tMin
+	Set ^KG("tagg", pGraphKey, pBucket, pSource, pPredicate, "max") = tMax
+	Set ^KG("tagg", pGraphKey, pBucket, pSource, pPredicate, "hll") = tHLL
+}
+
+/// Spec 255: keep ^KG("tlast", g, s, p) at the newest timestamp of (s, p). One global read per write, and a Set
+/// only when the timestamp is newer: about 100 journal bytes against 3.5 kB for the rest of a write (plan.md).
+ClassMethod NoteLatest(pGKey, pTs, pS As %String, pP As %String) [ Private ]
+{
+	// a canonical number: InsertEdge receives "1700000000" from Python, BulkInsert 1700000000 from JSON, and two graphs
+	// written the two ways must hold the same store (spec 254, FR-004)
+	Set tLast = $Get(^KG("tlast", pGKey, pS, pP))
+	If (tLast = "") || (pTs > tLast) { Set ^KG("tlast", pGKey, pS, pP) = +pTs }
+}
+
+/// Re-derive ^KG("tlast") for the pairs in pPairs(s, p) whose newest edge may have been removed.
+///
+/// A pair whose recorded timestamp still holds an edge is right as it is. The others share one backwards walk of the
+/// timestamps from the newest of their recorded ones: each stops at its first surviving edge, and a pair with none
+/// left loses its entry. Sources are matched per timestamp by the reader's leapfrog, so a timestamp costs about the
+/// smaller of the pending sources and the sources at it.
+ClassMethod Relatest(pGKey, ByRef pPairs) [ Private ]
+{
+	Kill tPend, tSrc
+	Set tFrom = ""
+	Set tS = ""
+	For {
+		Set tS = $Order(pPairs(tS))
+		Quit:tS=""
+		Set tP = ""
+		For {
+			Set tP = $Order(pPairs(tS, tP))
+			Quit:tP=""
+			Set tL = $Get(^KG("tlast", pGKey, tS, tP))
+			Continue:tL=""
+			Continue:$Data(^KG("tout", pGKey, tL, tS, tP))
+			Set tPend(tS, tP) = "", tSrc(tS) = ""
+			Set:(tFrom="")||(tL>tFrom) tFrom = tL
+		}
+	}
+	Quit:tFrom=""
+	Set tTs = tFrom
+	Set:'$Data(^KG("tout", pGKey, tTs)) tTs = $Order(^KG("tout", pGKey, tTs), -1)
+	While (tTs '= "") && $Data(tSrc) {
+		Set tS = ""
+		For {
+			Set tS = ##class(Graph.KG.TemporalWindow).NextListed("tout", pGKey, tTs, tS, .tSrc)
+			Quit:tS=""
+			Set tP = ""
+			For {
+				Set tP = $Order(tPend(tS, tP))
+				Quit:tP=""
+				Continue:'$Data(^KG("tout", pGKey, tTs, tS, tP))
+				Set ^KG("tlast", pGKey, tS, tP) = tTs
+				Kill tPend(tS, tP)
+			}
+			Kill:'$Data(tPend(tS)) tSrc(tS)
+		}
+		Set tTs = $Order(^KG("tout", pGKey, tTs), -1)
+	}
+	Set tS = ""
+	For {
+		Set tS = $Order(tPend(tS))
+		Quit:tS=""
+		Set tP = ""
+		For {
+			Set tP = $Order(tPend(tS, tP))
+			Quit:tP=""
+			Kill ^KG("tlast", pGKey, tS, tP)
+		}
+	}
+}
+
+/// After a purge of [pStart, pEnd): every pair whose newest timestamp fell in the range lost it. pStart "" means
+/// from the beginning. Walks the index's pairs, which are far fewer than the edges the purge walked.
+ClassMethod RelatestRange(pGKey, pStart, pEnd) [ Private ]
+{
+	Kill tPairs
+	Set tS = ""
+	For {
+		Set tS = $Order(^KG("tlast", pGKey, tS))
+		Quit:tS=""
+		Set tP = ""
+		For {
+			Set tP = $Order(^KG("tlast", pGKey, tS, tP), 1, tT)
+			Quit:tP=""
+			Continue:tT>=pEnd
+			Continue:(pStart'="")&&(tT<pStart)
+			Set tPairs(tS, tP) = ""
+		}
+	}
+	Do ..Relatest(pGKey, .tPairs)
+}
+
+/// Build ^KG("tlast") for one graph from ^KG("tout") and mark it complete: for a graph written before spec 255, whose
+/// latest-event reads otherwise walk the timestamps. One pass over the graph's edges; run it while the graph is quiet.
+/// The flag is set last, so a read during the rebuild walks rather than trusting a half-built index. Returns the
+/// number of (source, predicate) pairs indexed.
+ClassMethod RebuildLatest(graphId As %String = "") As %Integer
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Kill ^KG("tlast", tGKey)
+	Set tN = 0
+	Set tTs = ""
+	For {
+		Set tTs = $Order(^KG("tout", tGKey, tTs))
+		Quit:tTs=""
+		Set tS = ""
+		For {
+			Set tS = $Order(^KG("tout", tGKey, tTs, tS))
+			Quit:tS=""
+			Set tP = ""
+			For {
+				Set tP = $Order(^KG("tout", tGKey, tTs, tS, tP))
+				Quit:tP=""
+				Set:'$Data(^KG("tlast", tGKey, tS, tP)) tN = tN + 1
+				Do ..NoteLatest(tGKey, tTs, tS, tP)
+			}
+		}
+	}
+	Set ^KG("tlast", tGKey) = 1
+	Quit tN
+}
+
+/// Does any timestamp still carry this edge in this graph?
+///
+/// Walks every timestamp in the graph, because ^KG("tout") is keyed
+/// (graph, ts, s, p, o) and there is no (s, p, o) -> ts index. The cost is one
+/// $Order step per distinct timestamp, paid only on delete. Putting the graph key
+/// first is what keeps the walk inside one graph.
+ClassMethod HasTemporalEdge(pGraphKey, pSource As %String, pPredicate As %String, pTarget As %String) As %Boolean [ Private ]
+{
+	Set tFound = 0
+	Set tTS = ""
+	For {
+		Set tTS = $Order(^KG("tout", pGraphKey, tTS))
+		Quit:tTS=""
+		If $Data(^KG("tout", pGraphKey, tTS, pSource, pPredicate, pTarget)) {
+			Set tFound = 1
+			Quit
+		}
+	}
+	Quit tFound
+}
+
+/// Count distinct target nodes for source+predicate in a time window via HLL sketch.
+/// When source="" (empty string), counts across ALL sources matching the predicate.
+/// HLL registers are merged element-wise across all matching (source, predicate) pairs.
+/// Same ~26% error rate as per-source mode.
+ClassMethod GetDistinctCount(graphId As %String = "", source As %String, predicate As %String, tsStart As %Integer, tsEnd As %Integer) As %Integer
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tsStart = +tsStart
+	Set tsEnd = +tsEnd
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set startBucket = tsStart \ tBucketDiv
+	Set endBucket = tsEnd \ tBucketDiv
+	Set merged = $ListBuild(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+	For b = startBucket:1:endBucket {
+		If source '= "" {
+			Set hll = $Get(^KG("tagg", tGKey, b, source, predicate, "hll"))
+			If hll = "" Continue
+			For i = 1:1:16 {
+				If $List(hll, i) > $List(merged, i) {
+					Set $List(merged, i) = $List(hll, i)
+				}
+			}
+		} Else {
+			Set src = ""
+			For {
+				Set src = $Order(^KG("tagg", tGKey, b, src))
+				Quit:(src = "")
+				Set p = ""
+				For {
+					Set p = $Order(^KG("tagg", tGKey, b, src, p))
+					Quit:(p = "")
+					If predicate '= "" && (p '= predicate) { Continue }
+					Set hll = $Get(^KG("tagg", tGKey, b, src, p, "hll"))
+					If hll = "" Continue
+					For i = 1:1:16 {
+						If $List(hll, i) > $List(merged, i) {
+							Set $List(merged, i) = $List(hll, i)
+						}
+					}
+				}
+			}
+		}
+	}
+	// HarmonicMean estimator: alpha_16 * m^2 / Z where Z = sum(2^(-reg[i]))
+	// alpha_16 = 0.673 for m=16 registers
+	// All registers zero means nothing was ever added: the raw estimator would answer 11.
+	Set Z = 0, tAnySet = 0
+	For i = 1:1:16 {
+		If $List(merged, i) > 0 { Set tAnySet = 1 }
+		Set Z = Z + (1 / (2 ** $List(merged, i)))
+	}
+	If 'tAnySet || (Z = 0) Return 0
+	Set estimate = 0.673 * 16 * 16 / Z
+	Return $Number(estimate, 0)
+}
+
+/// Every edge in [tsStart, tsEnd] (both inclusive), optionally of one source and one predicate, as one JSON array.
+/// The answer is one %String, so a window whose JSON passes 3,641,144 characters (about 35 k edges) raises
+/// <MAXSTRING>; a source filter still walks every source at every timestamp; attributes are not included. For any
+/// window size, source lists and prefixes, and attributes in the same call, use Graph.KG.TemporalWindow (spec 255).
+ClassMethod QueryWindow(graphId As %String = "", source As %String, predicate As %String, tsStart As %Integer, tsEnd As %Integer) As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tsStart = +tsStart
+	Set tsEnd = +tsEnd
+	Set result = "["
+	Set first = 1
+	Set ts = tsStart - 1
+	While 1 {
+		Set ts = $Order(^KG("tout", tGKey, ts))
+		If ts = "" Quit
+		If ts > tsEnd Quit
+		Set s = ""
+		While 1 {
+			Set s = $Order(^KG("tout", tGKey, ts, s))
+			If s = "" Quit
+			If source '= "" { If s '= source { Continue } }
+			Set p = ""
+			While 1 {
+				Set p = $Order(^KG("tout", tGKey, ts, s, p))
+				If p = "" Quit
+				If predicate '= "" { If p '= predicate { Continue } }
+				Set o = ""
+				While 1 {
+					Set o = $Order(^KG("tout", tGKey, ts, s, p, o), 1, w)
+					If o = "" Quit
+					If 'first Set result = result _ ","
+					Set first = 0
+					Set result = result _ "{""s"":""" _ ..jsonEsc(s) _ """,""p"":""" _ ..jsonEsc(p) _ """,""o"":""" _ ..jsonEsc(o) _ """,""ts"":" _ ts _ ",""w"":" _ ..jsonNum(w) _ "}"
+				}
+			}
+		}
+	}
+	Return result _ "]"
+}
+
+ClassMethod QueryWindowSources(graphId As %String = "", predicate As %String, tsStart As %Integer, tsEnd As %Integer) As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tsStart = +tsStart
+	Set tsEnd = +tsEnd
+	Kill dedup
+	Set ts = tsStart - 1
+	While 1 {
+		Set ts = $Order(^KG("tout", tGKey, ts))
+		If ts = "" Quit
+		If ts > tsEnd Quit
+		Set s = ""
+		While 1 {
+			Set s = $Order(^KG("tout", tGKey, ts, s))
+			If s = "" Quit
+			If predicate = "" {
+				Set dedup(s) = 1
+			} Else {
+				If $Data(^KG("tout", tGKey, ts, s, predicate)) Set dedup(s) = 1
+			}
+		}
+	}
+	Set result = "[", first = 1, src = ""
+	For {
+		Set src = $Order(dedup(src))
+		Quit:(src = "")
+		If 'first { Set result = result _ "," }
+		Set first = 0
+		Set result = result _ """" _ ..jsonEsc(src) _ """"
+	}
+	Return result _ "]"
+}
+
+ClassMethod GetVelocity(graphId As %String = "", nodeId As %String, windowSec As %Integer = 300, nowTs As %Integer = 0) As %Integer
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set now = $Select(nowTs > 0: nowTs,
+		1: ##class(%SYSTEM.SQL).DATEDIFF("ss", "1970-01-01 00:00:00", $ZDateTime($ZTimeStamp, 3, 1)))
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set startBucket = (now - windowSec) \ tBucketDiv
+	Set endBucket = now \ tBucketDiv
+	Set total = 0
+	For b = startBucket:1:endBucket {
+		Set total = total + $Get(^KG("bucket", tGKey, b, nodeId), 0)
+	}
+	Return total
+}
+
+ClassMethod FindBursts(graphId As %String = "", predicate As %String, windowSec As %Integer, threshold As %Integer, nowTs As %Integer = 0) As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set now = $Select(nowTs > 0: nowTs,
+		1: ##class(%SYSTEM.SQL).DATEDIFF("ss", "1970-01-01 00:00:00", $ZDateTime($ZTimeStamp, 3, 1)))
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set startBucket = (now - windowSec) \ tBucketDiv
+	Set endBucket = now \ tBucketDiv
+	Set result = "["
+	Set first = 1
+	Set b = startBucket - 1
+	For {
+		Set b = $Order(^KG("bucket", tGKey, b))
+		Quit:b=""
+		If b > endBucket Quit
+		Set node = ""
+		For {
+			Set node = $Order(^KG("bucket", tGKey, b, node), 1, cnt)
+			Quit:node=""
+			If '$Data(totals(node)) Set totals(node) = 0
+			Set totals(node) = totals(node) + cnt
+		}
+	}
+	Set node = ""
+	For {
+		Set node = $Order(totals(node), 1, total)
+		Quit:node=""
+		If total >= threshold {
+			Set:'first result = result _ ","
+			Set first = 0
+			Set result = result _ "{""id"":""" _ ..jsonEsc(node) _ """,""velocity"":" _ ..jsonNum(total) _ "}"
+		}
+	}
+	Return result _ "]"
+}
+
+ClassMethod Purge()
+{
+	Do ..EraseAll()
+}
+
+/// Legacy method — purges raw edges and expired aggregate buckets for default graph.
+/// Retires the structural rows only purged timestamps held up, as PurgeRawBefore does. With pRetireNodes
+/// it also deletes the endpoint nodes that leaves bare (see PurgeRawBefore); returns how many.
+ClassMethod PurgeBefore(tsEnd As %Integer, pRetireNodes As %Boolean = 0) As %Integer
+{
+	Set tGKey = 0  // default graph
+	Set tsEnd = +tsEnd
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set maxSafeBucket = (tsEnd \ tBucketDiv) - 1
+	Do ..RetireExpired(tGKey, "", tsEnd, pRetireNodes, .tRetired, "")
+	Set ts = ""
+	For {
+		Set ts = $Order(^KG("tout", tGKey, ts))
+		Quit:(ts = "")!(ts >= tsEnd)
+		Set s = ""
+		For {
+			Set s = $Order(^KG("tout", tGKey, ts, s))
+			Quit:s=""
+			Set p = ""
+			For {
+				Set p = $Order(^KG("tout", tGKey, ts, s, p))
+				Quit:p=""
+				Set o = ""
+				For {
+					Set o = $Order(^KG("tout", tGKey, ts, s, p, o))
+					Quit:o=""
+					Kill ^KG("tout", tGKey, ts, s, p, o)
+					Kill ^KG("tin",  tGKey, ts, o, p, s)
+					Kill ^KG("edgeprop", tGKey, ts, s, p, o)
+				}
+			}
+		}
+		Set bucket = ts \ tBucketDiv
+		If bucket <= maxSafeBucket {
+			Kill ^KG("tagg", tGKey, bucket)
+			Kill ^KG("bucket", tGKey, bucket)
+		}
+		Kill ^KG("tout", tGKey, ts)
+	}
+	Do ..RelatestRange(tGKey, "", tsEnd)
+	Return +$Get(tRetired)
+}
+
+/// Delete raw temporal edges in [tsStart, tsEnd) for the specified graph.
+/// graphId="" targets the default graph (key 0). tsStart=0 default deletes all before tsEnd.
+/// Returns "deleted:skipped". ^KG("labelset") is never touched; nor are the bucket aggregates.
+///
+/// Spec 254 (FR-001, FR-002): the structural row of a (source, predicate, target) whose every
+/// timestamp is purged goes too, with its ^KG("out"/"in") entries, while the row still carries
+/// the temporal marker (ADR-0009, amended): a row a non-temporal write asserted stays. Nodes stay, unless
+/// pRetireNodes is 1: then each endpoint of a retired triple that is left bare in this graph (no edge, label,
+/// property, document or embedding) is deleted too, by Graph.KG.Eraser.RetireBareNodes, and the result is
+/// "deleted:skipped:retired". See RetireExpired.
+ClassMethod PurgeRawBefore(graphId As %String = "", tsEnd As %Integer, tsStart As %Integer = 0, pRetireNodes As %Boolean = 0) As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tsEnd = +tsEnd
+	Set tsStart = $Select(+tsStart < 0: 0, 1: +tsStart)
+	Do ..RetireExpired(tGKey, tsStart, tsEnd, pRetireNodes, .tRetired, graphId)
+	Set deleted = 0
+	Set skipped = 0
+	Set ts = ""
+	For {
+		Set ts = $Order(^KG("tout", tGKey, ts))
+		Quit:(ts = "")!(ts >= tsEnd)
+		If ts < tsStart {
+			Set s = ""
+			For {
+				Set s = $Order(^KG("tout", tGKey, ts, s))
+				Quit:s=""
+				Set p = ""
+				For {
+					Set p = $Order(^KG("tout", tGKey, ts, s, p))
+					Quit:p=""
+					Set o = ""
+					For {
+						Set o = $Order(^KG("tout", tGKey, ts, s, p, o))
+						Quit:o=""
+						Set skipped = skipped + 1
+					}
+				}
+			}
+			Continue
+		}
+		Set s = ""
+		For {
+			Set s = $Order(^KG("tout", tGKey, ts, s))
+			Quit:s=""
+			Set p = ""
+			For {
+				Set p = $Order(^KG("tout", tGKey, ts, s, p))
+				Quit:p=""
+				Set o = ""
+				For {
+					Set o = $Order(^KG("tout", tGKey, ts, s, p, o))
+					Quit:o=""
+					Kill ^KG("tout", tGKey, ts, s, p, o)
+					Kill ^KG("tin",  tGKey, ts, o, p, s)
+					Kill ^KG("edgeprop", tGKey, ts, s, p, o)
+					Set deleted = deleted + 1
+				}
+			}
+		}
+		Kill ^KG("tout", tGKey, ts)
+	}
+	Do:deleted ..RelatestRange(tGKey, tsStart, tsEnd)
+	Return deleted _ ":" _ skipped _ $Select(pRetireNodes: ":" _ +$Get(tRetired), 1: "")
+}
+
+/// Spec 254: retire the structural rows that only the timestamps in [pTsStart, pTsEnd) hold up,
+/// before a purge kills those timestamps. pTsStart "" means no lower bound (PurgeBefore).
+/// Returns the number of triples whose rows were retired.
+///
+/// 1. The distinct (s, p, o) of the range go into ^||IVG.TPurge.
+/// 2. One walk of the timestamps outside the range removes each candidate a surviving
+///    timestamp still holds. A source with no candidate is skipped whole, and the walk
+///    stops when no candidate is left. ^KG("tout") has no (s, p, o) -> ts index, so this
+///    walk is what a reference count would otherwise have to store (plan, Decision 1).
+/// 3. The rows of what is left are retired by Graph.KG.Adjacency: deleted while marked,
+///    which the row's functional index turns into the ^KG("out"/"in") removal and the
+///    degree generation bump (ADR-0012). An unmarked row (create_edge) stays: FR-002.
+///
+/// Rows first, raw entries after (the caller's kill loop): a purge that fails part way
+/// leaves timestamps without rows, and running it again finishes the job. The other order
+/// would leave marked rows that no later purge can find.
+///
+/// 4. With pRetireNodes, the endpoints of those triples go to Graph.KG.Eraser.RetireBareNodes once their
+///    rows are gone: it deletes the ones nothing else names (pRetired: how many). Only endpoints of a retired
+///    triple are looked at, so a node someone created and never used in a temporal edge is never a candidate.
+///    The nodes go after the rows: a purge that fails between the two leaves bare nodes that no later purge
+///    names (their triples are gone), and Graph.KG.Eraser.EraseBareNodes takes those.
+ClassMethod RetireExpired(pGKey, pTsStart, pTsEnd As %Integer, pRetireNodes As %Boolean = 0, ByRef pRetired As %Integer, pGraphName As %String = "") As %Integer [ Private ]
+{
+	Set pRetired = 0
+	Kill ^||IVG.TPurge
+	Set tLeft = 0
+	Set tTs = ""
+	If pTsStart '= "" {
+		Set tTs = $Order(^KG("tout", pGKey, pTsStart), -1)
+	}
+	For {
+		Set tTs = $Order(^KG("tout", pGKey, tTs))
+		Quit:(tTs = "")||(tTs >= pTsEnd)
+		Continue:(pTsStart '= "")&&(tTs < pTsStart)
+		Set tS = ""
+		For {
+			Set tS = $Order(^KG("tout", pGKey, tTs, tS))
+			Quit:tS=""
+			Set tP = ""
+			For {
+				Set tP = $Order(^KG("tout", pGKey, tTs, tS, tP))
+				Quit:tP=""
+				// ADR-0015: a temporal-only predicate has no rows to retract and no endpoints to retire
+				Continue:('##class(Graph.KG.TemporalPolicy).IsStructuralKey(pGKey, tP))
+				Set tO = ""
+				For {
+					Set tO = $Order(^KG("tout", pGKey, tTs, tS, tP, tO))
+					Quit:tO=""
+					If '$Data(^||IVG.TPurge(tS, tP, tO)) {
+						Set ^||IVG.TPurge(tS, tP, tO) = ""
+						Set tLeft = tLeft + 1
+					}
+				}
+			}
+		}
+	}
+	If tLeft = 0 {
+		Return 0
+	}
+	// The survivors: every timestamp outside [pTsStart, pTsEnd).
+	Set tTs = ""
+	For {
+		Set tTs = $Order(^KG("tout", pGKey, tTs))
+		Quit:(tTs = "")||(tLeft = 0)
+		If (tTs < pTsEnd) && ((pTsStart = "") || (tTs >= pTsStart)) {
+			// inside the range: jump to its end
+			Set tTs = $Order(^KG("tout", pGKey, pTsEnd), -1)
+			Continue
+		}
+		Set tS = ""
+		For {
+			Set tS = $Order(^KG("tout", pGKey, tTs, tS))
+			Quit:(tS = "")||(tLeft = 0)
+			Continue:'$Data(^||IVG.TPurge(tS))
+			Set tP = ""
+			For {
+				Set tP = $Order(^KG("tout", pGKey, tTs, tS, tP))
+				Quit:(tP = "")||(tLeft = 0)
+				Continue:'$Data(^||IVG.TPurge(tS, tP))
+				Set tO = ""
+				For {
+					Set tO = $Order(^KG("tout", pGKey, tTs, tS, tP, tO))
+					Quit:(tO = "")||(tLeft = 0)
+					If $Data(^||IVG.TPurge(tS, tP, tO)) {
+						Kill ^||IVG.TPurge(tS, tP, tO)
+						Set tLeft = tLeft - 1
+					}
+				}
+			}
+		}
+	}
+	If tLeft > 0 {
+		If ##class(Graph.KG.Adjacency).Indexed() {
+			$$$ThrowOnError(##class(Graph.KG.Adjacency).RetractTemporalRows(pGKey, $Name(^||IVG.TPurge)))
+		} Else {
+			$$$ThrowOnError(##class(Graph.KG.Adjacency).RetractTemporalShadows(pGKey, $Name(^||IVG.TPurge)))
+		}
+		If pRetireNodes && ##class(Graph.KG.Adjacency).Indexed() {
+			// the ends of what is left in TPurge: the triples whose rows have just been retracted
+			Kill ^||IVG.TNodes
+			Set tS = ""
+			For {
+				Set tS = $Order(^||IVG.TPurge(tS))
+				Quit:tS=""
+				Set ^||IVG.TNodes(tS) = ""
+				Set tP = ""
+				For {
+					Set tP = $Order(^||IVG.TPurge(tS, tP))
+					Quit:tP=""
+					Set tO = ""
+					For {
+						Set tO = $Order(^||IVG.TPurge(tS, tP, tO))
+						Quit:tO=""
+						Set ^||IVG.TNodes(tO) = ""
+					}
+				}
+			}
+			Set pRetired = ##class(Graph.KG.Eraser).RetireBareNodes(pGKey, ##class(Graph.KG.GraphKey).ForName(pGraphName), $Name(^||IVG.TNodes))
+			Kill ^||IVG.TNodes
+		}
+	}
+	Kill ^||IVG.TPurge
+	Return tLeft
+}
+
+/// Delete ^KG("tagg") and ^KG("bucket") entries in [bucketStart, bucketEnd] for one graph.
+/// Raw edges (tout/tin/edgeprop) are never touched. Returns count of buckets removed.
+ClassMethod PurgeBucketRange(graphId As %String = "", bucketStart As %Integer, bucketEnd As %Integer) As %Integer
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set bucketStart = +bucketStart, bucketEnd = +bucketEnd
+	Set tCount = 0
+	If bucketStart > bucketEnd Quit 0
+	Set bucket = bucketStart - 1
+	For {
+		Set bucket = $Order(^KG("tagg", tGKey, bucket))
+		Quit:(bucket="")!(bucket > bucketEnd)
+		Kill ^KG("tagg", tGKey, bucket)
+		Kill ^KG("bucket", tGKey, bucket)
+		Set tCount = tCount + 1
+	}
+	Quit tCount
+}
+
+/// Move a pre-spec-223 temporal index into the graph-scoped layout.
+///
+/// Every flat entry belongs to the default graph — there was nowhere else for it
+/// to have come from — so ^KG("tout", ts, s, p, o) becomes
+/// ^KG("tout", 0, ts, s, p, o), and the same for "tin", "edgeprop", "bucket" and
+/// "tagg". Idempotent: a database already in the scoped layout has nothing flat
+/// to find and returns 0.
+///
+/// FLAT IS A DEPTH, NOT A VALUE. A flat "tout" timestamp has (s, p, o) below it
+/// and a graph key has (ts, s, p, o), so the two are told apart by the depth of
+/// the tree below them. The first version of this method guessed from the
+/// subscript instead — above 1000000, so it looks like a Unix timestamp — and
+/// stopped its walk at anything that did not look like one. Integer 0 keys the
+/// default graph and collates before every timestamp, so a single scoped
+/// default-graph write was enough to stop the walk on its first step, and it
+/// returned 0 while doing so, which is what an already-migrated database
+/// returns.
+///
+/// That guard never ran at all, either: ObjectScript has no operator precedence,
+/// so "+ts = ts && ts > 1000000" evaluates left to right as
+/// ((+ts = ts) && ts) > 1000000, which is 1 > 1000000. Every call took the Else
+/// branch and quit on the first subscript it saw. The migration had never moved
+/// an entry.
+///
+/// ONE TRANSACTION. Every reader is graph-scoped, so a half-migrated index has
+/// window queries answering from one layout while the rest of the data sits at
+/// the other. The batched TCOMMIT is therefore gone: this either finishes or
+/// leaves the flat layout exactly as it was, and throws rather than returning a
+/// count it did not achieve (the same contract as Graph.KG.Eraser — ADR-0004).
+///
+/// Returns the number of raw "tout" entries moved.
+ClassMethod MigrateToGraphScoped() As %Integer
+{
+	Set tMigrated = 0
+	Set tTxnLevel = $TLevel
+	Try {
+		TSTART
+		Set tMigrated = ..MigrateRaw()
+		Do ..MigrateDerived()
+		TCOMMIT
+	} Catch tEx {
+		While $TLevel > tTxnLevel { TROLLBACK 1 }
+		Throw tEx
+	}
+	Quit tMigrated
+}
+
+/// Move the raw trees: "tout", "tin", and the "edgeprop" entries hanging off them.
+ClassMethod MigrateRaw() As %Integer [ Private ]
+{
+	Set tMigrated = 0
+
+	// Collect the flat first subscripts before moving anything: a relocation
+	// writes into the same global this walks.
+	Kill tFlat
+	Set tKey = ""
+	For {
+		Set tKey = $Order(^KG("tout", tKey))
+		Quit:tKey=""
+		If ..FlatDepth("tout", tKey) = 3 { Set tFlat(tKey) = "" }
+	}
+
+	Set tTs = ""
+	For {
+		Set tTs = $Order(tFlat(tTs))
+		Quit:tTs=""
+		Set tS = ""
+		For {
+			Set tS = $Order(^KG("tout", tTs, tS))
+			Quit:tS=""
+			Set tP = ""
+			For {
+				Set tP = $Order(^KG("tout", tTs, tS, tP))
+				Quit:tP=""
+				Set tO = ""
+				For {
+					Set tO = $Order(^KG("tout", tTs, tS, tP, tO), 1, tW)
+					Quit:tO=""
+					// A scoped entry at the same coordinates wins: it is the one
+					// every reader can already see. The flat duplicate goes
+					// either way, so a second run has nothing left to trip over
+					// and the count means "moved", not "looked at".
+					If '$Data(^KG("tout", 0, tTs, tS, tP, tO)) {
+						Set ^KG("tout", 0, tTs, tS, tP, tO) = tW
+						Set ^KG("tin", 0, tTs, tO, tP, tS) = tW
+						Do ..NoteLatest(0, tTs, tS, tP)
+						Set tK = ""
+						For {
+							Set tK = $Order(^KG("edgeprop", tTs, tS, tP, tO, tK), 1, tV)
+							Quit:tK=""
+							Set ^KG("edgeprop", 0, tTs, tS, tP, tO, tK) = tV
+						}
+						Set tMigrated = tMigrated + 1
+					}
+					Kill ^KG("edgeprop", tTs, tS, tP, tO)
+					Kill ^KG("tin", tTs, tO, tP, tS)
+				}
+			}
+		}
+		Kill ^KG("tout", tTs)
+	}
+
+	// "tin" and "edgeprop" entries whose "tout" is already gone. InsertEdge can
+	// suppress the reverse index, and a purge removes raw entries — so the two
+	// trees are not guaranteed to line up, and an entry left at a layout no
+	// reader looks at is the drift this migration exists to end.
+	Do ..MigrateOrphans("tin", 3)
+	Do ..MigrateOrphans("edgeprop", 4)
+	Quit tMigrated
+}
+
+/// Relocate whatever is left at a flat first subscript of one store.
+ClassMethod MigrateOrphans(pStore As %String, pFlatDepth As %Integer) [ Private ]
+{
+	Kill tFlat
+	Set tKey = ""
+	For {
+		Set tKey = $Order(^KG(pStore, tKey))
+		Quit:tKey=""
+		If ..FlatDepth(pStore, tKey) = pFlatDepth { Set tFlat(tKey) = "" }
+	}
+
+	Set tKey = ""
+	For {
+		Set tKey = $Order(tFlat(tKey))
+		Quit:tKey=""
+		Set tFrom = $Name(^KG(pStore, tKey))
+		Set tTo = $Name(^KG(pStore, 0, tKey))
+		Merge @tTo = @tFrom
+		Kill @tFrom
+	}
+	Quit
+}
+
+/// Move "bucket" and "tagg" into the scoped layout.
+///
+/// A bucket present at only one layout is relocated whole, because that is exact
+/// — and because recomputing it from raw entries would delete the aggregates
+/// PurgeRawBefore deliberately keeps after dropping their raw edges (13-month
+/// retention).
+///
+/// A bucket present at both layouts is recomputed from the scoped raw entries
+/// instead, because two aggregates for one bucket cannot be combined: "count"
+/// and "sum" would add and "min"/"max" would fold, but the HLL sketch is an
+/// opaque register string with no merge available here. A recomputed bucket
+/// loses whatever contributions had already been purged out of raw, which is the
+/// price of the collision and the reason relocation is preferred.
+ClassMethod MigrateDerived() [ Private ]
+{
+	// One list from both trees: a bucket can have a counter with no aggregate,
+	// or an aggregate whose raw edges were purged, and either has to move.
+	Kill tFlat
+	Set tKey = ""
+	For {
+		Set tKey = $Order(^KG("bucket", tKey))
+		Quit:tKey=""
+		If ..FlatDepth("bucket", tKey) = 1 { Set tFlat(tKey) = "" }
+	}
+	Set tKey = ""
+	For {
+		Set tKey = $Order(^KG("tagg", tKey))
+		Quit:tKey=""
+		If ..FlatDepth("tagg", tKey) = 3 { Set tFlat(tKey) = "" }
+	}
+
+	Set tBucket = ""
+	For {
+		Set tBucket = $Order(tFlat(tBucket))
+		Quit:tBucket=""
+		If $Data(^KG("bucket", 0, tBucket)) || $Data(^KG("tagg", 0, tBucket)) {
+			Kill ^KG("bucket", tBucket)
+			Kill ^KG("tagg", tBucket)
+			Do ..RebuildBucket(0, tBucket)
+		} Else {
+			If $Data(^KG("bucket", tBucket)) {
+				Merge ^KG("bucket", 0, tBucket) = ^KG("bucket", tBucket)
+				Kill ^KG("bucket", tBucket)
+			}
+			If $Data(^KG("tagg", tBucket)) {
+				Merge ^KG("tagg", 0, tBucket) = ^KG("tagg", tBucket)
+				Kill ^KG("tagg", tBucket)
+			}
+		}
+	}
+	Quit
+}
+
+/// Derive one bucket's counters and aggregates again from the raw entries in it.
+///
+/// Through the same $Increment sequence and the same UpdateHLL the writer uses,
+/// so a rebuilt bucket and a written one cannot disagree about how they were
+/// built.
+ClassMethod RebuildBucket(pGKey As %String, pBucket As %Integer) [ Private ]
+{
+	Set tDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set tFrom = pBucket * tDiv
+	Set tTo = tFrom + tDiv - 1
+	Kill ^KG("bucket", pGKey, pBucket)
+	Kill ^KG("tagg", pGKey, pBucket)
+
+	Set tTs = tFrom - 1
+	For {
+		Set tTs = $Order(^KG("tout", pGKey, tTs))
+		Quit:tTs=""
+		Quit:tTs>tTo
+		Set tS = ""
+		For {
+			Set tS = $Order(^KG("tout", pGKey, tTs, tS))
+			Quit:tS=""
+			Set tP = ""
+			For {
+				Set tP = $Order(^KG("tout", pGKey, tTs, tS, tP))
+				Quit:tP=""
+				Set tO = ""
+				For {
+					Set tO = $Order(^KG("tout", pGKey, tTs, tS, tP, tO), 1, tW)
+					Quit:tO=""
+					Set tmp = $Increment(^KG("bucket", pGKey, pBucket, tS))
+					Set tmp = $Increment(^KG("tagg", pGKey, pBucket, tS, tP, "count"))
+					Set tmp = $Increment(^KG("tagg", pGKey, pBucket, tS, tP, "sum"), tW)
+					If '$Data(^KG("tagg", pGKey, pBucket, tS, tP, "min")) || (tW < ^KG("tagg", pGKey, pBucket, tS, tP, "min")) {
+						Set ^KG("tagg", pGKey, pBucket, tS, tP, "min") = tW
+					}
+					If '$Data(^KG("tagg", pGKey, pBucket, tS, tP, "max")) || (tW > ^KG("tagg", pGKey, pBucket, tS, tP, "max")) {
+						Set ^KG("tagg", pGKey, pBucket, tS, tP, "max") = tW
+					}
+					Do ..UpdateHLL(pGKey, pBucket, tS, tP, tO)
+				}
+			}
+		}
+	}
+	Quit
+}
+
+/// The depth of the tree below ^KG(pStore, pKey), in subscripts.
+///
+/// This is what tells a flat subscript from a graph key, and it is a fact about
+/// the layout rather than a guess about what a subscript looks like: a flat
+/// "tout" timestamp has (s, p, o) below it, a graph key has (ts, s, p, o).
+///
+/// The first and the last child are both probed. A disagreement means one
+/// subscript holds both layouts — a flat bucket 0 sitting under the same node as
+/// the default graph's key 0, say — which depth cannot resolve, so it throws
+/// rather than migrating half of it.
+ClassMethod FlatDepth(pStore As %String, pKey As %String) As %Integer [ Private ]
+{
+	Set tRef = $Name(^KG(pStore, pKey))
+	Set tFirst = ..LeafDepth(tRef, 1)
+	Set tLast = ..LeafDepth(tRef, -1)
+	If tFirst '= tLast {
+		$$$ThrowStatus($$$ERROR($$$GeneralError, "^KG(""" _ pStore _ """, " _ pKey _ ") holds both the flat and the graph-scoped layout at once; nothing was migrated"))
+	}
+	Quit tFirst
+}
+
+/// Walk one edge of the tree below pRef and return how deep it goes.
+ClassMethod LeafDepth(pRef As %String, pDir As %Integer = 1) As %Integer [ Private ]
+{
+	Set tDepth = 0
+	Set tRef = pRef
+	For {
+		Set tChild = $Order(@tRef@(""), pDir)
+		Quit:tChild=""
+		Set tRef = $Name(@tRef@(tChild))
+		Set tDepth = tDepth + 1
+	}
+	Quit tDepth
+}
+
+/// Intern an attribute JSON object: canonicalize, hash, store once, return SHA1 hex.
+/// Returns "" on invalid JSON input. Idempotent.
+/// Type fidelity: numbers intern as numbers, booleans as booleans, nulls as null.
+/// ^KG("labelset") is append-only and NEVER touched by PurgeRawBefore or PurgeBefore.
+/// Interned label sets outlive raw edges -- safe for 13-month aggregate retention.
+ClassMethod InternLabelSet(attrsJSON As %String) As %String
+{
+	Set tSC = $$$OK
+	Set obj = ##class(%DynamicObject).%FromJSON(attrsJSON)
+	If '$IsObject(obj) { Return "" }
+	// Collect keys into a local array for sorting
+	Set iter = obj.%GetIterator()
+	Kill keys
+	Set keyCount = 0
+	While iter.%GetNext(.key) {
+		Set keyCount = keyCount + 1
+		Set keys(key) = ""
+	}
+	// Build canonical JSON with sorted keys
+	Set canonical = "{"
+	Set first = 1
+	Set k = ""
+	For {
+		Set k = $Order(keys(k))
+		Quit:(k = "")
+		Set val = obj.%Get(k)
+		Set valType = obj.%GetTypeOf(k)
+		If 'first { Set canonical = canonical _ "," }
+		Set first = 0
+		// Encode key
+		Set canonical = canonical _ """" _ k _ """:"
+		// Encode value based on type
+		If valType = "number" {
+			Set canonical = canonical _ val
+		} ElseIf valType = "boolean" {
+			Set canonical = canonical _ $Select(val:"true", 1:"false")
+		} ElseIf valType = "null" {
+			Set canonical = canonical _ "null"
+		} Else {
+			Set canonical = canonical _ """" _ val _ """"
+		}
+	}
+	Set canonical = canonical _ "}"
+	// SHA1 hash -> lowercase hex
+	Set hashBytes = $SYSTEM.Encryption.SHA1Hash(canonical)
+	Set hex = ""
+	For i = 1:1:$Length(hashBytes) {
+		Set b = $ASCII(hashBytes, i)
+		Set hex = hex _ $Extract("0123456789abcdef", (b \ 16) + 1) _ $Extract("0123456789abcdef", (b # 16) + 1)
+	}
+	// Store if absent
+	If '$Data(^KG("labelset", hex)) {
+		Set ^KG("labelset", hex) = canonical
+	}
+	Return hex
+}
+
+/// Return the canonical JSON for a known label set hash. Returns "" if unknown.
+ClassMethod ResolveLabelSet(hash As %String) As %String
+{
+	Return $Get(^KG("labelset", hash), "")
+}
+
+/// WARNING: Edges written with suppressReverseIndex=1 (or "sri":1 in BulkInsert)
+/// are NOT visible via this method. Those edges write only to ^KG("tout") and have
+/// no ^KG("tin") entry. This is intentional. Callers mixing suppressed and
+/// non-suppressed edges will see only non-suppressed edges here.
+///
+/// The answer is one %String, so a window whose JSON passes 3,641,144 characters raises <MAXSTRING>. The paged
+/// reader Graph.KG.TemporalWindow (spec 255, "dir": "in") has no such cap and returns attributes too.
+ClassMethod QueryWindowInbound(graphId As %String = "", target As %String, predicate As %String, tsStart As %Integer, tsEnd As %Integer) As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tsStart = +tsStart
+	Set tsEnd = +tsEnd
+	Set result = "["
+	Set first = 1
+	Set ts = tsStart - 1
+	While 1 {
+		Set ts = $Order(^KG("tin", tGKey, ts))
+		If ts = "" Quit
+		If ts > tsEnd Quit
+		Set o = ""
+		While 1 {
+			Set o = $Order(^KG("tin", tGKey, ts, o))
+			If o = "" Quit
+			If target '= "" { If o '= target { Continue } }
+			Set p = ""
+			While 1 {
+				Set p = $Order(^KG("tin", tGKey, ts, o, p))
+				If p = "" Quit
+				If predicate '= "" { If p '= predicate { Continue } }
+				Set s = ""
+				While 1 {
+					Set s = $Order(^KG("tin", tGKey, ts, o, p, s), 1, w)
+					If s = "" Quit
+					If 'first Set result = result _ ","
+					Set first = 0
+					Set result = result _ "{""s"":""" _ ..jsonEsc(s) _ """,""p"":""" _ ..jsonEsc(p) _ """,""o"":""" _ ..jsonEsc(o) _ """,""ts"":" _ ts _ ",""w"":" _ ..jsonNum(w) _ "}"
+				}
+			}
+		}
+	}
+	Return result _ "]"
+}
+
+/// One statistic of source's predicate edges over exactly [tsStart, tsEnd]. A bucket the window holds whole is read
+/// from ^KG("tagg"); the one or two it holds in part are read event by event from ^KG("tout"), so an event outside
+/// the window is never counted (4.6.0 R217: every bucket the window touched was counted whole).
+ClassMethod GetAggregate(graphId As %String = "", source As %String, predicate As %String, metric As %String, tsStart As %Integer, tsEnd As %Integer) As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tsStart = +tsStart
+	Set tsEnd = +tsEnd
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set startBucket = tsStart \ tBucketDiv
+	Set endBucket = tsEnd \ tBucketDiv
+	Set totalCount = 0, totalSum = 0
+	Set globalMin = "", globalMax = ""
+	For b = startBucket:1:endBucket {
+		Set bLo = b * tBucketDiv
+		Set bHi = ((b + 1) * tBucketDiv) - 1
+		If (bLo >= tsStart) && (bHi <= tsEnd) {
+			Set cnt = +$Get(^KG("tagg", tGKey, b, source, predicate, "count"), 0)
+			Set sm = +$Get(^KG("tagg", tGKey, b, source, predicate, "sum"), 0)
+			Set mn = $Get(^KG("tagg", tGKey, b, source, predicate, "min"))
+			Set mx = $Get(^KG("tagg", tGKey, b, source, predicate, "max"))
+			Set totalCount = totalCount + cnt
+			Set totalSum = totalSum + sm
+			If mn '= "" { If (globalMin = "") || (mn < globalMin) Set globalMin = mn }
+			If mx '= "" { If (globalMax = "") || (mx > globalMax) Set globalMax = mx }
+			Continue
+		}
+		Set lo = $Select(bLo > tsStart: bLo, 1: tsStart)
+		Set hi = $Select(bHi < tsEnd: bHi, 1: tsEnd)
+		Set ts = lo - 1
+		For {
+			Set ts = $Order(^KG("tout", tGKey, ts))
+			Quit:ts=""
+			Quit:ts>hi
+			Set o = ""
+			For {
+				Set o = $Order(^KG("tout", tGKey, ts, source, predicate, o), 1, w)
+				Quit:o=""
+				Set totalCount = totalCount + 1
+				Set totalSum = totalSum + w
+				If (globalMin = "") || (w < globalMin) Set globalMin = w
+				If (globalMax = "") || (w > globalMax) Set globalMax = w
+			}
+		}
+	}
+	If metric = "count" Return totalCount
+	If metric = "sum" Return totalSum
+	If metric = "min" Return $Select(globalMin="":"", 1:globalMin)
+	If metric = "max" Return $Select(globalMax="":"", 1:globalMax)
+	If metric = "avg" Return $Select(totalCount=0:"", 1:$FN(totalSum/totalCount,"",6))
+	Return ""
+}
+
+ClassMethod GetBucketGroups(graphId As %String = "", predicate As %String, tsStart As %Integer, tsEnd As %Integer, sourcePrefix As %String = "") As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tsStart = +tsStart
+	Set tsEnd = +tsEnd
+	Set tBucketDiv = $Select(..#TSUNIT="ms": ..#BUCKETMS, 1: ..#BUCKET)
+	Set startBucket = tsStart \ tBucketDiv
+	Set endBucket = tsEnd \ tBucketDiv
+	Set prefixLen = $Length(sourcePrefix)
+	Kill totals
+	Set b = startBucket - 1
+	For {
+		Set b = b + 1
+		Quit:(b > endBucket)
+		Set bLo = b * tBucketDiv
+		Set bHi = ((b + 1) * tBucketDiv) - 1
+		If (bLo < tsStart) || (bHi > tsEnd) {
+			// 4.6.0 R249: a bucket the window cuts is read event by event from ^KG("tout") over the cut range, as
+			// GetAggregate does (R217); every bucket the window touched was counted whole
+			Do ..BucketGroupsEvents(tGKey, predicate, $Select(bLo > tsStart: bLo, 1: tsStart), $Select(bHi < tsEnd: bHi, 1: tsEnd), sourcePrefix, .totals)
+			Continue
+		}
+		Set src = ""
+		For {
+			Set src = $Order(^KG("tagg", tGKey, b, src))
+			Quit:(src = "")
+			If prefixLen > 0 && ($Extract(src, 1, prefixLen) '= sourcePrefix) { Continue }
+			Set p = ""
+			For {
+				Set p = $Order(^KG("tagg", tGKey, b, src, p))
+				Quit:(p = "")
+				If predicate '= "" && (p '= predicate) { Continue }
+				Set cnt = +$Get(^KG("tagg", tGKey, b, src, p, "count"), 0)
+				Set sm = +$Get(^KG("tagg", tGKey, b, src, p, "sum"), 0)
+				Set mn = $Get(^KG("tagg", tGKey, b, src, p, "min"))
+				Set mx = $Get(^KG("tagg", tGKey, b, src, p, "max"))
+				If '$Data(totals(src, p, "count")) { Set totals(src, p, "count") = 0, totals(src, p, "sum") = 0, totals(src, p, "min") = "", totals(src, p, "max") = "" }
+				Set totals(src, p, "count") = totals(src, p, "count") + cnt
+				Set totals(src, p, "sum") = totals(src, p, "sum") + sm
+				If mn '= "" { If totals(src, p, "min") = "" || (mn < totals(src, p, "min")) Set totals(src, p, "min") = mn }
+				If mx '= "" { If totals(src, p, "max") = "" || (mx > totals(src, p, "max")) Set totals(src, p, "max") = mx }
+			}
+		}
+	}
+	Set result = "[", first = 1
+	Set src = ""
+	For {
+		Set src = $Order(totals(src))
+		Quit:(src = "")
+		Set p = ""
+		For {
+			Set p = $Order(totals(src, p))
+			Quit:(p = "")
+			Set cnt = totals(src, p, "count")
+			Set sm = totals(src, p, "sum")
+			Set mn = $Select(totals(src, p, "min")="":"null", 1:totals(src, p, "min"))
+			Set mx = $Select(totals(src, p, "max")="":"null", 1:totals(src, p, "max"))
+			Set avg = $Select(cnt=0:"null", 1:$FN(sm/cnt,"",6))
+			If 'first Set result = result _ ","
+			Set first = 0
+			Set result = result _ "{""source"":""" _ ..jsonEsc(src) _ """,""predicate"":""" _ ..jsonEsc(p) _ """,""count"":" _ ..jsonNum(cnt) _ ",""sum"":" _ ..jsonNum(sm) _ ",""avg"":" _ ..jsonNum(avg) _ ",""min"":" _ ..jsonNum(mn) _ ",""max"":" _ ..jsonNum(mx) _ "}"
+		}
+	}
+	Return result _ "]"
+}
+
+/// Add to pTotals(source, predicate, "count" | "sum" | "min" | "max") every event in ^KG("tout", pGKey) with a
+/// timestamp in [pLo, pHi], a predicate of pPredicate ("" any) and a source starting with pPrefix ("" any): the part of
+/// a bucket GetBucketGroups' window cuts (4.6.0 R249).
+ClassMethod BucketGroupsEvents(pGKey, pPredicate As %String, pLo As %Integer, pHi As %Integer, pPrefix As %String, ByRef pTotals) [ Private ]
+{
+	Set tLen = $Length(pPrefix)
+	Set tTs = pLo - 1
+	For {
+		Set tTs = $Order(^KG("tout", pGKey, tTs))
+		Quit:(tTs = "")
+		Quit:(tTs > pHi)
+		Set tSrc = ""
+		For {
+			Set tSrc = $Order(^KG("tout", pGKey, tTs, tSrc))
+			Quit:(tSrc = "")
+			If (tLen > 0) && ($Extract(tSrc, 1, tLen) '= pPrefix) { Continue }
+			Set tP = ""
+			For {
+				Set tP = $Order(^KG("tout", pGKey, tTs, tSrc, tP))
+				Quit:(tP = "")
+				If (pPredicate '= "") && (tP '= pPredicate) { Continue }
+				Set tO = ""
+				For {
+					Set tO = $Order(^KG("tout", pGKey, tTs, tSrc, tP, tO), 1, tW)
+					Quit:(tO = "")
+					If '$Data(pTotals(tSrc, tP, "count")) { Set pTotals(tSrc, tP, "count") = 0, pTotals(tSrc, tP, "sum") = 0, pTotals(tSrc, tP, "min") = "", pTotals(tSrc, tP, "max") = "" }
+					Set pTotals(tSrc, tP, "count") = pTotals(tSrc, tP, "count") + 1
+					Set pTotals(tSrc, tP, "sum") = pTotals(tSrc, tP, "sum") + tW
+					If (pTotals(tSrc, tP, "min") = "") || (tW < pTotals(tSrc, tP, "min")) { Set pTotals(tSrc, tP, "min") = tW }
+					If (pTotals(tSrc, tP, "max") = "") || (tW > pTotals(tSrc, tP, "max")) { Set pTotals(tSrc, tP, "max") = tW }
+				}
+			}
+		}
+	}
+	Quit
+}
+
+ClassMethod GetBucketGroupTargets(graphId As %String = "", source As %String, predicate As %String, tsStart As %Integer, tsEnd As %Integer) As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set tsStart = +tsStart
+	Set tsEnd = +tsEnd
+	Set ts = tsStart - 1
+	Kill dedup
+	For {
+		Set ts = $Order(^KG("tout", tGKey, ts))
+		Quit:(ts = "")
+		If ts > tsEnd Quit
+		If $Data(^KG("tout", tGKey, ts, source)) {
+			Set p = ""
+			For {
+				Set p = $Order(^KG("tout", tGKey, ts, source, p))
+				Quit:(p = "")
+				If predicate '= "" && (p '= predicate) { Continue }
+				Set o = ""
+				For {
+					Set o = $Order(^KG("tout", tGKey, ts, source, p, o))
+					Quit:(o = "")
+					Set dedup(o) = 1
+				}
+			}
+		}
+	}
+	Set result = "[", first = 1, tgt = ""
+	For {
+		Set tgt = $Order(dedup(tgt))
+		Quit:(tgt = "")
+		If 'first { Set result = result _ "," }
+		Set first = 0
+		Set result = result _ """" _ ..jsonEsc(tgt) _ """"
+	}
+	Return result _ "]"
+}
+
+/// The attributes of one temporal edge, as a JSON object ({} when it has none). One call per edge: to read a window
+/// with each edge's attributes in one call, use Graph.KG.TemporalWindow (spec 255), which builds them the same way.
+ClassMethod GetEdgeAttrs(graphId As %String = "", ts As %Integer, source As %String, predicate As %String, target As %String) As %String
+{
+	Set tGKey = ##class(Graph.KG.GraphKey).ForIndex(graphId)
+	Set ts = +ts
+	Set result = ##class(%DynamicObject).%New()
+	Set key = ""
+	While 1 {
+		Set key = $Order(^KG("edgeprop", tGKey, ts, source, predicate, target, key), 1, val)
+		If key = "" Quit
+		Do result.%Set(key, val)
+	}
+	Return result.%ToJSON()
+}
+
+}

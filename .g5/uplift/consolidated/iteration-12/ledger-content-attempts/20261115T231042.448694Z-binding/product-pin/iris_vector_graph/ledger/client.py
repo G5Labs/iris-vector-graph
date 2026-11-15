@@ -1,0 +1,758 @@
+"""GraphLedger — thin Python client over Graph.KG.Ledger (spec 213, R3/R6).
+
+The server method owns the transaction; this module serializes changesets,
+stages large payloads, maps wire errors to exceptions, logs outcomes, and
+exposes history/diff/reconstruction/verification built on ``replay``.
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+import time
+import uuid
+from dataclasses import dataclass, field
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
+from .changeset import Changeset
+from .errors import (
+    LedgerError,
+    LedgerTransactionOpenError,
+    RedactionInProgressError,
+    UnknownRevisionError,
+    from_commit_error,
+)
+
+logger = logging.getLogger("iris_vector_graph.ledger")
+
+LEDGER_CLASS = "Graph.KG.Ledger"
+REDACT_CLASS = "Graph.KG.LedgerRedact"
+CHUNK_CHARS = 1_000_000
+RECORD_PAGE = 5_000
+
+
+# --------------------------------------------------------------------------- #
+# value objects
+# --------------------------------------------------------------------------- #
+
+
+@dataclass
+class RevisionInfo:
+    seq: int
+    revision_id: str
+    parent_id: Optional[str]
+    kind: str
+    actor: str
+    actor_type: str
+    conn_user: str
+    committed_ms: int
+    message: Optional[str] = None
+    source: Optional[Dict[str, Any]] = None
+    correlation_id: Optional[str] = None
+    idempotency_key: Optional[str] = None
+    op_count: int = 0
+
+    @classmethod
+    def from_wire(cls, d: Dict[str, Any]) -> "RevisionInfo":
+        src = d.get("source")
+        if isinstance(src, str) and src:
+            try:
+                src = json.loads(src)
+            except Exception:
+                src = {"raw": src}
+        return cls(
+            seq=int(d["seq"]),
+            revision_id=str(d["revision_id"]),
+            parent_id=(d.get("parent_id") or None),
+            kind=str(d.get("kind", "changeset")),
+            actor=str(d.get("actor", "")),
+            actor_type=str(d.get("actor_type", "")),
+            conn_user=str(d.get("conn_user", "")),
+            committed_ms=int(d.get("committed_ms") or 0),
+            message=d.get("message") or None,
+            source=src or None,
+            correlation_id=d.get("correlation_id") or None,
+            idempotency_key=d.get("idempotency_key") or None,
+            op_count=int(d.get("op_count") or 0),
+        )
+
+
+@dataclass
+class CommitResult:
+    """Result of a successful :meth:`GraphLedger.commit` call.
+
+    Attributes:
+        revision: The assigned or replayed :class:`RevisionInfo`.
+        replayed: ``True`` when this commit was a replay of an earlier identical
+            changeset (same ``actor``, ``actor_type``, and ``ops`` fingerprint).
+            **Note**: ``replayed=True`` can occur even when ``expected_head`` differs
+            from the original commit — the fingerprint does *not* include
+            ``expected_head``.  See :meth:`Changeset.fingerprint` for the exact
+            scope of the idempotency hash.
+        stmt_ids: Mapping of op index → assigned statement identity for new
+            relationship operations.
+        post_commit_applied: ``True`` when post_commit_properties were applied
+            successfully after the main commit.
+        post_commit_error: Set to an error string if post_commit_properties
+            writes failed; the main commit is unaffected.
+    """
+
+    revision: RevisionInfo
+    replayed: bool = False
+    stmt_ids: Dict[int, str] = field(default_factory=dict)
+    post_commit_applied: bool = False
+    post_commit_error: Optional[str] = None
+
+
+@dataclass
+class _CommitWireResult:
+    """Raw result from the transport layer — no exceptions, no side effects.
+
+    ``_send_changeset`` populates this and returns it to ``commit()``, which
+    then maps it to exceptions (on failure) or ``CommitResult`` (on success).
+    Keeping transport (chunking, ObjectScript call, JSON parsing) separate from
+    semantics (NKG dirty, post_commit SQL, metrics) makes each independently
+    testable with a simple mock.
+    """
+
+    ok: bool
+    revision_id: Optional[str]
+    replayed: bool
+    stmt_ids: dict
+    error_code: Optional[str]
+    reason: Optional[str]
+    raw_resp: dict
+
+
+@dataclass
+class HistoryPage:
+    revisions: List[RevisionInfo]
+    next_after_seq: Optional[int]
+
+
+@dataclass
+class Revision:
+    info: RevisionInfo
+    records: list  # List[MutationRecord]
+
+
+@dataclass
+class RedactionReceipt:
+    """What one :meth:`GraphLedger.redact` call did (spec 256 FR-008).
+
+    The counts cover the whole redaction of the target, across resumed runs.
+    ``complete`` is False when ``max_batches`` stopped it early; ``redaction`` is the
+    content-free audit revision, None until the run completes or when nothing matched.
+    """
+
+    complete: bool
+    target_sha256: str
+    revision_seqs: List[int] = field(default_factory=list)
+    records_tombstoned: int = 0
+    metadata_cleared: int = 0
+    idempotency_keys_removed: int = 0
+    statements_removed: int = 0
+    unattributed_records: int = 0
+    batches: int = 0
+    max_batch_ms: int = 0
+    redaction: Optional[RevisionInfo] = None
+    out_of_reach: List[str] = field(default_factory=list)
+
+    @property
+    def revisions_touched(self) -> int:
+        return len(self.revision_seqs)
+
+    @classmethod
+    def from_wire(cls, d: Dict[str, Any]) -> "RedactionReceipt":
+        rev = d.get("redaction")
+        return cls(
+            complete=bool(d.get("complete", False)),
+            target_sha256=str(d.get("target_sha256") or ""),
+            revision_seqs=[int(s) for s in d.get("revision_seqs") or []],
+            records_tombstoned=int(d.get("records_tombstoned") or 0),
+            metadata_cleared=int(d.get("metadata_cleared") or 0),
+            idempotency_keys_removed=int(d.get("idempotency_keys_removed") or 0),
+            statements_removed=int(d.get("statements_removed") or 0),
+            unattributed_records=int(d.get("unattributed_records") or 0),
+            batches=int(d.get("batches") or 0),
+            max_batch_ms=int(d.get("max_batch_ms") or 0),
+            redaction=RevisionInfo.from_wire(rev) if rev else None,
+            out_of_reach=[str(x) for x in d.get("out_of_reach") or []],
+        )
+
+
+@dataclass
+class LedgerCounters:
+    state: str = "never-enabled"
+    strict: bool = False
+    head_seq: int = 0
+    commits_ok: int = 0
+    rejections: Dict[str, int] = field(default_factory=dict)
+    replays_idem: int = 0
+    last_verify_ms: Optional[int] = None
+    last_verify_result: Optional[str] = None
+    enabled_ms: Optional[int] = None
+    disabled_ms: Optional[int] = None
+
+
+_REJECTION_COLUMNS = (
+    "rej_stale_head",
+    "rej_unknown_head",
+    "rej_idem_conflict",
+    "rej_failed_op",
+    "rej_strict_block",
+    "rej_size_limit",
+    "rej_disabled",
+    "rej_lock_timeout",
+)
+
+
+def _class_value(iris_obj, cls: str, method: str, *args):
+    """``classMethodValue`` on a Native API object, or ``call`` on a host (iris_vector_graph.host)."""
+    from iris_vector_graph.host import Host
+
+    if isinstance(iris_obj, Host):
+        return iris_obj.call(cls, method, *args)
+    return iris_obj.classMethodValue(cls, method, *args)
+
+
+# --------------------------------------------------------------------------- #
+# client
+# --------------------------------------------------------------------------- #
+
+
+class GraphLedger:
+    """Per-engine ledger client. Obtain via ``engine.ledger``."""
+
+    def __init__(self, engine):
+        self._engine = engine
+        self._hooks: List[Callable[[Dict[str, Any]], None]] = []
+
+    # -- transport -------------------------------------------------------------
+
+    def _iris(self):
+        return self._engine._iris_obj()
+
+    def _schema(self) -> str:
+        return getattr(self._engine, "_schema_prefix", "Graph_KG") or "Graph_KG"
+
+    def _call(self, method: str, *args, cls: str = LEDGER_CLASS, via=None) -> str:
+        """``cls.method(*args)`` through the engine's Native API, or through ``via`` (a host on the caller's own
+        server process, inside the caller's transaction: :meth:`commit`)."""
+        iris_obj = self._iris() if via is None else via
+        raw = str(_class_value(iris_obj, cls, method, *args))
+        # Large answers are staged by Graph.KG.Ledger.LargeOut whichever class answered.
+        if raw.startswith("CHUNKED:"):
+            _, tag, n_str = raw.split(":", 2)
+            n = int(n_str)
+            raw = "".join(
+                str(_class_value(iris_obj, LEDGER_CLASS, "ReadLargeOutChunk", tag, i))
+                for i in range(1, n + 1)
+            )
+        return raw
+
+    def _call_json(self, method: str, *args, cls: str = LEDGER_CLASS) -> Dict[str, Any]:
+        raw = self._call(method, *args, cls=cls)
+        try:
+            return json.loads(raw) if raw else {}
+        except json.JSONDecodeError as e:
+            raise LedgerError(f"{cls}.{method} returned non-JSON: {raw[:200]!r}") from e
+
+    def _refresh_guard(self) -> None:
+        guard = getattr(self._engine, "_ledger_guard", None)
+        if guard is not None and hasattr(guard, "refresh"):
+            guard.refresh()
+
+    # -- lifecycle -------------------------------------------------------------
+
+    def _refuse_in_caller_transaction(self, operation: str) -> None:
+        """4.7.0: ``enable`` and ``redact`` commit on their own (Graph.KG.Ledger refuses an open transaction on its
+        own process); over the engine's Native API connection (``from_connect``), another process, they ran outside
+        the caller's transaction instead. Refused here when the caller has one open (``$TLEVEL`` above 0)."""
+        from iris_vector_graph._write_txn import caller_transaction_level
+
+        level = caller_transaction_level(self._engine.conn)
+        if level:
+            raise LedgerTransactionOpenError(
+                f"{operation} cannot run inside the caller's open transaction ($TLEVEL {level}) on the engine's "
+                "connection; nothing was done. Commit or roll it back, then call it again"
+            )
+
+    def enable(
+        self, *, strict: bool = False, max_ops: int = 50_000, recon_bound: int = 250_000
+    ) -> RevisionInfo:
+        self._refuse_in_caller_transaction("ledger.enable()")
+        # The schema whose tables the genesis reads, named as commit names it (4.6.0 R106): it came from
+        # Enable's compiled default, right only because the deploy rewrites that default too.
+        resp = self._call_json("Enable", 1 if strict else 0, int(max_ops), int(recon_bound), self._schema())
+        self._refresh_guard()
+        if not resp.get("ok", False):
+            raise from_commit_error(resp)
+        info = RevisionInfo.from_wire(resp["revision"])
+        if resp.get("adoption_needed"):
+            report = self.verify(adopt=True)
+            adopted = getattr(report, "adoption_revision", None)
+            if adopted is not None:
+                info = adopted
+        return info
+
+    def disable(self) -> None:
+        resp = self._call_json("Disable")
+        self._refresh_guard()
+        if not resp.get("ok", True):
+            raise from_commit_error(resp)
+
+    def set_strict(self, flag: bool) -> None:
+        resp = self._call_json("SetStrict", 1 if flag else 0)
+        self._refresh_guard()
+        if not resp.get("ok", False):
+            raise from_commit_error(resp)
+
+    def meta(self) -> Dict[str, Any]:
+        return self._call_json("Meta")
+
+    def head(self) -> RevisionInfo:
+        resp = self._call_json("Head")
+        if not resp.get("ok", False):
+            raise from_commit_error(resp)
+        return RevisionInfo.from_wire(resp["revision"])
+
+    # -- commit ----------------------------------------------------------------
+
+    def _send_changeset(self, changeset: Changeset, *, kind: str = "changeset", via=None) -> "_CommitWireResult":
+        """Transport layer: chunk, call ObjectScript, parse JSON → _CommitWireResult.
+
+        Never raises. All errors are encoded in the result's ``ok=False`` path.
+        Has no side effects on the engine or store — purely I/O. ``via``: as :meth:`_call`'s.
+        """
+        payload = changeset.canonical_json()
+        meta = {
+            "fingerprint": changeset.fingerprint(),
+            "expected_head": changeset.expected_head,
+            "idempotency_key": changeset.idempotency_key,
+            "kind": kind,
+            "schema": self._schema(),
+            "staged": False,
+        }
+        try:
+            if len(payload) <= CHUNK_CHARS:
+                raw = self._call("Commit", payload, json.dumps(meta), via=via)
+            else:
+                token = uuid.uuid4().hex
+                # the stage is process-private (^||IVG.LedgerStage): on the process that commits
+                iris_obj = self._iris() if via is None else via
+                idx = 0
+                for start in range(0, len(payload), CHUNK_CHARS):
+                    idx += 1
+                    _class_value(
+                        iris_obj, LEDGER_CLASS, "StageChunk", token, idx, payload[start : start + CHUNK_CHARS]
+                    )
+                meta["staged"] = True
+                raw = self._call("Commit", token, json.dumps(meta), via=via)
+        except Exception as exc:
+            return _CommitWireResult(
+                ok=False, revision_id=None, replayed=False, stmt_ids={},
+                error_code="inconsistent", reason=str(exc),
+                raw_resp={"ok": False, "error": "inconsistent", "reason": str(exc)},
+            )
+        try:
+            resp = (
+                json.loads(raw)
+                if raw
+                else {"ok": False, "error": "inconsistent", "reason": "empty response"}
+            )
+        except json.JSONDecodeError:
+            resp = {
+                "ok": False,
+                "error": "inconsistent",
+                "reason": f"non-JSON response: {raw[:200]!r}",
+            }
+        revision = resp.get("revision") or {}
+        return _CommitWireResult(
+            ok=bool(resp.get("ok", False)),
+            revision_id=revision.get("revision_id") if revision else None,
+            replayed=bool(resp.get("replayed", False)),
+            stmt_ids=resp.get("stmt_ids") or {},
+            error_code=resp.get("error") if not resp.get("ok", False) else None,
+            reason=resp.get("reason"),
+            raw_resp=resp,
+        )
+
+    def commit(self, changeset: Changeset, *, kind: str = "changeset") -> CommitResult:
+        """Commit ``changeset`` as one revision (Graph.KG.Ledger.Commit).
+
+        4.7.0: inside a transaction the caller opened on the engine's connection (SQL ``START TRANSACTION``, or the
+        driver's autocommit off) the revision and its writes, ``post_commit_properties`` included, are part of it:
+        the caller's commit keeps them and the caller's rollback takes them back. The commit then runs on that
+        connection's own server process, where the caller's transaction is, nested in it; the engine's Native API
+        connection (``from_connect``) is another process, where it used to run, committed whatever the caller did. On
+        the caller's own connection Graph.KG.Ledger.Commit refused (``LedgerTransactionOpenError``). The ledger head
+        stays locked until the caller's transaction ends, so another commit waits for it (up to the lock timeout).
+        """
+        changeset.validate()
+        from iris_vector_graph._write_txn import caller_transaction_level, write_txn
+
+        if caller_transaction_level(self._engine.conn) is None:
+            return self._commit(changeset, kind, None)
+        # IVG's own level: its commit goes back to the caller's level and its rollback takes back IVG's level alone,
+        # so the caller's commit or rollback decides
+        with write_txn(self._engine.conn, self._schema()) as txn:
+            return self._commit(changeset, kind, txn)
+
+    def _commit(self, changeset: Changeset, kind: str, txn) -> CommitResult:
+        via = txn.native() if txn is not None else None
+        t0 = time.perf_counter()
+        wire = self._send_changeset(changeset, kind=kind, via=via)
+        duration_ms = (time.perf_counter() - t0) * 1000.0
+
+        if not wire.ok:
+            resp = wire.raw_resp
+            self._emit(
+                resp.get("error", "error"), None, changeset, duration_ms, reason=resp.get("reason")
+            )
+            # `from_commit_error` owns every wire code, including narrowing a
+            # `failed_op` whose reason names a missing node to NodeNotFoundError.
+            # Parsing it a second time here is how the op index got dropped.
+            raise from_commit_error(resp)
+
+        resp = wire.raw_resp
+        info = RevisionInfo.from_wire(resp["revision"])
+        replayed = wire.replayed
+        stmt_ids = {int(k): str(v) for k, v in (wire.stmt_ids or {}).items()}
+        self._emit("replayed" if replayed else "success", info, changeset, duration_ms)
+
+        if not replayed and any(
+            op["op"] in ("create_rel", "upsert_rel", "delete_rel", "delete_node")
+            for op in changeset.ops
+        ):
+            self._mark_nkg_dirty_if_needed()
+
+        # Apply post_commit_properties (Approach A — direct SQL, no new revision)
+        pcp = getattr(changeset, "post_commit_properties", {})
+        post_applied = False
+        post_error: Optional[str] = None
+        if pcp:
+            post_applied, post_error = self._apply_post_commit_properties(pcp, info.revision_id)
+
+        return CommitResult(
+            revision=info,
+            replayed=replayed,
+            stmt_ids=stmt_ids,
+            post_commit_applied=post_applied,
+            post_commit_error=post_error,
+        )
+
+    def _apply_post_commit_properties(self, pcp: Dict[str, Dict[str, Any]], revision_id) -> Tuple[bool, Optional[str]]:
+        """Write ``post_commit_properties`` (Approach A: direct SQL, no new revision): ``(applied, error)``.
+
+        Each property is a DELETE then an INSERT, committed together. Any refusal, the DELETE's included, rolls back
+        and is the error returned; the DELETE's was passed over, so the INSERT ran after it (4.6.0 R276).
+
+        Both are scoped to the revision's graph, the default graph, where the ledger keeps nodes (see :meth:`redact`).
+        Unscoped, the DELETE took the property from every graph holding a node of that id (4.6.0 R281).
+        """
+        from iris_vector_graph.constants import DEFAULT_GRAPH
+        from iris_vector_graph.routing import graph_scope_predicate
+
+        from .changeset import REVISION_ID_SENTINEL
+
+        from iris_vector_graph._write_txn import WriteTxn
+
+        schema = self._schema()
+        graph = DEFAULT_GRAPH
+        cur = self._engine.conn.cursor()
+        # 4.7.0: IVG's own level, nested in the caller's transaction (and in commit's) when there is one; it called
+        # conn.commit(), which committed the caller's work, and conn.rollback(), which took it back
+        ptxn = WriteTxn(self._engine.conn, schema, cur)
+        try:
+            ptxn.begin()
+            for nid, props in pcp.items():
+                for k, v in props.items():
+                    actual_v = revision_id if v == REVISION_ID_SENTINEL else v
+                    cur.execute(
+                        f'DELETE FROM {schema}.rdf_props WHERE {graph_scope_predicate("graph_id")} AND s = ? '
+                        f'AND "key" = ?',
+                        [graph, nid, k],
+                    )
+                    cur.execute(
+                        f'INSERT INTO {schema}.rdf_props (graph_id, s, "key", val) VALUES (?, ?, ?, ?)',
+                        [graph, nid, k, actual_v],
+                    )
+            ptxn.commit()
+            return True, None
+        except Exception as pcp_err:
+            post_error = str(pcp_err)[:500]
+            logger.error("post_commit_properties write failed: %s", post_error)
+            ptxn.rollback()  # logs its own failure
+            return False, post_error
+
+    def _mark_nkg_dirty_if_needed(self) -> None:
+        """R15: when the incremental ^NKG skeleton is absent, flag staleness."""
+        try:
+            present = str(
+                self._iris().classMethodValue("Graph.KG.Meta", "GetNKG", "$meta", "nodeCount")
+            )
+        except Exception:
+            present = ""
+        if present == "":
+            try:
+                self._engine._nkg_dirty = True
+            except Exception:
+                pass
+
+    # -- observability ---------------------------------------------------------
+
+    def register_metrics_hook(self, fn: Callable[[Dict[str, Any]], None]) -> None:
+        self._hooks.append(fn)
+
+    def _emit(
+        self,
+        outcome: str,
+        info: Optional[RevisionInfo],
+        changeset: Changeset,
+        duration_ms: float,
+        reason: Optional[str] = None,
+    ) -> None:
+        event = {
+            "outcome": outcome,
+            "revision_id": info.revision_id if info else None,
+            "seq": info.seq if info else None,
+            "actor": changeset.actor,
+            "actor_type": changeset.actor_type,
+            "op_count": len(changeset.ops),
+            "duration_ms": round(duration_ms, 3),
+            "reason": reason,
+        }
+        logger.info(
+            "ledger.commit outcome=%s revision_id=%s actor=%s op_count=%d duration_ms=%.3f%s",
+            outcome,
+            event["revision_id"],
+            changeset.actor,
+            len(changeset.ops),
+            duration_ms,
+            f" reason={reason}" if reason else "",
+            extra={"ledger_event": event},
+        )
+        for hook in list(self._hooks):
+            try:
+                hook(dict(event))
+            except Exception as e:  # hooks must never break commits
+                logger.warning("ledger metrics hook failed: %s", e)
+
+    def stats(self) -> LedgerCounters:
+        m = self.meta()
+        counters = LedgerCounters(
+            state=str(m.get("state", "never-enabled")),
+            strict=bool(m.get("strict", False)),
+            head_seq=int(m.get("head_seq") or 0),
+        )
+        try:
+            cur = self._engine.conn.cursor()
+            try:
+                cur.execute(
+                    f"SELECT commits_ok, replays_idem, {', '.join(_REJECTION_COLUMNS)}, "
+                    f"last_verify_ms, last_verify_result, enabled_ms, disabled_ms "
+                    f"FROM {self._schema()}.ledger_stats"
+                )
+                fetched = cur.fetchone()
+                # materialize: the IRIS DB-API DataRow is lazy and dies with the cursor
+                row = tuple(fetched) if fetched is not None else None
+            finally:
+                cur.close()
+        except Exception:
+            row = None
+        if row:
+            counters.commits_ok = int(row[0] or 0)
+            counters.replays_idem = int(row[1] or 0)
+            counters.rejections = {
+                col: int(row[2 + i] or 0) for i, col in enumerate(_REJECTION_COLUMNS)
+            }
+            base = 2 + len(_REJECTION_COLUMNS)
+            counters.last_verify_ms = int(row[base]) if row[base] not in (None, "") else None
+            counters.last_verify_result = row[base + 1] or None
+            counters.enabled_ms = int(row[base + 2]) if row[base + 2] not in (None, "") else None
+            counters.disabled_ms = int(row[base + 3]) if row[base + 3] not in (None, "") else None
+        return counters
+
+    # -- read side (US6–US9) ---------------------------------------------------
+
+    def _seq_of(self, revision_id: str) -> int:
+        resp = self._call_json("SeqOf", str(revision_id))
+        if not resp.get("ok", False):
+            raise UnknownRevisionError(f"unknown revision {revision_id}")
+        return int(resp["seq"])
+
+    def history(
+        self,
+        *,
+        after_seq: int = 0,
+        limit: int = 100,
+        actor: Optional[str] = None,
+        actor_type: Optional[str] = None,
+        since_ms: Optional[int] = None,
+        until_ms: Optional[int] = None,
+        descending: bool = False,
+        correlation_id: Optional[str] = None,
+        source: Optional[str] = None,
+    ) -> HistoryPage:
+        """Return a page of ledger revisions, newest or oldest first.
+
+        All filter parameters are pushed to SQL (not applied in Python).
+
+        Args:
+            after_seq: Pagination cursor — return revisions after this seq.
+            limit: Maximum revisions to return.
+            actor: Filter to revisions by a specific actor string.
+            actor_type: Filter to revisions by actor type (e.g. "ingest").
+            since_ms: Only revisions committed at or after this epoch-ms.
+            until_ms: Only revisions committed at or before this epoch-ms.
+            descending: Return newest-first when True.
+            correlation_id: Filter to revisions with this exact correlation_id.
+                Useful for per-tenant history in multi-tenant graphs where
+                correlation_id is set to e.g. "acme-health|iris-acme-health".
+            source: Filter to revisions tagged with this source string.
+        """
+        from .replay import fetch_history
+
+        return fetch_history(
+            self._engine.conn,
+            self._schema(),
+            after_seq=after_seq,
+            limit=limit,
+            actor=actor,
+            actor_type=actor_type,
+            since_ms=since_ms,
+            until_ms=until_ms,
+            descending=descending,
+            correlation_id=correlation_id,
+            source=source,
+        )
+
+    # -- redaction (spec 256, ADR-0013) ----------------------------------------
+
+    def redact(
+        self,
+        graph: Optional[str] = None,
+        prefix: Optional[str] = None,
+        *,
+        separator: str = "|",
+        actor: str = "system:ledger-redact",
+        batch_size: int = 2_000,
+        max_batches: int = 0,
+    ) -> "RedactionReceipt":
+        """Remove an erased target's content from the ledger's history.
+
+        Every record of the target becomes a tombstone that keeps its seq, ordinal and op
+        and holds the SHA-256 of the record it replaced. Each revision with a tombstone
+        loses its message, source, correlation id and idempotency key. The run ends with
+        a content-free revision of kind ``redaction`` naming the redacted revisions by
+        seq. Afterwards ``verify()`` is ``equal`` again.
+
+        The target is ``graph`` (``None`` is the default graph), narrowed by ``prefix``
+        to the ids that start with ``prefix + separator`` (``"acme"`` does not match
+        ``"acme-health|..."``). The ledger records nodes graph-blind, in the default
+        graph, so a tenant whose relationships live in its own graph is two calls:
+        ``redact(tenant_graph)`` and ``redact(None, prefix=tenant)``.
+
+        Erase first: a target with live rows is refused (``RedactionTargetLiveError``)
+        and nothing changes. Each batch of ``batch_size`` tombstones is one transaction
+        under the ledger head lock. ``max_batches > 0`` stops early and leaves the run in
+        progress; calling again with the same target resumes it. Running a finished
+        redaction again changes nothing and returns a receipt of zeros.
+
+        Exports written before the redaction, journals and backups still hold the
+        content; the receipt's ``out_of_reach`` says so.
+        """
+        self._refuse_in_caller_transaction("ledger.redact()")
+        resp = self._call_json(
+            "Redact",
+            "" if graph is None else str(graph),
+            "" if prefix is None else str(prefix),
+            str(separator),
+            str(actor),
+            int(batch_size),
+            int(max_batches),
+            self._schema(),
+            cls=REDACT_CLASS,
+        )
+        if not resp.get("ok", False):
+            raise from_commit_error(resp)
+        return RedactionReceipt.from_wire(resp)
+
+    def redaction_in_progress(self) -> Optional[Dict[str, Any]]:
+        """The marker of an unfinished redaction (``target_sha256``, ``started_ms``), or None."""
+        resp = self._call_json("InProgress", cls=REDACT_CLASS)
+        return resp if resp.get("in_progress") else None
+
+    def _refuse_while_redacting(self) -> None:
+        mark = self.redaction_in_progress()
+        if mark is not None:
+            raise RedactionInProgressError(
+                f"a redaction (target_sha256 {mark.get('target_sha256')}) has not finished; "
+                "record readers would see it half done. Run it again to finish it."
+            )
+
+    def get_revision(self, revision_id: str) -> Revision:
+        from .replay import fetch_revision_info, iter_records_sql
+
+        self._refuse_while_redacting()
+        seq = self._seq_of(revision_id)
+        info = fetch_revision_info(self._engine.conn, self._schema(), seq)
+        if info is None:
+            raise UnknownRevisionError(f"unknown revision {revision_id}")
+        records = list(iter_records_sql(self._engine.conn, self._schema(), seq, seq))
+        return Revision(info=info, records=records)
+
+    def diff(self, from_id: str, to_id: str):
+        from .replay import compute_diff, iter_records_sql
+
+        self._refuse_while_redacting()
+        a = self._seq_of(from_id)
+        b = self._seq_of(to_id)
+        lo, hi = (a, b) if a <= b else (b, a)
+        forward = (
+            compute_diff(iter_records_sql(self._engine.conn, self._schema(), lo + 1, hi))
+            if hi > lo
+            else compute_diff([])
+        )
+        return forward if a <= b else forward.inverse()
+
+    def reconstruct(self, revision_id: str, *, stream: bool = False):
+        from .replay import iter_records_sql, reconstruct
+
+        self._refuse_while_redacting()
+        seq = self._seq_of(revision_id)
+        bound = int(self.meta().get("recon_bound") or 250_000)
+        return reconstruct(
+            iter_records_sql(self._engine.conn, self._schema(), 1, seq), bound=bound, stream=stream
+        )
+
+    def export_reconstruction(self, revision_id: str, path: str):
+        from .export import export_ndjson
+        from .replay import iter_records_sql, reconstruct
+
+        self._refuse_while_redacting()
+        seq = self._seq_of(revision_id)
+        state = reconstruct(
+            iter_records_sql(self._engine.conn, self._schema(), 1, seq), bound=None, stream=False
+        )
+        return export_ndjson(state, path)
+
+    def verify(self, *, adopt: bool = False, actor: str = "system:ledger-verify"):
+        from .replay import verify as _verify
+
+        return _verify(self, adopt=adopt, actor=actor)
+
+
+__all__ = [
+    "GraphLedger",
+    "RevisionInfo",
+    "CommitResult",
+    "HistoryPage",
+    "Revision",
+    "LedgerCounters",
+    "RedactionReceipt",
+    "CHUNK_CHARS",
+    "LEDGER_CLASS",
+    "REDACT_CLASS",
+]

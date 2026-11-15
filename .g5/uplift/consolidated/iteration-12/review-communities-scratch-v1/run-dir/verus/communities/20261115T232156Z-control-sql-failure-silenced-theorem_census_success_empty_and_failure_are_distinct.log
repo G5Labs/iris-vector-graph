@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/controls/sql-failure-silenced/20261115T232156Z/models/communities/communities.rs:574:9
+    |
+570 | pub proof fn theorem_census_success_empty_and_failure_are_distinct(n:Seq<NodeRow>,e:Seq<EdgeRow>,g:Seq<Coord>,limit:nat)
+    | ------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+574 |         census(n,e,g,limit,Some(0),Transport::Failed).answer is Failure,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

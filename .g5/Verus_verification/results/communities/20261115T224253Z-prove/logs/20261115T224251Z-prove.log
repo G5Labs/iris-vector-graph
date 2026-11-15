@@ -1,0 +1,18 @@
+verification results:: 55 verified, 2 errors
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:544:54
+    |
+544 |     let updated=n.push(NodeRow{graph:0,id:x});assert(live(updated) =~= live(n).insert(x));assert(endpoints_live(updated,e));theorem...
+    |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:552:9
+    |
+550 | pub proof fn theorem_same_token_can_reuse_different_raw_origin(token:int)
+    | ------------------------------------------------------------------------- at the end of the function body
+551 |     ensures core_read(Kind::Wcc,seq![],None,token,Some(Entry{kind:Kind::Wcc,limit:None,token,origin:pair()})).hit,
+552 |         match core_read(Kind::Wcc,seq![],None,token,Some(Entry{kind:Kind::Wcc,limit:None,token,origin:pair()})).answer{Core::Success(labels)=>labels.contains_key(1) && labels[1]==0,_=>false},
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

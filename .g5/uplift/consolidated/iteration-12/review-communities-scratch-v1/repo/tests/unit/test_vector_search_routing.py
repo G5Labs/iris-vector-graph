@@ -1,0 +1,143 @@
+import json
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+
+class TestNativeVecProbe:
+
+    def _make_engine(self, vector_cosine_available: bool):
+        from iris_vector_graph.engine import IRISGraphEngine
+        conn = MagicMock()
+        cursor = MagicMock()
+        conn.cursor.return_value = cursor
+        if vector_cosine_available:
+            cursor.execute.return_value = None
+        else:
+            cursor.execute.side_effect = Exception(
+                "Unknown function VECTOR_COSINE"
+            )
+        eng = IRISGraphEngine.__new__(IRISGraphEngine)
+        eng.conn = conn
+        eng._native_vec_available = None
+        eng._embedding_function_available = None
+        eng.embedding_dimension = 4
+        eng._arno_available = None
+        eng._arno_capabilities = {}
+        eng._schema_prefix = "Graph_KG"
+        return eng
+
+    def test_probe_returns_true_when_vector_cosine_works(self):
+        eng = self._make_engine(vector_cosine_available=True)
+        assert eng._probe_native_vec() is True
+
+    def test_probe_returns_false_when_unknown_function(self):
+        eng = self._make_engine(vector_cosine_available=False)
+        assert eng._probe_native_vec() is False
+
+    def test_probe_result_is_cached(self):
+        eng = self._make_engine(vector_cosine_available=True)
+        eng._probe_native_vec()
+        eng._probe_native_vec()
+        assert eng.conn.cursor.call_count == 1
+
+    def test_probe_false_cached_after_first_call(self):
+        eng = self._make_engine(vector_cosine_available=False)
+        eng._probe_native_vec()
+        eng.conn.cursor.reset_mock()
+        result = eng._probe_native_vec()
+        assert result is False
+        eng.conn.cursor.assert_not_called()
+
+
+class TestVectorSearchRouting:
+
+    def _make_engine(self, native: bool):
+        from iris_vector_graph.engine import IRISGraphEngine
+        conn = MagicMock()
+        eng = IRISGraphEngine.__new__(IRISGraphEngine)
+        eng.conn = conn
+        eng._native_vec_available = native
+        eng.embedding_dimension = 4
+        eng._arno_available = None
+        eng._arno_capabilities = {}
+        return eng
+
+    def test_routes_to_kg_knn_vec_when_native_available(self):
+        eng = self._make_engine(native=True)
+        query = [0.1, 0.2, 0.3, 0.4]
+        with patch.object(eng, "kg_KNN_VEC", return_value=[("n1", 0.9)]) as mock_knn:
+            result = eng.search_nodes_by_vector(query, k=5)
+        # The (graph, model_key) pair reaches kg_KNN_VEC even when the caller named
+        # neither: `None`/`None` is the default pair, and passing it explicitly is how
+        # the native path stays route-aware (spec 230, FR-013).
+        mock_knn.assert_called_once_with(
+            json.dumps([float(v) for v in query]),
+            k=5,
+            label_filter=None,
+            graph=None,
+            model_key=None,
+        )
+        assert result == [("n1", 0.9)]
+
+    def test_routes_to_ivf_when_native_unavailable(self):
+        eng = self._make_engine(native=False)
+        query = [0.1, 0.2, 0.3, 0.4]
+        with patch.object(eng, "ivf_search", return_value=[("n2", 0.8)]) as mock_ivf:
+            result = eng.search_nodes_by_vector(query, k=3, ivf_name="my_idx")
+        mock_ivf.assert_called_once_with("my_idx", query, k=3, nprobe=8)
+        assert result == [("n2", 0.8)]
+
+    def test_accepts_json_string_query(self):
+        eng = self._make_engine(native=True)
+        query_str = "[0.1, 0.2, 0.3, 0.4]"
+        with patch.object(eng, "kg_KNN_VEC", return_value=[]) as mock_knn:
+            eng.search_nodes_by_vector(query_str, k=5)
+        mock_knn.assert_called_once_with(
+            query_str, k=5, label_filter=None, graph=None, model_key=None
+        )
+
+    def test_label_filter_forwarded_to_native(self):
+        eng = self._make_engine(native=True)
+        query = [0.1, 0.2, 0.3, 0.4]
+        with patch.object(eng, "kg_KNN_VEC", return_value=[]) as mock_knn:
+            eng.search_nodes_by_vector(query, k=5, label_filter="Person")
+        mock_knn.assert_called_once_with(
+            json.dumps([float(v) for v in query]),
+            k=5,
+            label_filter="Person",
+            graph=None,
+            model_key=None,
+        )
+
+    def test_scoped_lookup_refuses_the_ivf_fallback(self):
+        """`Graph.KG.IVFIndex` holds no graph, so an IVF answer spans every graph.
+
+        FR-013 says a scoped lookup never falls back to an unscoped scan, and this is
+        the one place the fallback was silent: without native VECTOR_COSINE the graph
+        and model_key arguments simply went nowhere and the index answered from the
+        whole namespace.
+        """
+        eng = self._make_engine(native=False)
+        query = [0.1, 0.2, 0.3, 0.4]
+        with patch.object(eng, "ivf_search", return_value=[("n2", 0.8)]) as mock_ivf:
+            for kwargs in ({"graph": "tenant:a"}, {"model_key": "minilm"}):
+                with pytest.raises(ValueError, match="IVF"):
+                    eng.search_nodes_by_vector(query, k=5, **kwargs)
+        mock_ivf.assert_not_called()
+
+    def test_the_default_graph_still_reaches_ivf(self):
+        """An explicit default graph is the same question the unscoped call asks."""
+        eng = self._make_engine(native=False)
+        query = [0.1, 0.2, 0.3, 0.4]
+        with patch.object(eng, "ivf_search", return_value=[("n2", 0.8)]) as mock_ivf:
+            result = eng.search_nodes_by_vector(query, k=3, ivf_name="my_idx", graph="")
+        mock_ivf.assert_called_once_with("my_idx", query, k=3, nprobe=8)
+        assert result == [("n2", 0.8)]
+
+    def test_nprobe_forwarded_to_ivf(self):
+        eng = self._make_engine(native=False)
+        query = [0.1, 0.2, 0.3, 0.4]
+        with patch.object(eng, "ivf_search", return_value=[]) as mock_ivf:
+            eng.search_nodes_by_vector(query, k=5, ivf_name="idx", nprobe=32)
+        mock_ivf.assert_called_once_with("idx", query, k=5, nprobe=32)

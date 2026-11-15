@@ -1,0 +1,201 @@
+{
+  "name": "ledger_content",
+  "root": "ledger_content.rs",
+  "expected_verified": 108,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "label-reader-drops-content",
+      "find": "labels:s.nodes[id].labels.insert(k),..s.nodes[id]})}else{s},",
+      "replace": "labels:s.nodes[id].labels,..s.nodes[id]})}else{s},",
+      "expect_fail_in": [
+        "theorem_primitive_records_replay_full_content"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "property-reader-drops-content",
+      "find": "props:s.nodes[id].props.insert(key,text(new))",
+      "replace": "props:s.nodes[id].props",
+      "expect_fail_in": [
+        "theorem_primitive_records_replay_full_content"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "qual-reader-drops-content",
+      "find": "quals:s.rels[id].quals.insert(key,text(new))",
+      "replace": "quals:s.rels[id].quals",
+      "expect_fail_in": [
+        "theorem_primitive_records_replay_full_content"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "prior-is-not-current",
+      "find": "seq![rec(Action::SetProp{id,key:k,prior:value(s.nodes[id].props,k),new:Some(v)})])},",
+      "replace": "seq![rec(Action::SetProp{id,key:k,prior:None,new:Some(v)})])},",
+      "expect_fail_in": [
+        "theorem_current_prior_is_derived"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "delete-snapshot-loses-content",
+      "find": "seq![rec(Action::DeleteNode{id,snapshot:s.nodes[id]})])},",
+      "replace": "seq![rec(Action::DeleteNode{id,snapshot:empty_node()})])},",
+      "expect_fail_in": [
+        "theorem_simple_snapshot_is_complete"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "existing-upsert-resets",
+      "find": "Op::CreateNode(id,upsert)=>if s.nodes.contains_key(id){if upsert{done(s,seq![])}",
+      "replace": "Op::CreateNode(id,upsert)=>if s.nodes.contains_key(id){if upsert{done(put_node(s,id,empty_node()),seq![])}",
+      "expect_fail_in": [
+        "theorem_labels_and_quals_are_not_reset_by_existing_upsert"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "duplicate-label-emits",
+      "find": "else if s.nodes[id].labels.contains(k){done(s,seq![])}",
+      "replace": "else if s.nodes[id].labels.contains(k){done(s,seq![rec(Action::AddLabel(id,k))])}",
+      "expect_fail_in": [
+        "theorem_same_value_and_label_are_noop"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "same-property-emits",
+      "find": "else if value(s.nodes[id].props,k)==Some(v){done(s,seq![])}",
+      "replace": "else if value(s.nodes[id].props,k)==Some(v){done(s,seq![rec(Action::SetProp{id,key:k,prior:Some(v),new:Some(v)})])}",
+      "expect_fail_in": [
+        "theorem_same_value_and_label_are_noop"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "transaction-prefix-leaks",
+      "find": "if rest.error.is_some(){fail(s,rest.error.unwrap())}",
+      "replace": "if rest.error.is_some(){Reply{state:rest.state,records:first.records+rest.records,error:rest.error}}",
+      "expect_fail_in": [
+        "theorem_transaction_records_replay_full_content"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "deletion-context-ignored",
+      "find": "else if blocked(g,q){Some(Error::Deleted)}",
+      "replace": "else if false && blocked(g,q){Some(Error::Deleted)}",
+      "expect_fail_in": [
+        "theorem_deleted_context_precedes_reserved"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "named-cutoff-ignored",
+      "find": "{1<=r.seq<=through}",
+      "replace": "{1<=r.seq}",
+      "expect_fail_in": [
+        "theorem_later_records_cannot_change_full_content"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "at-bound-refuses",
+      "find": "entity_count(n)>bound.unwrap()",
+      "replace": "entity_count(n)>=bound.unwrap()",
+      "expect_fail_in": [
+        "theorem_named_bound_result_projects"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "stream-obeys-bound",
+      "find": "bound.is_some() && !stream && entity_count(n)",
+      "replace": "bound.is_some() && entity_count(n)",
+      "expect_fail_in": [
+        "theorem_full_stream_and_export_fold"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "null-becomes-text",
+      "find": "{if v.is_some(){v.unwrap()}else{seq![]}}",
+      "replace": "{if v.is_some(){v.unwrap()}else{seq!['n','u','l','l']}}",
+      "expect_fail_in": [
+        "theorem_reader_null_empty_text"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "nul-graph-not-normalized",
+      "find": " || g==Some(seq!['\\0'])",
+      "replace": "",
+      "expect_fail_in": [
+        "theorem_raw_graph_tuple_normalization"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "tuple-delete-keeps-other-owner",
+      "find": "by_tuple:s.by_tuple.remove(s.rels[id].tuple),..s}}else{s},",
+      "replace": "by_tuple:if s.by_tuple[s.rels[id].tuple]==id{s.by_tuple.remove(s.rels[id].tuple)}else{s.by_tuple},..s}}else{s},",
+      "expect_fail_in": [
+        "theorem_duplicate_tuple_views_remain_distinct"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "last-prior-wins",
+      "find": "if d.contains_key(k){d[k].0}else{b}",
+      "replace": "b",
+      "expect_fail_in": [
+        "lemma_attribute_alignment_step"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "net-zero-delta-retained",
+      "find": "d.dom().filter(|f:Field|d[f].0!=d[f].1)",
+      "replace": "d.dom()",
+      "expect_fail_in": [
+        "theorem_continuous_full_content_endpoint_diff"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "allocator-does-not-advance",
+      "find": "next:if out.error.is_none() && allocating(g,q){g.next+1}",
+      "replace": "next:if out.error.is_none() && allocating(g,q){g.next}",
+      "expect_fail_in": [
+        "theorem_raw_new_rel_uses_own_fresh_counter"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "batch-carrier-fault-suppressed",
+      "find": "else if exists|i:int|0<=i<quals.len() && quals[i].0.len()==0{Some(Error::KeyCarrier)}else{None},\n Request::ReplaceQuals",
+      "replace": "else if false{Some(Error::KeyCarrier)}else{None},\n Request::ReplaceQuals",
+      "expect_fail_in": [
+        "theorem_batch_empty_key_carrier_fault"
+      ],
+      "classification": "source-algorithm-or-reader"
+    },
+    {
+      "name": "export-omits-properties",
+      "find": "props:s.nodes[k.1].props}})}",
+      "replace": "props:Map::empty()}})}",
+      "expect_fail_in": [
+        "theorem_export_preserves_complete_fields"
+      ],
+      "classification": "source-algorithm-or-reader"
+    }
+  ],
+  "additional_inputs": [
+    "../reconstruction/reconstruction.rs",
+    "alternate.rs"
+  ]
+}

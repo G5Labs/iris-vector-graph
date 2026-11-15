@@ -1,0 +1,225 @@
+/// Knowledge graph tools for MCP — Cypher query, graph loading, stats, PPR, evidence search.
+/// Exposed via Graph.KG.MCPService → iris-mcp-server → Claude Desktop.
+Class Graph.KG.MCPTools Extends %AI.Tool
+{
+
+/// Execute a Cypher query against the knowledge graph.
+/// The query is translated to SQL via the iris-vector-graph Cypher translator, executed, and results returned as JSON.
+/// Example: MATCH (a)-[r]->(b) WHERE a.id = 'hla-b27' RETURN a.id, r, b.id LIMIT 10
+Method CypherQuery(query As %String) As %DynamicObject [ Language = python ]
+{
+	try:
+		from iris_vector_graph.cypher.parser import parse_query
+		from iris_vector_graph.cypher.translator import translate_to_sql, set_schema_prefix
+		from iris_vector_graph.engine import IRISGraphEngine
+		from iris_vector_graph.embedded import EmbeddedConnection
+		import iris
+		
+		set_schema_prefix("Graph_KG")
+		sql = translate_to_sql(parse_query(query)).sql
+		# 4.6.0 R311: the engine answers the rows, so they are typed as execute_cypher's are. The raw SQL's rows
+		# carried CY_TYPED's mark ('\x01D2.5' for 2.5) and every list or map as its JSON text.
+		result = IRISGraphEngine(EmbeddedConnection(iris.sql)).execute_cypher(query)
+		if result.error:
+			return {"status": "ERROR", "error": str(result.error)}
+		rows = [list(row) for row in result.rows]
+		return {"status": "OK", "columns": list(result.columns), "rows": rows, "rowCount": len(rows), "sql": sql}
+	except Exception as e:
+		return {"status": "ERROR", "error": str(e)}
+}
+
+/// Execute a SQL query directly against the Graph_KG schema.
+/// Use this when you know the exact SQL or when Cypher translation is not needed.
+/// Example: SELECT s, p, o_id FROM Graph_KG.rdf_edges WHERE s = 'hla-b27' FETCH FIRST 10 ROWS ONLY
+Method RunSQL(query As %String) As %DynamicObject
+{
+	Set result = {}
+	Try {
+		Set stmt = ##class(%SQL.Statement).%New()
+		Set sc = stmt.%Prepare(query)
+		If $$$ISERR(sc) {
+			Do result.%Set("status", "ERROR")
+			Do result.%Set("error", $System.Status.GetErrorText(sc))
+			Return result
+		}
+		Set rs = stmt.%Execute()
+		Set cols = ##class(%DynamicArray).%New()
+		// The result has no %GetColumnName; names come from its metadata.
+		Set meta = rs.%GetMetadata()
+		For i = 1:1:meta.columns.Count() {
+			Do cols.%Push(meta.columns.GetAt(i).colName)
+		}
+		Set rows = ##class(%DynamicArray).%New()
+		While rs.%Next() {
+			Set row = ##class(%DynamicArray).%New()
+			For i = 1:1:meta.columns.Count() {
+				Do row.%Push(rs.%GetData(i))
+			}
+			Do rows.%Push(row)
+		}
+		Do result.%Set("status", "OK")
+		Do result.%Set("columns", cols)
+		Do result.%Set("rows", rows)
+		Do result.%Set("rowCount", rows.%Size())
+	} Catch ex {
+		Do result.%Set("status", "ERROR")
+		Do result.%Set("error", ex.DisplayString())
+	}
+	Return result
+}
+
+/// Load a graph file (GraphML or OBO format) into the knowledge graph.
+/// After loading, BuildKG() is called to populate the ^KG adjacency index.
+/// format: "graphml" (default) or "obo"
+Method LoadGraph(filePath As %String, format As %String = "graphml") As %DynamicObject [ Language = python ]
+{
+	try:
+		import iris
+		from iris_vector_graph.engine import IRISGraphEngine
+		
+		from iris_vector_graph.embedded import EmbeddedConnection
+		
+		engine = IRISGraphEngine(EmbeddedConnection(iris.sql))
+		
+		if format.lower() == "obo":
+			stats = engine.load_obo(filePath)
+		else:
+			import networkx as nx
+			G = nx.read_graphml(filePath)
+			stats = engine.load_networkx(G)
+		
+		# Build ^KG adjacency index
+		iris.cls("Graph.KG.Traversal").BuildKG()
+		
+		return {
+			"status": "OK",
+			"nodesLoaded": stats.get("nodes", 0),
+			"edgesLoaded": stats.get("edges", 0),
+			"buildKGCompleted": True,
+			"format": format
+		}
+	except Exception as e:
+		return {"status": "ERROR", "error": str(e)}
+}
+
+/// Get knowledge graph statistics: node count, edge count, top predicates, top labels.
+/// Call this first to understand what's in the graph before querying.
+Method GraphStats() As %DynamicObject
+{
+	Set result = {}
+	Try {
+		Set stmt = ##class(%SQL.Statement).%New()
+		
+		// Node count
+		Set sc = stmt.%Prepare("SELECT COUNT(*) AS cnt FROM Graph_KG.nodes")
+		Set rs = stmt.%Execute()
+		Do rs.%Next()
+		Set nodeCount = rs.%GetData(1)
+		
+		// Edge count
+		Set sc = stmt.%Prepare("SELECT COUNT(*) AS cnt FROM Graph_KG.rdf_edges")
+		Set rs = stmt.%Execute()
+		Do rs.%Next()
+		Set edgeCount = rs.%GetData(1)
+		
+		// Top predicates
+		Set sc = stmt.%Prepare("SELECT TOP 10 p, COUNT(*) AS cnt FROM Graph_KG.rdf_edges GROUP BY p ORDER BY cnt DESC")
+		Set rs = stmt.%Execute()
+		Set preds = ##class(%DynamicArray).%New()
+		While rs.%Next() {
+			Set obj = ##class(%DynamicObject).%New()
+			Do obj.%Set("predicate", rs.%GetData(1))
+			Do obj.%Set("count", rs.%GetData(2))
+			Do preds.%Push(obj)
+		}
+		
+		// Top labels
+		Set sc = stmt.%Prepare("SELECT TOP 10 label, COUNT(*) AS cnt FROM Graph_KG.rdf_labels GROUP BY label ORDER BY cnt DESC")
+		Set rs = stmt.%Execute()
+		Set labels = ##class(%DynamicArray).%New()
+		While rs.%Next() {
+			Set obj = ##class(%DynamicObject).%New()
+			Do obj.%Set("label", rs.%GetData(1))
+			Do obj.%Set("count", rs.%GetData(2))
+			Do labels.%Push(obj)
+		}
+		
+		Do result.%Set("status", "OK")
+		Do result.%Set("nodeCount", nodeCount)
+		Do result.%Set("edgeCount", edgeCount)
+		Do result.%Set("topPredicates", preds)
+		Do result.%Set("topLabels", labels)
+	} Catch ex {
+		Do result.%Set("status", "ERROR")
+		Do result.%Set("error", ex.DisplayString())
+	}
+	Return result
+}
+
+/// Run Personalized PageRank from seed nodes to find structurally important related concepts.
+/// Returns top-K ranked nodes with PPR scores. Use this to discover surprising connections.
+/// seeds: array of node IDs, e.g. ["hla-b27", "spondyloarthritis"]
+Method PPRWalk(seeds As %DynamicArray, topK As %Integer = 10, damping As %Double = 0.85) As %DynamicObject
+{
+	Set result = {}
+	Try {
+		Set seedJson = seeds.%ToJSON()
+		// RunJson(seeds, alpha, maxIter, bidir, revWeight, graph, exclude, limit): topK is the limit.
+		Set pprJson = ##class(Graph.KG.PageRank).RunJson(seedJson, damping, 50, 0, 1.0, "", "", topK)
+		Set pprResult = ##class(%DynamicArray).%FromJSON(pprJson)
+		
+		Set results = ##class(%DynamicArray).%New()
+		For i = 0:1:(pprResult.%Size()-1) {
+			Set item = pprResult.%Get(i)
+			Set obj = ##class(%DynamicObject).%New()
+			Do obj.%Set("nodeId", item.%Get("id"))
+			Do obj.%Set("score", item.%Get("score"), "number")
+			Do results.%Push(obj)
+		}
+		
+		Do result.%Set("status", "OK")
+		Do result.%Set("results", results)
+		Do result.%Set("seedCount", seeds.%Size())
+	} Catch ex {
+		Do result.%Set("status", "ERROR")
+		Do result.%Set("error", ex.DisplayString())
+	}
+	Return result
+}
+
+/// Search for supporting evidence in the literature using vector similarity.
+/// Requires document embeddings loaded in kg_NodeEmbeddings table.
+/// query: natural language description of what to search for
+Method EvidenceSearch(query As %String, topK As %Integer = 5) As %DynamicObject [ Language = python ]
+{
+	try:
+		import iris
+		
+		# Check if embeddings exist
+		stmt = iris.sql.prepare("SELECT COUNT(*) FROM Graph_KG.kg_NodeEmbeddings WHERE COALESCE(graph_id, '') = ''")
+		# iris.sql results are iterated, they have no next()/getColumn().
+		count = next(iter(stmt.execute()))[0]
+		
+		if count == 0:
+			return {"status": "OK", "results": [], "message": "No embeddings loaded in kg_NodeEmbeddings"}
+		
+		# Use IRIS vector search. `node_id`, not `id` (spec 227 re-keyed the table),
+		# and restricted to the default graph: a scan of every graph's vectors would
+		# answer this tool with another graph's documents.
+		sql = """
+			SELECT TOP ? node_id, VECTOR_DOT_PRODUCT(emb, (SELECT TOP 1 emb FROM Graph_KG.kg_NodeEmbeddings WHERE node_id = ? AND COALESCE(graph_id, '') = '')) AS score
+			FROM Graph_KG.kg_NodeEmbeddings
+			WHERE COALESCE(graph_id, '') = ''
+			ORDER BY score DESC
+		"""
+		stmt = iris.sql.prepare(sql)
+		rs = stmt.execute(topK, query)
+		
+		results = [{"id": row[0], "score": float(row[1])} for row in rs]
+		
+		return {"status": "OK", "results": results, "resultCount": len(results)}
+	except Exception as e:
+		return {"status": "ERROR", "error": str(e)}
+}
+
+}

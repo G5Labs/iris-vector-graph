@@ -1,0 +1,72 @@
+verification results:: 71 verified, 3 errors
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,
+23 | | }
+   | |_^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:39:10
+   |
+38 |   pub proof fn theorem_rich_known_lifecycle_keeps_deletion_time_snapshot()
+   |   ------------------------------------------------------------------------ at the end of the function body
+39 |    ensures ({
+   |  __________^
+40 | |   let initial=Store{state:empty(),next:1,dead_nodes:Set::empty(),dead_rels:Set::empty()};
+41 | |   let base=request(initial,Request::Node{id:0,upsert:false,labels:seq![seq!['L']],props:seq![(seq!['k'],seq!['1'])]});
+42 | |   let changed=execute(base.store.state,seq![Op::SetProp(0,seq!['k'],seq!['2']),Op::AddLabel(0,seq!['M'])]);
+...  |
+49 | |   && d.live[(false,0)].created && d.live[(false,0)].attrs[(1nat,seq!['k'])]==(None,Some(seq!['3']))
+50 | |  }),
+   | |___^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:71:10
+   |
+71 |    ensures fold(s,qual_records(id,qs))==put_rel(s,id,Stmt{quals:quals_map(s.rels[id].quals,qs),..s.rels[id]}),
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+74 | /  if qs.len()>0{
+75 | |   let n=put_rel(s,id,Stmt{quals:s.rels[id].quals.insert(qs[0].0,qs[0].1),..s.rels[id]});
+76 | |   assert(qual_records(id,qs).drop_first() =~= qual_records(id,qs.drop_first()));lemma_qual_record_fold(n,id,qs.drop_first());
+77 | |  }
+   | |__- at the end of the function body
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:90:10
+   |
+90 |    ensures fold(g.state,capture_step(g,row).records)==capture_step(g,row).store.state,
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+91 |   {
+92 | /  match row {
+93 | |   Row::Edge{s,p,o,raw_graph,quals}=>if !temporal_marked(quals){let qs=parsed_pairs(quals);if !(exists|i:int|0<=i<qs.len() && qs[i]...
+94 | |    let id=g.next as int;let t=tuple(s,p,o,raw_graph);let n=State{rels:g.state.rels.insert(id,Stmt{tuple:t,quals:Map::empty()}),by_...
+95 | |    lemma_qual_record_fold(n,id,qs);lemma_fold_concat(g.state,seq![rec(Action::CreateRel(id,t))],qual_records(id,qs));reveal_with_f...
+96 | |   }},_=>{reveal_with_fuel(fold,2);},
+97 | |  }
+   | |__- at the end of the function body
+
+error: aborting due to 3 previous errors; 2 warnings emitted
+

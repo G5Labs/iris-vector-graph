@@ -1,0 +1,55 @@
+verification results:: 107 verified, 1 errors
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/batch-carrier-fault-suppressed/20261115T231939Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/batch-carrier-fault-suppressed/20261115T231939Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/batch-carrier-fault-suppressed/20261115T231939Z/models/ledger_content/ledger_content.rs:338:1
+    |
+338 | pub proof fn theorem_batch_empty_key_carrier_fault(g:Store,s:int,p:Text,o:int,rg:Option<Text>,v:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/batch-carrier-fault-suppressed/20261115T231939Z/models/ledger_content/ledger_content.rs:340:10
+    |
+340 |  ensures request(g,Request::Rel{s,p,o,raw_graph:rg,upsert:true,quals:seq![(seq![],v)]}).error==Some(Error::KeyCarrier),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+344 |  assert forall|i:int|0<=i<qs.len() implies !weight_key(qs[i].0) by {assert(i==0);}
+    |  ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/batch-carrier-fault-suppressed/20261115T231939Z/models/ledger_content/ledger_content.rs:341:10
+    |
+341 |          request(g,Request::Rel{s,p,o,raw_graph:rg,upsert:true,quals:seq![(seq![],v)]}).records.len()==0,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+344 |  assert forall|i:int|0<=i<qs.len() implies !weight_key(qs[i].0) by {assert(i==0);}
+    |  ------ at the end of the function body
+
+error: aborting due to 2 previous errors; 2 warnings emitted
+

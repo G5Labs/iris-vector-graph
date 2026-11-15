@@ -1,0 +1,16 @@
+error: found a cyclic self-reference in a definition, which may result in nontermination
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:452:1
+    |
+  1 | / use vstd::prelude::*;
+  2 | | use vstd::seq_lib::*;
+  3 | | use vstd::set_lib::*;
+  4 | | use vstd::relations::sorted_by;
+...   |
+452 | | pub broadcast proof fn lemma_after_progress(ids:Seq<Node>,cursor:Node)
+    | | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ may be part of cycle (node 1 of 2 in cycle): function definition, whose body may have dependencies
+...   |
+646 | | }
+    | |_- may be part of cycle (node 2 of 2 in cycle): module-level reveal
+
+error: aborting due to 1 previous error
+

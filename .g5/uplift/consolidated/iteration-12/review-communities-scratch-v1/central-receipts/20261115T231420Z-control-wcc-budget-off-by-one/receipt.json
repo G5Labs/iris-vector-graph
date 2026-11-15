@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_already_correct_pair_still_needs_confirmation"
+    ],
+    "find": "k as int>=limit.unwrap()",
+    "name": "wcc-budget-off-by-one",
+    "replace": "k as int>limit.unwrap()"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_already_correct_pair_still_needs_confirmation"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/wcc-budget-off-by-one/20261115T231418Z/models/communities/communities.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_already_correct_pair_still_needs_confirmation": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231418Z-control-wcc-budget-off-by-one-theorem_already_correct_pair_still_needs_confirmation.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231418Z-control-wcc-budget-off-by-one.log",
+    "timed_out": false,
+    "verified": 72
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/communities/20261115T231420Z-control-wcc-budget-off-by-one/logs/20261115T231418Z-control-wcc-budget-off-by-one-theorem_already_correct_pair_still_needs_confirmation.log": "7840642a76f6c4382ae63291a5963dff0d13cfdf82890ee25295391fac0e3478",
+    ".g5/Verus_verification/results/communities/20261115T231420Z-control-wcc-budget-off-by-one/logs/20261115T231418Z-control-wcc-budget-off-by-one.log": "215665af4dac39a021b035c512b3a00bc0e1a27f2eee6c8c095dcbc50b8c8d0b"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

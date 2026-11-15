@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_cursor_tail_equivalence"
+    ],
+    "find": "Some(selected.last())",
+    "name": "cursor-overadvanced",
+    "replace": "Some(if ids.len()>selected.len(){ids[selected.len() as int]}else{selected.last()})"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_cursor_tail_equivalence"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/cursor-overadvanced/20261115T231435Z/models/communities/communities.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_cursor_tail_equivalence": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231435Z-control-cursor-overadvanced-lemma_cursor_tail_equivalence.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231435Z-control-cursor-overadvanced.log",
+    "timed_out": false,
+    "verified": 72
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/communities/20261115T231436Z-control-cursor-overadvanced/logs/20261115T231435Z-control-cursor-overadvanced-lemma_cursor_tail_equivalence.log": "389ff2306e0bd9356ea96ea833ed3343ca314c3ee248d657584d72e8e5f3184e",
+    ".g5/Verus_verification/results/communities/20261115T231436Z-control-cursor-overadvanced/logs/20261115T231435Z-control-cursor-overadvanced.log": "b18fc05716025f02dd9fdbd7097f706e47d91634f0d62765a22fe2118c959f04"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

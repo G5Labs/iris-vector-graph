@@ -1,0 +1,931 @@
+"""arno_bridge — invoke arno-callout `$ZF(-5)` rzf functions from Python (Spec 163 FR-024).
+
+Wraps the IRIS `$ZF(-4,...)` / `$ZF(-5,...)` extension function family for
+Python clients. Provides:
+
+  * `arno_available(conn)` — probe whether `libarno_callout.so` is loaded;
+    cached after first probe per connection.
+  * `arno_call(conn, fn_name, *args)` — look up `fn_name` in the loaded DLL
+    and invoke it via `$ZF(-5)`. Returns the JSON string result.
+  * `ArnoError` — raised on `<FUNCTION DOES NOT EXIST>` (fn_id=0), library
+    not loaded, or runtime error from the Rust kernel.
+
+Avoids the `%SYS.DBSRV` class-lookup path: `$ZF(-5)` invocation does NOT route
+through SQL-bindings-server class resolution. Confirmed via existing arno
+deployments (`kg_pagerank_global`, `kg_wcc_global`, `kg_cdlp_global`) working
+from external Python. (Historically tracked as "Bug S immunity"; Bug S turned
+out to be an SSH-tunnel-to-wrong-container artifact, not a real IRIS defect.)
+
+Environment overrides:
+  IVG_DISABLE_ARNO=1     — force `arno_available()` to return False
+                            (used by tests to exercise the LazyKG fallback path)
+  IVG_ARNO_LIB=/path     — the library path, ahead of the one the server resolves
+                            (Graph.KG.ArnoAccel.LibPath: ^ArnoAccel("lib_path"), else
+                            /usr/irissys/mgr/libarno_callout.so); 4.6.0 R132
+"""
+
+from __future__ import annotations
+
+import logging
+import os
+from typing import Any
+
+from iris_vector_graph.host import host_for
+from iris_vector_graph.schema_name import DEFAULT_SCHEMA
+
+logger = logging.getLogger(__name__)
+
+
+DEFAULT_LIB_PATH = "/usr/irissys/mgr/libarno_callout.so"  # Graph.KG.ArnoAccel's DEFAULTLIBPATH
+
+
+def arno_disabled() -> bool:
+    """``IVG_DISABLE_ARNO=1`` in this process's environment: the engine does not load the library. One reading for
+    every caller (4.6.0 R207: the status and the loaders read it differently)."""
+    return os.environ.get("IVG_DISABLE_ARNO", "").strip() == "1"
+
+
+def configured_lib_path() -> str:
+    """``IVG_ARNO_LIB`` from this process's environment, "" when unset or blank (4.6.0 R132)."""
+    return os.environ.get("IVG_ARNO_LIB", "").strip()
+
+
+def loader_args() -> tuple:
+    """The argument both server loaders (``ArnoAccel.Load``, ``NKGAccel.Load``) get: ``IVG_ARNO_LIB`` when set,
+    else none, so the server resolves the path one way for both (``Graph.KG.ArnoAccel.LibPath``)."""
+    path = configured_lib_path()
+    return (path,) if path else ()
+
+
+def resolve_lib_path(conn) -> str:
+    """The library path the SQL-function path probes and calls: ``IVG_ARNO_LIB``, else what the server's loaders
+    resolve (``Graph.KG.ArnoAccel.LibPath``), else :data:`DEFAULT_LIB_PATH` where that class is not deployed."""
+    path = configured_lib_path()
+    if path:
+        return path
+    host = host_for(conn)
+    if not host.method_exists("Graph.KG.ArnoAccel", "LibPath"):
+        return DEFAULT_LIB_PATH
+    return str(host.call("Graph.KG.ArnoAccel", "LibPath") or DEFAULT_LIB_PATH)
+
+
+def record_configured_lib_path(conn) -> None:
+    """Load ``IVG_ARNO_LIB`` on the server (``Graph.KG.ArnoAccel.Load``, which records it) when the server resolves
+    another path, so the SQL wrappers accept it: since 4.6.0 R288 each refuses any library but the one
+    ``Graph.KG.ArnoAccel.LibPath()`` resolves on the server, which a caller's argument cannot change. Nothing when
+    ``IVG_ARNO_LIB`` is unset or the server already resolves it. A load that fails leaves the server's path, and the
+    probe then answers that the library is not available."""
+    path = configured_lib_path()
+    if not path:
+        return
+    host = host_for(conn)
+    if not host.method_exists("Graph.KG.ArnoAccel", "LibPath"):
+        return
+    if str(host.call("Graph.KG.ArnoAccel", "LibPath") or "") != path:
+        host.call("Graph.KG.ArnoAccel", "Load", path)
+
+
+class ArnoError(RuntimeError):
+    """Raised when arno-callout invocation fails.
+
+    Subclasses error categories:
+        - LibraryNotLoaded: $ZF(-4,1,...) returned 0 / library missing
+        - FunctionNotFound: $ZF(-4,3,...) returned 0 (fn_name not in GetZFTable)
+        - RuntimeError: the Rust kernel returned an "ERROR: ..." string
+    """
+
+
+_probe_cache: dict = {}
+
+
+def _conn_key(conn) -> int:
+    """Return a stable identity key for a connection (id() suffices — connections are not hashable)."""
+    return id(conn)
+
+
+def _create_routines(conn, cur, ddls, *, schema: str) -> list:
+    """Run each ``CREATE OR REPLACE`` in ``ddls`` that the routine record (4.6.0 R133) does not list as created, with
+    this text, in ``schema``; record each one run. Answers the names created (4.6.0 R153: every wrapper was created
+    again on first use in each connection, recompiling its class and discarding the cached queries that call it)."""
+    from iris_vector_graph.routine_record import RoutineRecord, routine_name
+
+    try:
+        routines = RoutineRecord(host_for(conn), cur, schema)
+    except TypeError as exc:  # createIRIS refused the connection when the record was first read
+        logger.debug("Arno wrapper fingerprints not kept: no Native API on this connection (%s)", exc)
+        routines = RoutineRecord(None, cur, schema)
+    created = []
+    for ddl in ddls:
+        ddl = ddl.strip()
+        if routines.unchanged(ddl):
+            continue
+        if not created:
+            # 4.7.0: DDL and a class compile, and the caller commits after it (it committed the caller's work)
+            from iris_vector_graph._write_txn import refuse_in_caller_transaction
+
+            refuse_in_caller_transaction(
+                conn, f"creating the Arno SQL function {routine_name(ddl)}",
+                "a SQL function is DDL and a class compile, committed when it is made",
+            )
+        routines.forget(ddl)
+        cur.execute(ddl)
+        created.append(routines.created(ddl))
+    routines.save()
+    return created
+
+
+def _zf_wrapper_ddls(schema: str) -> list:
+    """The `CREATE OR REPLACE` of each `ivg_arno_zf_*` wrapper `_ensure_zf_call_function` creates in `schema`."""
+    return [
+        # 0-arg version (probe only). Every wrapper below is called only after this probe answered: a file that is not
+        # there is not handed to $ZF(-4,1), which writes two severity-1 lines to messages.log per process (R207, P2).
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_probe(libpath VARCHAR(512), fname VARCHAR(128))
+RETURNS BIGINT
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, fname)
+    quit:##class(%File).Exists(libpath)=0 0
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 0
+    set fnid = $ZF(-4,3,dllid,fname)
+    quit fnid
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_call_2s(libpath VARCHAR(512), fname VARCHAR(128), a1 VARCHAR(512), a2 VARCHAR(512))
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{schema}.rdf_edges")
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, fname)
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed for "_libpath
+    set fnid = $ZF(-4,3,dllid,fname)
+    quit:fnid=0 "ERROR: function not found "_fname
+    set result = $ZF(-5,dllid,fnid,a1,a2)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_call_kg_triangle(libpath VARCHAR(512), gname VARCHAR(64), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{schema}.rdf_edges")
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_triangle_count_global")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_triangle_count_global")
+    quit:fnid=0 "ERROR: kg_triangle_count_global not found"
+    set result = $ZF(-5,dllid,fnid,gname,topk)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_call_kg_scc(libpath VARCHAR(512), gname VARCHAR(64), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{schema}.rdf_edges")
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_scc_global")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_scc_global")
+    quit:fnid=0 "ERROR: kg_scc_global not found"
+    set result = $ZF(-5,dllid,fnid,gname,topk)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_call_kg_kcore(libpath VARCHAR(512), gname VARCHAR(64), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{schema}.rdf_edges")
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_kcore_global")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_kcore_global")
+    quit:fnid=0 "ERROR: kg_kcore_global not found"
+    set result = $ZF(-5,dllid,fnid,gname,topk)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_call_kg_leiden(plib VARCHAR(512), pgname VARCHAR(64), pmaxlevels INT, pgamma DOUBLE, ptol DOUBLE, ptopk INT, pmembudget INT, pseed INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{schema}.rdf_edges")
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(plib, "kg_leiden_global")
+    set dllid = $ZF(-4,1,plib)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_leiden_global")
+    quit:fnid=0 "ERROR: kg_leiden_global not found"
+    set result = $ZF(-5,dllid,fnid,pgname,pmaxlevels,pgamma,ptol,ptopk,pmembudget,pseed)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_triangle_json(libpath VARCHAR(512), gjson VARCHAR(32000), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_triangle_count_json")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_triangle_count_json")
+    quit:fnid=0 "ERROR: kg_triangle_count_json not found"
+    set result = $ZF(-5,dllid,fnid,gjson,topk)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_scc_json(libpath VARCHAR(512), gjson VARCHAR(32000), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_scc_json")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_scc_json")
+    quit:fnid=0 "ERROR: kg_scc_json not found"
+    set result = $ZF(-5,dllid,fnid,gjson,topk)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_kcore_json(libpath VARCHAR(512), gjson VARCHAR(32000), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_kcore_json")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_kcore_json")
+    quit:fnid=0 "ERROR: kg_kcore_json not found"
+    set result = $ZF(-5,dllid,fnid,gjson,topk)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_leiden_json(plib VARCHAR(512), pjson VARCHAR(32000), pmaxlevels INT, pgamma DOUBLE, ptol DOUBLE, ptopk INT, pmembudget INT, pseed INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(plib, "kg_leiden_json")
+    set dllid = $ZF(-4,1,plib)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_leiden_json")
+    quit:fnid=0 "ERROR: kg_leiden_json not found"
+    set result = $ZF(-5,dllid,fnid,pjson,pmaxlevels,pgamma,ptol,ptopk,pmembudget,pseed)
+    quit result
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_triangle_run(libpath VARCHAR(512), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_triangle_count_run")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_triangle_count_run")
+    quit:fnid=0 "ERROR: kg_triangle_count_run not found"
+    quit $ZF(-5,dllid,fnid,topk)
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_scc_run(libpath VARCHAR(512), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_scc_run")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_scc_run")
+    quit:fnid=0 "ERROR: kg_scc_run not found"
+    quit $ZF(-5,dllid,fnid,topk)
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_kcore_run(libpath VARCHAR(512), topk INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_kcore_run")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_kcore_run")
+    quit:fnid=0 "ERROR: kg_kcore_run not found"
+    quit $ZF(-5,dllid,fnid,topk)
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_leiden_run(plib VARCHAR(512), pmaxlevels INT, pgamma DOUBLE, ptol DOUBLE, ptopk INT, pmembudget INT, pseed INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(plib, "kg_leiden_run")
+    set dllid = $ZF(-4,1,plib)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_leiden_run")
+    quit:fnid=0 "ERROR: kg_leiden_run not found"
+    quit $ZF(-5,dllid,fnid,pmaxlevels,pgamma,ptol,ptopk,pmembudget,pseed)
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_get_result_chunk(libpath VARCHAR(512), offs BIGINT, len INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_get_result_chunk")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_get_result_chunk")
+    quit:fnid=0 "ERROR: kg_get_result_chunk not found"
+    quit $ZF(-5,dllid,fnid,offs,len)
+}}""",
+        f"""
+CREATE OR REPLACE FUNCTION {schema}.ivg_arno_zf_get_result_len(libpath VARCHAR(512))
+RETURNS BIGINT
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_get_result_len")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 -1
+    set fnid = $ZF(-4,3,dllid,"kg_get_result_len")
+    quit:fnid=0 -1
+    quit $ZF(-5,dllid,fnid)
+}}""",
+    ]
+
+
+def wrapper_ddls(schema: str) -> dict:
+    """``{routine name, upper case: CREATE OR REPLACE}`` for every SQL function the bridge creates in `schema`, each
+    checking its library and function (4.6.0 R288). Setup replaces a copy of one that does not (4.6.0 R293)."""
+    from iris_vector_graph.routine_record import routine_name
+
+    ddls = _zf_wrapper_ddls(schema) + [_adj_append_ddl(schema)] + _serverside_ddls(schema)
+    return {routine_name(d): d.strip() for d in ddls}
+
+
+def _ensure_zf_call_function(conn, *, schema: str = DEFAULT_SCHEMA) -> None:
+    """Install the single multi-arg SQL function that wraps load+lookup+call.
+
+    Runs once per connection and IVG Schema (``schema``, the calling engine's; spec 262), and creates only the
+    wrappers the routine record does not hold with this text (4.6.0 R153). Avoids %SYS.DBSRV class lookup: SQL
+    function bodies execute as LANGUAGE OBJECTSCRIPT inside IRIS — they don't route through the
+    class resolution that fails for `%SYSTEM.Util.Evaluate` from external Python.
+    """
+    key = _conn_key(conn)
+    if schema in _probe_cache.get(key, {}).get("ddl_schemas", ()):
+        return
+
+    cur = conn.cursor()
+    if _create_routines(conn, cur, _zf_wrapper_ddls(schema), schema=schema):
+        conn.commit()  # 4.7.0: only after creating one (never in the caller's transaction: refused there)
+
+    _probe_cache.setdefault(key, {}).setdefault("ddl_schemas", set()).add(schema)
+
+
+def arno_available(conn, *, schema: str = DEFAULT_SCHEMA) -> bool:
+    """Probe whether `libarno_callout.so` is loaded and callable from this connection.
+
+    Caches result per connection. Honors `IVG_DISABLE_ARNO=1` for forcing
+    the LazyKG fallback path in tests.
+    """
+    if arno_disabled():
+        return False
+
+    key = _conn_key(conn)
+    if key in _probe_cache and "available" in _probe_cache[key]:
+        return _probe_cache[key]["available"]
+
+    try:
+        record_configured_lib_path(conn)
+    except Exception as exc:  # the wrappers then refuse IVG_ARNO_LIB, and the probe answers "not available"
+        logger.warning("IVG_ARNO_LIB=%s could not be loaded on the server (%s); the Arno SQL functions refuse a path "
+                       "the server does not resolve", configured_lib_path(), exc)
+    try:
+        lib_path = resolve_lib_path(conn)
+    except Exception as exc:  # the probe below then says whether the library answers at the default
+        logger.debug("Arno library path not resolved on the server (%s); probing %s", exc, DEFAULT_LIB_PATH)
+        lib_path = DEFAULT_LIB_PATH
+
+    try:
+        _ensure_zf_call_function(conn, schema=schema)
+    except Exception:
+        if key not in _probe_cache:
+            _probe_cache[key] = {}
+        _probe_cache[key]["available"] = False
+        _probe_cache[key]["lib_path"] = lib_path
+        return False
+
+    try:
+        cur = conn.cursor()
+        cur.execute(f"SELECT {schema}.ivg_arno_zf_probe(?, ?)", [lib_path, "version"])
+        row = cur.fetchone()
+        fn_id = int(row[0]) if row and row[0] is not None else 0
+    except Exception:
+        if key not in _probe_cache:
+            _probe_cache[key] = {}
+        _probe_cache[key]["available"] = False
+        _probe_cache[key]["lib_path"] = lib_path
+        return False
+
+    available = fn_id > 0
+    if key not in _probe_cache:
+        _probe_cache[key] = {}
+    _probe_cache[key]["available"] = available
+    _probe_cache[key]["lib_path"] = lib_path
+    return available
+
+
+def arno_call(conn, fn_name: str, *args: Any, schema: str = DEFAULT_SCHEMA) -> str:
+    """Invoke an arno `$ZF(-5)` function by name and return its string result.
+
+    Routes to a typed SQL wrapper based on `fn_name` to satisfy IRIS SQL
+    function signature requirements (each wrapper has a fixed arg arity).
+    Avoids %SYS.DBSRV class lookup: SQL function body executes inside IRIS
+    without going through SQL-bindings-server class resolution.
+
+    Args:
+        conn: IRIS dbapi connection.
+        fn_name: One of "kg_triangle_count_global", "kg_scc_global",
+            "kg_kcore_global", "kg_leiden_global".
+        *args: Arguments matching the Rust function signature.
+        schema: The IVG Schema holding the wrappers (the calling engine's).
+
+    Returns:
+        String result from the kernel (typically JSON).
+
+    Raises:
+        ArnoError: When library not loaded, function not found, or kernel
+            returned a string starting with "ERROR:".
+    """
+    if not arno_available(conn, schema=schema):
+        raise ArnoError(
+            f"libarno_callout not available; cannot call {fn_name!r}. "
+            "Set IVG_ARNO_LIB or put libarno_callout.so at /usr/irissys/mgr/libarno_callout.so."
+        )
+
+    lib_path = _probe_cache[_conn_key(conn)]["lib_path"]
+
+    sql_fn = _SQL_FN_DISPATCH.get(fn_name)
+    if sql_fn is None:
+        raise ArnoError(
+            f"No SQL wrapper registered for {fn_name!r}. "
+            f"Supported: {sorted(_SQL_FN_DISPATCH.keys())}"
+        )
+
+    # Each wrapper is a distinct SQL function with a fixed signature, so the marker list
+    # in the dispatch table *is* the arity. Checked here because IRIS reports the mismatch
+    # as `<ARGUMENT ERROR> Incorrect number of parameters`, which names neither the
+    # function the caller asked for nor either count.
+    expected = sql_fn[1].count("?")
+    if len(args) != expected:
+        raise ArnoError(
+            f"{fn_name!r} expects {expected} argument(s) after the library path, "
+            f"got {len(args)}: {list(args)!r}"
+        )
+
+    try:
+        _ensure_zf_call_function(conn, schema=schema)
+        cur = conn.cursor()
+        cur.execute(f"SELECT {schema}.{sql_fn[0]}(?, {sql_fn[1]})", [lib_path, *args])
+        row = cur.fetchone()
+    except Exception as e:
+        raise ArnoError(f"$ZF(-5) call to {fn_name!r} failed: {e}") from e
+
+    if not row or row[0] is None:
+        raise ArnoError(f"{fn_name!r} returned NULL")
+
+    result_str = str(row[0])
+    if result_str.startswith("ERROR:"):
+        raise ArnoError(f"{fn_name!r} returned: {result_str}")
+
+    if fn_name.endswith("_run") and result_str.startswith("OK:"):
+        try:
+            total_len = int(result_str[3:])
+        except ValueError:
+            return result_str
+        if total_len <= 0:
+            return ""
+        chunks: list = []
+        offset = 0
+        chunk_size = 30000
+        cur2 = conn.cursor()
+        while offset < total_len:
+            length = min(chunk_size, total_len - offset)
+            cur2.execute(f"SELECT {schema}.ivg_arno_zf_get_result_chunk(?, ?, ?)", [lib_path, offset, length])
+            chunk_row = cur2.fetchone()
+            if not chunk_row or chunk_row[0] is None:
+                raise ArnoError(f"{fn_name!r} chunk fetch returned NULL at offset {offset}")
+            chunk = str(chunk_row[0])
+            if chunk.startswith("ERROR:"):
+                raise ArnoError(f"{fn_name!r} chunk fetch: {chunk}")
+            chunks.append(chunk)
+            offset += len(chunk) if chunk else length
+            if not chunk:
+                break
+        return "".join(chunks)
+
+    return result_str
+
+
+_SQL_FN_DISPATCH = {
+    "kg_triangle_count_global": ("ivg_arno_zf_call_kg_triangle", "?, ?"),
+    "kg_scc_global": ("ivg_arno_zf_call_kg_scc", "?, ?"),
+    "kg_kcore_global": ("ivg_arno_zf_call_kg_kcore", "?, ?"),
+    "kg_leiden_global": ("ivg_arno_zf_call_kg_leiden", "?, ?, ?, ?, ?, ?, ?"),
+    "kg_triangle_count_json": ("ivg_arno_zf_triangle_json", "?, ?"),
+    "kg_scc_json": ("ivg_arno_zf_scc_json", "?, ?"),
+    "kg_kcore_json": ("ivg_arno_zf_kcore_json", "?, ?"),
+    "kg_leiden_json": ("ivg_arno_zf_leiden_json", "?, ?, ?, ?, ?, ?, ?"),
+    "kg_triangle_count_run": ("ivg_arno_zf_triangle_run", "?"),
+    "kg_scc_run": ("ivg_arno_zf_scc_run", "?"),
+    "kg_kcore_run": ("ivg_arno_zf_kcore_run", "?"),
+    "kg_leiden_run": ("ivg_arno_zf_leiden_run", "?, ?, ?, ?, ?, ?"),
+}
+
+
+def _quote_zf_arg(arg: Any) -> str:
+    """Format a single argument for the $ZF(-5) ObjectScript expression.
+
+    Strings get double-quoted with embedded quote escaping per ObjectScript convention.
+    Numbers pass through unquoted. None becomes empty string.
+    """
+    if arg is None:
+        return '""'
+    if isinstance(arg, bool):
+        return "1" if arg else "0"
+    if isinstance(arg, (int, float)):
+        return str(arg)
+    s = str(arg).replace('"', '""')
+    return f'"{s}"'
+
+
+def remap_kernel_ids(result_json: str, idx_to_node: list) -> list:
+    """Convert integer-indexed kernel result rows back to original node IDs.
+
+    The `kg_*_run` kernels operate on integer-indexed adjacency strings and
+    emit results with `"id"` set to the stringified integer (e.g., `"42"`).
+    Map those back via `idx_to_node[i]` (built by `build_kg_adjacency_chunked`).
+
+    Returns the parsed list of result dicts with `id` rewritten to the
+    original string node IDs.
+    """
+    import json as _json
+
+    parsed = _json.loads(result_json) if result_json else []
+    out: list = []
+    for r in parsed:
+        if not isinstance(r, dict):
+            continue
+        rid = r.get("id", "")
+        try:
+            i = int(rid)
+            if 0 <= i < len(idx_to_node):
+                r = {**r, "id": idx_to_node[i]}
+        except (TypeError, ValueError):
+            pass
+        out.append(r)
+    return out
+
+
+def clear_probe_cache() -> None:
+    """Reset the per-connection probe cache. Used by tests to re-probe after deploys."""
+    _probe_cache.clear()
+
+
+def build_kg_adjacency_json(conn) -> str:
+    """Walk the default graph's `^KG("out", 0, src, predicate, dst)` via Native API and serialize as
+    `{"nodes": [...], "edges": [{"s": "...", "d": "..."}, ...]}` JSON.
+
+    This bypasses the rzf `ns.keys` truncation bug observed when iterating
+    long-string-subscripted globals from inside a `$ZF(-5)` callout. The
+    `iris.createIRIS().nextSubscript()` Native API call from Python works
+    correctly on the same data.
+
+    Used by `_*_arno` helpers in `iris_sql_store.py` to feed the `*_json`
+    Rust kernels (`kg_triangle_count_json`, `kg_scc_json`, etc.).
+
+    Note: IRIS SQL VARCHAR(32000) caps the single-call JSON payload at ~30KB.
+    For larger graphs use `build_kg_adjacency_chunked` + `kg_*_run` kernels
+    (canonical chunked-upload pattern from arno's Graph.KG.ArnoAccelNKG).
+    """
+    import json as _json
+
+    host = host_for(conn)
+
+    nodes_seen: dict = {}
+    nodes_list: list = []
+    edges: list = []
+
+    def _intern(node_id: str) -> int:
+        idx = nodes_seen.get(node_id)
+        if idx is None:
+            idx = len(nodes_list)
+            nodes_list.append(node_id)
+            nodes_seen[node_id] = idx
+        return idx
+
+    src = host.next_subscript("^KG", "out", 0, "")
+    while src is not None and src != "":
+        _intern(src)
+        pred = host.next_subscript("^KG", "out", 0, src, "")
+        while pred is not None and pred != "":
+            dst = host.next_subscript("^KG", "out", 0, src, pred, "")
+            while dst is not None and dst != "":
+                _intern(dst)
+                edges.append({"s": src, "d": dst})
+                dst = host.next_subscript("^KG", "out", 0, src, pred, dst)
+            pred = host.next_subscript("^KG", "out", 0, src, pred)
+        src = host.next_subscript("^KG", "out", 0, src)
+
+    in_src = host.next_subscript("^KG", "in", 0, "")
+    while in_src is not None and in_src != "":
+        if in_src not in nodes_seen:
+            _intern(in_src)
+        in_src = host.next_subscript("^KG", "in", 0, in_src)
+
+    return _json.dumps({"nodes": nodes_list, "edges": edges}, separators=(",", ":"))
+
+
+def _adj_append_ddl(schema: str) -> str:
+    """The `CREATE OR REPLACE` of `ivg_arno_adj_append` in `schema` (build_kg_adjacency_chunked creates it)."""
+    return f"""CREATE OR REPLACE FUNCTION {schema}.ivg_arno_adj_append(libpath VARCHAR(512), chunk VARCHAR(32000))
+RETURNS VARCHAR(64)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_adj_append")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen failed"
+    set fnid = $ZF(-4,3,dllid,"kg_adj_append")
+    quit:fnid=0 "ERROR: kg_adj_append not found"
+    quit $ZF(-5,dllid,fnid,chunk)
+}}"""
+
+
+def build_kg_adjacency_chunked(
+    conn, *, schema: str = DEFAULT_SCHEMA, server_side: bool = True
+) -> "tuple[list[str], int]":
+    """Build NKG-format adjacency string with embedded NODEMAP header by walking
+    the default graph's `^KG("out", 0, src, predicate, dst)` (spec 214's layout), then upload it in
+    30KB chunks via `kg_adj_append` to the Rust-side buffer.
+
+    Format (matches `Graph.KG.NKGAccel.ExportAdjacencyKG` + `parse_nkg_adjacency_with_nodemap`):
+
+        NODEMAP:N
+        0=node_name_0
+        1=node_name_1
+        ...
+        ---
+        0:1,2,3
+        1:0,2
+        ...
+
+    Returns (node_id_list, edge_count) for caller convenience; the kernel itself
+    resolves indices back to names via the NODEMAP header so result rows already
+    carry original node IDs and no Python-side remap is needed.
+
+    Bypasses (1) the rzf `ns.keys` truncation bug on long-string subscripts (we
+    walk via Native API in Python, which works), and (2) the 32KB single-VARCHAR
+    parameter limit (we chunk to 30KB pieces). Mirrors arno's canonical
+    `Graph.KG.ArnoAccelNKG` ObjectScript pattern adapted to run from Python.
+
+    Performance: at v1.99.0 the Python walk via Native API takes ~0.9s on
+    ER(2000, 9941e) due to ~20k `nextSubscript` round-trips. The optimized
+    server-side path (`_build_kg_adjacency_serverside`, the default) drops this to ~50ms by
+    moving the entire walk into a SQL OBJECTSCRIPT function; ``server_side=False`` walks over the Native API instead.
+
+    Raises ``ArnoError`` when the library is not available, before walking anything, and lets any failure of the walk
+    or the upload raise. Before 4.6.0 (R175) the server-side walk read the pre-214 layout `^KG("out", "", 0, ...)`,
+    failed with `<SUBSCRIPT>` on every call, and was caught here, so the fast path never ran and nothing said so.
+    """
+    if not arno_available(conn, schema=schema):
+        raise ArnoError("libarno_callout not available; cannot send adjacency chunks.")
+    if server_side:
+        return _build_kg_adjacency_serverside(conn, schema=schema)
+
+    host = host_for(conn)
+
+    node_to_idx: dict = {}
+    idx_to_node: list = []
+
+    def _intern(node_id: str) -> int:
+        idx = node_to_idx.get(node_id)
+        if idx is None:
+            idx = len(idx_to_node)
+            idx_to_node.append(node_id)
+            node_to_idx[node_id] = idx
+        return idx
+
+    src = host.next_subscript("^KG", "out", 0, "")
+    while src is not None and src != "":
+        _intern(src)
+        src = host.next_subscript("^KG", "out", 0, src)
+
+    in_src = host.next_subscript("^KG", "in", 0, "")
+    while in_src is not None and in_src != "":
+        if in_src not in node_to_idx:
+            _intern(in_src)
+        in_src = host.next_subscript("^KG", "in", 0, in_src)
+
+    edge_count = 0
+    body_lines: list = []
+    src = host.next_subscript("^KG", "out", 0, "")
+    while src is not None and src != "":
+        s_idx = node_to_idx[src]
+        nbrs: list = []
+        pred = host.next_subscript("^KG", "out", 0, src, "")
+        while pred is not None and pred != "":
+            dst = host.next_subscript("^KG", "out", 0, src, pred, "")
+            while dst is not None and dst != "":
+                d_idx = node_to_idx.get(dst)
+                if d_idx is None:
+                    d_idx = _intern(dst)
+                nbrs.append(str(d_idx))
+                edge_count += 1
+                dst = host.next_subscript("^KG", "out", 0, src, pred, dst)
+            pred = host.next_subscript("^KG", "out", 0, src, pred)
+        if nbrs:
+            body_lines.append(f"{s_idx}:{','.join(nbrs)}")
+        src = host.next_subscript("^KG", "out", 0, src)
+
+    n = len(idx_to_node)
+    header_parts = [f"NODEMAP:{n}"]
+    for i, name in enumerate(idx_to_node):
+        header_parts.append(f"{i}={name}")
+    header = "\n".join(header_parts) + "\n"
+    body = "\n".join(body_lines) + ("\n" if body_lines else "")
+    adj_str = header + "---\n" + body
+
+    chunk_size = 30000
+    cur = conn.cursor()
+    if _create_routines(conn, cur, [_adj_append_ddl(schema)], schema=schema):
+        conn.commit()  # 4.7.0: only after creating one (never in the caller's transaction: refused there)
+
+    lib_path = _probe_cache[_conn_key(conn)]["lib_path"]
+    pos = 0
+    while pos < len(adj_str):
+        chunk = adj_str[pos : pos + chunk_size]
+        cur.execute(f"SELECT {schema}.ivg_arno_adj_append(?, ?)", [lib_path, chunk])
+        row = cur.fetchone()
+        if row and row[0] and str(row[0]).startswith("ERROR"):
+            raise ArnoError(f"kg_adj_append failed: {row[0]}")
+        pos += chunk_size
+
+    return idx_to_node, edge_count
+
+
+def _serverside_ddls(schema: str) -> list:
+    """The `CREATE OR REPLACE` of `ivg_arno_build_adj` and `ivg_arno_get_node_chunk` in `schema`
+    (_build_kg_adjacency_serverside creates them)."""
+    ddl = f"""CREATE OR REPLACE FUNCTION {schema}.ivg_arno_build_adj(libpath VARCHAR(512))
+RETURNS VARCHAR(64)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{schema}.rdf_edges")
+    do ##class(Graph.KG.ArnoAccel).RequireCallout(libpath, "kg_adj_append")
+    set dllid = $ZF(-4,1,libpath)
+    quit:dllid=0 "ERROR: dlopen"
+    set fnid = $ZF(-4,3,dllid,"kg_adj_append")
+    quit:fnid=0 "ERROR: kg_adj_append"
+    kill ^||arnonodemap, ^||arnonodelookup, ^||arnonodeschunks
+    set n = 0, node = ""
+    for {{
+        set node = $Order(^KG("out",0,node))
+        quit:node=""
+        set ^||arnonodemap(n) = node
+        set ^||arnonodelookup(node) = n
+        set n = n + 1
+    }}
+    set node = ""
+    for {{
+        set node = $Order(^KG("in",0,node))
+        quit:node=""
+        if '$Data(^||arnonodelookup(node)) {{
+            set ^||arnonodemap(n) = node
+            set ^||arnonodelookup(node) = n
+            set n = n + 1
+        }}
+    }}
+    set buf = "NODEMAP:"_n_$Char(10)
+    set i = 0
+    while i < n {{
+        set buf = buf_i_"="_^||arnonodemap(i)_$Char(10)
+        set i = i + 1
+        if $Length(buf) > 12000 {{
+            do $ZF(-5,dllid,fnid,buf)
+            set buf = ""
+        }}
+    }}
+    if $Length(buf) > 0 {{
+        do $ZF(-5,dllid,fnid,buf)
+        set buf = ""
+    }}
+    do $ZF(-5,dllid,fnid,"---"_$Char(10))
+    set chunkSize = 12000
+    set ec = 0
+    set buf = ""
+    set src = ""
+    for {{
+        set src = $Order(^KG("out",0,src))
+        quit:src=""
+        set sIdx = $Get(^||arnonodelookup(src))
+        if sIdx="" continue
+        set nbrs = ""
+        set pred = ""
+        for {{
+            set pred = $Order(^KG("out",0,src,pred))
+            quit:pred=""
+            set dst = ""
+            for {{
+                set dst = $Order(^KG("out",0,src,pred,dst))
+                quit:dst=""
+                set dIdx = $Get(^||arnonodelookup(dst))
+                if dIdx="" continue
+                if nbrs'="" set nbrs = nbrs_","
+                set nbrs = nbrs_dIdx
+                set ec = ec + 1
+            }}
+        }}
+        if nbrs="" continue
+        set line = sIdx_":"_nbrs_$Char(10)
+        if $Length(buf)+$Length(line) > chunkSize {{
+            do $ZF(-5,dllid,fnid,buf)
+            set buf = ""
+        }}
+        set buf = buf_line
+    }}
+    if $Length(buf) > 0 do $ZF(-5,dllid,fnid,buf)
+    set chunkNum = 0, ndchunk = ""
+    set i = 0
+    while i < n {{
+        set entry = ^||arnonodemap(i)_$Char(31)
+        if $Length(ndchunk)+$Length(entry) > 30000 {{
+            set chunkNum = chunkNum + 1
+            set ^||arnonodeschunks(chunkNum) = ndchunk
+            set ndchunk = ""
+        }}
+        set ndchunk = ndchunk_entry
+        set i = i + 1
+    }}
+    if $Length(ndchunk) > 0 {{
+        set chunkNum = chunkNum + 1
+        set ^||arnonodeschunks(chunkNum) = ndchunk
+    }}
+    set ^||arnonodeschunks = chunkNum
+    quit "OK:"_n_":"_ec_":"_chunkNum
+}}""".strip()
+    ddl2 = f"""CREATE OR REPLACE FUNCTION {schema}.ivg_arno_get_node_chunk(idx INT)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    quit $Get(^||arnonodeschunks(idx))
+}}""".strip()
+    return [ddl, ddl2]
+
+
+def _build_kg_adjacency_serverside(conn, *, schema: str = DEFAULT_SCHEMA) -> "tuple[list[str], int]":
+    """Server-side ^KG walk: SQL OBJECTSCRIPT function does the entire walk
+    + chunked kg_adj_append calls in a single Python→IRIS round-trip.
+
+    Returns (idx_to_node, edge_count). The nodemap is built inside ObjectScript
+    via $Order on `^KG("out",0,...)` / `^KG("in",0,...)` (the default graph, spec 214's layout), then the entire
+    NODEMAP+adjacency string is built in IRIS memory and pushed to libarno's
+    Mutex<String> buffer in 30KB chunks via direct $ZF(-5,kg_adj_append,...)
+    calls. The nodemap is also persisted to `^||arnonodemap` in process-private
+    storage; the function returns "<edge_count>:<node_count>" as a tiny status
+    string, and Python pulls the nodemap out via a follow-up read.
+
+    Performance target: ~50-100ms on ER(2000,9941e), down from ~960ms for
+    the per-call Native-API path.
+    """
+    key = _conn_key(conn)
+    cache = _probe_cache.get(key, {})
+    lib_path = cache.get("lib_path", DEFAULT_LIB_PATH)
+
+    cur = conn.cursor()
+    if schema not in cache.get("serverside_ddl_schemas", ()):
+        if _create_routines(conn, cur, _serverside_ddls(schema), schema=schema):
+            conn.commit()  # 4.7.0: only after creating one (never in the caller's transaction: refused there)
+        _probe_cache.setdefault(key, {}).setdefault("serverside_ddl_schemas", set()).add(schema)
+
+    cur.execute(f"SELECT {schema}.ivg_arno_build_adj('{lib_path}')")
+    row = cur.fetchone()
+    if not row or row[0] is None:
+        raise ArnoError("ivg_arno_build_adj returned NULL")
+    status = str(row[0])
+    if status.startswith("ERROR"):
+        raise ArnoError(f"ivg_arno_build_adj: {status}")
+    if not status.startswith("OK:"):
+        raise ArnoError(f"ivg_arno_build_adj unexpected status: {status[:100]}")
+    parts = status[3:].split(":")
+    if len(parts) != 3:
+        raise ArnoError(f"ivg_arno_build_adj malformed status: {status[:100]}")
+    n = int(parts[0])
+    edge_count = int(parts[1])
+    chunk_count = int(parts[2])
+
+    if n == 0:
+        return [], 0
+
+    chunks: list = []
+    for i in range(1, chunk_count + 1):
+        cur.execute(f"SELECT {schema}.ivg_arno_get_node_chunk({i})")
+        chunk_row = cur.fetchone()
+        if chunk_row and chunk_row[0]:
+            chunks.append(str(chunk_row[0]))
+    full = "".join(chunks)
+    idx_to_node = full.rstrip("\x1f").split("\x1f") if full else []
+    return idx_to_node, edge_count

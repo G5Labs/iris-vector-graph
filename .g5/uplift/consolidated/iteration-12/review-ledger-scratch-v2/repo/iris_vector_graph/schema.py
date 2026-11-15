@@ -1,0 +1,3360 @@
+#!/usr/bin/env python3
+"""
+Domain-Agnostic Graph Schema Management
+
+Provides RDF-style graph schema utilities that can be used across domains.
+Extracted from the biomedical-specific implementation for reusability.
+"""
+
+import logging
+import re
+import warnings
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+
+from .capabilities import IRISCapabilities
+from .constants import DEFAULT_EMBEDDING_DIMENSION, DEFAULT_EMBEDDING_TABLE
+from .host import ClientHost, Host, host_for
+from .schema_name import IVGSchemaError, SchemaCursor, refuse_other_record, rewrite_schema_text
+from .security import sanitize_identifier, validate_table_name
+
+logger = logging.getLogger(__name__)
+
+#: Every name a namespace may present ``rdf_edges`` under, in the order a migration
+#: should try them. ``Graph_KG`` is the declared schema and the only one DDL can
+#: reach; the 4.5.x compatibility view in ``SQLUser`` is the second;
+#: the bare name resolves against the session's schema search path. Spec 230,
+#: FR-004 — see :meth:`GraphSchema.tighten_graph_id_column`.
+GRAPH_ID_TABLE_SPELLINGS = ("Graph_KG.rdf_edges", "SQLUser.rdf_edges", "rdf_edges")  # 4.5.x legacy
+
+#: The 4.0.0 ``rdf_edges`` declaration, named on its own because two callers need the
+#: *same* one: the full DDL script below, and the rescue that re-creates the table
+#: after deleting the v3.2.0 class that owned it. A second spelling would drift, and
+#: the whole point of the rescue is that the rebuilt table matches a fresh install.
+RDF_EDGES_DDL = """CREATE TABLE Graph_KG.rdf_edges(
+  edge_id    BIGINT IDENTITY PRIMARY KEY,
+  graph_id   VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+  s          VARCHAR(256) %EXACT NOT NULL,
+  p          VARCHAR(128) %EXACT NOT NULL,
+  o_id       VARCHAR(256) %EXACT NOT NULL,
+  qualifiers %Library.DynamicObject,
+  ekey       INTEGER NOT NULL DEFAULT 0,
+  CONSTRAINT fk_edges_source FOREIGN KEY (graph_id, s) REFERENCES Graph_KG.nodes (graph_id, node_id),
+  CONSTRAINT fk_edges_dest FOREIGN KEY (graph_id, o_id) REFERENCES Graph_KG.nodes (graph_id, node_id),
+  CONSTRAINT u_spo_graph_ekey UNIQUE (s, p, o_id, graph_id, ekey)
+)"""
+
+#: Where the edges wait while the class that owned them is deleted. DDL-owned, so
+#: deleting ``Graph.KG.Edge`` cannot take it along; named for the version that
+#: rescued them so an operator finding one left behind knows what it is.
+RESCUE_STAGING_TABLE = "rdf_edges__ivg400rescue"
+
+#: Where a rescued edge waits when it cannot go back into the 4.0.0 table: v3.2.0's FK
+#: was graph-blind, so an edge may claim a graph in which its endpoint has no node row.
+RESCUE_UNPLACED_TABLE = "rdf_edges__ivg400unplaced"
+
+#: The classes that declared ``SqlTableName = rdf_edges`` and must not survive in a
+#: namespace. ``Graph.KG.TestEdge`` went first; spec 227 deleted ``Graph.KG.Edge``.
+STALE_EDGE_CLASSES = ("Graph.KG.Edge", "Graph.KG.TestEdge")
+
+#: The compatibility view 4.5.x put over ``rdf_edges`` for unqualified reads (4.6.0 creates none, spec 262).
+#: Kept to build and recognise 4.5.x namespaces: a 3.2.0 rescue still drops it when present, since while it exists
+#: ``DROP TABLE Graph_KG.rdf_edges`` fails with SQLCODE -321, and once the v3.2.0 class it was
+#: compiled against is deleted it dangles (SQLCODE -30 on every read) while still
+#: blocking ``CREATE VIEW`` as already present.
+RDF_EDGES_COMPAT_VIEW_DDL = "CREATE VIEW SQLUser.rdf_edges AS SELECT * FROM Graph_KG.rdf_edges"  # 4.5.x legacy
+
+
+class RdfEdgesRescueError(RuntimeError):
+    """A class-owned ``rdf_edges`` was emptied but its rows did not all come back.
+
+    Its own type because ``initialize_schema``'s ObjectScript deploy is best-effort:
+    that call site logs a failed deploy at DEBUG as "expected in Docker". A rescue
+    failing there left a real 3.2.0 install with no ``Graph_KG.rdf_edges`` at all while
+    ``initialize_schema`` still reported ``objectscript_deployed: True``, so this one
+    exception is re-raised past the best-effort handler.
+    """
+
+
+def _qualifiers_equal(left: str, right: str) -> str:
+    """Null-safe, exact equality of two aliases' ``qualifiers``.
+
+    Part of the rescue's dedupe key. The staging column is ``VARCHAR(64000)`` — an
+    ordinary string, so comparable, but declared without ``%EXACT`` and therefore
+    SQLUPPER-collated: measured on IRIS, a bare ``=`` answers ``'{"A":1}' = '{"a":1}'``
+    true, which would collapse two different edges into one. ``%EXACT`` on both
+    sides compares the stored text byte for byte. ``DISTINCT`` / ``GROUP BY`` are not
+    used for the same reason: they group by the collated value.
+    """
+    return (
+        f"(%EXACT({left}.qualifiers) = %EXACT({right}.qualifiers) "
+        f"OR ({left}.qualifiers IS NULL AND {right}.qualifiers IS NULL))"
+    )
+
+
+def _call_classmethod(conn_or_cursor, class_name: str, method_name: str, *args) -> Any:
+    conn = getattr(conn_or_cursor, "_connection", conn_or_cursor)
+    host = host_for(conn)
+    if method_name.startswith("%"):
+        # Some callers run a %-method here (%BuildIndices in bulk_loader, %Exists in the
+        # schema install). The host refuses those by design, so this path dispatches
+        # without the guard to keep them working. Open decision: see the package report.
+        return host._call(class_name, method_name, *args)
+    return host.call(class_name, method_name, *args)
+
+
+def _call_classmethod_large(iris_obj, cls: str, method: str, *args) -> str:
+    """Run a class method and reassemble a ``CHUNKED:`` or ``SORTED:`` reply.
+
+    See :meth:`Host.call_large`. ``iris_obj`` is a host or a native object; a native
+    object is wrapped, so callers that still hold their own handle keep working.
+    """
+    host = iris_obj if isinstance(iris_obj, Host) else ClientHost(None, native=iris_obj)
+    return host.call_large(cls, method, *args)
+
+
+_ROUTINE_DIR = re.compile(r"\^\|\^\^([^|]+)\|")
+
+
+def _refuse_unreadable_routines(native) -> None:
+    """Raise ``ClassesUnreadable`` when IVG's classes are there but this user may not run them (4.6.0 R050).
+
+    Asked after the Native API's ``IDKEYExists`` said the sentinel class is absent: the class dictionary is in the
+    routines database, and a user without ``R`` on its resource gets 0 for every class, not an error. Running one of
+    IVG's classes tells the two apart: ``<CLASS DOES NOT EXIST>`` when it is absent, ``<PROTECT>`` naming the routines
+    database when it is refused. ``Graph.KG.Meta.IsSet`` reads one node of ``^Graph.KG.Meta`` and writes nothing.
+    """
+    from iris_vector_graph.exceptions import ClassesUnreadable
+
+    try:
+        _call_classmethod(native, "Graph.KG.Meta", "IsSet", "kg_built")
+    except Exception as exc:
+        text = str(exc)
+        found = _ROUTINE_DIR.search(text)
+        if "<PROTECT>" not in text or not found:
+            # absent (<CLASS DOES NOT EXIST>), no Native API, or a refusal that names no database (a missing
+            # %Native_ClassExecution): the dictionary's answer stands
+            return
+        raise ClassesUnreadable(
+            f"IVG's classes are in this namespace's routines database ({found.group(1)}), which this user may not "
+            f"read: {text}. "
+            "Running them over the Native API needs R on that database's resource as well as the globals "
+            "database's (ADMIN_GUIDE §3, <routines database resource>)"
+        ) from exc
+
+
+def _iris_true(value: Any) -> bool:
+    """A count or flag as IRIS returns it: an int, a bool, or the text of a number.
+
+    Anything else is False. ``bool(row[0])`` read a MagicMock's stand-in object as a
+    class that exists, so an engine built on a mock connection detected a deployed
+    namespace; a real server never answers a COUNT(*) or ``IsSet`` with an object.
+    """
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return value != 0
+    if isinstance(value, bytes):
+        value = value.decode(errors="replace")
+    if isinstance(value, str):
+        try:
+            return float(value.strip()) != 0
+        except ValueError:
+            return False
+    return False
+
+
+#: Every iFind index in one SQL schema, with the number of compiled helper classes it
+#: can be searched through. `%FIND search_index(...)` calls a *generated* class —
+#: `<owner>.<hash>`, `GeneratedBy = '<owner>.CLS'`, extending `%iFind.Find.Basic` — that
+#: the compiler writes as a side effect of compiling the owner class. A second
+#: `CompilePackage` over the owner's package deletes that compiled helper without
+#: writing a new one, because the owner is already up to date, and the index definition
+#: survives: nothing reports a problem until a query fails at Open with
+#: `<CLASS DOES NOT EXIST>`. Spec 230, FR-030.
+_IFIND_HELPER_SQL = (
+    "SELECT i.parent, i.SqlName, "
+    "(SELECT COUNT(*) FROM %Dictionary.CompiledClass c "
+    " WHERE c.GeneratedBy = i.parent || '.CLS' AND c.Super LIKE '%iFind.Find%') AS helpers "
+    "FROM %Dictionary.CompiledIndex i "
+    "WHERE i.TypeClass LIKE '%iFind%' "
+    "AND i.parent IN (SELECT Name FROM %Dictionary.CompiledClass WHERE SqlSchemaName = ?)"
+)
+
+_IFIND_HELPER_COUNT_SQL = (
+    "SELECT COUNT(*) FROM %Dictionary.CompiledClass "
+    "WHERE GeneratedBy = ? AND Super LIKE '%iFind.Find%'"
+)
+
+
+def _ifind_helper_count(cursor, owner: str) -> int:
+    cursor.execute(_IFIND_HELPER_COUNT_SQL, [f"{owner}.CLS"])
+    row = cursor.fetchone()
+    return int(row[0]) if row and row[0] is not None else 0
+
+
+def repair_ifind_helpers(cursor, *, conn=None, schema: str = "Graph_KG") -> Dict[str, bool]:
+    """Make every iFind index in `schema` searchable again, and say which are.
+
+    Compiling the owner class on its own always regenerates the helper the package
+    compile deleted, so the repair is one ``$SYSTEM.OBJ.Compile(owner, "ck-d")`` per
+    index left without one, and the re-read afterwards — not the compiler's status — is
+    the verdict. Runs after every deploy and after the ``^KG`` re-key, because both
+    compile ``Graph.KG`` and either can leave `idx_docs_text_ifind` (the ``kg_TXT``
+    leg) and `idx_props_val_ifind` (property text search) pointing at nothing.
+
+    Args:
+        cursor: A DB-API cursor, used for the two ``%Dictionary`` reads.
+        conn: The connection the compile is ordered over. Pass it: a compile is a
+            Native API call and ``createIRIS`` rejects a cursor outright
+            (``TypeError: argument 1 must be irissdk.IRISConnection, not Cursor``),
+            because a live DB-API cursor carries no reference to its connection. Only
+            omit it for a wrapped cursor that does.
+        schema: The SQL schema whose iFind indexes to check.
+
+    Returns:
+        ``{sql_index_name: searchable}``, one entry per iFind index found, empty when
+        the server will not answer the question. Never raises: a namespace with no
+        ``%Dictionary`` access, or a compile that cannot be ordered, is reported as a
+        ``False`` rather than turning schema setup into a failure.
+    """
+    try:
+        cursor.execute(_IFIND_HELPER_SQL, [schema])
+        rows = list(cursor.fetchall() or [])
+    except Exception as e:
+        logger.debug("iFind helper check skipped: %s", e)
+        return {}
+
+    result: Dict[str, bool] = {}
+    for row in rows:
+        # A row this short is not an iFind index: it is a cursor answering some other
+        # question, which is what a test fake or a connection replaying an earlier
+        # statement hands back. Skipping beats an IndexError out of a function whose
+        # contract is never to raise.
+        if row is None or len(row) < 3:
+            logger.debug("iFind helper check skipped a row of %r columns", row)
+            continue
+        owner, index_name = str(row[0]), str(row[1])
+        if int(row[2] or 0):
+            result[index_name] = True
+            continue
+        try:
+            _call_classmethod(
+                cursor if conn is None else conn, "%SYSTEM.OBJ", "Compile", owner, "ck-d"
+            )
+            searchable = _ifind_helper_count(cursor, owner) > 0
+        except Exception as e:
+            logger.warning(
+                "%s.%s has no compiled iFind helper class and could not be repaired: %s. "
+                "Text search through it fails with <CLASS DOES NOT EXIST> until %s is "
+                "recompiled.",
+                schema,
+                index_name,
+                e,
+                owner,
+            )
+            result[index_name] = False
+            continue
+        if not searchable:
+            logger.warning(
+                "%s.%s still has no compiled iFind helper class after recompiling %s.",
+                schema,
+                index_name,
+                owner,
+            )
+        result[index_name] = searchable
+    return result
+
+
+def guard_from(table: str) -> str:
+    """The FROM of a per-row guard on `table`, the qualified rdf_props or rdf_labels of an IVG Schema (`... WHERE s = ?
+    AND "key" = ?`). On a table whose statistics were taken near empty (a new namespace) IRIS answered such a guard
+    from the index that leads with the key or the label, every row holding it, so a load grew quadratically (4.7.0
+    row 2); without those the plan reads the s index, else (s, key), else the primary key, never the whole table
+    (EXPLAIN on 2026.3, each fallback measured with the better indexes dropped). Used by create_node, store_node and
+    the Cypher writers (translator._hint_row_guards); the bulk SQL templates below spell the same FROM, and
+    Graph.KG.EdgeScan's server loader its own."""
+    name = table.rsplit(".", 1)[-1]
+    if name == "rdf_props":
+        return f"%IGNOREINDEX {table}.idx_props_key, {table}.idx_props_key_valkey {table}"
+    if name == "rdf_labels":
+        return f"%IGNOREINDEX {table}.idx_labels_label {table}"
+    raise ValueError(f"guard_from: {table} is not rdf_props or rdf_labels")
+
+
+class GraphSchema:
+    """Domain-agnostic RDF-style graph schema management"""
+
+    #: The ``DeployResult`` of the latest packaged ObjectScript deploy, or None.
+    last_deploy = None
+
+    @staticmethod
+    def get_fhir_graph_schema_sql() -> str:
+        """The FHIR-graph tables (specs 231, 232, 235).
+
+        Not part of :meth:`get_base_schema_sql`: the first ``fhir_graph_register``
+        runs this, so a namespace that never registers a FHIR repository has none of
+        these tables. Every statement is idempotent or fails with "already exists".
+        """
+        return """
+-- spec 231: one row per FHIR repository projected as a named graph. The watermarks
+-- are the highest Rsrc.ID and RsrcVer.ID a sync has consumed; they move inside the
+-- same transaction as the edges they account for.
+CREATE TABLE IF NOT EXISTS Graph_KG.fhir_graphs (
+    graph_id      VARCHAR(256) %EXACT NOT NULL,
+    repo_id       VARCHAR(64) NOT NULL,
+    rsrc_schema   VARCHAR(128) NOT NULL,
+    search_schema VARCHAR(128) NOT NULL,
+    ver_schema    VARCHAR(128) NOT NULL,
+    endpoints     VARCHAR(4000) DEFAULT '[]',
+    denylist      VARCHAR(4000) DEFAULT '[]',
+    interval_s    INTEGER DEFAULT 60,
+    wm_rsrc       BIGINT DEFAULT 0,
+    wm_ver        BIGINT DEFAULT 0,
+    task_id       VARCHAR(64),
+    last_sync     TIMESTAMP,
+    last_rebuild  TIMESTAMP,
+    last_error    VARCHAR(4000),
+    last_counts   VARCHAR(32000),
+    json_links    VARCHAR(8000),
+    -- spec 235: Graph.KG.FHIRGraph INTERPVERSION of the last full interpretation.
+    -- NULL (synced before spec 235, or erased) makes the next sync re-derive every resource once.
+    interp_version INTEGER,
+    CONSTRAINT pk_fhir_graphs PRIMARY KEY (graph_id)
+);
+
+-- spec 231: a reference that did not become an edge, and why (external, missing,
+-- deleted; spec 232 adds version-not-found, ambiguous, no-definition). Owned by its
+-- source key: a resync replaces the source's rows.
+CREATE TABLE IF NOT EXISTS Graph_KG.fhir_unresolved (
+    graph_id VARCHAR(256) %EXACT NOT NULL,
+    source   VARCHAR(256) %EXACT NOT NULL,
+    param    VARCHAR(128) %EXACT NOT NULL,
+    target   VARCHAR(512) %EXACT NOT NULL,
+    reason   VARCHAR(32) NOT NULL
+);
+
+CREATE INDEX idx_fhir_unres_source ON Graph_KG.fhir_unresolved (graph_id, source);
+CREATE INDEX idx_fhir_unres_target ON Graph_KG.fhir_unresolved (graph_id, target);
+
+-- spec 232: the canonical url and version each definitional key declared at its last
+-- sync, so a url edit can find the referrers of the old url. The repository index
+-- keeps 220 characters of a url or version, so these columns do too.
+CREATE TABLE IF NOT EXISTS Graph_KG.fhir_definitions (
+    graph_id VARCHAR(256) %EXACT NOT NULL,
+    rsrc_key VARCHAR(256) %EXACT NOT NULL,
+    url      VARCHAR(220) %EXACT NOT NULL,
+    version  VARCHAR(220) %EXACT,
+    CONSTRAINT pk_fhir_definitions PRIMARY KEY (graph_id, rsrc_key)
+);
+
+CREATE INDEX idx_fhir_def_url ON Graph_KG.fhir_definitions (graph_id, url);
+
+-- spec 232: every canonical (and extension Reference) link a source carries, resolved
+-- or not. origin is 'index' or the json link entry; kind is canonical or reference.
+-- Owned by its source key: a resync replaces the source's rows.
+CREATE TABLE IF NOT EXISTS Graph_KG.fhir_canonical_refs (
+    graph_id VARCHAR(256) %EXACT NOT NULL,
+    source   VARCHAR(256) %EXACT NOT NULL,
+    param    VARCHAR(128) %EXACT NOT NULL,
+    url      VARCHAR(512) %EXACT NOT NULL,
+    version  VARCHAR(220) %EXACT,
+    origin   VARCHAR(1024) %EXACT NOT NULL,
+    kind     VARCHAR(16) NOT NULL
+);
+
+CREATE INDEX idx_fhir_cref_source ON Graph_KG.fhir_canonical_refs (graph_id, source);
+CREATE INDEX idx_fhir_cref_url ON Graph_KG.fhir_canonical_refs (graph_id, url);
+"""
+
+    @staticmethod
+    def get_base_schema_sql(
+        embedding_dimension: int = DEFAULT_EMBEDDING_DIMENSION,
+    ) -> str:
+        """Get SQL for base schema. Using explicit Graph_KG schema qualification and robust types.
+
+        Args:
+            embedding_dimension: Dimension of the vector embeddings. Defaults to
+                                 ``DEFAULT_EMBEDDING_DIMENSION`` (768) for backward
+                                 compatibility, but should be set to match your
+                                 actual embedding model (e.g. 384 for all-MiniLM-L6-v2).
+        """
+        return f"""
+-- Spec 227: a node ID is unique per graph, not per namespace.  Every table that
+-- points at a node therefore carries graph_id and references the composite key
+-- (graph_id, node_id) in that column order — the referenced constraint's own
+-- order, which IRIS requires and otherwise refuses with SQLCODE -121.
+--
+-- The two legacy embedding tables are the default route, so they declare the same
+-- composite reference every generated route declares alongside its own vector column
+-- (contracts/sql-schema.md §2).  3.2.0's single-column `fk_emb_node` had nothing
+-- unique left to point at once a node ID stopped being unique on its own; it is
+-- re-declared composite here rather than dropped, because without it an embedding
+-- can be written for a node that does not exist and a node holding one can be
+-- deleted (FR-008, data-model.md §2).
+CREATE TABLE Graph_KG.nodes(
+  node_id    VARCHAR(256) %EXACT NOT NULL,
+  graph_id   VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT pk_nodes_graph PRIMARY KEY (node_id, graph_id),
+  CONSTRAINT uq_nodes_graph_node UNIQUE (graph_id, node_id)
+);
+
+CREATE TABLE Graph_KG.rdf_labels(
+  graph_id   VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+  s          VARCHAR(256) %EXACT NOT NULL,
+  label      VARCHAR(128) %EXACT NOT NULL,
+  CONSTRAINT pk_labels PRIMARY KEY (graph_id, s, label),
+  CONSTRAINT fk_labels_node FOREIGN KEY (graph_id, s) REFERENCES Graph_KG.nodes (graph_id, node_id)
+);
+
+CREATE TABLE Graph_KG.rdf_props(
+  graph_id VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+  s        VARCHAR(256) %EXACT NOT NULL,
+  key      VARCHAR(128) %EXACT NOT NULL,
+  val      VARCHAR(64000) %EXACT,
+  val_key  VARCHAR(128) %EXACT COMPUTECODE {{set {{*}}=$extract({{val}},1,128)}} COMPUTEONCHANGE (val),
+  CONSTRAINT pk_props PRIMARY KEY (graph_id, s, key)
+);
+
+{RDF_EDGES_DDL};
+
+-- The two legacy embedding tables are the *default route* under 4.0.0, keyed the
+-- same way a generated route is (contracts/sql-schema.md §2) so that the
+-- kg_KNN_VEC procedure and a statement generated against a route name the same
+-- columns.  `id` becomes `node_id` because a node ID is no longer unique on its
+-- own, and the primary key becomes a single integer identity because IRIS only
+-- accepts an HNSW index on a table shaped that way (research R3).  Uniqueness
+-- moves to (graph_id, node_id): one vector per node per route.
+CREATE TABLE Graph_KG.kg_NodeEmbeddings (
+    emb_rowid BIGINT IDENTITY PRIMARY KEY,
+    graph_id VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+    node_id VARCHAR(256) %EXACT NOT NULL,
+    emb VECTOR(DOUBLE, {embedding_dimension}),
+    metadata %Library.DynamicObject,
+    CONSTRAINT uq_emb_graph_node UNIQUE (graph_id, node_id),
+    CONSTRAINT fk_emb_node FOREIGN KEY (graph_id, node_id) REFERENCES Graph_KG.nodes (graph_id, node_id)
+);
+
+CREATE TABLE Graph_KG.kg_NodeEmbeddings_optimized (
+    emb_rowid BIGINT IDENTITY PRIMARY KEY,
+    graph_id VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+    node_id VARCHAR(256) %EXACT NOT NULL,
+    emb VECTOR(DOUBLE, {embedding_dimension}),
+    metadata %Library.DynamicObject,
+    CONSTRAINT uq_emb_opt_graph_node UNIQUE (graph_id, node_id),
+    CONSTRAINT fk_emb_node_opt FOREIGN KEY (graph_id, node_id) REFERENCES Graph_KG.nodes (graph_id, node_id)
+);
+
+-- `kg_EdgeEmbeddings` is the *default edge route* under 4.0.0 (spec 230, FR-006),
+-- shaped like a generated edge route so one INSERT serves both.  Before 4.0.0 the
+-- primary key was the triple alone, so two graphs asserting the same edge shared one
+-- row and the second write replaced the first; the key is now (graph_id, s, p, o_id)
+-- and the primary key a single integer identity, which is the only shape IRIS accepts
+-- an HNSW index on (research R3).  `metadata` exists because the routed table has it.
+CREATE TABLE IF NOT EXISTS Graph_KG.kg_EdgeEmbeddings (
+    emb_rowid BIGINT IDENTITY PRIMARY KEY,
+    graph_id VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+    s    VARCHAR(256) %EXACT NOT NULL,
+    p    VARCHAR(512) %EXACT NOT NULL,
+    o_id VARCHAR(256) %EXACT NOT NULL,
+    emb  VECTOR(DOUBLE, {embedding_dimension}),
+    metadata VARCHAR(4000),
+    CONSTRAINT uq_edge_emb_graph_spo UNIQUE (graph_id, s, p, o_id)
+);
+
+-- One document per node per graph, and `id` is a NODE ID: the same key space as
+-- `Graph_KG.nodes.node_id`, not a document ID chosen by whoever wrote the row.
+-- That is what lets `kg_RRF_FUSE` fuse at all — its vector leg answers node IDs,
+-- and a FULL OUTER JOIN between node IDs and free-form document IDs matches
+-- nothing, so every "fused" row carried one leg and NULLs for the other.
+-- No foreign key to `nodes`: a caller may write a document before the node
+-- exists, and the 4.0.0 migration has to be able to quarantine a row whose ID
+-- names no node rather than be refused by a constraint (FR-007, FR-018).
+CREATE TABLE Graph_KG.docs(
+  graph_id VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+  id       VARCHAR(256) %EXACT NOT NULL,
+  text     VARCHAR(4000) %EXACT,
+  CONSTRAINT pk_docs PRIMARY KEY (graph_id, id)
+);
+
+CREATE INDEX idx_docs_graph ON Graph_KG.docs (graph_id);
+CREATE INDEX idx_docs_text_ifind ON TABLE Graph_KG.docs (text) AS %iFind.Index.Basic;
+
+CREATE TABLE IF NOT EXISTS Graph_KG.fhir_bridges (
+    fhir_code        VARCHAR(64) %EXACT NOT NULL,
+    kg_node_id       VARCHAR(256) %EXACT NOT NULL,
+    fhir_code_system VARCHAR(128) NOT NULL DEFAULT 'ICD10CM',
+    bridge_type      VARCHAR(64) NOT NULL DEFAULT 'icd10_to_mesh',
+    confidence       FLOAT DEFAULT 1.0,
+    source_cui       VARCHAR(16),
+    CONSTRAINT pk_bridge PRIMARY KEY (fhir_code, kg_node_id)
+);
+
+CREATE INDEX idx_bridges_code_type ON Graph_KG.fhir_bridges (fhir_code, bridge_type);
+CREATE INDEX idx_bridges_kg_node ON Graph_KG.fhir_bridges (kg_node_id);
+CREATE INDEX idx_bridges_type ON Graph_KG.fhir_bridges (bridge_type);
+
+-- spec 231: a code in a code system maps to a node in a graph. Supersedes fhir_bridges,
+-- which is migrated in with relation 'related' and source 'fhir_bridges'.
+CREATE TABLE IF NOT EXISTS Graph_KG.code_crosswalk (
+    code_system_uri VARCHAR(256) %EXACT NOT NULL,
+    code            VARCHAR(128) %EXACT NOT NULL,
+    target_graph    VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+    target_node_id  VARCHAR(256) %EXACT NOT NULL,
+    relation        VARCHAR(16) NOT NULL DEFAULT 'exact',
+    source          VARCHAR(128),
+    source_version  VARCHAR(128),
+    confidence      DOUBLE DEFAULT 1.0,
+    CONSTRAINT pk_code_crosswalk PRIMARY KEY (target_graph, target_node_id, code_system_uri, code)
+);
+
+CREATE INDEX idx_crosswalk_code ON Graph_KG.code_crosswalk (code_system_uri, code);
+
+CREATE TABLE IF NOT EXISTS Graph_KG.rdf_reifications (
+    reifier_id VARCHAR(256) %EXACT NOT NULL,
+    edge_id BIGINT NOT NULL,
+    CONSTRAINT pk_reifications PRIMARY KEY (reifier_id)
+);
+
+CREATE INDEX idx_reif_edge ON Graph_KG.rdf_reifications (edge_id);
+
+CREATE TABLE IF NOT EXISTS Graph_KG.table_mappings (
+    label         VARCHAR(255) NOT NULL PRIMARY KEY,
+    sql_table     VARCHAR(500) NOT NULL,
+    id_column     VARCHAR(255) NOT NULL,
+    prop_columns  VARCHAR(4000),
+    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS Graph_KG.relationship_mappings (
+    predicate    VARCHAR(255) NOT NULL,
+    source_label VARCHAR(255) NOT NULL,
+    target_label VARCHAR(255) NOT NULL,
+    target_fk    VARCHAR(255),
+    via_table    VARCHAR(500),
+    via_source   VARCHAR(255),
+    via_target   VARCHAR(255),
+    CONSTRAINT pk_rel_mappings PRIMARY KEY (source_label, predicate, target_label)
+);
+
+CREATE TABLE IF NOT EXISTS Graph_KG.rdf_namespaces (
+    prefix  VARCHAR(64)  NOT NULL,
+    uri     VARCHAR(512) NOT NULL,
+    CONSTRAINT pk_rdf_namespaces PRIMARY KEY (prefix)
+);
+
+-- Indexes for graph traversal performance (based on TrustGraph patterns)
+-- Single-column indexes for basic lookups
+CREATE INDEX idx_labels_s ON Graph_KG.rdf_labels (s);
+CREATE INDEX idx_labels_label ON Graph_KG.rdf_labels (label);
+CREATE INDEX idx_props_s ON Graph_KG.rdf_props (s);
+CREATE INDEX idx_props_key ON Graph_KG.rdf_props (key);
+CREATE INDEX idx_edges_s ON Graph_KG.rdf_edges (s);
+CREATE INDEX idx_edges_oid ON Graph_KG.rdf_edges (o_id);
+CREATE INDEX idx_edges_p ON Graph_KG.rdf_edges (p);
+
+-- Composite indexes for common query patterns
+CREATE INDEX idx_props_s_key ON Graph_KG.rdf_props (s, key);
+-- idx_props_key_valkey (key, val_key) is not here on purpose: on a table that has no val_key column yet IRIS builds
+-- it over `val` instead (see GraphSchema.ensure_props_value_key, which adds the column first and then the index).
+CREATE INDEX idx_edges_s_p ON Graph_KG.rdf_edges (s, p);
+CREATE INDEX idx_edges_p_oid ON Graph_KG.rdf_edges (p, o_id);
+CREATE INDEX idx_labels_s_label ON Graph_KG.rdf_labels (s, label);
+
+-- Substring indexing on rdf_props.val for fast property lookups
+CREATE INDEX idx_props_val_ifind ON TABLE Graph_KG.rdf_props (val) AS %iFind.Index.Basic;
+
+-- Functional index on edge confidence for fast filtering
+CREATE INDEX idx_edges_confidence ON Graph_KG.rdf_edges(JSON_VALUE(qualifiers, '$.confidence' RETURNING INTEGER));
+"""
+
+    @staticmethod
+    def get_indexes_sql() -> str:
+        """Get SQL to create performance indexes. Safe to run on existing databases."""
+        return """
+-- Single-column indexes
+CREATE INDEX IF NOT EXISTS idx_labels_s ON Graph_KG.rdf_labels (s);
+CREATE INDEX IF NOT EXISTS idx_labels_label ON Graph_KG.rdf_labels (label);
+CREATE INDEX IF NOT EXISTS idx_props_s ON Graph_KG.rdf_props (s);
+CREATE INDEX IF NOT EXISTS idx_props_key ON Graph_KG.rdf_props (key);
+CREATE INDEX IF NOT EXISTS idx_edges_s ON Graph_KG.rdf_edges (s);
+CREATE INDEX IF NOT EXISTS idx_edges_oid ON Graph_KG.rdf_edges (o_id);
+CREATE INDEX IF NOT EXISTS idx_edges_p ON Graph_KG.rdf_edges (p);
+-- Composite indexes for common patterns
+CREATE INDEX IF NOT EXISTS idx_props_s_key ON Graph_KG.rdf_props (s, key);
+CREATE INDEX IF NOT EXISTS idx_edges_s_p ON Graph_KG.rdf_edges (s, p);
+CREATE INDEX IF NOT EXISTS idx_edges_p_oid ON Graph_KG.rdf_edges (p, o_id);
+CREATE INDEX IF NOT EXISTS idx_labels_s_label ON Graph_KG.rdf_labels (s, label);
+
+-- Substring indexing on rdf_props.val for fast property lookups
+-- Uses IRIS iFind for high-performance substring/text search
+CREATE INDEX idx_props_val_ifind ON TABLE Graph_KG.rdf_props (val) AS %iFind.Index.Basic;
+
+-- Functional index on edge confidence for fast filtering
+-- Optimizes JSON processing by indexing the value inside the DynamicObject
+CREATE INDEX idx_edges_confidence ON Graph_KG.rdf_edges(JSON_VALUE(qualifiers, '$.confidence' RETURNING INTEGER));
+"""
+
+    @staticmethod
+    def ensure_indexes(cursor) -> Dict[str, bool]:
+        """
+        Create performance indexes if they don't exist. Safe for existing databases.
+
+        Returns:
+            Dict mapping index name to success status
+        """
+        indexes = [
+            # Single-column indexes
+            ("idx_labels_s", "CREATE INDEX idx_labels_s ON Graph_KG.rdf_labels (s)"),
+            (
+                "idx_labels_label",
+                "CREATE INDEX idx_labels_label ON Graph_KG.rdf_labels (label)",
+            ),
+            ("idx_props_s", "CREATE INDEX idx_props_s ON Graph_KG.rdf_props (s)"),
+            ("idx_props_key", "CREATE INDEX idx_props_key ON Graph_KG.rdf_props (key)"),
+            ("idx_edges_s", "CREATE INDEX idx_edges_s ON Graph_KG.rdf_edges (s)"),
+            (
+                "idx_edges_oid",
+                "CREATE INDEX idx_edges_oid ON Graph_KG.rdf_edges (o_id)",
+            ),
+            ("idx_edges_p", "CREATE INDEX idx_edges_p ON Graph_KG.rdf_edges (p)"),
+            # Composite indexes for common patterns
+            (
+                "idx_props_s_key",
+                "CREATE INDEX idx_props_s_key ON Graph_KG.rdf_props (s, key)",
+            ),
+            (
+                "idx_edges_s_p",
+                "CREATE INDEX idx_edges_s_p ON Graph_KG.rdf_edges (s, p)",
+            ),
+            (
+                "idx_edges_p_oid",
+                "CREATE INDEX idx_edges_p_oid ON Graph_KG.rdf_edges (p, o_id)",
+            ),
+            (
+                "idx_labels_s_label",
+                "CREATE INDEX idx_labels_s_label ON Graph_KG.rdf_labels (s, label)",
+            ),
+            (
+                "idx_props_val_ifind",
+                "CREATE INDEX idx_props_val_ifind ON TABLE Graph_KG.rdf_props (val) AS %iFind.Index.Basic",
+            ),
+            (
+                "idx_docs_graph",
+                "CREATE INDEX idx_docs_graph ON Graph_KG.docs (graph_id)",
+            ),
+            (
+                "idx_docs_text_ifind",
+                "CREATE INDEX idx_docs_text_ifind ON TABLE Graph_KG.docs (text) AS %iFind.Index.Basic",
+            ),
+            # idx_ledger_correlation: ensure_ledger_index, after the deploy compiles the table (4.6.0 R137)
+            (
+                "idx_edges_confidence",
+                "CREATE INDEX idx_edges_confidence ON Graph_KG.rdf_edges(JSON_VALUE(qualifiers, '$.confidence' RETURNING INTEGER))",
+            ),
+            # Drop problematic indexes
+            ("drop_idx_props_key_val", "DROP INDEX idx_props_key_val"),
+        ]
+
+        _OPTIONAL_INDEXES = {"idx_props_val_ifind", "idx_docs_text_ifind", "idx_edges_confidence"}
+
+        status = {}
+        for name, sql in indexes:
+            try:
+                cursor.execute(sql)
+                status[name] = True
+            except Exception as e:
+                err = str(e).lower()
+                sqlcode = ""
+                import re as _re
+
+                m = _re.search(r"sqlcode.*?<(-?\d+)>", err)
+                if m:
+                    sqlcode = m.group(1)
+
+                if "already exists" in err or "already has" in err or "already has index" in err:
+                    status[name] = True
+                elif sqlcode == "-400" and "rdf_edges" in sql.lower():
+                    alt_sql = GraphSchema._create_index_alter_table(name, sql)
+                    if alt_sql:
+                        try:
+                            cursor.execute(alt_sql)
+                            status[name] = True
+                            continue
+                        except Exception as e2:
+                            e2_err = str(e2).lower()
+                            if "already exists" in e2_err or "already has" in e2_err:
+                                status[name] = True
+                            else:
+                                logger.debug("Index %s ALTER TABLE fallback failed: %s", name, e2)
+                                status[name] = False
+                    else:
+                        logger.debug(
+                            "Index %s skipped (-400, no ALTER TABLE equivalent): %s",
+                            name,
+                            e,
+                        )
+                        status[name] = False
+                elif name in _OPTIONAL_INDEXES or sqlcode == "-400":
+                    logger.debug("Optional/fatal index %s skipped: %s", name, e)
+                    status[name] = False
+                else:
+                    status[name] = False
+
+        status["upgrade_val_column"] = GraphSchema.upgrade_val_column(cursor)
+        status["add_graph_id_column"] = GraphSchema.add_graph_id_column(cursor)
+        status["add_graph_id_index"] = GraphSchema.add_graph_id_index(cursor)
+        status["add_graph_oid_index"] = GraphSchema.add_graph_oid_index(cursor)
+        # The repair itself is unguarded inside the migration — a caller that runs it
+        # directly must hear that the default graph still has two spellings. Schema
+        # setup is not that caller: it records the failure and carries on, the same
+        # way every migration above it does.
+        try:
+            status["tighten_graph_id_column"] = GraphSchema.tighten_graph_id_column(cursor)
+        except Exception as e:
+            logger.debug("graph_id tightening skipped: %s", e)
+            status["tighten_graph_id_column"] = {"error": str(e)}
+        status.update(GraphSchema._spo_constraint_status(cursor))
+        status["add_graph_id_to_nodes"] = GraphSchema.add_graph_id_to_nodes(cursor)
+        try:
+            status["props_value_key"] = GraphSchema.ensure_props_value_key(cursor)
+        except Exception as e:
+            logger.warning("rdf_props value key not completed (lookups by value keep scanning): %s", e)
+            status["props_value_key"] = {"error": str(e)}
+        try:
+            status["adjacency_index"] = GraphSchema.ensure_adjacency_index(cursor)
+        except Exception as e:
+            logger.warning("adjacency functional index not declared (^KG stays write-path maintained): %s", e)
+            status["adjacency_index"] = {"error": str(e)}
+
+        return status
+
+    #: The ledger's lookup by correlation id (`ledger.revisions(correlation_id=...)`).
+    LEDGER_INDEX_DDL = "CREATE INDEX idx_ledger_correlation ON Graph_KG.ledger_revisions (correlation_id)"
+
+    @staticmethod
+    def ensure_ledger_index(cursor, build=None) -> str:
+        """Create ``idx_ledger_correlation`` on ``ledger_revisions`` when the table exists and the index does not.
+
+        ``ledger_revisions`` is the table of the class ``Graph.KG.LedgerRevision``, so it exists only after the deploy
+        has compiled it; setup calls this after the deploy (4.6.0 R137: asked for in :meth:`ensure_indexes`, before
+        the deploy, a fresh namespace got the index only from its second setup). Since R150 the class declares the
+        index, so a reload of the class keeps it; ``CREATE INDEX`` is left for a class compiled before that.
+
+        A declared index is built by nothing when the compile that declares it meets rows written before it (a 4.5
+        namespace whose first setup skipped the index), and an equality lookup through it finds none of them.
+        ``build``, when given, is called for a present index: setup passes ``LedgerRevision.BuildCorrelationIndex``,
+        which builds it only when the table has rows and the index no entry. Answers ``"present"``, ``"created"`` or
+        ``"skipped: ..."``; a refused ``CREATE INDEX`` or a failed build raises.
+        """
+        cursor.execute(
+            "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'ledger_revisions'"
+        )
+        if not cursor.fetchone():
+            return "skipped: no ledger_revisions table"
+        cursor.execute(
+            "SELECT 1 FROM INFORMATION_SCHEMA.INDEXES WHERE TABLE_SCHEMA = 'Graph_KG' "
+            "AND TABLE_NAME = 'ledger_revisions' AND INDEX_NAME = 'idx_ledger_correlation'"
+        )
+        if cursor.fetchone():
+            if build is not None:
+                build()
+            return "present"
+        cursor.execute(GraphSchema.LEDGER_INDEX_DDL)
+        return "created"
+
+    #: The functional indexes that keep the Adjacency Index current (spec 252, ADR-0008), in declaration order:
+    #: (index name, table, the ^KG stores it derives, DDL).
+    ADJACENCY_INDEXES = (
+        (
+            "idx_edges_adj",
+            "rdf_edges",
+            '^KG("out"/"in")',
+            "CREATE INDEX idx_edges_adj ON Graph_KG.rdf_edges (graph_id, s, p, o_id, qualifiers, ekey) AS Graph.KG.AdjIndex",
+        ),
+        (
+            "idx_labels_adj",
+            "rdf_labels",
+            '^KG("label")',
+            "CREATE INDEX idx_labels_adj ON Graph_KG.rdf_labels (graph_id, s, label) AS Graph.KG.LabelIndex",
+        ),
+    )
+
+    @staticmethod
+    def adjacency_index_kind(
+        cursor, name: str = "idx_edges_adj", table: str = "rdf_edges", schema: str = "Graph_KG", native=None
+    ) -> str:
+        """``functional`` when ``schema.table`` has the index ``name`` as a functional index (a TypeClass, such as
+        Graph.KG.AdjIndex), ``plain`` when an index of that name is an ordinary one, ``absent`` when there is none
+        (4.7.0 row 16: a plain ``idx_edges_adj`` was taken for the adjacency index, and ``^KG`` went unwritten).
+
+        A role without SELECT on the class dictionary (ADMIN_GUIDE §3's reading and writing roles) is refused the SQL
+        (SQLCODE -99); given ``native``, the adjacency index of ``rdf_edges`` is then asked of
+        ``Graph.KG.Adjacency.IndexKind``, which any user may call. Without it, or if that fails, the refusal raises."""
+        from iris_vector_graph._dictionary import sql_refused
+        from iris_vector_graph.schema_name import schema_package
+
+        try:
+            cursor.execute(
+                "SELECT ci.TypeClass FROM %Dictionary.CompiledIndex ci WHERE ci.SqlName = ? AND ci.parent IN "
+                "(SELECT Name FROM %Dictionary.CompiledClass WHERE SqlSchemaName = ? AND SqlTableName = ?)",
+                [name, schema, table],
+            )
+        except Exception as exc:
+            if native is None or not sql_refused(exc) or (name, table) != ("idx_edges_adj", "rdf_edges"):
+                raise
+            try:
+                kind = str(native.classMethodValue(
+                    "Graph.KG.Adjacency", "IndexKind", f"{schema_package(schema)}.rdfedges") or "")
+            except Exception:
+                kind = ""  # classes older than IndexKind: the refusal is the answer
+            if kind not in ("functional", "plain", "absent"):
+                raise exc from None
+            return kind
+        rows = cursor.fetchall()
+        if not rows:
+            return "absent"
+        return "functional" if any(r[0] for r in rows) else "plain"
+
+    @staticmethod
+    def ensure_adjacency_index(cursor) -> Dict[str, Any]:
+        """Declare the functional indexes that keep ``^KG("out"/"in"/"label")`` current with their rows (spec 252).
+
+        Only where ``Graph.KG.AdjIndex`` and ``Graph.KG.LabelIndex`` are compiled (a DDL-only namespace has no callbacks),
+        only once ``rdf_edges.ekey`` exists (the edge index reads it; spec 234's migration adds it) and ``graph_id`` is on
+        both tables (a 3.x namespace gains it in ``upgrade_to_4_0_0``), and only when the index is missing; a plain index of
+        the same name is dropped and replaced (4.7.0 row 16).
+        ``CREATE INDEX`` builds the index over every existing row, which on an install whose adjacency has drifted is also
+        the repair; that can take minutes on a large graph, so it is announced first.
+        """
+        cursor.execute(
+            "SELECT COUNT(*) FROM %Dictionary.CompiledClass WHERE Name IN ('Graph.KG.AdjIndex', 'Graph.KG.LabelIndex')"
+        )
+        row = cursor.fetchone()
+        if not row or row[0] != 2:
+            return {"skipped": "Graph.KG.AdjIndex / LabelIndex not compiled"}
+        # The edge index is declared after `backfill_temporal_rows()`, a procedure of the IVG Schema's own class
+        # (4.6.0 R126). On a 4.5.x namespace upgraded to another schema, setup's first call here (ensure_indexes,
+        # before the deploy) found 4.5.x's callback classes and no `RAG.SqlProcs`, failed on the procedure (SQLCODE
+        # -359) and logged that the index was not declared, which the call after the deploy then did. The SQL text
+        # names `Graph.KG.SqlProcs`, which a SchemaCursor rewrites to the schema's package.
+        cursor.execute("SELECT COUNT(*) FROM %Dictionary.CompiledClass WHERE Name = 'Graph.KG.SqlProcs'")
+        row = cursor.fetchone()
+        if not row or not row[0]:
+            schema = cursor._schema if isinstance(cursor, SchemaCursor) else "Graph_KG"
+            package = rewrite_schema_text("Graph.KG.SqlProcs", schema)
+            return {"skipped": f"{package} (the IVG Schema's procedures) not compiled yet"}
+        cursor.execute(
+            "SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS "
+            "WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'rdf_edges' AND COLUMN_NAME = 'ekey'"
+        )
+        if not cursor.fetchone():
+            return {"skipped": "rdf_edges has no ekey column yet"}
+        cursor.execute(
+            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Graph_KG' "
+            "AND TABLE_NAME IN ('rdf_edges', 'rdf_labels') AND COLUMN_NAME = 'graph_id'"
+        )
+        row = cursor.fetchone()
+        if not row or row[0] != 2:
+            return {"skipped": "rdf_edges / rdf_labels have no graph_id column yet"}
+        status: Dict[str, Any] = {}
+        schema = cursor._schema if isinstance(cursor, SchemaCursor) else "Graph_KG"
+        for name, table, stores, ddl in GraphSchema.ADJACENCY_INDEXES:
+            kind = GraphSchema.adjacency_index_kind(cursor, name, table, schema)
+            if kind == "functional":
+                status[name] = "present"
+                continue
+            if kind == "plain":
+                # 4.7.0 row 16: a plain index of this name maintains no ^KG, and the writers took it for this one
+                logger.warning(
+                    "%s.%s: %s is a plain index, not the adjacency index; dropping it to declare %s",
+                    schema,
+                    table,
+                    name,
+                    stores,
+                )
+                cursor.execute(f"DROP INDEX {name} ON Graph_KG.{table}")
+                status[f"{name}_replaced_plain"] = True
+            if name == "idx_edges_adj":
+                # ADR-0009: a temporal edge written before this has a ^KG shadow and no row; the build below
+                # derives ^KG from rows, so give each one its marked row first.
+                cursor.execute("SELECT Graph_KG.backfill_temporal_rows()")
+                row = cursor.fetchone()
+                status["temporal_rows_backfilled"] = row[0] if row else 0
+            # Announced for a table with rows to index; on an empty one (every fresh namespace) it is DEBUG, so a
+            # first setup logs its one summary line at INFO (4.6.0 R207, P1)
+            cursor.execute(f"SELECT TOP 1 1 FROM Graph_KG.{table}")
+            log = logger.info if cursor.fetchone() else logger.debug
+            log(
+                "Graph_KG.%s: declaring %s, which rebuilds %s from every existing row once "
+                "(minutes on a large graph); afterwards every write keeps it current and sync() is not needed for it.",
+                table,
+                name,
+                stores,
+            )
+            cursor.execute(ddl)
+            status[name] = "created"
+        return status
+
+    #: Rows the value-key backfill touches per statement: bounded so one UPDATE never holds a whole SF10 table in one go.
+    VALUE_KEY_BATCH = 200_000
+
+    @staticmethod
+    def ensure_props_value_key(cursor) -> Dict[str, Any]:
+        """Give ``rdf_props`` the column ``val_key`` (the first 128 characters of ``val``) and the index ``(key, val_key)``.
+
+        ``val`` cannot be an index subscript: v1.4.8 dropped ``(key, val)`` for <SUBSCRIPT> on long values, and since then
+        every lookup of a node by a property value scanned that key's rows (SNB SF1 profile read: 7 s, 0.6 ms with an
+        index). Three steps, each skipped when the catalog shows it done, so a second run is a no-op and an interrupted one
+        resumes: add the computed column, fill it on existing rows (a computed column is not filled for rows that exist when
+        it is added), create the index. The index comes last on purpose: the engine uses the column only when the index
+        exists, so a half-filled column is never read.
+        """
+        status: Dict[str, Any] = {}
+        cursor.execute(
+            "SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS "
+            "WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'rdf_props' AND COLUMN_NAME = 'val_key'"
+        )
+        if cursor.fetchone() is None:
+            cursor.execute(
+                "ALTER TABLE Graph_KG.rdf_props ADD COLUMN val_key VARCHAR(128) %EXACT "
+                "COMPUTECODE {set {*}=$extract({val},1,128)} COMPUTEONCHANGE (val)"
+            )
+            status["column"] = "added"
+        else:
+            status["column"] = "present"
+        filled = 0
+        previous_left = None
+        while True:
+            # SET val = val recomputes the column; only rows still missing it are touched, a batch at a time.
+            # IRIS has no UPDATE TOP; a non-correlated TOP subquery on the row id bounds the batch.
+            cursor.execute(
+                "UPDATE Graph_KG.rdf_props SET val = val WHERE %ID IN ("
+                f"SELECT TOP {GraphSchema.VALUE_KEY_BATCH} %ID FROM Graph_KG.rdf_props WHERE val_key IS NULL AND val IS NOT NULL)"
+            )
+            n = getattr(cursor, "rowcount", -1)
+            if isinstance(n, int) and n >= 0:
+                filled += n
+                if n < GraphSchema.VALUE_KEY_BATCH:
+                    break
+                continue
+            # The driver did not say how many rows changed: ask the table. Anything but a positive count (no row, a
+            # non-number from a stub cursor) ends the loop, so it cannot spin.
+            cursor.execute("SELECT COUNT(*) FROM Graph_KG.rdf_props WHERE val_key IS NULL AND val IS NOT NULL")
+            row = cursor.fetchone()
+            left = row[0] if row else 0
+            if not isinstance(left, int) or isinstance(left, bool) or left <= 0:
+                break
+            if previous_left is not None and left >= previous_left:
+                # No progress since the last pass: stop rather than spin, and leave the index uncreated.
+                status["backfill_stalled"] = left
+                break
+            previous_left = left
+        status["backfilled"] = filled
+        if "backfill_stalled" in status:
+            status["index"] = "not created: backfill incomplete"
+            return status
+        cursor.execute(
+            "SELECT 1 FROM INFORMATION_SCHEMA.INDEXES "
+            "WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'rdf_props' AND INDEX_NAME = 'idx_props_key_valkey'"
+        )
+        if cursor.fetchone() is None:
+            cursor.execute("CREATE INDEX idx_props_key_valkey ON Graph_KG.rdf_props (key, val_key)")
+            status["index"] = "created"
+        elif GraphSchema._props_value_key_index_covers_val(cursor):
+            # An index of this name that lists `val` is not ours: up to 4.4.1 the base DDL ran
+            # `CREATE INDEX ... (key, val_key)` on a table with no val_key column, which IRIS builds over `val`. It
+            # exists only when no value was long enough to be a <SUBSCRIPT> (one that long fails the build and IRIS
+            # rolls the statement back), and it makes every later insert of a long value fail. Replace it.
+            cursor.execute("DROP INDEX idx_props_key_valkey ON Graph_KG.rdf_props")
+            cursor.execute("CREATE INDEX idx_props_key_valkey ON Graph_KG.rdf_props (key, val_key)")
+            status["index"] = "rebuilt: the index of that name was on (key, val)"
+        else:
+            status["index"] = "present"
+        return status
+
+    @staticmethod
+    def _props_has_value_key_column(cursor, schema: str = "Graph_KG") -> bool:
+        cursor.execute(rewrite_schema_text(
+            "SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS "
+            "WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'rdf_props' AND COLUMN_NAME = 'val_key'", schema
+        ))
+        return cursor.fetchone() is not None
+
+    @staticmethod
+    def _props_value_key_index_covers_val(cursor) -> bool:
+        """True when ``idx_props_key_valkey`` is declared over ``val`` and not over ``val_key``."""
+        cursor.execute(
+            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.INDEXES "
+            "WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'rdf_props' AND INDEX_NAME = 'idx_props_key_valkey'"
+        )
+        columns = {str(row[0]).lower() for row in cursor.fetchall()}
+        return "val" in columns and "val_key" not in columns
+
+    #: The tables whose statistics decide whether a graph-scoped lookup reads an
+    #: index or scans the extent. `nodes` is the one that matters most: both of
+    #: `rdf_edges`' composite foreign keys resolve through it on every edge insert.
+    TUNABLE_TABLES = (
+        "nodes",
+        "rdf_edges",
+        "rdf_labels",
+        "rdf_props",
+        "rdf_reifications",
+        "docs",
+        "embedding_registry",
+        "ledger_revisions",
+    )
+
+    @staticmethod
+    def tune_tables(
+        cursor,
+        tables: Optional[Sequence[str]] = None,
+        schema: str = "Graph_KG",
+    ) -> Dict[str, bool]:
+        """Collect table statistics so the optimizer can use the graph-scoped indexes.
+
+        IVG ran `TUNE TABLE` nowhere, and on an install that spec 227 had re-keyed,
+        `WHERE node_id = ? AND graph_id = ?` planned as
+
+            Read master map Graph_KG.nodes.IDKEY, looping on ID
+
+        — a scan, measured at 5.3ms against 46,343 rows. Since spec 227 that shape is
+        on every graph-scoped read and inside both of `rdf_edges`' composite foreign
+        keys, so an untuned install paid the scan twice per edge insert: 10.2ms,
+        against 0.23ms after one `TUNE TABLE Graph_KG.nodes`, which moved the plan to
+        `Read index map Graph_KG.nodes.pk_nodes_graph`.
+
+        `TUNE TABLE` does two things a re-keyed install needs, and this call wants
+        both: it measures the rows that are actually there, and it discards the
+        cached plans prepared before the current indexes existed. So it runs at the
+        end of schema setup and again after the 4.0.0 migration, which builds each
+        re-keyed table by copying rows into a staging table and dropping the source
+        over it.
+
+        Args:
+            cursor: A DB-API cursor on the namespace to tune.
+            tables: Tune these instead of :data:`TUNABLE_TABLES`. A name with no
+                schema is read as belonging to `schema`; a qualified one is used
+                as given, which is how the registry names a routed table.
+            schema: The schema unqualified names belong to.
+
+        Returns:
+            Qualified table name → whether `TUNE TABLE` succeeded. A table this
+            install does not have reports False rather than raising: tuning is
+            worth attempting on every table and required on none.
+        """
+        names = list(tables) if tables is not None else list(GraphSchema.TUNABLE_TABLES)
+        status: Dict[str, bool] = {}
+        for name in names:
+            qualified = name if "." in name else f"{schema}.{name}"
+            try:
+                cursor.execute(f"TUNE TABLE {qualified}")
+                status[qualified] = True
+            except Exception as e:
+                # a table this install lacks is expected (3.2.0 has no ledger tables); a failed tune of one that is
+                # there leaves its plans to whatever statistics it had, so it is said (4.6.0 R312)
+                text = str(e)
+                missing = "<-30>" in text or "SQLCODE: -30" in text or "not found" in text.lower()
+                (logger.debug if missing else logger.warning)("TUNE TABLE %s %s: %s", qualified,
+                                                              "skipped" if missing else "failed", text[:300])
+                status[qualified] = False
+        return status
+
+    @staticmethod
+    def _at_234(cursor) -> bool:
+        """Whether ``rdf_edges`` already carries a NOT NULL ``ekey`` and the widened key."""
+        try:
+            cursor.execute(
+                "SELECT IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS "
+                "WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'rdf_edges' "
+                "AND COLUMN_NAME = 'ekey'"
+            )
+            row = cursor.fetchone()
+            if not row or str(row[0]).upper() != "NO":
+                return False
+            return "u_spo_graph_ekey" in GraphSchema._edge_constraints(cursor)
+        except Exception as e:
+            logger.debug("spec 234 probe failed: %s", e)
+            return False
+
+    @staticmethod
+    def _edge_constraints(cursor) -> set:
+        cursor.execute(
+            "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS "
+            "WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'rdf_edges'"
+        )
+        return {str(r[0]).lower() for r in cursor.fetchall()}
+
+    @staticmethod
+    def _spo_constraint_status(cursor) -> Dict[str, Any]:
+        """The unique-key half of schema setup.
+
+        ``update_spo_unique_constraint`` adds ``u_spo_graph`` on every run. Once the
+        table is at 234 that would put the triple-only key back beside the widened one
+        and refuse every parallel edge, so it is skipped there; before 234 it runs
+        first, and ``ensure_ekey`` then swaps it for ``u_spo_graph_ekey``.
+        """
+        status: Dict[str, Any] = {}
+        if GraphSchema._at_234(cursor):
+            status["update_spo_unique_constraint"] = True
+        else:
+            status["update_spo_unique_constraint"] = GraphSchema.update_spo_unique_constraint(cursor)
+        status["ensure_ekey"] = GraphSchema.ensure_ekey(cursor)
+        return status
+
+    @staticmethod
+    def ensure_ekey(cursor) -> Dict[str, Any]:
+        """Bring ``rdf_edges`` to spec 234: an ``ekey`` column and a unique key on
+        ``(s, p, o_id, graph_id, ekey)`` in place of ``(s, p, o_id, graph_id)``.
+
+        Five steps, each skipped when the catalog shows it done, so a second run is a
+        no-op and a run that died half way resumes: add the column, fill it with 0,
+        make it NOT NULL, add the widened key, drop the old one. The old key is dropped
+        only after the new one is in place, so the table never has neither. Every
+        existing row becomes ``ekey = 0``, which is the edge ``^KG`` already holds, so
+        neither the adjacency nor the ledger changes.
+        """
+        if GraphSchema._at_234(cursor):
+            try:
+                if "u_spo_graph" not in GraphSchema._edge_constraints(cursor):
+                    return {"status": "already at 234"}
+            except Exception:
+                return {"status": "already at 234"}
+        steps = []
+        try:
+            cursor.execute(
+                "SELECT IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS "
+                "WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = 'rdf_edges' "
+                "AND COLUMN_NAME = 'ekey'"
+            )
+            row = cursor.fetchone()
+            nullable = None if not row else str(row[0]).upper()
+            if nullable is None:
+                cursor.execute("ALTER TABLE Graph_KG.rdf_edges ADD COLUMN ekey INTEGER DEFAULT 0")
+                steps.append("add column")
+                nullable = "YES"
+            if nullable != "NO":
+                cursor.execute("UPDATE Graph_KG.rdf_edges SET ekey = 0 WHERE ekey IS NULL")
+                steps.append("fill")
+                cursor.execute("ALTER TABLE Graph_KG.rdf_edges ALTER COLUMN ekey NOT NULL")
+                steps.append("not null")
+            constraints = GraphSchema._edge_constraints(cursor)
+            if "u_spo_graph_ekey" not in constraints:
+                cursor.execute(
+                    "ALTER TABLE Graph_KG.rdf_edges ADD CONSTRAINT u_spo_graph_ekey "
+                    "UNIQUE (s, p, o_id, graph_id, ekey)"
+                )
+                steps.append("add key")
+            if "u_spo_graph" in constraints:
+                cursor.execute("ALTER TABLE Graph_KG.rdf_edges DROP CONSTRAINT u_spo_graph")
+                steps.append("drop old key")
+        except Exception as e:
+            logger.warning("rdf_edges ekey migration stopped after %s: %s", steps, e)
+            return {"status": "failed", "steps": steps, "error": str(e)}
+        if not steps:
+            return {"status": "already at 234"}
+        return {"status": "migrated", "steps": steps}
+
+    @staticmethod
+    def update_spo_unique_constraint(cursor) -> bool:
+        try:
+            cursor.execute("ALTER TABLE Graph_KG.rdf_edges DROP CONSTRAINT u_spo")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE Graph_KG.rdf_edges DROP CONSTRAINT uspo")
+        except Exception:
+            pass
+        try:
+            cursor.execute(
+                "ALTER TABLE Graph_KG.rdf_edges ADD CONSTRAINT u_spo_graph UNIQUE (s, p, o_id, graph_id)"
+            )
+            return True
+        except Exception as e:
+            if "already exists" in str(e).lower():
+                return True
+            return False
+
+    @staticmethod
+    def add_graph_id_index(cursor) -> bool:
+        try:
+            cursor.execute("CREATE INDEX idx_edges_graph_id ON Graph_KG.rdf_edges (graph_id)")
+            return True
+        except Exception as e:
+            if "already exists" in str(e).lower() or "already has" in str(e).lower():
+                return True
+            return False
+
+    @staticmethod
+    def add_graph_oid_index(cursor) -> bool:
+        """``(graph_id, o_id)``: is there an edge into this node in this graph? A bare-node retire asks it per node,
+        and so does ``fk_edges_dest`` when the row goes. Without it, statistics that call ``o_id`` unselective plan
+        both as a scan of ``u_spo_graph_ekey`` (``s`` leads it): 54 rows/s on a 500,000-row drop (4.5.2)."""
+        try:
+            cursor.execute("CREATE INDEX idx_edges_graph_oid ON Graph_KG.rdf_edges (graph_id, o_id)")
+            return True
+        except Exception as e:
+            if "already exists" in str(e).lower() or "already has" in str(e).lower():
+                return True
+            return False
+
+    @staticmethod
+    def _create_index_alter_table(name: str, create_sql: str) -> Optional[str]:
+        import re as _re
+
+        m = _re.match(
+            r"CREATE\s+INDEX\s+(\w+)\s+ON\s+([\w\.]+)\s*\(([^)]+)\)",
+            create_sql.strip(),
+            _re.IGNORECASE,
+        )
+        if not m:
+            return None
+        idx_name, table, cols = m.group(1), m.group(2), m.group(3)
+        return f"ALTER TABLE {table} ADD INDEX {idx_name} ({cols})"
+
+    @staticmethod
+    def add_graph_id_column(cursor) -> bool:
+        try:
+            cursor.execute(
+                "ALTER TABLE Graph_KG.rdf_edges ADD COLUMN graph_id VARCHAR(256) %EXACT NULL"
+            )
+            return True
+        except Exception as e:
+            err_lower = str(e).lower()
+            if "already exists" in err_lower or "duplicate" in err_lower or "unique" in err_lower:
+                return True
+            return False
+
+    @staticmethod
+    def tighten_graph_id_column(cursor) -> Dict[str, Any]:
+        """Give the default graph one spelling in ``rdf_edges``, and keep it that way.
+
+        A fresh install creates ``graph_id VARCHAR(256) %EXACT NOT NULL DEFAULT ''``.
+        ``add_graph_id_column`` adds it ``NULL`` with no default, so an upgraded
+        database holds both spellings of the default graph at once and every reader
+        needs both predicates forever.
+
+        Two steps, reported separately because they fail separately:
+
+        1. ``UPDATE ... SET graph_id = '' WHERE graph_id IS NULL``.  This runs first:
+           the ALTER cannot succeed while a single NULL row remains.
+        2. ``ALTER COLUMN graph_id NOT NULL`` so nothing writes the second spelling
+           again.  The type is deliberately *not* restated — ``ALTER COLUMN`` has no
+           way to say ``%EXACT``, so a form that repeated ``VARCHAR(256)`` would drop
+           the column back to the default collation and graph keys would stop
+           comparing exactly.  ``SET DEFAULT ''`` follows so an INSERT that omits the
+           column lands in the default graph rather than failing.
+
+        The DDL half needs IRIS to resolve the table, which it cannot do while a
+        second class also claims ``SqlTableName = rdf_edges``.  When that happens the
+        repair has still happened, and the result says so rather than claiming a
+        tightening it did not achieve.  Every writer in the package names ``graph_id``
+        explicitly, so the repair alone is enough to keep the second spelling out.
+
+        Note that ``rdf_edges`` legitimately appears twice in the catalog: IRIS
+        auto-generates a compatibility view in ``SQLUser`` over
+        ``Graph_KG.rdf_edges``.  Probe with ``TABLE_SCHEMA = 'Graph_KG'``; the view
+        carries no column defaults, so reading its row makes a required ``graph_id``
+        look nullable.  This migration only reaches a namespace with the
+        ``Graph.KG.*`` classes deployed — a namespace whose schema was built by DDL
+        alone keeps the nullable column forever.
+
+        The table name is resolved rather than assumed (spec 230, FR-004).  Every
+        statement here used to say ``Graph_KG.rdf_edges`` and nothing else, so a
+        namespace presenting the table under any other name got a migration that
+        raised ``SQLCODE -30`` on its first statement and — because
+        :meth:`ensure_indexes` records the failure and carries on — a result
+        indistinguishable from a database that needed no repair.  The declared
+        schema is tried first: the ``SQLUser`` name is a *view*, so resolving it
+        ahead of the base table would repair the rows and then silently skip the
+        ``NOT NULL`` half against something no ALTER can reach.
+
+        Returns:
+            ``{"rows_repaired": int, "not_null": bool, "default_set": bool,
+            "resolved_table": str | None, "spellings_tried": tuple[str, ...]}``.
+            ``resolved_table`` is ``None`` when no spelling resolved, which is the
+            one outcome the old shape could not express.
+        """
+        result: Dict[str, Any] = {
+            "rows_repaired": 0,
+            "not_null": False,
+            "default_set": False,
+            "resolved_table": None,
+            "spellings_tried": GRAPH_ID_TABLE_SPELLINGS,
+        }
+
+        last_error: Optional[Exception] = None
+        for table in GRAPH_ID_TABLE_SPELLINGS:
+            try:
+                cursor.execute(f"UPDATE {table} SET graph_id = '' WHERE graph_id IS NULL")
+            except Exception as e:  # unresolvable under this name; try the next
+                last_error = e
+                logger.debug("graph_id repair could not resolve %s: %s", table, e)
+                continue
+            result["resolved_table"] = table
+            break
+
+        if result["resolved_table"] is None:
+            logger.debug(
+                "graph_id tightening found no table under %s: %s",
+                ", ".join(GRAPH_ID_TABLE_SPELLINGS),
+                last_error,
+            )
+            return result
+
+        table = result["resolved_table"]
+        rowcount = getattr(cursor, "rowcount", 0)
+        try:
+            result["rows_repaired"] = max(0, int(rowcount))
+        except (TypeError, ValueError):
+            result["rows_repaired"] = 0
+
+        # 4.6.0 R138: each ALTER recompiles the table's class, so only the half the column lacks runs. A fresh install
+        # creates the column both ways, and before this every setup re-ran both ALTERs on it.
+        not_null, has_default = GraphSchema._graph_id_column_state(cursor, table)
+        result["already_tight"] = bool(not_null and has_default)
+        if not_null:
+            result["not_null"] = True
+        else:
+            try:
+                cursor.execute(f"ALTER TABLE {table} ALTER COLUMN graph_id NOT NULL")
+                result["not_null"] = True
+            except Exception as e:
+                if "already" in str(e).lower():
+                    result["not_null"] = True
+                else:
+                    logger.debug("graph_id could not be made NOT NULL: %s", e)
+
+        if has_default:
+            result["default_set"] = True
+        else:
+            try:
+                cursor.execute(f"ALTER TABLE {table} ALTER COLUMN graph_id SET DEFAULT ''")
+                result["default_set"] = True
+            except Exception as e:
+                logger.debug("graph_id default could not be set: %s", e)
+
+        return result
+
+    @staticmethod
+    def _graph_id_column_state(cursor, table: str) -> Tuple[bool, bool]:
+        """``(NOT NULL, DEFAULT '')`` for ``graph_id`` of ``table`` (``schema.rdf_edges``), read from
+        ``INFORMATION_SCHEMA.COLUMNS``; ``(False, False)`` when the catalog has no row for it (a bare or view
+        spelling), so the caller alters as it did before R138. The default is the empty string written any way the
+        catalog may show it: ``$c(0)``, which is what IRIS reports, ``''`` or empty."""
+        if "." not in table:
+            return False, False
+        schema, name = table.split(".", 1)
+        cursor.execute(
+            "SELECT IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS "
+            f"WHERE TABLE_SCHEMA = '{schema}' AND TABLE_NAME = '{name}' AND COLUMN_NAME = 'graph_id'"
+        )
+        row = cursor.fetchone()
+        if not row:
+            return False, False
+        nullable, default = row[0], row[1]
+        not_null = str(nullable).strip().upper() == "NO"
+        # IRIS 2026.3 reports DEFAULT '' as the ObjectScript expression of the empty string, `$c(0)` (measured)
+        has_default = default is not None and str(default).strip().lower() in ("", "''", "$c(0)", "$char(0)")
+        return not_null, has_default
+
+    @staticmethod
+    def get_graph_scope_migration_sql(legacy_node_keys: Sequence[str] = ()) -> List[str]:
+        """Statements that re-key a 3.2.0 schema so a node ID is unique per graph.
+
+        Spec 227, ``contracts/sql-schema.md`` §4.  The order is not interchangeable
+        and the list is returned rather than executed so the order can be asserted
+        without a database:
+
+        1. **Drop the five dependents.**  Each foreign key holds
+           ``uq_nodes_nodeid`` in place; dropping the unique first fails.
+        2. **Swap the unique constraint** on ``nodes`` for
+           ``(graph_id, node_id)``.  Column order matters: it is the order every
+           composite reference below has to repeat, because IRIS names referenced
+           columns in the referenced constraint's own order and refuses any other
+           with ``SQLCODE -121`` (research R1).
+        3. **Give labels and props their graph column**, following data-model.md
+           §3: ``ADD COLUMN`` nullable → backfill from the node's graph →
+           ``ALTER COLUMN ... NOT NULL`` → ``SET DEFAULT ''`` → re-key the primary
+           key.  ``ALTER COLUMN`` never restates the type: the restated form is
+           ``SQLCODE -25``, and restating it without ``%EXACT`` would silently drop
+           the column to default collation, which is worse than an error because
+           graph keys would stop comparing exactly (see
+           :meth:`tighten_graph_id_column`).
+        4. **Re-point the three structural dependents** at the composite key.  The
+           two embedding foreign keys are not re-added *here* because the upgrade
+           rebuilds both default-route tables from scratch
+           (:meth:`~iris_vector_graph.migrations.graph_scoped_embeddings._create_embedding_table`)
+           and the composite reference is declared in that ``CREATE TABLE``, exactly as
+           a generated route declares its own (§2).  An ``ALTER`` here would also run
+           before the rows have a graph, so it could only fail.
+
+        The backfill resolves a child row's graph through ``nodes`` and claims only a
+        row whose node sits in exactly one graph, so the column stays ``NULL`` when the
+        node is absent or lives in more than one.  That is deliberate: step 3's
+        ``NOT NULL`` then fails loudly instead of assigning an orphan to the default
+        graph or a shared node ID to whichever graph sorts first (FR-036).  The
+        migration in :mod:`iris_vector_graph.migrations` counts those rows before
+        running any of these statements and refuses the whole re-key when it finds
+        one, reporting the rows rather than repairing them.
+
+        Every statement is safe to repeat, because a killed pass is resumed by running
+        the list again (the migrator tolerates the "already done" answers): the
+        backfill claims only rows still ``NULL``, and the dedupe deletes nothing the
+        second time.
+
+        Two repairs a real 3.x-era install needed, beyond the §4 order:
+
+        * **A key over ``node_id`` alone under another name.** A 2.x-born ``nodes``
+          table declared ``node_id ... PRIMARY KEY`` inline, which IRIS names
+          ``NODES_PKEY1``. Dropping ``uq_nodes_nodeid`` by name left it in place, so
+          the catalog looked 4.0.0 while a node ID still could not be written into a
+          second graph (SQLCODE -119). The migrator finds every such key by its column
+          set and passes the names in as ``legacy_node_keys``; they are dropped after
+          the five dependents are, and ``pk_nodes_graph PRIMARY KEY (node_id,
+          graph_id)`` — what a fresh install declares — takes the primary key's place.
+          On a 3.2.0 table, which already declares it, that ``ADD`` is SQLCODE -307
+          and is tolerated as done.
+        * **Exact duplicate rows.** An install whose child tables were never keyed on
+          ``(s, label)`` / ``(s, key)`` holds full copies, and they make the composite
+          primary key fail with SQLCODE -125. Before the key is added, every copy but
+          the lowest ``%ID`` is deleted. For ``rdf_props`` a copy is only a row whose
+          ``val`` is also equal (``NULL`` equal to ``NULL``): two rows that disagree on
+          the value are a conflict, which the migrator refuses the re-key over and
+          reports, rather than keeping one value at random.
+
+        Args:
+            legacy_node_keys: Names of unique or primary keys on ``nodes`` whose
+                column set is exactly ``(node_id)``, other than ``uq_nodes_nodeid``,
+                which the list always drops.
+
+        Returns:
+            Statements in execution order, with no trailing semicolons (IRIS
+            rejects one on a statement sent through the DB-API).
+        """
+        statements: List[str] = [
+            # 1 — the five dependents that hold uq_nodes_nodeid in place
+            "ALTER TABLE Graph_KG.rdf_labels DROP CONSTRAINT fk_labels_node",
+            "ALTER TABLE Graph_KG.rdf_edges DROP CONSTRAINT fk_edges_source",
+            "ALTER TABLE Graph_KG.rdf_edges DROP CONSTRAINT fk_edges_dest",
+            "ALTER TABLE Graph_KG.kg_NodeEmbeddings DROP CONSTRAINT fk_emb_node",
+            "ALTER TABLE Graph_KG.kg_NodeEmbeddings_optimized DROP CONSTRAINT fk_emb_node_opt",
+            # 2 — the swap that makes a node ID unique per graph
+            "ALTER TABLE Graph_KG.nodes DROP CONSTRAINT uq_nodes_nodeid",
+        ]
+        for name in legacy_node_keys:
+            if name == "uq_nodes_nodeid":
+                continue
+            if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name):
+                raise ValueError(f"not a constraint name this migration can drop: {name!r}")
+            statements.append(f"ALTER TABLE Graph_KG.nodes DROP CONSTRAINT {name}")
+        statements.extend(
+            [
+                "ALTER TABLE Graph_KG.nodes ADD CONSTRAINT uq_nodes_graph_node "
+                "UNIQUE (graph_id, node_id)",
+                "ALTER TABLE Graph_KG.nodes ADD CONSTRAINT pk_nodes_graph "
+                "PRIMARY KEY (node_id, graph_id)",
+            ]
+        )
+
+        # 3 — labels and props gain graph_id, in data-model.md §3's order
+        for table, pk_name, tail in (
+            ("rdf_labels", "pk_labels", "label"),
+            ("rdf_props", "pk_props", '"key"'),
+        ):
+            qualified = f"Graph_KG.{table}"
+            # Keep the lowest %ID of each (graph_id, s, tail). Written without a
+            # correlated subquery: on IRIS 2026.3 `DELETE ... WHERE EXISTS (SELECT ...
+            # k.%ID < d.%ID)` over the same table deleted nothing, silently, while the
+            # same predicate as a SELECT answered correctly. A prop row is deleted only
+            # when a lower %ID holds the same value too, so running this list without
+            # the migrator's conflict check still never discards a distinct value — the
+            # primary key then refuses (-125) instead.
+            dedupe = (
+                f"DELETE FROM {qualified} WHERE %ID NOT IN (SELECT MIN(g.%ID) FROM "
+                f"{qualified} g GROUP BY g.graph_id, g.s, g.{tail})"
+            )
+            if table == "rdf_props":
+                dedupe += (
+                    f" AND %ID IN (SELECT d.%ID FROM {qualified} d, {qualified} k "
+                    f"WHERE k.graph_id = d.graph_id AND k.s = d.s AND k.{tail} = d.{tail} "
+                    "AND k.%ID < d.%ID AND (k.val = d.val OR (k.val IS NULL AND d.val IS NULL)))"
+                )
+            statements.extend(
+                [
+                    f"ALTER TABLE {qualified} ADD COLUMN graph_id VARCHAR(256) %EXACT NULL",
+                    f"UPDATE {qualified} c SET c.graph_id = "
+                    f"(SELECT MIN(n.graph_id) FROM Graph_KG.nodes n WHERE n.node_id = c.s) "
+                    f"WHERE c.graph_id IS NULL AND (SELECT COUNT(DISTINCT n.graph_id) "
+                    f"FROM Graph_KG.nodes n WHERE n.node_id = c.s) = 1",
+                    f"ALTER TABLE {qualified} ALTER COLUMN graph_id NOT NULL",
+                    f"ALTER TABLE {qualified} ALTER COLUMN graph_id SET DEFAULT ''",
+                    dedupe,
+                    f"ALTER TABLE {qualified} DROP CONSTRAINT {pk_name}",
+                    f"ALTER TABLE {qualified} ADD CONSTRAINT {pk_name} "
+                    f"PRIMARY KEY (graph_id, s, {tail})",
+                ]
+            )
+
+        # 4 — re-point the structural dependents; embedding routes declare their own
+        statements.extend(
+            [
+                "ALTER TABLE Graph_KG.rdf_labels ADD CONSTRAINT fk_labels_node "
+                "FOREIGN KEY (graph_id, s) REFERENCES Graph_KG.nodes (graph_id, node_id)",
+                "ALTER TABLE Graph_KG.rdf_edges ADD CONSTRAINT fk_edges_source "
+                "FOREIGN KEY (graph_id, s) REFERENCES Graph_KG.nodes (graph_id, node_id)",
+                "ALTER TABLE Graph_KG.rdf_edges ADD CONSTRAINT fk_edges_dest "
+                "FOREIGN KEY (graph_id, o_id) REFERENCES Graph_KG.nodes (graph_id, node_id)",
+            ]
+        )
+        return statements
+
+    @staticmethod
+    def add_graph_id_to_nodes(cursor, recreate_pk: bool = False) -> Dict[str, Any]:
+        """Spec 214: add graph_id column to nodes; migrate __graph pseudo-props.
+
+        This migration is safe to run on a live cluster.  It is additive-only by
+        default: it adds the column and migrates data without touching the primary key.
+        The compound PK recreation (step 4+) is gated behind ``recreate_pk=True``
+        and is intentionally NOT called from ``ensure_indexes`` because the IRIS
+        ``RENAME TABLE`` syntax is ``ALTER TABLE old RENAME new`` (without schema
+        qualification on the new name), and the intermediate ``DROP TABLE nodes``
+        step is destructive and non-recoverable on connection loss.
+
+        Step 1 (DDL, auto-commits in IRIS):
+          ALTER TABLE nodes ADD COLUMN graph_id VARCHAR(256) %EXACT NOT NULL DEFAULT ''
+        Step 2-3 (DML transaction): migrate __graph rows; delete them from rdf_props.
+        Step 4+ (optional, recreate_pk=True only): recreate nodes with compound PK
+          (node_id, graph_id) and UNIQUE (graph_id, node_id).  Requires explicit opt-in because
+          it drops the existing nodes table — only safe on a fresh schema or after a
+          verified full backup.  IRIS rename syntax: ALTER TABLE nodes_new RENAME nodes
+        """
+        result: Dict[str, Any] = {"column_added": False, "rows_migrated": 0, "pk_recreated": False}
+
+        # Step 1 — DDL (auto-commits in IRIS)
+        try:
+            cursor.execute(
+                "ALTER TABLE Graph_KG.nodes ADD COLUMN graph_id VARCHAR(256) %EXACT NOT NULL DEFAULT ''"
+            )
+            result["column_added"] = True
+        except Exception as e:
+            err = str(e).lower()
+            if "already" in err or "duplicate" in err:
+                result["column_added"] = True
+            else:
+                logger.warning("add_graph_id_to_nodes step1 failed: %s", e)
+                return result
+
+        # Step 2-3 — DML: migrate existing __graph pseudo-prop values
+        try:
+            cursor.execute(
+                "UPDATE Graph_KG.nodes n SET n.graph_id = "
+                "(SELECT p.val FROM Graph_KG.rdf_props p "
+                "WHERE p.s = n.node_id AND p.\"key\" = '__graph') "
+                "WHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props p "
+                "WHERE p.s = n.node_id AND p.\"key\" = '__graph')"
+            )
+            migrated = cursor.rowcount if cursor.rowcount is not None else 0
+            cursor.execute("DELETE FROM Graph_KG.rdf_props WHERE \"key\" = '__graph'")
+            try:
+                cursor.connection.commit()
+            except AttributeError:
+                pass
+            result["rows_migrated"] = migrated
+        except Exception as e:
+            logger.warning("add_graph_id_to_nodes migration DML failed: %s", e)
+
+        if not recreate_pk:
+            # Default path: additive migration only. The compound PK is only required
+            # for strict multi-tenant isolation and must be opted into explicitly via
+            # recreate_pk=True after a full backup. Spec 227's unique swap is a
+            # separate migration (get_graph_scope_migration_sql) because it also
+            # re-points every dependent key.
+            return result
+
+        # Step 4+ — optional compound-PK recreation (recreate_pk=True only).
+        # Check if it already exists first — safe to skip if so.
+        try:
+            cursor.execute(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS "
+                "WHERE TABLE_SCHEMA='Graph_KG' AND TABLE_NAME='nodes' "
+                "AND CONSTRAINT_NAME='pk_nodes_graph'"
+            )
+            row = cursor.fetchone()
+            if row and int(row[0]) > 0:
+                result["pk_recreated"] = True
+                return result
+        except Exception:
+            pass
+
+        try:
+            cursor.execute(
+                """
+                CREATE TABLE Graph_KG.nodes_new (
+                    node_id    VARCHAR(256) %EXACT NOT NULL,
+                    graph_id   VARCHAR(256) %EXACT NOT NULL DEFAULT '',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CONSTRAINT pk_nodes_graph PRIMARY KEY (node_id, graph_id),
+                    CONSTRAINT uq_nodes_graph_node UNIQUE (graph_id, node_id)
+                )
+            """
+            )
+            cursor.execute(
+                "INSERT INTO Graph_KG.nodes_new (node_id, graph_id, created_at) "
+                "SELECT node_id, graph_id, created_at FROM Graph_KG.nodes"
+            )
+            cursor.execute("DROP TABLE Graph_KG.nodes")
+            # IRIS rename syntax: ALTER TABLE old_name RENAME new_name
+            # The new name must NOT be schema-qualified.
+            try:
+                cursor.execute("ALTER TABLE Graph_KG.nodes_new RENAME nodes")
+                result["pk_recreated"] = True
+            except Exception as rename_err:
+                # Rename failed after DROP — data is in nodes_new, nodes is gone.
+                # Log loudly; caller must run ALTER TABLE Graph_KG.nodes_new RENAME nodes
+                # manually to recover.
+                logger.error(
+                    "add_graph_id_to_nodes: DROP succeeded but RENAME failed (%s). "
+                    "Data is in Graph_KG.nodes_new. Run: "
+                    "ALTER TABLE Graph_KG.nodes_new RENAME nodes",
+                    rename_err,
+                )
+            try:
+                conn = getattr(cursor, "connection", None)
+                if conn:
+                    conn.commit()
+            except Exception:
+                pass
+        except Exception as e:
+            logger.warning("add_graph_id_to_nodes table recreation failed: %s", e)
+            try:
+                conn = getattr(cursor, "connection", None)
+                if conn:
+                    conn.rollback()
+            except Exception:
+                pass
+        return result
+
+    @staticmethod
+    def disable_indexes(cursor, schema: str = "Graph_KG") -> Dict[str, bool]:
+        """
+        Disable indexes for bulk loading. Re-enable with rebuild_indexes() after loading.
+
+        This dramatically speeds up bulk INSERT operations by skipping index maintenance.
+
+        Args:
+            cursor: A DB-API cursor; a plain one is fine, the statements already name ``schema``.
+            schema: The IVG Schema whose tables lose the indexes (4.6.0 R243: a bare ``DROP INDEX`` dropped a RAG
+                namespace's indexes, and ``rebuild_indexes`` then recreated them on ``Graph_KG``).
+
+        Returns:
+            Dict mapping index name to success status
+        """
+        # Only drop indexes on tables that support DDL from a cursor connection.
+        # rdf_edges is left out: DROP INDEX on it via a cursor has returned SQLCODE
+        # -400, which corrupts the connection's parameter binding state for every
+        # later call on that cursor. This was once explained by `Graph.KG.Edge`
+        # owning the table as a persistent class; spec 227 deleted that class, so the
+        # table is DDL-declared like the others and the explanation no longer holds.
+        # The omission stays because it is measured behaviour and costs only the bulk
+        # speed-up on one table — not because the reason is understood.
+        indexes = [
+            "idx_labels_s",
+            "idx_labels_label",
+            "idx_labels_s_label",
+            "idx_props_s",
+            "idx_props_key",
+            "idx_props_s_key",
+            "idx_props_key_valkey",
+        ]
+
+        tables = dict(GraphSchema._bulk_index_tables())
+        status = {}
+        for name in indexes:
+            try:
+                safe_name = sanitize_identifier(name)
+                cursor.execute(rewrite_schema_text(f"DROP INDEX {safe_name} ON Graph_KG.{tables[name]}", schema))
+                status[name] = True
+            except Exception as e:
+                err = str(e).lower()
+                if "does not exist" in err or "not found" in err:
+                    status[name] = True  # Already gone
+                else:
+                    status[name] = False
+        return status
+
+    # The exact CREATE INDEX statements for indexes that disable_indexes() drops.
+    # Must stay in sync with the list in disable_indexes().
+    # rdf_edges indexes are NOT included, matching disable_indexes(): DDL on that
+    # table via a cursor has returned SQLCODE -400 and corrupted the connection's
+    # parameter binding state. See disable_indexes() for why the old explanation
+    # (Graph.KG.Edge owning the table) no longer applies.
+    _BULK_INDEX_DDL = [
+        ("idx_labels_s", "CREATE INDEX idx_labels_s ON Graph_KG.rdf_labels (s)"),
+        ("idx_labels_label", "CREATE INDEX idx_labels_label ON Graph_KG.rdf_labels (label)"),
+        ("idx_labels_s_label", "CREATE INDEX idx_labels_s_label ON Graph_KG.rdf_labels (s, label)"),
+        ("idx_props_s", "CREATE INDEX idx_props_s ON Graph_KG.rdf_props (s)"),
+        ("idx_props_key", "CREATE INDEX idx_props_key ON Graph_KG.rdf_props (key)"),
+        ("idx_props_s_key", "CREATE INDEX idx_props_s_key ON Graph_KG.rdf_props (s, key)"),
+        # Skipped (status False) on an install the value-key migration has not reached: IRIS would not fail the
+        # statement, it would index `val` (see ensure_props_value_key).
+        ("idx_props_key_valkey", "CREATE INDEX idx_props_key_valkey ON Graph_KG.rdf_props (key, val_key)"),
+    ]
+
+    @staticmethod
+    def _bulk_index_tables() -> List[Tuple[str, str]]:
+        """``(index, table)`` for each index of :attr:`_BULK_INDEX_DDL`, read off its statement."""
+        return [(name, re.search(r" ON Graph_KG\.(\w+) ", sql).group(1)) for name, sql in GraphSchema._BULK_INDEX_DDL]
+
+    @staticmethod
+    def rebuild_indexes(cursor, schema: str = "Graph_KG") -> Dict[str, Optional[bool]]:
+        """
+        Rebuild only the indexes that disable_indexes() dropped. Does NOT run schema
+        migrations (ALTER TABLE, ADD COLUMN, etc.) — callers rely on this being
+        a pure CREATE INDEX operation that doesn't corrupt driver parameter state.
+
+        Args:
+            cursor: A DB-API cursor; a plain one is fine, the statements already name ``schema``.
+            schema: The IVG Schema whose tables get the indexes back (4.6.0 R243).
+
+        Returns:
+            Dict mapping index name to True (there), False (not created, logged as a WARNING naming the index and
+            the error: 4.6.0 R257) or None (``idx_props_key_valkey`` on an install without ``rdf_props.val_key``,
+            which has no such index to rebuild). :meth:`indexes_not_rebuilt` lists the False ones.
+        """
+        status: Dict[str, Optional[bool]] = {}
+        errors: Dict[str, str] = {}
+        for name, sql in GraphSchema._BULK_INDEX_DDL:
+            sql = rewrite_schema_text(sql, schema)
+            if name == "idx_props_key_valkey":
+                try:
+                    has_column = GraphSchema._props_has_value_key_column(cursor, schema=schema)
+                except Exception:
+                    has_column = True  # cannot tell: the CREATE below decides, as it did before the check existed
+                if not has_column:
+                    status[name] = None
+                    continue
+            try:
+                cursor.execute(sql)
+                status[name] = True
+            except Exception as e:
+                errors[name] = str(e)
+                err = str(e).lower()
+                if "already exists" in err or "already has" in err:
+                    status[name] = True
+                elif "sqlcode: <-400>" in err or "<-400>" in err:
+                    # IRIS: try ALTER TABLE ADD INDEX fallback for rdf_edges
+                    alt = GraphSchema._create_index_alter_table(name, sql)
+                    if alt:
+                        try:
+                            cursor.execute(alt)
+                            status[name] = True
+                            continue
+                        except Exception as e2:
+                            errors[name] = str(e2)
+                            e2_err = str(e2).lower()
+                            if "already exists" in e2_err or "already has" in e2_err:
+                                status[name] = True
+                            else:
+                                status[name] = False
+                    else:
+                        status[name] = False
+                else:
+                    status[name] = False
+        tables = dict(GraphSchema._bulk_index_tables())
+        for name in GraphSchema.indexes_not_rebuilt(status):
+            # a status dict alone hid R243's lost indexes: none of its callers read it (4.6.0 R257)
+            logger.warning(
+                "rebuild_indexes: index %s on %s.%s was not rebuilt: %s",
+                name, schema, tables[name], errors.get(name, "")[:300],
+            )
+        return status
+
+    @staticmethod
+    def indexes_not_rebuilt(status: Dict[str, Optional[bool]]) -> List[str]:
+        """The indexes a :meth:`rebuild_indexes` status lists as not created (False), in its order."""
+        return [name for name, ok in status.items() if ok is False]
+
+    @staticmethod
+    def get_bulk_insert_sql(table: str) -> str:
+        """
+        Get INSERT statement with %NOINDEX hint for bulk loading.
+
+        Args:
+            table: Table name ('nodes', 'rdf_labels', 'rdf_props', 'rdf_edges', 'kg_NodeEmbeddings')
+
+        Returns:
+            INSERT SQL with %NOINDEX for fast bulk loading
+
+        Example:
+            sql = GraphSchema.get_bulk_insert_sql('rdf_labels')
+            cursor.execute(sql, [node_id, label])
+
+        Every guard that names a graph compares ``COALESCE(graph_id, '')`` against
+        ``COALESCE(?, '')``. Both halves matter: a database upgraded rather than
+        created stores half the default graph as NULL, so a guard reading the column
+        directly reports "nothing there" and the load writes a second copy of every
+        row it already has; and a caller passing ``None`` for the default graph would
+        otherwise be looking for the literal NULL graph rather than the default one.
+        One parameter says all of it (spec 230, FR-005).
+
+        The unscoped ``nodes`` / ``rdf_labels`` / ``rdf_props`` templates name no
+        graph at all on purpose: they are the fallback for a pre-214 schema where the
+        column does not exist, and naming it there is SQLCODE -29. Their graph-aware
+        counterparts carry ``_with_graph`` in the name; ``rdf_edges`` has had the
+        column for long enough that its unscoped form writes ``''`` explicitly.
+        """
+        templates = {
+            "nodes": "INSERT INTO Graph_KG.nodes (node_id) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.nodes WHERE node_id = ?)",
+            # The guard names the graph for the same reason the children's do: a
+            # node ID can live in two graphs after the re-key, so probing on
+            # `node_id` alone found another graph's row, skipped the insert, and
+            # still reported the node created (spec 227 FR-034).
+            "nodes_with_graph": "INSERT INTO Graph_KG.nodes (node_id, graph_id) SELECT ?, ? WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.nodes WHERE node_id = ? AND COALESCE(graph_id, '') = COALESCE(?, ''))",
+            "rdf_labels": "INSERT INTO Graph_KG.rdf_labels (s, label) SELECT ?, ? WHERE NOT EXISTS (SELECT 1 FROM %IGNOREINDEX Graph_KG.rdf_labels.idx_labels_label Graph_KG.rdf_labels WHERE s = ? AND label = ?)",
+            "rdf_props": 'INSERT INTO Graph_KG.rdf_props (s, "key", val) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM %IGNOREINDEX Graph_KG.rdf_props.idx_props_key, Graph_KG.rdf_props.idx_props_key_valkey Graph_KG.rdf_props WHERE s = ? AND "key" = ?)',
+            # Spec 227 (FR-034): the child tables re-keyed on (graph_id, ...), so
+            # both the row and its guard name the graph. Unscoped, the guard finds
+            # another graph's row for the same node ID, reports "already there",
+            # and the insert is skipped with nothing written and no error.
+            "rdf_labels_with_graph": "INSERT INTO Graph_KG.rdf_labels (graph_id, s, label) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM %IGNOREINDEX Graph_KG.rdf_labels.idx_labels_label Graph_KG.rdf_labels WHERE COALESCE(graph_id, '') = COALESCE(?, '') AND s = ? AND label = ?)",
+            "rdf_props_with_graph": 'INSERT INTO Graph_KG.rdf_props (graph_id, s, "key", val) SELECT ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM %IGNOREINDEX Graph_KG.rdf_props.idx_props_key, Graph_KG.rdf_props.idx_props_key_valkey Graph_KG.rdf_props WHERE COALESCE(graph_id, \'\') = COALESCE(?, \'\') AND s = ? AND "key" = ?)',
+            # graph_id is named explicitly, not left to the column default: on a
+            # database upgraded from before spec-214 the column is nullable with no
+            # default, and an omitted graph_id lands in the NULL spelling of the
+            # default graph that no graph-aware reader looks at. The guard names the
+            # same graph the row does — unscoped, a default-graph load deduped
+            # against every graph in the namespace, so a tenant already holding
+            # `(s, p, o)` made the default graph's copy of that edge unwritable
+            # (spec 230, FR-005).
+            "rdf_edges": "INSERT INTO Graph_KG.rdf_edges (s, p, o_id, graph_id) SELECT ?, ?, ?, '' WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.rdf_edges WHERE s = ? AND p = ? AND o_id = ? AND COALESCE(graph_id, '') = '')",
+            "rdf_edges_with_graph": "INSERT INTO Graph_KG.rdf_edges (s, p, o_id, graph_id) SELECT ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.rdf_edges WHERE s = ? AND p = ? AND o_id = ? AND COALESCE(graph_id, '') = COALESCE(?, ''))",
+            # `node_id`, not `id`: spec 227 re-keyed the embedding tables on
+            # (graph_id, node_id) with emb_rowid as the identity, so the old
+            # column name is SQLCODE -29 on the first row of any bulk load.
+            "kg_NodeEmbeddings": "INSERT INTO Graph_KG.kg_NodeEmbeddings (graph_id, node_id, emb, metadata) SELECT ?, ?, TO_VECTOR(?), ? WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.kg_NodeEmbeddings WHERE COALESCE(graph_id, '') = COALESCE(?, '') AND node_id = ?)",
+        }
+        if table not in templates:
+            raise ValueError(f"Unknown table: {table}. Valid: {list(templates.keys())}")
+        return templates[table]
+
+    @staticmethod
+    def upgrade_val_column(cursor) -> bool:
+        """
+        Upgrade rdf_props.val from VARCHAR(4000) to VARCHAR(64000) for large value support.
+
+        Safe to run on existing databases - will alter column type if needed.
+        VARCHAR(64000) supports values up to 64KB while keeping REPLACE function compatibility.
+
+        The ALTER names `COLLATE %EXACT`: without it IRIS resets the column to its
+        default, SQLUPPER, and `n.name = 'JOHN'` matches 'John'. It runs only when the
+        class dictionary does not already show MAXLEN 64000 and EXACT collation.
+
+        Returns:
+            True if upgraded or already large enough, False on error
+        """
+        try:
+            cursor.execute(
+                "SELECT Parameters FROM %Dictionary.PropertyDefinition "
+                "WHERE parent = 'Graph.KG.rdfprops' AND Name = 'val'"
+            )
+            row = cursor.fetchone()
+            params = row[0] if row else None
+            if isinstance(params, str):
+                kv = params.upper().split(",")
+                settings = dict(zip(kv[0::2], kv[1::2]))
+                if settings.get("COLLATION") == "EXACT" and settings.get("MAXLEN") == "64000":
+                    return True
+                logger.warning(
+                    "Graph_KG.rdf_props.val is %s: restoring VARCHAR(64000) EXACT collation so value "
+                    "equality is case-sensitive. IRIS rebuilds the indexes on val, which takes "
+                    "minutes on a large graph (about 4 minutes at 2.9M property rows).",
+                    params,
+                )
+        except Exception as e:
+            logger.debug("rdf_props.val dictionary read failed, altering anyway: %s", e)
+        try:
+            cursor.execute(
+                "ALTER TABLE Graph_KG.rdf_props ALTER COLUMN val VARCHAR(64000) COLLATE %EXACT"
+            )
+            return True
+        except Exception as e:
+            # Already correct size or other issue
+            if "already" in str(e).lower() or "same" in str(e).lower():
+                return True
+            return False
+
+    @staticmethod
+    def validate_schema(cursor) -> Dict[str, bool]:
+        """
+        Validates that required schema tables exist
+        """
+        required_tables = [
+            "Graph_KG.rdf_labels",
+            "Graph_KG.rdf_props",
+            "Graph_KG.rdf_edges",
+            "Graph_KG.kg_NodeEmbeddings",
+            "Graph_KG.kg_NodeEmbeddings_optimized",
+            "Graph_KG.kg_EdgeEmbeddings",
+            "Graph_KG.docs",
+        ]
+
+        status = {}
+        for table in required_tables:
+            try:
+                # Validate table name against allowlist
+                safe_table = validate_table_name(table)
+                cursor.execute(f"SELECT TOP 1 * FROM {safe_table}")
+                status[table] = True
+            except Exception:
+                status[table] = False
+
+        return status
+
+    @staticmethod
+    def _split_table_name(table_name: str) -> tuple:
+        """Split ``Graph_KG.kg_EdgeEmbeddings`` into ``("Graph_KG", "kg_EdgeEmbeddings")``.
+
+        An unqualified name is taken to be in the Graph_KG schema.
+        """
+        schema, _, table = table_name.rpartition(".")
+        return (schema or "Graph_KG"), table
+
+    @staticmethod
+    def derive_class_name(table_name: str) -> str:
+        """Derive the persistent class name IRIS generates for a SQL table name.
+
+        Schema underscores become package dots, table underscores are dropped:
+        ``Graph_KG.kg_NodeEmbeddings`` -> ``Graph.KG.kgNodeEmbeddings``, which is
+        exactly what ``iris_src/src/Graph/KG/kgNodeEmbeddings.cls`` declares via
+        ``SqlTableName``.
+
+        This is a *guess*, used only when the class dictionary cannot be read.
+        A DDL-created table (``kg_EdgeEmbeddings`` has no hand-written .cls) gets
+        whatever class name IRIS chose, which may not follow this rule — prefer
+        :meth:`resolve_table_class`.
+        """
+        schema, table = GraphSchema._split_table_name(table_name)
+        return f"{schema.replace('_', '.')}.{table.replace('_', '')}"
+
+    #: The index kinds a class keeps in a global of its own, one first subscript per index name
+    #: (``^BM25Idx``, ``^IVF``, ``^PLAID``), with the type ``SHOW INDEXES`` reports for each.
+    GLOBAL_INDEX_KINDS = (
+        ("Graph.KG.BM25Index", "FULLTEXT(BM25)"),
+        ("Graph.KG.IVFIndex", "VECTOR(IVF)"),
+        ("Graph.KG.PLAIDSearch", "VECTOR(PLAID)"),
+    )
+
+    @staticmethod
+    def global_indexes(call) -> List[tuple]:
+        """The BM25, IVF and PLAID indexes the namespace holds, as ``(name, type)``.
+
+        ``call(class_name, method_name)`` runs a class method (the engine's or the store's
+        bridge); each class's ``List()`` answers its index names, comma-separated. The two index
+        reports read these here. Before 4.6.0 they read ``kg_BM25Meta``, ``kg_IVFMeta`` and
+        ``kg_PlaidMeta``, tables nothing creates, and swallowed the error, so no such index was
+        ever listed (R103). A failing call raises.
+        """
+        found = []
+        for class_name, index_type in GraphSchema.GLOBAL_INDEX_KINDS:
+            names = str(call(class_name, "List") or "")
+            found.extend((name, index_type) for name in names.split(",") if name)
+        return found
+
+    @staticmethod
+    def hnsw_indexes(cursor, table_name: str, errors: Optional[list] = None, native=None) -> List[tuple]:
+        """The HNSW indexes IRIS holds on ``table_name``, as ``(sql_name, properties)``.
+
+        The one place that answers "does this table have an ANN index", so the two index
+        reports (``AdminMixin._show_indexes`` and ``IRISGraphStore.list_indexes``) cannot
+        drift apart again — both used to synthesize a row from a table's row count
+        (spec 226, FR-018).
+
+        An ANN index is distinguished by ``TypeClass`` (``%SQL.Index.HNSW``), not by
+        ``Type``, which reads ``index`` for a plain index and an HNSW one alike;
+        ``INFORMATION_SCHEMA.INDEXES`` carries no index type at all.
+
+        Empty when the table has no such index, has no projecting class, or does not exist:
+        ``kg_NodeEmbeddings_optimized`` is absent in DDL-only namespaces, and an index
+        report has to survive that rather than raise from the middle of itself. ``errors``: a list a failed dictionary
+        read is reported to (``status()``, 4.6.0 R160), so "no index" and "could not tell" read differently there.
+
+        ``native``: a Native API object. A user IRIS refuses the dictionary in SQL (SQLCODE -99: ADMIN_GUIDE §3's
+        reading and writing roles) is answered by ``Graph.KG.Meta.HnswIndexes`` through it, which reads the dictionary
+        as objects and needs only ``%Native_ClassExecution`` (4.6.0 R247: status() said "class lookup failed").
+        """
+        from iris_vector_graph._dictionary import sql_refused
+
+        lookup_errors: list = []
+        class_name = GraphSchema.resolve_table_class(cursor, table_name, lookup_errors)
+        if not class_name:
+            if native is not None and any(sql_refused(e) for e in lookup_errors):
+                return GraphSchema._hnsw_indexes_native(native, table_name, errors)
+            if errors is not None:
+                errors.extend(lookup_errors)
+            return []
+        try:
+            # Literal interpolation, as in `resolve_table_class`: parameterised binds do
+            # not match reliably against the `%Dictionary.*` tables. `class_name` came from
+            # the dictionary itself, so it is not caller input.
+            cursor.execute(
+                "SELECT SqlName, Properties FROM %Dictionary.CompiledIndex "
+                f"WHERE parent = '{class_name}' AND TypeClass LIKE '%HNSW%'"
+            )
+            return [(row[0], row[1]) for row in cursor.fetchall()]
+        except Exception as e:
+            if native is not None and sql_refused(e):
+                return GraphSchema._hnsw_indexes_native(native, table_name, errors)
+            logger.debug("Could not read HNSW indexes for %s: %s", table_name, e)
+            if errors is not None:
+                errors.append(f"HNSW index read failed for {table_name}: {e}")
+            return []
+
+    @staticmethod
+    def _hnsw_indexes_native(native, table_name: str, errors: Optional[list]) -> List[tuple]:
+        """:meth:`hnsw_indexes` from the server's ``Graph.KG.Meta.HnswIndexes``: a JSON list of {name, properties}."""
+        import json
+
+        schema, table = GraphSchema._split_table_name(table_name)
+        try:
+            raw = native.classMethodValue("Graph.KG.Meta", "HnswIndexes", schema, table)
+            return [(row["name"], row["properties"]) for row in json.loads(str(raw or "[]"))]
+        except Exception as e:
+            logger.debug("Could not read HNSW indexes for %s over the Native API: %s", table_name, e)
+            if errors is not None:
+                errors.append(f"HNSW index read failed for {table_name}: {e}")
+            return []
+
+    @staticmethod
+    def resolve_table_class(cursor, table_name: str, errors: Optional[list] = None) -> Optional[str]:
+        """Ask IRIS which class projects to ``table_name``. None if no class does.
+
+        The class dictionary is keyed by class name, not SQL name, so anything
+        reading ``%Dictionary.CompiledProperty`` for a table has to make this
+        hop first. Note the literal interpolation: parameterised binds do not
+        match reliably against ``%Dictionary.CompiledClass``.
+
+        ``errors``: a list a failed dictionary read is reported to (``status()``); without one it is logged only.
+        """
+        schema, table = GraphSchema._split_table_name(table_name)
+        try:
+            safe_schema = sanitize_identifier(schema)
+            safe_table = sanitize_identifier(table)
+        except ValueError:
+            logger.warning("Invalid table name for class lookup: %r", table_name)
+            return None
+
+        try:
+            cursor.execute(
+                "SELECT Name FROM %Dictionary.CompiledClass "
+                f"WHERE SqlSchemaName = '{safe_schema}' AND SqlTableName = '{safe_table}'"
+            )
+            row = cursor.fetchone()
+            if row and row[0]:
+                return str(row[0])
+        except Exception as e:
+            logger.debug("Could not resolve class for %s: %s", table_name, e)
+            if errors is not None:
+                errors.append(f"class lookup failed for {table_name}: {e}")
+        return None
+
+    @staticmethod
+    def get_embedding_dimension(
+        cursor, table_name: str = DEFAULT_EMBEDDING_TABLE
+    ) -> Optional[int]:
+        """Detect the VECTOR width of ``table_name``'s ``emb`` column, or None.
+
+        None means "this table has no ``emb`` column with a declared width" —
+        either the table does not exist, or the column was created untyped. It
+        does **not** mean "use the default": before 3.1.0 this method ignored
+        ``table_name`` entirely and answered about ``Graph.KG.kgNodeEmbeddings``
+        whatever it was asked, so a caller checking the edge column was handed
+        the node column's width and read a broken schema as healthy.
+        """
+        class_name = GraphSchema.resolve_table_class(
+            cursor, table_name
+        ) or GraphSchema.derive_class_name(table_name)
+
+        try:
+            safe_class = sanitize_identifier(class_name)
+        except ValueError:
+            logger.warning("Invalid table name for dimension lookup: %r", table_name)
+            return None
+
+        try:
+            cursor.execute(
+                "SELECT Parameters FROM %Dictionary.CompiledProperty "
+                f"WHERE Name = 'emb' AND Parent = '{safe_class}'"
+            )
+            rows = cursor.fetchall()
+            for row in rows:
+                params = str(row[0])
+                if "LEN," in params:
+                    # Parse 'LEN,768' out of the flat Parameters blob
+                    parts = params.split(",")
+                    for i, p in enumerate(parts):
+                        if p == "LEN" and i + 1 < len(parts):
+                            return int(parts[i + 1])
+                # A cursor inside IRIS returns the $LIST itself, not its comma form:
+                # 'LEN' + length/type control bytes + the digits.
+                match = re.search(r"LEN[\x00-\x1f]+(\d+)", params)
+                if match:
+                    return int(match.group(1))
+        except Exception:
+            pass
+
+        # Fallback to INFORMATION_SCHEMA (though IRIS often reports VECTOR as VARCHAR there)
+        schema, table = GraphSchema._split_table_name(table_name)
+
+        try:
+            result = None
+            for s_name, t_name in [(schema, table), (schema.upper(), table.upper())]:
+                cursor.execute(
+                    """
+                    SELECT DTD_IDENTIFIER, COLUMN_TYPE, DATA_TYPE
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = ?
+                      AND TABLE_NAME = ?
+                      AND COLUMN_NAME = 'emb'
+                    """,
+                    [s_name, t_name],
+                )
+                result = cursor.fetchone()
+                if result:
+                    break
+
+            if result:
+                for val in result:
+                    if not val:
+                        continue
+                    val_str = str(val)
+                    matches = re.findall(r"(\d+)\s*\)", val_str)
+                    if matches:
+                        return int(matches[-1])
+                    digits = "".join(ch for ch in val_str if ch.isdigit())
+                    if digits:
+                        return int(digits)
+        except Exception:
+            pass
+
+        return None
+
+    @staticmethod
+    def get_procedures_sql_list(
+        table_schema: str = "Graph_KG",
+    ) -> List[str]:
+        """
+        Get a list of SQL statements to install retrieval stored procedures.
+
+        The 3.2.0 ``embedding_dimension`` parameter is **removed** in 4.0.0
+        (FR-024). It was accepted and ignored, which is worse than absent: it read
+        like it controlled the vector width. It never did, and it must not, because
+        the generated ``kg_KNN_VEC`` converts the query vector with
+        ``TO_VECTOR(:queryInput, DOUBLE)`` — no length — on purpose. A declared
+        length makes IRIS pad or truncate the query vector to it and score the
+        reshaped value, so a six-element query against a four-wide column returned a
+        perfect-match 1.0 instead of an error. Unlengthed, IRIS compares the two
+        widths and raises ``SQLCODE -257``. See ADR-0005; the measurement is pinned
+        by ``tests/integration/test_to_vector_width_regression_e2e.py``.
+
+        Widths are enforced where that is useful: on the column declaration, and
+        against ``Graph_KG.embedding_registry``.
+
+        Args:
+            table_schema: SQL schema containing the data tables (e.g. "Graph_KG").
+
+        Returns:
+            List of SQL DDL strings in execution order. Each is a complete
+            statement suitable for cursor.execute().
+        """
+        # Spec 262: the functions are written for the default IVG Schema (`Graph_KG.CY_CMP`, `##class(Graph.KG.funcCYSORTKEY)`)
+        # and moved to `table_schema` the way the class sources are (`rewrite_schema_text`).
+        statements = [
+            "CREATE SCHEMA iris_vector_graph",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.JSON_ARRAYLENGTH(j VARCHAR(32000)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { Set a = ##class(%Library.DynamicArray).%FromJSON(j) Quit a.%Size() }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.JSON_ARRAYGET(j VARCHAR(32000), i INTEGER) RETURNS VARCHAR(4000) LANGUAGE OBJECTSCRIPT { Set a = ##class(%Library.DynamicArray).%FromJSON(j), val = a.%Get(i) If $IsObject(val) { Quit val.%ToJSON() } Quit val _ "" }
+""",
+            # 4.6.0 R274: a JSON "" (what a CREATE or create_edge stores for '') is SQL's '' ($Char(0)), not NULL, in
+            # JSON_VALUE, CY_REL_PROP and CY_REL_TOSTRING; CY_RETYPE_MAP writes a stored "\u0000" (SET r.k = '') as "".
+            # The stored qualifiers are not changed.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.JSON_VALUE(j VARCHAR(32000), p VARCHAR(1000)) RETURNS VARCHAR(4000) LANGUAGE OBJECTSCRIPT { Set obj = ##class(%Library.DynamicObject).%FromJSON(j), key = $Extract(p, 3, *), val = obj.%Get(key) If $IsObject(val) { Quit val.%ToJSON() } If obj.%GetTypeOf(key) = "number" { Quit obj.%Get(key, , "json") } If (val = "") && (obj.%GetTypeOf(key) = "string") { Quit $Char(0) } Quit val _ "" }
+""",
+            # R093: JSON_VALUE answers a number in ObjectScript's form (.95), the same text as the string ".95".
+            # A RETURN of a relationship property reads it here instead: a number in JSON's form (0.95), a boolean
+            # as true/false, anything else as JSON_VALUE does. Filters keep JSON_VALUE, whose text they compare.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_REL_PROP(j VARCHAR(32000), p VARCHAR(1000)) RETURNS VARCHAR(4000) LANGUAGE OBJECTSCRIPT { New obj, key, t, val, a, jt, f Set obj = ##class(%Library.DynamicObject).%FromJSON(j), key = $Extract(p, 3, *), t = obj.%GetTypeOf(key), val = obj.%Get(key) If $IsObject(val) { Quit val.%ToJSON() } If t = "number" { Set jt = obj.%Get(key, , "json") If ($Find(jt, ".") + $Find(jt, "e") + $Find(jt, "E")) = 0 { Quit jt } Set f = "" _ (+jt) If $Extract(f) = "." { Set f = "0" _ f } ElseIf $Extract(f, 1, 2) = "-." { Set f = "-0" _ $Extract(f, 2, *) } If $Find(f, ".") = 0 { Set f = f _ ".0" } Quit f } If t = "boolean" { Quit $Select(val: "true", 1: "false") } If (t = "string") && (val = "") { Quit $Char(0) } Quit val _ "" }
+""",
+            # 4.6.0 R182: toString() of a stored number in openCypher's text. CY_FLOAT_TEXT spells a canonical ObjectScript
+            # decimal (".95", "12345678.9") as a Cypher FLOAT does: "0.95", "1.0", "1.23456789E7", "1.0E-4" (an exponent
+            # below -3 or above 6, as Java's Double.toString). CY_TOSTRING reads a node value's own type in the row
+            # ($LISTBUILD type 8 or 9 is a $DOUBLE, 4 or 5 an integer, 6 or 7 a decimal, 1 or 2 a string): a $DOUBLE is
+            # the shortest decimal that reads back as it; a string is returned as it is. CY_REL_TOSTRING reads a
+            # relationship's JSON leaf: a number by its JSON text (1.0 is a float, 7 an integer), a string as it is.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_FLOAT_TEXT(s VARCHAR(4000)) RETURNS VARCHAR(4000) LANGUAGE OBJECTSCRIPT { New neg, ip, fp, dg, ex, z, m If s [ "E" { Quit s } Set neg = ($Extract(s) = "-") If neg { Set s = $Extract(s, 2, *) } Set ip = $Piece(s, "."), fp = $Piece(s, ".", 2) If ip = "" { Set ip = "0" } If +ip { Set dg = ip _ fp, ex = $Length(ip) - 1 } Else { Set z = $Length(fp) - $Length($ZStrip(fp, "<", "0")), dg = $Extract(fp, z + 1, *), ex = -(z + 1) } If dg = "" { Quit "0.0" } If (ex < 7) && (ex > -4) { Quit $Select(neg: "-", 1: "") _ ip _ "." _ $Select(fp = "": "0", 1: fp) } Set dg = $ZStrip(dg, ">", "0"), m = $Extract(dg) _ "." _ $Select($Length(dg) > 1: $Extract(dg, 2, *), 1: "0") Quit $Select(neg: "-", 1: "") _ m _ "E" _ ex }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_TOSTRING(v VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New t, s, d, n If v = "" { Quit "" } Set t = $ASCII($LISTBUILD(v), 2) If (t = 8) || (t = 9) { Set s = "" _ v If s = "NAN" { Quit "NaN" } If s = "INF" { Quit "Infinity" } If s = "-INF" { Quit "-Infinity" } Set n = 1, d = $DECIMAL(v, 1) While ($DOUBLE(d) = v) = 0 { Set n = n + 1, d = $DECIMAL(v, n) If n > 16 { Quit } } Quit ##class(Graph.KG.funcCYFLOATTEXT).CYFLOATTEXT("" _ d) } If ((t = 6) || (t = 7)) && (("" _ v) [ ".") { Quit ##class(Graph.KG.funcCYFLOATTEXT).CYFLOATTEXT("" _ v) } Quit "" _ v }
+""",
+            # 4.6.0 R240: arithmetic over a stored value keeps its type. CY_ARITH computes a op b for + - * / % and answers
+            # a $DOUBLE when either operand is a float (a $DOUBLE, $LISTBUILD type 8 or 9; a decimal or a numeric text
+            # with a point or an exponent), an integer otherwise (/ truncates toward zero, as openCypher's integer
+            # division; % keeps the dividend's sign, as Java's remainder); null for a null operand.
+            # 4.6.0 R297: as openCypher's error kinds have it (the TCK's README; no TCK scenario covers either), an
+            # integer divided by an integer zero (/ or %) raises ArithmeticError, and - * / % over a value that is not a
+            # number (a string, a boolean, a list) raise TypeError; + of one still answers null. A float divided by zero
+            # is IEEE: Infinity, -Infinity, NaN for 0 / 0 and for any % 0. They answered NaN and null. A stored number
+            # keeps its stored form: the API's text '7' is the number 7.
+            r"""
+CREATE OR REPLACE FUNCTION Graph_KG.CY_ARITH(a VARCHAR(32000), op VARCHAR(1), b VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New f, i, v, t, x, n, bad If (a = "") || (b = "") { Quit "" } Set f = 0, bad = 0 For i = 1, 2 { Set v = $Select(i = 1: a, 1: b), t = $ASCII($LISTBUILD(v), 2), n(i) = v If (t = 8) || (t = 9) { Set f = 1 } ElseIf (t = 6) || (t = 7) { If ("" _ v) [ "." { Set f = 1 } } ElseIf ((t = 4) || (t = 5)) = 0 { If $IsValidNum(v) { Set n(i) = +v If (v [ ".") || (v [ "E") || (v [ "e") { Set f = 1 } } Else { Set bad = 1 } } } If bad { If op = "+" { Quit ##class(Graph.KG.funcLISTCONCAT).LISTCONCAT(a, b) } Throw ##class(%Exception.General).%New("TypeError", 5001, , "TypeError: InvalidArgumentType: " _ op _ " needs two numbers and got a value that is not one") } If f { Set n(1) = $DOUBLE(n(1)), n(2) = $DOUBLE(n(2)) } If op = "+" { Quit n(1) + n(2) } If op = "-" { Quit n(1) - n(2) } If op = "*" { Quit n(1) * n(2) } If +n(2) = 0 { If f = 0 { Throw ##class(%Exception.General).%New("ArithmeticError", 5001, , "ArithmeticError: integer " _ $Select(op = "%": "modulo", 1: "division") _ " by zero") } Quit $Select(op = "%": $DOUBLE("NAN"), n(1) > 0: $DOUBLE("INF"), n(1) < 0: $DOUBLE("-INF"), 1: $DOUBLE("NAN")) } If (op = "/") && f { Quit n(1) / n(2) } Set x = n(1) / n(2), x = $Select(x < 0: -((-x) \ 1), 1: x \ 1) If op = "%" { Quit n(1) - (n(2) * x) } Quit x }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_REL_TOSTRING(j VARCHAR(32000), p VARCHAR(1000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New obj, key, t, txt Set obj = ##class(%Library.DynamicObject).%FromJSON(j), key = $Extract(p, 3, *), t = obj.%GetTypeOf(key) If (t = "unassigned") || (t = "null") { Quit "" } If t = "boolean" { Quit $Select(obj.%Get(key): "true", 1: "false") } If (t = "object") || (t = "array") { Quit obj.%Get(key).%ToJSON() } If t = "number" { Set txt = obj.%Get(key, , "json") If (txt [ ".") || (txt [ "e") || (txt [ "E") { Quit ##class(Graph.KG.funcCYFLOATTEXT).CYFLOATTEXT("" _ (+txt)) } Quit txt } If obj.%Get(key) = "" { Quit $Char(0) } Quit obj.%Get(key) _ "" }
+""",
+            # 4.6.0 R210: a SET that copies a relationship's property. CY_JSON_TYPE is the type a relationship's property
+            # reads back as (prop_values.parse_rel_prop_text): integer or float for a JSON number (a float has a
+            # fraction or exponent) and for a string spelling a canonical one (a Cypher CREATE writes "7"), else string,
+            # boolean, array, object, null, and unassigned when absent. So `SET r.p = r.q` keeps a number a number and
+            # '007' a string, and `SET n.p = r.w` stores 7 as an integer and 0.5 as a double. CY_VALUE_TYPE is a node
+            # value's type in the row ($LISTBUILD type 4 to 9 a number, else a string; null when empty), for
+            # `SET r.p = n.x`. Neither body has an apostrophe or a question mark (the DB-API reads them in DDL).
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_JSON_TYPE(j VARCHAR(32000), p VARCHAR(1000)) RETURNS VARCHAR(16) LANGUAGE OBJECTSCRIPT { New obj, key, t, txt, s, ip, fp If j = "" { Quit "unassigned" } Set obj = ##class(%Library.DynamicObject).%FromJSON(j), key = $Extract(p, 3, *), t = obj.%GetTypeOf(key) If t = "number" { Set txt = obj.%Get(key, , "json") If (txt [ ".") || (txt [ "e") || (txt [ "E") { Quit "float" } Quit "integer" } If t = "string" { Set s = obj.%Get(key) If $Extract(s) = "-" { Set s = $Extract(s, 2, *) } Set ip = $Piece(s, "."), fp = $Piece(s, ".", 2) If (ip = "") || ($Translate(ip _ fp, "0123456789") = "" = 0) { Quit "string" } If ($Length(ip) > 1) && ($Extract(ip) = "0") { Quit "string" } If $Length(s, ".") = 1 { Quit "integer" } If ($Length(s, ".") = 2) && ($Length(fp) > 0) { Quit "float" } Quit "string" } Quit t }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_VALUE_TYPE(v VARCHAR(32000)) RETURNS VARCHAR(16) LANGUAGE OBJECTSCRIPT { New t If v = "" { Quit "null" } Set t = $ASCII($LISTBUILD(v), 2) If (t > 3) && (t < 10) { Quit "number" } Quit "string" }
+""",
+            # 4.6.0 R218: a node value read as the type it is stored with. rdf_props.val is VARCHAR, and a Cypher
+            # write stores a number there as an IRIS number, which intersystems-irispython 5.4.0 reads as a Python
+            # number and 5.4.1 as IRIS text (.94999999999999995559). CY_TYPED reads the value's type in the row (as
+            # CY_TOSTRING does; a value of 40 characters or more is a string) and marks a number: $Char(1) "D" before
+            # a $DOUBLE's text, $Char(1) "N" before an integer's or decimal's, $Char(1) "S" before a string that
+            # begins with $Char(1). The engine decodes the mark (prop_values.decode_typed_text); any other string is
+            # returned as it is. Only the columns a query returns read through it, never a filter or a sort key.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_TYPED(v VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New t If v = "" { Quit v } If $Length(v) < 40 { Set t = $ASCII($LISTBUILD(v), 2) If (t = 8) || (t = 9) { Quit $Char(1) _ "D" _ v } If (t > 3) && (t < 8) { Quit $Char(1) _ "N" _ v } } If $Extract(v) = $Char(1) { Quit $Char(1) _ "S" _ v } Quit v }
+""",
+            # 4.6.0 R310: an element of a list a row holds, unwound (JSON_TABLE's VARCHAR column), read as its JSON type.
+            # JSON_TABLE hands a JSON integer on as $LIST type 4 or 5 and a number spelled with a fraction or an
+            # exponent (1.0, 1.5, 1e20) as type 6; driver 5.4.0 answered those as int and Decimal, 5.4.1 as their text.
+            # CY_JSON_TYPED marks the first "N" (an integer) and the second "D" (a float), as the JSON spelled it;
+            # CY_TYPED reads an integral decimal as an integer (a node value, R218), which a JSON 1.0 is not.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_JSON_TYPED(v VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New t If v = "" { Quit v } If $Length(v) < 40 { Set t = $ASCII($LISTBUILD(v), 2) If (t > 5) && (t < 10) { Quit $Char(1) _ "D" _ v } If (t = 4) || (t = 5) { Quit $Char(1) _ "N" _ v } } If $Extract(v) = $Char(1) { Quit $Char(1) _ "S" _ v } Quit v }
+""",
+            # 4.6.0 R248: a node value inside a whole-node value (RETURN n's `_props` list, collect(n), a node in a
+            # map) and a map literal's property, as JSON. CY_JSON_NUM answers the JSON number of a value stored as an
+            # IRIS number (the type test CY_TYPED makes), spelled as CY_TOSTRING spells it (0.95, 5.0 for a $DOUBLE 5,
+            # 29, NaN and Infinity as Python reads them), and NULL for a string, which the caller writes as the JSON
+            # string it was. So a node value carries the number RETURN n.prop answers, under any driver version.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_JSON_NUM(v VARCHAR(32000)) RETURNS VARCHAR(4000) LANGUAGE OBJECTSCRIPT { New t If v = "" { Quit "" } If $Length(v) > 39 { Quit "" } Set t = $ASCII($LISTBUILD(v), 2) If (t < 4) || (t > 9) { Quit "" } Quit ##class(Graph.KG.funcCYTOSTRING).CYTOSTRING(v) }
+""",
+            # 4.6.0 R307: size() of a string, in characters: SQL's LENGTH leaves trailing blanks out and CHAR_LENGTH
+            # counts UTF-16 code units, so a character past U+FFFF (a surrogate pair) counted 2. A low surrogate is the
+            # second half of a pair. NULL in, NULL out; SQL's '' ($Char(0)) is 0.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_STR_SIZE(v VARCHAR(32000)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { New n, i, c, a If v = "" { Quit "" } If v = $Char(0) { Quit 0 } Set n = $Length(v), c = 0, i = 0 While i < n { Set i = i + 1, a = $Ascii(v, i) If (a > 56319) && (a < 57344) { Set c = c + 1 } } Quit n - c }
+""",
+            # 4.6.0 R315: `x IN list` for a list a row holds (a stored node or relationship property, a WITH alias),
+            # by openCypher: 1 when an element equals x by type (a string is no number; 1 equals 1.0), NULL when none
+            # does and x or an element is null, 0 otherwise (an empty list: 0, x null or not). x arrives as its JSON
+            # text. A value that is no JSON list answers NULL. SQL's `x IN p.val` needs a parenthesised list
+            # (SQLCODE -1), and a JSON_TABLE reader compared each element's text, so '2' IN [1, 2, 3] was true.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_LIST_HAS(j VARCHAR(32000), xj VARCHAR(32000)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { New a, xa, x, xt, it, k, v, t, nul If (j = "") || (j = $Char(0)) { Quit "" } If $Extract(j) = "[" { } Else { Quit "" } Try { Set a = ##class(%Library.DynamicArray).%FromJSON(j) } Catch { Return "" } If a.%Size() = 0 { Quit 0 } If (xj = "") || (xj = "null") { Quit "" } Try { Set xa = ##class(%Library.DynamicArray).%FromJSON("[" _ xj _ "]") } Catch { Return "" } Set xt = xa.%GetTypeOf(0), x = xa.%Get(0), nul = 0, it = a.%GetIterator() While it.%GetNext(.k, .v, .t) { If t = "null" { Set nul = 1 } ElseIf t = xt { If t = "number" { If (+v) = (+x) { Return 1 } } ElseIf $IsObject(v) { If v.%ToJSON() = x.%ToJSON() { Return 1 } } ElseIf v = x { Return 1 } } } Quit $Select(nul: "", 1: 0) }
+""",
+            # 4.6.0 R307: a list predicate's source: an empty list or map element spelled as its JSON text, as
+            # JSON_TABLE hands a non-empty one (IRIS's JSON_TABLE('[[]]', '$[*]') answers no row, so
+            # `any(e IN [r.p] WHERE e IS NOT NULL)` of r.p = [] was false), and "" as SQL's '' ($Char(0)), which
+            # JSON_TABLE read as null. Any other list is returned as it is.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_LIST_SRC(j VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New a, out, it, k, v, t, hit If $Extract(j) = "[" { Set a = "" Try { Set a = ##class(%Library.DynamicArray).%FromJSON(j) } Catch { Set a = "" } } Else { Quit j } If $IsObject(a) = 0 { Quit j } Set out = ##class(%Library.DynamicArray).%New(), hit = 0, it = a.%GetIterator() While it.%GetNext(.k, .v, .t) { If $IsObject(v) && (v.%Size() = 0) { Do out.%Push(v.%ToJSON()) Set hit = 1 } ElseIf (t = "string") && (v = "") { Do out.%Push($Char(0)) Set hit = 1 } ElseIf $IsObject(v) { Do out.%Push(v) } Else { Do out.%Push(v, t) } } If hit = 0 { Quit j } Quit out.%ToJSON() }
+""",
+            # 4.6.0 R307: a node value that is a list or map, as JSON. Every writer stores a list or map in
+            # rdf_props.val as its JSON text, which the JSON a read builds (RETURN n's `_props` list, collect(n.p), a map
+            # projection, properties(n)) wrote as a JSON string. CY_JSON_LISTMAP answers the stored text when it
+            # starts and ends with [ and ], or { and }, and parses (get_node's rule, prop_values.decode_json_list_map),
+            # else NULL. The stored text is not changed. No apostrophe or question mark (the DB-API reads them in DDL).
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_JSON_LISTMAP(v VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New f, l, ok Set f = $Extract(v), l = $Extract(v, *) If ((f = "[") && (l = "]")) || ((f = "{") && (l = "}")) { Set ok = 1 Try { Do ##class(%Library.DynamicObject).%FromJSON(v) } Catch { Set ok = 0 } If ok { Quit v } } Quit "" }
+""",
+            # 4.6.0 R250: whether a summed value is a float, for sum(): a $DOUBLE, a decimal with a fraction, or text
+            # spelled with a point or an exponent (what a Cypher write stores in qualifiers, "2.0", and the API in val).
+            # One float makes the sum a float, as openCypher sums; the SUM itself comes back with no type.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_IS_FLOAT(v VARCHAR(32000)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { New t, s If v = "" { Quit 0 } If $Length(v) < 40 { Set t = $ASCII($LISTBUILD(v), 2) If (t = 8) || (t = 9) { Quit 1 } If (t > 3) && (t < 8) { Quit ("" _ v) [ "." } } Set s = "" _ v If $IsValidNum(s) = 0 { Quit 0 } Quit (s [ ".") || (s [ "e") || (s [ "E") }
+""",
+            # 4.6.0 R227: element i of a JSON list a row holds (a negative i counts from the end), with its type.
+            # JSON_ARRAYGET answers an element as IRIS's value (1 for true, the text '1' for 1); a RETURN column that
+            # is the element itself reads this: $Char(1) "J" before a scalar element's JSON text (1, 2.5, "a", true),
+            # which the engine decodes (prop_values.decode_typed_text); a list or map element as its JSON, unmarked,
+            # as JSON_ARRAYGET answers it; null, out of range, or no list: NULL.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_LIST_ELEM(j VARCHAR(32000), i INTEGER) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New a, n, t, v, b If j = "" { Quit "" } Set a = ##class(%Library.DynamicArray).%FromJSON(j), n = a.%Size() If i < 0 { Set i = n + i } If (i < 0) || (i >= n) { Quit "" } Set t = a.%GetTypeOf(i), v = a.%Get(i) If $IsObject(v) { Quit $Char(1) _ "J" _ v.%ToJSON() } If (t = "null") || (t = "unassigned") { Quit "" } If t = "number" { Quit $Char(1) _ "J" _ a.%Get(i, , "json") } Set b = ##class(%Library.DynamicArray).%New() Do b.%Push(v, t) Set b = b.%ToJSON() Quit $Char(1) _ "J" _ $Extract(b, 2, $Length(b) - 1) }
+""",
+            # 4.6.0 R273: the same element as a value a WITH column holds, typed as a node property's stored value is,
+            # so the stage's later reads (CY_TYPED, CY_ARITH, CY_TOSTRING) keep its type: a number an IRIS number (a
+            # $DOUBLE when its JSON has a point or an exponent), a boolean its stored spelling 'true' / 'false', the
+            # empty string $Char(0) (SQL's ''), another string itself, a list or map its JSON; null or out of range NULL.
+            # 4.6.0 R286: the point is read from the element's JSON text (%Get(i, , "json")): %Get(i) reads 1.0 as 1,
+            # so a JSON 1.0 came back as the integer 1.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_LIST_VAL(j VARCHAR(32000), i INTEGER) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New a, n, t, v, x If j = "" { Quit "" } Set a = ##class(%Library.DynamicArray).%FromJSON(j), n = a.%Size() If i < 0 { Set i = n + i } If (i < 0) || (i >= n) { Quit "" } Set t = a.%GetTypeOf(i), v = a.%Get(i) If $IsObject(v) { Quit v.%ToJSON() } If (t = "null") || (t = "unassigned") { Quit "" } If t = "boolean" { Quit $Select(v: "true", 1: "false") } If t = "number" { Set x = a.%Get(i, , "json") If (x [ ".") || (x [ "e") || (x [ "E") { Quit $DOUBLE(v) } Quit +v } If v = "" { Quit $Char(0) } Quit v }
+""",
+            # 4.7.0 row 21: a list built at run time, as JSON_TABLE reads its elements beside their kinds. Each element is
+            # {"v": <its JSON>, "k": "b" for a boolean, else "", "j": <its JSON as a string>, which a collect() of the
+            # UNWIND variable lists as it is}: JSON_TABLE hands a JSON boolean on as the text 1 / 0
+            # and an empty string as null, so an UNWIND (translator.py, the run-time JSON_TABLE) reads the flag beside
+            # the value, and the empty string goes as "\u0000", which JSON_TABLE reads as SQL's '' ($Char(0)). An object
+            # per element, not a pair: JSON_TABLE iterates the inner list of a one-element list of lists (R255).
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_LIST_KINDS(j VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New a, n, i, t, x, jx, k, q, out If (j = "") || (j = $Char(0)) { Quit "[]" } Set a = ##class(%Library.DynamicArray).%FromJSON(j), n = a.%Size(), out = "", q = $Char(34) For i = 0 : 1 : (n - 1) { Set t = a.%GetTypeOf(i), k = $Select(t = "boolean": "b", t = "number": "n", t = "string": "s", t = "array": "l", t = "object": "m", 1: "z"), x = a.%Get(i, , "json") If (t = "null") || (t = "unassigned") { Set x = "null" } Set jx = x If (t = "string") && (a.%Get(i) = "") { Set x = q _ $Char(92) _ "u0000" _ q } Set out = out _ $Select(i: ",", 1: "") _ "{" _ q _ "v" _ q _ ":" _ x _ "," _ q _ "k" _ q _ ":" _ q _ k _ q _ "," _ q _ "j" _ q _ ":" _ q _ $ZConvert(jx, "O", "JSON") _ q _ "}" } Quit "[" _ out _ "]" }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.RAND() RETURNS DOUBLE LANGUAGE OBJECTSCRIPT { Quit $RANDOM(1000000) / 1000000.0 }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.NEWID() RETURNS VARCHAR(36) LANGUAGE OBJECTSCRIPT { Quit $SYSTEM.Util.CreateGUID() }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.LIST_REVERSE(j VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { Set arr = ##class(%Library.DynamicArray).%FromJSON(j), out = ##class(%Library.DynamicArray).%New(), n = arr.%Size(), i = n-1 While i >= 0 { Do out.%Push(arr.%Get(i)) Set i = i-1 } Quit out.%ToJSON() }
+""",
+            r"""
+CREATE OR REPLACE FUNCTION Graph_KG.CY_TEMPORAL_ARITH(a VARCHAR(4096), op VARCHAR(1), b VARCHAR(4096)) RETURNS VARCHAR(4096) LANGUAGE OBJECTSCRIPT { If (a = "") || (b = "") { Quit "" } Set dN = 86400000000000 For i = 1, 2 { Set v = $Select(i = 1: a, 1: b), mo(i) = 0, dd(i) = 0, ns(i) = 0, isD(i) = ($Extract(v) = "P") && ($Length(v) > 1) If isD(i) { Set tp = 0, num = "" Set p = 1 While p < $Length(v) { Set p = p + 1, c = $Extract(v, p) If c = "T" { Set tp = 1 } ElseIf (c = "-") || (c = ".") || ("0123456789" [ c) { Set num = num _ c } ElseIf $IsValidNum(num) = 0 { Set isD(i) = 0 } ElseIf c = "Y" { Set mo(i) = mo(i) + (num * 12), num = "" } ElseIf (c = "M") && (tp = 0) { Set mo(i) = mo(i) + num, num = "" } ElseIf c = "W" { Set dd(i) = dd(i) + (num * 7), num = "" } ElseIf c = "D" { Set dd(i) = dd(i) + num, num = "" } ElseIf c = "H" { Set ns(i) = ns(i) + (num * 3600000000000), num = "" } ElseIf c = "M" { Set ns(i) = ns(i) + (num * 60000000000), num = "" } ElseIf c = "S" { Set ns(i) = ns(i) + (num * 1000000000), num = "" } Else { Set isD(i) = 0 } } If $Length(num) { Set isD(i) = 0 } } } Set res = "", fmt = 0 If (op = "*") || (op = "/") { Set di = $Select(isD(1): 1, isD(2) && (op = "*"): 2, 1: 0) If di { Set k = $Select(di = 1: b, 1: a) If ($IsValidNum(k) = 0) || ((op = "/") && (+k = 0)) { Quit "" } Set k = +$FNumber(k, "", 15) Set f = $Select(op = "*": +k, 1: 1 / k), m = mo(di) * f, wm = m \ 1, x = (dd(di) * f) + ((m - wm) * 30.436875), wd = x \ 1, mo = wm, dd = wd, ns = ((ns(di) * f) + ((x - wd) * dN)) \ 1, fmt = 1 } ElseIf ($IsValidNum(a) && $IsValidNum(b)) = 0 { Throw ##class(%Exception.General).%New("TypeError", 5001, , "TypeError: InvalidArgumentType: " _ op _ " needs two numbers and got a value that is not one") } } ElseIf isD(1) && isD(2) { Set s = $Select(op = "-": -1, 1: 1), mo = mo(1) + (s * mo(2)), dd = dd(1) + (s * dd(2)), ns = ns(1) + (s * ns(2)), fmt = 1 } ElseIf (isD(1) || isD(2)) && (((op = "-") && isD(1)) = 0) && $Match($Select(isD(1): b, 1: a), "(\d{4}-\d{2}-\d{2}|\d{2}:\d{2}).*") { Set ti = $Select(isD(1): 2, 1: 1), di = 3 - ti, t = $Select(ti = 1: a, 1: b), s = $Select(op = "-": -1, 1: 1), mo = s * mo(di), dd = s * dd(di), ns = s * ns(di) Set hasDate = $Match($Extract(t, 1, 10), "\d{4}-\d{2}-\d{2}"), rest = t, dpart = "" If hasDate { Set dpart = $Extract(t, 1, 10), rest = $Select($Extract(t, 11) = "T": $Extract(t, 12, *), 1: "") } Set hasTime = ($Length(rest) > 0), p = 1 While (p <= $Length(rest)) && ("0123456789:." [ $Extract(rest, p)) { Set p = p + 1 } Set tstr = $Extract(rest, 1, p - 1), zone = $Extract(rest, p, *), tod = ($Piece(tstr, ":", 1) * 3600000000000) + ($Piece(tstr, ":", 2) * 60000000000) + ($Piece(tstr, ":", 3) * 1000000000) If hasTime && (tstr = "") { Quit "" } If hasDate { Set tm = ($Extract(dpart, 1, 4) * 12) + $Extract(dpart, 6, 7) - 1 + mo, m2 = tm # 12, y2 = (tm - m2) / 12, m2 = m2 + 1, first = $ZDateH($Translate($Justify(y2, 4), " ", "0") _ "-" _ $Extract(100 + m2, 2, 3) _ "-01", 3, , , , , -672045), nxt = $ZDateH($Select(m2 = 12: $Translate($Justify(y2 + 1, 4), " ", "0") _ "-01", 1: $Translate($Justify(y2, 4), " ", "0") _ "-" _ $Extract(101 + m2, 2, 3)) _ "-01", 3, , , , , -672045), d = $Extract(dpart, 9, 10) If d > (nxt - first) { Set d = nxt - first } Set h = first + d - 1 + dd If hasTime { Set tn = tod + ns, r = tn # dN, h = h + ((tn - r) / dN), tod = r } Else { Set h = h + (ns \ dN) } Set res = $ZDate(h, 3, , 4, , , -672045) } Else { Set tod = (tod + ns) # dN } If hasTime { Set hh = tod \ 3600000000000, mi = tod \ 60000000000 # 60, ss = tod \ 1000000000 # 60, fr = tod # 1000000000, ts = $Extract(100 + hh, 2, 3) _ ":" _ $Extract(100 + mi, 2, 3) If ss || fr { Set ts = ts _ ":" _ $Extract(100 + ss, 2, 3) } If fr { Set fs = $Extract(1000000000 + fr, 2, 10) While $Extract(fs, *) = "0" { Set fs = $Extract(fs, 1, *-1) } Set ts = ts _ "." _ fs } Set res = res _ $Select(hasDate: "T", 1: "") _ ts _ zone } Quit res } Else { If $IsValidNum(a) && $IsValidNum(b) { Quit $Select(op = "+": a + b, op = "-": a - b, op = "*": a * b, +b = 0: "", 1: a / b) } If op = "+" { Quit $Select(a = $Char(0): "", 1: ##class(Graph.KG.funcCYTOSTRING).CYTOSTRING(a)) _ $Select(b = $Char(0): "", 1: ##class(Graph.KG.funcCYTOSTRING).CYTOSTRING(b)) } Throw ##class(%Exception.General).%New("TypeError", 5001, , "TypeError: InvalidArgumentType: " _ op _ " needs two numbers and got a value that is not one") } If fmt = 0 { Quit "" } Set y = mo \ 12, m = mo - (y * 12), h = ns \ 3600000000000, r = ns - (h * 3600000000000), mi = r \ 60000000000, r = r - (mi * 60000000000), out = "P" _ $Select(y: y _ "Y", 1: "") _ $Select(m: m _ "M", 1: "") _ $Select(dd: dd _ "D", 1: "") If h || mi || r { Set out = out _ "T" _ $Select(h: h _ "H", 1: "") _ $Select(mi: mi _ "M", 1: "") If r { Set sec = r / 1000000000 If $Extract(sec) = "." { Set sec = "0" _ sec } ElseIf $Extract(sec, 1, 2) = "-." { Set sec = "-0" _ $Extract(sec, 2, *) } Set out = out _ sec _ "S" } } Quit $Select(out = "P": "PT0S", 1: out) }
+""",
+            r"""
+CREATE OR REPLACE FUNCTION Graph_KG.CY_DURATION_FIELD(v VARCHAR(4096), f VARCHAR(64)) RETURNS BIGINT LANGUAGE OBJECTSCRIPT { If ($Extract(v) = "P") = 0 { Quit "" } Set mo = 0, dd = 0, ns = 0, tp = 0, num = "", p = 1 While p < $Length(v) { Set p = p + 1, c = $Extract(v, p) If (c = "T") && (tp = 0) && ($Length(num) = 0) { Set tp = 1 } ElseIf (c = "-") || (c = ".") || ("0123456789" [ c) { Set num = num _ c } ElseIf ($Length(num) = 0) || ($IsValidNum(num) = 0) { Return "" } ElseIf (c = "Y") && (tp = 0) { Set mo = mo + (num * 12), num = "" } ElseIf (c = "M") && (tp = 0) { Set mo = mo + num, num = "" } ElseIf (c = "W") && (tp = 0) { Set dd = dd + (num * 7), num = "" } ElseIf (c = "D") && (tp = 0) { Set dd = dd + num, num = "" } ElseIf (c = "H") && tp { Set ns = ns + (num * 3600000000000), num = "" } ElseIf c = "M" { Set ns = ns + (num * 60000000000), num = "" } ElseIf (c = "S") && tp { Set ns = ns + (num * 1000000000), num = "" } Else { Return "" } } If $Length(num) || (v = "P") || ($Extract(v, *) = "T") { Return "" } Set s = ns \ 1000000000, n = ns - (s * 1000000000) If n < 0 { Set s = s - 1, n = n + 1000000000 } Quit $Case(f, "years": mo \ 12, "quarters": mo \ 3, "months": mo, "weeks": dd \ 7, "days": dd, "hours": s \ 3600, "minutes": s \ 60, "seconds": s, "milliseconds": (s * 1000) + (n \ 1000000), "microseconds": (s * 1000000) + (n \ 1000), "nanoseconds": ns, "quartersOfYear": (mo \ 3) - ((mo \ 12) * 4), "monthsOfQuarter": mo - ((mo \ 3) * 3), "monthsOfYear": mo - ((mo \ 12) * 12), "daysOfWeek": dd - ((dd \ 7) * 7), "minutesOfHour": (s \ 60) - ((s \ 3600) * 60), "secondsOfMinute": s - ((s \ 60) * 60), "millisecondsOfSecond": n \ 1000000, "microsecondsOfSecond": n \ 1000, "nanosecondsOfSecond": n, : "") }
+""",
+            r"""
+CREATE OR REPLACE FUNCTION Graph_KG.CY_TEMPORAL_FIELD(v VARCHAR(4096), f VARCHAR(64)) RETURNS VARCHAR(4096) LANGUAGE OBJECTSCRIPT { If v = "" { Quit "" } Set hasDate = $Match($Extract(v, 1, 10), "\d{4}-\d{2}-\d{2}"), rest = v, (y, m, d, q, dow, wy, wk, od, dq, ep) = "" If hasDate { Set y = +$Extract(v, 1, 4), m = +$Extract(v, 6, 7), d = +$Extract(v, 9, 10), h = $ZDateH($Extract(v, 1, 10), 3, , , , , -672045), rest = $Select($Extract(v, 11) = "T": $Extract(v, 12, *), 1: ""), q = ((m - 1) \ 3) + 1, dow = ((h + 3) # 7) + 1, th = h - dow + 4, wy = +$Extract($ZDate(th, 3, , 4, , , -672045), 1, 4), wk = ((th - $ZDateH($Translate($Justify(wy, 4), " ", "0") _ "-01-01", 3, , , , , -672045)) \ 7) + 1, od = h - $ZDateH($Extract(v, 1, 4) _ "-01-01", 3, , , , , -672045) + 1, dq = h - $ZDateH($Extract(v, 1, 5) _ $Extract(100 + (((q - 1) * 3) + 1), 2, 3) _ "-01", 3, , , , , -672045) + 1 } Set p = 1 While (p <= $Length(rest)) && ("0123456789:." [ $Extract(rest, p)) { Set p = p + 1 } Set tstr = $Extract(rest, 1, p - 1), zone = $Extract(rest, p, *), hh = +$Piece(tstr, ":", 1), mi = +$Piece(tstr, ":", 2), sf = $Piece(tstr, ":", 3), ss = +$Piece(sf, ".", 1), ns = +$Extract($Piece(sf, ".", 2) _ "000000000", 1, 9), name = "", off = "", offs = 0 If zone [ "[" { Set name = $Piece($Piece(zone, "[", 2), "]", 1), zone = $Piece(zone, "[", 1) } If zone = "Z" { Set off = "Z" } ElseIf $Length(zone) { Set off = zone, offs = $Select($Extract(zone) = "-": -1, 1: 1) * (($Extract(zone, 2, 3) * 3600) + ($Extract(zone, 5, 6) * 60) + $Extract(zone, 8, 9)) } If hasDate { Set ep = ((h - 47117) * 86400) + (hh * 3600) + (mi * 60) + ss - offs } Quit $Case(f, "year": y, "quarter": q, "month": m, "week": wk, "weekYear": wy, "day": d, "ordinalDay": od, "dayOfYear": od, "weekDay": dow, "dayOfWeek": dow, "dayOfQuarter": dq, "quarterDay": dq, "hour": hh, "minute": mi, "second": ss, "millisecond": ns \ 1000000, "microsecond": ns \ 1000, "nanosecond": ns, "timezone": $Select($Length(name): name, 1: off), "offset": off, "offsetMinutes": offs \ 60, "offsetSeconds": offs, "epochSeconds": ep, "epochMillis": $Select(ep = "": "", 1: (ep * 1000) + (ns \ 1000000)), : "") }
+""",
+            r"""
+CREATE OR REPLACE FUNCTION Graph_KG.CY_SORT_KEY(v VARCHAR(32000), t VARCHAR(16)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { If (v = "") || (t = "null") { Quit "z" } If v = $Char(0) { Quit "l" } If ((t = "x") || (t = "number")) && ($Length(v) < 40) && ($ASCII($LISTBUILD(v), 2) > 7) { Set dt = "" _ v If dt = "NAN" { Quit "o" } If dt = "INF" { Quit "n3" } If dt = "-INF" { Quit "n0" } } If t = "string" { Quit "l" _ v } If t = "boolean" { Quit "m" _ +v } If (t = "array") || ((t = "x") && ($Extract(v) = "[")) { Set arr = "" Try { Set arr = ##class(%Library.DynamicArray).%FromJSON(v) } Catch { Set arr = "" } If $IsObject(arr) { Set k = "d", it = arr.%GetIterator() While it.%GetNext(.i, .e, .et) { If et = "array" { Set e = e.%ToJSON() } ElseIf et = "object" { Set e = e.%ToJSON() } ElseIf et = "boolean" { Set e = $Select(e: 1, 1: 0) } Set k = k _ ##class(Graph.KG.funcCYSORTKEY).CYSORTKEY(e, $Select(et = "string": "x", 1: et)) _ $Char(1) } Quit k } } If t = "x" { Set q = $Char(34) If ($Extract(v, 1, 8) = ("{" _ q _ "_id" _ q _ ":" _ q)) && (v [ ("," _ q _ "_labels" _ q _ ":[")) { Quit "b" _ v } If ($Extract(v, 1, 9) = ("{" _ q _ "type" _ q _ ":" _ q)) && (v [ ("," _ q _ "props" _ q _ ":")) { Quit "c" _ v } If ($Extract(v, 1, 10) = ("{" _ q _ "nodes" _ q _ ":[")) && (v [ ("," _ q _ "rels" _ q _ ":[")) { Quit "e" _ v } } If (t = "object") || ((t = "x") && ($Extract(v) = "{")) { Quit "a" _ v } If t = "x" { If v = "true" { Quit "m1" } If v = "false" { Quit "m0" } If v = "NaN" { Quit "o" } } If (t = "number") || ((t = "x") && $IsValidNum(v)) { Set n = +v If n = 0 { Quit "n1" } Set s = "" _ $Select(n < 0: -n, 1: n), ex = 0 If s [ "E" { Set ex = +$Piece(s, "E", 2), s = $Piece(s, "E", 1) } Set ip = $Piece(s, "."), fp = $Piece(s, ".", 2) If +ip { Set e = $Length(+ip) - 1, dg = (+ip) _ fp } Else { Set dg = $ZStrip(fp, "<", "0"), e = $Length(dg) - $Length(fp) - 1 } Set dg = $ZStrip(dg, ">", "0"), e = e + ex + 50000 If n > 0 { Quit "n2" _ $Extract(100000 + e, 2, 6) _ dg } Quit "n0" _ $Extract(100000 + (99999 - e), 2, 6) _ $Translate(dg, "0123456789", "9876543210") _ "~" } If $Extract(v) = "P" { Set dur = ($Length(v) > 1), tp = 0, num = "", p = 1, dl = 0 While dur && (p < $Length(v)) { Set p = p + 1, c = $Extract(v, p) If (c = "-") || (c = ".") || ("0123456789" [ c) { Set num = num _ c } ElseIf (c = "T") && (tp = 0) && ($Length(num) = 0) { Set tp = 1 } ElseIf $Length(num) && $IsValidNum(num) && ($Select(tp: "HMS", 1: "YMWD") [ c) { Set dl = dl + (num * $Case($Select(tp: "T", 1: "") _ c, "Y": 31556952, "M": 2629746, "W": 604800, "D": 86400, "TH": 3600, "TM": 60, : 1)), num = "" } Else { Set dur = 0 } } If dur && ($Length(num) = 0) && ("YMWDHS" [ $Extract(v, *)) { Quit "k" _ $Extract(##class(Graph.KG.funcCYSORTKEY).CYSORTKEY(dl, "number"), 2, *) _ $Char(1) _ v } } Set d10 = $Extract(v, 1, 10), hasDate = ($Length(d10) = 10) && ($Extract(d10, 5) = "-") && ($Extract(d10, 8) = "-") && ($Translate($Extract(d10, 1, 4) _ $Extract(d10, 6, 7) _ $Extract(d10, 9, 10), "0123456789") = ""), rest = v, h = 0 If hasDate { If $Length(v) = 10 { Quit "h" _ v } If $Extract(v, 11) '= "T" { Quit "l" _ v } Set h = $ZDateH(d10, 3, , , , , -672045, , "") If h = "" { Quit "l" _ v } Set rest = $Extract(v, 12, *) } Set r5 = $Extract(rest, 1, 5) If ($Length(r5) < 5) || ($Length($Translate($Extract(r5, 1, 2) _ $Extract(r5, 4, 5), "0123456789")) > 0) || ($Char(10, 11, 12, 13, 133, 8232, 8233) [ $Extract(r5, 3)) { Quit "l" _ v } Set p = 1 While (p <= $Length(rest)) && ("0123456789:." [ $Extract(rest, p)) { Set p = p + 1 } Set tstr = $Extract(rest, 1, p - 1), zone = $Extract(rest, p, *), sf = $Piece(tstr, ":", 3), secs = ($Piece(tstr, ":", 1) * 3600) + ($Piece(tstr, ":", 2) * 60) + $Piece(sf, "."), ns = $Extract($Piece(sf, ".", 2) _ "000000000", 1, 9), offs = 0 If zone [ "[" { Set zone = $Piece(zone, "[", 1) } If zone = "" { If hasDate { Quit "g" _ d10 _ $Extract(100000 + secs, 2, 6) _ ns } Quit "j" _ $Extract(100000 + secs, 2, 6) _ ns } If zone '= "Z" { Set offs = $Select($Extract(zone) = "-": -1, 1: 1) * (($Extract(zone, 2, 3) * 3600) + ($Extract(zone, 5, 6) * 60) + $Extract(zone, 8, 9)) } If hasDate { Quit "f" _ $Extract(10000000000000 + (((h + 672045) * 86400) + secs - offs), 2, 14) _ ns } Quit "i" _ $Extract(1000000 + secs - offs + 100000, 2, 7) _ ns }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_CMP(pa VARCHAR(32000), pb VARCHAR(32000)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { Set a = ##class(Graph.KG.funcCYSORTKEY).CYSORTKEY(pa, "x"), b = ##class(Graph.KG.funcCYSORTKEY).CYSORTKEY(pb, "x") If (a = "z") || (b = "z") { Quit "" } Set ra = $Extract(a), rb = $Extract(b) If (ra = "o") && ((rb = "o") || (rb = "n")) { Quit 2 } If (rb = "o") && (ra = "n") { Quit 2 } If (ra = rb) = 0 { Quit "" } If "abcek" [ ra { Quit "" } If a = b { Quit 0 } Quit $Select(a ] b: 1, 1: -1) }
+""",
+            # 4.6.0 R308: `a <op> b` by openCypher's rules over two values whose types are known, for the comparisons
+            # the translator cannot answer before the query runs (a list element, a list, a map, two kinds). Each side
+            # comes with its type, a value marked as prop_values.TYPED_MARK spells it ($Char(1) "J" JSON, "N" or "D" a
+            # number, "S" a string) whatever its tag: "j" JSON text (a list or map column, a literal),
+            # "n" a number, "s" a string (SQL's '' is $Char(0)), "b" a boolean (1 / 0 or 'true' / 'false'), "v" a value
+            # as CY_LIST_VAL answers it (an IRIS number a number, 'true' / 'false' a boolean, a list or map its JSON,
+            # anything else a string) and "w" the same with 'true' / 'false' strings (its boolean flag is 0); SQL's
+            # NULL is null. Answers 1, 0 or NULL (null): two kinds are not equal and do not order, a map orders with
+            # nothing, lists compare element by element (a shorter prefix first) and maps key by key, a null inside
+            # making the answer null where nothing else decides. A string that is an ISO duration (CY_SORT_KEY's "k") is
+            # the duration: it orders with nothing, and two are equal when their months, days and nanoseconds are
+            # (CY_DURATION_FIELD; 4.6.0 fixes81). op "c" (the recursion) answers the ordering ("<",
+            # "=", ">", "?") and the equality ("T", "F", "?") of the two.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_JCMP(a VARCHAR(32000), ta VARCHAR(1), b VARCHAR(32000), tb VARCHAR(1), op VARCHAR(2)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { New h, i, v, t, ka, kb, x, y, o, e, n, m, k, c, it, ev, dx, dy, f For i = 1, 2 { Set v = $Select(i = 1: a, 1: b), t = $Select(i = 1: ta, 1: tb), h(i) = ##class(%Library.DynamicArray).%New() If $Extract(v) = $Char(1) { Set t = $Case($Extract(v, 2), "J": "j", "S": "s", : "n"), v = $Extract(v, 3, *) } If v = "" { Do h(i).%Push("", "null") } ElseIf t = "j" { Set h(i) = ##class(%Library.DynamicArray).%FromJSON("[" _ v _ "]") } ElseIf t = "n" { Do h(i).%Push(+v, "number") } ElseIf t = "b" { Do h(i).%Push((v = 1) || (v = "true"), "boolean") } ElseIf ((t = "v") || (t = "w")) && ($Length(v) < 40) && ($ASCII($LISTBUILD(v), 2) > 3) && ($ASCII($LISTBUILD(v), 2) < 10) { Do h(i).%Push(v, "number") } ElseIf (t = "v") && ((v = "true") || (v = "false")) { Do h(i).%Push(v = "true", "boolean") } ElseIf ((t = "v") || (t = "w")) && ("[{" [ $Extract(v)) { Try { Set h(i) = ##class(%Library.DynamicArray).%FromJSON("[" _ v _ "]") } Catch { Do h(i).%Push(v, "string") } } Else { Do h(i).%Push($Select(v = $Char(0): "", 1: v), "string") } } Set ka = h(1).%GetTypeOf(0), kb = h(2).%GetTypeOf(0), x = h(1).%Get(0), y = h(2).%Get(0), o = "?", e = "F" If (ka = "null") || (kb = "null") { Set e = "?" } ElseIf ka = kb { If (ka = "number") || (ka = "boolean") { Set o = $Select(x < y: "<", x > y: ">", 1: "="), e = $Select(o = "=": "T", 1: "F") } ElseIf ka = "string" { Set dx = ($Extract(##class(Graph.KG.funcCYSORTKEY).CYSORTKEY(x, "x")) = "k"), dy = ($Extract(##class(Graph.KG.funcCYSORTKEY).CYSORTKEY(y, "x")) = "k") If dx || dy { Set o = "?", e = "F" If dx && dy { Set e = "T" For f = "months", "days", "nanoseconds" { If (##class(Graph.KG.funcCYDURATIONFIELD).CYDURATIONFIELD(x, f) = ##class(Graph.KG.funcCYDURATIONFIELD).CYDURATIONFIELD(y, f)) = 0 { Set e = "F" } } } } Else { Set o = $Select(x = y: "=", x ] y: ">", 1: "<"), e = $Select(o = "=": "T", 1: "F") } } ElseIf ka = "array" { Set n = x.%Size(), m = y.%Size(), o = "", e = $Select(n = m: "T", 1: "F") Set k = -1 While (k + 1) < $Select(n < m: n, 1: m) { Set k = k + 1, c = ##class(Graph.KG.funcCYJCMP).CYJCMP(x.%Get(k, , "json"), "j", y.%Get(k, , "json"), "j", "c") If o = "" { If ($Extract(c) = "=") = 0 { Set o = $Extract(c) } } If $Extract(c, 2) = "F" { Set e = "F" } ElseIf ($Extract(c, 2) = "?") && (e = "T") { Set e = "?" } } If o = "" { Set o = $Select(n < m: "<", n > m: ">", 1: "=") } } ElseIf ka = "object" { Set n = 0, m = 0, e = "T", it = x.%GetIterator() While it.%GetNext(.k, .ev) { Set n = n + 1 If y.%IsDefined(k) { Set c = $Extract(##class(Graph.KG.funcCYJCMP).CYJCMP(x.%Get(k, , "json"), "j", y.%Get(k, , "json"), "j", "c"), 2) If c = "F" { Set e = "F" } ElseIf (c = "?") && (e = "T") { Set e = "?" } } Else { Set e = "F" } } Set it = y.%GetIterator() While it.%GetNext(.k, .ev) { Set m = m + 1 } If (n = m) = 0 { Set e = "F" } } } If op = "c" { Quit o _ e } If op = "=" { Quit $Select(e = "?": "", 1: e = "T") } If op = "<>" { Quit $Select(e = "?": "", 1: e = "F") } If o = "?" { Quit "" } Quit $Case(op, "<": o = "<", "<=": (o = ">") = 0, ">": o = ">", : (o = "<") = 0) }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.LIST_CONCAT(a VARCHAR(32000), b VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { If (a = "") || (b = "") { Quit "" } If (($Extract(a) = "[") + ($Extract(b) = "[")) = 0 { Quit ##class(Graph.KG.funcCYTEMPORALARITH).CYTEMPORALARITH(a, "+", b) } Set out = ##class(%Library.DynamicArray).%New() For v = a, b { Set arr = "" If $Extract(v) = "[" { Try { Set arr = ##class(%Library.DynamicArray).%FromJSON(v) } Catch { Set arr = "" } } If $IsObject(arr) { Set it = arr.%GetIterator() While it.%GetNext(.k, .e, .t) { If (t = "object") || (t = "array") { Do out.%Push(e) } Else { Do out.%Push(e, t) } } } ElseIf v = $Char(0) { Do out.%Push("") } ElseIf $IsValidNum(v) { Do out.%Push(+v) } Else { Do out.%Push(v) } } Quit out.%ToJSON() }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_REVERSE(v VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { If v = "" { Quit "" } Set arr = "" If $Extract(v) = "[" { Try { Set arr = ##class(%Library.DynamicArray).%FromJSON(v) } Catch { Set arr = "" } } If '$IsObject(arr) { Quit $Reverse(v) } Set out = ##class(%Library.DynamicArray).%New(), i = arr.%Size() - 1 While i >= 0 { Set t = arr.%GetTypeOf(i) If (t = "object") || (t = "array") { Do out.%Push(arr.%Get(i)) } Else { Do out.%Push(arr.%Get(i), t) } Set i = i - 1 } Quit out.%ToJSON() }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.LIST_TAIL(j VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { Set arr = ##class(%Library.DynamicArray).%FromJSON(j), out = ##class(%Library.DynamicArray).%New(), n = arr.%Size(), i = 1 While i < n { Do out.%Push(arr.%Get(i)) Set i = i+1 } Quit out.%ToJSON() }
+""",
+            # REGEX_MATCH and STR_SPLIT (4.6.0 R274) read their arguments as IRIS passes them: SQL NULL arrives as ""
+            # and answers NULL, SQL's '' arrives as $Char(0) and is the empty string (R269's rule for CypherFn):
+            # '' =~ 'a*' is true, the empty pattern matches only '', split('', ',') is [''], split(s, '') the characters.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.REGEX_MATCH(s VARCHAR(4000), p VARCHAR(4000)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { If (s = "") || (p = "") { Quit "" } If s = $Char(0) { Set s = "" } If p = $Char(0) { Quit (s = "") } Quit $MATCH(s, p) }
+""",
+            # LIST_HEAD and LIST_LAST are retired (spec 262): the translator answers head() and last() inline and never
+            # called them, and their bodies failed when called. The legacy manifest records both with no replacement.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.STR_SPLIT(str VARCHAR(4000), delim VARCHAR(100)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { If (str = "") || (delim = "") { Quit "" } If str = $Char(0) { Set str = "" } Set out = ##class(%Library.DynamicArray).%New(), i = 1 If delim = $Char(0) { Set n = $LENGTH(str) While i <= n { Do out.%Push($EXTRACT(str, i))  Set i = i + 1 } Quit out.%ToJSON() } Set n = $LENGTH(str, delim) While i <= n { Do out.%Push($PIECE(str, delim, i))  Set i = i + 1 } Quit out.%ToJSON() }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_EXP_ORDKEY(v VARCHAR(32000), t VARCHAR(16)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New tt, top, k, arr, it, ix, el, et, x, neg, ex, m, ev Set tt = t, top = (t = "top"), k = "" If top { If v = "" { Quit "" } Set tt = "string" If $Extract(v) = "[" { Set tt = "array" } ElseIf $Extract(v) = "{" { Set tt = "object" } ElseIf $IsValidNum(v) { Set tt = "number" } ElseIf (v = "true") || (v = "false") { Set tt = "boolean" } } If tt = "string" { Set k = "B" _ v _ $Char(1) } ElseIf tt = "boolean" { Set k = "C" _ ((v = 1) || (v = "true")) } ElseIf tt = "null" { Set k = "E" } ElseIf tt = "object" { Set k = "@" _ v _ $Char(1) } ElseIf tt = "array" { Set arr = "" Try { Set arr = ##class(%Library.DynamicArray).%FromJSON(v) } Catch { Set arr = "" } If $IsObject(arr) = 0 { Set k = "B" _ v _ $Char(1) } Else { Set k = "A", it = arr.%GetIterator() While it.%GetNext(.ix, .el, .et) { If (et = "array") || (et = "object") { Set el = el.%ToJSON() } Set k = k _ ##class(Graph.KG.funcCYEXPORDKEY).CYEXPORDKEY(el, et) } Set k = k _ $Char(1) } } Else { Set x = +v If x = 0 { Set k = "D1" } Else { Set neg = (x < 0) If neg { Set x = -x } Set ex = 0 While (x >= 10) { Set x = x / 10, ex = ex + 1 } While (x < 1) { Set x = x * 10, ex = ex - 1 } Set m = $Extract($Translate(x, ".") _ "00000000000000000000", 1, 20), ev = ex + 500 If neg { Set ev = 1000 - ev, m = $Translate(m, "0123456789", "9876543210"), k = "D0" _ ev _ m } Else { Set k = "D2" _ ev _ m } } } If top { Quit k _ $Char(2) _ v } Quit k }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_EXP_ORDVAL(k VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { If k = "" { Quit "" } Quit $Piece(k, $Char(2), 2, $Length(k, $Char(2))) }
+""",
+            # 4.6.0 R298: CY_VLP_PATHS and CY_VLP_CHAIN read each relationship's properties through CY_RETYPE_MAP, as
+            # properties(r) does: a number a Cypher CREATE stored as text ({"w": "7"}) is the number 7 in `r` and in
+            # relationships(p), a stored 'true' the boolean. The stored qualifiers are unchanged.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_VLP_PATHS(src VARCHAR(512), types VARCHAR(4000), dir VARCHAR(8), minh INTEGER, maxh INTEGER, gall INTEGER, gid VARCHAR(512), tbl VARCHAR(256)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New stmt, sc, out, q, tw, nt, ta, i, targ, gw, sql, d1, d2, sp, st, sd, sl, se, cur, dep, pl, pe, o, na, ya, ra, k, j, a, ro, adj, dd, nargs, args, rs, qv, qj, nb, eid Set out = ##class(%Library.DynamicArray).%New() If (src = "") || (maxh < minh) { Quit out.%ToJSON() } If gid = $Char(0) { Set gid = "" } If types = $Char(0) { Set types = "" } Set q = $Char(63), tw = "", nt = 0 If (types = "") = 0 { Set ta = ##class(%Library.DynamicArray).%FromJSON(types), nt = ta.%Size() For i = 1 : 1 : nt { Set tw = tw _ $Select(i = 1: "", 1: ", ") _ q, targ(i) = ta.%Get(i - 1) } If nt > 0 { Set tw = " AND p IN (" _ tw _ ")" } } Set gw = $Select(gall: "", 1: " AND COALESCE(graph_id, " _ $Char(39, 39) _ ") = COALESCE(" _ q _ ", " _ $Char(39, 39) _ ")") Set sql(1) = "SELECT edge_id, s, p, o_id, qualifiers FROM " _ tbl _ " WHERE s = " _ q _ tw _ gw Set sql(2) = "SELECT edge_id, s, p, o_id, qualifiers FROM " _ tbl _ " WHERE o_id = " _ q _ tw _ gw _ $Select(dir = "both": " AND (s <> o_id)", 1: "") Set d1 = $Select(dir = "in": 2, 1: 1), d2 = $Select(dir = "both": 2, 1: d1) For dd = d1 : 1 : d2 { Set stmt(dd) = ##class(%SQL.Statement).%New(), sc = stmt(dd).%Prepare(sql(dd)) If $System.Status.IsError(sc) { Throw ##class(%Exception.StatusException).CreateFromStatus(sc) } } Set sp = 1, st(1) = src, sd(1) = 0, sl(1) = "", se(1) = "," While sp > 0 { Set cur = st(sp), dep = sd(sp), pl = sl(sp), pe = se(sp), sp = sp - 1 If dep >= minh { Set o = ##class(%Library.DynamicObject).%New(), na = ##class(%Library.DynamicArray).%New(), ya = ##class(%Library.DynamicArray).%New(), ra = ##class(%Library.DynamicArray).%New(), k = $Char(2) For j = 1 : 1 : $ListLength(pl) { Set a = $List(pl, j) Do na.%Push($List(a, 2) _ ""), ya.%Push($List(a, 3) _ "") Set ro = ##class(%Library.DynamicObject).%New() Do ro.%Set("type", $List(a, 3) _ ""), ro.%Set("props", ##class(%Library.DynamicObject).%FromJSON(##class(Graph.KG.funcCYRETYPEMAP).CYRETYPEMAP($List(a, 4)))), ra.%Push(ro) Set k = k _ $List(a, 5) _ $Char(1) _ $List(a, 3) _ $Char(1) _ $List(a, 6) _ $Char(2) } Do o.%Set("t", cur _ ""), o.%Set("l", dep), o.%Set("n", na.%ToJSON()), o.%Set("y", ya.%ToJSON()), o.%Set("r", ra.%ToJSON()), o.%Set("k", k), out.%Push(o) } If dep < maxh { If $Data(adj(cur)) = 0 { Set adj(cur) = 0 For dd = d1 : 1 : d2 { Set nargs = 1, args(1) = cur For i = 1 : 1 : nt { Set nargs = nargs + 1, args(nargs) = targ(i) } If gall = 0 { Set nargs = nargs + 1, args(nargs) = gid } Set args = nargs, rs = stmt(dd).%Execute(args...) While rs.%Next() { Set qv = rs.%GetData(5), qj = $Select($IsObject(qv): qv.%ToJSON(), qv = "": "{}", 1: qv) Set nb = $Select(dd = 1: rs.%GetData(4), 1: rs.%GetData(2)), adj(cur) = adj(cur) + 1 Set adj(cur, adj(cur)) = $ListBuild(rs.%GetData(1), nb, rs.%GetData(3), qj, rs.%GetData(2), rs.%GetData(4)) } } } For i = adj(cur) : -1 : 1 { Set a = adj(cur, i), eid = $List(a, 1) If (pe [ ("," _ eid _ ",")) = 0 { Set sp = sp + 1, st(sp) = $List(a, 2), sd(sp) = dep + 1, sl(sp) = pl _ $ListBuild(a), se(sp) = pe _ eid _ "," } } } } Quit out.%ToJSON() }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_VLP_ENDS(src VARCHAR(512), types VARCHAR(4000), dir VARCHAR(8), minh INTEGER, maxh INTEGER, gall INTEGER, gid VARCHAR(512), tbl VARCHAR(256)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New stmt, sc, out, q, tw, nt, ta, i, targ, gw, sql, d1, d2, sp, st, sd, se, cur, dep, pe, a, adj, dd, nargs, args, rs, qv, nb, eid, best, ord, no, o If (tbl = "Graph_KG.rdf_edges") && ##class(%Dictionary.CompiledMethod).%ExistsId("Graph.KG.VarLength" _ $Char(124, 124) _ "Ends") && ##class(Graph.KG.Adjacency).Indexed() { Do ##class(Graph.KG.SqlPrivilege).RequireSelect(tbl) Quit ##class(Graph.KG.VarLength).Ends(src, types, dir, minh, maxh, gall, gid) } Set out = ##class(%Library.DynamicArray).%New() If (src = "") || (maxh < minh) { Quit out.%ToJSON() } If gid = $Char(0) { Set gid = "" } If types = $Char(0) { Set types = "" } Set q = $Char(63), tw = "", nt = 0 If (types = "") = 0 { Set ta = ##class(%Library.DynamicArray).%FromJSON(types), nt = ta.%Size() For i = 1 : 1 : nt { Set tw = tw _ $Select(i = 1: "", 1: ", ") _ q, targ(i) = ta.%Get(i - 1) } If nt > 0 { Set tw = " AND p IN (" _ tw _ ")" } } Set gw = $Select(gall: "", 1: " AND COALESCE(graph_id, " _ $Char(39, 39) _ ") = COALESCE(" _ q _ ", " _ $Char(39, 39) _ ")") Set sql(1) = "SELECT edge_id, s, p, o_id FROM " _ tbl _ " WHERE s = " _ q _ tw _ gw Set sql(2) = "SELECT edge_id, s, p, o_id FROM " _ tbl _ " WHERE o_id = " _ q _ tw _ gw _ $Select(dir = "both": " AND (s <> o_id)", 1: "") Set d1 = $Select(dir = "in": 2, 1: 1), d2 = $Select(dir = "both": 2, 1: d1) For dd = d1 : 1 : d2 { Set stmt(dd) = ##class(%SQL.Statement).%New(), sc = stmt(dd).%Prepare(sql(dd)) If $System.Status.IsError(sc) { Throw ##class(%Exception.StatusException).CreateFromStatus(sc) } } Set sp = 1, st(1) = src, sd(1) = 0, se(1) = ",", no = 0 While sp > 0 { Set cur = st(sp), dep = sd(sp), pe = se(sp), sp = sp - 1 If dep >= minh { If $Data(best(cur)) = 0 { Set no = no + 1, ord(no) = cur, best(cur) = dep } ElseIf dep < best(cur) { Set best(cur) = dep } } If dep < maxh { If $Data(adj(cur)) = 0 { Set adj(cur) = 0 For dd = d1 : 1 : d2 { Set nargs = 1, args(1) = cur For i = 1 : 1 : nt { Set nargs = nargs + 1, args(nargs) = targ(i) } If gall = 0 { Set nargs = nargs + 1, args(nargs) = gid } Set args = nargs, rs = stmt(dd).%Execute(args...) While rs.%Next() { Set nb = $Select(dd = 1: rs.%GetData(4), 1: rs.%GetData(2)), adj(cur) = adj(cur) + 1 Set adj(cur, adj(cur)) = $ListBuild(rs.%GetData(1), nb) } } } For i = adj(cur) : -1 : 1 { Set a = adj(cur, i), eid = $List(a, 1) If (pe [ ("," _ eid _ ",")) = 0 { Set sp = sp + 1, st(sp) = $List(a, 2), sd(sp) = dep + 1, se(sp) = pe _ eid _ "," } } } } For i = 1 : 1 : no { Set o = ##class(%Library.DynamicObject).%New() Do o.%Set("t", ord(i) _ ""), o.%Set("l", best(ord(i))) Do out.%Push(o) } Quit out.%ToJSON() }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_VLP_CHAIN(ids VARCHAR(32000), dir VARCHAR(8), tbl VARCHAR(256)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New out, q, a, m, i, sql, rs, id, seen, es, ep, eo, eq, qv, st, ns, x, cur, ok, nb, o, na, ya, ra, ro, k Set out = ##class(%Library.DynamicArray).%New() If (ids = "") || (ids = $Char(0)) { Quit out.%ToJSON() } If dir = $Char(0) { Set dir = "out" } Set q = $Char(63), a = ##class(%Library.DynamicArray).%FromJSON(ids), m = a.%Size() If m = 0 { Quit out.%ToJSON() } Set sql = "SELECT s, p, o_id, qualifiers FROM " _ tbl _ " WHERE edge_id = " _ q For i = 1 : 1 : m { Set id = a.%Get(i - 1) _ "" If (id = "") || $Data(seen(id)) { Return out.%ToJSON() } Set seen(id) = 1, rs = ##class(%SQL.Statement).%ExecDirect(, sql, id) If rs.%Next() = 0 { Do ##class(Graph.KG.SqlPrivilege).RaiseIfRefused(rs.%SQLCODE, rs.%Message, tbl) Return out.%ToJSON() } Set es(i) = rs.%GetData(1), ep(i) = rs.%GetData(2), eo(i) = rs.%GetData(3), qv = rs.%GetData(4), eq(i) = $Select($IsObject(qv): qv.%ToJSON(), qv = "": "{}", 1: qv) } Set ns = 1, st(1) = $Select(dir = "in": eo(1), 1: es(1)) If (dir = "both") && ((es(1) = eo(1)) = 0) { Set ns = 2, st(2) = eo(1) } For x = 1 : 1 : ns { Set cur = st(x), ok = 1, na = ##class(%Library.DynamicArray).%New(), ya = ##class(%Library.DynamicArray).%New(), ra = ##class(%Library.DynamicArray).%New(), k = $Char(2) For i = 1 : 1 : m { If ok { Set nb = "" If (dir = "in") = 0, es(i) = cur { Set nb = eo(i) } ElseIf (dir = "out") = 0, eo(i) = cur { Set nb = es(i) } Else { Set ok = 0 } If ok { Do na.%Push(nb _ ""), ya.%Push(ep(i) _ "") Set ro = ##class(%Library.DynamicObject).%New() Do ro.%Set("type", ep(i) _ ""), ro.%Set("props", ##class(%Library.DynamicObject).%FromJSON(##class(Graph.KG.funcCYRETYPEMAP).CYRETYPEMAP(eq(i)))), ra.%Push(ro) Set k = k _ es(i) _ $Char(1) _ ep(i) _ $Char(1) _ eo(i) _ $Char(2), cur = nb } } } If ok { Set o = ##class(%Library.DynamicObject).%New() Do o.%Set("s", st(x) _ ""), o.%Set("t", cur _ ""), o.%Set("l", m), o.%Set("n", na.%ToJSON()), o.%Set("y", ya.%ToJSON()), o.%Set("r", ra.%ToJSON()), o.%Set("k", k), out.%Push(o) } } Quit out.%ToJSON() }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_VLP_HAS(k VARCHAR(32000), s VARCHAR(512), p VARCHAR(256), o VARCHAR(512)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { If (k = "") || (s = "") { Quit 0 } Quit (k [ ($Char(2) _ s _ $Char(1) _ p _ $Char(1) _ o _ $Char(2))) }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_VLP_DISJOINT(a VARCHAR(32000), b VARCHAR(32000)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT { If (a = "") || (b = "") { Quit 1 } New r, n, i, e Set r = 1, n = $Length(a, $Char(2)) For i = 2 : 1 : (n - 1) { Set e = $Piece(a, $Char(2), i) If (e = "") = 0 { If b [ ($Char(2) _ e _ $Char(2)) { Set r = 0 Quit } } } Quit r }
+""",
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_VLP_OPT(paths VARCHAR(32000), tmode INTEGER, tgt VARCHAR(512), labels VARCHAR(4000), ltbl VARCHAR(256)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New a, out, i, o, t, keep, la, nl, j, sql, rs, q Set q = $Char(63), out = ##class(%Library.DynamicArray).%New() If (paths = "") || (paths = $Char(0)) { Set paths = "[]" } If tgt = $Char(0) { Set tgt = "" } If labels = $Char(0) { Set labels = "" } Set a = ##class(%Library.DynamicArray).%FromJSON(paths), nl = 0 If (labels = "") = 0 { Set la = ##class(%Library.DynamicArray).%FromJSON(labels), nl = la.%Size() } Set sql = "SELECT 1 FROM " _ ltbl _ " l WHERE l.s = " _ q _ " AND l.label = " _ q For i = 0 : 1 : (a.%Size() - 1) { Set o = a.%Get(i), t = o.%Get("t"), keep = 1 If tmode { If (tgt = "") || ((t = tgt) = 0) { Set keep = 0 } } For j = 0 : 1 : (nl - 1) { If keep { Set rs = ##class(%SQL.Statement).%ExecDirect(, sql, t, la.%Get(j)) If rs.%Next() = 0 { Do ##class(Graph.KG.SqlPrivilege).RaiseIfRefused(rs.%SQLCODE, rs.%Message, ltbl) Set keep = 0 } } } If keep { Do out.%Push(o) } } If out.%Size() = 0 { Quit "[{}]" } Quit out.%ToJSON() }
+""",
+            # properties(n): each value keeps the type it was stored with, as RETURN n.p reads it: a number a Cypher
+            # write or (from 4.6.4) the Python API stored is a number, and any text a string, the text '30' or '0.95'
+            # too. 4.7.0 row 10: text spelled as JSON spells a number was read as the number, so a string '30' was 30
+            # here and '30' in n.s; that rule dates from when the API wrote 0.95 as the text `0.95` (4.6.0 R139).
+            # gid is the node's graph ('' the default graph, which reaches ObjectScript as $Char(0), and binds as ''):
+            # without it two graphs' nodes of one id were read as one merged map (4.6.0 R157). NULL (gid = "") is a
+            # node the translation cannot tie to a graph, and reads every graph's rows, as before.
+            # 4.6.0 R248: a value stored as an IRIS number is the JSON number CY_JSON_NUM spells, the value RETURN n.p
+            # answers (5.0 for a $DOUBLE 5, which a dynamic object spelled 5; 0.95, not 0.94999999999999995559). The
+            # map is written as text for that; each other value is spelled by a dynamic array, as the object spelled
+            # it, and a key read twice (gid NULL, two graphs) keeps its last value, as %Set did. 4.6.0 R307: a list or
+            # map's stored JSON text is that list or map (CY_JSON_LISTMAP), not a string.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_PROPS_MAP(nid VARCHAR(256), tbl VARCHAR(256), gid VARCHAR(256)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New sql, rs, k, v, q, j, a, keys, vals, n, i, out, sep Set q = $Char(63), n = 0 If (nid = "") || (nid = $Char(0)) { Quit "{}" } Set sql = "SELECT ""key"", val FROM " _ tbl _ " WHERE s = " _ q If gid = "" { Set rs = ##class(%SQL.Statement).%ExecDirect(, sql, nid) } Else { Set sql = sql _ " AND COALESCE(graph_id, " _ q _ ") = " _ q, rs = ##class(%SQL.Statement).%ExecDirect(, sql, nid, gid, gid) } While rs.%Next() { Set k = rs.%GetData(1), v = rs.%GetData(2), j = ##class(Graph.KG.funcCYJSONNUM).CYJSONNUM(v), a = ##class(%Library.DynamicArray).%New() If j = "" { Set j = ##class(Graph.KG.funcCYJSONLISTMAP).CYJSONLISTMAP(v) } If j = "" { If v = "true" { Set j = "true" } ElseIf v = "false" { Set j = "false" } Else { Do a.%Push(v) Set j = $Extract(a.%ToJSON(), 2, *-1) } } If $Data(keys(k)) = 0 { Set n = n + 1, keys(k) = n } Set vals(keys(k)) = j, a = ##class(%Library.DynamicArray).%New() Do a.%Push(k) Set vals(keys(k), "k") = $Extract(a.%ToJSON(), 2, *-1) } Do ##class(Graph.KG.SqlPrivilege).RaiseIfRefused(rs.%SQLCODE, rs.%Message, tbl) Set out = "", i = 0, sep = "" While i < n { Set i = i + 1, out = out _ sep _ vals(i, "k") _ ":" _ vals(i), sep = "," } Quit "{" _ out _ "}" }
+""",
+            # 4.6.0 R250: properties(r) spells each value as openCypher does. The map is written as text: a JSON number
+            # keeps the text it was written with (2.0, which a dynamic object re-spelled 2), a number-shaped string with
+            # a point or an exponent (what a Cypher write stores, "2.0") is spelled as a float by CY_FLOAT_TEXT, an
+            # integer's as before; the translation answers {} for an edge whose qualifiers are NULL. 4.6.0 R307: a string
+            # that is a list or map's JSON text (CY_JSON_LISTMAP) is that list or map, as RETURN r.p reads it.
+            """
+CREATE OR REPLACE FUNCTION Graph_KG.CY_RETYPE_MAP(j VARCHAR(32000)) RETURNS VARCHAR(32000) LANGUAGE OBJECTSCRIPT { New obj, out, it, k, v, t, ok, jv, a, sep If (j = "") || (j = $Char(0)) { Quit j } Set obj = "", ok = 1 Try { Set obj = ##class(%Library.DynamicObject).%FromJSON(j) } Catch { Set ok = 0 } If (ok = 0) || ($IsObject(obj) = 0) { Quit j } Set out = "", sep = "", it = obj.%GetIterator() While it.%GetNext(.k, .v, .t) { If (t = "string") && (v = $Char(0)) { Set v = "" } If t = "number" { Set jv = obj.%Get(k, , "json") } ElseIf t = "boolean" { Set jv = $Select(v: "true", 1: "false") } ElseIf t = "null" { Set jv = "null" } ElseIf (t = "object") || (t = "array") { Set jv = v.%ToJSON() } ElseIf $Length(##class(Graph.KG.funcCYJSONLISTMAP).CYJSONLISTMAP(v)) > 0 { Set jv = v } ElseIf v = "true" { Set jv = "true" } ElseIf v = "false" { Set jv = "false" } ElseIf $Match(v, "-{0,1}(0|[1-9][0-9]*)([.][0-9]+){0,1}") { If (v [ ".") || (v [ "e") || (v [ "E") { Set jv = ##class(Graph.KG.funcCYFLOATTEXT).CYFLOATTEXT("" _ (+v)) } Else { Set a = ##class(%Library.DynamicArray).%New() Do a.%Push(+v, "number") Set jv = $Extract(a.%ToJSON(), 2, *-1) } } Else { Set a = ##class(%Library.DynamicArray).%New() Do a.%Push(v) Set jv = $Extract(a.%ToJSON(), 2, *-1) } Set a = ##class(%Library.DynamicArray).%New() Do a.%Push(k) Set out = out _ sep _ $Extract(a.%ToJSON(), 2, *-1) _ ":" _ jv, sep = "," } Quit "{" _ out _ "}" }
+""",
+            # 4.6.0 R265: 0, or kg_KNN_VEC's refusal for a named graph whose vectors have a route of their own
+            # (Graph.KG.GraphStores.VectorRouteGuard). A function, not the class's SqlProc: kg_KNN_VEC names it, and
+            # the routines are created before the classes are deployed.
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_VEC_ROUTE_GUARD(graphId VARCHAR(256), proc VARCHAR(64)) RETURNS INTEGER LANGUAGE OBJECTSCRIPT {{ Quit ##class(Graph.KG.GraphStores).VectorRouteGuard(graphId, proc) }}
+""",
+            f"""
+CREATE OR REPLACE PROCEDURE {table_schema}.kg_KNN_VEC(
+  IN queryInput VARCHAR(32000),
+  IN k INT,
+  IN labelFilter VARCHAR(128),
+  -- The fourth argument was embeddingConfig, accepted and ignored. In 4.0.0 it is the
+  -- graph, and it is load-bearing. The slot's *meaning* changed while its position and
+  -- type did not, so a 3.2.0 caller still compiles and now searches a graph named after
+  -- their model — which is why this is called out in the changelog rather than left to
+  -- a deprecation warning nobody would see (FR-022).
+  IN graphId VARCHAR(256)
+)
+LANGUAGE SQL
+BEGIN
+  -- The query vector is converted with no length, deliberately: a declared length makes
+  -- IRIS pad or truncate the query to it and score the reshaped value, turning a wrong
+  -- width into a plausible number instead of SQLCODE -257. See ADR-0005.
+  --
+  -- COALESCE on both sides of every graph comparison. Left, because graph_id arrives by
+  -- ADD COLUMN on an upgraded install and is nullable there. Right, because IRIS binds
+  -- an empty host variable as SQL NULL, so `= :graphId` for the default graph would
+  -- compile to `= NULL` and match nothing, quietly, with SQLCODE 100 (FR-005).
+  --
+  -- The label join carries the same predicate: without it a label belonging to another
+  -- graph's copy of this node ID satisfies the join and the label filter becomes the
+  -- leak rather than the filter (FR-035).
+  --
+  -- This procedure serves the default route only — its FROM is fixed. A search against
+  -- another route goes through resolve_route in Python and a generated statement of this
+  -- same shape; both must return identical scope for the same graph.
+  -- graph_id is projected as well as filtered on. kg_RRF_FUSE joins this leg to the
+  -- text leg and both legs have to agree on the graph, not just the id; a leg that
+  -- knows its graph and will not say it forces its caller to assume one.
+  SELECT TOP :k n.node_id, VECTOR_COSINE(n.emb, TO_VECTOR(:queryInput, DOUBLE)) AS score,
+         n.graph_id
+  FROM {table_schema}.kg_NodeEmbeddings n
+  LEFT JOIN {table_schema}.rdf_labels L
+    ON L.s = n.node_id
+   AND COALESCE(L.graph_id, '') = COALESCE(:graphId, '')
+  WHERE COALESCE(n.graph_id, '') = COALESCE(:graphId, '')
+    AND (:labelFilter IS NULL OR :labelFilter = '' OR L.label = :labelFilter)
+    -- 4.6.0 R265: a named graph whose vectors have a route of their own has none here, so this answered no rows
+    -- (or failed on the route's width). The guard raises instead, naming the calls that read the route. It reads
+    -- no column, so IRIS tests it once at Open, before the scan: with no row to scan it still raises.
+    AND {table_schema}.kg_VEC_ROUTE_GUARD(COALESCE(:graphId, ''), 'kg_KNN_VEC') = 0
+  ORDER BY score DESC;
+END
+""",
+            f"""
+CREATE OR REPLACE PROCEDURE {table_schema}.kg_TXT(
+  IN q VARCHAR(4000),
+  IN k INT,
+  -- Minimum number of occurrences of the search string in the document, matching the
+  -- score below. It used to be documented as an iFind rank (0-1000), a scale nothing
+  -- ever produced.
+  IN minOccurrences INT,
+  -- The graph whose documents may answer. Required, not defaulted: a three-argument
+  -- 3.2.0 call now fails on arity rather than being narrowed to the default graph
+  -- without saying so, and an unscoped text leg is what made a "scoped" fusion
+  -- return every graph's documents (FR-008).
+  IN graphId VARCHAR(256)
+)
+LANGUAGE SQL
+BEGIN
+  -- iFind is reached through the index, never through the column: `%FIND(d.text, :q)`
+  -- resolves as a user function (`SQLUSER.%FIND`, SQLCODE -359) and this procedure could
+  -- not be created at all, which took kg_RRF_FUSE down with it.
+  --
+  -- The score is a term-frequency count, not BM25. `%FIND.Rank` does not exist, and
+  -- `%iFind.Rank` fails at runtime with <CLASS DOES NOT EXIST> because the IRIS AI image
+  -- carries no `%iFind.Ranker.*` class for $$$IFDEFAULTRANKER to resolve. iFind still
+  -- chooses the candidates (word-aware, indexed); the count only orders them.
+  --
+  -- COALESCE on both sides of the graph comparison, for the same two reasons as
+  -- kg_KNN_VEC: graph_id arrives by ADD COLUMN on an upgraded install and is nullable
+  -- there, and IRIS binds an empty host variable as SQL NULL, so `= :graphId` for the
+  -- default graph would compile to `= NULL` and match nothing (FR-005).
+  SELECT TOP :k d.id,
+         (CHAR_LENGTH(UPPER(d.text)) - CHAR_LENGTH(REPLACE(UPPER(d.text), UPPER(:q), '')))
+         / CHAR_LENGTH(:q) AS score,
+         d.graph_id
+  FROM {table_schema}.docs d
+  WHERE %ID %FIND search_index(idx_docs_text_ifind, :q)
+    AND COALESCE(d.graph_id, '') = COALESCE(:graphId, '')
+    AND (CHAR_LENGTH(UPPER(d.text)) - CHAR_LENGTH(REPLACE(UPPER(d.text), UPPER(:q), '')))
+        / CHAR_LENGTH(:q) >= :minOccurrences
+  ORDER BY score DESC;
+END
+""",
+            f"""
+CREATE OR REPLACE PROCEDURE {table_schema}.kg_RRF_FUSE(
+  IN k INT,
+  IN k1 INT,
+  IN k2 INT,
+  IN c INT,
+  IN queryVector VARCHAR(32000),
+  IN qtext VARCHAR(4000),
+  -- Added with the graph scope, not optional. The old call passed NULL into
+  -- kg_KNN_VEC's fourth slot to satisfy its arity; leaving that NULL would now mean
+  -- "the default graph" by accident, and a fusion that ranked every graph's vectors
+  -- together would re-widen exactly what kg_KNN_VEC was narrowed to fix (FR-023).
+  IN graphId VARCHAR(256)
+)
+LANGUAGE SQL
+BEGIN
+  -- The legs are derived tables, not a WITH: IRIS 2026.1 rejects a WITH statement that
+  -- spans lines in a procedure body at Prepare (SQLCODE -1, "SELECT expected, <end of
+  -- statement> found ^ WITH V AS ("), so on Community 2026.1 this procedure did not
+  -- exist after setup (4.6.0 R200). 2026.3 takes either form.
+  SELECT TOP :k id, rrf, vs, ts
+  FROM (
+    SELECT COALESCE(V.id, K.id) AS id,
+           COALESCE(V.graph_id, K.graph_id) AS graph_id,
+           (1.0/(:c + COALESCE(V.r, 1000000000))) +
+           (1.0/(:c + COALESCE(K.r, 1000000000))) AS rrf,
+           V.vs, K.ts
+    FROM (
+      -- kg_KNN_VEC answers `node_id`, not `id`: 227 re-keyed the embedding tables and the
+      -- procedure projects `n.node_id`. Reading `id` here made this CREATE fail at Prepare
+      -- with SQLCODE -29 ("Field 'ID' not found in the applicable tables"), so the
+      -- procedure did not exist at all and SQL-side fusion was silently absent.
+      SELECT ROW_NUMBER() OVER (ORDER BY score DESC) AS r, node_id AS id, graph_id, score AS vs
+      FROM {table_schema}.kg_KNN_VEC(:queryVector, :k1, NULL, :graphId)
+    ) V
+    -- Joined on the graph as well as the id. Both legs are already restricted to
+    -- :graphId, so this cannot change which rows pair up today. It is here because the
+    -- next leg added to this fusion will not be, and a join on id alone would then fuse
+    -- one graph's vector score with another graph's text score into a single row.
+    FULL OUTER JOIN (
+      -- kg_TXT answers `score`, a term-frequency count. It was read as `bm25` here, a
+      -- column kg_TXT never had and a ranking it never computed.
+      --
+      -- :graphId reaches this leg, and `docs.id` is a node id (FR-007). Both changes are
+      -- load-bearing: without the graph the leg answered every graph's documents, and
+      -- without the shared key space the join matched nothing, so every "fused" row
+      -- carried one leg's score and NULL for the other.
+      SELECT ROW_NUMBER() OVER (ORDER BY score DESC) AS r, id, graph_id, score AS ts
+      FROM {table_schema}.kg_TXT(:qtext, :k2, 0, :graphId)
+    ) K
+      ON V.id = K.id
+     AND COALESCE(V.graph_id, '') = COALESCE(K.graph_id, '')
+  ) F
+  ORDER BY rrf DESC;
+END
+""",
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_PPR(
+  seedEntities VARCHAR(32000),
+  dampingFactor DOUBLE DEFAULT 0.85,
+  maxIterations INT DEFAULT 100,
+  bidirectional INT DEFAULT 0,
+  reverseEdgeWeight DOUBLE DEFAULT 1.0,
+  graphId VARCHAR(256) DEFAULT '',
+  rowLimit INT DEFAULT 1000
+)
+RETURNS VARCHAR(8000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    set result = ##class(Graph.KG.PageRank).RunJson(seedEntities, dampingFactor, maxIterations, bidirectional, reverseEdgeWeight, graphId, "", rowLimit)
+    set result = ##class(Graph.KG.PageRank).WithUnscored(result, "{table_schema}", graphId, rowLimit)
+    quit result
+}}
+""",
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_DegreeCentrality(
+  direction VARCHAR(8) DEFAULT 'out',
+  predicate VARCHAR(256) DEFAULT '',
+  topK INT DEFAULT 10000,
+  graphId VARCHAR(256) DEFAULT ''
+)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    set loners = ##class(Graph.KG.Edgeless).Loners("{table_schema}", graphId, .ids)
+    set inner = topK
+    if loners > 0 {{ set inner = 0 }}
+    set result = ##class(Graph.KG.Centrality).DegreeCentralityJson(direction, predicate, inner, graphId)
+    if loners > 0 {{ set result = ##class(Graph.KG.Edgeless).Complete("degree", result, topK, .ids) }}
+    quit result
+}}
+""",
+            # 4.6.0 R166: betweenness, closeness, eigenvector, leiden, triangleCount, scc and kcore answer
+            # `ERROR:<why>` (`^NKG not built`, ...) as text, which JSON_TABLE made one row of NULLs. Each throws the
+            # text instead, so the CALL fails with it.
+            # 4.6.0 R196: each first throws where a named graph has an edge (NKGAccel.RefuseMergedGraphs): ^NKG then
+            # merges that graph's edges with the default graph's, and the function answered every graph merged.
+            # The sample-size default is an `if`, not `$SELECT(sampleSize>0:sampleSize,
+            # 1:200)`. A comma inside a colon-clause list is DDL the parser rejects —
+            # `<PARAMETER ERROR> Parameter Name error, First value cannot be a digit: 2`
+            # — so this function silently did not exist: the failure landed in
+            # `_install_procedures`'s non-core branch as a debug log, and calling it gave
+            # `SQLCODE -359 ... 'GRAPH_KG.KG_BETWEENNESS' does not exist`. `$S(...)` and
+            # `$CASE(...)` fail the same way; a single-clause `$SELECT(a:b)` is fine.
+            # 4.6.0 R232: direction and maxHops reach BetweennessGlobal; before, it never saw them, so
+            # `CALL ivg.betweenness({direction:'both', maxHops:2})` answered the directed, unbounded scores.
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_Betweenness(
+  sampleSize INT DEFAULT 0,
+  direction VARCHAR(8) DEFAULT 'out',
+  maxHops INT DEFAULT 0,
+  topK INT DEFAULT 10000,
+  memBudgetMB INT DEFAULT 256
+)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    do ##class(Graph.KG.NKGAccel).RefuseMergedGraphs("kg_Betweenness")
+    set samples = 200
+    if sampleSize > 0 {{ set samples = sampleSize }}
+    set result = ##class(Graph.KG.NKGAccel).BetweennessGlobal(sampleSize, topK, samples, direction, maxHops)
+    if $extract(result,1,6)="ERROR:" {{ throw ##class(%Exception.General).%New("IVG","5001",,result) }}
+    if $extract(result,1,3)="OK:" {{ set result = $extract(result,4,*) }}
+    quit result
+}}
+""",
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_Closeness(
+  formula VARCHAR(16) DEFAULT 'harmonic',
+  direction VARCHAR(8) DEFAULT 'out',
+  maxHops INT DEFAULT 0,
+  topK INT DEFAULT 10000
+)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    do ##class(Graph.KG.NKGAccel).RefuseMergedGraphs("kg_Closeness")
+    set loners = ##class(Graph.KG.Edgeless).Loners("{table_schema}", "", .ids)
+    set inner = topK
+    if loners > 0 {{ set inner = 0 }}
+    set result = ##class(Graph.KG.NKGAccel).ClosenessGlobal(formula, direction, maxHops, inner)
+    if $extract(result,1,6)="ERROR:" {{ throw ##class(%Exception.General).%New("IVG","5001",,result) }}
+    if $extract(result,1,3)="OK:" {{ set result = $extract(result,4,*) }}
+    if loners > 0 {{ set result = ##class(Graph.KG.Edgeless).Complete("closeness", result, topK, .ids, formula) }}
+    quit result
+}}
+""",
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_Eigenvector(
+  maxIter INT DEFAULT 100,
+  tol DOUBLE DEFAULT 0.000001,
+  topK INT DEFAULT 10000
+)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    do ##class(Graph.KG.NKGAccel).RefuseMergedGraphs("kg_Eigenvector")
+    set result = ##class(Graph.KG.NKGAccel).EigenvectorGlobal(maxIter, tol, topK, "{table_schema}")
+    if $extract(result,1,6)="ERROR:" {{ throw ##class(%Exception.General).%New("IVG","5001",,result) }}
+    if $extract(result,1,3)="OK:" {{ set result = $extract(result,4,*) }}
+    quit result
+}}
+""",
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_Leiden(
+  maxLevels INT DEFAULT 10,
+  gamma DOUBLE DEFAULT 1.0,
+  tol DOUBLE DEFAULT 0.0001,
+  topK INT DEFAULT 10000,
+  memBudgetMB INT DEFAULT 256,
+  randomSeed INT DEFAULT -1
+)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    do ##class(Graph.KG.NKGAccel).RefuseMergedGraphs("kg_Leiden")
+    set loners = ##class(Graph.KG.Edgeless).Loners("{table_schema}", "", .ids)
+    set inner = topK
+    if loners > 0 {{ set inner = 0 }}
+    set result = ##class(Graph.KG.Communities).LeidenJsonAuto(maxLevels, gamma, tol, inner, memBudgetMB, randomSeed)
+    if $extract(result,1,6)="ERROR:" {{ throw ##class(%Exception.General).%New("IVG","5001",,result) }}
+    if $extract(result,1,3)="OK:" {{ set result = $extract(result,4,*) }}
+    if loners > 0 {{ set result = ##class(Graph.KG.Edgeless).Complete("leiden", result, topK, .ids) }}
+    quit result
+}}
+""",
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_TriangleCount(
+  topK INT DEFAULT 10000
+)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    do ##class(Graph.KG.NKGAccel).RefuseMergedGraphs("kg_TriangleCount")
+    set loners = ##class(Graph.KG.Edgeless).Loners("{table_schema}", "", .ids)
+    set inner = topK
+    if loners > 0 {{ set inner = 0 }}
+    set result = ##class(Graph.KG.Communities).TriangleCountJson(inner)
+    if $extract(result,1,6)="ERROR:" {{ throw ##class(%Exception.General).%New("IVG","5001",,result) }}
+    if $extract(result,1,3)="OK:" {{ set result = $extract(result,4,*) }}
+    if loners > 0 {{ set result = ##class(Graph.KG.Edgeless).Complete("triangles", result, topK, .ids) }}
+    quit result
+}}
+""",
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_SCC(
+  topK INT DEFAULT 10000
+)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    do ##class(Graph.KG.NKGAccel).RefuseMergedGraphs("kg_SCC")
+    set loners = ##class(Graph.KG.Edgeless).Loners("{table_schema}", "", .ids)
+    set inner = topK
+    if loners > 0 {{ set inner = 0 }}
+    set result = ##class(Graph.KG.Communities).SCCJson(inner)
+    if $extract(result,1,6)="ERROR:" {{ throw ##class(%Exception.General).%New("IVG","5001",,result) }}
+    if $extract(result,1,3)="OK:" {{ set result = $extract(result,4,*) }}
+    if loners > 0 {{ set result = ##class(Graph.KG.Edgeless).Complete("scc", result, topK, .ids) }}
+    quit result
+}}
+""",
+            f"""
+CREATE OR REPLACE FUNCTION {table_schema}.kg_KCore(
+  topK INT DEFAULT 10000
+)
+RETURNS VARCHAR(32000)
+LANGUAGE OBJECTSCRIPT
+{{
+    do ##class(Graph.KG.SqlPrivilege).RequireSelect("{table_schema}.rdf_edges")
+    do ##class(Graph.KG.NKGAccel).RefuseMergedGraphs("kg_KCore")
+    set loners = ##class(Graph.KG.Edgeless).Loners("{table_schema}", "", .ids)
+    set inner = topK
+    if loners > 0 {{ set inner = 0 }}
+    set result = ##class(Graph.KG.Communities).KCoreJson(inner)
+    if $extract(result,1,6)="ERROR:" {{ throw ##class(%Exception.General).%New("IVG","5001",,result) }}
+    if $extract(result,1,3)="OK:" {{ set result = $extract(result,4,*) }}
+    if loners > 0 {{ set result = ##class(Graph.KG.Edgeless).Complete("kcore", result, topK, .ids) }}
+    quit result
+}}
+""",
+        ]
+        return [rewrite_schema_text(s, table_schema) for s in statements]
+
+    # ------------------------------------------------------------------
+    # ObjectScript (.cls) deployment helpers
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def check_objectscript_classes(cursor, conn=None) -> "IRISCapabilities":
+        """
+        Detect which ObjectScript classes are compiled in IRIS.
+
+        Uses %Dictionary.ClassDefinition (fast); falls back to $CLASSMETHOD
+        %Exists if the dictionary query fails (e.g. restricted namespace).
+        The ``^KG`` / ``^NKG`` markers are read through ``Graph.KG.Meta`` only
+        when the Graph.KG classes are there to answer.
+
+        A count or flag is read strictly (:func:`_iris_true`): only a number, or
+        its text, counts. Anything else — a mock's stand-in object, ``None`` — is
+        not evidence that a class exists.
+
+        Args:
+            cursor: Active IRIS dbapi cursor (for SQL queries).
+            conn:   Optional connection object for native API calls via
+                    createIRIS(). When None, the cursor itself is tried.
+
+        Returns:
+            IRISCapabilities with objectscript_deployed, graphoperators_deployed,
+            and kg_built flags set.
+        """
+        # Resolve the native-API handle: prefer explicit conn, else try cursor
+        _native_target = conn if conn is not None else cursor
+
+        caps = IRISCapabilities()
+        asked_natively: list = []
+
+        def _class_present(name: str) -> bool:
+            try:
+                cursor.execute(
+                    f"SELECT COUNT(*) FROM %Dictionary.ClassDefinition WHERE Name='{name}'"
+                )
+                row = cursor.fetchone()
+                return bool(row) and _iris_true(row[0])
+            except Exception as exc:
+                # A user without SELECT on the class dictionary (ADMIN_GUIDE §3's reading role: SQLCODE -99)
+                # asks the dictionary class over the Native API, which %Native_ClassExecution allows; IDKEYExists
+                # has no %, so every host can call it (iris_vector_graph/_dictionary.py). The fallback called
+                # `<class>.%Exists(1)`, a method a non-persistent class does not have, so every reader found no
+                # classes and khop answered [] (4.6.0 R206).
+                logger.debug("class dictionary not readable in SQL (%s); asking over the Native API", exc)
+                try:
+                    asked_natively.append(name)
+                    return _iris_true(
+                        _call_classmethod(_native_target, "%Dictionary.CompiledClass", "IDKEYExists", name))
+                except Exception as nexc:
+                    logger.debug("class lookup over the Native API failed too (%s): %s taken as absent", nexc, name)
+                    return False
+
+        # --- Graph.KG.PageRank (sentinel: reliably compiles; Edge conflicts with existing DDL table) ---
+        caps.objectscript_deployed = _class_present("Graph.KG.PageRank")
+        if not caps.objectscript_deployed and asked_natively:
+            _refuse_unreadable_routines(_native_target)
+        # --- iris.vector.graph.GraphOperators ---
+        caps.graphoperators_deployed = _class_present("iris.vector.graph.GraphOperators")
+
+        if not caps.objectscript_deployed:
+            return caps
+
+        # --- ^KG / ^NKG bootstrap markers via native API ---
+        for marker in ("kg_built", "nkg_built"):
+            try:
+                result = _call_classmethod(_native_target, "Graph.KG.Meta", "IsSet", marker)
+                setattr(caps, marker, _iris_true(result))
+            except Exception:
+                setattr(caps, marker, False)
+
+        return caps
+
+    @staticmethod
+    def deploy_objectscript_classes(
+        cursor, iris_src_path: Optional[Path] = None, conn=None, force: Optional[bool] = None, schema: str = "Graph_KG"
+    ) -> "IRISCapabilities":
+        """
+        Deploy ObjectScript .cls files to IRIS and return capability flags.
+
+        Sends the packaged sources over the connection and compiles those the
+        server can (see ``_engine/class_deploy.py``); an unchanged source set is
+        not reinstalled unless ``force``. Nothing else is loaded: when that deploy
+        fails, or no sources are packaged, the classes stay as they were and
+        ``GraphSchema.last_deploy.errors`` says why (4.6.0 R303). ``last_deploy``
+        holds the result, including skipped and failed classes.
+
+        Args:
+            cursor:        Active IRIS dbapi cursor.
+            iris_src_path: Unused; the sources are the package's own. Kept for callers.
+            conn:          Connection for native API calls.
+
+        Returns:
+            IRISCapabilities reflecting what is compiled in IRIS after deployment.
+
+        Raises:
+            IVGSchemaError: the namespace records an IVG Schema other than ``schema``; nothing was probed or loaded
+                (4.6.0 R173).
+        """
+        _native = conn if conn is not None else cursor
+        # R173: before the rescue probe below or any load, a namespace recorded under another IVG Schema refuses. A
+        # handle with no Native API (a bare cursor) cannot read the record; the packaged deploy then fails as before.
+        from iris_vector_graph._engine.class_deploy import DeployResult, deploy_packaged_classes, native_for
+
+        try:
+            _record_reader = native_for(_native)
+        except Exception as exc:  # no handle, so no record to read; the packaged deploy meets the same and says so
+            logger.debug("IVG Schema record not read before the class deploy: no Native API (%s)", exc)
+        else:
+            refuse_other_record(_record_reader, schema)
+
+        # STALE_EDGE_CLASSES must not exist in the namespace. Both declared
+        # `SqlTableName = rdf_edges`; `Graph.KG.TestEdge` went first, and spec 227
+        # deleted `Graph.KG.Edge` once the live container showed what a class-owned
+        # rdf_edges actually is: `(ID, s, p, o_id, qualifiers, graph_id)` — no
+        # `edge_id`, so the reification cascade in `_engine/nodes_edges.py` and every
+        # read in `_engine/prov.py` get SQLCODE -29; no composite FK to
+        # `nodes (graph_id, node_id)`; and a graph-blind `UNIQUE (s, p, o_id)`.
+        # Whichever declaration compiles last owns the table, so this is not
+        # housekeeping.
+        # The compiled class survives in the namespace after its source is gone, so
+        # the deploy deletes it.
+        # On a real v3.2.0 install `Graph.KG.Edge` *owns* Graph_KG.rdf_edges, so the
+        # delete below takes every edge in the graph with it. The rows move to a
+        # DDL-owned staging table first and come back into a rebuilt table after.
+        try:
+            staged = GraphSchema.stage_class_owned_rdf_edges(cursor)
+        except Exception as exc:
+            logger.warning("rdf_edges rescue probe failed: %s", exc)
+            staged = None
+
+        # The classes ship in the package (the wheel force-includes iris_src/src) and go over the connection. Nothing
+        # else loads when that deploy fails (4.6.0 R303): a LoadDir fallback on the server's /tmp/src compiled whatever
+        # was there, unchecked, and on the test container that was an older IVG.
+        GraphSchema.last_deploy = None
+        try:
+            result = deploy_packaged_classes(_native, force=force, schema=schema)
+        except IVGSchemaError:
+            raise  # a refusal, not a failed deploy (R173)
+        except Exception as exc:
+            logger.warning("Packaged ObjectScript deploy failed: %s", exc)
+            # R299: kept for initialize_schema()'s reply, which reads last_deploy; a None there said nothing went wrong
+            result = DeployResult(errors=[f"packaged class deploy failed: {exc}"])
+        if result is None:
+            result = DeployResult(errors=["no ObjectScript class sources are packaged with this install (expected in "
+                                          "iris_vector_graph/iris_src/src); nothing was loaded. Reinstall the wheel."])
+        GraphSchema.last_deploy = result
+        # `-d`: a fresh namespace has neither class, and without it every new install printed "ERROR #5351: Class ...
+        # does not exist". A failed deploy deletes them only when the rescue above staged the rows of the 3.2.0
+        # `Graph.KG.Edge` that owns rdf_edges: the restore below puts them back into a DDL table.
+        if result.deployed or staged is not None:
+            for cls_name in STALE_EDGE_CLASSES:
+                try:
+                    _call_classmethod(_native, "%SYSTEM.OBJ", "Delete", cls_name, "ef-d")
+                except Exception:
+                    pass
+        if result.deployed:
+            # Spec 257: native plans compiled against the classes just replaced. A stale one is never run (its
+            # stamp is the executor's build), so a failed drop only leaves classes behind.
+            try:
+                _call_classmethod(_native, "Graph.KG.Cypher.Gen", "DropAll")
+            except Exception as exc:
+                logger.debug("compiled native plans not dropped: %s", exc)
+
+        # After the delete, whether or not the deploy succeeded: a rescue left un-restored is an install with no
+        # rdf_edges at all.
+        # `staged is None` still resumes a rescue an earlier run left unfinished.
+        GraphSchema.restore_rescued_rdf_edges(cursor, staged)
+
+        try:
+            return GraphSchema.check_objectscript_classes(cursor, conn=conn)
+        except Exception as exc:
+            logger.warning("check_objectscript_classes failed: %s", exc)
+            return IRISCapabilities()
+
+    @staticmethod
+    def stage_class_owned_rdf_edges(cursor) -> Optional[int]:
+        """Copy a class-owned ``rdf_edges`` into a DDL-owned table, before the delete.
+
+        v3.2.0 shipped ``Graph.KG.Edge`` as
+        ``[ Final, DdlAllowed, SqlTableName = rdf_edges ]``, so on a real 3.2.0
+        install the class *owns* the table: the rows are that class's extent, and
+        ``initialize_schema``'s ``CREATE TABLE`` was declined as already present.
+        Deleting the class therefore deletes every edge in the graph — measured
+        against a 3.2.0 install, ``Graph_KG.rdf_edges`` came back SQLCODE -30 and
+        ``^Graph.KG.EdgeD`` was gone.
+
+        So the rows move out first, into :data:`RESCUE_STAGING_TABLE`, which is
+        DDL-owned and survives the delete.
+
+        Returns:
+            The number of rows staged, or ``None`` when there is nothing to rescue —
+            a fresh install, or one already carrying a DDL-owned table.
+        """
+        if not GraphSchema._stale_edge_class_exists(cursor):
+            return None
+
+        staging = f"Graph_KG.{RESCUE_STAGING_TABLE}"
+        # The class-owned table has no `edge_id` — that column is spec 227's, and its
+        # absence is why the class had to go. v3.2.0 declared
+        # `graph_id NOT NULL DEFAULT $c(0)`, so a default-graph edge reaches here as
+        # NULL or as CHAR(0); both mean the default graph rather than a third one, and
+        # both have to read as '' because that is the spelling 4.0.0's FK to
+        # `nodes (graph_id, node_id)` compares against.
+        graph = "COALESCE(NULLIF(e.graph_id, CHAR(0)), '')"
+        if GraphSchema._graph_kg_table_exists(cursor, RESCUE_STAGING_TABLE):
+            # A rescue table left by an earlier run is never dropped here: if that run
+            # deleted the class and something re-compiled it since, the table this
+            # would re-stage from is empty and the rescue table is the only copy. Add
+            # what the class table holds that the rescue table does not, and leave the
+            # rest — exact duplicates among what is added collapse in the restore.
+            cursor.execute(
+                f"INSERT INTO {staging} (s, p, o_id, qualifiers, graph_id) "
+                f"SELECT e.s, e.p, e.o_id, e.qualifiers, {graph} "
+                "FROM Graph_KG.rdf_edges e WHERE NOT EXISTS ("
+                f"SELECT 1 FROM {staging} r WHERE r.s = e.s AND r.p = e.p "
+                f"AND r.o_id = e.o_id AND r.graph_id = {graph} "
+                f"AND {_qualifiers_equal('r', 'e')})"
+            )
+        else:
+            cursor.execute(
+                f"CREATE TABLE {staging} (\n"
+                "  s          VARCHAR(256) %EXACT,\n"
+                "  p          VARCHAR(128) %EXACT,\n"
+                "  o_id       VARCHAR(256) %EXACT,\n"
+                "  qualifiers VARCHAR(64000),\n"
+                "  graph_id   VARCHAR(256) %EXACT\n"
+                ")"
+            )
+            cursor.execute(
+                f"INSERT INTO {staging} (s, p, o_id, qualifiers, graph_id) "
+                "SELECT s, p, o_id, qualifiers, COALESCE(NULLIF(graph_id, CHAR(0)), '') "
+                "FROM Graph_KG.rdf_edges"
+            )
+        cursor.execute(f"SELECT COUNT(*) FROM {staging}")
+        row = cursor.fetchone()
+        staged = int(row[0]) if row and row[0] is not None else 0
+        logger.warning(
+            "Graph_KG.rdf_edges is owned by a v3.2.0 class; %s row(s) staged into %s "
+            "before the class is deleted",
+            staged,
+            staging,
+        )
+        return staged
+
+    @staticmethod
+    def pending_rdf_edges_rescue(cursor) -> Optional[int]:
+        """Rows waiting in a rescue table an earlier run left behind, or ``None``.
+
+        The rescue table outlives a failed restore on purpose, but the class whose
+        existence triggers staging is already deleted by then — so a re-run cannot
+        rely on staging to notice it. This is what notices it.
+        """
+        if not GraphSchema._graph_kg_table_exists(cursor, RESCUE_STAGING_TABLE):
+            return None
+        cursor.execute(f"SELECT COUNT(*) FROM Graph_KG.{RESCUE_STAGING_TABLE}")
+        row = cursor.fetchone()
+        return int(row[0]) if row and row[0] is not None else 0
+
+    @staticmethod
+    def restore_rescued_rdf_edges(cursor, staged: Optional[int]) -> Optional[Dict[str, int]]:
+        """Re-create ``rdf_edges`` from the canonical DDL and put the rows back.
+
+        v3.2.0's FK was ``nodes (node_id)`` alone while its rows already carried a
+        graph, so a 3.2.0 install can legally hold an edge in graph ``g`` whose
+        endpoint row sits in the default graph. 4.0.0's FK is composite, so that edge
+        cannot go back in: it fails ``fk_edges_dest`` with SQLCODE -121 and used to
+        take the whole restore with it. Spec 227 Story 5's rule decides what happens
+        instead — place what resolves, quarantine what does not, delete nothing, and
+        never place a row by guessing at its graph.
+
+        v3.2.0 also wrote full duplicate rows: ``bulk_loader.py`` inserted with
+        ``%NOINDEX %NOCHECK``, which skips the class's ``uspo`` unique index, and
+        staging folds NULL and CHAR(0) graph ids together. 4.0.0's
+        ``u_spo_graph (s, p, o_id, graph_id)`` admits one of each, and a single
+        duplicate used to fail the whole INSERT…SELECT. So one row per key is placed
+        — the lowest ``%ID`` in the rescue table, i.e. the first staged — and a row
+        identical to it in all five columns is counted *collapsed*. A row with the
+        same key but different ``qualifiers`` is not a duplicate: it is quarantined.
+
+        Args:
+            cursor: Active IRIS dbapi cursor.
+            staged: What :meth:`stage_class_owned_rdf_edges` returned. ``None`` means
+                nothing was staged by *this* run; a rescue table an earlier run left
+                behind is then resumed — unless a v3.2.0 edge class is still compiled,
+                in which case its extent is the authoritative copy and the next
+                staging reads from it.
+
+        Returns:
+            ``{"staged", "restored", "collapsed", "quarantined"}`` counts, or ``None``
+            when there was nothing to restore.
+
+        Raises:
+            RdfEdgesRescueError: when the placed, collapsed and quarantined rows
+                together do not account for every staged row, and for any error
+                raised along the way. The staging table is deliberately left in place
+                — it is the only surviving copy — and the next ``initialize_schema()``
+                resumes from it. The error type matters: the deploy call site
+                re-raises this one and logs every other exception at DEBUG as
+                "expected in Docker", which is how a failed rebuild once produced an
+                install with no edge table and a success report.
+        """
+        if staged is None:
+            try:
+                staged = GraphSchema.pending_rdf_edges_rescue(cursor)
+                if staged is not None and GraphSchema._stale_edge_class_exists(cursor):
+                    staged = None
+            except Exception as exc:
+                logger.warning("rdf_edges rescue resume probe failed: %s", exc)
+                staged = None
+            if staged is None:
+                return None
+            logger.warning(
+                "Graph_KG.%s holds %s row(s) from an earlier rdf_edges rescue that did not "
+                "finish; resuming the restore",
+                RESCUE_STAGING_TABLE,
+                staged,
+            )
+
+        try:
+            return GraphSchema._restore_rescued_rdf_edges(cursor, staged)
+        except RdfEdgesRescueError:
+            raise
+        except Exception as exc:
+            raise RdfEdgesRescueError(
+                f"Graph_KG.rdf_edges could not be rebuilt after rescuing {staged} "
+                f"row(s) out of the v3.2.0 class-owned table: {exc}. The rows are still "
+                f"in Graph_KG.{RESCUE_STAGING_TABLE}, which is left in place on purpose "
+                "— nothing has been deleted. Re-run initialize_schema() once the cause "
+                "is cleared: it resumes from that table."
+            ) from exc
+
+    @staticmethod
+    def _restore_rescued_rdf_edges(cursor, staged: int) -> Dict[str, int]:
+        """The body of :meth:`restore_rescued_rdf_edges`, which wraps what this raises."""
+        staging = f"Graph_KG.{RESCUE_STAGING_TABLE}"
+        unplaced = f"Graph_KG.{RESCUE_UNPLACED_TABLE}"
+        endpoint_resolves = (
+            "EXISTS (SELECT 1 FROM Graph_KG.nodes n1 "
+            "       WHERE n1.graph_id = r.graph_id AND n1.node_id = r.s) "
+            "AND EXISTS (SELECT 1 FROM Graph_KG.nodes n2 "
+            "       WHERE n2.graph_id = r.graph_id AND n2.node_id = r.o_id)"
+        )
+
+        def same_key(a: str, b: str) -> str:
+            # The staging columns are %EXACT, so `=` compares exactly with either side.
+            return (
+                f"{a}.s = {b}.s AND {a}.p = {b}.p AND {a}.o_id = {b}.o_id "
+                f"AND {a}.graph_id = {b}.graph_id"
+            )
+
+        # `r` is the key's representative: no lower %ID shares its key. Placement only
+        # depends on (graph_id, s, o_id), so every row of a key resolves or none does.
+        is_representative = (
+            f"NOT EXISTS (SELECT 1 FROM {staging} d WHERE {same_key('d', 'r')} "
+            "AND d.%ID < r.%ID)"
+        )
+        # `r` is a later copy of its key's representative, identical in all five columns.
+        copies_representative = (
+            f"EXISTS (SELECT 1 FROM {staging} d WHERE {same_key('d', 'r')} "
+            f"AND d.%ID < r.%ID AND {_qualifiers_equal('d', 'r')} "
+            f"AND NOT EXISTS (SELECT 1 FROM {staging} d2 WHERE {same_key('d2', 'd')} "
+            "AND d2.%ID < d.%ID))"
+        )
+
+        # The rebuilt table's two foreign keys point at `nodes (graph_id, node_id)`, and
+        # IRIS refuses a foreign key whose referenced columns carry no unique key:
+        # SQLCODE -314, measured against a real 3.2.0 install, whose `nodes` declares
+        # `uq_nodes_nodeid UNIQUE (node_id)` and nothing composite. That key is added by
+        # the embeddings migration's `_rekey_children`, which `upgrade_to_4_0_0` runs
+        # *after* `initialize_schema` deleted the class — too late to be of any use here.
+        # So the restore adds it itself. Additive and tolerated: v3.2.0's `node_id` was
+        # globally unique, so `(graph_id, node_id)` cannot collide, `uq_nodes_nodeid`
+        # stays until `_rekey_children` drops it, and on an install that already has the
+        # composite key the ALTER simply fails as a duplicate.
+        try:
+            cursor.execute(
+                "ALTER TABLE Graph_KG.nodes ADD CONSTRAINT uq_nodes_graph_node "
+                "UNIQUE (graph_id, node_id)"
+            )
+        except Exception as exc:
+            logger.debug("uq_nodes_graph_node already present or not addable: %s", exc)
+
+        # Staging already writes '' for the default graph, but a rescue table resumed
+        # from an older run, or filled by hand, may still carry NULL. ('' and CHAR(0)
+        # are one value in IRIS SQL.) Lossless: both spell the default graph.
+        cursor.execute(f"UPDATE {staging} SET graph_id = '' WHERE graph_id IS NULL")
+        # The dedupe is three correlated lookups per row; without this index each one
+        # is a scan of the rescue table.
+        try:
+            cursor.execute(
+                f"CREATE INDEX idx_ivg400rescue_key ON {staging} (s, p, o_id, graph_id)"
+            )
+        except Exception as exc:
+            logger.debug("rescue key index already present or not addable: %s", exc)
+
+        # Clear the way for the rebuild. The compatibility view blocks DROP TABLE
+        # (SQLCODE -321) and, once the class it was compiled against is gone, dangles.
+        try:
+            cursor.execute("DROP VIEW SQLUser.rdf_edges")  # 4.5.x legacy
+        except Exception as exc:
+            logger.debug("SQLUser.rdf_edges view not dropped: %s", exc)  # 4.5.x legacy
+        # A re-run after a failed restore finds a DDL rdf_edges in the way — created by
+        # the failed rebuild, or by the base DDL script of the re-run itself — and the
+        # rebuild refuses with SQLCODE -201. It is dropped only when every row it holds
+        # is also in the rescue table; one that is not may be an edge written since.
+        if GraphSchema._graph_kg_table_exists(cursor, "rdf_edges"):
+            cursor.execute(
+                "SELECT COUNT(*) FROM Graph_KG.rdf_edges e WHERE NOT EXISTS ("
+                f"SELECT 1 FROM {staging} r WHERE r.s = e.s AND r.p = e.p "
+                "AND r.o_id = e.o_id AND r.graph_id = COALESCE(e.graph_id, '') "
+                f"AND {_qualifiers_equal('r', 'e')})"
+            )
+            row = cursor.fetchone()
+            foreign = int(row[0]) if row and row[0] is not None else 0
+            if foreign:
+                raise RdfEdgesRescueError(
+                    f"Graph_KG.rdf_edges already exists and holds {foreign} row(s) that "
+                    f"are not in {staging}, so it cannot be replaced by the rebuilt "
+                    f"table without losing them. Nothing has been dropped: copy those "
+                    f"rows into {staging} (s, p, o_id, qualifiers, graph_id), drop "
+                    "Graph_KG.rdf_edges, and re-run initialize_schema()."
+                )
+            cursor.execute("DROP TABLE Graph_KG.rdf_edges")
+
+        cursor.execute(RDF_EDGES_DDL)
+        cursor.execute(
+            "INSERT INTO Graph_KG.rdf_edges (s, p, o_id, qualifiers, graph_id) "
+            f"SELECT r.s, r.p, r.o_id, r.qualifiers, r.graph_id FROM {staging} r "
+            f"WHERE {endpoint_resolves} AND {is_representative}"
+        )
+        cursor.execute("SELECT COUNT(*) FROM Graph_KG.rdf_edges")
+        row = cursor.fetchone()
+        restored = int(row[0]) if row and row[0] is not None else 0
+
+        cursor.execute(
+            f"SELECT COUNT(*) FROM {staging} r "
+            f"WHERE {endpoint_resolves} AND {copies_representative}"
+        )
+        row = cursor.fetchone()
+        collapsed = int(row[0]) if row and row[0] is not None else 0
+
+        quarantined = 0
+        if restored + collapsed != staged:
+            try:
+                cursor.execute(f"DROP TABLE {unplaced}")
+            except Exception:
+                pass
+            cursor.execute(
+                f"CREATE TABLE {unplaced} (\n"
+                "  s          VARCHAR(256) %EXACT,\n"
+                "  p          VARCHAR(128) %EXACT,\n"
+                "  o_id       VARCHAR(256) %EXACT,\n"
+                "  qualifiers VARCHAR(64000),\n"
+                "  graph_id   VARCHAR(256) %EXACT\n"
+                ")"
+            )
+            # The exact complement of placed-or-collapsed: an endpoint that does not
+            # resolve, or a later row of its key whose qualifiers differ from the one
+            # placed. `EXISTS` never answers NULL, so no row falls between the tables.
+            cursor.execute(
+                f"INSERT INTO {unplaced} (s, p, o_id, qualifiers, graph_id) "
+                f"SELECT r.s, r.p, r.o_id, r.qualifiers, r.graph_id FROM {staging} r "
+                f"WHERE NOT ({endpoint_resolves}) "
+                f"OR (NOT {is_representative} AND NOT {copies_representative})"
+            )
+            cursor.execute(f"SELECT COUNT(*) FROM {unplaced}")
+            row = cursor.fetchone()
+            quarantined = int(row[0]) if row and row[0] is not None else 0
+
+        if restored + collapsed + quarantined != staged:
+            raise RdfEdgesRescueError(
+                f"rescued {staged} row(s) out of a class-owned Graph_KG.rdf_edges but "
+                f"placed {restored}, collapsed {collapsed} exact duplicate(s) and "
+                f"quarantined {quarantined}. The rows are still in {staging}, which is "
+                "left in place on purpose — the next initialize_schema() resumes from it."
+            )
+
+        # Spec 262: the 4.5.x compatibility view dropped above is not re-created; IVG reads the table, qualified.
+
+        cursor.execute(f"DROP TABLE {staging}")
+        if quarantined:
+            logger.warning(
+                "Graph_KG.rdf_edges rebuilt; %s row(s) restored, %s exact duplicate(s) "
+                "collapsed, and %s row(s) held in %s because an endpoint has no node row "
+                "in the graph the edge claims, or because another row with the same "
+                "(s, p, o_id, graph_id) but different qualifiers was placed. Nothing was "
+                "deleted: place them by creating the missing node rows, by correcting "
+                "the edge's graph_id, or by merging the qualifiers, then copy them back",
+                restored,
+                collapsed,
+                quarantined,
+                unplaced,
+            )
+        else:
+            logger.warning(
+                "Graph_KG.rdf_edges rebuilt; %s row(s) restored, %s exact duplicate(s) "
+                "collapsed",
+                restored,
+                collapsed,
+            )
+        return {
+            "staged": staged,
+            "restored": restored,
+            "collapsed": collapsed,
+            "quarantined": quarantined,
+        }
+
+    @staticmethod
+    def _graph_kg_table_exists(cursor, name: str) -> bool:
+        """Is ``Graph_KG.<name>`` a base table? (A view of the same name is not.)"""
+        cursor.execute(
+            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES "
+            f"WHERE TABLE_SCHEMA = 'Graph_KG' AND TABLE_NAME = '{name}' "
+            "AND TABLE_TYPE = 'BASE TABLE'"
+        )
+        row = cursor.fetchone()
+        return bool(row and row[0])
+
+    @staticmethod
+    def _stale_edge_class_exists(cursor) -> bool:
+        """Is one of the v3.2.0 classes that owned ``rdf_edges`` still compiled?"""
+        names = ", ".join(f"'{name}'" for name in STALE_EDGE_CLASSES)
+        cursor.execute(
+            f"SELECT COUNT(*) FROM %Dictionary.CompiledClass WHERE Name IN ({names})"
+        )
+        row = cursor.fetchone()
+        return bool(row and row[0])
+
+    @staticmethod
+    def bootstrap_kg_global(cursor, conn=None, schema: str = "Graph_KG") -> bool:
+        """
+        Backfill the ^KG global from existing SQL edge data using BuildKG().
+
+        Only runs once — records completion in Graph.KG.Meta so subsequent
+        calls are no-ops.  Safe to call on an empty database (returns False).
+
+        Args:
+            cursor: Active IRIS dbapi cursor (for SQL queries).
+            conn:   Optional connection for native API calls via createIRIS().
+                    When None, the cursor itself is tried.
+            schema: The IVG Schema whose ``rdf_edges`` is counted (4.6.0 R243: it was always ``Graph_KG``, which a
+                    plain cursor in another schema's namespace does not have).
+
+        Returns:
+            True if BuildKG() was called, False if already done or no edges.
+        """
+        _native = conn if conn is not None else cursor
+
+        # Already done?
+        try:
+            result = _call_classmethod(_native, "Graph.KG.Meta", "IsSet", "kg_built")
+            if result:
+                return False
+        except Exception:
+            return False
+
+        # Any edges to backfill?
+        try:
+            cursor.execute(rewrite_schema_text("SELECT COUNT(*) FROM Graph_KG.rdf_edges", schema))
+            row = cursor.fetchone()
+            if not row or not row[0]:
+                return False
+        except Exception:
+            return False
+
+        # Run BuildKG via native API
+        try:
+            _call_classmethod(_native, "Graph.KG.Traversal", "BuildKG")
+        except Exception as exc:
+            logger.warning("BuildKG() failed: %s", exc)
+            return False
+
+        # Record completion
+        try:
+            _call_classmethod(_native, "Graph.KG.Meta", "Set", "kg_built", "1")
+            _call_classmethod(_native, "Graph.KG.Meta", "Set", "nkg_built", "1")
+        except Exception as exc:
+            logger.warning("Could not record kg_built in Graph.KG.Meta: %s", exc)
+
+        logger.info("^KG and ^NKG globals bootstrapped from existing rdf_edges rows")
+        return True

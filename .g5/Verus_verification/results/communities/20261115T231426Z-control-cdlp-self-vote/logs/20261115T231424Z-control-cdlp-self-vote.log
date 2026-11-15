@@ -1,0 +1,18 @@
+verification results:: 71 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/cdlp-self-vote/20261115T231424Z/models/communities/communities.rs:333:13
+    |
+331 | pub proof fn theorem_self_loop_is_no_vote(a:Coord,u:Node,l:Labels,c:Counts)
+    | --------------------------------------------------------------------------- at the end of the function body
+332 |     requires a.owner==u,a.neighbor==u,
+333 |     ensures count_fold(seq![a],u,l,c)==c,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/cdlp-self-vote/20261115T231424Z/models/communities/communities.rs:433:26
+    |
+433 |     assert forall|x:Node|#[trigger] frequency(g,u,l,x)==0 by {lemma_frequency_witness(g,u,l,x);if frequency(g,u,l,x)>0{let i=choose...
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

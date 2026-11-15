@@ -1,0 +1,58 @@
+verification results:: 106 verified, 2 errors
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/transaction-prefix-leaks/20261115T231911Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/transaction-prefix-leaks/20261115T231911Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/transaction-prefix-leaks/20261115T231911Z/models/ledger_content/ledger_content.rs:137:10
+    |
+137 |            execute(s,ops).error.is_some() ==> execute(s,ops).state==s && execute(s,ops).records.len()==0,
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+140 | /  if ops.len()>0{
+141 | |   let first=produce(s,ops[0]);theorem_primitive_records_replay_full_content(s,ops[0]);
+142 | |   if first.error.is_none(){theorem_transaction_records_replay_full_content(first.state,ops.drop_first());lemma_fold_concat(s,firs...
+143 | |  }
+    | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/transaction-prefix-leaks/20261115T231911Z/models/ledger_content/ledger_content.rs:672:45
+    |
+672 |    ensures coherent(request(g,q).store.state),allocation_frame(request(g,q).store),
+    |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+673 |   {
+674 | /  if pre_error(g,q).is_none(){
+675 | |   let ops=request_ops(g,q);let limit=if allocating(g,q){g.next+1}else{g.next};
+676 | |   assert(ids_below(g.state,limit));
+677 | |   match q {
+...   |
+689 | |   lemma_execute_id_bound(g.state,ops,limit);
+690 | |  }
+    | |__- at the end of the function body
+
+error: aborting due to 2 previous errors; 2 warnings emitted
+

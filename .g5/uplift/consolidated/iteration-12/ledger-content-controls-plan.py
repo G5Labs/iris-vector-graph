@@ -1,0 +1,27 @@
+from pathlib import Path
+import json
+p=Path('.g5/Verus_verification/models/ledger_content/model.json');j=json.loads(p.read_text());cs=[]
+def c(name,find,repl,target):cs.append(dict(name=name,find=find,replace=repl,expect_fail_in=[target],classification='source-algorithm-or-reader'))
+c('label-reader-drops-content','labels:s.nodes[id].labels.insert(k),..s.nodes[id]})}else{s},','labels:s.nodes[id].labels,..s.nodes[id]})}else{s},','theorem_primitive_records_replay_full_content')
+c('property-reader-drops-content','props:s.nodes[id].props.insert(key,text(new))','props:s.nodes[id].props','theorem_primitive_records_replay_full_content')
+c('qual-reader-drops-content','quals:s.rels[id].quals.insert(key,text(new))','quals:s.rels[id].quals','theorem_primitive_records_replay_full_content')
+c('prior-is-not-current','seq![rec(Action::SetProp{id,key:k,prior:value(s.nodes[id].props,k),new:Some(v)})])},','seq![rec(Action::SetProp{id,key:k,prior:None,new:Some(v)})])},','theorem_current_prior_is_derived')
+c('delete-snapshot-loses-content','seq![rec(Action::DeleteNode{id,snapshot:s.nodes[id]})])},','seq![rec(Action::DeleteNode{id,snapshot:empty_node()})])},','theorem_simple_snapshot_is_complete')
+c('existing-upsert-resets','Op::CreateNode(id,upsert)=>if s.nodes.contains_key(id){if upsert{done(s,seq![])}','Op::CreateNode(id,upsert)=>if s.nodes.contains_key(id){if upsert{done(put_node(s,id,empty_node()),seq![])}','theorem_labels_and_quals_are_not_reset_by_existing_upsert')
+c('duplicate-label-emits','else if s.nodes[id].labels.contains(k){done(s,seq![])}','else if s.nodes[id].labels.contains(k){done(s,seq![rec(Action::AddLabel(id,k))])}','theorem_same_value_and_label_are_noop')
+c('same-property-emits','else if value(s.nodes[id].props,k)==Some(v){done(s,seq![])}','else if value(s.nodes[id].props,k)==Some(v){done(s,seq![rec(Action::SetProp{id,key:k,prior:Some(v),new:Some(v)})])}','theorem_same_value_and_label_are_noop')
+c('transaction-prefix-leaks','if rest.error.is_some(){fail(s,rest.error.unwrap())}','if rest.error.is_some(){Reply{state:rest.state,records:first.records+rest.records,error:rest.error}}','theorem_transaction_records_replay_full_content')
+c('deletion-context-ignored','else if blocked(g,q){Some(Error::Deleted)}','else if false && blocked(g,q){Some(Error::Deleted)}','theorem_deleted_context_precedes_reserved')
+c('named-cutoff-ignored','{1<=r.seq<=through}','{1<=r.seq}','theorem_later_records_cannot_change_full_content')
+c('at-bound-refuses','entity_count(n)>bound.unwrap()','entity_count(n)>=bound.unwrap()','theorem_named_bound_result_projects')
+c('stream-obeys-bound','bound.is_some() && !stream && entity_count(n)','bound.is_some() && entity_count(n)','theorem_full_stream_and_export_fold')
+c('null-becomes-text','{if v.is_some(){v.unwrap()}else{seq![]}}',"{if v.is_some(){v.unwrap()}else{seq!['n','u','l','l']}}",'theorem_reader_null_empty_text')
+c('nul-graph-not-normalized'," || g==Some(seq!['\\0'])",'','theorem_raw_graph_tuple_normalization')
+c('tuple-delete-keeps-other-owner','by_tuple:s.by_tuple.remove(s.rels[id].tuple),..s}}else{s},','by_tuple:if s.by_tuple[s.rels[id].tuple]==id{s.by_tuple.remove(s.rels[id].tuple)}else{s.by_tuple},..s}}else{s},','theorem_duplicate_tuple_views_remain_distinct')
+c('last-prior-wins','if d.contains_key(k){d[k].0}else{b}','b','lemma_attribute_alignment_step')
+c('net-zero-delta-retained','d.dom().filter(|f:Field|d[f].0!=d[f].1)','d.dom()','theorem_continuous_full_content_endpoint_diff')
+c('allocator-does-not-advance','next:if out.error.is_none() && allocating(g,q){g.next+1}','next:if out.error.is_none() && allocating(g,q){g.next}','theorem_raw_new_rel_uses_own_fresh_counter')
+c('batch-carrier-fault-suppressed','else if exists|i:int|0<=i<quals.len() && quals[i].0.len()==0{Some(Error::KeyCarrier)}else{None},\n Request::ReplaceQuals','else if false{Some(Error::KeyCarrier)}else{None},\n Request::ReplaceQuals','theorem_batch_empty_key_carrier_fault')
+c('export-omits-properties','props:s.nodes[k.1].props}})}','props:Map::empty()}})}','theorem_export_preserves_complete_fields')
+src=(p.parent/'ledger_content.rs').read_text();bad=[(x['name'],src.count(x['find'])) for x in cs if src.count(x['find'])!=1];assert not bad,bad
+j['expected_verified']=108;j['controls']=cs;p.write_text(json.dumps(j,indent=2)+'\n');print(len(cs))

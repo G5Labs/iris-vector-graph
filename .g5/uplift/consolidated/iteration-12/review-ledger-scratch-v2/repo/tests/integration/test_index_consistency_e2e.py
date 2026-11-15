@@ -1,0 +1,187 @@
+"""E2E: the ^KG/^NKG-vs-SQL consistency invariant.
+
+This is the test the suite was missing. The existing index tests assert that
+sync() *calls* its sub-methods (mock-level plumbing); none assert that after a
+write the globals actually agree with the SQL tables. These tests exercise the
+real invariant on a live container:
+
+  1. A normal write (create_edge) keeps globals and SQL in sync.
+  2. A BYPASS write (raw SQL INSERT) drifts — and verify_sync() catches it.
+  3. verify_sync(heal=True) repairs the drift via sync().
+
+Requires live IRIS (iris_vector_graph community container).
+"""
+from __future__ import annotations
+
+import os
+import uuid
+
+import pytest
+
+SKIP_IRIS_TESTS = os.environ.get("SKIP_IRIS_TESTS", "false").lower() == "true"
+
+
+@pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+class TestIndexConsistencyInvariant:
+
+    @pytest.fixture(autouse=True)
+    def setup(self, iris_connection):
+        from iris_vector_graph.engine import IRISGraphEngine
+        self.conn = iris_connection
+        self.engine = IRISGraphEngine(iris_connection, embedding_dimension=4)
+        self.run = uuid.uuid4().hex[:8]
+        self.prefix = f"drift_{self.run}"
+        yield
+        cur = iris_connection.cursor()
+        try:
+            cur.execute(f"DELETE FROM Graph_KG.rdf_edges WHERE s LIKE '{self.prefix}%'")
+            cur.execute(f"DELETE FROM Graph_KG.rdf_edges WHERE o_id LIKE '{self.prefix}%'")
+            cur.execute(f"DELETE FROM Graph_KG.nodes WHERE node_id LIKE '{self.prefix}%'")
+            iris_connection.commit()
+        except Exception:
+            pass
+        finally:
+            cur.close()
+
+    def _n(self, i):
+        return f"{self.prefix}_n{i}"
+
+    # NOTE: assertions are delta-based, not absolute. The shared enterprise DB
+    # may already carry drift from other suites/benchmarks (we observed
+    # NKG edgeCount=110 vs SQL=108 on a live container — the very drift this
+    # detector exists to catch). Absolute COUNT equality is therefore unsafe;
+    # we measure how the SQL-vs-global gap *changes* across an operation.
+
+    def _raw_insert(self, n, noindex=False):
+        """Insert n genuinely-new edge rows via raw SQL (bypassing create_edge).
+
+        Uses run-unique subjects so the UNIQUE (s,p,o_id) constraint never
+        silently swallows the insert in a shared/polluted DB. Returns rows added.
+
+        `noindex`: spec 252 made ^KG (and the ^NKG it interns into) a functional
+        index on rdf_edges, so a plain INSERT on an indexed database is no longer
+        drift. `INSERT %NOINDEX` — the bulk loaders' hint — still is. It skips
+        every index, so all but the adjacency one are rebuilt from the rows
+        afterwards: COUNT(*) has to see the rows for the drift to show.
+        """
+        hint = "%NOINDEX " if noindex else ""
+        # rdf_edges has a FOREIGN KEY to nodes(node_id) — the endpoints must
+        # exist first, or the INSERT fails with SQLCODE -121. (This FK is itself
+        # the SQL layer's only built-in guard against orphan edges.)
+        cur = self.conn.cursor()
+        added = 0
+        for i in range(n):
+            s, o = f"{self.prefix}_raw{i}", f"{self.prefix}_rawtgt{i}"
+            for nid in (s, o):
+                cur.execute(
+                    "INSERT INTO Graph_KG.nodes (node_id) SELECT ? "
+                    "WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.nodes WHERE node_id=?)",
+                    [nid, nid],
+                )
+            cur.execute(
+                f"INSERT {hint}INTO Graph_KG.rdf_edges (s, p, o_id) VALUES (?, ?, ?)",
+                [s, "BYPASS", o],
+            )
+            added += cur.rowcount if cur.rowcount is not None else 1
+        if noindex:
+            cur.execute(
+                "SELECT SqlName FROM %Dictionary.CompiledIndex "
+                "WHERE parent = 'Graph.KG.rdfedges' AND Type <> 'key' AND Name <> 'idxedgesadj'"
+            )
+            names = ", ".join(f'"{row[0]}"' for row in cur.fetchall())
+            cur.execute(f"BUILD INDEX FOR TABLE Graph_KG.rdf_edges INDEX {names}")
+        self.conn.commit()
+        cur.close()
+        return added
+
+    def test_normal_write_then_sync_is_in_sync(self):
+        """create_edge + sync() leaves the index covering every SQL edge."""
+        for i in range(4):
+            self.engine.create_node(self._n(i), labels=["Node"])
+        for i in range(3):
+            self.engine.create_edge(self._n(i), "LINK", self._n(i + 1))
+        self.engine.sync()
+
+        after = self.engine.verify_sync()
+        # Self-maintaining writes + sync: globals cover SQL, flag is clear.
+        assert after.global_edges >= after.sql_edges
+        assert after.pending_sync is False
+        assert after.in_sync is True
+
+    def test_a_plain_sql_insert_keeps_the_index(self):
+        """Spec 252: ^KG is a functional index on rdf_edges, so a raw SQL INSERT (SQL-bridge / external-ETL pattern)
+        keeps it: the gap does not move. (This test asserted the drift before spec 252.)"""
+        for i in range(4):
+            self.engine.create_node(self._n(i), labels=["Node"])
+        self.engine.sync()
+        before = self.engine.verify_sync()
+        assert self._raw_insert(3) == 3, "raw insert must add genuinely-new rows for this test"
+        after = self.engine.verify_sync()
+        assert after.sql_edges == before.sql_edges + 3
+        assert (after.sql_edges - after.global_edges) == (before.sql_edges - before.global_edges)
+
+    def test_raw_sql_bypass_widens_the_gap(self):
+        """A raw `INSERT %NOINDEX` (the bulk loaders' hint) skips the index, so it drifts."""
+        for i in range(4):
+            self.engine.create_node(self._n(i), labels=["Node"])
+        self.engine.sync()
+        before = self.engine.verify_sync()
+
+        # Bypass create_edge entirely — write the table directly, past its indexes.
+        added = self._raw_insert(3, noindex=True)
+        assert added == 3, "raw insert must add genuinely-new rows for this test"
+
+        after = self.engine.verify_sync()
+        # SQL grew by 3; globals did not → the gap widened by exactly 3.
+        assert (after.sql_edges - after.global_edges) == \
+               (before.sql_edges - before.global_edges) + 3
+        assert after.in_sync is False
+
+    def test_heal_repairs_drift(self):
+        """verify_sync(heal=True) rebuilds globals so the gap closes to zero."""
+        for i in range(4):
+            self.engine.create_node(self._n(i), labels=["Node"])
+        self.engine.create_edge(self._n(0), "LINK", self._n(1))
+        self.engine.sync()
+
+        # Introduce a known bypass drift, then confirm the detector sees a gap.
+        added = self._raw_insert(2, noindex=True)
+        assert added == 2
+        drifted = self.engine.verify_sync()
+        assert drifted.sql_edges > drifted.global_edges
+        assert drifted.in_sync is False
+
+        # heal=True runs a full BuildKG/BuildNKG rebuild from SQL.
+        healed = self.engine.verify_sync(heal=True)
+        assert healed.healed is True
+        # Post-rebuild every SQL edge is indexed (globals no longer trail SQL).
+        # We assert globals >= SQL rather than exact equality: ^NKG's meta
+        # edgeCount over-counts on a DB that has seen deletes (documented in
+        # verify_sync). The contract that matters — no SQL edge missing from the
+        # index — holds.
+        post = self.engine.verify_sync()
+        assert post.global_edges >= post.sql_edges
+        assert post.in_sync is True
+
+    def test_drop_graph_leaves_no_deferred_staleness(self):
+        """drop_graph is no longer a BYPASS, so it leaves nothing to rebuild.
+
+        This used to assert `_nkg_dirty is True`: the old `drop_graph` deleted SQL
+        rows, left `^KG`/`^NKG` answering for a graph with no rows, and set the flag
+        so the inconsistency waited on a rebuild that might never run. `drop_graph`
+        now calls `erase_graph`, and the Eraser drops the adjacency inside its own
+        transaction (ADR-0004) — a set flag here would mean the graph's adjacency
+        outlived it.
+        """
+        g = f"urn:graph:{self.prefix}"
+        self.engine.create_node(self._n(0), labels=["Node"], graph=g)
+        self.engine.create_node(self._n(1), labels=["Node"], graph=g)
+        self.engine.create_edge(self._n(0), "LINK", self._n(1), graph=g)
+        self.engine.sync()
+        obj = self.engine._iris_obj()
+        assert obj.get("KG", "out", g, self._n(0), "LINK", self._n(1)) is not None
+
+        self.engine.drop_graph(g)
+
+        assert self.engine._nkg_dirty is False
+        assert obj.get("KG", "out", g, self._n(0), "LINK", self._n(1)) is None

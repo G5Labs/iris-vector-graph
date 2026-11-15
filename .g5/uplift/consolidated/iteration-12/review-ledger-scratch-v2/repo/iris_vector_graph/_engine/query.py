@@ -1,0 +1,4545 @@
+import copy
+import dataclasses
+import json
+import logging
+import os
+import re
+import time
+from typing import Dict, Any, List, Optional, Tuple, Union
+
+from iris_vector_graph.cypher.native_route import NativeRoute
+from iris_vector_graph.cypher.parser import parse_query
+from iris_vector_graph.cypher.read_only import split_statements, writes_cypher
+from iris_vector_graph.cypher.row_where import handler_tail, where_rows, yield_names
+from iris_vector_graph.cypher.translator import (
+    _stored_number_test,
+    properties_subquery,
+    rewrite_ambiguous_param_unwind,
+    translate_to_sql,
+    unwind_by_index,
+)
+from iris_vector_graph.cypher.merge_rows import plan_row_create, plan_row_merge
+from iris_vector_graph.cypher.count_create import plan_count_create
+from iris_vector_graph.result import IVGResult
+from iris_vector_graph.prop_values import (
+    decode_json_value,
+    number_spellings,
+    parse_prop_text,
+    parse_rel_prop_text,
+    read_prop_value,
+)
+from iris_vector_graph._validate import CypherInput, KHop2Input
+from iris_vector_graph._engine.ledger import ledger_check as _ledger_check
+from iris_vector_graph._engine.temporal_only_warning import warn_empty_cypher
+
+logger = logging.getLogger(__name__)
+
+_CARTESIAN_PAT = re.compile(
+    r'\bJOIN\s+\S+\s+(?P<alias>\w+)\s+ON\s+1\s*=\s*1\b',
+    re.IGNORECASE,
+)
+_ORDER_CLAUSE_PAT = re.compile(r'\n(?:ORDER|HAVING|GROUP)\b', re.IGNORECASE)
+
+
+_SQL_LITERAL = re.compile(r"'(?:[^']|'')*'")
+_SELECT_DISTINCT = re.compile(r"\bSELECT\s+DISTINCT\b", re.IGNORECASE)
+# a statement that is one count: its alias, quoted ("my count") or not
+_SELECT_COUNT_AS = re.compile(r'\bSELECT\s+COUNT\s*\(.*?\)\s+AS\s+(?:"([^"]+)"|(\w+))', re.IGNORECASE)
+
+
+def _placeholder_index(sql_str: str, end: int) -> int:
+    """The position among the statement's parameters of the `?` just before `end` (`?` inside literals not counted)."""
+    return _SQL_LITERAL.sub("", sql_str[: end - 1]).count("?")
+
+
+def bound_node_id_param(sql_str: str, params: List[Any], alias: str) -> Optional[str]:
+    """The parameter bound at ``alias.node_id = ?``, found by its placeholder position.
+
+    Not the first string parameter: a property join binds its key earlier in the
+    statement (`p2."key" = ?`), and taking that one started BFS from a node named
+    after the property (2026-09-30, the QUICKSTART 2-hop query).
+    """
+    m = re.search(r"\b" + re.escape(alias) + r"\.node_id\s*=\s*\?", sql_str, re.IGNORECASE)
+    if not m:
+        return None
+    index = _placeholder_index(sql_str, m.end())
+    if index < len(params) and isinstance(params[index], str) and params[index]:
+        return params[index]
+    return None
+
+
+def bound_id_property(sql_str: str, params: List[Any], alias: str) -> Union[str, List[str], None]:
+    """The value `alias`'s `id` property is held equal to (`pK.val = ?` or a literal), where pK joins rdf_props on
+    alias with key 'id'; else None. `WHERE s.id = $x` reads the property, not the identity. Only a conjunct reaches
+    here: `NOT` and `OR` over it translate to CY_VLP_PATHS, not to the BFS routes. A number is held to every text it
+    is stored as (`pK.val IN ('5', '5.0')`, 4.6.0 R168): that answers the list of texts. From 4.7.0 (row 24) a number
+    is held to a stored number of its value (`pK.val_key IN ('5', '5.0', ...)` with the row's type test, or the
+    type test and `CAST(pK.val AS DOUBLE) = CAST('5' AS DOUBLE)`): the list of its texts too, which id_holders reads
+    as numbers only."""
+    for join in re.finditer(
+        r"\bJOIN\s+\S*rdf_props\s+(\w+)\s+ON\s+\1\.s\s*=\s*" + re.escape(alias) + r'\.node_id\b[^\n]*?\1\."key"\s*=\s*\?',
+        sql_str,
+        re.IGNORECASE,
+    ):
+        index = _placeholder_index(sql_str, join.end())
+        if index >= len(params) or params[index] != "id":
+            continue
+        pk = re.escape(join.group(1))
+        spelled = re.search(r"\b" + pk + r"\.val(?:_key)?\s+IN\s+\(((?:'[-+.0-9eE]+'(?:,\s*)?)+)", sql_str, re.IGNORECASE)
+        if spelled:
+            return re.findall(r"'([^']*)'", spelled.group(1))
+        cast = re.search(r"CAST\(" + pk + r"\.val AS DOUBLE\) = CAST\('([-+.0-9eE]+)' AS DOUBLE\)", sql_str)
+        if cast:
+            text = cast.group(1)
+            number = float(text) if any(c in text for c in ".eE") else int(text)
+            twin = int(number) if isinstance(number, float) and number.is_integer() else float(number)
+            return list(dict.fromkeys(number_spellings(number) + number_spellings(twin)))
+        bound = re.search(r"\b" + pk + r"\.val\s*=\s*\?", sql_str, re.IGNORECASE)
+        if bound:
+            index = _placeholder_index(sql_str, bound.end())
+            value = params[index] if index < len(params) else None
+            # rdf_props.val holds the text: a number binds as its text
+            return str(value) if isinstance(value, (str, int, float)) and not isinstance(value, bool) else None
+        lit = re.search(r"\b" + pk + r"\.val\s*=\s*(?:CAST\s*\(\s*)?(?:'((?:[^']|'')*)'|(-?\d+(?:\.\d+)?)\b)", sql_str, re.IGNORECASE)
+        if lit:
+            return lit.group(1).replace("''", "'") if lit.group(1) is not None else lit.group(2)
+        return None
+    return None
+
+
+def _store_schema(store) -> str:
+    """The namespace's IVG Schema: the engine's `_schema_prefix`, or IRISGraphStore's `_schema` (4.6.0 R319: the
+    store has no `_schema_prefix`, so these reads named Graph_KG in a namespace set up under another schema)."""
+    for attr in ("_schema_prefix", "_schema"):
+        value = getattr(store, attr, None)
+        if isinstance(value, str) and value:
+            return value
+    return "Graph_KG"
+
+
+def id_holders(
+    store, value: Union[str, List[str]], labels: List[str], graph: Optional[str] = None, node: Optional[str] = None
+) -> List[str]:
+    """The nodes (node, if given) whose `id` property is value (one of the texts, for a list) and that carry labels in
+    the same graph: in graph, or in any where graph is None. Read from the rows, not through get_nodes, which
+    JSON-parses a value ("1.50" -> 1.5)."""
+    schema = _store_schema(store)
+    args: List[Any] = list(value) if isinstance(value, list) else [value]
+    placeholders = ", ".join("?" for _ in args)
+    sql = f'SELECT DISTINCT p.s FROM {schema}.rdf_props p WHERE p."key" = \'id\' AND p.val IN ({placeholders})'
+    if isinstance(value, list):
+        # a number's texts (bound_id_property): a stored number of that value, not a string that spells it (row 24)
+        sql += f" AND {_stored_number_test('p.val')}"
+    if node is not None:
+        sql += " AND p.s = ?"
+        args.append(node)
+    if graph is not None:
+        sql += " AND COALESCE(p.graph_id, '') = COALESCE(?, '')"
+        args.append(graph)
+    for lbl in labels:
+        sql += f" AND EXISTS (SELECT 1 FROM {schema}.rdf_labels l WHERE l.s = p.s AND l.graph_id = p.graph_id AND l.label = ?)"
+        args.append(lbl)
+    cursor = store.conn.cursor()
+    cursor.execute(sql, args)
+    return [row[0] for row in cursor.fetchall() if row and row[0]]
+
+
+def node_with_labels(store, node: str, labels: List[str], graph: Optional[str] = None) -> bool:
+    """Whether the node `node` exists, in graph (in any when graph is None), carrying every label in that graph: what a
+    pattern `({id: node}:L)` names (4.6.0 R194)."""
+    schema = _store_schema(store)
+    sql = f"SELECT TOP 1 n.node_id FROM {schema}.nodes n WHERE n.node_id = ?"
+    args: List[Any] = [node]
+    if graph is not None:
+        sql += " AND COALESCE(n.graph_id, '') = COALESCE(?, '')"
+        args.append(graph)
+    for lbl in labels:
+        sql += (
+            f" AND EXISTS (SELECT 1 FROM {schema}.rdf_labels l WHERE l.s = n.node_id AND l.graph_id = n.graph_id"
+            " AND l.label = ?)"
+        )
+        args.append(lbl)
+    cursor = store.conn.cursor()
+    try:
+        cursor.execute(sql, args)
+        return cursor.fetchone() is not None
+    finally:
+        cursor.close()
+
+
+def extract_vlp_source_ids(
+    sql_query,
+    source_labels: List[str],
+    source_alias: str,
+    target_alias: str,
+    store,
+) -> List[str]:
+    """Find source node IDs for a variable-length-path Cypher query.
+
+    This is the single authoritative implementation of VLP source extraction,
+    used by both _execute_var_length_labeled and
+    _execute_var_length_labeled_path_funcs.
+
+    Three paths, in priority order (and, between 2 and 1, 2c: `WHERE s.id = $x`, the `id` property's holders):
+
+    1. **Label-based** (``source_labels`` non-empty): call ``store.query_nodes``
+       per label and intersect the results.
+
+    2. **Direct node_id = ?** (WHERE clause binds ``source_alias.node_id = ?``):
+       extract the parameter value directly — no DB round-trip.
+
+    3. **Cartesian SQL** (full-SQL DISTINCT query): detect the
+       ``JOIN target_alias ON 1=1`` cartesian boundary, build a
+       ``SELECT DISTINCT source_alias.node_id`` query with all original params,
+       and run it against the store's connection.
+
+    Returns an empty list when extraction finds no source IDs (callers decide
+    what to return for empty results, since result shapes differ).
+    """
+    if store is None:
+        return []
+
+    sql_str = sql_query.sql if isinstance(sql_query.sql, str) else ""
+
+    # A source already bound by a preceding relationship hop in the same
+    # pattern (`(a)-->(b)-[*]->(c)`: the var-length hop's source is `b`, bound
+    # by the earlier `(a)-->(b)`) shows up in the generated SQL as a real JOIN
+    # on `source_alias` — not the `ON 1=1` cartesian marker the still-unbound
+    # target gets. A label on such a source (a real one, or the isolation tag
+    # the TCK harness puts on every node in a scenario) is an extra filter on
+    # top of that join, not an alternate way to find the source: matching by
+    # label alone finds every node carrying it, not just the one actually
+    # reachable via the join (Match7 [19] — the shared isolation label made
+    # BFS start from `a` too, which then found `b` itself as a false `c`).
+    source_prebound_by_join = bool(source_alias) and bool(
+        re.search(
+            r'\bJOIN\s+\S+\s+' + re.escape(source_alias) + r'\s+ON\s+(?!1\s*=\s*1\b)',
+            sql_str,
+            re.IGNORECASE,
+        )
+    )
+
+    # ── Path 2 first: the pattern names its source by id ────────────────────
+    # An id binding (`node_id = ?`, or the same written as a literal for a property
+    # map) is the source. A label on it only narrows: the node has to carry the label.
+    # Before this the label won, took every node that carries it, and (a) answered for
+    # the whole population instead of the one node named, and (b) read that population
+    # in a single `IN (...)` list the database rejects past about 1,000 parameters.
+    if source_alias and not source_prebound_by_join:
+        bound = bound_node_id_param(
+            sql_str, sql_query.parameters[0] if sql_query.parameters else [], source_alias
+        )
+        if bound is None:
+            lit = re.search(
+                r'\b' + re.escape(source_alias) + r"\.node_id\s*=\s*"
+                r"(?:CAST\s*\(\s*)?'((?:[^']|'')*)'",
+                sql_str,
+                re.IGNORECASE,
+            )
+            if lit:
+                bound = lit.group(1).replace("''", "'")
+        if bound is not None:
+            if not source_labels:
+                return [bound]
+            try:
+                labelled = store.get_node_labels([bound])
+                have = set(json.loads(labelled.rows[0][1])) if labelled.rows else set()
+            except Exception as exc:
+                raise RuntimeError(
+                    f"could not check the labels {source_labels} of source node {bound!r}: {exc}"
+                ) from exc
+            return [bound] if all(lbl in have for lbl in source_labels) else []
+
+    # ── Path 2c: `WHERE s.id = $x`, which the translator routes here as a pin ───
+    # The statement reads it as the `id` property, so the start is every node holding that value (with the labels);
+    # the label lookup below would have taken every node with the label.
+    if source_alias and not source_prebound_by_join:
+        held = bound_id_property(sql_str, sql_query.parameters[0] if sql_query.parameters else [], source_alias)
+        if held is not None:
+            return id_holders(store, held, source_labels, getattr(sql_query, "graph_context", None))
+
+    # ── Path 1: label-based ──────────────────────────────────────────────────
+    if source_labels and not source_prebound_by_join:
+        label_sets = []
+        for lbl in source_labels:
+            try:
+                lbl_result = store.query_nodes(label_filter=lbl)
+            except Exception as exc:
+                # An empty answer here would be indistinguishable from "no such node".
+                raise RuntimeError(
+                    f"could not look up the nodes labeled {lbl!r} to start the path from: {exc}"
+                ) from exc
+            label_sets.append({row[0] for row in lbl_result.rows if row and row[0]})
+        if not label_sets:
+            return []
+        common = label_sets[0]
+        for s in label_sets[1:]:
+            common = common & s
+        return list(common)
+
+    # ── Path 2 (rest): the id binding when it is joined in, not bound ───────
+    if source_alias:
+        params_list = sql_query.parameters[0] if sql_query.parameters else []
+        bound = bound_node_id_param(sql_str, params_list, source_alias)
+        if bound is not None:
+            return [bound]
+
+        # ── Path 2b: the same binding written as a literal ──────────────────
+        # `MATCH (a {node_id: 'x'})` inlines the id into the statement instead of
+        # binding it, so Path 2 found nothing and callers fell through to a SQL
+        # round trip — or, in `approx_count_distinct`, to answering 0 (spec 230).
+        literal_pat = re.compile(
+            r'\b' + re.escape(source_alias) + r"\.node_id\s*=\s*"
+            r"(?:CAST\s*\(\s*)?'((?:[^']|'')*)'",
+            re.IGNORECASE,
+        )
+        lit = literal_pat.search(sql_str)
+        if lit:
+            return [lit.group(1).replace("''", "'")]
+
+    # ── Path 3: cartesian SQL extraction ────────────────────────────────────
+    if source_alias and target_alias:
+        target_cartesian_pat = re.compile(
+            r'\bJOIN\s+\S+\s+' + re.escape(target_alias) + r'\s+ON\s+1\s*=\s*1\b',
+            re.IGNORECASE,
+        )
+        m = target_cartesian_pat.search(sql_str)
+        if m:
+            full_from_where = sql_str[sql_str.lower().find('\nfrom '):].strip()
+            order_m = _ORDER_CLAUSE_PAT.search(full_from_where)
+            if order_m:
+                full_from_where = full_from_where[:order_m.start()].strip()
+            src_query = f"SELECT DISTINCT {source_alias}.node_id {full_from_where}"
+            params_list = sql_query.parameters[0] if sql_query.parameters else []
+            try:
+                cursor = store.conn.cursor()
+                cursor.execute(src_query, list(params_list))
+                return [row[0] for row in cursor.fetchall() if row and row[0]]
+            except Exception as exc:
+                logger.debug("extract_vlp_source_ids: cartesian SQL failed: %s", exc)
+
+    return []
+
+
+def _bounded_put(cache: dict, key, value, size: int):
+    """cache[key] = value, dropping the oldest entry once the cache holds `size`; returns value."""
+    if len(cache) >= size:
+        cache.pop(next(iter(cache)))
+    cache[key] = value
+    return value
+
+
+def _finish_sql_result(result, sql_query, bolt_types: bool = True) -> IVGResult:
+    """The typing and naming every translated statement's raw rows go through (the SQL path's, and the native path's
+    for the same statement, spec 253 FR-002): internal columns dropped, values decoded, columns renamed."""
+    _drop_internal_columns(result)
+    _decode_typed_value_columns(result, sql_query)
+    _decode_bool_text_columns(result, sql_query)
+    _decode_rel_prop_text_columns(result, sql_query)
+    _decode_numeric_expr_columns(result, sql_query)
+    _decode_map_text_columns(result, sql_query)
+    _decode_mixed_expr_columns(result, sql_query)
+    _decode_empty_json_strings(result)
+    _strip_node_graphs(result, sql_query)
+    _decode_json_value_columns(result, sql_query)
+    _decode_graph_json_values(result, sql_query)
+    if bolt_types and sql_query.bolt_column_types:
+        result.bolt_column_types = sql_query.bolt_column_types
+    if sql_query.column_name_map and result.columns:
+        result.columns = [sql_query.column_name_map.get(col, col) for col in result.columns]
+    return result
+
+
+def _quote_ends(text: str, i: int, depth: int) -> bool:
+    """Whether the quote at `i` delimits a string of JSON text nested `depth` times in JSON strings: each nesting
+    escapes every quote and backslash once more, so such a quote has 2**depth - 1 backslashes before it, give or take
+    whole escaped backslashes (a multiple of 2**(depth + 1))."""
+    k = 0
+    while i - k - 1 >= 0 and text[i - k - 1] == "\\":
+        k += 1
+    return k % (2 ** (depth + 1)) == 2 ** depth - 1
+
+
+def _skip_string(text: str, i: int, depth: int) -> int:
+    """`i` is just after a string's opening quote at `depth`: the index after its closing quote, or -1."""
+    while True:
+        j = text.find('"', i)
+        if j < 0:
+            return -1
+        if _quote_ends(text, j, depth):
+            return j + 1
+        i = j + 1
+
+
+def _skip_array(text: str, i: int, depth: int) -> int:
+    """`i` is at a '[' of JSON at `depth`: the index after its matching ']', or -1."""
+    if i >= len(text) or text[i] != "[":
+        return -1
+    level = 0
+    while i < len(text):
+        ch = text[i]
+        if ch == '"' and _quote_ends(text, i, depth):
+            i = _skip_string(text, i + 1, depth)
+            if i < 0:
+                return -1
+            continue
+        if ch == "[":
+            level += 1
+        elif ch == "]":
+            level -= 1
+            if level == 0:
+                return i + 1
+        i += 1
+    return -1
+
+
+def _node_graph_span(text: str, start: int, depth: int):
+    """The span of `,"_graph":"<g>"` in a node object at `start` ('{') of JSON nested `depth` times, when the object is
+    exactly `{"_id":"…","_labels":[…],"_props":[…],"_graph":"…"}` as the collect() builder writes it; else None."""
+    q = "\\" * (2 ** depth - 1) + '"'
+
+    def key(i, name):
+        token = f"{q}{name}{q}:"
+        return i + len(token) if text.startswith(token, i) else -1
+
+    i = key(start + 1, "_id")
+    if i < 0 or not text.startswith(q, i):
+        return None
+    i = _skip_string(text, i + len(q), depth)
+    for name in ("_labels", "_props"):
+        if i < 0 or not text.startswith(",", i):
+            return None
+        i = key(i + 1, name)
+        if i < 0:
+            return None
+        i = _skip_array(text, i, depth)
+    if i < 0 or not text.startswith(",", i):
+        return None
+    graph_at = i
+    i = key(i + 1, "_graph")
+    if i < 0 or not text.startswith(q, i):
+        return None
+    i = _skip_string(text, i + len(q), depth)
+    if i < 0 or not text.startswith("}", i):
+        return None
+    return graph_at, i
+
+
+def _strip_node_graph(text: str) -> str:
+    """`text` without the `"_graph"` of each node object the collect() builder wrote (4.6.0 R310), at any depth of
+    JSON-in-JSON text. Only an object whose keys are exactly `_id`, `_labels`, `_props`, `_graph` in that order loses
+    it; any other text is returned as it is."""
+    if "_graph" not in text:
+        return text
+    out, last, i = [], 0, text.find("{")
+    while i >= 0:
+        span = None
+        for depth in range(5):
+            span = _node_graph_span(text, i, depth)
+            if span:
+                break
+        if span:
+            out.append(text[last:span[0]])
+            last = span[1]
+            # past the node: what its properties hold is the user's, even text that spells a node
+            i = text.find("{", last)
+            continue
+        i = text.find("{", i + 1)
+    return "".join(out) + text[last:] if out else text
+
+
+def _strip_node_graphs(result, sql_query) -> None:
+    """Drop the collected nodes' `"_graph"` from the columns that can hold one (SQLQuery.node_json_columns)."""
+    names = {n.strip('"').lower() for n in getattr(sql_query, "node_json_columns", None) or []}
+    rows = getattr(result, "rows", None)
+    if not names or not rows:
+        return
+    idx = [i for i, c in enumerate(result.columns or []) if str(c).strip('"').lower() in names]
+    if not idx:
+        return
+    out = []
+    for row in rows:
+        row = list(row)
+        for i in idx:
+            if i < len(row) and isinstance(row[i], str):
+                row[i] = _strip_node_graph(row[i])
+        out.append(row)
+    result.rows = out
+
+
+#: A JSON string that is the one character $Char(0), as a value of a list or map: `[`, `,`, `:` or `{` before it, so
+#: the quote opens a string (inside a JSON string a quote is escaped, `\"`).
+_NUL_JSON_STRING = re.compile(r'([\[,:{]\s*)"\\u0000"')
+
+
+def _decode_empty_json_strings(result) -> None:
+    """Read "\\u0000" inside a list or map in a row as the empty string (4.6.0 R274).
+
+    IRIS hands SQL's '' to its JSON functions as $Char(0), which they spell "\\u0000" (JSON_ARRAY(''), JSON_ARRAYAGG
+    of '', and the qualifiers `SET r.k = ''` stores, which properties(r) and RETURN r carry): `collect('')`,
+    `[n.e]`, `properties(r)` answered "\\x00" once parsed. To IRIS a string of the one character $Char(0) is '', so
+    it is the empty string here; the stored text is not changed."""
+    rows = getattr(result, "rows", None)
+    if not rows:
+        return
+    out, changed = [], False
+    for row in rows:
+        if any(isinstance(v, str) and "\\u0000" in v and v[:1] in ("[", "{") for v in row):
+            row = [
+                _NUL_JSON_STRING.sub(r'\1""', v) if isinstance(v, str) and v[:1] in ("[", "{") else v for v in row
+            ]
+            changed = True
+        out.append(row)
+    if changed:
+        result.rows = out
+
+
+def _decode_json_value_columns(result, sql_query) -> None:
+    """Answer the list or map a list- or map-valued RETURN column holds (SQLQuery.json_value_columns, 4.6.0 R311)
+    instead of its JSON text. Runs after the text passes above, which read that text. A value already a list or dict
+    (a native row, a CY_TYPED read) and null pass through; text that does not parse is left as it is, with a warning,
+    since such a column holding it is a translator defect."""
+    names = {n.strip('"').lower() for n in getattr(sql_query, "json_value_columns", None) or []}
+    rows = getattr(result, "rows", None)
+    if not names or not rows:
+        return
+    idx = [i for i, c in enumerate(result.columns or []) if str(c).strip('"').lower() in names]
+    if not idx:
+        return
+    out = []
+    for row in rows:
+        row = list(row)
+        for i in idx:
+            v = row[i] if i < len(row) else None
+            try:
+                row[i] = decode_json_value(v)
+            except ValueError:
+                logger.warning("list or map column %s holds text that is not JSON: %.80r", result.columns[i], v)
+        out.append(row)
+    result.rows = out
+
+
+#: The keys, in order, of the JSON text SQL spells a node (inside a list or map), a relationship and a path with: the
+#: translator's `_graph_value_sql`, `collect()` builder (its "_graph" stripped by then) and path builders.
+_GRAPH_JSON_KEYS = (("_id", "_labels", "_props"), ("type", "props"), ("nodes", "rels"))
+
+
+def _graph_json_value(v):
+    """`v` with each node, relationship and path that is still its JSON text, at any depth of a list or map, read
+    into its dict (4.6.0 R314). Only text that parses to an object with exactly one of _GRAPH_JSON_KEYS is; a node's
+    `_props` entries stay the JSON text they are documented as."""
+    if isinstance(v, list):
+        return [_graph_json_value(x) for x in v]
+    if isinstance(v, dict):
+        if tuple(v) in _GRAPH_JSON_KEYS:
+            return v  # a graph element's own values (its properties, a path's ids) are the user's: not read again
+        return {k: _graph_json_value(x) for k, x in v.items()}
+    if isinstance(v, str) and v[:1] == "{" and v[-1:] == "}":
+        try:
+            parsed = json.loads(v)
+        except ValueError:  # text in braces that is not JSON: a value, not a graph element's JSON
+            return v
+        if isinstance(parsed, dict) and tuple(parsed) in _GRAPH_JSON_KEYS:
+            return parsed
+    return v
+
+
+def _decode_graph_json_values(result, sql_query) -> None:
+    """Answer a node, relationship or path a column holds as its dict wherever it sits (4.6.0 R314): `collect(n)`,
+    `collect(p)` and `[p]` held each as a JSON string element (JSON_ARRAYAGG and JSON_ARRAY quote text), and
+    `head(collect(n))` and an UNWIND of `collect(n)` answered the text itself, where `[n]` and `RETURN p` answered the
+    dict. Only the columns the translator knows can hold one (SQLQuery.node_json_columns, graph_json_columns)."""
+    names = {n.strip('"').lower() for n in (getattr(sql_query, "node_json_columns", None) or [])
+             + (getattr(sql_query, "graph_json_columns", None) or [])}
+    rows = getattr(result, "rows", None)
+    if not names or not rows:
+        return
+    idx = [i for i, c in enumerate(result.columns or []) if str(c).strip('"').lower() in names]
+    if not idx:
+        return
+    out = []
+    for row in rows:
+        row = list(row)
+        for i in idx:
+            if i < len(row):
+                row[i] = _graph_json_value(row[i])
+        out.append(row)
+    result.rows = out
+
+
+def _count_column(sql_query) -> str:
+    """The name the SQL path gives a statement's one count: its alias, renamed through the column map."""
+    sql_str = sql_query.sql if isinstance(sql_query.sql, str) else ""
+    col_map = sql_query.column_name_map or {}
+    m = _SELECT_COUNT_AS.search(sql_str)
+    if m is None:
+        return next(iter(col_map.values()), "count")
+    alias = m.group(1) or m.group(2)
+    return col_map.get(alias, alias)
+
+
+def _graph_kw(sql_query) -> dict:
+    """`graph=` for a store call when the query is scoped to one graph (spec 253: the all-graphs route runs per graph)."""
+    graph = getattr(sql_query, "graph_context", None)
+    return {"graph": graph} if graph is not None else {}
+
+
+def _extract_sql_row_limit(sql: str) -> int:
+    """The row cap the translated statement carries, or 0 when it carries none.
+
+    Three spellings reach here for the same Cypher `LIMIT n`: IRIS SQL's
+    `FETCH FIRST n ROWS ONLY`, the `SELECT TOP n` the build-106 %qaqpre workaround
+    emits instead, and a bare `LIMIT n`. Every route that answers a var-length
+    pattern outside SQL has to read the cap itself, because the statement it was
+    lifted from never runs.
+    """
+    if not sql:
+        return 0
+    m = re.search(r"FETCH\s+FIRST\s+(\d+)\s+ROWS\s+ONLY", sql, re.IGNORECASE)
+    if not m:
+        m = re.search(r"\bSELECT\s+(?:DISTINCT\s+)?TOP\s+(\d+)\b", sql, re.IGNORECASE)
+    if not m:
+        m = re.search(r"\bLIMIT\s+(\d+)", sql, re.IGNORECASE)
+    return int(m.group(1)) if m else 0
+
+
+def _split_top_level_and(where_clause: str) -> list:
+    """Split a SQL WHERE clause on top-level AND conjuncts only.
+
+    Respects nesting depth: AND tokens inside parentheses (subqueries, EXISTS)
+    are not treated as separators.  Returns a list of condition strings.
+    """
+    parts = []
+    depth = 0
+    buf = []
+    i = 0
+    text = where_clause
+    while i < len(text):
+        ch = text[i]
+        if ch == '(':
+            depth += 1
+            buf.append(ch)
+            i += 1
+        elif ch == ')':
+            depth -= 1
+            buf.append(ch)
+            i += 1
+        elif depth == 0 and text[i:i+4].upper() == ' AND' and (i + 4 >= len(text) or text[i+4] == ' '):
+            # Top-level AND separator
+            part = ''.join(buf).strip()
+            if part:
+                parts.append(part)
+            buf = []
+            i += 4  # skip ' AND'
+        elif depth == 0 and text[i:i+3].upper() == 'AND' and i == 0:
+            i += 3
+        else:
+            buf.append(ch)
+            i += 1
+    part = ''.join(buf).strip()
+    if part:
+        parts.append(part)
+    return parts if parts else [where_clause]
+
+
+# ---------------------------------------------------------------------------
+# GDS → ivg procedure shim map
+# Keys are lowercase gds.* procedure names; values are ivg.* equivalents.
+# ---------------------------------------------------------------------------
+
+GDS_SHIM_MAP: Dict[str, str] = {
+    "gds.louvain.stream":               "ivg.leiden",
+    "gds.nodesimilarity.stream":        "ivg.vector.search",
+}
+
+#: What each gds.* procedure the engine answers itself (:data:`GDS_ANSWERED`) yields, for the error that says what it
+#: answers.
+_DIJKSTRA_YIELDS = "index, sourceNode, targetNode, totalCost, nodeIds, costs"
+GDS_YIELDS = {
+    "gds.pagerank.stream": "nodeId, score",
+    "gds.betweenness.stream": "nodeId, score",
+    "gds.shortestpath.dijkstra.stream": _DIJKSTRA_YIELDS,
+    "gds.shortestpath.dijkstra": _DIJKSTRA_YIELDS,
+}
+
+#: The gds.* procedures the engine answers itself, with GDS's column names (`nodeId`, `score`) and its
+#: `(graphName, configuration)` arguments (spec 195's data model; IRISGraphEngine._proc_gds_*). Before 4.6.0 (R174)
+#: they were shimmed: `gds.pageRank.stream` to `ivg.ppr` (personalized PageRank, which needs seeds) and
+#: `gds.betweenness.stream` to `ivg.betweenness`, neither of which a handler answers, so the call fell through to the
+#: translator and answered no rows and no error. `gds.shortestPath.dijkstra.stream` (and the bare
+#: `gds.shortestPath.dijkstra`) was shimmed to `ivg.shortestPath.weighted` with GDS's arguments passed by position, the
+#: graph name as the source and the configuration as the target: no rows (R183).
+GDS_ANSWERED = frozenset(GDS_YIELDS)
+
+
+def _handle_gds_shim(proc) -> Optional["IVGResult"]:
+    """Handle a gds.* procedure call: shim to ivg.* or return an error result.
+
+    Returns None for non-gds procedures and for the ones the engine answers itself (:data:`GDS_ANSWERED`): the caller
+    continues normal dispatch. Returns an IVGResult for other gds.* procedures (either shimmed result or error).
+    """
+    name = proc.procedure_name.lower()
+    if not name.startswith("gds.") or name in GDS_ANSWERED:
+        return None
+
+    ivg_equiv = GDS_SHIM_MAP.get(name)
+    if ivg_equiv is None:
+        suggestions = ", ".join(sorted(set(GDS_SHIM_MAP.values())))
+        return IVGResult(
+            columns=["error"],
+            rows=[],
+            error=(
+                f"gds procedure '{proc.procedure_name}' not shimmed; "
+                f"use ivg equivalent. Available: {suggestions}"
+            ),
+        )
+
+    # Build a shimmed proc object with the ivg equivalent name.
+    # Return it as a tuple sentinel so the caller can re-dispatch.
+    shimmed = type("ShimmedProc", (), {
+        "procedure_name": ivg_equiv,
+        "arguments": proc.arguments,
+        "yield_items": getattr(proc, "yield_items", []),
+    })()
+    # (shimmed_proc, None) sentinel tuple — caller checks isinstance(result, tuple)
+    return (shimmed, None)  # type: ignore[return-value]
+
+
+#: The columns the SQL route gives a node variable `n` (4.6.0 R291): n_id, n_labels, n_props.
+_NODE_COLUMN_SUFFIXES = ("_id", "_labels", "_props")
+
+
+def _scalar_return_items(sql_query, source_var, target_var, path_var):
+    """The RETURN clause as per-item readings, in RETURN order, or None when an item is anything else.
+
+    Each item is ("length",), ("nodes",), ("relationships",) of the path, ("path",) for the path variable,
+    ("node", "source"|"target") for an end of the path, or ("prop", "source"|"target", name) for its property. The
+    translation's SELECT names the columns (`select_aliases`): one per item, three for a node (n_id, n_labels,
+    n_props). Anything else (an aggregate, an expression, another variable) is None, and the older projection answers.
+    4.6.0 R291: a node variable or the path variable beside a path function was left to that projection, which
+    answered other columns (`RETURN b, length(p) AS l` gave a, b and l) in other shapes than the SQL route's.
+    """
+    from iris_vector_graph.cypher import ast as _ast
+
+    raw = getattr(sql_query, "return_items", None)
+    aliases = list(getattr(sql_query, "select_aliases", None) or [])
+    if not isinstance(raw, list) or not raw:
+        return None
+    out = []
+    width = 0
+    for it in raw:
+        e = it.expression
+        if isinstance(e, _ast.FunctionCall) and e.function_name.lower() in ("length", "nodes", "relationships"):
+            arg = e.arguments[0] if e.arguments else None
+            if not isinstance(arg, _ast.Variable) or (path_var is not None and arg.name != path_var):
+                return None
+            out.append((e.function_name.lower(),))
+            width += 1
+        elif isinstance(e, _ast.PropertyReference) and e.variable in (source_var, target_var):
+            out.append(("prop", "target" if e.variable == target_var else "source", e.property_name))
+            width += 1
+        elif isinstance(e, _ast.Variable) and e.name in (source_var, target_var):
+            names = [e.name + s for s in _NODE_COLUMN_SUFFIXES]
+            if aliases[width:width + len(names)] != names:
+                return None
+            out.append(("node", "target" if e.name == target_var else "source"))
+            width += len(names)
+        elif isinstance(e, _ast.Variable) and path_var is not None and e.name == path_var:
+            out.append(("path",))
+            width += 1
+        else:
+            return None
+    return out if width == len(aliases) else None
+
+
+def _typed_rel_props(qualifiers) -> dict:
+    """A relationship's stored qualifiers (JSON text, a dict or None) as its properties, each read as properties(r)
+    reads it (parse_rel_prop_text, CY_RETYPE_MAP's rule): a Cypher CREATE stores 7 as the text "7", which is the
+    number 7, and 'true' the boolean. 4.6.0 R298: the variable-length routes answered {"w": "7"}."""
+    if isinstance(qualifiers, str):
+        qualifiers = json.loads(qualifiers) if qualifiers.strip() else {}
+    if not isinstance(qualifiers, dict):
+        return {}
+    props = {}
+    for k, v in qualifiers.items():
+        if isinstance(v, str):
+            v = "" if v == "\x00" else parse_rel_prop_text(v)
+        props[k] = v
+    return props
+
+
+def _with_edge_ids(walked) -> tuple:
+    """A `_bfs_with_paths(edge_ids=True)` path as (nodes, types, edge ids); a stand-in walk of (nodes, types) gets
+    no ids, so its qualifiers are read by ends and type."""
+    nodes, types = walked[0], walked[1]
+    ids = list(walked[2]) if len(walked) > 2 else [None] * len(types)
+    return nodes, types, ids
+
+
+def _item_columns(sql_query) -> list:
+    names = getattr(sql_query, "column_name_map", None) or {}
+    return [names.get(a, a) for a in (getattr(sql_query, "select_aliases", None) or [])]
+
+
+def _bare_path_funcs(vl, sql_query) -> Optional[list]:
+    """The RETURN as `length` / `nodes` / `relationships` of the path, one per item, or None when it is anything more.
+
+    `return_path_funcs` lists the RETURN's path functions and path variables in order; when it is as long as the
+    RETURN and holds no path variable, every item is one of the three. ORDER BY, SKIP, LIMIT and DISTINCT are more.
+    """
+    funcs = list(vl.get("return_path_funcs") or [])
+    if not funcs or "path" in funcs:
+        return None
+    items = getattr(sql_query, "return_items", None)
+    # the parsed items when the engine set them; else the translation's named columns; else (a translation that
+    # names none) the functions themselves
+    if isinstance(items, list):
+        n_items = len(items)
+    else:
+        n_items = len(_item_columns(sql_query)) or len(funcs)
+    if len(funcs) != n_items:
+        return None
+    from iris_vector_graph.cypher import ast as _ast
+
+    parsed = getattr(sql_query, "parsed_query", None)
+    if isinstance(parsed, _ast.CypherQuery) and (
+        parsed.order_by_clause or parsed.skip is not None or parsed.limit is not None
+        or (parsed.return_clause is not None and parsed.return_clause.distinct)
+    ):
+        return None
+    return funcs
+
+
+def _shortest_relationships(node) -> list:
+    """The relationship patterns of a parsed query that are a shortestPath / allShortestPaths."""
+    return _vl_relationships(node, shortest=True)
+
+
+def _vl_relationships(node, shortest: bool = False) -> list:
+    """The variable-length relationship patterns of a parsed query, in the order a walk of the tree meets them (the
+    same in a deep copy); with `shortest`, only shortestPath / allShortestPaths."""
+    from iris_vector_graph.cypher import ast as _ast
+
+    found, seen = [], set()
+
+    def walk(x):
+        if id(x) in seen or x is None or isinstance(x, (str, int, float, bool)):
+            return
+        seen.add(id(x))
+        if isinstance(x, _ast.RelationshipPattern):
+            vl = x.variable_length
+            if vl is not None and (not shortest or vl.shortest or vl.all_shortest):
+                found.append(x)
+            return
+        if isinstance(x, (list, tuple)):
+            for y in x:
+                walk(y)
+        elif isinstance(x, dict):
+            for y in x.values():
+                walk(y)
+        elif hasattr(x, "__dataclass_fields__"):
+            for name in x.__dataclass_fields__:
+                walk(getattr(x, name, None))
+
+    walk(node)
+    return found
+
+
+def _is_number(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def cypher_equal(a, b) -> Optional[bool]:
+    """openCypher `=` over Python values: None (null) when either side is null, or a list or map holds a null where
+    nothing else decides; a number equals a number of the other type (2 = 2.0); a boolean is no number."""
+    if a is None or b is None:
+        return None
+    if isinstance(a, bool) or isinstance(b, bool):
+        return isinstance(a, bool) and isinstance(b, bool) and a == b
+    if _is_number(a) and _is_number(b):
+        return a == b
+    if isinstance(a, dict) and isinstance(b, dict):
+        if set(a) != set(b):
+            return False
+        keys = sorted(a)
+        a, b = [a[k] for k in keys], [b[k] for k in keys]
+    if isinstance(a, list) and isinstance(b, list):
+        if len(a) != len(b):
+            return False
+        out: Optional[bool] = True
+        for x, y in zip(a, b):
+            same = cypher_equal(x, y)
+            if same is False:
+                return False
+            if same is None:
+                out = None
+        return out
+    return type(a) is type(b) and a == b
+
+
+#: The most paths `checked_trails` writes into a statement; past it the query raises (a part would answer wrongly).
+_CHECKED_PATHS_MAX = 20000
+
+
+def checked_trails(neighbours, starts, types, direction, min_hops, max_hops, wanted, limit=_CHECKED_PATHS_MAX) -> list:
+    """The paths of a variable-length hop whose every relationship holds the property map `wanted`, as CY_VLP_PATHS
+    writes them (plus the start `s` and its graph `g`): from each `(graph, node)` of `starts`, the trails (no
+    relationship twice) of `min_hops..max_hops` relationships of `types` (any type when empty) in `direction`, each
+    relationship's stored qualifiers read as properties(r) reads them and compared by openCypher equality
+    (`cypher_equal`), which SQL cannot do for a float in a list or a map (4.6.0 R308).
+
+    `neighbours(keys, direction)` answers `{(graph, node): [((edge_id, s, p, o, qualifiers, graph), far node), ...]}`
+    for the relationships a walk takes from each node. More than `limit` paths raise ValueError.
+    """
+
+    def holds(edge) -> bool:
+        if types and edge[2] not in types:
+            return False
+        props = _typed_rel_props(edge[4])
+        return all(cypher_equal(props.get(k), v) is True for k, v in wanted.items())
+
+    adj: dict = {}
+    frontier = set(starts)
+    for _ in range(max_hops):
+        need = sorted(k for k in frontier if k not in adj)
+        if need:
+            for key, steps in neighbours(need, direction).items():
+                adj[key] = [(e, far) for e, far in steps if holds(e)]
+        frontier = {(g, far) for g, n in frontier for _e, far in adj.get((g, n), ())} - set(adj)
+        if not frontier:
+            break
+
+    paths: list = []
+
+    def compact(value) -> str:
+        return json.dumps(value, separators=(",", ":"))
+
+    def emit(graph, start, nodes, edges):
+        if len(paths) >= limit:
+            raise ValueError(
+                f"a variable-length pattern with the property map {wanted!r} has more than {limit} paths; narrow its "
+                "start, or check the map in a WHERE (all(x IN r WHERE x.k = v))"
+            )
+        paths.append({
+            "s": start, "g": graph, "t": nodes[-1] if nodes else start, "l": len(edges),
+            "n": compact(nodes),
+            "y": compact([e[2] for e in edges]),
+            "r": compact([{"type": e[2], "props": _typed_rel_props(e[4])} for e in edges]),
+            "k": "\x02" + "".join(f"{e[1]}\x01{e[2]}\x01{e[3]}\x02" for e in edges),
+        })
+
+    def walk(graph, start, node, nodes, edges, used):
+        if len(edges) >= min_hops:
+            emit(graph, start, nodes, edges)
+        if len(edges) == max_hops:
+            return
+        for e, far in adj.get((graph, node), ()):
+            if e[0] not in used:
+                walk(graph, start, far, nodes + [far], edges + [e], used | {e[0]})
+
+    for graph, start in sorted(starts):
+        walk(graph, start, start, [], [], frozenset())
+    return paths
+
+
+def _vl_hop_text(vl0) -> str:
+    """`(a)-[:T*1..2]->(b)`, a variable-length hop as the translator recorded it, for a message."""
+    types = "|".join(vl0.get("types") or [])
+    hop = f"[{vl0.get('rel_var') or ''}{':' + types if types else ''}*{vl0.get('min_hops', 1)}..{vl0.get('max_hops', 1)}]"
+    arrow = {"out": f"-{hop}->", "in": f"<-{hop}-"}.get(vl0.get("direction"), f"-{hop}-")
+    return f"({vl0.get('source_var') or ''}){arrow}({vl0.get('target_var') or ''})"
+
+
+#: The most paths an OPTIONAL variable-length hop's statement carries as a literal (4.6.0 R308); past it the query
+#: raises: the paths are written into the statement's text.
+_OPTIONAL_PATHS_MAX = 20000
+
+
+def _optional_hop_rel(tree, rel_id=None, original=None):
+    """The variable-length relationship of `tree` that an OPTIONAL hop's walk is for: the one at the place of the
+    relationship `rel_id` in `original` (the tree `tree` is a deep copy of) or in its clash-renamed twin, which the
+    translator may have read instead (same shape, so same place); without `rel_id`, the first one that is not a shortest
+    path."""
+    rels = _vl_relationships(tree)
+    if rel_id is None or original is None:
+        return next((r for r in rels if not (r.variable_length.shortest or r.variable_length.all_shortest)), None)
+    for read in (original, getattr(original, "param_twin", None)):
+        if not read:
+            continue
+        at = next((i for i, r in enumerate(_vl_relationships(read)) if id(r) == rel_id), None)
+        if at is not None and at < len(rels):
+            return rels[at]
+    return None
+
+
+def optional_hop_refusal(vl0) -> Optional[str]:
+    """The message an OPTIONAL MATCH over the variable-length hop `vl0` raises with, or None when the engine's routes
+    answer it.
+
+    The translator answers in SQL a lone OPTIONAL hop from a bound start to a plain far end; any other OPTIONAL hop from
+    a start an earlier clause binds (a WHERE on the new end, a map or labels on either node, another hop in the
+    pattern, inside CALL {}) came to the engine, whose labeled route answered rows of the wrong width with the start
+    nulled (4.6.0 R308). A leading OPTIONAL MATCH, which binds its own start, is answered right and not refused.
+    """
+    if not vl0.get("optional_bound_start") or vl0.get("shortest") or vl0.get("all_shortest"):
+        return None
+    return (
+        f"OPTIONAL MATCH {_vl_hop_text(vl0)} with an end an earlier clause binds cannot be answered in this shape (a "
+        "map on the relationship, its relationships or path read in the pattern's order from a new start, or another "
+        "hop the engine walks). Match the hop alone and filter after it: OPTIONAL MATCH (a)-[*1..2]->(b) WITH a, b "
+        "WHERE ... (which drops the row of nulls a start with no match keeps under OPTIONAL MATCH)"
+    )
+
+
+def _rel_index(rels, vl0) -> Optional[int]:
+    """The position in `rels` of the relationship pattern the translator recorded as `vl0` (by its `rel_id`)."""
+    return next((i for i, r in enumerate(rels) if id(r) == vl0.get("rel_id")), None)
+
+
+def _graph_batches(pairs, size: int = 500):
+    """`(graph, nodes)` for the `(graph, node)` pairs, grouped by graph in batches of at most `size` nodes."""
+    by_graph: dict = {}
+    for g, n in pairs:
+        by_graph.setdefault(g, []).append(n)
+    for g, nodes in by_graph.items():
+        for i in range(0, len(nodes), size):
+            yield g, nodes[i:i + size]
+
+
+def literal_paths_json(paths) -> str:
+    """`paths` as the JSON text a hop's `literal_paths` holds. The text is inlined into a join, where the translator
+    counts `?` to place each bind and scans parentheses: a node id holding one would shift them, so those are written as
+    JSON escapes, which JSON_TABLE reads back."""
+    return json.dumps(paths).replace("?", "\\u003f").replace("(", "\\u0028").replace(")", "\\u0029")
+
+
+class _NotALiteral(Exception):
+    """A property map value that is an expression, not a literal or a parameter."""
+
+
+def _map_value(v, parameters):
+    """A property map value of the parsed tree as a Python value."""
+    from iris_vector_graph.cypher import ast as _ast
+
+    if isinstance(v, _ast.Literal):
+        return [_map_value(x, parameters) for x in v.value] if isinstance(v.value, list) else v.value
+    if isinstance(v, _ast.MapLiteral):
+        return {k: _map_value(x, parameters) for k, x in v.entries.items()}
+    if isinstance(v, _ast.Variable) and v.is_parameter and v.name in (parameters or {}):
+        return parameters[v.name]
+    if isinstance(v, (str, int, float, bool, type(None))):
+        return v
+    raise _NotALiteral(v)
+
+
+def _build_path_func_columns(return_path_funcs: list, source_var: str, target_var: str,
+                              col_map: dict, path_named_var: str = None) -> list:
+    """Build ordered output column names for a labeled path function result.
+
+    Uses col_map to find the RETURN aliases for path functions and node variables.
+    Falls back to standard names if col_map is empty.
+    """
+    columns = []
+    # col_map: {sql_alias -> cypher_expression}
+    # e.g. {"l": "length(p)", "a": "a", "b": "b"}
+    # Reverse map: cypher_expression -> sql_alias
+    cypher_to_alias = {v: k for k, v in col_map.items()} if col_map else {}
+
+    # Determine columns from col_map first (preserves RETURN order)
+    if col_map:
+        # We can't guarantee order from dict, so use return_path_funcs and var names
+        # as guidance. But col_map is unordered — we need to infer from what funcs we have.
+        added = set()
+        # Check for source_var in col_map
+        src_cypher = source_var
+        if src_cypher in cypher_to_alias:
+            alias = cypher_to_alias[src_cypher]
+            columns.append(alias)
+            added.add(alias)
+        # Check for target_var in col_map
+        tgt_cypher = target_var
+        if tgt_cypher in cypher_to_alias:
+            alias = cypher_to_alias[tgt_cypher]
+            if alias not in added:
+                columns.append(alias)
+                added.add(alias)
+        # Check for path functions
+        for func in return_path_funcs:
+            # Find alias for "length(p)", "relationships(p)", "nodes(p)"
+            for cypher_expr, alias in col_map.items():
+                if cypher_expr.lower().startswith(func + "(") and alias not in added:
+                    columns.append(alias)
+                    added.add(alias)
+            # Check for col_map entries where alias == cypher_expr (no rename)
+            func_expr = f"{func}(p)"
+            if func_expr in col_map and col_map[func_expr] not in added:
+                columns.append(col_map[func_expr])
+                added.add(col_map[func_expr])
+        # Add any remaining col_map entries
+        for sql_alias, cypher_expr in col_map.items():
+            if sql_alias not in added:
+                columns.append(sql_alias)
+                added.add(sql_alias)
+    else:
+        # No col_map: use standard names
+        if "path" in return_path_funcs:
+            columns.append(path_named_var or "p")
+        if "nodes" in return_path_funcs or "length" in return_path_funcs:
+            columns.append(source_var)
+        if "nodes" in return_path_funcs or "length" in return_path_funcs:
+            columns.append(target_var)
+        if "length" in return_path_funcs:
+            columns.append("l")
+        if "relationships" in return_path_funcs:
+            columns.append("relationships(p)")
+        if "nodes" in return_path_funcs and "nodes(p)" not in columns:
+            columns.append("nodes(p)")
+
+    return columns if columns else [source_var, target_var]
+
+
+
+_BOOL_DIGITS = {"1": True, "0": False, "true": True, "false": False}
+
+
+def _bool_expr_value(v):
+    """A value from a statically boolean column: 1 / 0 (int, Decimal or text) and
+    'true' / 'false' become True / False; null and anything else are left alone."""
+    if v is None or isinstance(v, bool):
+        return v
+    if isinstance(v, str):
+        return _BOOL_DIGITS.get(v, v)
+    if isinstance(v, int) or type(v).__name__ == "Decimal":
+        if v == 1:
+            return True
+        if v == 0:
+            return False
+    return v
+
+
+_INTERNAL_COLUMN = re.compile(r"__sort\d+(?:_[ns])?")
+
+
+def _drop_internal_columns(result) -> None:
+    """Remove the translator's __sortN sort-key columns (and their values) from a result."""
+    columns = list(getattr(result, "columns", None) or [])
+    drop = [i for i, c in enumerate(columns) if _INTERNAL_COLUMN.fullmatch(str(c))]
+    if not drop:
+        return
+    keep = [i for i in range(len(columns)) if i not in set(drop)]
+    result.columns = [columns[i] for i in keep]
+    result.rows = [[row[i] for i in keep if i < len(row)] for row in (result.rows or [])]
+    bolt = getattr(result, "bolt_column_types", None)
+    if bolt and len(bolt) == len(columns):
+        result.bolt_column_types = [bolt[i] for i in keep]
+
+
+def _decode_typed_value_columns(result, sql_query) -> None:
+    """Decode the columns read through CY_TYPED (SQLQuery.typed_value_columns, 4.6.0 R218) to the type each value is
+    stored with. A native row's values are already typed and carry no mark, so they pass through. A list or map's JSON
+    text, which both executors answer as it is stored, reads as the list or map (4.6.0 R307)."""
+    names = {n.strip('"').lower() for n in getattr(sql_query, "typed_value_columns", None) or []}
+    if not names or not getattr(result, "rows", None):
+        return
+    idx = [i for i, c in enumerate(result.columns or []) if str(c).strip('"').lower() in names]
+    if not idx:
+        return
+    rows = []
+    for row in result.rows:
+        row = list(row)
+        for i in idx:
+            if i < len(row):
+                row[i] = read_prop_value(row[i])
+        rows.append(row)
+    result.rows = rows
+
+
+def _decode_bool_text_columns(result, sql_query) -> None:
+    """Read 'true' / 'false' as booleans in columns that return a stored property,
+    and 1 / 0 as booleans in columns whose value is statically boolean
+    (comparisons, label tests, quantifiers, boolean literals, ...)."""
+    cols = getattr(sql_query, "bool_text_columns", None) or []
+    names = {n.strip('"').lower() for n in getattr(sql_query, "bool_expr_columns", None) or []}
+    prop_names = {
+        n.strip('"').lower() for n in getattr(sql_query, "prop_text_expr_columns", None) or []
+    }
+    if not (cols or names or prop_names) or not getattr(result, "rows", None):
+        return
+    if len(result.columns or []) != getattr(sql_query, "return_arity", 0):
+        cols = []
+    expr_cols = [
+        i for i, c in enumerate(result.columns or []) if str(c).strip('"').lower() in names
+    ]
+    # By name, not index: a WITH-chain alias of a bare property reference
+    # (`WITH a.bool AS bool ... RETURN bool`) is a plain Variable in the final
+    # RETURN, not the PropertyReference `bool_text_columns` (index-based)
+    # matches. `parse_prop_text` is the narrow, safe decode here too — it
+    # only ever flips the exact 'true'/'false' spellings, so it never
+    # misreads an int/float property that happens to read "1" or "0".
+    prop_cols = [
+        i for i, c in enumerate(result.columns or []) if str(c).strip('"').lower() in prop_names
+    ]
+    if not (cols or expr_cols or prop_cols):
+        return
+    rows = []
+    for row in result.rows:
+        row = list(row)
+        for i in cols:
+            if i < len(row):
+                row[i] = parse_prop_text(row[i])
+        for i in expr_cols:
+            if i < len(row):
+                row[i] = _bool_expr_value(row[i])
+        for i in prop_cols:
+            if i < len(row):
+                row[i] = parse_prop_text(row[i])
+        rows.append(row)
+    result.rows = rows
+
+
+def _decode_rel_prop_text_columns(result, sql_query) -> None:
+    """Promote relationship-qualifier property text (SQLQuery.rel_prop_text_columns)
+    to int / float / bool, same as a node's bare property already arrives typed.
+    See iris_vector_graph.prop_values.parse_rel_prop_text."""
+    cols = getattr(sql_query, "rel_prop_text_columns", None) or []
+    if not cols or not getattr(result, "rows", None):
+        return
+    if len(result.columns or []) != getattr(sql_query, "return_arity", 0):
+        return
+    rows = []
+    for row in result.rows:
+        row = list(row)
+        for i in cols:
+            if i < len(row):
+                row[i] = parse_rel_prop_text(row[i])
+        rows.append(row)
+    result.rows = rows
+
+
+def _int_expr_value(v):
+    """A value from a statically INTEGER-valued column (SQLQuery.int_expr_columns):
+    float / Decimal becomes int. IRIS's FLOOR()/MOD() come back as DOUBLE or
+    Decimal even for a Cypher expression that is statically an integer, and
+    DOUBLE arithmetic on a value that is mathematically whole can leave a tiny
+    floating-point residue (e.g. -7.0 or -1.11e-15 for an expression that is
+    exactly -7 or 0); round() absorbs that residue. null and bool pass through.
+
+    A number's IRIS text becomes the int too (4.6.0 R273), as _float_expr_value reads one: intersystems-irispython
+    5.4.1 reads an untyped expression column as text (`WITH 3 AS x RETURN x * 4` answered '12', `x / 2` '-3')."""
+    if v is None or isinstance(v, bool) or isinstance(v, int):
+        return v
+    if isinstance(v, str) and _IRIS_NUMBER_TEXT.fullmatch(v):
+        from decimal import Decimal
+
+        v = Decimal(v)
+    if isinstance(v, float) or type(v).__name__ == "Decimal":
+        try:
+            return int(round(v))
+        except (ValueError, OverflowError, TypeError):
+            return v
+    return v
+
+
+def _float_expr_value(v):
+    """A value from a statically FLOAT-valued column (SQLQuery.float_expr_columns):
+    int / Decimal becomes float (e.g. avg(), percentileCont/Disc() can come back
+    as an IRIS integer when the values happen to be whole numbers). null and
+    bool pass through.
+
+    A number's IRIS text becomes the float too (4.6.0 R248): percentileDisc() answers through a %String procedure,
+    which intersystems-irispython 5.4.1 reads as text ('10', '.5') where 5.4.0 read the number. The column's type
+    is the query's, so only the spelling is read here; other text passes through."""
+    if v is None or isinstance(v, bool) or isinstance(v, float):
+        return v
+    if isinstance(v, int) or type(v).__name__ == "Decimal":
+        try:
+            return float(v)
+        except (ValueError, OverflowError, TypeError):
+            return v
+    if isinstance(v, str) and _IRIS_NUMBER_TEXT.fullmatch(v):
+        return float(v)
+    return v
+
+
+#: A canonical IRIS number's text (`10`, `30.5`, `.5`, `-.5`, `1E-5`), as a %String result spells one.
+_IRIS_NUMBER_TEXT = re.compile(r"-?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
+
+
+_JSON_BARE_INT_RE = re.compile(r"(?<![\d.eE+-])-?\d+(?![\d.eE])")
+
+
+def _float_list_expr_value(v):
+    """A value from a Float-valued list comprehension
+    (SQLQuery.float_list_expr_columns): IRIS's JSON_ARRAYAGG serializes a
+    whole-number DOUBLE without a decimal point (1.0 -> "1"), so a
+    JSON-decoded element loses its Cypher FLOAT type (Set1 [5]:
+    `[i IN n.numbers | i / 2.0]` -> "[0.5,1,1.5]" instead of "[0.5,1.0,1.5]").
+    Appends .0 to every bare-integer element in the JSON array text. Anything
+    that isn't a `[...]`-shaped string (null, already decoded, ...) passes
+    through unchanged."""
+    if not isinstance(v, str) or not (v.startswith("[") and v.endswith("]")):
+        return v
+    return _JSON_BARE_INT_RE.sub(lambda m: m.group(0) + ".0", v)
+
+
+_BOOL_LIST_TEXT = re.compile(r"\[(?:[01](?:,[01])*)?\]")
+
+
+def _bool_list_expr_value(v):
+    """A value from a collect() of a boolean expression (SQLQuery.bool_list_expr_columns, 4.7.0 row 21): the SQL lists
+    the expression's 1 / 0 (JSON_ARRAYAGG, nulls skipped), which a Cypher list of booleans answers as true / false.
+    Only JSON text that is exactly a list of 1s and 0s, or a list of those ints, is read; anything else passes."""
+    if isinstance(v, str) and _BOOL_LIST_TEXT.fullmatch(v):
+        return v.replace("1", "true").replace("0", "false")
+    if isinstance(v, list) and all(type(x) is int and x in (0, 1) for x in v):
+        return [x == 1 for x in v]
+    return v
+
+
+def _sum_expr_value(v):
+    """A value from a sum() of unknown argument type (SQLQuery.sum_expr_columns):
+    whole -> INTEGER (the 5.2.1 driver's answer; 5.4 returns every SUM as a float)."""
+    if isinstance(v, float) and v.is_integer() and abs(v) < 2**63:
+        return int(v)
+    return v
+
+
+def _decode_numeric_expr_columns(result, sql_query) -> None:
+    """Cast driver values in columns statically known to be Cypher INTEGER /
+    FLOAT (SQLQuery.int_expr_columns / float_expr_columns) to the matching
+    Python type. See _numeric_static_type in the translator. Columns of
+    unknown numeric type (a property of unknown type) are left untouched."""
+    int_names = {
+        n.strip('"').lower() for n in getattr(sql_query, "int_expr_columns", None) or []
+    }
+    float_names = {
+        n.strip('"').lower() for n in getattr(sql_query, "float_expr_columns", None) or []
+    }
+    float_list_names = {
+        n.strip('"').lower() for n in getattr(sql_query, "float_list_expr_columns", None) or []
+    }
+    bool_list_names = {
+        n.strip('"').lower() for n in getattr(sql_query, "bool_list_expr_columns", None) or []
+    }
+    sum_names = {
+        n.strip('"').lower() for n in getattr(sql_query, "sum_expr_columns", None) or []
+    }
+    if not (int_names or float_names or float_list_names or bool_list_names or sum_names):
+        return
+    if not getattr(result, "rows", None):
+        return
+    cols = result.columns or []
+    int_cols = [i for i, c in enumerate(cols) if str(c).strip('"').lower() in int_names]
+    float_cols = [i for i, c in enumerate(cols) if str(c).strip('"').lower() in float_names]
+    float_list_cols = [
+        i for i, c in enumerate(cols) if str(c).strip('"').lower() in float_list_names
+    ]
+    bool_list_cols = [i for i, c in enumerate(cols) if str(c).strip('"').lower() in bool_list_names]
+    sum_cols = [i for i, c in enumerate(cols) if str(c).strip('"').lower() in sum_names]
+    if not (int_cols or float_cols or float_list_cols or bool_list_cols or sum_cols):
+        return
+    rows = []
+    for row in result.rows:
+        row = list(row)
+        for i in int_cols:
+            if i < len(row):
+                row[i] = _int_expr_value(row[i])
+        for i in sum_cols:
+            if i < len(row):
+                row[i] = _sum_expr_value(row[i])
+        for i in float_cols:
+            if i < len(row):
+                row[i] = _float_expr_value(row[i])
+        for i in float_list_cols:
+            if i < len(row):
+                row[i] = _float_list_expr_value(row[i])
+        for i in bool_list_cols:
+            if i < len(row):
+                row[i] = _bool_list_expr_value(row[i])
+        rows.append(row)
+    result.rows = rows
+
+
+_INT_TEXT = re.compile(r"-?(?:0|[1-9]\d*)")
+_FLOAT_TEXT = re.compile(r"-?(?:0|[1-9]\d*)\.\d+(?:[eE][-+]?\d+)?")
+
+
+def _mixed_scalar_value(v):
+    """A row value from a column holding a Cypher-heterogeneous mix of types
+    (SQLQuery.mixed_expr_columns): an UNWIND/subscript/WITH alias of a list
+    mixing graph values with other values, or max()/min() over one. Such a
+    column's raw text spells its value the way `_mixed_graph_list_sql` /
+    `CY_EXP_ORDKEY` (translator.py) encode it -- 'true'/'false' for a
+    boolean, 'NaN' for a float division-by-zero, a bare numeric literal's
+    own text for a number -- because the column itself can hold any Cypher
+    type row to row and IRIS has no type tag to carry alongside a VARCHAR
+    value.
+
+    Node / relationship / path JSON, a plain JSON list/map, a real string,
+    and null already decode correctly downstream (the live TCK matcher,
+    `tests/tck/capture.py`'s `tag_maybe_json`) and are left untouched here.
+    """
+    if not isinstance(v, str):
+        return v
+    if v == "true":
+        return True
+    if v == "false":
+        return False
+    if v == "NaN":
+        return float("nan")
+    if _INT_TEXT.fullmatch(v):
+        return int(v)
+    if _FLOAT_TEXT.fullmatch(v):
+        return float(v)
+    return v
+
+
+def _decode_mixed_expr_columns(result, sql_query) -> None:
+    """Cast driver text in columns statically known to hold a Cypher-
+    heterogeneous scalar (SQLQuery.mixed_expr_columns) to each row's own
+    real Python type. See `_mixed_scalar_value`."""
+    names = {n.strip('"').lower() for n in getattr(sql_query, "mixed_expr_columns", None) or []}
+    if not names or not getattr(result, "rows", None):
+        return
+    cols = [i for i, c in enumerate(result.columns or []) if str(c).strip('"').lower() in names]
+    if not cols:
+        return
+    known = {k.strip('"').lower(): set(v) for k, v in (getattr(sql_query, "mixed_expr_strings", None) or {}).items()}
+    rows = []
+    for row in result.rows:
+        row = list(row)
+        for i in cols:
+            if i < len(row):
+                strings = known.get(str(result.columns[i]).strip('"').lower())
+                row[i] = _mixed_scalar_value(row[i]) if strings is None else _literal_mixed_value(row[i], strings)
+        rows.append(row)
+    result.rows = rows
+
+
+def _literal_mixed_value(v, strings):
+    """A mixed column's value when its values come from a literal list holding exactly `strings` (4.6.0 R311): one of
+    those is the string; other text spelling JSON is the list, map, node, relationship or path it spells (their JSON is
+    the column's text); the rest reads as `_mixed_scalar_value` reads it. An IRIS Decimal is the number its digits
+    spell: a fraction or an exponent a float, else an integer (5.4.0 answered 1.5 as Decimal('1.5'))."""
+    if isinstance(v, str):
+        if v in strings:
+            return v
+        if v[:1] in ("[", "{"):
+            try:
+                return json.loads(v)
+            except ValueError:
+                logger.warning("mixed column value spells no JSON: %.80r", v)
+                return v
+        return _mixed_scalar_value(v)
+    if type(v).__name__ == "Decimal":
+        return float(v) if v.as_tuple().exponent < 0 else int(v)
+    return v
+
+
+#: Procedures the translator also answers, so a handler answers them only when the query is the call alone.
+_TRANSLATED_PROCEDURES = frozenset({"ivg.vector.search", "ivg.shortestpath.weighted"})
+
+#: Of those, the ones whose handler may answer a RETURN of any of the yielded names, in any order: the engine projects
+#: its answer onto them (`_project_handler_answer`). `YIELD path, totalCost RETURN totalCost` answered both columns.
+_PROJECTED_PROCEDURES = frozenset({"ivg.shortestpath.weighted"})
+
+
+def _handler_may_answer(parsed) -> bool:
+    """Whether a system-procedure handler may answer this query by itself (4.6.0 R118).
+
+    A handler answers the CALL and nothing after it: `CALL ivg.vector.search(.., $vec, 2) YIELD node, score MATCH
+    (node)-[:R]->(m) RETURN m` answered `node, score`, the MATCH and RETURN dropped. For a procedure the translator also
+    knows, the handler answers only `CALL .. [YIELD ..]`, optionally with a RETURN of the yielded names in their order;
+    anything more is the translator's.
+    """
+    from iris_vector_graph.cypher import ast as _ast
+
+    name = parsed.procedure_call.procedure_name.lower()
+    if name in _TRANSLATED_PROCEDURES and parsed.procedure_call.yield_where is not None:
+        # `YIELD ... WHERE`: the translator's WITH filters the rows (4.7.0 row 33); another handler's rows go through
+        # cypher.row_where (_execute_parsed)
+        return False
+    if name not in _TRANSLATED_PROCEDURES and name not in GDS_ANSWERED:
+        return True
+    if (
+        parsed.query_parts
+        or parsed.union_queries
+        or parsed.order_by_clause is not None
+        or parsed.skip is not None
+        or parsed.limit is not None
+    ):
+        return False
+    rc = parsed.return_clause
+    if rc is None:
+        return True
+    yielded = list(getattr(parsed.procedure_call, "yield_items", None) or [])
+    names = []
+    for item in rc.items:
+        e = item.expression
+        if not isinstance(e, _ast.Variable) or (item.alias is not None and item.alias != e.name):
+            return False
+        names.append(e.name)
+    if rc.distinct:
+        return False
+    if name in _PROJECTED_PROCEDURES or name in GDS_ANSWERED:
+        # 4.6.0 R140: the same rule for `ivg.shortestPath.weighted`, whose later clauses were dropped as R118's were
+        return len(set(names)) == len(names) and set(names) <= set(yielded)
+    return names == yielded
+
+
+def _project_handler_answer(result, parsed):
+    """A handler's answer for `.. YIELD path, totalCost RETURN totalCost`: the RETURN's columns, in its order (R140).
+
+    With no RETURN, the YIELD's. Only for `_PROJECTED_PROCEDURES`, after `_handler_may_answer` agreed, so every RETURN
+    name is a yielded name. The handler names its columns by what it computes (`path`, `totalCost`); a name it does
+    not answer raises."""
+    rc = parsed.return_clause
+    name = parsed.procedure_call.procedure_name.lower()
+    if result is None or (name not in _PROJECTED_PROCEDURES and name not in GDS_ANSWERED):
+        return result
+    columns = list(result.columns or [])
+    if rc is not None:
+        names = [item.expression.name for item in rc.items]
+    else:
+        # a CALL ending in YIELD answers the yielded names
+        names = list(getattr(parsed.procedure_call, "yield_items", None) or []) or columns
+    if names == columns:
+        return result
+    missing = [n for n in names if n not in columns]
+    if missing:
+        raise ValueError(f"{parsed.procedure_call.procedure_name} answers {columns}, not {missing}")
+    at = [columns.index(n) for n in names]
+    result.columns = names
+    result.rows = [[row[i] for i in at] for row in (result.rows or [])]
+    return result
+
+
+def _project_onto_names(result, proc, names):
+    """A handler's answer as the RETURN's names, each the column its YIELD item reads (`YIELD label AS l RETURN l`),
+    in the RETURN's order (4.7.0 row 33: `YIELD name, edition RETURN edition` answered every column). A name whose
+    column the handler does not answer raises, unless there are no rows to read."""
+    columns = list(result.columns or [])
+    if names == columns:
+        return result
+    source = yield_names(proc)
+    wanted = [source.get(n, n) for n in names]
+    missing = [c for c in wanted if c not in columns]
+    if missing and result.rows:
+        raise ValueError(f"{proc.procedure_name} answers {columns}, not {missing}")
+    at = [columns.index(c) for c in wanted] if not missing else []
+    result.columns = list(names)
+    result.rows = [[row[i] for i in at] for row in (result.rows or [])]
+    return result
+
+
+def _apply_handler_tail(result, parsed, parameters):
+    """A handler's rows cut by the query's ORDER BY, SKIP and LIMIT (4.6.0 R263).
+
+    `CALL db.labels() YIELD label RETURN label LIMIT 1` answered every label: a handler answers the CALL, and the
+    RETURN's tail was dropped. The procedures the translator also answers never get here with a tail
+    (`_handler_may_answer`). An ORDER BY sorts by returned columns, nulls last, as openCypher's ascending order puts
+    them; one over anything else raises rather than answer the rows unsorted."""
+    rows = getattr(result, "rows", None)
+    if rows is None or (parsed.order_by_clause is None and parsed.skip is None and parsed.limit is None):
+        return result
+    from types import SimpleNamespace
+
+    from iris_vector_graph.cypher import ast as _ast
+    from iris_vector_graph.cypher.translator import _resolve_pagination_value
+
+    rows = list(rows)
+    if parsed.order_by_clause is not None:
+        columns = list(result.columns or [])
+        name = parsed.procedure_call.procedure_name
+        for item in reversed(parsed.order_by_clause.items):
+            e = item.expression
+            if not isinstance(e, _ast.Variable) or e.name not in columns:
+                raise ValueError(f"{name}: ORDER BY reads a returned column by name, not {e!r}")
+            i = columns.index(e.name)
+            present = [r for r in rows if r[i] is not None]
+            try:
+                present.sort(key=lambda r: r[i], reverse=not item.ascending)
+            except TypeError as exc:
+                raise ValueError(f"{name}: ORDER BY {e.name} over values of different types: {exc}") from exc
+            nulls = [r for r in rows if r[i] is None]
+            rows = present + nulls if item.ascending else nulls + present
+    ctx = SimpleNamespace(input_params=dict(parameters or {}))
+    skip = _resolve_pagination_value(parsed.skip, ctx, "SKIP") or 0
+    limit = _resolve_pagination_value(parsed.limit, ctx, "LIMIT")
+    result.rows = rows[skip:] if limit is None else rows[skip:skip + limit]
+    return result
+
+
+def _numeric_value(v: Any) -> Any:
+    """A row value read typed (a node property RETURN, 4.6.0 R218), for binding into a CREATE: a Decimal as the int or
+    float it is, anything else as it is (a string stays a string, 4.6.0 R286)."""
+    from decimal import Decimal
+
+    if isinstance(v, Decimal):
+        return int(v) if v == v.to_integral_value() else float(v)
+    return v
+
+
+def _prefix_value(v: Any) -> Any:
+    """A row value read back as text, typed for binding into a MERGE.
+
+    Properties are stored as text, so `foo.x` reads back '0'; `y + 1` must add,
+    not concatenate. Decimal and other numeric driver types become int/float.
+    """
+    from decimal import Decimal
+
+    if isinstance(v, Decimal):
+        return int(v) if v == v.to_integral_value() else float(v)
+    if isinstance(v, str):
+        if _INT_TEXT.fullmatch(v):
+            return int(v)
+        if _FLOAT_TEXT.fullmatch(v):
+            return float(v)
+        return parse_prop_text(v)
+    return v
+
+
+def _decode_map_text_columns(result, sql_query) -> None:
+    """Re-type driver values in columns statically known to be a static map
+    field access (SQLQuery.map_text_columns — see _is_map_access_valued in
+    the translator): IVG's JSON_VALUE always returns VARCHAR text, whatever
+    the underlying JSON value's type, so a number or boolean embedded in a
+    map (Map1, Return4 [11], With4 [6]/[7]) loses its Cypher type on the way
+    out. Reuses `_prefix_value`'s text-typing rule (numeric text -> int/float,
+    prop_values.py's boolean spellings -> bool, else unchanged) — the same
+    rule CY_PROPS_MAP applies going in."""
+    names = {n.strip('"').lower() for n in getattr(sql_query, "map_text_columns", None) or []}
+    if not names or not getattr(result, "rows", None):
+        return
+    cols = [i for i, c in enumerate(result.columns or []) if str(c).strip('"').lower() in names]
+    if not cols:
+        return
+    rows = []
+    for row in result.rows:
+        row = list(row)
+        for i in cols:
+            if i < len(row):
+                row[i] = _prefix_value(row[i])
+        rows.append(row)
+    result.rows = rows
+
+
+def _return_item_name(item) -> str:
+    from iris_vector_graph.cypher import ast as _ast
+
+    e = item.expression
+    if isinstance(e, _ast.Variable):
+        return e.name
+    if isinstance(e, _ast.PropertyReference):
+        return f"{e.variable}.{e.property_name}"
+    return getattr(item, "source_text", None) or str(e)
+
+
+def _optional_null_columns(sql_query, fallback) -> list:
+    """Columns of the single null row an OPTIONAL var-length match with no target
+    answers: the translated SELECT's (Cypher-named), else `fallback`."""
+    aliases = [
+        a for a in getattr(sql_query, "select_aliases", None) or []
+        if not _INTERNAL_COLUMN.fullmatch(a)
+    ]
+    if not aliases:
+        return list(fallback)
+    names = getattr(sql_query, "column_name_map", None) or {}
+    return [names.get(a, a) for a in aliases]
+
+
+def _fill_empty_columns(result, parsed) -> None:
+    """An empty result still carries the RETURN clause's column names; several routes
+    (var-length BFS, DML with LIMIT 0, subqueries) return columns=[] when no row comes back."""
+    from iris_vector_graph.cypher import ast as _ast
+
+    if result is None or getattr(result, "error", None) or result.columns or result.rows:
+        return
+    ret = getattr(parsed, "return_clause", None)
+    items = list(getattr(ret, "items", None) or [])
+    if not items or any(
+        isinstance(it.expression, _ast.Literal) and it.expression.value == "*" for it in items
+    ):
+        return
+    result.columns = [it.alias or _return_item_name(it) for it in items]
+
+
+#: A clause's FROM in generated SQL starts its line; a nested subquery's does not (the R310 retry's %NOPARALLEL).
+_CLAUSE_FROM = re.compile(r"(?m)^FROM ")
+
+
+def _is_long_list_temp_error(error) -> bool:
+    """IRIS 2026.3's failure for a grouping read over an UNWIND of a list longer than 511 characters: -400 <SUBSCRIPT>
+    in a ^||%t temporary keyed by the list's text (4.6.0 R310). With the key past 32767 bytes the message names no
+    temporary, only the query's class and `Encoded subscript ... > 32767 bytes` (4.7.0 gate). Exactly those, so no
+    other error retries."""
+    if not (isinstance(error, str) and "<-400>" in error and "<SUBSCRIPT>" in error):
+        return False
+    return "^||%t(" in error or ("^%sqlcq." in error and "Encoded subscript" in error and "> 32767 bytes" in error)
+
+
+def _raise_if_error(result, raise_on_error) -> None:
+    """execute_cypher(raise_on_error=True): surface IVGResult.error as an exception."""
+    error = getattr(result, "error", None) if raise_on_error else None
+    if error:
+        from iris_vector_graph.errors import PowerIterationFailedConvergence
+
+        # CALL ivg.eigenvector that did not converge raises what eigenvector_centrality raises
+        PowerIterationFailedConvergence.raise_if_in(error)
+        raise RuntimeError(error)
+
+
+def _raise_if_step_failed(result, wrote: bool = False) -> None:
+    """A step of a write that runs in steps (a per-row CREATE or MERGE, a CREATE pipeline) answered `error`: raise.
+
+    The store answers a failed read with `IVGResult.error`, not an exception. These executors read the rows of a
+    prefix and ran the writes for each, so a prefix that failed (SQLCODE -23, a parameter the driver refuses) "had"
+    no rows: nothing was written, nothing raised, and `error` was None (4.6.0 R296). `wrote`: an earlier step has
+    written (and committed) its rows, which this failure does not take back.
+    """
+    from iris_vector_graph.errors import GraphWriteError
+
+    error = getattr(result, "error", None)
+    if error:
+        left = "the rows of the steps before it are written" if wrote else ""
+        raise GraphWriteError("execute_cypher", RuntimeError(error), left)
+
+
+_USE_GRAPH_PREFIX = re.compile(
+    r"""\s*USE\s+(?:GRAPH\s+)?(?:'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|\w+)\s+""", re.IGNORECASE
+)
+
+
+def _scope_statements(parts: List[str]) -> List[str]:
+    """Each statement after the first, under the first one's `USE GRAPH` unless it names its own graph."""
+    use = _USE_GRAPH_PREFIX.match(parts[0])
+    if not use:
+        return parts
+    prefix = use.group(0).lstrip()
+    return [parts[0]] + [p if re.match(r"USE\b", p, re.IGNORECASE) else prefix + p for p in parts[1:]]
+
+
+# (source, target) pairs a labelled shortestPath may search.
+_SHORTEST_PATH_MAX_PAIRS = 1000
+
+# Rows a count-only CREATE pipeline (cypher.count_create) may fan out to.
+_COUNT_CREATE_MAX_ROWS = 100_000
+
+
+class QueryMixin:
+    def execute_aql(
+        self,
+        aql: str,
+        bind_vars: Optional[Dict[str, Any]] = None,
+    ) -> "IVGResult":
+        """Run an ArangoDB AQL query by translating it to Cypher and running that.
+
+        ``bind_vars`` are AQL's ``@name`` bindings. The query goes through ``translate_aql``
+        (``AQLParseError`` or ``AQLTranslationError`` when it cannot) and then
+        ``execute_cypher`` with default options, so a mutation is not refused and its result
+        is an ``IVGResult`` like any Cypher query's.
+        """
+        from iris_vector_graph.cypher.aql import translate_aql
+        cypher_query, params = translate_aql(aql, bind_vars or {})
+        return self.execute_cypher(cypher_query, parameters=params)
+    @warn_empty_cypher
+    def execute_cypher(
+        self, cypher_query: str, parameters: Dict[str, Any] = None,
+        read_only: bool = False, procedures: Dict[str, Any] = None,
+        raise_on_error: bool = False,
+    ) -> "IVGResult":
+        """
+        Run a Cypher query and return its rows as an ``IVGResult``. A read the native executor
+        supports runs over ``^KG`` (on by default; the engine's ``native_cypher=False`` or
+        ``IVG_NATIVE_CYPHER=0`` turns it off); every other query is translated to IRIS SQL.
+        Writes (CREATE, MERGE, SET, DELETE) change the graph unless ``read_only=True``. A failed
+        read comes back with ``IVGResult.error`` set and no rows, unless ``raise_on_error=True``;
+        a write that IRIS or IVG refuses raises ``GraphWriteError`` whatever ``raise_on_error``
+        says, after rolling the statement back (USER_GUIDE, Errors).
+
+        Args:
+            cypher_query: Cypher query string
+            parameters: Optional query parameters
+            read_only: If True, rejects any mutation (CREATE/DELETE/SET/MERGE/REMOVE/FOREACH)
+                with ``PermissionError``, wherever it is written: a UNION branch, a
+                ``CALL { }`` body, any statement of a ``;``-separated query (refused
+                before the first statement runs), or beside ``approx_count_distinct``.
+                A query that does not parse is refused the same way. The rule is
+                :func:`iris_vector_graph.cypher.writes_cypher`, which the servers'
+                ``IVG_READ_ONLY`` applies too.
+            procedures: Optional dict of test procedures (for TCK harness): {name: {args, outputs, rows}}
+            raise_on_error: If True, a statement whose SQL failed (the store answers
+                with ``IVGResult.error`` set and no rows) raises ``RuntimeError``
+                instead of coming back as an empty result. Default False, because
+                callers such as the TCK harness read ``IVGResult.error`` themselves.
+                Checked on the main path, on each part of a chained query, on each
+                statement of a ``;``-separated query and on a row-bound MERGE; the
+                per-row statements of a count-only CREATE pipeline are not checked.
+
+        Returns:
+            ``IVGResult`` with ``columns``, ``rows``, ``metadata`` and ``error``.
+        """
+        CypherInput(cypher_query=cypher_query)
+        writes = writes_cypher(cypher_query)
+        if read_only and writes:
+            # Before every shortcut below, on the whole text: the rule the servers' IVG_READ_ONLY applies (R113).
+            raise PermissionError(
+                f"Read-only mode: mutation queries (CREATE/DELETE/SET/MERGE/REMOVE/FOREACH), and queries that do not "
+                f"parse, are not allowed. Query: {cypher_query[:100]}"
+            )
+        if writes and not getattr(self, "_cypher_write_txn", None):
+            return self._execute_cypher_write(cypher_query, parameters, procedures, raise_on_error)
+        import re as _re_ec
+        _APPROX_RE = _re_ec.compile(
+            r'\bapprox_count_distinct\s*\(',
+            _re_ec.IGNORECASE,
+        )
+        # every call below that runs Cypher again gets these, read_only above all
+        opts = {"read_only": read_only, "procedures": procedures, "raise_on_error": raise_on_error}
+        _approx_m = _APPROX_RE.search(cypher_query)
+        if _approx_m:
+            return self._execute_approx_count_distinct(cypher_query, parameters, _approx_m, **opts)
+
+        _fast = self._try_khop_fast_path(cypher_query, parameters)
+        if _fast is not None:
+            return _fast
+
+        stripped = cypher_query.strip().upper()
+
+        if "CALL DB.LABELS() YIELD" in stripped and "UNION" in stripped:
+            labels = self._try_system_procedure(
+                type("P", (), {"procedure_name": "db.labels"})()
+            ).rows
+            rels = self._try_system_procedure(
+                type("P", (), {"procedure_name": "db.relationshipTypes"})()
+            ).rows
+            cursor = self.conn.cursor()
+            cursor.execute(
+                f'SELECT DISTINCT TOP 1000 "key" FROM {self._ivg_schema}.rdf_props ORDER BY "key"'
+            )
+            prop_keys = [r[0] for r in cursor.fetchall()]
+            return IVGResult(                columns= ["result"],
+                rows= [
+                    [{"name": "labels", "data": [r[0] for r in labels]}],
+                    [{"name": "relationshipTypes", "data": [r[0] for r in rels]}],
+                    [{"name": "propertyKeys", "data": prop_keys}],
+                ]
+            )
+
+        if (
+            "RETURN DISTINCT" in stripped
+            and "UNION ALL" in stripped
+            and "ENTITY" in stripped
+        ):
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT TOP 25 node_id FROM {self._ivg_schema}.nodes")
+            node_rows = [["node", r[0]] for r in cursor.fetchall()]
+            cursor.execute(f"SELECT DISTINCT TOP 25 p FROM {self._ivg_schema}.rdf_edges")
+            rel_rows = [["relationship", r[0]] for r in cursor.fetchall()]
+            return IVGResult(columns=["entity", "id"], rows=node_rows + rel_rows)
+
+        if (
+            "MATCH ()" in stripped
+            and "COUNT(*)" in stripped
+            and "UNION ALL" in stripped
+        ):
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT COUNT(*) FROM {self._ivg_schema}.nodes")
+            node_count = cursor.fetchone()[0]
+            cursor.execute(f"SELECT COUNT(*) FROM {self._ivg_schema}.rdf_edges")
+            edge_count = cursor.fetchone()[0]
+            return IVGResult(                columns= ["result"],
+                rows= [
+                    [{"name": "nodes", "data": node_count}],
+                    [{"name": "relationships", "data": edge_count}],
+                ]
+            )
+
+        if ";" in cypher_query and "CALL " in cypher_query.upper():
+            parts = split_statements(cypher_query)
+            if len(parts) > 1:
+                # Each part runs with this call's options and USE GRAPH scope; a write in any part was refused at
+                # the top, before the first one runs. 4.5.1 ran the parts without read_only and dropped their exceptions,
+                # so `CALL db.labels(); CREATE ...` committed the CREATE under read_only=True.
+                parts = _scope_statements(parts)
+                all_rows = []
+                all_cols = None
+                for part in parts:
+                    sub = self.execute_cypher(part, parameters=parameters, **opts)
+                    if sub.error:
+                        # the first failing part is the answer, with no rows (4.6.0): the parts' error was never
+                        # read, so the other parts' rows came back as if it had answered nothing
+                        return IVGResult(columns=sub.columns or [], rows=[], error=sub.error)
+                    if all_cols is None:
+                        all_cols = sub.columns
+                    all_rows.extend(sub.rows)
+                return IVGResult(columns=all_cols or ["result"], rows=all_rows)
+
+        if stripped.startswith("EXPLAIN "):
+            return IVGResult(                columns= ["Plan"],
+                rows= [["No execution plan available (IRIS backend)"]]
+            )
+
+        if stripped.startswith("SHOW "):
+            return self._handle_show_command(stripped)
+
+        if (stripped.startswith("CREATE CONSTRAINT")
+                or stripped.startswith("DROP CONSTRAINT")
+                or stripped.startswith("CREATE INDEX")
+                or stripped.startswith("CREATE TEXT INDEX")
+                or stripped.startswith("CREATE RANGE INDEX")
+                or stripped.startswith("CREATE POINT INDEX")
+                or stripped.startswith("DROP INDEX")
+                or stripped.startswith("CREATE FULLTEXT")
+                or stripped.startswith("CREATE LOOKUP")):
+            return IVGResult(columns=[], rows=[], sql=cypher_query, params=[])
+
+        # the caller's query only, never a tree the write path builds from it (its read step was rewritten, and the
+        # statements around it then failed -23); before every route, so the native translation cache (keyed by
+        # repr(parsed)) keys the two reads apart (4.7.0 row 22)
+        parsed = rewrite_ambiguous_param_unwind(parse_query(cypher_query), parameters)
+
+        self._probe_if_idle()
+
+        if parsed.subsequent_queries:
+            result = None
+            current_params = dict(parameters) if parameters else {}
+            for part_query in [parsed] + parsed.subsequent_queries:
+                # a copy: `parsed` is parse_query's cached AST, and emptying it there dropped the chained parts from
+                # every later run of the same text, and hid their writes from writes_cypher (R113)
+                part_query = copy.copy(part_query)
+                part_query.subsequent_queries = []
+                part_query = rewrite_ambiguous_param_unwind(part_query, current_params)
+                result = self._execute_parsed(part_query, current_params, procedures)
+                _raise_if_error(result, raise_on_error)
+                if result and result.rows and result.columns:
+                    first_row = result["rows"][0] if result["rows"] else []
+                    for col, val in zip(result["columns"], first_row):
+                        if isinstance(val, (str, int, float, bool, type(None))):
+                            current_params[col] = val
+            return result
+
+        row_merge = plan_row_merge(parsed, parameters) or plan_row_create(parsed, parameters)
+        if row_merge is not None:
+            result = self._execute_row_merge(row_merge, parameters, procedures)
+            if result is not None:
+                _raise_if_error(result, raise_on_error)
+                return result
+        count_create = plan_count_create(parsed, parameters)
+        if count_create is not None:
+            return self._execute_count_create(count_create, parameters, procedures)
+        try:
+            result = self._execute_parsed(parsed, parameters, procedures)
+        except RuntimeError as exc:
+            # USER_GUIDE §3: a read that fails in IRIS comes back with result.error set. A route that calls a class
+            # method (shortestPath's Graph.KG.Traversal, refused <PROTECT> by a reading role) raised IRIS's error out
+            # of execute_cypher instead (4.6.0). Only IRIS's plain RuntimeError, only on a query that writes nothing:
+            # a write raises GraphWriteError whatever raise_on_error says, and a typed error keeps its type.
+            if raise_on_error or type(exc) is not RuntimeError or writes_cypher(cypher_query):
+                raise
+            result = IVGResult(columns=[], rows=[], error=str(exc))
+        _raise_if_error(result, raise_on_error)
+        _fill_empty_columns(result, parsed)
+        return result
+
+
+    def _execute_cypher_write(self, cypher_query, parameters, procedures, raise_on_error):
+        """A query that writes, as one transaction of IVG's (4.6.4, _write_txn): nested in the caller's when one is
+        open, so the caller's commit or rollback decides, and a failure takes back IVG's part alone. A write that runs
+        in steps (a per-row MERGE or CREATE) is one transaction too; its steps used to commit one by one."""
+        from iris_vector_graph._write_txn import write_txn
+
+        txn = write_txn(self.conn, self._ivg_schema)
+        self._cypher_write_txn = txn
+        try:
+            result = self.execute_cypher(
+                cypher_query, parameters=parameters, procedures=procedures, raise_on_error=raise_on_error
+            )
+        except BaseException:
+            txn.rollback()
+            raise
+        finally:
+            self._cypher_write_txn = None
+        if getattr(result, "error", None):
+            txn.rollback()  # a write that answers its error has written nothing of its own
+        else:
+            txn.commit()
+        return result
+
+    def _execute_count_create(self, steps, parameters, procedures=None):
+        """Run a MATCH/CREATE pipeline whose rows carry no values (see
+        cypher.count_create): each MATCH multiplies the row count, each CREATE
+        runs once per row."""
+        rows = 1
+        wrote = False
+        for kind, q in steps:
+            if kind == "count":
+                res = self._execute_parsed(q, parameters, procedures)
+                _raise_if_step_failed(res, wrote)
+                n = res.rows[0][0] if res.rows and res.rows[0] else 0
+                rows *= int(n or 0)
+                if rows > _COUNT_CREATE_MAX_ROWS:
+                    raise ValueError(
+                        f"CREATE would run for {rows} rows "
+                        f"(limit {_COUNT_CREATE_MAX_ROWS})"
+                    )
+            else:
+                for _ in range(rows):
+                    _raise_if_step_failed(self._execute_parsed(q, parameters, procedures), wrote)
+                    wrote = True
+        return IVGResult(columns=[], rows=[])
+
+    def _execute_row_merge(self, plan, parameters, procedures=None):
+        """Run the prefix, then the MERGE suffix once per row (see cypher.merge_rows).
+
+        Returns None, having written nothing, when a row cannot be bound; the prefix
+        of a row-bound plan is read-only, and a count-only plan binds no values.
+        A prefix or a row's statements that fail raise GraphWriteError (4.6.0 R296).
+        """
+        prefix = self._execute_parsed(plan.prefix, parameters, procedures)
+        _raise_if_step_failed(prefix)
+        cols = list(prefix.columns or [])
+        if plan.row_vars:
+            rows = [dict(zip(cols, r)) for r in (prefix.rows or [])]
+            rows = [
+                {
+                    v: _numeric_value(row.get(v)) if v in plan.typed_cols else _prefix_value(row.get(v))
+                    for v in plan.row_vars
+                }
+                for row in rows
+            ]
+        else:
+            n = prefix.rows[0][0] if prefix.rows and prefix.rows[0] else 0
+            rows = [{} for _ in range(int(n or 0))]
+        bound = [plan.bind(row) for row in rows]
+        if any(q is None for q in bound):
+            return None
+        out_cols, out_rows, last = None, [], None
+        for q in bound:
+            wrote = last is not None
+            last = self._execute_parsed(q, parameters, procedures)
+            _raise_if_step_failed(last, wrote)
+            if out_cols is None:
+                out_cols = last.columns
+            out_rows.extend(last.rows or [])
+        if last is None:
+            items = plan.return_clause.items if plan.return_clause else []
+            out_cols = [it.alias or _return_item_name(it) for it in items]
+            return IVGResult(columns=out_cols, rows=[])
+        last.columns = out_cols
+        last.rows = out_rows
+        return last
+    def _execute_parsed(self, parsed, parameters, procedures=None):
+        if parsed.procedure_call is not None:
+            if _handler_may_answer(parsed):
+                # `USE GRAPH` and the query's parameters live on the parsed query, not on
+                # the procedure call. This interception runs *before* the translator that
+                # spec 227 scoped, so dropping them here answered a scoped CALL with an
+                # unscoped search and a `$param` vector with an empty one.
+                result = self._try_system_procedure(
+                    parsed.procedure_call,
+                    parameters=parameters,
+                    graph=getattr(parsed, "graph_context", None),
+                )
+                if result is not None:
+                    # the clauses after the YIELD the handler's rows take, or a raise naming the one they cannot: a
+                    # WITH or MATCH there was dropped (4.7.0 row 33); a WHERE filters the rows before the RETURN
+                    # projects them
+                    conditions, names = handler_tail(parsed)
+                    result = where_rows(result, parsed.procedure_call, parameters, conditions)
+                    result = _project_handler_answer(result, parsed)
+                    if names is not None:
+                        result = _project_onto_names(result, parsed.procedure_call, names)
+                    return _apply_handler_tail(result, parsed, parameters)
+            elif parsed.procedure_call.procedure_name.lower() in GDS_ANSWERED:
+                # nothing else answers a gds.* call: the translator would answer it with no rows (R174)
+                name = parsed.procedure_call.procedure_name
+                raise ValueError(
+                    f"{name} answers `CALL {name}(...) YIELD {GDS_YIELDS[name.lower()]}`, optionally followed by a "
+                    "RETURN of the yielded names, and nothing more: no ORDER BY, SKIP, LIMIT or later clause. Sort, "
+                    "cut or join the rows in Python, or call the engine's method (engine.kg_PAGERANK(), "
+                    "engine.betweenness_centrality()) or ivg.shortestPath.weighted."
+                )
+        shadow = self._cypher_shadow()
+        key = route = None
+        if not shadow and getattr(self, "native_route_ms", 0) > 0:
+            key = self._native_key(parsed, parameters)
+            route = self.__dict__.setdefault("_native_routes", {}).get(key)
+            if route is not None and route.next_path() == "sql":
+                return self._routed_sql(route, parsed, parameters, procedures)
+        started = time.perf_counter()
+        native = self._try_native(parsed, parameters, key)
+        if native is None:
+            return self._execute_parsed_sql(parsed, parameters, procedures)
+        plan, result = native
+        if shadow:
+            sql = self._execute_parsed_sql(parsed, parameters, procedures)
+            self._shadow_compare(parsed, parameters, plan, result, sql)
+        elif key is not None:
+            if route is None:
+                route = _bounded_put(self._native_routes, key, NativeRoute(self.native_route_ms), self._NATIVE_TRANSLATIONS)
+            route.record("native", (time.perf_counter() - started) * 1000)
+        return result
+
+    def _routed_sql(self, route, parsed, parameters, procedures):
+        """The SQL path's answer to a shape its route sends there, timed for the route (its trials and its drift)."""
+        started = time.perf_counter()
+        try:
+            result = self._execute_parsed_sql(parsed, parameters, procedures)
+            failed = bool(getattr(result, "error", None))
+        except Exception as ex:
+            logger.debug("routed SQL run failed, native keeps the shape: %s", ex)
+            failed = True
+        if failed:
+            # SQL failed where native answers this shape: native keeps it, and answers this call
+            route.sql_failed()
+            native = self._try_native(parsed, parameters)
+            if native is None:
+                return self._execute_parsed_sql(parsed, parameters, procedures)
+            return native[1]
+        before = route.choice
+        route.record("sql", (time.perf_counter() - started) * 1000)
+        if route.choice == "sql" and before != "sql":
+            self._native_routed_sql = getattr(self, "_native_routed_sql", 0) + 1
+        return result
+
+    # --- spec 253: read-only Cypher run natively (cypher.native_plan, Graph.KG.Cypher.Exec) ---
+
+    _NATIVE_EXEC_CLASS = "Graph.KG.Cypher.Exec"
+    _NATIVE_PAGE_SIZE = 1000
+    _NATIVE_TRANSLATIONS = 256
+
+    def _cypher_shadow(self) -> bool:
+        """Shadow mode (FR-006): every native answer is checked against the SQL path's."""
+        if getattr(self, "cypher_shadow", False):
+            return True
+        return os.environ.get("IVG_CYPHER_SHADOW") == "1"
+
+    def _try_native(self, parsed, parameters, key=None) -> Optional[Tuple[dict, IVGResult]]:
+        """(plan, native answer), or None for the SQL path (FR-007).
+
+        None means no plan, a closed gate, or an executor error; each distinct error reason is
+        warned about once per engine.
+        """
+        from iris_vector_graph.cypher import native_plan
+
+        parameters = parameters or {}
+        plan = native_plan.plan_query(parsed, parameters)
+        if plan is None or native_plan.native_gate(self) is not None or self._names_mapped_label(parsed):
+            return None
+        sql_query = None
+        if "columns" not in plan:
+            # A planned query is translated anyway, not run: its SELECT aliases and decoders are the SQL path's, so
+            # the native answer is named and typed by the same code (FR-002).
+            sql_query = self._native_translation(parsed, parameters, key)
+            columns = [a for a in sql_query.select_aliases if not a.startswith("__")]
+            # A variable-length read the SQL path hands to its BFS routes (an id-bound start) is planned all the same:
+            # the routes answer from BFS rather than the statement, and the statement still names the columns. The
+            # translator sets var_length_paths for other shapes too (shortest paths, OPTIONAL, path functions, a
+            # relationship variable on the hop); the planner declines each of those, which is why no check is here.
+            if sql_query.is_transactional or len(columns) != plan["width"]:
+                return None
+            plan = dict(plan, columns=columns)
+        plan = dict(plan, parallel_min=getattr(self, "native_parallel_min", -1), v=native_plan.PLAN_VERSION)
+        try:
+            result = self._run_native_plan(plan, parameters)
+        except Exception as ex:
+            reason = f"{type(ex).__name__}: {str(ex)[:160]}"
+            warned = self.__dict__.setdefault("_native_warned", set())
+            if reason not in warned:
+                warned.add(reason)
+                logger.warning("native Cypher fell back to SQL: %s", reason)
+            return None
+        if sql_query is not None:
+            # the translation is shared by every answer to this query (_native_translation): each gets its own copies
+            meta = sql_query.query_metadata
+            result.metadata = meta.model_copy(deep=True) if meta is not None else None
+            _finish_sql_result(result, sql_query)
+            result.bolt_column_types = list(result.bolt_column_types)
+        self._native_answers = getattr(self, "_native_answers", 0) + 1
+        return plan, result
+
+    def _names_mapped_label(self, parsed) -> bool:
+        """A label mapped to a SQL table (map_sql_table) is in the query: its rows are in that table, which the native
+        executor does not read, so its answer would be no rows."""
+        if self._table_mapping_cache is None:
+            self._load_table_mapping_cache()
+        mapped = self._table_mapping_cache
+        if not mapped:
+            return False
+        from iris_vector_graph.cypher import ast
+
+        def walk(x):
+            if isinstance(x, ast.NodePattern):
+                return any(label in mapped for label in x.labels or ())
+            if isinstance(x, (list, tuple)):
+                return any(walk(i) for i in x)
+            if isinstance(x, dict):
+                return any(walk(v) for v in x.values())
+            slots = getattr(type(x), "__slots__", None)
+            if slots and type(x).__module__ == ast.__name__:
+                return any(walk(getattr(x, s, None)) for s in slots)
+            return False
+
+        return walk(parsed)
+
+    def _native_translation(self, parsed, parameters, key=None):
+        """The statement's translation, once per query and parameter types: the native path reads only its names and
+        decoders, which follow the statement's shape, never a parameter's value. The parsed query's repr is the key
+        (it holds the literals, not the parameters' values; about 10 us against a translation's 0.3 ms or more)."""
+        cache = self.__dict__.setdefault("_native_translations", {})
+        key = key or self._native_key(parsed, parameters)
+        sql_query = cache.get(key)
+        if sql_query is None:
+            sql_query = _bounded_put(cache, key, translate_to_sql(parsed, parameters, engine=self), self._NATIVE_TRANSLATIONS)
+        return sql_query
+
+    @staticmethod
+    def _native_key(parsed, parameters):
+        """A query shape: the parsed query and its parameters' types."""
+        return (repr(parsed), tuple(sorted((k, type(v).__name__) for k, v in (parameters or {}).items())))
+
+    def _run_native_plan(self, plan, parameters) -> IVGResult:
+        """Run a plan in Graph.KG.Cypher.Exec and read its rows in pages (FR-015)."""
+        native = self._iris_obj()
+
+        def call_json(method, *args):
+            return json.loads(str(native.classMethodValue(self._NATIVE_EXEC_CLASS, method, *args)))
+
+        head = call_json("Run", json.dumps(plan), json.dumps(parameters, default=str))
+        if head.get("workers"):
+            self._native_parallel_runs = getattr(self, "_native_parallel_runs", 0) + 1
+        if "rows" in head:  # one page: answered and freed inside Run, no further round trip
+            return IVGResult(columns=list(plan["columns"]), rows=head["rows"])
+        tag, total = head["tag"], int(head["count"])
+        rows: list = []
+        try:
+            while len(rows) < total:
+                page = call_json("ReadPage", tag, len(rows) + 1, self._NATIVE_PAGE_SIZE)
+                if not page:
+                    break
+                rows.extend(page)
+        finally:
+            native.classMethodVoid(self._NATIVE_EXEC_CLASS, "Drop", tag)
+        return IVGResult(columns=list(plan["columns"]), rows=rows)
+
+    def _shadow_compare(self, parsed, parameters, plan, native, sql) -> None:
+        """Raise NativeMismatch when the SQL path failed or answered other than native (FR-006)."""
+        from iris_vector_graph.cypher.native_shadow import NativeMismatch, compare
+
+        if getattr(sql, "error", None):
+            raise NativeMismatch(f"the SQL path failed where native answered: {sql.error}")
+        ordered, limited = bool(plan.get("ordered")), bool(plan.get("limited"))
+        unlimited = None
+        if limited and not ordered:
+            # either path may return any `limit` of the matches: native's are held to the full answer. param_twin (the
+            # clash-renamed tree) holds the LIMIT too, so it goes as well
+            full = self._execute_parsed_sql(dataclasses.replace(parsed, limit=None, param_twin=None), parameters)
+            unlimited = [list(r) for r in full.rows]
+        compare(
+            str(getattr(parsed, "source_text", "") or plan),
+            parameters or {},
+            list(sql.columns),
+            [list(r) for r in sql.rows],
+            list(native.columns),
+            [list(r) for r in native.rows],
+            ordered=ordered,
+            limited=limited,
+            sql_unlimited_rows=unlimited,
+        )
+
+    def _unwind_by_index_retry(self, parsed, parameters, procedures, result, sql_query):
+        """Run a read that failed _is_long_list_temp_error once more with its UNWINDs read by position (4.6.0 R310).
+
+        Once: when the rewrite also fails, the first error is answered with a note. When the translation has no UNWIND
+        to rewrite, the first result is answered as it was. The rewrite reads a list once per element (quadratic in its
+        length), so it logs at INFO the first time each statement shape takes it.
+        """
+        used: list = []
+        with unwind_by_index(used):
+            retry = translate_to_sql(parsed, parameters, engine=self, procedures=procedures)
+        if not used or retry.is_transactional or retry.var_length_paths:
+            return result, sql_query
+        if parsed.return_clause is not None:
+            retry.return_items = list(parsed.return_clause.items)
+            retry.parsed_query = parsed
+        shape = retry.sql if isinstance(retry.sql, str) else "\n".join(retry.sql)
+        logged = self.__dict__.setdefault("_unwind_index_logged", set())
+        if shape not in logged:
+            logged.add(shape)
+            logger.info(
+                "Cypher UNWIND of a list over 511 characters under grouping failed on IRIS 2026.3 (<SUBSCRIPT>); "
+                "reading it by position instead, which costs time quadratic in the list's length (4.6.0 R310)"
+            )
+        # On a many-core server IRIS plans the position read in parallel, and that plan keys a temporary by the whole
+        # list and fails the same way (4.7.0 gate, 32 cores): each clause's FROM (a line's first word) runs serially.
+        serial = _CLAUSE_FROM.sub("FROM %NOPARALLEL ", retry.sql) if isinstance(retry.sql, str) else retry.sql
+        again = self._store.execute_sql(serial, retry.parameters[0] if retry.parameters else [])
+        if getattr(again, "error", None):
+            result.error = (
+                f"{result.error}\n(the 2026.3 long-list UNWIND fallback, which reads the list by position, also "
+                f"failed: {again.error})"
+            )
+            return result, sql_query
+        return again, retry
+
+    def _execute_parsed_sql(self, parsed, parameters, procedures=None):
+        sql_query = translate_to_sql(parsed, parameters, engine=self, procedures=procedures)
+        if parsed.return_clause is not None:
+            sql_query.return_items = list(parsed.return_clause.items)
+            sql_query.parsed_query = parsed
+        if sql_query.var_length_paths:
+            routed = self._route_var_length(sql_query, parameters)
+            # 4.6.0 R311: the BFS routes build their own rows; their list, map and path columns are answered as Python
+            # values, as the SQL route's are
+            _decode_json_value_columns(routed, sql_query)
+            _decode_graph_json_values(routed, sql_query)
+            return routed
+        metadata = sql_query.query_metadata
+        if sql_query.is_transactional:
+            _ledger_check(self, "cypher_dml")
+            result = self._store.execute_transaction(sql_query.sql, sql_query.parameters)
+            result.metadata = metadata
+            return _finish_sql_result(result, sql_query, bolt_types=False)
+        if self._store_capabilities.get("native_sql", True):
+            sql_str = sql_query.sql
+            p = sql_query.parameters[0] if sql_query.parameters else []
+            result = self._store.execute_sql(sql_str, p)
+            if _is_long_list_temp_error(getattr(result, "error", None)):
+                result, sql_query = self._unwind_by_index_retry(parsed, parameters, procedures, result, sql_query)
+            result.metadata = metadata
+            return _finish_sql_result(result, sql_query)
+        traversal = self._extract_traversal(parsed, parameters)
+        if traversal is not None:
+            return self._execute_traversal(traversal, sql_query, parsed, parameters)
+        label_filter = None
+        return_props = None
+        limit = 0
+        try:
+            if parsed.query_parts:
+                clause = parsed.query_parts[0].clauses[0]
+                if hasattr(clause, "patterns") and clause.patterns:
+                    node = clause.patterns[0].nodes[0] if clause.patterns[0].nodes else None
+                    if node and node.labels:
+                        label_filter = node.labels[0]
+            if parsed.return_clause:
+                return_props = [
+                    item.expression.property_name
+                    for item in parsed.return_clause.items
+                    if hasattr(item.expression, "property_name")
+                ]
+            if parsed.limit:
+                limit = int(parsed.limit)
+        except Exception:
+            pass
+        return self._store.query_nodes(
+            label_filter=label_filter,
+            property_filters=None,
+            return_properties=return_props,
+            limit=limit,
+        )
+    def _extract_traversal(self, parsed, parameters):
+        from iris_vector_graph.cypher.ast import Direction
+        try:
+            clause = parsed.query_parts[0].clauses[0]
+            if not (hasattr(clause, "patterns") and clause.patterns):
+                return None
+            pat = clause.patterns[0]
+            if len(pat.nodes) < 2 or len(pat.relationships) < 1:
+                return None
+            rel = pat.relationships[0]
+            if rel.variable_length is not None:
+                return None
+            src_node = pat.nodes[0]
+            src_id = None
+            if src_node.properties:
+                for k, v in src_node.properties.items():
+                    if k == "id":
+                        if isinstance(v, str) and v.startswith("$"):
+                            src_id = parameters.get(v[1:])
+                        elif hasattr(v, 'name'):
+                            src_id = parameters.get(v.name)
+                        elif isinstance(v, str):
+                            src_id = v
+                        else:
+                            src_id = str(v)
+                        break
+            if src_id is None:
+                return None
+            direction_map = {Direction.OUTGOING: "out", Direction.INCOMING: "in", Direction.BOTH: "both"}
+            is_count = bool(
+                parsed.return_clause and
+                any(hasattr(item.expression, "function_name") and
+                    item.expression.function_name.upper() == "COUNT"
+                    for item in parsed.return_clause.items)
+            )
+            return {
+                "source_id": str(src_id),
+                "predicates": rel.types or [],
+                "direction": direction_map.get(rel.direction, "out"),
+                "is_count": is_count,
+                "return_col": (
+                    (parsed.return_clause.items[0].alias or "count") if is_count
+                    else (parsed.return_clause.items[0].alias or "id") if (parsed.return_clause and parsed.return_clause.items)
+                    else "id"
+                ),
+            }
+        except Exception:
+            return None
+    def _execute_traversal(self, traversal, sql_query, parsed, parameters):
+        raw = self._store.execute_bfs(
+            traversal["source_id"],
+            traversal["predicates"],
+            1,
+            traversal["direction"],
+            0,
+            graph=getattr(sql_query, "graph_context", None),
+        )
+        if isinstance(raw, list):
+            rows = [[r.get("node_id", r.get("id", "")), r.get("hops", 1)] for r in raw]
+        elif raw.error:  # 4.6.0: a failed walk raises; it answered no rows (a count of 0)
+            raise RuntimeError(f"one-hop traversal from {traversal['source_id']!r} failed: {raw.error}")
+        else:
+            rows = raw.rows
+        if traversal["is_count"]:
+            return IVGResult(columns=[traversal["return_col"]], rows=[[len(rows)]], metadata=sql_query.query_metadata)
+        return IVGResult(columns=[traversal["return_col"]], rows=[[r[0]] for r in rows], metadata=sql_query.query_metadata)
+
+    def _edge_graphs(self) -> list:
+        """Names of the graphs holding adjacency ("" for the default graph): the top level of ^KG("out")."""
+        names, key = [], ""
+        try:
+            native = self._iris_obj()
+            for _ in range(10_000):
+                key = native.nextSubscript(False, "^KG", "out", key)
+                if not isinstance(key, (str, int)) or key == "":
+                    break
+                names.append("" if str(key) == "0" else str(key))
+        except Exception:
+            return []  # no Native API here: the routes keep their single-graph default
+        return names
+
+    def _route_var_length_each_graph(self, sql_query, parameters, graphs):
+        """Run the var-length route in each graph and return the union (a lone count is summed)."""
+        import copy
+
+        parts = []
+        for g in graphs:
+            q = copy.copy(sql_query)
+            q.graph_context = g
+            r = self._route_var_length(q, parameters, one_graph_of_all=True)
+            if getattr(r, "error", None):
+                return r
+            parts.append(r)
+        if len(parts) == 1:
+            return parts[0]
+        sql_str = sql_query.sql if isinstance(sql_query.sql, str) else ""
+        columns = next((r.columns for r in parts if r.columns), parts[0].columns)
+        rows = [row for r in parts for row in r.rows]
+        if len(columns) == 1 and all(len(r.rows) == 1 for r in parts) and re.search(r"\bCOUNT\s*\(", sql_str, re.I):
+            rows = [[sum(int(r.rows[0][0] or 0) for r in parts)]]
+        elif re.search(r"\bSELECT\s+DISTINCT\b", sql_str, re.I):
+            seen, unique = set(), []
+            for row in rows:
+                key = repr(row)
+                if key not in seen:
+                    seen.add(key)
+                    unique.append(row)
+            rows = unique
+        limit = _extract_sql_row_limit(sql_str)
+        if limit:
+            rows = rows[:limit]
+        return IVGResult(columns=columns, rows=rows, metadata=parts[0].metadata)
+
+    def _route_var_length(self, sql_query, parameters, one_graph_of_all=False):
+        if self._nkg_dirty:
+            from iris_vector_graph.errors import IndexNotSyncedError
+            raise IndexNotSyncedError()
+        vl0 = sql_query.var_length_paths[0]
+        if vl0.get("unchecked_props"):
+            # a property map SQL cannot check: the engine checks each path, the statement does the rest (R308)
+            checked = self._project_checked_paths(sql_query, parameters, vl0)
+            if checked is not None:
+                return checked
+        if vl0.get("optional_paths_sql"):
+            return self._project_optional_paths(sql_query, parameters, vl0)
+        refusal = optional_hop_refusal(vl0)
+        if refusal is not None:
+            raise ValueError(refusal)
+        # `USE GRAPH` never reaches the SQL on this route — we call BFS instead of
+        # running the translated statement — so the graph has to travel on the
+        # SQLQuery and be handed to every traversal below (spec 227).
+        graph = getattr(sql_query, "graph_context", None)
+        is_shortest = vl0.get("shortest") or vl0.get("all_shortest")
+        if graph is None:
+            # An all-graphs read is the union of each graph's own answer (spec 253, FR-009): every route below walks
+            # one graph's ^KG, and graph=None used to mean the default graph's alone.
+            graphs = self._edge_graphs()
+            if graphs:
+                return self._route_var_length_each_graph(sql_query, parameters, graphs)
+        if is_shortest:
+            return self._execute_shortest_path_cypher(sql_query, parameters)
+
+        # Resolve source_id from explicit id parameter or query parameters
+        source_id = None
+        src_id_param = vl0.get("src_id_param")
+        if src_id_param:
+            if isinstance(src_id_param, str) and src_id_param.startswith("$"):
+                pname = src_id_param[1:]
+                if parameters and pname in parameters:
+                    source_id = str(parameters[pname])
+            elif src_id_param:
+                source_id = str(src_id_param)
+        if source_id is None and parameters:
+            src_var = vl0.get("source_var")
+            if src_var and src_var in parameters:
+                source_id = str(parameters[src_var])
+
+        source_labels = vl0.get("source_labels") or []
+        source_alias_r = vl0.get("source_alias") or ""
+        # `{id: x}` is the node x holding the pattern's labels, as the translated MATCH reads it; the routes below walk
+        # from x reading neither, so they answered for x whatever the pattern said of it. 4.6.0 R194: an `id` property
+        # equal to x is not asked for, as no other route asks it (a bulk-loaded node has none).
+        # (OPTIONAL is left to the routes: per graph, each graph without the source would add a row of nulls)
+        if (
+            vl0.get("src_id_prop")
+            and not vl0.get("optional")
+            and source_id is not None
+            and not node_with_labels(self._store, source_id, source_labels, graph)
+        ):
+            return self._vl_no_source(sql_query)
+
+        # Fast-path: extract source_id only when the WHERE clause directly binds
+        # source_alias.node_id = ? — uses Path 2 of extract_vlp_source_ids.
+        # Multi-source cases (label-based or cartesian-SQL) are handled downstream
+        # by _execute_var_length_labeled / _execute_var_length_labeled_path_funcs.
+        if source_id is None and src_id_param is None and source_alias_r:
+            source_id = bound_node_id_param(
+                sql_query.sql if isinstance(sql_query.sql, str) else "",
+                sql_query.parameters[0] if sql_query.parameters else [],
+                source_alias_r,
+            )
+        # 4.6.0 R319: in one graph of an all-graphs read (graph set by _route_var_length_each_graph), a bound source that
+        # graph does not hold matches nothing there: its walk from 0 hops answered the source once more, with null
+        # properties
+        if (
+            one_graph_of_all
+            and not vl0.get("optional")
+            and source_id is not None
+            and not node_with_labels(self._store, source_id, source_labels, graph)
+        ):
+            return self._vl_no_source(sql_query)
+
+        # The BFS below answers `(id, hops, pred)` rows, one per node per depth along any walk: not what a RETURN of
+        # the target asks for, and an undirected walk comes back over the edge it arrived by, so
+        # `(a {node_id: $x})-[*1..3]-(b) RETURN DISTINCT b.node_id` returned a chain's start (4.6.0, N1). A RETURN of
+        # the target (its id included) goes to the labeled route instead, which reads the ends of paths that use no
+        # relationship twice (Graph.KG.VarLength) at any min_hops, projects the SELECT's columns, and resolves the
+        # same bound source (extract_vlp_source_ids, Path 2).
+        target_var = vl0.get("target_var")
+        returns_target = bool(target_var) and any(
+            isinstance(expr, str) and (expr == target_var or expr.startswith(f"{target_var}."))
+            for expr in (sql_query.column_name_map or {}).values()
+        )
+        if (
+            returns_target
+            and not vl0.get("temporal_window")
+            and not vl0.get("return_path_funcs")
+            and not vl0.get("properties")
+        ):
+            # an inline `(n {id: $x})` source too (spec 253 T008): this route answered it with raw (id, hops, pred)
+            # rows; the labeled route resolves the same bound source from the SQL (n0.node_id = ?) and projects
+            source_id = None
+            src_id_param = None
+
+        # When source is not ID-bound, use labeled multi-source traversal.
+        # This covers two cases:
+        #   (a) source labeled in this pattern: source_labels is populated
+        #   (b) source bound in a prior MATCH: source_labels=[] but source_alias
+        #       is present in the SQL with label joins we can query.
+        if source_id is None and src_id_param is None:
+            # When path functions (length/nodes/relationships) are in RETURN,
+            # use dedicated method that tracks (source, target, hop) triples.
+            if vl0.get("return_path_funcs"):
+                labeled = self._execute_var_length_labeled_path_funcs(
+                    sql_query, parameters, vl0
+                )
+            else:
+                labeled = self._execute_var_length_labeled(sql_query, parameters, vl0)
+            # BFS reports each node once, but two nodes can project the same value:
+            # `RETURN DISTINCT t.name` answered 'Breast cancer' twice. So DISTINCT runs
+            # over the projected rows, first occurrence kept, before the LIMIT below.
+            if (
+                labeled is not None
+                and labeled.rows
+                and _SELECT_DISTINCT.search(sql_query.sql if isinstance(sql_query.sql, str) else "")
+            ):
+                seen_rows: set = set()
+                unique_rows = []
+                for row in labeled.rows:
+                    key = repr(row)
+                    if key not in seen_rows:
+                        seen_rows.add(key)
+                        unique_rows.append(row)
+                labeled.rows = unique_rows
+            # Neither labeled route runs the statement it was translated from, so the
+            # `LIMIT` on it has to be applied here. Before this, `MATCH (x)-[r*1..1]->(y)
+            # WHERE x.id = $id RETURN y.id LIMIT 5` over a 20-neighbour hub returned all
+            # 20 rows — the ID-bound route reads the cap and passes it to BFS, so only
+            # the property-bound form was wrong (spec 230, FR-032).
+            return self._apply_sql_row_limit(labeled, sql_query)
+
+        if vl0.get("return_path_funcs"):
+            # Path functions are implemented only here. `_execute_var_length_cypher` has
+            # no handling for them and dropped the column (spec 025 amendment 2026-10-07).
+            # The source the pattern named goes with the call, so it is not looked up
+            # again by label.
+            labeled = self._execute_var_length_labeled_path_funcs(
+                sql_query,
+                parameters,
+                vl0,
+                # A label on the source narrows it, so that case goes through the
+                # extractor, which finds the id binding and checks the label on it.
+                source_ids=[source_id] if (source_id is not None and not source_labels) else None,
+            )
+            return self._apply_sql_row_limit(labeled, sql_query)
+
+        if vl0.get("min_hops", 1) > 1 or vl0.get("properties"):
+            return self._execute_var_length_cypher(sql_query, parameters)
+
+        import re as _re
+        sql_str = sql_query.sql if isinstance(sql_query.sql, str) else (sql_query.sql[0] if sql_query.sql else "")
+        count_match = _re.search(r'SELECT\s+COUNT\s*\(\s*DISTINCT\s+.*?\)\s+AS\s+(\w+)', sql_str, _re.IGNORECASE)
+
+        # Fallback source_id resolution from SQL parameters
+        if source_id is None:
+            params = sql_query.parameters[0] if sql_query.parameters else []
+            for item in params:
+                if isinstance(item, str) and not item.startswith("Graph_KG"):
+                    source_id = item
+                    break
+        if source_id is None and parameters:
+            source_id = next(iter(parameters.values()), None)
+
+        if source_id is None:
+            return IVGResult(columns=[], rows=[], sql="", params=[], metadata=sql_query.query_metadata)
+
+        predicates = vl0.get("types", [])
+        max_hops = vl0.get("max_hops", 5)
+        direction = vl0.get("direction", "out")
+
+        if count_match:
+            col_name = count_match.group(1)
+            # counted where the ends are (Graph.KG.VarLength.EndsCount, the native path's walk): streaming BFS's rows
+            # to count them took DRKG's D_Q2 3.5 s for 45,993 ends; the rows below are the fallback
+            try:
+                cnt = int(self._iris_obj().classMethodValue(
+                    "Graph.KG.VarLength", "EndsCount", source_id, json.dumps(predicates) if predicates else "",
+                    direction, vl0.get("min_hops", 1), max_hops, 0, graph or "",
+                ))
+                return IVGResult(columns=[col_name], rows=[[cnt]], metadata=sql_query.query_metadata)
+            except Exception as ex:
+                logger.debug("VarLength.EndsCount unavailable, counting BFS rows: %s", ex)
+            bfs_result = self._store.execute_bfs(
+                source_id, predicates, max_hops, direction, 0, graph=graph
+            )
+            if bfs_result.error:  # 4.6.0: a failed walk raises; it counted 0
+                raise RuntimeError(f"var-length count: the BFS from {source_id!r} failed: {bfs_result.error}")
+            # BFS reports a node once per depth it is reached at: the count is of the nodes
+            cnt = len({row[0] for row in bfs_result.rows if row})
+            return IVGResult(columns=[col_name], rows=[[cnt]], metadata=sql_query.query_metadata)
+        row_limit = _extract_sql_row_limit(sql_str)
+
+        direction = vl0.get("direction", "out")
+        predicates = vl0.get("types", [])
+        max_hops = vl0.get("max_hops", 5)
+
+        # This route answers from BFS instead of running the statement it was translated
+        # from, so the statement's `DISTINCT` has to be honoured here. BFS reports one row
+        # per reached edge — an undirected walk reaches the same node at two hops and by
+        # two predicates — so `RETURN DISTINCT b.node_id` came back with duplicates
+        # (spec 230). The cap then has to move out of BFS: truncating raw hits would cap
+        # the wrong thing, leaving `LIMIT 20` holding 11 distinct nodes.
+        distinct = bool(_re.search(r'\bSELECT\s+DISTINCT\b', sql_str, _re.IGNORECASE))
+        max_results = 0 if distinct else row_limit
+
+        if vl0.get("temporal_window"):
+            ts_start = vl0.get("ts_start", 0)
+            ts_end = vl0.get("ts_end", 9999999999)
+            result = self._store.execute_temporal_cypher(
+                source_id, predicates, ts_start, ts_end, direction, max_hops, graph=graph
+            )
+        else:
+            result = self._store.execute_bfs(
+                source_id, predicates, max_hops, direction, max_results, graph=graph
+            )
+
+        if distinct and result.rows:
+            # Keep the first row for an id: BFS emits in hop order, so that is its
+            # shortest hop and the `hops` column stays meaningful.
+            seen_ids: set = set()
+            deduped = []
+            for row in result.rows:
+                if not row:
+                    continue
+                if row[0] in seen_ids:
+                    continue
+                seen_ids.add(row[0])
+                deduped.append(row)
+            if row_limit:
+                deduped = deduped[:row_limit]
+            result = IVGResult(
+                columns=result.columns,
+                rows=deduped,
+                sql=result.sql,
+                params=result.params,
+                metadata=result.metadata,
+                error=result.error,
+            )
+
+        return_properties = getattr(sql_query.query_metadata, "return_properties", None)
+        if return_properties and result.rows:
+            node_ids = [row[0] for row in result.rows if row]
+            if node_ids:
+                props_result = self._store.get_nodes(node_ids, return_properties, **_graph_kw(sql_query))
+                props_by_id = {r[0]: r[2:] for r in props_result.rows}
+                enriched = [[r[0], r[1]] + list(props_by_id.get(r[0], [None] * len(return_properties))) for r in result.rows]
+                result = IVGResult(
+                    columns=result.columns + return_properties,
+                    rows=enriched,
+                    metadata=result.metadata,
+                )
+        return result
+
+    def _vl_no_source(self, sql_query) -> "IVGResult":
+        """The answer of a variable-length read whose source matches no node: a count of 0, else no rows, under the
+        statement's own column names."""
+        sql_str = sql_query.sql if isinstance(sql_query.sql, str) else ""
+        if _SELECT_COUNT_AS.search(sql_str):
+            return IVGResult(columns=[_count_column(sql_query)], rows=[[0]], metadata=sql_query.query_metadata)
+        columns = [a for a in sql_query.select_aliases if not a.startswith("__")]
+        return _finish_sql_result(IVGResult(columns=columns, rows=[], metadata=sql_query.query_metadata), sql_query)
+
+    def _apply_sql_row_limit(self, result, sql_query) -> "IVGResult":
+        """Cap a route's own rows at the translated statement's `LIMIT`.
+
+        Skipped when the statement also carries an `ORDER BY`: these routes assemble
+        their rows from BFS output, which carries no sort, so the first n rows are not
+        the n the sort asked for. Truncating there would turn "too many rows" into "the
+        wrong rows", so the cap is dropped and the gap logged — visibly over-returning
+        beats silently answering something else.
+        """
+        sql_str = sql_query.sql if isinstance(sql_query.sql, str) else ""
+        limit = _extract_sql_row_limit(sql_str)
+        if not limit or not result.rows or len(result.rows) <= limit:
+            return result
+        if re.search(r"\bORDER\s+BY\b", sql_str, re.IGNORECASE):
+            logger.warning(
+                "var-length path: LIMIT %d not applied because the query also has an "
+                "ORDER BY, which this route cannot honour — returning all %d rows",
+                limit,
+                len(result.rows),
+            )
+            return result
+        return IVGResult(
+            columns=result.columns,
+            rows=result.rows[:limit],
+            metadata=result.metadata,
+        )
+
+    # 4.6.1: remove, measured unreachable. Since 4.6.0 R308 (3ff6a049) a named path expands in SQL whatever its RETURN
+    # (translator._vlp_bfs_answers), and path functions need a named path; shortestPath has its own route and
+    # approx_count_distinct goes to its own handler (_execute_approx_count_distinct). Only unit tests that patch
+    # _vlp_bfs_answers reach it.
+    def _execute_var_length_labeled_path_funcs(
+        self, sql_query, parameters, vl0, source_ids=None
+    ) -> "IVGResult":
+        """Execute a var-length path query with path functions (length/nodes/relationships)
+        where the source is identified by label(s) rather than a bound node ID.
+
+        Unlike _execute_var_length_labeled (which only returns target node data), this
+        method tracks full (source, target, hop) triples and assembles results for
+        path function RETURN columns.
+        """
+        source_labels = vl0.get("source_labels") or []
+        target_labels = vl0.get("target_labels") or []
+        predicates = vl0.get("types") or []
+        min_hops = vl0.get("min_hops", 1)
+        max_hops = vl0.get("max_hops", 10)
+        direction = vl0.get("direction", "out")
+        source_var = vl0.get("source_var") or "a"
+        target_var = vl0.get("target_var") or "b"
+        source_alias = vl0.get("source_alias") or ""
+        target_alias = vl0.get("target_alias") or ""
+        return_path_funcs = vl0.get("return_path_funcs") or []
+        path_named_var = vl0.get("path_named_var")
+        col_map = sql_query.column_name_map or {}
+
+        # Step 1: the sources. The router passes the one the pattern named; otherwise
+        # they are collected by the shared extraction module.
+        if source_ids is None:
+            source_ids = extract_vlp_source_ids(
+                sql_query=sql_query,
+                source_labels=source_labels,
+                source_alias=source_alias,
+                target_alias=target_alias,
+                store=getattr(self, "_store", None),
+            )
+
+        items = _scalar_return_items(sql_query, source_var, target_var, path_named_var)
+
+        if not source_ids:
+            columns = (
+                _item_columns(sql_query)
+                if items is not None
+                else _build_path_func_columns(return_path_funcs, source_var, target_var, col_map, path_named_var)
+            )
+            return IVGResult(columns=columns, rows=[], metadata=sql_query.query_metadata)
+
+        # Step 2: the paths, each in one graph. USE GRAPH names it; without it a query answers each graph's own paths
+        # (USER_GUIDE section 4), so each source is walked in every graph that holds a node of its id. Before 4.6.0
+        # R282 `RETURN p` walked the default graph alone and `RETURN b` every graph at once, and the nodes and
+        # relationships were fetched by id alone, so a node id in two graphs came back with both graphs' labels and
+        # properties. path_triples: (src, tgt, hop, graph); full_paths, when kept, in step with them.
+        graph_ctx = getattr(sql_query, "graph_context", None)
+        walks = self._vlp_walks(source_ids, graph_ctx)
+        path_triples: list = []
+        full_paths: list = []
+        # the actual path is kept for relationships(p) too: rebuilt from its ends it was some other path's, and
+        # ShortestPathJson reads no graph
+        need_full_paths = bool({"path", "relationships", "nodes"} & set(return_path_funcs)) or (
+            items is not None and any(i[0] in ("nodes", "relationships", "path") for i in items)
+        )
+
+        for src_id, graph in walks:
+            if min_hops == 0:
+                path_triples.append((src_id, src_id, 0, graph))
+                if need_full_paths:
+                    full_paths.append(([src_id], [], []))
+            if need_full_paths:
+                for walked in self._bfs_with_paths(src_id, predicates, max_hops, direction, graph=graph,
+                                                   edge_ids=True):
+                    node_list, edge_list, id_list = _with_edge_ids(walked)
+                    hop = len(edge_list)
+                    if node_list and min_hops <= hop <= max_hops:
+                        path_triples.append((src_id, node_list[-1], hop, graph))
+                        full_paths.append((node_list, edge_list, id_list))
+            else:
+                for tgt_id, hop in self._vl_ends(src_id, predicates, direction, max(min_hops, 1), max_hops, graph):
+                    if tgt_id:
+                        path_triples.append((src_id, tgt_id, hop, graph))
+
+        # Step 3: a target holds every label the pattern names, in its graph (`if all_labeled:` skipped the filter when
+        # no target held one, and the lookup was of every graph's labels)
+        if target_labels and path_triples:
+            holding = self._vlp_labeled(target_labels, {(g, t) for _s, t, _h, g in path_triples})
+            keep = [i for i, (_s, t, _h, g) in enumerate(path_triples) if (g, t) in holding]
+            path_triples = [path_triples[i] for i in keep]
+            if need_full_paths:
+                full_paths = [full_paths[i] for i in keep]
+
+        if items is not None:
+            return self._project_path_items(sql_query, items, path_triples, full_paths, direction)
+
+        if not path_triples:
+            columns = _build_path_func_columns(return_path_funcs, source_var, target_var, col_map, path_named_var)
+            return IVGResult(columns=columns, rows=[], metadata=sql_query.query_metadata)
+
+        # Step 4: the path's nodes (each in its graph), with labels and properties; a failure raises (it answered every
+        # node with no labels and no properties)
+        wanted = set()
+        for idx, (s, t, _h, g) in enumerate(path_triples):
+            ids = full_paths[idx][0] if need_full_paths else (s, t)
+            wanted.update((g, nid) for nid in ids)
+        node_data_map = self._vlp_node_data(wanted)
+
+        # Step 5: Build result rows
+        def _get_node(nid, graph):
+            return node_data_map.get((graph, nid), {"_id": nid, "_labels": "[]", "_props": None})
+
+        def _get_edge_rels(node_list, edge_list, id_list, graph):
+            """The path's relationships as ':TYPE {key: val}' strings, each edge's qualifiers read in its graph."""
+            return [_format_rel(t, self._vlp_qualifiers(node_list[i], t, node_list[i + 1], direction, graph,
+                                                        id_list[i]))
+                    for i, t in enumerate(edge_list)]
+
+        def _format_rel(rel_type, qualifiers_json):
+            """Format a relationship as ':TYPE {key: val, ...}' string."""
+            if not qualifiers_json:
+                return f":{rel_type}"
+            import json as _j
+            props = _j.loads(qualifiers_json) if isinstance(qualifiers_json, str) else qualifiers_json
+            if isinstance(props, dict) and props:
+                parts = []
+                for k, v in props.items():
+                    try:
+                        parts.append(f"{k}: {int(v)}")
+                    except (ValueError, TypeError):
+                        parts.append(f"{k}: {v}")
+                return f":{rel_type} {{{', '.join(parts)}}}"
+            return f":{rel_type}"
+
+        # Determine output columns from RETURN clause and col_map
+        columns = _build_path_func_columns(return_path_funcs, source_var, target_var, col_map, path_named_var)
+
+        path_var_col = path_named_var or "p"
+        rows_out = []
+        path_iter = iter(full_paths) if (need_full_paths and full_paths) else None
+
+        for src_id, tgt_id, hop, graph in path_triples:
+            fp_nodes, fp_edges, fp_ids = (next(path_iter) if path_iter else (None, None, None))
+            row = []
+            for col in columns:
+                cypher_col = col_map.get(col, col) if col_map else col
+                if "path" in return_path_funcs and (col == path_var_col or cypher_col == path_var_col):
+                    # Build path JSON object: {"nodes": [...node_data...], "rels": [...edge_types...]}
+                    if fp_nodes:
+                        import json as _pj
+                        path_json = _pj.dumps({
+                            "nodes": [_get_node(n, graph) for n in fp_nodes],
+                            "rels": list(fp_edges),
+                        })
+                    else:
+                        import json as _pj
+                        path_json = _pj.dumps({
+                            "nodes": [_get_node(src_id, graph), _get_node(tgt_id, graph)],
+                            "rels": [],
+                        })
+                    row.append(path_json)
+                elif cypher_col == source_var or col == source_var:
+                    row.append(_get_node(src_id, graph))
+                elif cypher_col == target_var or col == target_var:
+                    row.append(_get_node(tgt_id, graph))
+                elif cypher_col in ("length(p)", f"length({cypher_col})") or col == "l" and "length" in return_path_funcs:
+                    row.append(hop)
+                elif "length" in return_path_funcs and col in ("l", "length", "length(p)"):
+                    row.append(hop)
+                elif "relationships" in return_path_funcs and "relationship" in col.lower():
+                    row.append(_get_edge_rels(fp_nodes, fp_edges, fp_ids, graph))
+                elif "nodes" in return_path_funcs and "node" in col.lower():
+                    row.append([_get_node(n, graph) for n in fp_nodes])
+                else:
+                    row.append(None)
+            rows_out.append(row)
+
+        return IVGResult(
+            columns=columns,
+            rows=rows_out,
+            metadata=sql_query.query_metadata,
+        )
+
+    def _project_path_items(self, sql_query, items, path_triples, full_paths, direction="out") -> "IVGResult":
+        """The RETURN's columns, in RETURN order (spec 025 FR-010), in the shapes the SQL route (CY_VLP_PATHS) gives.
+
+        `items` is `_scalar_return_items`' reading of the RETURN clause. `path_triples` are (source, target, hops,
+        graph), `full_paths` the (nodes, relationship types) of each when kept. Everything is read in the path's graph
+        (4.6.0 R282; by node id alone, a node id in two graphs answered whichever graph's value came last). As the SQL
+        route answers them (4.6.0 R291): a node as three columns (n_id, n_labels, n_props), `length(p)` an integer,
+        `nodes(p)` a JSON list of node ids, `relationships(p)` a JSON list of {"type", "props"} objects, `p` the JSON
+        object {"nodes": [ids], "rels": [types]}. Before R291 the relationships were the types alone, or ":TYPE {k: v}"
+        text, and the nodes Python lists.
+        """
+        from iris_vector_graph.routing import graph_scope_predicate
+
+        columns = _item_columns(sql_query)
+        wanted: Dict[str, set] = {}
+        for it in items:
+            if it[0] == "prop" and it[2] != "node_id":
+                wanted.setdefault(it[2], set()).update(
+                    (g, t if it[1] == "target" else s) for s, t, _h, g in path_triples)
+        values: Dict[str, Dict[tuple, Any]] = {}
+        if wanted:
+            cursor = self._store.conn.cursor()
+            try:
+                for key, pairs in wanted.items():
+                    found: Dict[tuple, Any] = {}
+                    by_graph: Dict[str, list] = {}
+                    for g, nid in pairs:
+                        by_graph.setdefault(g, []).append(nid)
+                    for g, ids in by_graph.items():
+                        id_list = sorted(ids)
+                        for start in range(0, len(id_list), 500):
+                            chunk = id_list[start : start + 500]
+                            ph = ",".join("?" * len(chunk))
+                            cursor.execute(
+                                f"SELECT s, {self._ivg_schema}.CY_TYPED(val) FROM {self._ivg_schema}.rdf_props "
+                                f'WHERE "key" = ? AND {graph_scope_predicate("graph_id")} AND s IN ({ph})',
+                                [key, g] + chunk,
+                            )
+                            for nid, val in cursor.fetchall():
+                                found[(g, nid)] = read_prop_value(val)  # R248, R307: as a RETURN column reads it
+                    values[key] = found
+            finally:
+                cursor.close()
+        node_pairs = {(g, t if it[1] == "target" else s)
+                      for s, t, _h, g in path_triples for it in items if it[0] == "node"}
+        node_data = self._vlp_node_data(node_pairs) if node_pairs else {}
+        qualifiers: dict = {}
+
+        def rel_objects(nodes_list, edges_list, ids_list, graph):
+            out = []
+            for i, rel_type in enumerate(edges_list):
+                a, b = nodes_list[i], nodes_list[i + 1]
+                key = (a, rel_type, b, graph, ids_list[i])
+                if key not in qualifiers:
+                    qualifiers[key] = self._vlp_qualifiers(a, rel_type, b, direction, graph, ids_list[i])
+                out.append({"type": rel_type, "props": _typed_rel_props(qualifiers[key])})
+            return out
+
+        compact = (",", ":")
+        rows = []
+        for idx, (src, tgt, hop, graph) in enumerate(path_triples):
+            nodes_list, edges_list, ids_list = (full_paths[idx] if idx < len(full_paths) else ([src, tgt], [], []))
+            row = []
+            for it in items:
+                if it[0] == "length":
+                    row.append(hop)
+                elif it[0] == "nodes":
+                    row.append(json.dumps(list(nodes_list), separators=compact))
+                elif it[0] == "relationships":
+                    row.append(json.dumps(rel_objects(nodes_list, edges_list, ids_list, graph), separators=compact))
+                elif it[0] == "path":
+                    row.append(json.dumps({"nodes": list(nodes_list), "rels": list(edges_list)}, separators=compact))
+                elif it[0] == "node":
+                    nid = tgt if it[1] == "target" else src
+                    d = node_data.get((graph, nid), {"_labels": "[]", "_props": None})
+                    row.extend([nid, d["_labels"], d["_props"]])
+                else:
+                    _, which, name = it
+                    nid = tgt if which == "target" else src
+                    row.append(nid if name == "node_id" else values.get(name, {}).get((graph, nid)))
+            rows.append(row)
+        return IVGResult(columns=columns, rows=rows, metadata=sql_query.query_metadata)
+
+    def _vlp_walks(self, source_ids: list, graph: Optional[str]) -> list:
+        """(source, graph) for each walk the path executor makes: the USE GRAPH graph, or without one each graph holding
+        a node of the source's id (the default graph as ''), in source order (4.6.0 R282)."""
+        if graph is not None:
+            return [(s, graph) for s in source_ids]
+        held: Dict[str, list] = {}
+        ids = list(dict.fromkeys(source_ids))
+        cursor = self._store.conn.cursor()
+        try:
+            for start in range(0, len(ids), 500):
+                chunk = ids[start : start + 500]
+                cursor.execute(
+                    f"SELECT node_id, COALESCE(graph_id, '') FROM {self._ivg_schema}.nodes "
+                    f"WHERE node_id IN ({','.join('?' * len(chunk))})",
+                    chunk,
+                )
+                for nid, g in cursor.fetchall():
+                    held.setdefault(str(nid), []).append("" if g in (None, "\x00") else str(g))
+        finally:
+            cursor.close()
+        return [(s, g) for s in source_ids for g in sorted(held.get(s, []))]
+
+    def _vlp_labeled(self, labels: list, pairs: set) -> set:
+        """The (graph, node) of `pairs` that hold every label in `labels`, each in its own graph."""
+        from iris_vector_graph.routing import graph_scope_predicate
+
+        by_graph: Dict[str, list] = {}
+        for g, nid in pairs:
+            by_graph.setdefault(g, []).append(nid)
+        holding: set = set()
+        cursor = self._store.conn.cursor()
+        try:
+            for g, ids in by_graph.items():
+                ids = sorted(set(ids))
+                for start in range(0, len(ids), 500):
+                    chunk = ids[start : start + 500]
+                    cursor.execute(
+                        f"SELECT s, COUNT(DISTINCT label) FROM {self._ivg_schema}.rdf_labels "
+                        f"WHERE {graph_scope_predicate('graph_id')} AND label IN ({','.join('?' * len(labels))}) "
+                        f"AND s IN ({','.join('?' * len(chunk))}) GROUP BY s",
+                        [g] + list(labels) + chunk,
+                    )
+                    holding.update((g, str(nid)) for nid, n in cursor.fetchall() if int(n) == len(set(labels)))
+        finally:
+            cursor.close()
+        return holding
+
+    def _vlp_node_data(self, pairs: set) -> dict:
+        """``{(graph, node): {"_id", "_labels", "_props"}}`` for each (graph, node) of `pairs`, its labels and
+        properties read in its graph."""
+        schema = self._ivg_schema
+        by_graph: Dict[str, list] = {}
+        for g, nid in pairs:
+            by_graph.setdefault(g, []).append(nid)
+        out: dict = {}
+        cursor = self._store.conn.cursor()
+        try:
+            for g, ids in by_graph.items():
+                ids = sorted(set(ids))
+                for start in range(0, len(ids), 500):
+                    chunk = ids[start : start + 500]
+                    cursor.execute(
+                        f"SELECT n.node_id, "
+                        f"COALESCE((SELECT JSON_ARRAYAGG(label) FROM {schema}.rdf_labels WHERE s = n.node_id "
+                        f"AND COALESCE(graph_id, '') = COALESCE(n.graph_id, '')), '[]'), "
+                        # R248: the _props list every translated statement builds, its numbers typed
+                        f"{properties_subquery('n.node_id', prefix=schema, graph_expr='n.graph_id')} "
+                        f"FROM {schema}.nodes n WHERE COALESCE(n.graph_id, '') = COALESCE(?, '') "
+                        f"AND n.node_id IN ({', '.join('?' * len(chunk))})",
+                        [g] + chunk,
+                    )
+                    for nid, labels_json, props_json in cursor.fetchall():
+                        out[(g, nid)] = {"_id": nid, "_labels": labels_json or "[]", "_props": props_json}
+        finally:
+            cursor.close()
+        return out
+
+    def _vlp_qualifiers(self, a: str, rel_type: str, b: str, direction: str, graph: str, edge_id=None):
+        """The qualifiers of the `rel_type` edge between path neighbours a and b in `graph`: a -> b for an outgoing
+        walk, b -> a for an incoming one, either for an undirected one; None when the edge has none. With `edge_id`
+        (the row the walk took, `_bfs_with_paths(edge_ids=True)`), that edge's: by ends and type, two parallel edges
+        of one type both answered the first one's (4.6.0 R294)."""
+        from iris_vector_graph.routing import graph_scope_predicate
+
+        if edge_id is not None:
+            cursor = self._store.conn.cursor()
+            try:
+                cursor.execute(f"SELECT qualifiers FROM {self._ivg_schema}.rdf_edges WHERE edge_id = ?", [edge_id])
+                row = cursor.fetchone()
+                return None if row is None else row[0]  # read before the cursor closes: its DataRow goes with it
+            finally:
+                cursor.close()
+        if direction in ("in", "inbound"):
+            ends = [(b, a)]
+        elif direction in ("out", "outbound"):
+            ends = [(a, b)]
+        else:
+            ends = [(a, b), (b, a)]
+        cursor = self._store.conn.cursor()
+        try:
+            for s, o in ends:
+                cursor.execute(
+                    f"SELECT qualifiers FROM {self._ivg_schema}.rdf_edges WHERE s = ? AND p = ? AND o_id = ? "
+                    f"AND {graph_scope_predicate('graph_id')}",
+                    [s, rel_type, o, graph],
+                )
+                row = cursor.fetchone()
+                if row is not None:
+                    return row[0]
+        finally:
+            cursor.close()
+        return None
+
+    def _execute_var_length_labeled(self, sql_query, parameters, vl0) -> "IVGResult":
+        """Execute a variable-length path where source is identified by label(s).
+
+        Handles two cases:
+        1. Source labeled in same MATCH: source_labels is populated → use query_nodes
+        2. Source bound in prior MATCH clause: source_labels is empty but the SQL
+           FROM/JOIN clauses correctly filter source nodes → extract source IDs by
+           running a trimmed version of the SQL up to the Cartesian JOIN boundary.
+
+        Steps:
+        1. Collect source node IDs (via label lookup OR SQL-based extraction).
+        2. Run BFS from each source node.
+        3. Deduplicate target node IDs, applying min_hops filter.
+        4. Filter target nodes by target_labels if specified.
+        5. Fetch requested properties and return result shaped to the SQL SELECT.
+        """
+        import re as _re
+
+        source_labels = vl0.get("source_labels") or []
+        target_labels = vl0.get("target_labels") or []
+        predicates = vl0.get("types") or []
+        min_hops = vl0.get("min_hops", 1)
+        max_hops = vl0.get("max_hops", 10)
+        direction = vl0.get("direction", "out")
+        target_var = vl0.get("target_var") or "c"
+        source_alias = vl0.get("source_alias") or ""
+        target_alias = vl0.get("target_alias") or ""
+        rel_var = vl0.get("rel_var")
+        is_optional = vl0.get("optional", False)
+
+        sql_str = sql_query.sql if isinstance(sql_query.sql, str) else ""
+
+        # Determine result shape from column_name_map
+        col_map = sql_query.column_name_map or {}
+        is_count = any(
+            v.lower().startswith("count(") for v in col_map.values()
+        ) or bool(_re.search(r'SELECT\s+COUNT\s*\(', sql_str, _re.IGNORECASE))
+
+        # Build return_props list: [(cypher_expr, prop_key)] for the target variable
+        # Use cypher_expr (e.g. "c.name") as the output column name, not the SQL alias
+        # (e.g. "c_name"), so that TCK column comparison works correctly.
+        return_props = []
+        for sql_alias, cypher_expr in col_map.items():
+            if "." in cypher_expr:
+                var_name, prop_key = cypher_expr.split(".", 1)
+                if var_name == target_var:
+                    return_props.append((cypher_expr, prop_key))
+
+        out_cols = [col for col, _ in return_props] if return_props else [target_var]
+
+        # Detect whether the SQL SELECT uses the node-triple pattern for target_var:
+        # "x_id, x_labels, x_props" — used by _remap_node_columns for node comparison.
+        # If the SQL has this pattern, we must return those three columns with proper data.
+        _id_col = f"{target_var}_id"
+        _labels_col = f"{target_var}_labels"
+        _props_col = f"{target_var}_props"
+        _node_triple_in_sql = (
+            _id_col in sql_str
+            and _labels_col in sql_str
+            and _props_col in sql_str
+        )
+        # Also detect source variable triple columns in the SQL for source var returns
+        source_var = vl0.get("source_var")
+        _src_id_col = f"{source_var}_id" if source_var else None
+        _src_labels_col = f"{source_var}_labels" if source_var else None
+        _src_props_col = f"{source_var}_props" if source_var else None
+        _src_triple_in_sql = (
+            source_var
+            and _src_id_col in sql_str
+            and _src_labels_col in sql_str
+            and _src_props_col in sql_str
+        )
+
+        # Detect rel_var column in SQL (NULL AS r sentinel)
+        _rel_col = rel_var
+        _rel_in_sql = bool(
+            _rel_col and _re.search(
+                r'\bNULL\s+AS\s+' + _re.escape(_rel_col) + r'\b',
+                sql_str,
+                _re.IGNORECASE,
+            )
+        )
+
+        # Step 1: Collect source node IDs via the shared extraction module.
+        source_ids = extract_vlp_source_ids(
+            sql_query=sql_query,
+            source_labels=source_labels,
+            source_alias=source_alias,
+            target_alias=target_alias,
+            store=getattr(self, "_store", None),
+        )
+        # post_where_conds and post_params are unused after the extraction refactor
+        # but kept to avoid NameError in downstream code that references them.
+        post_where_conds: list = []
+        post_params: list = []
+
+        if not source_ids:
+            if is_count:
+                col_name = _count_column(sql_query)
+                return IVGResult(columns=[col_name], rows=[[0]], metadata=sql_query.query_metadata)
+            if is_optional:
+                null_cols = _optional_null_columns(
+                    sql_query,
+                    [_id_col, _labels_col, _props_col] if _node_triple_in_sql else out_cols,
+                )
+                return IVGResult(columns=null_cols, rows=[[None] * len(null_cols)], metadata=sql_query.query_metadata)
+            return IVGResult(columns=out_cols, rows=[], metadata=sql_query.query_metadata)
+
+        # Step 2: BFS from each source node.
+        # When rel_var is requested, use path-tracking BFS to collect edge sequences.
+        # Otherwise, collect unique (node_id, min_hop) pairs.
+        min_hop_per_node: dict = {}
+        path_edges_by_target: dict = {}  # target_id → list of edge-type lists per path
+
+        if min_hops == 0:
+            for src_id in source_ids:
+                min_hop_per_node[src_id] = 0
+                if _rel_in_sql:
+                    path_edges_by_target.setdefault(src_id, []).append(([src_id], [], []))
+
+        # a failed walk raises (4.6.0 R282): it was logged at debug and the source answered no ends
+        for src_id in source_ids:
+            if _rel_in_sql:
+                # Path-tracking BFS to reconstruct edge sequences for RETURN r
+                paths = self._bfs_with_paths(
+                    src_id, predicates, max_hops, direction,
+                    graph=getattr(sql_query, "graph_context", None), edge_ids=True,
+                )
+                for walked in paths:
+                    path_nodes, path_edges, path_ids = _with_edge_ids(walked)
+                    if not path_nodes:
+                        continue
+                    target_id = path_nodes[-1]
+                    hop = len(path_nodes) - 1
+                    if hop < min_hops or hop > max_hops:
+                        continue
+                    existing = min_hop_per_node.get(target_id)
+                    if existing is None or hop < existing:
+                        min_hop_per_node[target_id] = hop
+                    path_edges_by_target.setdefault(target_id, []).append((path_nodes, path_edges, path_ids))
+            else:
+                ends = self._vl_ends(
+                    src_id, predicates, direction, min_hops, max_hops,
+                    getattr(sql_query, "graph_context", None),
+                )
+                for nid, hop in ends:
+                    if nid:
+                        existing = min_hop_per_node.get(nid)
+                        if existing is None or hop < existing:
+                            min_hop_per_node[nid] = hop
+
+        # Filter by min_hops and collect in-order unique target IDs
+        target_ids = [
+            nid for nid, hop in min_hop_per_node.items()
+            if hop >= min_hops
+        ]
+
+        # Step 2b: Filter by relationship properties if specified (e.g. [r*1..2 {weight: 10}])
+        # For single-hop (max_hops==1), check direct edges from source_ids.
+        # For multi-hop, check that the target has at least one incoming edge matching
+        # the filter (simplified heuristic — full path verification would require path BFS).
+        rel_props_filter = vl0.get("properties") or {}
+        if rel_props_filter and target_ids:
+            import json as _json_rpf
+            passing_targets = set()
+            cursor_rpf = self._store.conn.cursor()
+            t_table = self._t("rdf_edges") if hasattr(self, "_t") else f"{self._ivg_schema}.rdf_edges"
+            for tgt_id in target_ids:
+                try:
+                    # For each target, check whether any incoming edge matches the filter.
+                    # This handles both direct (1-hop) and indirect (multi-hop) cases.
+                    cursor_rpf.execute(
+                        f"SELECT qualifiers FROM {t_table} WHERE o_id=?",
+                        [tgt_id],
+                    )
+                    for row in cursor_rpf.fetchall():
+                        qual_json = row[0] if row else None
+                        try:
+                            qualifiers = _json_rpf.loads(qual_json) if qual_json else {}
+                        except Exception:
+                            qualifiers = {}
+                        if all(str(qualifiers.get(k)) == str(v) for k, v in rel_props_filter.items()):
+                            passing_targets.add(tgt_id)
+                            break
+                except Exception as exc:
+                    logger.debug("rel_props_filter query failed: %s", exc)
+            target_ids = [t for t in target_ids if t in passing_targets]
+
+        # Step 3: Filter target nodes by target_labels (AND semantics per label)
+        if target_labels and target_ids:
+            for lbl in target_labels:
+                try:
+                    lbl_result = self._store.query_nodes(label_filter=lbl)
+                    labeled_ids = {row[0] for row in lbl_result.rows if row}
+                    target_ids = [nid for nid in target_ids if nid in labeled_ids]
+                except Exception as exc:
+                    logger.debug("target label lookup failed for %s: %s", lbl, exc)
+
+        # Step 4: Filter target nodes by post-boundary WHERE conditions (target props)
+        if post_where_conds and target_ids and target_alias:
+            target_ids = self._filter_nodes_by_post_where(
+                target_ids, target_alias, post_where_conds, post_params, sql_str
+            )
+
+        if is_count:
+            return IVGResult(columns=[_count_column(sql_query)], rows=[[len(target_ids)]], metadata=sql_query.query_metadata)
+
+        if not target_ids:
+            if is_optional:
+                null_cols = _optional_null_columns(
+                    sql_query,
+                    [_id_col, _labels_col, _props_col] if _node_triple_in_sql else out_cols,
+                )
+                return IVGResult(columns=null_cols, rows=[[None] * len(null_cols)], metadata=sql_query.query_metadata)
+            return IVGResult(columns=out_cols, rows=[], metadata=sql_query.query_metadata)
+
+        # 4.6.1: remove this step, measured unreachable: a RETURN of the hop's relationship variable expands in SQL since
+        # 4.6.0 R294, and with a relationship property map since R308 (translator._vlp_bfs_answers).
+        # Step 5: RETURN r, one row per path: the path's relationships as the SQL route gives them (CY_VLP_PATHS), a
+        # JSON list of {"type", "props"}, each edge's qualifiers read by the row it walked. It was [[":TYPE"], ...]
+        # (4.6.0 R294).
+        if _rel_in_sql and _rel_col:
+            graph = getattr(sql_query, "graph_context", None) or ""
+            rows_out = []
+            for nid in target_ids:
+                for path_nodes, path_edges, path_ids in path_edges_by_target.get(nid, []):
+                    rels = []
+                    for i, rel_type in enumerate(path_edges):
+                        q = self._vlp_qualifiers(path_nodes[i], rel_type, path_nodes[i + 1], direction, graph,
+                                                 path_ids[i])
+                        rels.append({"type": rel_type, "props": _typed_rel_props(q)})
+                    rows_out.append([json.dumps(rels, separators=(",", ":"))])
+            return IVGResult(
+                columns=[_rel_col],
+                rows=rows_out,
+                metadata=sql_query.query_metadata,
+            )
+
+        if not return_props:
+            # RETURN x (whole node) — return node triple if SQL expects it
+            if _node_triple_in_sql:
+                # Fetch labels+props so _remap_node_columns can reconstruct the node
+                nodes_result = self._store.get_nodes(target_ids, [], **_graph_kw(sql_query))
+                # get_nodes returns rows: [node_id, labels_json]
+                node_data = {row[0]: row[1] for row in (nodes_result.rows if nodes_result else [])}
+                # Fetch props as JSON for x_props column
+                props_json_by_id = self._fetch_props_json(target_ids)
+                rows_out = []
+                for nid in target_ids:
+                    rows_out.append([
+                        nid,
+                        node_data.get(nid, "[]"),
+                        props_json_by_id.get(nid),
+                    ])
+                return IVGResult(
+                    columns=[_id_col, _labels_col, _props_col],
+                    rows=rows_out,
+                    metadata=sql_query.query_metadata,
+                )
+            # No triple columns — return IDs only (legacy path)
+            return IVGResult(
+                columns=out_cols,
+                rows=[[nid] for nid in target_ids],
+                metadata=sql_query.query_metadata,
+            )
+
+        # Step 4: Fetch requested properties for each target node.
+        # `node_id` is the node's identity, not a row in `rdf_props`, so asking the
+        # store for it as a property missed every time and `RETURN b.node_id` answered
+        # a column of None — the right rows with no values in them (spec 230). Project
+        # it from the id we already hold and ask the store only for real properties.
+        prop_keys = [pk for _, pk in return_props]
+        stored_keys = [pk for pk in prop_keys if pk != "node_id"]
+        props_result = self._store.get_nodes(target_ids, stored_keys, **_graph_kw(sql_query))
+        # get_nodes returns rows: [node_id, labels_json, prop1, prop2, ...]
+        props_by_id: dict = {}
+        for row in (props_result.rows if props_result else []):
+            if row:
+                nid = row[0]
+                props_by_id[nid] = dict(zip(stored_keys, list(row[2:])))
+
+        rows_out = []
+        for nid in target_ids:
+            vals = props_by_id.get(nid, {})
+            rows_out.append([nid if pk == "node_id" else vals.get(pk) for pk in prop_keys])
+
+        return IVGResult(
+            columns=out_cols,
+            rows=rows_out,
+            metadata=sql_query.query_metadata,
+        )
+
+    def _vl_ends(self, source_id, predicates, direction, min_hops, max_hops, graph) -> list:
+        """``(node, least length)`` for each far end of a variable-length hop from ``source_id``, a path using no
+        relationship twice (``store.execute_vl_ends``).
+
+        A store without that reader (one written against the protocol before 4.6.0) answers from its BFS, as before:
+        a node once per depth along any walk, so an undirected hop comes back over the edge it arrived by. So does a
+        failed walk, with a warning.
+        """
+        if getattr(type(self._store), "execute_vl_ends", None) is not None:
+            try:
+                ends = self._store.execute_vl_ends(
+                    source_id, predicates, direction, min_hops, max_hops, graph=graph
+                )
+                return [(row[0], int(row[1])) for row in ends.rows]
+            except Exception as ex:
+                logger.warning(
+                    "var-length path: Graph.KG.VarLength.Ends failed from %s (%s); answering from BFS, which can "
+                    "walk an undirected hop back over the edge it arrived by", source_id, ex,
+                )
+        bfs_result = self._store.execute_bfs(source_id, predicates, max_hops, direction, 0, graph=graph)
+        if isinstance(getattr(bfs_result, "error", None), str):
+            # 4.6.0 R282: a failed walk (IVGResult.error set) raises; it answered no ends
+            raise RuntimeError(f"var-length path: the BFS from {source_id!r} failed: {bfs_result.error}")
+        if not bfs_result:
+            return []
+        return [(row[0], row[1] if len(row) > 1 else 1) for row in bfs_result.rows if row]
+
+    def _fetch_props_json(self, node_ids: list) -> dict:
+        """Fetch props as JSON strings (matching SQL x_props format) keyed by node_id.
+
+        Returns a dict mapping node_id → JSON string like
+        '[{"key":"name","value":"A"},{"key":"age","value":"30"}]'
+        or None if the node has no properties.
+        """
+        if not node_ids:
+            return {}
+        _CHUNK = 499
+        result: dict = {nid: None for nid in node_ids}
+        try:
+            cursor = self._store.conn.cursor()
+            for i in range(0, len(node_ids), _CHUNK):
+                chunk = node_ids[i:i + _CHUNK]
+                placeholders = ",".join("?" * len(chunk))
+                # R248: CY_TYPED reads a stored number as that number under every driver version; 5.4.1 read IRIS's
+                # text, and 5.4.0 a Decimal (2.5 * 2) that json.dumps could not write, which dropped every property
+                cursor.execute(
+                    f'SELECT s, "key", {self._ivg_schema}.CY_TYPED(val) FROM {self._t("rdf_props")} '
+                    f"WHERE s IN ({placeholders})",
+                    chunk,
+                )
+                props_by_nid: dict = {}
+                for row in cursor.fetchall():
+                    nid, key, val = row[0], row[1], read_prop_value(row[2])  # R307: a list or map as itself
+                    props_by_nid.setdefault(nid, []).append({"key": key, "value": val})
+                for nid, props in props_by_nid.items():
+                    result[nid] = json.dumps(props)
+        except Exception as exc:
+            logger.debug("_fetch_props_json failed: %s", exc)
+        return result
+
+    def _bfs_with_paths(
+        self, source_id: str, predicates: list, max_hops: int, direction: str,
+        graph: Optional[str] = None, edge_ids: bool = False,
+    ) -> list:
+        """BFS that tracks the full path (node + edge-type sequence), one graph only.
+
+        Returns a list of (node_list, edge_type_list) tuples.
+        node_list[0] == source_id; node_list[-1] == target node.
+        edge_type_list has len(node_list) - 1 entries. With `edge_ids`, (node_list, edge_type_list, edge_id_list):
+        the rdf_edges row each hop walked, so two parallel edges of one type are two paths that can be told apart
+        (4.6.0 R294: their qualifiers were read by ends and type, and both paths got the first edge's).
+
+        This is a second hop-by-hop walk of rdf_edges alongside
+        _sql_bfs_fallback, and it was unscoped for the same reason: no caller had a
+        graph to give it. COALESCE on both sides — an upgraded row can read as NULL
+        and IRIS returns $Char(0) for an empty VARCHAR (spec 227).
+        """
+        cursor = self._store.conn.cursor()
+        schema = _store_schema(self._store)
+        edges_table = f"{schema}.rdf_edges"
+
+        results: list = []
+        # frontier: list of (nodes_on_path, edges_on_path)
+        frontier: list = [([source_id], [], [])]
+
+        for _hop in range(1, max_hops + 1):
+            if not frontier:
+                break
+            all_src_ids = list({path[0][-1] for path in frontier})
+            if not all_src_ids:
+                break
+            preds_clause = ""
+            if predicates:
+                placeholders_p = ",".join("?" * len(predicates))
+                preds_clause = f" AND p IN ({placeholders_p})"
+            placeholders_f = ",".join("?" * len(all_src_ids))
+            graph_clause = " AND COALESCE(graph_id, '') = COALESCE(?, '')"
+            # a failed edge query raises (4.6.0 R282): it ended the walk, answering the paths found so far as all
+            params = all_src_ids + (predicates if predicates else []) + [graph or ""]
+            eid = ", edge_id" if edge_ids else ""
+            where = f"IN ({placeholders_f}){preds_clause}{graph_clause}"
+            sql_out = f"SELECT s, o_id, p{eid} FROM {edges_table} WHERE s {where}"
+            sql_in = f"SELECT o_id, s, p{eid} FROM {edges_table} WHERE o_id {where}"
+            if direction in ("out", "outbound"):
+                queries = [sql_out]
+            elif direction in ("in", "inbound"):
+                queries = [sql_in]
+            else:
+                queries = [sql_out, sql_in]
+            edges: list = []
+            for sql in queries:
+                cursor.execute(sql, params)
+                edges += list(cursor.fetchall())
+
+            # adj: src_id → [(nbr_id, pred, edge_id or None)]
+            adj: dict = {}
+            for row in edges:
+                adj.setdefault(row[0], []).append((row[1], row[2], row[3] if edge_ids else None))
+
+            next_frontier: list = []
+            for nodes, path_edges, path_ids in frontier:
+                current = nodes[-1]
+                for nbr, pred, edge in adj.get(current, []):
+                    if nbr not in nodes:  # no cycles on a single path
+                        step = (nodes + [nbr], path_edges + [pred], path_ids + [edge])
+                        results.append(step if edge_ids else step[:2])
+                        next_frontier.append(step)
+            frontier = next_frontier
+
+        return results
+
+    def _filter_nodes_by_post_where(
+        self,
+        target_ids: list,
+        target_alias: str,
+        post_where_conds: list,
+        post_params: list,
+        original_sql: str,
+    ) -> list:
+        """Filter target_ids using the post-boundary WHERE conditions (target props).
+
+        Extracts the post-boundary FROM/JOIN clauses and reruns them as a SQL query
+        restricted to candidate target_ids.
+        """
+        import re as _re
+        if not target_ids or not post_where_conds:
+            return target_ids
+        cursor = self._store.conn.cursor()
+        cartesian_pat = _re.compile(
+            r'\bJOIN\s+\S+\s+' + _re.escape(target_alias) + r'\s+ON\s+1\s*=\s*1\b',
+            _re.IGNORECASE,
+        )
+        m = cartesian_pat.search(original_sql)
+        if not m:
+            return target_ids
+        where_start = original_sql.find('\nWHERE ')
+        if where_start == -1:
+            where_start = len(original_sql)
+        post_joins = original_sql[m.start():where_start].strip()
+        # Replace "JOIN nodes target_alias ON 1=1" with "FROM nodes target_alias"
+        post_joins = _re.sub(
+            r'\bJOIN\s+(\S+)\s+' + _re.escape(target_alias) + r'\s+ON\s+1\s*=\s*1\b',
+            r'FROM \1 ' + target_alias,
+            post_joins,
+            count=1,
+            flags=_re.IGNORECASE,
+        )
+        _CHUNK = 499
+        filtered: set = set()
+        for i in range(0, len(target_ids), _CHUNK):
+            chunk = target_ids[i:i + _CHUNK]
+            placeholders = ",".join("?" * len(chunk))
+            post_filter = f"{target_alias}.node_id IN ({placeholders})"
+            all_conds = [post_filter] + post_where_conds
+            post_query = (
+                f"SELECT DISTINCT {target_alias}.node_id\n"
+                f"{post_joins}\n"
+                f"WHERE {' AND '.join(all_conds)}"
+            )
+            params = list(post_params) + list(chunk)
+            # 4.6.0: a failed filter query raises; it let every target of the chunk through (logged at DEBUG)
+            cursor.execute(post_query, params)
+            for row in cursor.fetchall():
+                if row and row[0]:
+                    filtered.add(row[0])
+        return [nid for nid in target_ids if nid in filtered]
+
+    def _execute_shortest_path_cypher(
+        self, sql_query, parameters=None
+    ) -> Dict[str, Any]:
+        vl = sql_query.var_length_paths[0]
+        max_hops = vl.get("max_hops", 5)
+        direction = vl.get("direction", "both")
+        find_all = 1 if vl.get("all_shortest") else 0
+        # the graph walked (4.6.2): the routines read the default graph's ^KG whatever the query's graph, so USE GRAPH
+        # 'g' answered the default graph's path and a path only g holds answered none
+        graph = getattr(sql_query, "graph_context", None)
+        # named only for a named graph, so a store written before 4.6.2 (no graph argument) still answers the default
+        gkw = {"graph": graph} if isinstance(graph, str) and graph else {}
+        # a query that reads only the length gets the distance alone, searched from both ends (ShortestLength); the
+        # routine reads out and both, so another direction keeps the path routine
+        length_only = (
+            vl.get("return_path_funcs") == ["length"]
+            and _bare_path_funcs(vl, sql_query) is not None
+            and not find_all
+            and direction in ("out", "both")
+            and hasattr(self._store, "shortest_path_length")
+        )
+
+        def _length_rows(source_id, target_id):
+            try:
+                n = self._store.shortest_path_length(
+                    source_id, target_id, vl.get("types", []), max_hops, direction, **gkw
+                )
+            except Exception as ex:
+                if "DOES NOT EXIST" not in str(ex):
+                    raise
+                # classes deployed before ShortestLength: the path routine answers, as it did
+                found = self._store.execute_shortest_path(
+                    source_id, target_id, vl.get("types", []), max_hops, direction, False, **gkw
+                )
+                return [[r[0], r[1]] for r in (found.rows or [])[:1]]
+            return [["", n]] if n >= 0 else []
+
+        if self._shortest_path_endpoints_by_match(sql_query, vl):
+            pairs = self._lookup_shortest_path_endpoints(sql_query, vl)
+            rows = []
+            for source_id, target_id in pairs:
+                if length_only:
+                    rows.extend(_length_rows(source_id, target_id))
+                    continue
+                found = self._store.execute_shortest_path(
+                    source_id, target_id, vl.get("types", []), max_hops, direction,
+                    bool(find_all), **gkw,
+                )
+                # shortestPath is one path per pair; ShortestPathJson hands back every one at the shortest depth
+                found_rows = found.rows or []
+                rows.extend(found_rows if find_all else found_rows[:1])
+            return self._shape_shortest_path(
+                IVGResult(columns=["path", "length"], rows=rows), vl, sql_query, parameters
+            )
+
+        def _resolve(param_ref):
+            if param_ref is None:
+                return None
+            if isinstance(param_ref, str) and param_ref.startswith("$"):
+                name = param_ref[1:]
+                if parameters and name in parameters:
+                    return str(parameters[name])
+                return None
+            return str(param_ref)
+
+        source_id = _resolve(vl.get("src_id_param"))
+        target_id = _resolve(vl.get("dst_id_param"))
+
+        if source_id is None and parameters:
+            src_var = vl.get("source_var")
+            if src_var and src_var in parameters:
+                source_id = str(parameters[src_var])
+            else:
+                source_id = next(
+                    (str(v) for v in parameters.values() if isinstance(v, str)), None
+                )
+
+        if target_id is None and parameters:
+            dst_var = vl.get("target_var")
+            if dst_var and dst_var in parameters:
+                target_id = str(parameters[dst_var])
+            else:
+                vals = [str(v) for v in parameters.values() if isinstance(v, str)]
+                target_id = vals[1] if len(vals) > 1 else None
+
+        if source_id is None or target_id is None:
+            sql_params = sql_query.parameters[0] if sql_query.parameters else []
+            str_params = [p for p in sql_params if isinstance(p, str) and not p.startswith("Graph_KG")]
+            if source_id is None and len(str_params) >= 1:
+                source_id = str_params[0]
+            if target_id is None and len(str_params) >= 2:
+                target_id = str_params[1]
+
+        if source_id is None or target_id is None:
+            raise ValueError(
+                "shortestPath requires both source and target node IDs to be bound. "
+                "Use {id: $from} / {id: $to} or {id: 'literal'} on both endpoints."
+            )
+
+        if length_only:
+            return self._shape_shortest_path(
+                IVGResult(columns=["path", "length"], rows=_length_rows(source_id, target_id)), vl, sql_query, parameters
+            )
+        predicates = vl.get("types", [])
+        result = self._store.execute_shortest_path(
+            source_id, target_id, predicates, max_hops, direction, bool(find_all), **gkw
+        )
+        if not find_all and len(result.rows or []) > 1:
+            result = IVGResult(columns=result.columns, rows=result.rows[:1])
+        return self._shape_shortest_path(result, vl, sql_query, parameters)
+
+    @staticmethod
+    def _shortest_path_endpoints_by_match(sql_query, vl) -> bool:
+        """True when the endpoints are defined by labels / property maps, not a node key.
+
+        The translated MATCH is then the only thing that knows which nodes they are.
+        An endpoint bound by an earlier hop (empty alias) cannot be read this way.
+        """
+        if vl.get("src_id_param") is not None and vl.get("dst_id_param") is not None:
+            return False
+        sql = getattr(sql_query, "sql", None)
+        if not isinstance(sql, str) or not sql.lstrip().upper().startswith("SELECT"):
+            return False
+        if "\nFROM " not in sql:
+            return False
+        if not (vl.get("source_alias") and vl.get("target_alias")):
+            return False
+        return bool(
+            vl.get("source_labels") or vl.get("target_labels") or "rdf_props" in sql
+        )
+
+    def _lookup_shortest_path_endpoints(self, sql_query, vl):
+        """Run the translated MATCH for its (source, target) node ids."""
+        sql = sql_query.sql
+        lookup = (
+            f"SELECT DISTINCT {vl['source_alias']}.node_id, {vl['target_alias']}.node_id"
+            + sql[sql.index("\nFROM "):]
+        )
+        params = sql_query.parameters[0] if sql_query.parameters else []
+        found = self._store.execute_sql(lookup, params)
+        error = getattr(found, "error", None)
+        if error:
+            raise RuntimeError(f"shortestPath endpoint lookup failed: {error}")
+        pairs = []
+        for row in found.rows or []:
+            source_id, target_id = str(row[0]), str(row[1])
+            if source_id != target_id:
+                pairs.append((source_id, target_id))
+        if len(pairs) > _SHORTEST_PATH_MAX_PAIRS:
+            raise ValueError(
+                f"shortestPath endpoints match {len(pairs)} (source, target) pairs; "
+                f"the limit is {_SHORTEST_PATH_MAX_PAIRS}. Narrow the endpoint "
+                "labels or properties."
+            )
+        return pairs
+
+    def _shape_shortest_path(self, result, vl, sql_query, parameters=None):
+        """The RETURN over the shortest paths found (`result`: one `[path JSON, length]` row per path).
+
+        A RETURN of only `length(p)`, `nodes(p)` and `relationships(p)` is read from the rows here, under the RETURN's
+        names. Anything else is the translator's: the query is translated again over the paths found and run
+        (`_project_shortest_paths`). Before 4.6.0 every RETURN was shaped here: aliases were dropped, and so was any
+        item that was not one of the three functions (NR8).
+        """
+        import json as _j
+
+        from iris_vector_graph.cypher import ast as _ast
+
+        funcs = _bare_path_funcs(vl, sql_query)
+        if funcs is None:
+            if not isinstance(getattr(sql_query, "parsed_query", None), _ast.CypherQuery):
+                return result  # a translation the engine did not make from a parse: nothing to project
+            return self._project_shortest_paths(result, vl, sql_query, parameters)
+        columns = _item_columns(sql_query)
+        if len(columns) != len(funcs):
+            columns = funcs  # a translation that names no items: the functions' own names, as before 4.6.0
+        rows_out = []
+        for path_json, length in result.rows:
+            path = _j.loads(path_json) if path_json else {}
+            values = {"length": length, "nodes": path.get("nodes", []), "relationships": path.get("rels", [])}
+            rows_out.append([values[f] for f in funcs])
+        return IVGResult(
+            columns=columns,
+            rows=rows_out,
+            sql=result.sql,
+            params=result.params,
+            metadata=sql_query.query_metadata,
+        )
+
+    def _project_shortest_paths(self, result, vl, sql_query, parameters):
+        """Run the query's own translation with the paths found standing in for the search.
+
+        The shortestPath relationship of a copy of the parsed query carries the paths as the JSON CY_VLP_PATHS
+        returns (`VariableLength.literal_paths`), so the translator joins them as it joins a variable-length walk and
+        projects the RETURN, ORDER BY, DISTINCT and LIMIT as for any other path. Each relationship carries the
+        properties stored on its edge.
+        """
+        import copy
+        import json as _j
+
+        paths = []
+        for path_json, length in result.rows:
+            path = _j.loads(path_json) if path_json else {}
+            nodes = [str(n) for n in path.get("nodes") or []]
+            types = [t if isinstance(t, str) else t.get("type") for t in path.get("rels") or []]
+            if len(nodes) != len(types) + 1:
+                raise ValueError(f"shortestPath: a path without its nodes cannot be projected: {path_json!r}")
+            paths.append((nodes, types, length))
+        graph = getattr(sql_query, "graph_context", None)
+        stored = self._shortest_path_edges(paths, graph)
+        backward = vl.get("direction") == "in"  # an incoming hop a <- b is the stored edge (b, t, a)
+        literal = []
+        for nodes, types, length in paths:
+            hops = []
+            for a, t, b in zip(nodes, types, nodes[1:]):
+                ahead, behind = ((b, t, a), (a, t, b)) if backward else ((a, t, b), (b, t, a))
+                hops.append(stored.get(ahead) or stored.get(behind) or (ahead, "{}"))
+            literal.append({
+                "s": nodes[0],
+                "t": nodes[-1],
+                "l": length,
+                "n": _j.dumps(nodes[1:]),
+                "y": _j.dumps(types),
+                "r": _j.dumps([{"type": t, "props": _typed_rel_props(q)} for t, (_, q) in zip(types, hops)]),
+                "k": "\x02" + "".join(f"{s}\x01{p}\x01{o}\x02" for (s, p, o), _ in hops),
+            })
+        parsed = copy.deepcopy(sql_query.parsed_query)
+        parsed.param_clash = parsed.param_twin = None
+        parsed.graph_context = graph
+        rels = _shortest_relationships(parsed)
+        if len(rels) != 1:
+            raise ValueError("shortestPath: a query with more than one shortest-path pattern cannot be projected")
+        rels[0].variable_length.literal_paths = _j.dumps(literal)
+        projected = translate_to_sql(parsed, parameters, engine=self)
+        if projected.var_length_paths or not isinstance(projected.sql, str):
+            # the translator kept the pattern for the engine (an OPTIONAL MATCH, a source bound by an earlier stage)
+            raise ValueError(
+                "shortestPath: this query's RETURN cannot be projected over the paths found (OPTIONAL MATCH, or a "
+                "source bound by an earlier stage); RETURN only length(p), nodes(p) and relationships(p) there"
+            )
+        found = self._store.execute_sql(projected.sql, projected.parameters[0] if projected.parameters else [])
+        found.metadata = sql_query.query_metadata
+        return _finish_sql_result(found, projected)
+
+    def _project_optional_paths(self, sql_query, parameters, vl0):
+        """Answer a query whose OPTIONAL variable-length hop the statement cannot walk (a start an earlier clause binds,
+        with a WHERE, a map or labels on the OPTIONAL MATCH, or another hop): the walk from the start's exact rows
+        (`optional_paths_sql`, CY_VLP_PATHS in each start's graph) is run, and the query's own translation over those
+        paths (`VariableLength.literal_paths`, each with its start `s` and graph `g`) LEFT JOINs them as one group, so
+        every predicate holds on the path and a start with none keeps its row of nulls (4.6.0 R308)."""
+        refusal = optional_hop_refusal(vl0)
+        parsed = getattr(sql_query, "parsed_query", None)
+        if parsed is None:
+            raise ValueError(refusal)
+        walk_sql, walk_params = vl0["optional_paths_sql"]
+        walked = self._store.execute_sql(walk_sql, walk_params)
+        if getattr(walked, "error", None):
+            raise RuntimeError(f"walking {_vl_hop_text(vl0)} from its starts failed: {walked.error}")
+        rows = walked.rows or []
+        if len(rows) > _OPTIONAL_PATHS_MAX:
+            raise ValueError(f"{refusal}; this one walks {len(rows)} paths, more than {_OPTIONAL_PATHS_MAX}")
+        paths = [
+            # g: the start's graph ('' the default graph); ga: 1 for a walk across every graph (a start whose graph
+            # the row does not carry), whose ends are in any graph
+            {"s": str(s), "g": "" if g is None else str(g), **({"ga": 1} if g is None else {}), "t": str(t),
+             "l": int(l), "n": n, "y": y, "r": r, "k": k}
+            for s, g, t, l, n, y, r, k in rows
+        ]
+        tree = copy.deepcopy(parsed)
+        tree.param_clash = tree.param_twin = None
+        tree.graph_context = getattr(sql_query, "graph_context", None)
+        rel = _optional_hop_rel(tree, vl0.get("rel_id"), parsed)
+        if rel is None:
+            raise ValueError(refusal)
+        rel.variable_length.literal_paths = literal_paths_json(paths)
+        projected = translate_to_sql(tree, parameters, engine=self)
+        if projected.var_length_paths or not isinstance(projected.sql, str):
+            raise ValueError(refusal)  # another hop the engine walks, or a shape the group cannot hold
+        found = self._store.execute_sql(projected.sql, projected.parameters[0] if projected.parameters else [])
+        found.metadata = sql_query.query_metadata
+        return _finish_sql_result(found, projected)
+
+    def _project_checked_paths(self, sql_query, parameters, vl0):
+        """Answer a query whose variable-length hops with a property map the translator left to the engine (a float in
+        a list, a map, or a shape such as OPTIONAL MATCH) with the query's own translation over the paths that hold the
+        map (4.6.0 R308).
+
+        For each such hop in turn the engine walks the trails and checks every relationship (`checked_trails`); a copy
+        of the parsed query carries them as the hop's `literal_paths` (`literal_checked`), so the statement holds the
+        start to everything the pattern says of it, joins the target, and projects the RETURN, as shortestPath's
+        projection does. The engine's labeled route read the start by its labels alone, kept a far end when any
+        relationship into it held the map, and answered the far end's columns only, so nothing goes back to it: a hop
+        the statement still cannot read, or a map value that is an expression, raises ValueError naming it.
+        """
+        parsed = getattr(sql_query, "parsed_query", None)
+        if parsed is None:
+            raise ValueError("a variable-length relationship with a property map needs the query's RETURN")
+        at = _rel_index(_vl_relationships(parsed), vl0)
+        graph = getattr(sql_query, "graph_context", None)
+        tree = copy.deepcopy(parsed)
+        tree.param_clash = tree.param_twin = None
+        tree.graph_context = graph
+        while True:
+            rels = _vl_relationships(tree)
+            if at is None or rels[at].variable_length.literal_paths is not None:
+                raise ValueError(
+                    f"{_vl_hop_text(vl0)} with a relationship property map cannot be answered in this shape (an "
+                    "OPTIONAL MATCH whose nodes carry labels or a map or whose new end a WHERE reads, or beside a "
+                    "shortest path or another hop the engine walks). Write the map as a WHERE on that MATCH: "
+                    "-[r*1..2]-> ... WHERE all(x IN r WHERE x.k = v)"
+                )
+            rel = rels[at]
+            try:
+                wanted = {k: _map_value(v, parameters) for k, v in (rel.properties or {}).items()}
+            except _NotALiteral as ex:
+                raise ValueError(
+                    f"{_vl_hop_text(vl0)}: a variable-length relationship's property map takes literals and parameters "
+                    f"only, not {ex.args[0]!r}. Write it as a WHERE: -[r*1..2]-> ... WHERE all(x IN r WHERE x.k = ...)"
+                ) from None
+            types = list(vl0.get("types") or [])
+            direction = vl0.get("direction", "out")
+            min_hops, max_hops = vl0.get("min_hops", 1), vl0.get("max_hops", 1)
+            starts = self._checked_path_starts(vl0, graph, types, direction, min_hops, parameters)
+            paths = checked_trails(self._checked_path_neighbours(types, graph), starts, types, direction, min_hops,
+                                   max_hops, wanted)
+            if vl0.get("target_labels"):
+                # the far end's labels hold on each path, so an OPTIONAL hop to a labelled end is a plain LEFT JOIN
+                held = self._nodes_holding({(p["g"], p["t"]) for p in paths}, vl0["target_labels"])
+                paths = [p for p in paths if (p["g"], p["t"]) in held]
+            rel.variable_length.literal_paths = literal_paths_json(paths)
+            rel.variable_length.literal_checked = True
+            projected = translate_to_sql(tree, parameters, engine=self)
+            if not projected.var_length_paths and isinstance(projected.sql, str):
+                break
+            vl0 = projected.var_length_paths[0] if projected.var_length_paths else {}
+            # another hop the engine walks (not one with a property map to check) is refused above
+            at = _rel_index(rels, vl0) if vl0.get("unchecked_props") else None
+        found = self._store.execute_sql(projected.sql, projected.parameters[0] if projected.parameters else [])
+        found.metadata = sql_query.query_metadata
+        return _finish_sql_result(found, projected)
+
+    def _checked_path_starts(self, vl0, graph, types, direction, min_hops, parameters) -> list:
+        """`(graph, node)` for every node a path of the hop can start from, a superset the statement narrows: the node
+        named by id, else the nodes holding the start's labels, else (a path of one relationship or more) every node a
+        relationship of the hop's types leaves in its direction, else every node."""
+        _table = self._t
+        # COALESCE on both sides: an empty string bound as a parameter can arrive as NULL
+        gw, gargs = (" AND COALESCE(graph_id, '') = COALESCE(?, '')", [graph]) if graph is not None else ("", [])
+
+        def rows(sql, args):
+            found = self._store.execute_sql(sql, args)
+            if getattr(found, "error", None):
+                raise RuntimeError(f"reading the starts of a variable-length pattern failed: {found.error}")
+            return {(str(g or ""), str(n)) for n, g in found.rows or []}
+
+        src = vl0.get("src_id_param")
+        if isinstance(src, str) and src.startswith("$"):
+            src = (parameters or {}).get(src[1:])
+        labels = vl0.get("source_labels") or []
+        if src is not None and not labels:
+            return sorted(rows(f"SELECT node_id, graph_id FROM {_table('nodes')} WHERE node_id = ?{gw}",
+                               [str(src)] + gargs))
+        if labels:
+            held = set.intersection(*[
+                rows(f"SELECT s, graph_id FROM {_table('rdf_labels')} WHERE label = ?{gw}", [label] + gargs)
+                for label in labels
+            ])
+            return sorted(held)
+        if min_hops == 0:
+            return sorted(rows(f"SELECT node_id, graph_id FROM {_table('nodes')} WHERE 1 = 1{gw}", gargs))
+        tw = f" AND p IN ({','.join('?' * len(types))})" if types else ""
+        ends = {"out": ["s"], "in": ["o_id"]}.get(direction, ["s", "o_id"])
+        out: set = set()
+        for col in ends:
+            out |= rows(f"SELECT DISTINCT %EXACT({col}), %EXACT(COALESCE(graph_id, '')) FROM {_table('rdf_edges')} "
+                        f"WHERE 1 = 1{tw}{gw}", types + gargs)
+        return sorted(out)
+
+    def _nodes_holding(self, pairs, labels) -> set:
+        """The `(graph, node)` of `pairs` that hold every label of `labels` (in batches of 500 nodes)."""
+        held = set()
+        for g, batch in _graph_batches(pairs):
+            found = self._store.execute_sql(
+                f"SELECT s FROM {self._t('rdf_labels')} WHERE s IN ({','.join('?' * len(batch))}) AND label IN "
+                f"({','.join('?' * len(labels))}) AND COALESCE(graph_id, '') = COALESCE(?, '') GROUP BY s "
+                f"HAVING COUNT(DISTINCT label) = {len(set(labels))}",
+                batch + list(labels) + [g],
+            )
+            if getattr(found, "error", None):
+                raise RuntimeError(f"reading the labels of a variable-length pattern's ends failed: {found.error}")
+            held |= {(g, str(r[0])) for r in found.rows or []}
+        return held
+
+    def _checked_path_neighbours(self, types, graph):
+        """`checked_trails`' reader: each node's relationships of `types` in its graph (in batches of 500 nodes), the
+        far node by direction; an undirected walk takes a self-loop once, as CY_VLP_PATHS does."""
+        table = self._t("rdf_edges")
+        tw = f" AND p IN ({','.join('?' * len(types))})" if types else ""
+
+        def neighbours(keys, direction):
+            out = {k: [] for k in keys}
+            sides = {"out": [("s", 3)], "in": [("o_id", 1)]}.get(direction, [("s", 3), ("o_id", 1)])
+            for g, batch in _graph_batches(keys):
+                for col, far in sides:
+                    loop = " AND s <> o_id" if direction == "both" and col == "o_id" else ""
+                    found = self._store.execute_sql(
+                        f"SELECT edge_id, s, p, o_id, qualifiers FROM {table} WHERE {col} IN "
+                        f"({','.join('?' * len(batch))}){tw} AND COALESCE(graph_id, '') = COALESCE(?, ''){loop}",
+                        batch + types + [g],
+                    )
+                    if getattr(found, "error", None):
+                        raise RuntimeError(f"reading a variable-length pattern's relationships failed: {found.error}")
+                    for eid, s, p, o, q in found.rows or []:
+                        edge = (eid, str(s), str(p), str(o), q, g)
+                        out[(g, edge[1] if col == "s" else edge[3])].append((edge, edge[far]))
+            return out
+
+        return neighbours
+
+    def _shortest_path_edges(self, paths, graph):
+        """{(s, p, o): ((s, p, o), qualifiers JSON)} for the stored edges among each path's nodes.
+
+        Paths are read a batch at a time, a batch holding up to 200 distinct nodes: the edges between them, not every
+        edge out of a hub on the path.
+        """
+        _table = self._t
+
+        stored: dict = {}
+        batches: list = []
+        for nodes, types, _ in paths:
+            if not types:
+                continue
+            if not batches or len(batches[-1][0] | set(nodes)) > 200:
+                batches.append((set(), set()))
+            batches[-1][0].update(nodes)
+            batches[-1][1].update(types)
+        for ids, preds in batches:
+            ids, preds = sorted(ids), sorted(preds)
+            ph_ids, ph_preds = ",".join("?" * len(ids)), ",".join("?" * len(preds))
+            found = self._store.execute_sql(
+                f"SELECT s, p, o_id, qualifiers FROM {_table('rdf_edges')} "
+                f"WHERE s IN ({ph_ids}) AND o_id IN ({ph_ids}) AND p IN ({ph_preds}) "
+                "AND COALESCE(graph_id, '') = COALESCE(?, '')",
+                ids + ids + preds + [graph or ""],
+            )
+            if getattr(found, "error", None):
+                raise RuntimeError(f"shortestPath: reading the path's edges failed: {found.error}")
+            for s, p, o, q in found.rows or []:
+                key = (str(s), str(p), str(o))
+                stored[key] = (key, q or "{}")
+        return stored
+
+    def _execute_var_length_cypher(self, sql_query, parameters=None) -> Dict[str, Any]:
+        import json as _json
+        from iris_vector_graph.engine import _bfs_stream_pages
+        from iris_vector_graph.schema import _call_classmethod
+
+        if self._nkg_dirty:
+            from iris_vector_graph.errors import IndexNotSyncedError
+            raise IndexNotSyncedError()
+
+        vl = sql_query.var_length_paths[0]
+        predicates_json = _json.dumps(vl["types"]) if vl["types"] else ""
+        max_hops = vl["max_hops"]
+        min_hops = vl["min_hops"]
+        rel_props_filter = vl.get("properties", {})
+
+        params = sql_query.parameters[0] if sql_query.parameters else []
+        source_id = None
+        # The router resolved the source from the pattern. Guessing it from the first
+        # string in the statement's bound parameters picked the label (spec 025
+        # amendment 2026-10-07), so that guess is the fallback and not the rule.
+        pinned = vl.get("src_id_param")
+        if isinstance(pinned, str) and pinned and not pinned.startswith("$"):
+            source_id = pinned
+        elif isinstance(pinned, str) and pinned.startswith("$") and parameters:
+            source_id = str(parameters[pinned[1:]]) if pinned[1:] in parameters else None
+        if source_id is None:
+            for item in params:
+                if isinstance(item, str) and not item.startswith("Graph_KG"):
+                    source_id = item
+                    break
+        if source_id is None and parameters:
+            src_var = vl.get("source_var")
+            if src_var and src_var in parameters:
+                source_id = str(parameters[src_var])
+            else:
+                source_id = next(iter(parameters.values()), None)
+
+        if source_id is None:
+            return IVGResult(                columns= [],
+                rows= [],
+                sql= "",
+                params= [],
+                metadata= sql_query.query_metadata
+            )
+
+        import re as _re
+        sql_str = sql_query.sql if isinstance(sql_query.sql, str) else (sql_query.sql[0] if sql_query.sql else "")
+        max_results = _extract_sql_row_limit(sql_str)
+
+        count_match = _re.search(r'SELECT\s+COUNT\s*\(\s*DISTINCT\s+.*?\)\s+AS\s+(\w+)', sql_str, _re.IGNORECASE)
+        if count_match:
+            col_name = count_match.group(1)
+            # the ends at min..max hops, each once (Graph.KG.VarLength, the native path's walk). BFSFastCountDistinct
+            # counted every node within max hops: `*2..2` counted the start through its self-loop
+            graph = getattr(sql_query, "graph_context", None) or ""
+            try:
+                cnt = int(str(_call_classmethod(
+                    self.conn, "Graph.KG.VarLength", "EndsCount",
+                    source_id, predicates_json, vl.get("direction", "out"), min_hops, max_hops, 0, graph,
+                )))
+            except Exception as ex:
+                # as _route_var_length's count: the BFS rows, one per node per depth, counted by node
+                logger.debug("VarLength.EndsCount unavailable, counting BFS rows: %s", ex)
+                bfs_result = self._store.execute_bfs(
+                    source_id, vl["types"], max_hops, vl.get("direction", "out"), 0, graph=graph or None
+                )
+                if bfs_result.error:  # 4.6.0: a failed walk raises; it counted 0
+                    raise RuntimeError(f"var-length count: the BFS from {source_id!r} failed: {bfs_result.error}")
+                cnt = len({row[0] for row in bfs_result.rows if row})
+            return IVGResult(                columns= [col_name],
+                rows= [[cnt]],
+                sql= f"VarLength.EndsCount({source_id}, {predicates_json}, {min_hops}..{max_hops})",
+                params= [],
+                metadata= sql_query.query_metadata
+            )
+
+        bfs_results = None
+        direction = vl.get("direction", "out")
+        arno_usable = (
+            self._detect_arno()
+            and self._arno_capabilities.get("bfs")
+            and self._arno_capabilities.get("rust_callout")
+            and direction == "out"
+        )
+        if arno_usable:
+            try:
+                bfs_json = self._arno_call(
+                    "Graph.KG.NKGAccel",
+                    "BFSJson",
+                    source_id,
+                    predicates_json,
+                    max_hops,
+                    max_results,
+                )
+                bfs_str = str(bfs_json) if bfs_json else ""
+                if bfs_str == "SORTED:0":
+                    # An empty answer, not JSON: parsing it logged a failure and ran the
+                    # ObjectScript BFS to find the same nothing.
+                    bfs_results = []
+                elif bfs_str.startswith("SORTED:"):
+                    tag = bfs_str.split(":")[1]
+                    if max_results == 0:
+                        bfs_results = list(_bfs_stream_pages(self.conn, tag))
+                    else:
+                        try:
+                            results_str = str(_call_classmethod(
+                                self.conn, "Graph.KG.Traversal", "ReadBFSResults", tag
+                            ))
+                            bfs_results = _json.loads(results_str)
+                        except Exception:
+                            bfs_results = list(_bfs_stream_pages(self.conn, tag))
+                elif bfs_str:
+                    bfs_results = _json.loads(bfs_str)
+                else:
+                    bfs_results = []
+                logger.debug("Arno BFSJson: %d results for %s", len(bfs_results), source_id)
+            except Exception as e:
+                logger.warning(f"Arno BFSJson failed, falling back to BFSFastJsonSorted: {e}")
+                bfs_results = None
+
+        if bfs_results is None:
+            direction = vl.get("direction", "out")
+            try:
+                resp = str(_call_classmethod(
+                    self.conn, "Graph.KG.Traversal", "BFSFastJsonSorted",
+                    # a [:A|B*] hop walks either type at every hop, as BFSJson does: a set, not BFSFast's sequence
+                    source_id, predicates_json, max_hops, "", direction, max_results, "", 1,
+                ))
+                if resp.startswith("SORTED:") and resp != "SORTED:0":
+                    tag = resp.split(":", 2)[1]
+                    if max_results == 0:
+                        bfs_results = list(_bfs_stream_pages(self.conn, tag))
+                    else:
+                        try:
+                            results_str = str(_call_classmethod(
+                                self.conn, "Graph.KG.Traversal", "ReadBFSResults", tag
+                            ))
+                            bfs_results = _json.loads(results_str)
+                        except Exception:
+                            bfs_results = list(_bfs_stream_pages(self.conn, tag))
+                else:
+                    bfs_results = []
+            except Exception as e:  # 4.6.0: raises; it answered no rows, logged at WARNING
+                raise RuntimeError(f"var-length walk (BFSFastJsonSorted) from {source_id!r} failed: {e}") from e
+
+        if min_hops > 1:
+            min_step_per_node: dict = {}
+            for r in bfs_results:
+                oid = r.get("o")
+                if oid:
+                    s = r.get("step", 1)
+                    if oid not in min_step_per_node or s < min_step_per_node[oid]:
+                        min_step_per_node[oid] = s
+            bfs_results = [
+                r
+                for r in bfs_results
+                if min_step_per_node.get(r.get("o"), 0) >= min_hops
+            ]
+
+        if rel_props_filter and bfs_results:
+            bfs_results = self._filter_edges_by_properties(bfs_results, rel_props_filter)
+
+        seen = set()
+        target_ids = []
+        for r in bfs_results:
+            oid = r.get("o")
+            if oid and oid not in seen:
+                seen.add(oid)
+                target_ids.append(oid)
+
+        sql_str = sql_query.sql if isinstance(sql_query.sql, str) else ""
+
+        # Fast path: if query only needs node IDs (RETURN DISTINCT b.node_id or RETURN b.node_id),
+        # skip get_nodes() entirely — BFS already has the IDs.
+        id_only_match = _re.search(
+            r'SELECT\s+(?:DISTINCT\s+)?(?:\S+\.node_id|\S+\.id)\s+AS\s+(\w+)',
+            sql_str, _re.IGNORECASE
+        )
+        # Count path: COUNT(DISTINCT ...) — just return the count
+        count_match = _re.search(
+            r'SELECT\s+COUNT\s*\(\s*DISTINCT\s+.*?\)\s+AS\s+(\w+)',
+            sql_str, _re.IGNORECASE
+        )
+
+        if count_match:
+            col_name = count_match.group(1)
+            return IVGResult(                columns= [col_name],
+                rows= [[len(target_ids)]],
+                sql= f"BFSFastJson({source_id}, {predicates_json}, {max_hops})",
+                params= [],
+                metadata= sql_query.query_metadata
+            )
+
+        if id_only_match:
+            col_name = id_only_match.group(1)
+            # Apply LIMIT from SQL if present
+            limit_match = _re.search(r'\bLIMIT\s+(\d+)', sql_str, _re.IGNORECASE)
+            limit = int(limit_match.group(1)) if limit_match else None
+            result_ids = target_ids[:limit] if limit else target_ids
+            return IVGResult(                columns= [col_name],
+                rows= [[nid] for nid in result_ids],
+                sql= f"BFSFastJson({source_id}, {predicates_json}, {max_hops})",
+                params= [],
+                metadata= sql_query.query_metadata
+            )
+
+        # Full path: caller wants labels/props — fall through to get_nodes()
+        alias_match = _re.search(r'SELECT\s+DISTINCT\s+\S+\s+AS\s+(\w+)|SELECT\s+\S+\s+AS\s+(\w+)', sql_str, _re.IGNORECASE)
+        col_name = (alias_match.group(1) or alias_match.group(2)) if alias_match else "b_id"
+
+        if not target_ids:
+            return IVGResult(                columns= [col_name, "b_labels", "b_props"],
+                rows= [],
+                sql= "",
+                params= [],
+                metadata= sql_query.query_metadata
+            )
+
+        nodes = self.get_nodes(target_ids)
+        rows = []
+        for data in nodes:
+            node_id = data.get("id", "")
+            rows.append(
+                (
+                    node_id,
+                    data.get("labels", []),
+                    {k: v for k, v in data.items() if k not in ("labels", "id")},
+                )
+            )
+
+        return IVGResult(            columns= [col_name, "b_labels", "b_props"],
+            rows= [list(r) for r in rows],
+            sql= f"BFSFastJson({source_id}, {predicates_json}, {max_hops})",
+            params= [],
+            metadata= sql_query.query_metadata
+        )
+    def _try_khop_fast_path(self, cypher_query: str, parameters) -> Optional[Dict[str, Any]]:
+        import re as _re
+
+        # every shortcut below starts at one node named by its node_id; any other query skips the graph listing's
+        # round trips and these regexes (about 0.2 ms, paid by every Cypher query before)
+        if not _re.match(r"\s*MATCH\s*\(\s*\w+\s*\{\s*node_id\s*:\s*\$", cypher_query, _re.IGNORECASE):
+            return None
+
+
+        _1HOP_COUNT_RE = _re.compile(
+            r'''^\s*MATCH\s*\(\s*\w+\s*\{\s*node_id\s*:\s*\$(\w+)\s*\}\s*\)
+                \s*-\s*\[\s*:\s*(\w+)\s*\]\s*->\s*\(\s*(\w+)\s*\)
+                \s*RETURN\s+count\s*\(\s*\3\s*\)\s+AS\s+(\w+)\s*$''',
+            _re.IGNORECASE | _re.VERBOSE,
+        )
+        _1HOP_IDS_RE = _re.compile(
+            r'''^\s*MATCH\s*\(\s*\w+\s*\{\s*node_id\s*:\s*\$(\w+)\s*\}\s*\)
+                \s*-\s*\[\s*:\s*(\w+)\s*\]\s*->\s*\(\s*(\w+)\s*\)
+                \s*RETURN\s+\3\.node_id(?:\s+AS\s+(\w+))?\s*$''',
+            _re.IGNORECASE | _re.VERBOSE,
+        )
+        params = parameters or {}
+
+        # Graph.KG.Traversal's k-hop methods read the default graph's adjacency; the same query on the SQL path reads
+        # every graph (spec 253, T006). Answer here only when the default graph is the only one with edges.
+        graphs = self._edge_graphs()
+        if graphs and graphs != [""]:
+            return None
+
+        m = _1HOP_COUNT_RE.match(cypher_query)
+        if m:
+            src_param, pred, _nvar, col = m.group(1), m.group(2), m.group(3), m.group(4)
+            src_id = params.get(src_param)
+            if src_id is None:
+                return None
+            try:
+                cnt = int(self._iris_obj().classMethodValue(
+                    "Graph.KG.Traversal", "KHopCount", str(src_id), pred
+                ))
+                return IVGResult(columns=[col], rows=[(cnt,)])
+            except Exception:
+                return None
+
+        m = _1HOP_IDS_RE.match(cypher_query)
+        if m:
+            src_param, pred, nvar, alias = m.group(1), m.group(2), m.group(3), m.group(4)
+            src_id = params.get(src_param)
+            if src_id is None:
+                return None
+            try:
+                raw = str(self._iris_obj().classMethodValue(
+                    "Graph.KG.Traversal", "KHopNeighborIds", str(src_id), pred
+                ))
+                # KHopNeighborIds returns "" for no results; ObjectScript None → "None"
+                ids = [x for x in raw.split("\n") if x and x != "None"]
+                # the column RETURN names: `m.node_id` unaliased, not `node_id` (4.6.0, R068)
+                col = alias or f"{nvar}.node_id"
+                return IVGResult(columns=[col], rows=[(nid,) for nid in ids])
+            except Exception:
+                return None
+
+        # No shortcut for `[:P*2]` either (4.6.0, R068): KHop2NeighborIds and KHop2CountExact answer the nodes first
+        # reached at distance two, each once, under `node_id`; `*2` is every path of two relationships, a row each.
+        # No shortcut for `(n {node_id: $x})-[:P*1..K]->(m) RETURN m.node_id` (4.6.0, #80): its ^NKG k-hop answered
+        # each node once (a row per path is the answer), under the column `node_id`, over every predicate whatever
+        # the pattern named, from ^NKG however stale, and dropped the start reached back by a cycle.
+        return None
+    def _execute_approx_count_distinct(self, cypher_query: str, parameters, match, **opts) -> IVGResult:
+        """approx_count_distinct from the HLL route (CountDistinctKHop over ^NKG) where it answers the query as
+        written, else counted exactly; a query that does not parse goes to the exact path, which reports its error."""
+        from iris_vector_graph.cypher.translator import QueryMetadata
+        from iris_vector_graph.schema import _call_classmethod
+
+        try:
+            q = parse_query(cypher_query)
+        except Exception as ex:
+            return self._approx_counted_exactly(cypher_query, parameters, f"a query that did not parse ({type(ex).__name__})", **opts)
+        read, reason = self._approx_hll_read(q, parameters or {})
+        if reason:
+            return self._approx_counted_exactly(cypher_query, parameters, reason, **opts)
+
+        predicates_json = json.dumps(read["types"]) if read["types"] else ""
+        try:
+            result = json.loads(str(_call_classmethod(
+                self.conn, "Graph.KG.NKGAccel", "CountDistinctKHop",
+                read["source"], predicates_json, read["max_hops"], read["direction"],
+            )))
+            estimate = result.get("estimate", 0)
+            registers = result.get("registers", 256)
+            std_error = result.get("std_error", 0.065)
+        except Exception as e:
+            logger.warning(f"CountDistinctKHop failed: {e}")
+            return self._approx_counted_exactly(cypher_query, parameters, f"the HLL route failed ({type(e).__name__})", **opts)
+        if not estimate:
+            # a source with no neighbours answers 0, and so does one the snapshot does not hold (never synced, or
+            # dropped by an erase): the exact count tells them apart
+            return self._approx_counted_exactly(
+                cypher_query, parameters, "the HLL route answered 0, which a source missing from ^NKG also answers",
+                **opts,
+            )
+
+        meta = QueryMetadata(
+            warnings=[
+                f"approx_count_distinct: HLL-{registers}, "
+                f"std_error={std_error*100:.1f}%, registers={registers}"
+            ]
+        )
+        return IVGResult(
+            columns=[read["column"]],
+            rows=[[estimate]],
+            sql=f"CountDistinctKHop({read['source']}, {predicates_json}, {read['max_hops']})",
+            params=[],
+            metadata=meta,
+        )
+
+    @staticmethod
+    def _approx_hll_read(q, parameters) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+        """(read, None): what the HLL route takes to answer parsed query `q` as written; or (None, why it cannot).
+
+        The route answers one count: the distinct far ends of one variable-length hop, at least one hop away, from a
+        start pinned by `node_id`, by types, maximum hops and direction, in no graph, as the query's one row. The
+        source is read from the pattern or its WHERE pin, and nowhere else.
+        """
+        from iris_vector_graph.cypher import ast as _ast
+
+        pattern_reason = "a pattern the HLL route does not apply (it walks one variable-length hop and checks nothing)"
+        if q.graph_context is not None:
+            return None, "USE GRAPH: the HLL snapshot has no graph"
+        if (
+            q.union_queries or q.subsequent_queries or q.procedure_call is not None or q.skip is not None
+            or q.limit is not None or q.order_by_clause is not None or len(q.query_parts) != 1
+        ):
+            return None, "a query shape the HLL route does not answer (a stage, a union, SKIP, LIMIT or ORDER BY)"
+        part = q.query_parts[0]
+        items = q.return_clause.items if q.return_clause is not None else []
+        agg = items[0].expression if len(items) == 1 else None
+        if not (
+            isinstance(agg, _ast.FunctionCall) and agg.function_name.lower() == "approx_count_distinct"
+            and len(agg.arguments) == 1 and isinstance(agg.arguments[0], _ast.Variable)
+        ):
+            return None, "a RETURN the HLL route does not answer (it returns one approx_count_distinct column)"
+        if part.with_clause is not None or part.procedure_call is not None or not all(
+            isinstance(c, (_ast.MatchClause, _ast.WhereClause)) for c in part.clauses
+        ):
+            return None, pattern_reason
+        matches = [c for c in part.clauses if isinstance(c, _ast.MatchClause)]
+        if len(matches) != 1 or matches[0].optional or matches[0].named_paths or len(matches[0].patterns) != 1:
+            return None, pattern_reason
+        pattern = matches[0].patterns[0]
+        if len(pattern.relationships) != 1:
+            return None, pattern_reason
+        rel, (start, far) = pattern.relationships[0], pattern.nodes
+        vl = rel.variable_length
+        if vl is None or vl.shortest or vl.all_shortest or rel.properties or far.labels or far.properties:
+            return None, pattern_reason
+        if vl.min_hops != 1:
+            return None, "a minimum hop count other than 1"
+        if start.labels:
+            return None, "a label on the start node"
+        if agg.arguments[0].name != far.variable or far.variable == start.variable:
+            return None, "a count of something other than the hop's far end"
+
+        # the start's id pin: `{node_id: v}`, or a WHERE of nothing but `start.node_id = v`
+        pins = [start.properties["node_id"]] if set(start.properties or {}) == {"node_id"} else []
+        if start.properties and not pins:
+            return None, pattern_reason
+        for clause in part.clauses:
+            if isinstance(clause, _ast.WhereClause):
+                stack = [clause.expression]
+                while stack:
+                    expr = stack.pop()
+                    if isinstance(expr, _ast.BooleanExpression) and expr.operator == _ast.BooleanOperator.AND:
+                        stack.extend(expr.operands)
+                        continue
+                    if not (
+                        isinstance(expr, _ast.BooleanExpression) and expr.operator == _ast.BooleanOperator.EQUALS
+                        and len(expr.operands) == 2
+                    ):
+                        return None, pattern_reason
+                    ref, value = expr.operands
+                    if not isinstance(ref, _ast.PropertyReference):
+                        ref, value = value, ref
+                    if not (
+                        isinstance(ref, _ast.PropertyReference) and start.variable
+                        and ref.variable == start.variable and ref.property_name == "node_id"
+                    ):
+                        return None, pattern_reason
+                    pins.append(value)
+        sources = set()
+        for pin in pins:
+            if isinstance(pin, _ast.Literal):
+                sources.add(pin.value)
+            elif isinstance(pin, _ast.Variable) and pin.is_parameter:
+                sources.add(parameters.get(pin.name))
+            else:
+                sources.add(None)
+        source = sources.pop() if len(sources) == 1 else None
+        if not isinstance(source, str) or not source:
+            return None, "no source node id the HLL route can read (bind the start's node_id as a string)"
+
+        if rel.direction != _ast.Direction.OUTGOING:
+            # CountDistinctKHop merges ^NKG("$agg") sketches of OUTGOING neighbours: an incoming walk counts the wrong
+            # ones, an undirected one walks back over the relationship it arrived by (4.6.0 R070)
+            return None, "an incoming or undirected hop (the HLL sketches hold outgoing neighbours only)"
+        column = items[0].alias or items[0].source_text or f"approx_count_distinct({far.variable})"
+        read = {"source": source, "types": list(rel.types or []), "max_hops": vl.max_hops, "direction": "out"}
+        return dict(read, column=column), None
+
+    def _approx_counted_exactly(self, cypher_query: str, parameters, reason: str, **opts) -> IVGResult:
+        """approx_count_distinct answered as count(DISTINCT ...): an exact count is a valid approximation. Every call
+        is rewritten, so execute_cypher cannot dispatch the query back here; that includes one in a string literal."""
+        from iris_vector_graph.cypher.translator import QueryMetadata
+
+        exact = re.sub(r"\bapprox_count_distinct\s*\(", "count(DISTINCT ", cypher_query, flags=re.IGNORECASE)
+        result = self.execute_cypher(exact, parameters, **opts)
+        # an unnamed column is named by its text as written: give each unnamed call's column back its own text
+        unnamed = {}
+        for m in re.finditer(r"\bapprox_count_distinct\s*\([^()]*\)(?!\s*AS\b)", cypher_query, re.IGNORECASE):
+            unnamed[re.sub(r"\bapprox_count_distinct\s*\(", "count(DISTINCT ", m.group(0), flags=re.IGNORECASE)] = m.group(0)
+        result.columns = [unnamed.get(c, c) if isinstance(c, str) else c for c in result.columns]
+        result.metadata = result.metadata or QueryMetadata()
+        warning = f"approx_count_distinct: counted exactly, because of {reason}"
+        result.metadata.warnings = [*(result.metadata.warnings or []), warning]
+        return result
+
+    def khop2_count_fast(self, node_id: str, predicate: str = "") -> int:
+        """How many nodes are first reached at the second outbound hop from ``node_id``.
+
+        Default graph; neither ``node_id`` nor a direct neighbour is counted, and with a
+        ``predicate`` both hops follow it. With a predicate it reads the precomputed
+        ``^KG("deg2p")`` count when there is one and it is current (built at the current ``^KG("__version")``, its
+        stamp ``^IVG.BuiltFrom("deg2p")``; any write since makes it stale, 4.6.0 R284); otherwise it counts by
+        walking ``^KG("out")``.
+        Read-only. ``khop2_count_exact`` reads the exact precomputed counts instead.
+        """
+        KHop2Input(node_id=node_id)
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.Traversal", "KHop2CountFast", node_id, predicate
+        )
+        return int(result)
+    def khop2_count_exact(self, node_id: str, predicate: str = "") -> int:
+        """``khop2_count_fast``'s count, read from the exact precomputed counts.
+
+        With a ``predicate`` it reads the ``^KG("deg2p_exact")`` count that
+        ``backfill_deg2p_exact`` writes, when there is one and it is current (``^IVG.BuiltFrom("deg2p_exact")``,
+        as ``khop2_count_fast``); otherwise it counts by walking ``^KG("out")``. Default graph; read-only.
+        """
+        KHop2Input(node_id=node_id)
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.Traversal", "KHop2CountExact", node_id, predicate
+        )
+        return int(result)

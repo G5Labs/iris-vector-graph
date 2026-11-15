@@ -1,0 +1,154 @@
+{
+  "verdict": "OBSERVED_ACTUAL_SOURCE_BOUNDARIES",
+  "cases": [
+    {
+      "name": "temporal record ignored by structural fold but diff treats contributing unknown op as attribute",
+      "input": {
+        "seq": 1,
+        "ordinal": 1,
+        "op": "create_temporal_edge",
+        "entity_kind": "temporal_edge",
+        "entity_id": "x",
+        "attr": "",
+        "prior": null,
+        "new": "{\"graph\":\"named\",\"o\":\"b\",\"p\":\"R\",\"s\":\"a\"}",
+        "graph": "named",
+        "flags": []
+      },
+      "actual": {
+        "node_ids": [],
+        "stmt_ids": [],
+        "entries": [
+          {
+            "entity_kind": "temporal_edge",
+            "entity_id": "x",
+            "attr": "qual:",
+            "before": null,
+            "after": "{\"graph\":\"named\",\"o\":\"b\",\"p\":\"R\",\"s\":\"a\"}"
+          }
+        ],
+        "redacted": []
+      },
+      "agrees": true
+    },
+    {
+      "name": "non-node non-revision kind with create_rel still enters relationship reader",
+      "input": {
+        "seq": 1,
+        "ordinal": 1,
+        "op": "create_rel",
+        "entity_kind": "other-kind",
+        "entity_id": "x",
+        "attr": "",
+        "prior": null,
+        "new": "{\"graph\":\"named\",\"o\":\"b\",\"p\":\"R\",\"s\":\"a\"}",
+        "graph": "named",
+        "flags": []
+      },
+      "actual": {
+        "node_ids": [],
+        "stmt_ids": [
+          "x"
+        ],
+        "entries": [
+          {
+            "entity_kind": "other-kind",
+            "entity_id": "x",
+            "attr": "",
+            "before": null,
+            "after": "{\"graph\":\"named\",\"o\":\"b\",\"p\":\"R\",\"s\":\"a\"}"
+          }
+        ],
+        "redacted": []
+      },
+      "agrees": true
+    },
+    {
+      "name": "create_node with rel kind ignored by fold but classified as creation by diff",
+      "input": {
+        "seq": 1,
+        "ordinal": 1,
+        "op": "create_node",
+        "entity_kind": "rel",
+        "entity_id": "x",
+        "attr": "",
+        "prior": null,
+        "new": "{\"graph\":\"named\",\"o\":\"b\",\"p\":\"R\",\"s\":\"a\"}",
+        "graph": "named",
+        "flags": []
+      },
+      "actual": {
+        "node_ids": [],
+        "stmt_ids": [],
+        "entries": [
+          {
+            "entity_kind": "rel",
+            "entity_id": "x",
+            "attr": "",
+            "before": null,
+            "after": "{\"graph\":\"named\",\"o\":\"b\",\"p\":\"R\",\"s\":\"a\"}"
+          }
+        ],
+        "redacted": []
+      },
+      "agrees": true
+    },
+    {
+      "name": "revision audit ignored by both",
+      "input": {
+        "seq": 1,
+        "ordinal": 1,
+        "op": "arbitrary",
+        "entity_kind": "revision",
+        "entity_id": "x",
+        "attr": "",
+        "prior": null,
+        "new": "{\"graph\":\"named\",\"o\":\"b\",\"p\":\"R\",\"s\":\"a\"}",
+        "graph": "named",
+        "flags": []
+      },
+      "actual": {
+        "node_ids": [],
+        "stmt_ids": [],
+        "entries": [],
+        "redacted": []
+      },
+      "agrees": true
+    },
+    {
+      "name": "tombstone tracked separately in diff",
+      "input": {
+        "seq": 1,
+        "ordinal": 1,
+        "op": "redacted",
+        "entity_kind": "node",
+        "entity_id": "x",
+        "attr": "",
+        "prior": null,
+        "new": "{\"graph\":\"named\",\"o\":\"b\",\"p\":\"R\",\"s\":\"a\"}",
+        "graph": "named",
+        "flags": [],
+        "digest": null,
+        "redacted_op": null
+      },
+      "actual": {
+        "node_ids": [],
+        "stmt_ids": [],
+        "entries": [],
+        "redacted": [
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      "agrees": true
+    }
+  ],
+  "socket_connect_calls": 0,
+  "native_calls": 0,
+  "elapsed_s": 0.42386245797388256,
+  "source_sha256": "2cf6d87ea3b1c66f785c1bf8dcd7cf38c99e29cc3cac2794d73edf6af20d00b3",
+  "script_sha256": "635756895c39123258ff8a8f21b2496012145b308118a701c13fb0d195fd6c51",
+  "scope": "Five L19 pure-reader contrasts. Nonordinary kind/op and temporal histories limit a general endpoint theorem; no new product issue, native/SQL reachability, policy or formal coverage claim. Actual decoder constructors/readers unchanged, no candidate import."
+}

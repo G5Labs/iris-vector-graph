@@ -1,0 +1,49 @@
+verification results:: 71 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:394:1
+    |
+394 | pub proof fn theorem_raw_sql_incidence_agree(g:Seq<Coord>,e:Seq<EdgeRow>,u:Node)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:396:13
+    |
+396 |     ensures members(g).contains(u) <==> sql_incident(e,u),raw_other(g,u) <==> sql_other(e,u),raw_out(g,u) <==> sql_out(e,u),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+404 |     if sql_out(e,u){let i=choose|i:int|0<=i<e.le...=j<g.len() && g[j]==a;assert(raw_out(g,u));}
+    |     --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:396:94
+    |
+396 |     ensures members(g).contains(u) <==> sql_incident(e,u),raw_other(g,u) <==> sql_other(e,u),raw_out(g,u) <==> sql_out(e,u),
+    |                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+404 |     if sql_out(e,u){let i=choose|i:int|0<=i<e.le...=j<g.len() && g[j]==a;assert(raw_out(g,u));}
+    |     --------------------------------------------...-------------------------------------------- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:674:1
+    |
+674 | pub proof fn theorem_foreign_graph_coordinates_do_not_enter_default_core(g:Seq<Coord>,limit:Option<int>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:678:12
+    |
+678 |     assert(g.all(|a:Coord|!selected(a)));g.lemma_all_neg_filter_empty(|a:Coord|selected(a));assert(members(g) =~= Set::empty());ass...
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:678:42
+    |
+678 |     assert(g.all(|a:Coord|!selected(a)));g.lemma_all_neg_filter_empty(|a:Coord|selected(a));assert(members(g) =~= Set::empty());ass...
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq_lib.rs:1762:12
+    |
+    = note: failed precondition
+
+error: aborting due to 4 previous errors
+

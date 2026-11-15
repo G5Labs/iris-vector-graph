@@ -1,0 +1,606 @@
+import base64
+import json
+import math
+import os
+import struct
+from unittest.mock import MagicMock
+
+import pytest
+
+SKIP_IRIS_TESTS = os.environ.get("SKIP_IRIS_TESTS", "false").lower() == "true"
+
+# ivf_build imports sklearn (only in the [ml]/[plaid] extras, not [full]); skip
+# the build-path tests when it is absent so CI without those extras stays green.
+try:
+    import sklearn  # noqa: F401
+    HAS_SKLEARN = True
+except ImportError:
+    HAS_SKLEARN = False
+
+
+def _make_engine():
+    from iris_vector_graph.engine import IRISGraphEngine
+
+    engine = IRISGraphEngine.__new__(IRISGraphEngine)
+    engine.conn = MagicMock()
+    engine._index_registry = {}
+    engine._arno_available = None
+    engine._arno_capabilities = {}
+    engine._nkg_dirty = False
+    engine._native_vec_available = None
+    engine._schema_prefix = "Graph_KG"
+    return engine
+
+
+def _encode_vec(floats):
+    return base64.b64encode(struct.pack(f"{len(floats)}f", *floats)).decode()
+
+
+def _cosine(a, b):
+    dot = sum(x * y for x, y in zip(a, b))
+    na = math.sqrt(sum(x * x for x in a))
+    nb = math.sqrt(sum(x * x for x in b))
+    if na == 0 or nb == 0:
+        return 0.0
+    return dot / (na * nb)
+
+
+@pytest.mark.requires_clean_isolation
+@pytest.mark.skipif(not HAS_SKLEARN, reason="sklearn not installed (ivf_build requires it)")
+class TestIVFIndexUnit:
+
+    def test_ivf_build_calls_classmethod(self):
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '{"nlist":2,"dim":3,"metric":"cosine","indexed":2}'
+        engine._iris_obj = lambda: iris_mock
+
+        cursor_mock = MagicMock()
+        cursor_mock.fetchall.return_value = [
+            ("n1", _encode_vec([0.1, 0.2, 0.3])),
+            ("n2", _encode_vec([0.4, 0.5, 0.6])),
+        ]
+        engine.conn.cursor.return_value = cursor_mock
+
+        engine.ivf_build("test46a", nlist=2)
+
+        calls = iris_mock.classMethodValue.call_args_list
+        build_calls = [c for c in calls if len(c.args) > 1 and c.args[1] == "Build"]
+        assert build_calls, "ivf_build must call Graph.KG.IVFIndex.Build"
+        assert build_calls[0].args[0] == "Graph.KG.IVFIndex"
+        assert build_calls[0].args[2] == "test46a"
+
+    def test_ivf_build_returns_dict(self):
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '{"nlist":2,"dim":3,"metric":"cosine","indexed":2}'
+        engine._iris_obj = lambda: iris_mock
+
+        cursor_mock = MagicMock()
+        cursor_mock.fetchall.return_value = [
+            ("n1", _encode_vec([0.1, 0.2, 0.3])),
+            ("n2", _encode_vec([0.4, 0.5, 0.6])),
+        ]
+        engine.conn.cursor.return_value = cursor_mock
+
+        result = engine.ivf_build("test46a", nlist=2)
+        assert isinstance(result, dict)
+        assert "nlist" in result
+        assert "indexed" in result
+        assert "dim" in result
+
+    def test_ivf_build_idempotent_unit(self):
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '{"nlist":2,"dim":3,"metric":"cosine","indexed":1}'
+        engine._iris_obj = lambda: iris_mock
+
+        cursor_mock = MagicMock()
+        cursor_mock.fetchall.return_value = [
+            ("n1", _encode_vec([0.1, 0.2, 0.3])),
+        ]
+        engine.conn.cursor.return_value = cursor_mock
+
+        engine.ivf_build("test46a", nlist=2)
+        engine.ivf_build("test46a", nlist=2)
+
+        build_calls = [c for c in iris_mock.classMethodValue.call_args_list
+                       if len(c.args) > 1 and c.args[1] == "Build"]
+        assert len(build_calls) == 2
+
+    def test_ivf_search_returns_sorted_tuples(self):
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '[{"id":"A","score":0.95},{"id":"B","score":0.82}]'
+        engine._iris_obj = lambda: iris_mock
+
+        result = engine.ivf_search("test46a", [0.1, 0.2, 0.3], k=2, nprobe=2)
+        assert result == [("A", 0.95), ("B", 0.82)]
+        assert result[0][1] >= result[1][1]
+
+    def test_ivf_search_empty_index_returns_empty(self):
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = "[]"
+        engine._iris_obj = lambda: iris_mock
+
+        result = engine.ivf_search("test46_noexist", [0.1, 0.2], k=5, nprobe=2)
+        assert result == []
+
+    def test_ivf_drop_calls_classmethod(self):
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        engine._iris_obj = lambda: iris_mock
+
+        engine.ivf_drop("test46x")
+        calls = iris_mock.classMethodVoid.call_args_list
+        assert any(c.args[1] == "Drop" and c.args[2] == "test46x" for c in calls)
+
+    def test_ivf_info_returns_dict(self):
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '{"nlist":4,"dim":3,"metric":"cosine","indexed":5}'
+        engine._iris_obj = lambda: iris_mock
+
+        result = engine.ivf_info("test46a")
+        assert isinstance(result, dict)
+        assert result["nlist"] == 4
+        assert result["indexed"] == 5
+
+    def test_ivf_info_missing_returns_empty(self):
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = "{}"
+        engine._iris_obj = lambda: iris_mock
+
+        result = engine.ivf_info("test46_missing")
+        assert result == {}
+
+    def test_ivf_cypher_translation_produces_cte(self):
+        from iris_vector_graph.cypher.translator import translate_to_sql
+        from iris_vector_graph.cypher.parser import parse_query
+
+        q = "CALL ivg.ivf.search('myidx', [0.1, 0.2, 0.3], 5, 2) YIELD node, score RETURN node, score ORDER BY score DESC"
+        parsed = parse_query(q)
+        sql_obj = translate_to_sql(parsed, {})
+        sql = sql_obj.sql if isinstance(sql_obj.sql, str) else "\n".join(sql_obj.sql)
+        assert "IVF AS (" in sql or "IVF" in sql
+        assert "Graph_KG.kg_IVF" in sql or "kg_IVF" in sql
+
+    def test_ivf_cypher_rejects_wrong_argcount(self):
+        from iris_vector_graph.cypher.translator import translate_to_sql
+        from iris_vector_graph.cypher.parser import parse_query
+
+        q = "CALL ivg.ivf.search('myidx', [0.1]) YIELD node, score RETURN node, score"
+        parsed = parse_query(q)
+        with pytest.raises(ValueError, match="ivg.ivf.search"):
+            translate_to_sql(parsed, {})
+
+    def test_ivf_build_uses_schema_prefix(self):
+        """ivf_build must respect schema prefix — bug: was hardcoding Graph_KG."""
+        from iris_vector_graph.cypher.translator import set_schema_prefix, get_schema_prefix
+
+        orig_prefix = get_schema_prefix()
+        set_schema_prefix("MySchema")
+        try:
+            engine = _make_engine()
+            engine._schema_prefix = "MySchema"
+            iris_mock = MagicMock()
+            iris_mock.classMethodValue.return_value = '{"nlist":2,"dim":3,"metric":"cosine","indexed":2}'
+            engine._iris_obj = lambda: iris_mock
+
+            captured_sqls = []
+
+            def mock_cursor():
+                c = MagicMock()
+                def capture_execute(sql, *args, **kw):
+                    captured_sqls.append(sql)
+                c.execute.side_effect = capture_execute
+                c.fetchall.return_value = [
+                    ("n1", _encode_vec([0.1, 0.2, 0.3])),
+                    ("n2", _encode_vec([0.4, 0.5, 0.6])),
+                ]
+                return c
+
+            engine.conn.cursor.side_effect = mock_cursor
+
+            engine.ivf_build("test_schema", nlist=2)
+        finally:
+            set_schema_prefix(orig_prefix)
+
+        assert captured_sqls, "ivf_build must execute a SELECT"
+        for sql in captured_sqls:
+            assert "Graph_KG." not in sql, (
+                f"ivf_build hardcoded Graph_KG schema prefix; got: {sql}"
+            )
+        # 4.0.0 resolves the route first, so the registry lookup is captured too;
+        # the vector read is the statement that has to carry the prefixed table.
+        assert any("MySchema.kg_NodeEmbeddings" in sql for sql in captured_sqls), (
+            f"ivf_build must use schema prefix; got: {captured_sqls}"
+        )
+
+
+@pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+@pytest.mark.requires_clean_isolation
+class TestIVFIndexE2E:
+
+    @pytest.fixture(autouse=True)
+    def setup(self, iris_master_cleanup, iris_connection):
+        import uuid
+        from iris_vector_graph.engine import IRISGraphEngine
+
+        cursor = iris_connection.cursor()
+        for tbl in ("Graph_KG.kg_EdgeEmbeddings", "Graph_KG.docs"):
+            try:
+                cursor.execute(f"DELETE FROM {tbl}")
+            except Exception:
+                pass
+        try:
+            iris_connection.commit()
+        except Exception:
+            pass
+
+        self.engine = IRISGraphEngine(iris_connection, embedding_dimension=768)
+        self._run = uuid.uuid4().hex[:8]
+        self.engine.initialize_schema()
+        yield
+
+        for idx in [f"test46a_{self._run}", f"test46b_{self._run}",
+                    f"test46c_{self._run}", f"test46d_{self._run}",
+                    f"test46e_{self._run}"]:
+            try:
+                self.engine.ivf_drop(idx)
+            except Exception:
+                pass
+
+    def _make_nodes_with_embeddings(self, n: int, dim: int = 4):
+        import random
+        rng = random.Random(42)
+        nodes = []
+        cursor = self.engine.conn.cursor()
+        for i in range(n):
+            nid = f"ivf_n{i}_{self._run}"
+            vec = [rng.gauss(0, 1) for _ in range(dim)]
+            norm = math.sqrt(sum(x * x for x in vec)) or 1.0
+            vec = [x / norm for x in vec]
+            vec_str = ",".join(str(v) for v in vec)
+            try:
+                cursor.execute("INSERT INTO Graph_KG.nodes (node_id) VALUES (?)", [nid])
+            except Exception:
+                pass
+            # 4.0.0 keys the embedding tables (graph_id, node_id) — the 3.2.0 `id`
+            # column is gone. Not swallowed: swallowing it left the table empty and
+            # ivf_build reported "no vectors found" (spec 227).
+            cursor.execute(
+                "INSERT INTO Graph_KG.kg_NodeEmbeddings (graph_id, node_id, emb) "
+                "VALUES ('', ?, TO_VECTOR(?, DOUBLE))",
+                [nid, vec_str]
+            )
+            nodes.append((nid, vec))
+        try:
+            self.engine.conn.commit()
+        except Exception:
+            pass
+        return nodes
+
+    def _insert_embeddings(self, nodes):
+        cursor = self.engine.conn.cursor()
+        for nid, vec in nodes:
+            vec_str = ",".join(str(v) for v in vec)
+            try:
+                cursor.execute(
+                    "INSERT INTO Graph_KG.nodes (node_id) VALUES (?)", [nid]
+                )
+            except Exception:
+                pass
+            cursor.execute(
+                "INSERT INTO Graph_KG.kg_NodeEmbeddings (graph_id, node_id, emb) "
+                "VALUES ('', ?, TO_VECTOR(?, DOUBLE))",
+                [nid, vec_str]
+            )
+        try:
+            self.engine.conn.commit()
+        except Exception:
+            pass
+
+    def _cleanup_nodes(self, node_ids):
+        cursor = self.engine.conn.cursor()
+        for nid in node_ids:
+            try:
+                cursor.execute("DELETE FROM Graph_KG.kg_NodeEmbeddings WHERE node_id = ?", [nid])
+            except Exception:
+                pass
+        try:
+            self.engine.conn.commit()
+        except Exception:
+            pass
+
+    def test_build_indexes_nodes(self):
+        import random
+        rng = random.Random(7)
+        dim = 768
+        nodes = []
+        for i in range(5):
+            nid = f"ivfbuild_{i}_{self._run}"
+            vec = [rng.gauss(0, 1) for _ in range(dim)]
+            nodes.append((nid, vec))
+        self._insert_embeddings(nodes)
+        node_ids = [n[0] for n in nodes]
+
+        idx = f"test46a_{self._run}"
+        result = self.engine.ivf_build(idx, nlist=2, build_batch_size=10, node_ids=node_ids)
+        assert isinstance(result, dict)
+        assert result.get("indexed", 0) >= 5
+        assert result.get("nlist") == 2
+
+        info = self.engine.ivf_info(idx)
+        assert info.get("indexed", 0) >= 5
+        self._cleanup_nodes(node_ids)
+
+    def test_build_idempotent(self):
+        import random
+        rng = random.Random(8)
+        dim = 768
+        nodes = [(f"ivfidm_{i}_{self._run}", [rng.gauss(0, 1) for _ in range(dim)]) for i in range(4)]
+        self._insert_embeddings(nodes)
+        node_ids = [n[0] for n in nodes]
+
+        idx = f"test46b_{self._run}"
+        r1 = self.engine.ivf_build(idx, nlist=2, build_batch_size=10, node_ids=node_ids)
+        r2 = self.engine.ivf_build(idx, nlist=2, build_batch_size=10, node_ids=node_ids)
+        assert r1["indexed"] == r2["indexed"]
+        self._cleanup_nodes(node_ids)
+
+    def test_search_returns_results(self):
+        import random
+        rng = random.Random(9)
+        dim = 768
+        nodes = []
+        for i in range(20):
+            nid = f"ivfsearch_{i}_{self._run}"
+            vec = [rng.gauss(0, 1) for _ in range(dim)]
+            norm = math.sqrt(sum(x * x for x in vec)) or 1.0
+            vec = [x / norm for x in vec]
+            nodes.append((nid, vec))
+        self._insert_embeddings(nodes)
+        node_ids = [n[0] for n in nodes]
+
+        idx = f"test46c_{self._run}"
+        self.engine.ivf_build(idx, nlist=4, build_batch_size=10, node_ids=node_ids)
+        query = nodes[0][1]
+        results = self.engine.ivf_search(idx, query, k=5, nprobe=4)
+        assert len(results) > 0
+        assert results[0][1] >= results[-1][1]
+        self._cleanup_nodes(node_ids)
+
+    def test_nprobe_exact_matches_brute_force(self):
+        import random
+        rng = random.Random(10)
+        dim = 768
+        nodes = []
+        for i in range(20):
+            nid = f"ivfexact_{i}_{self._run}"
+            vec = [rng.gauss(0, 1) for _ in range(dim)]
+            norm = math.sqrt(sum(x * x for x in vec)) or 1.0
+            vec = [x / norm for x in vec]
+            nodes.append((nid, vec))
+        node_ids = [n[0] for n in nodes]
+        self._insert_embeddings(nodes)
+
+        idx = f"test46d_{self._run}"
+        # Pass node_ids so only these 20 nodes are indexed — correct, isolated behavior
+        self.engine.ivf_build(idx, nlist=4, build_batch_size=10, node_ids=node_ids)
+        query = nodes[3][1]
+        exact = self.engine.ivf_search(idx, query, k=1, nprobe=4)
+        brute_top = max(nodes, key=lambda n: _cosine(query, n[1]))
+        assert len(exact) > 0
+        assert exact[0][0] == brute_top[0], (
+            f"IVF top-1 {exact[0][0]!r} != brute-force top-1 {brute_top[0]!r}"
+        )
+        self._cleanup_nodes(node_ids)
+
+    def test_search_empty_index_returns_empty(self):
+        result = self.engine.ivf_search(f"ivf_noexist_{self._run}", [0.1, 0.2, 0.3, 0.4], k=5, nprobe=2)
+        assert result == []
+
+    def test_drop_removes_index(self):
+        import random
+        rng = random.Random(11)
+        dim = 768
+        nodes = [(f"ivfdrop_{i}_{self._run}", [rng.gauss(0, 1) for _ in range(dim)]) for i in range(4)]
+        self._insert_embeddings(nodes)
+        node_ids = [n[0] for n in nodes]
+
+        idx = f"test46a_{self._run}"
+        self.engine.ivf_build(idx, nlist=2, build_batch_size=10, node_ids=node_ids)
+        self.engine.ivf_drop(idx)
+        info = self.engine.ivf_info(idx)
+        assert info == {}
+        self._cleanup_nodes(node_ids)
+
+    def test_info_returns_cfg(self):
+        import random
+        rng = random.Random(12)
+        dim = 768
+        nodes = [(f"ivfinfo_{i}_{self._run}", [rng.gauss(0, 1) for _ in range(dim)]) for i in range(4)]
+        self._insert_embeddings(nodes)
+        node_ids = [n[0] for n in nodes]
+
+        idx = f"test46b_{self._run}"
+        self.engine.ivf_build(idx, nlist=2, build_batch_size=10, node_ids=node_ids)
+        info = self.engine.ivf_info(idx)
+        assert info.get("nlist") == 2
+        assert info.get("indexed", 0) > 0
+        self._cleanup_nodes(node_ids)
+
+    def test_ivf_cypher_end_to_end(self):
+        cursor = self.engine.conn.cursor()
+        try:
+            cursor.execute("SELECT Graph_KG.kg_IVF('', '[]', 1, 1)")
+        except Exception as e:
+            if "not exist" in str(e).lower() or "SQLCODE" in str(e):
+                pytest.skip("kg_IVF SQL proc not available on this container — requires ObjectScript compilation")
+        import random
+        rng = random.Random(13)
+        dim = 768
+        nodes = []
+        for i in range(10):
+            nid = f"ivfcyph_{i}_{self._run}"
+            vec = [rng.gauss(0, 1) for _ in range(dim)]
+            norm = math.sqrt(sum(x * x for x in vec)) or 1.0
+            vec = [x / norm for x in vec]
+            nodes.append((nid, vec))
+        self._insert_embeddings(nodes)
+        node_ids = [n[0] for n in nodes]
+
+        idx = f"test46e_{self._run}"
+        self.engine.ivf_build(idx, nlist=2, build_batch_size=10, node_ids=node_ids)
+        query = nodes[0][1]
+        vec_str = ", ".join(str(v) for v in query)
+        cypher = (
+            f"CALL ivg.ivf.search('{idx}', [{vec_str}], 3, 2) "
+            f"YIELD node, score RETURN node, score ORDER BY score DESC"
+        )
+        result = self.engine.execute_cypher(cypher)
+        assert "columns" in result
+        assert "node" in result["columns"] or "score" in result["columns"]
+        assert len(result.rows) > 0
+        self._cleanup_nodes(node_ids)
+
+
+@pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+@pytest.mark.requires_clean_isolation
+class TestRRFFuseCommunityE2E:
+    """kg_RRF_FUSE on Community container: HNSW-only registry must return results.
+
+    Community Edition has no ^IVF global after a fresh start.  The fixed code
+    falls back to kg_KNN_VEC; the bug returned [] every time.
+    """
+
+    @pytest.fixture(autouse=True)
+    def setup(self, iris_master_cleanup, iris_connection):
+        import uuid
+        from iris_vector_graph.engine import IRISGraphEngine
+
+        self.conn = iris_connection
+        self.engine = IRISGraphEngine(iris_connection, embedding_dimension=4)
+        self.engine.initialize_schema()
+        self._run = uuid.uuid4().hex[:8]
+
+        cursor = iris_connection.cursor()
+        self._nodes = []
+        import random, math
+        rng = random.Random(99)
+        for i in range(6):
+            nid = f"rrf_ce_{i}_{self._run}"
+            vec = [rng.gauss(0, 1) for _ in range(4)]
+            norm = math.sqrt(sum(x * x for x in vec)) or 1.0
+            vec = [x / norm for x in vec]
+            try:
+                cursor.execute("INSERT INTO Graph_KG.nodes (node_id) VALUES (?)", [nid])
+            except Exception:
+                pass
+            cursor.execute(
+                "INSERT INTO Graph_KG.kg_NodeEmbeddings (graph_id, node_id, emb) "
+                "VALUES ('', ?, TO_VECTOR(?, DOUBLE))",
+                [nid, ",".join(str(v) for v in vec)],
+            )
+            self._nodes.append((nid, vec))
+        try:
+            iris_connection.commit()
+        except Exception:
+            pass
+        yield
+        cursor2 = iris_connection.cursor()
+        for nid, _ in self._nodes:
+            try:
+                cursor2.execute("DELETE FROM Graph_KG.kg_NodeEmbeddings WHERE node_id = ?", [nid])
+            except Exception:
+                pass
+        try:
+            iris_connection.commit()
+        except Exception:
+            pass
+
+    def test_hnsw_only_registry_returns_results(self):
+        """Regression: kg_RRF_FUSE with hnsw-only registry was returning [] (bug fix v2.4.8)."""
+        import json
+        assert "hnsw" in self.engine._index_registry, (
+            "Expected hnsw in registry on community container"
+        )
+        query_vec = self._nodes[0][1]
+        result = self.engine.kg_RRF_FUSE(
+            k=5, k1=5, k2=5, c=60,
+            query_vector=json.dumps(query_vec),
+            query_text="",
+        )
+        assert isinstance(result, list)
+        assert len(result) > 0, (
+            "kg_RRF_FUSE with hnsw-only registry must not return [] — "
+            "was a bug before v2.4.8"
+        )
+        assert all(len(r) == 4 for r in result)
+
+    def test_hnsw_bm25_rrf_returns_fused_results(self):
+        """kg_RRF_FUSE with hnsw + bm25: both legs must contribute to fusion."""
+        import json
+
+        # Build a BM25 index over node text
+        idx_bm25 = f"rrf_bm25_{self._run}"
+        cursor = self.conn.cursor()
+        # Graph.KG.BM25Index.Build reads node properties out of Graph_KG.rdf_props,
+        # never Graph_KG.docs. This fixture used to INSERT into Graph_KG.docs under a
+        # column (node_id) that table has never had, inside a bare except — so the
+        # BM25 leg of the fusion below was always fed an empty index and the test
+        # passed on the vector leg alone.
+        for nid, _ in self._nodes:
+            cursor.execute(
+                'INSERT INTO Graph_KG.rdf_props (graph_id, s, "key", val) '
+                "VALUES ('', ?, 'text', ?)",
+                [nid, f"medical term cancer biology {nid}"],
+            )
+        try:
+            self.conn.commit()
+        except Exception:
+            pass
+
+        # Check if BM25 ObjectScript class is available
+        try:
+            self.engine.bm25_build(idx_bm25, ["text"])
+        except Exception as e:
+            if "CLASS DOES NOT EXIST" in str(e).upper() or "not exist" in str(e).lower():
+                pytest.skip("Graph.KG.BM25Index not available on this container")
+            raise
+
+        try:
+            assert "hnsw" in self.engine._index_registry
+            assert idx_bm25 in self.engine._index_registry
+
+            query_vec = self._nodes[0][1]
+            result = self.engine.kg_RRF_FUSE(
+                k=5, k1=5, k2=5, c=60,
+                query_vector=json.dumps(query_vec),
+                query_text="cancer",
+            )
+            assert len(result) > 0
+            # At least one node should appear in both legs (they all have "cancer" in text)
+            node_ids = {r[0] for r in result}
+            assert node_ids.issubset({nid for nid, _ in self._nodes} | set())
+        finally:
+            try:
+                self.engine.bm25_drop(idx_bm25)
+            except Exception:
+                pass
+            cleanup = self.conn.cursor()
+            for nid, _ in self._nodes:
+                try:
+                    cleanup.execute(
+                        "DELETE FROM Graph_KG.rdf_props WHERE s = ? AND \"key\" = 'text'",
+                        [nid],
+                    )
+                except Exception:
+                    pass
+            try:
+                self.conn.commit()
+            except Exception:
+                pass

@@ -1,0 +1,334 @@
+"""
+Unit tests for bulk_loader.py covering:
+- BulkLoader._executemany_batched: unique-error path (individual retry), non-unique error raises
+- BulkLoader._rebuild_indices: success, SQL fail+TUNE success, total failure
+- BulkLoader.load_nodes: skip_existing=False path, with properties
+- BulkLoader.load_edges: dedup, skip_existing=False, use_noindex=False
+- BulkLoader.rebuild_all_indices: success and failure
+- BulkLoader.build_graph_globals: success and failure
+- BulkLoader.load_networkx: full flow (mocked sub-calls)
+
+No IRIS connection needed — mocks conn and cursor.
+"""
+import pytest
+from unittest.mock import MagicMock, patch, call
+from iris_vector_graph.bulk_loader import BulkLoader
+from iris_vector_graph.exceptions import BulkLoadError
+
+
+def _make_loader():
+    conn = MagicMock()
+    cursor = MagicMock()
+    conn.cursor.return_value = cursor
+    cursor.execute.return_value = None
+    cursor.fetchall.return_value = []
+    cursor.fetchone.return_value = (0,)
+    cursor.close.return_value = None
+    loader = BulkLoader(conn, batch_size=2)
+    return loader, conn, cursor
+
+
+# ---------------------------------------------------------------------------
+# _executemany_batched
+# ---------------------------------------------------------------------------
+
+class TestExecutemanyBatched:
+
+    def test_happy_path(self):
+        loader, conn, cursor = _make_loader()
+        rows = [["r1"], ["r2"], ["r3"]]
+        result = loader._executemany_batched(cursor, "INSERT INTO t VALUES (?)", rows, "test")
+        assert result == 3
+
+    def test_unique_error_triggers_individual_retry(self):
+        """Batch with UNIQUE violation → individual row retry, some succeed."""
+        loader, conn, cursor = _make_loader()
+
+        call_count = [0]
+        def side_effect(sql, params=None):
+            call_count[0] += 1
+            if isinstance(params, list) and len(params) == 2:
+                # batch call — simulate unique error
+                raise Exception("-119 UNIQUE constraint failed")
+            # individual row calls succeed
+            return None
+
+        cursor.executemany = side_effect
+        cursor.execute.return_value = None
+
+        rows = [["r1"], ["r2"]]
+        result = loader._executemany_batched(cursor, "INSERT INTO t VALUES (?)", rows, "test")
+        assert result == 2
+
+    def test_non_unique_error_raises(self):
+        """Batch with a non-UNIQUE error raises instead of returning 0.
+
+        This used to assert `result == 0`, which is what let a wholesale
+        `SQLCODE -121` rejection reach the caller as a stats dict saying zero rows
+        and no exception — see tests/unit/test_bulk_loader_error_propagation.py.
+        """
+        loader, conn, cursor = _make_loader()
+
+        cursor.executemany = MagicMock(side_effect=Exception("FATAL: table not found"))
+        rows = [["r1"], ["r2"]]
+        with pytest.raises(BulkLoadError):
+            loader._executemany_batched(cursor, "INSERT INTO t VALUES (?)", rows, "test")
+
+    def test_unique_error_individual_failure_raises_when_not_a_duplicate(self):
+        """A row that fails the retry for some other reason is not a skipped duplicate."""
+        loader, conn, cursor = _make_loader()
+
+        cursor.executemany = MagicMock(side_effect=Exception("unique constraint -119"))
+        cursor.execute = MagicMock(side_effect=Exception("also fails"))
+        rows = [["r1"]]
+        with pytest.raises(BulkLoadError):
+            loader._executemany_batched(cursor, "INSERT INTO t VALUES (?)", rows, "test")
+
+
+# ---------------------------------------------------------------------------
+# _rebuild_indices
+# ---------------------------------------------------------------------------
+
+class TestRebuildIndices:
+    """These mocked `cursor.execute` and asserted True, which is how the SQL
+    they were mocking could be a function IRIS does not have (SQLCODE -359) for
+    as long as it was. The rebuild goes through the native bridge now, so the
+    patch target is `_call_classmethod` — see
+    tests/unit/test_bulk_loader_index_rebuild.py for the behaviour tests.
+    """
+
+    def test_success_returns_true(self):
+        loader, conn, cursor = _make_loader()
+        with patch("iris_vector_graph.bulk_loader._call_classmethod", return_value=1):
+            result = loader._rebuild_indices(cursor, "Graph.KG.nodes")
+        assert result is True
+
+    def test_execute_exception_returns_false(self):
+        # _rebuild_indices has no fallback: any exception → False
+        loader, conn, cursor = _make_loader()
+        with patch(
+            "iris_vector_graph.bulk_loader._call_classmethod",
+            side_effect=Exception("BuildIndices failed"),
+        ):
+            result = loader._rebuild_indices(cursor, "Graph.KG.nodes")
+        assert result is False
+
+    def test_failure_status_returns_false(self):
+        """%BuildIndices answers with a %Status, so a falsy one is a failure."""
+        loader, conn, cursor = _make_loader()
+        with patch("iris_vector_graph.bulk_loader._call_classmethod", return_value=0):
+            result = loader._rebuild_indices(cursor, "Graph.KG.nodes")
+        assert result is False
+
+
+# ---------------------------------------------------------------------------
+# load_nodes
+# ---------------------------------------------------------------------------
+
+class TestLoadNodes:
+
+    def test_skip_existing_false_loads_all(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = []
+        nodes = [("n1", {"name": "BRCA1", "namespace": "gene"}),
+                 ("n2", {"name": "TP53"})]
+        with patch.object(loader, "_executemany_batched", return_value=2) as mock_exec:
+            stats = loader.load_nodes(nodes, skip_existing=False)
+        assert stats["nodes"] == 2
+        # executemany called for nodes, labels, props
+        assert mock_exec.call_count >= 1
+
+    def test_skip_existing_true_filters(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = [("n1",)]  # n1 already exists
+        nodes = [("n1", {"name": "BRCA1"}), ("n2", {"name": "TP53"})]
+        with patch.object(loader, "_executemany_batched", return_value=1):
+            stats = loader.load_nodes(nodes, skip_existing=True)
+        # Only n2 should be new
+        assert isinstance(stats, dict)
+
+    def test_props_up_to_the_column_width_are_kept_whole(self):
+        """4.7.0 row 3d: whole up to rdf_props.val's 64000 characters (they were cut to 60000)."""
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = []
+        long_val = "x" * 63000
+        nodes = [("n1", {"bio": long_val})]
+        captured = []
+        def mock_batch(cursor, sql, params, label):
+            captured.extend(params)
+            return len(params)
+        with patch.object(loader, "_executemany_batched", side_effect=mock_batch):
+            loader.load_nodes(nodes, skip_existing=False)
+        # Find the prop param for "bio"
+        prop_rows = [p for p in captured if isinstance(p, list) and len(p) == 3 and p[1] == "bio"]
+        if prop_rows:
+            assert len(prop_rows[0][2]) == 63000
+
+    def test_none_values_excluded_from_props(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = []
+        nodes = [("n1", {"good": "val", "bad": None})]
+        captured = []
+        def mock_batch(cursor, sql, params, label):
+            captured.extend(params)
+            return len(params)
+        with patch.object(loader, "_executemany_batched", side_effect=mock_batch):
+            loader.load_nodes(nodes, skip_existing=False)
+        # "bad" key with None val should not appear
+        prop_rows = [p for p in captured if isinstance(p, list) and len(p) == 3]
+        keys = [p[1] for p in prop_rows]
+        assert "bad" not in keys
+
+
+# ---------------------------------------------------------------------------
+# load_edges
+# ---------------------------------------------------------------------------
+
+class TestLoadEdges:
+
+    def test_deduplication(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = []
+        edges = [
+            ("n1", "TREATS", "n2", None),
+            ("n1", "TREATS", "n2", None),  # duplicate
+            ("n1", "TARGETS", "n3", {"conf": 0.9}),
+        ]
+        with patch.object(loader, "_executemany_batched", return_value=2) as mock_exec:
+            stats = loader.load_edges(edges, use_noindex=False, skip_existing=False)
+        # The last call is the edges; the one before it registers their endpoints,
+        # which `load_edges` has to do now that rdf_edges has composite FKs.
+        call_args = mock_exec.call_args_list[-1]
+        params = call_args[0][2]  # positional arg 3
+        assert len(params) == 2  # deduplicated to 2
+
+    def test_use_noindex_false_uses_plain_insert(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = []
+        edges = [("n1", "TREATS", "n2", None)]
+        captured_sqls = []
+        def mock_batch(cursor, sql, params, label):
+            captured_sqls.append(sql)
+            return len(params)
+        with patch.object(loader, "_executemany_batched", side_effect=mock_batch):
+            loader.load_edges(edges, use_noindex=False, skip_existing=False)
+        assert any("NOINDEX" not in s and "INSERT INTO" in s for s in captured_sqls)
+
+    def test_skip_existing_true_filters(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = [("n1", "TREATS", "n2")]
+        edges = [("n1", "TREATS", "n2", None), ("n1", "TARGETS", "n3", None)]
+        with patch.object(loader, "_executemany_batched", return_value=1) as mock_exec:
+            stats = loader.load_edges(edges, skip_existing=True)
+        params = mock_exec.call_args_list[-1][0][2]
+        assert len(params) == 1  # n1-TREATS-n2 filtered out
+
+
+# ---------------------------------------------------------------------------
+# rebuild_all_indices
+# ---------------------------------------------------------------------------
+
+class TestRebuildAllIndices:
+
+    def test_success_all_true(self):
+        loader, conn, cursor = _make_loader()
+        with patch("iris_vector_graph.bulk_loader._call_classmethod", return_value=1):
+            result = loader.rebuild_all_indices()
+        assert all(v is True for v in result.values())
+        assert len(result) == 4
+
+    def test_partial_failure(self):
+        loader, conn, cursor = _make_loader()
+        call_count = [0]
+        def side(*a):
+            call_count[0] += 1
+            if call_count[0] == 2:
+                raise RuntimeError("BuildIndices failed")
+            return 1
+        with patch("iris_vector_graph.bulk_loader._call_classmethod", side_effect=side):
+            result = loader.rebuild_all_indices()
+        assert False in result.values()
+
+
+# ---------------------------------------------------------------------------
+# build_graph_globals
+# ---------------------------------------------------------------------------
+
+class TestBuildGraphGlobals:
+    """4.7.0: the class methods, on the loader's connection (`conn.iris` here, as iris_vector_graph.host.host_for
+    takes it), as the engine's sync() runs them; it sent ObjectScript as SQL (-51) and answered False.
+    tests/e2e/test_470_silent_writers_e2e.py checks ^KG is rebuilt."""
+
+    def test_success_runs_buildkg_then_buildnkg(self):
+        loader, conn, cursor = _make_loader()
+        conn.iris.classMethodValue.return_value = "1"
+        assert loader.build_graph_globals() is True
+        called = [c.args[:2] for c in conn.iris.classMethodValue.call_args_list]
+        assert called == [("Graph.KG.Traversal", "BuildKG"), ("Graph.KG.Traversal", "BuildNKG"),
+                          ("Graph.KG.Traversal", "Build2HopStats")]
+        cursor.execute.assert_not_called()
+
+    def test_a_status_error_raises_with_its_text(self):
+        loader, conn, cursor = _make_loader()
+
+        def answer(cls, method, *args):
+            return "0 bad" if method == "BuildKG" else "ERROR #5002: ObjectScript error: <UNDEFINED>"
+
+        conn.iris.classMethodValue.side_effect = answer
+        with pytest.raises(RuntimeError, match=r"Graph.KG.Traversal.BuildKG failed: ERROR #5002"):
+            loader.build_graph_globals()
+
+
+# ---------------------------------------------------------------------------
+# load_networkx
+# ---------------------------------------------------------------------------
+
+class TestLoadNetworkx:
+
+    def _make_graph(self):
+        G = MagicMock()
+        G.is_multigraph.return_value = False  # edges() below yields (src, dst, data)
+        G.number_of_nodes.return_value = 3
+        G.number_of_edges.return_value = 2
+        G.nodes.return_value = [
+            ("n1", {"namespace": "gene", "name": "BRCA1"}),
+            ("n2", {"namespace": "disease"}),
+            ("n3", {}),
+        ]
+        G.edges.return_value = [
+            ("n1", "n2", {"predicate": "TREATS"}),
+            ("n2", "n3", {"label": "TARGETS", "confidence": 0.9}),
+        ]
+        return G
+
+    def test_full_load_no_globals(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = []
+        cursor.fetchone.return_value = (0,)
+        G = self._make_graph()
+        with patch.object(loader, "_executemany_batched", return_value=2):
+            with patch.object(loader, "rebuild_all_indices", return_value={}):
+                stats = loader.load_networkx(G, build_globals=False)
+        assert "input_nodes" in stats
+        assert stats["input_nodes"] == 3
+
+    def test_full_load_with_globals_success(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = []
+        cursor.fetchone.return_value = (0,)
+        G = self._make_graph()
+        with patch.object(loader, "_executemany_batched", return_value=2):
+            with patch.object(loader, "rebuild_all_indices", return_value={}):
+                with patch.object(loader, "build_graph_globals", return_value=True):
+                    stats = loader.load_networkx(G, build_globals=True)
+        assert stats["globals_built"] is True
+
+    def test_use_noindex_false_skips_rebuild(self):
+        loader, conn, cursor = _make_loader()
+        cursor.fetchall.return_value = []
+        cursor.fetchone.return_value = (0,)
+        G = self._make_graph()
+        with patch.object(loader, "_executemany_batched", return_value=2):
+            with patch.object(loader, "rebuild_all_indices") as mock_rebuild:
+                loader.load_networkx(G, use_noindex=False, build_globals=False)
+        mock_rebuild.assert_not_called()

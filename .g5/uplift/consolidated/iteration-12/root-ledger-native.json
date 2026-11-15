@@ -1,0 +1,1709 @@
+{
+  "verdict": "AGREES",
+  "completed_cases": 22,
+  "cases": [
+    {
+      "label": "new node separate record expansion",
+      "actual": [
+        [
+          "create_node",
+          "",
+          null,
+          ""
+        ],
+        [
+          "add_label",
+          "L",
+          null,
+          ""
+        ],
+        [
+          "set_prop",
+          "empty",
+          null,
+          ""
+        ],
+        [
+          "set_prop",
+          "k",
+          null,
+          "1"
+        ],
+        [
+          "set_prop",
+          "text",
+          null,
+          "null"
+        ]
+      ],
+      "expected": [
+        [
+          "create_node",
+          "",
+          null,
+          ""
+        ],
+        [
+          "add_label",
+          "L",
+          null,
+          ""
+        ],
+        [
+          "set_prop",
+          "empty",
+          null,
+          ""
+        ],
+        [
+          "set_prop",
+          "k",
+          null,
+          "1"
+        ],
+        [
+          "set_prop",
+          "text",
+          null,
+          "null"
+        ]
+      ],
+      "prediction_agrees": true
+    },
+    {
+      "label": "initial complete node content",
+      "actual": {
+        "labels": [
+          "L"
+        ],
+        "props": {
+          "empty": "",
+          "k": "1",
+          "text": "null"
+        }
+      },
+      "expected": {
+        "labels": [
+          "L"
+        ],
+        "props": {
+          "empty": "",
+          "k": "1",
+          "text": "null"
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "existing upsert preserves unspecified full content",
+      "actual": {
+        "nodes": {
+          "ledger12:2f786a99:a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "empty": "",
+              "k": "2",
+              "text": "null"
+            }
+          },
+          "ledger12:2f786a99:b": {
+            "labels": [],
+            "props": {}
+          },
+          "ledger12:2f786a99:simple": {
+            "labels": [
+              "Simple"
+            ],
+            "props": {
+              "x": "0"
+            }
+          }
+        },
+        "rels": {
+          "5": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null,
+            "quals": {
+              "q": "x",
+              "weight": "1.25"
+            }
+          }
+        }
+      },
+      "expected": {
+        "nodes": {
+          "ledger12:2f786a99:a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "empty": "",
+              "k": "2",
+              "text": "null"
+            }
+          },
+          "ledger12:2f786a99:b": {
+            "labels": [],
+            "props": {}
+          },
+          "ledger12:2f786a99:simple": {
+            "labels": [
+              "Simple"
+            ],
+            "props": {
+              "x": "0"
+            }
+          }
+        },
+        "rels": {
+          "5": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null,
+            "quals": {
+              "q": "x",
+              "weight": "1.25"
+            }
+          }
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "existing upsert emits no create node",
+      "actual": [
+        "add_label",
+        "set_prop"
+      ],
+      "expected": [
+        "add_label",
+        "set_prop"
+      ],
+      "prediction_agrees": true
+    },
+    {
+      "label": "relationship create plus separate qualifier records",
+      "actual": [
+        [
+          "create_rel",
+          ""
+        ],
+        [
+          "set_qual",
+          "q"
+        ],
+        [
+          "set_qual",
+          "weight"
+        ]
+      ],
+      "expected": [
+        [
+          "create_rel",
+          ""
+        ],
+        [
+          "set_qual",
+          "q"
+        ],
+        [
+          "set_qual",
+          "weight"
+        ]
+      ],
+      "prediction_agrees": true
+    },
+    {
+      "label": "tuple-only create new",
+      "actual": {
+        "graph": null,
+        "o": "ledger12:2f786a99:b",
+        "p": "R",
+        "s": "ledger12:2f786a99:a"
+      },
+      "expected": {
+        "s": "ledger12:2f786a99:a",
+        "p": "R",
+        "o": "ledger12:2f786a99:b",
+        "graph": null
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "identical writes emit no records",
+      "actual": [],
+      "expected": [],
+      "prediction_agrees": true
+    },
+    {
+      "label": "ordinary null setter refuses before commit",
+      "actual": "ChangesetOperationError",
+      "expected": "ChangesetOperationError",
+      "prediction_agrees": true
+    },
+    {
+      "label": "changed setter actual priors",
+      "actual": [
+        [
+          "set_prop",
+          "k",
+          "2",
+          "3"
+        ],
+        [
+          "remove_label",
+          "M",
+          "",
+          null
+        ],
+        [
+          "set_qual",
+          "q",
+          "x",
+          "y"
+        ]
+      ],
+      "expected": [
+        [
+          "set_prop",
+          "k",
+          "2",
+          "3"
+        ],
+        [
+          "remove_label",
+          "M",
+          "",
+          null
+        ],
+        [
+          "set_qual",
+          "q",
+          "x",
+          "y"
+        ]
+      ],
+      "prediction_agrees": true
+    },
+    {
+      "label": "continuous-life restored complete content",
+      "actual": {
+        "nodes": {
+          "ledger12:2f786a99:a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "empty": "",
+              "k": "2",
+              "text": "null"
+            }
+          },
+          "ledger12:2f786a99:b": {
+            "labels": [],
+            "props": {}
+          },
+          "ledger12:2f786a99:simple": {
+            "labels": [
+              "Simple"
+            ],
+            "props": {
+              "x": "0"
+            }
+          }
+        },
+        "rels": {
+          "5": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null,
+            "quals": {
+              "q": "x",
+              "weight": "1.25"
+            }
+          }
+        }
+      },
+      "expected": {
+        "nodes": {
+          "ledger12:2f786a99:a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "empty": "",
+              "k": "2",
+              "text": "null"
+            }
+          },
+          "ledger12:2f786a99:b": {
+            "labels": [],
+            "props": {}
+          },
+          "ledger12:2f786a99:simple": {
+            "labels": [
+              "Simple"
+            ],
+            "props": {
+              "x": "0"
+            }
+          }
+        },
+        "rels": {
+          "5": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null,
+            "quals": {
+              "q": "x",
+              "weight": "1.25"
+            }
+          }
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "continuous-life restored net diff empty",
+      "actual": [],
+      "expected": [],
+      "prediction_agrees": true
+    },
+    {
+      "label": "simple delete complete snapshot",
+      "actual": {
+        "labels": [
+          "Simple"
+        ],
+        "props": {
+          "x": "0"
+        }
+      },
+      "expected": {
+        "labels": [
+          "Simple"
+        ],
+        "props": {
+          "x": "0"
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "changed-before-delete complete deletion snapshot",
+      "actual": {
+        "labels": [
+          "L",
+          "M",
+          "R"
+        ],
+        "props": {
+          "empty": "",
+          "k": "9",
+          "text": "null"
+        }
+      },
+      "expected": {
+        "labels": [
+          "L",
+          "M",
+          "R"
+        ],
+        "props": {
+          "empty": "",
+          "k": "9",
+          "text": "null"
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "default deletion leaves named relationship",
+      "actual": {
+        "s": "ledger12:2f786a99:named-source",
+        "p": "NAMED",
+        "o": "ledger12:2f786a99:b",
+        "graph": "ledger12:2f786a99:named",
+        "quals": {
+          "q": "named"
+        }
+      },
+      "expected": {
+        "s": "ledger12:2f786a99:named-source",
+        "p": "NAMED",
+        "o": "ledger12:2f786a99:b",
+        "graph": "ledger12:2f786a99:named",
+        "quals": {
+          "q": "named"
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "bare endpoint absent while named relationship remains",
+      "actual": [
+        false,
+        true
+      ],
+      "expected": [
+        false,
+        true
+      ],
+      "prediction_agrees": true
+    },
+    {
+      "label": "native named edge physical row survives",
+      "actual": 1,
+      "expected": 1,
+      "prediction_agrees": true
+    },
+    {
+      "label": "surviving named registration refuses ordinary create",
+      "actual": {
+        "type": "ChangesetOperationError",
+        "node_exists": true
+      },
+      "expected": {
+        "type": "ChangesetOperationError",
+        "node_exists": true
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "known rich lifecycle reverse uses deletion-time snapshot",
+      "actual": {
+        "labels": [
+          "L",
+          "M",
+          "R"
+        ],
+        "props": {
+          "empty": "",
+          "k": "9",
+          "text": "null"
+        }
+      },
+      "expected": {
+        "labels": [
+          "L",
+          "M",
+          "R"
+        ],
+        "props": {
+          "empty": "",
+          "k": "9",
+          "text": "null"
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "known reverse snapshot differs from range-start content",
+      "actual": false,
+      "expected": false,
+      "prediction_agrees": true
+    },
+    {
+      "label": "earlier named cutoff retains complete content",
+      "actual": {
+        "nodes": {
+          "ledger12:2f786a99:a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "empty": "",
+              "k": "2",
+              "text": "null"
+            }
+          },
+          "ledger12:2f786a99:b": {
+            "labels": [],
+            "props": {}
+          },
+          "ledger12:2f786a99:simple": {
+            "labels": [
+              "Simple"
+            ],
+            "props": {
+              "x": "0"
+            }
+          }
+        },
+        "rels": {
+          "5": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null,
+            "quals": {
+              "q": "x",
+              "weight": "1.25"
+            }
+          }
+        }
+      },
+      "expected": {
+        "nodes": {
+          "ledger12:2f786a99:a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "empty": "",
+              "k": "2",
+              "text": "null"
+            }
+          },
+          "ledger12:2f786a99:b": {
+            "labels": [],
+            "props": {}
+          },
+          "ledger12:2f786a99:simple": {
+            "labels": [
+              "Simple"
+            ],
+            "props": {
+              "x": "0"
+            }
+          }
+        },
+        "rels": {
+          "5": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null,
+            "quals": {
+              "q": "x",
+              "weight": "1.25"
+            }
+          }
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "earlier cutoff eager stream complete content",
+      "actual": {
+        "nodes": {
+          "ledger12:2f786a99:a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "empty": "",
+              "k": "2",
+              "text": "null"
+            }
+          },
+          "ledger12:2f786a99:b": {
+            "labels": [],
+            "props": {}
+          },
+          "ledger12:2f786a99:simple": {
+            "labels": [
+              "Simple"
+            ],
+            "props": {
+              "x": "0"
+            }
+          }
+        },
+        "rels": {
+          "5": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null,
+            "quals": {
+              "q": "x",
+              "weight": "1.25"
+            }
+          }
+        }
+      },
+      "expected": {
+        "nodes": {
+          "ledger12:2f786a99:a": {
+            "labels": [
+              "L",
+              "M"
+            ],
+            "props": {
+              "empty": "",
+              "k": "2",
+              "text": "null"
+            }
+          },
+          "ledger12:2f786a99:b": {
+            "labels": [],
+            "props": {}
+          },
+          "ledger12:2f786a99:simple": {
+            "labels": [
+              "Simple"
+            ],
+            "props": {
+              "x": "0"
+            }
+          }
+        },
+        "rels": {
+          "5": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null,
+            "quals": {
+              "q": "x",
+              "weight": "1.25"
+            }
+          }
+        }
+      },
+      "prediction_agrees": true
+    },
+    {
+      "label": "earlier cutoff NDJSON full entities",
+      "actual": [
+        {
+          "graph": null,
+          "o": "ledger12:2f786a99:b",
+          "p": "R",
+          "quals": {
+            "q": "x",
+            "weight": "1.25"
+          },
+          "s": "ledger12:2f786a99:a",
+          "stmt_id": "5",
+          "type": "rel"
+        },
+        {
+          "id": "ledger12:2f786a99:a",
+          "labels": [
+            "L",
+            "M"
+          ],
+          "props": {
+            "empty": "",
+            "k": "2",
+            "text": "null"
+          },
+          "type": "node"
+        },
+        {
+          "id": "ledger12:2f786a99:b",
+          "labels": [],
+          "props": {},
+          "type": "node"
+        },
+        {
+          "id": "ledger12:2f786a99:simple",
+          "labels": [
+            "Simple"
+          ],
+          "props": {
+            "x": "0"
+          },
+          "type": "node"
+        }
+      ],
+      "expected": [
+        {
+          "type": "rel",
+          "stmt_id": "5",
+          "s": "ledger12:2f786a99:a",
+          "p": "R",
+          "o": "ledger12:2f786a99:b",
+          "graph": null,
+          "quals": {
+            "q": "x",
+            "weight": "1.25"
+          }
+        },
+        {
+          "type": "node",
+          "id": "ledger12:2f786a99:a",
+          "labels": [
+            "L",
+            "M"
+          ],
+          "props": {
+            "empty": "",
+            "k": "2",
+            "text": "null"
+          }
+        },
+        {
+          "type": "node",
+          "id": "ledger12:2f786a99:b",
+          "labels": [],
+          "props": {}
+        },
+        {
+          "type": "node",
+          "id": "ledger12:2f786a99:simple",
+          "labels": [
+            "Simple"
+          ],
+          "props": {
+            "x": "0"
+          }
+        }
+      ],
+      "prediction_agrees": true
+    }
+  ],
+  "failure": null,
+  "prefix": "ledger12:2f786a99:",
+  "named_graph": "ledger12:2f786a99:named",
+  "before_meta": {
+    "ok": true,
+    "state": "disabled",
+    "strict": false,
+    "max_ops": 50000,
+    "recon_bound": 250000,
+    "head_seq": 12,
+    "head_id": "b8de6b08e14211f1a1f336fcf217e862"
+  },
+  "enable": {
+    "seq": 13,
+    "revision_id": "d368d3d0e14211f1a1f336fcf217e862",
+    "parent_id": "b8de6b08e14211f1a1f336fcf217e862",
+    "kind": "adoption",
+    "actor": "system:ledger-verify",
+    "actor_type": "system",
+    "conn_user": "_SYSTEM",
+    "committed_ms": 1794781255614,
+    "message": "adoption of 2 unrecorded change(s) observed at b8de6b08e14211f1a1f336fcf217e862",
+    "source": null,
+    "correlation_id": null,
+    "idempotency_key": null,
+    "op_count": 2
+  },
+  "after_meta": {
+    "ok": true,
+    "state": "disabled",
+    "strict": false,
+    "max_ops": 50000,
+    "recon_bound": 250000,
+    "head_seq": 23,
+    "head_id": "d380c6b1e14211f1a1f336fcf217e862"
+  },
+  "revisions": [
+    {
+      "revision": {
+        "seq": 14,
+        "revision_id": "d36bfddfe14211f1a1f336fcf217e862",
+        "parent_id": "d368d3d0e14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255635,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 9
+      },
+      "ops": [
+        {
+          "op": "create_node",
+          "id": "ledger12:2f786a99:a",
+          "labels": [
+            "L"
+          ],
+          "props": {
+            "k": "1",
+            "empty": "",
+            "text": "null"
+          }
+        },
+        {
+          "op": "create_node",
+          "id": "ledger12:2f786a99:b"
+        },
+        {
+          "op": "create_node",
+          "id": "ledger12:2f786a99:simple",
+          "labels": [
+            "Simple"
+          ],
+          "props": {
+            "x": "0"
+          }
+        }
+      ],
+      "records": [
+        {
+          "seq": 14,
+          "ordinal": 1,
+          "op": "create_node",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 14,
+          "ordinal": 2,
+          "op": "add_label",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "L",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 14,
+          "ordinal": 3,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "empty",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 14,
+          "ordinal": 4,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "k",
+          "prior": null,
+          "new": "1",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 14,
+          "ordinal": 5,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "text",
+          "prior": null,
+          "new": "null",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 14,
+          "ordinal": 6,
+          "op": "create_node",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:b",
+          "attr": "",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 14,
+          "ordinal": 7,
+          "op": "create_node",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:simple",
+          "attr": "",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 14,
+          "ordinal": 8,
+          "op": "add_label",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:simple",
+          "attr": "Simple",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 14,
+          "ordinal": 9,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:simple",
+          "attr": "x",
+          "prior": null,
+          "new": "0",
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {}
+    },
+    {
+      "revision": {
+        "seq": 15,
+        "revision_id": "d3711348e14211f1a1f336fcf217e862",
+        "parent_id": "d36bfddfe14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255669,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 5
+      },
+      "ops": [
+        {
+          "op": "upsert_node",
+          "id": "ledger12:2f786a99:a",
+          "labels": [
+            "M"
+          ],
+          "props": {
+            "k": "2"
+          }
+        },
+        {
+          "op": "upsert_rel",
+          "tuple": {
+            "s": "ledger12:2f786a99:a",
+            "p": "R",
+            "o": "ledger12:2f786a99:b",
+            "graph": null
+          },
+          "quals": {
+            "q": "x",
+            "weight": "1.25"
+          }
+        }
+      ],
+      "records": [
+        {
+          "seq": 15,
+          "ordinal": 1,
+          "op": "add_label",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "M",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 15,
+          "ordinal": 2,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "k",
+          "prior": "1",
+          "new": "2",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 15,
+          "ordinal": 3,
+          "op": "create_rel",
+          "entity_kind": "rel",
+          "entity_id": "5",
+          "attr": "",
+          "prior": null,
+          "new": "{\"graph\":null,\"o\":\"ledger12:2f786a99:b\",\"p\":\"R\",\"s\":\"ledger12:2f786a99:a\"}",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 15,
+          "ordinal": 4,
+          "op": "set_qual",
+          "entity_kind": "rel",
+          "entity_id": "5",
+          "attr": "q",
+          "prior": null,
+          "new": "x",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 15,
+          "ordinal": 5,
+          "op": "set_qual",
+          "entity_kind": "rel",
+          "entity_id": "5",
+          "attr": "weight",
+          "prior": null,
+          "new": "1.25",
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {
+        "1": "5"
+      }
+    },
+    {
+      "revision": {
+        "seq": 16,
+        "revision_id": "d375e84ae14211f1a1f336fcf217e862",
+        "parent_id": "d3711348e14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255700,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 0
+      },
+      "ops": [
+        {
+          "op": "set_prop",
+          "id": "ledger12:2f786a99:a",
+          "key": "k",
+          "value": "2"
+        },
+        {
+          "op": "add_label",
+          "id": "ledger12:2f786a99:a",
+          "label": "M"
+        },
+        {
+          "op": "set_qual",
+          "ref": {
+            "stmt_id": "5"
+          },
+          "key": "q",
+          "value": "x"
+        }
+      ],
+      "records": [],
+      "stmt_ids": {}
+    },
+    {
+      "revision": {
+        "seq": 17,
+        "revision_id": "d37687dbe14211f1a1f336fcf217e862",
+        "parent_id": "d375e84ae14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255704,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 3
+      },
+      "ops": [
+        {
+          "op": "set_prop",
+          "id": "ledger12:2f786a99:a",
+          "key": "k",
+          "value": "3"
+        },
+        {
+          "op": "remove_label",
+          "id": "ledger12:2f786a99:a",
+          "label": "M"
+        },
+        {
+          "op": "set_qual",
+          "ref": {
+            "stmt_id": "5"
+          },
+          "key": "q",
+          "value": "y"
+        }
+      ],
+      "records": [
+        {
+          "seq": 17,
+          "ordinal": 1,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "k",
+          "prior": "2",
+          "new": "3",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 17,
+          "ordinal": 2,
+          "op": "remove_label",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "M",
+          "prior": "",
+          "new": null,
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 17,
+          "ordinal": 3,
+          "op": "set_qual",
+          "entity_kind": "rel",
+          "entity_id": "5",
+          "attr": "q",
+          "prior": "x",
+          "new": "y",
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {}
+    },
+    {
+      "revision": {
+        "seq": 18,
+        "revision_id": "d3779f62e14211f1a1f336fcf217e862",
+        "parent_id": "d37687dbe14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255711,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 3
+      },
+      "ops": [
+        {
+          "op": "set_prop",
+          "id": "ledger12:2f786a99:a",
+          "key": "k",
+          "value": "2"
+        },
+        {
+          "op": "add_label",
+          "id": "ledger12:2f786a99:a",
+          "label": "M"
+        },
+        {
+          "op": "set_qual",
+          "ref": {
+            "stmt_id": "5"
+          },
+          "key": "q",
+          "value": "x"
+        }
+      ],
+      "records": [
+        {
+          "seq": 18,
+          "ordinal": 1,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "k",
+          "prior": "3",
+          "new": "2",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 18,
+          "ordinal": 2,
+          "op": "add_label",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "M",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 18,
+          "ordinal": 3,
+          "op": "set_qual",
+          "entity_kind": "rel",
+          "entity_id": "5",
+          "attr": "q",
+          "prior": "y",
+          "new": "x",
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {}
+    },
+    {
+      "revision": {
+        "seq": 19,
+        "revision_id": "d37d537ae14211f1a1f336fcf217e862",
+        "parent_id": "d3779f62e14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255749,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 1
+      },
+      "ops": [
+        {
+          "op": "delete_node",
+          "id": "ledger12:2f786a99:simple",
+          "mode": "strict"
+        }
+      ],
+      "records": [
+        {
+          "seq": 19,
+          "ordinal": 1,
+          "op": "delete_node",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:simple",
+          "attr": "",
+          "prior": "{\"labels\":[\"Simple\"],\"props\":{\"x\":\"0\"}}",
+          "new": null,
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {}
+    },
+    {
+      "revision": {
+        "seq": 20,
+        "revision_id": "d37e4cd8e14211f1a1f336fcf217e862",
+        "parent_id": "d37d537ae14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255755,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 7
+      },
+      "ops": [
+        {
+          "op": "delete_rel",
+          "ref": {
+            "stmt_id": "5"
+          }
+        },
+        {
+          "op": "set_prop",
+          "id": "ledger12:2f786a99:a",
+          "key": "k",
+          "value": "9"
+        },
+        {
+          "op": "add_label",
+          "id": "ledger12:2f786a99:a",
+          "label": "R"
+        },
+        {
+          "op": "create_node",
+          "id": "ledger12:2f786a99:named-source",
+          "labels": [
+            "Scoped"
+          ]
+        },
+        {
+          "op": "create_rel",
+          "tuple": {
+            "s": "ledger12:2f786a99:named-source",
+            "p": "NAMED",
+            "o": "ledger12:2f786a99:b",
+            "graph": "ledger12:2f786a99:named"
+          },
+          "quals": {
+            "q": "named"
+          }
+        }
+      ],
+      "records": [
+        {
+          "seq": 20,
+          "ordinal": 1,
+          "op": "delete_rel",
+          "entity_kind": "rel",
+          "entity_id": "5",
+          "attr": "",
+          "prior": "{\"graph\":null,\"o\":\"ledger12:2f786a99:b\",\"p\":\"R\",\"quals\":{\"q\":\"x\",\"weight\":\"1.25\"},\"s\":\"ledger12:2f786a99:a\"}",
+          "new": null,
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 20,
+          "ordinal": 2,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "k",
+          "prior": "2",
+          "new": "9",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 20,
+          "ordinal": 3,
+          "op": "add_label",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "R",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 20,
+          "ordinal": 4,
+          "op": "create_node",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:named-source",
+          "attr": "",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 20,
+          "ordinal": 5,
+          "op": "add_label",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:named-source",
+          "attr": "Scoped",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 20,
+          "ordinal": 6,
+          "op": "create_rel",
+          "entity_kind": "rel",
+          "entity_id": "6",
+          "attr": "",
+          "prior": null,
+          "new": "{\"graph\":\"ledger12:2f786a99:named\",\"o\":\"ledger12:2f786a99:b\",\"p\":\"NAMED\",\"s\":\"ledger12:2f786a99:named-source\"}",
+          "graph": "ledger12:2f786a99:named",
+          "flags": []
+        },
+        {
+          "seq": 20,
+          "ordinal": 7,
+          "op": "set_qual",
+          "entity_kind": "rel",
+          "entity_id": "6",
+          "attr": "q",
+          "prior": null,
+          "new": "named",
+          "graph": "ledger12:2f786a99:named",
+          "flags": []
+        }
+      ],
+      "stmt_ids": {
+        "4": "6"
+      }
+    },
+    {
+      "revision": {
+        "seq": 21,
+        "revision_id": "d37f6093e14211f1a1f336fcf217e862",
+        "parent_id": "d37e4cd8e14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255762,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 1
+      },
+      "ops": [
+        {
+          "op": "delete_node",
+          "id": "ledger12:2f786a99:a",
+          "mode": "strict"
+        }
+      ],
+      "records": [
+        {
+          "seq": 21,
+          "ordinal": 1,
+          "op": "delete_node",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "",
+          "prior": "{\"labels\":[\"L\",\"M\",\"R\"],\"props\":{\"empty\":\"\",\"k\":\"9\",\"text\":\"null\"}}",
+          "new": null,
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {}
+    },
+    {
+      "revision": {
+        "seq": 22,
+        "revision_id": "d3800e78e14211f1a1f336fcf217e862",
+        "parent_id": "d37f6093e14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255767,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 2
+      },
+      "ops": [
+        {
+          "op": "create_node",
+          "id": "ledger12:2f786a99:a",
+          "props": {
+            "k": "fresh"
+          }
+        }
+      ],
+      "records": [
+        {
+          "seq": 22,
+          "ordinal": 1,
+          "op": "create_node",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 22,
+          "ordinal": 2,
+          "op": "set_prop",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:a",
+          "attr": "k",
+          "prior": null,
+          "new": "fresh",
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {}
+    },
+    {
+      "revision": {
+        "seq": 23,
+        "revision_id": "d380c6b1e14211f1a1f336fcf217e862",
+        "parent_id": "d3800e78e14211f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-native",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781255771,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 1
+      },
+      "ops": [
+        {
+          "op": "delete_node",
+          "id": "ledger12:2f786a99:named-source",
+          "mode": "strict"
+        }
+      ],
+      "records": [
+        {
+          "seq": 23,
+          "ordinal": 1,
+          "op": "delete_node",
+          "entity_kind": "node",
+          "entity_id": "ledger12:2f786a99:named-source",
+          "attr": "",
+          "prior": "{\"labels\":[\"Scoped\"],\"props\":{}}",
+          "new": null,
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {}
+    }
+  ],
+  "export_summary": {
+    "path": "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-native-2f786a99.ndjson",
+    "nodes": 1090,
+    "rels": 4
+  },
+  "reverse_diff": [
+    {
+      "entity_kind": "node",
+      "entity_id": "ledger12:2f786a99:a",
+      "attr": "",
+      "before": null,
+      "after": "{\"labels\":[\"L\",\"M\",\"R\"],\"props\":{\"empty\":\"\",\"k\":\"9\",\"text\":\"null\"}}"
+    },
+    {
+      "entity_kind": "node",
+      "entity_id": "ledger12:2f786a99:a",
+      "attr": "",
+      "before": "",
+      "after": null
+    },
+    {
+      "entity_kind": "node",
+      "entity_id": "ledger12:2f786a99:a",
+      "attr": "prop:k",
+      "before": "fresh",
+      "after": null
+    },
+    {
+      "entity_kind": "node",
+      "entity_id": "ledger12:2f786a99:named-source",
+      "attr": "",
+      "before": "",
+      "after": null
+    },
+    {
+      "entity_kind": "node",
+      "entity_id": "ledger12:2f786a99:named-source",
+      "attr": "label:Scoped",
+      "before": "",
+      "after": null
+    },
+    {
+      "entity_kind": "node",
+      "entity_id": "ledger12:2f786a99:simple",
+      "attr": "",
+      "before": null,
+      "after": "{\"labels\":[\"Simple\"],\"props\":{\"x\":\"0\"}}"
+    },
+    {
+      "entity_kind": "rel",
+      "entity_id": "5",
+      "attr": "",
+      "before": null,
+      "after": "{\"graph\":null,\"o\":\"ledger12:2f786a99:b\",\"p\":\"R\",\"quals\":{\"q\":\"x\",\"weight\":\"1.25\"},\"s\":\"ledger12:2f786a99:a\"}"
+    },
+    {
+      "entity_kind": "rel",
+      "entity_id": "6",
+      "attr": "",
+      "before": "{\"graph\":\"ledger12:2f786a99:named\",\"o\":\"ledger12:2f786a99:b\",\"p\":\"NAMED\",\"s\":\"ledger12:2f786a99:named-source\"}",
+      "after": null
+    },
+    {
+      "entity_kind": "rel",
+      "entity_id": "6",
+      "attr": "qual:q",
+      "before": "named",
+      "after": null
+    }
+  ],
+  "container": "ivg-uplift-next-20261115",
+  "identity_checked": true,
+  "source_identities": {
+    "iris_vector_graph/ledger/client.py": {
+      "pin_blob": "c26ad281e847c8db71cc7209d5749326ef984914",
+      "export_equals": true,
+      "current_equals": true
+    },
+    "iris_vector_graph/ledger/changeset.py": {
+      "pin_blob": "c5fc724a87a1a8dbbe7d02a510519e05881fa4af",
+      "export_equals": true,
+      "current_equals": true
+    },
+    "iris_vector_graph/ledger/replay.py": {
+      "pin_blob": "af462069dc204da26d238525262d67410ac136df",
+      "export_equals": true,
+      "current_equals": true
+    },
+    "iris_vector_graph/ledger/export.py": {
+      "pin_blob": "f2918e87324fca2b3a6ca122c91ab741e4b21e18",
+      "export_equals": true,
+      "current_equals": true
+    },
+    "iris_src/src/Graph/KG/Ledger.cls": {
+      "pin_blob": "017d1677d1a75921f8cc0a984a876fb88bb05af8",
+      "export_equals": true,
+      "current_equals": true
+    },
+    "iris_src/src/Graph/KG/LedgerApply.cls": {
+      "pin_blob": "b1400156a9721217b2799c6b82f731f058615342",
+      "export_equals": true,
+      "current_equals": true
+    },
+    "iris_src/src/Graph/KG/LedgerGenesis.cls": {
+      "pin_blob": "596c7b6e16607649b010dc1b050fcc4801205f98",
+      "export_equals": true,
+      "current_equals": true
+    }
+  },
+  "source_inputs": {
+    "iris_vector_graph/ledger/client.py": "7a7674fe4c8efec9723847d409c6da867c3f90d7821991c94cc9b2eaee7ef08c",
+    "iris_vector_graph/ledger/changeset.py": "0542061cd17b5c74f4d34f9a9ad42a7cc673804b6911136a8e5d256dd1cd79c3",
+    "iris_vector_graph/ledger/replay.py": "2cf6d87ea3b1c66f785c1bf8dcd7cf38c99e29cc3cac2794d73edf6af20d00b3",
+    "iris_vector_graph/ledger/export.py": "863649f572424ca27bb9c7ec16f0231bca1efd302289a72eead960af2fcf2d74",
+    "iris_src/src/Graph/KG/Ledger.cls": "d0a0e0149b09dda68c908da6c7544a99830afdc2e94905b57209589a7dad54dd",
+    "iris_src/src/Graph/KG/LedgerApply.cls": "73068abd02f1e93a8cda77365e9c8be41f8d756f1bc25dbb33e8a7468700c414",
+    "iris_src/src/Graph/KG/LedgerGenesis.cls": "afd64ea71b6159a5e49f729e3bb43fbd0796617cfa8fa69aa00c4e37f1629909"
+  },
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-12/root-ledger-native.py": "4fc15f9e09a8d61c588a758288d39640e06d01deee7d3017aa7532b5a67e2fa8",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-predictions.md": "ed886212cf00e3077b9a83ad20b30ce97bbf6d812a7ed72702d64abecb2e50c7",
+    ".g5/Verus_verification/models/temporal_restore/binding.py": "cdd4459d65727c894b6be1aca1a1f61ad56cb1325592bacc9dcb5471a7608fe1",
+    ".g5/uplift/consolidated/iteration-5/native-setup.json": "00f2a10ec6c71dcfef54013d462875481bd76ef3d7a8c9dc0e291aae63058cdf"
+  },
+  "elapsed": 0.914387832977809,
+  "genesis_native_executed": false,
+  "new_issue_claims": 0,
+  "scope": "Ordinary finite Changeset/ApplyAll native writers through actual SQL record decoder, named full-content reconstruction/diff/stream/export on a fresh prefix. Earlier task-owned state retained. Enable resumes/adopts disabled history; no reset or Genesis execution. Known bug-led-101 strengthened, q-con-002 unanswered. Native class correspondence reuses setup5 deployment/export audit; no native-body, arbitrary SQL/JSON/string coercion, atomicity or repository-wide proof."
+}

@@ -1,0 +1,19 @@
+.F...................................................................... [ 46%]
+........................................................................ [ 92%]
+...........                                                              [100%]
+=================================== FAILURES ===================================
+__ TestBuilderWire.test_wire_validates_against_schema_if_jsonschema_available __
+
+self = <tests.unit.test_ledger_changeset.TestBuilderWire object at 0x102f1f710>
+
+    def test_wire_validates_against_schema_if_jsonschema_available(self):
+        jsonschema = pytest.importorskip("jsonschema")
+>       with open(SCHEMA_PATH) as f:
+             ^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/repo/tests/unit/../../specs/213-graph-revision-ledger/contracts/changeset.schema.json'
+
+tests/unit/test_ledger_changeset.py:72: FileNotFoundError
+=========================== short test summary info ============================
+FAILED ../../../../../../../../../../../../dev::TestBuilderWire::test_wire_validates_against_schema_if_jsonschema_available
+1 failed, 154 passed in 1.02s
+REVIEW_SOCKET_CONNECT_CALLS 0

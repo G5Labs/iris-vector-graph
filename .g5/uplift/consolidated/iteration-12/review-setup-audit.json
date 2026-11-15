@@ -1,0 +1,30 @@
+{
+  "utc": "2026-11-15T23:29:01.991396+00:00",
+  "first_prepare": {
+    "status": "HARNESS_SETUP_ERROR before candidate execution",
+    "preserved_source_harness": "review-ledger-scratch-v1/review-replay-before-copy-fix.py",
+    "source_sha256": "240a5153e6f901d03ba80dc47d089e6c9d9ad2a4a7207806437ecdbc3932c156",
+    "partial_scratch_preserved": true,
+    "candidate_commands_executed": 0,
+    "raw_process_stderr_capture_file": null,
+    "visible_tool_transcript": "prepare-failure-raw.log is a manual transcription of visible tool output, not a machine-captured original stderr file; prepare-failure.log/json summarize it.",
+    "correction": "Fresh v2 preserves symlinks rather than follows the optional dangling TCK symlink."
+  },
+  "upstream_setup_failures": {
+    "machine_captured_raw_logs": [
+      "review-ledger-scratch-v2/runs/20261115T232215.325847Z-upstream/raw.log",
+      "review-ledger-scratch-v2/runs/20261115T232222.768269Z-upstream/raw.log"
+    ],
+    "causes": [
+      "wrong confcutdir argument relative to scratch cwd",
+      "omitted unmodified product changeset.schema.json test dependency"
+    ],
+    "resolution": "Corrected command path and copied exact hash-equal source dependency; unchanged155 tests pass. No candidate/product/oracle edit."
+  },
+  "candidate_replay": {
+    "all_proof_control_binding_upstream_inputs_results_logs_machine_preserved": true,
+    "source_packages_equal_final": true,
+    "central_oracle_edits": false
+  },
+  "startup_latency": "Default zsh/process startup delayed output; explicit bash/loginfalse was used subsequently. Child-command costs exclude unmeasured outer shell startup; no resource/model verdict inferred."
+}

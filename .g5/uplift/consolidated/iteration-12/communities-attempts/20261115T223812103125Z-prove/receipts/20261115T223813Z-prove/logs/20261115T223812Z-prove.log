@@ -1,0 +1,48 @@
+verification results:: 45 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:393:1
+    |
+393 | pub proof fn theorem_raw_sql_incidence_agree(g:Seq<Coord>,e:Seq<EdgeRow>,u:Node)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:395:13
+    |
+395 |     ensures members(g).contains(u) <==> sql_incident(e,u),raw_other(g,u) <==> sql_other(e,u),raw_out(g,u) <==> sql_out(e,u),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+403 |     if sql_out(e,u){let i=choose|i:int|0<=i<e.len() && e[i].graph==0 && e[i].s==u;let a=Coord{incoming:false,graph:0,owner:u,predicate:e[i].predicate,neighbor:e[i].o};assert(matches_edge(a,e[i]));assert(g.contains(a));}
+    |     ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:395:59
+    |
+395 |     ensures members(g).contains(u) <==> sql_incident(e,u),raw_other(g,u) <==> sql_other(e,u),raw_out(g,u) <==> sql_out(e,u),
+    |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+403 |     if sql_out(e,u){let i=choose|i:int|0<=i<e.len() && e[i].graph==0 && e[i].s==u;let a=Coord{incoming:false,graph:0,owner:u,predicate:e[i].predicate,neighbor:e[i].o};assert(matches_edge(a,e[i]));assert(g.contains(a));}
+    |     ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:395:94
+    |
+395 |     ensures members(g).contains(u) <==> sql_incident(e,u),raw_other(g,u) <==> sql_other(e,u),raw_out(g,u) <==> sql_out(e,u),
+    |                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+403 |     if sql_out(e,u){let i=choose|i:int|0<=i<e.len() && e[i].graph==0 && e[i].s==u;let a=Coord{incoming:false,graph:0,owner:u,predicate:e[i].predicate,neighbor:e[i].o};assert(matches_edge(a,e[i]));assert(g.contains(a));}
+    |     ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:398:117
+    |
+398 | ...d(g[i]) && g[i].owner==u;let k=choose|k:int|0<=k<e.len() && matches_edge(g[i],e[k]);}
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:400:173
+    |
+400 | ...r==u && g[i].neighbor==v;let k=choose|k:int|0<=k<e.len() && matches_edge(g[i],e[k]);}
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 3 previous errors
+

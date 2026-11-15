@@ -1,0 +1,1155 @@
+from __future__ import annotations
+import json
+from typing import NamedTuple, Optional
+
+from iris_vector_graph._validate import TemporalEdgeInput, validate_graph_name
+from iris_vector_graph._engine import temporal_window as _window
+from iris_vector_graph.errors import GraphWriteError
+from iris_vector_graph.exceptions import TemporalWindowError
+from iris_vector_graph._engine.ledger import ledger_strict as _ledger_strict
+
+
+def _temporal_left(error: str) -> str:
+    """What a failed temporal write leaves, for GraphWriteError. InsertEdge runs no transaction, so an error part way
+    through keeps the stores it wrote before it; a <PROTECT> (the user may not write the database) refuses the first."""
+    if "<PROTECT>" in (error or ""):
+        return ""
+    return "the temporal stores written before the error stay (the temporal write runs no transaction)"
+
+
+class PurgeResult(NamedTuple):
+    """Return value of purge_raw_before: counts of deleted and skipped edges.
+
+    int(result) == result.deleted for backward-compatible callers. ``nodes_retired`` is the number of
+    endpoint nodes deleted because the purge left them bare; it is 0 with ``retire_bare_nodes=False``.
+    """
+
+    deleted: int
+    skipped: int
+    nodes_retired: int = 0
+
+    def __int__(self) -> int:
+        return self.deleted
+
+
+class BareNodesResult(NamedTuple):
+    """Return value of erase_bare_nodes.
+
+    ``bare``: nodes found bare. ``erased``: removed (0 in a dry run). ``kept``: found bare and
+    left, because adjacency named them or a dependant appeared since the scan. ``batches``:
+    transactions run.
+    """
+
+    bare: int
+    erased: int
+    kept: int
+    batches: int
+    dry_run: bool
+
+
+class DropRowsResult(NamedTuple):
+    """Return value of drop_temporal_structural_rows.
+
+    ``rows``: marked rows deleted, or in a dry run the rows that carry the writers' own marker text. ``nodes_retired``:
+    endpoint nodes deleted because the drop left them bare. ``batches``: transactions run. ``dry_run``: nothing was changed.
+    ``unchecked``: in a dry run, the other rows of the predicates (explicit edges, or rows marked in another JSON layout),
+    which only a real run reads one by one; 0 after a real run. ``per_predicate``: ``{predicate: {"rows", "unchecked",
+    "nodes_retired"}}``, one entry for each predicate asked about.
+    """
+
+    rows: int
+    nodes_retired: int
+    batches: int
+    dry_run: bool
+    unchecked: int = 0
+    per_predicate: dict = {}
+
+
+class TemporalWriteCount(int):
+    """Return value of bulk_create_edges_temporal: the number of edges written (spec 254, FR-003).
+
+    An ``int``, so every caller that read the written count keeps reading it. ``collisions`` counts
+    mode-"insert" writes at coordinates ``(ts, s, p, o)`` that already held an edge, from an earlier
+    call or earlier in the batch: they changed no store. ``skipped`` counts mode-"skip" writes that
+    found their coordinates occupied.
+    """
+
+    collisions: int
+    skipped: int
+
+    def __new__(cls, written: int, collisions: int = 0, skipped: int = 0):
+        obj = super().__new__(cls, int(written))
+        obj.collisions = int(collisions)
+        obj.skipped = int(skipped)
+        return obj
+
+    @property
+    def written(self) -> int:
+        return int(self)
+
+    def __repr__(self) -> str:
+        return f"TemporalWriteCount(written={int(self)}, collisions={self.collisions}, skipped={self.skipped})"
+
+
+import logging
+logger = logging.getLogger(__name__)
+
+
+def _mirror_node(engine, cursor, node_id: str, graph: Optional[str]) -> None:
+    """Create an endpoint node for a mirrored temporal edge, in the edge's graph.
+
+    4.0.0 keys `nodes` on `(graph_id, node_id)` and points `fk_edges_src` /
+    `fk_edges_dest` at that composite key (FR-008), so an endpoint created in the
+    default graph does not satisfy an edge in a named one — the mirror wrote the
+    node, the edge insert failed its foreign key, and the caller was told True.
+    """
+    graph_id = graph or ""
+    try:
+        cursor.execute(
+            f"INSERT INTO {engine._t('nodes')} (node_id, graph_id) SELECT ?, ? "
+            f"WHERE NOT EXISTS (SELECT 1 FROM {engine._t('nodes')} "
+            f"WHERE node_id=? AND COALESCE(graph_id, '') = COALESCE(?, ''))",
+            [node_id, graph_id, node_id, graph_id],
+        )
+    except Exception as e:
+        logger.warning(
+            "temporal mirror: endpoint %r not created in graph %r: %s",
+            node_id, graph_id, e,
+        )
+
+
+#: Qualifiers that mark a structural ``rdf_edges`` row as owned by a temporal edge
+#: (spec 246, ADR-0009). Stored in the existing ``qualifiers`` JSON column.
+TEMPORAL_QUALIFIERS = {"temporal": True}
+
+#: Upper bound of the event-time range for a read that means "all time".
+_ALL_TIME_END = 9999999999
+
+#: ``bulk_create_edges_temporal``'s dict keys, by role (R213).
+_TEMPORAL_KEYS = {
+    "source": ("s", "source_id", "source"),
+    "predicate": ("p", "predicate"),
+    "target": ("o", "target_id", "target"),
+    "timestamp": ("ts", "timestamp"),
+}
+_TEMPORAL_OPTIONAL = ("w", "weight", "attrs")
+
+
+def _check_temporal_edges(edges: list) -> None:
+    """ValueError naming the first edge ``bulk_create_edges_temporal`` cannot write as given (R213: a missing source,
+    predicate or target was sent as ``""``, a missing timestamp as 0, and an unknown key dropped)."""
+    allowed = {k for keys in _TEMPORAL_KEYS.values() for k in keys} | set(_TEMPORAL_OPTIONAL)
+    shape = "a dict with s/source_id/source, p/predicate, o/target_id/target, ts/timestamp, and optionally w/weight, attrs"
+    for i, e in enumerate(edges):
+        if not isinstance(e, dict):
+            raise ValueError(f"bulk_create_edges_temporal: edge {i} is a {type(e).__name__}, not {shape}")
+        for role, keys in _TEMPORAL_KEYS.items():
+            if not any(e.get(k) not in (None, "") for k in keys):
+                raise ValueError(f"bulk_create_edges_temporal: edge {i} {e!r} has no {role}; each edge is {shape}")
+        unknown = sorted(str(k) for k in e if k not in allowed)
+        if unknown:
+            raise ValueError(
+                f"bulk_create_edges_temporal: edge {i} has key(s) {', '.join(repr(k) for k in unknown)}, which it "
+                f"does not store; each edge is {shape}"
+            )
+
+
+def _given_weight(e: dict):
+    """The edge's ``w``, else its ``weight``, else 1.0; None is not given. A 0 is a weight (4.6.0 R252:
+    ``e.get("w") or ...`` read 0 as absent and wrote 1.0)."""
+    for k in ("w", "weight"):
+        if e.get(k) is not None:
+            return e[k]
+    return 1.0
+
+
+def _temporal_rows_on(engine) -> bool:
+    """True when the engine was built with ``temporal_structural_rows=True``."""
+    return bool(getattr(engine, "_temporal_structural_rows", False))
+
+
+def _select_structural_row(engine, column, source, predicate, target, graph):
+    """Select ``column`` from the triple's ``rdf_edges`` row in ``graph``; first row or None."""
+    cursor = engine.conn.cursor()
+    cursor.execute(
+        f"SELECT {column} FROM {engine._t('rdf_edges')} WHERE s = ? AND p = ? AND o_id = ? "
+        "AND COALESCE(graph_id, '') = COALESCE(?, '')",
+        [source, predicate, target, graph or ""],
+    )
+    return cursor.fetchone()
+
+
+def _own_structural_row(engine, source, predicate, target, weight, graph) -> None:
+    """Give the triple one ``rdf_edges`` row marked as temporal, unless it has one.
+
+    An existing row (written by ``create_edge`` or the legacy mirror) is left as it
+    is and is not marked, so it is never removed by a temporal delete.
+    """
+    row = _select_structural_row(engine, "COUNT(*)", source, predicate, target, graph)
+    if row and row[0]:
+        return
+    # create_edge is the one writer of structural rows, so the SQL and the
+    # ^KG adjacency entry stay in step with a non-temporal edge. The marked row's qualifiers are
+    # built here, as they were before R215 (a weight of 1.0 left out, another as a JSON number):
+    # create_edge's weight= now stores the number's text.
+    quals = dict(TEMPORAL_QUALIFIERS)
+    if weight is not None and float(weight) != 1.0:
+        quals["weight"] = float(weight)
+    engine.create_edge(source, predicate, target, qualifiers=quals, graph=graph)
+
+
+def _owned_structural_row(engine, source, predicate, target, graph) -> bool:
+    """True when the triple's ``rdf_edges`` row carries the temporal marker."""
+    row = _select_structural_row(engine, "qualifiers", source, predicate, target, graph)
+    if not row or row[0] is None:
+        return False
+    try:
+        qualifiers = json.loads(row[0]) if isinstance(row[0], str) else row[0]
+    except ValueError:
+        return False
+    return isinstance(qualifiers, dict) and qualifiers.get("temporal") is True
+
+
+def _triple_survives(engine, source, predicate, target, graph) -> bool:
+    """True when any temporal edge for the triple still exists, or cannot be ruled out.
+
+    An error or an unreadable result counts as "survives", so a failed read keeps
+    the structural row rather than deleting it on a guess.
+    """
+    result = engine._store.execute_temporal_window_query(
+        source, predicate, 0, _ALL_TIME_END, "out", graph=graph,
+    )
+    if result.error:
+        return True
+    for row in result.rows:
+        if not result.columns or not isinstance(row, (list, tuple)):
+            return True
+        named = dict(zip(result.columns, row))
+        if "o" in named:
+            hit = named["o"]
+        elif "target" in named:
+            hit = named["target"]
+        else:
+            return True
+        if hit == target:
+            return True
+    return False
+
+
+class TemporalMixin:
+    """Temporal property graph domain mixin for IRISGraphEngine.
+    
+    Provides time-indexed edge storage, windowed queries, pre-aggregated analytics,
+    and burst detection over the temporal edge store (^KG("tout"/"tin"/"bucket")/^KG("tagg")).
+    """
+
+    def create_edge_temporal(
+        self,
+        source: str,
+        predicate: str,
+        target: str,
+        timestamp: int = None,
+        weight: float = 1.0,
+        attrs: dict = None,
+        upsert: bool = False,
+        suppress_reverse_index: bool = False,
+        graph: Optional[str] = None,
+        mode: str = "",
+    ) -> bool:
+        """Write one timestamped edge, with optional ``attrs``, to one graph's temporal index; returns
+        ``True`` (a collision in ``mode="insert"`` too). A write IRIS refuses raises ``GraphWriteError``
+        and writes nothing; before 4.6.0 it answered ``False``.
+
+        Args:
+            upsert: When ``True``, if an edge with the same ``(source, predicate,
+                target, timestamp)`` key already exists, its weight and attrs are
+                **replaced** with the new values (last-write-wins semantics). When
+                ``False`` (default), ``mode="insert"``: a second write at the same
+                coordinates is a collision and changes no store, aggregates
+                included (spec 254). The first write wins. The call still returns
+                ``True`` (it did not fail); ``bulk_create_edges_temporal`` reports
+                collisions as a count.
+
+                **Note on bucket aggregates**: ``upsert=True`` replaces the edge's
+                weight in ``^KG("tout")`` but does NOT adjust the pre-computed bucket
+                aggregates in ``^KG("tagg")``. Aggregate counters (count/sum/min/max)
+                remain based on the original value. If aggregate fidelity is required,
+                call ``Purge()`` and rebuild, or use ``get_edges_in_window()`` for
+                exact per-edge statistics.
+
+        ADJACENCY CONTRACT: TemporalIndex.InsertEdge writes the temporal globals
+        (^KG "tout"/"tin"/buckets/aggregates) AND a shadow ^KG("out",0,...)
+        adjacency entry — so temporal edges ARE visible to the ^KG-based readers
+        (MatchEdges, Algorithms, Centrality). They are NOT written to the
+        interned ^NKG(-1,...) index, so the NKG-accelerated (arno/Rust) BFS path
+        will not see them until a BuildNKG. Call engine.sync() if you need
+        temporal edges in NKG-accelerated traversals. Edges are only mirrored
+        into the rdf_edges SQL table when ``graph=`` is supplied.
+        """
+        if timestamp is not None:
+            TemporalEdgeInput(source=source, predicate=predicate, target=target,
+                              timestamp=int(timestamp), weight=weight)
+        result = self._store.write_temporal_edge(  # type: ignore[call-arg]
+            source, predicate, target,
+            timestamp=int(timestamp) if timestamp is not None else 0,
+            weight=weight, attrs=attrs, upsert=upsert,
+            suppress_reverse_index=suppress_reverse_index,
+            mode=mode,
+            graph=graph,
+        )
+        if result.error is not None:
+            # R203: it answered False, which a caller that does not check reads as written
+            raise GraphWriteError("create_edge_temporal", RuntimeError(result.error),
+                                  left=_temporal_left(result.error))
+        if graph is not None and _ledger_strict(self):
+            logger.debug("ledger strict mode: temporal structural mirror skipped for %s -[%s]-> %s", source, predicate, target)
+        elif _temporal_rows_on(self) and not _ledger_strict(self):
+            # Spec 246: the temporal edge owns a marked structural row (create_edge path).
+            _own_structural_row(self, source, predicate, target, weight, graph)
+        elif graph is not None and not getattr(self, "_adjacency_indexed", False):
+            # With the adjacency index, InsertEdge asserted the marked row itself (ADR-0009).
+            cursor = self.conn.cursor()
+            for nid in (source, target):
+                _mirror_node(self, cursor, nid, graph)
+            try:
+                cursor.execute(
+                    f"INSERT INTO {self._t('rdf_edges')} (s, p, o_id, graph_id) "
+                    f"SELECT ?, ?, ?, ? WHERE NOT EXISTS "
+                    f"(SELECT 1 FROM {self._t('rdf_edges')} WHERE s=? AND p=? AND o_id=? "
+                    f"AND COALESCE(graph_id, '') = COALESCE(?, ''))",
+                    [source, predicate, target, graph, source, predicate, target, graph],
+                )
+                # 4.6.4: no conn.commit(): the statement is atomic on its own, and the commit ended a caller's open
+                # transaction
+            except Exception as e:
+                # Silence here is what made a missing endpoint look like success: the
+                # temporal globals held the edge, rdf_edges held nothing, and the
+                # return value said True.
+                logger.warning(
+                    "temporal mirror: %s -[%s]-> %s not written to rdf_edges in graph %r: %s",
+                    source, predicate, target, graph, e,
+                )
+        return True
+
+    def delete_edge_temporal(
+        self,
+        source: str,
+        predicate: str,
+        target: str,
+        timestamp: int,
+        graph: Optional[str] = None,
+    ) -> bool:
+        """Remove one timestamped edge, and everything derived from it.
+
+        The inverse of ``create_edge_temporal``. Until this existed, the only ways
+        to remove a temporal edge were time-based and coarse — ``purge_before``,
+        ``purge_raw_before``, ``purge_bucket_range`` — so removing one edge meant
+        removing every other edge in the same window, and deleting a structural
+        edge left its temporal entries behind for good.
+
+        Returns ``False`` when no edge existed at those coordinates, so a caller
+        can tell a delete from a no-op rather than treating both as success.
+
+        ``InsertEdge`` writes nine stores and three of them cannot be run
+        backwards: ``min`` and ``max`` are running extremes, and the distinct-count
+        sketch is a HyperLogLog whose registers only move up. Those are recomputed
+        from the bucket's surviving edges rather than adjusted, which is why this
+        is one call and not a set of decrements — the caller cannot know which
+        stores are invertible.
+
+        The structural shadow in ``^KG("out")`` is removed only when no temporal
+        edge for ``(source, predicate, target)`` survives in this graph, because
+        the shadow means "this edge exists at some time".
+
+        KNOWN AMBIGUITY: ``create_edge`` writes the same ``^KG("out")`` entry with
+        no marker distinguishing it from a temporal shadow. If both wrote the same
+        triple in the same graph, removing the last temporal edge removes the
+        structural edge too. Rebuild with ``BuildKG()`` if you mix the two paths
+        on one triple.
+        """
+        TemporalEdgeInput(
+            source=source, predicate=predicate, target=target,
+            timestamp=int(timestamp),
+        )
+        if not _temporal_rows_on(self):
+            return self._store.delete_temporal_edge(
+                source, predicate, target, int(timestamp), graph=graph
+            )
+        # Spec 246: remove the structural row this edge owns, once no temporal edge
+        # for the triple is left. Strict ledger mode leaves SQL writes to the ledger.
+        owned = _owned_structural_row(self, source, predicate, target, graph)
+        deleted = self._store.delete_temporal_edge(
+            source, predicate, target, int(timestamp), graph=graph
+        )
+        if not deleted or not owned or _ledger_strict(self):
+            return deleted
+        if not _triple_survives(self, source, predicate, target, graph):
+            self.delete_edge(source, predicate, target, graph=graph)
+        return deleted
+
+    def bulk_create_edges_temporal(
+        self, edges: list, upsert: bool = False,
+        suppress_reverse_index: bool = False, graph: Optional[str] = None,
+        mode: str = "",
+    ) -> "TemporalWriteCount":
+        """Write a batch of timestamped edges, each a dict with ``s``, ``p``, ``o``, ``ts`` and
+        optionally ``w`` and ``attrs``, to one graph's temporal index in one server call. Another
+        shape raises ``ValueError`` before anything is written.
+
+        Each edge is a dict with ``s``, ``p``, ``o``, ``ts`` and optionally ``w`` (1.0) and
+        ``attrs`` (or ``source``/``source_id``, ``predicate``, ``target``/``target_id``,
+        ``timestamp``, ``weight``). An edge that is not a dict, lacks a source, predicate,
+        target or timestamp, or has another key raises ``ValueError`` naming it, before anything
+        is written (4.6.0: a missing key became ``""`` or 0).
+
+        Returns a ``TemporalWriteCount``: an ``int`` equal to the number of edges
+        written, with ``.collisions`` (mode ``"insert"`` at coordinates that already
+        held an edge, which changed no store) and ``.skipped`` (mode ``"skip"``)
+        (spec 254, FR-003).
+
+        ``graph`` reaches the temporal globals as well as the ``rdf_edges``
+        mirror. It used to reach only the mirror: the batch went into ``^KG`` at
+        the default graph key whatever was asked for, so a named-graph bulk load
+        was invisible to every graph-scoped temporal reader while the SQL rows
+        looked correct.
+
+        ``mode`` means here what it means on ``create_edge_temporal``:
+        ``"update"`` overwrites an edge already at ``(s, p, o, ts)``, ``"skip"``
+        keeps the first write, ``"insert"`` keeps the first write and counts the
+        second as a collision. Empty defers to ``upsert``, which is ``"update"``
+        when true. Bucket aggregates in ``^KG("tagg")`` are not adjusted for an
+        overwritten weight — the FR-004 caveat, and it applies to this path
+        identically.
+
+        An edge IRIS refuses raises ``GraphWriteError``, saying how many of the batch were
+        written; before 4.6.0 the count alone answered, so a refused batch read as 0 new edges.
+        """
+        _check_temporal_edges(edges)
+        normalized = [
+            {
+                "source": e.get("s") or e.get("source_id") or e.get("source", ""),
+                "predicate": e.get("p") or e.get("predicate", ""),
+                "target": e.get("o") or e.get("target_id") or e.get("target", ""),
+                "timestamp": int(e.get("ts") or e.get("timestamp", 0)),
+                "weight": float(_given_weight(e)),
+                "attrs": e.get("attrs") or {},
+            }
+            for e in edges
+        ]
+        result = self._store.bulk_write_temporal_edges(
+            normalized, upsert=upsert, suppress_reverse_index=suppress_reverse_index,
+            graph=graph, mode=mode,
+        )
+        try:
+            row = list(result.rows[0]) if result.rows else []
+            count, collisions, skipped = (int(x) for x in (row + [0, 0, 0])[:3])
+        except (TypeError, ValueError, IndexError):
+            count = collisions = skipped = 0
+        if result.error is not None:
+            # R203: a refused batch used to answer a count of 0, which reads as "nothing new to write"
+            raise GraphWriteError(
+                "bulk_create_edges_temporal", RuntimeError(result.error),
+                left=(f"{count} of {len(normalized)} edges written" if count else _temporal_left(result.error)))
+        # With the adjacency index, BulkInsert asserted every marked row itself (ADR-0009); the
+        # mirror below is for installs without it, and was three SQL statements per edge.
+        if count > 0 and graph is not None and not getattr(self, "_adjacency_indexed", False):
+            cursor = self.conn.cursor()
+            for e in normalized:
+                for nid in (e["source"], e["target"]):
+                    _mirror_node(self, cursor, nid, graph)
+                try:
+                    cursor.execute(
+                        f"INSERT INTO {self._t('rdf_edges')} (s, p, o_id, graph_id) "
+                        f"SELECT ?, ?, ?, ? WHERE NOT EXISTS "
+                        f"(SELECT 1 FROM {self._t('rdf_edges')} WHERE s=? AND p=? AND o_id=? "
+                        f"AND COALESCE(graph_id, '') = COALESCE(?, ''))",
+                        [e["source"], e["predicate"], e["target"], graph,
+                         e["source"], e["predicate"], e["target"], graph],
+                    )
+                except Exception as exc:
+                    logger.warning(
+                        "temporal mirror: %s -[%s]-> %s not written to rdf_edges in graph %r: %s",
+                        e["source"], e["predicate"], e["target"], graph, exc,
+                    )
+            # 4.6.4: no conn.commit() (4.6.0 R276 checked it): each mirror INSERT is atomic on its own, and the
+            # commit ended a caller's open transaction
+        return TemporalWriteCount(count, collisions=collisions, skipped=skipped)
+
+    def get_edges_in_window(
+        self,
+        source: str = "",
+        predicate: str = "",
+        start: int = 0,
+        end: int = 0,
+        direction: str = "out",
+        graph: Optional[str] = None,
+    ) -> list:
+        """Return one graph's temporal edges with ``start <= ts <= end`` as a list of dicts, for one
+        ``source`` (every source when empty) and ``predicate`` (every predicate when empty); reads only.
+
+        direction="in" queries inbound edges (QueryWindowInbound); a direction other than "out" or "in" raises
+        ``ValueError`` (before 4.6.0 it read the out-edges).
+        WARNING: Edges written with suppress_reverse_index=True are NOT visible
+        when direction="in". Those edges have no ^KG("tin") entry by design.
+        Callers mixing suppressed and non-suppressed writes will see only
+        non-suppressed edges in inbound queries.
+
+        source="" returns edges from all sources (QueryWindow all-sources path).
+
+        **Return shape**: each dict has keys ``{s, p, o, ts, w}`` (plus long-form
+        aliases ``source``, ``predicate``, ``target``, ``timestamp``, ``weight``).
+
+        **One string, so a cap.** The server builds the whole answer as one string; a window past about
+        35 k edges raises ``TemporalWindowError`` (``<MAXSTRING>``). It never returns ``[]`` for a window it
+        could not read. ``iter_edges_in_window`` reads any window in pages, attributes included (spec 255).
+
+        **Edge attributes are NOT included.** Attrs written via
+        ``create_edge_temporal(attrs={...})`` are stored separately in
+        ``^KG("edgeprop")`` and are never returned by this method. To retrieve attrs
+        for a specific edge, call ``get_edge_attrs(ts, source, predicate, target)``::
+
+            edges = engine.get_edges_in_window("svc-auth", "CALLS", ts_start, ts_end)
+            for edge in edges:
+                attrs = engine.get_edge_attrs(edge["ts"], edge["s"], edge["p"], edge["o"])
+        """
+        if direction not in ("out", "in"):
+            # 4.6.0 round 3: anything else read the out-edges
+            raise ValueError(f'direction is "out" or "in", not {direction!r}')
+        result = self._store.execute_temporal_window_query(source, predicate, start, end, direction, graph=graph)
+        if result.error:
+            # Spec 255 FR-006: this used to return [], so a window past QueryWindow's string limit read as empty.
+            raise TemporalWindowError(
+                f"temporal window read failed: {result.error}. QueryWindow answers in one string of at most "
+                "3,641,144 characters; iter_edges_in_window reads any window in pages"
+            )
+        cols = result.columns
+        if cols and result.rows and isinstance(result.rows[0], (list, tuple)):
+            long_to_short = {"source": "s", "predicate": "p", "target": "o", "timestamp": "ts", "weight": "w"}
+            short_to_long = {v: k for k, v in long_to_short.items()}
+            out = []
+            for row in result.rows:
+                d = dict(zip(cols, row))
+                extras = {long_to_short[k]: v for k, v in d.items() if k in long_to_short}
+                extras.update({short_to_long[k]: v for k, v in d.items() if k in short_to_long})
+                d.update(extras)
+                out.append(d)
+            return out
+        return result.rows
+
+    def iter_edges_in_window(
+        self,
+        start: int,
+        end: int,
+        *,
+        source: Optional[str] = None,
+        sources: Optional[list] = None,
+        source_prefix: Optional[str] = None,
+        predicates: Optional[list] = None,
+        direction: str = "out",
+        attrs: bool = True,
+        page_size: int = 1000,
+        graph: Optional[str] = None,
+    ) -> "_window.TemporalWindowCursor":
+        """Read a window of any size, a page at a time, each event with its attributes (spec 255).
+
+        Returns a cursor: iterate it for event dicts with ``get_edges_in_window``'s keys (``s, p, o, ts, w`` and
+        ``source, predicate, target, timestamp, weight``) plus ``attrs`` (``{}`` when the edge has none; left out
+        with ``attrs=False``). The first page comes back in this call, so a window that fits one page (1,000 events
+        by default) costs one round trip. Close it with ``close()`` or a ``with`` block when you stop early; it
+        closes itself when the last page is read or when it is garbage-collected.
+
+        Both ends are inclusive, as in ``get_edges_in_window``. Order is ascending timestamp, then source,
+        predicate and target, stable across pages. Each page is a live read from where the last one stopped: an
+        event removed after a page was read is not returned later.
+
+        Filters (at most one of the three source filters): ``source``, a list ``sources`` (their union, each event
+        once; an empty list reads nothing), ``source_prefix`` (for example ``"tenant|"``), and a set of
+        ``predicates``. With a source filter the server looks the sources up at each timestamp rather than walking
+        every source at it. A prefix made only of digits, ``-`` and ``.`` cannot use that lookup (IRIS sorts
+        numbers before strings) and walks the sources at each timestamp instead.
+
+        ``direction="in"`` reads the reverse index: the source filters then name the target, and edges written
+        with ``suppress_reverse_index=True`` are not visible, as with ``get_edges_in_window(direction="in")``.
+
+        Raises ``TemporalWindowError`` when the server read fails, at this call or at the page that failed.
+        """
+        spec = _window.window_spec(
+            start, end, source=source, sources=sources, source_prefix=source_prefix, predicates=predicates,
+            direction=direction, attrs=attrs, page_size=page_size,
+        )
+        return _window.TemporalWindowCursor(self._iris_obj(), validate_graph_name(graph), spec)
+
+    def get_latest_edges(
+        self,
+        sources: Optional[list] = None,
+        *,
+        source_prefix: Optional[str] = None,
+        predicate: Optional[str] = None,
+        before: Optional[int] = None,
+        lookback: Optional[int] = None,
+        attrs: bool = True,
+        graph: Optional[str] = None,
+    ) -> list:
+        """The newest event of each source, with its attributes (spec 255).
+
+        Name the sources, give a ``source_prefix``, or neither for every source in the graph. ``predicate``
+        restricts to one edge type; ``before`` is an exclusive cutoff (events at ``before`` or later do not
+        count), and ``lookback`` with it ignores events older than ``before - lookback``. Ties at the newest
+        timestamp go to the last ``(predicate, target)`` in index order. A source with no qualifying event is
+        absent, never ``None``. Event dicts have ``iter_edges_in_window``'s keys.
+
+        Answered from ``^KG("tlast")``, the newest timestamp per (source, predicate) kept on every write; a cutoff
+        walks timestamps back from it. A graph written before this index existed is answered by that walk for
+        named sources, and raises ``TemporalWindowError`` for a prefix or every source until
+        ``rebuild_temporal_latest(graph)`` has run once.
+        """
+        if sources is not None and not sources and not source_prefix:
+            return []
+        return _window.latest(
+            self._iris_obj(), validate_graph_name(graph), sources=sources, source_prefix=source_prefix,
+            predicate=predicate, before=before, lookback=lookback, attrs=attrs,
+        )
+
+    def rebuild_temporal_latest(self, graph: Optional[str] = None) -> int:
+        """Build the latest-event index for a graph written before spec 255, and mark it complete.
+
+        One pass over the graph's temporal edges; run it while the graph is quiet. Returns the number of
+        (source, predicate) pairs indexed. Graphs written since need nothing: every write keeps the index.
+        """
+        return int(self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex", "RebuildLatest", validate_graph_name(graph),
+        ))
+
+    def purge_before(self, ts: int, retire_bare_nodes: bool = True) -> int:
+        """Delete the default graph's temporal edges older than ``ts``, aggregates included; no other
+        graph is touched.
+
+        The one temporal operation with no ``graph`` parameter, because the
+        underlying ``PurgeBefore`` hardcodes key 0 and is kept for callers written
+        before the temporal globals were graph-scoped. Use ``purge_raw_before``
+        and ``purge_bucket_range`` for any named graph.
+
+        Deletes structural rows too, as ``purge_raw_before`` does (spec 254): the
+        marked row of every triple none of whose timestamps survive. It also deletes the endpoint nodes
+        that leaves bare (see ``purge_raw_before``) and returns how many; with ``retire_bare_nodes=False``
+        it keeps them and returns 0 (the default before 4.7.0).
+        """
+        return int(self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex", "PurgeBefore", int(ts),
+            1 if retire_bare_nodes else 0,
+        ) or 0)
+
+    def purge_bucket_range(
+        self, bucket_start: int, bucket_end: int, graph: Optional[str] = None
+    ) -> int:
+        """Delete one graph's ``^KG("tagg")`` and ``^KG("bucket")`` aggregate entries for buckets
+        ``bucket_start`` to ``bucket_end`` inclusive, and return how many buckets were removed.
+
+        Raw edges (tout/tin/edgeprop) are never touched — pair this with
+        ``purge_raw_before`` to remove both, or the aggregates go on describing
+        edges that are gone (and vice versa).
+        bucket = timestamp // BUCKET_SIZE (300 for seconds, 300000 for ms).
+        Returns count of buckets removed. Returns 0 if bucket_start > bucket_end.
+        """
+        return self._store.purge_bucket_range(bucket_start, bucket_end, graph=graph)
+
+    def purge_raw_before(
+        self, ts_end: int, ts_start: int = 0, graph: Optional[str] = None,
+        retire_bare_nodes: bool = True,
+    ) -> "PurgeResult":
+        """Delete one graph's raw temporal edges with ``ts_start <= ts < ts_end``, and the structural
+        rows only they asserted; the aggregates and ``^KG("labelset")`` (append-only) stay.
+
+        Writes more than the temporal globals (spec 254): the structural
+        ``rdf_edges`` row of every ``(source, predicate, target)`` whose every
+        timestamp was purged is deleted too, with its ``^KG("out"/"in")``
+        entries, while the row still carries the temporal marker. A row a
+        non-temporal write asserted (``create_edge``, ``bulk_create_edges``)
+        stays.
+
+        By default (4.7.0; ``retire_bare_nodes=False`` before) each endpoint of a retired triple that the purge left
+        BARE in this graph is deleted too: no edge names it (as source or target), and it has
+        no label, property, document or embedding. Only endpoints of the retired triples are
+        looked at, so a node created on purpose and never used in a temporal edge is never a
+        candidate; a node created on purpose, used only by a temporal edge, with nothing else
+        on it, is bare when that edge goes and is deleted. The deletion is race-safe (the
+        foreign keys refuse it while a writer's edge exists, committed or not). It was off by default
+        until 4.7.0, so a workload writing a new target node per event grew edgeless nodes without
+        limit (opsreview: 941 nodes to 7.2 million); ``retire_bare_nodes=False`` keeps every endpoint,
+        whose degree is then 0. For nodes an earlier purge already left, use ``erase_bare_nodes``.
+
+        Returns PurgeResult(deleted, skipped, nodes_retired). int(result) == result.deleted.
+        """
+        return self._store.purge_raw_before(
+            ts_end, ts_start=ts_start, graph=graph, retire_bare_nodes=retire_bare_nodes
+        )
+
+    def erase_bare_nodes(
+        self,
+        graph: Optional[str] = None,
+        batch_size: int = 10000,
+        dry_run: bool = False,
+        min_age_seconds: int = 0,
+    ) -> "BareNodesResult":
+        """Delete the BARE nodes of one graph: no edge names them (as source or target), and they
+        have no label, property, document or embedding.
+
+        The sweep for the nodes a temporal workload left behind: every distinct target of a
+        temporal edge is a node, and a purge before 4.7.0 (or with ``retire_bare_nodes=False``) left it.
+        Race-safe against a writer adding an edge, a label or an embedding: the foreign keys
+        refuse the delete while a dependant exists, committed or not, and that node is counted
+        as ``kept``. A property or document written to a node after the sweep has judged it bare
+        has no foreign key to stop the delete; ``min_age_seconds`` keeps the sweep off nodes
+        young enough for a writer to be mid-way through them (and a node a writer has just
+        created is the only kind that can lose that race).
+
+        Args:
+            graph: The graph; ``None`` and ``""`` are the default graph. The same id in another
+                graph is untouched.
+            batch_size: Nodes per transaction.
+            dry_run: Count only. Changes nothing: no row, no global, not ``^KG("__version")``.
+            min_age_seconds: Leave nodes created less than this many seconds ago.
+
+        Returns:
+            BareNodesResult(bare, erased, kept, batches, dry_run).
+        """
+        return self._store.erase_bare_nodes(
+            graph=graph, batch_size=batch_size, dry_run=dry_run, min_age_seconds=min_age_seconds
+        )
+
+    # ── ADR-0015: temporal-only predicates ──────────────────────────────────────────────
+
+    def set_temporal_structural(
+        self, predicate: str, enabled: bool = True, graph: Optional[str] = None
+    ) -> None:
+        """Say whether the temporal edges of ``predicate`` in ``graph`` imply structural rows (ADR-0009).
+
+        ``enabled=False`` registers the predicate as **temporal-only**: from the next write on, ``create_edge_temporal`` and
+        ``bulk_create_edges_temporal`` write the temporal stores (window, bucket, aggregate, latest-event, sketch) and
+        nothing else: no ``rdf_edges`` row, no node, no ``^KG("out"/"in")`` entry. BFS, k-hop, centrality, degree and Cypher
+        ``MATCH`` of that predicate then return nothing (an empty structural read of it logs a warning that says so); the
+        temporal reads are unaffected. The default is ``True`` (ADR-0009 as before).
+
+        It changes no row that exists. Rows an earlier release wrote go with ``drop_temporal_structural_rows``; rows a
+        predicate made structural again lacks come back with ``backfill_temporal_structural_rows``. The registration is
+        per graph and per predicate, outlives ``erase_graph`` (it is configuration), and is removed by ``erase_all``.
+
+        Raises:
+            ValueError: for an empty predicate or a graph name that cannot be a subscript (ADR-0003).
+        """
+        if not predicate:
+            raise ValueError("a predicate is required")
+        result = str(self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalPolicy", "Apply", validate_graph_name(graph), predicate, 1 if enabled else 0,
+        ))
+        if result != "ok":
+            raise ValueError(result.removeprefix("error:"))
+
+    def get_temporal_structural(self, predicate: str, graph: Optional[str] = None) -> bool:
+        """``True`` while the temporal edges of ``predicate`` in ``graph`` imply structural rows (the default)."""
+        return bool(int(self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalPolicy", "IsStructural", validate_graph_name(graph), predicate,
+        )))
+
+    def list_temporal_structural_opt_outs(self, graph: Optional[str] = None) -> list:
+        """The predicates registered temporal-only in ``graph``, sorted."""
+        return json.loads(str(self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalPolicy", "List", validate_graph_name(graph),
+        )))
+
+    def drop_temporal_structural_rows(
+        self,
+        predicate,
+        graph: Optional[str] = None,
+        batch_size: int = 10000,
+        dry_run: bool = False,
+        retire_bare_nodes: bool = True,
+    ) -> "DropRowsResult":
+        """Delete the structural rows an earlier release (or an earlier setting) wrote for temporal-only predicates.
+
+        ``predicate`` is one name or a list of names, each already registered with
+        ``set_temporal_structural(predicate, False)`` (or new writes would put the rows back): otherwise ``ValueError``,
+        before anything is deleted. Only rows that still carry the temporal marker go (ADR-0009): an edge ``create_edge``
+        asserted stays with its endpoints. The row's index removes its ``^KG`` entries. With ``retire_bare_nodes`` the
+        endpoint nodes that leaves bare go too (``erase_bare_nodes``'s test).
+
+        Bounded transactions of ``batch_size`` rows; idempotent and resumable. ``dry_run=True`` changes nothing (no row, no
+        global, not ``^KG("__version")``) and is two SQL counts per predicate through the indexes on ``p`` and ``graph_id``,
+        with no row read: ``rows`` are those carrying the writers' own marker text, ``unchecked`` the rest, which the real run
+        reads one by one. Needs the adjacency index (spec 252). Readers that walk ``^KG("tout"/"tin")`` are unaffected.
+
+        Returns:
+            DropRowsResult(rows, nodes_retired, batches, dry_run, unchecked, per_predicate): the totals, and the same
+            counts for each predicate.
+        """
+        predicates = [predicate] if isinstance(predicate, str) else list(dict.fromkeys(predicate))
+        if not predicates or not all(predicates):
+            raise ValueError("at least one predicate is required")
+        still = [p for p in predicates if self.get_temporal_structural(p, graph=graph)]
+        if still:
+            raise ValueError(
+                f"predicate(s) {still!r} are still structural: register them temporal-only first "
+                "(set_temporal_structural(predicate, False))"
+            )
+        per = {}
+        for pred in predicates:
+            d = json.loads(str(self._iris_obj().classMethodValue(
+                "Graph.KG.TemporalPolicy", "DropRows", validate_graph_name(graph), pred,
+                max(1, int(batch_size)), 1 if dry_run else 0, 1 if retire_bare_nodes else 0,
+            )))
+            per[pred] = {"rows": int(d["rows"]), "unchecked": int(d["unchecked"]),
+                         "nodes_retired": int(d["nodes_retired"]), "batches": int(d["batches"])}
+        return DropRowsResult(
+            sum(v["rows"] for v in per.values()),
+            sum(v["nodes_retired"] for v in per.values()),
+            sum(v["batches"] for v in per.values()),
+            bool(dry_run),
+            sum(v["unchecked"] for v in per.values()),
+            {p: {k: v[k] for k in ("rows", "unchecked", "nodes_retired")} for p, v in per.items()},
+        )
+
+    def backfill_temporal_structural_rows(
+        self, predicate: str, graph: Optional[str] = None, seen_limit: int = 100000
+    ) -> int:
+        """Write the marked rows, nodes and ``^KG`` entries ``predicate``'s temporal edges lack, from the temporal stores.
+
+        The way back after ``set_temporal_structural(predicate, True)``: the temporal stores are the authority and the rows a
+        projection of them. ``predicate`` must NOT be registered temporal-only (``ValueError``). Idempotent. One walk of the
+        graph's temporal timestamps; ``seen_limit`` bounds the memory of triples already asserted.
+
+        Returns:
+            The number of triples asserted (a triple with several timestamps counts once).
+        """
+        try:
+            return int(self._iris_obj().classMethodValue(
+                "Graph.KG.TemporalPolicy", "BackfillRows", validate_graph_name(graph), predicate, int(seen_limit),
+            ))
+        except Exception as exc:
+            if "registered temporal-only" in str(exc):
+                raise ValueError(
+                    f"predicate {predicate!r} is registered temporal-only (opted out): make it structural first "
+                    "(set_temporal_structural(predicate, True))"
+                ) from exc
+            raise
+
+    def intern_label_set(self, attrs: dict) -> str:
+        """Canonicalize, hash, and intern an attribute dict. Returns SHA1 hex hash.
+
+        Type fidelity: numeric values intern as numbers, booleans as booleans,
+        nulls as null. {"port": 1972} resolves as integer 1972, not "1972".
+
+        ^KG("labelset") is append-only and never touched by any purge operation.
+        Interned label sets outlive raw edges — safe for long-term retention.
+        """
+        import json as _json
+
+        return self._store.intern_label_set(_json.dumps(attrs, separators=(",", ":")))
+
+    def resolve_label_set(self, hash_hex: str) -> str:
+        """Return the canonical JSON for a known label set hash, or '' if unknown."""
+        return self._store.resolve_label_set(hash_hex)
+
+    def get_edge_velocity(
+        self,
+        node_id: str,
+        window_seconds: int = 300,
+        window: int = None,
+        now_ts: int = 0,
+        graph: Optional[str] = None,
+    ) -> int:
+        """Count the temporal edges ``node_id`` is the source of (every predicate) in the last
+        ``window_seconds``, read from the per-source bucket counts in ``^KG("bucket")``.
+
+        The window is rounded out to whole buckets (300 s), so edges up to a bucket before
+        ``now_ts - window_seconds`` count too. ``window`` is another name for ``window_seconds``.
+
+        Args:
+            node_id: Source node ID.
+            window_seconds: Width of the time window in seconds.
+            now_ts: Unix timestamp to use as "now". Default 0 = wall clock.
+                **Pass an explicit value when testing with historical fixture data**
+                (e.g., ``now_ts = fixture_epoch + window_seconds``) to ensure the
+                window covers the fixture timestamps.
+        """
+        w = window if window is not None else window_seconds
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex", "GetVelocity",
+            validate_graph_name(graph),
+            node_id, w, now_ts,
+        )
+        return int(result)
+
+    def find_burst_nodes(
+        self,
+        predicate: str = "",
+        window_seconds: int = 300,
+        threshold: int = 50,
+        now_ts: int = 0,
+        graph: Optional[str] = None,
+    ) -> list:
+        """The sources with at least ``threshold`` temporal edges in the last ``window_seconds``, as
+        ``[{"id": node, "velocity": count}, ...]``, from the per-source bucket counts.
+
+        Counts are of outgoing edges over every predicate, in whole 300 s buckets: ``predicate`` is
+        passed to the server and not used there, so it filters nothing.
+
+        Args:
+            predicate: Filter to edges with this predicate. Empty = all predicates.
+            window_seconds: Width of the detection window in seconds.
+            threshold: Minimum edge count to qualify as a burst.
+            now_ts: Unix timestamp to use as "now". Default 0 = wall clock.
+                **Pass an explicit value when testing with historical fixture data**
+                so the detection window covers the fixture timestamps.
+        """
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex", "FindBursts",
+            validate_graph_name(graph),
+            predicate, window_seconds, threshold, now_ts,
+        )
+        return json.loads(str(result))
+
+    def get_edge_attrs(
+        self, ts: int, source: str, predicate: str, target: str,
+        graph: Optional[str] = None,
+    ) -> dict:
+        """Return the attribute dict for a specific temporal edge.
+
+        This is the companion to ``create_edge_temporal(attrs=...)``. Attrs are stored
+        in ``^KG("edgeprop")`` and are NOT included in ``get_edges_in_window()``
+        results — call this per edge when you need them::
+
+            attrs = engine.get_edge_attrs(
+                edge["ts"], edge["s"], edge["p"], edge["o"]
+            )
+
+        Returns an empty dict when no attrs were stored for this edge.
+        """
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex", "GetEdgeAttrs",
+            validate_graph_name(graph),
+            ts, source, predicate, target,
+        )
+        return json.loads(str(result))
+
+    def get_temporal_aggregate(
+        self,
+        source: str,
+        predicate: str,
+        metric: str,
+        ts_start: int,
+        ts_end: int,
+        graph: Optional[str] = None,
+    ):
+        """One statistic of ``source``'s ``predicate`` edges over exactly ``[ts_start, ts_end]``.
+
+        ``metric`` is ``"count"`` (an ``int``), or ``"sum"``, ``"avg"``, ``"min"`` or ``"max"`` of the
+        weights (a ``float``). A 300 s bucket the window holds whole is read from its pre-aggregate in
+        ``^KG("tagg")``; a bucket the window cuts is read edge by edge, so an edge outside the window is
+        never counted (4.6.0; before, every bucket the window touched counted whole). A purged bucket
+        (``purge_raw_before``) keeps only its aggregate, so a window that cuts it counts none of it. An
+        empty window or an unknown metric gives ``0`` or ``0.0``, never ``None``; a failed server call raises
+        (4.6.0; it gave ``0.0``, logged as a warning).
+        """
+        result = self._store.get_temporal_aggregate(
+            source, predicate, metric, ts_start, ts_end, graph=graph
+        )
+        if result.rows:
+            val = result.rows[0][0]
+            return int(val) if metric == "count" else float(val)
+        return 0 if metric == "count" else None
+
+    def get_bucket_groups(
+        self,
+        predicate: str = "",
+        ts_start: int = 0,
+        ts_end: int = 0,
+        source_prefix: str = "",
+        graph: Optional[str] = None,
+    ) -> list:
+        """Return statistics per (source, predicate) pair over exactly ``[ts_start, ts_end]``.
+
+        A 300 s bucket the window holds whole is read from its pre-aggregate in ``^KG("tagg")``; a bucket
+        the window cuts is read edge by edge, so an edge outside the window is never counted (4.6.0; before,
+        every bucket the window touched counted whole), as ``get_temporal_aggregate`` reads. A purged bucket
+        (``purge_raw_before``) keeps only its aggregate, so a window that cuts it counts none of it.
+
+        Args:
+            predicate: Edge type to filter on. Empty string matches all predicates.
+            ts_start: Window start as Unix timestamp (inclusive).
+            ts_end: Window end as Unix timestamp (inclusive).
+            source_prefix: If non-empty, only include entries whose source node ID
+                starts with this prefix. Use for tenant-scoped queries. Default "".
+
+        Returns:
+            list[dict]: Each dict has keys:
+                source    (str)   — source node ID
+                predicate (str)   — edge type
+                count     (int)   — number of edges in window
+                sum       (float) — total weight across all edges
+                avg       (float) — mean weight (None if count == 0)
+                min       (float) — minimum weight (None if no edges)
+                max       (float) — maximum weight (None if no edges)
+
+        **No target field.** Aggregates are computed per ``(source, predicate)``
+        only — the target dimension is not preserved in ``^KG("tagg")``. When
+        multiple targets share the same ``(source, predicate)`` pair (e.g.
+        per-metric baselines), the aggregated values span all targets and cannot
+        be disaggregated.
+
+        **Workaround for per-target statistics**: use
+        ``get_bucket_group_targets(source, predicate, ts_start, ts_end)`` to get
+        distinct targets, then aggregate per target in Python::
+
+            targets = engine.get_bucket_group_targets(
+                "acme|prod", "SEGMENT_BASELINE", ts_start, ts_end
+            )
+            for target in targets:
+                edges = engine.get_edges_in_window(
+                    "acme|prod", "SEGMENT_BASELINE", ts_start, ts_end
+                )
+                target_edges = [e for e in edges if e["o"] == target]
+                avg = sum(e["w"] for e in target_edges) / len(target_edges)
+        """
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex",
+            "GetBucketGroups",
+            validate_graph_name(graph),
+            predicate,
+            ts_start,
+            ts_end,
+            source_prefix,
+        )
+        return json.loads(str(result))
+
+    def get_bucket_group_targets(
+        self,
+        source: str,
+        predicate: str,
+        ts_start: int,
+        ts_end: int,
+        graph: Optional[str] = None,
+    ) -> list[str]:
+        """Return distinct target node IDs for a source+predicate over a time window.
+
+        Use as the first step in per-target aggregation when ``get_bucket_groups()``
+        is insufficient because it lacks the target dimension. See
+        ``get_bucket_groups()`` for a full workaround pattern.
+        """
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex",
+            "GetBucketGroupTargets",
+            validate_graph_name(graph),
+            source,
+            predicate,
+            ts_start,
+            ts_end,
+        )
+        return json.loads(str(result))
+
+    def get_window_sources(
+        self,
+        predicate: str,
+        ts_start: int,
+        ts_end: int,
+        graph: Optional[str] = None,
+    ) -> list[str]:
+        """Return distinct source node IDs with at least one edge for a
+        predicate over a time window, without materializing per-edge JSON.
+
+        Unlike ``get_edges_in_window`` (which returns every matching edge —
+        source, target, timestamp, weight — and requires the caller to
+        de-duplicate sources in Python), this walks ``^KG("tout")`` only down
+        to the source level per timestamp bucket and returns each matching
+        source once. Use this when you only need "which sources fired this
+        predicate in this window" (e.g. fleet/tenant enumeration) and would
+        otherwise be discarding target/timestamp/weight from a full window
+        scan.
+
+        Args:
+            predicate: Edge type to filter on. Empty string matches any
+                predicate (fastest — skips the per-source predicate check).
+            ts_start: Window start as Unix timestamp (inclusive).
+            ts_end: Window end as Unix timestamp (inclusive).
+
+        Returns:
+            list[str]: Distinct source node IDs, each returned once even if
+                they have multiple matching edges in the window.
+        """
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex",
+            "QueryWindowSources",
+            validate_graph_name(graph),
+            predicate,
+            ts_start,
+            ts_end,
+        )
+        return json.loads(str(result))
+
+    def get_distinct_count(
+        self,
+        source: str,
+        predicate: str,
+        ts_start: int,
+        ts_end: int,
+        graph: Optional[str] = None,
+    ) -> int:
+        """Estimate how many distinct targets ``source``'s ``predicate`` edges reach in ``[ts_start, ts_end]``.
+
+        An approximate count from the HyperLogLog sketches in ``^KG("tagg")`` (about 26% error), merged
+        over the 300 s buckets the window touches. ``source=""`` merges every source's sketch for the
+        predicate. Reads only.
+        """
+        result = self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex",
+            "GetDistinctCount",
+            validate_graph_name(graph),
+            source,
+            predicate,
+            ts_start,
+            ts_end,
+        )
+        return int(str(result))
+
+    def export_temporal_edges_ndjson(
+        self, path: str, start: int = None, end: int = None, predicate: str = None,
+        graph: Optional[str] = None,
+    ) -> dict:
+        """Write the graph's temporal edges, optionally only ``predicate``'s, as ``{"kind": "temporal_edge"}``
+        NDJSON lines with their attributes, to ``path``; ``import_graph_ndjson`` reads them back.
+
+        ``start`` and ``end`` bound the timestamps (0 and 9999999999 when not given). The window is read in
+        one server string, so a window past about 35 k edges fails as ``get_edges_in_window`` does; each
+        edge's attributes are a further call. Returns ``{"temporal_edges": n}``.
+        """
+        s_filter = ""
+        p_filter = predicate or ""
+        ts_start = start or 0
+        ts_end = end or 9999999999
+        result_json = self._iris_obj().classMethodValue(
+            "Graph.KG.TemporalIndex",
+            "QueryWindow",
+            validate_graph_name(graph),
+            s_filter,
+            p_filter,
+            ts_start,
+            ts_end,
+        )
+        edges = json.loads(str(result_json))
+
+        with open(path, "w") as f:
+            for edge in edges:
+                attrs = self.get_edge_attrs(
+                    edge["ts"], edge["s"], edge["p"], edge["o"], graph=graph
+                )
+                event = {
+                    "kind": "temporal_edge",
+                    "source": edge["s"],
+                    "predicate": edge["p"],
+                    "target": edge["o"],
+                    "timestamp": edge["ts"],
+                    "weight": edge.get("w", 1.0),
+                    "attrs": attrs,
+                }
+                f.write(json.dumps(event) + "\n")
+
+        return {"temporal_edges": len(edges)}

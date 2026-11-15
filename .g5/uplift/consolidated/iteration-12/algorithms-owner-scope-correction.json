@@ -1,0 +1,22 @@
+{
+  "path": ".g5/ontology/features/algorithms.g5.md",
+  "before_sha256": "58a9057cc821f08da7200eb785c86beb46be4587d149ac5d08f4a7a99705e031",
+  "before_preserved": ".g5/uplift/consolidated/iteration-12/algorithms-owner-before-scope-correction.md",
+  "original": "- A damping factor outside (0, 1), an iteration count below 1 or an unknown direction raises `ValueError` before anything is read.",
+  "replacement": "- PageRank and PPR reject a damping factor outside (0, 1) or an iteration count below 1 with `ValueError` before reading data.\n- Operations with a direction reject an unknown direction with `ValueError` before reading data.",
+  "reason": "The generic recovered bullet overgeneralized explicitly PageRank/PPR-specific documented validation to WCC/CDLP. Corrected from primary documentation and independent authority audit, not weakened to fit code. Existing directional refusal and valid PPR/PR requirements preserved; no policy decision or product finding.",
+  "authority": [
+    "docs/USER_GUIDE.md:598-600",
+    "CHANGELOG.md:41",
+    "docs/COMMUNITIES.md:164-210",
+    "docs/API_REFERENCE.md:1579,1731"
+  ],
+  "review": [
+    "review-communities-owner-audit.md",
+    "review-communities-owner-audit.json"
+  ],
+  "time": "2026-11-15T22:45:35.394231+00:00",
+  "new_blocks": 0,
+  "new_issues": 0,
+  "new_owner_decisions": 0
+}

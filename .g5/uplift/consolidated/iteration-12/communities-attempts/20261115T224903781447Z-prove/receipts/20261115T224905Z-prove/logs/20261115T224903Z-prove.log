@@ -1,0 +1,27 @@
+verification results:: 63 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:590:1
+    |
+590 | pub proof fn theorem_final_reader_orders_every_existing_label(labels:Labels)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:593:9
+    |
+590 | pub proof fn theorem_final_reader_orders_every_existing_label(labels:Labels)
+    | ---------------------------------------------------------------------------- at the end of the function body
+...
+593 |         forall|i:int,j:int|0<=i<j<observe(labels).len() ==> #[trigger] observe(labels)[i].0<=#[trigger] observe(labels)[j].0,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:594:9
+    |
+590 | pub proof fn theorem_final_reader_orders_every_existing_label(labels:Labels)
+    | ---------------------------------------------------------------------------- at the end of the function body
+...
+594 |         public_view(Public::Success(Map::empty()))==Some(seq![]),public_view(Public::Failure)==None,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

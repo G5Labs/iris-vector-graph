@@ -1,0 +1,713 @@
+"""Doc-test layer 2 (4.6.0 R043): what the docs name exists in the code.
+
+`check_doc` returns one Finding per thing a reader would trip over:
+
+  link        a relative markdown link whose target is missing
+  unshipped   a link or path into something git does not ship (specs/, CLAUDE.md …; docs.toml `unshipped`)
+  path        a repo path (`iris_vector_graph/…`, `docs/…`, `tests/…`) that does not exist
+  class       a `Graph.KG.*` / `IVG.*` class not in iris_src/src, nor the class of a table IVG's DDL creates
+  member      `Class.Member` or `##class(Class).Member` not defined in the class (or a Graph.KG/IVG superclass)
+  method      `engine.<name>` / `IRISGraphEngine.<name>` that IRISGraphEngine does not have
+  global      a `^Global` root no code in iris_src or iris_vector_graph names
+  env         an `IVG_*` variable no code, script or CI file reads
+  marker      a malformed or stale `<!-- doc-check: unchecked names="…" reason="…" -->`, or one in a reader doc
+              (the marker excuses the class, member, method, global, env and path findings it names, in its doc)
+Reader docs only (tests/docs/docs.toml [[doc]]):
+  port        a port not in docker-compose.yml's host ports nor docs.toml `other_ports`
+  container   a `docker exec|logs|cp|…` target not a docker-compose.yml container
+  script      a `scripts/…` command that does not exist
+  dev-script  a `scripts/…` command that is a maintainer script (docs.toml `dev_scripts`)
+Where a doc may name what spec 262 took out of the wheel:
+  docs/dev/, docs/migration/, CONTRIBUTING.md   the development-only classes in iris_src/dev exist
+  docs/migration/, docs/dev/notes/              the legacy manifest's retired classes, and their iris_src/src files
+  docs/dev/notes/                               a path one of the manifest's releases (v4.4.0 … v4.5.1) shipped:
+                                                `git cat-file -e <tag>:<path>`, or with no git or no tags (ci-parity's
+                                                copy, CI's shallow checkout) a manifest class's iris_src/src file
+
+No IRIS needed: everything is read from the checkout.
+"""
+
+from __future__ import annotations
+
+import html
+import re
+import subprocess
+import unicodedata
+from dataclasses import dataclass, field
+from pathlib import Path
+from urllib.parse import unquote
+
+from tests.docs.harness import REPO, load_config, tomllib
+
+REPO_DIRS = (
+    "iris_vector_graph", "iris_src", "scripts", "docs", "tests", "examples", "api", "sql", "docker", "deploy",
+    "benchmarks", "config", "skills", "vendor", "src",
+)
+TOP_FILES = (
+    "README.md", "CHANGELOG.md", "CONTRIBUTING.md", "CONTEXT.md", "PRE_RELEASE_CHECKLIST.md", "pyproject.toml",
+    "docker-compose.yml", "module.xml", "module-core.xml", "LICENSE", "uv.lock",
+)
+#: Globals that belong to IRIS, not IVG: a doc may name them.
+SYSTEM_GLOBALS = re.compile(r"^(%|odd|r(OBJ|INDEX|MAC|INC)|ROUTINE|ERRORS|SYS$|IRIS\.|ISC\.|mtemp|CacheTemp|SPOOL)")
+CODE_SUFFIXES = {".py", ".cls", ".sh", ".mac", ".inc", ".yml", ".yaml", ".toml", ".cfg", ".ini", ".json", ".sql"}
+
+
+@dataclass(frozen=True)
+class Finding:
+    doc: str
+    kind: str
+    item: str
+    line: int = field(default=0, compare=False, hash=False)
+
+    def key(self) -> tuple:
+        return (self.doc, self.kind, self.item)
+
+
+@dataclass
+class Context:
+    repo: Path
+    classes: set
+    packages: set
+    class_files: dict
+    engine_attrs: set
+    globals_: set
+    env_vars: set
+    compose_ports: set
+    compose_containers: set
+    other_ports: set
+    dev_scripts: list
+    unshipped: list
+    reader_docs: set
+    submodules: list = field(default_factory=list)
+    # spec 262 took classes out of the wheel. iris_src/dev holds the development-only ones (Benchmark, BenchFormat,
+    # User.Exec …): real for a contributor doc (DEV_DOCS), absent for a reader.
+    dev_classes: set = field(default_factory=set)
+    dev_packages: set = field(default_factory=set)
+    dev_class_files: dict = field(default_factory=dict)
+    # The legacy manifest's retired names (no replacement), as classes and as their iris_src/src files: known
+    # history in RETIRED_DOCS.
+    retired_classes: set = field(default_factory=set)
+    retired_paths: set = field(default_factory=set)
+    # Every manifest class as an iris_src/src file: what 3.2.0 to 4.5.1 shipped there, when git cannot say.
+    manifest_paths: set = field(default_factory=set)
+    # The release tags the manifest covers, present in this checkout; () with no git or no tags.
+    release_tags: tuple = ()
+    # Where the wheel puts a file it force-includes (pyproject): a doc naming that path names what an install has.
+    wheel_paths: set = field(default_factory=set)
+    _at_tag: dict = field(default_factory=dict, repr=False, compare=False)
+
+
+#: Docs a contributor reads: development-only classes (iris_src/dev) exist for them.
+DEV_DOCS = ("docs/dev/", "docs/migration/", "CONTRIBUTING.md")
+#: Docs that record what went away: the legacy manifest's retired classes and files are names they may use.
+RETIRED_DOCS = ("docs/migration/", "docs/dev/notes/")
+#: Verbatim history: a path a past release shipped is not a broken path here.
+HISTORY_DOCS = ("docs/dev/notes/",)
+
+
+def _under(doc: str, prefixes: tuple) -> bool:
+    return any(doc == p or (p.endswith("/") and doc.startswith(p)) for p in prefixes)
+
+
+def _iter_code(repo: Path, roots: tuple):
+    for root in roots:
+        base = repo / root
+        if base.is_file():
+            yield base
+            continue
+        if not base.is_dir():
+            continue
+        for p in base.rglob("*"):
+            if p.is_file() and p.suffix in CODE_SUFFIXES and "__pycache__" not in p.parts:
+                yield p
+
+
+def _engine_attrs() -> set:
+    from iris_vector_graph.engine import IRISGraphEngine
+
+    attrs = set(dir(IRISGraphEngine))
+    src = Path(__import__("inspect").getsourcefile(IRISGraphEngine)).read_text()
+    attrs |= set(re.findall(r"\bself\.([A-Za-z_]\w*)\s*(?::[^=\n]+)?=", src))
+    # A switch the caller sets on the engine and a mixin reads with getattr(self, "name", default), such as
+    # `engine.cypher_shadow = True` (_engine/query.py): real, though no class or __init__ defines it.
+    engine_dir = Path(__import__("inspect").getsourcefile(IRISGraphEngine)).parent / "_engine"
+    for p in sorted(engine_dir.glob("*.py")):
+        attrs |= set(re.findall(r"""\bgetattr\(\s*self\s*,\s*["']([A-Za-z_]\w*)["']""", p.read_text()))
+    return attrs
+
+
+def _wheel_paths(repo: Path) -> set:
+    build = tomllib.loads((repo / "pyproject.toml").read_text())["tool"]["hatch"]["build"]["targets"]["wheel"]
+    return {target for src, target in build.get("force-include", {}).items() if (repo / src).exists()}
+
+
+def _compose(repo: Path) -> tuple:
+    text = (repo / "docker-compose.yml").read_text()
+    # "1972:1972", "127.0.0.1:9000:9000", or "${IVG_IRIS_PORT:-1972}:1972" (the default is what a reader gets).
+    found = re.findall(r"""^\s*-\s*["']?(?:[\d.]+:)?(?:\$\{\w+:-(\d+)\}|(\d+)):\d+""", text, re.M)
+    ports = {int(default or fixed) for default, fixed in found}
+    containers = set(re.findall(r"^\s*container_name:\s*([\w.-]+)", text, re.M))
+    containers |= set(re.findall(r"^  ([\w-]+):\s*$", text.split("services:", 1)[1].split("\nvolumes:")[0], re.M))
+    return ports, containers
+
+
+def _submodules(repo: Path) -> list:
+    """Submodule paths (.gitmodules). CI and ci-parity do not fetch them, a full checkout has them: a path into one
+    is taken as present so the result does not depend on which kind of checkout runs the test."""
+    gm = repo / ".gitmodules"
+    return re.findall(r"(?m)^\s*path\s*=\s*(\S+)", gm.read_text()) if gm.exists() else []
+
+
+def _in_submodule(ctx: "Context", rel: str) -> bool:
+    import os
+
+    candidates = [rel]
+    p = ctx.repo / rel
+    if p.is_symlink():
+        candidates.append(os.path.normpath(os.path.join(os.path.dirname(rel), os.readlink(p))))
+    return any(c == s or c.startswith(s.rstrip("/") + "/") for c in candidates for s in ctx.submodules)
+
+
+def _scan_classes(src: Path) -> tuple:
+    classes, packages, class_files = set(), set(), {}
+    for p in src.rglob("*.cls") if src.is_dir() else ():
+        rel = p.relative_to(src)
+        # Both layouts: Graph/KG/Foo.cls and User.Foo.cls at the top.
+        name = ".".join(rel.with_suffix("").parts)
+        classes.add(name)
+        class_files[name] = p
+        parts = name.split(".")
+        for i in range(1, len(parts)):
+            packages.add(".".join(parts[:i]))
+    return classes, packages, class_files
+
+
+def _class_paths(name: str) -> set:
+    """The iris_src/src file a class lives in, in either layout (Graph/KG/Foo.cls, User.Foo.cls)."""
+    return {f"iris_src/src/{name}.cls", "iris_src/src/" + name.replace(".", "/") + ".cls"}
+
+
+def _manifest() -> tuple:
+    """(retired class names, every class name, (first, last) release) from the frozen legacy manifest."""
+    from iris_vector_graph.legacy_manifest import LEGACY_MANIFEST
+
+    retired = {e["class_name"] for e in LEGACY_MANIFEST if e["kind"] != "view" and not e["replacement"]}
+    every = {e["class_name"] for e in LEGACY_MANIFEST if e["class_name"]}
+    first = min(_version(e["first_release"]) for e in LEGACY_MANIFEST)
+    last = max(_version(e["last_release"]) for e in LEGACY_MANIFEST)
+    return retired, every, (first, last)
+
+
+def _version(text: str) -> tuple:
+    m = re.match(r"^v?(\d+)\.(\d+)\.(\d+)$", text)
+    return tuple(int(x) for x in m.groups()) if m else ()
+
+
+def _git(repo: Path, *args) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", *args], cwd=repo, capture_output=True, text=True)
+
+
+def _release_tags(repo: Path) -> tuple:
+    """The release tags the legacy manifest covers (v3.2.0 … v4.5.1) that this checkout has, oldest first.
+
+    () when `repo` is not the top of a git work tree (ci-parity's scratch copy) or has no such tags (CI's shallow
+    checkout fetches none): history then comes from the manifest alone."""
+    top = _git(repo, "rev-parse", "--show-toplevel")
+    if top.returncode != 0 or Path(top.stdout.strip()).resolve() != Path(repo).resolve():
+        return ()
+    _, _, (first, last) = _manifest()
+    tags = [t for t in _git(repo, "tag", "-l", "v*").stdout.split() if _version(t)]
+    return tuple(sorted((t for t in tags if first <= _version(t) <= last), key=_version))
+
+
+#: The paths the history docs name that a release tag shipped and this checkout no longer has, one per line: the
+#: answer `_shipped_in_a_past_release` gets from the tags, kept for a tree with no git history (a `git archive`,
+#: ci-parity's copy, CI's shallow clone), where it got none and four docs failed. `write_past_release_paths()`
+#: regenerates it from the tags.
+PAST_RELEASE_PATHS = Path(__file__).with_name("past_release_paths.txt")
+
+
+def past_release_paths() -> set:
+    if not PAST_RELEASE_PATHS.exists():
+        return set()
+    return {ln.strip() for ln in PAST_RELEASE_PATHS.read_text().splitlines() if ln.strip() and not ln.startswith("#")}
+
+
+def write_past_release_paths(repo: Path = REPO) -> list:
+    """Run the check over every doc in a checkout with the release tags, and write the paths it found only at a
+    tag."""
+    ctx = build_context(repo)
+    if not ctx.release_tags:
+        raise RuntimeError(f"{repo} has no release tags: fetch them first")
+    ctx.manifest_paths = set().union(*map(_class_paths, _manifest()[1]))  # the tags alone, not the list being made
+    for doc in docs_to_check(repo, ctx):
+        check_doc(doc, (repo / doc).read_text(), ctx, reader=doc in ctx.reader_docs)
+    paths = sorted(rel for (_, rel), shipped in ctx._at_tag.items() if shipped)
+    PAST_RELEASE_PATHS.write_text(
+        "# Paths a release tag shipped that the history docs name (tests/docs/consistency.py PAST_RELEASE_PATHS).\n"
+        "# Regenerate in a checkout with the tags: python -c 'from tests.docs import consistency as c; "
+        "c.write_past_release_paths()'\n" + "".join(p + "\n" for p in paths)
+    )
+    return paths
+
+
+def _shipped_in_a_past_release(ctx: Context, rel: str) -> bool:
+    """A path one of the manifest's releases shipped: at a release tag when git has them, else in the manifest."""
+    rel = rel.rstrip("/")
+    if rel in ctx.manifest_paths:
+        return True
+    key = (ctx.release_tags, rel)
+    if key not in ctx._at_tag:
+        ctx._at_tag[key] = any(_git(ctx.repo, "cat-file", "-e", f"{t}:{rel}").returncode == 0
+                               for t in ctx.release_tags)
+    return ctx._at_tag[key]
+
+
+def _view_for(ctx: Context, doc: str) -> Context:
+    """The context `doc` is checked against: development-only classes for a contributor doc, retired ones for a
+    doc that records what went away."""
+    from dataclasses import replace
+
+    dev, retired = _under(doc, DEV_DOCS), _under(doc, RETIRED_DOCS)
+    if not (dev or retired):
+        return ctx
+    classes, packages, class_files = set(ctx.classes), set(ctx.packages), dict(ctx.class_files)
+    if dev:
+        classes |= ctx.dev_classes
+        packages |= ctx.dev_packages
+        class_files.update(ctx.dev_class_files)
+    if retired:
+        classes |= ctx.retired_classes  # no source to read: members are not checked
+    return replace(ctx, classes=classes, packages=packages, class_files=class_files)
+
+
+def build_context(repo: Path = REPO) -> Context:
+    config = load_config()
+    cons = config.consistency
+    classes, packages, class_files = _scan_classes(repo / "iris_src" / "src")
+    dev_classes, dev_packages, dev_class_files = _scan_classes(repo / "iris_src" / "dev")
+    retired, every, _ = _manifest()
+    # Classes IVG's DDL creates: table Graph_KG.rdf_edges is class Graph.KG.rdfedges.
+    # A procedure IVG's DDL creates is class Graph.KG.proc<name without _>: kg_RRF_FUSE is Graph.KG.prockgRRFFUSE
+    # (the schema is written Graph_KG, or {table_schema} where setup fills it in). A FUNCTION makes no such class.
+    for p in _iter_code(repo, ("iris_vector_graph", "sql")):
+        text = p.read_text(errors="replace")
+        for table in re.findall(r"(?i)CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?Graph_KG\.(\w+)", text):
+            classes.add("Graph.KG." + table.replace("_", ""))
+        for proc in re.findall(r"(?i)CREATE\s+(?:OR\s+REPLACE\s+)?PROCEDURE\s+(?:Graph_KG|\{\w+\})\.(\w+)", text):
+            classes.add("Graph.KG.proc" + proc.replace("_", ""))
+    globals_ = set()
+    for p in _iter_code(repo, ("iris_src", "iris_vector_graph", "scripts", "sql")):
+        for g in re.findall(r"\^(?!\|\|)([A-Za-z%][\w.%]*)", p.read_text(errors="replace")):
+            globals_.add(g.rstrip("."))
+    # Env vars: any IVG_* the shipped code, scripts and CI name; in tests/ only the ones read from the
+    # environment (a test may name a variable that does not exist), plus those the doc harness supplies.
+    env_vars = set()
+    for p in _iter_code(repo, ("iris_vector_graph", "iris_src", "scripts", "api", "docker", "deploy",
+                               "docker-compose.yml", ".github", "pyproject.toml", "benchmarks", "examples", "src",
+                               "tests/docs/harness.py")):
+        env_vars |= set(_ENV.findall(p.read_text(errors="replace")))
+    for p in _iter_code(repo, ("tests",)):
+        env_vars |= set(_ENV_READ.findall(p.read_text(errors="replace")))
+    ports, containers = _compose(repo)
+    return Context(
+        repo=repo, classes=classes, packages=packages, class_files=class_files, engine_attrs=_engine_attrs(),
+        globals_=globals_, env_vars=env_vars, compose_ports=ports, compose_containers=containers,
+        other_ports={int(x) for x in cons.get("other_ports", [])},
+        dev_scripts=list(cons.get("dev_scripts", [])), unshipped=list(cons.get("unshipped", [])),
+        reader_docs={d.path for d in config.docs},
+        submodules=_submodules(repo),
+        dev_classes=dev_classes - classes, dev_packages=dev_packages,
+        dev_class_files={k: v for k, v in dev_class_files.items() if k not in classes},
+        retired_classes=retired, retired_paths=set().union(*map(_class_paths, retired)),
+        manifest_paths=set().union(*map(_class_paths, every)) | past_release_paths(),
+        release_tags=_release_tags(repo),
+        wheel_paths=_wheel_paths(repo),
+    )
+
+
+def docs_to_check(repo: Path = REPO, ctx: Context = None) -> list:
+    """README.md, CONTRIBUTING.md and docs/**/*.md that git ships."""
+    unshipped = ctx.unshipped if ctx else []
+    paths = [p for p in ("README.md", "CONTRIBUTING.md") if (repo / p).exists()]
+    paths += sorted(str(p.relative_to(repo)) for p in (repo / "docs").rglob("*.md"))
+    return [p for p in paths if not any(p == u or p.startswith(u) for u in unshipped)]
+
+
+# ── extraction ─────────────────────────────────────────────────────────────────
+
+_FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
+_INLINE = re.compile(r"(`+)(.+?)\1")
+_LINK = re.compile(r"!?\[(?:[^\]\\]|\\.)*\]\(\s*<?([^)\s>]+)>?(?:\s+\"[^\"]*\")?\s*\)")
+_HREF = re.compile(r"""(?:href|src)=["']([^"']+)["']""")
+_REPO_PATH = re.compile(
+    r"(?<![\w/.~$-])((?:\./)?(?:" + "|".join(REPO_DIRS) + r")/[\w./*{}-]*[\w*/])"
+)
+# Not after `^||`: `^||IVG.LedgerStage` is a process-private global, not a class.
+_CLASS = re.compile(r"(?<![\w^.%|])((?:Graph\.KG|IVG)(?:\.[A-Za-z%][\w%]*)+)")
+_HASHCLASS = re.compile(r"##class\(\s*((?:Graph\.KG|IVG)(?:\.[\w%]+)+)\s*\)\.(%?\w+)")
+_ENGINE = re.compile(r"(?<![\w./])(engine|IRISGraphEngine)\.([A-Za-z_]\w*)")
+_GLOBAL = re.compile(r"(?:(?<=[\s`(\"',=])|^)\^(?!\|\|)([A-Za-z%][\w.%]*)")
+_ENV = re.compile(r"\bIVG_[A-Z0-9_]*[A-Z0-9]\b")
+_ENV_READ = re.compile(r"""(?:environ(?:\.get|\.setdefault|\.pop)?\s*[\[(]\s*|getenv\(\s*|envvar=)["'](IVG_\w+)["']""")
+_PORTS = (
+    re.compile(r"(?:localhost|127\.0\.0\.1|0\.0\.0\.0):(\d{2,5})\b"),
+    re.compile(r"(?i)\bport\s*[=:]\s*(\d{3,5})\b"),
+    re.compile(r"(?i)\bport\s+(\d{3,5})\b"),
+    re.compile(r"""connect\(\s*["'][^"']*["']\s*,\s*(\d{3,5})\b"""),
+    re.compile(r"-p\s+(\d{3,5}):\d+"),
+)
+_SCRIPT = re.compile(r"(?<![\w/.-])(scripts/[\w./-]*[\w])")
+
+
+def _segments(text: str):
+    """(line number, text, in a fenced block) for each line."""
+    fence = None
+    for n, line in enumerate(text.split("\n"), 1):
+        m = _FENCE.match(line)
+        if m:
+            mark = m.group(1)
+            if fence is None:
+                fence = mark
+                continue
+            if mark[0] == fence[0] and len(mark) >= len(fence) and not line.strip()[len(mark):].strip():
+                fence = None
+                continue
+        yield n, line, fence is not None
+
+
+def _resolve(doc: str, target: str, repo: Path) -> Path:
+    if target.startswith("/"):
+        return repo / target.lstrip("/")
+    return (repo / doc).parent / target
+
+
+def _is_unshipped(rel: str, unshipped: list) -> bool:
+    return any(rel == u or rel.startswith(u) for u in unshipped)
+
+
+def _rel(p: Path, repo: Path):
+    try:
+        return str(p.resolve().relative_to(repo.resolve()))
+    except ValueError:
+        return None
+
+
+def _class_defines(ctx: Context, cls: str, member: str, seen=None) -> bool:
+    if member.startswith("%") or member in ("cls", "int", "mac"):
+        return True  # inherited from a % class, or a file name
+    path = ctx.class_files.get(cls)
+    if path is None:
+        return cls in ctx.classes  # a DDL-made class: its members are columns, not checked
+    text = path.read_text(errors="replace")
+    if re.search(r"(?m)^(?:ClassMethod|Method|Property|Query|Parameter|Index|Relationship|Trigger|XData|Projection|"
+                 r"ForeignKey)\s+" + re.escape(member) + r"\b", text):
+        return True
+    seen = seen or set()
+    seen.add(cls)
+    m = re.search(r"(?m)^Class\s+[\w.%]+\s+Extends\s+\(?([^){\n]+)", text)
+    for sup in (m.group(1).split(",") if m else []):
+        sup = sup.strip()
+        if sup and sup not in seen and sup in ctx.class_files and _class_defines(ctx, sup, member, seen):
+            return True
+    return False
+
+
+def _check_class(ctx: Context, name: str):
+    """None when `name` is a class, a package, or Class.Member with the member defined; else (kind, item)."""
+    name = name.rstrip(".")
+    if name in ctx.classes or name in ctx.packages:
+        return None
+    parts = name.split(".")
+    for i in range(len(parts) - 1, 1, -1):
+        cls = ".".join(parts[:i])
+        if cls in ctx.classes:
+            if _class_defines(ctx, cls, parts[i]):
+                return None
+            return ("member", f"{cls}.{parts[i]}")
+    return ("class", name)
+
+
+def _known_old_path(ctx: Context, doc: str, rel: str) -> bool:
+    """A path that no longer exists but that `doc` may name: a retired file, or (history docs) a past release's."""
+    rel = rel.rstrip("/")
+    if _under(doc, RETIRED_DOCS) and rel in ctx.retired_paths:
+        return True
+    return _under(doc, HISTORY_DOCS) and _shipped_in_a_past_release(ctx, rel)
+
+
+#: `<!-- doc-check: unchecked names="A, B" reason="…" -->`, outside code, starting a line (it may continue over the
+#: next lines up to its `-->`): names this doc gives that the checker cannot confirm from the checkout (a proposal's
+#: planned name, a spike's scratch global, a class a past release had, a run's output directory, a member inherited
+#: from a system class), with why. Not in a reader doc. Only the kinds below are excused, never a link; a listed name
+#: the doc no longer gets a finding for is stale.
+_DOC_CHECK_START = re.compile(r"^\s*<!--\s*doc-check:")
+_UNCHECKED_KINDS = {"class", "member", "method", "global", "env", "path"}
+
+
+def _doc_check_spans(text: str) -> list:
+    """[(first line, set of its line numbers, body or None when it has no `-->`)] per doc-check marker."""
+    spans, current = [], None
+    for n, line, in_code in _segments(text):
+        if current is None:
+            if in_code or not _DOC_CHECK_START.match(line):
+                continue
+            current = (n, {n}, [line])
+        else:
+            current[1].add(n)
+            current[2].append(line)
+        if "-->" in line:
+            joined = " ".join(s.strip() for s in current[2])
+            body = re.match(r"^<!--\s*doc-check:\s*(.*?)\s*-->", joined)
+            spans.append((current[0], current[1], body.group(1) if body else None))
+            current = None
+    if current is not None:
+        spans.append((current[0], {current[0]}, None))  # unterminated: only its first line is the marker
+    return spans
+
+
+def _unchecked_markers(doc: str, text: str, reader: bool) -> tuple:
+    """({name: marker line} the doc's markers list, [(kind, item, line)] marker problems)."""
+    names, problems = {}, []
+    for n, _, body in _doc_check_spans(text):
+        if body is None:
+            problems.append(("marker", "doc-check marker with no closing -->", n))
+            continue
+        kind = body.split(None, 1)[0] if body else ""
+        attrs = dict(re.findall(r'(\w+)="([^"]*)"', body))
+        if kind != "unchecked":
+            problems.append(("marker", f"unknown doc-check marker: {body}", n))
+        elif reader:
+            problems.append(("marker", "doc-check: unchecked is not allowed in a reader doc", n))
+        elif not attrs.get("names", "").strip():
+            problems.append(("marker", 'doc-check: unchecked needs names="…"', n))
+        elif not attrs.get("reason", "").strip():
+            problems.append(("marker", 'doc-check: unchecked needs a reason="…"', n))
+        else:
+            for name in attrs["names"].split(","):
+                if name.strip():
+                    names.setdefault(name.strip(), n)
+    return names, problems
+
+
+def check_doc(doc: str, text: str, ctx: Context, reader: bool = False) -> list:
+    ctx = _view_for(ctx, doc)
+    repo = ctx.repo
+    found: dict = {}
+
+    def add(kind, item, line):
+        f = Finding(doc, kind, item, line)
+        found.setdefault(f.key(), f)
+
+    marker_lines = set().union(*(lines for _, lines, _ in _doc_check_spans(text)))
+    for n, line, in_code in _segments(text):
+        if n in marker_lines:
+            continue  # a marker names what it excuses; it is not a use of them
+        inline = [m.group(2) for m in _INLINE.finditer(line)] if not in_code else []
+        prose = _INLINE.sub("", line) if not in_code else ""
+
+        # links: prose only
+        for m in list(_LINK.finditer(prose)) + list(_HREF.finditer(prose)):
+            target = m.group(1)
+            if re.match(r"^[a-z][a-z0-9+.-]*:", target, re.I) or target.startswith("#"):
+                continue
+            path_part = unquote(target.split("#")[0].split("?")[0])
+            if not path_part:
+                continue
+            resolved = _resolve(doc, path_part, repo)
+            rel = _rel(resolved, repo)
+            if rel is not None and _is_unshipped(rel, ctx.unshipped):
+                add("unshipped", target, n)
+            elif not resolved.exists() and not (rel is not None and _in_submodule(ctx, rel)):
+                add("link", target, n)
+
+        # repo paths: inline code in prose, and anywhere in code blocks
+        candidates = []
+        for chunk in (inline if not in_code else [line]):
+            candidates += [m.group(1) for m in _REPO_PATH.finditer(chunk)]
+        if not in_code:
+            candidates += [c for c in inline if c in TOP_FILES]
+        for cand in candidates:
+            cand = re.sub(r"(::.*|:\d+(-\d+)?)$", "", cand).rstrip(".")
+            if reader and cand.startswith("scripts/"):
+                continue  # the script checks below cover it
+            if "{" in cand:
+                continue  # a template (`docs/{name}.md`)
+            rel = cand[2:] if cand.startswith("./") else cand
+            if _is_unshipped(rel, ctx.unshipped):
+                add("unshipped", cand, n)
+                continue
+            hit = (any(repo.glob(rel)) if "*" in rel else (repo / rel).exists()) or (
+                (repo / doc).parent.joinpath(rel).exists()) or rel in ctx.wheel_paths
+            if not hit and not _in_submodule(ctx, rel.rstrip("/")) and not _known_old_path(ctx, doc, rel):
+                add("path", cand, n)
+
+        # classes and members
+        for m in _HASHCLASS.finditer(line):
+            cls, member = m.group(1), m.group(2)
+            problem = _check_class(ctx, cls)
+            if problem:
+                add(*problem, n)
+            elif not _class_defines(ctx, cls, member):
+                add("member", f"{cls}.{member}", n)
+        for m in _CLASS.finditer(line):
+            if m.group(1).rstrip(".") in ctx.globals_:
+                continue  # a global named the Native API way, without the caret
+            problem = _check_class(ctx, m.group(1))
+            if problem:
+                add(*problem, n)
+
+        # engine methods
+        for m in _ENGINE.finditer(line):
+            name = m.group(2)
+            if name == "py" or name in ctx.engine_attrs:
+                continue
+            add("method", f"{m.group(1)}.{name}", n)
+
+        # globals
+        for m in _GLOBAL.finditer(line):
+            root = m.group(1).split("(")[0]
+            if line[m.end():m.end() + 1] == "*":  # ^IVG.* : a family of globals
+                if any(g.startswith(root) for g in ctx.globals_):
+                    continue
+            root = root.rstrip(".")
+            if SYSTEM_GLOBALS.match(root) or root in ctx.globals_:
+                continue
+            storage = re.match(r"^(.+?)(D|I|S|Stream)$", root)
+            if storage and storage.group(1) in ctx.classes:
+                continue  # a persistent class's data/index/stream global
+            add("global", f"^{root}", n)
+
+        # env vars
+        for var in _ENV.findall(line):
+            if var not in ctx.env_vars:
+                add("env", var, n)
+
+        if not reader:
+            continue
+        for rx in _PORTS:
+            for port in rx.findall(line):
+                port = int(port)
+                if port not in ctx.compose_ports and port not in ctx.other_ports:
+                    add("port", str(port), n)
+        from tests.docs.harness import _docker_targets
+
+        for target in _docker_targets(line):
+            if target not in ctx.compose_containers:
+                add("container", target, n)
+        for script in _SCRIPT.findall(line):
+            if not (repo / script).exists():
+                add("script", script, n)
+            elif any(script == d or script.startswith(d) for d in ctx.dev_scripts):
+                add("dev-script", script, n)
+
+    unchecked, problems = _unchecked_markers(doc, text, reader)
+    for kind, item, n in problems:
+        add(kind, item, n)
+    for name, n in unchecked.items():
+        excused = [k for k, f in found.items() if f.item == name and f.kind in _UNCHECKED_KINDS]
+        if not excused:
+            add("marker", f"stale unchecked name: {name}", n)
+        for k in excused:
+            del found[k]
+    return list(found.values())
+
+
+# ── the known-failures baseline ────────────────────────────────────────────────
+
+BASELINE = Path(__file__).with_name("consistency_known_failures.txt")
+
+
+def load_baseline(path: Path = BASELINE) -> set:
+    """(doc, kind, item) per line `doc | kind | item`; `#` comments and blank lines ignored."""
+    entries = set()
+    if not path.exists():
+        return entries
+    for raw in path.read_text().splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        doc, kind, item = (part.strip() for part in line.split(" | ", 2))
+        entries.add((doc, kind, item))
+    return entries
+
+
+def format_baseline(findings) -> str:
+    return "".join(f"{f.doc} | {f.kind} | {f.item}\n" for f in sorted(findings, key=lambda f: f.key()))
+
+
+# ── relative links and their anchors (4.6.5) ───────────────────────────────────
+#
+# check_doc checks that a link's file exists, in the documents it checks. CHANGELOG.md is not one of them (its
+# history names classes and paths that are gone), but its links into the current docs are what a reader follows, and
+# a renamed heading breaks one without a sound. `check_links` checks a link's file and, for a markdown target, its
+# `#anchor` against GitHub's heading slugs.
+
+_ATX = re.compile(r"^ {0,3}(#{1,6})[ \t]+(.*?)(?:[ \t]+#+)?[ \t]*$")
+_ID_ATTR = re.compile(r"""<a\s[^>]*?(?:id|name)=["']([^"']+)["']""", re.I)
+
+
+def github_slug(heading: str) -> str:
+    """The id GitHub gives a heading: its rendered text lower-cased, anything but a letter, mark, number, `_` or
+    `-` dropped, a space becoming `-` (hyphens are not collapsed)."""
+    s = re.sub(r"!?\[((?:[^\]\\]|\\.)*)\]\([^)]*\)", r"\1", heading)  # a link or image keeps its text
+    s = re.sub(r"<[^>]+>", "", s)
+    s = _INLINE.sub(lambda m: m.group(2).strip(), s)
+    s = html.unescape(s)
+    s = re.sub(r"(\*{1,3})(?=\S)(.+?)(?<=\S)\1", r"\2", s)
+    s = re.sub(r"(?<!\w)(_{1,3})(?=\S)(.+?)(?<=\S)\1(?!\w)", r"\2", s)
+    out = []
+    for ch in s.strip().lower():
+        cat = unicodedata.category(ch)
+        if ch == " ":
+            out.append("-")
+        elif ch == "-" or cat[0] in "LMN" or cat == "Pc":
+            out.append(ch)
+    return "".join(out)
+
+
+def anchors_of(text: str) -> set:
+    """Every `#anchor` a markdown document answers to: its headings' slugs (a repeat gets `-1`, `-2` …) and the
+    `id` or `name` of an HTML anchor. A line inside a fenced block is not a heading."""
+    anchors, seen = set(), {}
+    for _n, line, in_code in _segments(text):
+        if in_code:
+            continue
+        for m in _ID_ATTR.finditer(line):
+            anchors.add(m.group(1).lower())
+        m = _ATX.match(line)
+        if not m:
+            continue
+        slug = github_slug(m.group(2))
+        count = seen.get(slug, 0)
+        seen[slug] = count + 1
+        anchors.add(slug if count == 0 else f"{slug}-{count}")
+    return anchors
+
+
+def check_links(doc: str, text: str, repo: Path = REPO) -> list:
+    """One Finding per relative link in `doc`'s prose whose file is missing (`link`) or, when the file is markdown
+    (or the link is `#anchor` alone, meaning the document itself), whose anchor names no heading there (`anchor`)."""
+    found: dict = {}
+    cache: dict = {}
+
+    def anchors_in(path: Path) -> set:
+        if path not in cache:
+            cache[path] = anchors_of(path.read_text())
+        return cache[path]
+
+    for n, line, in_code in _segments(text):
+        if in_code:
+            continue
+        prose = _INLINE.sub("", line)
+        for m in list(_LINK.finditer(prose)) + list(_HREF.finditer(prose)):
+            target = m.group(1)
+            if re.match(r"^[a-z][a-z0-9+.-]*:", target, re.I):
+                continue
+            path_part, _, anchor = unquote(target.split("?")[0]).partition("#")
+            resolved = _resolve(doc, path_part, repo) if path_part else repo / doc
+            if not resolved.exists():
+                found.setdefault((doc, "link", target), Finding(doc, "link", target, n))
+            elif anchor and resolved.suffix == ".md" and anchor.lower() not in anchors_in(resolved):
+                found.setdefault((doc, "anchor", target), Finding(doc, "anchor", target, n))
+    return list(found.values())

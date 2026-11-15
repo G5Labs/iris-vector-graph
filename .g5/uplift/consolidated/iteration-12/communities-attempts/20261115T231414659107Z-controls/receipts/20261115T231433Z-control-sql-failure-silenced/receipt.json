@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_census_success_empty_and_failure_are_distinct"
+    ],
+    "find": "Transport::Failed=>Census::Failure",
+    "name": "sql-failure-silenced",
+    "replace": "Transport::Failed=>Census::Success(Map::empty())"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_census_success_empty_and_failure_are_distinct"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/sql-failure-silenced/20261115T231431Z/models/communities/communities.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_census_success_empty_and_failure_are_distinct": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231431Z-control-sql-failure-silenced-theorem_census_success_empty_and_failure_are_distinct.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231431Z-control-sql-failure-silenced.log",
+    "timed_out": false,
+    "verified": 71
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/communities/20261115T231433Z-control-sql-failure-silenced/logs/20261115T231431Z-control-sql-failure-silenced-theorem_census_success_empty_and_failure_are_distinct.log": "36e4f0d96f862c792dc81bb2ef311e73cf4ef723417c5c8199ca6e55d86a86f1",
+    ".g5/Verus_verification/results/communities/20261115T231433Z-control-sql-failure-silenced/logs/20261115T231431Z-control-sql-failure-silenced.log": "05bb0b1351d2cf53f60ceb168d5460ca488691f0b5fe84b03abffd8fbba4c937"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

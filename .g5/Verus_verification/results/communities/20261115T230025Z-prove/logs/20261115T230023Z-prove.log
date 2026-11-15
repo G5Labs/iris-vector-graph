@@ -1,0 +1,17 @@
+verification results:: 66 verified, 2 errors
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:523:1
+    |
+523 | pub proof fn theorem_native_pages_derive_full_result_or_fail(ids:Seq<Node>,full:Map<Node,bool>,limit:nat,call:nat,fault:Option<nat>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:536:43
+    |
+535 | pub proof fn theorem_full_final_page_requires_empty_page(x:Node,full:Map<Node,bool>)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+536 |     ensures page(seq![x],1).next==Some(x),native_pages(seq![x],full,1,0,None).native_calls==2,page(seq![],1).next==None,
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

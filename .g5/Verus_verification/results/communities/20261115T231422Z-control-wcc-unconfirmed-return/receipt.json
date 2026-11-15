@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_already_correct_pair_still_needs_confirmation"
+    ],
+    "find": "if changed(g,old,next)==0",
+    "name": "wcc-unconfirmed-return",
+    "replace": "if true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_already_correct_pair_still_needs_confirmation"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/wcc-unconfirmed-return/20261115T231420Z/models/communities/communities.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_already_correct_pair_still_needs_confirmation": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231420Z-control-wcc-unconfirmed-return-theorem_already_correct_pair_still_needs_confirmation.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231420Z-control-wcc-unconfirmed-return.log",
+    "timed_out": false,
+    "verified": 71
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/communities/20261115T231422Z-control-wcc-unconfirmed-return/logs/20261115T231420Z-control-wcc-unconfirmed-return-theorem_already_correct_pair_still_needs_confirmation.log": "0f825c9cba94fd6a5d8fc8364b680e0391908bee001bb2c2abcf15db7ec9e44e",
+    ".g5/Verus_verification/results/communities/20261115T231422Z-control-wcc-unconfirmed-return/logs/20261115T231420Z-control-wcc-unconfirmed-return.log": "e37180ff6f939af2594d20f4c9d9c9c7134e35db8a0481a871486cbce6638697"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

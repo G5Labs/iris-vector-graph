@@ -1,0 +1,8 @@
+{"verdict": "DISAGREES_OR_INCOMPLETE", "completed_cases": 16, "elapsed": 1.4785584580386057, "failure": {"type": "ChangesetOperationError", "message": "changeset operation 0 failed: node_exists: 'ledger12:801542c4:a'", "trace": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-native.py\", line 141, in main\n    r7, _ = commit(cs().create_node(a, properties={'k': 'fresh'}))\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-native.py\", line 58, in commit\n    result = lg.commit(changeset)\n             ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/ledger/client.py\", line 396, in commit\n    return self._commit(changeset, kind, None)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/ledger/client.py\", line 416, in _commit\n    raise from_commit_error(resp)\niris_vector_graph.ledger.errors.ChangesetOperationError: changeset operation 0 failed: node_exists: 'ledger12:801542c4:a'\n"}}
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-native.py", line 184, in <module>
+    main()
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-native.py", line 180, in main
+    assert result['verdict'] == 'AGREES'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

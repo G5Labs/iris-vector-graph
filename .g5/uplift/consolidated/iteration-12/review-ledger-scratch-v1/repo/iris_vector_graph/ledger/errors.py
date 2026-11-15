@@ -1,0 +1,223 @@
+"""Exception hierarchy for the revision ledger (spec 213, data-model.md "Error kinds").
+
+Every ledger error descends from :class:`LedgerError`, which descends from
+:class:`iris_vector_graph.sdk.IVGError`, so callers can catch the package root.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Dict, Optional
+
+from ..sdk import IVGError
+
+
+class LedgerError(IVGError):
+    """Base class for all revision-ledger errors."""
+
+
+class LedgerNotEnabledError(LedgerError):
+    """The operation requires an enabled ledger and none exists."""
+
+
+class LedgerDisabledError(LedgerError):
+    """The ledger exists but is disabled; commits are rejected (FR-001a)."""
+
+
+class LedgerStrictModeError(LedgerError):
+    """A non-ledger structural mutation was attempted while strict mode is on (FR-042)."""
+
+
+class StaleHeadError(LedgerError):
+    """``expected_head`` did not match the head at serialization (FR-015)."""
+
+    def __init__(self, message: str = "stale head", current_head: Optional[str] = None):
+        self.current_head = current_head
+        super().__init__(f"{message} (current head: {current_head})")
+
+
+class UnknownRevisionError(LedgerError):
+    """A revision identifier does not exist in this ledger (FR-016, FR-026)."""
+
+
+class IdempotencyConflictError(LedgerError):
+    """Idempotency key reused with a different payload fingerprint (FR-020)."""
+
+
+class ChangesetOperationError(LedgerError):
+    """One operation in the changeset failed; nothing was applied (FR-008)."""
+
+    def __init__(self, op_index: int, reason: str = ""):
+        self.op_index = op_index
+        self.reason = reason
+        super().__init__(f"changeset operation {op_index} failed: {reason}")
+
+
+class ChangesetTooLargeError(LedgerError):
+    """Changeset exceeds the ledger's maximum operation count (FR-013)."""
+
+    def __init__(self, limit: Optional[int] = None, message: str = ""):
+        self.limit = limit
+        super().__init__(message or f"changeset exceeds max_ops={limit}")
+
+
+class EmptyChangesetError(LedgerError):
+    """A changeset with zero operations was submitted (FR-013)."""
+
+
+class ReconstructionTooLargeError(LedgerError):
+    """Reconstruction exceeds the configured entity bound (FR-036)."""
+
+    def __init__(self, bound: int, estimate: int):
+        self.bound = bound
+        self.estimate = estimate
+        super().__init__(
+            f"reconstruction of ~{estimate} entities exceeds bound {bound}; request stream=True"
+        )
+
+
+class LedgerLockTimeoutError(LedgerError):
+    """Could not acquire the head lock within the timeout; retryable (R5)."""
+
+
+class LedgerTransactionOpenError(LedgerError):
+    """A transaction was already open in the server process; ``enable`` or a redaction refused (FR-047). ``commit``
+    no longer raises it: since 4.7.0 it joins the open transaction."""
+
+
+class LedgerInconsistencyError(LedgerError):
+    """The ledger's own structures disagree with each other."""
+
+
+class NodeNotFoundError(ChangesetOperationError):
+    """A relationship operation references a node that does not exist (FR-008, spec 217).
+
+    A `ChangesetOperationError`, because it *is* one: the server rejected a single
+    operation and said which. Spec 217 originally made it a sibling, which meant the
+    most common authoring mistake was the one rejection that would not tell you which
+    of your operations was at fault.
+
+    The base's `__init__` is deliberately not inherited — it would replace the
+    actionable message below with "changeset operation 4 failed".
+
+    Attributes:
+        missing_node: The node ID that was not found.
+        op_index: Zero-based index of the operation that failed, or -1 if the server
+            did not say.
+        reason: The server's raw reason string.
+    """
+
+    def __init__(
+        self,
+        message: str = "",
+        *,
+        missing_node: str = "",
+        op_index: int = -1,
+        reason: str = "",
+    ):
+        self.missing_node = missing_node
+        self.op_index = op_index
+        self.reason = reason
+        if not message:
+            message = (
+                f"create_relationship failed: node '{missing_node}' does not exist. "
+                f"Add upsert_node('{missing_node}') to the changeset, or set "
+                f"auto_stub_missing_nodes=True on the Changeset."
+            )
+        LedgerError.__init__(self, message)
+
+
+class IdempotencyRedactedError(IdempotencyConflictError):
+    """The idempotency key was bound to a revision that has since been redacted (spec 256).
+
+    A retry is refused rather than replayed or applied again: replaying would answer with a
+    revision whose content is gone, and applying would re-create an erased tenant.
+    """
+
+
+class RedactionTargetLiveError(LedgerError):
+    """Redaction refused: the target still holds live rows (spec 256 FR-005). Erase it first."""
+
+
+class RedactionInProgressError(LedgerError):
+    """A redaction has not finished (spec 256 Decision 3).
+
+    Raised by the record readers while the marker exists, by a commit that would write into
+    the running redaction's target, and by a redaction of a different target.
+    """
+
+
+class InvalidRedactionTargetError(LedgerError):
+    """The redaction target cannot be addressed (bad graph name, empty separator)."""
+
+
+# How Graph.KG.LedgerApply spells "the relationship pointed at a node that is not there".
+_MISSING_NODE_PREFIX = "node_not_found: '"
+
+_WIRE_MAP = {
+    "not_enabled": LedgerNotEnabledError,
+    "disabled": LedgerDisabledError,
+    "empty": EmptyChangesetError,
+    "too_large": ChangesetTooLargeError,
+    "stale_head": StaleHeadError,
+    "unknown_head": UnknownRevisionError,
+    "idempotency_conflict": IdempotencyConflictError,
+    "failed_op": ChangesetOperationError,
+    "lock_timeout": LedgerLockTimeoutError,
+    "transaction_open": LedgerTransactionOpenError,
+    "inconsistent": LedgerInconsistencyError,
+    "idempotency_redacted": IdempotencyRedactedError,
+    "target_live": RedactionTargetLiveError,
+    "redaction_in_progress": RedactionInProgressError,
+    "invalid_target": InvalidRedactionTargetError,
+}
+
+
+def from_commit_error(payload: Dict[str, Any]) -> LedgerError:
+    """Map a ``CommitError`` wire object (contracts/changeset.schema.json) to an exception."""
+    code = str(payload.get("error", ""))
+    reason = str(payload.get("reason", "") or "")
+    cls = _WIRE_MAP.get(code)
+    if cls is None:
+        return LedgerError(f"{code or 'unknown'}: {reason}")
+    if cls is StaleHeadError:
+        return StaleHeadError(reason or "stale head", current_head=payload.get("head"))
+    if cls is ChangesetOperationError:
+        idx = payload.get("op_index")
+        op_index = int(idx) if idx is not None else -1
+        # The one rejection that names the node it could not find gets the narrower
+        # type (spec 217) without losing the index and reason FR-008 requires.
+        if reason.startswith(_MISSING_NODE_PREFIX):
+            return NodeNotFoundError(
+                missing_node=reason[len(_MISSING_NODE_PREFIX) : -1],
+                op_index=op_index,
+                reason=reason,
+            )
+        return ChangesetOperationError(op_index, reason)
+    if cls is ChangesetTooLargeError:
+        limit = payload.get("limit")
+        return ChangesetTooLargeError(int(limit) if limit is not None else None, reason)
+    return cls(reason or code)
+
+
+__all__ = [
+    "LedgerError",
+    "LedgerNotEnabledError",
+    "LedgerDisabledError",
+    "LedgerStrictModeError",
+    "StaleHeadError",
+    "UnknownRevisionError",
+    "IdempotencyConflictError",
+    "ChangesetOperationError",
+    "ChangesetTooLargeError",
+    "EmptyChangesetError",
+    "ReconstructionTooLargeError",
+    "LedgerLockTimeoutError",
+    "LedgerTransactionOpenError",
+    "LedgerInconsistencyError",
+    "NodeNotFoundError",
+    "IdempotencyRedactedError",
+    "RedactionTargetLiveError",
+    "RedactionInProgressError",
+    "InvalidRedactionTargetError",
+    "from_commit_error",
+]

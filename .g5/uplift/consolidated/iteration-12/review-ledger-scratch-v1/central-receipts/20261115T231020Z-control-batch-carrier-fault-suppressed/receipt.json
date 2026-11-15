@@ -1,0 +1,53 @@
+{
+  "control": {
+    "classification": "source-algorithm-or-reader",
+    "expect_fail_in": [
+      "theorem_batch_empty_key_carrier_fault"
+    ],
+    "find": "else if exists|i:int|0<=i<quals.len() && quals[i].0.len()==0{Some(Error::KeyCarrier)}else{None},\n Request::ReplaceQuals",
+    "name": "batch-carrier-fault-suppressed",
+    "replace": "else if false{Some(Error::KeyCarrier)}else{None},\n Request::ReplaceQuals"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_batch_empty_key_carrier_fault"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_content/alternate.rs": "47af78ac8fb4fa4e7c7b74b5100fb67dc8d759c6cb592c8a65dee126d546b45a",
+    ".g5/Verus_verification/models/ledger_content/ledger_content.rs": "6da398763cdf28d7e8805fd4944e7abfeecddb28c951187e7598ffbed3c1d4b3",
+    ".g5/Verus_verification/models/ledger_content/model.json": "2d1a3c259ca4f95079d0179ada659eb90555626ba60cdea57195923cb0ade4c4",
+    ".g5/Verus_verification/models/reconstruction/reconstruction.rs": "245d60d0106d1e850ed6b6b1623f2ed442b3d34424db5297aeb55e2c4a87b3f6"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration12-ledger-content-20261115/verus/ledger_content/controls/batch-carrier-fault-suppressed/20261115T231017Z/models/ledger_content/ledger_content.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_batch_empty_key_carrier_fault": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration12-ledger-content-20261115/verus/ledger_content/20261115T231017Z-control-batch-carrier-fault-suppressed-theorem_batch_empty_key_carrier_fault.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration12-ledger-content-20261115/verus/ledger_content/20261115T231017Z-control-batch-carrier-fault-suppressed.log",
+    "timed_out": false,
+    "verified": 107
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_content/20261115T231020Z-control-batch-carrier-fault-suppressed/logs/20261115T231017Z-control-batch-carrier-fault-suppressed-theorem_batch_empty_key_carrier_fault.log": "feafa98be755454018753ec9f7fd564dc5de0986a18ae804201e85a4369d4576",
+    ".g5/Verus_verification/results/ledger_content/20261115T231020Z-control-batch-carrier-fault-suppressed/logs/20261115T231017Z-control-batch-carrier-fault-suppressed.log": "338d75d6cca0aa1fa60a3ba78064aaa6ee9c65f287261c7b77c1fdadd6fce3a2"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "verdict": "AGREES_AS_BUILT_WITH_FORECAST_MISS",
+  "cases": [
+    {
+      "label": "two logical slots alias one physical link",
+      "actual": {
+        "same_link": true,
+        "created_count": 2
+      },
+      "expected_as_built": {
+        "same_link": true,
+        "created_count": 2
+      },
+      "source_agrees": true,
+      "prospective_hypothesis": "Hypothesis1 distinct-borrower isolation is false for this helper; no actual concurrent DB use tested"
+    },
+    {
+      "label": "two returned queue entries alias same physical link",
+      "actual": {
+        "queue_size": 2,
+        "permits": 2
+      },
+      "expected_as_built": {
+        "queue_size": 2,
+        "permits": 2
+      },
+      "source_agrees": true,
+      "prospective_hypothesis": "Counts are logical slots, not distinct physical links"
+    },
+    {
+      "label": "capacity-one waiter blocked",
+      "actual": false,
+      "expected_as_built": false,
+      "source_agrees": true,
+      "prospective_hypothesis": "Capacity-one excludes a second admitted borrower"
+    },
+    {
+      "label": "cancel waiting does not manufacture permit",
+      "actual": 0,
+      "expected_as_built": 0,
+      "source_agrees": true,
+      "prospective_hypothesis": "Hypothesis2 waiting cancellation passes"
+    },
+    {
+      "label": "return after waiting cancellation restores capacity",
+      "actual": {
+        "permits": 1,
+        "queue_size": 1,
+        "created_count": 1
+      },
+      "expected_as_built": {
+        "permits": 1,
+        "queue_size": 1,
+        "created_count": 1
+      },
+      "source_agrees": true,
+      "prospective_hypothesis": "Hypothesis2 passes for bounded schedule"
+    },
+    {
+      "label": "raised borrower body returns logical link",
+      "actual": {
+        "permits": 1,
+        "queue_size": 1
+      },
+      "expected_as_built": {
+        "permits": 1,
+        "queue_size": 1
+      },
+      "source_agrees": true,
+      "prospective_hypothesis": "Hypothesis2 body exception passes"
+    },
+    {
+      "label": "cancelled acquired body returns logical link",
+      "actual": {
+        "permits": 1,
+        "queue_size": 1
+      },
+      "expected_as_built": {
+        "permits": 1,
+        "queue_size": 1
+      },
+      "source_agrees": true,
+      "prospective_hypothesis": "Hypothesis2 acquired cancellation passes"
+    },
+    {
+      "label": "singleton retains first engine",
+      "actual": {
+        "same_pool": true,
+        "first_engine": true
+      },
+      "expected_as_built": {
+        "same_pool": true,
+        "first_engine": true
+      },
+      "source_agrees": true,
+      "prospective_hypothesis": "Different app engine is not a new pool; actual resolvers bypass it"
+    }
+  ],
+  "completed_cases": 8,
+  "elapsed": 0.00044474995229393244,
+  "socket_calls": 0,
+  "native_calls": 0,
+  "db_operations": 0,
+  "source_inputs": {
+    "iris_vector_graph/gql/pooling.py": "a83efcb73e87800098f49ab6bacba6843a0b1870a6603d940ed3d74309d9bece",
+    "iris_vector_graph/gql/__init__.py": "eacde4c011258e924bfee435f27ac58997e8a067a9a83975fc5db3723d1ae3b9",
+    "iris_vector_graph/gql/resolvers.py": "ce69f94301fcc10a85a34390be97561db42851a2c94d661b93ea512d1cea4d94"
+  },
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-12/next-pool-probe.py": "8a2fe2b60472e4a36c3bde36f547f438ffb8b2922e48154b2c35bd0ff7692e25",
+    ".g5/uplift/consolidated/iteration-12/next-pool-PAIRS.md": "fdd197b896a246ea2579f2876cd21a9b682b7408d0fd347f3a2db4c7d3d8c6ef"
+  },
+  "scope": "Builder alternate-workflow survey only. Unmodified pinned pooling module loaded directly with its real engine import, opaque link objects and explicit bounded asyncio schedules. No actual SQL/driver/network/server concurrency, safety/security scenario, product fix, new formal/issue/owner credit. Resolver and startup consumer bypass established by source inspection separately; helper distinct-link forecast refuted."
+}

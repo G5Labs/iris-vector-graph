@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/wcc-unconfirmed-return/20261115T231420Z/models/communities/communities.rs:234:9
+    |
+232 | pub proof fn theorem_already_correct_pair_still_needs_confirmation()
+    | -------------------------------------------------------------------- at the end of the function body
+233 |     ensures get(labels_at(pair(),1),0)==0,get(labels_at(pair(),1),1)==0,
+234 |         wstep(pair(),Some(1),0) is Continue,wstep(pair(),Some(1),1) is Refused,wstep(pair(),Some(2),1) is Success,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

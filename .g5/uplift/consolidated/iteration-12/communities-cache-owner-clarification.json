@@ -1,0 +1,18 @@
+{
+  "path": ".g5/ontology/features/algorithms.g5.md",
+  "block": "algorithms.cache.token",
+  "addition": "- WCC and CDLP cache the labels for nodes found in adjacency. Each public call then reads the current nodes with no edge to another node and adds missing ones with their own labels, even on a cache hit.",
+  "existing_meaning_preserved": "Adjacency token governs reusable core labels; current node membership is completed outside that cache. Edge rollback/cache correctness remains separate, not repaired.",
+  "source": [
+    "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_WCC",
+    "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_CDLP",
+    "iris_vector_graph/_edgeless.py::complete_labels"
+  ],
+  "evidence": [
+    "../iteration-11/next-communities-native.json",
+    "root-communities-census-native.json"
+  ],
+  "new_blocks": 0,
+  "new_issues": 0,
+  "owner_decisions": 0
+}

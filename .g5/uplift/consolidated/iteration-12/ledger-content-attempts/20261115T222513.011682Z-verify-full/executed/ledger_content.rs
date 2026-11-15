@@ -1,0 +1,197 @@
+use vstd::prelude::*;
+verus! {
+pub type Text=Seq<char>;
+pub type Tuple=(int,Text,int,Option<Text>);
+pub struct Node {pub labels:Set<Text>,pub props:Map<Text,Text>}
+pub struct Stmt {pub tuple:Tuple,pub quals:Map<Text,Text>}
+pub struct State {pub nodes:Map<int,Node>,pub rels:Map<int,Stmt>,pub by_tuple:Map<Tuple,int>}
+pub open spec fn empty_node()->Node {Node{labels:Set::empty(),props:Map::empty()}}
+pub open spec fn empty()->State {State{nodes:Map::empty(),rels:Map::empty(),by_tuple:Map::empty()}}
+pub open spec fn graph(g:Option<Text>)->Option<Text> {if g.is_none() || g.unwrap().len()==0 || g==Some(seq!['\0']){None}else{g}}
+pub open spec fn tuple(s:int,p:Text,o:int,g:Option<Text>)->Tuple {(s,p,o,graph(g))}
+pub open spec fn reserved(k:Text)->bool {k==seq!['i','d'] || k==seq!['_','_','g','r','a','p','h']}
+pub open spec fn text(v:Option<Text>)->Text {if v.is_some(){v.unwrap()}else{seq![]}}
+pub open spec fn value<K>(m:Map<K,Text>,k:K)->Option<Text> {if m.contains_key(k){Some(m[k])}else{None}}
+pub enum Action {
+ CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+ SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+ CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+ SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+ Temporal,Other,
+}
+pub struct Record {pub seq:nat,pub ordinal:nat,pub action:Action,pub redacted:bool,pub audit:bool}
+pub open spec fn rec(a:Action)->Record {Record{seq:1,ordinal:1,action:a,redacted:false,audit:false}}
+pub open spec fn put_node(s:State,id:int,n:Node)->State {State{nodes:s.nodes.insert(id,n),..s}}
+pub open spec fn put_rel(s:State,id:int,r:Stmt)->State {State{rels:s.rels.insert(id,r),..s}}
+pub open spec fn apply(s:State,r:Record)->State {
+ if r.redacted || r.audit{s}else{match r.action {
+  Action::CreateNode(id)=>put_node(s,id,empty_node()),
+  Action::DeleteNode{id,..}=>State{nodes:s.nodes.remove(id),..s},
+  Action::AddLabel(id,k)=>if s.nodes.contains_key(id){put_node(s,id,Node{labels:s.nodes[id].labels.insert(k),..s.nodes[id]})}else{s},
+  Action::RemoveLabel(id,k)=>if s.nodes.contains_key(id){put_node(s,id,Node{labels:s.nodes[id].labels.remove(k),..s.nodes[id]})}else{s},
+  Action::SetProp{id,key,new,..}=>if s.nodes.contains_key(id){put_node(s,id,Node{props:s.nodes[id].props.insert(key,text(new)),..s.nodes[id]})}else{s},
+  Action::RemoveProp{id,key,..}=>if s.nodes.contains_key(id){put_node(s,id,Node{props:s.nodes[id].props.remove(key),..s.nodes[id]})}else{s},
+  Action::CreateRel(id,t)=>State{rels:s.rels.insert(id,Stmt{tuple:t,quals:Map::empty()}),by_tuple:s.by_tuple.insert(t,id),..s},
+  Action::DeleteRel{id,..}=>if s.rels.contains_key(id){State{rels:s.rels.remove(id),by_tuple:s.by_tuple.remove(s.rels[id].tuple),..s}}else{s},
+  Action::SetQual{id,key,new,..}=>if s.rels.contains_key(id){put_rel(s,id,Stmt{quals:s.rels[id].quals.insert(key,text(new)),..s.rels[id]})}else{s},
+  Action::RemoveQual{id,key,..}=>if s.rels.contains_key(id){put_rel(s,id,Stmt{quals:s.rels[id].quals.remove(key),..s.rels[id]})}else{s},
+  _=>s,
+ }}
+}
+pub open spec fn fold(s:State,rs:Seq<Record>)->State decreases rs.len() {
+ if rs.len()==0{s}else{fold(apply(s,rs[0]),rs.drop_first())}
+}
+pub enum NumberState {Start,Sign,Int,DotBare,DotTail,Frac,Exp,ExpSign,ExpDigits}
+pub open spec fn digit(c:char)->bool {'0'<=c<='9'}
+pub open spec fn number_next(st:NumberState,c:char)->Option<NumberState> {match st {
+ NumberState::Start|NumberState::Sign=>if digit(c){Some(NumberState::Int)}else if c=='.'{Some(NumberState::DotBare)}else if matches!(st,NumberState::Start) && (c=='+' || c=='-'){Some(NumberState::Sign)}else{None},
+ NumberState::Int=>if digit(c){Some(NumberState::Int)}else if c=='.'{Some(NumberState::DotTail)}else if c=='e' || c=='E'{Some(NumberState::Exp)}else{None},
+ NumberState::DotBare=>if digit(c){Some(NumberState::Frac)}else{None},
+ NumberState::DotTail|NumberState::Frac=>if digit(c){Some(NumberState::Frac)}else if c=='e' || c=='E'{Some(NumberState::Exp)}else{None},
+ NumberState::Exp|NumberState::ExpSign=>if digit(c){Some(NumberState::ExpDigits)}else if matches!(st,NumberState::Exp) && (c=='+' || c=='-'){Some(NumberState::ExpSign)}else{None},
+ NumberState::ExpDigits=>if digit(c){Some(NumberState::ExpDigits)}else{None},
+}}
+pub open spec fn number_scan(t:Text,st:NumberState)->Option<NumberState> decreases t.len() {
+ if t.len()==0{Some(st)}else{let n=number_next(st,t[0]);if n.is_none(){None}else{number_scan(t.drop_first(),n.unwrap())}}
+}
+pub open spec fn numeric(t:Text)->bool {let n=number_scan(t,NumberState::Start);n.is_some() && matches!(n.unwrap(),NumberState::Int|NumberState::DotTail|NumberState::Frac|NumberState::ExpDigits)}
+pub open spec fn weight_key(k:Text)->bool {k==seq!['w','e','i','g','h','t']}
+pub enum Op {CreateNode(int,bool),AddLabel(int,Text),RemoveLabel(int,Text),SetProp(int,Text,Text),RemoveProp(int,Text),
+ CreateRel(int,Tuple,bool),DeleteRel(int),SetQual(int,Text,Text),RemoveQual(int,Text),DeleteNode(int)}
+pub enum Error {Exists,Missing,Reserved,EmptyKey,MissingAttribute,Incident,Numeric}
+pub struct Reply {pub state:State,pub records:Seq<Record>,pub error:Option<Error>}
+pub open spec fn fail(s:State,e:Error)->Reply {Reply{state:s,records:seq![],error:Some(e)}}
+pub open spec fn done(s:State,rs:Seq<Record>)->Reply {Reply{state:s,records:rs,error:None}}
+// This primitive is the ordinary successful-SQL/default-profile projection.
+// Full batch create/upsert expands to these operations, not a supplied node map.
+pub open spec fn produce(s:State,o:Op)->Reply {match o {
+ Op::CreateNode(id,upsert)=>if s.nodes.contains_key(id){if upsert{done(s,seq![])}else{fail(s,Error::Exists)}}
+  else{done(put_node(s,id,empty_node()),seq![rec(Action::CreateNode(id))])},
+ Op::AddLabel(id,k)=>if !s.nodes.contains_key(id){fail(s,Error::Missing)}else if k.len()==0{fail(s,Error::EmptyKey)}
+  else if s.nodes[id].labels.contains(k){done(s,seq![])}else{done(put_node(s,id,Node{labels:s.nodes[id].labels.insert(k),..s.nodes[id]}),seq![rec(Action::AddLabel(id,k))])},
+ Op::RemoveLabel(id,k)=>if !s.nodes.contains_key(id){fail(s,Error::Missing)}else if !s.nodes[id].labels.contains(k){fail(s,Error::MissingAttribute)}
+  else{done(put_node(s,id,Node{labels:s.nodes[id].labels.remove(k),..s.nodes[id]}),seq![rec(Action::RemoveLabel(id,k))])},
+ Op::SetProp(id,k,v)=>if reserved(k){fail(s,Error::Reserved)}else if !s.nodes.contains_key(id){fail(s,Error::Missing)}else if k.len()==0{fail(s,Error::EmptyKey)}
+  else if value(s.nodes[id].props,k)==Some(v){done(s,seq![])}
+  else{done(put_node(s,id,Node{props:s.nodes[id].props.insert(k,v),..s.nodes[id]}),seq![rec(Action::SetProp{id,key:k,prior:value(s.nodes[id].props,k),new:Some(v)})])},
+ Op::RemoveProp(id,k)=>if reserved(k){fail(s,Error::Reserved)}else if !s.nodes.contains_key(id){fail(s,Error::Missing)}else if !s.nodes[id].props.contains_key(k){fail(s,Error::MissingAttribute)}
+  else{done(put_node(s,id,Node{props:s.nodes[id].props.remove(k),..s.nodes[id]}),seq![rec(Action::RemoveProp{id,key:k,prior:s.nodes[id].props[k]})])},
+ Op::CreateRel(id,t,upsert)=>if !s.nodes.contains_key(t.0) || !s.nodes.contains_key(t.2){fail(s,Error::Missing)}
+  else if t.1.len()==0{fail(s,Error::EmptyKey)}else if s.by_tuple.contains_key(t){if upsert{done(s,seq![])}else{fail(s,Error::Exists)}}
+  else{done(State{rels:s.rels.insert(id,Stmt{tuple:t,quals:Map::empty()}),by_tuple:s.by_tuple.insert(t,id),..s},seq![rec(Action::CreateRel(id,t))])},
+ Op::DeleteRel(id)=>if !s.rels.contains_key(id){fail(s,Error::Missing)}else{done(State{rels:s.rels.remove(id),by_tuple:s.by_tuple.remove(s.rels[id].tuple),..s},seq![rec(Action::DeleteRel{id,snapshot:s.rels[id]})])},
+ Op::SetQual(id,k,v)=>if !s.rels.contains_key(id){fail(s,Error::Missing)}else if k.len()==0{fail(s,Error::EmptyKey)}else if weight_key(k) && !numeric(v){fail(s,Error::Numeric)}else if value(s.rels[id].quals,k)==Some(v){done(s,seq![])}
+  else{done(put_rel(s,id,Stmt{quals:s.rels[id].quals.insert(k,v),..s.rels[id]}),seq![rec(Action::SetQual{id,key:k,prior:value(s.rels[id].quals,k),new:Some(v)})])},
+ Op::RemoveQual(id,k)=>if !s.rels.contains_key(id){fail(s,Error::Missing)}else if k.len()==0{fail(s,Error::EmptyKey)}else if !s.rels[id].quals.contains_key(k){fail(s,Error::MissingAttribute)}
+  else{done(put_rel(s,id,Stmt{quals:s.rels[id].quals.remove(k),..s.rels[id]}),seq![rec(Action::RemoveQual{id,key:k,prior:s.rels[id].quals[k]})])},
+ Op::DeleteNode(id)=>if !s.nodes.contains_key(id){fail(s,Error::Missing)}else if exists|rid:int|s.rels.contains_key(rid) && s.rels[rid].tuple.3.is_none() && (s.rels[rid].tuple.0==id || s.rels[rid].tuple.2==id){fail(s,Error::Incident)}
+  else{done(State{nodes:s.nodes.remove(id),..s},seq![rec(Action::DeleteNode{id,snapshot:s.nodes[id]})])},
+}}
+pub proof fn theorem_primitive_records_replay_full_content(s:State,o:Op)
+ ensures fold(s,produce(s,o).records)==produce(s,o).state,
+         produce(s,o).error.is_some() ==> produce(s,o).state==s && produce(s,o).records.len()==0,
+{reveal_with_fuel(fold,2);}
+pub proof fn theorem_current_prior_is_derived(s:State,id:int,k:Text,v:Text)
+ requires s.nodes.contains_key(id),!reserved(k),k.len()>0,value(s.nodes[id].props,k)!=Some(v),
+ ensures produce(s,Op::SetProp(id,k,v)).records==seq![rec(Action::SetProp{id,key:k,prior:value(s.nodes[id].props,k),new:Some(v)})],
+{}
+pub proof fn theorem_simple_snapshot_is_complete(s:State,id:int)
+ requires s.nodes.contains_key(id),!(exists|rid:int|s.rels.contains_key(rid) && s.rels[rid].tuple.3.is_none() && (s.rels[rid].tuple.0==id || s.rels[rid].tuple.2==id)),
+ ensures produce(s,Op::DeleteNode(id)).records==seq![rec(Action::DeleteNode{id,snapshot:s.nodes[id]})],
+{}
+pub proof fn theorem_labels_and_quals_are_not_reset_by_existing_upsert(s:State,id:int)
+ requires s.nodes.contains_key(id),
+ ensures produce(s,Op::CreateNode(id,true)).state==s,produce(s,Op::CreateNode(id,true)).records.len()==0,
+{}
+pub proof fn theorem_reader_null_empty_text(s:State,id:int,k:Text)
+ requires s.nodes.contains_key(id),
+ ensures apply(s,rec(Action::SetProp{id,key:k,prior:None,new:None})).nodes[id].props[k]==seq![],
+         apply(s,rec(Action::SetProp{id,key:k,prior:None,new:Some(seq![])})).nodes[id].props[k]==seq![],
+         apply(s,rec(Action::SetProp{id,key:k,prior:None,new:Some(seq!['n','u','l','l'])})).nodes[id].props[k]==seq!['n','u','l','l'],
+{}
+pub proof fn theorem_delete_node_is_not_relationship_cascade(s:State,id:int)
+ ensures apply(s,rec(Action::DeleteNode{id,snapshot:empty_node()})).rels==s.rels,
+{}
+pub proof fn theorem_tombstone_audit_temporal_ignored(s:State,r:Record)
+ requires r.redacted || r.audit || matches!(r.action,Action::Temporal|Action::Other),
+ ensures apply(s,r)==s,
+{}
+pub proof fn lemma_fold_concat(s:State,a:Seq<Record>,b:Seq<Record>)
+ ensures fold(s,a+b)==fold(fold(s,a),b),
+ decreases a.len(),
+{
+ if a.len()>0{lemma_fold_concat(apply(s,a[0]),a.drop_first(),b);assert((a+b).drop_first() =~= a.drop_first()+b);}
+}
+pub open spec fn execute(s:State,ops:Seq<Op>)->Reply decreases ops.len() {
+ if ops.len()==0{done(s,seq![])}else{
+  let first=produce(s,ops[0]);if first.error.is_some(){fail(s,first.error.unwrap())}else{
+   let rest=execute(first.state,ops.drop_first());if rest.error.is_some(){fail(s,rest.error.unwrap())}
+   else{done(rest.state,first.records+rest.records)}}}
+}
+pub proof fn theorem_transaction_records_replay_full_content(s:State,ops:Seq<Op>)
+ ensures fold(s,execute(s,ops).records)==execute(s,ops).state,
+         execute(s,ops).error.is_some() ==> execute(s,ops).state==s && execute(s,ops).records.len()==0,
+ decreases ops.len(),
+{
+ if ops.len()>0{
+  let first=produce(s,ops[0]);theorem_primitive_records_replay_full_content(s,ops[0]);
+  if first.error.is_none(){theorem_transaction_records_replay_full_content(first.state,ops.drop_first());lemma_fold_concat(s,first.records,execute(first.state,ops.drop_first()).records);}
+ }
+}
+pub enum Request {
+ Node{ id:int,upsert:bool,labels:Seq<Text>,props:Seq<(Text,Text)> },
+ Rel{ s:int,p:Text,o:int,raw_graph:Option<Text>,upsert:bool,quals:Seq<(Text,Text)> },
+ Primitive(Op),
+}
+pub struct Store {pub state:State,pub next:nat}
+pub struct Output {pub store:Store,pub records:Seq<Record>,pub error:Option<Error>}
+pub open spec fn node_ops(id:int,labels:Seq<Text>,props:Seq<(Text,Text)>)->Seq<Op> {
+ labels.map_values(|k:Text|Op::AddLabel(id,k))+props.map_values(|kv:(Text,Text)|Op::SetProp(id,kv.0,kv.1))
+}
+pub open spec fn request_ops(g:Store,q:Request)->Seq<Op> {match q {
+ Request::Node{id,upsert,labels,props}=>seq![Op::CreateNode(id,upsert)]+node_ops(id,labels,props),
+ Request::Rel{s,p,o,raw_graph,upsert,quals}=>{
+  let t=tuple(s,p,o,raw_graph);let id=if g.state.by_tuple.contains_key(t){g.state.by_tuple[t]}else{g.next as int};
+  seq![Op::CreateRel(id,t,upsert)]+quals.map_values(|kv:(Text,Text)|Op::SetQual(id,kv.0,kv.1))},
+ Request::Primitive(o)=>seq![o],
+}}
+pub open spec fn pre_error(g:Store,q:Request)->Option<Error> {match q {
+ Request::Node{id,upsert,props,..}=>if g.state.nodes.contains_key(id) && !upsert{Some(Error::Exists)}
+  else if exists|i:int|0<=i<props.len() && reserved(props[i].0){Some(Error::Reserved)}else{None},
+ Request::Rel{s,p,o,quals,..}=>if !g.state.nodes.contains_key(s) || !g.state.nodes.contains_key(o){Some(Error::Missing)}else if p.len()==0{Some(Error::EmptyKey)}
+  else if exists|i:int|0<=i<quals.len() && weight_key(quals[i].0) && !numeric(quals[i].1){Some(Error::Numeric)}else{None},
+ _=>None,
+}}
+pub open spec fn allocating(g:Store,q:Request)->bool {match q {
+ Request::Rel{s,p,o,raw_graph,..}=>!g.state.by_tuple.contains_key(tuple(s,p,o,raw_graph)),_=>false,
+}}
+pub open spec fn request(g:Store,q:Request)->Output {
+ if pre_error(g,q).is_some(){Output{store:g,records:seq![],error:pre_error(g,q)}}else{
+  let out=execute(g.state,request_ops(g,q));
+  Output{store:Store{state:out.state,next:if out.error.is_none() && allocating(g,q){g.next+1}else{g.next}},records:out.records,error:out.error}}
+}
+pub proof fn theorem_raw_request_full_content(g:Store,q:Request)
+ ensures fold(g.state,request(g,q).records)==request(g,q).store.state,
+         request(g,q).error.is_some() ==> request(g,q).store.state==g.state && request(g,q).store.next==g.next && request(g,q).records.len()==0,
+{theorem_transaction_records_replay_full_content(g.state,request_ops(g,q));}
+pub proof fn theorem_new_node_emits_separate_content(g:Store,id:int,k:Text,v:Text,l:Text)
+ requires !g.state.nodes.contains_key(id),!reserved(k),k.len()>0,l.len()>0,
+ ensures ({let q=Request::Node{id,upsert:false,labels:seq![l],props:seq![(k,v)]};let out=request(g,q);
+  out.error.is_none() && out.store.state.nodes[id].labels==set![l] && out.store.state.nodes[id].props==map![k=>v]
+  && out.records==seq![rec(Action::CreateNode(id)),rec(Action::AddLabel(id,l)),rec(Action::SetProp{id,key:k,prior:None,new:Some(v)})]}),
+{reveal_with_fuel(execute,5);}
+pub proof fn theorem_same_value_and_label_are_noop(s:State,id:int,k:Text,v:Text,l:Text)
+ requires s.nodes.contains_key(id),!reserved(k),k.len()>0,l.len()>0,s.nodes[id].props.contains_key(k),s.nodes[id].props[k]==v,s.nodes[id].labels.contains(l),
+ ensures execute(s,seq![Op::AddLabel(id,l),Op::SetProp(id,k,v)]).records.len()==0,
+{reveal_with_fuel(execute,4);}
+pub proof fn theorem_reserved_create_has_no_committed_prefix(g:Store,id:int,l:Text)
+ ensures request(g,Request::Node{id,upsert:true,labels:seq![l],props:seq![(seq!['i','d'],seq!['x'])]}).store.state==g.state,
+         request(g,Request::Node{id,upsert:true,labels:seq![l],props:seq![(seq!['i','d'],seq!['x'])]}).records.len()==0,
+{let ps=seq![(seq!['i','d'],seq!['x'])];assert(reserved(ps[0].0));assert(0<=0<ps.len() && reserved(ps[0].0));assert(exists|i:int|0<=i<ps.len() && reserved(ps[i].0));}
+pub proof fn theorem_raw_graph_tuple_normalization(s:int,p:Text,o:int,named:Text)
+ requires named.len()>0,named!=seq!['\0'],
+ ensures tuple(s,p,o,None)==tuple(s,p,o,Some(seq![])),tuple(s,p,o,Some(seq!['\0']))==tuple(s,p,o,None),
+         tuple(s,p,o,Some(named)).3==Some(named),
+{}
+
+}

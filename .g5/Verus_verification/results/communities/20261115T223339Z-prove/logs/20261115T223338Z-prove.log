@@ -1,0 +1,29 @@
+verification results:: 37 verified, 1 errors
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:32:7
+   |
+32 |     g.filter_lemma(|a:Coord|selected(a));let xs=g.filter(|a:Coord|selected(a));assert(xs.contains(g[i]));
+   |       ^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:307:1
+    |
+307 | pub proof fn lemma_ordered_count_keys(c:Counts)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:312:62
+    |
+312 |     assert(q.to_multiset() =~= keys(c).to_multiset());assert(q.len()==keys(c).len());assert(q.to_set() =~= keys(c).to_set());
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:312:93
+    |
+312 |     assert(q.to_multiset() =~= keys(c).to_multiset());assert(q.len()==keys(c).len());assert(q.to_set() =~= keys(c).to_set());
+    |                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors; 1 warning emitted
+

@@ -1,0 +1,84 @@
+import uvicorn
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from strawberry.fastapi import GraphQLRouter
+from typing import Optional, Any
+import logging
+
+from ..engine import IRISGraphEngine
+from .engine import GQLGraphEngine
+from .schema import build_schema
+from .pooling import get_pool
+
+logger = logging.getLogger(__name__)
+
+def create_app(engine: IRISGraphEngine, prefix: str = "/graphql", embedder: Optional[Any] = None) -> FastAPI:
+    """
+    Creates a FastAPI app with auto-generated GraphQL schema.
+    """
+    # Configure engine embedder if provided
+    if embedder:
+        engine.embedder = embedder
+
+    gql_engine = GQLGraphEngine(engine)
+    schema = build_schema(gql_engine)
+    app = FastAPI(title="IRIS Vector Graph Auto-Generated API")
+    
+    # Context getter for resolvers
+    async def get_context():
+        return {
+            "engine": engine,
+            "gql_engine": gql_engine,
+            "pool": await get_pool(engine)
+        }
+
+    # Exception handlers
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        err_msg = str(exc)
+        if "Access Denied" in err_msg:
+            return JSONResponse(status_code=403, content={"error": "IRIS Access Denied", "details": err_msg})
+        if "License Limit" in err_msg or "Too many connections" in err_msg:
+            return JSONResponse(status_code=503, content={"error": "IRIS License Limit Reached", "details": err_msg})
+        
+        logger.error(f"Unhandled exception: {exc}", exc_info=True)
+        return JSONResponse(status_code=500, content={"error": "Internal Server Error", "details": err_msg})
+
+    graphql_app = GraphQLRouter(schema, context_getter=get_context)
+    app.include_router(graphql_app, prefix=prefix)
+
+    # IVG_API_KEY gate, default-deny; a no-op when the variable is unset.
+    from ..api_auth import ApiKeyMiddleware
+    app.add_middleware(ApiKeyMiddleware)
+    
+    @app.get("/")
+    async def root():
+        return {"name": "IRIS Vector Graph API", "graphql_endpoint": prefix}
+
+    @app.get("/health")
+    async def health():
+        try:
+            cursor = engine.conn.cursor()
+            cursor.execute("SELECT 1")
+            cursor.close()
+            db_status = "connected"
+        except Exception:
+            db_status = "disconnected"
+        return {"status": "healthy", "database": db_status, "graphql": "available"}
+    
+    return app
+
+def serve(
+    engine: IRISGraphEngine,
+    host: str = "0.0.0.0",
+    port: int = 8000,
+    prefix: str = "/graphql",
+    embedder: Optional[Any] = None,
+    **kwargs
+):
+    """
+    Auto-generates and starts a GraphQL server over an IRIS graph store.
+    """
+    app = create_app(engine, prefix=prefix, embedder=embedder)
+    print(f"Starting auto-generated GraphQL server at http://{host}:{port}{prefix}")
+    uvicorn.run(app, host=host, port=port, **kwargs)

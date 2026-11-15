@@ -1,0 +1,697 @@
+"""
+Unit tests for _engine/nodes_edges.py covering:
+- count_nodes (with and without label)
+- _bulk_load_drifted (returns True on error, False on 0 edges)
+- backfill_2hop_exact (success and failure)
+- _assert_node_exists (found and not found)
+- delete_edge (success and failure)
+- bulk_delete_nodes (success path)
+- create_node (basic SQL path)
+- bulk_create_nodes (SQL path, no ObjectScript)
+- bulk_create_edges (SQL path)
+- _resolve_node_from_row (JSON and plain list parsing)
+
+No IRIS connection needed — mocks conn and cursor.
+"""
+import json
+import pytest
+
+from iris_vector_graph import GraphWriteError
+from unittest.mock import MagicMock, call, patch
+from iris_vector_graph.engine import IRISGraphEngine
+
+
+def _make_eng(dim=4):
+    conn = MagicMock()
+    cursor = MagicMock()
+    conn.cursor.return_value = cursor
+    cursor.execute.return_value = None
+    cursor.executemany.return_value = None
+    cursor.fetchall.return_value = []
+    cursor.fetchone.return_value = (0,)
+    cursor.description = []
+    cursor.close.return_value = None
+    return IRISGraphEngine(conn, embedding_dimension=dim), conn, cursor
+
+
+# ---------------------------------------------------------------------------
+# count_nodes
+# ---------------------------------------------------------------------------
+
+class TestCountNodes:
+
+    def test_count_all_nodes(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchone.return_value = (42,)
+        result = eng.count_nodes()
+        assert result == 42
+
+    def test_count_nodes_with_label(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchone.return_value = (7,)
+        result = eng.count_nodes(label="Disease")
+        assert result == 7
+        # Verify it queried rdf_labels
+        sql = cursor.execute.call_args[0][0]
+        assert "rdf_labels" in sql
+
+    def test_count_nodes_error_raises(self):
+        """A failed count raises (4.6.0; it answered 0)."""
+        eng, conn, cursor = _make_eng()
+        cursor.execute.side_effect = RuntimeError("table not found")
+        with pytest.raises(RuntimeError, match="table not found"):
+            eng.count_nodes()
+
+
+# ---------------------------------------------------------------------------
+# get_node_ids_by_label / get_nodes_by_label
+# ---------------------------------------------------------------------------
+
+class TestGetNodesByLabel:
+    """A JOIN-free by-label lookup (mirrors Neo4j's NodeByLabelScan) that avoids
+    routing through the Cypher MATCH translator's multi-table JOIN, which can
+    trigger an IRIS %qaqpre compiler fault on some builds/instances."""
+
+    def test_get_node_ids_by_label_queries_rdf_labels_only(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchall.return_value = [("gene:TP53",), ("gene:BRCA1",)]
+        result = eng.get_node_ids_by_label("Gene")
+        assert result == ["gene:TP53", "gene:BRCA1"]
+        sql = cursor.execute.call_args[0][0]
+        assert "rdf_labels" in sql
+        assert "JOIN" not in sql.upper()
+        assert cursor.execute.call_args[0][1] == ["Gene"]
+
+    def test_get_node_ids_by_label_empty(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchall.return_value = []
+        assert eng.get_node_ids_by_label("Nonexistent") == []
+
+    def test_get_node_ids_by_label_skips_falsy_rows(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchall.return_value = [("a",), (None,), ("",)]
+        assert eng.get_node_ids_by_label("Gene") == ["a"]
+
+    def test_get_nodes_by_label_hydrates_via_get_nodes(self):
+        eng, conn, cursor = _make_eng()
+        with patch.object(eng, "get_node_ids_by_label", return_value=["n1", "n2"]) as mock_ids:
+            with patch.object(eng, "get_nodes", return_value=[{"id": "n1"}, {"id": "n2"}]) as mock_get:
+                result = eng.get_nodes_by_label("Person")
+        mock_ids.assert_called_once_with("Person")
+        mock_get.assert_called_once_with(["n1", "n2"])
+        assert result == [{"id": "n1"}, {"id": "n2"}]
+
+    def test_get_nodes_by_label_empty_skips_get_nodes(self):
+        eng, conn, cursor = _make_eng()
+        with patch.object(eng, "get_node_ids_by_label", return_value=[]):
+            with patch.object(eng, "get_nodes") as mock_get:
+                result = eng.get_nodes_by_label("Nonexistent")
+        mock_get.assert_not_called()
+        assert result == []
+
+
+# ---------------------------------------------------------------------------
+# _bulk_load_drifted
+# ---------------------------------------------------------------------------
+
+class TestBulkLoadDrifted:
+
+    def test_returns_false_when_zero_sql_edges(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchone.return_value = (0,)
+        iris_obj = MagicMock()
+        iris_obj.classMethodValue.return_value = "0"
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            result = eng._bulk_load_drifted()
+        assert result is False
+
+    def test_returns_true_when_nkg_empty_but_edges_exist(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchone.return_value = (100,)  # sql_edges = 100
+        iris_obj = MagicMock()
+        iris_obj.classMethodValue.return_value = "0"  # nkg_nodes = 0
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            result = eng._bulk_load_drifted()
+        assert result is True
+
+    def test_returns_true_on_exception(self):
+        eng, conn, cursor = _make_eng()
+        cursor.execute.side_effect = RuntimeError("DB gone")
+        result = eng._bulk_load_drifted()
+        assert result is True
+
+
+# ---------------------------------------------------------------------------
+# backfill_2hop_exact
+# ---------------------------------------------------------------------------
+
+class TestBackfill2HopExact:
+
+    def test_success_returns_count(self):
+        eng, conn, cursor = _make_eng()
+        iris_obj = MagicMock()
+        iris_obj.classMethodValue.return_value = "50"
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            result = eng.backfill_2hop_exact()
+        assert result == 50
+
+    def test_failure_returns_zero(self):
+        eng, conn, cursor = _make_eng()
+        iris_obj = MagicMock()
+        iris_obj.classMethodValue.side_effect = RuntimeError("class not found")
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            result = eng.backfill_2hop_exact()
+        assert result == 0
+
+
+# ---------------------------------------------------------------------------
+# _assert_node_exists
+# ---------------------------------------------------------------------------
+
+class TestAssertNodeExists:
+
+    def test_existing_node_does_not_raise(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchone.return_value = (1,)
+        eng._assert_node_exists("existing_node")  # should not raise
+
+    def test_missing_node_raises_value_error(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchone.return_value = (0,)
+        with pytest.raises(ValueError, match="Node does not exist"):
+            eng._assert_node_exists("missing_node")
+
+    def test_db_error_raises(self):
+        """4.6.0 R276: it was swallowed, so the write went ahead on a node the check never found."""
+        eng, conn, cursor = _make_eng()
+        cursor.execute.side_effect = RuntimeError("connection lost")
+        with pytest.raises(RuntimeError, match="connection lost"):
+            eng._assert_node_exists("any_node")
+
+
+# ---------------------------------------------------------------------------
+# delete_edge
+# ---------------------------------------------------------------------------
+
+class TestDeleteEdge:
+
+    def test_success_returns_true(self):
+        eng, conn, cursor = _make_eng()
+        iris_obj = MagicMock()
+        iris_obj.classMethodVoid.return_value = None
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            result = eng.delete_edge("src", "TREATS", "tgt")
+        assert result is True
+
+    def test_sql_failure_returns_false(self):
+        eng, conn, cursor = _make_eng()
+        cursor.execute.side_effect = RuntimeError("delete failed")
+        with pytest.raises(GraphWriteError):  # 4.6.0 R203: a failed write raises; it answered False
+            eng.delete_edge("src", "TREATS", "tgt")
+
+    def test_adjacency_kill_failure_raises_and_keeps_the_row(self):
+        """4.6.3: it answered True with a WARNING, ^KG still holding the deleted edge."""
+        eng, conn, cursor = _make_eng()
+        eng._adjacency_indexed_cached = False
+        iris_obj = MagicMock()
+        iris_obj.classMethodVoid.side_effect = RuntimeError("^KG kill failed")
+        with patch.object(eng, "_iris_obj", return_value=iris_obj), \
+                pytest.raises(GraphWriteError, match=r"\^KG adjacency delete.*nothing deleted"):
+            eng.delete_edge("src", "TREATS", "tgt")
+        statements = [c.args[0] for c in cursor.execute.call_args_list]
+        assert "COMMIT" not in statements and "ROLLBACK" in statements, statements
+
+
+# ---------------------------------------------------------------------------
+# bulk_delete_nodes
+# ---------------------------------------------------------------------------
+
+class TestBulkDeleteNodes:
+
+    def test_empty_list_returns_zero(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.bulk_delete_nodes([])
+        assert int(result) == 0
+
+# ---------------------------------------------------------------------------
+# create_node
+# ---------------------------------------------------------------------------
+
+class TestCreateNode:
+
+    def test_creates_node_and_returns_true(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.create_node("new_node", labels=["Gene"], properties={"name": "BRCA1"})
+        assert result is not None
+
+    def test_create_node_no_labels_no_props(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.create_node("bare_node")
+        assert result is not None
+
+    def test_create_node_sql_error_returns_false(self):
+        eng, conn, cursor = _make_eng()
+        # Fail on INSERT but let START TRANSACTION and ROLLBACK pass
+        def execute_side(sql, *args, **kwargs):
+            if sql and "INSERT" in sql.upper():
+                raise RuntimeError("insert failed")
+        cursor.execute.side_effect = execute_side
+        with pytest.raises(GraphWriteError):  # 4.6.0 R203: a failed write raises; it answered False
+            eng.create_node("bad_node")
+
+
+# ---------------------------------------------------------------------------
+# bulk_create_nodes (SQL fallback — no ObjectScript)
+# ---------------------------------------------------------------------------
+
+class TestBulkCreateNodes:
+
+    def test_basic_sql_path(self):
+        eng, conn, cursor = _make_eng()
+        from iris_vector_graph.capabilities import IRISCapabilities
+        eng.capabilities = IRISCapabilities(objectscript_deployed=False)
+        nodes = [
+            {"id": "n1", "labels": ["Gene"], "properties": {"name": "BRCA1"}},
+            {"id": "n2", "labels": ["Disease"], "properties": {"name": "Cancer"}},
+        ]
+        result = eng.bulk_create_nodes(nodes)
+        assert result is not None
+
+    def test_refuses_nodes_without_id(self):
+        """R213: a node without id raises, before any write (it was skipped)."""
+        eng, conn, cursor = _make_eng()
+        from iris_vector_graph.capabilities import IRISCapabilities
+        eng.capabilities = IRISCapabilities(objectscript_deployed=False)
+        nodes = [
+            {"labels": ["NoId"]},
+            {"id": "valid", "labels": ["Gene"]},
+        ]
+        with pytest.raises(ValueError, match="no 'id'"):
+            eng.bulk_create_nodes(nodes)
+        cursor.executemany.assert_not_called()
+
+    def test_empty_nodes_returns_zero(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.bulk_create_nodes([])
+        assert result == 0 or result == []
+
+
+# ---------------------------------------------------------------------------
+# bulk_create_edges (SQL path)
+# ---------------------------------------------------------------------------
+
+class TestBulkCreateEdges:
+
+    def test_basic_sql_path(self):
+        eng, conn, cursor = _make_eng()
+        from iris_vector_graph.capabilities import IRISCapabilities
+        eng.capabilities = IRISCapabilities(objectscript_deployed=False)
+        edges = [
+            {"source_id": "n1", "predicate": "TREATS", "target_id": "n2"},
+            {"source_id": "n2", "predicate": "CAUSES", "target_id": "n3"},
+        ]
+        with patch.object(eng, "_iris_obj", return_value=MagicMock()):
+            result = eng.bulk_create_edges(edges, auto_sync=False)
+        assert isinstance(result, int)
+
+    def test_empty_edges_returns_zero(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.bulk_create_edges([])
+        assert result == 0
+
+    def test_edges_missing_keys_raise(self):
+        """R213: an edge missing target_id raises before any write (it was skipped and the call answered 0)."""
+        eng, conn, cursor = _make_eng()
+        from iris_vector_graph.capabilities import IRISCapabilities
+        eng.capabilities = IRISCapabilities(objectscript_deployed=False)
+        edges = [{"source_id": "n1", "predicate": "X"}]
+        with patch.object(eng, "_iris_obj", return_value=MagicMock()):
+            with pytest.raises(ValueError, match="target_id"):
+                eng.bulk_create_edges(edges, auto_sync=False)
+        cursor.executemany.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# get_node (SQL path)
+# ---------------------------------------------------------------------------
+
+class TestGetNode:
+
+    def test_get_node_found(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchone.side_effect = [
+            ("n1", json.dumps(["Gene"]), json.dumps([{"key": "name", "value": "BRCA1"}])),
+        ]
+        cursor.description = [("node_id",), ("node_labels",), ("node_props",)]
+        result = eng.get_node("n1")
+        # Returns dict or None — just verify no crash
+        assert result is None or isinstance(result, dict)
+
+    def test_get_node_not_found_returns_none(self):
+        eng, conn, cursor = _make_eng()
+        cursor.fetchone.return_value = None
+        result = eng.get_node("missing_node")
+        assert result is None
+
+    def test_get_node_sql_error_raises(self):
+        """A failed read raises (4.6.0; it answered None, which read as no such node)."""
+        eng, conn, cursor = _make_eng()
+        cursor.execute.side_effect = RuntimeError("SQL error")
+        with pytest.raises(RuntimeError, match="SQL error"):
+            eng.get_node("any_node")
+
+
+# ---------------------------------------------------------------------------
+# _BulkLoadSession (lines 19-30)
+# ---------------------------------------------------------------------------
+
+class TestBulkLoadSession:
+
+    def test_add_nodes_accumulates_stats(self):
+        eng, conn, cursor = _make_eng()
+        with patch.object(eng, "_with_reconnect", return_value=3):
+            with patch.object(eng, "_iris_obj", side_effect=RuntimeError("no iris")):
+                with patch.object(eng, "_bulk_load_drifted", return_value=False):
+                    with patch.object(eng, "sync"):
+                        with patch("iris_vector_graph._engine.schema.GraphSchema"):
+                            with eng.bulk_load_session(rebuild_indexes=False) as session:
+                                session.add_nodes([{"id": "n1"}, {"id": "n2"}, {"id": "n3"}])
+        assert session.stats["nodes"] == 3
+
+    def test_add_edges_accumulates_stats(self):
+        eng, conn, cursor = _make_eng()
+        with patch.object(eng, "_with_reconnect", return_value=2):
+            with patch.object(eng, "_iris_obj", side_effect=RuntimeError("no iris")):
+                with patch.object(eng, "_bulk_load_drifted", return_value=False):
+                    with patch.object(eng, "sync"):
+                        with patch("iris_vector_graph._engine.schema.GraphSchema"):
+                            with eng.bulk_load_session(rebuild_indexes=False) as session:
+                                session.add_edges([("n1", "n2"), ("n2", "n3")])
+        assert session.stats["edges"] == 2
+
+
+# ---------------------------------------------------------------------------
+# get_nodes: exception fallback (line 300), empty_nids (lines 270-288)
+# ---------------------------------------------------------------------------
+
+class TestGetNodesExtended:
+
+    def test_exception_raises_without_cypher_fallback(self):
+        """A failed batch read raises (4.6.0); it no longer retries node by node through Cypher."""
+        eng, conn, cursor = _make_eng()
+        cursor.execute.side_effect = RuntimeError("SQL error")
+        with patch.object(eng, "_get_node_cypher_fallback",
+                          return_value={"id": "n1", "labels": []}) as mock_fb:
+            with pytest.raises(RuntimeError, match="SQL error"):
+                eng.get_nodes(["n1"])
+        mock_fb.assert_not_called()
+
+    def test_empty_list_returns_empty(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.get_nodes([])
+        assert result == []
+
+
+# ---------------------------------------------------------------------------
+# set_edge_weight (lines 520-532)
+# ---------------------------------------------------------------------------
+
+class TestSetEdgeWeight:
+
+    # Spec 252: the weight is written to the edge's row (qualifiers), so success needs a row; a database error is False.
+    def test_success_returns_true(self):
+        eng, conn, cursor = _make_eng()
+        eng._adjacency_indexed_cached = True
+        cursor.fetchall.return_value = [(1, None)]
+        iris_obj = MagicMock()
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            result = eng.set_edge_weight("n1", "TREATS", "n2", 0.75)
+        assert result is True
+
+    def test_failure_returns_false(self):
+        eng, conn, cursor = _make_eng()
+        eng._adjacency_indexed_cached = True
+        cursor.execute.side_effect = RuntimeError("database failed")
+        with patch.object(eng, "_iris_obj", return_value=MagicMock()):
+            with pytest.raises(GraphWriteError):  # 4.6.0 R203: a failed write raises; it answered False
+                eng.set_edge_weight("n1", "TREATS", "n2", 0.5)
+
+
+# ---------------------------------------------------------------------------
+# erase_graph / erase_all / drop_graph
+#
+# These used to assert the SQL `drop_graph` emitted through a mocked cursor: the
+# table list, the FK order, the two rowcount reads. That is testing the
+# implementation, and it is why the temporal leak survived — a test that asserts
+# which DELETEs are emitted passes just as happily when the list is incomplete.
+#
+# The behaviour is now Graph.KG.Eraser's, tested against the live container in
+# tests/integration/test_erase_graph.py. What is left at this seam is what the
+# facade itself owns: which classmethod it calls, with which graph name, what it
+# returns, and that a failed erase surfaces rather than being reported as a count.
+# ---------------------------------------------------------------------------
+
+class TestEraseGraph:
+
+    def _eraser(self, eng, removed=0, error=None):
+        iris_obj = MagicMock()
+        if error is not None:
+            iris_obj.classMethodValue.side_effect = error
+        else:
+            iris_obj.classMethodValue.return_value = removed
+        return patch.object(eng, "_iris_obj", return_value=iris_obj), iris_obj
+
+    def test_delegates_to_the_eraser(self):
+        eng, conn, cursor = _make_eng()
+        patcher, iris_obj = self._eraser(eng, removed=10)
+        with patcher:
+            result = eng.erase_graph("g1")
+        assert result == 10
+        # The ledger guard probes through the same seam first, so assert the erase
+        # is the call that ends the method rather than the only call made.
+        assert iris_obj.classMethodValue.call_args == call(
+            "Graph.KG.Eraser", "EraseGraph", "g1"
+        )
+
+    def test_the_default_graph_reaches_the_eraser_as_the_empty_string(self):
+        """`None` and `""` are the same graph; the Eraser derives both spellings."""
+        eng, conn, cursor = _make_eng()
+        patcher, iris_obj = self._eraser(eng)
+        with patcher:
+            eng.erase_graph(None)
+        assert iris_obj.classMethodValue.call_args.args[2] == ""
+
+    def test_a_failed_erase_raises_rather_than_returning_a_count(self):
+        """ADR-0004: a partial erasure is a defect, not an outcome."""
+        eng, conn, cursor = _make_eng()
+        patcher, _ = self._eraser(eng, error=RuntimeError("erase failed on rdf_edges"))
+        with patcher, pytest.raises(RuntimeError):
+            eng.erase_graph("g1")
+
+    def test_erase_does_not_defer_the_inconsistency_to_a_rebuild(self):
+        """`drop_graph` set `_nkg_dirty` and left ^NKG holding the erased edges.
+
+        The Eraser drops ^NKG instead, so there is nothing left for a caller to
+        remember to resolve.
+        """
+        eng, conn, cursor = _make_eng()
+        eng._nkg_dirty = True
+        patcher, _ = self._eraser(eng, removed=3)
+        with patcher:
+            eng.erase_graph("g1")
+        assert eng._nkg_dirty is False
+
+    def test_erase_all_delegates_to_the_eraser(self):
+        eng, conn, cursor = _make_eng()
+        patcher, iris_obj = self._eraser(eng, removed=7)
+        with patcher:
+            result = eng.erase_all()
+        assert result == 7
+        assert iris_obj.classMethodValue.call_args == call("Graph.KG.Eraser", "EraseAll")
+
+    def test_drop_graph_is_erase_graph(self):
+        """The old name survives to the next major; the old bypass does not."""
+        eng, conn, cursor = _make_eng()
+        patcher, iris_obj = self._eraser(eng, removed=10)
+        with patcher:
+            result = eng.drop_graph("g1")
+        assert result == 10
+        assert iris_obj.classMethodValue.call_args == call(
+            "Graph.KG.Eraser", "EraseGraph", "g1"
+        )
+
+
+# ---------------------------------------------------------------------------
+# bulk_create_nodes: objectscript path (lines 599-620), graph prop (line 659)
+# ---------------------------------------------------------------------------
+
+class TestBulkCreateNodesExtended:
+
+    def test_objectscript_path_falls_back_to_sql(self):
+        from iris_vector_graph.capabilities import IRISCapabilities
+        eng, conn, cursor = _make_eng()
+        eng.capabilities = IRISCapabilities(objectscript_deployed=True)
+        iris_obj = MagicMock()
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            with patch("iris_vector_graph.schema._call_classmethod_large",
+                       side_effect=RuntimeError("no chunk size")):
+                with patch("iris_vector_graph._engine.nodes_edges.GraphSchema"):
+                    result = eng.bulk_create_nodes(
+                        [{"id": "n1"}, {"id": "n2"}], disable_indexes=False
+                    )
+        assert isinstance(result, list)
+
+    def test_graph_prop_added_when_node_has_graph_key(self):
+        eng, conn, cursor = _make_eng()
+        with patch("iris_vector_graph._engine.nodes_edges.GraphSchema") as mock_gs:
+            mock_gs.disable_indexes.return_value = None
+            mock_gs.rebuild_indexes.return_value = None
+            mock_gs.get_bulk_insert_sql.return_value = "INSERT INTO nodes VALUES (?, ?)"
+            result = eng.bulk_create_nodes(
+                [{"id": "n1", "labels": ["Gene"], "graph": "g1"}],
+                disable_indexes=False,
+            )
+        assert "n1" in result
+
+
+# ---------------------------------------------------------------------------
+# bulk_create_edges: graph= path (lines 731-749)
+# ---------------------------------------------------------------------------
+
+class TestBulkCreateEdgesExtended:
+
+    def test_with_graph_executes_graph_sql(self):
+        eng, conn, cursor = _make_eng()
+        with patch("iris_vector_graph._engine.nodes_edges.GraphSchema") as mock_gs:
+            mock_gs.disable_indexes.return_value = None
+            mock_gs.rebuild_indexes.return_value = None
+            mock_gs.get_bulk_insert_sql.side_effect = lambda name: f"INSERT INTO {name} ..."
+            with patch.object(eng, "sync"):
+                result = eng.bulk_create_edges(
+                    [{"source_id": "n1", "predicate": "TREATS", "target_id": "n2"}],
+                    graph="g1",
+                    disable_indexes=False,
+                    auto_sync=False,
+                )
+        assert result == 1
+
+    def test_auto_rebuild_kg_deprecated_warning(self):
+        eng, conn, cursor = _make_eng()
+        with patch("iris_vector_graph._engine.nodes_edges.GraphSchema"):
+            with patch.object(eng, "sync"):
+                with pytest.warns(DeprecationWarning, match="auto_rebuild_kg"):
+                    eng.bulk_create_edges(
+                        [{"source_id": "n1", "predicate": "T", "target_id": "n2"}],
+                        auto_rebuild_kg=False,
+                        disable_indexes=False,
+                    )
+
+
+# ---------------------------------------------------------------------------
+# bulk_ingest_edges: tuple input (lines 776-779), objectscript path (786-800)
+# ---------------------------------------------------------------------------
+
+class TestBulkIngestEdgesExtended:
+
+    def test_tuple_input_normalized(self):
+        eng, conn, cursor = _make_eng()
+        with patch.object(eng, "_iris_obj") as mock_iris:
+            mock_iris.return_value.classMethodVoid.return_value = None
+            result = eng.bulk_ingest_edges(
+                [("n1", "n2", "TREATS"), ("n2", "n3")],
+                predicate="KNOWS",
+                auto_sync=False,
+            )
+        assert isinstance(result, int)
+
+    def test_objectscript_path_when_deployed(self):
+        from iris_vector_graph.capabilities import IRISCapabilities
+        eng, conn, cursor = _make_eng()
+        eng.capabilities = IRISCapabilities(objectscript_deployed=True)
+        iris_obj = MagicMock()
+        with patch.object(eng, "_iris_obj", return_value=iris_obj):
+            with patch("iris_vector_graph.schema._call_classmethod_large",
+                       side_effect=RuntimeError("no chunk size")):
+                with patch.object(eng, "sync"):
+                    result = eng.bulk_ingest_edges(
+                        [{"s": "n1", "p": "T", "o": "n2"}] * 3,
+                        auto_sync=False,
+                    )
+        assert isinstance(result, int)
+
+
+# ---------------------------------------------------------------------------
+# store_node: with properties and labels (lines 957-990)
+# ---------------------------------------------------------------------------
+
+class TestStoreNode:
+
+    def test_node_without_props_or_labels(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.store_node("n1")
+        assert result is True
+
+    def test_with_properties_writes_props(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.store_node("n1", properties={"name": "BRCA1", "score": 0.9})
+        assert result is True
+
+    def test_with_labels_inserts_label_rows(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.store_node("n1", labels=["Gene", "Protein"])
+        assert result is True
+
+    def test_duplicate_node_swallowed(self):
+        eng, conn, cursor = _make_eng()
+        call_n = [0]
+        def side(sql, params=None):
+            # the node INSERT (after START TRANSACTION since 4.5.0) is the duplicate
+            if sql.lstrip().upper().startswith("INSERT"):
+                call_n[0] += 1
+                if call_n[0] == 1:
+                    raise Exception("-119 UNIQUE violation")
+        cursor.execute.side_effect = side
+        result = eng.store_node("n1")
+        assert result is True
+
+
+# ---------------------------------------------------------------------------
+# store_edge (lines 1005-1008)
+# ---------------------------------------------------------------------------
+
+class TestStoreEdge:
+
+    def test_with_qualifiers_succeeds(self):
+        eng, conn, cursor = _make_eng()
+        result = eng.store_edge("n1", "TREATS", "n2", qualifiers={"confidence": 0.9})
+        assert result is True
+
+    def test_duplicate_edge_swallowed(self):
+        eng, conn, cursor = _make_eng()
+        call_n = [0]
+        def side(sql, params=None):
+            call_n[0] += 1
+            if call_n[0] == 3:  # 1=store_node(n1), 2=store_node(n2), 3=edge INSERT
+                raise Exception("-119 UNIQUE constraint")
+        cursor.execute.side_effect = side
+        result = eng.store_edge("n1", "TREATS", "n2")
+        assert result is True
+
+
+# ---------------------------------------------------------------------------
+# nodes_exist: IN-query failure fallback (lines 1030-1039)
+# ---------------------------------------------------------------------------
+
+class TestNodesExistExtended:
+
+    def test_in_query_failure_falls_back_to_individual(self):
+        eng, conn, cursor = _make_eng()
+        call_n = [0]
+        def side_execute(sql, params=None):
+            call_n[0] += 1
+            if "IN (" in str(sql):
+                raise RuntimeError("IN clause failed")
+        cursor.execute.side_effect = side_execute
+        cursor.fetchone.return_value = (1,)  # node exists in fallback
+        result = eng.nodes_exist(["n1"])
+        assert isinstance(result, set)

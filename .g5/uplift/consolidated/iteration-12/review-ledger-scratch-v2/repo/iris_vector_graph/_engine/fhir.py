@@ -1,0 +1,482 @@
+import json
+import logging
+from typing import Optional, Dict, Any, List
+
+from iris_vector_graph._write_txn import write_txn
+from iris_vector_graph.errors import CallerTransactionOpenError
+
+
+logger = logging.getLogger(__name__)
+
+
+class FhirMixin:
+    """FHIR and SQL table bridge mixin for IRISGraphEngine.
+    
+    Provides bidirectional mapping between clinical FHIR data and the knowledge graph,
+    enabling hybrid queries across standard clinical SQL tables and the KG.
+    """
+
+    def get_table_mapping(self, label: str) -> Optional[dict]:
+        """The ``table_mappings`` row that projects SQL table rows as nodes of ``label``, or ``None``.
+
+        A dict with ``label``, ``sql_table``, ``id_column`` and ``prop_columns`` (the JSON text stored), read
+        from a per-engine cache loaded on first use; ``reload_table_mappings`` refreshes it. A failed load
+        (no ``table_mappings`` table) leaves the cache empty, so the answer is ``None``.
+        """
+        if self._table_mapping_cache is None:
+            self._load_table_mapping_cache()
+        return (
+            self._table_mapping_cache.get(label) if self._table_mapping_cache else None
+        )
+
+    def _load_table_mapping_cache(self) -> None:
+        self._table_mapping_cache = {}
+        try:
+            cur = self.conn.cursor()
+            cur.execute(
+                f"SELECT label, sql_table, id_column, prop_columns FROM {self._ivg_schema}.table_mappings"
+            )
+            for row in cur.fetchall():
+                self._table_mapping_cache[row[0]] = {
+                    "label": row[0],
+                    "sql_table": row[1],
+                    "id_column": row[2],
+                    "prop_columns": row[3],
+                }
+        except Exception:
+            self._table_mapping_cache = {}
+
+    def get_rel_mapping(
+        self, source_label: str, predicate: str, target_label: str
+    ) -> Optional[dict]:
+        """The ``relationship_mappings`` row for ``(source_label, predicate, target_label)``, or ``None``.
+
+        A dict with the three keys plus ``target_fk``, ``via_table``, ``via_source`` and ``via_target``, read
+        from a per-engine cache loaded on first use (``reload_table_mappings`` refreshes it); a failed load
+        leaves the cache empty.
+        """
+        if self._rel_mapping_cache is None:
+            self._load_rel_mapping_cache()
+        key = (source_label, predicate, target_label)
+        return self._rel_mapping_cache.get(key) if self._rel_mapping_cache else None
+
+    def _load_rel_mapping_cache(self) -> None:
+        self._rel_mapping_cache = {}
+        try:
+            cur = self.conn.cursor()
+            cur.execute(
+                "SELECT source_label, predicate, target_label, target_fk, "
+                f"via_table, via_source, via_target FROM {self._ivg_schema}.relationship_mappings"
+            )
+            for row in cur.fetchall():
+                key = (row[0], row[1], row[2])
+                self._rel_mapping_cache[key] = {
+                    "source_label": row[0],
+                    "predicate": row[1],
+                    "target_label": row[2],
+                    "target_fk": row[3],
+                    "via_table": row[4],
+                    "via_source": row[5],
+                    "via_target": row[6],
+                }
+        except Exception:
+            self._rel_mapping_cache = {}
+
+    class TableNotMappedError(ValueError):
+        """Raised by ``attach_embeddings_to_table`` for a label ``map_sql_table`` has not mapped."""
+
+    def map_sql_table(
+        self, table: str, id_column: str, label: str, property_columns=None
+    ) -> dict:
+        """Map an existing SQL table to a graph label as a read-only projection.
+
+        Cypher queries against ``label`` are translated to JOINs on ``table`` at
+        query time — rows are never copied into rdf_edges/nodes.
+
+        ADJACENCY CONTRACT: because the rows are not materialized into
+        ``Graph_KG.rdf_edges``, edges reached through this mapping (or via
+        ``map_sql_relationship``) are NOT present in the ^KG/^NKG adjacency
+        globals. Property/pattern Cypher sees them; the global-backed algorithms
+        do NOT — BFS, centrality, var-length paths, and the NKG-accelerated
+        traversals will not traverse projected edges. There is no automatic
+        propagation and ``verify_sync()`` cannot see this gap (nothing was
+        written to rdf_edges). If you need these edges in graph algorithms,
+        materialize them (create_edge / bulk_create_edges) rather than mapping.
+        """
+        from iris_vector_graph.security import sanitize_identifier
+
+        sanitize_identifier(table)
+        sanitize_identifier(id_column)
+        sanitize_identifier(label)
+        cur = self.conn.cursor()
+        cur.execute(
+            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS "
+            "WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?",
+            [
+                table.split(".")[0] if "." in table else "USER",
+                table.split(".")[-1],
+                id_column,
+            ],
+        )
+        row = cur.fetchone()
+        if not row or int(row[0]) == 0:
+            raise ValueError(
+                f"Table '{table}' or column '{id_column}' not found. "
+                f"Verify the table exists and id_column is correct."
+            )
+        prop_json = json.dumps(property_columns) if property_columns else None
+        # 4.7.0: one transaction of IVG's, nested in the caller's when there is one (it called conn.commit())
+        with write_txn(self.conn, self._ivg_schema, cur):
+            cur.execute(
+                f"UPDATE {self._ivg_schema}.table_mappings SET sql_table=?, id_column=?, prop_columns=? WHERE label=?",
+                [table, id_column, prop_json, label],
+            )
+            if cur.rowcount == 0:
+                cur.execute(
+                    f"INSERT INTO {self._ivg_schema}.table_mappings (label, sql_table, id_column, prop_columns) VALUES (?,?,?,?)",
+                    [label, table, id_column, prop_json],
+                )
+        self._invalidate_mapping_cache()
+        return {
+            "label": label,
+            "sql_table": table,
+            "id_column": id_column,
+            "prop_columns": property_columns,
+        }
+
+    def map_sql_relationship(
+        self,
+        source_label: str,
+        predicate: str,
+        target_label: str,
+        target_fk: str = None,
+        via_table: str = None,
+        via_source: str = None,
+        via_target: str = None,
+    ) -> dict:
+        """Map a relationship between two mapped labels to SQL, as a read-only projection; writes and commits.
+
+        The edge is either a foreign key on the source table (``target_fk``) or a join table (``via_table``
+        with ``via_source`` and ``via_target``); one of ``target_fk`` and ``via_table`` is required, and both
+        labels must already be mapped with ``map_sql_table`` (``ValueError`` otherwise). Upserts the
+        ``relationship_mappings`` row, clears the mapping cache, and returns the labels, predicate,
+        ``target_fk`` and ``via_table``. Like a mapped table, these edges are not in ``^KG``.
+        """
+        if not target_fk and not via_table:
+            raise ValueError("Either target_fk or via_table must be provided.")
+        if not self.get_table_mapping(source_label):
+            raise ValueError(
+                f"Source label '{source_label}' is not registered. Call map_sql_table first."
+            )
+        if not self.get_table_mapping(target_label):
+            raise ValueError(
+                f"Target label '{target_label}' is not registered. Call map_sql_table first."
+            )
+        cur = self.conn.cursor()
+        # 4.7.0: one transaction of IVG's, nested in the caller's when there is one (it called conn.commit())
+        with write_txn(self.conn, self._ivg_schema, cur):
+            cur.execute(
+                f"UPDATE {self._ivg_schema}.relationship_mappings SET target_fk=?, via_table=?, via_source=?, "
+                "via_target=? WHERE source_label=? AND predicate=? AND target_label=?",
+                [target_fk, via_table, via_source, via_target, source_label, predicate, target_label],
+            )
+            if cur.rowcount == 0:
+                cur.execute(
+                    f"INSERT INTO {self._ivg_schema}.relationship_mappings "
+                    "(source_label, predicate, target_label, target_fk, via_table, via_source, via_target) "
+                    "VALUES (?,?,?,?,?,?,?)",
+                    [source_label, predicate, target_label, target_fk, via_table, via_source, via_target],
+                )
+        self._invalidate_mapping_cache()
+        return {
+            "source_label": source_label,
+            "predicate": predicate,
+            "target_label": target_label,
+            "target_fk": target_fk,
+            "via_table": via_table,
+        }
+
+    def list_table_mappings(self) -> dict:
+        """Every SQL projection, read from the tables (not the cache): ``{"nodes": [...], "relationships": [...]}``.
+
+        ``nodes`` holds one dict per ``table_mappings`` row (with ``registered_at`` as a string), and
+        ``relationships`` one per ``relationship_mappings`` row.
+        """
+        cur = self.conn.cursor()
+        cur.execute(
+            f"SELECT label, sql_table, id_column, prop_columns, registered_at FROM {self._ivg_schema}.table_mappings"
+        )
+        nodes = [
+            {
+                "label": r[0],
+                "sql_table": r[1],
+                "id_column": r[2],
+                "prop_columns": r[3],
+                "registered_at": str(r[4]),
+            }
+            for r in cur.fetchall()
+        ]
+        cur.execute(
+            "SELECT source_label, predicate, target_label, target_fk, via_table, via_source, via_target "
+            f"FROM {self._ivg_schema}.relationship_mappings"
+        )
+        rels = [
+            {
+                "source_label": r[0],
+                "predicate": r[1],
+                "target_label": r[2],
+                "target_fk": r[3],
+                "via_table": r[4],
+                "via_source": r[5],
+                "via_target": r[6],
+            }
+            for r in cur.fetchall()
+        ]
+        return {"nodes": nodes, "relationships": rels}
+
+    def remove_table_mapping(self, label: str) -> None:
+        """Delete ``label``'s table mapping and every relationship mapping from or to it; commits.
+
+        Raises ``ValueError`` when ``label`` is not mapped. The SQL table itself is not touched.
+        """
+        cur = self.conn.cursor()
+        cur.execute(
+            f"SELECT COUNT(*) FROM {self._ivg_schema}.table_mappings WHERE label=?", [label]
+        )
+        if int(cur.fetchone()[0]) == 0:
+            raise ValueError(f"Label '{label}' not found in table_mappings.")
+        # 4.7.0: one transaction of IVG's, nested in the caller's when there is one (it called conn.commit())
+        with write_txn(self.conn, self._ivg_schema, cur):
+            cur.execute(f"DELETE FROM {self._ivg_schema}.table_mappings WHERE label=?", [label])
+            cur.execute(
+                f"DELETE FROM {self._ivg_schema}.relationship_mappings WHERE source_label=? OR target_label=?",
+                [label, label],
+            )
+        self._invalidate_mapping_cache()
+
+    def reload_table_mappings(self) -> None:
+        """Reread ``table_mappings`` and ``relationship_mappings`` into this engine's cache.
+
+        For mappings another engine or process changed; this engine's own map and remove calls already
+        clear the cache.
+        """
+        self._invalidate_mapping_cache()
+        self._load_table_mapping_cache()
+        self._load_rel_mapping_cache()
+
+    def attach_embeddings_to_table(
+        self,
+        label: str,
+        text_columns: list,
+        batch_size: int = 1000,
+        force: bool = False,
+        progress_callback=None,
+        *,
+        graph: Optional[str] = None,
+        model_key: Optional[str] = None,
+    ) -> dict:
+        """Embed a mapped SQL table's rows as nodes in one graph (spec 227).
+
+        Writes go through `store_embedding`, which routes the pair, enforces spec 226
+        identity and binds the graph. The three statements this replaced all keyed on
+        `id`: the "already embedded?" check matched nothing (so `force=False` skipped
+        nothing and every run re-embedded the table), and the INSERT was refused with
+        SQLCODE -108 inside a `logger.warning` (T071).
+
+        A graph ID is collision avoidance, not an authorisation boundary: it is
+        supplied by the caller, so it cannot decide what that caller may read
+        (FR-032).
+
+        Each row's vector is stored for the node ``<label>:<id>`` in ``graph``, which must exist. Returns
+        ``embedded``, ``skipped`` (already embedded, without ``force``), ``no_node`` and ``no_node_ids`` (rows whose
+        node is not there, not embedded), ``errors`` and ``error_ids`` (rows whose text or vector failed, each logged),
+        and ``total`` (the table's rows). 4.7.0: a row without its node was logged and dropped, so a table none of
+        whose rows had nodes answered ``embedded: 0`` and nothing else; a summary WARNING now names both counts.
+        """
+        mapping = self.get_table_mapping(label)
+        if not mapping:
+            raise self.TableNotMappedError(
+                f"Label '{label}' is not registered. Call map_sql_table first."
+            )
+        from iris_vector_graph.security import sanitize_identifier
+
+        # identifiers, pasted: the caller's text columns, and the mapping row's table and id column (4.6.0)
+        sql_table = sanitize_identifier(mapping["sql_table"])
+        id_col = sanitize_identifier(mapping["id_column"])
+        columns = ", ".join(sanitize_identifier(c) for c in text_columns)
+        cur = self.conn.cursor()
+        cur.execute(f"SELECT {id_col}, {columns} FROM {sql_table}")
+        all_rows = cur.fetchall()
+        n_total = len(all_rows)
+        embedded = 0
+        skipped = 0
+        no_node_ids: List[str] = []
+        error_ids: List[str] = []
+        for batch_start in range(0, n_total, batch_size):
+            batch = all_rows[batch_start : batch_start + batch_size]
+            present = self._nodes_present([f"{label}:{row[0]}" for row in batch], graph)
+            for row in batch:
+                row_id = row[0]
+                node_id = f"{label}:{row_id}"
+                if node_id not in present:
+                    no_node_ids.append(node_id)
+                    continue
+                if not force:
+                    if self.get_embedding(node_id, graph=graph, model_key=model_key):
+                        skipped += 1
+                        continue
+                text = " ".join(
+                    str(row[i + 1])
+                    for i in range(len(text_columns))
+                    if row[i + 1] is not None
+                )
+                try:
+                    emb = self.embed_text(text)
+                    self.store_embedding(
+                        node_id, emb, graph=graph, model_key=model_key
+                    )
+                    embedded += 1
+                except CallerTransactionOpenError:
+                    raise  # a new route refused before anything was written: not a row's failure
+                except Exception as ex:
+                    error_ids.append(node_id)
+                    logger.warning(
+                        f"attach_embeddings_to_table: failed to embed {node_id}: {ex}"
+                    )
+            # 4.7.0: no conn.commit(): store_embedding commits its own part, nested in the caller's transaction
+            n_done = batch_start + len(batch)
+            logger.info(
+                f"attach_embeddings_to_table: {n_done}/{n_total} rows processed"
+            )
+            if progress_callback:
+                progress_callback(n_done, n_total)
+        if no_node_ids or error_ids:
+            logger.warning(
+                "attach_embeddings_to_table(%r): %d of %d rows not embedded: %d have no node %s:<id> in graph %r "
+                "(create the nodes first), %d failed",
+                label, len(no_node_ids) + len(error_ids), n_total, len(no_node_ids), label, graph, len(error_ids),
+            )
+        return {
+            "embedded": embedded,
+            "skipped": skipped,
+            "no_node": len(no_node_ids),
+            "no_node_ids": no_node_ids,
+            "errors": len(error_ids),
+            "error_ids": error_ids,
+            "total": n_total,
+        }
+
+    def _nodes_present(self, node_ids: List[str], graph: Optional[str]) -> set:
+        """The ids of ``node_ids`` that are nodes in ``graph`` (None: the default graph)."""
+        from iris_vector_graph.constants import DEFAULT_GRAPH
+        from iris_vector_graph.routing import graph_scope_predicate
+
+        graph_id = DEFAULT_GRAPH if graph is None else graph
+        found: set = set()
+        cur = self.conn.cursor()
+        try:
+            for i in range(0, len(node_ids), 500):
+                chunk = node_ids[i : i + 500]
+                cur.execute(
+                    f"SELECT %EXACT(node_id) FROM {self._t('nodes')} WHERE node_id IN ({', '.join('?' * len(chunk))})"
+                    f" AND {graph_scope_predicate('graph_id')}",
+                    chunk + [graph_id],
+                )
+                found.update(str(r[0]) for r in cur.fetchall())
+        finally:
+            cur.close()
+        return found
+
+    def fhir_bridge_add(
+        self,
+        fhir_code: str,
+        kg_node_id: str,
+        fhir_code_system: str = "ICD10CM",
+        bridge_type: str = "icd10_to_mesh",
+        confidence: float = 1.0,
+        source_cui: Optional[str] = None,
+    ) -> None:
+        """Deprecated since 4.1.0 (use ``code_crosswalk_add``): upsert one ``fhir_bridges`` row and its
+        ``code_crosswalk`` row, and commit.
+
+        .. deprecated:: 4.1.0
+            Removed in 5.0 with ``fhir_bridges``. Use ``code_crosswalk_add``. Until
+            then a bridge is written to both tables (spec 231 FR-015).
+        """
+        import warnings
+
+        from iris_vector_graph._engine.fhir_graph import code_system_uri
+
+        warnings.warn(
+            "fhir_bridge_add is deprecated since 4.1.0 and is removed in 5.0; "
+            "use engine.code_crosswalk_add",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        cursor = self.conn.cursor()
+        # 4.7.0: one transaction of IVG's, nested in the caller's when there is one (it called conn.commit())
+        try:
+            with write_txn(self.conn, self._ivg_schema, cursor):
+                cursor.execute(
+                    f"INSERT OR UPDATE INTO {self._t('fhir_bridges')} "
+                    "(fhir_code, kg_node_id, fhir_code_system, bridge_type, confidence, source_cui) "
+                    "VALUES (?, ?, ?, ?, ?, ?)",
+                    [fhir_code, kg_node_id, fhir_code_system, bridge_type, float(confidence), source_cui],
+                )
+                cursor.execute(
+                    f"INSERT OR UPDATE INTO {self._t('code_crosswalk')} "
+                    "(code_system_uri, code, target_graph, target_node_id, relation, source, "
+                    "source_version, confidence) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    [
+                        code_system_uri(fhir_code_system),
+                        fhir_code,
+                        "",
+                        kg_node_id,
+                        "related",
+                        "fhir_bridges",
+                        bridge_type,
+                        float(confidence),
+                    ],
+                )
+        finally:
+            cursor.close()
+
+    def get_kg_anchors(
+        self, icd_codes: List[str], bridge_type: str = "icd10_to_mesh"
+    ) -> List[str]:
+        """Deprecated since 4.1.0 (use ``fhir_resolve_concepts``): the existing node IDs that ``fhir_bridges``
+        maps ``icd_codes`` to under ``bridge_type``. A failed query raises (4.6.0; it answered ``[]``).
+
+        .. deprecated:: 4.1.0
+            Removed in 5.0. Use ``fhir_resolve_concepts`` over a FHIR named graph.
+        """
+        import warnings
+
+        warnings.warn(
+            "get_kg_anchors is deprecated since 4.1.0 and is removed in 5.0; "
+            "use engine.fhir_resolve_concepts over a FHIR named graph",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        if not icd_codes:
+            return []
+        _IN_CHUNK = 499
+        results: list = []
+        cursor = self.conn.cursor()
+        try:
+            for i in range(0, len(icd_codes), _IN_CHUNK):
+                chunk = icd_codes[i : i + _IN_CHUNK]
+                placeholders = ", ".join(["?"] * len(chunk))
+                sql = (
+                    f"SELECT DISTINCT b.kg_node_id "
+                    f"FROM {self._t('fhir_bridges')} b "
+                    f"JOIN {self._t('nodes')} n ON n.node_id = b.kg_node_id "
+                    f"WHERE b.fhir_code IN ({placeholders}) "
+                    f"AND b.bridge_type = ?"
+                )
+                cursor.execute(sql, chunk + [bridge_type])
+                results.extend(row[0] for row in cursor.fetchall())
+            return results
+        finally:
+            cursor.close()
+

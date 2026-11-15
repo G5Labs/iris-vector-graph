@@ -1,0 +1,88 @@
+verification results:: 80 verified, 2 errors
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,
+23 | | }
+   | |_^
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:50:1
+   |
+50 | pub proof fn lemma_rich_raw_states()
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:53:10
+   |
+50 | pub proof fn lemma_rich_raw_states()
+   | ------------------------------------ at the end of the function body
+...
+53 |          rich_changed().state.nodes[0]==(Node{labels:set![seq!['L'],seq!['M']],props:map![seq!['k']=>seq!['2']]}),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:55:10
+   |
+50 | pub proof fn lemma_rich_raw_states()
+   | ------------------------------------ at the end of the function body
+...
+55 |          rich_changed().records==seq![rec(Action::SetProp{id:0,key:seq!['k'],prior:Some(seq!['1']),new:Some(seq!['2'])}),rec(Action::AddLabel(0,seq!['M']))],
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:69:10
+   |
+68 |   pub proof fn theorem_rich_known_lifecycle_keeps_deletion_time_snapshot()
+   |   ------------------------------------------------------------------------ at the end of the function body
+69 |    ensures ({let d=lifecycles(delta(),rich_changed().records+rich_deleted().records+rich_recreated().records);
+   |  __________^
+70 | |   rich_base().store.state.nodes[0].props[seq!['k']]==seq!['1'] && rich_base().store.state.nodes[0].labels==set![seq!['L']]
+71 | |   && rich_recreated().state.nodes[0].props[seq!['k']]==seq!['3'] && d.closed.len()==1
+72 | |   && inverse(d.closed)[0].after==Some(Data::Node(Node{labels:set![seq!['L'],seq!['M']],props:map![seq!['k']=>seq!['2']]}))
+73 | |   && d.live[(false,0)].created && d.live[(false,0)].attrs[(1nat,seq!['k'])]==(None,Some(seq!['3']))}),
+   | |_____________________________________________________________________________________________________^ failed this postcondition
+
+note: recommendation not met
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:71:6
+   |
+71 |   && rich_recreated().state.nodes[0].props[seq!['k']]==seq!['3'] && d.closed.len()==1
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+note: recommendation not met
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ledger_content/alternate.rs:73:6
+   |
+73 |   && d.live[(false,0)].created && d.live[(false,0)].attrs[(1nat,seq!['k'])]==(None,Some(seq!['3']))}),
+   |      ^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: aborting due to 3 previous errors; 2 warnings emitted
+

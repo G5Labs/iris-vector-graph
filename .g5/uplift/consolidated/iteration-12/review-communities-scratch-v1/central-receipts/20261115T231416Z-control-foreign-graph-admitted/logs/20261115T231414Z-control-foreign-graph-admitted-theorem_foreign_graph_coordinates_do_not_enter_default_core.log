@@ -1,0 +1,27 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:674:1
+    |
+674 | pub proof fn theorem_foreign_graph_coordinates_do_not_enter_default_core(g:Seq<Coord>,limit:Option<int>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:678:12
+    |
+678 |     assert(g.all(|a:Coord|!selected(a)));g.lemma_all_neg_filter_empty(|a:Coord|selected(a));assert(members(g) =~= Set::empty());ass...
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/foreign-graph-admitted/20261115T231414Z/models/communities/communities.rs:678:42
+    |
+678 |     assert(g.all(|a:Coord|!selected(a)));g.lemma_all_neg_filter_empty(|a:Coord|selected(a));assert(members(g) =~= Set::empty());ass...
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq_lib.rs:1762:12
+    |
+    = note: failed precondition
+
+error: aborting due to 2 previous errors
+

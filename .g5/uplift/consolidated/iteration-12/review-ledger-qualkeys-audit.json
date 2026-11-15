@@ -1,0 +1,189 @@
+{
+  "verdict": "READ_ONLY_REFUTATION_AND_FOLLOWUP_AUDIT_AGREES",
+  "utc": "2026-11-15T22:31:03.328825+00:00",
+  "original_forecast": "Empty batch qualifier key would be skipped after local key collection",
+  "forecast_status": "REFUTED; reviewer overlooked invalid empty native local-array subscript before enumeration",
+  "original_completed_comparisons": 0,
+  "original_failure": {
+    "type": "LedgerInconsistencyError",
+    "message": "<SUBSCRIPT> 16 QualsJson+4^Graph.KG.LedgerApply.1 tKeys() Subscript 1 is \"\"",
+    "trace": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-native.py\", line 49, in main\n    r1, records = commit(change)\n                  ^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-native.py\", line 26, in commit\n    r = lg.commit(change)\n        ^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/ledger/client.py\", line 396, in commit\n    return self._commit(changeset, kind, None)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/ledger/client.py\", line 416, in _commit\n    raise from_commit_error(resp)\niris_vector_graph.ledger.errors.LedgerInconsistencyError: <SUBSCRIPT> 16 QualsJson+4^Graph.KG.LedgerApply.1 tKeys() Subscript 1 is \"\"\n"
+  },
+  "followup_exposure": "All6 explicitly post-refutation, not blind predictions",
+  "followup_cases": [
+    {
+      "label": "new empty-key batch refuses before relationship/revision",
+      "actual": {
+        "error": {
+          "type": "LedgerInconsistencyError",
+          "subscript": true,
+          "stage": true
+        },
+        "unchanged_head": true,
+        "physical": null
+      },
+      "expected": {
+        "error": {
+          "type": "LedgerInconsistencyError",
+          "subscript": true,
+          "stage": true
+        },
+        "unchanged_head": true,
+        "physical": null
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "valid nonempty new batch neighbor",
+      "actual": {
+        "physical": {
+          "q": "x"
+        },
+        "replay": {
+          "q": "x"
+        },
+        "records": [
+          [
+            "set_qual",
+            "q",
+            null,
+            "x"
+          ]
+        ]
+      },
+      "expected": {
+        "physical": {
+          "q": "x"
+        },
+        "replay": {
+          "q": "x"
+        },
+        "records": [
+          [
+            "set_qual",
+            "q",
+            null,
+            "x"
+          ]
+        ]
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "existing empty-key batch refuses without changing old qualifier",
+      "actual": {
+        "error": {
+          "type": "LedgerInconsistencyError",
+          "subscript": true,
+          "stage": true
+        },
+        "unchanged_head": true,
+        "physical": {
+          "q": "x"
+        }
+      },
+      "expected": {
+        "error": {
+          "type": "LedgerInconsistencyError",
+          "subscript": true,
+          "stage": true
+        },
+        "unchanged_head": true,
+        "physical": {
+          "q": "x"
+        }
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "valid nonempty existing upsert neighbor",
+      "actual": {
+        "physical": {
+          "q": "y"
+        },
+        "replay": {
+          "q": "y"
+        },
+        "records": [
+          [
+            "set_qual",
+            "q",
+            "x",
+            "y"
+          ]
+        ]
+      },
+      "expected": {
+        "physical": {
+          "q": "y"
+        },
+        "replay": {
+          "q": "y"
+        },
+        "records": [
+          [
+            "set_qual",
+            "q",
+            "x",
+            "y"
+          ]
+        ]
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "direct empty qualifier retains Python refusal",
+      "actual": [
+        "ValueError",
+        true
+      ],
+      "expected": [
+        "ValueError",
+        true
+      ],
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "node empty-property batch rolls back earlier create",
+      "actual": {
+        "error": {
+          "type": "ChangesetOperationError",
+          "empty_property": true
+        },
+        "unchanged_head": true,
+        "absent_node": true
+      },
+      "expected": {
+        "error": {
+          "type": "ChangesetOperationError",
+          "empty_property": true
+        },
+        "unchanged_head": true,
+        "absent_node": true
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    }
+  ],
+  "original_native22_artifacts_unchanged": true,
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-native.py": "d3125359c381bc6af00d3871fabe20d7da1005a0e022c3d601bd7d8b375c6845",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-native.json": "9503849f116d745d6ebba2ee3cdc5a631702fa96fa5377c3e08569ea967b6c86",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-native.log": "16ea0140ec10cc42686eec405901c1b2690b96b997ac21d930a5a88d6ad40e7a",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-predictions.md": "4ddbd05e7ac4a7e82adf1ff829c72a6b6bfa3f55753e5b4dc9b414819b311f75",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-followup.py": "4acd099e2f2f781bd76ebd49230c3da6a9cc243019d729ad0719c61dee643e47",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-followup.json": "f063a447345eb47cd0f4e60883db0e17c488be93da956417b9ecf0d22605cebf",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-followup.log": "7bf2eb42889c984d2e6c5e4c18d12aa5250e22863e2d6225df112f8d983e6cc9",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-followup-predictions.md": "3bef6aca78d17569d87ec08847a2ce0165e181faae387b87b541b840341132ac"
+  },
+  "native_executed_by_reviewer": 0,
+  "network_calls": 0,
+  "new_product_issues": 0,
+  "scope": "Finite root-owned carrier observations. Preserve direct Python setter validation versus native local-array failure and node property rollback. No skip-empty theorem, universal native subscript/body/coercion/transaction proof or policy change.",
+  "elapsed_s": 0.007931875006761402
+}

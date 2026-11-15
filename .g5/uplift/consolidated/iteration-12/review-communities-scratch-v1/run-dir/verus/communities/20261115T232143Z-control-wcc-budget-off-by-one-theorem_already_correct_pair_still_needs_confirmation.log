@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/controls/wcc-budget-off-by-one/20261115T232143Z/models/communities/communities.rs:232:1
+    |
+232 | pub proof fn theorem_already_correct_pair_still_needs_confirmation()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/controls/wcc-budget-off-by-one/20261115T232143Z/models/communities/communities.rs:234:45
+    |
+232 | pub proof fn theorem_already_correct_pair_still_needs_confirmation()
+    | -------------------------------------------------------------------- at the end of the function body
+233 |     ensures get(labels_at(pair(),1),0)==0,get(labels_at(pair(),1),1)==0,
+234 |         wstep(pair(),Some(1),0) is Continue,wstep(pair(),Some(1),1) is Refused,wstep(pair(),Some(2),1) is Success,
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/controls/wcc-budget-off-by-one/20261115T232143Z/models/communities/communities.rs:235:82
+    |
+232 | pub proof fn theorem_already_correct_pair_still_needs_confirmation()
+    | -------------------------------------------------------------------- at the end of the function body
+...
+235 |         wstep(seq![],Some(0),0)==(WEvent::Success{labels:Map::empty(),rounds:0}),wstep(pair(),Some(0),0) is Refused,
+    |                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,290 @@
+"""LazyKG — on-demand `^KG` adapter for IRIS via Native API (Spec 163 FR-025).
+
+Reads `^KG` through `host_for(conn)` with lazy fetching + dict caching of the IVG `^KG`
+global structure. Algorithms call `lkg.out_neighbors(node)` etc. — first call hits
+IRIS via `next_subscript`/`get`, subsequent calls hit the Python dict cache.
+
+Avoids the `%SYS.DBSRV` class-lookup path: uses Native API direct global access
+(no `##class()` lookup), so it is unaffected by SQL-bindings-server class
+resolution issues. (Historically tracked as "Bug S"; that turned out to be an
+SSH-tunnel-to-wrong-container artifact, not a real IRIS defect — the direct-gref
+path remains valuable regardless.)
+
+Designed to be shared across spec 162 (centrality retrofit per FR-026) and spec 163
+(community detection algorithms). Sibling module `arno_bridge.py` provides the
+optional Rust-accelerated path; `LazyKG` is the always-available fallback.
+
+Storage layout (spec 214 put the graph key between the tree name and the node):
+    ^KG("out", graph, s, p, o)   outbound edges
+    ^KG("in",  graph, o, p, s)   inbound edges
+
+`graph` is the derived index key — the integer 0 for the default graph, the name
+itself otherwise (`iris_vector_graph._validate.graph_index_key`, ADR-0003). Specs
+162/163 were written against the pre-214 layout, where `out`/`in` carried a shard
+number that was always 0; a literal 0 therefore still reads the default graph's
+`out`/`in` correctly by coincidence.
+
+Out-degree is not stored. `degree()` and `degree_for_predicate()` ask
+`Graph.KG.Adj.Degree(graph, node, predicate)`, which counts the `out` entries behind a
+generation-validated cache: exact under rollback, where a counter kept with `$Increment`
+drifts. A hub costs one walk on the first call and a cache hit after.
+
+Concurrency contract (inherited from spec 162 FR-021 / spec 163 FR-018):
+    Reads `^KG` live — no snapshot, no lock. Concurrent mutations during a
+    multi-second algorithm run may produce inconsistent neighbor sets. Run on
+    a quiescent graph for reproducibility.
+"""
+
+from __future__ import annotations
+
+from typing import Iterator, List, Optional
+
+from iris_vector_graph._validate import graph_index_key
+from iris_vector_graph.host import host_for
+
+
+def named_graph_with_edges(conn) -> Optional[str]:
+    """The first graph other than the default one that holds an edge in ``^KG("out")``, or None (4.6.0 R184).
+
+    ``^NKG`` is built from every graph's ``^KG("out", g, ...)`` with no graph key (Graph.KG.TraversalBuild), so it is
+    the default graph's adjacency exactly when this answers None. The algorithms that read ``^NKG`` ask it before
+    answering: a method then reads the default graph's ``^KG`` instead, and a Cypher procedure raises.
+
+    Reads ``^KG("out", <graph>)`` keys only, at most two of them unless a graph named like a negative number (which
+    collates before the default graph's 0) is present. A key the driver hands back as anything but ``str`` or ``int``
+    (a test's MagicMock connection) is no graph.
+    """
+    host = host_for(conn)
+    key = host.next_subscript("^KG", "out", "")
+    while isinstance(key, (str, int)) and key != "":
+        if str(key) != "0":
+            return str(key)
+        key = host.next_subscript("^KG", "out", key)
+    return None
+
+
+def graphs_with_edges(conn) -> List[str]:
+    """The name of every graph holding an edge in ``^KG("out")``, ``""`` for the default graph, in collation order
+    (4.6.0 R192).
+
+    What a Cypher procedure without ``USE GRAPH`` answers over: the union of each of these graphs' own answers
+    (CONTEXT.md, All-graphs read). A graph with no edge has no answer to add to a procedure that walks edges. A key the
+    driver hands back as anything but ``str`` or ``int`` (a test's MagicMock connection) ends the list.
+    """
+    host = host_for(conn)
+    names: List[str] = []
+    key = host.next_subscript("^KG", "out", "")
+    while isinstance(key, (str, int)) and key != "":
+        names.append("" if str(key) == "0" else str(key))
+        key = host.next_subscript("^KG", "out", key)
+    return names
+
+
+class LazyKG:
+    """On-demand `^KG` neighbor adapter with per-node dict cache.
+
+    Lifecycle: instantiate at the start of an algorithm run, use throughout,
+    let Python GC reclaim at function return. No explicit close needed.
+
+    Every read is confined to one graph, fixed at construction. There is no
+    merged view here: a node ID can exist in two graphs with different
+    neighbours (spec 227 broke `UNIQUE (node_id)`), so a walk that spanned graphs
+    would return one node with both graphs' edges and no way to tell them apart.
+
+    Methods:
+        iter_nodes(): Iterator over all nodes in this graph with at least one
+            outbound edge (i.e., the sources under `^KG("out", graph)`). Plus optionally
+            union with `^KG("in", graph, *)` keys when `include_sinks=True`.
+        out_neighbors(node): Distinct outbound targets of node (across all predicates).
+        in_neighbors(node): Distinct inbound sources of node.
+        degree(node): Total out-degree, counting parallel edges (`Graph.KG.Adj.Degree`).
+        degree_for_predicate(node, pred): Per-predicate out-degree.
+        clear_cache(): Reset all internal caches (rare — used by tests).
+
+    Cache: unbounded by default (Python heap GC handles eviction at function
+    return). For very long-running algorithms over huge graphs, callers can
+    explicitly `clear_cache()` between phases.
+    """
+
+    def __init__(self, conn, include_sinks: bool = True, graph: Optional[str] = None):
+        """Construct a LazyKG over the given dbapi connection.
+
+        Args:
+            conn: An `iris.dbapi.Connection` (external) or embedded equivalent.
+                Reached through `host_for(conn)`: a native object on `conn.iris`,
+                or `iris.createIRIS(conn)`.
+            include_sinks: When True (default), `iter_nodes()` also enumerates
+                nodes that appear only as inbound targets (sinks with no
+                outbound edges). Set False for slight speedup when sinks
+                aren't needed.
+            graph: The named graph to read. `None` and `""` both mean the default
+                graph. Validated and derived here so an invalid or reserved name
+                fails at construction rather than returning an empty graph: a
+                wrong subscript reads as "no edges", which no caller can tell
+                from a graph that really has none.
+        """
+        self._host = host_for(conn)
+        self._include_sinks = include_sinks
+        self._graph = graph_index_key(graph)
+        self._out_cache: dict = {}
+        self._in_cache: dict = {}
+        self._degree_cache: dict = {}
+        self._degp_cache: dict = {}
+        self._in_degree_cache: dict = {}
+        self._in_degp_cache: dict = {}
+        self._nodes_cache: Optional[list] = None
+
+    def iter_nodes(self) -> Iterator[str]:
+        """Yield each unique node ID exactly once.
+
+        Walks `^KG("out", graph, *)` for nodes with outbound edges, then optionally
+        `^KG("in", graph, *)` for sinks. Cached on first complete iteration.
+
+        Omitting the graph subscript here walked the graph *names*, so a
+        single-graph install yielded one node called `"0"` and every per-node
+        read below then found nothing for it.
+        """
+        if self._nodes_cache is not None:
+            yield from self._nodes_cache
+            return
+
+        g = self._graph
+        seen: set = set()
+        result: list = []
+
+        sub = self._host.next_subscript("^KG", "out", g, "")
+        while sub is not None and sub != "":
+            if sub not in seen:
+                seen.add(sub)
+                result.append(sub)
+            sub = self._host.next_subscript("^KG", "out", g, sub)
+
+        if self._include_sinks:
+            sub = self._host.next_subscript("^KG", "in", g, "")
+            while sub is not None and sub != "":
+                if sub not in seen:
+                    seen.add(sub)
+                    result.append(sub)
+                sub = self._host.next_subscript("^KG", "in", g, sub)
+
+        self._nodes_cache = result
+        yield from result
+
+    def out_neighbors(self, node: str) -> List[str]:
+        """Return distinct outbound targets of `node` (across all predicates).
+
+        Self-loops included; multi-edges (same node pair across multiple
+        predicates) deduplicated. Cached after first call.
+        """
+        if node in self._out_cache:
+            return self._out_cache[node]
+        g = self._graph
+        ns: List[str] = []
+        seen: set = set()
+        p = self._host.next_subscript("^KG", "out", g, node, "")
+        while p is not None and p != "":
+            o = self._host.next_subscript("^KG", "out", g, node, p, "")
+            while o is not None and o != "":
+                if o not in seen:
+                    seen.add(o)
+                    ns.append(o)
+                o = self._host.next_subscript("^KG", "out", g, node, p, o)
+            p = self._host.next_subscript("^KG", "out", g, node, p)
+        self._out_cache[node] = ns
+        return ns
+
+    def in_neighbors(self, node: str) -> List[str]:
+        """Return distinct inbound sources of `node` (across all predicates)."""
+        if node in self._in_cache:
+            return self._in_cache[node]
+        g = self._graph
+        ns: List[str] = []
+        seen: set = set()
+        p = self._host.next_subscript("^KG", "in", g, node, "")
+        while p is not None and p != "":
+            s = self._host.next_subscript("^KG", "in", g, node, p, "")
+            while s is not None and s != "":
+                if s not in seen:
+                    seen.add(s)
+                    ns.append(s)
+                s = self._host.next_subscript("^KG", "in", g, node, p, s)
+            p = self._host.next_subscript("^KG", "in", g, node, p)
+        self._in_cache[node] = ns
+        return ns
+
+    def _adj_degree(self, node: str, predicate: str) -> int:
+        """`Graph.KG.Adj.Degree` through the host; an empty answer is a node with no edges."""
+        raw = self._host.call("Graph.KG.Adj", "Degree", self._graph, node, predicate)
+        return int(raw) if raw not in (None, "") else 0
+
+    def degree(self, node: str) -> int:
+        """Return total out-degree of `node` (count of edges, not unique targets)."""
+        if node in self._degree_cache:
+            return self._degree_cache[node]
+        deg = self._adj_degree(node, "")
+        self._degree_cache[node] = deg
+        return deg
+
+    def degree_for_predicate(self, node: str, predicate: str) -> int:
+        """Return the out-degree of `node` over edges with `predicate`."""
+        key = (node, predicate)
+        if key in self._degp_cache:
+            return self._degp_cache[key]
+        deg = self._adj_degree(node, predicate)
+        self._degp_cache[key] = deg
+        return deg
+
+    def in_degree(self, node: str) -> int:
+        """Return total in-degree by counting entries under `^KG("in", graph, node, *, *)`.
+
+        Used by spec 162 degree centrality and BFS-based betweenness when
+        traversing reverse edges.
+        """
+        if node in self._in_degree_cache:
+            return self._in_degree_cache[node]
+        g = self._graph
+        count = 0
+        p = self._host.next_subscript("^KG", "in", g, node, "")
+        while p is not None and p != "":
+            s = self._host.next_subscript("^KG", "in", g, node, p, "")
+            while s is not None and s != "":
+                count += 1
+                s = self._host.next_subscript("^KG", "in", g, node, p, s)
+            p = self._host.next_subscript("^KG", "in", g, node, p)
+        self._in_degree_cache[node] = count
+        return count
+
+    def in_degree_for_predicate(self, node: str, predicate: str) -> int:
+        """Return per-predicate in-degree by counting `^KG("in", graph, node, predicate, *)` keys."""
+        key = (node, predicate)
+        if key in self._in_degp_cache:
+            return self._in_degp_cache[key]
+        g = self._graph
+        count = 0
+        s = self._host.next_subscript("^KG", "in", g, node, predicate, "")
+        while s is not None and s != "":
+            count += 1
+            s = self._host.next_subscript("^KG", "in", g, node, predicate, s)
+        self._in_degp_cache[key] = count
+        return count
+
+    def clear_cache(self) -> None:
+        """Reset all internal caches. Used by tests; rarely needed in algorithms."""
+        self._out_cache.clear()
+        self._in_cache.clear()
+        self._degree_cache.clear()
+        self._degp_cache.clear()
+        self._in_degree_cache.clear()
+        self._in_degp_cache.clear()
+        self._nodes_cache = None
+
+    def cache_stats(self) -> dict:
+        """Return cache size info — diagnostic helper for perf tests / debugging."""
+        return {
+            "out_cached_nodes": len(self._out_cache),
+            "in_cached_nodes": len(self._in_cache),
+            "degree_cached_nodes": len(self._degree_cache),
+            "degp_cached_pairs": len(self._degp_cache),
+            "nodes_enumerated": self._nodes_cache is not None,
+            "total_nodes_known": len(self._nodes_cache) if self._nodes_cache else 0,
+        }

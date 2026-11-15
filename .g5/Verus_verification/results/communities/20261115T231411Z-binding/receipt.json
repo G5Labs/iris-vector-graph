@@ -1,0 +1,867 @@
+{
+  "comparisons": 1255,
+  "current_equals_exported_pin": {
+    "iris_src/src/Graph/KG/Algorithms.cls": true,
+    "iris_src/src/Graph/KG/Edgeless.cls": true,
+    "iris_vector_graph/_collation.py": true,
+    "iris_vector_graph/_edgeless.py": true,
+    "iris_vector_graph/_engine/algorithms.py": true,
+    "iris_vector_graph/algo_cache.py": true,
+    "iris_vector_graph/stores/iris_sql_store.py": true
+  },
+  "effect_checks": {
+    "cursor_value_echoed": true,
+    "empty_graph_zero_budget_success": true,
+    "full_final_page_extra_empty": true,
+    "partial_bad_json_discards_whole_native_result": true,
+    "partial_raise_discards_whole_native_result": true,
+    "successful_empty_avoids_sql": true
+  },
+  "elapsed": 0.3822104580467567,
+  "failure": null,
+  "histories": [
+    {
+      "agrees": true,
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:a",
+          "n:iso": "n:iso"
+        }
+      },
+      "name": "warm-wcc",
+      "stats": {
+        "miss": 1,
+        "put": 1
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:b",
+          "n:b": "n:a",
+          "n:iso": "n:iso"
+        }
+      },
+      "name": "warm-cdlp",
+      "stats": {
+        "miss": 2,
+        "put": 2
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:a",
+          "n:iso": "n:iso"
+        }
+      },
+      "name": "second-wcc",
+      "stats": {
+        "hit": 1
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:b",
+          "n:b": "n:a",
+          "n:iso": "n:iso"
+        }
+      },
+      "name": "second-cdlp",
+      "stats": {
+        "hit": 2
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:a",
+          "n:iso": "n:iso",
+          "n:new": "n:new"
+        }
+      },
+      "name": "isolate-add-wcc",
+      "stats": {
+        "hit": 3
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:b",
+          "n:b": "n:a",
+          "n:iso": "n:iso",
+          "n:new": "n:new"
+        }
+      },
+      "name": "isolate-add-cdlp",
+      "stats": {
+        "hit": 4
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:a",
+          "n:iso": "n:iso"
+        }
+      },
+      "name": "ordinary-isolate-delete-wcc",
+      "stats": {
+        "hit": 4,
+        "miss": 1,
+        "put": 1
+      }
+    },
+    {
+      "agrees": true,
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:b",
+          "n:b": "n:a",
+          "n:iso": "n:iso"
+        }
+      },
+      "name": "ordinary-isolate-delete-cdlp",
+      "stats": {
+        "hit": 4,
+        "miss": 2,
+        "put": 2
+      }
+    },
+    {
+      "agrees": true,
+      "fresh": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b"
+        }
+      },
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:a"
+        }
+      },
+      "known_counterexample_boundary": true,
+      "name": "stale-core-not-repaired-by-live-loners",
+      "old": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:a"
+        }
+      }
+    }
+  ],
+  "inputs": {
+    ".g5/Verus_verification/models/communities/binding.py": "323c83db34558038690d199f6e38513ea2ee15c45c4b2236a1f7c5feee835acc",
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281",
+    ".g5/Verus_verification/models/communities/port.py": "9c6b6c315055576d716795867f10c4281699fa1f6e1d6d6117c7bb88d75b3fd9",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    ".g5/uplift/consolidated/iteration-11/next-communities-PAIRS.md": "7c8bf926cc49f35c30a70b89dc211d561713cade4465f1ee5d20e290e79a7193",
+    ".g5/uplift/consolidated/iteration-11/next-communities-native.json": "913be7fcd0e62a7353d9efcfc9edaa630cadf686638d5c87741f1ee533b0482b",
+    ".g5/uplift/consolidated/iteration-11/next-communities-native.log": "61be3263cc41143807821621debefbcec34d4a06f611eabdc512bd2f5f749cd6",
+    ".g5/uplift/consolidated/iteration-11/next-communities-native.py": "72a6449dcc896522a22b4157f65c4615c6959dbfb858ba8876d40c1788f253ba",
+    ".g5/uplift/consolidated/iteration-11/next-communities-plan.md": "b44c3529c1d096a3c09b50798f429947a033c006a447f0a71040822955fa07bb",
+    ".g5/uplift/consolidated/iteration-12/review-communities-paging-probe.json": "86bde3ee5f34ccb2e196f2b825840f73252e366b7169fcd0b1e8da29865cbbaf",
+    ".g5/uplift/consolidated/iteration-12/review-communities-paging-probe.log": "02e07edb3ed68e3ad68b5921873832c756b8fe369e55db30708eae33fb689218",
+    ".g5/uplift/consolidated/iteration-12/review-communities-paging-probe.py": "21cf801b39fb44d538392afb08d37cdd5566e49196ac88d541aef64a4fc375ce",
+    ".g5/uplift/consolidated/iteration-12/root-communities-census-native.json": "308f88cd25069df90d7dca6cfaaff81ff25559c376265f03e322015ab18f247e",
+    ".g5/uplift/consolidated/iteration-12/root-communities-census-native.log": "4ca03fe55c1918bf8387ff05d71f0da228c91a392a010dccc0a8d48291871486",
+    ".g5/uplift/consolidated/iteration-12/root-communities-census-native.py": "92ee5be5739a053999af14ff7ddba88dcf75a7af4327b5d151154f9cd5528fe7",
+    ".g5/uplift/consolidated/iteration-12/root-communities-census-predictions.md": "e0d3638a2397071f3376538d7e014321bb299f9636dc2ec73ad19667d45c74f3",
+    "iris_src/src/Graph/KG/Algorithms.cls": "442161ae5574d89f8669090e9d20b7a55f8f239b353fdd9243210f8e2b2f2a61",
+    "iris_src/src/Graph/KG/Edgeless.cls": "d70e81d32bceb505ad1e972846c82d9bab73193e7155cf82a59e071e2ac5d6ce",
+    "iris_vector_graph/_collation.py": "108c4dd485f135595039effd8a8a6d0fecd552bb8363073464c2b5196f3e6546",
+    "iris_vector_graph/_edgeless.py": "1361713b382eedbad19b2a269296aba234a0a0f05684c11cf2f21245bf30346c",
+    "iris_vector_graph/_engine/algorithms.py": "e39a9164f19bb67f1c2b0f686a3ac5a01208c1f5c2da15f937820fe6c47853de",
+    "iris_vector_graph/algo_cache.py": "2d896a6fa9a9262f422f576e90db4b704b94555319fe337d2438a55dab181dce",
+    "iris_vector_graph/stores/iris_sql_store.py": "737df8a794a979d2c2e4f3af100508fd05c1907893ec2fa65f2fc440e34ff153"
+  },
+  "kind": "binding",
+  "mismatch_count": 0,
+  "mismatches": [],
+  "model": "communities",
+  "native_executions": 0,
+  "paging_examples": [
+    {
+      "agrees": true,
+      "cache_stats": {
+        "miss": 1,
+        "put": 1
+      },
+      "calls": [
+        [
+          "Graph.KG.AlgoCache",
+          "Lookup",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          ]
+        ],
+        [
+          "Graph.KG.Algorithms",
+          "WCCJson",
+          []
+        ],
+        [
+          "Graph.KG.AlgoCache",
+          "Put",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "1",
+            "[]"
+          ]
+        ]
+      ],
+      "core_traces": [
+        {
+          "agrees": true,
+          "error": null,
+          "kind": "wcc",
+          "limit": null,
+          "model": {},
+          "model_trace": [],
+          "rows": {},
+          "trace": []
+        }
+      ],
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b",
+          "n:c": "n:c",
+          "n:d": "n:d"
+        }
+      },
+      "input": {
+        "edges": [],
+        "fault": null,
+        "kind": "wcc",
+        "limit": null,
+        "native": "off",
+        "nodes": [
+          [
+            "",
+            "n:a"
+          ],
+          [
+            "",
+            "n:b"
+          ],
+          [
+            "",
+            "n:c"
+          ],
+          [
+            "",
+            "n:d"
+          ]
+        ],
+        "page": 1,
+        "sql_fail": false
+      },
+      "page_queries": [
+        {
+          "after": "",
+          "graph": "",
+          "page": 1,
+          "reply": {
+            "loners": {
+              "n:a": 0
+            },
+            "next": "n:a"
+          },
+          "schema": "G"
+        },
+        {
+          "after": "n:a",
+          "graph": "",
+          "page": 1,
+          "reply": {
+            "loners": {
+              "n:b": 0
+            },
+            "next": "n:b"
+          },
+          "schema": "G"
+        },
+        {
+          "after": "n:b",
+          "graph": "",
+          "page": 1,
+          "reply": {
+            "loners": {
+              "n:c": 0
+            },
+            "next": "n:c"
+          },
+          "schema": "G"
+        },
+        {
+          "after": "n:c",
+          "graph": "",
+          "page": 1,
+          "reply": {
+            "loners": {
+              "n:d": 0
+            },
+            "next": "n:d"
+          },
+          "schema": "G"
+        },
+        {
+          "after": "n:d",
+          "graph": "",
+          "page": 1,
+          "reply": {
+            "loners": {},
+            "next": ""
+          },
+          "schema": "G"
+        }
+      ],
+      "sql": [],
+      "want": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b",
+          "n:c": "n:c",
+          "n:d": "n:d"
+        }
+      }
+    },
+    {
+      "agrees": true,
+      "cache_stats": {
+        "miss": 1,
+        "put": 1
+      },
+      "calls": [
+        [
+          "Graph.KG.AlgoCache",
+          "Lookup",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          ]
+        ],
+        [
+          "Graph.KG.Algorithms",
+          "WCCJson",
+          []
+        ],
+        [
+          "Graph.KG.AlgoCache",
+          "Put",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "1",
+            "[]"
+          ]
+        ]
+      ],
+      "core_traces": [
+        {
+          "agrees": true,
+          "error": null,
+          "kind": "wcc",
+          "limit": null,
+          "model": {},
+          "model_trace": [],
+          "rows": {},
+          "trace": []
+        }
+      ],
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b",
+          "n:c": "n:c",
+          "n:d": "n:d"
+        }
+      },
+      "input": {
+        "edges": [],
+        "fault": [
+          1,
+          "raise"
+        ],
+        "kind": "wcc",
+        "limit": null,
+        "native": "off",
+        "nodes": [
+          [
+            "",
+            "n:a"
+          ],
+          [
+            "",
+            "n:b"
+          ],
+          [
+            "",
+            "n:c"
+          ],
+          [
+            "",
+            "n:d"
+          ]
+        ],
+        "page": 1,
+        "sql_fail": false
+      },
+      "page_queries": [
+        {
+          "after": "",
+          "graph": "",
+          "page": 1,
+          "reply": {
+            "loners": {
+              "n:a": 0
+            },
+            "next": "n:a"
+          },
+          "schema": "G"
+        },
+        {
+          "after": "n:a",
+          "fault": "raise",
+          "graph": "",
+          "page": 1,
+          "schema": "G"
+        }
+      ],
+      "sql": [
+        [
+          "SELECT n.node_id, CASE WHEN EXISTS (SELECT 1 FROM G.rdf_edges x WHERE x.s = n.node_id AND COALESCE(x.graph_id, '') = ?) THEN 1 ELSE 0 END FROM G.nodes n WHERE COALESCE(n.graph_id, '') = ? AND NOT EXISTS (SELECT 1 FROM G.rdf_edges e WHERE e.s = n.node_id AND e.o_id <> n.node_id AND COALESCE(e.graph_id, '') = ?) AND NOT EXISTS (SELECT 1 FROM G.rdf_edges e WHERE e.o_id = n.node_id AND e.s <> n.node_id AND COALESCE(e.graph_id, '') = ?)",
+          [
+            "",
+            "",
+            "",
+            ""
+          ]
+        ]
+      ],
+      "want": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b",
+          "n:c": "n:c",
+          "n:d": "n:d"
+        }
+      }
+    },
+    {
+      "agrees": true,
+      "cache_stats": {
+        "miss": 1,
+        "put": 1
+      },
+      "calls": [
+        [
+          "Graph.KG.AlgoCache",
+          "Lookup",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          ]
+        ],
+        [
+          "Graph.KG.Algorithms",
+          "WCCJson",
+          []
+        ],
+        [
+          "Graph.KG.AlgoCache",
+          "Put",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "1",
+            "[]"
+          ]
+        ]
+      ],
+      "core_traces": [
+        {
+          "agrees": true,
+          "error": null,
+          "kind": "wcc",
+          "limit": null,
+          "model": {},
+          "model_trace": [],
+          "rows": {},
+          "trace": []
+        }
+      ],
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b",
+          "n:c": "n:c",
+          "n:d": "n:d"
+        }
+      },
+      "input": {
+        "edges": [],
+        "fault": [
+          1,
+          "bad-json"
+        ],
+        "kind": "wcc",
+        "limit": null,
+        "native": "off",
+        "nodes": [
+          [
+            "",
+            "n:a"
+          ],
+          [
+            "",
+            "n:b"
+          ],
+          [
+            "",
+            "n:c"
+          ],
+          [
+            "",
+            "n:d"
+          ]
+        ],
+        "page": 1,
+        "sql_fail": false
+      },
+      "page_queries": [
+        {
+          "after": "",
+          "graph": "",
+          "page": 1,
+          "reply": {
+            "loners": {
+              "n:a": 0
+            },
+            "next": "n:a"
+          },
+          "schema": "G"
+        },
+        {
+          "after": "n:a",
+          "fault": "bad-json",
+          "graph": "",
+          "page": 1,
+          "schema": "G"
+        }
+      ],
+      "sql": [
+        [
+          "SELECT n.node_id, CASE WHEN EXISTS (SELECT 1 FROM G.rdf_edges x WHERE x.s = n.node_id AND COALESCE(x.graph_id, '') = ?) THEN 1 ELSE 0 END FROM G.nodes n WHERE COALESCE(n.graph_id, '') = ? AND NOT EXISTS (SELECT 1 FROM G.rdf_edges e WHERE e.s = n.node_id AND e.o_id <> n.node_id AND COALESCE(e.graph_id, '') = ?) AND NOT EXISTS (SELECT 1 FROM G.rdf_edges e WHERE e.o_id = n.node_id AND e.s <> n.node_id AND COALESCE(e.graph_id, '') = ?)",
+          [
+            "",
+            "",
+            "",
+            ""
+          ]
+        ]
+      ],
+      "want": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b",
+          "n:c": "n:c",
+          "n:d": "n:d"
+        }
+      }
+    },
+    {
+      "agrees": true,
+      "cache_stats": {
+        "miss": 1,
+        "put": 1
+      },
+      "calls": [
+        [
+          "Graph.KG.AlgoCache",
+          "Lookup",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          ]
+        ],
+        [
+          "Graph.KG.Algorithms",
+          "WCCJson",
+          []
+        ],
+        [
+          "Graph.KG.AlgoCache",
+          "Put",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "1",
+            "[]"
+          ]
+        ]
+      ],
+      "core_traces": [
+        {
+          "agrees": true,
+          "error": null,
+          "kind": "wcc",
+          "limit": null,
+          "model": {},
+          "model_trace": [],
+          "rows": {},
+          "trace": []
+        }
+      ],
+      "got": {
+        "kind": "error",
+        "message": "named SQL census provider failure",
+        "type": "OperationalError"
+      },
+      "input": {
+        "edges": [],
+        "fault": [
+          1,
+          "raise"
+        ],
+        "kind": "wcc",
+        "limit": null,
+        "native": "off",
+        "nodes": [
+          [
+            "",
+            "n:a"
+          ],
+          [
+            "",
+            "n:b"
+          ],
+          [
+            "",
+            "n:c"
+          ],
+          [
+            "",
+            "n:d"
+          ]
+        ],
+        "page": 1,
+        "sql_fail": true
+      },
+      "page_queries": [
+        {
+          "after": "",
+          "graph": "",
+          "page": 1,
+          "reply": {
+            "loners": {
+              "n:a": 0
+            },
+            "next": "n:a"
+          },
+          "schema": "G"
+        },
+        {
+          "after": "n:a",
+          "fault": "raise",
+          "graph": "",
+          "page": 1,
+          "schema": "G"
+        }
+      ],
+      "sql": [
+        [
+          "SELECT n.node_id, CASE WHEN EXISTS (SELECT 1 FROM G.rdf_edges x WHERE x.s = n.node_id AND COALESCE(x.graph_id, '') = ?) THEN 1 ELSE 0 END FROM G.nodes n WHERE COALESCE(n.graph_id, '') = ? AND NOT EXISTS (SELECT 1 FROM G.rdf_edges e WHERE e.s = n.node_id AND e.o_id <> n.node_id AND COALESCE(e.graph_id, '') = ?) AND NOT EXISTS (SELECT 1 FROM G.rdf_edges e WHERE e.o_id = n.node_id AND e.s <> n.node_id AND COALESCE(e.graph_id, '') = ?)",
+          [
+            "",
+            "",
+            "",
+            ""
+          ]
+        ]
+      ],
+      "want": {
+        "kind": "error"
+      }
+    },
+    {
+      "agrees": true,
+      "cache_stats": {
+        "miss": 1,
+        "put": 1
+      },
+      "calls": [
+        [
+          "Graph.KG.AlgoCache",
+          "Lookup",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          ]
+        ],
+        [
+          "Graph.KG.Algorithms",
+          "WCCJson",
+          []
+        ],
+        [
+          "Graph.KG.AlgoCache",
+          "Put",
+          [
+            "",
+            "wcc",
+            "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "1",
+            "[]"
+          ]
+        ]
+      ],
+      "core_traces": [
+        {
+          "agrees": true,
+          "error": null,
+          "kind": "wcc",
+          "limit": null,
+          "model": {},
+          "model_trace": [],
+          "rows": {},
+          "trace": []
+        }
+      ],
+      "got": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b",
+          "n:c": "n:c",
+          "n:d": "n:d"
+        }
+      },
+      "input": {
+        "edges": [],
+        "fault": [
+          0,
+          "raise"
+        ],
+        "kind": "wcc",
+        "limit": null,
+        "native": "off",
+        "nodes": [
+          [
+            "",
+            "n:a"
+          ],
+          [
+            "",
+            "n:b"
+          ],
+          [
+            "",
+            "n:c"
+          ],
+          [
+            "",
+            "n:d"
+          ]
+        ],
+        "page": 1,
+        "sql_fail": false
+      },
+      "page_queries": [
+        {
+          "after": "",
+          "fault": "raise",
+          "graph": "",
+          "page": 1,
+          "schema": "G"
+        }
+      ],
+      "sql": [
+        [
+          "SELECT n.node_id, CASE WHEN EXISTS (SELECT 1 FROM G.rdf_edges x WHERE x.s = n.node_id AND COALESCE(x.graph_id, '') = ?) THEN 1 ELSE 0 END FROM G.nodes n WHERE COALESCE(n.graph_id, '') = ? AND NOT EXISTS (SELECT 1 FROM G.rdf_edges e WHERE e.s = n.node_id AND e.o_id <> n.node_id AND COALESCE(e.graph_id, '') = ?) AND NOT EXISTS (SELECT 1 FROM G.rdf_edges e WHERE e.o_id = n.node_id AND e.s <> n.node_id AND COALESCE(e.graph_id, '') = ?)",
+          [
+            "",
+            "",
+            "",
+            ""
+          ]
+        ]
+      ],
+      "want": {
+        "kind": "success",
+        "value": {
+          "n:a": "n:a",
+          "n:b": "n:b",
+          "n:c": "n:c",
+          "n:d": "n:d"
+        }
+      }
+    }
+  ],
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.8",
+  "scope": "Actual pinned Python engine/core dispatch/store/cache/strict reader/live completion and SQL loners over executing raw Owner/native-page ports, independent synchronous model trace and raw BFS/vote oracle. SQLite SQL executes original scoped census predicates. Native body and full collation/numeric/normalization/cache transport providers remain qualified; source mutable kernel ports are not native execution. page helper override named for small pagination tests. Known18 +root8 and independent paging5 are flat-hashed finite supplements, not supplied answer maps or private/blind evidence.",
+  "sensitivity": {
+    "actual_census_failure_silenced": true,
+    "actual_existing_core_overwritten": true,
+    "actual_explicit_limit_native_bypass": true,
+    "actual_public_live_completion_removed": true,
+    "actual_shared_hit_rows_lost": true,
+    "corrupted_observation_rejected": true,
+    "source_port_count-self_cdlp": true,
+    "source_port_cursor_overadvance": true,
+    "source_port_dedup-label-votes_cdlp": true,
+    "source_port_guard-after-scan_wcc": true,
+    "source_port_in-place_cdlp": true,
+    "source_port_in-place_wcc": true,
+    "source_port_out-only_wcc": true,
+    "source_port_tie-last_cdlp": true
+  },
+  "socket_connect_calls": 0,
+  "verdict": "AGREES"
+}

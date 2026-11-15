@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_pair_cdlp_swaps_old_labels"
+    ],
+    "find": "|u:Node|winner(g,u,l)",
+    "name": "cdlp-wrong-old-map",
+    "replace": "|u:Node|winner(g,u,initial(g))"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_pair_cdlp_swaps_old_labels"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/communities/communities.rs": "6f6d970295a4862e43e64ce85f65646650ef6bef2ae2b7b35288ad7187320b2d",
+    ".g5/Verus_verification/models/communities/model.json": "37993e2941d279c1fafec03f47a18438d9449f51fc2727438c259be8fb0af281"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/cdlp-wrong-old-map/20261115T231428Z/models/communities/communities.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_pair_cdlp_swaps_old_labels": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231428Z-control-cdlp-wrong-old-map-lemma_pair_cdlp_swaps_old_labels.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/20261115T231428Z-control-cdlp-wrong-old-map.log",
+    "timed_out": false,
+    "verified": 72
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/communities/20261115T231429Z-control-cdlp-wrong-old-map/logs/20261115T231428Z-control-cdlp-wrong-old-map-lemma_pair_cdlp_swaps_old_labels.log": "5087c8019806f354f215df3db53acfac7293ec65a0cb1ac649024b611c761ffc",
+    ".g5/Verus_verification/results/communities/20261115T231429Z-control-cdlp-wrong-old-map/logs/20261115T231428Z-control-cdlp-wrong-old-map.log": "d6206ed76b0f581fcc22ee146cea61b3cae9ff463d4fc751161af553b88d46c5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

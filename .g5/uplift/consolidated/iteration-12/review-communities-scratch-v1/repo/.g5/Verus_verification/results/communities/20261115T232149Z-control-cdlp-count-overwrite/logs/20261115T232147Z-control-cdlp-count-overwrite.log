@@ -1,0 +1,27 @@
+verification results:: 72 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/controls/cdlp-count-overwrite/20261115T232147Z/models/communities/communities.rs:263:1
+    |
+263 | pub proof fn lemma_raw_coordinate_count_at(g:Seq<Coord>,u:Node,l:Labels,c:Counts,x:Node)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/controls/cdlp-count-overwrite/20261115T232147Z/models/communities/communities.rs:264:13
+    |
+264 |     ensures count(count_fold(g,u,l,c),x)==count(c,x)+frequency(g,u,l,x),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+268 |     if g.len()>0{let a=g[0];let v=get(l,a.neighbor);lemma_raw_coordinate_count_at(g.drop_first(),u,l,if vote(a,u){c.insert(v,count(c,v)+1)}else{c},x);}
+    |     --------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-communities-scratch-v1/run-dir/verus/communities/controls/cdlp-count-overwrite/20261115T232147Z/models/communities/communities.rs:265:9
+    |
+265 |         count_fold(g,u,l,c).contains_key(x) <==> c.contains_key(x) || frequency(g,u,l,x)>0,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+268 |     if g.len()>0{let a=g[0];let v=get(l,a.neighbor);lemma_raw_coordinate_count_at(g.drop_first(),u,l,if vote(a,u){c.insert(v,count(c,v)+1)}else{c},x);}
+    |     --------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: aborting due to 2 previous errors
+

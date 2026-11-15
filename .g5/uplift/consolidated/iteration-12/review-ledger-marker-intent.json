@@ -1,0 +1,78 @@
+{
+  "utc": "2026-11-15T23:04:33.091316+00:00",
+  "kind": "source and public-register intent/dedup audit; no native execution",
+  "inputs": {
+    ".g5/ontology/features/ledger.g5.md": "7b60fa59e9b156bafb8f6391dc60424f018cf5d22e4f89eab3564a04681c9b27",
+    ".g5/ontology/features/temporal.g5.md": "aedbfa99ce0ceeb39c1dd474ee56a46dc444ffd1ad9f132844969c861fdf0a86",
+    ".g5/Verus_verification/bugs_issues.md": "410df9b21e3ed45e0cb8ae9e6e4a599aad6878142abe86d8881f0dc7efc30b5d",
+    "iris_src/src/Graph/KG/LedgerApply.cls": "73068abd02f1e93a8cda77365e9c8be41f8d756f1bc25dbb33e8a7468700c414",
+    "iris_src/src/Graph/KG/LedgerGenesis.cls": "afd64ea71b6159a5e49f729e3bb43fbd0796617cfa8fa69aa00c4e37f1629909",
+    "iris_vector_graph/ledger/changeset.py": "0542061cd17b5c74f4d34f9a9ad42a7cc673804b6911136a8e5d256dd1cd79c3",
+    "tests/integration/test_ledger_us02_rollback.py": "7763d4357761ce8db10015325497dc7bb131d58acd16ee6453f9bfb67bee7622",
+    "tests/unit/test_ledger_replay.py": "66f1c65dcab03912f55f4976446971ac2c54287dff01b30920ff7ee4f45909ac",
+    "docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md": "b5116f5c20604acc3760f1404fc78830dd141961081dcfb17ecc7b866a5b781d",
+    "specs/213-graph-revision-ledger/contracts/ledger-api.md": "7760433280f9eb905506662d8c5b608e854af1abb2af061eed2016d23bd73dbd"
+  },
+  "prediction": "Ordinary accepted temporal:true text/Boolean qualifier persists as string; a later create on same tuple sees tCur.temporal == true text, enters adoption, replaces physical qualifiers and allocates a new statement rather than relationship_exists. Native root evidence pending at this source audit.",
+  "neighbors": [
+    "temporal:false existing create refuses",
+    "temporal:true existing create predicted adoption/reallocation",
+    "ordinary existing upsert otherwise merges and preserves statement identity"
+  ],
+  "authority": [
+    {
+      "path": ".g5/ontology/features/ledger.g5.md",
+      "lines": [
+        12,
+        75,
+        76
+      ],
+      "fact": "Statement identity spans one relationship life; existing create refuses except temporal row takeover."
+    },
+    {
+      "path": "tests/integration/test_ledger_us02_rollback.py",
+      "lines": [
+        80,
+        88
+      ],
+      "fact": "Existing ordinary relationship second create fails at index1 with relationship_exists."
+    },
+    {
+      "path": "tests/unit/test_ledger_replay.py",
+      "lines": [
+        518,
+        539
+      ],
+      "fact": "Qualifier evolution preserves statement identity in actual replay test."
+    },
+    {
+      "path": "docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md",
+      "lines": [
+        34,
+        42
+      ],
+      "fact": "Temporal marker distinguishes derived from explicitly written row."
+    }
+  ],
+  "related_inherited_findings": [
+    {
+      "id": "F-C0351",
+      "root": "Caller can set temporal marker; published card observes Python boolean and canonical verify omission.",
+      "exact_new_outcome_already_listed": false
+    },
+    {
+      "id": "F-0505",
+      "root": "Different marker predicates across readers/deleters/ledger.",
+      "exact_new_outcome_already_listed": false
+    },
+    {
+      "id": "F-C0450",
+      "root": "Ledger temporal:1 strings are misclassified by temporal deletion and leave a live statement.",
+      "exact_new_outcome_already_listed": false
+    }
+  ],
+  "disposition": "Root adjudicates after native facts. Adjacent/shared root evidence is material; no independent new issue count or policy/repair decision. Existing-marker exceptions remain partial source correspondence, not unsupported API refusal.",
+  "private_artifacts_inspected": false,
+  "native_calls": 0,
+  "network_calls": 0
+}

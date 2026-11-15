@@ -1,0 +1,21 @@
+verification results:: 71 verified, 2 errors
+error: precondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/wcc-unconfirmed-return/20261115T231420Z/models/communities/communities.rs:224:9
+    |
+204 |     requires wround(g,labels_at(g,k))==labels_at(g,k),
+    |              ---------------------------------------- failed precondition
+...
+224 |         lemma_fixed_round_remains_fixed(g,t,(end-t) as nat);theorem_every_actual_round_is_raw_reachable_minimum(g,end);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration12-communities-20261115/verus/communities/controls/wcc-unconfirmed-return/20261115T231420Z/models/communities/communities.rs:234:9
+    |
+232 | pub proof fn theorem_already_correct_pair_still_needs_confirmation()
+    | -------------------------------------------------------------------- at the end of the function body
+233 |     ensures get(labels_at(pair(),1),0)==0,get(labels_at(pair(),1),1)==0,
+234 |         wstep(pair(),Some(1),0) is Continue,wstep(pair(),Some(1),1) is Refused,wstep(pair(),Some(2),1) is Success,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,244 @@
+Class Graph.KG.TraversalKHop Extends %RegisteredObject
+{
+
+/// Out-degree of srcId in the default graph, over every predicate or only pred. A cached,
+/// generation-validated count (Graph.KG.Adj.Degree, spec 248): O(1) while the entry is
+/// current, a recount that refills it otherwise. A parallel edge counts once per edge,
+/// as the stored counter it replaces did.
+ClassMethod KHopCount(srcId As %String, pred As %String = "") As %Integer
+{
+	If srcId = "" {
+		Quit 0
+	}
+	// While the whole-graph stamp holds (Graph.KG.Adj.AllWarm, read inline: no call) the
+	// answer is one global read. Otherwise the validated path recounts and refills.
+	Set tStamp = $Get(^KG("degw", 0))
+	If (tStamp '= "") && (tStamp = +$Get(^KG("__version"))) {
+		If pred = "" {
+			Quit $ListGet($Get(^KG("degc", 0, srcId, $Char(1))), 2, 0)
+		}
+		Quit $ListGet($Get(^KG("degc", 0, srcId, pred)), 2, 0)
+	}
+	Quit ##class(Graph.KG.Adj).Degree(0, srcId, pred)
+}
+
+/// The targets of srcId's out-edges in the default graph, over every predicate or only pred,
+/// one line per edge: a multigraph pair joined by n edges (^KG("out", g, s, p, o, "#") = n)
+/// is listed n times, as openCypher answers a row per relationship (4.6.0, R074).
+ClassMethod KHopNeighborIds(srcId As %String, pred As %String = "", requiredPreds As %List = "") As %String
+{
+	Set pGraph = 0
+    Set result = ""
+    Set hasGuard = (requiredPreds '= "") && ($ListLength(requiredPreds) > 0)
+    If pred '= "" {
+        Set o = ""
+        For {
+            Set o = $Order(^KG("out", pGraph, srcId, pred, o))
+            Quit:o=""
+            If hasGuard {
+                Set dstIdx = $Get(^NKG("$NI", o))
+                If dstIdx = "" || '##class(Graph.KG.NKGAccelTraversal).StructuralGuard(dstIdx, requiredPreds) Continue
+            }
+            For tI = 1:1:+$Get(^KG("out", pGraph, srcId, pred, o, "#"), 1) {
+                Set result = result _ o _ $Char(10)
+            }
+        }
+    } Else {
+        Set p = ""
+        For {
+            Set p = $Order(^KG("out", pGraph, srcId, p))
+            Quit:p=""
+            Set o = ""
+            For {
+                Set o = $Order(^KG("out", pGraph, srcId, p, o))
+                Quit:o=""
+                If hasGuard {
+                    Set dstIdx = $Get(^NKG("$NI", o))
+                    If dstIdx = "" || '##class(Graph.KG.NKGAccelTraversal).StructuralGuard(dstIdx, requiredPreds) Continue
+                }
+                For tI = 1:1:+$Get(^KG("out", pGraph, srcId, p, o, "#"), 1) {
+                    Set result = result _ o _ $Char(10)
+                }
+            }
+        }
+    }
+    Return result
+}
+ClassMethod KHop2Count(srcId As %String, pred As %String = "") As %Integer
+{
+	Set pGraph = 0
+    Kill ^||kh2s, ^||kh2all
+    Set ^||kh2all(srcId) = ""
+
+    If pred '= "" {
+        Set o1 = ""
+        For {
+            Set o1 = $Order(^KG("out", pGraph, srcId, pred, o1))
+            Quit:o1=""
+            If '$Data(^||kh2all(o1)) {
+                Set ^||kh2all(o1) = ""
+                Set ^||kh2s(o1) = ""
+            }
+        }
+    } Else {
+        Set p1 = ""
+        For {
+            Set p1 = $Order(^KG("out", pGraph, srcId, p1))
+            Quit:p1=""
+            Set o1 = ""
+            For {
+                Set o1 = $Order(^KG("out", pGraph, srcId, p1, o1))
+                Quit:o1=""
+                If '$Data(^||kh2all(o1)) {
+                    Set ^||kh2all(o1) = ""
+                    Set ^||kh2s(o1) = ""
+                }
+            }
+        }
+    }
+
+    Set cnt = 0
+    Set mid = ""
+    For {
+        Set mid = $Order(^||kh2s(mid))
+        Quit:mid=""
+        If pred '= "" {
+            Set o2 = ""
+            For {
+                Set o2 = $Order(^KG("out", pGraph, mid, pred, o2))
+                Quit:o2=""
+                If '$Data(^||kh2all(o2)) {
+                    Set ^||kh2all(o2) = ""
+                    Set cnt = cnt + 1
+                }
+            }
+        } Else {
+            Set p2 = ""
+            For {
+                Set p2 = $Order(^KG("out", pGraph, mid, p2))
+                Quit:p2=""
+                Set o2 = ""
+                For {
+                    Set o2 = $Order(^KG("out", pGraph, mid, p2, o2))
+                    Quit:o2=""
+                    If '$Data(^||kh2all(o2)) {
+                        Set ^||kh2all(o2) = ""
+                        Set cnt = cnt + 1
+                    }
+                }
+            }
+        }
+    }
+    Kill ^||kh2s, ^||kh2all
+    Return cnt
+}
+ClassMethod KHop2NeighborIds(srcId As %String, pred As %String = "", maxResults As %Integer = 0) As %String
+{
+	Set pGraph = 0
+    Kill ^||kh2s, ^||kh2all
+    Set ^||kh2all(srcId) = ""
+
+    If pred '= "" {
+        Set o1 = ""
+        For {
+            Set o1 = $Order(^KG("out", pGraph, srcId, pred, o1))
+            Quit:o1=""
+            If '$Data(^||kh2all(o1)) {
+                Set ^||kh2all(o1) = ""
+                Set ^||kh2s(o1) = ""
+            }
+        }
+    } Else {
+        Set p1 = ""
+        For {
+            Set p1 = $Order(^KG("out", pGraph, srcId, p1))
+            Quit:p1=""
+            Set o1 = ""
+            For {
+                Set o1 = $Order(^KG("out", pGraph, srcId, p1, o1))
+                Quit:o1=""
+                If '$Data(^||kh2all(o1)) {
+                    Set ^||kh2all(o1) = ""
+                    Set ^||kh2s(o1) = ""
+                }
+            }
+        }
+    }
+
+    Set result = ""
+    Set cnt = 0
+    Set mid = ""
+    For {
+        Set mid = $Order(^||kh2s(mid))
+        Quit:mid=""
+        If pred '= "" {
+            Set o2 = ""
+            For {
+                Set o2 = $Order(^KG("out", pGraph, mid, pred, o2))
+                Quit:o2=""
+                If '$Data(^||kh2all(o2)) {
+                    Set ^||kh2all(o2) = ""
+                    Set result = result _ o2 _ $Char(10)
+                    Set cnt = cnt + 1
+                    If (maxResults > 0) && (cnt >= maxResults) {
+                        Kill ^||kh2s, ^||kh2all
+                        Return result
+                    }
+                }
+            }
+        } Else {
+            Set p2 = ""
+            For {
+                Set p2 = $Order(^KG("out", pGraph, mid, p2))
+                Quit:p2=""
+                Set o2 = ""
+                For {
+                    Set o2 = $Order(^KG("out", pGraph, mid, p2, o2))
+                    Quit:o2=""
+                    If '$Data(^||kh2all(o2)) {
+                        Set ^||kh2all(o2) = ""
+                        Set result = result _ o2 _ $Char(10)
+                        Set cnt = cnt + 1
+                        If (maxResults > 0) && (cnt >= maxResults) {
+                            Kill ^||kh2s, ^||kh2all
+                            Return result
+                        }
+                    }
+                }
+            }
+        }
+    }
+    Kill ^||kh2s, ^||kh2all
+    Return result
+}
+ClassMethod KHop2CountFast(srcId As %String, pred As %String = "") As %Integer
+{
+	// Default graph, like every other method in this class: the two-hop readers take
+	// no graph, so the entry they read is the default graph's (spec 230 FR-010).
+	Set pGraph = 0
+	// 4.6.0 R284: the precomputed count only while ^KG("__version") is the one it was built at; after any write it is
+	// stale (it answered the count of the graph as Build2HopStats last saw it), and the walk answers
+    If (pred '= "") && ..Fresh("deg2p") {
+        Set cnt = $Get(^KG("deg2p", pGraph, srcId, pred), -1)
+        If cnt >= 0 Return +cnt
+    }
+    Return ..KHop2Count(srcId, pred)
+}
+ClassMethod KHop2CountExact(srcId As %String, pred As %String = "") As %Integer
+{
+	Set pGraph = 0
+    If (pred '= "") && ..Fresh("deg2p_exact") {
+        Set cnt = $Get(^KG("deg2p_exact", pGraph, srcId, pred), -1)
+        If cnt >= 0 Return +cnt
+    }
+    Return ..KHop2Count(srcId, pred)
+}
+
+/// Whether the Rebuilt store pStore ("deg2p", "deg2p_exact") was built from the current Graph-Version Token: its stamp
+/// ^IVG.BuiltFrom(pStore) equals ^KG("__version") (ADR-0008, iris_vector_graph/freshness.py; 4.6.0 R284). No stamp
+/// (counts built before 4.6.0) is not current.
+ClassMethod Fresh(pStore As %String) As %Boolean [ Private ]
+{
+	Quit ($Data(^IVG.BuiltFrom(pStore)) # 2) && (^IVG.BuiltFrom(pStore) = +$Get(^KG("__version")))
+}
+}

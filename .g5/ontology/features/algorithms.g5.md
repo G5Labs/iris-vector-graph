@@ -113,7 +113,8 @@ PageRank, WCC, CDLP and subgraph read the default graph only, while PPR and degr
 Every algorithm answer includes every node of the graph, nodes with no edge too, and the n in any formula is the graph's node count. Ranked answers come highest first, and ties go by node ID in IRIS collation; two scores equal to 12 decimal places are a tie.
 
 - A direction is `out` (along edges), `in` (against them) or `both` (the graph read as undirected).
-- A damping factor outside (0, 1), an iteration count below 1 or an unknown direction raises `ValueError` before anything is read.
+- PageRank and PPR reject a damping factor outside (0, 1) or an iteration count below 1 with `ValueError` before reading data.
+- Operations with a direction reject an unknown direction with `ValueError` before reading data.
 - The exceptions to "every node" are betweenness, which lists only nodes that score above 0, and walks and subgraphs, which list what they reach.
 
 <a id="algorithms.op.pagerank"></a>
@@ -287,6 +288,7 @@ Answers of PageRank, PPR, WCC and CDLP are cached for every connection, separate
 A cached answer is valid only while the graph-version token it was computed under is still current, as the [structure page](graph-structure.g5.md#structure.rebuilt.valid) defines. The token moves on changes to the adjacency index, not on node rows or properties, so the cache admits only answers that depend on adjacency alone.
 
 - PageRank also keys on the set of nodes, because adding a node without edges does not move the token.
+- WCC and CDLP cache the labels for nodes found in adjacency. Each public call then reads the current nodes with no edge to another node and adds missing ones with their own labels, even on a cache hit.
 - Subgraph extraction reads labels and properties, so its answers are never cached.
 - The token is shared by the whole namespace, so a write to one graph also invalidates other graphs' answers.
 
@@ -446,7 +448,7 @@ Changed in 4.6.0. Before that, procedures and methods disagreed: some answered e
 - agent
 - user-facing-behavior
 
-Edgeless nodes joined every answer in 4.6.0 (R306), and unreached PPR nodes got a 0.0 row in 4.7.0. Argument checks for damping and iterations came in 4.7.0. The Cypher procedures' graph scope is in [graph scope](#algorithms.graph_scope).
+Edgeless nodes joined every answer in 4.6.0 (R306), and unreached PPR nodes got a 0.0 row in 4.7.0. PageRank and PPR argument checks for damping and iterations came in 4.7.0 ([USER_GUIDE](../../../docs/USER_GUIDE.md#L598-L600), [CHANGELOG](../../../CHANGELOG.md#L41)). The Cypher procedures' graph scope is in [graph scope](#algorithms.graph_scope).
 
 ### algorithms.op.pagerank
 
@@ -496,20 +498,24 @@ Actual named graph s:seed->t:tiny plus0:zero, alpha1e-13 and one iteration: nati
 ### algorithms.op.wcc
 
 - Sources: [COMMUNITIES.md: Weakly connected components](../../../docs/COMMUNITIES.md); [API_REFERENCE kg_WCC](../../../docs/API_REFERENCE.md)
+- Verus: [communities](../../Verus_verification/models/communities/NOTES.md) derives raw coordinate membership, synchronous minima, reachable-radius propagation and actual first-stop termination within N rounds including confirmation. Explicit insufficient budgets refuse even after labels happen to be final; empty succeeds before the guard. Weak-component interpretation requires mirrored, closed projected edges and an admitted order relation; native bodies, arbitrary identifiers/serialization, provider truth and concurrency remain unproved.
 - Expands: [Operations](#algorithms.op)
 - agent
 - user-facing-behavior
 
 With a round limit the Owner answers even when Arno is loaded. Before 4.6.0 labels stopped after 100 rounds, so a long component could come back split.
 
+
 ### algorithms.op.cdlp
 
 - Sources: [COMMUNITIES.md: Label propagation](../../../docs/COMMUNITIES.md); [API_REFERENCE kg_CDLP](../../../docs/API_REFERENCE.md)
+- Verus: [communities](../../Verus_verification/models/communities/NOTES.md) derives raw coordinate frequencies, self-loop exclusion, greatest-vote/least-label decisions, old-map synchrony, finite budget and arbitrary-round two-node parity. It does not promise convergence or resolve physical keyed-edge vote policy; repeated physical keys collapse in the source coordinate projection. Typed integer and shared admitted ordering/provider conditions remain explicit.
 - Expands: [Operations](#algorithms.op)
 - agent
 - user-facing-behavior
 
 The self-loop rule and the collation tie-break changed in 4.6.0. The oscillation is documented; the documented check is to compare two adjacent round limits.
+
 
 ### algorithms.op.subgraph
 
@@ -654,6 +660,7 @@ Findings: [HD-1003](../../Verus_verification/open_questions.md#HD-1003)
 - Playbook: [ALG-B16](../../../experiment/playbook-completion/ontology/10-algorithms.md#L309), [ALG-B16.3](../../../experiment/playbook-completion/ontology/10-algorithms.md#L312)
 - Verus: active for modeled PageRank/PPR keys and repeated calls (partial for public M21): the playbook's `proofs-d1e` [`acache_l1.rs`](../../../experiment/playbook-completion/proofs-d1e/src/acache_l1.rs) `theorem_answer_is_fresh` and `acache_l2.rs` (**reviewed design**: freshness is keyed on a node token `nver` the pin does not have; the pin's behavior is control `control_f1004_create_moves_no_token`, finding F-1004, rerun here). Its theorem supports "the reviewed design returns fresh answers", not "the product does". Overlapping: `G-graph_structure` (as-built) algorithm-cache token model, which omits the parameters from the key; its witness of a rolled-back write is finding bug-str-002. Scope correction in iteration 1: Q contains only PageRank and seeded PPR, not CDLP iteration keys; Ans does not carry CDLP labels or iteration counts. M21 remains partial.
 - Children: [global PageRank admission](#algorithms.cache.pagerank), [token](#algorithms.cache.token), [erasure](#algorithms.cache.erasure), [concurrency](#algorithms.cache.concurrency)
+- Verus (new bounded composition): [communities](../../Verus_verification/models/communities/NOTES.md) derives immutable core payloads from raw origins and composes selected-key/token reuse with a fresh raw live census. It proves same-core isolate visibility and retains stale same-token/different-origin counterexamples. Front/shared implementation, hashing, capacity/large results, disabled/failing cache paths, concurrent publication and actual token-writer correctness are wider than this relation; prior reviewed-design and rollback findings remain.
 - agent
 - data-integrity
 - test-coverage
@@ -662,11 +669,13 @@ Live coverage: `tests/integration/test_236_algo_cache.py`. Each graph's cache is
 
 Findings: [A cached personalized PageRank answer does not notice a node created after it](../../Verus_verification/bugs_issues.md#bug-plt-017)
 
+
 ### algorithms.cache.token
 
 - Sources: [Spec 236 FR-017, FR-018, FR-019, research R2](../../../specs/236-arno-callout-adoption/spec.md); [Spec 236 token audit](../../../specs/236-arno-callout-adoption/research-token-audit.md); [algo_cache.py](../../../iris_vector_graph/algo_cache.py); [Adjacency.cls](../../../iris_src/src/Graph/KG/Adjacency.cls); [structure.rebuilt.token](graph-structure.g5.md#structure.rebuilt.token)
 - Playbook: [ALG-B16.6](../../../experiment/playbook-completion/ontology/10-algorithms.md#L315), [ALG-B16.7](../../../experiment/playbook-completion/ontology/10-algorithms.md#L316)
 - Verus: active for abstract shared-cache hits and recompute after a write (partial for public J04): the playbook's `proofs-d1e` `acache_l2.rs` (**reviewed design**, see [algorithm cache](#algorithms.cache); control `control_f1004_create_moves_no_token`). As-built evidence: `G-graph_structure` `theorem_as_built_cache_sound` and the rollback witness behind bug-str-002 (not the same defect as F-1004). Scope correction in iteration 1: WCC components and the public second-connection WCC reader are not represented, so J04 remains partial; an abstract shared-cache hit is not that workflow.
+- Verus (WCC/CDLP extension): [communities](../../Verus_verification/models/communities/NOTES.md) derives SQL-node/edge versus KG incidence, value-consuming page cursors with final empty confirmation, whole-result failure discard and SQL fallback. Raw stable SQL/KG projection and a common order-preserving admitted identifier carrier are required. New census8 and reused native18 corroborate finite ordinary cases; no all-driver/collation or rollback repair is implied.
 - Expands: [Algorithm cache](#algorithms.cache)
 - agent
 - data-integrity
@@ -675,6 +684,7 @@ Findings: [A cached personalized PageRank answer does not notice a node created 
 Live coverage: `tests/integration/test_236_token_write_paths.py`, one case per audited write path. Where the label index is declared, label writes also move the token, so the stated reason subgraph is not cached is out of date; the decision stands. The case of a write that rolls back after a reader stored an answer is the open question [structure.rebuilt.rollback](graph-structure.g5.md#structure.rebuilt.rollback). Suspected divergence: a cached PPR answer for a seed that is not yet a node survives the node's creation, since PPR is not keyed on the node set.
 
 Findings: [A cached personalized PageRank answer does not notice a node created after it](../../Verus_verification/bugs_issues.md#bug-plt-017), [same creation trigger in F-1004](../../Verus_verification/bugs_issues.md#F-1004)
+
 
 ### algorithms.cache.pagerank
 

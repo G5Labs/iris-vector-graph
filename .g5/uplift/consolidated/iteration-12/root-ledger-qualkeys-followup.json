@@ -1,0 +1,368 @@
+{
+  "verdict": "AGREES",
+  "completed_cases": 6,
+  "cases": [
+    {
+      "label": "new empty-key batch refuses before relationship/revision",
+      "actual": {
+        "error": {
+          "type": "LedgerInconsistencyError",
+          "subscript": true,
+          "stage": true
+        },
+        "unchanged_head": true,
+        "physical": null
+      },
+      "expected": {
+        "error": {
+          "type": "LedgerInconsistencyError",
+          "subscript": true,
+          "stage": true
+        },
+        "unchanged_head": true,
+        "physical": null
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "valid nonempty new batch neighbor",
+      "actual": {
+        "physical": {
+          "q": "x"
+        },
+        "replay": {
+          "q": "x"
+        },
+        "records": [
+          [
+            "set_qual",
+            "q",
+            null,
+            "x"
+          ]
+        ]
+      },
+      "expected": {
+        "physical": {
+          "q": "x"
+        },
+        "replay": {
+          "q": "x"
+        },
+        "records": [
+          [
+            "set_qual",
+            "q",
+            null,
+            "x"
+          ]
+        ]
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "existing empty-key batch refuses without changing old qualifier",
+      "actual": {
+        "error": {
+          "type": "LedgerInconsistencyError",
+          "subscript": true,
+          "stage": true
+        },
+        "unchanged_head": true,
+        "physical": {
+          "q": "x"
+        }
+      },
+      "expected": {
+        "error": {
+          "type": "LedgerInconsistencyError",
+          "subscript": true,
+          "stage": true
+        },
+        "unchanged_head": true,
+        "physical": {
+          "q": "x"
+        }
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "valid nonempty existing upsert neighbor",
+      "actual": {
+        "physical": {
+          "q": "y"
+        },
+        "replay": {
+          "q": "y"
+        },
+        "records": [
+          [
+            "set_qual",
+            "q",
+            "x",
+            "y"
+          ]
+        ]
+      },
+      "expected": {
+        "physical": {
+          "q": "y"
+        },
+        "replay": {
+          "q": "y"
+        },
+        "records": [
+          [
+            "set_qual",
+            "q",
+            "x",
+            "y"
+          ]
+        ]
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "direct empty qualifier retains Python refusal",
+      "actual": [
+        "ValueError",
+        true
+      ],
+      "expected": [
+        "ValueError",
+        true
+      ],
+      "prediction_agrees": true,
+      "post_refutation": true
+    },
+    {
+      "label": "node empty-property batch rolls back earlier create",
+      "actual": {
+        "error": {
+          "type": "ChangesetOperationError",
+          "empty_property": true
+        },
+        "unchanged_head": true,
+        "absent_node": true
+      },
+      "expected": {
+        "error": {
+          "type": "ChangesetOperationError",
+          "empty_property": true
+        },
+        "unchanged_head": true,
+        "absent_node": true
+      },
+      "prediction_agrees": true,
+      "post_refutation": true
+    }
+  ],
+  "revisions": [
+    {
+      "revision": {
+        "seq": 27,
+        "revision_id": "143dc2ffe14411f1a1f336fcf217e862",
+        "parent_id": "143d68f1e14411f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-qualfollow",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781793881,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 2
+      },
+      "ops": [
+        {
+          "op": "create_node",
+          "id": "qualfollow12:d5b49137:a"
+        },
+        {
+          "op": "create_node",
+          "id": "qualfollow12:d5b49137:b"
+        }
+      ],
+      "records": [
+        {
+          "seq": 27,
+          "ordinal": 1,
+          "op": "create_node",
+          "entity_kind": "node",
+          "entity_id": "qualfollow12:d5b49137:a",
+          "attr": "",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 27,
+          "ordinal": 2,
+          "op": "create_node",
+          "entity_kind": "node",
+          "entity_id": "qualfollow12:d5b49137:b",
+          "attr": "",
+          "prior": null,
+          "new": "",
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {}
+    },
+    {
+      "revision": {
+        "seq": 28,
+        "revision_id": "144392ede14411f1a1f336fcf217e862",
+        "parent_id": "143dc2ffe14411f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-qualfollow",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781793919,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 2
+      },
+      "ops": [
+        {
+          "op": "create_rel",
+          "tuple": {
+            "s": "qualfollow12:d5b49137:a",
+            "p": "QUALKEY",
+            "o": "qualfollow12:d5b49137:b",
+            "graph": null
+          },
+          "quals": {
+            "q": "x"
+          }
+        }
+      ],
+      "records": [
+        {
+          "seq": 28,
+          "ordinal": 1,
+          "op": "create_rel",
+          "entity_kind": "rel",
+          "entity_id": "9",
+          "attr": "",
+          "prior": null,
+          "new": "{\"graph\":null,\"o\":\"qualfollow12:d5b49137:b\",\"p\":\"QUALKEY\",\"s\":\"qualfollow12:d5b49137:a\"}",
+          "graph": null,
+          "flags": []
+        },
+        {
+          "seq": 28,
+          "ordinal": 2,
+          "op": "set_qual",
+          "entity_kind": "rel",
+          "entity_id": "9",
+          "attr": "q",
+          "prior": null,
+          "new": "x",
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {
+        "0": "9"
+      }
+    },
+    {
+      "revision": {
+        "seq": 29,
+        "revision_id": "14494eabe14411f1a1f336fcf217e862",
+        "parent_id": "144392ede14411f1a1f336fcf217e862",
+        "kind": "changeset",
+        "actor": "uplift12-qualfollow",
+        "actor_type": "system",
+        "conn_user": "_SYSTEM",
+        "committed_ms": 1794781793957,
+        "message": null,
+        "source": null,
+        "correlation_id": null,
+        "idempotency_key": null,
+        "op_count": 1
+      },
+      "ops": [
+        {
+          "op": "upsert_rel",
+          "tuple": {
+            "s": "qualfollow12:d5b49137:a",
+            "p": "QUALKEY",
+            "o": "qualfollow12:d5b49137:b",
+            "graph": null
+          },
+          "quals": {
+            "q": "y"
+          }
+        }
+      ],
+      "records": [
+        {
+          "seq": 29,
+          "ordinal": 1,
+          "op": "set_qual",
+          "entity_kind": "rel",
+          "entity_id": "9",
+          "attr": "q",
+          "prior": "x",
+          "new": "y",
+          "graph": null,
+          "flags": []
+        }
+      ],
+      "stmt_ids": {
+        "0": "9"
+      }
+    }
+  ],
+  "failure": null,
+  "prefix": "qualfollow12:d5b49137:",
+  "before_meta": {
+    "ok": true,
+    "state": "disabled",
+    "strict": false,
+    "max_ops": 50000,
+    "recon_bound": 250000,
+    "head_seq": 25,
+    "head_id": "edabea53e14311f1a1f336fcf217e862"
+  },
+  "after_meta": {
+    "ok": true,
+    "state": "disabled",
+    "strict": false,
+    "max_ops": 50000,
+    "recon_bound": 250000,
+    "head_seq": 29,
+    "head_id": "14494eabe14411f1a1f336fcf217e862"
+  },
+  "elapsed": 0.3741951250121929,
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-followup.py": "4acd099e2f2f781bd76ebd49230c3da6a9cc243019d729ad0719c61dee643e47",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-followup-predictions.md": "3bef6aca78d17569d87ec08847a2ce0165e181faae387b87b541b840341132ac",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-native.py": "4fc15f9e09a8d61c588a758288d39640e06d01deee7d3017aa7532b5a67e2fa8",
+    ".g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-native.json": "9503849f116d745d6ebba2ee3cdc5a631702fa96fa5377c3e08569ea967b6c86",
+    ".g5/Verus_verification/models/temporal_restore/binding.py": "cdd4459d65727c894b6be1aca1a1f61ad56cb1325592bacc9dcb5471a7608fe1",
+    ".g5/uplift/consolidated/iteration-5/native-setup.json": "00f2a10ec6c71dcfef54013d462875481bd76ef3d7a8c9dc0e291aae63058cdf"
+  },
+  "source_inputs": {
+    "iris_src/src/Graph/KG/LedgerApply.cls": "73068abd02f1e93a8cda77365e9c8be41f8d756f1bc25dbb33e8a7468700c414",
+    "iris_vector_graph/ledger/changeset.py": "0542061cd17b5c74f4d34f9a9ad42a7cc673804b6911136a8e5d256dd1cd79c3",
+    "iris_vector_graph/ledger/replay.py": "2cf6d87ea3b1c66f785c1bf8dcd7cf38c99e29cc3cac2794d73edf6af20d00b3",
+    "iris_vector_graph/ledger/client.py": "7a7674fe4c8efec9723847d409c6da867c3f90d7821991c94cc9b2eaee7ef08c"
+  },
+  "identity_checked": true,
+  "container": "ivg-uplift-next-20261115",
+  "new_issue_claims": 0,
+  "post_refutation": true,
+  "scope": "Six post-refutation source-informed finite native neighbors, not blind predictions. Original skip-empty forecast and0-comparison failed native attempt preserved. Actual empty-key local-map failures for new/existing qualifiers contrast valid records/physical JSON/replay, Python direct refusal and own node-prefix rollback. No new issue/owner decision/product fix/native body or universal provider proof."
+}

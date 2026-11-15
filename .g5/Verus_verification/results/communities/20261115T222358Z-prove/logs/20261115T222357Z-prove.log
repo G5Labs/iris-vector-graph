@@ -1,0 +1,140 @@
+verification results:: 10 verified, 5 errors
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:32:7
+   |
+32 |     g.filter_lemma(|a:Coord|selected(a));let xs=g.filter(|a:Coord|selected(a));assert(xs.contains(g[i]));
+   |       ^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:58:1
+   |
+58 | pub proof fn lemma_ball_head(g:Seq<Coord>,u:Node,k:nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:67:41
+   |
+67 |             if v!=u{let n=choose|n:Node|neighbor(g,u,n) && ball(g,n,(k-1) as nat).contains(v);lemma_ball_basic(g,n,(k-1) as nat);}
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:67:95
+   |
+46 |     requires members(g).contains(u),
+   |              ---------------------- failed precondition
+...
+67 |             if v!=u{let n=choose|n:Node|neighbor(g,u,n) && ball(g,n,(k-1) as nat).contains(v);lemma_ball_basic(g,n,(k-1) as nat);}
+   |                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:71:37
+   |
+71 | ...   let n=choose|n:Node|neighbor(g,u,n) && ball(g,n,(k-1) as nat).contains(w);lemma_ball_basic(g,n,(k-1) as nat);assert(ball(g,n,k...
+   |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:79:63
+   |
+79 |             else if ball(g,n,(k-1) as nat).contains(v){assert(ball(g,u,k).contains(v));}
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:96:29
+   |
+96 |         let x=choose|x:Node|ball(g,u,k).contains(x) && !ball(g,u,(k-1) as nat).contains(x);
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:97:9
+   |
+97 |         ball(g,u,(k-1) as nat).lemma_subset_not_in_lt(ball(g,u,k),x);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> set_lib.rs:443:12
+   |
+   = note: failed precondition
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:105:85
+    |
+105 | ...ict_growth(g,u,k);let x=choose|x:Node|ball(g,u,n).contains(x) && !ball(g,u,k).contains(x);ball(g,u,k).lemma_subset_not_in_lt(bal...
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:105:137
+    |
+105 | ...ontains(x) && !ball(g,u,k).contains(x);ball(g,u,k).lemma_subset_not_in_lt(ball(g,u,n),x);lemma_len_subset(ball(g,u,n),members(g));}
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> set_lib.rs:443:12
+    |
+    = note: failed precondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:121:1
+    |
+121 | pub proof fn lemma_min_fold(g:Seq<Coord>,u:Node,l:Labels,best:Node)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:128:43
+    |
+128 | ...   if v!=best{let i=choose|i:int|0<=i<g.len() && selected(g[i]) && g[i].owner==u && v==get(l,g[i].neighbor);if i>0{assert(candid...
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:128:132
+    |
+128 | ...t(l,g[i].neighbor);if i>0{assert(candidates(g.drop_first(),u,l,b).contains(v));}}
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:130:73
+    |
+130 | ...   if min_fold(g,u,l,best)!=best{if min_fold(g,u,l,best)==b{assert(candidates(g,u,l,best).contains(b));}else{let i=choose|i:int|...
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:130:134
+    |
+130 | ...nt|0<=i<g.drop_first().len() && selected(g.drop_first()[i]) && g.drop_first()[i].owner==u && min_fold(g,u,l,best)==get(l,g.drop_first()[i].neighbor);as...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:133:1
+    |
+133 | pub proof fn theorem_synchronous_round_extends_raw_radius(g:Seq<Coord>,k:nat,l:Labels)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:139:45
+    |
+139 | ...   if x==l[u]{}else{let i=choose|i:int|0<=i<g.len() && selected(g[i]) && g[i].owner==u && x==get(l,g[i].neighbor);let n=g[i].nei...
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:139:126
+    |
+139 | ...   if x==l[u]{}else{let i=choose|i:int|0<=i<g.len() && selected(g[i]) && g[i].owner==u && x==get(l,g[i].neighbor);let n=g[i].nei...
+    |                                                                                                                            ^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:139:147
+    |
+139 | ...get(l,g[i].neighbor);let n=g[i].neighbor;assert(neighbor(g,u,n));assert(ball(g,n,k).contains(x));}
+    |                                                    ^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/communities/communities.rs:139:171
+    |
+139 | ...[i].neighbor;assert(neighbor(g,u,n));assert(ball(g,n,k).contains(x));}
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 8 previous errors; 1 warning emitted
+

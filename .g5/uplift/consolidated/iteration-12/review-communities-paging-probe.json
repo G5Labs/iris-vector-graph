@@ -1,0 +1,265 @@
+{
+  "verdict": "ACTUAL_PAGING_DISPATCH_SQL_SOURCE_AGREES",
+  "cases": [
+    {
+      "mode": "good",
+      "raw_nodes": [
+        "a",
+        "b",
+        "iso",
+        "loop"
+      ],
+      "raw_edges": [
+        [
+          "a",
+          "R",
+          "b"
+        ],
+        [
+          "loop",
+          "L",
+          "loop"
+        ]
+      ],
+      "actual": {
+        "iso": false,
+        "loop": true
+      },
+      "error": null,
+      "native_page_calls": [
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "",
+          "limit": 1
+        },
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "iso",
+          "limit": 1
+        },
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "loop",
+          "limit": 1
+        }
+      ],
+      "sql": [],
+      "agrees": true
+    },
+    {
+      "mode": "fail",
+      "raw_nodes": [
+        "a",
+        "b",
+        "iso",
+        "loop"
+      ],
+      "raw_edges": [
+        [
+          "a",
+          "R",
+          "b"
+        ],
+        [
+          "loop",
+          "L",
+          "loop"
+        ]
+      ],
+      "actual": {
+        "iso": false,
+        "loop": true
+      },
+      "error": null,
+      "native_page_calls": [
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "",
+          "limit": 1
+        },
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "iso",
+          "limit": 1
+        }
+      ],
+      "sql": [
+        {
+          "sql": "SELECT n.node_id, CASE WHEN EXISTS (SELECT 1 FROM main.rdf_edges x WHERE x.s = n.node_id AND COALESCE(x.graph_id, '') = ?) THEN 1 ELSE 0 END FROM main.nodes n WHERE COALESCE(n.graph_id, '') = ? AND NOT EXISTS (SELECT 1 FROM main.rdf_edges e WHERE e.s = n.node_id AND e.o_id <> n.node_id AND COALESCE(e.graph_id, '') = ?) AND NOT EXISTS (SELECT 1 FROM main.rdf_edges e WHERE e.o_id = n.node_id AND e.s <> n.node_id AND COALESCE(e.graph_id, '') = ?)",
+          "args": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "mode": "malformed",
+      "raw_nodes": [
+        "a",
+        "b",
+        "iso",
+        "loop"
+      ],
+      "raw_edges": [
+        [
+          "a",
+          "R",
+          "b"
+        ],
+        [
+          "loop",
+          "L",
+          "loop"
+        ]
+      ],
+      "actual": {
+        "iso": false,
+        "loop": true
+      },
+      "error": null,
+      "native_page_calls": [
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "",
+          "limit": 1
+        },
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "iso",
+          "limit": 1
+        }
+      ],
+      "sql": [
+        {
+          "sql": "SELECT n.node_id, CASE WHEN EXISTS (SELECT 1 FROM main.rdf_edges x WHERE x.s = n.node_id AND COALESCE(x.graph_id, '') = ?) THEN 1 ELSE 0 END FROM main.nodes n WHERE COALESCE(n.graph_id, '') = ? AND NOT EXISTS (SELECT 1 FROM main.rdf_edges e WHERE e.s = n.node_id AND e.o_id <> n.node_id AND COALESCE(e.graph_id, '') = ?) AND NOT EXISTS (SELECT 1 FROM main.rdf_edges e WHERE e.o_id = n.node_id AND e.s <> n.node_id AND COALESCE(e.graph_id, '') = ?)",
+          "args": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "mode": "double-failure",
+      "raw_nodes": [
+        "a",
+        "b",
+        "iso",
+        "loop"
+      ],
+      "raw_edges": [
+        [
+          "a",
+          "R",
+          "b"
+        ],
+        [
+          "loop",
+          "L",
+          "loop"
+        ]
+      ],
+      "actual": null,
+      "error": {
+        "type": "OperationalError",
+        "message": "named SQL census unavailable"
+      },
+      "native_page_calls": [
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "",
+          "limit": 1
+        },
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "iso",
+          "limit": 1
+        }
+      ],
+      "sql": [
+        {
+          "sql": "SELECT n.node_id, CASE WHEN EXISTS (SELECT 1 FROM main.rdf_edges x WHERE x.s = n.node_id AND COALESCE(x.graph_id, '') = ?) THEN 1 ELSE 0 END FROM main.nodes n WHERE COALESCE(n.graph_id, '') = ? AND NOT EXISTS (SELECT 1 FROM main.rdf_edges e WHERE e.s = n.node_id AND e.o_id <> n.node_id AND COALESCE(e.graph_id, '') = ?) AND NOT EXISTS (SELECT 1 FROM main.rdf_edges e WHERE e.o_id = n.node_id AND e.s <> n.node_id AND COALESCE(e.graph_id, '') = ?)",
+          "args": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ],
+      "agrees": true
+    },
+    {
+      "mode": "empty",
+      "raw_nodes": [
+        "a",
+        "b"
+      ],
+      "raw_edges": [
+        [
+          "a",
+          "R",
+          "b"
+        ]
+      ],
+      "actual": {},
+      "error": null,
+      "native_page_calls": [
+        {
+          "cls": "Graph.KG.Edgeless",
+          "method": "LonersJson",
+          "schema": "main",
+          "graph": "",
+          "after": "",
+          "limit": 1
+        }
+      ],
+      "sql": [],
+      "agrees": true
+    }
+  ],
+  "socket_connect_calls": 0,
+  "native_calls": 0,
+  "source_inputs": {
+    "iris_vector_graph/_edgeless.py": "1361713b382eedbad19b2a269296aba234a0a0f05684c11cf2f21245bf30346c",
+    "iris_vector_graph/_engine/algorithms.py": "e39a9164f19bb67f1c2b0f686a3ac5a01208c1f5c2da15f937820fe6c47853de"
+  },
+  "script_sha256": "21cf801b39fb44d538392afb08d37cdd5566e49196ac88d541aef64a4fc375ce",
+  "elapsed_s": 0.42254416598007083,
+  "helper_substitution": "Actual _edgeless.loners invoked with explicit supported page=1 through dispatch wrapper; named raw Native port derives each page from raw membership/edges. SQLite executes actual SQL. No native class or server call.",
+  "scope": "Five frozen C15 neighboring source/provider cases, not new sampling/grade/formal units. Native/SQL projection uses a stated faithful raw fixture. SQLite parameter behavior does not prove native DBAPI semantics; root8 is separate finite corroboration."
+}

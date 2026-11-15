@@ -1,0 +1,119 @@
+{
+  "summary": {
+    "main_passing_native_cases": 42,
+    "ordinary_panel": 22,
+    "post_refutation_followups": 6,
+    "next_cypher_preparation_native_cases": 18,
+    "reused_community_preparation_native_cases": 18,
+    "reused_community_preparation_source": "../iteration-11/next-communities-native.json",
+    "alternate_pool_source_schedules": 8,
+    "alternate_pool_native_or_db_calls": 0,
+    "original_refuted_batch_key_native_attempt_completed_comparisons": 0,
+    "main_panel_failed_attempt_passing_comparisons": 16,
+    "cypher_failed_attempt_passing_comparisons": 16,
+    "new_issues": 0,
+    "owner_decisions": 0,
+    "direct_executable_body_verified": 0,
+    "ledger_passing_native_cases": 34,
+    "new_communities_census_native_cases": 8,
+    "new_communities_controlled_census_unavailable_events": 4,
+    "new_ledger_marker_native_cases": 6,
+    "known_marker_root_strengthened": "F-C0351"
+  },
+  "receipts": [
+    {
+      "path": "root-ledger-native.json",
+      "sha256": "8d57e00ea4f388426b19c7c3f2474368c6dcb3b327f0950360ee8c4313e7cf62",
+      "verdict": "AGREES",
+      "completed_cases": 22,
+      "agrees": 22,
+      "elapsed_s": 0.914387832977809,
+      "failure": null
+    },
+    {
+      "path": "root-ledger-qualkeys-native.json",
+      "sha256": "9503849f116d745d6ebba2ee3cdc5a631702fa96fa5377c3e08569ea967b6c86",
+      "verdict": "DISAGREES_OR_INCOMPLETE",
+      "completed_cases": 0,
+      "agrees": 0,
+      "elapsed_s": 0.1808247499866411,
+      "failure": {
+        "type": "LedgerInconsistencyError",
+        "message": "<SUBSCRIPT> 16 QualsJson+4^Graph.KG.LedgerApply.1 tKeys() Subscript 1 is \"\"",
+        "trace": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-native.py\", line 49, in main\n    r1, records = commit(change)\n                  ^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-qualkeys-native.py\", line 26, in commit\n    r = lg.commit(change)\n        ^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/ledger/client.py\", line 396, in commit\n    return self._commit(changeset, kind, None)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/ledger/client.py\", line 416, in _commit\n    raise from_commit_error(resp)\niris_vector_graph.ledger.errors.LedgerInconsistencyError: <SUBSCRIPT> 16 QualsJson+4^Graph.KG.LedgerApply.1 tKeys() Subscript 1 is \"\"\n"
+      }
+    },
+    {
+      "path": "root-ledger-qualkeys-followup.json",
+      "sha256": "f063a447345eb47cd0f4e60883db0e17c488be93da956417b9ecf0d22605cebf",
+      "verdict": "AGREES",
+      "completed_cases": 6,
+      "agrees": 6,
+      "elapsed_s": 0.3741951250121929,
+      "failure": null
+    },
+    {
+      "path": "next-cypher-merge-native.json",
+      "sha256": "db0199d782e19ea515fc9314a308ce607d94550f5e3d3c8227e7da4d2c485199",
+      "verdict": "AGREES",
+      "completed_cases": 18,
+      "agrees": 18,
+      "elapsed_s": 0.7635127080138773,
+      "failure": null
+    },
+    {
+      "path": "next-pool-probe.json",
+      "sha256": "4cf9ca435c5f6e5f0f0abb95adfc52ec5ff3d9c97734044db033569fefaaf550",
+      "verdict": "AGREES_AS_BUILT_WITH_FORECAST_MISS",
+      "completed_cases": 8,
+      "agrees": 8,
+      "elapsed_s": 0.00044474995229393244,
+      "failure": null
+    },
+    {
+      "path": "root-ledger-attempts/attempt-1/root-ledger-native.json",
+      "sha256": "a433660d52f036a86fb1a2b56d8194066bc3cc41a6b6dd4b58fbd655230289e6",
+      "verdict": "DISAGREES_OR_INCOMPLETE",
+      "completed_cases": 16,
+      "agrees": 16,
+      "elapsed_s": 1.4785584580386057,
+      "failure": {
+        "type": "ChangesetOperationError",
+        "message": "changeset operation 0 failed: node_exists: 'ledger12:801542c4:a'",
+        "trace": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-native.py\", line 141, in main\n    r7, _ = commit(cs().create_node(a, properties={'k': 'fresh'}))\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/root-ledger-native.py\", line 58, in commit\n    result = lg.commit(changeset)\n             ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/ledger/client.py\", line 396, in commit\n    return self._commit(changeset, kind, None)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/ledger/client.py\", line 416, in _commit\n    raise from_commit_error(resp)\niris_vector_graph.ledger.errors.ChangesetOperationError: changeset operation 0 failed: node_exists: 'ledger12:801542c4:a'\n"
+      }
+    },
+    {
+      "path": "next-cypher-merge-attempts/attempt-1/next-cypher-merge-native.json",
+      "sha256": "0729a289d95fd41744489abf6e8fb051a9b8966e0aeb15ab616c63294a9fb636",
+      "verdict": "DISAGREES_OR_INCOMPLETE",
+      "completed_cases": 17,
+      "agrees": 16,
+      "elapsed_s": 4.241787959006615,
+      "failure": {
+        "type": "AssertionError",
+        "message": "('relationship other-variable expression explicitly refuses', {'type': 'SyntaxError', 'explicit': True}, {'type': 'GraphWriteError', 'explicit': True})",
+        "trace": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/next-cypher-merge-native.py\", line 101, in main\n    case('relationship other-variable expression explicitly refuses', refused, dict(type='GraphWriteError', explicit=True))\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/next-cypher-merge-native.py\", line 49, in case\n    assert ok, (name, actual, expected)\nAssertionError: ('relationship other-variable expression explicitly refuses', {'type': 'SyntaxError', 'explicit': True}, {'type': 'GraphWriteError', 'explicit': True})\n"
+      }
+    },
+    {
+      "path": "root-communities-census-native.json",
+      "sha256": "308f88cd25069df90d7dca6cfaaff81ff25559c376265f03e322015ab18f247e",
+      "verdict": "AGREES",
+      "completed_cases": 8,
+      "agrees": 8,
+      "elapsed_s": 0.292749541986268,
+      "failure": null
+    },
+    {
+      "path": "root-ledger-marker-native.json",
+      "sha256": "f708a5347f9863e8b91efbe55c7d39ef0952e1ea30288134780f15f087f0a5c8",
+      "verdict": "AGREES_SOURCE_FORECAST",
+      "completed_cases": 6,
+      "agrees": 6,
+      "elapsed_s": 0.16971570899477229,
+      "failure": null
+    }
+  ],
+  "scope": "Known-source builder diagnostics. Original failed scenarios and provider forecasts stay visible. Passing comparisons are not independent/blind predictions or population grades. Native source/class correspondence reuses setup5; arbitrary SQL/codec/collation/atomicity and native bodies remain unproved. No prior native observation counted again as newly executed."
+}

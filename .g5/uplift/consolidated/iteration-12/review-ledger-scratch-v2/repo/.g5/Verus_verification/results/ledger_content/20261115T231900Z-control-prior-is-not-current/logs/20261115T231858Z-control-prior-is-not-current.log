@@ -1,0 +1,58 @@
+verification results:: 105 verified, 3 errors
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/prior-is-not-current/20261115T231858Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/prior-is-not-current/20261115T231858Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+error: assertion failed
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/prior-is-not-current/20261115T231858Z/models/ledger_content/alternate.rs:68:9
+   |
+68 |  assert(first.records==seq![rec(Action::SetProp{id:0,key:seq!['k'],prior:Some(seq!['1']),new:Some(seq!['2'])})]);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/prior-is-not-current/20261115T231858Z/models/ledger_content/ledger_content.rs:100:10
+    |
+ 98 | pub proof fn theorem_current_prior_is_derived(s:State,id:int,k:Text,v:Text)
+    | --------------------------------------------------------------------------- at the end of the function body
+ 99 |  requires s.nodes.contains_key(id),!reserved(k),k.len()>0,value(s.nodes[id].props,k)!=Some(v),
+100 |  ensures produce(s,Op::SetProp(id,k,v)).records==seq![rec(Action::SetProp{id,key:k,prior:value(s.nodes[id].props,k),new:Some(v)})],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-12/review-ledger-scratch-v2/run-dir/verus/ledger_content/controls/prior-is-not-current/20261115T231858Z/models/ledger_content/ledger_content.rs:419:10
+    |
+419 |            produce(s,o).records.len()==1 ==> valid_attr_step(s,produce(s,o).records[0]),
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+423 | /  if rs.len()==1{
+424 | |   let r=rs[0];let a=attr_record(r).unwrap();
+425 | |   assert forall|f:Field|f!=a.0 implies field(s,f)==field(apply(s,r),f) by {}
+426 | |  }
+    | |__- at the end of the function body
+
+error: aborting due to 3 previous errors; 2 warnings emitted
+
