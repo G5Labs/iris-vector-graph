@@ -1,0 +1,27 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/last-duplicate-wins/fusion_ranking.rs:37:1
+   |
+37 | pub proof fn theorem_first_occurrence_wins(a:int,b:int,c:nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/last-duplicate-wins/fusion_ranking.rs:38:13
+   |
+37 | pub proof fn theorem_first_occurrence_wins(a:int,b:int,c:nat)
+   | ------------------------------------------------------------- at the end of the function body
+38 |     ensures rank(seq![(0,a),(0,b)],0,0)==Some(1),part(seq![(0,a),(0,b)],0,c)==1real/(c as real+1real),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/last-duplicate-wins/fusion_ranking.rs:38:50
+   |
+37 | pub proof fn theorem_first_occurrence_wins(a:int,b:int,c:nat)
+   | ------------------------------------------------------------- at the end of the function body
+38 |     ensures rank(seq![(0,a),(0,b)],0,0)==Some(1),part(seq![(0,a),(0,b)],0,c)==1real/(c as real+1real),
+   |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

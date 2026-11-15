@@ -1,0 +1,15 @@
+# Named reconstruction, prefix bounds, stream and export
+
+As-built structural entity/count transcription at `3eaa79cf`, **11 verified / 6 controls**. Owners: `ledger.readers.bound` and `.policy`. Logs and receipts: `results/reconstruction/`.
+
+`selected` derives the named revision cutoff from each raw record's sequence. `apply` handles node/relationship create, delete and existing-entity update, ignores tombstones/audits and never creates an entity for a missing-entity update. State maps entity identity to an abstract content value; full labels, property/qualifier maps and relationship tuples are outside the proof. `run` checks after each selected record, not just at the end; `effective` derives zero/unset meta fallback. `fold` has no bound.
+
+`theorem_bound_exactly_prefixes` proves for arbitrary sequences that ordinary reconstruction succeeds exactly when each selected prefix fits, and returns the same abstract content as the fold when it does. `theorem_stream_and_export_fold` proves stream and unbounded export agree with the fold for arbitrary sequences. Concrete neighbors: at-limit succeeds; create a/create b/delete b refuses at bound 1 while stream returns a; a read through revision 1 ignores revision 2. Zero/default and tombstone/audit distinctions have named theorems.
+
+Six controls fail where named: refuse equality at the bound; enforce the bound on stream; inspect final size only; ignore named cutoff; interpret zero literally; apply tombstones/audits. The initial expected-count receipt (13 expected, 11 verified) is retained, superseded by a matching baseline.
+
+`binding.py`: **7,020** actual Python named-reader comparisons over all sequences length 0..3 from eight record shapes, two revision cutoffs, three raw bounds, two delivery modes. These are arbitrary accepted pure-reader iterables; not every enumerated history is ledger-producible. The chosen peak-size pair is a reachable commit history. Real `GraphLedger.reconstruct`→SQL pager/decoder→`GraphState.apply`→`reconstruct`, and `export_reconstruction`→`export_ndjson` run against substituted SQL/meta/revision providers with no redaction in progress. Export and stream return the same survivor; tracked input is consumed fully before the iterator is returned. A stream-guard product mutant and changed deciding observation are detected.
+
+Bounded negative values, all graph content/tuple parsing, diff correctness, SQL paging implementation, concurrent mutation, redaction admission and incremental-memory streaming remain unproved. The provider fixture and expected fold are unverified Python, not a verified executable twin. Exact bindings are in `crosswalk/decision-links.tsv`. `q-con-001` gets corroboration; q-iter-002 records intermediate/final policy, with default to preserve current behavior. No product defect is inferred from uncertain policy.
+
+Trust: bundled pinned vstd only, no unchecked declarations, no actors. Proof is about this abstraction; Python correspondence is Observed at unit level; implementation-verified **0**.

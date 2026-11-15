@@ -1,0 +1,53 @@
+{
+  "name": "ledger_apply",
+  "root": "ledger_apply.rs",
+  "expected_verified": 9,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "discard-prior",
+      "why": "discard-prior",
+      "find": "Record::Set(n,k,value(g,n,k),v)",
+      "replace": "Record::Set(n,k,None,v)",
+      "expect_fail_in": [
+        "theorem_two_writes_produce_priors"
+      ]
+    },
+    {
+      "name": "prefix-leaks",
+      "why": "prefix-leaks",
+      "find": "Reply { store:s, error:work.error }",
+      "replace": "Reply { store:Store { graph:work.graph, ..s }, error:work.error }",
+      "expect_fail_in": [
+        "theorem_mid_failure_rolls_back_prefix"
+      ]
+    },
+    {
+      "name": "endpoint-guard-lost",
+      "why": "endpoint-guard-lost",
+      "find": "!g.nodes.contains(s) || !g.nodes.contains(o)",
+      "replace": "!g.nodes.contains(s)",
+      "expect_fail_in": [
+        "theorem_real_endpoint_decides"
+      ]
+    },
+    {
+      "name": "same-value-recorded",
+      "why": "same-value-recorded",
+      "find": "if value(g,n,k) == Some(v)",
+      "replace": "if false",
+      "expect_fail_in": [
+        "theorem_same_value_records_nothing"
+      ]
+    },
+    {
+      "name": "first-error-index-lost",
+      "why": "first-error-index-lost",
+      "find": "error:Some(index)",
+      "replace": "error:Some(0)",
+      "expect_fail_in": [
+        "theorem_mid_failure_rolls_back_prefix"
+      ]
+    }
+  ]
+}

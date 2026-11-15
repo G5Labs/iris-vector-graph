@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/ledger_apply/controls/endpoint-guard-lost/ledger_apply.rs:78:13
+   |
+76 | pub proof fn theorem_real_endpoint_decides(g: Graph, s:int,o:int)
+   | ----------------------------------------------------------------- at the end of the function body
+77 |     requires !g.nodes.contains(o),
+78 |     ensures fails(g,Op::Rel(s,o)),
+   |             ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

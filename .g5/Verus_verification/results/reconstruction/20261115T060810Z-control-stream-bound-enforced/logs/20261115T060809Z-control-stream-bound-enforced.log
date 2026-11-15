@@ -1,0 +1,24 @@
+verification results:: 9 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/stream-bound-enforced/reconstruction.rs:47:13
+   |
+47 |     ensures run(s,rs,through,b,true)==Some(fold(s,rs,through)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+51 |     if rs.len()>0 {theorem_stream_and_export_fold(next(s,rs[0],through),rs.drop_first(),through,b);}
+   |     ------------------------------------------------------------------------------------------------ at the end of the function body
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/stream-bound-enforced/reconstruction.rs:62:13
+   |
+61 |   pub proof fn theorem_transient_oversize_refuses()
+   |   ------------------------------------------------- at the end of the function body
+62 |       ensures ({let rs=seq![record(1,Op::Create(false,0,0)),record(2,Op::Create(false,1,0)),record(3,Op::Delete(false,1))];
+   |  _____________^
+63 | |         fold(Map::empty(),rs,3)==map![(false,0)=>0]
+64 | |         && run(Map::empty(),rs,3,Some(1),false)==None
+65 | |         && run(Map::empty(),rs,3,Some(1),true)==Some(map![(false,0)=>0])}),
+   | |__________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

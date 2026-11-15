@@ -1,0 +1,24 @@
+verification results:: 7 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/ledger_apply/controls/endpoint-guard-lost/ledger_apply.rs:78:13
+   |
+76 | pub proof fn theorem_real_endpoint_decides(g: Graph, s:int,o:int)
+   | ----------------------------------------------------------------- at the end of the function body
+77 |     requires !g.nodes.contains(o),
+78 |     ensures fails(g,Op::Rel(s,o)),
+   |             ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/ledger_apply/controls/endpoint-guard-lost/ledger_apply.rs:86:13
+   |
+85 |   pub proof fn theorem_mid_failure_rolls_back_prefix()
+   |   ---------------------------------------------------- at the end of the function body
+86 |       ensures ({ let s=commit(initial(),seq![Op::Create(0),Op::Create(1),Op::Set(0,0,1)]).store;
+   |  _____________^
+87 | |         let r=commit(s,seq![Op::Create(2),Op::Label(0,7),Op::Set(0,0,2),Op::Rel(2,0),Op::Rel(0,99),Op::Create(3)]);
+88 | |         r.error==Some(4) && r.store==s && r.store.graph.next==1 && value(r.store.graph,0,0)==Some(1)
+89 | |         && !r.store.graph.nodes.contains(2) && !r.store.graph.nodes.contains(3) }),
+   | |__________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

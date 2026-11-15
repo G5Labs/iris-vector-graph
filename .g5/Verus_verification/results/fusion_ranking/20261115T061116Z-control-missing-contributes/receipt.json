@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_absent_contributes_zero"
+    ],
+    "find": "None => 0real",
+    "name": "missing-contributes",
+    "replace": "None => 1real / (2real * c as real + xs.len() as real)",
+    "why": "missing-contributes"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_absent_contributes_zero"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+    ".g5/Verus_verification/models/fusion_ranking/model.json": "785718521d0ad4c23702c9fbc2116633acb133cc8e7c9e3213bde8d53739c5b3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/missing-contributes/fusion_ranking.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_absent_contributes_zero": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T061115Z-control-missing-contributes-theorem_absent_contributes_zero.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T061115Z-control-missing-contributes.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fusion_ranking/20261115T061116Z-control-missing-contributes/logs/20261115T061115Z-control-missing-contributes-theorem_absent_contributes_zero.log": "73162a86354edfc2abcbb685b451cc0c21ae957c196e913f7461f0b081723c61",
+    ".g5/Verus_verification/results/fusion_ranking/20261115T061116Z-control-missing-contributes/logs/20261115T061115Z-control-missing-contributes.log": "8082677e44788311926700c347297baa3e902d29267c2a8fa5d464f5bf7792ce"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

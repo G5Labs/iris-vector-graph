@@ -63,6 +63,15 @@ Deleting a node removes, in its graph, its labels, properties, documents, vector
 - The node and its own rows go in one transaction.
 - Without a named graph, the delete uses the one graph that holds the ID ([graph scope](../concepts/graph-scope.g5.md#graph.default)).
 
+<a id="structure.node.delete.bulk"></a>
+[D · structure.node.delete.bulk]
+
+Bulk node deletion ignores missing or empty IDs and repeats, then runs batches in each selected graph; a failed batch is logged and later batches still run. Its `DeleteResult` reports `deleted` from calls that returned successfully and `failed` as the number of requested IDs in calls that raised; converting it to an integer or boolean uses only `deleted`.
+
+- A true result can have failures. A false result does not prove that nothing was deleted: a node delete can finish before its later reifier cleanup raises, and the caller counts that whole batch as failed.
+- The same risk applies when an underlying store call commits some chunks before a later chunk fails ([erasure atomicity](erasure.g5.md#erasure.atomic)). The batch log's claim that everything rolled back is too strong.
+- With an explicit graph only that graph is selected. With graph omitted, an ID held in several graphs is refused before any deletion. This model covers one explicit graph and positive batch sizes; graph discovery and database atomicity remain separate obligations.
+
 <a id="structure.node.update"></a>
 [I · structure.node.update]
 
@@ -353,10 +362,21 @@ The `id` property dates from 4.6.0 (R181), so that `MATCH (n {id: ...})` finds t
 ### structure.node.delete
 - Sources: [API reference, delete_node](../../../docs/API_REFERENCE.md#L516-L522), [delete_node](../../../iris_vector_graph/_engine/nodes_edges.py#L2227-L2268), [Eraser.EraseIdSet](../../../iris_src/src/Graph/KG/Eraser.cls#L467-L632)
 - Expands: [nodes](#structure.node)
+- Children: [bulk deletion counts](#structure.node.delete.bulk)
 - agent
 - user-facing-behavior, data-integrity
 
 Observed: the reifier nodes are deleted in later transactions, and a failure there raises an error that says the node is gone and its reifiers are not. Erasure semantics are owned by the erasure pages.
+
+### structure.node.delete.bulk
+- Sources: [`NodesEdgesMixin.bulk_delete_nodes`](../../../iris_vector_graph/_engine/nodes_edges.py#L2270-L2299), [`_delete_in_scope`](../../../iris_vector_graph/_engine/nodes_edges.py#L2176-L2200), [`DeleteResult`](../../../iris_vector_graph/_engine/nodes_edges.py#L103-L111), [`_delete_scopes`](../../../iris_vector_graph/_engine/nodes_edges.py#L2202-L2225), [`IRISGraphStore.delete_nodes`](../../../iris_vector_graph/stores/iris_sql_store.py#L1323-L1361)
+- Verus: [bulk_delete](../../Verus_verification/models/bulk_delete/NOTES.md), as-built `theorem_later_batch_runs_after_failure`, `theorem_failed_counts_requested_not_existing`, `theorem_cleanup_failure_is_not_rollback`; raw ID filtering, positive batching and primary/cleanup failure ordering. Provider calls are substituted in the Python comparison; no live erase or implementation proof.
+- Expands: [deleting nodes](#structure.node.delete)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+Findings: [inherited partial erase](../../Verus_verification/bugs_issues.md#bug-led-011). Reifier cleanup is another inspected partial-effect path; the new unit comparison observes its Python caller with a substituted store, not IRIS erasure.
 
 ### structure.node.update
 - Sources: [store_node](../../../iris_vector_graph/_engine/nodes_edges.py#L2393-L2530), [API reference, store_node](../../../docs/API_REFERENCE.md#L738-L750)

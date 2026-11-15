@@ -144,3 +144,25 @@ python3 .g5/Verus_verification/native/run_upstream.py tests/integration/<file>.p
 ## Results
 
 The [coverage map](coverage.md) holds every claim's status (Proved / Observed / Violated / Suspected / Assumed / Open). Product findings: [findings register](findings.md). Plan, review rounds and adjudications: [uplift plan](../uplift/ivg-verus-initial/uplift-plan.md). Final report: [final-report.md](../uplift/ivg-verus-initial/final-report.md).
+
+
+## Improvement iteration 2 on this Mac
+
+Run from `/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph`. Only `.g5/` artifacts change. The product export and Python environment are reused from the inspected immutable pin; each binding checks file identity. Verus remains `0.2026.10.04.426d8b0`, bundled vstd only for new models. The actors snapshot remains an untouched inherited dependency.
+
+```sh
+export RUN_DIR=/Users/ziniuw/runs/ivg-iteration2-20261115
+export IVG_PIN_DIR=/Users/ziniuw/runs/ivg-consolidated-20261114/pin
+export VERUS_BIN=/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus
+export G5_GUIDE=/Users/ziniuw/Desktop/research/G5-Lean-V2/.agents/guidance
+export PYTHONDONTWRITEBYTECODE=1
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/reconstruction
+CONTROL=final-size-only python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/reconstruction
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python .g5/Verus_verification/models/reconstruction/binding.py
+python3 .g5/Verus_verification/tools/inventory_controls.py
+python3 .g5/Verus_verification/tools/check_consolidated.py
+```
+
+Expect 11 verified / zero errors; the final-size-only control fails theorem_transient_oversize_refuses; Python AGREES on 7,020 count/content cases and the actual streaming/export survivor journey. This is a model proof and Python unit correspondence with substituted SQL/meta, not an IRIS or implementation proof. Latest receipts/raw proof logs are under results/reconstruction/. Replace reconstruction with ledger_apply (9/5), fusion_ranking (11/6) or bulk_delete (10/5) and omit CONTROL to run its full control suite. The ledger binding expressly does not execute its ObjectScript producer.
+
+The upstream 13-file regression command and cwd are in [upstream-unit.json](../uplift/consolidated/iteration-2/upstream-unit.json); expected 314 passed. See [iteration 2 handoff](../uplift/consolidated/iteration-2/HANDOFF.md) for limits and review attacks.

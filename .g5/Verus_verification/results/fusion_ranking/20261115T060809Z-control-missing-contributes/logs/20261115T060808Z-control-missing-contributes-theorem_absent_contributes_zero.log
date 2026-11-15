@@ -1,0 +1,23 @@
+error[E0277]: the trait bound `vstd::prelude::nat: vstd::prelude::SpecMul<vstd::prelude::real>` is not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/missing-contributes/fusion_ranking.rs:13:90
+   |
+13 |     match rank(xs,id,0) { Some(r) => 1real / (c as real+r as real), None => 1real / (2 * c as real + xs.len() as real) }
+   |                                                                                      ----^^^^^^^^^
+   |                                                                                      |   |
+   |                                                                                      |   the trait `vstd::prelude::SpecMul<vstd::prelude::real>` is not implemented for `vstd::prelude::nat`
+   |                                                                                      required by a bound introduced by this call
+   |
+   = help: `vstd::prelude::nat` implements trait `vstd::prelude::SpecMul<Rhs>`:
+             vstd::prelude::SpecMul<i128>
+             vstd::prelude::SpecMul<i16>
+             vstd::prelude::SpecMul<i32>
+             vstd::prelude::SpecMul<i64>
+             vstd::prelude::SpecMul<i8>
+             vstd::prelude::SpecMul<isize>
+             vstd::prelude::SpecMul<u128>
+             vstd::prelude::SpecMul<u16>
+           and 6 others
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.

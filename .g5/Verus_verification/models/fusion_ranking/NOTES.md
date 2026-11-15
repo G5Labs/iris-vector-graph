@@ -1,0 +1,15 @@
+# Python RRF rank producer and wrapper failure policy
+
+As-built `3eaa79cf`, **11 verified / 6 controls**. Owners `search.fusion.python` and `search.fusion.failed_leg`. Receipts/logs: `results/fusion_ranking/`.
+
+`rank` reads the raw ranked list and uses the first matching entity, not a supplied rank. `part` derives absence as zero; `score` sums all legs using mathematical real arithmetic. `theorem_rank_ignores_magnitude` proves the raw provider scores do not affect rank for arbitrary same-ID lists; first-duplicate and absent-item theorems preserve those boundaries. `theorem_second_leg_changes_winner` derives a strict two-candidate winner from two raw lists: vector a,b alone returns a, adding text b returns b even when raw scores favor a.
+
+`collect`/`add` take external provider rows/not-requested/raises outcomes. Their actual catch/mode policy is derived: failed vector and graph are omitted; text failure raises; successful empty legs stay in search_modes. The model does not assume a normalized "usable leg" selector. Failure controls swapping provider handling fail, as do first→last duplicate, absent contribution, second-leg omission and empty-mode omission controls.
+
+The Python comparison runs the actual `RRFFusion.fuse_results` over **14,450** combinations (two lists, each length 0..3, IDs a/b, raw scores -9/999, c 1/60) plus **90** `HybridSearchFusion.multi_modal_search` journeys through real leg catches, max-confidence graph aggregation, ranking, k limit and detailed mode rows. Providers are substituted; no IRIS search runs. The actual wrapper changes top-1 a→b in the chosen pair. Last-occurrence product mutation and a changed deciding observation are detected. Ties are compared as allowed orders, including at a k cutoff.
+
+Scope: mathematical score derivation and strict pair winner are Proved; floating point agreement, general Python sorting, graph aggregation/detail assembly are Observed, not proved. Provider relevance, SQL/Cypher/engine fusion surfaces, graph isolation, negative constants and approximate-search behavior remain outside. Exact source symbols/ranges: crosswalk/decision-links.tsv. Expected Python oracle is a hand transcription using Fraction, not a verified twin.
+
+F-0709 already records swallowed vector failures. This is new formal/native-unit evidence for that finding; bug-srch-005/010 have related but distinct surfaces. `simp-srch-001` remains a proposal: no common replacement was implemented/proved. HD-0702 retains conflicting proposed defaults (G common zero contribution, P separately documented surfaces); no authority settled a product-wide ranking policy. HD-0705 retains support uncertainty and its correction that HybridSearchFusion is module-level, not top-level exported.
+
+Retained failed attempts: first winner proof needed explicit real-arithmetic lemmas; missing-contribution control initially had a cast type error; second-leg control initially erased recursion and broke a fuel annotation. Neither build failure counted. Corrected controls now fail their named semantic claims. Trust: pinned vstd only; no unchecked declarations or actors; implementation-verified **0**.

@@ -243,6 +243,8 @@ def py_defs(source: str) -> dict[str, int]:
                 for t in targets:
                     if isinstance(t, ast.Name):
                         out[t.id] = out.get(t.id, 0) + 1
+            else:
+                walk(ch, prefix)
     walk(ast.parse(source), "")
     return out
 

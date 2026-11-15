@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/ignore-requested-revision/reconstruction.rs:71:13
+   |
+70 |   pub proof fn theorem_named_revision_ignores_later()
+   |   --------------------------------------------------- at the end of the function body
+71 |       ensures run(Map::empty(),seq![record(1,Op::Create(false,0,0)),record(2,Op::Create(false,1,0))],1,Some(1),false)
+   |  _____________^
+72 | |         ==Some(map![(false,0)=>0]),
+   | |__________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

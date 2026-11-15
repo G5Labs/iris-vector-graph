@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_empty_success_is_a_retained_leg"
+    ],
+    "find": "modes:legs.modes.push(mode)",
+    "name": "empty-mode-lost",
+    "replace": "modes:if xs.len()==0 {legs.modes} else {legs.modes.push(mode)}",
+    "why": "empty-mode-lost"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_success_is_a_retained_leg"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+    ".g5/Verus_verification/models/fusion_ranking/model.json": "785718521d0ad4c23702c9fbc2116633acb133cc8e7c9e3213bde8d53739c5b3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/empty-mode-lost/fusion_ranking.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_success_is_a_retained_leg": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T061118Z-control-empty-mode-lost-theorem_empty_success_is_a_retained_leg.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T061118Z-control-empty-mode-lost.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fusion_ranking/20261115T061118Z-control-empty-mode-lost/logs/20261115T061118Z-control-empty-mode-lost-theorem_empty_success_is_a_retained_leg.log": "044399f6d6c4e19988ac1d6ea203efac992eff06e6543f0529624779bfd93a53",
+    ".g5/Verus_verification/results/fusion_ranking/20261115T061118Z-control-empty-mode-lost/logs/20261115T061118Z-control-empty-mode-lost.log": "039118d0d2fcd0ecc5c82607c9c176f31b8135dcbde6b93dee7c35bbec9900a1"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

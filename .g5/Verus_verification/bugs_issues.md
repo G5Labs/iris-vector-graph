@@ -2198,6 +2198,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `b-07-f0709`, `b-07-f
 - Remedy proposed by the playbook arm (not implemented): Raise naming the leg on every fusion path (the 4.7.1 plan), or return a field naming the legs that ran.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
 
+Iteration 2 corroboration: fusion_ranking now models raw list first-rank selection and the Python wrapper's asymmetric provider catches. Its unit binding runs actual multi_modal_search, retaining empty successful legs but omitting failed vector/graph legs while raising text errors. The providers are substituted; no new IRIS observation or new discovery is claimed. bug-srch-010 concerns the engine surface, while this wrapper evidence belongs to F-0709. Owner: search.fusion.failed_leg and search.fusion.python; no shared repair implemented.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="F-0801"></a>
@@ -4400,6 +4402,8 @@ Observed: the store's `delete_nodes` and `delete_edges` split the IDs into chunk
 Consequence: a failure part-way through a large ID-list erase leaves the earlier chunks erased and the rest live; running the same erase again finishes it. Inside a caller's transaction the chunks nest and roll back together.
 
 Repair proposal (not implemented): run the chunks inside one IVG transaction level when there is no caller transaction, or document the per-chunk commit and report the committed count on failure.
+
+Iteration 2 scope: [bulk_delete](models/bulk_delete/NOTES.md) corroborates the caller's counts and partial-effect risk at Python unit level. Actual `_delete_in_scope` deletes the primary nodes before later reifier cleanup; an injected cleanup-provider failure makes `bulk_delete_nodes` report the whole request as failed while those nodes are gone. This is a related producer path, not a new per-chunk IRIS reproduction or a new finding. The Verus model represents the partial effect and continued later batches. Owner: [structure.node.delete.bulk](../ontology/features/graph-structure.g5.md#structure.node.delete.bulk); the store's real per-chunk transaction behavior remains inherited/inspected.
 
 <a id="bug-srch-017"></a>
 ### A BM25 index built before 4.0.0 reports the default graph, so the default graph's fusion reads another graph's documents as its own

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_second_leg_changes_winner"
+    ],
+    "find": "part(lists[0],id,c)+score(lists.drop_first(),id,c)",
+    "name": "drop-second-leg",
+    "replace": "part(lists[0],id,c)",
+    "why": "drop-second-leg"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_second_leg_changes_winner"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+    ".g5/Verus_verification/models/fusion_ranking/model.json": "37354782d300fb014046131652453ef3598048146b80be5f15e712dd560073ca"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/drop-second-leg/fusion_ranking.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": null,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_second_leg_changes_winner": {
+        "errors": null,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T060809Z-control-drop-second-leg-theorem_second_leg_changes_winner.log",
+        "timed_out": false,
+        "verified": null
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T060809Z-control-drop-second-leg.log",
+    "timed_out": false,
+    "verified": null
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fusion_ranking/20261115T060810Z-control-drop-second-leg/logs/20261115T060809Z-control-drop-second-leg-theorem_second_leg_changes_winner.log": "808e76fb97cb0e29b1d8b26a7ccdc0f33cd3484cd29b420fcf6c6164b944c112",
+    ".g5/Verus_verification/results/fusion_ranking/20261115T060810Z-control-drop-second-leg/logs/20261115T060809Z-control-drop-second-leg.log": "f7db0b0ffb094c8c2064e730d0d8f6474a733ec91d81660ab15a27d6f9265704"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "ERROR",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

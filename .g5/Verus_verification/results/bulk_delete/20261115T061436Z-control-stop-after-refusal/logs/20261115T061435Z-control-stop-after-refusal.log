@@ -1,0 +1,13 @@
+verification results:: 9 verified, 1 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/bulk_delete/controls/stop-after-refusal/bulk_delete.rs:52:13
+   |
+51 |   pub proof fn theorem_later_batch_runs_after_failure()
+   |   ----------------------------------------------------- at the end of the function body
+52 |       ensures ({let r=run(map![1=>(),2=>()],seq![Input::Id(1),Input::Id(2)],1,set![1]);
+   |  _____________^
+53 | |         r.live==map![1=>()] && r.deleted==1 && r.failed==1 && as_int(r)==1 && as_bool(r)}),
+   | |__________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

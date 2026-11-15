@@ -201,6 +201,20 @@ Readers show the ledger without changing it.
 - Reconstruct returns the graph as of a revision. Above 250,000 nodes and relationships (set at enable) it refuses with `ReconstructionTooLargeError` unless asked to stream.
 - Export writes a reconstruction as NDJSON that `import_graph_ndjson` accepts, with no size bound.
 
+<a id="ledger.readers.bound"></a>
+[D · ledger.readers.bound]
+
+Ordinary reconstruction checks its size after each record, so it can refuse a history that grew above the limit even if later deletes make the requested graph small. Streaming reconstruction and export skip that check; both first build the whole requested graph in memory.
+
+- The count is nodes plus relationships; labels and properties add no entities. Redaction tombstones and audit records change no content.
+- A read stops at the named revision, so later records cannot change its content or cause its size refusal.
+- Today a stored limit of zero is read as the default 250,000. Whether the limit should instead concern only the final graph is [open](#ledger.readers.bound.policy).
+
+<a id="ledger.readers.bound.policy"></a>
+[Q · ledger.readers.bound.policy]
+
+Should reconstruction's limit cap every intermediate graph or just the requested graph? Working answer: keep the current check after each record and document it; the alternative is a final-size limit, which permits a history to use more memory before it shrinks.
+
 ## Verification
 
 <a id="ledger.verify"></a>
@@ -304,7 +318,7 @@ Live test: `test_ledger_us02_rollback.py::test_reserved_property_rejected_before
 
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [USER_GUIDE section 9](../../../docs/USER_GUIDE.md#L1052-L1115), [errors.py](../../../iris_vector_graph/ledger/errors.py); ordered application and stop at the first failure: [`iris_src/src/Graph/KG/LedgerApply.cls::ApplyAll`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L18-L48); set property records prior and new, same value writes nothing: [`LedgerApply.cls`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L265-L317); live tests [`test_duplicate_set_property_records_both_and_last_wins`, `test_failing_op_mid_changeset_leaves_everything_unchanged`](../../../tests/integration/test_ledger_us02_rollback.py#L62-L136)
 - Playbook: [LED-B4.10](../../../experiment/playbook-completion/ontology/11-ledger.md#L190), [LED-B5.9](../../../experiment/playbook-completion/ontology/11-ledger.md#L236), record fold [RPL-T90](../../../experiment/playbook-completion/ontology/14-replay.md#L61)
-- Verus: active family for part of the composed rule (public case M03) is the playbook's `proofs-pa3` `ledger_l2` (reviewed design: ordered `rec_put` with sequence and ordinal, ordered fold, abort; the copy of `proofs-breadth` without premise P-A3), with `ledger_redaction` (as-built) [`redaction.rs`](../../Verus_verification/models/ledger_redaction/redaction.rs) `apply`/replay and the commit-admission theorems as overlapping evidence that covers ordered records and rejection separately. See [families](../../Verus_verification/families.tsv). Scope correction in iteration 1: this is partial for M03. Op has no prior value, rec_put copies supplied records and out2 has no operation-failure outcome; generated prior/new records and a mid-changeset writer refusal are not modeled. CallerEnd rollback does not establish that missing failure boundary.
+- Verus: new as-built transcription [`ledger_apply`](../../Verus_verification/models/ledger_apply/ledger_apply.rs), `theorem_two_writes_produce_priors`, `theorem_mid_failure_rolls_back_prefix`, `theorem_valid_relationship_reachable`: derives records from raw create/label/set/relationship operations, stops at a missing endpoint and rolls back the transaction before the revision reader. This covers the M03 distinction in a single default graph under successful SQL/global transaction and head-serialization premises; ObjectScript is inspected, not executed or implementation-verified here. Other operation kinds, admission, concurrent writers, redaction, post-commit properties and caller transactions remain outside this new model. The playbook's `proofs-pa3` remains active for its admission/binding protocol and partial for M03: Op has no prior and rec_put copies supplied records. See [families](../../Verus_verification/families.tsv).
 - Children: [Admission order](#ledger.commit.admission), [One at a time](#ledger.commit.serial), [Expected head](#ledger.commit.expected-head), [Size](#ledger.commit.size), [Commit kind](#ledger.commit.kind), [Caller's transaction](#ledger.commit.caller-transaction), [Post-commit properties](#ledger.commit.post-commit)
 - agent
 - user-facing-behavior, data-integrity
@@ -484,6 +498,7 @@ Findings: [When the strict-mode guard cannot read the ledger's state, should it 
 ### ledger.readers
 
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L27-L31), [client.py readers](../../../iris_vector_graph/ledger/client.py#L585-L739), [export.py](../../../iris_vector_graph/ledger/export.py)
+- Children: [bound during reconstruction](#ledger.readers.bound)
 - agent
 - user-facing-behavior
 - test-coverage
@@ -491,6 +506,26 @@ Findings: [When the strict-mode guard cannot read the ledger's state, should it 
 The diff order is [replay.py _sort_key](../../../iris_vector_graph/ledger/replay.py#L404-L405); the reconstruct bound counts nodes plus relationships while folding ([replay.py reconstruct](../../../iris_vector_graph/ledger/replay.py#L544-L558)). Live tests: `test_ledger_us06_history.py`, `test_ledger_us07_diff.py`, `test_ledger_us08_reconstruct.py`. While a redaction is unfinished some readers refuse ([rule](redaction.g5.md#redaction.batches.readers)).
 
 Findings: [The reverse diff of a range where a node is deleted and re-created reports the earlier revision's property as absent](../../Verus_verification/bugs_issues.md#bug-led-101); questions [Must the streaming history reader bound its memory?](../../Verus_verification/open_questions.md#q-con-001), [Is a ledger diff an ordered script?](../../Verus_verification/open_questions.md#q-con-002). Public cases M04, M05 and J03 read this block; `diff(a, b)` returns `compute_diff(b..a).inverse()` when `a` is later (`ledger/client.py:706-718`), so "the reverse is the inverse" and "the same revision is empty" hold by construction of the selector, and no formal contract here relates `compute_diff` to the two reconstructed states (reviewed plan C, not built).
+
+### ledger.readers.bound
+- Sources: [`GraphLedger.reconstruct`](../../../iris_vector_graph/ledger/client.py#L720-L729), [`::export_reconstruction`](../../../iris_vector_graph/ledger/client.py#L731-L739), [`replay.reconstruct`](../../../iris_vector_graph/ledger/replay.py#L544-L566), [`GraphState.apply`](../../../iris_vector_graph/ledger/replay.py#L172-L212), [API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L30-L31)
+- Verus: [reconstruction](../../Verus_verification/models/reconstruction/NOTES.md) as-built `theorem_bound_exactly_prefixes`, `theorem_stream_and_export_fold`, `theorem_named_revision_ignores_later`, `theorem_transient_oversize_refuses`; structural entity and abstract content projection. Labels, complete property/qualifier maps, tuple decoding and diff are not proved. Actual Python named readers, record paging/decoding and NDJSON writer are observed with substituted SQL and meta.
+- Expands: [ledger readers](#ledger.readers)
+- Children: [limit policy](#ledger.readers.bound.policy)
+- agent
+- user-facing-behavior
+- test-coverage
+
+Findings: [streaming memory question](../../Verus_verification/open_questions.md#q-con-001), [intermediate versus final size](../../Verus_verification/open_questions.md#q-iter-002).
+
+### ledger.readers.bound.policy
+- Sources: [API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L30-L31), [`reconstruct` check inside fold](../../../iris_vector_graph/ledger/replay.py#L550-L556)
+- Expands: [reconstruction bound](#ledger.readers.bound)
+- agent
+- uncertain
+- user-facing-behavior
+
+Findings: [q-iter-002](../../Verus_verification/open_questions.md#q-iter-002). Existing source settles the current check, but no recovered authority chooses a final-size promise over a memory-protection check.
 
 ### ledger.verify
 

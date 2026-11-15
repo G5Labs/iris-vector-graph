@@ -1,0 +1,62 @@
+{
+  "name": "reconstruction",
+  "root": "reconstruction.rs",
+  "expected_verified": 11,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "at-bound-refused",
+      "why": "at-bound-refused",
+      "find": "n.len()>bound.unwrap()",
+      "replace": "n.len()>=bound.unwrap()",
+      "expect_fail_in": [
+        "theorem_at_bound_succeeds"
+      ]
+    },
+    {
+      "name": "stream-bound-enforced",
+      "why": "stream-bound-enforced",
+      "find": "&& !stream &&",
+      "replace": "&& true &&",
+      "expect_fail_in": [
+        "theorem_transient_oversize_refuses"
+      ]
+    },
+    {
+      "name": "final-size-only",
+      "why": "final-size-only",
+      "find": "&& n.len()>bound.unwrap()",
+      "replace": "&& fold(n,rs.drop_first(),through).len()>bound.unwrap()",
+      "expect_fail_in": [
+        "theorem_transient_oversize_refuses"
+      ]
+    },
+    {
+      "name": "ignore-requested-revision",
+      "why": "ignore-requested-revision",
+      "find": "1 <= r.seq <= through",
+      "replace": "1 <= r.seq",
+      "expect_fail_in": [
+        "theorem_named_revision_ignores_later"
+      ]
+    },
+    {
+      "name": "zero-is-zero",
+      "why": "zero-is-zero",
+      "find": "if n==0 {250000} else {n}",
+      "replace": "n",
+      "expect_fail_in": [
+        "theorem_zero_uses_default"
+      ]
+    },
+    {
+      "name": "tombstone-applied",
+      "why": "tombstone-applied",
+      "find": "if r.redacted || r.audit",
+      "replace": "if false",
+      "expect_fail_in": [
+        "theorem_tombstone_and_audit_ignore"
+      ]
+    }
+  ]
+}

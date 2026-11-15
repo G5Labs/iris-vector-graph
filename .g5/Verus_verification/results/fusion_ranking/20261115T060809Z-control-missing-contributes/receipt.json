@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_absent_contributes_zero"
+    ],
+    "find": "None => 0real",
+    "name": "missing-contributes",
+    "replace": "None => 1real / (2 * c as real + xs.len() as real)",
+    "why": "missing-contributes"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_absent_contributes_zero"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+    ".g5/Verus_verification/models/fusion_ranking/model.json": "37354782d300fb014046131652453ef3598048146b80be5f15e712dd560073ca"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/missing-contributes/fusion_ranking.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": null,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_absent_contributes_zero": {
+        "errors": null,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T060808Z-control-missing-contributes-theorem_absent_contributes_zero.log",
+        "timed_out": false,
+        "verified": null
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T060808Z-control-missing-contributes.log",
+    "timed_out": false,
+    "verified": null
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fusion_ranking/20261115T060809Z-control-missing-contributes/logs/20261115T060808Z-control-missing-contributes-theorem_absent_contributes_zero.log": "4e6acd20e5ccda5625719d07f7de17d755e476732c9d03a061e56542920f4dab",
+    ".g5/Verus_verification/results/fusion_ranking/20261115T060809Z-control-missing-contributes/logs/20261115T060808Z-control-missing-contributes.log": "4e6acd20e5ccda5625719d07f7de17d755e476732c9d03a061e56542920f4dab"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "ERROR",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

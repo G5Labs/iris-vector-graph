@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_failed_counts_requested_not_existing"
+    ],
+    "find": "failed:rest.failed+if caught {batch.len()} else {0}",
+    "name": "failed-count-hidden",
+    "replace": "failed:rest.failed",
+    "why": "failed-count-hidden"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failed_counts_requested_not_existing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs": "ca7bd0e16ab6cb9ff8a8b306e654197d409f42a7c0703d701ab6d0dac2c6ef04",
+    ".g5/Verus_verification/models/bulk_delete/model.json": "0b2e872e3b40403c5e56436625643988949e6f46862d1704c58a2b4082be5c2d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/bulk_delete/controls/failed-count-hidden/bulk_delete.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_failed_counts_requested_not_existing": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/bulk_delete/20261115T061436Z-control-failed-count-hidden-theorem_failed_counts_requested_not_existing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/bulk_delete/20261115T061436Z-control-failed-count-hidden.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_delete/20261115T061436Z-control-failed-count-hidden/logs/20261115T061436Z-control-failed-count-hidden-theorem_failed_counts_requested_not_existing.log": "075894614c1063bb2e858f82987d05046cfde508a92a30498ec924bc49e1451f",
+    ".g5/Verus_verification/results/bulk_delete/20261115T061436Z-control-failed-count-hidden/logs/20261115T061436Z-control-failed-count-hidden.log": "1b2c6f406c556b66880bd72c2b5929d827f24b7ee9c1ac2e2da379a83568b6c4"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

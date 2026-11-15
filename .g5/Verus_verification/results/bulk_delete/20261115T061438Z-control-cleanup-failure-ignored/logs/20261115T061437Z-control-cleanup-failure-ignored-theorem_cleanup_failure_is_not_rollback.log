@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/bulk_delete/controls/cleanup-failure-ignored/bulk_delete.rs:64:13
+   |
+63 |   pub proof fn theorem_cleanup_failure_is_not_rollback()
+   |   ------------------------------------------------------ at the end of the function body
+64 |       ensures ({let r=batches(map![1=>(),2=>()],seq![1,2],2,Set::empty(),set![1]);
+   |  _____________^
+65 | |         r.live==Map::<int,()>::empty() && r.deleted==0 && r.failed==2 && !as_bool(r)}),
+   | |______________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

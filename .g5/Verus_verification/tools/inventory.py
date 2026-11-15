@@ -46,6 +46,9 @@ def py_defs(src):
                 walk(ch, prefix + ch.name + ".")
             elif isinstance(ch, ast.ClassDef):
                 walk(ch, prefix + ch.name + ".")
+            else:
+                # if/try/with/loop blocks do not introduce a Python name scope.
+                walk(ch, prefix)
     try:
         walk(ast.parse(src), "")
     except SyntaxError:

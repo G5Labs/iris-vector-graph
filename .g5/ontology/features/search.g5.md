@@ -279,6 +279,21 @@ Every leg of a fusion answers the same graph, and the legs are matched on both g
 
 A leg that fails must be reported as a failure that names the leg, not treated as an empty ranking.
 
+- Today `HybridSearchFusion.multi_modal_search` raises a text failure, but logs and drops a failed vector or graph leg. A successful empty leg stays in its `search_modes`; a failed leg is absent, so a returned ranking can be incomplete. This is the inherited F-0709 departure from the rule.
+
+<a id="search.fusion.python"></a>
+[D · search.fusion.python]
+
+The exported Python `RRFFusion.fuse_results` uses each entity's first position in each list, starting at one, and adds nothing for a missing entity. It ignores the providers' score magnitudes, returns each entity once in descending fused score, and promises no order between tied scores.
+
+- `HybridSearchFusion.multi_modal_search` fuses the legs that completed and returns at most k entities with their fused rank and each retained leg's first score and position. A successful graph expansion is another ranked leg.
+- These Python helpers' shipped behavior is settled; whether to keep them as supported public API is [open](#search.fusion.python.support).
+
+<a id="search.fusion.python.support"></a>
+[Q · search.fusion.python.support]
+
+Should the exported Python fusion helpers remain supported? Working answer: keep them and make their graph and failure behavior follow the shared fusion rules; the alternative is to deprecate them explicitly. No owner has ratified this choice.
+
 <a id="search.fusion.absent"></a>
 [Q · search.fusion.absent]
 
@@ -613,7 +628,7 @@ Findings: [Should plain text search use a BM25 index named "default" when one ex
 
 ### search.fusion
 - Sources: [engine kg_RRF_FUSE](../../../iris_vector_graph/_engine/vector.py#L1382-L1451), [API reference](../../../docs/API_REFERENCE.md#L985-L1000), [RRFFusion](../../../iris_vector_graph/fusion.py#L21-L64), [SQL kg_RRF_FUSE](../../../iris_vector_graph/schema.py#L2526-L2560), [Cypher ivg.retrieve](../../../iris_vector_graph/cypher/translator.py#L3239-L3360), [operators default c](../../../iris_vector_graph/operators.py#L37-L44), [test_rrf_fuse_e2e.py](../../../tests/unit/test_rrf_fuse_e2e.py)
-- Children: [Same graph](#search.fusion.same_graph), [Failed leg](#search.fusion.failed_leg), [Absent result](#search.fusion.absent), [Text leg](#search.fusion.text_leg)
+- Children: [Same graph](#search.fusion.same_graph), [Failed leg](#search.fusion.failed_leg), [Python fusion](#search.fusion.python), [Absent result](#search.fusion.absent), [Text leg](#search.fusion.text_leg)
 - Note: the live test checks result shape only. The engine method and the SQL procedure take `c` with no default.
 - agent
 - user-facing-behavior
@@ -633,11 +648,32 @@ Findings: [Under USE GRAPH, fusion reads a BM25 index built for another graph as
 ### search.fusion.failed_leg
 - Sources: [KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L172-L181), [text leg re-raise rationale](../../../iris_vector_graph/fusion.py#L154-L170)
 - Expands: [Fusion](#search.fusion)
+- Verus: [fusion_ranking](../../Verus_verification/models/fusion_ranking/NOTES.md) as-built `theorem_vector_failure_dropped_text_failure_raises`, `theorem_empty_success_is_a_retained_leg`, `theorem_graph_failure_dropped`; provider outcomes are external inputs, and catch/mode admission is derived. This models the Python wrapper's departure, not compliance with the intended failure rule.
 - Observed divergence: the engine's fusion logs a failed leg and answers an empty or one-leg ranking, which `IRISGraphOperators.kg_RRF_FUSE`'s default empty query vector triggers. The known-issue entry plans the fix for 4.7.1 ([KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L172-L181)), and the [API reference](../../../docs/API_REFERENCE.md#L999) still documents the log-and-continue behaviour.
 - agent
 - user-facing-behavior
 
 Findings: [A failed vector leg makes the engine's fusion answer an empty list instead of an error](../../Verus_verification/bugs_issues.md#bug-srch-010)
+
+### search.fusion.python
+- Sources: [`RRFFusion.fuse_results`](../../../iris_vector_graph/fusion.py#L27-L64), [`HybridSearchFusion.multi_modal_search`](../../../iris_vector_graph/fusion.py#L113-L253), [migration guide](../../../docs/migration/v4.0.0.md#L427-L435)
+- Verus: [fusion_ranking](../../Verus_verification/models/fusion_ranking/NOTES.md), as-built `rank`, `score`, `theorem_rank_ignores_magnitude`, `theorem_first_occurrence_wins`, `theorem_second_leg_changes_winner`; exact real arithmetic for rank contributions and a strict pair winner. General sorting, floating point rounding and detail assembly are observed in Python, not proved.
+- Expands: [fusion](#search.fusion)
+- Children: [helper support policy](#search.fusion.python.support)
+- agent
+- user-facing-behavior
+- test-coverage
+
+No order is claimed between ties or at a tied k cutoff. This helper's zero absent contribution does not settle the shared rule for the other fusion entry points.
+
+### search.fusion.python.support
+- Sources: [top-level exports](../../../iris_vector_graph/__init__.py#L124-L125), [migration guide](../../../docs/migration/v4.0.0.md#L427-L435), [recovered intent HD-0705](../../../experiment/playbook-completion/intent/HD-0705.md)
+- Expands: [Python fusion](#search.fusion.python)
+- agent
+- uncertain
+- user-facing-behavior
+
+Findings: [HD-0705](../../Verus_verification/open_questions.md#HD-0705). RRFFusion is exported at top level; HybridSearchFusion is available from its module. The inherited intent correction is preserved.
 
 ### search.fusion.absent
 - Sources: [engine absent rank](../../../iris_vector_graph/_engine/vector.py#L1438-L1451), [SQL procedure](../../../iris_vector_graph/schema.py#L2526-L2560), [RRFFusion](../../../iris_vector_graph/fusion.py#L27-L64), [API reference](../../../docs/API_REFERENCE.md#L985-L1000)

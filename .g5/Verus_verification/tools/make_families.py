@@ -186,7 +186,10 @@ C = [  # this consolidation's new model directories: (name, scope, design, statu
     ("embedded_no_data", "the embedded cursor's no-row rule and row counts over its three execution paths and the batch call", "as-built transcription", "active"),
     ("rel_prop_text", "the relationship property text decoder by input class (ASCII canonical rule)", "reviewed (ASCII); the as-built pattern departs, see NOTES", "active"),
     ("index_declaration", "GraphSchema.ensure_adjacency_index as an ordered action list from catalog state", "as-built transcription", "active"),
-    ("history_fold", "compute_diff, Diff.inverse and reconstruct over one ordered record list; the reconstruct bound", "as-built transcription", "active"),
+    ("ledger_apply", "raw admitted changeset operations produce prior/new records, stop at first failure and roll back before revision publication; one graph", "as-built transcription", "active"),
+    ("reconstruction", "named revision structural count/content projection, raw meta normalization, per-prefix bound and stream/export fold; full content/diff unproved", "as-built transcription", "active"),
+    ("fusion_ranking", "Python first-rank producer, mathematical RRF scores, strict pair winner and provider catch/modes; general sort/details observed only", "as-built transcription", "active"),
+    ("bulk_delete", "raw ID normalization, batch continuation, primary then cleanup failure, partial live effects and DeleteResult counts; one explicit graph", "as-built transcription", "active"),
     ("writer_id_reader", "writer paths into the Cypher id reader (create_node, bulk_create_nodes, BulkIngestNodesSQL)", "as-built transcription", "active"),
     ("row_limit_dialect", "the TOP / FETCH FIRST selector by engine construction path and query shape", "as-built transcription", "active"),
 ]

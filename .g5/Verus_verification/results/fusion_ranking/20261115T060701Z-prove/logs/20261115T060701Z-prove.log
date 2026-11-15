@@ -1,0 +1,26 @@
+verification results:: 8 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs:48:1
+   |
+48 | pub proof fn theorem_second_leg_changes_winner()
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs:49:13
+   |
+48 | pub proof fn theorem_second_leg_changes_winner()
+   | ------------------------------------------------ at the end of the function body
+49 |     ensures top_two(seq![seq![(0,1),(1,1000)]])==Some(0),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs:50:9
+   |
+48 | pub proof fn theorem_second_leg_changes_winner()
+   | ------------------------------------------------ at the end of the function body
+49 |     ensures top_two(seq![seq![(0,1),(1,1000)]])==Some(0),
+50 |         top_two(seq![seq![(0,1),(1,1000)],seq![(1,-1000)]])==Some(1),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_cleanup_failure_is_not_rollback"
+    ],
+    "find": "let caught=refused || blocked(batch,cleanup);",
+    "name": "cleanup-failure-ignored",
+    "replace": "let caught=refused;",
+    "why": "assume secondary cleanup cannot fail"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cleanup_failure_is_not_rollback"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs": "ca7bd0e16ab6cb9ff8a8b306e654197d409f42a7c0703d701ab6d0dac2c6ef04",
+    ".g5/Verus_verification/models/bulk_delete/model.json": "0b2e872e3b40403c5e56436625643988949e6f46862d1704c58a2b4082be5c2d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/bulk_delete/controls/cleanup-failure-ignored/bulk_delete.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cleanup_failure_is_not_rollback": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/bulk_delete/20261115T061437Z-control-cleanup-failure-ignored-theorem_cleanup_failure_is_not_rollback.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/bulk_delete/20261115T061437Z-control-cleanup-failure-ignored.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_delete/20261115T061438Z-control-cleanup-failure-ignored/logs/20261115T061437Z-control-cleanup-failure-ignored-theorem_cleanup_failure_is_not_rollback.log": "0d9083c59752cf55856b54aa1ddb3cc7d36773b7224fa39bc4f46620b73c4b32",
+    ".g5/Verus_verification/results/bulk_delete/20261115T061438Z-control-cleanup-failure-ignored/logs/20261115T061437Z-control-cleanup-failure-ignored.log": "3d86c7fec5a3a003dda09500fe69b1852f41477e22473d4d980773d957e9718b"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

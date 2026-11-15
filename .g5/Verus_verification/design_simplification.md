@@ -358,7 +358,9 @@ Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
-Comparison: none — no model run covers fusion.
+Comparison: [As-built Python fusion](results/fusion_ranking/20261115T061822Z-prove/receipt.json) → none — the proposed common replacement is not modeled or implemented.
+
+Iteration 2 scope: the as-built side derives first occurrence, zero absent contribution and provider catch policy for `fusion.py`, with a real helper/wrapper unit comparison. It does not cover the engine, SQL procedure or Cypher translator. Preserve first occurrence, provider-score independence, empty-success modes, graph scoping, top-k details and unspecified tie order if sharing the mechanism. HD-0702 retains the P default of separately documented surfaces beside G's common-rule proposal; no owner selected either.
 
 What is complicated now: four RRF implementations rank the same inputs differently: the engine (`vector.py:1444-1446`, absent rank from the leg's length), the SQL procedure (`schema.py:2536-2537`, 1e9), `ivg.retrieve` (`translator.py:3342-3352`, 0) and `fusion.py:56-58` (0); one `try` turns a failed leg into an empty answer ([bug-srch-005](bugs_issues.md#bug-srch-005), [bug-srch-010](bugs_issues.md#bug-srch-010)).
 
@@ -655,6 +657,8 @@ Comparison: none — the playbook arm's remedy is prose only; no model compares 
 - Redundant decision a shared mechanism would remove, and the proposal (not implemented): Declare every bound (key lengths, prefix length, row caps, memory, connections, latency) in the contract, check it at the boundary with a named refusal, and test each at the limit.
 - Caller behavior to preserve and a distinguishing case: not stated by the playbook arm beyond the remedy; see each member finding's `Expected` line.
 - Source: [reflection/ROOT-CAUSES.md](../../experiment/playbook-completion/reflection/ROOT-CAUSES.md). Not yet compared with the guidance arm's simplifications.
+
+Iteration 2 corroboration: reconstruction now derives zero/default meta normalization and per-record count checks, with an actual named-reader/export unit comparison. The model distinguishes transient oversize from final size; this supports one resource-bound boundary only. Streaming memory remains q-con-001 and peak/final policy is q-iter-002. No common capacity mechanism was implemented or proved.
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 

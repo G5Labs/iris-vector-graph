@@ -757,6 +757,19 @@ Classification: settled as built (the bound applies to the materialized reader o
 
 Working answer: "streaming" describes delivery, not memory; the bound protects callers of the materialized reader. Material alternative: the bound exists to cap memory, so the streaming reader and the export should fold incrementally (or be bounded too). Claims that depend on it: public case J03's "streaming export path under its documented scope". Lead L1 of the reviewed plan; neither arm recorded it.
 
+Iteration 2 corroboration: [reconstruction](models/reconstruction/NOTES.md) proves the bound exemption and shared structural fold; the actual named Python readers/export agree on the selected surviving-node journey and consume all records before yielding. This adds evidence to q-con-001; it is not a new streaming-memory finding. Canonical owner: [ledger.readers.bound](../ontology/features/ledger.g5.md#ledger.readers.bound).
+
+<a id="q-iter-002"></a>
+### Must reconstruction's bound concern each intermediate graph or only the requested graph?
+
+Severity: Low · Decision: Open
+
+Run: Uplift improvement iteration 2, 2026-11-15
+
+Classification: settled as built, intended policy needs ratification. `reconstruct` checks entity_count after each record (`replay.py:550-556`); a history create a, create b, delete b fails at bound 1 although its final graph contains only a. Streaming and export return a. [reconstruction model and Python comparison](models/reconstruction/NOTES.md) distinguish both histories. The API contract FR-035/036 references do not specify peak versus final size; available git history and tests do not settle a different policy.
+
+Working answer: preserve and document the intermediate-size check for memory protection. Alternative: check only the final size, accepting a larger temporary graph. Product maintainer owns this choice at [ledger.readers.bound.policy](../ontology/features/ledger.g5.md#ledger.readers.bound.policy); q-con-001 separately concerns whether streaming must bound memory. This is a specification/policy gap, not a confirmed product bug.
+
 <a id="q-con-002"></a>
 ### Is a ledger diff an ordered script or an unordered set of net changes?
 
@@ -1054,6 +1067,8 @@ Run: Playbook uplift, decisions for the human (imported 2026-11-14)
 - Owner: the maintainer (a human decision; no human has decided it).
 - Not yet compared with the guidance arm's questions.
 
+Iteration 2 reconciliation: the G canonical question provisionally favors a common zero absent contribution; the P intent file instead defaults to documenting distinct surfaces. Both are unratified proposals, not conflicting product observations. Preserve both options; the new Python-only RRF proof settles neither a product-wide rule nor which text corpus is intended. Owner: search.fusion.absent.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="HD-0703"></a>
@@ -1101,6 +1116,8 @@ Run: Playbook uplift, decisions for the human (imported 2026-11-14)
 - Intent recovery: [intent/HD-0705.md](../../experiment/playbook-completion/intent/HD-0705.md) (status assumption· Confidence: medium · Changed from decisions.md: no (refined per class; one factual correction to); decision text [07.md](../../experiment/playbook-uplift/decisions/07.md).
 - Owner: the maintainer (a human decision; no human has decided it).
 - Not yet compared with the guidance arm's questions.
+
+Iteration 2 owner recovery: search.fusion.python.support makes this policy visible from the canonical ontology. Preserve the intent file's correction: only RRFFusion and TextSearchEngine are exported at top level; HybridSearchFusion is module-level. The new contract covers shipped RRFFusion/HybridSearchFusion behavior without declaring all three supported public API.
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 

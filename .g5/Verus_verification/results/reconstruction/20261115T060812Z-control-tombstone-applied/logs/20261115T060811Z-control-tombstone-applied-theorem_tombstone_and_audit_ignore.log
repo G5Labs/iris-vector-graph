@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/tombstone-applied/reconstruction.rs:79:13
+   |
+77 | pub proof fn theorem_tombstone_and_audit_ignore(s:State,r:Record)
+   | ----------------------------------------------------------------- at the end of the function body
+78 |     requires r.redacted || r.audit,
+79 |     ensures apply(s,r)==s,
+   |             ^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

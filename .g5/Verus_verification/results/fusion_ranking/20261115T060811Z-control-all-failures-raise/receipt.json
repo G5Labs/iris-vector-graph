@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_vector_failure_dropped_text_failure_raises"
+    ],
+    "find": "if mode==1",
+    "name": "all-failures-raise",
+    "replace": "if true",
+    "why": "all-failures-raise"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_vector_failure_dropped_text_failure_raises"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+    ".g5/Verus_verification/models/fusion_ranking/model.json": "37354782d300fb014046131652453ef3598048146b80be5f15e712dd560073ca"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/all-failures-raise/fusion_ranking.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_vector_failure_dropped_text_failure_raises": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T060810Z-control-all-failures-raise-theorem_vector_failure_dropped_text_failure_raises.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T060810Z-control-all-failures-raise.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fusion_ranking/20261115T060811Z-control-all-failures-raise/logs/20261115T060810Z-control-all-failures-raise-theorem_vector_failure_dropped_text_failure_raises.log": "4d36637a15247c0964d587e32caebab2d4e6952f93b244273fc2285d14e2f9d0",
+    ".g5/Verus_verification/results/fusion_ranking/20261115T060811Z-control-all-failures-raise/logs/20261115T060810Z-control-all-failures-raise.log": "b06c57cd71e25fd0de659ffc4fa6a9de027eef1e3d2bcd0b24425cff0bdfcfc9"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

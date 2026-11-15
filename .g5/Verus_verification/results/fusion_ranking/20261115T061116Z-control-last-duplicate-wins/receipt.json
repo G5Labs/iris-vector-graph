@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_first_occurrence_wins"
+    ],
+    "find": "else if xs[0].0==id",
+    "name": "last-duplicate-wins",
+    "replace": "else if xs[0].0==id && rank(xs.drop_first(),id,offset+1).is_none()",
+    "why": "last-duplicate-wins"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_first_occurrence_wins"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+    ".g5/Verus_verification/models/fusion_ranking/model.json": "785718521d0ad4c23702c9fbc2116633acb133cc8e7c9e3213bde8d53739c5b3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/controls/last-duplicate-wins/fusion_ranking.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_first_occurrence_wins": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T061116Z-control-last-duplicate-wins-theorem_first_occurrence_wins.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/fusion_ranking/20261115T061116Z-control-last-duplicate-wins.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fusion_ranking/20261115T061116Z-control-last-duplicate-wins/logs/20261115T061116Z-control-last-duplicate-wins-theorem_first_occurrence_wins.log": "e42cb7504084f83327be6d8d1e1d68b3cd46cb47524a86557adeeaea17b620d1",
+    ".g5/Verus_verification/results/fusion_ranking/20261115T061116Z-control-last-duplicate-wins/logs/20261115T061116Z-control-last-duplicate-wins.log": "68b4bedde2dc0a00803f8d71a7ee0ffaffc6b5ab4870582b92cd4ce7b02c176f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

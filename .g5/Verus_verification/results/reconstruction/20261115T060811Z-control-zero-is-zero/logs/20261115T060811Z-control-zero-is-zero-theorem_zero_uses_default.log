@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/zero-is-zero/reconstruction.rs:75:13
+   |
+74 | pub proof fn theorem_zero_uses_default()
+   | ---------------------------------------- at the end of the function body
+75 |     ensures effective(Some(0))==250000, effective(None)==250000,effective(Some(1))==1,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

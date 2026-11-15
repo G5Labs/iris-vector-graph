@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_named_revision_ignores_later"
+    ],
+    "find": "1 <= r.seq <= through",
+    "name": "ignore-requested-revision",
+    "replace": "1 <= r.seq",
+    "why": "ignore-requested-revision"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_named_revision_ignores_later"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/reconstruction/model.json": "b0aff07a49184a0a5692a49fb1a622b023dbcc5aa20625f3737a144268390db3",
+    ".g5/Verus_verification/models/reconstruction/reconstruction.rs": "245d60d0106d1e850ed6b6b1623f2ed442b3d34424db5297aeb55e2c4a87b3f6"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/ignore-requested-revision/reconstruction.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_named_revision_ignores_later": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/20261115T060810Z-control-ignore-requested-revision-theorem_named_revision_ignores_later.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/20261115T060810Z-control-ignore-requested-revision.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/reconstruction/20261115T060811Z-control-ignore-requested-revision/logs/20261115T060810Z-control-ignore-requested-revision-theorem_named_revision_ignores_later.log": "025140d400cabb1d6de3733f479801fe12f6b0d3820f67529b71b6e6ba8f8b7b",
+    ".g5/Verus_verification/results/reconstruction/20261115T060811Z-control-ignore-requested-revision/logs/20261115T060810Z-control-ignore-requested-revision.log": "e1a965532c6df10dcf023fd973ae716b66fa8899e28d1bade999ba311d345282"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

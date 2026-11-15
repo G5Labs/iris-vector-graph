@@ -1,0 +1,45 @@
+verification results:: 8 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/at-bound-refused/reconstruction.rs:53:1
+   |
+53 | pub proof fn theorem_bound_exactly_prefixes(s:State,rs:Seq<Record>,through:nat,b:nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/at-bound-refused/reconstruction.rs:54:13
+   |
+54 |     ensures run(s,rs,through,Some(b),false).is_some()==prefixes_fit(s,rs,through,b),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+58 |     if rs.len()>0 {theorem_bound_exactly_prefixes(next(s,rs[0],through),rs.drop_first(),through,b);}
+   |     ------------------------------------------------------------------------------------------------ at the end of the function body
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/at-bound-refused/reconstruction.rs:55:9
+   |
+55 |         prefixes_fit(s,rs,through,b) ==> run(s,rs,through,Some(b),false)==Some(fold(s,rs,through)),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+58 |     if rs.len()>0 {theorem_bound_exactly_prefixes(next(s,rs[0],through),rs.drop_first(),through,b);}
+   |     ------------------------------------------------------------------------------------------------ at the end of the function body
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/at-bound-refused/reconstruction.rs:68:13
+   |
+67 | pub proof fn theorem_at_bound_succeeds()
+   | ---------------------------------------- at the end of the function body
+68 |     ensures run(Map::empty(),seq![record(1,Op::Create(false,0,0))],1,Some(1),false)==Some(map![(false,0)=>0]),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/reconstruction/controls/at-bound-refused/reconstruction.rs:71:13
+   |
+70 |   pub proof fn theorem_named_revision_ignores_later()
+   |   --------------------------------------------------- at the end of the function body
+71 |       ensures run(Map::empty(),seq![record(1,Op::Create(false,0,0)),record(2,Op::Create(false,1,0))],1,Some(1),false)
+   |  _____________^
+72 | |         ==Some(map![(false,0)=>0]),
+   | |__________________________________^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

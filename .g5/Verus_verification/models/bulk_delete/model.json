@@ -1,0 +1,53 @@
+{
+  "name": "bulk_delete",
+  "root": "bulk_delete.rs",
+  "expected_verified": 10,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "duplicates-kept",
+      "why": "duplicates-kept",
+      "find": "if seen.contains(id)",
+      "replace": "if false",
+      "expect_fail_in": [
+        "theorem_raw_ids_filtered_and_deduplicated"
+      ]
+    },
+    {
+      "name": "stop-after-refusal",
+      "why": "stop-after-refusal",
+      "find": "let rest=batches(after,ids.skip(n as int),size,reject,cleanup);",
+      "replace": "let rest=if caught {Answer {live:after,deleted:0,failed:0}} else {batches(after,ids.skip(n as int),size,reject,cleanup)};",
+      "expect_fail_in": [
+        "theorem_later_batch_runs_after_failure"
+      ]
+    },
+    {
+      "name": "failed-count-hidden",
+      "why": "failed-count-hidden",
+      "find": "failed:rest.failed+if caught {batch.len()} else {0}",
+      "replace": "failed:rest.failed",
+      "expect_fail_in": [
+        "theorem_failed_counts_requested_not_existing"
+      ]
+    },
+    {
+      "name": "boolean-means-no-failure",
+      "why": "boolean-means-no-failure",
+      "find": "r.deleted>0",
+      "replace": "r.failed==0",
+      "expect_fail_in": [
+        "theorem_later_batch_runs_after_failure"
+      ]
+    },
+    {
+      "name": "cleanup-failure-ignored",
+      "why": "assume secondary cleanup cannot fail",
+      "find": "let caught=refused || blocked(batch,cleanup);",
+      "replace": "let caught=refused;",
+      "expect_fail_in": [
+        "theorem_cleanup_failure_is_not_rollback"
+      ]
+    }
+  ]
+}

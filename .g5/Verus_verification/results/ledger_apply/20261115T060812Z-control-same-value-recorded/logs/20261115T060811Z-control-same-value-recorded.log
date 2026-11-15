@@ -1,0 +1,22 @@
+verification results:: 7 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/ledger_apply/controls/same-value-recorded/ledger_apply.rs:74:13
+   |
+72 | pub proof fn theorem_same_value_records_nothing(g: Graph, n:int,k:int,v:int)
+   | ---------------------------------------------------------------------------- at the end of the function body
+73 |     requires value(g,n,k)==Some(v),
+74 |     ensures write(g,Op::Set(n,k,v)) == (g,seq![]),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration2-20261115/verus/ledger_apply/controls/same-value-recorded/ledger_apply.rs:95:13
+   |
+94 |   pub proof fn theorem_noop_has_no_property_record()
+   |   -------------------------------------------------- at the end of the function body
+95 |       ensures ({ let r=commit(initial(),seq![Op::Create(0),Op::Set(0,0,1),Op::Set(0,0,1)]);
+   |  _____________^
+96 | |         revision(r.store,1)==Some(seq![Record::Create(0),Record::Set(0,0,None,1)]) }),
+   | |_____________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+
