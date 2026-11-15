@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/native-with-loners/pagerank_admission.rs:36:13
+   |
+34 |   pub proof fn theorem_added_isolate_recomputes(n:Nodes,id:nat,l:Seq<int>,a:nat,d:int,it:nat,rows:Seq<(int,int)>,fresh:Seq<(int,int)>)
+   |   ------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+35 |       requires id>n.max_id,l.len()>0,
+36 |       ensures ({let e=Entry{key:key(Some(n),seq![],d,it),adjacency:a,rows};
+   |  _____________^
+37 | |         let r=call(Some(add_node(n,id)),l,a,d,it,Some(e),fresh);
+38 | |         r.rows==fresh && r.computed && r.census==1 && !r.native}),
+   | |_________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

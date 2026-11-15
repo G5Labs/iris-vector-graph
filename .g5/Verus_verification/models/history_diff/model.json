@@ -1,0 +1,62 @@
+{
+  "name": "history_diff",
+  "root": "history_diff.rs",
+  "expected_verified": 12,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "include-lower-endpoint",
+      "why": "include-lower-endpoint",
+      "find": "a < r.seq <= b",
+      "replace": "a <= r.seq <= b",
+      "expect_fail_in": [
+        "theorem_range_lower_exclusive"
+      ]
+    },
+    {
+      "name": "reverse-unswapped",
+      "why": "reverse-unswapped",
+      "find": "else {inverse(finish(read(empty(),rs,b,a)))}",
+      "replace": "else {finish(read(empty(),rs,b,a))}",
+      "expect_fail_in": [
+        "theorem_named_reverse_and_equal"
+      ]
+    },
+    {
+      "name": "last-prior-wins",
+      "why": "last-prior-wins",
+      "find": "if l.seen {l.before}",
+      "replace": "if l.seen {r.prior}",
+      "expect_fail_in": [
+        "theorem_first_prior_survives"
+      ]
+    },
+    {
+      "name": "netzero-retained",
+      "why": "netzero-retained",
+      "find": "l.before!=l.after",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_continuous_net_zero"
+      ]
+    },
+    {
+      "name": "created-delete-visible",
+      "why": "created-delete-visible",
+      "find": "d.life.is_none() || !d.life.unwrap().created",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_created_then_deleted_cancels"
+      ]
+    },
+    {
+      "name": "drop-delete-snapshot",
+      "why": "producer snapshot must survive into inverse existence entry",
+      "find": "Payload::Snapshot(r.prior)",
+      "replace": "Payload::Snapshot(None)",
+      "expect_fail_in": [
+        "theorem_simple_delete_preserves_snapshot"
+      ]
+    }
+  ]
+}

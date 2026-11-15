@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/include-lower-endpoint/history_diff.rs:96:13
+   |
+94 | pub proof fn theorem_range_lower_exclusive(r:Record,a:nat,b:nat)
+   | ---------------------------------------------------------------- at the end of the function body
+95 |     requires r.seq==a,a<=b,
+96 |     ensures !selected(r,a,b),
+   |             ^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

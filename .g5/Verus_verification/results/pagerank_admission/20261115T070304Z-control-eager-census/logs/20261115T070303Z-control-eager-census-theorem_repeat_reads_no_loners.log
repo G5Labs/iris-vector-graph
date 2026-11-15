@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/eager-census/pagerank_admission.rs:38:13
+   |
+37 |   pub proof fn theorem_repeat_reads_no_loners(n:Nodes,l:Seq<int>,a:nat,d:int,it:nat,rows:Seq<(int,int)>,fresh:Seq<(int,int)>)
+   |   --------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+38 |       ensures ({let e=Entry{key:key(Some(n),l,d,it),adjacency:a,rows};
+   |  _____________^
+39 | |         let r=call(Some(n),l,a,d,it,Some(e),fresh);r.rows==rows && r.census==0 && !r.computed}),
+   | |_______________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

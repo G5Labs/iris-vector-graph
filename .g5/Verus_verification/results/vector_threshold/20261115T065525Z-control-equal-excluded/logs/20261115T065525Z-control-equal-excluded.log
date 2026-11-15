@@ -1,0 +1,27 @@
+verification results:: 3 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/vector_threshold/controls/equal-excluded/vector_threshold.rs:23:13
+   |
+22 | pub proof fn theorem_threshold_decides(score:int,t:int)
+   | ------------------------------------------------------- at the end of the function body
+23 |     ensures admits(build(Some(t)),score)==(score>=t),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/vector_threshold/controls/equal-excluded/vector_threshold.rs:27:13
+   |
+26 | pub proof fn theorem_boundary_included(t:int)
+   | --------------------------------------------- at the end of the function body
+27 |     ensures search(seq![t,t-1],Some(t),2)==seq![t],search(seq![t,t-1],None,2)==seq![t,t-1],
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/vector_threshold/controls/equal-excluded/vector_threshold.rs:30:13
+   |
+29 | pub proof fn theorem_filter_precedes_limit()
+   | -------------------------------------------- at the end of the function body
+30 |     ensures search(seq![100,50,25],Some(50),3)==seq![100,50],
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

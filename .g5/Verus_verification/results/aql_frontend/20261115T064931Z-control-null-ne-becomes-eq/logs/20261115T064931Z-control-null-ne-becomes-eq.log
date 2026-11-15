@@ -1,0 +1,12 @@
+verification results:: 5 verified, 1 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/aql_frontend/controls/null-ne-becomes-eq/aql_frontend.rs:34:9
+   |
+32 | pub proof fn theorem_null_operators()
+   | ------------------------------------- at the end of the function body
+33 |     ensures resolve(Operator::Eq,Expr::Null)==Predicate::IsNull,
+34 |         resolve(Operator::Ne,Expr::Null)==Predicate::IsNotNull,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/netzero-retained/history_diff.rs:99:13
+    |
+ 98 |   pub proof fn theorem_continuous_net_zero(v:int)
+    |   ----------------------------------------------- at the end of the function body
+ 99 |       ensures ({let s=Entity{exists:true,value:Some(v)};let (_,r)=writer(s,1,Op::Set(v));
+    |  _____________^
+100 | |         finish(track(empty(),r)).len()==0}),
+    | |___________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

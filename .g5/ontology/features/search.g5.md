@@ -128,6 +128,14 @@ A vector search returns up to k pairs of node ID and cosine similarity from one 
 - An optional label keeps only nodes that have the label in the same graph.
 - Each route gets an attempted approximate-nearest-neighbour (HNSW) index. A route whose index was refused is searched by a full scan.
 
+<a id="search.knn.threshold"></a>
+[I · search.knn.threshold]
+
+The generic `vector_search` and graph-routed `edge_vector_search` apply an optional cosine score threshold before taking their highest-scoring rows. Omitting it keeps all scores eligible; giving it keeps scores equal to or above it, so a score of 0.5 survives a threshold of 0.5 and a score of 0.25 does not.
+
+- Both bind the threshold in a WHERE predicate on the cosine expression, repeating the query-vector bind for that expression. The optional graph predicate combines with that filter; sorting follows it.
+- This rule concerns these two helpers, not every KNN, IVF, fusion or Cypher search surface.
+
 <a id="search.scope"></a>
 [I · search.scope]
 
@@ -345,6 +353,7 @@ What must erasing one graph do to a VecIndex, PLAID or IVF index, which records 
 - agent
 - data-integrity, user-facing-behavior
 - test-coverage
+
 ### search.embedding.registry
 - Sources: [ADR-0006 decision and context](../../../docs/adr/0006-embedding-identity-lives-in-a-registry-not-the-ledger.md#L7-L54), [registry DDL](../../../iris_vector_graph/_engine/schema.py#L143-L160), [test_embedding_registry_e2e.py](../../../tests/integration/test_embedding_registry_e2e.py)
 - Expands: [Embedding identity](#search.embedding)
@@ -352,12 +361,14 @@ What must erasing one graph do to a VecIndex, PLAID or IVF index, which records 
 - agent
 - architecture-decision
 - test-coverage
+
 ### search.embedding.model_key
 - Sources: [normalize_model_key and MECHANISMS](../../../iris_vector_graph/embedding_identity.py#L31-L72), [conflicts](../../../iris_vector_graph/embedding_identity.py#L180-L219)
 - Expands: [Embedding identity](#search.embedding)
 - Note: stated only in code docstrings citing spec 226, which is not in the repository.
 - agent
 - data-integrity
+
 ### search.embedding.width
 - Sources: query width before search: [`iris_vector_graph/_engine/vector.py::_assert_query_width`](../../../iris_vector_graph/_engine/vector.py#L455-L502), called first in [`::kg_KNN_VEC`](../../../iris_vector_graph/_engine/vector.py#L504-L545) (route lookup `:536-538`, check `:542`, first statement `:557`), unit tests [test_227_query_width.py](../../../tests/unit/test_227_query_width.py#L100-L132), live `tests/e2e/test_460_r223_vector_width_e2e.py`; [ADR-0005 consequences](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L62-L73), [reconcile_recorded_dimensions](../../../iris_vector_graph/_engine/schema.py#L1688-L1710), [reused-route width check](../../../iris_vector_graph/_engine/embeddings.py#L589-L641), [USER_GUIDE on setup and width](../../../docs/USER_GUIDE.md#L897-L910), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), query width: [ADR-0005](../../../docs/adr/0005-vector-width-is-not-declared-in-to-vector.md#L7-L48), [query width check](../../../iris_vector_graph/_engine/vector.py#L455-L502), [test_to_vector_width_regression_e2e.py](../../../tests/integration/test_to_vector_width_regression_e2e.py)
 - Playbook: [VEC-X5.5](../../../experiment/playbook-completion/ontology/06-vectors.md#L184)
@@ -367,6 +378,7 @@ What must erasing one graph do to a VecIndex, PLAID or IVF index, which records 
 - agent
 - architecture-decision, data-integrity, operations
 - test-coverage
+
 ### search.embedding.check_on_write
 - Sources: [enforce_embedding_identity](../../../iris_vector_graph/_engine/schema.py#L1354-L1396), [store_embedding](../../../iris_vector_graph/_engine/embeddings.py#L942-L1025), [store_embeddings](../../../iris_vector_graph/_engine/embeddings.py#L1028-L1115), [offered unknown identity](../../../iris_vector_graph/embedding_identity.py#L79-L98), [CHANGELOG v3.2.0](../../../CHANGELOG.md#L4371-L4440)
 - Expands: [Embedding identity](#search.embedding)
@@ -388,6 +400,7 @@ Findings: [Claiming the default embedding table for a model that already has a d
 
 
 The body's earlier "first writer that declares a model claims the table" was ADR-0006's wording from before routing; review round 3 R3-reader H4 aligned it with the code ([schema.py set_embedding_identity](../../../iris_vector_graph/_engine/schema.py#L1086-L1220), [setup claim](../../../iris_vector_graph/_engine/schema.py#L1485-L1513), [_read_route](../../../iris_vector_graph/_engine/embeddings.py#L403-L416) matches `model_key` only).
+
 ### search.embedding.other_model
 - Sources: [CHANGELOG v4.0.0](../../../CHANGELOG.md#L4046-L4060), [routed tables](../../../CHANGELOG.md#L4161-L4183), [USER_GUIDE "Several models"](../../../docs/USER_GUIDE.md#L946-L960), [setup claim](../../../iris_vector_graph/_engine/schema.py#L1485-L1513), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py)
 - Playbook: [VEC-B1.8](../../../experiment/playbook-completion/ontology/06-vectors.md#L86)
@@ -453,6 +466,7 @@ Findings: [Claiming the default embedding table for a model that already has a d
 - agent
 - data-integrity, user-facing-behavior
 - test-coverage
+
 ### search.routes.create_on_write
 - Sources: [_create_route and its 4.7.0 commit comment](../../../iris_vector_graph/_engine/embeddings.py#L470-L558), [per-route locks](../../../iris_vector_graph/_engine/embeddings.py#L67-L81), [_route_for_write](../../../iris_vector_graph/_engine/embeddings.py#L755-L792), [width per route test](../../../tests/e2e/test_227_two_models.py#L86-L112)
 - Expands: [Routes](#search.routes)
@@ -482,6 +496,15 @@ Findings: [Route creation commits the routed table before its registry row, and 
 
 Findings: [ADR-0005 forbids the three-argument TO_VECTOR for query vectors, which four call sites use](../../Verus_verification/bugs_issues.md#bug-doc-011)
 
+### search.knn.threshold
+
+- Sources: [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L333-L416), [vector_search](../../../iris_vector_graph/_engine/vector.py#L1169-L1288), [threshold tests](../../../tests/unit/test_vector_score_threshold.py), [live tests, inspected only](../../../tests/integration/test_vector_score_threshold_live.py)
+- Verus: [vector_threshold](../../Verus_verification/models/vector_threshold/NOTES.md), as-built scaled-integer threshold `build`, `admits`, `search`. Valid finite numeric conversion, cosine scores, ranked SQL provider and dialect preparation are premises; SQLite comparison is adapted-provider evidence, not IRIS execution.
+- Expands: [vector search](#search.knn)
+- agent
+- user-facing-behavior
+- test-coverage
+
 ### search.scope
 - Sources: [CHANGELOG v4.0.0 keyword graph](../../../CHANGELOG.md#L4184-L4198), [graph ID not an authorisation boundary](../../../CHANGELOG.md#L4366-L4370), [graph_scope_predicate](../../../iris_vector_graph/routing.py#L81-L100), [kg_KNN_VEC](../../../iris_vector_graph/_engine/vector.py#L504-L619), [test_230_scope_isolation.py](../../../tests/e2e/test_230_scope_isolation.py), SQL procedures: [KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L702-L714), [generated kg_KNN_VEC](../../../iris_vector_graph/schema.py#L2440-L2483), [test_460_r265_vector_procedures_route_e2e.py](../../../tests/e2e/test_460_r265_vector_procedures_route_e2e.py)
 - Children: [Indexes](#search.scope.indexes)
@@ -504,12 +527,14 @@ Findings: [Fusion chooses indexes from a snapshot taken when the engine started]
 
 
 The pre-4.0.0 index case is from [BM25Index.cls](../../../iris_src/src/Graph/KG/BM25Index.cls#L607-L611) ("a stale index is indistinguishable here; rebuild it") and the fusion's index choice in [vector.py](../../../iris_vector_graph/_engine/vector.py#L164-L206) (helper reading, review round 3 R3-reader M25; the fusion part was not re-checked).
+
 ### search.scope.indexes.upkeep
 - Sources: [USER_GUIDE: bm25_insert and bm25_delete keep an index current](../../../docs/USER_GUIDE.md#L893-L896), [index protocol, the only generic insert caller](../../../iris_vector_graph/index_protocol.py#L31-L60), [index wrappers](../../../iris_vector_graph/_engine/vector.py#L1548-L1879), [VecIndex usage](../../../iris_src/src/Graph/KG/VecIndex.cls#L1-L18)
 - Expands: [Indexes](#search.scope.indexes)
 - Note: added from correction 6 of the [reconstruction check](../../uplift/ivg-verus-initial/reconstruction-check.md#3-corrections-proposed) as a D, because the user guide documents caller upkeep for ordinary writes and deletes. That guide does not govern erasure, which [the erasure rule](#search.erasure.indexes) covers. No product code calls these indexes' insert or delete from a node write or delete path.
 - agent
 - architecture-decision, operations
+
 ### search.quarantine
 - Sources: [CHANGELOG v4.0.0 quarantine](../../../CHANGELOG.md#L4199-L4217), [migration guide](../../../docs/migration/v4.0.0.md#L303-L390), [migration rules](../../../iris_vector_graph/migrations/graph_scoped_embeddings.py#L1-L33), [_fate](../../../iris_vector_graph/migrations/graph_scoped_embeddings.py#L895-L920), [quarantine DDL](../../../iris_vector_graph/_engine/schema.py#L205-L227), [test_227_migration.py](../../../tests/e2e/test_227_migration.py), documents and edge vectors: [migration](../../../iris_vector_graph/migrations/docs_and_edge_vectors.py#L1-L44), [guide](../../../docs/migration/v4.0.0.md#L525-L598), [test_230_migration.py](../../../tests/e2e/test_230_migration.py)
 - Children: [Placement](#search.quarantine.placement), [Retention](#search.quarantine.retention)
@@ -517,12 +542,14 @@ The pre-4.0.0 index case is from [BM25Index.cls](../../../iris_src/src/Graph/KG/
 - agent
 - data-integrity, operations
 - test-coverage
+
 ### search.quarantine.placement
 - Sources: [place_quarantined](../../../iris_vector_graph/_engine/schema.py#L1972-L2070), [CHANGELOG v4.0.0](../../../CHANGELOG.md#L4199-L4217)
 - Expands: [Quarantine](#search.quarantine)
 - Note: only mocked unit tests exercise placement ([test_227_quarantine_api.py](../../../tests/unit/test_227_quarantine_api.py)).
 - agent
 - operations, data-integrity
+
 ### search.quarantine.retention
 - Sources: [EraseGraph note](../../../iris_src/src/Graph/KG/Eraser.cls#L300-L302), [EraseAll note](../../../iris_src/src/Graph/KG/Eraser.cls#L754-L760), [ADR-0004 consequences](../../../docs/adr/0004-erasure-removes-content-not-history.md#L71-L82)
 - Expands: [Quarantine](#search.quarantine)
@@ -540,12 +567,14 @@ Findings: [Should quarantined vectors and documents survive erasure indefinitely
 - agent
 - user-facing-behavior
 - test-coverage
+
 ### search.bm25.scoring
 - Sources: [spec 044 FR-003 and FR-004](../../../specs/044-bm25-index/spec.md#L149-L150), [USER_GUIDE BM25 text search and the stopword list](../../../docs/USER_GUIDE.md#L854-L896), [InitStopwords](../../../iris_src/src/Graph/KG/BM25Index.cls#L41-L50), [bm25_build docstring](../../../iris_vector_graph/_engine/vector.py#L1749-L1785), [formula test](../../../tests/integration/test_044_bm25_incremental.py#L401-L413)
 - Expands: [BM25 index](#search.bm25)
 - agent
 - user-facing-behavior
 - test-coverage
+
 ### search.bm25.query_time_idf
 - Sources: [spec 044 FR-017](../../../specs/044-bm25-index/spec.md#L163), [ADR-0007](../../../docs/adr/0007-bm25-df-and-doc-record-schema-2.md), [SearchCore](../../../iris_src/src/Graph/KG/BM25Index.cls#L236-L312)
 - Expands: [BM25 index](#search.bm25)
@@ -553,6 +582,7 @@ Findings: [Should quarantined vectors and documents survive erasure indefinitely
 - agent
 - architecture-decision
 - test-coverage
+
 ### search.bm25.counts
 - Sources: [spec 044 FR-016 and FR-018](../../../specs/044-bm25-index/spec.md#L162-L164), [Insert and RemoveDoc](../../../iris_src/src/Graph/KG/BM25Index.cls#L412-L493), [df test](../../../tests/integration/test_044_bm25_incremental.py#L157-L203)
 - Expands: [BM25 index](#search.bm25)
@@ -589,6 +619,7 @@ Findings: [A failed BM25 insert or delete rolls back the caller's whole transact
 - agent
 - architecture-decision, operations
 - test-coverage
+
 ### search.bm25.upgrade
 - Sources: [spec 044 FR-023](../../../specs/044-bm25-index/spec.md#L169), [Upgrade](../../../iris_src/src/Graph/KG/BM25Index.cls#L516-L581), [upgrade tests](../../../tests/integration/test_044_bm25_incremental.py#L294-L400)
 - Expands: [BM25 index](#search.bm25)
@@ -695,6 +726,7 @@ Findings: [The engine's fusion gives a result missing from one leg a non-zero, l
 - architecture-decision
 
 Findings: [Should every fusion entry point use the same text ranking?](../../Verus_verification/open_questions.md#q-srch-006)
+
 ### search.erasure
 - Sources: [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md#L8-L23), [EraseGraph](../../../iris_src/src/Graph/KG/Eraser.cls#L36-L313), [EraseAll registry delete](../../../iris_src/src/Graph/KG/Eraser.cls#L750-L760), [store inventory](../../../iris_src/src/Graph/KG/GraphStores.cls#L1-L60), [test_227_erase_isolation.py](../../../tests/e2e/test_227_erase_isolation.py)
 - Children: [Indexes](#search.erasure.indexes)

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/vector_threshold/controls/equal-excluded/vector_threshold.rs:27:13
+   |
+26 | pub proof fn theorem_boundary_included(t:int)
+   | --------------------------------------------- at the end of the function body
+27 |     ensures search(seq![t,t-1],Some(t),2)==seq![t],search(seq![t,t-1],None,2)==seq![t,t-1],
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

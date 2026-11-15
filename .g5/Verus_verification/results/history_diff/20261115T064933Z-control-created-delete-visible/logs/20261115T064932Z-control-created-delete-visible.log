@@ -1,0 +1,13 @@
+verification results:: 10 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/created-delete-visible/history_diff.rs:115:13
+    |
+114 |   pub proof fn theorem_created_then_deleted_cancels()
+    |   --------------------------------------------------- at the end of the function body
+115 |       ensures ({let s=Entity{exists:false,value:None};let (s1,r1)=writer(s,1,Op::Create);
+    |  _____________^
+116 | |         let (_,r2)=writer(s1,2,Op::Delete);finish(track(track(empty(),r1),r2)).len()==0}),
+    | |_________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

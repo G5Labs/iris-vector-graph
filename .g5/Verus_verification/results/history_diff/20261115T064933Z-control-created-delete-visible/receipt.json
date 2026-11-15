@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_created_then_deleted_cancels"
+    ],
+    "find": "d.life.is_none() || !d.life.unwrap().created",
+    "name": "created-delete-visible",
+    "replace": "true",
+    "why": "created-delete-visible"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_created_then_deleted_cancels"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_diff/history_diff.rs": "9f6cc034cfed991ec2f0689fc719f1ed4c374d1787bb106b031887242d1c0234",
+    ".g5/Verus_verification/models/history_diff/model.json": "71c5636e5d3aeb6593dd0979d94e71f865795410156e537c1f1336e3e17c3c36"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/created-delete-visible/history_diff.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_created_then_deleted_cancels": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/20261115T064932Z-control-created-delete-visible-theorem_created_then_deleted_cancels.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/20261115T064932Z-control-created-delete-visible.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_diff/20261115T064933Z-control-created-delete-visible/logs/20261115T064932Z-control-created-delete-visible-theorem_created_then_deleted_cancels.log": "83ac6595c9da9778d2ff721e64b3c89caf14beb0aec0711f4483223bf671d805",
+    ".g5/Verus_verification/results/history_diff/20261115T064933Z-control-created-delete-visible/logs/20261115T064932Z-control-created-delete-visible.log": "1c1d4f49ad935101e3fd1ade6ec15704fc336654762c93b3e75bea56b8dd7619"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

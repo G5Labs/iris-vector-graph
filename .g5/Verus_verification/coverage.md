@@ -532,3 +532,34 @@ Current exact scoped links: **54 / 3,077 Python definitions direct**, 9 indirect
 Selected upstream suites: **314 passed**, 13 files, no live IRIS, [command and raw log](../uplift/consolidated/iteration-2/upstream-unit.json). No per-symbol test coverage is inferred. New formal proof count is 41 with 22 named controls; do not add these to unrelated case denominators. Inherited 40 IRIS observations, 105 playbook rerun pairs and untouched model receipts are carry-forwards, not re-executions.
 
 Still unmodeled or partial: full history/diff/reconstruction content, restore-to-width/window readers, CDLP parameter keys and WCC/second-connection consumers, route median winner, warm cache contents and concurrent census, CALL row evaluation, algorithms numerics, FHIR, Bolt/HTTP and broader translator semantics. The new fusion wrapper is a narrow exception to the earlier unmapped helper area.
+
+## Improvement iteration 3 (2026-11-15)
+
+This supersedes the earlier absence claim for all diff contracts, while preserving
+the full-content and provider gaps. [Retained sample and challenges](../uplift/consolidated/iteration-3/PAIRS.md).
+
+| Owning obligation | New formal support and controls | Product boundary and actual evidence | Reliance and remaining gap |
+|---|---|---|---|
+| `ledger.readers.diff`, `.order`: named (lo,hi], equal-empty, inverse; first prior/last new within one life | [history_diff](models/history_diff/NOTES.md): 12 obligations / 6 named controls; arbitrary continuous-attribute endpoint relation, inversion involution, snapshot neighbor and corrected lifecycle witness | 9481 actual named Python pairs, including 8113 endpoint comparisons; real SQL decoder, diff, reconstruct, inverse; server records, snapshots and SQL are fixtures | Model proof per attribute; no global multi-entity ordering/content refinement or live writer proof. Original empty-prior bug-led-101 inference withdrawn, stronger change-before-delete evidence retained. Snapshot/application policy q-con-002 remains open |
+| `algorithms.cache.pagerank`: COUNT:MAX plus adjacency/parameter key; lazy census; raw self-loop/isolate distinction | [pagerank_admission](models/pagerank_admission/NOTES.md): 9 obligations / 6 controls; raw producer distinction and key admission | 16 real engine/store/cache journeys (48 calls), plus cold-loop/isolate and empty-census checks; SQL/cache/native/PageRank JSON providers substituted | Stable reads and non-reused IDs assumed. Native candidate means eligibility probe, not unconditional route. No numerical/concurrency/PPR freshness proof; F-1003/F-1004 remain |
+| `query.aql`: numeric suffix -> typed depth -> hops; null versus text-null operators -> public adapter | [aql_frontend](models/aql_frontend/NOTES.md): 6 obligations / 4 controls, producer and consumer mutations | 100 actual lexer/parser/translator/execute_aql journeys; final Cypher handler is recorder | Digit accumulation, exact arbitrary text encoding, SQL and query execution open; no general AQL semantics claim |
+| `search.knn.threshold`: inclusive optional cosine predicate, binds, filter before limit | [vector_threshold](models/vector_threshold/NOTES.md): 6 obligations / 3 controls; equality/omission neighbors | 32 actual node/edge builder/reader cases; SQLite executes actual predicate/cosine with documented TOP/TO_VECTOR adaptation | Mathematical scaled scores only. IRIS dialect, nonfinite floats, width/index and other KNN/fusion surfaces remain unproved |
+
+New work: **33 verified obligations / 19 named controls**; **164 upstream tests**
+in ten files passed with no skips (one expected AQL warning). Inherited proofs,
+105 playbook rerun pairs and 40 IRIS observations are unchanged-input carry-forwards,
+not rerun in this iteration. No direct product body is verified.
+
+Same inventory at pin: Python **3077 definitions / 119 files / 1200 public**;
+ObjectScript **972 members / 73 classes**; SQL **14 files**. `tools/inventory.py`
+now reports **70/3077 Python** and **25/972 ObjectScript** uniquely resolved direct
+scoped links; indirect-only **6/0**, SQL **0/14**, **127 rows**, **30 blocks**,
+**20** blocks with producer/writer and reader/consumer. Two support constants stay
+excluded; unresolved **0**. New links describe the slices above, not complete
+symbol semantics. `implementation-verified` remains **0**. Outside-denominator
+api/src/scripts counts remain **91/143/873** Python definitions, respectively.
+
+Unmapped strata remain algorithms numerics, full ledger content/lifecycle and
+database transactions, restore-to-readers, bulk label/property producer equivalence,
+CALL row evaluation, warm-cache content/concurrency, FHIR and broad HTTP/Bolt/query
+semantics. No repository-wide behavioral percentage or independent discovery score.

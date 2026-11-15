@@ -215,6 +215,23 @@ Ordinary reconstruction checks its size after each record, so it can refuse a hi
 
 Should reconstruction's limit cap every intermediate graph or just the requested graph? Working answer: keep the current check after each record and document it; the alternative is a final-size limit, which permits a history to use more memory before it shrinks.
 
+<a id="ledger.readers.diff"></a>
+[I · ledger.readers.diff]
+
+A diff selects records after the earlier revision through the later revision, including that later revision. Equal endpoints return no entries; reversing the endpoints swaps each entry's before and after values.
+
+- Within one uninterrupted entity life, each changed attribute shows its first prior and last new value; if those match, the attribute contributes no entry.
+- A life created and deleted inside the range contributes no entry. Deleting a life that existed before the range and then recreating it contributes separate deletion and creation entries.
+- Node deletion carries its labels and properties in the deletion's JSON snapshot. The reverse existence entry keeps that snapshot; a separate property entry with an absent after value does not by itself say the old life lacked that property.
+- As built, changing a property before deleting and recreating the node can lose the range's original value: the snapshot holds the value at deletion, and closing that life drops its earlier attribute prior. The promised net change remains the requirement; this [reported gap](../../Verus_verification/bugs_issues.md#bug-led-101) has no product repair here.
+
+<a id="ledger.readers.diff.order"></a>
+[Q · ledger.readers.diff.order]
+
+May callers apply a diff in its listed order as a script? Working answer: treat it as a set of lifecycle-aware net entries, sorted for display; the alternative requires a defined application order, especially when deletion and creation have equal sort keys.
+
+- The maintainer must ratify that choice and whether deletion snapshots describe the value at deletion or the range's starting value. Until then, report the actual snapshots and keep full endpoint reconstruction from lifecycle diffs unproved.
+
 ## Verification
 
 <a id="ledger.verify"></a>
@@ -292,7 +309,6 @@ Since the node table is keyed by (graph, node ID), one ID can be held by two gra
 
 Findings: [How should the ledger's genesis record a node ID that two graphs hold?](../../Verus_verification/open_questions.md#q-led-004)
 
-
 ### ledger.lifecycle.disable-during-redaction
 
 - Sources: [LedgerRedact.cls BatchInLock](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L302-L305), [Ledger.cls Enable/Disable](../../../iris_src/src/Graph/KG/Ledger.cls#L331-L351)
@@ -305,6 +321,7 @@ Findings: [How should the ledger's genesis record a node ID that two graphs hold
 Observed: [redaction_interrupt_resume](../../Verus_verification/receipts/native/redaction_interrupt_resume.json) (the batch after disable is refused `LedgerDisabledError`, verify mid-way reports `redaction_in_progress`, the rerun after enable completes with the uninterrupted end state). Review round 3 R3-reader M2 moved this out of the lifecycle body, where it read as a rule.
 
 Findings: [What should disabling the ledger do while a redaction is unfinished?](../../Verus_verification/open_questions.md#q-led-003); [Re-enabling the ledger during an unfinished redaction skips the adoption without telling the caller](../../Verus_verification/bugs_issues.md#bug-led-004)
+
 ### ledger.changeset
 
 - Sources: [changeset schema](../../../specs/213-graph-revision-ledger/contracts/changeset.schema.json), [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L36-L80), [changeset.py](../../../iris_vector_graph/ledger/changeset.py)
@@ -392,7 +409,6 @@ Findings: [Should callers be able to choose a commit's kind?](../../Verus_verifi
 
 This supersedes spec 213 FR-047, under which a commit refused an open transaction. The commit message quotes FR-047's reason from a research file that is not in the repository. Live test: `tests/e2e/test_470_ledger_caller_txn_e2e.py`.
 
-
 ### ledger.commit.post-commit
 
 - Sources: [changeset.py post_commit_properties](../../../iris_vector_graph/ledger/changeset.py#L18-L25), [client.py _apply_post_commit_properties](../../../iris_vector_graph/ledger/client.py#L430-L487), [CHANGELOG spec 218](../../../CHANGELOG.md#L4991-L4998), [USER_GUIDE writes inside your transaction](../../../docs/USER_GUIDE.md#L288-L289)
@@ -417,6 +433,7 @@ Findings: [Post-commit properties bypass strict mode and the block on commits in
 The strict-mode and redaction-marker gaps are from code reading (suspected); the verify divergence is observed.
 
 Findings: [Should post-commit properties be recorded, excluded from verify, or documented as unrecorded writes?](../../Verus_verification/open_questions.md#q-010)
+
 ### ledger.idempotency
 
 - Sources: [Ledger.cls idempotency](../../../iris_src/src/Graph/KG/Ledger.cls#L454-L473), [changeset.py fingerprint](../../../iris_vector_graph/ledger/changeset.py#L365-L386), [ledger API contract commit](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L26)
@@ -498,14 +515,14 @@ Findings: [When the strict-mode guard cannot read the ledger's state, should it 
 ### ledger.readers
 
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L27-L31), [client.py readers](../../../iris_vector_graph/ledger/client.py#L585-L739), [export.py](../../../iris_vector_graph/ledger/export.py)
-- Children: [bound during reconstruction](#ledger.readers.bound)
+- Children: [diff](#ledger.readers.diff), [bound during reconstruction](#ledger.readers.bound)
 - agent
 - user-facing-behavior
 - test-coverage
 
 The diff order is [replay.py _sort_key](../../../iris_vector_graph/ledger/replay.py#L404-L405); the reconstruct bound counts nodes plus relationships while folding ([replay.py reconstruct](../../../iris_vector_graph/ledger/replay.py#L544-L558)). Live tests: `test_ledger_us06_history.py`, `test_ledger_us07_diff.py`, `test_ledger_us08_reconstruct.py`. While a redaction is unfinished some readers refuse ([rule](redaction.g5.md#redaction.batches.readers)).
 
-Findings: [The reverse diff of a range where a node is deleted and re-created reports the earlier revision's property as absent](../../Verus_verification/bugs_issues.md#bug-led-101); questions [Must the streaming history reader bound its memory?](../../Verus_verification/open_questions.md#q-con-001), [Is a ledger diff an ordered script?](../../Verus_verification/open_questions.md#q-con-002). Public cases M04, M05 and J03 read this block; `diff(a, b)` returns `compute_diff(b..a).inverse()` when `a` is later (`ledger/client.py:706-718`), so "the reverse is the inverse" and "the same revision is empty" hold by construction of the selector, and no formal contract here relates `compute_diff` to the two reconstructed states (reviewed plan C, not built).
+Findings: [Lifecycle diff range priors](../../Verus_verification/bugs_issues.md#bug-led-101); questions [Must the streaming history reader bound its memory?](../../Verus_verification/open_questions.md#q-con-001), [Is a ledger diff an ordered script?](../../Verus_verification/open_questions.md#q-con-002). Public cases M04, M05 and J03 read this block. The new [diff owner](#ledger.readers.diff) and as-built history_diff contract represent named endpoint selection, inversion and continuous per-attribute endpoint values; complete lifecycle/content reconstruction remains open.
 
 ### ledger.readers.bound
 - Sources: [`GraphLedger.reconstruct`](../../../iris_vector_graph/ledger/client.py#L720-L729), [`::export_reconstruction`](../../../iris_vector_graph/ledger/client.py#L731-L739), [`replay.reconstruct`](../../../iris_vector_graph/ledger/replay.py#L544-L566), [`GraphState.apply`](../../../iris_vector_graph/ledger/replay.py#L172-L212), [numeric metadata producer `Ledger.Meta`](../../../iris_src/src/Graph/KG/Ledger.cls#L143-L151), [API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L30-L31)
@@ -526,6 +543,28 @@ Findings: [streaming memory question](../../Verus_verification/open_questions.md
 - user-facing-behavior
 
 Findings: [q-iter-002](../../Verus_verification/open_questions.md#q-iter-002). Existing source settles the current check, but no recovered authority chooses a final-size promise over a memory-protection check.
+
+### ledger.readers.diff
+
+- Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L29), [GraphLedger.diff](../../../iris_vector_graph/ledger/client.py#L706-L718), [compute_diff and Diff.inverse](../../../iris_vector_graph/ledger/replay.py#L404-L536), [NodeSnapshotJson and DeleteNodeRows](../../../iris_src/src/Graph/KG/LedgerApply.cls#L339-L371)
+- Verus: [history_diff](../../Verus_verification/models/history_diff/NOTES.md), as-built `theorem_named_reverse_and_equal`, `theorem_raw_history_endpoints`, `theorem_simple_delete_preserves_snapshot`, `theorem_change_then_delete_loses_range_prior`; per-attribute projection. No full graph diff/refinement proof.
+- Expands: [readers](#ledger.readers)
+- Children: [order and snapshot policy](#ledger.readers.diff.order)
+- agent
+- user-facing-behavior
+- test-coverage
+
+Findings: [bug-led-101](../../Verus_verification/bugs_issues.md#bug-led-101).
+
+### ledger.readers.diff.order
+
+- Sources: [ledger API](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L29), [stable sort and inverse](../../../iris_vector_graph/ledger/replay.py#L404-L418)
+- Expands: [diff](#ledger.readers.diff)
+- agent
+- uncertain
+- user-facing-behavior
+
+Findings: [q-con-002](../../Verus_verification/open_questions.md#q-con-002), [bug-led-101](../../Verus_verification/bugs_issues.md#bug-led-101). Maintainer decision pending; a passing inverse equality is not semantic endpoint reconstruction.
 
 ### ledger.verify
 

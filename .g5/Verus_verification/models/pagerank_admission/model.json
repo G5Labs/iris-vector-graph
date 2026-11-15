@@ -1,0 +1,62 @@
+{
+  "name": "pagerank_admission",
+  "root": "pagerank_admission.rs",
+  "expected_verified": 9,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "omit-node-token",
+      "why": "omit-node-token",
+      "find": "Key{nodes:n,",
+      "replace": "Key{nodes:None,",
+      "expect_fail_in": [
+        "theorem_insert_moves_key"
+      ]
+    },
+    {
+      "name": "eager-census",
+      "why": "eager-census",
+      "find": "if n.is_some() && hit{0}else{1}",
+      "replace": "1",
+      "expect_fail_in": [
+        "theorem_repeat_reads_no_loners"
+      ]
+    },
+    {
+      "name": "ignore-adjacency",
+      "why": "ignore-adjacency",
+      "find": "&& e.unwrap().adjacency==adj",
+      "replace": "&& true",
+      "expect_fail_in": [
+        "theorem_adjacency_change_recomputes"
+      ]
+    },
+    {
+      "name": "native-with-loners",
+      "why": "native-with-loners",
+      "find": "native_candidate:!hit && loners.len()==0",
+      "replace": "native_candidate:!hit",
+      "expect_fail_in": [
+        "theorem_added_isolate_recomputes"
+      ]
+    },
+    {
+      "name": "failed-token-known-empty",
+      "why": "failed-token-known-empty",
+      "find": "if failed {None}",
+      "replace": "if failed {Some(Nodes{count:0,max_id:0})}",
+      "expect_fail_in": [
+        "theorem_count_max_producer"
+      ]
+    },
+    {
+      "name": "self-loop-counts-as-isolate",
+      "why": "edgeless producer must distinguish self-loop-only nodes",
+      "find": "if raw[0].1 {rest}",
+      "replace": "if false {rest}",
+      "expect_fail_in": [
+        "theorem_self_loop_and_isolate_differ"
+      ]
+    }
+  ]
+}

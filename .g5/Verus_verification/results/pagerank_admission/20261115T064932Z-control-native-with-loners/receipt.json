@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_added_isolate_recomputes"
+    ],
+    "find": "native:!hit && loners.len()==0",
+    "name": "native-with-loners",
+    "replace": "native:!hit",
+    "why": "native-with-loners"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_added_isolate_recomputes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/pagerank_admission/model.json": "d27c5faeecdf18dd108ac375a821727ee5f3348382b079e26b4aa6620cad61fa",
+    ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs": "cc19b74d96b95248fb62ce8eb41accb290971b866ce4f99dd6fce3ff7c1dd566"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/native-with-loners/pagerank_admission.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_added_isolate_recomputes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/20261115T064931Z-control-native-with-loners-theorem_added_isolate_recomputes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/20261115T064931Z-control-native-with-loners.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/pagerank_admission/20261115T064932Z-control-native-with-loners/logs/20261115T064931Z-control-native-with-loners-theorem_added_isolate_recomputes.log": "3e63e7d0ef227242c54fbd9a2915c180e9aca11191f96575c07bf4f616eca91e",
+    ".g5/Verus_verification/results/pagerank_admission/20261115T064932Z-control-native-with-loners/logs/20261115T064931Z-control-native-with-loners.log": "1e349252075ce89a183ee3fcc375aa9964c6d03cd0a872d1d5ce265b965fb3f5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

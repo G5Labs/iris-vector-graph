@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_self_loop_and_isolate_differ"
+    ],
+    "find": "if raw[0].1 {rest}",
+    "name": "self-loop-counts-as-isolate",
+    "replace": "if false {rest}",
+    "why": "edgeless producer must distinguish self-loop-only nodes"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_self_loop_and_isolate_differ"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/pagerank_admission/model.json": "edff9c2481a756dd06a816df80caacd701f6856de0a8f7ee64ba89913ec3829c",
+    ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs": "b67bef15cc35cd4b6ecd3d9927cfa7e67274cfd32436c8a15fc0c6fe0e108b0d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/self-loop-counts-as-isolate/pagerank_admission.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_self_loop_and_isolate_differ": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/20261115T070305Z-control-self-loop-counts-as-isolate-theorem_self_loop_and_isolate_differ.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/20261115T070305Z-control-self-loop-counts-as-isolate.log",
+    "timed_out": false,
+    "verified": 8
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/pagerank_admission/20261115T070306Z-control-self-loop-counts-as-isolate/logs/20261115T070305Z-control-self-loop-counts-as-isolate-theorem_self_loop_and_isolate_differ.log": "9b72e5cb10d646d549c2273c20065bc14aab677c761ae76ab34cb285f0c86380",
+    ".g5/Verus_verification/results/pagerank_admission/20261115T070306Z-control-self-loop-counts-as-isolate/logs/20261115T070305Z-control-self-loop-counts-as-isolate.log": "40cb3650d7c1ed62d3db5c454e0967decb61fa4f003065f059262590d9117350"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

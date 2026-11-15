@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_range_preserves_both_bounds"
+    ],
+    "find": "(t.len()<2 || t[1]!='.')",
+    "name": "range-token-is-float",
+    "replace": "true",
+    "why": "range-token-is-float"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_range_preserves_both_bounds"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs": "a3cfe8d063930741196e130c4f5ea4f5f54046205e1e35a092e90978e222acf6",
+    ".g5/Verus_verification/models/aql_frontend/model.json": "511e0063410c7c2dc3a13f5e2e8ff68a24492eaf2e34c0498bae6220ed77005d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration3-20261115/verus/aql_frontend/controls/range-token-is-float/aql_frontend.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_range_preserves_both_bounds": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/aql_frontend/20261115T064930Z-control-range-token-is-float-theorem_range_preserves_both_bounds.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/aql_frontend/20261115T064930Z-control-range-token-is-float.log",
+    "timed_out": false,
+    "verified": 5
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aql_frontend/20261115T064930Z-control-range-token-is-float/logs/20261115T064930Z-control-range-token-is-float-theorem_range_preserves_both_bounds.log": "2a73a1a7dcb8b050b118f95a2edd6634acac19a28c0eec4679f315588adcf7f9",
+    ".g5/Verus_verification/results/aql_frontend/20261115T064930Z-control-range-token-is-float/logs/20261115T064930Z-control-range-token-is-float.log": "a6c399bf9d43d03bbf2976364cbfc2ca9ccd56d18e2bb7b4f80debf63f989be0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

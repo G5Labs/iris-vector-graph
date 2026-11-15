@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/omit-node-token/pagerank_admission.rs:35:13
+   |
+33 | pub proof fn theorem_insert_moves_key(n:Nodes,id:nat,l:Seq<int>,d:int,it:nat)
+   | ----------------------------------------------------------------------------- at the end of the function body
+34 |     requires id>n.max_id,
+35 |     ensures key(Some(add_node(n,id)),l,d,it)!=key(Some(n),l,d,it),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

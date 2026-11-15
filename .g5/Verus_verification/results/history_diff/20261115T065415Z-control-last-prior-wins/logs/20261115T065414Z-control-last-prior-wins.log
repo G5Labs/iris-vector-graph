@@ -1,0 +1,23 @@
+verification results:: 10 verified, 2 errors
+error: precondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/last-prior-wins/history_diff.rs:72:9
+   |
+62 |     requires attrs_only(ops),aligned(s,d,original),
+   |                              --------------------- failed precondition
+...
+72 |         theorem_continuous_endpoint_relation(n,track(d,r),ops.drop_first(),original);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/last-prior-wins/history_diff.rs:105:13
+    |
+104 |   pub proof fn theorem_first_prior_survives()
+    |   ------------------------------------------- at the end of the function body
+105 |       ensures ({let s=Entity{exists:true,value:Some(1)};let (s1,r1)=writer(s,1,Op::Set(2));
+    |  _____________^
+106 | |         let (_,r2)=writer(s1,2,Op::Set(3));let d=finish(track(track(empty(),r1),r2));
+107 | |         d==seq![Entry{attr:true,before:Some(Payload::Value(1)),after:Some(Payload::Value(3))}]}),
+    | |________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

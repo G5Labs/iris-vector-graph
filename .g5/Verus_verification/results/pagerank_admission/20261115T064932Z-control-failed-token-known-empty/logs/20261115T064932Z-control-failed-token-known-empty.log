@@ -1,0 +1,11 @@
+verification results:: 6 verified, 1 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/failed-token-known-empty/pagerank_admission.rs:24:67
+   |
+23 | pub proof fn theorem_count_max_producer()
+   | ----------------------------------------- at the end of the function body
+24 |     ensures token(None,None,false)==Some(Nodes{count:0,max_id:0}),token(Some(2),Some(8),true)==None,
+   |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

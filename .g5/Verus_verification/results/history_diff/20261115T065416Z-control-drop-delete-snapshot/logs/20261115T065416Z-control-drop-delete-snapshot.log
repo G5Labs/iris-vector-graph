@@ -1,0 +1,30 @@
+verification results:: 10 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/drop-delete-snapshot/history_diff.rs:110:13
+    |
+109 |   pub proof fn theorem_simple_delete_preserves_snapshot()
+    |   ------------------------------------------------------- at the end of the function body
+110 |       ensures ({let s=Entity{exists:true,value:Some(1)};let (s1,r1)=writer(s,2,Op::Delete);
+    |  _____________^
+111 | |         let (s2,r2)=writer(s1,3,Op::Create);let (s3,r3)=writer(s2,3,Op::Set(2));
+112 | |         let es=finish(track(track(track(empty(),r1),r2),r3));
+113 | |         s.value==Some(1) && s3.value==Some(2) && es.len()==3
+114 | |         && inverse(es)[0].after==Some(Payload::Snapshot(Some(1)))
+115 | |         && inverse(es)[2].before==Some(Payload::Value(2)) && inverse(es)[2].after==None}),
+    | |_________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/drop-delete-snapshot/history_diff.rs:120:13
+    |
+119 |   pub proof fn theorem_change_then_delete_loses_range_prior()
+    |   ----------------------------------------------------------- at the end of the function body
+120 |       ensures ({let s=Entity{exists:true,value:Some(1)};let (s1,r1)=writer(s,2,Op::Set(2));
+    |  _____________^
+121 | |         let (s2,r2)=writer(s1,3,Op::Delete);let (s3,r3)=writer(s2,4,Op::Create);
+122 | |         let (_,r4)=writer(s3,4,Op::Set(3));let es=finish(track(track(track(track(empty(),r1),r2),r3),r4));
+123 | |         es.len()==3 && inverse(es)[0].after==Some(Payload::Snapshot(Some(2)))
+124 | |         && inverse(es)[2].after==None && s.value==Some(1)}),
+    | |___________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

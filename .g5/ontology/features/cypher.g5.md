@@ -26,6 +26,16 @@ IVG answers each Cypher query on one of two paths. The SQL path answers every qu
 - Python plans a native read and IRIS runs it; the native executor never parses Cypher.
 - A query the native executor does not support takes the SQL path unchanged.
 
+## AQL translation
+
+<a id="query.aql"></a>
+[I · query.aql]
+
+`execute_aql` translates AQL into Cypher and passes that text and its bindings to the Cypher reader. For traversal depth, a single integer becomes equal lower and upper bounds; `1..2` keeps both integer bounds, while a decimal depth raises `AQLParseError` before execution.
+
+- Against a literal null on the right, equality becomes `IS NULL` and inequality becomes `IS NOT NULL`. The string `"null"` stays a string comparison, and other operators keep their comparison form.
+- This is a translation contract. It does not prove traversal results, Cypher null semantics, bound-parameter null rewriting or the whole AQL language.
+
 ## Native executor
 
 <a id="query.native"></a>
@@ -328,6 +338,15 @@ A relationship property read in a Cypher result is decoded from its stored text.
 Sources: [CONTEXT.md, Query execution](../../../CONTEXT.md#L224-L232), [spec 253, decisions of 2026-10-20 and FR-001](../../../specs/253-native-cypher-executor/spec.md#L14-L18), [USER_GUIDE, Where a query runs](../../../docs/USER_GUIDE.md#L350-L368), [`_execute_parsed`](../../../iris_vector_graph/_engine/query.py#L2032-L2082). Note: USER_GUIDE says "the one known difference between the paths is listed in Known issues", and no such entry is named there.
 
 Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no decider, so under the uplift's authority rule ([sources](../../uplift/ivg-verus-initial/sources.md)) the block is `agent` (review round 3 R3-reader M16).
+
+### query.aql
+
+- Sources: [numeric lexer](../../../iris_vector_graph/cypher/aql/lexer.py#L164-L174), [depth parser](../../../iris_vector_graph/cypher/aql/parser.py#L89-L105), [null translator](../../../iris_vector_graph/cypher/aql/translator.py#L97-L110), [hop writer](../../../iris_vector_graph/cypher/aql/translator.py#L159-L180), [execute_aql](../../../iris_vector_graph/_engine/query.py#L1730-L1745)
+- Verus: [aql_frontend](../../Verus_verification/models/aql_frontend/NOTES.md), as-built `lex`, `depth`, `hops`, `resolve`; raw suffix/typed token/AST/predicate projection. Actual output text and public adapter observed with a recorded Cypher consumer; query execution remains unproved.
+- Expands: [query paths](#query.paths)
+- agent
+- user-facing-behavior
+- test-coverage
 
 ### query.native
 - agent

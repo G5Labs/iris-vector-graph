@@ -1,0 +1,11 @@
+verification results:: 8 verified, 1 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/self-loop-counts-as-isolate/pagerank_admission.rs:57:13
+   |
+56 | pub proof fn theorem_self_loop_and_isolate_differ(n:Nodes,id:int,d:int,it:nat)
+   | ------------------------------------------------------------------------------ at the end of the function body
+57 |     ensures call(Some(n),edgeless(seq![(id,true)]),0,d,it,None,seq![]).native_candidate,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

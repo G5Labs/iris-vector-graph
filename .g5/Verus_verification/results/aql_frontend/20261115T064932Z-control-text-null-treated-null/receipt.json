@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_string_null_is_value"
+    ],
+    "find": "(Operator::Eq,Expr::Null)=>",
+    "name": "text-null-treated-null",
+    "replace": "(Operator::Eq,Expr::Null)|(Operator::Eq,Expr::TextNull)=>",
+    "why": "text-null-treated-null"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_string_null_is_value"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs": "a3cfe8d063930741196e130c4f5ea4f5f54046205e1e35a092e90978e222acf6",
+    ".g5/Verus_verification/models/aql_frontend/model.json": "511e0063410c7c2dc3a13f5e2e8ff68a24492eaf2e34c0498bae6220ed77005d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration3-20261115/verus/aql_frontend/controls/text-null-treated-null/aql_frontend.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_string_null_is_value": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/aql_frontend/20261115T064931Z-control-text-null-treated-null-theorem_string_null_is_value.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/aql_frontend/20261115T064931Z-control-text-null-treated-null.log",
+    "timed_out": false,
+    "verified": 5
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aql_frontend/20261115T064932Z-control-text-null-treated-null/logs/20261115T064931Z-control-text-null-treated-null-theorem_string_null_is_value.log": "8bb891be80a83cd283364189b3c02cefb07e2582dc97d1b2d17ad5934e499f2d",
+    ".g5/Verus_verification/results/aql_frontend/20261115T064932Z-control-text-null-treated-null/logs/20261115T064931Z-control-text-null-treated-null.log": "5338d983f8e5ef6880ef75dd40ed9651163e439a9981a0ab8dbbf8e9d2167139"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

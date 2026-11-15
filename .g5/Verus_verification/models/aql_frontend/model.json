@@ -1,0 +1,44 @@
+{
+  "name": "aql_frontend",
+  "root": "aql_frontend.rs",
+  "expected_verified": 6,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "range-token-is-float",
+      "why": "range-token-is-float",
+      "find": "(t.len()<2 || t[1]!='.')",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_range_preserves_both_bounds"
+      ]
+    },
+    {
+      "name": "max-depth-discarded",
+      "why": "max-depth-discarded",
+      "find": "Some(Token::Int(m))=>Some((n,m))",
+      "replace": "Some(Token::Int(m))=>Some((n,n))",
+      "expect_fail_in": [
+        "theorem_range_preserves_both_bounds"
+      ]
+    },
+    {
+      "name": "null-ne-becomes-eq",
+      "why": "null-ne-becomes-eq",
+      "find": "(Operator::Ne,Expr::Null)=>Predicate::IsNotNull",
+      "replace": "(Operator::Ne,Expr::Null)=>Predicate::IsNull",
+      "expect_fail_in": [
+        "theorem_null_operators"
+      ]
+    },
+    {
+      "name": "text-null-treated-null",
+      "why": "text-null-treated-null",
+      "find": "(Operator::Eq,Expr::Null)=>",
+      "replace": "(Operator::Eq,Expr::Null)|(Operator::Eq,Expr::TextNull)=>",
+      "expect_fail_in": [
+        "theorem_string_null_is_value"
+      ]
+    }
+  ]
+}

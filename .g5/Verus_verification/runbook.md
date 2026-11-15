@@ -166,3 +166,36 @@ python3 .g5/Verus_verification/tools/check_consolidated.py
 Expect 11 verified / zero errors; the final-size-only control fails theorem_transient_oversize_refuses; Python AGREES on 7,020 count/content cases and the actual streaming/export survivor journey. This is a model proof and Python unit correspondence with substituted SQL/meta, not an IRIS or implementation proof. Latest receipts/raw proof logs are under results/reconstruction/. Replace reconstruction with ledger_apply (9/5), fusion_ranking (11/6) or bulk_delete (10/5) and omit CONTROL to run its full control suite. The ledger binding expressly does not execute its ObjectScript producer.
 
 The upstream 13-file regression command and cwd are in [upstream-unit.json](../uplift/consolidated/iteration-2/upstream-unit.json); expected 314 passed. See [iteration 2 handoff](../uplift/consolidated/iteration-2/HANDOFF.md) for limits and review attacks.
+
+## Improvement iteration 3 on this Mac
+
+Run the named-reader producer challenge end to end:
+
+```sh
+cd /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph
+export RUN_DIR=/Users/ziniuw/runs/ivg-iteration3-20261115
+export IVG_PIN_DIR=/Users/ziniuw/runs/ivg-consolidated-20261114/pin
+export VERUS_BIN=/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus
+export G5_GUIDE=/Users/ziniuw/Desktop/research/G5-Lean-V2/.agents/guidance
+export PYTHONDONTWRITEBYTECODE=1
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/history_diff
+CONTROL=drop-delete-snapshot python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/history_diff
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python .g5/Verus_verification/models/history_diff/binding.py
+python3 .g5/Verus_verification/tools/check_consolidated.py
+```
+
+Expect **12 verified / zero errors**, the control failing
+`theorem_simple_delete_preserves_snapshot`, Python AGREES on **9481 named pairs**
+with **8113 continuous endpoint comparisons**, and gate PASS. The binding prints
+the receipt holding both simple and stronger snapshot observations. No IRIS runs.
+Omit CONTROL to run all six controls. Substitute pagerank_admission (9/6),
+aql_frontend (6/4), or vector_threshold (6/3) for the other proofs/controls/bindings;
+their NOTES name every provider and formal gap. Vector uses adapted SQLite,
+PageRank normalized fixture rows are not an ObjectScript numerical check, and
+AQL ends at a recorded Cypher handoff.
+
+The [iteration 3 handoff](../uplift/consolidated/iteration-3/HANDOFF.md),
+[sample](../uplift/consolidated/iteration-3/PAIRS.md) and
+[upstream command/log](../uplift/consolidated/iteration-3/upstream-unit.json)
+retain the sealed scope, inputs and limitations. Expected upstream result:
+164 passed, no skips. Independent review remains pending.

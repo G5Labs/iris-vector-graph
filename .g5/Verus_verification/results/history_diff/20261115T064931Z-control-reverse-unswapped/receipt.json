@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_named_reverse_and_equal"
+    ],
+    "find": "else {inverse(finish(read(empty(),rs,b,a)))}",
+    "name": "reverse-unswapped",
+    "replace": "else {finish(read(empty(),rs,b,a))}",
+    "why": "reverse-unswapped"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_named_reverse_and_equal"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_diff/history_diff.rs": "9f6cc034cfed991ec2f0689fc719f1ed4c374d1787bb106b031887242d1c0234",
+    ".g5/Verus_verification/models/history_diff/model.json": "71c5636e5d3aeb6593dd0979d94e71f865795410156e537c1f1336e3e17c3c36"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/controls/reverse-unswapped/history_diff.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_named_reverse_and_equal": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/20261115T064930Z-control-reverse-unswapped-theorem_named_reverse_and_equal.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/history_diff/20261115T064930Z-control-reverse-unswapped.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_diff/20261115T064931Z-control-reverse-unswapped/logs/20261115T064930Z-control-reverse-unswapped-theorem_named_reverse_and_equal.log": "9bec415f6cb6dcc6e0679ee2f7da8aae64f21a886bfdc8c695b7f7d54e644403",
+    ".g5/Verus_verification/results/history_diff/20261115T064931Z-control-reverse-unswapped/logs/20261115T064930Z-control-reverse-unswapped.log": "abc3c0b9502cc4cdd3e7565363cfa074e6bd6a16474ba56f5d447cbd4f5c157a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

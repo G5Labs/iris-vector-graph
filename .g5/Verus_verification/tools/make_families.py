@@ -177,6 +177,10 @@ P = [
 ]
 
 C = [  # this consolidation's new model directories: (name, scope, design, status, premises/notes)
+    ("vector_threshold", "optional inclusive cosine predicate and binds before row limit; adapted SQLite provider, no IRIS claim", "as-built transcription", "active"),
+    ("aql_frontend", "numeric suffix lexer, typed depth AST/hops and literal null/text-null operators; query execution unproved", "as-built transcription", "active"),
+    ("pagerank_admission", "COUNT:MAX node key, lazy hit/miss census and raw self-loop/isolate producer; numerics and concurrency unproved", "as-built transcription", "active"),
+    ("history_diff", "named range/inverse and continuous per-attribute endpoints; deletion snapshot correction and range-prior lifecycle witness", "as-built transcription", "active"),
     ("node_read", "numeric Python writer, CY_TYPED tag/escape and batched node inclusion/aliases; scalar subset", "as-built transcription", "active"),
     ("ndjson_import", "raw kind selection, node admission, width refusal, duplicate counts and prefix state; node projection only", "as-built transcription", "active"),
     ("route_recheck", "NativeRoute held-call counter, trial reset, next-path selection and permanent SQL failure; drift disabled", "as-built transcription", "active"),

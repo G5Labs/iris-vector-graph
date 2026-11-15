@@ -202,6 +202,8 @@ Comparison: [playbook-proofs-d1d `control_f0802_shortcut_unscoped` (as built)](r
 - Caller behavior to preserve and a distinguishing case: not stated by the playbook arm beyond the remedy; see each member finding's `Expected` line.
 - Source: [reflection/ROOT-CAUSES.md](../../experiment/playbook-completion/reflection/ROOT-CAUSES.md). Not yet compared with the guidance arm's simplifications.
 
+Iteration 3 corroboration: aql_frontend now checks integer-range lexing, typed depth propagation, literal null operators and text-null distinction through the public execute_aql handoff. It does not establish traversal results, Cypher-to-SQL semantics or a general reference evaluator. Preserve exact lower/upper bounds, string versus null and parameter handoff in any proposed shared frontend; the general simplification remains unimplemented.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="RC-19"></a>
@@ -658,7 +660,7 @@ Comparison: none — the playbook arm's remedy is prose only; no model compares 
 - Caller behavior to preserve and a distinguishing case: not stated by the playbook arm beyond the remedy; see each member finding's `Expected` line.
 - Source: [reflection/ROOT-CAUSES.md](../../experiment/playbook-completion/reflection/ROOT-CAUSES.md). Not yet compared with the guidance arm's simplifications.
 
-Iteration 2 corroboration: reconstruction now derives zero/default meta normalization and per-record count checks, with an actual named-reader/export unit comparison. The model distinguishes transient oversize from final size; this supports one resource-bound boundary only. Streaming memory remains q-con-001 and peak/final policy is q-iter-002. No common capacity mechanism was implemented or proved.
+Iteration 2 corroboration: reconstruction now derives zero/default meta normalization and per-record count checks, with an actual named-reader/export unit comparison. The model distinguishes transient oversize from final size; this supports one resource-bound boundary only. Streaming memory remains q-con-001 and peak/final policy is q-iter-002. No common capacity mechanism was implemented or proved. Iteration 3 addition: vector_threshold checks inclusive cosine predicates before limits and binds the repeated vector/threshold. PageRank's hidden 10000-row Owner cap remains F-1003. Neither a threshold proof nor a successful cache hit establishes all-node numerical normalization; no general capacity mechanism was implemented.
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 

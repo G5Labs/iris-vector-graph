@@ -123,6 +123,7 @@ Global PageRank is textbook PageRank over every node of the default graph, retur
 
 - The damping factor is 0.85 and the run is 20 iterations by default. The count is fixed, not a convergence test, except that with Arno the walk also stops once converged.
 - A node with no out-edges spreads its rank over every node.
+- Known departure at the pin: the Owner silently returns at most 10,000 rows, so a larger result can omit nodes and sum to less than one. That violates the complete-answer requirement; cache admission does not repair it.
 - Rank passes in proportion to edge count, so two edges from one node to another pass twice the rank of one.
 - Given seeds, it returns personalized PageRank cut at this method's iteration count. Its `bidirectional` and `reverse_weight` options are accepted and ignored.
 
@@ -268,6 +269,15 @@ A cached answer is valid only while the graph-version token it was computed unde
 - Subgraph extraction reads labels and properties, so its answers are never cached.
 - The token is shared by the whole namespace, so a write to one graph also invalidates other graphs' answers.
 
+<a id="algorithms.cache.pagerank"></a>
+[D · algorithms.cache.pagerank]
+
+Global PageRank puts the node table's row count and largest row ID in its cache key, alongside damping and iteration count; a cache hit also requires the current adjacency token. On a hit it returns the stored score rows without reading the nodes with no edge; adding an isolated node changes the node key and makes the next call compute again.
+
+- An unreadable node token falls back to reading the edgeless list before lookup and using that list in the key. A missing token is not a known empty node set; an empty table successfully reads as `0:0`.
+- The loner reader includes nodes whose only edges are self-loops. PageRank's adapter removes those from the edgeless list; a nonempty remaining list forces the Owner, while a self-loop-only list does not force that fallback.
+- These checks assume stable reads and non-reused row IDs. They do not establish a consistent snapshot during concurrent writes, PPR freshness, or numerical correctness. The Owner's 10,000-row cap can break the requirement to list every node and return scores summing to one; that is the existing [F-1003](../../Verus_verification/bugs_issues.md#F-1003).
+
 <a id="algorithms.cache.erasure"></a>
 [I · algorithms.cache.erasure]
 
@@ -299,6 +309,7 @@ Spec 236's status line still says "Draft", although it shipped in 4.2.0. Since 4
 
 
 The namespace guard is in [iris_sql_store.py _arno_route](../../../iris_vector_graph/stores/iris_sql_store.py#L882-L890) and [ArnoAccel.cls](../../../iris_src/src/Graph/KG/ArnoAccel.cls#L242-L262), which also refuses native PageRank on a multigraph default graph; the edgeless-node case is at [iris_sql_store.py](../../../iris_vector_graph/stores/iris_sql_store.py#L2390-L2395). Added by review round 3 R3-reader M11.
+
 ### algorithms.routing.revision
 
 - Sources: [Spec 236 FR-002, FR-003, FR-004, FR-008](../../../specs/236-arno-callout-adoption/spec.md); [arno_readers.py](../../../iris_vector_graph/arno_readers.py); [ArnoAccel.cls ReaderRevisions](../../../iris_src/src/Graph/KG/ArnoAccel.cls)
@@ -425,6 +436,8 @@ Edgeless nodes joined every answer in 4.6.0 (R306), and unreached PPR nodes got 
 - test-coverage
 
 Textbook PageRank and weighting by edge count came in 4.6.0. Before, a parallel edge counted in its source's degree but passed rank once, and the scores did not sum to 1. Live coverage: `tests/e2e/test_pagerank_textbook_e2e.py`.
+
+Findings: [Owner result cap F-1003](../../Verus_verification/bugs_issues.md#F-1003); the numerical/every-node rule is not established by the new cache-admission contract.
 
 ### algorithms.op.ppr
 
@@ -583,7 +596,7 @@ Findings: [HD-1003](../../Verus_verification/open_questions.md#HD-1003)
 - Sources: [Spec 236 FR-016, FR-017, FR-022, Story 4](../../../specs/236-arno-callout-adoption/spec.md); [algo_cache.py](../../../iris_vector_graph/algo_cache.py); [AlgoCache.cls](../../../iris_src/src/Graph/KG/AlgoCache.cls)
 - Playbook: [ALG-B16](../../../experiment/playbook-completion/ontology/10-algorithms.md#L309), [ALG-B16.3](../../../experiment/playbook-completion/ontology/10-algorithms.md#L312)
 - Verus: active for modeled PageRank/PPR keys and repeated calls (partial for public M21): the playbook's `proofs-d1e` [`acache_l1.rs`](../../../experiment/playbook-completion/proofs-d1e/src/acache_l1.rs) `theorem_answer_is_fresh` and `acache_l2.rs` (**reviewed design**: freshness is keyed on a node token `nver` the pin does not have; the pin's behavior is control `control_f1004_create_moves_no_token`, finding F-1004, rerun here). Its theorem supports "the reviewed design returns fresh answers", not "the product does". Overlapping: `G-graph_structure` (as-built) algorithm-cache token model, which omits the parameters from the key; its witness of a rolled-back write is finding bug-str-002. Scope correction in iteration 1: Q contains only PageRank and seeded PPR, not CDLP iteration keys; Ans does not carry CDLP labels or iteration counts. M21 remains partial.
-- Children: [token](#algorithms.cache.token), [erasure](#algorithms.cache.erasure), [concurrency](#algorithms.cache.concurrency)
+- Children: [global PageRank admission](#algorithms.cache.pagerank), [token](#algorithms.cache.token), [erasure](#algorithms.cache.erasure), [concurrency](#algorithms.cache.concurrency)
 - agent
 - data-integrity
 - test-coverage
@@ -604,7 +617,18 @@ Findings: [A cached personalized PageRank answer does not notice a node created 
 
 Live coverage: `tests/integration/test_236_token_write_paths.py`, one case per audited write path. Where the label index is declared, label writes also move the token, so the stated reason subgraph is not cached is out of date; the decision stands. The case of a write that rolls back after a reader stored an answer is the open question [structure.rebuilt.rollback](graph-structure.g5.md#structure.rebuilt.rollback). Suspected divergence: a cached PPR answer for a seed that is not yet a node survives the node's creation, since PPR is not keyed on the node set.
 
-Findings: [A cached personalized PageRank answer does not notice a node created after it](../../Verus_verification/bugs_issues.md#bug-plt-017)
+Findings: [A cached personalized PageRank answer does not notice a node created after it](../../Verus_verification/bugs_issues.md#bug-plt-017), [same creation trigger in F-1004](../../Verus_verification/bugs_issues.md#F-1004)
+
+### algorithms.cache.pagerank
+
+- Sources: [COUNT:MAX producer and engine consumer](../../../iris_vector_graph/_engine/algorithms.py#L179-L194), [global engine](../../../iris_vector_graph/_engine/algorithms.py#L782-L804), [store and cache](../../../iris_vector_graph/stores/iris_sql_store.py#L2362-L2424), [edgeless producer](../../../iris_vector_graph/_edgeless.py#L65-L67), [R313 tests](../../../tests/unit/test_460_r313_pagerank_loners_lazy.py)
+- Verus: [pagerank_admission](../../Verus_verification/models/pagerank_admission/NOTES.md), as-built `token`, `key`, `edgeless`, `call` and named neighbor theorems. COUNT:MAX SQL, row-ID monotonicity, snapshot consistency and actual PageRank numerics remain provider obligations.
+- Expands: [cache](#algorithms.cache)
+- agent
+- data-integrity
+- test-coverage
+
+Findings: [F-1003](../../Verus_verification/bugs_issues.md#F-1003). Global PageRank's node key is not evidence of [PPR freshness](#algorithms.cache.token). No live IRIS or numerical proof.
 
 ### algorithms.cache.erasure
 

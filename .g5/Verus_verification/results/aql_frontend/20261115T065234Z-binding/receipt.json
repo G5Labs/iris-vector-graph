@@ -1,0 +1,45 @@
+{
+  "comparisons": 100,
+  "detection": {
+    "changed_translation": true,
+    "null_operator_mutant": true,
+    "range_lexer_mutant": true
+  },
+  "domain": "0..3 lower/upper depth x equality/inequality x literal null/text null/1, plus 4 decimal depths; no security inputs",
+  "inputs": {
+    ".g5/Verus_verification/models/aql_frontend/aql_frontend.rs": "a3cfe8d063930741196e130c4f5ea4f5f54046205e1e35a092e90978e222acf6",
+    ".g5/Verus_verification/models/aql_frontend/binding.py": "e51005d3441db3160230e527ee07a077c172c7d35d5cf5ec1f12deda33b5f829",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    "iris_vector_graph/_engine/query.py": "197e7abc8ae204165b363ba4fc17445cb6fc7f789efd3b9dad6d88b0334945a3",
+    "iris_vector_graph/cypher/aql/__init__.py": "241ec610a00f26c4fc9a102d781c2e6f9996406de4b522e637008b2b808c6c44",
+    "iris_vector_graph/cypher/aql/lexer.py": "87cad12cd91b52000ee6f7b0ec2799dc10583a0e9b845531bea1be0dfa02ba5f",
+    "iris_vector_graph/cypher/aql/parser.py": "5d56f696357a1b175ac31d039005e857517fc40599ee3fde481132d1192c04d4",
+    "iris_vector_graph/cypher/aql/translator.py": "77c952ea6ba4bddb8e0881b66061a3f6aa0b03a9f3dead68eb75d4c8443459b6"
+  },
+  "kind": "binding",
+  "mismatch_count": 0,
+  "mismatches": [],
+  "model": "aql_frontend",
+  "pin": {
+    "all_equal": true,
+    "files_equal_pin_blobs": {
+      "iris_vector_graph/_engine/nodes_edges.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/schema.py": true
+    },
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "pin_dir": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin"
+  },
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.8",
+  "substituted": "execute_cypher final consumer recorder only; actual lexer, parser, AST, translation and execute_aql run; Cypher semantics and SQL unproved",
+  "verdict": "AGREES"
+}

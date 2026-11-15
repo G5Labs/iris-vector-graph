@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_adjacency_change_recomputes"
+    ],
+    "find": "&& e.unwrap().adjacency==adj",
+    "name": "ignore-adjacency",
+    "replace": "&& true",
+    "why": "ignore-adjacency"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_adjacency_change_recomputes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/pagerank_admission/model.json": "1da1a957bc1b17fb3ec705c425e373d5c226f3f918e904f642ee282cb5575478",
+    ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs": "cfb4ec9baf5a4721cbdea6b69dc195aa74953712844a1243c7056167712d0694"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/ignore-adjacency/pagerank_admission.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_adjacency_change_recomputes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/20261115T065525Z-control-ignore-adjacency-theorem_adjacency_change_recomputes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/20261115T065525Z-control-ignore-adjacency.log",
+    "timed_out": false,
+    "verified": 8
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/pagerank_admission/20261115T065526Z-control-ignore-adjacency/logs/20261115T065525Z-control-ignore-adjacency-theorem_adjacency_change_recomputes.log": "37d895a9f3b2f3967ad08fcaf7a717ac44c20dd35c80ba5435ed85d14bf2f05c",
+    ".g5/Verus_verification/results/pagerank_admission/20261115T065526Z-control-ignore-adjacency/logs/20261115T065525Z-control-ignore-adjacency.log": "556f26db3e885a6eef05d5647ddbd21d1b51040234b3a1a4a01216a76b54ffca"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

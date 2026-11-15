@@ -2422,6 +2422,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `b-10-live-cap`
 - Reviewed-design control: `playbook-proofs-d1e` `control_f1003_owner_cap` fails where expected in this run ([receipt](results/playbook-proofs-d1e/20261115T035522Z-control_f1003_owner_cap/receipt.json)); the reviewed design verifies ([baseline](results/playbook-proofs-d1e/20261115T035416Z-baseline/receipt.json)). That is a model fact about the reviewed design, not a product property.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
 
+Iteration 3 scope reconciliation: algorithms.cache.pagerank separates COUNT:MAX cache admission from the numerical/every-node promise. PageRankGlobalJson:506-520 still caps output at 10000; the new native Python binding only forwards normalized fixture scores and does not rerun this live cap witness. No normalization or unlimited-output proof is claimed; HD-1004 remains authoritative as previously recorded.
+
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 <a id="F-1004"></a>
@@ -2441,6 +2443,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `b-10-live-cache`, `b
 - Remedy proposed by the playbook arm (not implemented): Put the node-set token in the PPR key (as global PageRank does since R313) or raise a node token on every node write and read it inside AlgoCache.Lookup; a live test that creates an edgeless start node after a cached call.
 - Reviewed-design control: `playbook-proofs-d1e` `control_f1004_create_moves_no_token` fails where expected in this run ([receipt](results/playbook-proofs-d1e/20261115T035446Z-control_f1004_create_moves_no_token/receipt.json)); the reviewed design verifies ([baseline](results/playbook-proofs-d1e/20261115T035416Z-baseline/receipt.json)). That is a model fact about the reviewed design, not a product property.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
+
+Iteration 3 comparison: the create-an-edgeless-start-node trigger/effect is also bug-plt-017; the two source records are retained, not counted as separate new discoveries. The refuted deletion premise here is not restored. New pagerank_admission is global PageRank only and explicitly does not cover PPR; its node-key success cannot repair or refute this PPR finding.
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
@@ -3983,6 +3987,8 @@ Observed: PPR's cache key has no node-set token, and creating a node does not mo
 
 Consequence: `[]` cached for a seed that did not exist yet is served after `create_node(seed)` until the next adjacency write.
 
+Same creation trigger/effect as the retained playbook record F-1004, which carries an inherited live observation and refutes its node-deletion premise. This is one creation defect, not two discoveries. The new global PageRank contract does not cover PPR.
+
 Repair proposal (not implemented): key PPR on the node-set token as PageRank is. Governing statements: [algorithms.cache.token](../ontology/features/algorithms.g5.md#algorithms.cache.token), [algorithms.cache](../ontology/features/algorithms.g5.md#algorithms.cache).
 
 <a id="bug-plt-018"></a>
@@ -4553,25 +4559,30 @@ Consequence: a relationship property stored as such a string comes back from `RE
 Repair proposal (not implemented): compile both patterns with `re.ASCII` and end them with `\Z`; the controls `as-built-ascii-digits` and `as-built-without-final-newline-match` show each change removes one half. Governing statement: [query.values.relationship_text](../ontology/features/cypher.g5.md#query.values.relationship_text).
 
 <a id="bug-led-101"></a>
-### The reverse diff of a range where a node is deleted and re-created reports the earlier revision's property as absent
+### A property changed before node deletion loses its range-start prior in a lifecycle diff
 
 Severity: Low · Decision: Open
 
-Run: Consolidated uplift 2026-11-14
+Run: Consolidated uplift 2026-11-14; producer correction and stronger witness 2026-11-15
 
-**Suspected** end to end: observed on the pin's real `compute_diff` and `Diff.inverse` over hand-built records; `GraphLedger.diff` was read, not run, against a ledger. Severity is lowered one level from Medium.
+**Suspected end to end and policy-dependent.** Real named Python readers agree with a source-faithful snapshot fixture; no live IRIS writer ran. The promised net endpoint interpretation still needs its lifecycle application policy made precise by the maintainer.
 
-Found by: [l2-inverse-order unit probe](results/unit-probes/20261115T043637Z-l2-inverse-order/receipt.json) ([probe](native/unit_probes/l2_inverse_order.py)), settling lead L2 of the reviewed plan; neither arm recorded it.
+Found by: original [l2-inverse-order probe](results/unit-probes/20261115T043637Z-l2-inverse-order/receipt.json); corrected and strengthened by [history_diff](models/history_diff/NOTES.md), `theorem_change_then_delete_loses_range_prior` and the actual named-reader binding.
 
-Reproduced by: none natively.
+Reproduced by: none on IRIS in this iteration. Python `GraphLedger.diff` and `GraphLedger.reconstruct` execute with SQL, revision IDs and ObjectScript records substituted; [binding receipt](results/history_diff/20261115T065234Z-binding/receipt.json).
 
-Expected: `diff(b, a)` with `b` later is the net change from `b` back to `a`, lifecycle-aware (`specs/213-graph-revision-ledger/contracts/ledger-api.md:29`; public case M05; playbook `RPL-B92.1`, `RPL-B92.3`).
+Expected: under the net endpoint interpretation of the ledger API, a diff from a later revision back to one where n.k was 1 must retain that original value, or expose that it cannot describe it. Governing owners: [ledger.readers.diff](../ontology/features/ledger.g5.md#ledger.readers.diff), [lifecycle policy](../ontology/features/ledger.g5.md#ledger.readers.diff.order).
 
-Observed: with node `n` holding `k=1` at revision 1, deleted at 2 and re-created with `k=2` at 3, `diff(3, 1)` is `compute_diff(2..3).inverse()` (`ledger/client.py:706-718`, `ledger/replay.py:417-418`): it lists `n` created, then `n` deleted, then `prop:k` from `2` to absent. The deletion entry of the first life carries no attributes (`replay.py:467-477`), so the reverse cannot say that `k` was `1`; and because `_sort_key` (`:406-407`) ties the two existence entries, the inverse keeps the forward order, creation before deletion.
+Observed: start at revision 1 with k=1; set k=2 at 2; delete n at 3; recreate n at 4 and set k=3 at 5. DeleteNodeRows stores NodeSnapshotJson containing k=2. compute_diff closes that life and drops its earlier attribute prior 1. The reverse range has an existence creation snapshot with k=2 and prop:k from 3 to absent; neither gives the original 1. The new Verus witness derives that snapshot from the raw writes; continuous lives instead preserve the first prior and last value for arbitrary operation sequences.
 
-Consequence: a reader of the reverse diff learns a wrong value (`k` absent) for the earlier revision; applied in order as a script, the inverse ends with `n` present and `k` absent instead of `k=1`. The upstream test `test_reverse_diff_is_exact_inverse` asserts `rev == fwd.inverse()`, which holds by construction and cannot see this.
+Consequence: the range cannot be treated as a complete endpoint delta across this lifecycle. Rev==fwd.inverse() still passes and does not establish that stronger behavior.
 
-Repair proposal (not implemented): record the deleted life's attributes in its deletion entry (as `before` values), and order the inverse by reversing the forward order for entries with equal keys; or document that a diff is a set of net changes with no values for a deleted life. Related question: [q-con-002](open_questions.md#q-con-002). Governing statement: the ledger readers (`ledger.readers`).
+Repair options (not implemented): retain the first observed prior in the closed life's snapshot; or specify that lifecycle entries describe the deletion moment and do not reconstruct range endpoints. The maintainer owns that choice. q-con-002 also retains the independent ordered-script question.
+
+#### Historical witness correction
+
+The original headline claimed any delete/recreate lost the old property. Its fixture supplied delete_node prior="" and its script applier ignored JSON snapshots. The actual producer stores labels and properties in NodeSnapshotJson (LedgerApply.cls:339-371). For the simple no-intervening-change neighbor, reverse existence.after contains k=1; the former missing-property inference is withdrawn. The original probe/receipt remain unchanged. The stronger change-before-delete witness is corroboration of the same range-prior boundary, not a newly counted bug; stable tie ordering remains as built and its desired application policy remains open.
+
 
 <a id="F-0101"></a>
 ### Legacy removal reports objects removed that may still be there

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration3-20261115/verus/pagerank_admission/controls/ignore-adjacency/pagerank_admission.rs:41:13
+   |
+40 | pub proof fn theorem_adjacency_change_recomputes(n:Nodes,l:Seq<int>,a:nat,d:int,it:nat,rows:Seq<(int,int)>,fresh:Seq<(int,int)>)
+   | -------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+41 |     ensures call(Some(n),l,a+1,d,it,Some(Entry{key:key(Some(n),l,d,it),adjacency:a,rows}),fresh).computed,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
