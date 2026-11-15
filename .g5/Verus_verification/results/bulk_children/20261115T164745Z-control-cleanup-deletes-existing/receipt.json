@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_existing_value_wins"
+    ],
+    "find": "wanted.contains(k.0) && !s.parents.contains(k.0)",
+    "name": "cleanup-deletes-existing",
+    "replace": "wanted.contains(k.0)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_existing_value_wins"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/bulk_children/model.json": "e7c7b7caa5f1bca34d53ef20a1119181fb993cf18b79c54f503f71b83653855b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/cleanup-deletes-existing/bulk_children.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_existing_value_wins": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164743Z-control-cleanup-deletes-existing-theorem_existing_value_wins.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164743Z-control-cleanup-deletes-existing.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_children/20261115T164745Z-control-cleanup-deletes-existing/logs/20261115T164743Z-control-cleanup-deletes-existing-theorem_existing_value_wins.log": "98c9d43532da88b4c1f583b30601a66840883700e4cb3c1867dff7f6f9975877",
+    ".g5/Verus_verification/results/bulk_children/20261115T164745Z-control-cleanup-deletes-existing/logs/20261115T164743Z-control-cleanup-deletes-existing.log": "0baeaad62bdd9e369cf179dbdc2a3f0c9926274a630aea3ebd6410cf5cc8b930"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

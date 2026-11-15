@@ -1,0 +1,21 @@
+verification results:: 7 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/reader-default-graph/snapshot_routes.rs:60:13
+   |
+57 | pub proof fn theorem_restored_row_reaches_own_reader(s:State,key:(int,int),t:int,node:int,v:Seq<int>,engine:int,build:bool)
+   | --------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+60 |     ensures read(load(prepare(s,key,t,Width::Present(v.len() as int),engine,build,true,1),t,key.0,node,v,false).state,key,node)==Read::Value(v),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/reader-default-graph/snapshot_routes.rs:86:13
+   |
+84 | pub proof fn theorem_other_graph_frame(s:State,t:int,g:int,n:int,v:Seq<int>,other:(int,int),node:int)
+   | ----------------------------------------------------------------------------------------------------- at the end of the function body
+85 |     requires other.0!=g,
+86 |     ensures read(load(s,t,g,n,v,true).state,other,node)==read(s,other,node),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

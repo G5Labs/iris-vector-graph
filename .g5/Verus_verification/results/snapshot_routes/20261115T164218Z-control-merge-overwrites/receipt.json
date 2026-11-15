@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_merge_reports_without_overwrite"
+    ],
+    "find": "rows:if s.rows.contains_key(key){s.rows}else{s.rows.insert(key,v)}",
+    "name": "merge-overwrites",
+    "replace": "rows:s.rows.insert(key,v)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_merge_reports_without_overwrite"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/snapshot_routes/model.json": "8b69f622e215bc408d320acbee0ffbd3f8f140025915862824e3c3922951a551",
+    ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs": "3ff2513dc3081dd3a885cc060e2d9bf8c189f58e2cbfd953764ea308009e961c"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/merge-overwrites/snapshot_routes.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_merge_reports_without_overwrite": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164217Z-control-merge-overwrites-theorem_merge_reports_without_overwrite.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164217Z-control-merge-overwrites.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164218Z-control-merge-overwrites/logs/20261115T164217Z-control-merge-overwrites-theorem_merge_reports_without_overwrite.log": "3e453795e23b7a8dcd7826def75a85128d28c01d36af77650a6b4386e9802c67",
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164218Z-control-merge-overwrites/logs/20261115T164217Z-control-merge-overwrites.log": "a758705edf2e90ef506cf0debf11b81a85c31ca322cd59b30e581b1346d7f2a5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

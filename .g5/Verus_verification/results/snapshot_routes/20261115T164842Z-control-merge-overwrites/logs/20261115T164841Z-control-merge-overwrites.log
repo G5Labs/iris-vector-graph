@@ -1,0 +1,21 @@
+verification results:: 12 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/merge-overwrites/snapshot_routes.rs:98:46
+   |
+96 | pub proof fn theorem_merge_reports_without_overwrite(s:State,t:int,g:int,n:int,v:Seq<int>)
+   | ------------------------------------------------------------------------------------------ at the end of the function body
+97 |     requires s.widths.contains_key(t),s.widths[t]==v.len(),s.parents.contains((g,n)),s.rows.contains_key((t,g,n)),
+98 |     ensures load(s,t,g,n,v,true).reported==1,load(s,t,g,n,v,true).state.rows==s.rows,
+   |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/merge-overwrites/snapshot_routes.rs:137:13
+    |
+135 | pub proof fn theorem_existing_row_skips_width_check(s:State,t:int,g:int,n:int,v:Seq<int>)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+136 |     requires s.widths.contains_key(t),s.rows.contains_key((t,g,n)),
+137 |     ensures load(s,t,g,n,v,true).state==s,load(s,t,g,n,v,true).reported==1,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

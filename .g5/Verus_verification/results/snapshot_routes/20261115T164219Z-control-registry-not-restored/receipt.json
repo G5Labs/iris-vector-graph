@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_export_registry_restore_readback"
+    ],
+    "find": "State{registry:s.registry.insert(key,route),..s}",
+    "name": "registry-not-restored",
+    "replace": "s"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_export_registry_restore_readback"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/snapshot_routes/model.json": "8b69f622e215bc408d320acbee0ffbd3f8f140025915862824e3c3922951a551",
+    ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs": "3ff2513dc3081dd3a885cc060e2d9bf8c189f58e2cbfd953764ea308009e961c"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/registry-not-restored/snapshot_routes.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_export_registry_restore_readback": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164218Z-control-registry-not-restored-theorem_export_registry_restore_readback.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164218Z-control-registry-not-restored.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164219Z-control-registry-not-restored/logs/20261115T164218Z-control-registry-not-restored-theorem_export_registry_restore_readback.log": "38ea0eefd9fca14ca59441c3b045ab771937cbc3a01ae0f8bd96bca8e1283c9c",
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164219Z-control-registry-not-restored/logs/20261115T164218Z-control-registry-not-restored.log": "a7680cb3550ed1188d91f84f3901d706b5b9f157e17e5fd638151f2f2b53c805"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

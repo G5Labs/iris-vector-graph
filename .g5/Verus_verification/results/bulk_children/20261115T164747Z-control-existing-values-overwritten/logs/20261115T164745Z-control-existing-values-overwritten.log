@@ -1,0 +1,29 @@
+verification results:: 27 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/existing-values-overwritten/bulk_children.rs:88:13
+   |
+87 | pub proof fn lemma_apply_extends(s:Store,r:Input,reject:Fault)
+   | -------------------------------------------------------------- at the end of the function body
+88 |     ensures extends(s,apply(s,r,reject)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/existing-values-overwritten/bulk_children.rs:144:9
+    |
+141 | pub proof fn theorem_existing_value_wins(s:Store,r:Input,k:int)
+    | --------------------------------------------------------------- at the end of the function body
+...
+144 |         run(s,seq![r],no_fault(),false).store.props[(node(r),k)]==s.props[(node(r),k)],
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/existing-values-overwritten/bulk_children.rs:180:13
+    |
+178 | pub proof fn theorem_repeated_id_first_property_wins(s:Store,a:Input,b:Input,k:int)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+179 |     requires a.active,b.active,node(a)==node(b),!s.parents.contains(node(a)),offered(a).contains_key(k),
+180 |     ensures run(s,seq![a,b],no_fault(),false).store.props[(node(a),k)]==offered(a)[k],
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

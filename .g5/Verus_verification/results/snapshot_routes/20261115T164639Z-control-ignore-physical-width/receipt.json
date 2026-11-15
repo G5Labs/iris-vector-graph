@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_existing_incompatible_width_is_not_redeclared"
+    ],
+    "find": "s.widths[table]!=v.len() || ",
+    "name": "ignore-physical-width",
+    "replace": ""
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_existing_incompatible_width_is_not_redeclared"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/snapshot_routes/model.json": "4e174097431bb8ed17681ea76e4e07e98db2ae02d47b94c79cfff28bc9c70299",
+    ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs": "82622049f9e2fb6e5b853a2e9960048faebbbd222b23e6e36e3d412de63ff045"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/ignore-physical-width/snapshot_routes.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_existing_incompatible_width_is_not_redeclared": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164638Z-control-ignore-physical-width-theorem_existing_incompatible_width_is_not_redeclared.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164638Z-control-ignore-physical-width.log",
+    "timed_out": false,
+    "verified": 12
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164639Z-control-ignore-physical-width/logs/20261115T164638Z-control-ignore-physical-width-theorem_existing_incompatible_width_is_not_redeclared.log": "2b08548e48890d976557ecbbc529976033129d63f7a8bb7981af99d2d09d8f66",
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164639Z-control-ignore-physical-width/logs/20261115T164638Z-control-ignore-physical-width.log": "0a992af7462da2148751c592263af54e648e73808600fc6475b0ece55ebc04b8"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,37 @@
+verification results:: 26 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/graph-collapsed/bulk_children.rs:171:1
+    |
+171 | pub proof fn theorem_other_graph_frame(s:Store,r:Input,n:Node,k:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/graph-collapsed/bulk_children.rs:173:13
+    |
+171 | pub proof fn theorem_other_graph_frame(s:Store,r:Input,n:Node,k:int)
+    | -------------------------------------------------------------------- at the end of the function body
+172 |     requires n.0!=r.graph,
+173 |     ensures run(s,seq![r],no_fault(),false).store.parents.contains(n)==s.parents.contains(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/graph-collapsed/bulk_children.rs:174:9
+    |
+171 | pub proof fn theorem_other_graph_frame(s:Store,r:Input,n:Node,k:int)
+    | -------------------------------------------------------------------- at the end of the function body
+...
+174 |         run(s,seq![r],no_fault(),false).store.labels.contains((n,k))==s.labels.contains((n,k)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/graph-collapsed/bulk_children.rs:176:41
+    |
+176 |         s.props.contains_key((n,k)) ==> run(s,seq![r],no_fault(),false).store.props[(n,k)]==s.props[(n,k)],
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: aborting due to 2 previous errors
+

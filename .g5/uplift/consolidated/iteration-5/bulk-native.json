@@ -1,0 +1,220 @@
+{
+  "verdict": "AGREES",
+  "observations": [
+    {
+      "mode": "default_loader",
+      "known_deployed_before_call": true,
+      "calls": [
+        {
+          "class": "Graph.KG.EdgeScan",
+          "method": "BulkIngestNodesSQL"
+        }
+      ],
+      "ids": [
+        "a",
+        "b",
+        "o",
+        "x",
+        "f",
+        "o"
+      ],
+      "rows": {
+        "a": {
+          "id": "a",
+          "labels": [
+            "Old",
+            "New"
+          ],
+          "name": "old",
+          "keep": "k",
+          "p_id": "a",
+          "flag": true
+        },
+        "b": {
+          "id": "b",
+          "labels": [
+            "L"
+          ],
+          "p_id": "b",
+          "n": 5
+        },
+        "o": {
+          "id": "o",
+          "labels": [],
+          "p_id": "o",
+          "a": 2,
+          "d": 4
+        },
+        "x": {
+          "id": "x",
+          "labels": [],
+          "a": 1,
+          "p_id": "x",
+          "c": 3
+        },
+        "f": {
+          "id": "f",
+          "labels": [],
+          "p_id": "f",
+          "a": 2
+        }
+      },
+      "other_graph": {
+        "id": "o",
+        "labels": [],
+        "a": 9,
+        "p_id": "o"
+      },
+      "agrees": true
+    },
+    {
+      "mode": "default_sql",
+      "known_deployed_before_call": false,
+      "calls": [],
+      "ids": [
+        "a",
+        "b",
+        "o",
+        "x",
+        "f",
+        "o"
+      ],
+      "rows": {
+        "a": {
+          "id": "a",
+          "labels": [
+            "Old",
+            "New"
+          ],
+          "name": "old",
+          "keep": "k",
+          "p_id": "a",
+          "flag": true
+        },
+        "b": {
+          "id": "b",
+          "labels": [
+            "L"
+          ],
+          "n": 5,
+          "p_id": "b"
+        },
+        "o": {
+          "id": "o",
+          "labels": [],
+          "a": 2,
+          "p_id": "o",
+          "d": 4
+        },
+        "x": {
+          "id": "x",
+          "labels": [],
+          "a": 1,
+          "p_id": "x",
+          "c": 3
+        },
+        "f": {
+          "id": "f",
+          "labels": [],
+          "a": 2,
+          "p_id": "f"
+        }
+      },
+      "other_graph": {
+        "id": "o",
+        "labels": [],
+        "a": 9,
+        "p_id": "o"
+      },
+      "agrees": true
+    },
+    {
+      "mode": "named_sql",
+      "known_deployed_before_call": true,
+      "calls": [],
+      "ids": [
+        "a",
+        "b",
+        "o",
+        "x",
+        "f",
+        "o"
+      ],
+      "rows": {
+        "a": {
+          "id": "a",
+          "labels": [
+            "Old",
+            "New"
+          ],
+          "name": "old",
+          "keep": "k",
+          "p_id": "a",
+          "flag": true
+        },
+        "b": {
+          "id": "b",
+          "labels": [
+            "L"
+          ],
+          "n": 5,
+          "p_id": "b"
+        },
+        "o": {
+          "id": "o",
+          "labels": [],
+          "a": 2,
+          "p_id": "o",
+          "d": 4
+        },
+        "x": {
+          "id": "x",
+          "labels": [],
+          "a": 1,
+          "p_id": "x",
+          "c": 3
+        },
+        "f": {
+          "id": "f",
+          "labels": [],
+          "a": 2,
+          "p_id": "f"
+        }
+      },
+      "other_graph": {
+        "id": "o",
+        "labels": [],
+        "a": 9,
+        "p_id": "o"
+      },
+      "agrees": true
+    }
+  ],
+  "mismatches": [],
+  "elapsed": 0.8946651669975836,
+  "native": {
+    "container": "ivg-uplift-next-20261115",
+    "port": 35975,
+    "identity_checked": true
+  },
+  "source_pin": {
+    "pin_dir": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin",
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "files_equal_pin_blobs": {
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/schema.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/_engine/nodes_edges.py": true
+    },
+    "all_equal": true
+  },
+  "instrumentation": "_call_classmethod_large wrapper logs calls and invokes unchanged original; public payload, actual SQL/native writes and final reader. Orphan parent deleted by SQL as in product e2e fixture.",
+  "scope": "six-node batch, existing/orphan/repeat, labels, typed child values and other-graph frame across actual default-loader/default-SQL/named-SQL paths; no concurrency or full provider proof",
+  "probe_sha256": "e1c055151fccbb9bfafddef67ca2bb4e3f8907d095c8e89000853bc53ac7a25f"
+}

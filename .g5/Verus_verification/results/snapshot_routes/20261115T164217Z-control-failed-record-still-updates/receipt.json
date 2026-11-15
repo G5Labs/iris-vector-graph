@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_index_result_and_failed_record"
+    ],
+    "find": "if record && s.registry.contains_key(key)",
+    "name": "failed-record-still-updates",
+    "replace": "if s.registry.contains_key(key)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_index_result_and_failed_record"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/snapshot_routes/model.json": "8b69f622e215bc408d320acbee0ffbd3f8f140025915862824e3c3922951a551",
+    ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs": "3ff2513dc3081dd3a885cc060e2d9bf8c189f58e2cbfd953764ea308009e961c"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/failed-record-still-updates/snapshot_routes.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_index_result_and_failed_record": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164216Z-control-failed-record-still-updates-theorem_index_result_and_failed_record.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164216Z-control-failed-record-still-updates.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164217Z-control-failed-record-still-updates/logs/20261115T164216Z-control-failed-record-still-updates-theorem_index_result_and_failed_record.log": "b6bcad6b5f8fa9b0e6840505af06384302e4498a00eb72db7bcd74c02a683029",
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164217Z-control-failed-record-still-updates/logs/20261115T164216Z-control-failed-record-still-updates.log": "f399e01f004f001cebcbb28d02f423562bc08bdfbbcc707db7356f8880b76b5a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "name": "snapshot_routes",
+  "root": "snapshot_routes.rs",
+  "expected_verified": 14,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "default-width-for-every-route",
+      "find": "let w=width(meta,fallback);",
+      "replace": "let w=engine_width;",
+      "expect_fail_in": [
+        "theorem_archived_width_not_engine"
+      ]
+    },
+    {
+      "name": "ignore-physical-width",
+      "find": "s.widths[table]!=v.len() || ",
+      "replace": "",
+      "expect_fail_in": [
+        "theorem_existing_incompatible_width_is_not_redeclared"
+      ]
+    },
+    {
+      "name": "reader-default-graph",
+      "find": "(s.registry[key].table,key.0,node)",
+      "replace": "(s.registry[key].table,0,node)",
+      "expect_fail_in": [
+        "theorem_restored_row_reaches_own_reader"
+      ]
+    },
+    {
+      "name": "keep-archived-index-claim",
+      "find": "Route{indexed:build,..s.registry[key]}",
+      "replace": "s.registry[key]",
+      "expect_fail_in": [
+        "theorem_index_result_and_failed_record"
+      ]
+    },
+    {
+      "name": "failed-record-still-updates",
+      "find": "if record && s.registry.contains_key(key)",
+      "replace": "if s.registry.contains_key(key)",
+      "expect_fail_in": [
+        "theorem_index_result_and_failed_record"
+      ]
+    },
+    {
+      "name": "merge-overwrites",
+      "find": "} else if merge && s.rows.contains_key(key) {\n        Load{state:s,reported:1}",
+      "replace": "} else if merge && s.rows.contains_key(key) {\n        Load{state:State{rows:s.rows.insert(key,v),..s},reported:1}",
+      "expect_fail_in": [
+        "theorem_merge_reports_without_overwrite"
+      ]
+    },
+    {
+      "name": "registry-not-restored",
+      "find": "State{registry:s.registry.insert(key,route),..s}",
+      "replace": "s",
+      "expect_fail_in": [
+        "theorem_export_registry_restore_readback"
+      ]
+    },
+    {
+      "name": "missing-table-looks-empty",
+      "find": "else if !s.widths.contains_key(s.registry[key].table){Read::MissingTable}",
+      "replace": "else if !s.widths.contains_key(s.registry[key].table){Read::Absent}",
+      "expect_fail_in": [
+        "theorem_invalid_width_leaves_reader_error"
+      ]
+    },
+    {
+      "name": "parent-merge-uses-graph-key",
+      "find": "merge && (exists|other:int| s.parents.contains((other,n)))",
+      "replace": "merge && s.parents.contains((g,n))",
+      "expect_fail_in": [
+        "theorem_merge_parent_collision_blocks_vector"
+      ]
+    },
+    {
+      "name": "width-refusal-still-inserts",
+      "find": "if chosen<=0 {Load{state:p,reported:0}} else",
+      "replace": "if false {Load{state:p,reported:0}} else",
+      "expect_fail_in": [
+        "theorem_invalid_route_skips_insert"
+      ]
+    }
+  ]
+}

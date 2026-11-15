@@ -1,0 +1,29 @@
+verification results:: 24 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/old-labels-dropped/bulk_children.rs:81:13
+   |
+80 | pub proof fn lemma_apply_extends(s:Store,r:Input,reject:Fault)
+   | -------------------------------------------------------------- at the end of the function body
+81 |     ensures extends(s,apply(s,r,reject)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/old-labels-dropped/bulk_children.rs:159:13
+    |
+157 | pub proof fn theorem_existing_and_incoming_labels_union(s:Store,r:Input,l:int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+158 |     requires r.active,s.labels.contains((node(r),l)) || r.labels.contains(l),
+159 |     ensures run(s,seq![r],no_fault(),false).store.labels.contains((node(r),l)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/old-labels-dropped/bulk_children.rs:174:9
+    |
+171 | pub proof fn theorem_other_graph_frame(s:Store,r:Input,n:Node,k:int)
+    | -------------------------------------------------------------------- at the end of the function body
+...
+174 |         run(s,seq![r],no_fault(),false).store.labels.contains((n,k))==s.labels.contains((n,k)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

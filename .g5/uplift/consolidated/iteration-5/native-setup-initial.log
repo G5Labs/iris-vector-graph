@@ -1,0 +1,15 @@
+WARNING:root:IRISINSTALLDIR or ISC_PACKAGE_INSTALLDIR environment variable is not set
+WARNING:root:Embedded Python not configured; call iris.connect(path=...) to configure it
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-5/native-setup.py", line 23, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-5/native-setup.py", line 17, in main
+    start=time.monotonic();conn=connect();e=IRISGraphEngine(conn,embedding_dimension=8)
+                                ^^^^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-5/native-setup.py", line 11, in connect
+    conn=iris.dbapi.connect(hostname='127.0.0.1',port=PORT,namespace='USER',username='_SYSTEM',password='SYS')
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/iris/dbapi/__init__.py", line 184, in connect
+    connection._connect_dbapi(*args, **kwargs)
+iris.dbapi.OperationalError: <COMMUNICATION LINK ERROR> Failed to connect to server; Details: <COMMUNICATION ERROR> Invalid Message received; Details: Password change required

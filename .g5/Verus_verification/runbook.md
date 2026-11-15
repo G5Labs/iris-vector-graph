@@ -224,3 +224,33 @@ product-input mutation witnesses are in iteration-4/freshness-controls.json.
 The source reverse lookup is after-reach/bindings.json keyed by path::symbol;
 NOTES.md gives each formal role and its narrower evidence. Added product writers
 reopen correspondence globally while leaving unchanged theorem inputs reusable.
+
+## Improvement iteration 5 on this Mac
+
+[Checkpoint](../uplift/consolidated/iteration-5/HANDOFF.md), family NOTES and
+validation.json name source/role/receipt boundaries. Use the iteration4 Verus/Python
+pins, RUN_DIR=/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115 and IVG_PIN_DIR
+pointing at the exported pin. From the repository root:
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/bulk_children
+CONTROL=orphan-cleanup-omitted python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/bulk_children
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/bulk_children/binding.py
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/snapshot_routes
+CONTROL=parent-merge-uses-graph-key python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/snapshot_routes
+IVG_SNAPSHOT_NATIVE=1 /Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/snapshot_routes/binding.py
+IVG_SNAPSHOT_NATIVE=1 /Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/uplift/consolidated/iteration-5/bulk-native.py
+python3 .g5/Verus_verification/tools/correspondence_gate.py check .g5/uplift/consolidated/iteration-5/correspondence-inputs.json
+python3 .g5/Verus_verification/tools/check_consolidated.py
+```
+
+Bulk expected30 verified/11 controls/AGREES140; snapshot14/10/AGREES11.
+Omit CONTROL for each complete suite. Native commands mutate ONLY the task's
+hostname-checked ivg-uplift-next-20261115 on loopback35975, namespaceUSER. They
+require this iteration's initialized isolated runtime; creation/setup/error records
+are native-setup.* and root-attempts.md. Do not run them concurrently or against a
+sibling service. Before replaying on a stopped retained container, start that exact
+container and run native-setup.py if classes are absent. The scripts refuse wrong
+identity. Their state is disposable; archives/raw results persist outside it.
+The compiled-index catalog observations do not prove arbitrary commit-failure
+semantics. Member reverse lookup: iteration5/after-reach/bindings.json.

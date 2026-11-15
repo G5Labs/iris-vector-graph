@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/orphan-cleanup-omitted/bulk_children.rs:167:13
+    |
+165 | pub proof fn theorem_orphan_unoffered_value_removed(s:Store,r:Input,k:int)
+    | -------------------------------------------------------------------------- at the end of the function body
+166 |     requires r.active,!s.parents.contains(node(r)),!offered(r).contains_key(k),
+167 |     ensures !run(s,seq![r],no_fault(),false).store.props.contains_key((node(r),k)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

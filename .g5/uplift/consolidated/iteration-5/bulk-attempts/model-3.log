@@ -1,0 +1,23 @@
+error: postcondition not satisfied
+  --> .g5/Verus_verification/models/bulk_children/bulk_children.rs:81:13
+   |
+81 |       ensures extends(s,fold(s,xs,reject)),
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+84 | /     if xs.len()>0 {
+85 | |         lemma_apply_extends(s,xs[0],reject);
+86 | |         lemma_fold_extends(apply(s,xs[0],reject),xs.drop_first(),reject);
+87 | |         let a=apply(s,xs[0],reject);
+...  |
+98 | |     }
+   | |_____- at the end of the function body
+
+error: assertion failed
+   --> .g5/Verus_verification/models/bulk_children/bulk_children.rs:108:65
+    |
+108 |         assert forall|k:int| offered(r).contains_key(k) implies t.props.contains_key((node(r),k)) by {
+    |                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+verification results:: 20 verified, 2 errors
+error: aborting due to 2 previous errors
+

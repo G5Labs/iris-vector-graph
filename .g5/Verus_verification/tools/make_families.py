@@ -177,6 +177,8 @@ P = [
 ]
 
 C = [  # this consolidation's new model directories: (name, scope, design, status, premises/notes)
+    ("bulk_children", "graph-key/parent census, orphan properties, missing-key merge, label union, repeat order and complete typed reader projection; native finite witnesses", "as-built transcription", "active"),
+    ("snapshot_routes", "source registry/archive width to declarations, restored route/rows, literal width guard and real vector reader; merge parent/row and provider limits", "as-built transcription", "active"),
     ("edge_acceptance", "ordinary create/store duplicate returns, temporal adoption, endpoint/refusal and SQL/adjacency distinction; one triple", "as-built transcription", "active"),
     ("vector_threshold", "optional inclusive cosine predicate and binds before row limit; adapted SQLite provider, no IRIS claim", "as-built transcription", "active"),
     ("aql_frontend", "numeric suffix lexer, typed depth AST/hops and literal null/text-null operators; query execution unproved", "as-built transcription", "active"),

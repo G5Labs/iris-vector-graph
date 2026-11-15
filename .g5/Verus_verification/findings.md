@@ -4,7 +4,7 @@ Product baseline `3eaa79cf`. The register covers every bug, design simplificatio
 
 | File | Entries | High | Medium | Low | Observations / drift | Natively reproduced |
 |---|---:|---:|---:|---:|---:|---:|
-| [Bugs and issues](bugs_issues.md) | 428 | 48 | 129 | 220 | 31 | 239 of 397 |
+| [Bugs and issues](bugs_issues.md) | 428 | 48 | 129 | 220 | 31 | 240 of 397 |
 | [Design simplifications](design_simplification.md) | 55 | 16 | 25 | 13 | 1 | n/a |
 | [Open questions](open_questions.md) | 140 | 1 | 19 | 40 | 16 | n/a |
 

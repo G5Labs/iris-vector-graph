@@ -1340,7 +1340,7 @@ Run: Uplift 2026-11-13
 
 Found by: A-platform F-B1 (sub-reader b, re-read by A-platform).
 
-Reproduced by: none
+Reproduced by: original two-edge/column-order scenario not rerun; iteration 5 real IRIS parent-key/vector consequence via [snapshot binding](models/snapshot_routes/binding.py) and its retained [receipts](results/snapshot_routes/).
 
 Expected: a merge restore adds the archive's rows that are not already present; the v4.1.0 CHANGELOG (3926-3932) names this dedupe defect and fixes it for the FHIR tables.
 
@@ -1349,6 +1349,8 @@ Observed: the generic merge guard is `WHERE NOT EXISTS (… WHERE {cols[0]} = ?)
 Consequence: saving two edges in G, erasing G and merge-restoring gives one edge, and the report says two were restored.
 
 Repair proposal (not implemented): dedupe on each table's key columns, and count only rows actually inserted. Governing statement: [install.snapshot](../ontology/concepts/install.g5.md#install.snapshot).
+
+Iteration 5: the first-column guard root is also F-1802, whose earlier live evidence is retained. A new native shared-ID/other-graph parent witness loses graph A's parent, so its routed vector fails FK and the final reader is empty; the original complete-archive prediction and DISAGREES receipt are preserved. The Verus restore_parent/load/read chain derives this consequence. This strengthens the inherited root, not a new discovery or a repair.
 
 <a id="bug-plt-005"></a>
 ### The sample API's Cypher endpoints run translated SQL on a raw cursor, bypassing strict mode and the engine's statement protocol
@@ -2829,6 +2831,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `c18-live-merge-guard
 - Source severity S2, confidence high; module 18; governing page here: `install.snapshot`.
 - Remedy proposed by the playbook arm (not implemented): Guard each table on its primary or unique key (as CONFIGURATION_TABLES does) and count only inserted rows.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
+
+Iteration 5 strengthening: the generic first-column merge guard is the same root as bug-plt-004; both IDs/history are retained, not counted as two new findings. Real IRIS merge with preexisting graph B's shared node skips graph A's parent and refuses A's routed vector by FK, while B's existing vector is counted restored but unchanged. snapshot_routes now derives restore_parent -> load -> read and distinguishes an existing incompatible row's successful skip from an empty incompatible table's refusal. Original complete-archive prediction/DISAGREES receipt retained; no repair implemented.
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 

@@ -1,0 +1,68 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_missing_attempted_property_rolls_back",
+      "theorem_missing_attempted_label_rolls_back",
+      "theorem_missing_parent_rolls_back"
+    ],
+    "find": "raised || !complete(out,xs)",
+    "name": "missing-rows-accepted",
+    "replace": "raised"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_missing_attempted_property_rolls_back",
+      "theorem_missing_attempted_label_rolls_back",
+      "theorem_missing_parent_rolls_back"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/bulk_children/model.json": "e7c7b7caa5f1bca34d53ef20a1119181fb993cf18b79c54f503f71b83653855b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_missing_attempted_label_rolls_back": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164750Z-control-missing-rows-accepted-theorem_missing_attempted_label_rolls_back.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_missing_attempted_property_rolls_back": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164750Z-control-missing-rows-accepted-theorem_missing_attempted_property_rolls_back.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_missing_parent_rolls_back": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164750Z-control-missing-rows-accepted-theorem_missing_parent_rolls_back.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164750Z-control-missing-rows-accepted.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_children/20261115T164753Z-control-missing-rows-accepted/logs/20261115T164750Z-control-missing-rows-accepted-theorem_missing_attempted_label_rolls_back.log": "3f60f8ee540f6cdcbc77a58f7ed150e349670b355fb0757393b680e2f2418f1b",
+    ".g5/Verus_verification/results/bulk_children/20261115T164753Z-control-missing-rows-accepted/logs/20261115T164750Z-control-missing-rows-accepted-theorem_missing_attempted_property_rolls_back.log": "b77e24f51343b688271bdcfabc31d9a5592231658a3f13e49357d101524b96ba",
+    ".g5/Verus_verification/results/bulk_children/20261115T164753Z-control-missing-rows-accepted/logs/20261115T164750Z-control-missing-rows-accepted-theorem_missing_parent_rolls_back.log": "355dfa5674c178c9471a6f0ef4df5169a10878796d57cd2dd2413daefd9f2d98",
+    ".g5/Verus_verification/results/bulk_children/20261115T164753Z-control-missing-rows-accepted/logs/20261115T164750Z-control-missing-rows-accepted.log": "4e9b01c9489011d87c99fb894ff58c58406beef8f8939967328ed15faa1f7be3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

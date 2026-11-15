@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_existing_and_incoming_labels_union"
+    ],
+    "find": "s.labels.union(r.labels.map_by(|k:int|(node(r),k),|k:Child|k.1).difference(reject.labels))",
+    "name": "old-labels-dropped",
+    "replace": "r.labels.map_by(|k:int|(node(r),k),|k:Child|k.1).difference(reject.labels)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_existing_and_incoming_labels_union"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "2b949e4d0aad0f4e166937c0c9dc7a306057aad0daa8e40cab688e7771a396f3",
+    ".g5/Verus_verification/models/bulk_children/model.json": "d3704031a297c7a4c334350c7a1f450b625e29ed813b0c63e1734c72f4038588"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/old-labels-dropped/bulk_children.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_existing_and_incoming_labels_union": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164113Z-control-old-labels-dropped-theorem_existing_and_incoming_labels_union.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164113Z-control-old-labels-dropped.log",
+    "timed_out": false,
+    "verified": 24
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_children/20261115T164115Z-control-old-labels-dropped/logs/20261115T164113Z-control-old-labels-dropped-theorem_existing_and_incoming_labels_union.log": "52b9f7d026c5bd1064966182bdc2eef522443b08e4ad1e5bb82807acfe37757f",
+    ".g5/Verus_verification/results/bulk_children/20261115T164115Z-control-old-labels-dropped/logs/20261115T164113Z-control-old-labels-dropped.log": "1e611b55d1a9165e6752b789851a2b5da0ca678ecbb4bd56463dfd1f99a5d1ca"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

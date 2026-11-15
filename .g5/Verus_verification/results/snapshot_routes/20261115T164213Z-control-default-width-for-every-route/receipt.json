@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_archived_width_not_engine"
+    ],
+    "find": "let w=width(meta,fallback);",
+    "name": "default-width-for-every-route",
+    "replace": "let w=engine_width;"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_archived_width_not_engine"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/snapshot_routes/model.json": "8b69f622e215bc408d320acbee0ffbd3f8f140025915862824e3c3922951a551",
+    ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs": "3ff2513dc3081dd3a885cc060e2d9bf8c189f58e2cbfd953764ea308009e961c"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/default-width-for-every-route/snapshot_routes.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 6,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_archived_width_not_engine": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164212Z-control-default-width-for-every-route-theorem_archived_width_not_engine.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164212Z-control-default-width-for-every-route.log",
+    "timed_out": false,
+    "verified": 5
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164213Z-control-default-width-for-every-route/logs/20261115T164212Z-control-default-width-for-every-route-theorem_archived_width_not_engine.log": "50f964dcefcc88a425aa1ce9c61757333e537d5ebe9e3a67fd7112360d5a08b7",
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164213Z-control-default-width-for-every-route/logs/20261115T164212Z-control-default-width-for-every-route.log": "24ad07521f39dfb4c387d9b95f363bb79d39bff49de172a564c5fb8a05ee5fbf"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,75 @@
+verification results:: 27 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:216:1
+    |
+216 | pub proof fn theorem_missing_attempted_property_rolls_back(s:Store,r:Input,k:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:219:13
+    |
+216 | pub proof fn theorem_missing_attempted_property_rolls_back(s:Store,r:Input,k:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+219 |     ensures run(s,seq![r],Fault{props:set![(node(r),k)],..no_fault()},false).ids.is_none(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:220:9
+    |
+216 | pub proof fn theorem_missing_attempted_property_rolls_back(s:Store,r:Input,k:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+220 |         run(s,seq![r],Fault{props:set![(node(r),k)],..no_fault()},false).store==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:228:1
+    |
+228 | pub proof fn theorem_missing_attempted_label_rolls_back(s:Store,r:Input,l:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:230:13
+    |
+228 | pub proof fn theorem_missing_attempted_label_rolls_back(s:Store,r:Input,l:int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+229 |     requires r.active,r.labels.contains(l),!s.labels.contains((node(r),l)),
+230 |     ensures run(s,seq![r],Fault{labels:set![(node(r),l)],..no_fault()},false).ids.is_none(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:231:9
+    |
+228 | pub proof fn theorem_missing_attempted_label_rolls_back(s:Store,r:Input,l:int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+...
+231 |         run(s,seq![r],Fault{labels:set![(node(r),l)],..no_fault()},false).store==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:236:1
+    |
+236 | pub proof fn theorem_missing_parent_rolls_back(s:Store,r:Input)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:238:13
+    |
+236 | pub proof fn theorem_missing_parent_rolls_back(s:Store,r:Input)
+    | --------------------------------------------------------------- at the end of the function body
+237 |     requires r.active,!s.parents.contains(node(r)),
+238 |     ensures run(s,seq![r],Fault{parents:set![node(r)],..no_fault()},false).ids.is_none(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:239:9
+    |
+236 | pub proof fn theorem_missing_parent_rolls_back(s:Store,r:Input)
+    | --------------------------------------------------------------- at the end of the function body
+...
+239 |         run(s,seq![r],Fault{parents:set![node(r)],..no_fault()},false).store==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 6 previous errors
+

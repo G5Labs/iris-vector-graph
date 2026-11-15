@@ -584,3 +584,19 @@ population fidelity claim; inherited links were not exhaustively semantically au
 Builder E1 known-repair five scores and limits are in builder-scores.json.
 Bulk children and routed restore readers remain material gaps, independently
 surveyed and source-frozen; convergence is not claimed.
+
+## Improvement iteration 5 (2026-11-15)
+
+[Evidence](../uplift/consolidated/iteration-5/HANDOFF.md): bulk_children30 proofs,
+11 controls and140 Python/SQLite cases; root actual IRIS B1/B2 across loader/default
+SQL/named SQL. snapshot_routes14 proofs/10 controls,11 native/fault worlds with
+actual declarations/registry/vector reads and width admission. Zero direct product
+body verification. General physical-index/provider failure semantics stay open.
+The initial parent-complete merge premise and incompatible-row insertion premise
+were challenged and corrected in the as-built model, retaining their original
+observations and intended-policy failures. Known bug-plt-004/F-1802 strengthened,
+not new.22 qualified behavior roles,20 newly reached members:103/4130 ->123/4130
+under member_reach.py; exact unlinked members and exclusions retained. Purposive
+four-case self-scores stay separate from historical/public evaluator cohorts.
+Temporal restore/window and history paging remain material next gaps; no
+convergence claim. Both canonical owners carry stable formal links in G5 metadata.

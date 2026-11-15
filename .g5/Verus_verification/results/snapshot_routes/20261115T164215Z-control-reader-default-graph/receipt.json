@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_restored_row_reaches_own_reader"
+    ],
+    "find": "(s.registry[key].table,key.0,node)",
+    "name": "reader-default-graph",
+    "replace": "(s.registry[key].table,0,node)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_restored_row_reaches_own_reader"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/snapshot_routes/model.json": "8b69f622e215bc408d320acbee0ffbd3f8f140025915862824e3c3922951a551",
+    ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs": "3ff2513dc3081dd3a885cc060e2d9bf8c189f58e2cbfd953764ea308009e961c"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/reader-default-graph/snapshot_routes.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_restored_row_reaches_own_reader": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164214Z-control-reader-default-graph-theorem_restored_row_reaches_own_reader.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164214Z-control-reader-default-graph.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164215Z-control-reader-default-graph/logs/20261115T164214Z-control-reader-default-graph-theorem_restored_row_reaches_own_reader.log": "c00e1f52650366e8cfc13fd8c95c42e4f8e9653f951579b71522e3e545162e6e",
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164215Z-control-reader-default-graph/logs/20261115T164214Z-control-reader-default-graph.log": "eb957da985a588dd0a25d096f52c47d50a436ddd37ad52a3b167b73b891425d7"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

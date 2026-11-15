@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_index_result_and_failed_record"
+    ],
+    "find": "Route{indexed:build,..s.registry[key]}",
+    "name": "keep-archived-index-claim",
+    "replace": "s.registry[key]"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_index_result_and_failed_record"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/snapshot_routes/model.json": "ba5609b3d2d13c5e4cf68a3f9666231a03dd37b36c1ede35c6d458f8db27c380",
+    ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs": "9f512a28768f451f01c6a653f501c3ec735c942c5c306d0f19bddd24e6ae99b0"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/keep-archived-index-claim/snapshot_routes.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_index_result_and_failed_record": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164049Z-control-keep-archived-index-claim-theorem_index_result_and_failed_record.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164049Z-control-keep-archived-index-claim.log",
+    "timed_out": false,
+    "verified": 8
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164050Z-control-keep-archived-index-claim/logs/20261115T164049Z-control-keep-archived-index-claim-theorem_index_result_and_failed_record.log": "7e18f4de297e79dc8f0e598283e2dd6ac59ccf47073404ea373f6613533b985f",
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164050Z-control-keep-archived-index-claim/logs/20261115T164049Z-control-keep-archived-index-claim.log": "825033e076acacf2875b657504cdf6c682122bd3a72a12df963657e99a73c88e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

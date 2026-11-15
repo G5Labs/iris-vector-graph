@@ -1,0 +1,12 @@
+verification results:: 12 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/missing-table-looks-empty/snapshot_routes.rs:100:13
+    |
+ 98 | pub proof fn theorem_invalid_width_leaves_reader_error(s:State,key:(int,int),t:int,n:int,engine:int)
+    | ---------------------------------------------------------------------------------------------------- at the end of the function body
+ 99 |     requires s.registry.contains_key(key),s.registry[key].table==t,!s.widths.contains_key(t),
+100 |     ensures read(prepare(s,key,t,Width::Invalid,engine,true,true,1),key,n)==Read::MissingTable,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

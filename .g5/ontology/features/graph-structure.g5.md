@@ -50,10 +50,20 @@ Should whether a write joins the caller's transaction depend on how the engine w
 <a id="structure.node"></a>
 [I · structure.node]
 
-Creating a node that already exists in its graph changes nothing and reports False. A write that IRIS refuses raises an error and leaves nothing behind.
+`create_node` changes nothing and reports False when the node already exists in its graph. A write that IRIS refuses raises an error and leaves nothing behind.
 
 - When two callers create the same node at once, one creates it and the other reports False.
 - A new node gets an `id` property equal to its ID unless the caller gives one. The ledger reserves that property name ([changesets](ledger.g5.md#ledger.changeset)).
+
+<a id="structure.node.bulk"></a>
+[I · structure.node.bulk]
+
+`bulk_create_nodes` returns the accepted input IDs in order, including repeats and nodes already present. It skips IDs that Python treats as empty, including 0, False, None and empty text; each node's own graph value wins over the call's graph, and None names the default graph.
+
+- Existing nodes gain labels and property keys they lack and keep the values they already hold. Before adding any node row, the batch removes properties left for its IDs whose node row is missing in that graph; repeated IDs then merge into the first occurrence, and other graphs stay unchanged.
+- A None-valued property is omitted. An absent `id` property defaults to the node ID; an explicit None-valued `id` property is omitted too. [Node reads](#structure.node.read) apply the shared type and alias rules.
+- A SQL batch that leaves indexes in place checks every expected parent, label and non-null property key before returning. A missing required row or failed write raises and takes back that SQL operation under the database transaction contract; an existing property's different value is a permitted merge.
+- The native loader's chunk commits and index drop/rebuild follow the separate [bulk-load boundary](../concepts/install.g5.md#install.bulk_load); the SQL rollback rule does not establish those guarantees.
 
 <a id="structure.node.delete"></a>
 [I · structure.node.delete]
@@ -358,6 +368,14 @@ Findings: [Should whether a write joins the caller's transaction depend on how t
 - user-facing-behavior
 
 The `id` property dates from 4.6.0 (R181), so that `MATCH (n {id: ...})` finds the node. The concurrent-create bullet answers reconstruction gap G36 for nodes: uniqueness rests on the node table's key, with no lock.
+
+### structure.node.bulk
+- Sources: [bulk writer](../../../iris_vector_graph/_engine/nodes_edges.py#L1648-L1873), [orphan cleanup](../../../iris_vector_graph/_engine/nodes_edges.py#L1617-L1646), [child merge tests](../../../tests/e2e/test_460_bulk_create_nodes_paths_e2e.py), [orphan tests](../../../tests/e2e/test_470_bulk_orphan_props_e2e.py)
+- Expands: [nodes](#structure.node)
+- Formal contract: [bulk children](../../Verus_verification/models/bulk_children/bulk_children.rs)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
 
 ### structure.node.delete
 - Sources: [API reference, delete_node](../../../docs/API_REFERENCE.md#L516-L522), [delete_node](../../../iris_vector_graph/_engine/nodes_edges.py#L2227-L2268), [Eraser.EraseIdSet](../../../iris_src/src/Graph/KG/Eraser.cls#L467-L632)

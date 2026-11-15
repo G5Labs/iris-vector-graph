@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/duplicate-return-dropped/bulk_children.rs:166:9
+    |
+163 | pub proof fn theorem_repeated_id_first_property_wins(s:Store,a:Input,b:Input,k:int)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+...
+166 |         run(s,seq![a,b],no_fault(),false).ids==Some(seq![a.id,b.id]),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

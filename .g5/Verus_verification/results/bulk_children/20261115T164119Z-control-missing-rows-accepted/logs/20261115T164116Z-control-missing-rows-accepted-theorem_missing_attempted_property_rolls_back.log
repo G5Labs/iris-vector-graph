@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:186:1
+    |
+186 | pub proof fn theorem_missing_attempted_property_rolls_back(s:Store,r:Input,k:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:189:13
+    |
+186 | pub proof fn theorem_missing_attempted_property_rolls_back(s:Store,r:Input,k:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+189 |     ensures run(s,seq![r],Fault{props:set![(node(r),k)],..no_fault()},false).ids.is_none(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/missing-rows-accepted/bulk_children.rs:190:9
+    |
+186 | pub proof fn theorem_missing_attempted_property_rolls_back(s:Store,r:Input,k:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+190 |         run(s,seq![r],Fault{props:set![(node(r),k)],..no_fault()},false).store==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

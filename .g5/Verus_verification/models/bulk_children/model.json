@@ -1,0 +1,101 @@
+{
+  "name": "bulk_children",
+  "root": "bulk_children.rs",
+  "expected_verified": 30,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "orphan-cleanup-omitted",
+      "find": "!(wanted.contains(k.0) && !s.parents.contains(k.0))",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_orphan_value_replaced",
+        "theorem_orphan_unoffered_value_removed"
+      ]
+    },
+    {
+      "name": "cleanup-deletes-existing",
+      "find": "wanted.contains(k.0) && !s.parents.contains(k.0)",
+      "replace": "wanted.contains(k.0)",
+      "expect_fail_in": [
+        "theorem_existing_value_wins"
+      ]
+    },
+    {
+      "name": "existing-values-overwritten",
+      "find": "if old.contains_key(k) {old[k]} else {p[k.1]}",
+      "replace": "if k.0==node(r) && p.contains_key(k.1) {p[k.1]} else {old[k]}",
+      "expect_fail_in": [
+        "theorem_existing_value_wins",
+        "theorem_repeated_id_first_property_wins"
+      ]
+    },
+    {
+      "name": "old-labels-dropped",
+      "find": "s.labels.union(r.labels.map_by(|k:int|(node(r),k),|k:Child|k.1).difference(reject.labels))",
+      "replace": "r.labels.map_by(|k:int|(node(r),k),|k:Child|k.1).difference(reject.labels)",
+      "expect_fail_in": [
+        "theorem_existing_and_incoming_labels_union"
+      ]
+    },
+    {
+      "name": "graph-collapsed",
+      "find": "(r.graph,r.id)",
+      "replace": "(0,r.id)",
+      "expect_fail_in": [
+        "theorem_other_graph_frame"
+      ]
+    },
+    {
+      "name": "missing-rows-accepted",
+      "find": "raised || !complete(out,xs)",
+      "replace": "raised",
+      "expect_fail_in": [
+        "theorem_missing_attempted_property_rolls_back",
+        "theorem_missing_attempted_label_rolls_back",
+        "theorem_missing_parent_rolls_back"
+      ]
+    },
+    {
+      "name": "null-property-written",
+      "find": "r.props[k].is_some()",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_null_omitted_and_default_id"
+      ]
+    },
+    {
+      "name": "duplicate-return-dropped",
+      "find": "seq![xs[0].id]+returned(xs.drop_first())",
+      "replace": "if returned(xs.drop_first()).contains(xs[0].id) {returned(xs.drop_first())} else {seq![xs[0].id]+returned(xs.drop_first())}",
+      "expect_fail_in": [
+        "theorem_repeated_id_first_property_wins"
+      ]
+    },
+    {
+      "name": "reader-alias-lost",
+      "find": "tail.insert(alias(k),p[(n,k)])",
+      "replace": "tail.insert(k,p[(n,k)])",
+      "expect_fail_in": [
+        "theorem_reader_uses_own_graph",
+        "witness_alias_row_order_can_change_result"
+      ]
+    },
+    {
+      "name": "reader-graph-lost",
+      "find": "if p.contains_key((n,k)) {tail.insert(alias(k),p[(n,k)])}",
+      "replace": "if p.contains_key(((0,n.1),k)) {tail.insert(alias(k),p[((0,n.1),k)])}",
+      "expect_fail_in": [
+        "theorem_reader_uses_own_graph"
+      ]
+    },
+    {
+      "name": "node-graph-key-ignored",
+      "find": "GraphKey::Name(g)=>g",
+      "replace": "GraphKey::Name(g)=>keyword",
+      "expect_fail_in": [
+        "theorem_node_graph_key_wins"
+      ]
+    }
+  ]
+}

@@ -36,6 +36,7 @@ REL_PC = "../../experiment/playbook-completion"
 REL_PU = "../../experiment/playbook-uplift"
 GEN_MARK = "_Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._"
 RECONCILIATIONS = {
+    "F-1802": "Iteration 5 strengthening: the generic first-column merge guard is the same root as bug-plt-004; both IDs/history are retained, not counted as two new findings. Real IRIS merge with preexisting graph B's shared node skips graph A's parent and refuses A's routed vector by FK, while B's existing vector is counted restored but unchanged. snapshot_routes now derives restore_parent -> load -> read and distinguishes an existing incompatible row's successful skip from an empty incompatible table's refusal. Original complete-archive prediction/DISAGREES receipt retained; no repair implemented.",
     "F-C0351": "Iteration 4 strengthening, not a new discovery: independent review of edge_acceptance found the caller marker input missing from its first transcription. The extended run/theorem_caller_marker_retained and 56 actual Python/SQLite cases now include temporal=True on insertion and repeated adoption: True/True, one row, final caller value and marker retained. The prior live verify omission remains inherited, not rerun. temporal.structural.adopt preserves ADR-0009's intended unmarked explicit edge and names this observed exception. No reserve/strip repair is implemented; the SQL/provider boundary remains conditional.",
     "RC-16": "Iteration 3 corroboration: aql_frontend now checks integer-range lexing, typed depth propagation, literal null operators and text-null distinction through the public execute_aql handoff. It does not establish traversal results, Cypher-to-SQL semantics or a general reference evaluator. Preserve exact lower/upper bounds, string versus null and parameter handoff in any proposed shared frontend; the general simplification remains unimplemented.",
     "F-1004": "Iteration 3 comparison: the create-an-edgeless-start-node trigger/effect is also bug-plt-017; the two source records are retained, not counted as separate new discoveries. The refuted deletion premise here is not restored. New pagerank_admission is global PageRank only and explicitly does not cover PPR; its node-key success cannot repair or refute this PPR finding.",
@@ -381,7 +382,10 @@ def main():
         title = one_line(e.split("\n", 1)[0].lstrip("# "), 120)
         trig = (re.search(r"`([A-Za-z0-9_/.\-]+\.(?:py|cls|md|sql)[:#][^`]*)`", e) or [None, ""])[1]
         rep = re.search(r"^Reproduced by:\s*(.*)$", e, re.M)
-        strength = "native (guidance VM)" if rep and not rep.group(1).lower().startswith("none") else ("model witness" if "receipt.json" in e else "source")
+        local_native = re.search(r"iteration\s+(\d+)\s+real IRIS", rep.group(1), re.I) if rep else None
+        strength = (f"native (local iteration {local_native.group(1)}; scoped reproduction, see entry)" if local_native else
+                    "native (guidance VM)" if rep and not rep.group(1).lower().startswith("none") else
+                    "model witness" if "receipt.json" in e else "source")
         if "Severity:" in e and "Decision:" not in e.split("\n")[2:5].__str__():
             strength = "observation"
         rows["findings.tsv"].append([arm, gid, f".g5/Verus_verification/{name}" if arm == "G" else f".g5/Verus_verification/{name} (consolidated)",

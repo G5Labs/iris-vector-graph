@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/merge-overwrites/snapshot_routes.rs:89:46
+   |
+87 | pub proof fn theorem_merge_reports_without_overwrite(s:State,t:int,g:int,n:int,v:Seq<int>)
+   | ------------------------------------------------------------------------------------------ at the end of the function body
+88 |     requires s.widths.contains_key(t),s.widths[t]==v.len(),s.parents.contains((g,n)),s.rows.contains_key((t,g,n)),
+89 |     ensures load(s,t,g,n,v,true).reported==1,load(s,t,g,n,v,true).state.rows==s.rows,
+   |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

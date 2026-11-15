@@ -1,0 +1,27 @@
+verification results:: 13 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/ignore-physical-width/snapshot_routes.rs:84:1
+   |
+84 | pub proof fn theorem_existing_incompatible_width_is_not_redeclared(s:State,key:(int,int),t:int,g:int,n:int,v:Seq<int>,w:int,engine:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/ignore-physical-width/snapshot_routes.rs:87:9
+   |
+84 | pub proof fn theorem_existing_incompatible_width_is_not_redeclared(s:State,key:(int,int),t:int,g:int,n:int,v:Seq<int>,w:int,engine:int)
+   | --------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+87 |         load(prepare(s,key,t,Width::Present(w),engine,true,true,1),t,g,n,v,true).reported==0,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/ignore-physical-width/snapshot_routes.rs:88:9
+   |
+84 | pub proof fn theorem_existing_incompatible_width_is_not_redeclared(s:State,key:(int,int),t:int,g:int,n:int,v:Seq<int>,w:int,engine:int)
+   | --------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+88 |         load(prepare(s,key,t,Width::Present(w),engine,true,true,1),t,g,n,v,true).state.rows==s.rows,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

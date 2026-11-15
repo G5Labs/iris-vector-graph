@@ -1,0 +1,30 @@
+verification results:: 24 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/orphan-cleanup-omitted/bulk_children.rs:145:9
+    |
+142 | pub proof fn theorem_orphan_value_replaced(s:Store,r:Input,k:int)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+145 |         run(s,seq![r],no_fault(),false).store.props[(node(r),k)]==offered(r)[k],
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/orphan-cleanup-omitted/bulk_children.rs:152:13
+    |
+150 | pub proof fn theorem_orphan_unoffered_value_removed(s:Store,r:Input,k:int)
+    | -------------------------------------------------------------------------- at the end of the function body
+151 |     requires r.active,!s.parents.contains(node(r)),!offered(r).contains_key(k),
+152 |     ensures !run(s,seq![r],no_fault(),false).store.props.contains_key((node(r),k)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/orphan-cleanup-omitted/bulk_children.rs:165:13
+    |
+163 | pub proof fn theorem_repeated_id_first_property_wins(s:Store,a:Input,b:Input,k:int)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+164 |     requires a.active,b.active,node(a)==node(b),!s.parents.contains(node(a)),offered(a).contains_key(k),
+165 |     ensures run(s,seq![a,b],no_fault(),false).store.props[(node(a),k)]==offered(a)[k],
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

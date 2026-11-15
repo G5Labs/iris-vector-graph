@@ -1,0 +1,29 @@
+verification results:: 11 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/reader-default-graph/snapshot_routes.rs:77:13
+   |
+74 | pub proof fn theorem_restored_row_reaches_own_reader(s:State,key:(int,int),t:int,node:int,v:Seq<int>,engine:int,build:bool)
+   | --------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+77 |     ensures read(load(prepare(s,key,t,Width::Present(v.len() as int),engine,build,true,1),t,key.0,node,v,false).state,key,node)==Read::Value(v),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/reader-default-graph/snapshot_routes.rs:103:13
+    |
+101 | pub proof fn theorem_other_graph_frame(s:State,t:int,g:int,n:int,v:Seq<int>,other:(int,int),node:int)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+102 |     requires other.0!=g,
+103 |     ensures read(load(s,t,g,n,v,true).state,other,node)==read(s,other,node),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/reader-default-graph/snapshot_routes.rs:146:9
+    |
+146 |         read(load(restore_parent(s,key.0,n,true).state,t,key.0,n,v,true).state,key,n)==Read::Absent,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+147 | {assert(exists|o:int| s.parents.contains((o,n))) by {assert(s.parents.contains((other,n)));}}
+    |  ------ at the end of the function body
+
+error: aborting due to 3 previous errors
+

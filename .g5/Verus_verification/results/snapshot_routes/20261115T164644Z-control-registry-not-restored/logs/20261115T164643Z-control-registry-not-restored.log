@@ -1,0 +1,12 @@
+verification results:: 12 verified, 1 errors
+error: precondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/registry-not-restored/snapshot_routes.rs:120:5
+    |
+ 68 |     requires s.registry.contains_key(key),s.registry[key].table==t,s.registry[key].width==v.len(),v.len()>0,
+    |                                           ------------------------ failed precondition
+...
+120 |     theorem_restored_row_reaches_own_reader(s,key,a.table,n,src.rows[(a.table,key.0,n)],engine,build);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 1 previous error
+

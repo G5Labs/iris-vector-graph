@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/parent-merge-uses-graph-key/snapshot_routes.rs:139:1
+    |
+139 | pub proof fn theorem_merge_parent_collision_blocks_vector(s:State,key:(int,int),t:int,n:int,other:int,v:Seq<int>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/parent-merge-uses-graph-key/snapshot_routes.rs:143:13
+    |
+143 |     ensures restore_parent(s,key.0,n,true).state==s,restore_parent(s,key.0,n,true).reported==1,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+147 | {assert(exists|o:int| s.parents.contains((o,n))) by {assert(s.parents.contains((other,n)));}}
+    |  ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/parent-merge-uses-graph-key/snapshot_routes.rs:144:9
+    |
+144 |         load(restore_parent(s,key.0,n,true).state,t,key.0,n,v,true).reported==0,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+147 | {assert(exists|o:int| s.parents.contains((o,n))) by {assert(s.parents.contains((other,n)));}}
+    |  ------ at the end of the function body
+
+error: aborting due to 2 previous errors
+

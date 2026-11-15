@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_repeated_id_first_property_wins"
+    ],
+    "find": "seq![xs[0].id]+returned(xs.drop_first())",
+    "name": "duplicate-return-dropped",
+    "replace": "if returned(xs.drop_first()).contains(xs[0].id) {returned(xs.drop_first())} else {seq![xs[0].id]+returned(xs.drop_first())}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_repeated_id_first_property_wins"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/bulk_children/model.json": "e7c7b7caa5f1bca34d53ef20a1119181fb993cf18b79c54f503f71b83653855b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/duplicate-return-dropped/bulk_children.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_repeated_id_first_property_wins": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164754Z-control-duplicate-return-dropped-theorem_repeated_id_first_property_wins.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164754Z-control-duplicate-return-dropped.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_children/20261115T164755Z-control-duplicate-return-dropped/logs/20261115T164754Z-control-duplicate-return-dropped-theorem_repeated_id_first_property_wins.log": "5a821b7491eb1ac7e4c7228f9c20fa09a08296f35eb089ca8731906e8c1a0707",
+    ".g5/Verus_verification/results/bulk_children/20261115T164755Z-control-duplicate-return-dropped/logs/20261115T164754Z-control-duplicate-return-dropped.log": "5fa1755651efaf429f3dab4c36510398e4cb51406baf0b9532fb9b87f45f6177"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

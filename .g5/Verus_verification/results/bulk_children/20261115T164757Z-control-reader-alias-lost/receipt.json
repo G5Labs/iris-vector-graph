@@ -1,0 +1,59 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_reader_uses_own_graph",
+      "witness_alias_row_order_can_change_result"
+    ],
+    "find": "tail.insert(alias(k),p[(n,k)])",
+    "name": "reader-alias-lost",
+    "replace": "tail.insert(k,p[(n,k)])"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_reader_uses_own_graph",
+      "witness_alias_row_order_can_change_result"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/bulk_children/model.json": "e7c7b7caa5f1bca34d53ef20a1119181fb993cf18b79c54f503f71b83653855b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/reader-alias-lost/bulk_children.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_reader_uses_own_graph": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164755Z-control-reader-alias-lost-theorem_reader_uses_own_graph.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_alias_row_order_can_change_result": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164755Z-control-reader-alias-lost-witness_alias_row_order_can_change_result.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/20261115T164755Z-control-reader-alias-lost.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_children/20261115T164757Z-control-reader-alias-lost/logs/20261115T164755Z-control-reader-alias-lost-theorem_reader_uses_own_graph.log": "a3a88e394a75d4c7ea2d9949fb87d134d399158aaf9cd613c5b1b84b19a70a47",
+    ".g5/Verus_verification/results/bulk_children/20261115T164757Z-control-reader-alias-lost/logs/20261115T164755Z-control-reader-alias-lost-witness_alias_row_order_can_change_result.log": "0bffba015dcef3fb866d8bf827dbd2bda8bd0628fa9dab51020951bbf57d3f1f",
+    ".g5/Verus_verification/results/bulk_children/20261115T164757Z-control-reader-alias-lost/logs/20261115T164755Z-control-reader-alias-lost.log": "1333ef2d23f75ae83b95d724ef615fe5cf686f178b6b6762d9d5aa3e920565ce"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

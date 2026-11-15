@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/failed-record-still-updates/snapshot_routes.rs:94:9
+   |
+91 | pub proof fn theorem_index_result_and_failed_record(s:State,key:(int,int),t:int,w:int,engine:int,build:bool)
+   | ------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+94 |         prepare(s,key,t,Width::Present(w),engine,build,false,1).registry[key].indexed==s.registry[key].indexed,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

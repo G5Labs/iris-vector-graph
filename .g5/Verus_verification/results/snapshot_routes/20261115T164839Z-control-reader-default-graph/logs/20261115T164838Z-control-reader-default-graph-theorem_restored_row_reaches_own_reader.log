@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/reader-default-graph/snapshot_routes.rs:77:13
+   |
+74 | pub proof fn theorem_restored_row_reaches_own_reader(s:State,key:(int,int),t:int,node:int,v:Seq<int>,engine:int,build:bool)
+   | --------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+77 |     ensures read(load(prepare(s,key,t,Width::Present(v.len() as int),engine,build,true,1),t,key.0,node,v,false).state,key,node)==Read::Value(v),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

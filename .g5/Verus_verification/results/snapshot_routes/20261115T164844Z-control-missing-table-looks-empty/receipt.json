@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_invalid_width_leaves_reader_error"
+    ],
+    "find": "else if !s.widths.contains_key(s.registry[key].table){Read::MissingTable}",
+    "name": "missing-table-looks-empty",
+    "replace": "else if !s.widths.contains_key(s.registry[key].table){Read::Absent}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_invalid_width_leaves_reader_error"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/snapshot_routes/model.json": "46ee3bee1b2e42cf679053f61076345eb58ba8f01ad6f89681b18e6bba8e2771",
+    ".g5/Verus_verification/models/snapshot_routes/snapshot_routes.rs": "ccbb06438227f8c61ca588cc0e0700e17ee707aa7376cf264272682cbb5994b8"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/controls/missing-table-looks-empty/snapshot_routes.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_invalid_width_leaves_reader_error": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164843Z-control-missing-table-looks-empty-theorem_invalid_width_leaves_reader_error.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration5-snapshot-20261115/verus/snapshot_routes/20261115T164843Z-control-missing-table-looks-empty.log",
+    "timed_out": false,
+    "verified": 13
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164844Z-control-missing-table-looks-empty/logs/20261115T164843Z-control-missing-table-looks-empty-theorem_invalid_width_leaves_reader_error.log": "e7d85e9c072c39f7844f8b5208d5817bffcf33d9c1291905bc5be99c9e20677e",
+    ".g5/Verus_verification/results/snapshot_routes/20261115T164844Z-control-missing-table-looks-empty/logs/20261115T164843Z-control-missing-table-looks-empty.log": "d66c8a73a4a6cc3ac6802716491972b9f9e72445dbda0ff52c7503045df01192"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

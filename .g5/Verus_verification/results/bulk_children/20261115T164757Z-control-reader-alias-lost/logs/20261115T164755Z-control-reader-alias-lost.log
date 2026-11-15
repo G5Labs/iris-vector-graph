@@ -1,0 +1,77 @@
+verification results:: 27 verified, 3 errors
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/reader-alias-lost/bulk_children.rs:268:13
+    |
+268 |     ensures read(s,n,seq![k]).props[alias(k)]==s.props[(n,k)],read(s,n,seq![k]).present,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/reader-alias-lost/bulk_children.rs:268:13
+    |
+266 | pub proof fn theorem_reader_uses_own_graph(s:Store,n:Node,k:int)
+    | ---------------------------------------------------------------- at the end of the function body
+267 |     requires s.props.contains_key((n,k)),
+268 |     ensures read(s,n,seq![k]).props[alias(k)]==s.props[(n,k)],read(s,n,seq![k]).present,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/reader-alias-lost/bulk_children.rs:272:1
+    |
+272 | pub proof fn lemma_read_complete_key(p:Map<Child,int>,n:Node,keys:Seq<int>,k:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/reader-alias-lost/bulk_children.rs:275:13
+    |
+275 |       ensures read_props(p,n,keys).contains_key(alias(k)),read_props(p,n,keys)[alias(k)]==p[(n,k)],
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+279 | /     if keys.last()!=k {
+280 | |         let i=choose|i:int| 0<=i<keys.len() && keys[i]==k;
+281 | |         assert(i<keys.len()-1);
+282 | |         assert(keys.drop_last()[i]==k);
+...   |
+287 | |         lemma_read_complete_key(p,n,keys.drop_last(),k);
+288 | |     }
+    | |_____- at the end of the function body
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/reader-alias-lost/bulk_children.rs:275:57
+    |
+275 |     ensures read_props(p,n,keys).contains_key(alias(k)),read_props(p,n,keys)[alias(k)]==p[(n,k)],
+    |                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/reader-alias-lost/bulk_children.rs:275:57
+    |
+275 |       ensures read_props(p,n,keys).contains_key(alias(k)),read_props(p,n,keys)[alias(k)]==p[(n,k)],
+    |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+279 | /     if keys.last()!=k {
+280 | |         let i=choose|i:int| 0<=i<keys.len() && keys[i]==k;
+281 | |         assert(i<keys.len()-1);
+282 | |         assert(keys.drop_last()[i]==k);
+...   |
+287 | |         lemma_read_complete_key(p,n,keys.drop_last(),k);
+288 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration5-bulk-20261115/verus/bulk_children/controls/reader-alias-lost/bulk_children.rs:324:9
+    |
+321 | pub proof fn witness_alias_row_order_can_change_result(n:Node,a:int,b:int)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+324 |         read_props(map![(n,0)=>a,(n,2)=>b],n,seq![2,0])[2]==a,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

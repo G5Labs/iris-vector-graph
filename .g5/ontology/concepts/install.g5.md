@@ -259,6 +259,9 @@ A snapshot saves each routed vector table and restores it at the width the archi
 - A restore creates each routed table at the archived width, not at the restoring engine's width, then loads it, builds its index and records the index state the database really has.
 - A routed table found in the archive with no width entry takes its width from the restored registry row.
 - Node vectors and routed vectors are matched on graph and node, so two graphs' rows stay apart. Edge vectors match on source, predicate and target with no graph.
+- Observed limits: an existing routed table keeps its current width; an incompatible empty table refuses incoming vectors and reports failed rows. A merge keeps an existing graph/node vector and counts that skipped row as restored, even when the incoming vector has another width.
+- A failed registry index-state update is logged and clears this engine's route cache, but can leave the archive's old index claim. A route with invalid width metadata may remain registered without a table; its vector reader then raises rather than answering empty.
+- The generic node merge guard uses only the exported first column. A node with the same ID in another graph can therefore suppress the required parent, making its archived vector fail and its reader answer empty; this is a known merge defect, not the intended graph-key rule.
 
 <a id="install.snapshot.temporal"></a>
 [I · install.snapshot.temporal]
@@ -668,7 +671,8 @@ Findings: [What should a restore do when the namespace already has a live ledger
 ### install.snapshot.routes
 - Sources: [`iris_vector_graph/_engine/snapshot.py::routed_export_plan`](../../../iris_vector_graph/_engine/snapshot.py#L299-L344); [`iris_vector_graph/_engine/snapshot.py::SnapshotMixin.restore_snapshot`](../../../iris_vector_graph/_engine/snapshot.py#L1077-L1611) (routed tables at the archived width `:1372-1500`; node and routed vectors matched on graph and node `:1341-1350`, `:1473-1480`); live tests [test_snapshot_routed_embeddings.py](../../../tests/integration/test_snapshot_routed_embeddings.py#L152-L200), unit [test_snapshot_inventory.py](../../../tests/unit/test_snapshot_inventory.py)
 - Playbook: [SNP-B1.7](../../../experiment/playbook-completion/ontology/18-snapshot.md#L51), [SNP-B2.11](../../../experiment/playbook-completion/ontology/18-snapshot.md#L84), [SNP-B4.5](../../../experiment/playbook-completion/ontology/18-snapshot.md#L119)
-- Verus: no formal contract from restore to the width-checked reader in either arm. The playbook's `proofs-d1b` `snap_l2` (reviewed design) stores abstract contents without per-table width or the per-graph reader (control `control_fc1804_edge_routes_omitted`); `search` (as-built) has route logic but no restore transition. Missing: a restore transition over (route, declared width, per-graph rows) composed with the width check.
+- Formal contract: [routed snapshot stages and reader](../../Verus_verification/models/snapshot_routes/snapshot_routes.rs). It covers decoded node routes, declaration/registry/row stages and literal width admission; full archive loops, temporal globals and arbitrary provider failure outcomes remain open. The imported reviewed `snap_l2` is retained as partial historical evidence.
+- Findings: [generic merge key](../../Verus_verification/bugs_issues.md#bug-plt-004)
 - Expands: [Snapshots](#install.snapshot)
 - agent
 - user-facing-behavior, data-integrity
