@@ -1,0 +1,15 @@
+{
+  "command": "locks.sh iris python experiment/playbook-completion/lockplans/probes/guarded_insert.py $RUN_DIR/lockplans/guarded-insert --only 08-map-sql-table 17-write-nodes 17-write-edges 08-node-label 08-edge-matched --race-trials 20",
+  "experiment_head": "a7975f316bb6abc873ad3c92105aeb886e67a532",
+  "id": "lockplans-08-17-guarded-insert",
+  "kind": "live",
+  "lane": "lockplans",
+  "log": "$RUN_DIR/lockplans/guarded-insert/run-2.log",
+  "log_bytes": 11440,
+  "log_sha256": "a81df3ec5762717da79ab0e1d05203a44b1febe5562eabe1c786281d4fb88354",
+  "observes": "AUDITD; A runs the product write nested in an open caller transaction (START TRANSACTION) and holds 3 s, B runs the same-key write autocommit, then A COMMITs or ROLLBACKs; serial references measured live. Violated: 08-edge-matched (MATCH..CREATE edge, INSERT..SELECT..WHERE NOT EXISTS) with A ROLLBACK: B returns ok at once (its guard read A's uncommitted edge), after the rollback no edge exists; 17-write-edges (IRISGraphStore.write_edges, -119 skipped) with A ROLLBACK: B answers ok, after the rollback no node and no edge. Serializable: 08-node-label and 17-write-nodes (B waits LOCKW at +564^Graph.KG.nodes.1 on the FK; commit: merge; rollback: -121 refusal, nothing written); 08-edge-literal -119 refusal. Races (20 trials, no hold): 08-node-label 19 serializable/1 refused -119; 08-edge-matched 13/7 refused -119; 17-write-nodes 20/0; 17-write-edges 20/0; no anomalous trial. 08-map-sql-table not exercised in this run (probe used an invalid label gi-Map, refused by sanitize_identifier).",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "product_tree": "b098a6f48a379ce86ee2e5ae9ad0d37994dea567",
+  "registered_utc": "2026-11-15T02:01:55+00:00",
+  "result": "fail"
+}

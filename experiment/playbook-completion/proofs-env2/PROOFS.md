@@ -12,7 +12,7 @@ refinement, the premise theorems, the 17 controls) holds here unchanged, now ove
 Summary: cases in the Verus subset **2,430 of 2,943** recorded case runs (proofs-env r3: 1,769), 0
 disagreements, 0 observations outside the Verus model; Verus-model mutants killed by observation **49/49**
 (the 20 new ones included); 22 located controls (5 new), each with a verified counterexample; two premises linked anew
-(E-1 proved, P-M2 proved in part). Still outside: 513 case runs in 9 clause families, listed with their exact
+(E-1 proved in the specification, P-M2 proved in part; section 3). Still outside: 513 case runs in 9 clause families, listed with their exact
 obligations in section 6.
 
 ## 1. What the specification now includes (`src/ext.rs`, `src/spec.rs`)

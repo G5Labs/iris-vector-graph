@@ -8535,7 +8535,7 @@
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "11",
    "product_obligation": "unknown",
-   "remaining": "No verifier for ObjectScript or Python: no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: ObjectScript commit/genesis/adoption/disable handlers: unchecked lines in Ledger 76, LedgerApply 25, LedgerGenesis 13, LedgerStats 3, Txn 7, LedgerRevision 2, Adjacency 29 shared with 12) and Python client/_write_txn/errors lines; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
+   "remaining": "No automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here): no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: ObjectScript commit/genesis/adoption/disable handlers: unchecked lines in Ledger 76, LedgerApply 25, LedgerGenesis 13, LedgerStats 3, Txn 7, LedgerRevision 2, Adjacency 29 shared with 12) and Python client/_write_txn/errors lines; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
    "source": "matrix-input/correspondence_status.json",
    "status": "open"
   },
@@ -8561,7 +8561,7 @@
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "12",
    "product_obligation": "unknown",
-   "remaining": "No verifier for ObjectScript or Python: no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: Eraser 102 unchecked lines (routes, FHIR, NKG-built paths, EraseNodeIds, catch/rollback branches) and Adjacency 29; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
+   "remaining": "No automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here): no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: Eraser 102 unchecked lines (routes, FHIR, NKG-built paths, EraseNodeIds, catch/rollback branches) and Adjacency 29; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
    "source": "matrix-input/correspondence_status.json",
    "status": "open"
   },
@@ -8587,7 +8587,7 @@
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "13",
    "product_obligation": "unknown",
-   "remaining": "No verifier for ObjectScript or Python: no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: LedgerRedact 24 unchecked lines (lock-timeout/catch branches of Batch/Final, unattributed qualifier records, named-graph prefix LiveRows, DropStatements :465); exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
+   "remaining": "No automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here): no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: LedgerRedact 24 unchecked lines (lock-timeout/catch branches of Batch/Final, unattributed qualifier records, named-graph prefix LiveRows, DropStatements :465); exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
    "source": "matrix-input/correspondence_status.json",
    "status": "open"
   },
@@ -8613,7 +8613,7 @@
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "14",
    "product_obligation": "unknown",
-   "remaining": "No verifier for ObjectScript or Python: no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: verify/readers: replay.py 75, client.py readers and export_reconstruction, Ledger.CanonicalRecord tombstone branch :579-587; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
+   "remaining": "No automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here): no storage statement is proved equal to the model's evaluation. Strongest discharge: alpha contract-step check of every operation of the journal traces (correspondence/CORRESPONDENCE.md \u00a72, \u00a72b). Unchecked: verify/readers: replay.py 75, client.py readers and export_reconstruction, Ledger.CanonicalRecord tombstone branch :579-587; exact lines in correspondence/correspondence.json; executed lines are checked only for the traced inputs.",
    "source": "matrix-input/correspondence_status.json",
    "status": "open"
   },
@@ -10979,7 +10979,7 @@
     "intent_undecided": []
    },
    "product_obligation": "fails",
-   "remaining": "No frontend: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: ObjectScript commit/genesis/adoption/disable handlers: unchecked lines in Ledger 76, LedgerApply 25, LedgerGenesis 13, LedgerStats 3, Txn 7, LedgerRevision 2, Adjacency 29 shared with 12) and Python client/_write_txn/errors lines. Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
+   "remaining": "No supported frontend integrated here: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: ObjectScript commit/genesis/adoption/disable handlers: unchecked lines in Ledger 76, LedgerApply 25, LedgerGenesis 13, LedgerStats 3, Txn 7, LedgerRevision 2, Adjacency 29 shared with 12) and Python client/_write_txn/errors lines. Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
    "source": "matrix-input/correspondence_status.json",
    "status": "open",
    "supplemented_by": [
@@ -11004,7 +11004,7 @@
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "12",
    "product_obligation": "unknown",
-   "remaining": "No frontend: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: Eraser 102 unchecked lines (routes, FHIR, NKG-built paths, EraseNodeIds, catch/rollback branches) and Adjacency 29. Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
+   "remaining": "No supported frontend integrated here: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: Eraser 102 unchecked lines (routes, FHIR, NKG-built paths, EraseNodeIds, catch/rollback branches) and Adjacency 29. Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
    "source": "matrix-input/correspondence_status.json",
    "status": "open",
    "supplemented_by": [
@@ -11029,7 +11029,7 @@
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "13",
    "product_obligation": "unknown",
-   "remaining": "No frontend: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: LedgerRedact 24 unchecked lines (lock-timeout/catch branches of Batch/Final, unattributed qualifier records, named-graph prefix LiveRows, DropStatements :465). Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
+   "remaining": "No supported frontend integrated here: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: LedgerRedact 24 unchecked lines (lock-timeout/catch branches of Batch/Final, unattributed qualifier records, named-graph prefix LiveRows, DropStatements :465). Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
    "source": "matrix-input/correspondence_status.json",
    "status": "open",
    "supplemented_by": [
@@ -11054,7 +11054,7 @@
    "level_detail": "as-built (pin 3eaa79cf), AUDITC traces",
    "module": "14",
    "product_obligation": "unknown",
-   "remaining": "No frontend: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: verify/readers: replay.py 75, client.py readers and export_reconstruction, Ledger.CanonicalRecord tombstone branch :579-587. Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
+   "remaining": "No supported frontend integrated here: handlers are trace-checked (spec step rules + alpha steps), not proved to perform their spec step. Unchecked lines: verify/readers: replay.py 75, client.py readers and export_reconstruction, Ledger.CanonicalRecord tombstone branch :579-587. Limits of the alpha contract-step check (review R2-05): alpha (correspondence/CORRESPONDENCE.md section 2) maps create_temporal_edge to no content and excludes temporal-marked rows, as replay.py does, and its 'tombstone of live content' check (correspondence/tools/abstraction.py:466-472) folds a record's keys against alpha's rows, so a live temporal-only edge is never 'live' and F-C1308's failure passes the check by construction (temporal hole); the redaction step check covers soundness, counts, digests and the marker but not completeness at Final (every live record of the target tombstoned; theorem_final_effect in proofs/), so F-1305 / F-C1302-class outcomes pass (completeness hole); every checked trace is sequential apart from the F-1201 pair. A pass means no violation of the checked contract was seen on the traced inputs, not that the handler performs its step. [review-response R2-05]",
    "source": "matrix-input/correspondence_status.json",
    "status": "open",
    "supplemented_by": [
@@ -17750,8 +17750,11 @@
    "status": "closed"
   },
   {
-   "cited_runs": [],
+   "cited_runs": [
+    "hygiene-check-r1"
+   ],
    "evidence": [
+    "run:hygiene-check-r1",
     "tools/locks.sh",
     "tools/locks_rec.py",
     "tools/hygiene_check.py",
@@ -17759,12 +17762,13 @@
     "incidents/HEALTH-ALERT-0119.md",
     "incidents/superseded-logs.json"
    ],
+   "evidence_grade": "registered-run",
    "gate": "5-hygiene",
    "level": "method",
    "module": "product",
    "product_obligation": "unknown",
-   "remaining": "From the commit after d293fb6b, tools/locks.sh logs every hold to $RUN_DIR/locks/holds.jsonl (request with the command, parent pid, free disk and the wait cap; acquired with the wait and the holder's own pid and process group, so a job is stopped by that pid; released with the exit code; timeout), refuses a lock when free disk is below a floor (LOCK_DISK_FLOOR_GB, 20), and tools/hygiene_check.py checks the log (H1 one holder at a time per lock, H2 every hold released or its holder alive, H3 hold time <= 3 h, H4 disk floor, H5 a stoppable pid, H6 wait caps and outcomes, H7 well-formed lines; self-test with seeded violations); verify.sh runs the self-test in every mode and the check over its own window at the end. Open until a registered gate has run the check. Not covered: a job that never goes through locks.sh. Recorded lapses before the log: uncoordinated connections 23:02:53-23:03:40 UTC (IVG460SNAP), a heavy-lock deadlock from wrapping a self-locking proof runner (stopped by PID), licence exhaustion by the scratch-236 suites (HEALTH-ALERT-0119), and overwritten proof logs (superseded-logs.json).",
-   "status": "open"
+   "remaining": "From the commit after d293fb6b, tools/locks.sh logs every hold to $RUN_DIR/locks/holds.jsonl (request with the command, parent pid, free disk and the wait cap; acquired with the wait and the holder's own pid and process group, so a job is stopped by that pid; released with the exit code; timeout), refuses a lock when free disk is below a floor (LOCK_DISK_FLOOR_GB, 20), and tools/hygiene_check.py checks the log (H1 one holder at a time per lock, H2 every hold released or its holder alive, H3 hold time <= 3 h, H4 disk floor, H5 a stoppable pid, H6 wait caps and outcomes, H7 well-formed lines; self-test with seeded violations); verify.sh runs the self-test in every mode and the check over its own window at the end. Closed at method level by hygiene-check-r1 (20 holds since logging began, 0 problems) and the per-run step of every verify.sh mode. Not covered: a job that never goes through locks.sh. Recorded lapses before the log: uncoordinated connections 23:02:53-23:03:40 UTC (IVG460SNAP), a heavy-lock deadlock from wrapping a self-locking proof runner (stopped by PID), licence exhaustion by the scratch-236 suites (HEALTH-ALERT-0119), and overwritten proof logs (superseded-logs.json).",
+   "status": "closed"
   },
   {
    "cited_runs": [
@@ -38541,7 +38545,7 @@
   "n/a": 33,
   "unknown": 186
  },
- "registry_runs": 1566,
+ "registry_runs": 1576,
  "starting_inventory": {
   "cells": 904,
   "decisions": 61,
@@ -38553,9 +38557,9 @@
  },
  "status_counts": {
   "blocked": 24,
-  "closed": 618,
+  "closed": 619,
   "not-applicable": 35,
-  "open": 75
+  "open": 74
  },
  "submission": "9c3719c1",
  "writer_obligations": [

@@ -721,8 +721,7 @@ def module_entries(census_ids_by_module, open_ids_by_module):
         "17": ("iris_sql_store write_nodes/write_edges live; the SQL fallbacks of _delete_nodes_sql and delete_edges "
                "are reachable when the Eraser probe is refused and are discharged by F-C1750 (INV-stmt, live, "
                "ws-live-sql-fallback-priv) and, for _delete_nodes_sql's INV-marker/INV-no-live-tombstone, by F-C1301 "
-               "(inspected); insert_vector's conditional cells are resolved (no product caller). Verification cell "
-               "closes; product obligation fails (F-C1307, F-C1350, F-C1301, F-C1750)."),
+               "(inspected); insert_vector's conditional cells are resolved (no product caller)."),
         "18": ("Snapshot.ImportGlobals: finding F-1806 (live), Snapshot.SetNodeJSON: guard (live), import_rdf live, "
                "restore's three write-set gaps live (F-C1850). snapshot.restore_merge (not a plan) now has 9 discharges "
                "in BREADTH-A-DISCHARGES.json (m18|...): INV-text/INV-retry/INV-marker live (F-C1850 with merge=True, "
@@ -739,7 +738,9 @@ def module_entries(census_ids_by_module, open_ids_by_module):
             "findings": ({"17": ["F-C1307", "F-C1350", "F-C1301", "F-C1750"],
                           "18": ["F-1806", "F-C1850", "F-1801", "F-1805"]}[m] if closes else []),
             "reason": (f"{len(ids(m))} census cells of module {m}, each with one discharge in DISCHARGES.json; "
-                       f"{len(op)} of them open ({', '.join(op) or 'none'}). " + rest[m]),
+                       f"{len(op)} of them open ({', '.join(op) or 'none'}). " + rest[m]
+                       + (" Verification cell closes; product obligation fails (F-C1307, F-C1350, F-C1301, F-C1750)."
+                          if (m == "17" and closes) else "")),
         }
     return out
 

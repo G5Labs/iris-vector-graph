@@ -27,12 +27,12 @@ product scope check passes). Last checkpoint commit before the switch: `1564a673
 ## Blockers
 
 - Not operator-dependent (recorded so the monitor does not count it): the least-privilege login; the disposable user `IVGAUDIT_RO` is authorized setup (versions/PRIVILEGE.md).
-- Operator-dependent: O-2 (product-code mutation testing, `3.7-mutation`; the binding rule says model mutations only).
+- O-2 (product-code mutation testing, `3.7-mutation`): a documented, unperformed lane under this run's source-preservation scope (model mutations only); obligation open, not a blocker.
 - O-1 applied by the operator also to `IVG262CAP` (22:42 UTC); no confirmation outstanding.
   O-1 is resolved by the operator's clarification.
 - Genuinely unavailable (attempts in `versions/AVAILABILITY.md`): IRIS 2026.3, Enterprise / IRIS for Health and its
   licence (more than 8 units), `%AI`, `HS.FHIRServer`, multi-node, x86_64 `libarno_callout.so`.
-- No verifier for ObjectScript/Python (D-2, D-3): statement and handler proof cells stay open.
+- No automated source-level verification of the ObjectScript/Python handlers in this experiment (D-2, D-3; no supported frontend integrated here): statement and handler proof cells stay open.
 
 ## Provenance note (operator check after the switch)
 

@@ -5,7 +5,7 @@ pin's classes as deployed by `initialize_schema`; the INT text read from `^ROUTI
 pinned `.cls` files, see §2). Observation only: nothing compiled, no product file changed. Evidence grades follow
 `CONVENTIONS.md`; a result about a model is reported as such.
 
-**Headline.** There is no verifier for ObjectScript or Python, so no handler is *proved* to implement its model step
+**Headline.** This experiment provides no automated source-level verification of the ObjectScript/Python handlers (no supported frontend was integrated here), so no handler is *proved* to implement its model step
 (§3.5-handlers and §3.4-statements stay **open**). The strongest correspondence implemented here is a
 **trace refinement check**: an executable abstraction function α from the stored state (`^IVG.Ledger` subscripts and
 `Graph_KG` rows) to the states of the participant contracts the proofs use (`proofs/src/ledger.rs`, `store.rs`), applied
@@ -586,7 +586,7 @@ ledger).
 | 3.7-lock-log | closed | closed | open | closed |
 
 Stays open, and why:
-- **3.4-statements / 3.5-handlers (all four)**: no verifier for ObjectScript or Python, so no statement or handler is
+- **3.4-statements / 3.5-handlers (all four)**: no automated source-level verification of the ObjectScript/Python handlers in this experiment (no supported frontend integrated here), so no statement or handler is
   proved to perform its model step. What is discharged is a trace refinement check on the traced inputs; the unchecked
   lines of §3 (281 ObjectScript, 181 Python) have no evidence at all, and the exercised lines only for the inputs the
   traces used. The proofs (`proofs/`) remain statements about models.
