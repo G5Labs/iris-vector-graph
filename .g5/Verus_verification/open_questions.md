@@ -827,6 +827,20 @@ Evidence: `compute_diff` sorts entries by kind, ID and attribute (`ledger/replay
 
 Classification: needs ratification. Working answer: an unordered set of net changes (the contract's "net"), in which case order does not matter but the reverse diff's attribute values still do ([bug-led-101](bugs_issues.md#bug-led-101)). Alternative: an ordered script that a client may apply, which would require the inverse to reverse the order of tied entries. Lead L2 of the reviewed plan. Iteration 3 attaches this decision to canonical ledger.readers.diff.order. Producer inspection corrects the old empty deletion prior: NodeSnapshotJson carries full labels/properties at deletion. The simple delete/recreate neighbor preserves those values in inverse existence.after; changing a property before deleting still loses its earlier range prior when that lifecycle closes. Keep two choices explicit: (1) display a set of lifecycle entries with deletion-moment snapshots, the current working interpretation; (2) provide a complete endpoint delta or an applicable script, retaining range-start values and defining tie order. Neither is owner-ratified. As-built selection/inversion and continuous-life endpoint values now have history_diff proofs; full lifecycle reconstruction remains open.
 
+<a id="q-iter-007"></a>
+### Should weighted shortest path consider every parallel edge or the lowest-key representative graph?
+
+Severity: Low · Decision: Open
+
+Run: Consolidated iteration9, 2026-11-15
+
+Governing owner: [algorithms.op.paths.weighted.parallel](../ontology/features/algorithms.g5.md#algorithms.op.paths.weighted.parallel). No provisional owner answer or human decision.
+
+Evidence: USER_GUIDE631-644 promises cheapest path by edge weight. Spec234 FR004 mandates the lowest-key scalar leaf, while its FR015/clarifications explicitly discuss collapse for Arno/PPR/BFS rather than weighted Dijkstra. Actual DijkstraJson reads only scalar leaves. The valid mode-on native fixture in [weighted-native.json](../uplift/consolidated/iteration-9/weighted-native.json) has ekey0/weight10 and ekey5/weight1, plus a two-edge alternative of cost4: both native path and cost-only routes return4, whereas the whole stored multigraph has a cost1 path. [Independent source/intent review](../uplift/consolidated/iteration-9/weighted-projection-review.md) distinguishes this from the earlier mode-off harness-oracle miss.
+
+Plausible answers: define weighted paths over the lowest-key projection for compatibility, stating that graph to callers; or optimize over all parallel rows, changing the reader to select the minimum admissible effective weight while preserving the storage layout. Neither answer is chosen here. The new queue proof is a minimum over its actual raw scalar graph and remains useful under either future producer choice; it is not a proof of the unresolved all-relationships interpretation. No new weighted bug, accepted repair or policy decision is counted.
+
+
 <a id="HD-0001"></a>
 ### How to read "defined by its ancestors or an earlier same-level statement"
 

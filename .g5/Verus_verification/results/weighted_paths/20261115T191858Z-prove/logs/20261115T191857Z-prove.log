@@ -1,0 +1,21 @@
+verification results:: 20 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:279:1
+    |
+279 | pub proof fn lemma_refines_transitive(s:Search,t:Search,u:Search)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:283:56
+    |
+283 |     assert forall|k:Key|s.done.contains_key(k) implies u.done.contains_key(k) && u.done[k]==s.done[k] by {assert(t.done.contains_ke...
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:283:114
+    |
+283 | ...s_key(k) && u.done[k]==s.done[k] by {assert(t.done.contains_key(k));}
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

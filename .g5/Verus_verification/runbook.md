@@ -326,3 +326,10 @@ instance and IVG_TEMPORAL_NATIVE=1. Preserve sealed paths: copy scripts into a n
 and source-relative guard remain correct; run serially. They create/delete only
 unique owned fixtures; inspect final cleanup. No actual FHIR repo, namespaceguard
 setup acceptance, SQL-fault, background or transport proof is implied.
+
+
+### Iteration 9: raw weighted search and Bolt stream
+
+Current continuation: [iteration9 handoff](../uplift/consolidated/iteration-9/HANDOFF.md), then iteration10 Cost/PPR. Replay `.g5/Verus_verification/run_verus.py prove` or `controls` with model directory `models/weighted_paths` or `models/bolt_stream` (use full repository-relative model path), explicit VERUS_RUN_THREADS=4 and pinned VERUS_BIN. The weighted and Bolt NOTES give exact commands, provider fragments and named controls. Binding scripts use the pinned venv/export and forbid socket connects; native scripts separately require IVG_TEMPORAL_NATIVE=1 and hostname-check the task-owned35975instance. Do not point them at another instance. No product-body proof or DijkstraCost proof is inferred from native agreement.
+
+`check_evidence.py` checks the latest fresh proof/control/binding. Weighted integration flattened its already-recorded native/source hashes into `inputs`, so changed native fact artifacts invalidate that package binding; global `correspondence_gate.py` separately checks source/formal/name/link inputs. The nine disposable iteration9 freshness cases demonstrate both layers without mutating active inputs. External provider/runtime freshness is a named premise. `member_reach.py` gives188/4130 active named behavior locators, directbody0; observation rows do not earn reach.

@@ -1,0 +1,27 @@
+verification results:: 42 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/commit-clears-pending/20261115T192515Z/models/bolt_stream/bolt_stream.rs:318:1
+    |
+318 | pub proof fn theorem_commit_preserves_but_rollback_discards(s:Session,rows:Rows)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/commit-clears-pending/20261115T192515Z/models/bolt_stream/bolt_stream.rs:320:13
+    |
+318 | pub proof fn theorem_commit_preserves_but_rollback_discards(s:Session,rows:Rows)
+    | -------------------------------------------------------------------------------- at the end of the function body
+319 |     requires s.pending==Some(rows),
+320 |     ensures commit(s).state.pending==Some(rows),record_rows(pull(commit(s).state,-1).out)==rows,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/commit-clears-pending/20261115T192515Z/models/bolt_stream/bolt_stream.rs:320:49
+    |
+318 | pub proof fn theorem_commit_preserves_but_rollback_discards(s:Session,rows:Rows)
+    | -------------------------------------------------------------------------------- at the end of the function body
+319 |     requires s.pending==Some(rows),
+320 |     ensures commit(s).state.pending==Some(rows),record_rows(pull(commit(s).state,-1).out)==rows,
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

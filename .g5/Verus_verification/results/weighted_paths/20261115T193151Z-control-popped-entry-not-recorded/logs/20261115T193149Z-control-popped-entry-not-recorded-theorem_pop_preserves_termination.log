@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/popped-entry-not-recorded/20261115T193149Z/models/weighted_paths/weighted_paths.rs:517:9
+    |
+514 | pub proof fn theorem_pop_preserves_termination(c:Config,s:Search,e:Entry)
+    | ------------------------------------------------------------------------- at the end of the function body
+...
+517 |         pop_only(s,e).removed==s.removed.insert(e),!s.removed.contains(e),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

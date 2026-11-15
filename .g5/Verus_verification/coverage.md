@@ -642,3 +642,14 @@ audit retained withdrawals. Same reach167/4130->177/4130,10new,21role rows/3cont
 13paired builder rows complete13after, supported11/13 with2provider precision limits;
 no independent/population score. Bolt framing/pending rows and weighted optimality
 remain material; no convergence or diminishing-returns claim.
+
+
+## Improvement iteration 9 (2026-11-15)
+
+[Sealed handoff](../uplift/consolidated/iteration-9/HANDOFF.md), [paired builder ledger](../uplift/consolidated/iteration-9/PAIRS.md), [machine judgments](../uplift/consolidated/iteration-9/builder-scores.json), [source roles](../uplift/consolidated/iteration-9/role-audit.json). Product3eaa79cf unchanged; input9e120916. Two new as-built transcription families: weighted_paths45 units/8 controls and bolt_stream43/19, total88 new units (78 proof declarations,10 spec termination). No direct executable-body verification.
+
+Weighted derives actual raw stale-queue/node-hop relax/parent/backtrack, minimum/no-path and finite termination for stable integer scalar graphs; DijkstraCost, raw public argument/refusal and writer/float/JSON/provider correspondence remain gaps. Bolt derives raw headers/body/actual versus reencodedcut/queue then admitted rawRUN/PULL through pending state/final records; general codecs/graph objects/TCP/network/provider/database transaction behavior remain qualified. NewLow/Suspected functional roots bug-plt-101/102 have actual local Python session evidence,0 sockets; inheritedF1602 strengthened. q-iter-007 leaves intended weighted parallel-edge policy open. Registers430/55/145; no owner decision/accepted repair.
+
+Same-rule reach177/4130 ->188/4130,11 added/0lost;11 active fragment roles and13 observation contexts. Three new active roles have bounded native+unit corroboration,8 actual Python unit corroboration. Historical4129/93 and union335 stay separate. Exact new reverse bindings and all unlinked members are retained under iteration9/after-reach. Resolution is a locator; inherited177 were not exhaustively reaudited.
+
+Nineteen purposive builder decisions: ontology complete8/19 ->18/19, supported7/10answered ->18/18; models complete0/19 ->11/19, supported0/1answered ->11/17 (6partial,2unanswered). Not independent grading, approval or population rates. Misses, native9000paired+14public+18neighbors+4mirrorstates, binding9073, Bolt22/89/188/12+2/root36,49units, ninefreshnessfixtures and costs are in iteration9 ledgers. Independent43/all19/Boltbindings and root45/selectedweightedcontrols replay; all final receiptsfresh. Material next: actual cost-only proof, PPR recurrence/zero-fill; convergence unsupported.

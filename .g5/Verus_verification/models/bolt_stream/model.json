@@ -1,0 +1,179 @@
+{
+  "name": "bolt_stream",
+  "root": "bolt_stream.rs",
+  "expected_verified": 43,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "header-high-byte-lost",
+      "why": "header-high-byte-lost",
+      "find": "(raw[0] as nat)*256 + raw[1] as nat",
+      "replace": "raw[1] as nat",
+      "expect_fail_in": [
+        "lemma_header"
+      ]
+    },
+    {
+      "name": "incomplete-payload-emitted",
+      "why": "incomplete-payload-emitted",
+      "find": "else if n+2>raw.len() {Decoded{bodies:seq![],used:0}}",
+      "replace": "else if n+2>raw.len() {Decoded{bodies:seq![current],used:0}}",
+      "expect_fail_in": [
+        "theorem_incomplete_header_or_payload"
+      ]
+    },
+    {
+      "name": "chunk-accumulator-overwritten",
+      "why": "chunk-accumulator-overwritten",
+      "find": "let tail=scan(drop(raw,n+2),current+raw.subrange(2,(n+2) as int));",
+      "replace": "let tail=scan(drop(raw,n+2),raw.subrange(2,(n+2) as int));",
+      "expect_fail_in": [
+        "lemma_scan_chunk"
+      ]
+    },
+    {
+      "name": "reencoded-cut-corrected",
+      "why": "reencoded-cut-corrected",
+      "find": "let cut=encoded_lengths(d.bodies);",
+      "replace": "let cut=d.used;",
+      "expect_fail_in": [
+        "theorem_small_chunk_reencoding_leaves_terminator"
+      ]
+    },
+    {
+      "name": "decoded-queue-dropped",
+      "why": "decoded-queue-dropped",
+      "find": "queue:d.bodies.drop_first()",
+      "replace": "queue:seq![]",
+      "expect_fail_in": [
+        "theorem_buffer_and_queue_come_from_raw"
+      ]
+    },
+    {
+      "name": "queue-waits-for-new-frame",
+      "why": "queue-waits-for-new-frame",
+      "find": "if s.queue.len()>0 {",
+      "replace": "if false {",
+      "expect_fail_in": [
+        "theorem_queue_precedes_receive"
+      ]
+    },
+    {
+      "name": "empty-message-keeps-ws-open",
+      "why": "empty-message-keeps-ws-open",
+      "find": "Read::Message(body)=>body.len()>0",
+      "replace": "Read::Message(body)=>true",
+      "expect_fail_in": [
+        "theorem_empty_chunk_is_emitted"
+      ]
+    },
+    {
+      "name": "run-rows-not-persisted",
+      "why": "run-rows-not-persisted",
+      "find": "pending:Some(rows),types:Some",
+      "replace": "pending:Some(seq![]),types:Some",
+      "expect_fail_in": [
+        "theorem_run_produces_pending_and_type_metadata"
+      ]
+    },
+    {
+      "name": "error-enters-ready",
+      "why": "error-enters-ready",
+      "find": "phase:Phase::Failed,pending:None,..s",
+      "replace": "phase:Phase::Ready,pending:None,..s",
+      "expect_fail_in": [
+        "theorem_error_produces_failure_and_failed_gate"
+      ]
+    },
+    {
+      "name": "positive-pull-slice-lost",
+      "why": "positive-pull-slice-lost",
+      "find": "if n>0 && n<rows.len(){rows.take(n)}else{rows}",
+      "replace": "rows",
+      "expect_fail_in": [
+        "theorem_positive_pull_is_prefix"
+      ]
+    },
+    {
+      "name": "pull-retains-suffix",
+      "why": "pull-retains-suffix",
+      "find": "state:Session{phase:Phase::Ready,pending:None,columns:None,types:None},\n            out:records(rows)",
+      "replace": "state:Session{phase:Phase::Ready,pending:Some(remainder(s.pending.unwrap(),n)),columns:None,types:None},\n            out:records(rows)",
+      "expect_fail_in": [
+        "theorem_pull_reads_input_rows_then_clears"
+      ]
+    },
+    {
+      "name": "pull-reports-more",
+      "why": "pull-reports-more",
+      "find": "out:records(rows)+seq![Answer::Summary{has_more:None}]",
+      "replace": "out:records(rows)+seq![Answer::Summary{has_more:Some(true)}]",
+      "expect_fail_in": [
+        "theorem_partial_pull_drops_suffix_and_reports_no_more"
+      ]
+    },
+    {
+      "name": "commit-clears-pending",
+      "why": "commit-clears-pending",
+      "find": "pub open spec fn commit(s:Session)->Step {\n    Step{state:Session{phase:Phase::Ready,..s},out:seq![Answer::Summary{has_more:None}],engine_calls:0}\n}",
+      "replace": "pub open spec fn commit(s:Session)->Step {\n    Step{state:Session{phase:Phase::Ready,pending:None,..s},out:seq![Answer::Summary{has_more:None}],engine_calls:0}\n}",
+      "expect_fail_in": [
+        "theorem_commit_preserves_but_rollback_discards"
+      ]
+    },
+    {
+      "name": "rollback-preserves-pending",
+      "why": "rollback-preserves-pending",
+      "find": "pub open spec fn rollback(s:Session)->Step {reset(s)}",
+      "replace": "pub open spec fn rollback(s:Session)->Step {commit(s)}",
+      "expect_fail_in": [
+        "theorem_commit_preserves_but_rollback_discards"
+      ]
+    },
+    {
+      "name": "discard-clears-type-metadata",
+      "why": "discard-clears-type-metadata",
+      "find": "phase:Phase::Ready,pending:None,columns:None,..s",
+      "replace": "phase:Phase::Ready,pending:None,columns:None,types:None",
+      "expect_fail_in": [
+        "theorem_discard_keeps_types_reset_clears"
+      ]
+    },
+    {
+      "name": "reset-keeps-pending",
+      "why": "reset-keeps-pending",
+      "find": "pub open spec fn reset(s:Session)->Step {\n    Step{state:Session{phase:Phase::Ready,pending:None,columns:None,types:None},out:seq![Answer::Summary{has_more:None}],engine_calls:0}\n}",
+      "replace": "pub open spec fn reset(s:Session)->Step {\n    Step{state:Session{phase:Phase::Ready,pending:s.pending,columns:None,types:None},out:seq![Answer::Summary{has_more:None}],engine_calls:0}\n}",
+      "expect_fail_in": [
+        "theorem_discard_keeps_types_reset_clears"
+      ]
+    },
+    {
+      "name": "failed-gate-removed",
+      "why": "failed-gate-removed",
+      "find": "if s.phase==Phase::Failed {",
+      "replace": "if false {",
+      "expect_fail_in": [
+        "theorem_failed_run_does_not_consult_engine"
+      ]
+    },
+    {
+      "name": "tiny-pull-unsigned",
+      "why": "tiny-pull-unsigned",
+      "find": "else if n>=240{Some(n as int-256)}",
+      "replace": "else if n>=240{Some(n as int)}",
+      "expect_fail_in": [
+        "theorem_tiny_signed_pull_count"
+      ]
+    },
+    {
+      "name": "empty-error-is-failure",
+      "why": "empty-error-is-failure",
+      "find": "error.is_some() && error.unwrap().len()>0",
+      "replace": "error.is_some()",
+      "expect_fail_in": [
+        "theorem_raw_error_string_decides_failure"
+      ]
+    }
+  ]
+}

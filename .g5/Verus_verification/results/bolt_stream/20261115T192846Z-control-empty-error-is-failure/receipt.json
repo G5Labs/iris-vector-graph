@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_raw_error_string_decides_failure"
+    ],
+    "find": "error.is_some() && error.unwrap().len()>0",
+    "name": "empty-error-is-failure",
+    "replace": "error.is_some()",
+    "why": "empty-error-is-failure"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_raw_error_string_decides_failure"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/empty-error-is-failure/20261115T192843Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_raw_error_string_decides_failure": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192843Z-control-empty-error-is-failure-theorem_raw_error_string_decides_failure.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192843Z-control-empty-error-is-failure.log",
+    "timed_out": false,
+    "verified": 42
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192846Z-control-empty-error-is-failure/logs/20261115T192843Z-control-empty-error-is-failure-theorem_raw_error_string_decides_failure.log": "532514fa9b29158acece08f41e2712c1487de79d15f6cfa658f5340d576489c5",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192846Z-control-empty-error-is-failure/logs/20261115T192843Z-control-empty-error-is-failure.log": "8737675197eb1c7567a0eefe93b8ec4c5c5337c0e0acb0e4ee30723eb31a06cf"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_actual_continue_preserves"
+    ],
+    "find": "if e.1==c.dst{Event::Returned",
+    "name": "exact-cap-target-not-returned",
+    "replace": "if e.1==c.dst && e.0<c.cap{Event::Returned",
+    "why": "Tests target only below maxCost, losing exact-cap accepted paths."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_actual_continue_preserves"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_paths/model.json": "dda5c0ccd594ace9498a3d65b835eecd463e9d359d4e0817e6c40aff6b000b86",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/exact-cap-target-not-returned/20261115T193143Z/models/weighted_paths/weighted_paths.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_actual_continue_preserves": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T193143Z-control-exact-cap-target-not-returned-theorem_actual_continue_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T193143Z-control-exact-cap-target-not-returned.log",
+    "timed_out": false,
+    "verified": 44
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_paths/20261115T193146Z-control-exact-cap-target-not-returned/logs/20261115T193143Z-control-exact-cap-target-not-returned-theorem_actual_continue_preserves.log": "9bdbdf28a9998a6f902b93c7e5e981de4543c1dd8b2370d074c7bfbfa5ddfd7c",
+    ".g5/Verus_verification/results/weighted_paths/20261115T193146Z-control-exact-cap-target-not-returned/logs/20261115T193143Z-control-exact-cap-target-not-returned.log": "7d40b90de1d5a782e7784057698b64f1b092bdfffd6236dd90b91a2ce938cd95"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

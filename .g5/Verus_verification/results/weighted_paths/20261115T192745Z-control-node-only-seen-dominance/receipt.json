@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_relax_covers_neighbor"
+    ],
+    "find": "(s.seen.contains_key(a.4) && s.seen[a.4]<=h)",
+    "name": "node-only-seen-dominance",
+    "replace": "s.seen.contains_key(a.4)",
+    "why": "Rejects a newly reached smaller-hop label just because the node was seen."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_relax_covers_neighbor"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_paths/model.json": "d2a64c84d932492ca7bfd03594c636153b29c0293942b3f6ddecfe330cadba54",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "091bd4a4606bdaa43f4f27ce9c6e0badfbc1e5ce8d43420d14c576d4fb825e29"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/node-only-seen-dominance/20261115T192743Z/models/weighted_paths/weighted_paths.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_relax_covers_neighbor": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192743Z-control-node-only-seen-dominance-theorem_relax_covers_neighbor.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192743Z-control-node-only-seen-dominance.log",
+    "timed_out": false,
+    "verified": 44
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_paths/20261115T192745Z-control-node-only-seen-dominance/logs/20261115T192743Z-control-node-only-seen-dominance-theorem_relax_covers_neighbor.log": "a90c98869efaa7a4a86ed204605522b9e812e58b31f9214007836b2e823e1246",
+    ".g5/Verus_verification/results/weighted_paths/20261115T192745Z-control-node-only-seen-dominance/logs/20261115T192743Z-control-node-only-seen-dominance.log": "d6c68f4e500d22805cbf41eab1aa8e3c9bdd43e3d338e39986d0b1e614157183"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

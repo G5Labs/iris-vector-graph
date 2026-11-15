@@ -1,0 +1,285 @@
+{
+  "rows": [
+    {
+      "label": "negative public hops refused",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,-1) YIELD totalCost RETURN totalCost",
+      "rows": null,
+      "error": {
+        "type": "ValueError",
+        "message": "ivg.shortestPath.weighted: maxHops must be at least 0, got -1"
+      },
+      "expected_error": true,
+      "expected_costs": null,
+      "agrees": true
+    },
+    {
+      "label": "empty public source refused",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('','wp9:t') YIELD totalCost RETURN totalCost",
+      "rows": null,
+      "error": {
+        "type": "ValueError",
+        "message": "ivg.shortestPath.weighted: from parameter not supplied"
+      },
+      "expected_error": true,
+      "expected_costs": null,
+      "agrees": true
+    },
+    {
+      "label": "empty public target refused",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('wp9:s','') YIELD totalCost RETURN totalCost",
+      "rows": null,
+      "error": {
+        "type": "ValueError",
+        "message": "ivg.shortestPath.weighted: to parameter not supplied"
+      },
+      "expected_error": true,
+      "expected_costs": null,
+      "agrees": true
+    },
+    {
+      "label": "unknown weight refused",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','price') YIELD totalCost RETURN totalCost",
+      "rows": null,
+      "error": {
+        "type": "ValueError",
+        "message": "ivg.shortestPath.weighted: weightProp 'price' is not supported: edge weights are read from the adjacency index, which holds only the 'weight' relationship property"
+      },
+      "expected_error": true,
+      "expected_costs": null,
+      "agrees": true
+    },
+    {
+      "label": "unknown direction refused",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,0,'sideways') YIELD totalCost RETURN totalCost",
+      "rows": null,
+      "error": {
+        "type": "ValueError",
+        "message": "ivg.shortestPath.weighted: direction must be 'out', 'in' or 'both', not 'sideways'"
+      },
+      "expected_error": true,
+      "expected_costs": null,
+      "agrees": true
+    },
+    {
+      "label": "negative cap self precedes cap and existence",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('wp9:ghost','wp9:ghost','weight',-1,0) YIELD totalCost RETURN totalCost",
+      "rows": [
+        [
+          0.0
+        ]
+      ],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [
+        0.0
+      ],
+      "agrees": true
+    },
+    {
+      "label": "negative cap distinct has no path",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',-1,0) YIELD totalCost RETURN totalCost",
+      "rows": [],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [],
+      "agrees": true
+    },
+    {
+      "label": "zero public hops unbounded",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,0) YIELD totalCost RETURN totalCost",
+      "rows": [
+        [
+          3.0
+        ]
+      ],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [
+        3.0
+      ],
+      "agrees": true
+    },
+    {
+      "label": "bounded public hops alternative",
+      "query": "USE GRAPH 'wp9:a' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,2) YIELD totalCost RETURN totalCost",
+      "rows": [
+        [
+          5.0
+        ]
+      ],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [
+        5.0
+      ],
+      "agrees": true
+    },
+    {
+      "label": "public types []",
+      "query": "USE GRAPH 'wp9:norm' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,0,'out',[]) YIELD totalCost RETURN totalCost",
+      "rows": [
+        [
+          2.0
+        ]
+      ],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [
+        2.0
+      ],
+      "agrees": true
+    },
+    {
+      "label": "public types ['R']",
+      "query": "USE GRAPH 'wp9:norm' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,0,'out',['R']) YIELD totalCost RETURN totalCost",
+      "rows": [
+        [
+          4.0
+        ]
+      ],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [
+        4.0
+      ],
+      "agrees": true
+    },
+    {
+      "label": "public types ['S']",
+      "query": "USE GRAPH 'wp9:norm' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,0,'out',['S']) YIELD totalCost RETURN totalCost",
+      "rows": [],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [],
+      "agrees": true
+    },
+    {
+      "label": "public types 'R'",
+      "query": "USE GRAPH 'wp9:norm' CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,0,'out','R') YIELD totalCost RETURN totalCost",
+      "rows": [
+        [
+          4.0
+        ]
+      ],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [
+        4.0
+      ],
+      "agrees": true
+    },
+    {
+      "label": "unspecified graph enumerates each graph",
+      "query": "CALL ivg.shortestPath.weighted('wp9:s','wp9:t','weight',99,0) YIELD totalCost RETURN totalCost",
+      "rows": [
+        [
+          2.0
+        ],
+        [
+          3.0
+        ],
+        [
+          4.0
+        ],
+        [
+          2.0
+        ],
+        [
+          8.0
+        ]
+      ],
+      "error": null,
+      "expected_error": false,
+      "expected_costs": [
+        3.0,
+        8.0,
+        2.0,
+        4.0,
+        2.0
+      ],
+      "agrees": true
+    },
+    {
+      "label": "direct native endpoint/hop/cap",
+      "source": "wp9:s",
+      "target": "wp9:t",
+      "hops": -1,
+      "cap": 99,
+      "path": {
+        "nodes": [
+          "wp9:s",
+          "wp9:b",
+          "wp9:a",
+          "wp9:t"
+        ],
+        "rels": [
+          "R",
+          "R",
+          "R"
+        ],
+        "costs": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "length": 3,
+        "totalCost": 3.0
+      },
+      "cost": 3.0,
+      "expected": 3.0,
+      "agrees": true
+    },
+    {
+      "label": "direct native endpoint/hop/cap",
+      "source": "wp9:ghost",
+      "target": "wp9:ghost",
+      "hops": 0,
+      "cap": -1,
+      "path": {
+        "nodes": [
+          "wp9:ghost"
+        ],
+        "rels": [],
+        "costs": [],
+        "length": 0,
+        "totalCost": 0.0
+      },
+      "cost": 0.0,
+      "expected": 0.0,
+      "agrees": true
+    },
+    {
+      "label": "direct native endpoint/hop/cap",
+      "source": "",
+      "target": "wp9:t",
+      "hops": 0,
+      "cap": 99,
+      "path": {},
+      "cost": null,
+      "expected": null,
+      "agrees": true
+    },
+    {
+      "label": "direct native endpoint/hop/cap",
+      "source": "wp9:s",
+      "target": "",
+      "hops": 0,
+      "cap": 99,
+      "path": {},
+      "cost": null,
+      "expected": null,
+      "agrees": true
+    }
+  ],
+  "comparisons": 18,
+  "identity_checked": true,
+  "container": "ivg-uplift-next-20261115",
+  "agrees": true,
+  "inputs": {
+    "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native-neighbors.py": "58f555dbf0c9ddc24e7ca2c4f7bc356b6d8c6ad17515ee25a02460c5ded632da",
+    "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native.py": "dde0f86d14bc002abcf6617f40537c7125b033d7208f4dc2ff953781eb9a46d8",
+    "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native.json": "ddf341b286f9297e526c8ffa704f392f72aa787d751fd35e84e0e8cc30e6c8c1",
+    "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/temporal_restore/binding.py": "cdd4459d65727c894b6be1aca1a1f61ad56cb1325592bacc9dcb5471a7608fe1"
+  },
+  "scope": "Source-derived neighboring outcomes, not blind predictions. Reads retained five native fixtures from weighted-native AGREES run; no graph edit, security scenario, native body proof or arbitrary numeric equivalence. Public errors differ from direct native empty endpoint/no-path and negative hop behavior."
+}

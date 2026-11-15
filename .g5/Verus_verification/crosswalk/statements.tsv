@@ -1,5 +1,8 @@
 g_block	p_statement_ids	relation	decision or case id	page	since 24c6b0c0
-access.surfaces		g-only		.g5/ontology/concepts/access.g5.md	unchanged
+access.surfaces		g-only		.g5/ontology/concepts/access.g5.md	changed
+access.bolt		g-only		.g5/ontology/concepts/access.g5.md	new
+access.bolt.framing		g-only		.g5/ontology/concepts/access.g5.md	new
+access.bolt.results		g-only		.g5/ontology/concepts/access.g5.md	new
 access.iris_boundary		g-only		.g5/ontology/concepts/access.g5.md	unchanged
 access.graph_id		g-only		.g5/ontology/concepts/access.g5.md	unchanged
 access.api_key		g-only		.g5/ontology/concepts/access.g5.md	unchanged
@@ -8,7 +11,9 @@ access.api_key.headers		g-only		.g5/ontology/concepts/access.g5.md	unchanged
 access.api_key.bolt		g-only		.g5/ontology/concepts/access.g5.md	unchanged
 access.defaults		g-only		.g5/ontology/concepts/access.g5.md	unchanged
 access.defaults.exposure		g-only		.g5/ontology/concepts/access.g5.md	unchanged
-access.health		g-only		.g5/ontology/concepts/access.g5.md	unchanged
+access.health		g-only		.g5/ontology/concepts/access.g5.md	changed
+access.health.lifecycle		g-only		.g5/ontology/concepts/access.g5.md	new
+access.health.recovery-policy		g-only		.g5/ontology/concepts/access.g5.md	new
 access.read_only		g-only		.g5/ontology/concepts/access.g5.md	unchanged
 access.read_only.verdict		g-only		.g5/ontology/concepts/access.g5.md	unchanged
 access.read_only.scope		g-only		.g5/ontology/concepts/access.g5.md	unchanged
@@ -81,7 +86,7 @@ install.bulk_load.limits		g-only		.g5/ontology/concepts/install.g5.md	unchanged
 install.import		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.import.ndjson	WRT-B2.80;WRT-B7.86;WRT-T7.87	g-extended-from-p		.g5/ontology/concepts/install.g5.md	new
 algorithms.owner		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
-algorithms.routing		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
+algorithms.routing		g-only		.g5/ontology/features/algorithms.g5.md	changed
 algorithms.routing.revision		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.routing.fallback		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.routing.reload		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
@@ -94,7 +99,7 @@ algorithms.proof.build		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.proof.ungated		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.graph_scope		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.op		g-only		.g5/ontology/features/algorithms.g5.md	changed
-algorithms.op.pagerank		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
+algorithms.op.pagerank		g-only		.g5/ontology/features/algorithms.g5.md	changed
 algorithms.op.ppr		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.op.wcc		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.op.cdlp		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
@@ -111,12 +116,15 @@ algorithms.op.khop		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.op.walks		g-only		.g5/ontology/features/algorithms.g5.md	changed
 algorithms.op.paths	ALG-B10;ALG-B10.2	g-extended-from-p		.g5/ontology/features/algorithms.g5.md	new
 algorithms.op.paths.weighted	ALG-B10.5;ALG-B10.6;ALG-B10.7;ALG-B10.8;ALG-B10.90	g-extended-from-p	M12	.g5/ontology/features/algorithms.g5.md	new
+algorithms.op.paths.weighted.parallel		g-only		.g5/ontology/features/algorithms.g5.md	new
 algorithms.op.paths.direction	ALG-Q4	g-extended-from-p		.g5/ontology/features/algorithms.g5.md	new
 algorithms.cache	ALG-B16;ALG-B16.3	g-extended-from-p	M21	.g5/ontology/features/algorithms.g5.md	changed
 algorithms.cache.token	ALG-B16.6;ALG-B16.7	g-extended-from-p	J04	.g5/ontology/features/algorithms.g5.md	changed
+algorithms.cache.pagerank		g-only		.g5/ontology/features/algorithms.g5.md	new
 algorithms.cache.erasure		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 algorithms.cache.concurrency		g-only		.g5/ontology/features/algorithms.g5.md	unchanged
 query.paths		g-only		.g5/ontology/features/cypher.g5.md	unchanged
+query.aql		g-only		.g5/ontology/features/cypher.g5.md	new
 query.native		g-only		.g5/ontology/features/cypher.g5.md	unchanged
 query.native.gates		g-only		.g5/ontology/features/cypher.g5.md	unchanged
 query.native.privileges		g-only		.g5/ontology/features/cypher.g5.md	unchanged
@@ -151,7 +159,10 @@ query.writes.delete-scope		g-only		.g5/ontology/features/cypher.g5.md	unchanged
 query.read-only		g-only		.g5/ontology/features/cypher.g5.md	unchanged
 query.routes		g-only		.g5/ontology/features/cypher.g5.md	unchanged
 query.browser-metadata		g-only		.g5/ontology/features/cypher.g5.md	unchanged
-query.system-procedures		g-only		.g5/ontology/features/cypher.g5.md	unchanged
+query.system-procedures		g-only		.g5/ontology/features/cypher.g5.md	changed
+query.system-procedures.results		g-only		.g5/ontology/features/cypher.g5.md	new
+query.system-procedures.alias-policy		g-only		.g5/ontology/features/cypher.g5.md	new
+query.system-procedures.empty-validation		g-only		.g5/ontology/features/cypher.g5.md	new
 query.system-procedures.unknown		g-only		.g5/ontology/features/cypher.g5.md	unchanged
 query.conformance		g-only		.g5/ontology/features/cypher.g5.md	changed
 query.values		g-only		.g5/ontology/features/cypher.g5.md	new
@@ -170,7 +181,8 @@ erasure.prefix-match		g-only		.g5/ontology/features/erasure.g5.md	unchanged
 erasure.concurrency		g-only		.g5/ontology/features/erasure.g5.md	unchanged
 fhir.graph		g-only		.g5/ontology/features/fhir.g5.md	unchanged
 fhir.graph.install		g-only		.g5/ontology/features/fhir.g5.md	unchanged
-fhir.graph.lifecycle		g-only		.g5/ontology/features/fhir.g5.md	unchanged
+fhir.graph.lifecycle		g-only		.g5/ontology/features/fhir.g5.md	changed
+fhir.graph.lifecycle.tasks		g-only		.g5/ontology/features/fhir.g5.md	new
 fhir.sync		g-only		.g5/ontology/features/fhir.g5.md	unchanged
 fhir.sync.idempotent		g-only		.g5/ontology/features/fhir.g5.md	unchanged
 fhir.sync.exclusive		g-only		.g5/ontology/features/fhir.g5.md	unchanged
@@ -192,12 +204,14 @@ fhir.event.retry		g-only		.g5/ontology/features/fhir.g5.md	unchanged
 structure.write		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 structure.write.engine-connection		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 structure.node		g-only		.g5/ontology/features/graph-structure.g5.md	changed
-structure.node.delete		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
+structure.node.bulk		g-only		.g5/ontology/features/graph-structure.g5.md	new
+structure.node.delete		g-only		.g5/ontology/features/graph-structure.g5.md	changed
+structure.node.delete.bulk		g-only		.g5/ontology/features/graph-structure.g5.md	new
 structure.node.update		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 structure.node.read		g-only		.g5/ontology/features/graph-structure.g5.md	new
 structure.node.read.aliases		g-only		.g5/ontology/features/graph-structure.g5.md	new
 structure.edge		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
-structure.edge.single		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
+structure.edge.single		g-only		.g5/ontology/features/graph-structure.g5.md	changed
 structure.edge.weight		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 structure.edge.weight.set		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 structure.edge.delete		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
@@ -206,7 +220,7 @@ structure.reification		g-only		.g5/ontology/features/graph-structure.g5.md	uncha
 structure.multigraph		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 structure.multigraph.off		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 structure.multigraph.switch		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
-structure.multigraph.layout		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
+structure.multigraph.layout		g-only		.g5/ontology/features/graph-structure.g5.md	changed
 structure.multigraph.count	GID-B5.4;GID-B5.5;NAT-B1.6	g-extended-from-p	M11	.g5/ontology/features/graph-structure.g5.md	changed
 structure.multigraph.create_edge		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 structure.multigraph.ledger		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
@@ -235,8 +249,8 @@ structure.verify		g-only		.g5/ontology/features/graph-structure.g5.md	unchanged
 ledger.revision		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.lifecycle		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.lifecycle.genesis		g-only		.g5/ontology/features/ledger.g5.md	unchanged
-ledger.lifecycle.genesis.shared-ids		g-only		.g5/ontology/features/ledger.g5.md	unchanged
-ledger.lifecycle.disable-during-redaction		g-only		.g5/ontology/features/ledger.g5.md	unchanged
+ledger.lifecycle.genesis.shared-ids		g-only		.g5/ontology/features/ledger.g5.md	changed
+ledger.lifecycle.disable-during-redaction		g-only		.g5/ontology/features/ledger.g5.md	changed
 ledger.changeset		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.commit	LED-B4.10;LED-B5.9;RPL-T90	g-extended-from-p	M03	.g5/ontology/features/ledger.g5.md	changed
 ledger.commit.admission	LED-B4.1;LED-B4.7	g-extended-from-p	M01	.g5/ontology/features/ledger.g5.md	changed
@@ -244,9 +258,9 @@ ledger.commit.serial	LED-B4.7.5;LED-B4.7.6	g-extended-from-p	J05	.g5/ontology/fe
 ledger.commit.expected-head		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.commit.size		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.commit.kind		g-only		.g5/ontology/features/ledger.g5.md	unchanged
-ledger.commit.caller-transaction		g-only		.g5/ontology/features/ledger.g5.md	unchanged
+ledger.commit.caller-transaction		g-only		.g5/ontology/features/ledger.g5.md	changed
 ledger.commit.post-commit		g-only		.g5/ontology/features/ledger.g5.md	unchanged
-ledger.commit.post-commit.recorded		g-only		.g5/ontology/features/ledger.g5.md	unchanged
+ledger.commit.post-commit.recorded		g-only		.g5/ontology/features/ledger.g5.md	changed
 ledger.idempotency	LED-B4.7;LED-B4.7.4	g-extended-from-p	M02	.g5/ontology/features/ledger.g5.md	changed
 ledger.idempotency.key-required		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.node-scope		g-only		.g5/ontology/features/ledger.g5.md	unchanged
@@ -255,6 +269,12 @@ ledger.unrecorded		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.strict		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.strict.fail-open		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.readers		g-only	M04;M05;J03	.g5/ontology/features/ledger.g5.md	changed
+ledger.readers.history		g-only		.g5/ontology/features/ledger.g5.md	new
+ledger.readers.history.text-policy		g-only		.g5/ontology/features/ledger.g5.md	new
+ledger.readers.bound		g-only		.g5/ontology/features/ledger.g5.md	new
+ledger.readers.bound.policy		g-only		.g5/ontology/features/ledger.g5.md	new
+ledger.readers.diff		g-only		.g5/ontology/features/ledger.g5.md	new
+ledger.readers.diff.order		g-only		.g5/ontology/features/ledger.g5.md	new
 ledger.verify		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.verify.meaning		g-only		.g5/ontology/features/ledger.g5.md	unchanged
 ledger.verify.scope		g-only		.g5/ontology/features/ledger.g5.md	unchanged
@@ -294,12 +314,12 @@ redaction.batches.abort		g-only		.g5/ontology/features/redaction.g5.md	unchanged
 redaction.batches.marker-text		g-only		.g5/ontology/features/redaction.g5.md	unchanged
 redaction.batches.speed		g-only		.g5/ontology/features/redaction.g5.md	unchanged
 redaction.verify		g-only		.g5/ontology/features/redaction.g5.md	unchanged
-search.embedding		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.embedding.registry		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.embedding.model_key		g-only		.g5/ontology/features/search.g5.md	unchanged
+search.embedding		g-only		.g5/ontology/features/search.g5.md	changed
+search.embedding.registry		g-only		.g5/ontology/features/search.g5.md	changed
+search.embedding.model_key		g-only		.g5/ontology/features/search.g5.md	changed
 search.embedding.width	VEC-X5.5	g-extended-from-p	M14	.g5/ontology/features/search.g5.md	changed
 search.embedding.check_on_write		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.embedding.claim		g-only		.g5/ontology/features/search.g5.md	unchanged
+search.embedding.claim		g-only		.g5/ontology/features/search.g5.md	changed
 search.embedding.other_model	VEC-B1.8	g-extended-from-p	M13	.g5/ontology/features/search.g5.md	changed
 search.embedding.undeclared_default		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.embedding.queue		g-only		.g5/ontology/features/search.g5.md	unchanged
@@ -309,32 +329,36 @@ search.routes.no_fallback	VEC-B4	g-extended-from-p	M14	.g5/ontology/features/sea
 search.routes.create_on_write		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.routes.orphan		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.knn		g-only		.g5/ontology/features/search.g5.md	unchanged
+search.knn.threshold		g-only		.g5/ontology/features/search.g5.md	new
 search.scope		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.scope.indexes		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.scope.indexes.upkeep		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.quarantine		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.quarantine.placement		g-only		.g5/ontology/features/search.g5.md	unchanged
+search.scope.indexes		g-only		.g5/ontology/features/search.g5.md	changed
+search.scope.indexes.upkeep		g-only		.g5/ontology/features/search.g5.md	changed
+search.quarantine		g-only		.g5/ontology/features/search.g5.md	changed
+search.quarantine.placement		g-only		.g5/ontology/features/search.g5.md	changed
 search.quarantine.retention		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.bm25		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.bm25.scoring		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.bm25.query_time_idf		g-only		.g5/ontology/features/search.g5.md	unchanged
+search.bm25		g-only		.g5/ontology/features/search.g5.md	changed
+search.bm25.scoring		g-only		.g5/ontology/features/search.g5.md	changed
+search.bm25.query_time_idf		g-only		.g5/ontology/features/search.g5.md	changed
 search.bm25.counts		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.bm25.incremental		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.bm25.write_lock		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.bm25.schema		g-only		.g5/ontology/features/search.g5.md	unchanged
+search.bm25.schema		g-only		.g5/ontology/features/search.g5.md	changed
 search.bm25.upgrade		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.bm25.cutoff		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.bm25.read_isolation		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.bm25.default_index		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.fusion		g-only		.g5/ontology/features/search.g5.md	unchanged
+search.fusion		g-only		.g5/ontology/features/search.g5.md	changed
 search.fusion.same_graph		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.fusion.failed_leg		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.fusion.absent		g-only		.g5/ontology/features/search.g5.md	unchanged
-search.fusion.text_leg		g-only		.g5/ontology/features/search.g5.md	unchanged
+search.fusion.failed_leg		g-only		.g5/ontology/features/search.g5.md	changed
+search.fusion.python		g-only		.g5/ontology/features/search.g5.md	new
+search.fusion.python.support		g-only		.g5/ontology/features/search.g5.md	new
+search.fusion.absent		g-only		.g5/ontology/features/search.g5.md	changed
+search.fusion.text_leg		g-only		.g5/ontology/features/search.g5.md	changed
 search.erasure		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.erasure.indexes		g-only		.g5/ontology/features/search.g5.md	unchanged
 search.erasure.indexes.graphless		g-only		.g5/ontology/features/search.g5.md	unchanged
-temporal.edge		g-only		.g5/ontology/features/temporal.g5.md	unchanged
+temporal.edge		g-only		.g5/ontology/features/temporal.g5.md	changed
+temporal.edge.clock		g-only		.g5/ontology/features/temporal.g5.md	new
 temporal.edge.graph-scope		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.owner		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.write		g-only		.g5/ontology/features/temporal.g5.md	unchanged
@@ -342,6 +366,7 @@ temporal.write.collision		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.write.update-statistics		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.write.repeatable		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.write.partial-failure		g-only		.g5/ontology/features/temporal.g5.md	unchanged
+temporal.write.retry		g-only		.g5/ontology/features/temporal.g5.md	new
 temporal.write.concurrency		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.stats		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.stats.after-purge		g-only		.g5/ontology/features/temporal.g5.md	unchanged
@@ -351,7 +376,7 @@ temporal.latest.exact		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.delete		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.structural		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.structural.mark		g-only		.g5/ontology/features/temporal.g5.md	unchanged
-temporal.structural.adopt		g-only		.g5/ontology/features/temporal.g5.md	unchanged
+temporal.structural.adopt		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.structural.end		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.structural.upgrade		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.structural.ledger		g-only		.g5/ontology/features/temporal.g5.md	unchanged
@@ -373,8 +398,3 @@ temporal.erase		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.ledger		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.ledger.atomic		g-only		.g5/ontology/features/temporal.g5.md	unchanged
 temporal.ledger.insert-collision		g-only		.g5/ontology/features/temporal.g5.md	unchanged
-ledger.readers.bound		g-only	builder iteration 2	.g5/ontology/features/ledger.g5.md	new in iteration 2
-ledger.readers.bound.policy		g-only	builder iteration 2	.g5/ontology/features/ledger.g5.md	new in iteration 2
-search.fusion.python		g-only	builder iteration 2	.g5/ontology/features/search.g5.md	new in iteration 2
-search.fusion.python.support		g-only	builder iteration 2	.g5/ontology/features/search.g5.md	new in iteration 2
-structure.node.delete.bulk		g-only	builder iteration 2	.g5/ontology/features/graph-structure.g5.md	new in iteration 2

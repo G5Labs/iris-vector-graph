@@ -1,0 +1,18 @@
+verification results:: 39 verified, 2 errors
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:505:33
+    |
+505 | {reveal(termination_inv);assert(nodes(c).contains(c.src));}
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:508:13
+    |
+506 | pub proof fn lemma_neighbor_in_nodes(c:Config,a:Arc)
+    | ---------------------------------------------------- at the end of the function body
+507 |     requires graph_frame(c),selected(c,a),
+508 |     ensures nodes(c).contains(a.4),
+    |             ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

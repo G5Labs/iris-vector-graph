@@ -21,6 +21,26 @@ Who can reach IVG, through which entry points, what they are allowed to do, and 
 
 Applications reach IVG through the engine, or through optional servers built on it: the HTTP server, Bolt, GraphQL, the sample API, the IRIS-hosted MCP tools and an IRIS REST dispatcher. The servers are meant as a convenience layer: each server call should do what an engine method an application could call itself does.
 
+<a id="access.bolt"></a>
+[I · access.bolt]
+
+Bolt carries an ordered stream of messages and results over TCP or WebSocket. Changing how a valid message is split into chunks or transport reads must preserve its meaning and every following message.
+
+<a id="access.bolt.framing"></a>
+[I · access.bolt.framing]
+
+A message can use any positive chunk sizes through 65,535 bytes and ends with a zero-size chunk.
+- Complete bodies are dispatched in order; an incomplete suffix stays buffered until it is complete.
+- A zero-size chunk between messages is a keep-alive in the supported Bolt 4.4 protocol and leaves the session usable.
+
+<a id="access.bolt.results"></a>
+[I · access.bolt.results]
+
+A successful RUN supplies a result stream, preserving admitted values and field order.
+- PULL with a positive n returns at most n records, keeps the unread suffix, and reports that more records remain until the stream is exhausted; n=-1 returns every remaining record.
+- RESET discards the pending result and permits a later RUN.
+- A failed RUN emits FAILURE, clears pending rows, and ordinary requests are ignored until recovery.
+
 <a id="access.iris_boundary"></a>
 [D · access.iris_boundary]
 
@@ -201,13 +221,49 @@ Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning? There is no
 ### access.surfaces
 
 - Sources: [ADMIN_API.md](../../../docs/ADMIN_API.md); [cypher_api.py](../../../iris_vector_graph/cypher_api.py); [api/main.py](../../../api/main.py); [bolt_server.py](../../../iris_vector_graph/bolt_server.py); [MCPTools.cls](../../../iris_src/src/Graph/KG/MCPTools.cls); [Service.cls](../../../iris_src/src/Graph/KG/Service.cls)
-- Children: [IRIS boundary](#access.iris_boundary), [graph ID](#access.graph_id)
+- Children: [Bolt stream](#access.bolt), [IRIS boundary](#access.iris_boundary), [graph ID](#access.graph_id)
 - agent
 - architecture-decision
 
 Observed divergence: the sample API's REST Cypher route, its GraphQL Cypher field and the example GraphQL mutations it mounts run SQL on their own cursor instead of calling the engine (see [strict-mode surfaces](#access.ledger_strict.surfaces)).
 
 Findings: [Bolt sessions never close the IRIS connection their engine opened](../../Verus_verification/bugs_issues.md#bug-plt-002); [The sample API's Cypher endpoints run translated SQL on a raw cursor, bypassing strict mode and the engine's statement protocol](../../Verus_verification/bugs_issues.md#bug-plt-005); [A GraphQL GET request can run a Cypher write](../../Verus_verification/bugs_issues.md#bug-plt-013)
+
+### access.bolt
+- Sources: [Bolt protocol commitment](../../../iris_vector_graph/bolt_server.py#L1-L8), [ADMIN_API](../../../docs/ADMIN_API.md); [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/)
+- Verus: [bolt_stream model and limits](../../Verus_verification/models/bolt_stream/NOTES.md), as-built byte/state transcription; raw framing through admitted RUN/PULL final records, no generic codec/provider/network or database transaction proof.
+- Children: [framing](#access.bolt.framing), [result stream](#access.bolt.results)
+- Expands: [Entry points](#access.surfaces)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+Recovered in iteration9 from the shipped Bolt4.4 compatibility commitment and primary protocol, independently of the current decoder. This does not change the [explicit transaction owner](#access.transactions): pending rows and database transaction atomicity are different decisions.
+
+### access.bolt.framing
+- Sources: [primary message specification: Chunking and versions4.1/4.3](https://neo4j.com/docs/bolt/current/bolt/message/), [`BoltSession.run/_recv_message`](../../../iris_vector_graph/bolt_server.py#L396-L459), [`TcpBoltSession.run/_recv_message`](../../../iris_vector_graph/bolt_server.py#L936-L987)
+- Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `lemma_scan_encoded_prefix`, `theorem_small_chunk_reencoding_leaves_terminator`, `theorem_small_chunk_empty_closes_before_queued_run`, `theorem_coalesced_small_chunks_still_deliver_queued_run`, `theorem_noop_closes_wire_without_engine`; [fragment](../../Verus_verification/models/bolt_stream/NOTES.md). Raw scanner and actual re-encoding cut/queue are derived, with separate and coalesced passing/failing neighbors; transport scheduling and generic handshake/authentication remain outside the contract.
+- Expands: [Bolt stream](#access.bolt)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+Observed at the pin: WebSocket consumption is computed by default re-encoding each decoded body instead of counting received chunk headers. A fragmented HELLO followed by separately delivered RUN/PULL can therefore lose the result stream: the retained full HELLO trace executes RUN once but never emits its record. The smaller RESET witness loses the later RUN itself. Coalescing all messages can queue a successful exchange while leaving residue, so failure is packetization dependent. Separately, the WebSocket run loop closes on empty bytes from a valid NOOP; the TCP loop continues. [36 full-session local-transport cases and localized method-copy repairs](../../uplift/consolidated/iteration-9/bolt-session-probe.json) execute the actual session/codec over a one-row engine adapter, with no listener, socket, authentication scenario or database. Native network reachability remains unassessed.
+
+Findings: [WebSocket consumes the wrong byte count after small chunks](../../Verus_verification/bugs_issues.md#bug-plt-101); [WebSocket closes on a Bolt keep-alive chunk](../../Verus_verification/bugs_issues.md#bug-plt-102).
+
+### access.bolt.results
+- Sources: [primary message specification: PULL](https://neo4j.com/docs/bolt/current/bolt/message/), [`_handle_run/_handle_pull/_handle_reset` and dispatch](../../../iris_vector_graph/bolt_server.py#L500-L669)
+- Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `theorem_raw_wire_run_then_pull_final_records`, `theorem_partial_pull_drops_suffix_and_reports_no_more`, `theorem_raw_error_string_decides_failure`, `theorem_commit_preserves_but_rollback_discards`, `theorem_reset_allows_next_result`; [scope](../../Verus_verification/models/bolt_stream/NOTES.md). Admitted scalar/list/map cells and fixed canonical request fragments, not general PackStream/graph objects or SQL/provider execution.
+- Expands: [Bolt stream](#access.bolt)
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+Observed: positive n slices rows then clears the entire pending result and omits has_more (known F-1602); n=0 emits all rows but is only an as-built out-of-domain neighbor, not a compatible PULL request. RUN replaces pending rows. DISCARD, RESET and ROLLBACK clear pending rows; COMMIT leaves them despite returning READY. These as-built transitions do not establish that every sequence is allowed by the protocol. Scalar/list/map admitted codec values and final records are a narrower scope than all graph objects or arbitrary query providers.
+
+Findings: [PULL drops its unread suffix](../../Verus_verification/bugs_issues.md#F-1602); [Explicit transactions commit per RUN](../../Verus_verification/bugs_issues.md#F-1601).
+
 
 ### access.iris_boundary
 

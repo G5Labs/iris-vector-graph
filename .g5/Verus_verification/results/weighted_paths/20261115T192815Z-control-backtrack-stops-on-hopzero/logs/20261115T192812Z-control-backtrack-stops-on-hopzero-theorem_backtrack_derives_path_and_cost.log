@@ -1,0 +1,41 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/backtrack-stops-on-hopzero/20261115T192812Z/models/weighted_paths/weighted_paths.rs:427:1
+    |
+427 | pub proof fn theorem_backtrack_derives_path_and_cost(c:Config,s:Search,k:Key,fuel:nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/backtrack-stops-on-hopzero/20261115T192812Z/models/weighted_paths/weighted_paths.rs:429:13
+    |
+429 |       ensures walk(c,c.src,k.0,backtrack(s,c.src,k,fuel)),cost(c,backtrack(s,c.src,k,fuel))==s.dist[k],
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+434 | /     if k.0==c.src{assert(k==root(c));}
+435 | |     else {
+436 | |         let prev=s.parent[k].0;let a=s.parent[k].1;
+437 | |         assert(weight(c,a)>0);assert(s.dist.contains_key(prev));assert(s.dist[prev]==s.done[prev]);
+...   |
+440 | |         lemma_walk_push(c,c.src,prev.0,k.0,backtrack(s,c.src,prev,(fuel-1) as nat),a);
+441 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/backtrack-stops-on-hopzero/20261115T192812Z/models/weighted_paths/weighted_paths.rs:429:57
+    |
+429 |       ensures walk(c,c.src,k.0,backtrack(s,c.src,k,fuel)),cost(c,backtrack(s,c.src,k,fuel))==s.dist[k],
+    |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+434 | /     if k.0==c.src{assert(k==root(c));}
+435 | |     else {
+436 | |         let prev=s.parent[k].0;let a=s.parent[k].1;
+437 | |         assert(weight(c,a)>0);assert(s.dist.contains_key(prev));assert(s.dist[prev]==s.done[prev]);
+...   |
+440 | |         lemma_walk_push(c,c.src,prev.0,k.0,backtrack(s,c.src,prev,(fuel-1) as nat),a);
+441 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

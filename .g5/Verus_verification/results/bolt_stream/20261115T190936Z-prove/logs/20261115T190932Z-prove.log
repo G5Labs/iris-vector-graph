@@ -1,0 +1,36 @@
+verification results:: 11 verified, 4 errors
+error: assertion failed
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:65:9
+   |
+65 | {assert(n/256<256) by(nonlinear_arith);}
+   |         ^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:117:13
+    |
+116 |   pub proof fn theorem_small_chunk_reencoding_leaves_terminator()
+    |   --------------------------------------------------------------- at the end of the function body
+117 |       ensures ({let body=seq![0xb0u8,0x0fu8];let wire=encode(body,1);
+    |  _____________^
+118 | |         let r=receive(Receive{buffer:seq![],queue:seq![]},wire);
+119 | |         r.read==Read::Message(body) && r.actual_used==8 && r.cut==6 && r.next.buffer==end()}),
+    | |_____________________________________________________________________________________________^ failed this postcondition
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:123:1
+    |
+123 | pub proof fn theorem_default_chunk_good_neighbor()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:128:13
+    |
+127 |   pub proof fn theorem_left_terminator_returns_empty_then_queues_next()
+    |   --------------------------------------------------------------------- at the end of the function body
+128 |       ensures ({let next=seq![0xb0u8,0x0fu8];let r=receive(Receive{buffer:end(),queue:seq![]},encode(next,max_chunk()));
+    |  _____________^
+129 | |         r.read==Read::Message(seq![]) && !ws_continues(r.read) && r.next.queue==seq![next]}),
+    | |____________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

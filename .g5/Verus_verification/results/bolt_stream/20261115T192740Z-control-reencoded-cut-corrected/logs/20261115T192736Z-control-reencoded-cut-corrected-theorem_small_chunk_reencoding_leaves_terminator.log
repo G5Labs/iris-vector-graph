@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/reencoded-cut-corrected/20261115T192736Z/models/bolt_stream/bolt_stream.rs:159:13
+    |
+158 |   pub proof fn theorem_small_chunk_reencoding_leaves_terminator()
+    |   --------------------------------------------------------------- at the end of the function body
+159 |       ensures ({let body=seq![0xb0u8,0x0fu8];let wire=encode(body,1);
+    |  _____________^
+160 | |         let r=receive(Receive{buffer:seq![],queue:seq![]},wire);
+161 | |         r.read==Read::Message(body) && r.actual_used==8 && r.cut==6 && r.next.buffer==end() && r.next.queue==seq![]}),
+    | |_____________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

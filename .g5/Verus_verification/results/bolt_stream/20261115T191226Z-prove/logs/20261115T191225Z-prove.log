@@ -1,0 +1,51 @@
+verification results:: 28 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:244:13
+    |
+244 |       ensures record_rows(records(rows)+seq![Answer::Summary{has_more:None}])==rows,
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+247 | /     if rows.len()>0 {
+248 | |         lemma_record_reader(rows.drop_first());
+249 | |         assert(records(rows).drop_first()==records(rows.drop_first()));
+250 | |         assert((records(rows)+seq![Answer::Summary{has_more:None}]).drop_first()==records(rows.drop_first())+seq![Answer::Summary...
+251 | |         assert(seq![rows[0]]+rows.drop_first()==rows);
+252 | |     }
+    | |_____- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:306:1
+    |
+306 | pub proof fn theorem_raw_pull_field_drives_records(s:Session,rows:Rows,n:u8)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:308:13
+    |
+306 | pub proof fn theorem_raw_pull_field_drives_records(s:Session,rows:Rows,n:u8)
+    | ---------------------------------------------------------------------------- at the end of the function body
+307 |     requires s.phase!=Phase::Failed,s.pending==Some(rows),n<=127 || n>=240,
+308 |     ensures dispatch(s,pull_body(n),EngineResult::Error).is_some(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:309:9
+    |
+306 | pub proof fn theorem_raw_pull_field_drives_records(s:Session,rows:Rows,n:u8)
+    | ---------------------------------------------------------------------------- at the end of the function body
+...
+309 |         record_rows(dispatch(s,pull_body(n),EngineResult::Error).unwrap().out)==selected(rows,tiny(n).unwrap()),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:309:21
+    |
+309 |         record_rows(dispatch(s,pull_body(n),EngineResult::Error).unwrap().out)==selected(rows,tiny(n).unwrap()),
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> std_specs/option.rs:154:8
+    |
+    = note: recommendation not met
+
+error: aborting due to 3 previous errors
+

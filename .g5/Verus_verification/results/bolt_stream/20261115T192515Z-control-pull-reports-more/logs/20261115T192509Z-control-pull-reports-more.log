@@ -1,0 +1,72 @@
+verification results:: 36 verified, 7 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192509Z/models/bolt_stream/bolt_stream.rs:305:13
+    |
+303 | pub proof fn theorem_pull_reads_input_rows_then_clears(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+304 |     requires s.pending==Some(rows),
+305 |     ensures record_rows(pull(s,n).out)==selected(rows,n),pull(s,n).state.pending==None,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192509Z/models/bolt_stream/bolt_stream.rs:311:9
+    |
+308 | pub proof fn theorem_partial_pull_drops_suffix_and_reports_no_more(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+311 |         pull(s,n).out.last()==(Answer::Summary{has_more:None}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192509Z/models/bolt_stream/bolt_stream.rs:316:13
+    |
+314 | pub proof fn theorem_all_rows_for_nonpositive_pull(s:Session,rows:Rows,n:int)
+    | ----------------------------------------------------------------------------- at the end of the function body
+315 |     requires s.pending==Some(rows),n<=0,
+316 |     ensures record_rows(pull(s,n).out)==rows,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192509Z/models/bolt_stream/bolt_stream.rs:320:49
+    |
+318 | pub proof fn theorem_commit_preserves_but_rollback_discards(s:Session,rows:Rows)
+    | -------------------------------------------------------------------------------- at the end of the function body
+319 |     requires s.pending==Some(rows),
+320 |     ensures commit(s).state.pending==Some(rows),record_rows(pull(commit(s).state,-1).out)==rows,
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192509Z/models/bolt_stream/bolt_stream.rs:345:9
+    |
+342 | pub proof fn theorem_raw_pull_field_drives_records(s:Session,rows:Rows,n:u8)
+    | ---------------------------------------------------------------------------- at the end of the function body
+...
+345 |         record_rows(dispatch(s,pull_body(n),failed_result()).unwrap().out)==selected(rows,tiny(n).unwrap()),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192509Z/models/bolt_stream/bolt_stream.rs:389:13
+    |
+387 |   pub proof fn theorem_raw_wire_run_then_pull_final_records(s:Session,cols:Names,rows:Rows,n:u8)
+    |   ---------------------------------------------------------------------------------------------- at the end of the function body
+388 |       requires s.phase!=Phase::Failed,s.phase!=Phase::Defunct,cols.len()<3,0<n<=127,
+389 |       ensures ({let start=WireSession{receiver:empty_receiver(),session:s,open:true};
+    |  _____________^
+390 | |         let run_step=advance(start,encode(run_body(),max_chunk()),EngineResult::Rows{columns:cols,rows,error:None}).unwrap();
+391 | |         let pulled=advance(run_step.next,encode(pull_body(n),max_chunk()),failed_result()).unwrap();
+392 | |         let again=advance(pulled.next,encode(pull_body(n),max_chunk()),failed_result()).unwrap();
+393 | |         run_step.engine_calls==1 && pulled.engine_calls==0 && pulled.next.session.pending==None
+394 | |         && record_rows(pulled.out)==selected(rows,n as int) && record_rows(again.out)==seq![]}),
+    | |_______________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192509Z/models/bolt_stream/bolt_stream.rs:422:13
+    |
+420 | pub proof fn theorem_positive_pull_is_prefix(s:Session,rows:Rows,n:int)
+    | ----------------------------------------------------------------------- at the end of the function body
+421 |     requires s.pending==Some(rows),0<n<rows.len(),
+422 |     ensures record_rows(pull(s,n).out)==rows.take(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 7 previous errors
+

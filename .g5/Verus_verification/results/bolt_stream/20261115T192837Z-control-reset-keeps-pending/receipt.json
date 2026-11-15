@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_discard_keeps_types_reset_clears"
+    ],
+    "find": "pub open spec fn reset(s:Session)->Step {\n    Step{state:Session{phase:Phase::Ready,pending:None,columns:None,types:None},out:seq![Answer::Summary{has_more:None}],engine_calls:0}\n}",
+    "name": "reset-keeps-pending",
+    "replace": "pub open spec fn reset(s:Session)->Step {\n    Step{state:Session{phase:Phase::Ready,pending:s.pending,columns:None,types:None},out:seq![Answer::Summary{has_more:None}],engine_calls:0}\n}",
+    "why": "reset-keeps-pending"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_discard_keeps_types_reset_clears"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/reset-keeps-pending/20261115T192833Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_discard_keeps_types_reset_clears": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192833Z-control-reset-keeps-pending-theorem_discard_keeps_types_reset_clears.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192833Z-control-reset-keeps-pending.log",
+    "timed_out": false,
+    "verified": 41
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192837Z-control-reset-keeps-pending/logs/20261115T192833Z-control-reset-keeps-pending-theorem_discard_keeps_types_reset_clears.log": "130ae0f9d5dc513ef3a2bc324e2c388d7928770afc17658b6f5af10d1919cb8a",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192837Z-control-reset-keeps-pending/logs/20261115T192833Z-control-reset-keeps-pending.log": "b0d1d201afee520c7e2a662eb275327c3b1e78c30046d981c05b3124a604ae81"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

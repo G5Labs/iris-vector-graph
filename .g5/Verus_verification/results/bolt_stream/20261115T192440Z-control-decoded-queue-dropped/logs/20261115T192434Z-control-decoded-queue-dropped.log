@@ -1,0 +1,29 @@
+verification results:: 40 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/decoded-queue-dropped/20261115T192434Z/models/bolt_stream/bolt_stream.rs:137:9
+    |
+134 | pub proof fn theorem_buffer_and_queue_come_from_raw(s:Receive,a:Bytes)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+137 |         receive(s,a).next.queue==decode(s.buffer+a).bodies.drop_first(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/decoded-queue-dropped/20261115T192434Z/models/bolt_stream/bolt_stream.rs:180:13
+    |
+178 |   pub proof fn theorem_left_terminator_returns_empty_then_queues_next(next:Bytes)
+    |   ------------------------------------------------------------------------------- at the end of the function body
+179 |       requires 0<next.len()<=max_chunk(),
+180 |       ensures ({let r=receive(Receive{buffer:end(),queue:seq![]},encode(next,max_chunk()));
+    |  _____________^
+181 | |         r.read==Read::Message(seq![]) && !ws_continues(r.read) && r.next.queue==seq![next]}),
+    | |____________________________________________________________________________________________^ failed this postcondition
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/decoded-queue-dropped/20261115T192434Z/models/bolt_stream/bolt_stream.rs:452:1
+    |
+452 | pub proof fn theorem_coalesced_small_chunks_still_deliver_queued_run(s:Session,cols:Names,rows:Rows)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 3 previous errors
+

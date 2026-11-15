@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_pop_preserves_termination",
+      "theorem_continue_strictly_decreases"
+    ],
+    "find": "removed:s.removed.insert(e),..s",
+    "name": "popped-entry-not-recorded",
+    "replace": "removed:s.removed,..s",
+    "why": "Loses the derived finite-pop history needed for the strict Continue rank."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_pop_preserves_termination",
+      "theorem_continue_strictly_decreases"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_paths/model.json": "d2a64c84d932492ca7bfd03594c636153b29c0293942b3f6ddecfe330cadba54",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "091bd4a4606bdaa43f4f27ce9c6e0badfbc1e5ce8d43420d14c576d4fb825e29"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/popped-entry-not-recorded/20261115T192815Z/models/weighted_paths/weighted_paths.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_continue_strictly_decreases": {
+        "errors": 0,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192815Z-control-popped-entry-not-recorded-theorem_continue_strictly_decreases.log",
+        "timed_out": false,
+        "verified": 1
+      },
+      "theorem_pop_preserves_termination": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192815Z-control-popped-entry-not-recorded-theorem_pop_preserves_termination.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192815Z-control-popped-entry-not-recorded.log",
+    "timed_out": false,
+    "verified": 44
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_paths/20261115T192818Z-control-popped-entry-not-recorded/logs/20261115T192815Z-control-popped-entry-not-recorded-theorem_continue_strictly_decreases.log": "06aee624ceefb0f504401bde45618b53b002b11f413534c07dd4771d593a2dc7",
+    ".g5/Verus_verification/results/weighted_paths/20261115T192818Z-control-popped-entry-not-recorded/logs/20261115T192815Z-control-popped-entry-not-recorded-theorem_pop_preserves_termination.log": "a618c6a3434a2a79a681de2ef174a27c2cecb3c02ae408969411eb38b7bdb9ab",
+    ".g5/Verus_verification/results/weighted_paths/20261115T192818Z-control-popped-entry-not-recorded/logs/20261115T192815Z-control-popped-entry-not-recorded.log": "4563ef4e070b1de51c23b7af72f121a6d2b531436b362e495af0d837831010ac"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "FAIL_ELSEWHERE",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

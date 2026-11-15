@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_tiny_signed_pull_count"
+    ],
+    "find": "else if n>=240{Some(n as int-256)}",
+    "name": "tiny-pull-unsigned",
+    "replace": "else if n>=240{Some(n as int)}",
+    "why": "tiny-pull-unsigned"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_tiny_signed_pull_count"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "633f784085389e7a194e951f78f65bbd540fe253a9a21fde52f46f9c771481e5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/tiny-pull-unsigned/20261115T192536Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_tiny_signed_pull_count": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192536Z-control-tiny-pull-unsigned-theorem_tiny_signed_pull_count.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192536Z-control-tiny-pull-unsigned.log",
+    "timed_out": false,
+    "verified": 42
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192539Z-control-tiny-pull-unsigned/logs/20261115T192536Z-control-tiny-pull-unsigned-theorem_tiny_signed_pull_count.log": "febfe73366618bf6916befdaf756e45196010a48b7d87e7918fbd578379dcf58",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192539Z-control-tiny-pull-unsigned/logs/20261115T192536Z-control-tiny-pull-unsigned.log": "082623eb2b65aa6d2d262b192ee804cdafb93314733d2fd339167b3b45ddcf31"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

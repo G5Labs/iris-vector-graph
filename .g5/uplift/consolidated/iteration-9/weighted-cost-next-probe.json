@@ -1,0 +1,542 @@
+{
+  "verdict": "AGREES",
+  "counts": {
+    "cases": 31104,
+    "fallbacks": 53,
+    "frontsum": 2844,
+    "empty_frontier": 17892,
+    "decrease_key_updates": 273,
+    "label_updates_after_best": 1098,
+    "recorded_meeting_label_updates": 69,
+    "equal_shorter_meetings": 48
+  },
+  "failures": [],
+  "decisive": {
+    "bounded_hop": {
+      "result": {
+        "cost": 5,
+        "stop": "frontsum",
+        "pops": 3,
+        "finite_pop_bound": 8,
+        "events": [
+          {
+            "kind": "best",
+            "cost": 5,
+            "hops": 2,
+            "vertex": "a",
+            "path": [
+              [
+                "s",
+                "R",
+                "a",
+                4
+              ],
+              [
+                "a",
+                "R",
+                "t",
+                1
+              ]
+            ]
+          },
+          {
+            "kind": "best",
+            "cost": 3,
+            "hops": 3,
+            "vertex": "a",
+            "path": [
+              [
+                "s",
+                "R",
+                "b",
+                1
+              ],
+              [
+                "b",
+                "R",
+                "a",
+                1
+              ],
+              [
+                "a",
+                "R",
+                "t",
+                1
+              ]
+            ]
+          }
+        ],
+        "fallback": true,
+        "best": 3,
+        "best_hops": 3,
+        "label_updates_after_best": 1,
+        "recorded_meeting_label_updates": 1,
+        "equal_shorter_meetings": 0,
+        "decrease_key_updates": 1,
+        "transpose": true
+      },
+      "oracle": [
+        5,
+        2
+      ]
+    },
+    "equal_cost_shorter_hop": {
+      "result": {
+        "cost": 8,
+        "stop": "frontsum",
+        "pops": 6,
+        "finite_pop_bound": 14,
+        "events": [
+          {
+            "kind": "best",
+            "cost": 8,
+            "hops": 4,
+            "vertex": "b",
+            "path": [
+              [
+                "s",
+                "R",
+                "a",
+                2
+              ],
+              [
+                "a",
+                "R",
+                "b",
+                2
+              ],
+              [
+                "b",
+                "R",
+                "c",
+                2
+              ],
+              [
+                "c",
+                "R",
+                "t",
+                2
+              ]
+            ]
+          },
+          {
+            "kind": "equal_cheaper_hops_ignored",
+            "meeting": "y",
+            "cost": 8,
+            "retained_hops": 4,
+            "alternative_hops": 3
+          },
+          {
+            "kind": "equal_cheaper_hops_ignored",
+            "meeting": "x",
+            "cost": 8,
+            "retained_hops": 4,
+            "alternative_hops": 3
+          }
+        ],
+        "fallback": true,
+        "best": 8,
+        "best_hops": 4,
+        "label_updates_after_best": 2,
+        "recorded_meeting_label_updates": 0,
+        "equal_shorter_meetings": 2,
+        "decrease_key_updates": 0,
+        "transpose": true
+      },
+      "oracle": [
+        8,
+        3
+      ]
+    },
+    "first_intersection": {
+      "result": {
+        "cost": 8,
+        "stop": "frontsum",
+        "pops": 3,
+        "finite_pop_bound": 8,
+        "events": [
+          {
+            "kind": "best",
+            "cost": 10,
+            "hops": 2,
+            "vertex": "a",
+            "path": [
+              [
+                "s",
+                "R",
+                "a",
+                1
+              ],
+              [
+                "a",
+                "R",
+                "t",
+                9
+              ]
+            ]
+          },
+          {
+            "kind": "best",
+            "cost": 8,
+            "hops": 2,
+            "vertex": "b",
+            "path": [
+              [
+                "s",
+                "R",
+                "b",
+                4
+              ],
+              [
+                "b",
+                "R",
+                "t",
+                4
+              ]
+            ]
+          }
+        ],
+        "fallback": false,
+        "best": 8,
+        "best_hops": 2,
+        "label_updates_after_best": 2,
+        "recorded_meeting_label_updates": 0,
+        "equal_shorter_meetings": 0,
+        "decrease_key_updates": 0,
+        "transpose": true
+      },
+      "oracle": [
+        8,
+        2
+      ]
+    },
+    "frontsum_neighbor": {
+      "result": {
+        "cost": 3,
+        "stop": "frontsum",
+        "pops": 3,
+        "finite_pop_bound": 10,
+        "events": [
+          {
+            "kind": "best",
+            "cost": 4,
+            "hops": 2,
+            "vertex": "x",
+            "path": [
+              [
+                "s",
+                "R",
+                "x",
+                2
+              ],
+              [
+                "x",
+                "R",
+                "t",
+                2
+              ]
+            ]
+          },
+          {
+            "kind": "best",
+            "cost": 3,
+            "hops": 3,
+            "vertex": "b",
+            "path": [
+              [
+                "s",
+                "R",
+                "a",
+                1
+              ],
+              [
+                "a",
+                "R",
+                "b",
+                1
+              ],
+              [
+                "b",
+                "R",
+                "t",
+                1
+              ]
+            ]
+          }
+        ],
+        "fallback": false,
+        "best": 3,
+        "best_hops": 3,
+        "label_updates_after_best": 1,
+        "recorded_meeting_label_updates": 0,
+        "equal_shorter_meetings": 0,
+        "decrease_key_updates": 0,
+        "transpose": true
+      },
+      "oracle": [
+        3,
+        3
+      ]
+    }
+  },
+  "sensitivity": {
+    "no-fallback": {
+      "detected": true,
+      "changed": {
+        "cost": 3,
+        "stop": "frontsum",
+        "pops": 3,
+        "finite_pop_bound": 8,
+        "events": [
+          {
+            "kind": "best",
+            "cost": 5,
+            "hops": 2,
+            "vertex": "a",
+            "path": [
+              [
+                "s",
+                "R",
+                "a",
+                4
+              ],
+              [
+                "a",
+                "R",
+                "t",
+                1
+              ]
+            ]
+          },
+          {
+            "kind": "best",
+            "cost": 3,
+            "hops": 3,
+            "vertex": "a",
+            "path": [
+              [
+                "s",
+                "R",
+                "b",
+                1
+              ],
+              [
+                "b",
+                "R",
+                "a",
+                1
+              ],
+              [
+                "a",
+                "R",
+                "t",
+                1
+              ]
+            ]
+          }
+        ],
+        "fallback": false,
+        "best": 3,
+        "best_hops": 3,
+        "label_updates_after_best": 1,
+        "recorded_meeting_label_updates": 1,
+        "equal_shorter_meetings": 0,
+        "decrease_key_updates": 1,
+        "transpose": true
+      },
+      "want": 5
+    },
+    "zero-best-hop": {
+      "detected": true,
+      "changed": {
+        "cost": 3,
+        "stop": "frontsum",
+        "pops": 3,
+        "finite_pop_bound": 8,
+        "events": [
+          {
+            "kind": "best",
+            "cost": 5,
+            "hops": 0,
+            "vertex": "a",
+            "path": [
+              [
+                "s",
+                "R",
+                "a",
+                4
+              ],
+              [
+                "a",
+                "R",
+                "t",
+                1
+              ]
+            ]
+          },
+          {
+            "kind": "best",
+            "cost": 3,
+            "hops": 0,
+            "vertex": "a",
+            "path": [
+              [
+                "s",
+                "R",
+                "b",
+                1
+              ],
+              [
+                "b",
+                "R",
+                "a",
+                1
+              ],
+              [
+                "a",
+                "R",
+                "t",
+                1
+              ]
+            ]
+          }
+        ],
+        "fallback": false,
+        "best": 3,
+        "best_hops": 0,
+        "label_updates_after_best": 1,
+        "recorded_meeting_label_updates": 1,
+        "equal_shorter_meetings": 0,
+        "decrease_key_updates": 1,
+        "transpose": true
+      },
+      "want": 5
+    },
+    "first-meeting": {
+      "detected": true,
+      "changed": {
+        "cost": 10,
+        "stop": "mutant_first_meeting",
+        "pops": 2,
+        "events": [
+          {
+            "kind": "best",
+            "cost": 10,
+            "hops": 2,
+            "vertex": "a",
+            "path": [
+              [
+                "s",
+                "R",
+                "a",
+                1
+              ],
+              [
+                "a",
+                "R",
+                "t",
+                9
+              ]
+            ]
+          }
+        ],
+        "fallback": false
+      },
+      "want": 8
+    },
+    "same-way-back": {
+      "detected": true,
+      "changed": {
+        "cost": null,
+        "stop": "empty_frontier",
+        "pops": 2,
+        "finite_pop_bound": 8,
+        "events": [],
+        "fallback": false,
+        "best": null,
+        "best_hops": 0,
+        "label_updates_after_best": 0,
+        "recorded_meeting_label_updates": 0,
+        "equal_shorter_meetings": 0,
+        "decrease_key_updates": 0,
+        "transpose": true
+      },
+      "want": 3
+    },
+    "early-frontsum": {
+      "detected": true,
+      "changed": {
+        "cost": 4,
+        "stop": "frontsum",
+        "pops": 2,
+        "finite_pop_bound": 10,
+        "events": [
+          {
+            "kind": "best",
+            "cost": 4,
+            "hops": 2,
+            "vertex": "x",
+            "path": [
+              [
+                "s",
+                "R",
+                "x",
+                2
+              ],
+              [
+                "x",
+                "R",
+                "t",
+                2
+              ]
+            ]
+          }
+        ],
+        "fallback": false,
+        "best": 4,
+        "best_hops": 2,
+        "label_updates_after_best": 0,
+        "recorded_meeting_label_updates": 0,
+        "equal_shorter_meetings": 0,
+        "decrease_key_updates": 0,
+        "transpose": true
+      },
+      "want": 3
+    },
+    "old-queue-entry-not-killed": {
+      "detected": true,
+      "invariant_error": "('queue_exact', 0, [{(2, 'b'), (1, 't'), (4, 'b')}, {(0, 'ghost')}], [{'s': 0, 'b': 2, 't': 1}, {'ghost': 0}], [{'s'}, set()])",
+      "kind": "queue-correspondence; result need not differ"
+    }
+  },
+  "mirror_neighbors": [
+    {
+      "mode": "complete",
+      "cost": 20,
+      "json_cost": 20,
+      "transpose": true
+    },
+    {
+      "mode": "missing",
+      "cost": null,
+      "json_cost": 20,
+      "transpose": false
+    },
+    {
+      "mode": "unequal",
+      "cost": 11,
+      "json_cost": 20,
+      "transpose": false
+    }
+  ],
+  "script_sha256": "0ae96c35502f6a9a03e68987c4c0a095ffef5c6ad975caae51078bd60284c2cd",
+  "inputs": {
+    "iris_src/src/Graph/KG/TraversalPaths.cls": "599ae64ce9065748ac91896d20fb61ecc72ec1435bd6d58a6b298db241cd2bcf",
+    ".g5/uplift/consolidated/iteration-9/weighted-cost-next-PAIRS.md": "467971157f054ea0561937698e11e2550177ad3b8823f65e95be2557b4975712",
+    ".g5/uplift/consolidated/iteration-9/weighted-cost-next-start.json": "b82dc3af7399efe47575655374929e33d83a50b1d3c8c942b4f8f3c70fd1a859",
+    ".g5/uplift/consolidated/iteration-9/weighted-mirror-native.json": "b502cd069a6825236a889d18985797ae2aba78ab8d3eeea4adce3447d7822fb5"
+  },
+  "elapsed": 0.7977536669932306,
+  "socket_connect_calls": 0,
+  "scope": "Pure exact-integer source-shaped finite sanity checks; no actual product/native execution or formal theorem. Oracle used only in assertions/observations; search receives no answer and has no runtimeBudget."
+}

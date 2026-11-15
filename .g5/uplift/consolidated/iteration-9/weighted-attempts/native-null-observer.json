@@ -1,0 +1,187 @@
+{
+  "verdict": "DISAGREES",
+  "paired_search_cases": 0,
+  "scheduled_search_cases": 9000,
+  "mismatch_count": 0,
+  "mismatches": [],
+  "sampled_searches": [],
+  "projections": [
+    {
+      "graph": "wp9:a",
+      "sql_rows": [
+        [
+          "wp9:s",
+          "R",
+          "wp9:a",
+          0,
+          "4"
+        ],
+        [
+          "wp9:s",
+          "R",
+          "wp9:b",
+          0,
+          "1"
+        ],
+        [
+          "wp9:b",
+          "R",
+          "wp9:a",
+          0,
+          "1"
+        ],
+        [
+          "wp9:a",
+          "R",
+          "wp9:t",
+          0,
+          "1"
+        ]
+      ],
+      "leaves": [
+        {
+          "triple": [
+            "wp9:s",
+            "R",
+            "wp9:a"
+          ],
+          "lowest_ekey": 0,
+          "sql_weight": 4.0,
+          "out": 4,
+          "in": 4,
+          "agrees": true
+        },
+        {
+          "triple": [
+            "wp9:s",
+            "R",
+            "wp9:b"
+          ],
+          "lowest_ekey": 0,
+          "sql_weight": 1.0,
+          "out": 1,
+          "in": 1,
+          "agrees": true
+        },
+        {
+          "triple": [
+            "wp9:b",
+            "R",
+            "wp9:a"
+          ],
+          "lowest_ekey": 0,
+          "sql_weight": 1.0,
+          "out": 1,
+          "in": 1,
+          "agrees": true
+        },
+        {
+          "triple": [
+            "wp9:a",
+            "R",
+            "wp9:t"
+          ],
+          "lowest_ekey": 0,
+          "sql_weight": 1.0,
+          "out": 1,
+          "in": 1,
+          "agrees": true
+        }
+      ]
+    },
+    {
+      "graph": "wp9:other",
+      "sql_rows": [
+        [
+          "wp9:s",
+          "R",
+          "wp9:a",
+          0,
+          "8"
+        ],
+        [
+          "wp9:s",
+          "R",
+          "wp9:b",
+          0,
+          "2"
+        ],
+        [
+          "wp9:b",
+          "R",
+          "wp9:a",
+          0,
+          "2"
+        ],
+        [
+          "wp9:a",
+          "R",
+          "wp9:t",
+          0,
+          "4"
+        ]
+      ],
+      "leaves": [
+        {
+          "triple": [
+            "wp9:s",
+            "R",
+            "wp9:a"
+          ],
+          "lowest_ekey": 0,
+          "sql_weight": 8.0,
+          "out": 8,
+          "in": 8,
+          "agrees": true
+        },
+        {
+          "triple": [
+            "wp9:s",
+            "R",
+            "wp9:b"
+          ],
+          "lowest_ekey": 0,
+          "sql_weight": 2.0,
+          "out": 2,
+          "in": 2,
+          "agrees": true
+        },
+        {
+          "triple": [
+            "wp9:b",
+            "R",
+            "wp9:a"
+          ],
+          "lowest_ekey": 0,
+          "sql_weight": 2.0,
+          "out": 2,
+          "in": 2,
+          "agrees": true
+        },
+        {
+          "triple": [
+            "wp9:a",
+            "R",
+            "wp9:t"
+          ],
+          "lowest_ekey": 0,
+          "sql_weight": 4.0,
+          "out": 4,
+          "in": 4,
+          "agrees": true
+        }
+      ]
+    }
+  ],
+  "public": [],
+  "failure": {
+    "type": "OperationalError",
+    "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]",
+    "trace": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native.py\", line 65, in main\n    cur=c.cursor();cur.execute(\"SELECT s,p,o_id,ekey,Graph_KG.JSON_VALUE(qualifiers, '$.weight') FROM Graph_KG.rdf_edges WHERE graph_id=? ORDER BY edge_id\",[graph]);raw=[tuple(r) for r in cur.fetchall()];cur.close()\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\niris.dbapi.OperationalError: <SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]\n"
+  },
+  "identity_checked": true,
+  "container": "ivg-uplift-next-20261115",
+  "scope": "actual Python ordinary+keyed SQL writers, persisted weights->lowest-ekey out/in scalar projection, actual native DijkstraJson/DijkstraCost, public parser/handler/result plus producer mutant. Independent simple-walk oracle with effective positive small integer weights; stable fixtures only. No general floating/concurrency/native-body proof.",
+  "script_sha256": "81c5c38cf2b48de7c43252d03b0b20b8729d57b50b73d03fae2c28e15408a7ce",
+  "elapsed": 0.27652720900368877
+}

@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/queue-waits-for-new-frame/20261115T192440Z/models/bolt_stream/bolt_stream.rs:129:1
+    |
+129 | pub proof fn theorem_queue_precedes_receive(s:Receive,a:Bytes)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/queue-waits-for-new-frame/20261115T192440Z/models/bolt_stream/bolt_stream.rs:131:13
+    |
+129 | pub proof fn theorem_queue_precedes_receive(s:Receive,a:Bytes)
+    | -------------------------------------------------------------- at the end of the function body
+130 |     requires s.queue.len()>0,
+131 |     ensures !receive(s,a).received,receive(s,a).read==Read::Message(s.queue[0]),
+    |             ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/queue-waits-for-new-frame/20261115T192440Z/models/bolt_stream/bolt_stream.rs:131:36
+    |
+129 | pub proof fn theorem_queue_precedes_receive(s:Receive,a:Bytes)
+    | -------------------------------------------------------------- at the end of the function body
+130 |     requires s.queue.len()>0,
+131 |     ensures !receive(s,a).received,receive(s,a).read==Read::Message(s.queue[0]),
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

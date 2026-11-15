@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_commit_preserves_but_rollback_discards"
+    ],
+    "find": "pub open spec fn rollback(s:Session)->Step {reset(s)}",
+    "name": "rollback-preserves-pending",
+    "replace": "pub open spec fn rollback(s:Session)->Step {commit(s)}",
+    "why": "rollback-preserves-pending"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_commit_preserves_but_rollback_discards"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/rollback-preserves-pending/20261115T192825Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_commit_preserves_but_rollback_discards": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192825Z-control-rollback-preserves-pending-theorem_commit_preserves_but_rollback_discards.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192825Z-control-rollback-preserves-pending.log",
+    "timed_out": false,
+    "verified": 42
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192829Z-control-rollback-preserves-pending/logs/20261115T192825Z-control-rollback-preserves-pending-theorem_commit_preserves_but_rollback_discards.log": "3d0b564d12c414b55d5c9ce60c98f135ebfdd1d446f2a5b69a0aa56a503b8e07",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192829Z-control-rollback-preserves-pending/logs/20261115T192825Z-control-rollback-preserves-pending.log": "038c27170127aa9ac7241b55b2aed1bb547e107216059814974cc1e87d9361c7"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,12 @@
+verification results:: 33 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/bolt_stream/bolt_stream.rs:347:9
+    |
+344 | pub proof fn lemma_receive_default(body:Bytes)
+    | ---------------------------------------------- at the end of the function body
+...
+347 |         receive(empty_receiver(),encode(body,max_chunk())).next==empty_receiver(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

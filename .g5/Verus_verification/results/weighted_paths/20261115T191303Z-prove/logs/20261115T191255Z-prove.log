@@ -1,0 +1,17 @@
+verification results:: 3 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:114:13
+    |
+113 | pub proof fn theorem_initial_invariant(c:Config)
+    | ------------------------------------------------ at the end of the function body
+114 |     ensures inv(c,initial(c)),
+    |             ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:116:1
+    |
+116 | pub proof fn theorem_non_skipped_pop_uses_current_distance(c:Config,s:Search,e:Entry)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors
+

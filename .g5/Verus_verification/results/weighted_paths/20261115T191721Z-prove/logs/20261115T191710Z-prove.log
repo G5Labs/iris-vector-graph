@@ -1,0 +1,28 @@
+verification results:: 18 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:272:13
+    |
+272 |     ensures refines_cover(s,u),
+    |             ^^^^^^^^^^^^^^^^^^ failed this postcondition
+273 | {
+274 |     assert forall|q:Entry|s.queue.contains(q) implies covered(u,q.1,q.2,q.0) by {lemma_cover_monotone(t,u,q.1,q.2,q.0);}
+    |     ------ at the end of the function body
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:276:1
+    |
+276 | pub proof fn lemma_expand_preserves_and_covers(c:Config,s:Search,e:Entry,arcs:Seq<Arc>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:341:22
+    |
+341 |       ensures inv(c,t),no_target(c,t),
+    |                        ^^^^^^^^^^^^^^ failed this postcondition
+...
+344 | /     if skipped(s,e){theorem_skip_preserves_invariant(c,s,e);}
+345 | |     else{assert(e.1!=c.dst);theorem_expand_preserves_invariant(c,s,e);}
+    | |_______________________________________________________________________- at the end of the function body
+
+error: aborting due to 3 previous errors
+

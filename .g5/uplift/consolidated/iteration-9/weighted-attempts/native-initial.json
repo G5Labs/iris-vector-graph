@@ -1,0 +1,19 @@
+{
+  "verdict": "DISAGREES",
+  "paired_search_cases": 9000,
+  "mismatch_count": 0,
+  "mismatches": [],
+  "sampled_searches": [],
+  "projections": [],
+  "public": [],
+  "failure": {
+    "type": "ProgrammingError",
+    "error": "<SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.JSON_VALUE' does not exist>]",
+    "trace": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native.py\", line 65, in main\n    cur=c.cursor();cur.execute(\"SELECT s,p,o_id,ekey,JSON_VALUE(qualifiers, '$.weight') FROM Graph_KG.rdf_edges WHERE graph_id=? ORDER BY edge_id\",[graph]);raw=[tuple(r) for r in cur.fetchall()];cur.close()\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\niris.dbapi.ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]\r\n[Location: <Prepare>]\r\n[%msg: < User defined SQL function 'SQLUSER.JSON_VALUE' does not exist>]\n"
+  },
+  "identity_checked": true,
+  "container": "ivg-uplift-next-20261115",
+  "scope": "actual Python ordinary+keyed SQL writers, persisted weights->lowest-ekey out/in scalar projection, actual native DijkstraJson/DijkstraCost, public parser/handler/result plus producer mutant. Independent simple-walk oracle with effective positive small integer weights; stable fixtures only. No general floating/concurrency/native-body proof.",
+  "script_sha256": "35946ada2194171b2643add9ab16d86a5082070caeb3c45a5a9077d6ddf271a8",
+  "elapsed": 0.36727849999442697
+}

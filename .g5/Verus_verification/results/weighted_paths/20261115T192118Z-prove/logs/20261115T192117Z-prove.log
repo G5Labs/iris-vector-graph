@@ -1,0 +1,42 @@
+verification results:: 28 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:416:1
+    |
+416 | pub proof fn lemma_walk_push(c:Config,src:int,via:int,to:int,p:Seq<Arc>,a:Arc)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:418:13
+    |
+418 |       ensures walk(c,src,to,p.push(a)),cost(c,p.push(a))==cost(c,p)+weight(c,a),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+421 | /     if p.len()>0{
+422 | |         lemma_walk_push(c,p[0].4,via,to,p.drop_first(),a);
+423 | |         assert(p.push(a).drop_first() =~= p.drop_first().push(a));
+424 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:418:38
+    |
+418 |       ensures walk(c,src,to,p.push(a)),cost(c,p.push(a))==cost(c,p)+weight(c,a),
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+421 | /     if p.len()>0{
+422 | |         lemma_walk_push(c,p[0].4,via,to,p.drop_first(),a);
+423 | |         assert(p.push(a).drop_first() =~= p.drop_first().push(a));
+424 | |     }
+    | |_____- at the end of the function body
+
+error: precondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/weighted_paths/weighted_paths.rs:450:5
+    |
+427 |     requires base_inv(c,s),s.dist.contains_key(k),fuel>s.dist[k],
+    |                            ---------------------- failed precondition
+...
+450 |     theorem_backtrack_derives_path_and_cost(c,t,key(e),e.0+1);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 3 previous errors
+

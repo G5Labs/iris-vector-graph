@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native.py", line 119, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native.py", line 65, in main
+    cur=c.cursor();cur.execute("SELECT s,p,o_id,ekey,JSON_VALUE(qualifiers, '$.weight') FROM Graph_KG.rdf_edges WHERE graph_id=? ORDER BY edge_id",[graph]);raw=[tuple(r) for r in cur.fetchall()];cur.close()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+iris.dbapi.ProgrammingError: <SQL ERROR>; Details: [SQLCODE: <-359>:<SQL Function (function stored procedure) not found>]
+[Location: <Prepare>]
+[%msg: < User defined SQL function 'SQLUSER.JSON_VALUE' does not exist>]

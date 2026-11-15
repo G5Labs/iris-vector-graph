@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_small_chunk_reencoding_leaves_terminator"
+    ],
+    "find": "let cut=encoded_lengths(d.bodies);",
+    "name": "reencoded-cut-corrected",
+    "replace": "let cut=d.used;",
+    "why": "reencoded-cut-corrected"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_small_chunk_reencoding_leaves_terminator"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/reencoded-cut-corrected/20261115T192736Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_small_chunk_reencoding_leaves_terminator": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192736Z-control-reencoded-cut-corrected-theorem_small_chunk_reencoding_leaves_terminator.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192736Z-control-reencoded-cut-corrected.log",
+    "timed_out": false,
+    "verified": 41
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192740Z-control-reencoded-cut-corrected/logs/20261115T192736Z-control-reencoded-cut-corrected-theorem_small_chunk_reencoding_leaves_terminator.log": "e51d45fca01ef49b91a666e5657a695b280c5adba9ae58bcf43f813c64bb8aeb",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192740Z-control-reencoded-cut-corrected/logs/20261115T192736Z-control-reencoded-cut-corrected.log": "83f3d1e184775ed52ce0030b5a85a2ca0759e5b931e7c07771c7901f5bf7fae6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

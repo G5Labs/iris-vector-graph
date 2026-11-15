@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_buffer_and_queue_come_from_raw"
+    ],
+    "find": "queue:d.bodies.drop_first()",
+    "name": "decoded-queue-dropped",
+    "replace": "queue:seq![]",
+    "why": "decoded-queue-dropped"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_buffer_and_queue_come_from_raw"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "633f784085389e7a194e951f78f65bbd540fe253a9a21fde52f46f9c771481e5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/decoded-queue-dropped/20261115T192434Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": true,
+    "per_function": {
+      "theorem_buffer_and_queue_come_from_raw": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192434Z-control-decoded-queue-dropped-theorem_buffer_and_queue_come_from_raw.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192434Z-control-decoded-queue-dropped.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192440Z-control-decoded-queue-dropped/logs/20261115T192434Z-control-decoded-queue-dropped-theorem_buffer_and_queue_come_from_raw.log": "01735dbacb4f9ba71afcc809550b00db92d229940c71060808038fd176711776",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192440Z-control-decoded-queue-dropped/logs/20261115T192434Z-control-decoded-queue-dropped.log": "e555feb193aa081e731b6b5bb458a4f77151a28606c0a547bce6b1b18275b5fd"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

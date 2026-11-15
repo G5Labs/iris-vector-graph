@@ -1,0 +1,27 @@
+verification results:: 42 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/error-enters-ready/20261115T192456Z/models/bolt_stream/bolt_stream.rs:296:1
+    |
+296 | pub proof fn theorem_error_produces_failure_and_failed_gate(s:Session,body:Bytes,result:EngineResult)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/error-enters-ready/20261115T192456Z/models/bolt_stream/bolt_stream.rs:298:13
+    |
+296 | pub proof fn theorem_error_produces_failure_and_failed_gate(s:Session,body:Bytes,result:EngineResult)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+297 |     requires body.len()>=2,body[1]!=0x0f,body[1]!=0x02,
+298 |     ensures run(s,failed_result()).state.phase==Phase::Failed,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/error-enters-ready/20261115T192456Z/models/bolt_stream/bolt_stream.rs:301:9
+    |
+296 | pub proof fn theorem_error_produces_failure_and_failed_gate(s:Session,body:Bytes,result:EngineResult)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+301 |         dispatch(run(s,failed_result()).state,body,result)==Some(Step{out:seq![Answer::Ignored],..no_step(run(s,failed_result()).state)}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

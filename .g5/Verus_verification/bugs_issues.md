@@ -2685,6 +2685,8 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `c16-s1-cypher-http`
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
+Iteration9 corroboration: [bolt_stream](models/bolt_stream/NOTES.md) derives raw canonical PULL bytes, positive prefix selection, emitted records and lost nonempty suffix, then an empty second PULL. Actual Python dispatch/result traces and unchanged expected input oracles corroborate the projected row/metadata behavior. This strengthens the inherited root, not a new discovery or database transaction proof; general codec/provider/network and graph-result fragments remain qualified.
+
 <a id="F-1607"></a>
 ### Two Cypher entries of the sample API bypass the engine and answer differently
 
@@ -7995,6 +7997,45 @@ Reproduced by: playbook arm, live on its IRIS (x86_64 VM): `st-live-cap-snapshot
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 
 ## Observations and documentation drift
+
+<a id="bug-plt-101"></a>
+### WebSocket Bolt counts re-encoded bytes instead of received chunks and can lose later messages
+
+Severity: Low · Decision: Open
+
+Run: Consolidated iteration9, 2026-11-15 · Suspected end to end (actual Python local transports)
+
+Found by: the [iteration8 remaining-work framing challenge](../uplift/consolidated/iteration-8/next-survey-remaining.md), followed by [36 actual full-session traces and two localized method-copy controls](../uplift/consolidated/iteration-9/bolt-session-probe.json). Source: `BoltSession._recv_message`, `bolt_server.py:439-459`. Formal source-transcription witnesses: [bolt_stream.rs](models/bolt_stream/bolt_stream.rs) `theorem_small_chunk_reencoding_leaves_terminator`, `theorem_small_chunk_empty_closes_before_queued_run`, and the coalesced passing witness; [limits](models/bolt_stream/NOTES.md).
+
+Reproduced by: None natively; `bolt-session-probe.py` executes the real ordinary handshake, WebSocket session run/receive/dispatch, RUN/PULL and record encoder using local async transport objects and a one-row engine adapter, with zero socket connections. Listener and real driver reachability are not claimed.
+
+Expected: [access.bolt.framing](../ontology/concepts/access.g5.md#access.bolt.framing), from the product's Bolt4.4 compatibility commitment and the [primary chunking specification](https://neo4j.com/docs/bolt/current/bolt/message/): a message may be split into arbitrary positive chunks through 65,535 bytes, without changing subsequent messages.
+
+Observed: the stateless decoder accepts the valid fragmented HELLO, then `_recv_message` advances the raw buffer by the length of a default-chunk re-encoding. This omits extra received chunk headers and leaves old bytes. With later RUN/PULL delivered separately, the retained HELLO trace executes RETURN1 once but never emits a record, remains STREAMING, and fails to consume PULL/GOODBYE before the local transport is exhausted. The earlier small RESET witness instead returns empty before the later RUN. These are distinct concrete consequences of the same wrong offset; it does not always suppress RUN. Canonical default framing succeeds. Coalescing the whole exchange also succeeds because all complete bodies enter the queue before the wrong cut, but leaves residue; this passing neighbor is retained. The initial harness incorrectly expected coalesced failure and is preserved under `bolt-attempts/overbroad-packet-oracle.*` as a withdrawn expectation.
+
+Consequence: a valid ordinary client exchange can lose its query or response depending on chunk/transport boundaries. This is separate from the known PULL suffix loss (F-1602), transaction atomicity (F-1601), and empty-NOOP run-loop root (bug-plt-102).
+
+Repair proposal (not implemented): retain actual consumed-byte offsets from the raw decoder. A copy of the actual receive method using counted raw headers/payload boundaries fixes the fragmented/separate-frame case while the unchanged run loop still fails on NOOP. Changing only the run loop leaves the fragmented HELLO failure; both changes pass the ordinary matrix. No product file was edited.
+
+<a id="bug-plt-102"></a>
+### WebSocket Bolt closes an ordinary session when it receives a valid keep-alive chunk
+
+Severity: Low · Decision: Open
+
+Run: Consolidated iteration9, 2026-11-15 · Suspected end to end (actual Python local transports)
+
+Found by: [36 full-session local-transport traces](../uplift/consolidated/iteration-9/bolt-session-probe.json), source inspection of `BoltSession.run` (`bolt_server.py:410-412`) versus `TcpBoltSession.run` (`:946-948`), and primary protocol adjudication. [bolt_stream.rs](models/bolt_stream/bolt_stream.rs) separately proves `theorem_noop_closes_wire_without_engine` and `theorem_noop_coalesced_closes_with_queued_run` in the admitted state/wire fragment; [limits](models/bolt_stream/NOTES.md).
+
+Reproduced by: None natively; actual session/codec methods run through local transport objects, with no listener, actual socket, authentication scenario or database provider. Scalar query output is a declared one-row adapter premise.
+
+Expected: [access.bolt.framing](../ontology/concepts/access.g5.md#access.bolt.framing). The [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/) introduces empty NOOP chunks in4.1 with both clients and servers supporting them;4.3 permits them in all connection states. The actual trace negotiates the product's supported4.4.
+
+Observed: a canonical HELLO then empty chunk followed by ordinary RUN/PULL closes before the query, because `_recv_message` returns b'' and the WebSocket run loop treats every false value as connection end. Both separate and coalesced transport frames fail. The same actual TCP session run/receive using StreamReader and a local writer continues and emits the expected scalar record; no TCP socket was opened.
+
+Consequence: a legal keep-alive prematurely ends an otherwise usable WebSocket Bolt connection. This root remains after correcting actual chunk consumption (bug-plt-101).
+
+Repair proposal (not implemented): distinguish end-of-connection from empty keep-alive bytes, or consume NOOP in the receive layer. A copy of the WebSocket run method using a None-only end check fixes canonical-NOOP cases, while retaining the fragmented/separate HELLO failure from the other root. Both local changes together pass all packetization neighbors. No product file was edited.
+
 
 <a id="bug-tmp-012"></a>
 ### Without the adjacency index, deleting a temporal edge removes the adjacency of an explicit edge on the same triple

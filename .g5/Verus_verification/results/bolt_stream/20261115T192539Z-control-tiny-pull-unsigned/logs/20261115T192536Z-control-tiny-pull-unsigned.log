@@ -1,0 +1,11 @@
+verification results:: 42 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/tiny-pull-unsigned/20261115T192536Z/models/bolt_stream/bolt_stream.rs:425:13
+    |
+424 | pub proof fn theorem_tiny_signed_pull_count()
+    | --------------------------------------------- at the end of the function body
+425 |     ensures pull_count(pull_body(0xff))==Some(-1),pull_count(pull_body(1))==Some(1),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

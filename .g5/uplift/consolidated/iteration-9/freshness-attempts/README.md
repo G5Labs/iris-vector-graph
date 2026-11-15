@@ -1,0 +1,1 @@
+Initial disposable fixture runner passed its fresh-input assertion but failed constructing the result dictionary because the source-manifest scope field collided with its evidence-scope field. No controls credited from this aborted harness run. Corrected evidence_scope key; also matched the exact +maxHops source token before reexecution. No active source/model input was mutated.

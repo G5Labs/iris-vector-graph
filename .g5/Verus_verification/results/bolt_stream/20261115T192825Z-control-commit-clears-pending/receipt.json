@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_commit_preserves_but_rollback_discards"
+    ],
+    "find": "pub open spec fn commit(s:Session)->Step {\n    Step{state:Session{phase:Phase::Ready,..s},out:seq![Answer::Summary{has_more:None}],engine_calls:0}\n}",
+    "name": "commit-clears-pending",
+    "replace": "pub open spec fn commit(s:Session)->Step {\n    Step{state:Session{phase:Phase::Ready,pending:None,..s},out:seq![Answer::Summary{has_more:None}],engine_calls:0}\n}",
+    "why": "commit-clears-pending"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_commit_preserves_but_rollback_discards"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/commit-clears-pending/20261115T192821Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_commit_preserves_but_rollback_discards": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192821Z-control-commit-clears-pending-theorem_commit_preserves_but_rollback_discards.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192821Z-control-commit-clears-pending.log",
+    "timed_out": false,
+    "verified": 42
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192825Z-control-commit-clears-pending/logs/20261115T192821Z-control-commit-clears-pending-theorem_commit_preserves_but_rollback_discards.log": "1c7b7c981d184517015a91322faf2e5bd79f91b7b7ddb142302329dc6c956d09",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192825Z-control-commit-clears-pending/logs/20261115T192821Z-control-commit-clears-pending.log": "be1b0d238251434b93b2b7cc75e87c255a45d321e68e329cf7a1ebaa3596e6af"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

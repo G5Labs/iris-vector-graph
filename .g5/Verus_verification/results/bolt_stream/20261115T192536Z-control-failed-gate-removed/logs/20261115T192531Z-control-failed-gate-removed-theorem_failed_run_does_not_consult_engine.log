@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/failed-gate-removed/20261115T192531Z/models/bolt_stream/bolt_stream.rs:333:1
+    |
+333 | pub proof fn theorem_failed_run_does_not_consult_engine(s:Session,r:EngineResult)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/failed-gate-removed/20261115T192531Z/models/bolt_stream/bolt_stream.rs:335:13
+    |
+333 | pub proof fn theorem_failed_run_does_not_consult_engine(s:Session,r:EngineResult)
+    | --------------------------------------------------------------------------------- at the end of the function body
+334 |     requires s.phase==Phase::Failed,
+335 |     ensures dispatch(s,run_body(),r).unwrap().engine_calls==0,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/failed-gate-removed/20261115T192531Z/models/bolt_stream/bolt_stream.rs:336:9
+    |
+333 | pub proof fn theorem_failed_run_does_not_consult_engine(s:Session,r:EngineResult)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+336 |         dispatch(s,run_body(),r).unwrap().state==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

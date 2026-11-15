@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_error_produces_failure_and_failed_gate"
+    ],
+    "find": "phase:Phase::Failed,pending:None,..s",
+    "name": "error-enters-ready",
+    "replace": "phase:Phase::Ready,pending:None,..s",
+    "why": "error-enters-ready"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_error_produces_failure_and_failed_gate"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/error-enters-ready/20261115T192802Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_error_produces_failure_and_failed_gate": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192802Z-control-error-enters-ready-theorem_error_produces_failure_and_failed_gate.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192802Z-control-error-enters-ready.log",
+    "timed_out": false,
+    "verified": 42
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192806Z-control-error-enters-ready/logs/20261115T192802Z-control-error-enters-ready-theorem_error_produces_failure_and_failed_gate.log": "17b0cfc6b172f12489366197c868d0c9ff83306e2934c15d7bcfbb8347aa81a8",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192806Z-control-error-enters-ready/logs/20261115T192802Z-control-error-enters-ready.log": "f0b565f2445f50907ee44213dffa4ad37b3caf3311810683e4144fe5dec92e0d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_pull_reads_input_rows_then_clears"
+    ],
+    "find": "state:Session{phase:Phase::Ready,pending:None,columns:None,types:None},\n            out:records(rows)",
+    "name": "pull-retains-suffix",
+    "replace": "state:Session{phase:Phase::Ready,pending:Some(remainder(s.pending.unwrap(),n)),columns:None,types:None},\n            out:records(rows)",
+    "why": "pull-retains-suffix"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_pull_reads_input_rows_then_clears"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "633f784085389e7a194e951f78f65bbd540fe253a9a21fde52f46f9c771481e5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-retains-suffix/20261115T192504Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_pull_reads_input_rows_then_clears": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192504Z-control-pull-retains-suffix-theorem_pull_reads_input_rows_then_clears.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192504Z-control-pull-retains-suffix.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192509Z-control-pull-retains-suffix/logs/20261115T192504Z-control-pull-retains-suffix-theorem_pull_reads_input_rows_then_clears.log": "7837121d4b5dc4958c7d535ae4cca0d370436091dd92cf3321d37880e5ef544d",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192509Z-control-pull-retains-suffix/logs/20261115T192504Z-control-pull-retains-suffix.log": "762c44d1d2ada76d194dc9c64b1ed1c84f1e9e1f46ec6899d1d1dc6eaadded06"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

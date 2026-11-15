@@ -241,9 +241,18 @@ Path search finds a shortest path between two nodes inside one graph. A path fro
 A weighted path search returns a path with the lowest total cost, even when that path has more hops than another, and returns no row when no path joins the two nodes.
 - Each edge costs its stored weight. A weight of zero or less, or no weight, costs one.
 - Only the stored weight can be used: naming another weight property, or a direction other than out, in or both, is refused.
-- A path that costs more than the cost limit, or has more hops than a positive hop limit, is not an answer. A hop limit of zero or less means no limit.
+- For distinct endpoints, a path that costs more than the cost limit, or has more hops than a positive hop limit, is not an answer. Zero means no hop limit in the public procedure; a negative hop limit is refused there. The native search also treats negative hops as unbounded.
+- Nonempty equal endpoints return the empty path at cost 0 before the native cost-cap or node-existence check. Public empty or missing endpoint arguments are refused; direct native empty endpoints answer no path.
 - With a graph named, it searches that graph. With none, it searches each graph that has edges and gives one row for each graph where it finds a path.
 - Costs come back as decimal numbers, so a weight of one reads back as 1.0. A failed search raises instead of answering no row.
+- Relationship types omitted or supplied as an empty list mean every type. As built, the search reads each adjacency leaf's representative weight; in a correctly maintained multigraph that is the lowest live edge key, which need not hold the least weight of the parallel rows. Whether the intended minimum must instead consider every stored parallel relationship remains [open](#algorithms.op.paths.weighted.parallel).
+
+<a id="algorithms.op.paths.weighted.parallel"></a>
+[Q · algorithms.op.paths.weighted.parallel]
+
+Which relationship set should weighted shortest path optimize in a multigraph: every stored parallel relationship, or the lowest-key representative graph? There is no provisional owner answer.
+- The user guide promises the cheapest path by edge weight; the storage specification mandates the lowest-key leaf but does not clearly assign weighted shortest path to that projection.
+- As built, parallel keys0/weight10 and5/weight1 plus an alternative route of cost4 return4; the full stored multigraph has a path of cost1. Proving the implemented queue minimizes its derived graph does not settle this policy.
 
 <a id="algorithms.op.paths.direction"></a>
 [Q · algorithms.op.paths.direction]
@@ -572,13 +581,24 @@ Observed divergence: `random_walk` needs Arno, and without it returns an empty l
 ### algorithms.op.paths.weighted
 - Sources: [`iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L256-L346) (cost order and settling `:293-342`; weight of zero or less is one `:329-331`; hop bound `:265`, `:312`; no path `"{}"` `:344-345`), [`::DijkstraCost`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L378-L448), [`::CheckDirection`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L350-L355), [`::CheckWeightProp`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L359-L365); [`iris_vector_graph/engine.py::IRISGraphEngine._proc_ivg_shortestpath_weighted`](../../../iris_vector_graph/engine.py#L1201-L1313) (one search per graph `:1275-1282`); tests [test_weighted_shortest_path.py](../../../tests/unit/test_weighted_shortest_path.py) (they drive a live engine)
 - Playbook: [ALG-B10.5](../../../experiment/playbook-completion/ontology/10-algorithms.md#L225), [ALG-B10.6](../../../experiment/playbook-completion/ontology/10-algorithms.md#L226), [ALG-B10.7](../../../experiment/playbook-completion/ontology/10-algorithms.md#L227), [ALG-B10.8](../../../experiment/playbook-completion/ontology/10-algorithms.md#L228), [ALG-B10.90](../../../experiment/playbook-completion/ontology/10-algorithms.md#L229)
-- Verus: no formal contract in either arm. Missing: an optimality proof of the ObjectScript Dijkstra over (node, hops) states, and of the two-sided `DijkstraCost`; the public case M12 rests on the live tests and inspection.
+- Verus: [weighted_paths.rs](../../Verus_verification/models/weighted_paths/weighted_paths.rs), `theorem_complete_terminating_search`, `theorem_actual_search_terminates`, `theorem_actual_returned_path_is_optimal`, `theorem_empty_queue_is_no_feasible_path`, `theorem_admitted_self_is_zero`; [domain and source roles](../../Verus_verification/models/weighted_paths/NOTES.md). As-built state-transcription proof over a finite stable actual raw scalar graph, exact integer weights/cap and nonnegative hop bound: ordered stale queue, raw seen-hop dominance, dist/parent relaxation, optimal returned chain, no-path and derived termination. The bidirectional `DijkstraCost`, raw public argument/refusal carrier, writer/index maintenance, arbitrary floating/JSON/collation correspondence and concurrent changes remain unproved. No product executable body is verified.
+- Children: [Parallel-edge policy](#algorithms.op.paths.weighted.parallel)
 - Expands: [Path search](#algorithms.op.paths)
 - agent
 - user-facing-behavior
 - test-coverage
 
-Public case M12. The cost-ordered queue settles each (node, hops) state once at its lowest cost, so a cheaper longer path wins; `"{}"` (no path) becomes no row.
+Public case M12 now has a substantive one-sided numerical-search contract, while the cost-only route remains a material formal gap. The queue proof retains stale entries and minimum-hop dominance rather than replacing the algorithm with a supplied shortest answer. [9000 paired native searches,14 public queries](../../uplift/consolidated/iteration-9/weighted-native.json), [18 boundary neighbors](../../uplift/consolidated/iteration-9/weighted-native-neighbors.json) and [four explicit mirror-state variations](../../uplift/consolidated/iteration-9/weighted-mirror-native.json) are finite correspondence evidence, not a native-body or general cost-only proof. The mode-off lowest-key harness miss is retained and withdrawn as an unsupported producer expectation; the valid mode-on4-vs1 policy remains open. The cost-only route requires equal-effective-weight reverse mirrors: in the explicit provider-state fixture JSON keeps cost20, while a missing reverse point makes Cost answer no path and a reverse weight1 replacing10 makes Cost answer11; restoring the point restores20. These deliberately altered provider states are not ordinary-writer defects or a promise about malformed graphs.
+
+### algorithms.op.paths.weighted.parallel
+- Sources: [USER_GUIDE631-644](../../../docs/USER_GUIDE.md#L631-L644), [spec234 FR004/FR015](../../../specs/234-multigraph-parallel-edges/spec.md#L225-L243), [DijkstraJson raw leaf read](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L329-L338), [native mode-on fixture](../../uplift/consolidated/iteration-9/weighted-native.json), [independent intent review](../../uplift/consolidated/iteration-9/weighted-projection-review.md)
+- Expands: [Weighted path](#algorithms.op.paths.weighted)
+- agent
+- uncertain
+- user-facing-behavior, data-integrity
+- test-coverage
+
+The model's raw adjacency minimum and native4-vs1 observation are as-built evidence. No owner has selected the parallel-edge policy, no repair was accepted, and no new weighted product bug is counted. [q-iter-007](../../Verus_verification/open_questions.md#q-iter-007) records the decision. The earlier mode-off fixture miss is separately withdrawn as an unsupported lowest-key oracle, not evidence for this question.
 
 ### algorithms.op.paths.direction
 - Sources: [`iris_src/src/Graph/KG/TraversalPaths.cls::ShortestPathJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L5-L116), [`::ShortestLength`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L117-L175)

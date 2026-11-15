@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native.py", line 119, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-9/weighted-native.py", line 65, in main
+    cur=c.cursor();cur.execute("SELECT s,p,o_id,ekey,Graph_KG.JSON_VALUE(qualifiers, '$.weight') FROM Graph_KG.rdf_edges WHERE graph_id=? ORDER BY edge_id",[graph]);raw=[tuple(r) for r in cur.fetchall()];cur.close()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+iris.dbapi.OperationalError: <SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]
+[Location: <ServerLoop - Query Fetch>]
+[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <INVALID OREF>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]

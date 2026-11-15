@@ -1,0 +1,21 @@
+verification results:: 41 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/positive-pull-slice-lost/20261115T192806Z/models/bolt_stream/bolt_stream.rs:312:13
+    |
+310 | pub proof fn theorem_partial_pull_drops_suffix_and_reports_no_more(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+311 |     requires s.pending==Some(rows),0<n<rows.len(),
+312 |     ensures remainder(rows,n).len()>0,pull(s,n).state.pending==None,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/positive-pull-slice-lost/20261115T192806Z/models/bolt_stream/bolt_stream.rs:424:13
+    |
+422 | pub proof fn theorem_positive_pull_is_prefix(s:Session,rows:Rows,n:int)
+    | ----------------------------------------------------------------------- at the end of the function body
+423 |     requires s.pending==Some(rows),0<n<rows.len(),
+424 |     ensures record_rows(pull(s,n).out)==rows.take(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

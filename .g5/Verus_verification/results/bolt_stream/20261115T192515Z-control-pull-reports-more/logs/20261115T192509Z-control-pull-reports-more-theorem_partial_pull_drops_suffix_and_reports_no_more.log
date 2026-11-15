@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192509Z/models/bolt_stream/bolt_stream.rs:311:9
+    |
+308 | pub proof fn theorem_partial_pull_drops_suffix_and_reports_no_more(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+311 |         pull(s,n).out.last()==(Answer::Summary{has_more:None}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

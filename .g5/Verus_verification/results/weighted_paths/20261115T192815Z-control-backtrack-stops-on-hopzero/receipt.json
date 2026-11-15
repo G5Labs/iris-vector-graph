@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_backtrack_derives_path_and_cost"
+    ],
+    "find": "fuel==0 || k.0==src ||",
+    "name": "backtrack-stops-on-hopzero",
+    "replace": "fuel==0 || k.1==0 ||",
+    "why": "Unbounded search uses hop zero at every node, so hop zero is not the root test."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_backtrack_derives_path_and_cost"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_paths/model.json": "d2a64c84d932492ca7bfd03594c636153b29c0293942b3f6ddecfe330cadba54",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "091bd4a4606bdaa43f4f27ce9c6e0badfbc1e5ce8d43420d14c576d4fb825e29"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/backtrack-stops-on-hopzero/20261115T192812Z/models/weighted_paths/weighted_paths.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_backtrack_derives_path_and_cost": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192812Z-control-backtrack-stops-on-hopzero-theorem_backtrack_derives_path_and_cost.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192812Z-control-backtrack-stops-on-hopzero.log",
+    "timed_out": false,
+    "verified": 44
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_paths/20261115T192815Z-control-backtrack-stops-on-hopzero/logs/20261115T192812Z-control-backtrack-stops-on-hopzero-theorem_backtrack_derives_path_and_cost.log": "a54462688799ddd5e1138c0af4ffb1cf4ff563afd8ea35c1f8b4ee9a05e7a16f",
+    ".g5/Verus_verification/results/weighted_paths/20261115T192815Z-control-backtrack-stops-on-hopzero/logs/20261115T192812Z-control-backtrack-stops-on-hopzero.log": "f3179949d151cf9bc1d060153530f2ff2887f2d1653c4671aee64d1eabc40dbf"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

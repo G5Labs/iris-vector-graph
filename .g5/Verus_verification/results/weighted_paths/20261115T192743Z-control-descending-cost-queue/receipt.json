@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_minimum"
+    ],
+    "find": "a.0<b.0 || (a.0==b.0",
+    "name": "descending-cost-queue",
+    "replace": "a.0>b.0 || (a.0==b.0",
+    "why": "Reverses actual cost ordering; minimum must still be least cost."
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_minimum"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_paths/model.json": "d2a64c84d932492ca7bfd03594c636153b29c0293942b3f6ddecfe330cadba54",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "091bd4a4606bdaa43f4f27ce9c6e0badfbc1e5ce8d43420d14c576d4fb825e29"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/descending-cost-queue/20261115T192740Z/models/weighted_paths/weighted_paths.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_minimum": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192740Z-control-descending-cost-queue-lemma_minimum.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T192740Z-control-descending-cost-queue.log",
+    "timed_out": false,
+    "verified": 44
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_paths/20261115T192743Z-control-descending-cost-queue/logs/20261115T192740Z-control-descending-cost-queue-lemma_minimum.log": "481b6204c14ec09a5c8edc49ab3562db2a337a2f75a3f3afbdc10cd6c545f6df",
+    ".g5/Verus_verification/results/weighted_paths/20261115T192743Z-control-descending-cost-queue/logs/20261115T192740Z-control-descending-cost-queue.log": "458781b42f4958653885b9dad241088766fc1171e0abd3a992d97a063c60c33c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_scan_chunk"
+    ],
+    "find": "let tail=scan(drop(raw,n+2),current+raw.subrange(2,(n+2) as int));",
+    "name": "chunk-accumulator-overwritten",
+    "replace": "let tail=scan(drop(raw,n+2),raw.subrange(2,(n+2) as int));",
+    "why": "chunk-accumulator-overwritten"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_scan_chunk"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "633f784085389e7a194e951f78f65bbd540fe253a9a21fde52f46f9c771481e5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/chunk-accumulator-overwritten/20261115T192427Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_scan_chunk": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192427Z-control-chunk-accumulator-overwritten-lemma_scan_chunk.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192427Z-control-chunk-accumulator-overwritten.log",
+    "timed_out": false,
+    "verified": 41
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192431Z-control-chunk-accumulator-overwritten/logs/20261115T192427Z-control-chunk-accumulator-overwritten-lemma_scan_chunk.log": "cfb86b8d617df1a86d3b1c218bf92cdb3f94d842d8b139224c63e4526f8091ed",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192431Z-control-chunk-accumulator-overwritten/logs/20261115T192427Z-control-chunk-accumulator-overwritten.log": "4841435573f3957b03f311ad44e68c1aeffd075ede39d34616d7c9071918b81f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

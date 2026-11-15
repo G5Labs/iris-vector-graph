@@ -1,0 +1,346 @@
+{
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "foundation": "9e1209165d5076039d2ee315cc5cf67e4aa00856",
+  "current_utc": "2026-11-15T19:31:11.017439+00:00",
+  "proof_units": 43,
+  "proof_declarations": 39,
+  "named_helpers": 7,
+  "spec_termination_units": 4,
+  "controls": 19,
+  "encoding_comparisons": 22,
+  "raw_framing_cases": 89,
+  "dispatch_cases": 188,
+  "full_ws_journeys": 12,
+  "noop_contrasts": 2,
+  "root_full_session_cases": 36,
+  "mismatches": 0,
+  "binding_detections": {
+    "actual-commit-clears-rows": true,
+    "actual-decoder-high-byte-lost": true,
+    "actual-failed-gate-removed": true,
+    "actual-folded-error-ignored": true,
+    "actual-pull-slice-removed": true,
+    "actual-pull-suffix-retained": true,
+    "actual-reencoded-cut-corrected": true,
+    "actual-reset-keeps-rows": true,
+    "altered-final-record-rejected": true
+  },
+  "socket_connect_calls": 0,
+  "upstream_tests": 49,
+  "all_latest_receipts_fresh": true,
+  "all_named_controls_explicit_failure_without_resource_limit": true,
+  "receipts": [
+    {
+      "kind": "proof",
+      "control": "",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192725Z-prove/receipt.json",
+      "verdict": "PASS",
+      "fresh": true,
+      "named": [],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "binding",
+      "control": "",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192654Z-binding/receipt.json",
+      "verdict": "AGREES",
+      "fresh": true,
+      "named": [],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "header-high-byte-lost",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192729Z-control-header-high-byte-lost/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "lemma_header",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "incomplete-payload-emitted",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192733Z-control-incomplete-payload-emitted/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_incomplete_header_or_payload",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "chunk-accumulator-overwritten",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192736Z-control-chunk-accumulator-overwritten/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "lemma_scan_chunk",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "reencoded-cut-corrected",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192740Z-control-reencoded-cut-corrected/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_small_chunk_reencoding_leaves_terminator",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "decoded-queue-dropped",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192745Z-control-decoded-queue-dropped/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_buffer_and_queue_come_from_raw",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": true
+    },
+    {
+      "kind": "control",
+      "control": "queue-waits-for-new-frame",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192751Z-control-queue-waits-for-new-frame/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_queue_precedes_receive",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": true
+    },
+    {
+      "kind": "control",
+      "control": "empty-message-keeps-ws-open",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192756Z-control-empty-message-keeps-ws-open/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_empty_chunk_is_emitted",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": true
+    },
+    {
+      "kind": "control",
+      "control": "run-rows-not-persisted",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192802Z-control-run-rows-not-persisted/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_run_produces_pending_and_type_metadata",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "error-enters-ready",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192806Z-control-error-enters-ready/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_error_produces_failure_and_failed_gate",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "positive-pull-slice-lost",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192810Z-control-positive-pull-slice-lost/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_positive_pull_is_prefix",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "pull-retains-suffix",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192816Z-control-pull-retains-suffix/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_pull_reads_input_rows_then_clears",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "pull-reports-more",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192821Z-control-pull-reports-more/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_partial_pull_drops_suffix_and_reports_no_more",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "commit-clears-pending",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192825Z-control-commit-clears-pending/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_commit_preserves_but_rollback_discards",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "rollback-preserves-pending",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192829Z-control-rollback-preserves-pending/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_commit_preserves_but_rollback_discards",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "discard-clears-type-metadata",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192833Z-control-discard-clears-type-metadata/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_discard_keeps_types_reset_clears",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "reset-keeps-pending",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192837Z-control-reset-keeps-pending/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_discard_keeps_types_reset_clears",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "failed-gate-removed",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192840Z-control-failed-gate-removed/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_failed_run_does_not_consult_engine",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "tiny-pull-unsigned",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192843Z-control-tiny-pull-unsigned/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_tiny_signed_pull_count",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    },
+    {
+      "kind": "control",
+      "control": "empty-error-is-failure",
+      "receipt": ".g5/Verus_verification/results/bolt_stream/20261115T192846Z-control-empty-error-is-failure/receipt.json",
+      "verdict": "EXPECTED_FAIL",
+      "fresh": true,
+      "named": [
+        {
+          "fn": "theorem_raw_error_string_decides_failure",
+          "explicit_failure": true,
+          "resource_failure": false
+        }
+      ],
+      "whole_control_resource_limit": false
+    }
+  ],
+  "cost": {
+    "final_proof_subprocess_s": 2.384637000010116,
+    "final_controls_subprocess_s": 80.52080274999025,
+    "binding_receipt_core_s": 0.89965841700905,
+    "upstream_pytest_s": 0.8,
+    "upstream_guarded_s": 1.3320514159859158,
+    "no_token_cache_currency_or_solver_cpu_measure": true
+  },
+  "scope": "As-built specification with real pinned in-process Python/AsyncMock/StreamReader and named engine provider; no executable body/network/database proof; no owner policy or repair inferred."
+}

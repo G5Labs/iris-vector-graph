@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_partial_pull_drops_suffix_and_reports_no_more"
+    ],
+    "find": "out:records(rows)+seq![Answer::Summary{has_more:None}]",
+    "name": "pull-reports-more",
+    "replace": "out:records(rows)+seq![Answer::Summary{has_more:Some(true)}]",
+    "why": "pull-reports-more"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_partial_pull_drops_suffix_and_reports_no_more"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/controls/pull-reports-more/20261115T192816Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 7,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_partial_pull_drops_suffix_and_reports_no_more": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192816Z-control-pull-reports-more-theorem_partial_pull_drops_suffix_and_reports_no_more.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-bolt-20261115/verus/bolt_stream/20261115T192816Z-control-pull-reports-more.log",
+    "timed_out": false,
+    "verified": 36
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261115T192821Z-control-pull-reports-more/logs/20261115T192816Z-control-pull-reports-more-theorem_partial_pull_drops_suffix_and_reports_no_more.log": "87c4c6b299fd2983a54b0ba58887397c320653f814ce2e011c629cd6a8399115",
+    ".g5/Verus_verification/results/bolt_stream/20261115T192821Z-control-pull-reports-more/logs/20261115T192816Z-control-pull-reports-more.log": "13d0c92c400bc9175097eb6d33145bc9067d48d51d48a8f399f7dd34ae6fb9d5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

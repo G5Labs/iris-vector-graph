@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_backtrack_derives_path_and_cost"
+    ],
+    "find": "v.unwrap() as nat}else{1}",
+    "name": "nonpositive-weight-zero",
+    "replace": "v.unwrap() as nat}else{0}",
+    "why": "Changes default/nonpositive effective weight from one to zero."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_backtrack_derives_path_and_cost"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_paths/model.json": "dda5c0ccd594ace9498a3d65b835eecd463e9d359d4e0817e6c40aff6b000b86",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/controls/nonpositive-weight-zero/20261115T193140Z/models/weighted_paths/weighted_paths.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_backtrack_derives_path_and_cost": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T193140Z-control-nonpositive-weight-zero-theorem_backtrack_derives_path_and_cost.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration9-weighted-20261115/verus/weighted_paths/20261115T193140Z-control-nonpositive-weight-zero.log",
+    "timed_out": false,
+    "verified": 43
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_paths/20261115T193143Z-control-nonpositive-weight-zero/logs/20261115T193140Z-control-nonpositive-weight-zero-theorem_backtrack_derives_path_and_cost.log": "c836addb14f63adaeb06c24d40728b5c9f8d6fc29768e6fbbc0a36f7c3c9e35e",
+    ".g5/Verus_verification/results/weighted_paths/20261115T193143Z-control-nonpositive-weight-zero/logs/20261115T193140Z-control-nonpositive-weight-zero.log": "9e58dfa17ec5bca72807b4c094fede46911c4514068569561326d0872d045481"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
