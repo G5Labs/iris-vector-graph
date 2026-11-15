@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_final_status_does_not_validate_task"
+    ],
+    "find": "if !provider_read || !s.rows.contains_key(g){Status::Error}",
+    "name": "status-joins-task-existence",
+    "replace": "if !provider_read || !s.rows.contains_key(g) || (s.rows.contains_key(g) && !object_exists(s,s.rows[g].task_id)){Status::Error}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_final_status_does_not_validate_task"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "0e93bb9d52074062d2ac146c9b2e6d161b099e72ef0d518fe6affbd7c65adad4",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "b26d8337375fecbed4b0c09e1206da5b052209556e7f95252738f77c23c7480b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/status-joins-task-existence/20261115T184046Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_final_status_does_not_validate_task": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T184046Z-control-status-joins-task-existence-theorem_final_status_does_not_validate_task.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T184046Z-control-status-joins-task-existence.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261115T184048Z-control-status-joins-task-existence/logs/20261115T184046Z-control-status-joins-task-existence-theorem_final_status_does_not_validate_task.log": "c9bace7120787d2fbde29b6fa9f214d5634cabfa79e2d18e66b79b1c1c188994",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T184048Z-control-status-joins-task-existence/logs/20261115T184046Z-control-status-joins-task-existence.log": "333b268785b97675a0cfb9578b1cba9e5ca9a7cdd2b67720cbd2d3d8e42c59e6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

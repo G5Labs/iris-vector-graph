@@ -1,0 +1,89 @@
+{
+  "cases": [
+    {
+      "chunk_size": 65535,
+      "first_body": "b00f",
+      "expected_second": "b3108852455455524e2031a0a0",
+      "frames": [
+        "0002b00f0000",
+        "000db3108852455455524e2031a0a00000"
+      ],
+      "observed": [
+        {
+          "body_hex": "b00f",
+          "buffer_hex": ""
+        },
+        {
+          "body_hex": "b3108852455455524e2031a0a0",
+          "buffer_hex": ""
+        }
+      ],
+      "preserved": true
+    },
+    {
+      "chunk_size": 1,
+      "first_body": "b00f",
+      "expected_second": "b3108852455455524e2031a0a0",
+      "frames": [
+        "0001b000010f0000",
+        "000db3108852455455524e2031a0a00000"
+      ],
+      "observed": [
+        {
+          "body_hex": "b00f",
+          "buffer_hex": "0000"
+        },
+        {
+          "body_hex": "",
+          "buffer_hex": ""
+        }
+      ],
+      "preserved": false
+    },
+    {
+      "chunk_size": 2,
+      "first_body": "b00f",
+      "expected_second": "b3108852455455524e2031a0a0",
+      "frames": [
+        "0002b00f0000",
+        "000db3108852455455524e2031a0a00000"
+      ],
+      "observed": [
+        {
+          "body_hex": "b00f",
+          "buffer_hex": ""
+        },
+        {
+          "body_hex": "b3108852455455524e2031a0a0",
+          "buffer_hex": ""
+        }
+      ],
+      "preserved": true
+    },
+    {
+      "chunk_size": 3,
+      "first_body": "b00f",
+      "expected_second": "b3108852455455524e2031a0a0",
+      "frames": [
+        "0002b00f0000",
+        "000db3108852455455524e2031a0a00000"
+      ],
+      "observed": [
+        {
+          "body_hex": "b00f",
+          "buffer_hex": ""
+        },
+        {
+          "body_hex": "b3108852455455524e2031a0a0",
+          "buffer_hex": ""
+        }
+      ],
+      "preserved": true
+    }
+  ],
+  "ordinary_codec_roundtrip_valid": true,
+  "network_connect_calls": 0,
+  "scope": "actual product encoder/stateless decoder and BoltSession._recv_message; two local AsyncMock WebSocket frames, no socket/listener/auth/database; source-derived potential defect, not a new formal proof",
+  "elapsed": 0.005321249976987019,
+  "source_sha256": "8282cb51cd24e5fdb14c5e1d52280ea5877b04cd1c3ae08c02ac8a53ab721691"
+}

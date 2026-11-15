@@ -103,6 +103,9 @@ Consequence: a caller is told every edge was written while one has no structural
 
 Repair proposal (not implemented): run the structural step before the first Set in `WriteStores`, or wrap `WriteStores` in its own `TSTART`/`TROLLBACK 1`; make the bulk fallback raise, or re-send only the edges not yet written. Open choice: [temporal.write.partial-failure](../ontology/features/temporal.g5.md#temporal.write.partial-failure). Governing statements: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.structural](../ontology/features/temporal.g5.md#temporal.structural).
 
+
+Iteration 8 strengthens completed-prefix then whole-batch replay with the known F-0502 time carrier: after actual native full success followed by an injected reply error, raw0 can leave both current-time and epoch0 events while count1 is reported. retry_replay derives completed prefix state, entire fallback and final points; positive and prewrite neighbors remain. [Scope and controls](models/retry_replay/NOTES.md). Partial effects within one write, real transport faults, failing fallback items and other modes remain open; no repair or new bug count.
+
 <a id="bug-tmp-002"></a>
 ### An update at an occupied temporal coordinate counts the edge twice in the statistics
 
@@ -7594,6 +7597,8 @@ Reproduced by: none (confirmed-source)
 - Source severity S3, confidence medium; module 15; governing page here: `fhir.`.
 - Remedy proposed by the playbook arm (not implemented): Wrap the task change and the task_id update in one transaction (IRIS transactions span the IRISSYS and namespace databases), or make Unschedule find tasks by (TaskClass, NameSpace, GraphId) rather than by the stored id.
 - Not yet compared with the guidance arm's entries beyond the confirmed merges.
+
+Iteration 8 strengthens the inherited separate TaskManager and registry-write root, not a new bug: fhir_tasks derives raw ID/class/namespace/alternating Settings ownership, then save/delete before SQL, orphan/stale/retry and eligible canonical target/status projection. Allocation can equal an unused stale registry ID; orphan/two-task claims retain inequality rather than excluding that neighbor. Actual native20 confirms ordinary ownership/settings/interval/persistence and missing-repository refusal, not a real save/delete+SQL fault. Those faults are conditional pre-effect operation contracts; full successful Status/FHIR repository, namespace guard setup, background scheduling and loader generality remain qualified. No atomicity repair or owner decision implemented.
 
 _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather than edit._
 

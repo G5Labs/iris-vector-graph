@@ -205,7 +205,9 @@ def main():
     with patch.object(IRISGraphStore,'bulk_write_temporal_edges',fn):detection['fallback-zero-empty']=not run_case(False,0,available=False)['agrees']
     assert IRISGraphStore.bulk_write_temporal_edges is original
     base=run_case(False,0);altered=json.loads(json.dumps(base['windows']));altered[2][0]['timestamp']=0
-    detection['changed-final-coordinate']=altered!=base['windows']
+    _,expected_state,expected_rev=model(False,0,MISSING,True,True,'',True,False)
+    wanted_views=expected_views(expected_state,expected_rev,'')
+    detection['changed-final-coordinate']=base['windows']==wanted_views and altered!=wanted_views
     mismatches=[c for c in cases if not c['agrees']];verdict='AGREES' if not mismatches and all(s['agrees'] for s in special) and all(detection.values()) else 'DISAGREES'
     out=bc.write_receipt('temporal_clock',Path(__file__),{'verdict':verdict,'comparisons':len(cases),'window_comparisons':len(cases)*len(QUERIES),
         'mismatch_count':len(mismatches),'mismatches':mismatches[:10],'cases':cases,'special':special,'detection':detection,'elapsed':time.monotonic()-start,

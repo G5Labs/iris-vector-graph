@@ -1,0 +1,39 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T183838Z/models/fhir_tasks/fhir_tasks.rs:166:1
+    |
+166 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T183838Z/models/fhir_tasks/fhir_tasks.rs:170:9
+    |
+166 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+170 |         schedule(s,g,ns,n,fresh,Fault::Sql).state.tasks.contains_key(fresh),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T183838Z/models/fhir_tasks/fhir_tasks.rs:171:9
+    |
+171 |         schedule(s,g,ns,n,fresh,Fault::Sql).state.tasks[fresh]==scheduled_task(g,ns,n),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T183838Z/models/fhir_tasks/fhir_tasks.rs:171:9
+    |
+166 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+171 |         schedule(s,g,ns,n,fresh,Fault::Sql).state.tasks[fresh]==scheduled_task(g,ns,n),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

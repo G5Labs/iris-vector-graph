@@ -1,0 +1,73 @@
+verification results:: 66 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fault-skips-first-item/20261115T183344Z/models/retry_replay/retry_replay.rs:59:1
+   |
+59 | pub proof fn theorem_cutoff_derives_completed_prefix(s:clock::stores::Global,es:Seq<clock::Request>,clocks:Seq<int>,n:nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fault-skips-first-item/20261115T183344Z/models/retry_replay/retry_replay.rs:60:13
+   |
+59 | pub proof fn theorem_cutoff_derives_completed_prefix(s:clock::stores::Global,es:Seq<clock::Request>,clocks:Seq<int>,n:nat)
+   | -------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+60 |     ensures counts(s,es,clocks,Fault::ErrorAfter(n)).outcome.state==clock::fold(s,es.take(prefix_len(n,es.len()) as int),true,clocks).state,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fault-skips-first-item/20261115T183344Z/models/retry_replay/retry_replay.rs:61:9
+   |
+59 | pub proof fn theorem_cutoff_derives_completed_prefix(s:clock::stores::Global,es:Seq<clock::Request>,clocks:Seq<int>,n:nat)
+   | -------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+60 |     ensures counts(s,es,clocks,Fault::ErrorAfter(n)).outcome.state==clock::fold(s,es.take(prefix_len(n,es.len()) as int...
+61 |         counts(s,es,clocks,Fault::ErrorAfter(n)).completed==prefix_len(n,es.len()),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fault-skips-first-item/20261115T183344Z/models/retry_replay/retry_replay.rs:65:13
+   |
+63 |   pub proof fn theorem_fault_replays_entire_batch(s:clock::stores::Global,es:Seq<clock::Request>,clocks:Seq<int>,n:nat)
+   |   --------------------------------------------------------------------------------------------------------------------- at the end of the function body
+64 |       requires es.len()>0,clock::batch_valid(es),
+65 |       ensures run(s,es,clocks,Fault::ErrorAfter(n)).outcome==clock::fold(
+   |  _____________^
+66 | |         clock::fold(s,es.take(prefix_len(n,es.len()) as int),true,clocks).state,es,false,clocks),
+   | |________________________________________________________________________________________________^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fault-skips-first-item/20261115T183344Z/models/retry_replay/retry_replay.rs:69:1
+   |
+69 | pub proof fn theorem_zero_lost_reply_retains_two_events(e:clock::stores::Edge,now:int,w:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fault-skips-first-item/20261115T183344Z/models/retry_replay/retry_replay.rs:72:9
+   |
+69 | pub proof fn theorem_zero_lost_reply_retains_two_events(e:clock::stores::Edge,now:int,w:int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+...
+72 |         read(single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(1)),e,now,false)==Some(w),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fault-skips-first-item/20261115T183344Z/models/retry_replay/retry_replay.rs:74:9
+   |
+69 | pub proof fn theorem_zero_lost_reply_retains_two_events(e:clock::stores::Edge,now:int,w:int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+...
+74 |         read(single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(1)),e,now,true)==Some(w),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fault-skips-first-item/20261115T183344Z/models/retry_replay/retry_replay.rs:119:13
+    |
+117 |   pub proof fn theorem_mixed_prefix_replay_reaches_three_points(a:clock::stores::Edge,b:clock::stores::Edge,now:int,n:int,wa:int,wb:int,k:nat)
+    |   -------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+118 |       requires a.2!=b.2,now>0,n>0,1<=k<=2,
+119 |       ensures ({let es=seq![request(a,0,wa,true),request(b,n,wb,true)];let r=run(Map::empty(),es,seq![now,now],Fault::ErrorAfter(k));
+    |  _____________^
+120 | |         read(r,a,0,false)==Some(wa) && read(r,a,now,false)==Some(wa) && read(r,b,n,false)==Some(wb)
+121 | |         && r.outcome.count==2 && r.outcome.collisions==0}),
+    | |__________________________________________________________^ failed this postcondition
+
+error: aborting due to 6 previous errors
+

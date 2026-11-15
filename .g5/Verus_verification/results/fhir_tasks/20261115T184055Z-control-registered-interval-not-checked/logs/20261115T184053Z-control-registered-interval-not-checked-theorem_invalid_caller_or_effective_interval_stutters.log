@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/registered-interval-not-checked/20261115T184053Z/models/fhir_tasks/fhir_tasks.rs:139:9
+    |
+136 |   pub proof fn theorem_invalid_caller_or_effective_interval_stutters(s:State,g:Str,ns:Str,fresh:Str,raw:Interval)
+    |   --------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+139 | /         s.rows.contains_key(g) && s.rows[g].interval<60 ==>
+140 | |             public_schedule(s,g,ns,Interval::Omitted,fresh,Fault::None).reply==Reply::Error(Reason::Interval),
+    | |_____________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

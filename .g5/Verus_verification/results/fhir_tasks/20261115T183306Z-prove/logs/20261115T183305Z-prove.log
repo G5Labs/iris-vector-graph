@@ -1,0 +1,26 @@
+verification results:: 22 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:187:13
+    |
+185 |   pub proof fn theorem_orphan_survives_unschedule_and_can_tick(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+186 |       requires s.rows.contains_key(g),n>=60,!object_exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),
+187 |       ensures ({let saved=schedule(s,g,ns,n,fresh,Fault::Sql).state;let removed=unschedule(saved,g,ns,Fault::None);
+    |  _____________^
+188 | |         removed.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && removed.state.rows[g].task_id==seq![]
+189 | |         && tick(removed.state,fresh,reply)==Some(on_task(g,ns,reply))}),
+    | |_______________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:194:13
+    |
+191 |   pub proof fn theorem_schedule_retry_can_leave_two_tasks(s:State,g:Str,ns:Str,first:Str,second:Str,n:int)
+    |   -------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+194 |       ensures ({let saved=schedule(s,g,ns,n,first,Fault::Sql).state;let retried=schedule(saved,g,ns,n,second,Fault::None).state;
+    |  _____________^
+195 | |         retried.rows[g].task_id==second && retried.tasks.contains_key(first) && retried.tasks.contains_key(second)}),
+    | |____________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -145,6 +145,9 @@ def controls(model_dir: Path) -> int:
     worst = 0
     summary = []
     only = os.environ.get("CONTROL")
+    if only and not any(c["name"] == only for c in model.get("controls", [])):
+        print(f"ERROR: {model['name']}: no control named {only!r}; no verifier was run")
+        return 2
     for c in model.get("controls", []):
         name = c["name"]
         if only and name != only:

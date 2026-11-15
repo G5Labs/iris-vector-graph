@@ -1,0 +1,35 @@
+verification results:: 21 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/namespace-guard-ignored/20261115T183408Z/models/fhir_tasks/fhir_tasks.rs:118:9
+    |
+116 | pub proof fn theorem_wrong_field_refuses(t:Task,g:Str,ns:Str)
+    | ------------------------------------------------------------- at the end of the function body
+117 |     ensures t.class!=sync_class() ==> ownership(t,g,ns)==Owner::Class,
+118 |         t.class==sync_class() && t.namespace!=ns ==> ownership(t,g,ns)==Owner::Namespace,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/namespace-guard-ignored/20261115T183408Z/models/fhir_tasks/fhir_tasks.rs:187:13
+    |
+185 |   pub proof fn theorem_orphan_survives_unschedule_and_can_tick(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+186 |       requires s.rows.contains_key(g),n>=60,!object_exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),
+187 |       ensures ({let saved=schedule(s,g,ns,n,fresh,Fault::Sql).state;let removed=unschedule(saved,g,ns,Fault::None);
+    |  _____________^
+188 | |         removed.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && removed.state.rows[g].task_id==seq![]
+189 | |         && tick(removed.state,fresh,reply)==Some(on_task(g,ns,reply))}),
+    | |_______________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/namespace-guard-ignored/20261115T183408Z/models/fhir_tasks/fhir_tasks.rs:194:13
+    |
+191 |   pub proof fn theorem_schedule_retry_can_leave_two_tasks(s:State,g:Str,ns:Str,first:Str,second:Str,n:int)
+    |   -------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+194 |       ensures ({let saved=schedule(s,g,ns,n,first,Fault::Sql).state;let retried=schedule(saved,g,ns,n,second,Fault::None).state;
+    |  _____________^
+195 | |         retried.rows[g].task_id==second && retried.tasks.contains_key(first) && retried.tasks.contains_key(second)}),
+    | |____________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

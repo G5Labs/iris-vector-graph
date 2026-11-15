@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/status-joins-task-existence/20261115T184046Z/models/fhir_tasks/fhir_tasks.rs:221:13
+    |
+219 | pub proof fn theorem_final_status_does_not_validate_task(s:State,g:Str,current:int)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+220 |     requires s.rows.contains_key(g),s.rows[g].version.is_none() || s.rows[g].version.unwrap()<=current,
+221 |     ensures status(s,g,current,true)==status(State{tasks:Map::empty(),..s},g,current,true),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -139,3 +139,15 @@ all controls are explicitly replayed with inherited4, retaining the earlier runs
 Binding is about1.04s;
 upstream tests2.14s total (pytest1.58s). Final-phase verifier costs and receipt
 freshness are in iteration7/timestamp-validation.json. No independent grade exists.
+
+## Iteration8 sensitivity correction
+
+The new retry builder found that the original changed-final-coordinate check only
+compared edited output with original output. Its observation-control credit is
+withdrawn; the three actual producer mutations remain meaningful. The corrected
+harness derives state/reverse/windows independently from the raw case and requires
+the original to satisfy that oracle and altered data to fail it. A fresh binding
+receipt is retained in iteration8/clock-observation-refresh.log; proof inputs and
+product/native9 observations are unchanged-input carry-forwards, not new coverage.
+The sealed iteration7 source and original passing receipt remain recoverable; this
+correction also qualifies its peer-review claim about the observation control.

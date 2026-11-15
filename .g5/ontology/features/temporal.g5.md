@@ -94,6 +94,16 @@ When a temporal write fails part way, what may it leave behind, and must a retry
 - Alternative: a failed write leaves nothing, so a retry starts clean.
 - Open either way: a retry in insert mode now finds the edge, reports a collision and never writes the missing structural edge, statistics or attributes.
 
+<a id="temporal.write.retry"></a>
+[D · temporal.write.retry]
+
+A Counts error does not undo completed items: the Python store retries every
+normalized item through the single writer and reports only accepted fallback calls.
+
+- With a nonzero current clock, an error after a completed zero-timestamp item can leave both its current-time and epoch-zero events while reporting one write. A failure before any item writes leaves only epoch zero.
+- A positive explicit timestamp collides at its original coordinate; fallback can report one accepted call while inserting nothing new and reporting no collisions.
+- A completed prefix of a mixed zero/positive batch remains when the whole batch is replayed; the failed prefix's counters are discarded. This describes completed item boundaries and successful fallback calls, not a partial effect inside one write or a real transport failure.
+
 <a id="temporal.write.concurrency"></a>
 [Q · temporal.write.concurrency]
 
@@ -456,6 +466,15 @@ The live test hashes every store across batch sizes and a shuffled order. Under 
 Observed: when a batch call fails, the Python store re-sends every edge of the batch one by one and counts collisions as written (finding F2 in [stage-A notes](../../uplift/ivg-verus-initial/intent/temporal.md)).
 
 Findings: [A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written](../../Verus_verification/bugs_issues.md#bug-tmp-001)
+
+### temporal.write.retry
+- agent
+- user-facing-behavior
+- data-integrity
+- Expands: [Partial write failure](#temporal.write.partial-failure).
+- Formal: [completed-prefix and whole-batch replay](../../Verus_verification/models/retry_replay/retry_replay.rs), [exact producer/writer/reader scope](../../Verus_verification/models/retry_replay/NOTES.md).
+
+Evidence: [retained predictions](../../uplift/consolidated/iteration-8/retry-PAIRS.md), [actual native full-completion then injected reply error](../../uplift/consolidated/iteration-7/posteffect-native.json). Native partial-prefix errors, fallback item failures, upsert/skip, within-write failure and concurrency remain conditional or open. Known bug-tmp-001/F-0502 are strengthened, not newly discovered; no retry repair or owner policy was accepted.
 
 ### temporal.write.concurrency
 - Sources: [ADR-0010 context](../../../docs/adr/0010-degree-is-counted-never-stored.md#L17-L24), [spec 254 sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L86), [NoteLatest](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L488-L497); stage-A findings: [F6, F7](../../uplift/ivg-verus-initial/intent/temporal.md)

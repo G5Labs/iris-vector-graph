@@ -38,6 +38,18 @@ An operator registers a repository once, which names its graph, builds the graph
 
 ## Keeping the graph in step
 
+<a id="fhir.graph.lifecycle.tasks"></a>
+[D · fhir.graph.lifecycle.tasks]
+
+Scheduling derives ownership from the actual saved task before changing it.
+
+- It reuses an existing object only when its class is `Graph.KG.FHIRGraphSyncTask`, its namespace is current, and its raw Settings identify this graph; the last exact `GraphId` key wins, including an odd last key's empty value.
+- An existing foreign object refuses without task or registry changes; a stale ID naming no object is replaced on schedule or cleared on unschedule. A removed task's old ID is returned even after the registry ID is cleared.
+- The public interval is an integer of at least sixty seconds, or None to retain the registered interval; an effective interval below sixty refuses. Task minutes round upward while registered seconds remain exact.
+- Task save/delete precedes registry update; a failure in the later update can leave them disagreeing, so a status ID alone proves neither a live task nor ownership. A new ID equal to an unused stale registry ID can accidentally restore their agreement even on that error.
+- The saved canonical GraphId determines the eligible task invocation target; busy succeeds as an invocation while error, thrown call or invalid reply fails. Scheduling proves neither background activation nor completed sync.
+
+
 <a id="fhir.sync"></a>
 [I · fhir.sync]
 
@@ -179,6 +191,7 @@ The FHIR graph comes from specs 231 to 233, whose directories are not in the tre
 Live coverage: `tests/e2e/test_235_lazy_fhir_tables_e2e.py`. Spec 235's status line still says "Draft", although it shipped in 4.1.0.
 
 ### fhir.graph.lifecycle
+- Formal: [task ownership and lifecycle projection](../../Verus_verification/models/fhir_tasks/fhir_tasks.rs), [source roles and provider limits](../../Verus_verification/models/fhir_tasks/NOTES.md).
 
 - Sources: [FHIR_GRAPH.md](../../../docs/FHIR_GRAPH.md); [_engine/fhir_graph.py](../../../iris_vector_graph/_engine/fhir_graph.py); [ADMIN_GUIDE (restored task IDs)](../../../docs/ADMIN_GUIDE.md)
 - Expands: [FHIR graph](#fhir.graph)
@@ -186,6 +199,15 @@ Live coverage: `tests/e2e/test_235_lazy_fhir_tables_e2e.py`. Spec 235's status l
 - operations
 
 The task-ID refusal came in 4.7.0. No operation that unregisters a repository was found.
+
+### fhir.graph.lifecycle.tasks
+- agent
+- user-facing-behavior
+- data-integrity
+- Expands: [FHIR lifecycle](#fhir.graph.lifecycle).
+- Formal: [raw registry/task state to reader](../../Verus_verification/models/fhir_tasks/fhir_tasks.rs), [qualified roles](../../Verus_verification/models/fhir_tasks/NOTES.md).
+
+Evidence: [frozen pairs](../../uplift/consolidated/iteration-8/fhir-PAIRS.md), [native Task Manager and registry points](../../uplift/consolidated/iteration-8/fhir-native.json). Full Status needs real FHIR metadata/feed tables; its successful point projection remains conditional. Native wrong-namespace setup refused before the guard, and save/delete/SQL fault ordering is source/adapter evidence. Fault tags are pre-effect at the named operation, canonical loader and allocation are provider contracts, and unassigned task fields/background timing are outside the new proof. Existing F-C1501 and its intended remedy remain; no owner decision or new defect is inferred.
 
 ### fhir.sync
 

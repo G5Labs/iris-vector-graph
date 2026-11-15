@@ -1,0 +1,59 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_rounding_bounds",
+      "theorem_effective_interval"
+    ],
+    "find": "n/60+if n%60>0{1int}else{0int}",
+    "name": "minute-ceiling-lost",
+    "replace": "n/60"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_rounding_bounds",
+      "theorem_effective_interval"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "71fcae2b72e064fdc787021b43fd959735a3834d5d576f572dd8bbbf40789e28",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "b26d8337375fecbed4b0c09e1206da5b052209556e7f95252738f77c23c7480b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/minute-ceiling-lost/20261115T183831Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_effective_interval": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183831Z-control-minute-ceiling-lost-theorem_effective_interval.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rounding_bounds": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183831Z-control-minute-ceiling-lost-theorem_rounding_bounds.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183831Z-control-minute-ceiling-lost.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183833Z-control-minute-ceiling-lost/logs/20261115T183831Z-control-minute-ceiling-lost-theorem_effective_interval.log": "28952c0a5cb87ca9f2e50063f481085df7094a3b7d901522fa033beb2f1c6838",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183833Z-control-minute-ceiling-lost/logs/20261115T183831Z-control-minute-ceiling-lost-theorem_rounding_bounds.log": "e074deabb33ee3260e106f6c5d24a14ac4b03b00fc9190c7651caf1ecd47c507",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183833Z-control-minute-ceiling-lost/logs/20261115T183831Z-control-minute-ceiling-lost.log": "76426aecd565c8a1303376a510c9848117d7629bb9d43f88fc64693eb42115f4"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

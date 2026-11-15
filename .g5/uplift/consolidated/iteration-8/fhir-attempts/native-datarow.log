@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-8/fhir-native.py", line 115, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-8/fhir-native.py", line 61, in main
+    a=schedule(mine,60);tid=str(a['task_id']);t=task(tid);r=registry(mine)
+                                                            ^^^^^^^^^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-8/fhir-native.py", line 28, in registry
+    q=c.cursor();q.execute('SELECT task_id,interval_s FROM Graph_KG.fhir_graphs WHERE graph_id=?',[g]);r=q.fetchone();q.close();return {'task_id':None if not r[0] else str(r[0]),'interval':int(r[1])}
+                                                                                                                                                              ~^^^
+iris.dbapi.ProgrammingError: <COMMUNICATION LINK ERROR> Cursor closed; Details: DataRow is inaccessible and/or Cursor is closed

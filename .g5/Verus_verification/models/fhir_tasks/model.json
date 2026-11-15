@@ -1,0 +1,163 @@
+{
+  "name": "fhir_tasks",
+  "root": "fhir_tasks.rs",
+  "expected_verified": 27,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "first-GraphId-wins",
+      "find": "if tail.is_some(){tail}else{if xs[0]==graph_key(){Some(if xs.len()>1{xs[1]}else{seq![]})}else{None}}",
+      "replace": "if xs[0]==graph_key(){Some(if xs.len()>1{xs[1]}else{seq![]})}else{tail}",
+      "expect_fail_in": [
+        "theorem_settings_last_key_wins"
+      ]
+    },
+    {
+      "name": "odd-GraphId-key-dropped",
+      "find": "{if xs.len()==0{None}else{",
+      "replace": "{if xs.len()<2{None}else{",
+      "expect_fail_in": [
+        "theorem_odd_or_missing_graph_key"
+      ]
+    },
+    {
+      "name": "class-guard-ignored",
+      "find": "if t.class!=sync_class(){Owner::Class}",
+      "replace": "if false{Owner::Class}",
+      "expect_fail_in": [
+        "theorem_wrong_field_refuses"
+      ]
+    },
+    {
+      "name": "namespace-guard-ignored",
+      "find": "else if t.namespace!=ns{Owner::Namespace}",
+      "replace": "else if false{Owner::Namespace}",
+      "expect_fail_in": [
+        "theorem_wrong_field_refuses"
+      ]
+    },
+    {
+      "name": "graph-setting-guard-ignored",
+      "find": "else if saved_graph(t.settings)!=g{Owner::Graph}",
+      "replace": "else if false{Owner::Graph}",
+      "expect_fail_in": [
+        "theorem_wrong_field_refuses"
+      ]
+    },
+    {
+      "name": "caller-explicit-zero-accepted",
+      "find": "if n>=60{Some(n)}else{None}",
+      "replace": "if n>=0{Some(n)}else{None}",
+      "expect_fail_in": [
+        "theorem_caller_none_and_explicit_zero"
+      ]
+    },
+    {
+      "name": "minute-ceiling-lost",
+      "find": "n/60+if n%60>0{1int}else{0int}",
+      "replace": "n/60",
+      "expect_fail_in": [
+        "theorem_rounding_bounds",
+        "theorem_effective_interval"
+      ]
+    },
+    {
+      "name": "own-id-replaced",
+      "find": "let id=if has{row.task_id}else{fresh};",
+      "replace": "let id=fresh;",
+      "expect_fail_in": [
+        "theorem_existing_own_reuses_id"
+      ]
+    },
+    {
+      "name": "stale-id-looks-existing",
+      "find": "let has=object_exists(s,row.task_id);\n            if has",
+      "replace": "let has=row.task_id.len()>0;\n            if has",
+      "expect_fail_in": [
+        "theorem_stale_id_creates_and_status_reads"
+      ]
+    },
+    {
+      "name": "task-save-rolled-back-on-sql-error",
+      "find": "fail(saved,Reason::Sql,seq![Op::Assign,Op::Save,Op::Sql])",
+      "replace": "fail(s,Reason::Sql,seq![Op::Assign,Op::Save,Op::Sql])",
+      "expect_fail_in": [
+        "theorem_sql_failure_preserves_saved_orphan",
+        "theorem_orphan_survives_unschedule_and_can_tick"
+      ]
+    },
+    {
+      "name": "save-error-continues-to-sql",
+      "find": "else if fault==Fault::Save {",
+      "replace": "else if false {",
+      "expect_fail_in": [
+        "theorem_assign_or_save_failure_precedes_sql"
+      ]
+    },
+    {
+      "name": "delete-error-continues-to-sql",
+      "find": "else if has && fault==Fault::Delete {",
+      "replace": "else if false {",
+      "expect_fail_in": [
+        "theorem_delete_failure_precedes_sql"
+      ]
+    },
+    {
+      "name": "task-delete-rolled-back-on-sql-error",
+      "find": "if fault==Fault::Sql {fail(deleted,Reason::Sql,ops)}",
+      "replace": "if fault==Fault::Sql {fail(s,Reason::Sql,ops)}",
+      "expect_fail_in": [
+        "theorem_sql_failure_keeps_deleted_task_and_stale_id",
+        "theorem_delete_sql_failure_retry_is_stale"
+      ]
+    },
+    {
+      "name": "unschedule-reply-clears-old-id",
+      "find": "reply:Reply::Unscheduled{old_id:row.task_id,removed:has}",
+      "replace": "reply:Reply::Unscheduled{old_id:seq![],removed:has}",
+      "expect_fail_in": [
+        "theorem_unschedule_own_deletes_and_reports_old_id"
+      ]
+    },
+    {
+      "name": "status-joins-task-existence",
+      "find": "if !provider_read || !s.rows.contains_key(g){Status::Error}",
+      "replace": "if !provider_read || !s.rows.contains_key(g) || (s.rows.contains_key(g) && !object_exists(s,s.rows[g].task_id)){Status::Error}",
+      "expect_fail_in": [
+        "theorem_final_status_does_not_validate_task"
+      ]
+    },
+    {
+      "name": "status-downgrades-future-version",
+      "find": "if row.version.is_some() && row.version.unwrap()>current {Status::Error}",
+      "replace": "if false {Status::Error}",
+      "expect_fail_in": [
+        "theorem_future_version_status_refuses"
+      ]
+    },
+    {
+      "name": "busy-task-reported-failed",
+      "find": "st!=error_status()",
+      "replace": "st==seq!['o','k']",
+      "expect_fail_in": [
+        "theorem_busy_is_success_error_and_parse_failures_fail"
+      ]
+    },
+    {
+      "name": "tick-loses-saved-GraphId",
+      "find": "Some(on_task(saved_graph(s.tasks[id].settings),s.tasks[id].namespace,reply))",
+      "replace": "Some(on_task(seq![],s.tasks[id].namespace,reply))",
+      "expect_fail_in": [
+        "theorem_successful_schedule_derives_tick_target"
+      ]
+    },
+    {
+      "name": "registered-interval-not-checked",
+      "find": "if n<60{fail(s,Reason::Interval,seq![])}",
+      "replace": "if false{fail(s,Reason::Interval,seq![])}",
+      "expect_fail_in": [
+        "theorem_invalid_caller_or_effective_interval_stutters"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-delete-rolled-back-on-sql-error/20261115T183426Z/models/fhir_tasks/fhir_tasks.rs:199:13
+    |
+197 |   pub proof fn theorem_delete_sql_failure_retry_is_stale(s:State,g:Str,ns:Str)
+    |   ---------------------------------------------------------------------------- at the end of the function body
+198 |       requires s.rows.contains_key(g),object_exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,
+199 |       ensures ({let partial=unschedule(s,g,ns,Fault::Sql).state;let retried=unschedule(partial,g,ns,Fault::None);
+    |  _____________^
+200 | |         retried.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && retried.state.rows[g].task_id==seq![]}),
+    | |______________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

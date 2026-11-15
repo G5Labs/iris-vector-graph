@@ -1,0 +1,53 @@
+verification results:: 24 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/own-id-replaced/20261115T184030Z/models/fhir_tasks/fhir_tasks.rs:158:1
+    |
+158 | pub proof fn theorem_existing_own_reuses_id(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/own-id-replaced/20261115T184030Z/models/fhir_tasks/fhir_tasks.rs:160:13
+    |
+158 | pub proof fn theorem_existing_own_reuses_id(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+159 |     requires s.rows.contains_key(g),object_exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,n>=60,
+160 |     ensures public_schedule(s,g,ns,Interval::Integer(n),fresh,Fault::None).state.rows[g].task_id==s.rows[g].task_id,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/own-id-replaced/20261115T184030Z/models/fhir_tasks/fhir_tasks.rs:161:9
+    |
+158 | pub proof fn theorem_existing_own_reuses_id(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+161 |         public_schedule(s,g,ns,Interval::Integer(n),fresh,Fault::None).state.tasks[s.rows[g].task_id].minutes==minutes(n),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/own-id-replaced/20261115T184030Z/models/fhir_tasks/fhir_tasks.rs:210:13
+    |
+208 |   pub proof fn theorem_allocated_stale_id_becomes_own_even_on_sql_error(s:State,g:Str,ns:Str,n:int)
+    |   ------------------------------------------------------------------------------------------------- at the end of the function body
+209 |       requires s.rows.contains_key(g),s.rows[g].task_id.len()>0,!s.tasks.contains_key(s.rows[g].task_id),n>=60,
+210 |       ensures ({let saved=schedule(s,g,ns,n,s.rows[g].task_id,Fault::Sql).state;
+    |  _____________^
+211 | |         object_exists(saved,saved.rows[g].task_id) && ownership(saved.tasks[saved.rows[g].task_id],g,ns)==Owner::Own
+212 | |         && schedule(saved,g,ns,n,seq!['n','e','x','t'],Fault::None).state.rows[g].task_id==s.rows[g].task_id}),
+    | |______________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/own-id-replaced/20261115T184030Z/models/fhir_tasks/fhir_tasks.rs:237:13
+    |
+233 |   pub proof fn theorem_raw_caller_to_registry_status_and_tick(s:State,g:Str,ns:Str,fresh:Str,raw:Interval,current:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+237 |       ensures ({let done=public_schedule(s,g,ns,raw,fresh,Fault::None);let n=effective(caller_interval(raw).unwrap(),s.rows[g].interval);
+    |  _____________^
+238 | |         let id=if object_exists(s,s.rows[g].task_id){s.rows[g].task_id}else{fresh};
+239 | |         status(done.state,g,current,true)==(Status::Value{task_id:id,interval:n,version:s.rows[g].version,
+240 | |             stale:s.rows[g].version.is_none() || s.rows[g].version.unwrap()<current})
+241 | |         && tick(done.state,id,reply)==Some(on_task(g,ns,reply))}),
+    | |_________________________________________________________________^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

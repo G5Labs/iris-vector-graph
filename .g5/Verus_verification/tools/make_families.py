@@ -177,6 +177,8 @@ P = [
 ]
 
 C = [  # this consolidation's new model directories: (name, scope, design, status, premises/notes)
+    ("retry_replay", "derived completed Counts prefix plus whole-batch single fallback to final coordinates/counts; new units separated from imports", "as-built transcription", "active"),
+    ("fhir_tasks", "raw registry/task settings ownership, caller intervals, task/registry effects and eligible task/final status projection", "as-built transcription", "active"),
     ("procedure_results", "persisted labels to handled CALL aliases/filter/structural tail/projection/result columns, empty validation and cuts", "as-built transcription", "active"),
     ("temporal_clock", "raw caller timestamp and alternate normal/fallback clock resolution to temporal writer/window", "as-built transcription", "active"),
     ("service_health", "actual construction/query/schema provider results to HTTP health plus sticky capture/lazy cache recovery", "as-built transcription", "active"),

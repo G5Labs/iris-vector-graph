@@ -1,0 +1,23 @@
+verification results:: 25 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-delete-rolled-back-on-sql-error/20261115T183845Z/models/fhir_tasks/fhir_tasks.rs:192:9
+    |
+189 | pub proof fn theorem_sql_failure_keeps_deleted_task_and_stale_id(s:State,g:Str,ns:Str)
+    | -------------------------------------------------------------------------------------- at the end of the function body
+...
+192 |         !unschedule(s,g,ns,Fault::Sql).state.tasks.contains_key(s.rows[g].task_id),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-delete-rolled-back-on-sql-error/20261115T183845Z/models/fhir_tasks/fhir_tasks.rs:214:13
+    |
+212 |   pub proof fn theorem_delete_sql_failure_retry_is_stale(s:State,g:Str,ns:Str)
+    |   ---------------------------------------------------------------------------- at the end of the function body
+213 |       requires s.rows.contains_key(g),object_exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,
+214 |       ensures ({let partial=unschedule(s,g,ns,Fault::Sql).state;let retried=unschedule(partial,g,ns,Fault::None);
+    |  _____________^
+215 | |         retried.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && retried.state.rows[g].task_id==seq![]}),
+    | |______________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

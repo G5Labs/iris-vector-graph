@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/fallback-resumes-tail/20261115T183333Z/models/retry_replay/retry_replay.rs:93:9
+   |
+89 | pub proof fn theorem_positive_lost_reply_collides(e:clock::stores::Edge,n:int,now:int,w:int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+...
+93 |         single(Map::empty(),e,n,w,true,now,Fault::ErrorAfter(1)).outcome.count==1,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

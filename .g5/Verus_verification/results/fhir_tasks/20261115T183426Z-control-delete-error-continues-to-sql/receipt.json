@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_delete_failure_precedes_sql"
+    ],
+    "find": "else if has && fault==Fault::Delete {",
+    "name": "delete-error-continues-to-sql",
+    "replace": "else if false {"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_delete_failure_precedes_sql"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "970c984c0e67c01eb3275d984ad09bb86af713c132355f5442f8edfc8dc4b741",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "ad7363ffe79d984dd6ac15d50bc99cabffcdd14b945fafdc762afeae894e700a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/delete-error-continues-to-sql/20261115T183424Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_delete_failure_precedes_sql": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183424Z-control-delete-error-continues-to-sql-theorem_delete_failure_precedes_sql.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183424Z-control-delete-error-continues-to-sql.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183426Z-control-delete-error-continues-to-sql/logs/20261115T183424Z-control-delete-error-continues-to-sql-theorem_delete_failure_precedes_sql.log": "474fb34a872a6601a72b53cb3ca6ce0a2a77865ed2287bba22639fc724ff4961",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183426Z-control-delete-error-continues-to-sql/logs/20261115T183424Z-control-delete-error-continues-to-sql.log": "12a3cf398c4d9080d2fe36c830ac11900c23d1af4bf297c8452b67854650e5c0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

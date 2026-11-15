@@ -1,0 +1,44 @@
+verification results:: 23 verified, 4 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/unschedule-reply-clears-old-id/20261115T184044Z/models/fhir_tasks/fhir_tasks.rs:179:9
+    |
+175 | pub proof fn theorem_unschedule_stale_clears_only_registry(s:State,g:Str,ns:Str)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+179 |         unschedule(s,g,ns,Fault::None).reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/unschedule-reply-clears-old-id/20261115T184044Z/models/fhir_tasks/fhir_tasks.rs:185:9
+    |
+181 | pub proof fn theorem_unschedule_own_deletes_and_reports_old_id(s:State,g:Str,ns:Str)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+...
+185 |         unschedule(s,g,ns,Fault::None).reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:true}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/unschedule-reply-clears-old-id/20261115T184044Z/models/fhir_tasks/fhir_tasks.rs:198:13
+    |
+196 |   pub proof fn theorem_orphan_survives_unschedule_and_can_tick(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+197 |       requires s.rows.contains_key(g),n>=60,!object_exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),...
+198 |       ensures ({let saved=schedule(s,g,ns,n,fresh,Fault::Sql).state;let removed=unschedule(saved,g,ns,Fault::None);
+    |  _____________^
+199 | |         removed.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && removed.state.rows[g].task_id==seq![]
+200 | |         && tick(removed.state,fresh,reply)==Some(on_task(g,ns,reply))}),
+    | |_______________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/unschedule-reply-clears-old-id/20261115T184044Z/models/fhir_tasks/fhir_tasks.rs:216:13
+    |
+214 |   pub proof fn theorem_delete_sql_failure_retry_is_stale(s:State,g:Str,ns:Str)
+    |   ---------------------------------------------------------------------------- at the end of the function body
+215 |       requires s.rows.contains_key(g),object_exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,
+216 |       ensures ({let partial=unschedule(s,g,ns,Fault::Sql).state;let retried=unschedule(partial,g,ns,Fault::None);
+    |  _____________^
+217 | |         retried.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && retried.state.rows[g].task_id==seq![]}),
+    | |______________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

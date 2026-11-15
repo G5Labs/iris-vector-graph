@@ -1,0 +1,240 @@
+{
+  "verdict": "DISAGREES",
+  "comparisons": 7,
+  "mismatches": [
+    "HARNESS_OR_PROVIDER_EXCEPTION: TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'"
+  ],
+  "observations": [
+    {
+      "name": "new60",
+      "got": {
+        "reply": {
+          "status": "scheduled",
+          "graph_id": "fhir:G5T8:d0c87828a",
+          "task_id": "1002",
+          "interval_s": 60,
+          "minutes": 1
+        },
+        "task": {
+          "name": "IVG FHIR sync fhir:G5T8:d0c87828a",
+          "class": "Graph.KG.FHIRGraphSyncTask",
+          "namespace": "USER",
+          "period": 0,
+          "minutes": 1,
+          "settings": [
+            "GraphId",
+            "fhir:G5T8:d0c87828a"
+          ]
+        },
+        "registry": {
+          "task_id": "1002",
+          "interval": 60
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "own-reschedule61",
+      "got": {
+        "reply": {
+          "status": "scheduled",
+          "graph_id": "fhir:G5T8:d0c87828a",
+          "task_id": "1002",
+          "interval_s": 61,
+          "minutes": 2
+        },
+        "task": {
+          "name": "IVG FHIR sync fhir:G5T8:d0c87828a",
+          "class": "Graph.KG.FHIRGraphSyncTask",
+          "namespace": "USER",
+          "period": 0,
+          "minutes": 2,
+          "settings": [
+            "GraphId",
+            "fhir:G5T8:d0c87828a"
+          ]
+        },
+        "registry": {
+          "task_id": "1002",
+          "interval": 61
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "own-unschedule",
+      "got": {
+        "reply": {
+          "status": "unscheduled",
+          "graph_id": "fhir:G5T8:d0c87828a",
+          "task_id": "1002",
+          "removed": true
+        },
+        "task": null,
+        "registry": {
+          "task_id": null,
+          "interval": 61
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "stale-unschedule",
+      "got": {
+        "reply": {
+          "status": "unscheduled",
+          "graph_id": "fhir:G5T8:d0c87828a",
+          "task_id": "1002",
+          "removed": false
+        },
+        "registry": {
+          "task_id": null,
+          "interval": 61
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "stale-schedule",
+      "got": {
+        "reply": {
+          "status": "scheduled",
+          "graph_id": "fhir:G5T8:d0c87828a",
+          "task_id": "1003",
+          "interval_s": 61,
+          "minutes": 2
+        },
+        "task": {
+          "name": "IVG FHIR sync fhir:G5T8:d0c87828a",
+          "class": "Graph.KG.FHIRGraphSyncTask",
+          "namespace": "USER",
+          "period": 0,
+          "minutes": 2,
+          "settings": [
+            "GraphId",
+            "fhir:G5T8:d0c87828a"
+          ]
+        },
+        "registry": {
+          "task_id": "1003",
+          "interval": 61
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "other-graph-schedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1004",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:d0c87828b",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 0,
+            "minutes": 60,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:d0c87828b"
+            ]
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1004",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:d0c87828b",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 0,
+            "minutes": 60,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:d0c87828b"
+            ]
+          }
+        },
+        "error": "Schedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:d0c87828a names Task Manager task 1004 ('IVG FHIR sync fhir:G5T8:d0c87828b'), which is not this graph's sync task: it syncs FHIR graph fhir:G5T8:d0c87828b. Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:d0c87828a'), and call fhir_graph_schedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "other-graph-unschedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1004",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:d0c87828b",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 0,
+            "minutes": 60,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:d0c87828b"
+            ]
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1004",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:d0c87828b",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 0,
+            "minutes": 60,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:d0c87828b"
+            ]
+          }
+        },
+        "error": "Unschedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:d0c87828a names Task Manager task 1004 ('IVG FHIR sync fhir:G5T8:d0c87828b'), which is not this graph's sync task: it syncs FHIR graph fhir:G5T8:d0c87828b. Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:d0c87828a'), and call fhir_graph_unschedule again"
+      },
+      "agrees": true
+    }
+  ],
+  "identity_checked": true,
+  "container": "ivg-uplift-next-20261115",
+  "graphs": [
+    "fhir:G5T8:d0c87828a",
+    "fhir:G5T8:d0c87828b"
+  ],
+  "created_tasks": [
+    "1002",
+    "1003",
+    "1004",
+    "1005"
+  ],
+  "cleanup": [
+    {
+      "task_id": "1003",
+      "deleted": true,
+      "remaining": false
+    },
+    {
+      "task_id": "1004",
+      "deleted": true,
+      "remaining": false
+    },
+    {
+      "task_id": "1005",
+      "deleted": true,
+      "remaining": false
+    }
+  ],
+  "scope": "Actual Python wrapper/FHIRGraph Open/CheckOwnTask/Schedule/Unschedule/TaskManager save/read/delete and SQL registry point. Direct OnTask observes missing-repository failure only. No genuine FHIR resource projection, background invocation, network fault, SQL-update fault, race or security behavior is claimed.",
+  "script_sha256": "2871316d2e681e97b5c710227894cd4e2b2ec19d893f6840ae1793978ae9070b",
+  "elapsed": 0.300345625000773
+}

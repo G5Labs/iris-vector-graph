@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/save-error-continues-to-sql/20261115T183423Z/models/fhir_tasks/fhir_tasks.rs:152:1
+    |
+152 | pub proof fn theorem_assign_or_save_failure_precedes_sql(s:State,g:Str,ns:Str,fresh:Str,n:int,fault:Fault)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/save-error-continues-to-sql/20261115T183423Z/models/fhir_tasks/fhir_tasks.rs:155:13
+    |
+152 | pub proof fn theorem_assign_or_save_failure_precedes_sql(s:State,g:Str,ns:Str,fresh:Str,n:int,fault:Fault)
+    | ---------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+155 |     ensures schedule(s,g,ns,n,fresh,fault).state==s,!schedule(s,g,ns,n,fresh,fault).ops.contains(Op::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/save-error-continues-to-sql/20261115T183423Z/models/fhir_tasks/fhir_tasks.rs:155:53
+    |
+152 | pub proof fn theorem_assign_or_save_failure_precedes_sql(s:State,g:Str,ns:Str,fresh:Str,n:int,fault:Fault)
+    | ---------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+155 |     ensures schedule(s,g,ns,n,fresh,fault).state==s,!schedule(s,g,ns,n,fresh,fault).ops.contains(Op::Sql),
+    |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

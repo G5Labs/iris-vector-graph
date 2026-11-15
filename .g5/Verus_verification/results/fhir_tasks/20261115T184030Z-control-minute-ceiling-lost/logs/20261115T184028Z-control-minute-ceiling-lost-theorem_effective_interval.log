@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/minute-ceiling-lost/20261115T184028Z/models/fhir_tasks/fhir_tasks.rs:134:65
+    |
+132 | pub proof fn theorem_effective_interval(raw:int,registered:int)
+    | --------------------------------------------------------------- at the end of the function body
+133 |     ensures raw<=0 ==> effective(raw,registered)==registered,
+134 |         raw>0 ==> effective(raw,registered)==raw,minutes(60)==1,minutes(61)==2,
+    |                                                                 ^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

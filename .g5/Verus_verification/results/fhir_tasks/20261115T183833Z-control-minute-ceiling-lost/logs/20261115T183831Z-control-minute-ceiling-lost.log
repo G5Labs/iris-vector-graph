@@ -1,0 +1,21 @@
+verification results:: 25 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/minute-ceiling-lost/20261115T183831Z/models/fhir_tasks/fhir_tasks.rs:130:27
+    |
+128 | pub proof fn theorem_rounding_bounds(n:int)
+    | ------------------------------------------- at the end of the function body
+129 |     requires n>=60,
+130 |     ensures minutes(n)>=1,minutes(n)*60>=n,(minutes(n)-1)*60<n,
+    |                           ^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/minute-ceiling-lost/20261115T183831Z/models/fhir_tasks/fhir_tasks.rs:134:65
+    |
+132 | pub proof fn theorem_effective_interval(raw:int,registered:int)
+    | --------------------------------------------------------------- at the end of the function body
+133 |     ensures raw<=0 ==> effective(raw,registered)==registered,
+134 |         raw>0 ==> effective(raw,registered)==raw,minutes(60)==1,minutes(61)==2,
+    |                                                                 ^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

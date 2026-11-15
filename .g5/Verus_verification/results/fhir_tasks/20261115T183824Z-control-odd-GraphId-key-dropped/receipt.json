@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_odd_or_missing_graph_key"
+    ],
+    "find": "{if xs.len()==0{None}else{",
+    "name": "odd-GraphId-key-dropped",
+    "replace": "{if xs.len()<2{None}else{"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_odd_or_missing_graph_key"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "71fcae2b72e064fdc787021b43fd959735a3834d5d576f572dd8bbbf40789e28",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "b26d8337375fecbed4b0c09e1206da5b052209556e7f95252738f77c23c7480b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/odd-GraphId-key-dropped/20261115T183822Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_odd_or_missing_graph_key": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183822Z-control-odd-GraphId-key-dropped-theorem_odd_or_missing_graph_key.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183822Z-control-odd-GraphId-key-dropped.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183824Z-control-odd-GraphId-key-dropped/logs/20261115T183822Z-control-odd-GraphId-key-dropped-theorem_odd_or_missing_graph_key.log": "f32ab541c6f0c4ad74789ce81e3274a12b9331899e88ac8789eef14bc7a9b03f",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183824Z-control-odd-GraphId-key-dropped/logs/20261115T183822Z-control-odd-GraphId-key-dropped.log": "cc629e60e0e5391e86b66586216a70ff6435368941a5f910d8d75b5ee26b8fe5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

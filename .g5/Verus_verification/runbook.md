@@ -302,3 +302,27 @@ procedure-native.py require IVG_TEMPORAL_NATIVE=1 and only the guarded iteration
 runtime; run serially. Copy their scripts/outputs to a fresh replay evidence folder
 before rerunning, to preserve sealed original JSON paths. posteffect-native.py is
 next-model discovery evidence, not current formal credit or a real network fault.
+
+## Improvement iteration 8 on this Mac
+
+[Checkpoint](../uplift/consolidated/iteration-8/HANDOFF.md) and individual NOTES
+retain exact commands. With inherited tool pins/4threads/fresh RUN_DIR:
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/retry_replay
+CONTROL=fallback-resumes-tail python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/retry_replay
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/fhir_tasks
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/fhir_tasks
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/retry_replay/binding.py
+/Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/models/fhir_tasks/binding.py
+python3 .g5/Verus_verification/tools/correspondence_gate.py check .g5/uplift/consolidated/iteration-8/correspondence-inputs.json
+python3 .g5/Verus_verification/tools/check_consolidated.py
+```
+
+Expected70/9/AGREES872 and27/19/AGREES731+extras. Unknown CONTROL errors with2.
+Native fhir-native.py/fhir-id-native.py/fhir-name-native.py require the guarded own
+instance and IVG_TEMPORAL_NATIVE=1. Preserve sealed paths: copy scripts into a new
+.g5/uplift/consolidated/replay8-YYYYMMDD directory (same nesting level), so outputs
+and source-relative guard remain correct; run serially. They create/delete only
+unique owned fixtures; inspect final cleanup. No actual FHIR repo, namespaceguard
+setup acceptance, SQL-fault, background or transport proof is implied.

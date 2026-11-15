@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/first-GraphId-wins/20261115T183403Z/models/fhir_tasks/fhir_tasks.rs:107:1
+    |
+107 | pub proof fn theorem_settings_last_key_wins(g:Str,other:Str)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/first-GraphId-wins/20261115T183403Z/models/fhir_tasks/fhir_tasks.rs:108:13
+    |
+107 | pub proof fn theorem_settings_last_key_wins(g:Str,other:Str)
+    | ------------------------------------------------------------ at the end of the function body
+108 |     ensures saved_graph(seq![graph_key(),g,graph_key(),other])==other,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/first-GraphId-wins/20261115T183403Z/models/fhir_tasks/fhir_tasks.rs:109:9
+    |
+107 | pub proof fn theorem_settings_last_key_wins(g:Str,other:Str)
+    | ------------------------------------------------------------ at the end of the function body
+108 |     ensures saved_graph(seq![graph_key(),g,graph_key(),other])==other,
+109 |         saved_graph(seq![graph_key(),other,graph_key(),g])==g,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

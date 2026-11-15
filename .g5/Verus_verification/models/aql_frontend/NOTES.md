@@ -24,3 +24,10 @@ Syntactically valid surrounding traversal and digit-prefix accumulation are
 premises. The output is an abstract predicate/bounds; exact text is observed in
 Python. Expected Python calculation is unverified. Implementation-verified 0.
 RC-16 gains narrowly scoped evidence; no translator simplification is implemented.
+
+Iteration8 audit correction: compare(change=True) previously changed the expected
+expression, so its changed-translation credit was oracle sensitivity rather than
+altered-observation sensitivity. It now changes the actual observed Cypher text
+and keeps all input-derived expectations unchanged; a fresh100-case binding
+receipt replaces that one credit. Existing lexer/null producer mutations and
+formal inputs are unchanged; no new product behavior or proof gain is claimed.

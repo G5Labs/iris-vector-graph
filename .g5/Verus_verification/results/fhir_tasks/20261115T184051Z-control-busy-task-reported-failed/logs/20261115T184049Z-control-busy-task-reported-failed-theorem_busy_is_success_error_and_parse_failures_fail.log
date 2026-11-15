@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/busy-task-reported-failed/20261115T184049Z/models/fhir_tasks/fhir_tasks.rs:244:13
+    |
+243 | pub proof fn theorem_busy_is_success_error_and_parse_failures_fail(g:Str,ns:Str)
+    | -------------------------------------------------------------------------------- at the end of the function body
+244 |     ensures on_task(g,ns,SyncReply::Parsed(seq!['b','u','s','y'])).success,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

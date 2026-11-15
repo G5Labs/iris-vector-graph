@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/completed-prefix-discarded/20261115T183330Z/models/retry_replay/retry_replay.rs:69:1
+   |
+69 | pub proof fn theorem_zero_lost_reply_retains_two_events(e:clock::stores::Edge,now:int,w:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/completed-prefix-discarded/20261115T183330Z/models/retry_replay/retry_replay.rs:72:9
+   |
+69 | pub proof fn theorem_zero_lost_reply_retains_two_events(e:clock::stores::Edge,now:int,w:int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+...
+72 |         read(single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(1)),e,now,false)==Some(w),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/completed-prefix-discarded/20261115T183330Z/models/retry_replay/retry_replay.rs:74:9
+   |
+69 | pub proof fn theorem_zero_lost_reply_retains_two_events(e:clock::stores::Edge,now:int,w:int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+...
+74 |         read(single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(1)),e,now,true)==Some(w),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

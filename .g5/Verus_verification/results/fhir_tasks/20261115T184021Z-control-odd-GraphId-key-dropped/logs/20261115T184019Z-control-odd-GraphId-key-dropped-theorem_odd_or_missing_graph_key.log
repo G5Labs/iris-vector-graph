@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/odd-GraphId-key-dropped/20261115T184019Z/models/fhir_tasks/fhir_tasks.rs:117:9
+    |
+114 | pub proof fn theorem_odd_or_missing_graph_key(g:Str,other:Str)
+    | -------------------------------------------------------------- at the end of the function body
+...
+117 |         saved_graph(seq![graph_key(),g,graph_key()])==seq![],
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

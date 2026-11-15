@@ -1,0 +1,59 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_sql_failure_preserves_saved_orphan",
+      "theorem_orphan_survives_unschedule_and_can_tick"
+    ],
+    "find": "fail(saved,Reason::Sql,seq![Op::Assign,Op::Save,Op::Sql])",
+    "name": "task-save-rolled-back-on-sql-error",
+    "replace": "fail(s,Reason::Sql,seq![Op::Assign,Op::Save,Op::Sql])"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_sql_failure_preserves_saved_orphan",
+      "theorem_orphan_survives_unschedule_and_can_tick"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "970c984c0e67c01eb3275d984ad09bb86af713c132355f5442f8edfc8dc4b741",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "ad7363ffe79d984dd6ac15d50bc99cabffcdd14b945fafdc762afeae894e700a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T183420Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_orphan_survives_unschedule_and_can_tick": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183420Z-control-task-save-rolled-back-on-sql-error-theorem_orphan_survives_unschedule_and_can_tick.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_sql_failure_preserves_saved_orphan": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183420Z-control-task-save-rolled-back-on-sql-error-theorem_sql_failure_preserves_saved_orphan.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183420Z-control-task-save-rolled-back-on-sql-error.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183423Z-control-task-save-rolled-back-on-sql-error/logs/20261115T183420Z-control-task-save-rolled-back-on-sql-error-theorem_orphan_survives_unschedule_and_can_tick.log": "461ab80656e9f287208311f67a3f946601f529484594dafffb8782c5600d8f09",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183423Z-control-task-save-rolled-back-on-sql-error/logs/20261115T183420Z-control-task-save-rolled-back-on-sql-error-theorem_sql_failure_preserves_saved_orphan.log": "83c7e172ce9d2bb32f6d9174d7a0c33a06cea4220cb7e35d17e2280cb1089151",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183423Z-control-task-save-rolled-back-on-sql-error/logs/20261115T183420Z-control-task-save-rolled-back-on-sql-error.log": "c96e62333c8b174a301de249a5232cf5904d585d569caffc6321baa2c5a60d86"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

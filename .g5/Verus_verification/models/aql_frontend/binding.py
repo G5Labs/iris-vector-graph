@@ -23,7 +23,7 @@ def compare(resolve=None,change=False):
             tokens=AQLLexer(source).tokenize();ast=AQLParser(tokens).parse()
             cy,params=translate_aql(source,{'s':'a'})
             expr='v.x IS '+('NOT ' if op=='!=' else '')+'NULL' if right=='null' else 'v.x '+('=' if op=='==' else '<>')+' '+right
-            if change and n==0:expr='changed'
+            if change and n==0:cy='changed'
             if (ast.for_clause.min_depth,ast.for_clause.max_depth)!=(lo,hi) or f'*{lo}..{hi}' not in cy or expr not in cy or params!={'s':'a'}:
                 mism.append([source,cy,expr])
             # Real public adapter must hand the exact text and binding to consumer.

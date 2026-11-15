@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_wrong_field_refuses"
+    ],
+    "find": "if t.class!=sync_class(){Owner::Class}",
+    "name": "class-guard-ignored",
+    "replace": "if false{Owner::Class}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_wrong_field_refuses"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "970c984c0e67c01eb3275d984ad09bb86af713c132355f5442f8edfc8dc4b741",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "ad7363ffe79d984dd6ac15d50bc99cabffcdd14b945fafdc762afeae894e700a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/class-guard-ignored/20261115T183406Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_wrong_field_refuses": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183406Z-control-class-guard-ignored-theorem_wrong_field_refuses.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183406Z-control-class-guard-ignored.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183408Z-control-class-guard-ignored/logs/20261115T183406Z-control-class-guard-ignored-theorem_wrong_field_refuses.log": "32bbb9212cc609072f2f47fae99369a30f90e3159153e3b66e4cd9083d8ff8e9",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183408Z-control-class-guard-ignored/logs/20261115T183406Z-control-class-guard-ignored.log": "626be71bbe1c602082623a58b261605b512f86bd982386b85c36457e76ab5b12"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

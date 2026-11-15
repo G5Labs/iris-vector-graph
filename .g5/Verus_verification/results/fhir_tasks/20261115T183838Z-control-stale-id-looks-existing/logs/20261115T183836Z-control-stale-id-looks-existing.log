@@ -1,0 +1,121 @@
+verification results:: 20 verified, 7 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:147:1
+    |
+147 | pub proof fn theorem_stale_id_creates_and_status_reads(s:State,g:Str,ns:Str,fresh:Str,current:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:150:13
+    |
+147 | pub proof fn theorem_stale_id_creates_and_status_reads(s:State,g:Str,ns:Str,fresh:Str,current:int)
+    | -------------------------------------------------------------------------------------------------- at the end of the function body
+...
+150 |     ensures public_schedule(s,g,ns,Interval::Omitted,fresh,Fault::None).state.rows[g].task_id==fresh,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:151:9
+    |
+147 | pub proof fn theorem_stale_id_creates_and_status_reads(s:State,g:Str,ns:Str,fresh:Str,current:int)
+    | -------------------------------------------------------------------------------------------------- at the end of the function body
+...
+151 |         public_schedule(s,g,ns,Interval::Omitted,fresh,Fault::None).state.tasks.contains_key(fresh),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:166:1
+    |
+166 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:168:13
+    |
+166 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+167 |     requires s.rows.contains_key(g),n>=60,!object_exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),
+168 |     ensures schedule(s,g,ns,n,fresh,Fault::Sql).reply==Reply::Error(Reason::Sql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:170:9
+    |
+166 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+170 |         schedule(s,g,ns,n,fresh,Fault::Sql).state.tasks.contains_key(fresh),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:171:9
+    |
+171 |         schedule(s,g,ns,n,fresh,Fault::Sql).state.tasks[fresh]==scheduled_task(g,ns,n),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:196:13
+    |
+194 |   pub proof fn theorem_orphan_survives_unschedule_and_can_tick(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+195 |       requires s.rows.contains_key(g),n>=60,!object_exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),...
+196 |       ensures ({let saved=schedule(s,g,ns,n,fresh,Fault::Sql).state;let removed=unschedule(saved,g,ns,Fault::None);
+    |  _____________^
+197 | |         removed.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && removed.state.rows[g].task_id==seq![]
+198 | |         && tick(removed.state,fresh,reply)==Some(on_task(g,ns,reply))}),
+    | |_______________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:203:13
+    |
+200 |   pub proof fn theorem_schedule_retry_can_leave_two_tasks(s:State,g:Str,ns:Str,first:Str,second:Str,n:int)
+    |   -------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+203 |       ensures ({let saved=schedule(s,g,ns,n,first,Fault::Sql).state;let retried=schedule(saved,g,ns,n,second,Fault::None).state;
+    |  _____________^
+204 | |         retried.rows[g].task_id==second && retried.tasks.contains_key(first) && retried.tasks.contains_key(second)}),
+    | |____________________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:208:13
+    |
+206 |   pub proof fn theorem_allocated_stale_id_becomes_own_even_on_sql_error(s:State,g:Str,ns:Str,n:int)
+    |   ------------------------------------------------------------------------------------------------- at the end of the function body
+207 |       requires s.rows.contains_key(g),s.rows[g].task_id.len()>0,!s.tasks.contains_key(s.rows[g].task_id),n>=60,
+208 |       ensures ({let saved=schedule(s,g,ns,n,s.rows[g].task_id,Fault::Sql).state;
+    |  _____________^
+209 | |         object_exists(saved,saved.rows[g].task_id) && ownership(saved.tasks[saved.rows[g].task_id],g,ns)==Owner::Own
+210 | |         && schedule(saved,g,ns,n,seq!['n','e','x','t'],Fault::None).state.rows[g].task_id==s.rows[g].task_id}),
+    | |______________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:228:13
+    |
+226 |   pub proof fn theorem_successful_schedule_derives_tick_target(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+227 |       requires allocation_frame(s,g,fresh),s.rows.contains_key(g),n>=60,(!object_exists(s,s.rows[g].task_id) || o...
+228 |       ensures ({let done=public_schedule(s,g,ns,Interval::Integer(n),fresh,Fault::None);
+    |  _____________^
+229 | |         tick(done.state,done.state.rows[g].task_id,reply)==Some(on_task(g,ns,reply))}),
+    | |______________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/stale-id-looks-existing/20261115T183836Z/models/fhir_tasks/fhir_tasks.rs:235:13
+    |
+231 |   pub proof fn theorem_raw_caller_to_registry_status_and_tick(s:State,g:Str,ns:Str,fresh:Str,raw:Interval,current:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+235 |       ensures ({let done=public_schedule(s,g,ns,raw,fresh,Fault::None);let n=effective(caller_interval(raw).unwrap(),s.rows[g].interval);
+    |  _____________^
+236 | |         let id=if object_exists(s,s.rows[g].task_id){s.rows[g].task_id}else{fresh};
+237 | |         status(done.state,g,current,true)==(Status::Value{task_id:id,interval:n,version:s.rows[g].version,
+238 | |             stale:s.rows[g].version.is_none() || s.rows[g].version.unwrap()<current})
+239 | |         && tick(done.state,id,reply)==Some(on_task(g,ns,reply))}),
+    | |_________________________________________________________________^ failed this postcondition
+
+error: aborting due to 9 previous errors
+

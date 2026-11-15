@@ -1,0 +1,72 @@
+verification results:: 23 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T184035Z/models/fhir_tasks/fhir_tasks.rs:168:1
+    |
+168 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T184035Z/models/fhir_tasks/fhir_tasks.rs:172:9
+    |
+168 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+172 |         schedule(s,g,ns,n,fresh,Fault::Sql).state.tasks.contains_key(fresh),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T184035Z/models/fhir_tasks/fhir_tasks.rs:173:9
+    |
+173 |         schedule(s,g,ns,n,fresh,Fault::Sql).state.tasks[fresh]==scheduled_task(g,ns,n),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T184035Z/models/fhir_tasks/fhir_tasks.rs:173:9
+    |
+168 | pub proof fn theorem_sql_failure_preserves_saved_orphan(s:State,g:Str,ns:Str,fresh:Str,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+173 |         schedule(s,g,ns,n,fresh,Fault::Sql).state.tasks[fresh]==scheduled_task(g,ns,n),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T184035Z/models/fhir_tasks/fhir_tasks.rs:198:13
+    |
+196 |   pub proof fn theorem_orphan_survives_unschedule_and_can_tick(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+197 |       requires s.rows.contains_key(g),n>=60,!object_exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),...
+198 |       ensures ({let saved=schedule(s,g,ns,n,fresh,Fault::Sql).state;let removed=unschedule(saved,g,ns,Fault::None);
+    |  _____________^
+199 | |         removed.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && removed.state.rows[g].task_id==seq![]
+200 | |         && tick(removed.state,fresh,reply)==Some(on_task(g,ns,reply))}),
+    | |_______________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T184035Z/models/fhir_tasks/fhir_tasks.rs:205:13
+    |
+202 |   pub proof fn theorem_schedule_retry_can_leave_two_tasks(s:State,g:Str,ns:Str,first:Str,second:Str,n:int)
+    |   -------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+205 |       ensures ({let saved=schedule(s,g,ns,n,first,Fault::Sql).state;let retried=schedule(saved,g,ns,n,second,Fault::None).state;
+    |  _____________^
+206 | |         retried.rows[g].task_id==second && retried.tasks.contains_key(first) && retried.tasks.contains_key(second)}),
+    | |____________________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261115T184035Z/models/fhir_tasks/fhir_tasks.rs:210:13
+    |
+208 |   pub proof fn theorem_allocated_stale_id_becomes_own_even_on_sql_error(s:State,g:Str,ns:Str,n:int)
+    |   ------------------------------------------------------------------------------------------------- at the end of the function body
+209 |       requires s.rows.contains_key(g),s.rows[g].task_id.len()>0,!s.tasks.contains_key(s.rows[g].task_id),n>=60,
+210 |       ensures ({let saved=schedule(s,g,ns,n,s.rows[g].task_id,Fault::Sql).state;
+    |  _____________^
+211 | |         object_exists(saved,saved.rows[g].task_id) && ownership(saved.tasks[saved.rows[g].task_id],g,ns)==Owner::Own
+212 | |         && schedule(saved,g,ns,n,seq!['n','e','x','t'],Fault::None).state.rows[g].task_id==s.rows[g].task_id}),
+    | |______________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

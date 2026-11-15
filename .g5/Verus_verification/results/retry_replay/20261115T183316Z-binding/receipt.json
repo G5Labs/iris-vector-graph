@@ -1,0 +1,4353 @@
+{
+  "blocked_network_calls": 0,
+  "comparisons": 872,
+  "detection": {
+    "actual_fallback_clock_rule_changed": true,
+    "actual_fallback_count_changed": true,
+    "actual_fallback_loop_removed": true,
+    "changed_final_timestamp_rejected": true,
+    "normal_success_neighbor_preserved": true
+  },
+  "elapsed": 0.2801872080017347,
+  "inputs": {
+    ".g5/Verus_verification/models/retry_replay/binding.py": "28851d3b8e3db88923d569f16e4f1c7136273506d7b2cfa0c75305fa7742b348",
+    ".g5/Verus_verification/models/retry_replay/model.json": "fd156481f16d0ef548cee20152fea76aefbf77aae94a260a6665a3db80bb2d98",
+    ".g5/Verus_verification/models/retry_replay/retry_replay.rs": "e8240f12fbd8883f412956fa658d691ed74248bd26ddacfc43aa42c298e718f1",
+    ".g5/Verus_verification/models/temporal_clock/binding.py": "4a856fca246d5d82367112592012d317e17ec25f334a57a4bfd38b2d6c68f4df",
+    ".g5/Verus_verification/models/temporal_clock/temporal_clock.rs": "ce371d29745a9f520abb327fa3b358b5aac15db46d105664604598eba70e8be1",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    ".g5/uplift/consolidated/iteration-7/posteffect-native.json": "2e0dbe2f44c0c588f678bb1c2e5053b30f156f0f323b0ad4831d2d288d967655",
+    ".g5/uplift/consolidated/iteration-7/posteffect-native.py": "abd3256f5accc49517e4b3982a048e2b0af0de53f0db108a7169aec87185190b",
+    "iris_src/src/Graph/KG/TemporalIndex.cls": "4b00154628b5b77ae3bbae26c857f81d934d09d73bc271f65cb1e202d616cb54",
+    "iris_src/src/Graph/KG/TemporalWindow.cls": "eedab8aa8e94e081289caa52ef2038c981db48f170b20c246f0bf26d8ee7b519",
+    "iris_vector_graph/_engine/temporal.py": "0dab28a4a76d088d31b87d4dea23699b3e15a33fc0a96785f66b1defdb164802",
+    "iris_vector_graph/_engine/temporal_window.py": "529408a209bfc942a2f95a79469da052d01d5b68a179615d284740da1ff6b3fb",
+    "iris_vector_graph/stores/iris_sql_store.py": "737df8a794a979d2c2e4f3af100508fd05c1907893ec2fa65f2fc440e34ff153"
+  },
+  "kind": "binding",
+  "mismatch_count": 0,
+  "mismatches": [],
+  "model": "retry_replay",
+  "pin": {
+    "all_equal": true,
+    "files_equal_pin_blobs": {
+      "iris_vector_graph/_engine/nodes_edges.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/schema.py": true
+    },
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "pin_dir": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin"
+  },
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "provider_contract": "Fault occurs after k COMPLETE item operations or before all; actual fallback calls complete. Mode default insert, no attrs. Clocks at item i are200+i; fallback0 stays0. Prefix post-state derived, never supplied.",
+  "python": "3.11.8",
+  "residuals": [
+    "partial WriteStores raw/structural effects",
+    "real TCP loss",
+    "fallback item failures",
+    "upsert/skip/aggregate/latest effects",
+    "general JSON/numeric marshaling",
+    "strict ledger/concurrent writers"
+  ],
+  "root_native_comparisons": 4,
+  "root_native_scope": "Actual unchanged native Counts/InsertEdge and public writer/window; injected exception occurs after completed native success, before caller accepts reply. This is not real TCP/partial-prefix fault evidence. Native leaves are real; expected result is source-derived, not yet a proved composed model.",
+  "samples": [
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": null,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            3,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 0,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            2,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        0,
+        0,
+        0
+      ],
+      "processed_prefix": 0,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 1,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            2,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            3,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": null,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            3,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 0,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            2,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        0,
+        0,
+        0
+      ],
+      "processed_prefix": 0,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 1,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            2,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            3,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": null,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 0,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "100",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        0,
+        0,
+        0
+      ],
+      "processed_prefix": 0,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 1,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "100",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": null,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 0,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "100",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        0,
+        0,
+        0
+      ],
+      "processed_prefix": 0,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 1,
+      "expected": {
+        "collisions": 0,
+        "count": 1,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            100,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "100",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 2,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            100,
+            "c",
+            "R",
+            "b"
+          ],
+          7.0
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": null,
+      "expected": {
+        "collisions": 0,
+        "count": 2,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            100,
+            "c",
+            "R",
+            "b"
+          ],
+          7
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        },
+        {
+          "o": "b",
+          "p": "R",
+          "s": "c",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}, {\"s\": \"c\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            3,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        2,
+        0,
+        0
+      ],
+      "processed_prefix": 2,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 2,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ],
+        [
+          [
+            "",
+            100,
+            "c",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 0,
+      "expected": {
+        "collisions": 0,
+        "count": 2,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ],
+        [
+          [
+            "",
+            100,
+            "c",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        },
+        {
+          "o": "b",
+          "p": "R",
+          "s": "c",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}, {\"s\": \"c\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "c",
+            "R",
+            "b",
+            "100",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            2,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        0,
+        0,
+        0
+      ],
+      "processed_prefix": 0,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 2,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ],
+        [
+          [
+            "",
+            100,
+            "c",
+            "R",
+            "b"
+          ],
+          7.0
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 1,
+      "expected": {
+        "collisions": 0,
+        "count": 2,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ],
+        [
+          [
+            "",
+            100,
+            "c",
+            "R",
+            "b"
+          ],
+          7
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        },
+        {
+          "o": "b",
+          "p": "R",
+          "s": "c",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}, {\"s\": \"c\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "c",
+            "R",
+            "b",
+            "100",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            2,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            3,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        1,
+        0,
+        0
+      ],
+      "processed_prefix": 1,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "actual": {
+        "collisions": 0,
+        "count": 2,
+        "kind": "count",
+        "skipped": 0
+      },
+      "actual_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ],
+        [
+          [
+            "",
+            100,
+            "c",
+            "R",
+            "b"
+          ],
+          7.0
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7.0
+        ]
+      ],
+      "agrees": true,
+      "cutoff": 2,
+      "expected": {
+        "collisions": 0,
+        "count": 2,
+        "kind": "count",
+        "skipped": 0
+      },
+      "expected_state": [
+        [
+          [
+            "",
+            0,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ],
+        [
+          [
+            "",
+            100,
+            "c",
+            "R",
+            "b"
+          ],
+          7
+        ],
+        [
+          [
+            "",
+            200,
+            "a",
+            "R",
+            "b"
+          ],
+          7
+        ]
+      ],
+      "graph": "",
+      "input": [
+        {
+          "o": "b",
+          "p": "R",
+          "s": "a",
+          "ts": 0,
+          "w": 7
+        },
+        {
+          "o": "b",
+          "p": "R",
+          "s": "c",
+          "ts": 100,
+          "w": 7
+        }
+      ],
+      "port": [
+        {
+          "args": [
+            "",
+            "[{\"s\": \"a\", \"p\": \"R\", \"o\": \"b\", \"ts\": 0, \"w\": 7.0}, {\"s\": \"c\", \"p\": \"R\", \"o\": \"b\", \"ts\": 100, \"w\": 7.0}]",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "BulkInsertCounts"
+        },
+        {
+          "args": [
+            "",
+            "a",
+            "R",
+            "b",
+            "0",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "c",
+            "R",
+            "b",
+            "100",
+            "7.0",
+            "",
+            "0",
+            "0",
+            ""
+          ],
+          "class": "Graph.KG.TemporalIndex",
+          "method": "InsertEdge"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            1,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 0, \"end\": 0, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            2,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 200, \"end\": 200, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            3,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": 100, \"end\": 100, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            4,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -1, \"end\": -1, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "other",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"in\", \"attrs\": 1, \"page\": 1}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            7,
+            1
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Next"
+        },
+        {
+          "args": [
+            "",
+            "{\"start\": -2, \"end\": 201, \"dir\": \"out\", \"attrs\": 1, \"page\": 1, \"sources\": []}"
+          ],
+          "class": "Graph.KG.TemporalWindow",
+          "method": "Open"
+        }
+      ],
+      "port_counts_before_error": [
+        2,
+        0,
+        0
+      ],
+      "processed_prefix": 2,
+      "reverse": true,
+      "seed_time": null,
+      "windows": [
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 0,
+            "ts": 0,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "c",
+            "source": "c",
+            "target": "b",
+            "timestamp": 100,
+            "ts": 100,
+            "w": 7.0,
+            "weight": 7.0
+          },
+          {
+            "attrs": {},
+            "o": "b",
+            "p": "R",
+            "predicate": "R",
+            "s": "a",
+            "source": "a",
+            "target": "b",
+            "timestamp": 200,
+            "ts": 200,
+            "w": 7.0,
+            "weight": 7.0
+          }
+        ],
+        []
+      ]
+    }
+  ],
+  "scope": "Actual Python caller normalization/store/catch/whole-batch fallback/ported writer calls and public paged reader. Specified Native-port adapter executes completed-prefix/default-insert/time/window; no native/TCP/partial-within-item failure executed by this builder.",
+  "verdict": "AGREES",
+  "window_comparisons": 6976
+}

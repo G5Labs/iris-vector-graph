@@ -1,0 +1,35 @@
+verification results:: 25 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/first-GraphId-wins/20261115T184017Z/models/fhir_tasks/fhir_tasks.rs:110:1
+    |
+110 | pub proof fn theorem_settings_last_key_wins(g:Str,other:Str)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/first-GraphId-wins/20261115T184017Z/models/fhir_tasks/fhir_tasks.rs:111:13
+    |
+110 | pub proof fn theorem_settings_last_key_wins(g:Str,other:Str)
+    | ------------------------------------------------------------ at the end of the function body
+111 |     ensures saved_graph(seq![graph_key(),g,graph_key(),other])==other,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/first-GraphId-wins/20261115T184017Z/models/fhir_tasks/fhir_tasks.rs:112:9
+    |
+110 | pub proof fn theorem_settings_last_key_wins(g:Str,other:Str)
+    | ------------------------------------------------------------ at the end of the function body
+111 |     ensures saved_graph(seq![graph_key(),g,graph_key(),other])==other,
+112 |         saved_graph(seq![graph_key(),other,graph_key(),g])==g,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/first-GraphId-wins/20261115T184017Z/models/fhir_tasks/fhir_tasks.rs:117:9
+    |
+114 | pub proof fn theorem_odd_or_missing_graph_key(g:Str,other:Str)
+    | -------------------------------------------------------------- at the end of the function body
+...
+117 |         saved_graph(seq![graph_key(),g,graph_key()])==seq![],
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

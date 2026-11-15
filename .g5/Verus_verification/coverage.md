@@ -629,3 +629,16 @@ census and2 setup observations. Six staleness fixtures include API-source/newwri
 Thirteen builder cases are purposive, not independent/population performance.
 Actual post-effect native4 and independent FHIR task survey show material next gaps;
 convergence unsupported. Full provider/general semantics remain qualified in NOTES.
+
+## Improvement iteration 8 (2026-11-15)
+
+[Evidence](../uplift/consolidated/iteration-8/HANDOFF.md): retry_replay70 units
+(14new+56imports)/9controls and fhir_tasks27/19.41new units,28decisive controls,
+0product-body proofs. Bindings872/731core plus scoped extras; native20 task workflow,
+ID9 and same-name2 provider observations separately. Prefix1/SQL-fault/general loader
+remain conditional; fullFHIRStatus missingrepo, NS setuprefused. Known roots strengthened,
+0newbugs/Qs/repairs. Clock/AQL observation credit corrected with fresh1564/100; independent
+audit retained withdrawals. Same reach167/4130->177/4130,10new,21role rows/3contexts.
+13paired builder rows complete13after, supported11/13 with2provider precision limits;
+no independent/population score. Bolt framing/pending rows and weighted optimality
+remain material; no convergence or diminishing-returns claim.

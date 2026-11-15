@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration8-retry-20261115/verus/retry_replay/controls/empty-consults-provider/20261115T183349Z/models/retry_replay/retry_replay.rs:52:49
+   |
+50 | pub proof fn theorem_empty_has_no_counts_or_fallback(s:clock::stores::Global,clocks:Seq<int>,f:Fault)
+   | ----------------------------------------------------------------------------------------------------- at the end of the function body
+51 |     ensures run(s,seq![],clocks,f).outcome.state==s,run(s,seq![],clocks,f).outcome.count==0,
+52 |         run(s,seq![],clocks,f).outcome.accepted,!run(s,seq![],clocks,f).fell_back,
+   |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

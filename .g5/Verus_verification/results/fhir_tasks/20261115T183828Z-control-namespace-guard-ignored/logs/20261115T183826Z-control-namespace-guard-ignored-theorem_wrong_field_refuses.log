@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/namespace-guard-ignored/20261115T183826Z/models/fhir_tasks/fhir_tasks.rs:121:9
+    |
+119 | pub proof fn theorem_wrong_field_refuses(t:Task,g:Str,ns:Str)
+    | ------------------------------------------------------------- at the end of the function body
+120 |     ensures t.class!=sync_class() ==> ownership(t,g,ns)==Owner::Class,
+121 |         t.class==sync_class() && t.namespace!=ns ==> ownership(t,g,ns)==Owner::Namespace,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

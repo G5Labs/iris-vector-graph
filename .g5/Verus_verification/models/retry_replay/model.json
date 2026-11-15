@@ -1,0 +1,94 @@
+{
+  "name": "retry_replay",
+  "root": "retry_replay.rs",
+  "expected_verified": 70,
+  "additional_inputs": [
+    "../temporal_clock/temporal_clock.rs",
+    "../temporal_restore/temporal_restore.rs",
+    "../temporal_window_reader/temporal_window_reader.rs"
+  ],
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "completed-prefix-discarded",
+      "why": "completed-prefix-discarded",
+      "find": "clock::fold(normal.outcome.state,es,false,clocks)",
+      "replace": "clock::fold(s,es,false,clocks)",
+      "expect_fail_in": [
+        "theorem_zero_lost_reply_retains_two_events"
+      ]
+    },
+    {
+      "name": "fallback-resumes-tail",
+      "why": "fallback-resumes-tail",
+      "find": "clock::fold(normal.outcome.state,es,false,clocks)",
+      "replace": "clock::fold(normal.outcome.state,es.subrange(normal.completed as int,es.len() as int),false,clocks)",
+      "expect_fail_in": [
+        "theorem_positive_lost_reply_collides"
+      ]
+    },
+    {
+      "name": "error-reply-accepted",
+      "why": "error-reply-accepted",
+      "find": "if normal.error {",
+      "replace": "if false {",
+      "expect_fail_in": [
+        "theorem_zero_lost_reply_retains_two_events"
+      ]
+    },
+    {
+      "name": "fallback-uses-counts-clock",
+      "why": "fallback-uses-counts-clock",
+      "find": "clock::fold(normal.outcome.state,es,false,clocks)",
+      "replace": "clock::fold(normal.outcome.state,es,true,clocks)",
+      "expect_fail_in": [
+        "theorem_zero_lost_reply_retains_two_events"
+      ]
+    },
+    {
+      "name": "prefix-count-added",
+      "why": "prefix-count-added",
+      "find": "Result{outcome:fallback,fell_back:true",
+      "replace": "Result{outcome:clock::Outcome{count:normal.outcome.count+fallback.count,..fallback},fell_back:true",
+      "expect_fail_in": [
+        "theorem_zero_lost_reply_retains_two_events"
+      ]
+    },
+    {
+      "name": "prefix-collisions-leak",
+      "why": "prefix-collisions-leak",
+      "find": "Result{outcome:fallback,fell_back:true",
+      "replace": "Result{outcome:clock::Outcome{collisions:normal.outcome.collisions+fallback.collisions,..fallback},fell_back:true",
+      "expect_fail_in": [
+        "theorem_preexisting_collision_still_reports_one"
+      ]
+    },
+    {
+      "name": "fault-skips-first-item",
+      "why": "fault-skips-first-item",
+      "find": "let k=prefix_len(n,es.len());",
+      "replace": "let k=if n>0{prefix_len((n-1) as nat,es.len())}else{0};",
+      "expect_fail_in": [
+        "theorem_zero_lost_reply_retains_two_events"
+      ]
+    },
+    {
+      "name": "validation-barrier-removed",
+      "why": "validation-barrier-removed",
+      "find": "else if !clock::batch_valid(es) {",
+      "replace": "else if false {",
+      "expect_fail_in": [
+        "theorem_validation_precedes_counts_and_fallback"
+      ]
+    },
+    {
+      "name": "empty-consults-provider",
+      "why": "empty-consults-provider",
+      "find": "if es.len()==0 {",
+      "replace": "if false {",
+      "expect_fail_in": [
+        "theorem_empty_has_no_counts_or_fallback"
+      ]
+    }
+  ]
+}

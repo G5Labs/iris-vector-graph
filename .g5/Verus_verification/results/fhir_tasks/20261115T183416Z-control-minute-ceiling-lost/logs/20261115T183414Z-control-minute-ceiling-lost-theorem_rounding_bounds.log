@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/minute-ceiling-lost/20261115T183414Z/models/fhir_tasks/fhir_tasks.rs:127:27
+    |
+125 | pub proof fn theorem_rounding_bounds(n:int)
+    | ------------------------------------------- at the end of the function body
+126 |     requires n>=60,
+127 |     ensures minutes(n)>=1,minutes(n)*60>=n,(minutes(n)-1)*60<n,
+    |                           ^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

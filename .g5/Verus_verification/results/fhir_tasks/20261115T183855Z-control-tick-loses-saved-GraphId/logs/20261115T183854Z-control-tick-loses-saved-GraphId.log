@@ -1,0 +1,40 @@
+verification results:: 24 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/tick-loses-saved-GraphId/20261115T183854Z/models/fhir_tasks/fhir_tasks.rs:196:13
+    |
+194 |   pub proof fn theorem_orphan_survives_unschedule_and_can_tick(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+195 |       requires s.rows.contains_key(g),n>=60,!object_exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),...
+196 |       ensures ({let saved=schedule(s,g,ns,n,fresh,Fault::Sql).state;let removed=unschedule(saved,g,ns,Fault::None);
+    |  _____________^
+197 | |         removed.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && removed.state.rows[g].task_id==seq![]
+198 | |         && tick(removed.state,fresh,reply)==Some(on_task(g,ns,reply))}),
+    | |_______________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/tick-loses-saved-GraphId/20261115T183854Z/models/fhir_tasks/fhir_tasks.rs:228:13
+    |
+226 |   pub proof fn theorem_successful_schedule_derives_tick_target(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+227 |       requires allocation_frame(s,g,fresh),s.rows.contains_key(g),n>=60,(!object_exists(s,s.rows[g].task_id) || o...
+228 |       ensures ({let done=public_schedule(s,g,ns,Interval::Integer(n),fresh,Fault::None);
+    |  _____________^
+229 | |         tick(done.state,done.state.rows[g].task_id,reply)==Some(on_task(g,ns,reply))}),
+    | |______________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/tick-loses-saved-GraphId/20261115T183854Z/models/fhir_tasks/fhir_tasks.rs:235:13
+    |
+231 |   pub proof fn theorem_raw_caller_to_registry_status_and_tick(s:State,g:Str,ns:Str,fresh:Str,raw:Interval,current:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+235 |       ensures ({let done=public_schedule(s,g,ns,raw,fresh,Fault::None);let n=effective(caller_interval(raw).unwrap(),s.rows[g].interval);
+    |  _____________^
+236 | |         let id=if object_exists(s,s.rows[g].task_id){s.rows[g].task_id}else{fresh};
+237 | |         status(done.state,g,current,true)==(Status::Value{task_id:id,interval:n,version:s.rows[g].version,
+238 | |             stale:s.rows[g].version.is_none() || s.rows[g].version.unwrap()<current})
+239 | |         && tick(done.state,id,reply)==Some(on_task(g,ns,reply))}),
+    | |_________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

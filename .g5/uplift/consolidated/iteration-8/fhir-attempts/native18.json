@@ -1,0 +1,563 @@
+{
+  "verdict": "AGREES",
+  "comparisons": 18,
+  "mismatches": [],
+  "observations": [
+    {
+      "name": "new60",
+      "got": {
+        "reply": {
+          "status": "scheduled",
+          "graph_id": "fhir:G5T8:19ea444aa",
+          "task_id": "1006",
+          "interval_s": 60,
+          "minutes": 1
+        },
+        "task": {
+          "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+          "class": "Graph.KG.FHIRGraphSyncTask",
+          "namespace": "USER",
+          "period": 0,
+          "minutes": 1,
+          "settings": [
+            "GraphId",
+            "fhir:G5T8:19ea444aa"
+          ]
+        },
+        "registry": {
+          "task_id": "1006",
+          "interval": 60
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "own-reschedule61",
+      "got": {
+        "reply": {
+          "status": "scheduled",
+          "graph_id": "fhir:G5T8:19ea444aa",
+          "task_id": "1006",
+          "interval_s": 61,
+          "minutes": 2
+        },
+        "task": {
+          "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+          "class": "Graph.KG.FHIRGraphSyncTask",
+          "namespace": "USER",
+          "period": 0,
+          "minutes": 2,
+          "settings": [
+            "GraphId",
+            "fhir:G5T8:19ea444aa"
+          ]
+        },
+        "registry": {
+          "task_id": "1006",
+          "interval": 61
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "own-unschedule",
+      "got": {
+        "reply": {
+          "status": "unscheduled",
+          "graph_id": "fhir:G5T8:19ea444aa",
+          "task_id": "1006",
+          "removed": true
+        },
+        "task": null,
+        "registry": {
+          "task_id": null,
+          "interval": 61
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "stale-unschedule",
+      "got": {
+        "reply": {
+          "status": "unscheduled",
+          "graph_id": "fhir:G5T8:19ea444aa",
+          "task_id": "1006",
+          "removed": false
+        },
+        "registry": {
+          "task_id": null,
+          "interval": 61
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "stale-schedule",
+      "got": {
+        "reply": {
+          "status": "scheduled",
+          "graph_id": "fhir:G5T8:19ea444aa",
+          "task_id": "1007",
+          "interval_s": 61,
+          "minutes": 2
+        },
+        "task": {
+          "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+          "class": "Graph.KG.FHIRGraphSyncTask",
+          "namespace": "USER",
+          "period": 0,
+          "minutes": 2,
+          "settings": [
+            "GraphId",
+            "fhir:G5T8:19ea444aa"
+          ]
+        },
+        "registry": {
+          "task_id": "1007",
+          "interval": 61
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "other-graph-schedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1008",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444ab",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 0,
+            "minutes": 60,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:19ea444ab"
+            ]
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1008",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444ab",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 0,
+            "minutes": 60,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:19ea444ab"
+            ]
+          }
+        },
+        "error": "Schedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:19ea444aa names Task Manager task 1008 ('IVG FHIR sync fhir:G5T8:19ea444ab'), which is not this graph's sync task: it syncs FHIR graph fhir:G5T8:19ea444ab. Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:19ea444aa'), and call fhir_graph_schedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "other-graph-unschedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1008",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444ab",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 0,
+            "minutes": 60,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:19ea444ab"
+            ]
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1008",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444ab",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 0,
+            "minutes": 60,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:19ea444ab"
+            ]
+          }
+        },
+        "error": "Unschedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:19ea444aa names Task Manager task 1008 ('IVG FHIR sync fhir:G5T8:19ea444ab'), which is not this graph's sync task: it syncs FHIR graph fhir:G5T8:19ea444ab. Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:19ea444aa'), and call fhir_graph_unschedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "other-class-schedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1009",
+            "interval": 61
+          },
+          "task": {
+            "name": "G5 owned fixture 19ea444a",
+            "class": "%SYS.Task.PurgeErrorsAndLogs",
+            "namespace": "%SYS",
+            "period": 5,
+            "minutes": null,
+            "settings": []
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1009",
+            "interval": 61
+          },
+          "task": {
+            "name": "G5 owned fixture 19ea444a",
+            "class": "%SYS.Task.PurgeErrorsAndLogs",
+            "namespace": "%SYS",
+            "period": 5,
+            "minutes": null,
+            "settings": []
+          }
+        },
+        "error": "Schedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:19ea444aa names Task Manager task 1009 ('G5 owned fixture 19ea444a'), which is not this graph's sync task: it runs %SYS.Task.PurgeErrorsAndLogs. Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:19ea444aa'), and call fhir_graph_schedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "other-class-unschedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1009",
+            "interval": 61
+          },
+          "task": {
+            "name": "G5 owned fixture 19ea444a",
+            "class": "%SYS.Task.PurgeErrorsAndLogs",
+            "namespace": "%SYS",
+            "period": 5,
+            "minutes": null,
+            "settings": []
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1009",
+            "interval": 61
+          },
+          "task": {
+            "name": "G5 owned fixture 19ea444a",
+            "class": "%SYS.Task.PurgeErrorsAndLogs",
+            "namespace": "%SYS",
+            "period": 5,
+            "minutes": null,
+            "settings": []
+          }
+        },
+        "error": "Unschedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:19ea444aa names Task Manager task 1009 ('G5 owned fixture 19ea444a'), which is not this graph's sync task: it runs %SYS.Task.PurgeErrorsAndLogs. Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:19ea444aa'), and call fhir_graph_unschedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "other-namespace-provider-refused-save",
+      "save_error": "ERROR #7414: Task Class (Graph.KG.FHIRGraphSyncTask) does not exist in %SYS",
+      "assessed_guard": false
+    },
+    {
+      "name": "missing-schedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1007",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 5,
+            "minutes": 2,
+            "settings": []
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1007",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 5,
+            "minutes": 2,
+            "settings": []
+          }
+        },
+        "error": "Schedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:19ea444aa names Task Manager task 1007 ('IVG FHIR sync fhir:G5T8:19ea444aa'), which is not this graph's sync task: it syncs FHIR graph . Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:19ea444aa'), and call fhir_graph_schedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "missing-unschedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1007",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 5,
+            "minutes": 2,
+            "settings": []
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1007",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 5,
+            "minutes": 2,
+            "settings": []
+          }
+        },
+        "error": "Unschedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:19ea444aa names Task Manager task 1007 ('IVG FHIR sync fhir:G5T8:19ea444aa'), which is not this graph's sync task: it syncs FHIR graph . Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:19ea444aa'), and call fhir_graph_unschedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "duplicate-last-other-schedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1007",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 5,
+            "minutes": 2,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:19ea444aa",
+              "GraphId",
+              "fhir:G5T8:19ea444ab"
+            ]
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1007",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 5,
+            "minutes": 2,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:19ea444aa",
+              "GraphId",
+              "fhir:G5T8:19ea444ab"
+            ]
+          }
+        },
+        "error": "Schedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:19ea444aa names Task Manager task 1007 ('IVG FHIR sync fhir:G5T8:19ea444aa'), which is not this graph's sync task: it syncs FHIR graph fhir:G5T8:19ea444ab. Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:19ea444aa'), and call fhir_graph_schedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "duplicate-last-other-unschedule",
+      "got": {
+        "before": {
+          "registry": {
+            "task_id": "1007",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 5,
+            "minutes": 2,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:19ea444aa",
+              "GraphId",
+              "fhir:G5T8:19ea444ab"
+            ]
+          }
+        },
+        "after": {
+          "registry": {
+            "task_id": "1007",
+            "interval": 61
+          },
+          "task": {
+            "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+            "class": "Graph.KG.FHIRGraphSyncTask",
+            "namespace": "USER",
+            "period": 5,
+            "minutes": 2,
+            "settings": [
+              "GraphId",
+              "fhir:G5T8:19ea444aa",
+              "GraphId",
+              "fhir:G5T8:19ea444ab"
+            ]
+          }
+        },
+        "error": "Unschedule: ERROR #5001: fhir_graphs.task_id of fhir:G5T8:19ea444aa names Task Manager task 1007 ('IVG FHIR sync fhir:G5T8:19ea444aa'), which is not this graph's sync task: it syncs FHIR graph fhir:G5T8:19ea444ab. Nothing was changed. Check that task, clear the column (UPDATE Graph_KG.fhir_graphs SET task_id = NULL WHERE graph_id = 'fhir:G5T8:19ea444aa'), and call fhir_graph_unschedule again"
+      },
+      "agrees": true
+    },
+    {
+      "name": "duplicate-last-mine",
+      "got": {
+        "reply": {
+          "status": "scheduled",
+          "graph_id": "fhir:G5T8:19ea444aa",
+          "task_id": "1007",
+          "interval_s": 60,
+          "minutes": 1
+        },
+        "task": {
+          "name": "IVG FHIR sync fhir:G5T8:19ea444aa",
+          "class": "Graph.KG.FHIRGraphSyncTask",
+          "namespace": "USER",
+          "period": 0,
+          "minutes": 1,
+          "settings": [
+            "GraphId",
+            "fhir:G5T8:19ea444aa"
+          ]
+        },
+        "registry": {
+          "task_id": "1007",
+          "interval": 60
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "registered59-none",
+      "got": {
+        "error": "Schedule: ERROR #5001: interval must be at least 60 seconds (Task Manager granularity is one minute)",
+        "before": {
+          "task_id": null,
+          "interval": 59
+        },
+        "after": {
+          "task_id": null,
+          "interval": 59
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "registered59-override60",
+      "got": {
+        "reply": {
+          "status": "scheduled",
+          "graph_id": "fhir:G5T8:19ea444aa",
+          "task_id": "1010",
+          "interval_s": 60,
+          "minutes": 1
+        },
+        "registry": {
+          "task_id": "1010",
+          "interval": 60
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "public-status-missing-repository",
+      "got": {
+        "reply": null,
+        "error": "Status: ERROR #5540: SQLCODE: -30 Message:  Table 'HS_FHIRSERVER_STORAGE_JSON.SEARCHCOLUMN' not found",
+        "registry_point": {
+          "task_id": "1010",
+          "interval": 60
+        }
+      },
+      "agrees": true
+    },
+    {
+      "name": "direct-ontask-repository-failure",
+      "got": {
+        "ok": false,
+        "error": "ERROR #5001: FHIR graph sync fhir:G5T8:19ea444aa: ERROR #5540: SQLCODE: -30 Message:  Table 'HS_FHIRSERVER_STORAGE_JSON.SEARCHCOLUMN' not found",
+        "registry_point": {
+          "task_id": "1010",
+          "interval": 60
+        }
+      },
+      "agrees": true
+    }
+  ],
+  "identity_checked": true,
+  "container": "ivg-uplift-next-20261115",
+  "graphs": [
+    "fhir:G5T8:19ea444aa",
+    "fhir:G5T8:19ea444ab"
+  ],
+  "created_tasks": [
+    "1006",
+    "1007",
+    "1008",
+    "1009",
+    "1010"
+  ],
+  "cleanup": [
+    {
+      "task_id": "1007",
+      "deleted": true,
+      "remaining": false
+    },
+    {
+      "task_id": "1008",
+      "deleted": true,
+      "remaining": false
+    },
+    {
+      "task_id": "1009",
+      "deleted": true,
+      "remaining": false
+    },
+    {
+      "task_id": "1010",
+      "deleted": true,
+      "remaining": false
+    }
+  ],
+  "scope": "Actual Python wrapper/FHIRGraph Open/CheckOwnTask/Schedule/Unschedule/TaskManager save/read/delete and SQL registry point. Direct OnTask observes missing-repository failure only. No genuine FHIR resource projection, background invocation, network fault, SQL-update fault, race or security behavior is claimed.",
+  "script_sha256": "fe266fdd30cd02e6722c1de1a1c622c4ddb33480b7b4de2a59314f44624973c0",
+  "elapsed": 0.7388739590242039
+}

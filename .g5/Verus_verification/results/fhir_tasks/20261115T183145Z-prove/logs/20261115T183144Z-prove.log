@@ -1,0 +1,74 @@
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:50:21
+   |
+50 |             let has=exists(s,row.task_id);
+   |                     ^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:70:35
+   |
+70 |         let row=s.rows[g];let has=exists(s,row.task_id);
+   |                                   ^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:134:37
+    |
+134 |     requires s.rows.contains_key(g),exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)!=Owner::Own,
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:139:61
+    |
+139 |     requires s.rows.contains_key(g),s.rows[g].interval>=60,!exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),
+    |                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:148:37
+    |
+148 |     requires s.rows.contains_key(g),exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,n>=60,
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:153:45
+    |
+153 |     requires s.rows.contains_key(g),n>=60,(!exists(s,s.rows[g].task_id) || ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own),
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:158:44
+    |
+158 |     requires s.rows.contains_key(g),n>=60,!exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),
+    |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:165:38
+    |
+165 |     requires s.rows.contains_key(g),!exists(s,s.rows[g].task_id),
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:171:37
+    |
+171 |     requires s.rows.contains_key(g),exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:177:37
+    |
+177 |     requires s.rows.contains_key(g),exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:181:37
+    |
+181 |     requires s.rows.contains_key(g),exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `exists|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs:195:45
+    |
+195 |     requires s.rows.contains_key(g),n>=60,(!exists(s,s.rows[g].task_id) || ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own),
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 12 previous errors
+

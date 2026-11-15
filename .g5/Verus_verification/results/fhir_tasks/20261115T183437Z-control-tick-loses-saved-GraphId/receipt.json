@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_successful_schedule_derives_tick_target"
+    ],
+    "find": "Some(on_task(saved_graph(s.tasks[id].settings),s.tasks[id].namespace,reply))",
+    "name": "tick-loses-saved-GraphId",
+    "replace": "Some(on_task(seq![],s.tasks[id].namespace,reply))"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_successful_schedule_derives_tick_target"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "226a55d3e1860972682820cded6168793c4f732f306ec48f104247b31466e55d",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "7a451d05133963dae052f5c34668de4666887239514f40b126e4e2e802b14241"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/controls/tick-loses-saved-GraphId/20261115T183435Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_successful_schedule_derives_tick_target": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183435Z-control-tick-loses-saved-GraphId-theorem_successful_schedule_derives_tick_target.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration8-fhir-20261115/verus/fhir_tasks/20261115T183435Z-control-tick-loses-saved-GraphId.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183437Z-control-tick-loses-saved-GraphId/logs/20261115T183435Z-control-tick-loses-saved-GraphId-theorem_successful_schedule_derives_tick_target.log": "4187223bb6c9811d1c779d826a7405572be54b768ba844b0c41f4d1ba129350d",
+    ".g5/Verus_verification/results/fhir_tasks/20261115T183437Z-control-tick-loses-saved-GraphId/logs/20261115T183435Z-control-tick-loses-saved-GraphId.log": "210625fc289f7fe26d990302b6b1bfc2d56ac68d860990d9ae06c1887dc7bf26"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
