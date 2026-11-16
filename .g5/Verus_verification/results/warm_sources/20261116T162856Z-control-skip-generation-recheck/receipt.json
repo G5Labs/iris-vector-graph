@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_generation_moves_discard_fill"
+    ],
+    "find": "&& s.gen_after==s.gen_before",
+    "name": "skip-generation-recheck",
+    "replace": "",
+    "why": "keep entries after generation moves during storage"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_generation_moves_discard_fill"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/warm_sources/model.json": "e9bd7814d69979311dd405c83327eecb34961e76a1f74e0e48fc038089a51bfa",
+    ".g5/Verus_verification/models/warm_sources/warm_sources.rs": "d4cbb45a49b1d5b5eaa8dcb15f18d6731bee6e43498273e5b1a0b43f3b535620"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/warm_sources/controls/skip-generation-recheck/20261116T162856Z/models/warm_sources/warm_sources.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_generation_moves_discard_fill": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/warm_sources/20261116T162856Z-control-skip-generation-recheck-theorem_generation_moves_discard_fill.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/warm_sources/20261116T162856Z-control-skip-generation-recheck.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/warm_sources/20261116T162856Z-control-skip-generation-recheck/logs/20261116T162856Z-control-skip-generation-recheck-theorem_generation_moves_discard_fill.log": "823d0f6f26e4b9f77748410e0dd1d6058b00e71f7661b2797399f586448541df",
+    ".g5/Verus_verification/results/warm_sources/20261116T162856Z-control-skip-generation-recheck/logs/20261116T162856Z-control-skip-generation-recheck.log": "608610859a1ce706fba187f2672fba5dbb7381d94ea7c8105e5669952dc4fbca"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

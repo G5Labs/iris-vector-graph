@@ -1,0 +1,67 @@
+verification results:: 37 verified, 6 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/run-rows-not-persisted/20261116T161219Z/models/bolt_stream/bolt_stream.rs:292:13
+    |
+291 | pub proof fn theorem_run_produces_pending_and_type_metadata(s:Session,cols:Names,rows:Rows)
+    | ------------------------------------------------------------------------------------------- at the end of the function body
+292 |     ensures run(s,EngineResult::Rows{columns:cols,rows,error:None}).state.pending==Some(rows),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/run-rows-not-persisted/20261116T161219Z/models/bolt_stream/bolt_stream.rs:341:13
+    |
+340 | pub proof fn theorem_reset_allows_next_result(s:Session,cols:Names,rows:Rows)
+    | ----------------------------------------------------------------------------- at the end of the function body
+341 |     ensures dispatch(reset(s).state,run_body(),EngineResult::Rows{columns:cols,rows,error:None}).unwrap().state.pending==Some(rows),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/run-rows-not-persisted/20261116T161219Z/models/bolt_stream/bolt_stream.rs:354:13
+    |
+352 |   pub proof fn theorem_raw_default_frame_to_run_result(s:Session,cols:Names,rows:Rows)
+    |   ------------------------------------------------------------------------------------ at the end of the function body
+353 |       requires s.phase!=Phase::Failed,cols.len()<3,
+354 |       ensures ({let received=receive(Receive{buffer:seq![],queue:seq![]},encode(run_body(),max_chunk()));
+    |  _____________^
+355 | |         received.read==Read::Message(run_body()) && ws_continues(received.read)
+356 | |         && dispatch(s,run_body(),EngineResult::Rows{columns:cols,rows,error:None}).unwrap().state.pending==Some(rows)}),
+    | |_______________________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/run-rows-not-persisted/20261116T161219Z/models/bolt_stream/bolt_stream.rs:391:13
+    |
+389 |   pub proof fn theorem_raw_wire_run_then_pull_final_records(s:Session,cols:Names,rows:Rows,n:u8)
+    |   ---------------------------------------------------------------------------------------------- at the end of the function body
+390 |       requires s.phase!=Phase::Failed,s.phase!=Phase::Defunct,cols.len()<3,0<n<=127,
+391 |       ensures ({let start=WireSession{receiver:empty_receiver(),session:s,open:true};
+    |  _____________^
+392 | |         let run_step=advance(start,encode(run_body(),max_chunk()),EngineResult::Rows{columns:cols,rows,error:None}).unwrap();
+393 | |         let pulled=advance(run_step.next,encode(pull_body(n),max_chunk()),failed_result()).unwrap();
+394 | |         let again=advance(pulled.next,encode(pull_body(n),max_chunk()),failed_result()).unwrap();
+395 | |         run_step.engine_calls==1 && pulled.engine_calls==0 && pulled.next.session.pending==None
+396 | |         && record_rows(pulled.out)==selected(rows,n as int) && record_rows(again.out)==seq![]}),
+    | |_______________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/run-rows-not-persisted/20261116T161219Z/models/bolt_stream/bolt_stream.rs:435:13
+    |
+434 | pub proof fn theorem_raw_error_string_decides_failure(s:Session,cols:Names,rows:Rows,error:Seq<char>)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+435 |     ensures run(s,EngineResult::Rows{columns:cols,rows,error:Some(seq![])}).state.pending==Some(rows),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/run-rows-not-persisted/20261116T161219Z/models/bolt_stream/bolt_stream.rs:456:13
+    |
+454 |   pub proof fn theorem_coalesced_small_chunks_still_deliver_queued_run(s:Session,cols:Names,rows:Rows)
+    |   ---------------------------------------------------------------------------------------------------- at the end of the function body
+455 |       requires s.phase!=Phase::Defunct,cols.len()<3,
+456 |       ensures ({let start=WireSession{receiver:empty_receiver(),session:s,open:true};
+    |  _____________^
+457 | |         let r=advance(start,encode(seq![0xb0u8,0x0fu8],1)+encode(run_body(),max_chunk()),EngineResult::Rows{columns:cols,rows,error:None}).un...
+458 | |         let q=advance(r.next,seq![],EngineResult::Rows{columns:cols,rows,error:None}).unwrap();
+459 | |         r.next.open && r.next.receiver.queue==seq![run_body()] && !q.received && q.engine_calls==1 && q.next.session.pending==Some(rows)}),
+    | |__________________________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 6 previous errors
+

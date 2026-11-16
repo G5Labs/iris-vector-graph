@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/sticky-app-rebuild-count/20261116T161957Z/models/service_health/service_health.rs:139:9
+    |
+135 | pub proof fn theorem_bound_sample_can_recover(s:Main,bad:Probe,good:Probe)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+139 |         main_request(main_request(s,bad).state,good).state.factory_calls==s.factory_calls,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,11 @@
+verification results:: 12 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/node_read/controls/discard-bare-node/20261116T161557Z/models/node_read/node_read.rs:100:13
+    |
+ 99 | pub proof fn theorem_bare_node_vs_absent(id: int)
+    | ------------------------------------------------- at the end of the function body
+100 |     ensures included(Row { id, label_rows: 0, property_rows: 0, node_row: true }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,42 @@
+verification results:: 10 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/embedded_no_data/controls/no-data-rowcount-unknown/20261116T161206Z/models/embedded_no_data/embedded_no_data.rs:121:13
+    |
+114 | pub proof fn theorem_no_data_is_empty(verb: Verb, inline: bool, first: R, second: R, third: R)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+...
+121 |     ensures execute(verb, inline, first, second, third) == (Res::Done { rs: false, rowcount: 0 }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/embedded_no_data/controls/no-data-rowcount-unknown/20261116T161206Z/models/embedded_no_data/embedded_no_data.rs:126:1
+    |
+126 | pub proof fn theorem_no_data_on_every_path(verb: Verb, e: Err, d: Err)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/embedded_no_data/controls/no-data-rowcount-unknown/20261116T161206Z/models/embedded_no_data/embedded_no_data.rs:129:9
+    |
+126 | pub proof fn theorem_no_data_on_every_path(verb: Verb, e: Err, d: Err)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+129 |         execute(verb, false, R::Raise(e), R::Rs, R::Rs) == (Res::Done { rs: false, rowcount: 0 }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/embedded_no_data/controls/no-data-rowcount-unknown/20261116T161206Z/models/embedded_no_data/embedded_no_data.rs:131:9
+    |
+126 | pub proof fn theorem_no_data_on_every_path(verb: Verb, e: Err, d: Err)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+131 |         execute(verb, false, R::Raise(d), R::Raise(e), R::Rs) == (Res::Done { rs: false, rowcount: 0 }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/embedded_no_data/controls/no-data-rowcount-unknown/20261116T161206Z/models/embedded_no_data/embedded_no_data.rs:159:12
+    |
+159 |     assert(execute(Verb::Select, false, R::Raise(e), R::Rs, R::Rs) == (Res::Done { rs: false, rowcount: 0 }));
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

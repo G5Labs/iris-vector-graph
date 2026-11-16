@@ -1,0 +1,33 @@
+verification results:: 15 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/controls/server-empty-list-reads-all/20261116T162707Z/models/temporal_window_reader/temporal_window_reader.rs:99:1
+   |
+99 | pub proof fn theorem_server_filter_sources(s: Seq<char>, l: Seq<Seq<char>>)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/controls/server-empty-list-reads-all/20261116T162707Z/models/temporal_window_reader/temporal_window_reader.rs:105:9
+    |
+105 |           !server_admits(window_spec(plain(Some(Seq::<Seq<char>>::empty()))), s),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+109 | /     if l.contains(s) {
+110 | |         let i = choose|i: int| 0 <= i < l.len() && l[i] == s;
+111 | |         assert(l[i].len() == 0);
+112 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/controls/server-empty-list-reads-all/20261116T162707Z/models/temporal_window_reader/temporal_window_reader.rs:106:9
+    |
+106 |           !server_admits(window_spec(plain(Some(l))), s),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+109 | /     if l.contains(s) {
+110 | |         let i = choose|i: int| 0 <= i < l.len() && l[i] == s;
+111 | |         assert(l[i].len() == 0);
+112 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

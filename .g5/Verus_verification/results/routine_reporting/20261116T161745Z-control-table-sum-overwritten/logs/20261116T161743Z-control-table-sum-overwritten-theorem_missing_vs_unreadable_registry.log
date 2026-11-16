@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/table-sum-overwritten/20261116T161743Z/models/routine_reporting/routine_reporting.rs:162:2
+    |
+159 | pub proof fn theorem_missing_vs_unreadable_registry(c:Catalog,r:Registry,k:Kind)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+162 |  embeddings(c,r,k).count==read(c,legacy(k)).count,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_write_exact"
+    ],
+    "find": "        rebuild(s, k)\n    } else {",
+    "name": "update-rebuild-ignored-in-tagg",
+    "replace": "        St { cnt: s.cnt.insert(k, get0(s.cnt, k) + 1), sum: s.sum.insert(k, get0(s.sum, k) + w), ..s }\n    } else {",
+    "why": "Q1(b) repair half-done: 'update' leaves ^KG(\"bucket\") but still $Increments tagg"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_write_exact"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/update-rebuild-ignored-in-tagg/20261116T162142Z/models/temporal/temporal.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_write_exact": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162142Z-control-update-rebuild-ignored-in-tagg-lemma_write_exact.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162142Z-control-update-rebuild-ignored-in-tagg.log",
+    "timed_out": false,
+    "verified": 112
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261116T162152Z-control-update-rebuild-ignored-in-tagg/logs/20261116T162142Z-control-update-rebuild-ignored-in-tagg-lemma_write_exact.log": "f783ac09a63c8688a155b015168519f77fe52b1e0dceb952c7dec89d5a2dafd3",
+    ".g5/Verus_verification/results/temporal/20261116T162152Z-control-update-rebuild-ignored-in-tagg/logs/20261116T162142Z-control-update-rebuild-ignored-in-tagg.log": "623b63aa6fedc8a3b4b034624f824f15edc801c78b349484e7d71e5b18f9d761"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

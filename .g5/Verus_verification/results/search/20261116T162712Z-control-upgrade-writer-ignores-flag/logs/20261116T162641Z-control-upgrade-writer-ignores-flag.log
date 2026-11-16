@@ -1,0 +1,66 @@
+verification results:: 52 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1631:1
+     |
+1631 | pub proof fn theorem_upgrade_step_preserves(s: USys, a: UAct)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1735:20
+     |
+1735 |             assert(!s.ix.upgrading || s.ix.n is None);
+     |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1741:20
+     |
+1741 |             assert(cons(s.ix));
+     |                    ^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1742:13
+     |
+ 559 |         writable(ix),
+     |         ------------ failed precondition
+...
+1742 |             theorem_insert_preserves_counters(s.ix, d, bag, dlen);
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1787:9
+     |
+1782 | pub proof fn theorem_writers_refused_while_upgrading(s: USys, d: Doc, bag: Map<Term, int>, dlen: int)
+     | ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+1787 |         ustep(s, UAct::Insert { d, bag, dlen }, upgrade_as_built()) is None,
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1903:1
+     |
+1903 | pub proof fn theorem_repaired_upgrade_preserves(s: USys, a: UAct)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1993:20
+     |
+1993 |             assert(cons(s.ix));
+     |                    ^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1994:13
+     |
+ 559 |         writable(ix),
+     |         ------------ failed precondition
+...
+1994 |             theorem_insert_preserves_counters(s.ix, d, bag, dlen);
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:2099:12
+     |
+2099 |     assert(ustep(s6, UAct::Insert { d: 2, bag: bag1(8), dlen: 1 }, v) is None);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 7 previous errors
+

@@ -1,0 +1,67 @@
+verification results:: 14 verified, 4 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs:166:13
+    |
+165 | pub proof fn theorem_reset_clears_even_when_close_fails(s:Cache,error:Error)
+    | ---------------------------------------------------------------------------- at the end of the function body
+166 |     ensures reset(s,Access::Raised(error)).state.engine.is_none(),reset(s,Access::Raised(error)).closed.is_none(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs:169:1
+    |
+169 | pub proof fn theorem_reset_allows_replacement(s:Cache,id:int,close:Access)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs:170:13
+    |
+169 | pub proof fn theorem_reset_allows_replacement(s:Cache,id:int,close:Access)
+    | -------------------------------------------------------------------------- at the end of the function body
+170 |     ensures cache_request(reset(s,close).state,Factory::Engine{id,connection:Access::Ready},clean_query()).state.engine==Some(id),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs:171:9
+    |
+169 | pub proof fn theorem_reset_allows_replacement(s:Cache,id:int,close:Access)
+    | -------------------------------------------------------------------------- at the end of the function body
+170 |     ensures cache_request(reset(s,close).state,Factory::Engine{id,connection:Access::Ready},clean_query()).state.engine==Some(id),
+171 |         cache_request(reset(s,close).state,Factory::Engine{id,connection:Access::Ready},clean_query()).state.factory_calls==s.factory_calls+1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs:178:1
+    |
+178 | pub proof fn theorem_query_exception_replaces_cache(s:Cache,f:Factory,id:int,error:Error,close:Access)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs:180:13
+    |
+178 | pub proof fn theorem_query_exception_replaces_cache(s:Cache,f:Factory,id:int,error:Error,close:Access)
+    | ------------------------------------------------------------------------------------------------------ at the end of the function body
+179 |     requires s.engine.is_some(),
+180 |     ensures run_query(s,f,Query::Raised(error),Factory::Engine{id,connection:Access::Ready},clean_query(),close).state.engine==Some(id),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs:181:9
+    |
+178 | pub proof fn theorem_query_exception_replaces_cache(s:Cache,f:Factory,id:int,error:Error,close:Access)
+    | ------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+181 |         run_query(s,f,Query::Raised(error),Factory::Engine{id,connection:Access::Ready},clean_query(),close).state.factory_calls==s.factory_calls+1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs:195:9
+    |
+191 | pub proof fn theorem_second_query_exception_stops(s:Cache,f:Factory,id:int,a:Error,b:Error,close:Access)
+    | -------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+195 |         run_query(s,f,Query::Raised(a),Factory::Engine{id,connection:Access::Ready},Query::Raised(b),close).state.engine==Some(id),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 6 previous errors
+

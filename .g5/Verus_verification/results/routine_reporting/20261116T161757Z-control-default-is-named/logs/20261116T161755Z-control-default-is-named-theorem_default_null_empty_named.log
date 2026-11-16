@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/default-is-named/20261116T161755Z/models/routine_reporting/routine_reporting.rs:224:1
+    |
+224 | pub proof fn theorem_default_null_empty_named(r:Row,a:Option<nat>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/default-is-named/20261116T161755Z/models/routine_reporting/routine_reporting.rs:225:10
+    |
+224 | pub proof fn theorem_default_null_empty_named(r:Row,a:Option<nat>)
+    | ------------------------------------------------------------------ at the end of the function body
+225 |  ensures matches(r,None,a)==matches(r,Some(0),a),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/default-is-named/20261116T161755Z/models/routine_reporting/routine_reporting.rs:226:2
+    |
+224 | pub proof fn theorem_default_null_empty_named(r:Row,a:Option<nat>)
+    | ------------------------------------------------------------------ at the end of the function body
+225 |  ensures matches(r,None,a)==matches(r,Some(0),a),
+226 |  r.graph.is_none() ==> gid(r.graph)==0,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,21 @@
+verification results:: 100 verified, 3 errors
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ppr_walk/controls/decimal-key-too-coarse/20261116T161832Z/models/ppr_walk/ppr_walk.rs:361:9
+    |
+361 |  assert(decimal12(0.9999999999999real)==1000000000000);assert(decimal12(0.0000000000001real)==0);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ppr_walk/controls/decimal-key-too-coarse/20261116T161832Z/models/ppr_walk/ppr_walk.rs:386:67
+    |
+386 | {lemma_tiny_recurrence(0.5real);reveal_with_fuel(scoped,4);assert(decimal12(0.5real)==500000000000);lemma_positive_readers(0.5real,...
+    |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ppr_walk/controls/decimal-key-too-coarse/20261116T161832Z/models/ppr_walk/ppr_walk.rs:525:9
+    |
+525 |  assert(decimal12(a)==999999999990);assert(decimal12(b)==10);lemma_positive_readers(a,b,2);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

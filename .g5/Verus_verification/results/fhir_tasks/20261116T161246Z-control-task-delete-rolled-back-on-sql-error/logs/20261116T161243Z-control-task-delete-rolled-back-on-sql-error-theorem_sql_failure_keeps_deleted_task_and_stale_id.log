@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/task-delete-rolled-back-on-sql-error/20261116T161243Z/models/fhir_tasks/fhir_tasks.rs:194:9
+    |
+191 | pub proof fn theorem_sql_failure_keeps_deleted_task_and_stale_id(s:State,g:Str,ns:Str)
+    | -------------------------------------------------------------------------------------- at the end of the function body
+...
+194 |         !unschedule(s,g,ns,Fault::Sql).state.tasks.contains_key(s.rows[g].task_id),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

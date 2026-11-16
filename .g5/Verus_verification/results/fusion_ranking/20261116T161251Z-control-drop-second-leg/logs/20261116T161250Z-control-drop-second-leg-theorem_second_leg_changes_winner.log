@@ -1,0 +1,14 @@
+verification results:: 2 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fusion_ranking/controls/drop-second-leg/20261116T161250Z/models/fusion_ranking/fusion_ranking.rs:50:9
+   |
+48 | pub proof fn theorem_second_leg_changes_winner()
+   | ------------------------------------------------ at the end of the function body
+49 |     ensures top_two(seq![seq![(0,1),(1,1000)]])==Some(0),
+50 |         top_two(seq![seq![(0,1),(1,1000)],seq![(1,-1000)]])==Some(1),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

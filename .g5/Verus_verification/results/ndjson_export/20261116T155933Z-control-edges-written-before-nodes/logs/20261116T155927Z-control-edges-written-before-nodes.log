@@ -1,0 +1,35 @@
+verification results:: 142 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/edges-written-before-nodes/20261116T155927Z/models/ndjson_export/ndjson_export.rs:226:1
+    |
+226 | pub proof fn theorem_complete_export_line_sequence_and_counts(ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,es:Seq<EdgeRow>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/edges-written-before-nodes/20261116T155927Z/models/ndjson_export/ndjson_export.rs:228:10
+    |
+226 | pub proof fn theorem_complete_export_line_sequence_and_counts(ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,es:Seq<EdgeRow>)
+    | ------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+227 |  requires ordinary_keys(ps),admitted_edges(es),
+228 |  ensures export(ns,ls,ps,es).lines==node_events(census(ns),ns,ls,ps)+edge_events(edge_census(es)),export(ns,ls,ps,es).nodes==select...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/edges-written-before-nodes/20261116T155927Z/models/ndjson_export/ndjson_export.rs:228:99
+    |
+226 | pub proof fn theorem_complete_export_line_sequence_and_counts(ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,es:Seq<EdgeRow>)
+    | ------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+227 |  requires ordinary_keys(ps),admitted_edges(es),
+228 |  ensures export(ns,ls,ps,es).lines==node_events(census(ns),ns,ls,ps)+edge_events(edge_census(es)),export(ns,ls,ps,es).nodes==selected_ids(ns).len(),ex...
+    |                                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/edges-written-before-nodes/20261116T155927Z/models/ndjson_export/ndjson_export.rs:302:61
+    |
+302 | pub proof fn witness_node_line_precedes_edge_line() ensures ({let f=export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![EdgeRow{graph:0,serial:0,source:0,predicate:0,target:0,raw:None}]);is_node(f.lines[0])&&is_edge(f.lines[1])}), {...
+    | ---------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,59 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_reset_clears_even_when_close_fails",
+      "theorem_reset_allows_replacement"
+    ],
+    "find": "state:Cache{engine:None,close_attempts:",
+    "name": "reset-close-failure-retains-cache",
+    "replace": "state:Cache{engine:if matches!(close,Access::Ready){None}else{s.engine},close_attempts:"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_reset_clears_even_when_close_fails",
+      "theorem_reset_allows_replacement"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/model.json": "9e9c64a322b9016d1845da7e9d52c702e420bab831a1e476d5b548b760a724f9",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "c768d2646b1eba243619f465348f463b5d3a50a98382965c1325f2e50a966d8e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/reset-close-failure-retains-cache/20261116T162004Z/models/service_health/service_health.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_reset_allows_replacement": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/20261116T162004Z-control-reset-close-failure-retains-cache-theorem_reset_allows_replacement.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_reset_clears_even_when_close_fails": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/20261116T162004Z-control-reset-close-failure-retains-cache-theorem_reset_clears_even_when_close_fails.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/20261116T162004Z-control-reset-close-failure-retains-cache.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/service_health/20261116T162006Z-control-reset-close-failure-retains-cache/logs/20261116T162004Z-control-reset-close-failure-retains-cache-theorem_reset_allows_replacement.log": "de3a14046bea86a769bc1b08938300c27bb16b2e2781f4e3b1a92caa47bda54a",
+    ".g5/Verus_verification/results/service_health/20261116T162006Z-control-reset-close-failure-retains-cache/logs/20261116T162004Z-control-reset-close-failure-retains-cache-theorem_reset_clears_even_when_close_fails.log": "6484f199d7b9815be74fe79b68929b4152220665a5102779d101b513ce968fca",
+    ".g5/Verus_verification/results/service_health/20261116T162006Z-control-reset-close-failure-retains-cache/logs/20261116T162004Z-control-reset-close-failure-retains-cache.log": "f674042a74d1b43f6c554a5b37aa11bf9316a071e440e364d7c3e2936d1034a6"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_s_step_preserves_inv",
+      "theorem_refusal_changes_nothing",
+      "witness_serial_first_setup_and_refusal"
+    ],
+    "find": "accepted: !native_ok || check_passes(s, sch) }",
+    "name": "s-no-first-access-check",
+    "replace": "accepted: true }",
+    "why": "IRISGraphEngine construction without check_first_access (engine.py:375-378): every engine is accepted whatever the record says"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_s_step_preserves_inv",
+      "theorem_refusal_changes_nothing",
+      "witness_serial_first_setup_and_refusal"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-no-first-access-check/20261116T161630Z/models/platform/platform.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 7,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_s_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161630Z-control-s-no-first-access-check-lemma_s_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_refusal_changes_nothing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161630Z-control-s-no-first-access-check-theorem_refusal_changes_nothing.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_serial_first_setup_and_refusal": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161630Z-control-s-no-first-access-check-witness_serial_first_setup_and_refusal.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161630Z-control-s-no-first-access-check.log",
+    "timed_out": false,
+    "verified": 44
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261116T161659Z-control-s-no-first-access-check/logs/20261116T161630Z-control-s-no-first-access-check-lemma_s_step_preserves_inv.log": "b0384307bfcba19864621be9fa5101dc0d663cc22b77acff673281302c60ca73",
+    ".g5/Verus_verification/results/platform/20261116T161659Z-control-s-no-first-access-check/logs/20261116T161630Z-control-s-no-first-access-check-theorem_refusal_changes_nothing.log": "8b8fba98d3a4db9690f2b9ce93abe2b66a2c76eadcba4893de74795e563e2f15",
+    ".g5/Verus_verification/results/platform/20261116T161659Z-control-s-no-first-access-check/logs/20261116T161630Z-control-s-no-first-access-check-witness_serial_first_setup_and_refusal.log": "f12ccb32dc70acccd77b628cdadd92329bb6ca1aa1b4368ee763bf0abd59a5dd",
+    ".g5/Verus_verification/results/platform/20261116T161659Z-control-s-no-first-access-check/logs/20261116T161630Z-control-s-no-first-access-check.log": "2debec177e493a4d0dccc4a9ca0e11ba5c942f96fcdb4ba9adcac14c3d69ddc3"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/status-downgrades-future-version/20261116T161251Z/models/fhir_tasks/fhir_tasks.rs:226:13
+    |
+224 | pub proof fn theorem_future_version_status_refuses(s:State,g:Str,current:int)
+    | ----------------------------------------------------------------------------- at the end of the function body
+225 |     requires s.rows.contains_key(g),s.rows[g].version.is_some(),s.rows[g].version.unwrap()>current,
+226 |     ensures status(s,g,current,true)==Status::Error,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

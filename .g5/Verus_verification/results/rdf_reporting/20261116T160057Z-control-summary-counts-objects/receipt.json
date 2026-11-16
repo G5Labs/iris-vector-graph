@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_summary_counts_subjects_not_objects"
+    ],
+    "find": "nodes:subjects(qs).len()",
+    "name": "summary-counts-objects",
+    "replace": "nodes:qs.map_values(|x:Quad|x.triple.o).to_set().len()"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_summary_counts_subjects_not_objects"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "70eb4f615b746ea00e6b944d61f57c1900467e5158f67353782ce8fee7906550"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/summary-counts-objects/20261116T160051Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_summary_counts_subjects_not_objects": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/20261116T160051Z-control-summary-counts-objects-theorem_summary_counts_subjects_not_objects.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/20261116T160051Z-control-summary-counts-objects.log",
+    "timed_out": false,
+    "verified": 47
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T160057Z-control-summary-counts-objects/logs/20261116T160051Z-control-summary-counts-objects-theorem_summary_counts_subjects_not_objects.log": "f72421a132bab8c6bd27fb49125295e9fe788b48cc7b6d3a7fc7cd40a2b317eb",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T160057Z-control-summary-counts-objects/logs/20261116T160051Z-control-summary-counts-objects.log": "6c4def5f46148c65c9ea640a728262dd321f96e20ebd0f777dc24d0f24683c2e"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,15 @@
+verification results:: 54 verified, 2 errors
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/as-built-delete-without-early-return/20261116T163021Z/models/search/search.rs:1191:12
+     |
+1191 |     assert(s3.ix == s2.ix && s3.run is None && s3.gone.contains(1));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/as-built-delete-without-early-return/20261116T163021Z/models/search/search.rs:1211:12
+     |
+1211 |     assert(wstep(s2, WAct::DelBegin { d: 1 }, v) is Some);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

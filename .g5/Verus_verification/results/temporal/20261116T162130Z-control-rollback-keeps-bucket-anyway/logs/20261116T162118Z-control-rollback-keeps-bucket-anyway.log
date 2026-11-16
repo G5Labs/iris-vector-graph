@@ -1,0 +1,48 @@
+verification results:: 109 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:1489:1
+     |
+1489 | pub proof fn lemma_step_stats(s: St, a: Action, v: Variant)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:1545:17
+     |
+1014 |         a.bucket == b.bucket,
+     |         -------------------- failed precondition
+...
+1545 |                 lemma_exact_frame(sn, snap(s2));
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:1565:17
+     |
+1014 |         a.bucket == b.bucket,
+     |         -------------------- failed precondition
+...
+1565 |                 lemma_exact_frame(snap(s), snap(s2));
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:2012:12
+     |
+2012 |     assert(s1.tout == s0.tout && s1.cnt == s0.cnt && s1.sum == s0.sum && s1.bucket == s0.bucket && s1.purged == s0.purged);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:2048:9
+     |
+2036 | pub proof fn lemma_refused_commit_restores_journaled(s: St, ops: Seq<LOp>, blocked: bool, v: Variant)
+     | ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+2048 |         v.incr_undone ==> commit(s, ops, blocked, v).0.cnt == s.cnt && commit(s, ops, blocked, v).0.bucket == s.bucket,
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:3583:12
+     |
+3583 |     assert(s4.tout == s1.tout && s4.bucket == s1.bucket && s4.cnt == s1.cnt && s4.sum == s1.sum && s4.purged == s1.purged);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors
+

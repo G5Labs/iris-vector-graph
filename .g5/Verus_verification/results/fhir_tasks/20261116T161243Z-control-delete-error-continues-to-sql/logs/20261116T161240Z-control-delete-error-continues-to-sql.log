@@ -1,0 +1,27 @@
+verification results:: 26 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/delete-error-continues-to-sql/20261116T161240Z/models/fhir_tasks/fhir_tasks.rs:187:1
+    |
+187 | pub proof fn theorem_delete_failure_precedes_sql(s:State,g:Str,ns:Str)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/delete-error-continues-to-sql/20261116T161240Z/models/fhir_tasks/fhir_tasks.rs:189:13
+    |
+187 | pub proof fn theorem_delete_failure_precedes_sql(s:State,g:Str,ns:Str)
+    | ---------------------------------------------------------------------- at the end of the function body
+188 |     requires s.rows.contains_key(g),object_exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,
+189 |     ensures unschedule(s,g,ns,Fault::Delete).state==s,unschedule(s,g,ns,Fault::Delete).ops==seq![Op::Delete],
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/delete-error-continues-to-sql/20261116T161240Z/models/fhir_tasks/fhir_tasks.rs:189:55
+    |
+187 | pub proof fn theorem_delete_failure_precedes_sql(s:State,g:Str,ns:Str)
+    | ---------------------------------------------------------------------- at the end of the function body
+188 |     requires s.rows.contains_key(g),object_exists(s,s.rows[g].task_id),ownership(s.tasks[s.rows[g].task_id],g,ns)==Owner::Own,
+189 |     ensures unschedule(s,g,ns,Fault::Delete).state==s,unschedule(s,g,ns,Fault::Delete).ops==seq![Op::Delete],
+    |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

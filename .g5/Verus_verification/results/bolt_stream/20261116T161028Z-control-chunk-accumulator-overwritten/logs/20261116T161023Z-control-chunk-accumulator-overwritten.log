@@ -1,0 +1,41 @@
+verification results:: 41 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/chunk-accumulator-overwritten/20261116T161023Z/models/bolt_stream/bolt_stream.rs:69:1
+   |
+69 | pub proof fn lemma_scan_chunk(body:Bytes,rest:Bytes,current:Bytes)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/chunk-accumulator-overwritten/20261116T161023Z/models/bolt_stream/bolt_stream.rs:71:13
+   |
+69 | pub proof fn lemma_scan_chunk(body:Bytes,rest:Bytes,current:Bytes)
+   | ------------------------------------------------------------------ at the end of the function body
+70 |     requires 0<body.len()<=max_chunk(),
+71 |     ensures scan(header(body.len())+body+rest,current).bodies==scan(rest,current+body).bodies,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/chunk-accumulator-overwritten/20261116T161023Z/models/bolt_stream/bolt_stream.rs:72:9
+   |
+69 |   pub proof fn lemma_scan_chunk(body:Bytes,rest:Bytes,current:Bytes)
+   |   ------------------------------------------------------------------ at the end of the function body
+...
+72 | /         scan(header(body.len())+body+rest,current).used==
+73 | |             (if scan(rest,current+body).bodies.len()>0{body.len()+2+scan(rest,current+body).used}else{0}),
+   | |_________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/chunk-accumulator-overwritten/20261116T161023Z/models/bolt_stream/bolt_stream.rs:112:13
+    |
+112 |       ensures scan(raw,current).used<=raw.len(),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+115 | /     if raw.len()>=2 {
+116 | |         let n=length(raw);
+117 | |         if n==0 {theorem_scan_boundary_within_buffer(drop(raw,2),seq![]);}
+118 | |         else if n+2<=raw.len(){theorem_scan_boundary_within_buffer(drop(raw,n+2),current+raw.subrange(2,(n+2) as int));}
+119 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 3 previous errors
+

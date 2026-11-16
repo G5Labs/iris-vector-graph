@@ -1,0 +1,40 @@
+verification results:: 72 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/cdlp-tie-largest/20261116T161212Z/models/communities/communities.rs:295:1
+    |
+295 | pub proof fn lemma_best_fold(keys:Seq<Node>,c:Counts,b:(Node,nat))
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/cdlp-tie-largest/20261116T161212Z/models/communities/communities.rs:303:9
+    |
+293 |     requires better(a,b),better(b,c),ensures better(a,c),
+    |              ----------- failed precondition
+...
+303 |         lemma_better_transitive(best_fold(keys,c,b),next,b);lemma_better_transitive(best_fold(keys,c,b),next,(x,n));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/cdlp-tie-largest/20261116T161212Z/models/communities/communities.rs:304:55
+    |
+304 | ...   assert forall|v:Node|keys.contains(v) implies better(best_fold(keys,c,b),(v,count(c,v))) by {if v!=x{let i=choose|i:int|0<=i<...
+    |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/cdlp-tie-largest/20261116T161212Z/models/communities/communities.rs:305:83
+    |
+305 | ...oose|i:int|0<=i<keys.drop_first().len() && best_fold(keys,c,b)==(keys.drop_first()[i],count(c,keys.drop_first()[i]));assert(keys...
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/cdlp-tie-largest/20261116T161212Z/models/communities/communities.rs:305:196
+    |
+305 | ...keys.drop_first()[i],count(c,keys.drop_first()[i]));assert(keys[i+1]==keys.drop_first()[i]);}
+    |                                                               ^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: aborting due to 2 previous errors
+

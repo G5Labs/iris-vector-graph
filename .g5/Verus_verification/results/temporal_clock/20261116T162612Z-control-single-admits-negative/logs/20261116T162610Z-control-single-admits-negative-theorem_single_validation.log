@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/single-admits-negative/20261116T162610Z/models/temporal_clock/temporal_clock.rs:103:1
+    |
+103 | pub proof fn theorem_single_validation(n:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/single-admits-negative/20261116T162610Z/models/temporal_clock/temporal_clock.rs:105:13
+    |
+103 | pub proof fn theorem_single_validation(n:int)
+    | --------------------------------------------- at the end of the function body
+104 |     requires n<0,
+105 |     ensures single_payload(Raw::Number(n))==None,single_payload(Raw::Text(n))==None,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/single-admits-negative/20261116T162610Z/models/temporal_clock/temporal_clock.rs:105:50
+    |
+103 | pub proof fn theorem_single_validation(n:int)
+    | --------------------------------------------- at the end of the function body
+104 |     requires n<0,
+105 |     ensures single_payload(Raw::Number(n))==None,single_payload(Raw::Text(n))==None,
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

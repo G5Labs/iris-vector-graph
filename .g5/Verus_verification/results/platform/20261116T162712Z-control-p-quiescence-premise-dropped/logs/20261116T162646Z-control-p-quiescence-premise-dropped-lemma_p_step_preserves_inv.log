@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-quiescence-premise-dropped/20261116T162646Z/models/platform/platform.rs:2103:1
+     |
+2103 | pub proof fn lemma_p_step_preserves_inv(s: PSt, a: PAction)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-quiescence-premise-dropped/20261116T162646Z/models/platform/platform.rs:2273:24
+     |
+2273 |                 assert(!s.runs.contains_key(k));
+     |                        ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-quiescence-premise-dropped/20261116T162646Z/models/platform/platform.rs:2276:24
+     |
+2276 |                 assert(!s.jobs.contains_key(k));
+     |                        ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

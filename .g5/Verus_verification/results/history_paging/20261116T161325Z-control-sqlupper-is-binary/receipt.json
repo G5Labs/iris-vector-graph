@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_sqlupper_ascii_neighbor"
+    ],
+    "find": "Collation::SqlUpperAscii=>trim_tail(upper(a))==trim_tail(upper(b))",
+    "name": "sqlupper-is-binary",
+    "replace": "Collation::SqlUpperAscii=>a==b"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_sqlupper_ascii_neighbor"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_paging/history_paging.rs": "385755ecc9062df77704e9b19316f17e7ef23f09ef629d80bf592f1487a84f41",
+    ".g5/Verus_verification/models/history_paging/model.json": "ebc4d6ea6bf1bb56c7a12592ff389c8aa0b0e7d9d2ea25003ba98edce9958041"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/sqlupper-is-binary/20261116T161323Z/models/history_paging/history_paging.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_sqlupper_ascii_neighbor": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/20261116T161323Z-control-sqlupper-is-binary-theorem_sqlupper_ascii_neighbor.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/20261116T161323Z-control-sqlupper-is-binary.log",
+    "timed_out": false,
+    "verified": 18
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_paging/20261116T161325Z-control-sqlupper-is-binary/logs/20261116T161323Z-control-sqlupper-is-binary-theorem_sqlupper_ascii_neighbor.log": "329aa426c04257963bf64f7c64fda897bec38a73d14faa6cf73ecb2106dff103",
+    ".g5/Verus_verification/results/history_paging/20261116T161325Z-control-sqlupper-is-binary/logs/20261116T161323Z-control-sqlupper-is-binary.log": "986d854934001fc66429a028bae0cd8cbc5d201656152ba383806c750c364dfa"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

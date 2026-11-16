@@ -1,0 +1,21 @@
+verification results:: 112 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/update-rebuild-ignored-in-tagg/20261116T162142Z/models/temporal/temporal.rs:1031:1
+     |
+1031 | pub proof fn lemma_write_exact(s: St, c: Coord, w: int, attrs: Option<int>, mode: Mode, f: Fail, v: Variant)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/update-rebuild-ignored-in-tagg/20261116T162142Z/models/temporal/temporal.rs:1098:16
+     |
+1098 |         assert(get0(s2.cnt, akey(c)) == get0(rebuild(mid, akey(c)).cnt, akey(c)));
+     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/update-rebuild-ignored-in-tagg/20261116T162142Z/models/temporal/temporal.rs:1121:20
+     |
+1121 |             assert(s2.cnt == rebuild(mid, akey(c)).cnt);
+     |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

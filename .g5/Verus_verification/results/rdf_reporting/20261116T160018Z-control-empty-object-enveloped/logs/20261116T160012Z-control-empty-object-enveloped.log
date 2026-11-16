@@ -1,0 +1,18 @@
+verification results:: 48 verified, 2 errors
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/empty-object-enveloped/20261116T160012Z/models/rdf_reporting/rdf_reporting.rs:259:63
+    |
+259 | ...].triple;assert((emit_edge(e,rs,0,c)+emit_edge(e,rs,1,c)).map_values(triple_fn()) =~= seq![x,x]);assert(triples(emit_edge(e,rs,0...
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/empty-object-enveloped/20261116T160012Z/models/rdf_reporting/rdf_reporting.rs:322:10
+    |
+320 | pub proof fn theorem_empty_qualifier_has_no_envelope(e:Edge,rs:Rows,c:Config,pos:nat)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+321 |  requires edge_selected(e,rs,c),decode(e.qualifiers).len()==0
+322 |  ensures emit_edge(e,rs,pos,c).len()==1
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

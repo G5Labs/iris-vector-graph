@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/node-counter-doubled/20261116T155922Z/models/ndjson_export/ndjson_export.rs:292:67
+    |
+292 | pub proof fn witness_nodes_counter_counts_written_lines() ensures export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![]).nodes==export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![]).lines.len(), {...
+    | ---------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 1 previous error
+

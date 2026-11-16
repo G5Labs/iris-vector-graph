@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_zero_graph_epoch_is_preserved"
+    ],
+    "find": "(!zero_start || (k.1>0 && k.2>0))",
+    "name": "zero-start-export",
+    "replace": "(k.1>0 && k.2>0)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_zero_graph_epoch_is_preserved"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_restore/model.json": "6e7137843cae40f30a383cad43dee83f6733faac5bdff15cd9709921284cfb12",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_restore/controls/zero-start-export/20261116T162645Z/models/temporal_restore/temporal_restore.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_zero_graph_epoch_is_preserved": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_restore/20261116T162645Z-control-zero-start-export-theorem_zero_graph_epoch_is_preserved.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_restore/20261116T162645Z-control-zero-start-export.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_restore/20261116T162647Z-control-zero-start-export/logs/20261116T162645Z-control-zero-start-export-theorem_zero_graph_epoch_is_preserved.log": "bd0354e6d2a8da521e3b388b86d1481093c4f2b4190615d06b421c534da9d964",
+    ".g5/Verus_verification/results/temporal_restore/20261116T162647Z-control-zero-start-export/logs/20261116T162645Z-control-zero-start-export.log": "dbeb5dbef68f950b3c7d0fae589b92379263a120a64bdd857606c2c1d4a94348"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

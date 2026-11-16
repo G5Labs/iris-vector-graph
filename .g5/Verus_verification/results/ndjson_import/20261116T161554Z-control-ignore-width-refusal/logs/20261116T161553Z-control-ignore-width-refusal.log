@@ -1,0 +1,26 @@
+verification results:: 8 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_import/controls/ignore-width-refusal/20261116T161553Z/models/ndjson_import/ndjson_import.rs:78:1
+   |
+78 | pub proof fn theorem_wide_writer_refusal_preserves_prefix(id: int,a: int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_import/controls/ignore-width-refusal/20261116T161553Z/models/ndjson_import/ndjson_import.rs:79:13
+   |
+78 | pub proof fn theorem_wide_writer_refusal_preserves_prefix(id: int,a: int)
+   | ------------------------------------------------------------------------- at the end of the function body
+79 |     ensures run(start(Map::empty()),seq![node(id,a),Line::Object { kind: Kind::Node,etype:Kind::Missing,id:Some(id+1),chars:257,value:9 }]).stopped,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_import/controls/ignore-width-refusal/20261116T161553Z/models/ndjson_import/ndjson_import.rs:81:9
+   |
+78 | pub proof fn theorem_wide_writer_refusal_preserves_prefix(id: int,a: int)
+   | ------------------------------------------------------------------------- at the end of the function body
+...
+81 |         run(start(Map::empty()),seq![node(id,a),Line::Object { kind: Kind::Node,etype:Kind::Missing,id:Some(id+1),chars:257,value:9 }]).nodes==1,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

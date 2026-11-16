@@ -1,0 +1,54 @@
+verification results:: 106 verified, 2 errors
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/controls/tuple-delete-keeps-other-owner/20261116T161520Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/controls/tuple-delete-keeps-other-owner/20261116T161520Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/controls/tuple-delete-keeps-other-owner/20261116T161520Z/models/ledger_content/ledger_content.rs:95:10
+   |
+94 | pub proof fn theorem_primitive_records_replay_full_content(s:State,o:Op)
+   | ------------------------------------------------------------------------ at the end of the function body
+95 |  ensures fold(s,produce(s,o).records)==produce(s,o).state,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/controls/tuple-delete-keeps-other-owner/20261116T161520Z/models/ledger_content/ledger_content.rs:494:10
+    |
+492 |   pub proof fn theorem_duplicate_tuple_views_remain_distinct(t:Tuple,a:int,b:int)
+    |   ------------------------------------------------------------------------------- at the end of the function body
+493 |    requires a!=b,
+494 |    ensures ({let s=fold(empty(),seq![rec(Action::CreateRel(a,t)),rec(Action::CreateRel(b,t))]);
+    |  __________^
+495 | |   s.rels.contains_key(a) && s.rels.contains_key(b) && s.by_tuple[t]==b
+496 | |   && entities(s).contains_key((true,a)) && entities(s).contains_key((true,b))
+497 | |   && comparable(s,seq![a,b],Map::empty())==map![t=>(b,Map::<Text,Text>::empty())]
+498 | |   && ({let d=apply(s,rec(Action::DeleteRel{id:a,snapshot:s.rels[a]}));d.rels.contains_key(b) && !d.by_tuple.contains_key(t)
+499 | |        && comparable(d,seq![b],Map::empty())==map![t=>(b,Map::<Text,Text>::empty())]})}),
+    | |________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors; 2 warnings emitted
+

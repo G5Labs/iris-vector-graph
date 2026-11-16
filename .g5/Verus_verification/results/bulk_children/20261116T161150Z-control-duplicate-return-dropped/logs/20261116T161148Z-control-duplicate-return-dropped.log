@@ -1,0 +1,12 @@
+verification results:: 29 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/duplicate-return-dropped/20261116T161148Z/models/bulk_children/bulk_children.rs:181:9
+    |
+178 | pub proof fn theorem_repeated_id_first_property_wins(s:Store,a:Input,b:Input,k:int)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+...
+181 |         run(s,seq![a,b],no_fault(),false).ids==Some(seq![a.id,b.id]),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

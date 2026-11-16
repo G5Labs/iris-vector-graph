@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/node_read/controls/skip-structural-alias/20261116T161558Z/models/node_read/node_read.rs:115:1
+    |
+115 | pub proof fn theorem_structural_keys_kept(m: Map<int,int>, k: int, v: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/node_read/controls/skip-structural-alias/20261116T161558Z/models/node_read/node_read.rs:117:13
+    |
+115 | pub proof fn theorem_structural_keys_kept(m: Map<int,int>, k: int, v: int)
+    | -------------------------------------------------------------------------- at the end of the function body
+116 |     requires k >= 0, m.contains_key(0), m.contains_key(1),
+117 |     ensures assign(m,k,v)[0] == m[0], assign(m,k,v)[1] == m[1],
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/node_read/controls/skip-structural-alias/20261116T161558Z/models/node_read/node_read.rs:117:39
+    |
+115 | pub proof fn theorem_structural_keys_kept(m: Map<int,int>, k: int, v: int)
+    | -------------------------------------------------------------------------- at the end of the function body
+116 |     requires k >= 0, m.contains_key(0), m.contains_key(1),
+117 |     ensures assign(m,k,v)[0] == m[0], assign(m,k,v)[1] == m[1],
+    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

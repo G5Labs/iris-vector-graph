@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/node-callback-graph-dropped/20261116T155933Z/models/ndjson_export/ndjson_export.rs:305:10
+    |
+304 | pub proof fn theorem_generated_node_callback_preserves_graph(id:Id,labels:Seq<int>,props:Map<int,nr::Value>,g:Option<int>)
+    | -------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+305 |  ensures callback(Event::Node{id,labels,props},g)==Some(Action::CreateNode{id,labels,props,graph:g}),{}
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

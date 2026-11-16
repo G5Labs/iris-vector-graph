@@ -1,0 +1,55 @@
+verification results:: 7 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rel_prop_text/controls/legacy-bool-spellings/20261116T161658Z/models/rel_prop_text/rel_prop_text.rs:156:13
+    |
+154 | pub proof fn theorem_as_built_agrees_on_plain_ascii(t: Seq<char>, parses: bool)
+    | ------------------------------------------------------------------------------- at the end of the function body
+155 |     requires plain_ascii(t),
+156 |     ensures as_built(t, parses) == decode(t, parses),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rel_prop_text/controls/legacy-bool-spellings/20261116T161658Z/models/rel_prop_text/rel_prop_text.rs:172:9
+    |
+163 | pub proof fn theorem_decode_classes()
+    | ------------------------------------- at the end of the function body
+...
+172 |         decode(seq!['T', 'r', 'u', 'e'], false) == Val::Str(seq!['T', 'r', 'u', 'e']),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rel_prop_text/controls/legacy-bool-spellings/20261116T161658Z/models/rel_prop_text/rel_prop_text.rs:221:1
+    |
+221 | pub proof fn theorem_noncanonical_stays_text(t: Seq<char>, i: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rel_prop_text/controls/legacy-bool-spellings/20261116T161658Z/models/rel_prop_text/rel_prop_text.rs:226:13
+    |
+226 |       ensures decode(t, false) == Val::Str(t), decode(t, true) == Val::Str(t),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+227 |   {
+228 | /     if 0 <= i < t.len() && !ascii_digit(t[i]) && t[i] != '-' && t[i] != '.' {
+229 | |         // the reviewed rule reads digits as ASCII: a non-ASCII digit is foreign to it
+230 | |         let s = unsigned(t);
+231 | |         let j = if t.len() > 0 && t[0] == '-' { i - 1 } else { i };
+...   |
+255 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rel_prop_text/controls/legacy-bool-spellings/20261116T161658Z/models/rel_prop_text/rel_prop_text.rs:226:46
+    |
+226 |       ensures decode(t, false) == Val::Str(t), decode(t, true) == Val::Str(t),
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+227 |   {
+228 | /     if 0 <= i < t.len() && !ascii_digit(t[i]) && t[i] != '-' && t[i] != '.' {
+229 | |         // the reviewed rule reads digits as ASCII: a non-ASCII digit is foreign to it
+230 | |         let s = unsigned(t);
+231 | |         let j = if t.len() > 0 && t[0] == '-' { i - 1 } else { i };
+...   |
+255 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 4 previous errors
+

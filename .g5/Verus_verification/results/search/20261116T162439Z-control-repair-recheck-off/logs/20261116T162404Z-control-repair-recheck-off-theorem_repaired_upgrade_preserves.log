@@ -1,0 +1,32 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/repair-recheck-off/20261116T162404Z/models/search/search.rs:1903:1
+     |
+1903 | pub proof fn theorem_repaired_upgrade_preserves(s: USys, a: UAct)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/repair-recheck-off/20261116T162404Z/models/search/search.rs:1908:9
+     |
+1908 |           uinv_core(ustep(s, a, upgrade_repaired())->Some_0),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1916 | /     match a {
+1917 | |         UAct::Start { p } => {
+1918 | |             if s2 != s {
+1919 | |                 lemma_s1ok_frame(s.ix, s2.ix);
+...    |
+2003 | |         },
+2004 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/repair-recheck-off/20261116T162404Z/models/search/search.rs:1930:24
+     |
+1930 |                 assert(cons_present(s2.ix));
+     |                        ^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

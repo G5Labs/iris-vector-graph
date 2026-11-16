@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_reset_derives_native_first"
+    ],
+    "find": "trial: true, native_ms: 0, sql_runs: 0, last: None",
+    "name": "keep-trial-timings",
+    "replace": "trial: true, native_ms: r.native_ms, sql_runs: r.sql_runs, last: r.last",
+    "why": "a new trial reuses old timing counts"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_reset_derives_native_first"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/route_recheck/model.json": "34ed132e312157ceee73e041744ff426ca384c03c18f961e5cee9377f8e4320e",
+    ".g5/Verus_verification/models/route_recheck/route_recheck.rs": "1308596fd1641cb3586bb8c84b307a99e71bd72dc36767bf615564dbac7aebe8"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/route_recheck/controls/keep-trial-timings/20261116T161731Z/models/route_recheck/route_recheck.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_reset_derives_native_first": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/route_recheck/20261116T161731Z-control-keep-trial-timings-theorem_reset_derives_native_first.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/route_recheck/20261116T161731Z-control-keep-trial-timings.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/route_recheck/20261116T161732Z-control-keep-trial-timings/logs/20261116T161731Z-control-keep-trial-timings-theorem_reset_derives_native_first.log": "608c3241b150095cadd1edcb52208469bd7b5805b7c7f11add299f1b30f0a1a0",
+    ".g5/Verus_verification/results/route_recheck/20261116T161732Z-control-keep-trial-timings/logs/20261116T161731Z-control-keep-trial-timings.log": "d620c341fe4ddc6138b597913a8b0ab01487709670051696021c38206da92cb5"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

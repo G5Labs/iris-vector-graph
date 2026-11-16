@@ -1,0 +1,59 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_orphan_value_replaced",
+      "theorem_orphan_unoffered_value_removed"
+    ],
+    "find": "!(wanted.contains(k.0) && !s.parents.contains(k.0))",
+    "name": "orphan-cleanup-omitted",
+    "replace": "true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_orphan_value_replaced",
+      "theorem_orphan_unoffered_value_removed"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/bulk_children/model.json": "e7c7b7caa5f1bca34d53ef20a1119181fb993cf18b79c54f503f71b83653855b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/orphan-cleanup-omitted/20261116T161133Z/models/bulk_children/bulk_children.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_orphan_unoffered_value_removed": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/20261116T161133Z-control-orphan-cleanup-omitted-theorem_orphan_unoffered_value_removed.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_orphan_value_replaced": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/20261116T161133Z-control-orphan-cleanup-omitted-theorem_orphan_value_replaced.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/20261116T161133Z-control-orphan-cleanup-omitted.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_children/20261116T161135Z-control-orphan-cleanup-omitted/logs/20261116T161133Z-control-orphan-cleanup-omitted-theorem_orphan_unoffered_value_removed.log": "45048925a3fcebd9d9f90728754ed9135380e55488f458acba46365cd4d3dc62",
+    ".g5/Verus_verification/results/bulk_children/20261116T161135Z-control-orphan-cleanup-omitted/logs/20261116T161133Z-control-orphan-cleanup-omitted-theorem_orphan_value_replaced.log": "94b9ebb3d7ec69ed8b4f6ad241145e70616ae07d281177421397189af39e9300",
+    ".g5/Verus_verification/results/bulk_children/20261116T161135Z-control-orphan-cleanup-omitted/logs/20261116T161133Z-control-orphan-cleanup-omitted.log": "ca3244813869a20f971f0aef60efe585314f78c184bdb9c12241e377044c671b"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

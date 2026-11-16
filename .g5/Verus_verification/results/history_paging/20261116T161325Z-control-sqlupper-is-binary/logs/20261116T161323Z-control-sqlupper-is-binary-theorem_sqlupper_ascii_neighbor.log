@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/sqlupper-is-binary/20261116T161323Z/models/history_paging/history_paging.rs:205:13
+    |
+204 | pub proof fn theorem_sqlupper_ascii_neighbor()
+    | ---------------------------------------------- at the end of the function body
+205 |     ensures text_eq(seq![80,108,97,110],seq![112,76,65,78],Collation::SqlUpperAscii),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

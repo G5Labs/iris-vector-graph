@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/controls/close-not-idempotent/20261116T162703Z/models/temporal_window_reader/temporal_window_reader.rs:340:9
+    |
+336 | pub proof fn theorem_exhaustion_frees_without_close(script: Seq<Resp>, k: nat)
+    | ------------------------------------------------------------------------------ at the end of the function body
+...
+340 |         close(drain(open(script), script)).closes == 0,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

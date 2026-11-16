@@ -1,0 +1,41 @@
+verification results:: 66 verified, 4 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/retry_replay/controls/prefix-collisions-leak/20261116T161718Z/models/retry_replay/retry_replay.rs:65:13
+   |
+63 |   pub proof fn theorem_fault_replays_entire_batch(s:clock::stores::Global,es:Seq<clock::Request>,clocks:Seq<int>,n:nat)
+   |   --------------------------------------------------------------------------------------------------------------------- at the end of the function body
+64 |       requires es.len()>0,clock::batch_valid(es),
+65 |       ensures run(s,es,clocks,Fault::ErrorAfter(n)).outcome==clock::fold(
+   |  _____________^
+66 | |         clock::fold(s,es.take(prefix_len(n,es.len()) as int),true,clocks).state,es,false,clocks),
+   | |________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/retry_replay/controls/prefix-collisions-leak/20261116T161718Z/models/retry_replay/retry_replay.rs:76:9
+   |
+69 | pub proof fn theorem_zero_lost_reply_retains_two_events(e:clock::stores::Edge,now:int,w:int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+...
+76 |         single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(1)).outcome.collisions==0,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/retry_replay/controls/prefix-collisions-leak/20261116T161718Z/models/retry_replay/retry_replay.rs:94:9
+   |
+89 | pub proof fn theorem_positive_lost_reply_collides(e:clock::stores::Edge,n:int,now:int,w:int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+...
+94 |         single(Map::empty(),e,n,w,true,now,Fault::ErrorAfter(1)).outcome.collisions==0,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/retry_replay/controls/prefix-collisions-leak/20261116T161718Z/models/retry_replay/retry_replay.rs:100:9
+    |
+ 96 | pub proof fn theorem_preexisting_collision_still_reports_one(s:clock::stores::Global,e:clock::stores::Edge,n:int,now:int,w:int)
+    | ------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+100 |         single(s,e,n,w,true,now,Fault::ErrorAfter(1)).outcome.collisions==0,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

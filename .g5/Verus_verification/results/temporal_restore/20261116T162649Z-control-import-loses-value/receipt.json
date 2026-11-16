@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_export_import_key"
+    ],
+    "find": "state:s.insert(key,value),applied:1",
+    "name": "import-loses-value",
+    "replace": "state:s.insert(key,Scalar::Number(999)),applied:1"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_export_import_key"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_restore/model.json": "6e7137843cae40f30a383cad43dee83f6733faac5bdff15cd9709921284cfb12",
+    ".g5/Verus_verification/models/temporal_restore/temporal_restore.rs": "0f72f0047d5a1faf6471e0cd7b2bc369fe2c4e334144bbc17b6264b961d584a6",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_restore/controls/import-loses-value/20261116T162647Z/models/temporal_restore/temporal_restore.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_export_import_key": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_restore/20261116T162647Z-control-import-loses-value-lemma_export_import_key.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_restore/20261116T162647Z-control-import-loses-value.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_restore/20261116T162649Z-control-import-loses-value/logs/20261116T162647Z-control-import-loses-value-lemma_export_import_key.log": "4f1166a7497f469f0426e5e37d08f060cc2d32588d4c01abd92eeb01d3f9a825",
+    ".g5/Verus_verification/results/temporal_restore/20261116T162649Z-control-import-loses-value/logs/20261116T162647Z-control-import-loses-value.log": "43c98659b93c5463ec65f969376ba188e555501a4d799fc331a336ed19c886ff"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

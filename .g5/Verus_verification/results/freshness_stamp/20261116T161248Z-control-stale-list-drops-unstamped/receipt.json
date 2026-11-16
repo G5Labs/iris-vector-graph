@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_stale_stores_exact"
+    ],
+    "find": "        if built_from(stamps.last()) != Some(token(t)) { rest.push(stamps.last()) } else { rest }",
+    "name": "stale-list-drops-unstamped",
+    "replace": "        if built_from(stamps.last()) is Some && built_from(stamps.last()) != Some(token(t)) { rest.push(stamps.last()) } else { rest }",
+    "why": "stale_stores skips stores that were never stamped"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_stale_stores_exact"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/freshness_stamp/freshness_stamp.rs": "2f5c51382a0f39e5c0d9c8d89023a0cfcc94458af4932d67128ab8fa93f67f17",
+    ".g5/Verus_verification/models/freshness_stamp/model.json": "5f7a18762a487193a77062a4d379551f0eafe952d035094b7df1defbf9648295"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/controls/stale-list-drops-unstamped/20261116T161247Z/models/freshness_stamp/freshness_stamp.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_stale_stores_exact": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/20261116T161247Z-control-stale-list-drops-unstamped-theorem_stale_stores_exact.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/20261116T161247Z-control-stale-list-drops-unstamped.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/freshness_stamp/20261116T161248Z-control-stale-list-drops-unstamped/logs/20261116T161247Z-control-stale-list-drops-unstamped-theorem_stale_stores_exact.log": "a20ed3894027d6e2f40ca7992c72a57d1067ee9cbae3ca0ebecb6a89f267da69",
+    ".g5/Verus_verification/results/freshness_stamp/20261116T161248Z-control-stale-list-drops-unstamped/logs/20261116T161247Z-control-stale-list-drops-unstamped.log": "9c3828cfebca98bc4ef63c4e25b97e6ba1668f77f8b02439f798b4f3ff5b0d48"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

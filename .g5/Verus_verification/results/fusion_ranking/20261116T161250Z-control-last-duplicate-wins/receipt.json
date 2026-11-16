@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_first_occurrence_wins"
+    ],
+    "find": "else if xs[0].0==id",
+    "name": "last-duplicate-wins",
+    "replace": "else if xs[0].0==id && rank(xs.drop_first(),id,offset+1).is_none()",
+    "why": "last-duplicate-wins"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_first_occurrence_wins"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fusion_ranking/fusion_ranking.rs": "c355b2249b053fc25045068e6e8039dc4302b052c4b2ab90ac102fa1197a6ead",
+    ".g5/Verus_verification/models/fusion_ranking/model.json": "785718521d0ad4c23702c9fbc2116633acb133cc8e7c9e3213bde8d53739c5b3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fusion_ranking/controls/last-duplicate-wins/20261116T161249Z/models/fusion_ranking/fusion_ranking.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_first_occurrence_wins": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fusion_ranking/20261116T161249Z-control-last-duplicate-wins-theorem_first_occurrence_wins.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fusion_ranking/20261116T161249Z-control-last-duplicate-wins.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fusion_ranking/20261116T161250Z-control-last-duplicate-wins/logs/20261116T161249Z-control-last-duplicate-wins-theorem_first_occurrence_wins.log": "20c7c6f9111a9e48e452342c4924380e10fd079cc8f13c794366456f00eb2b8e",
+    ".g5/Verus_verification/results/fusion_ranking/20261116T161250Z-control-last-duplicate-wins/logs/20261116T161249Z-control-last-duplicate-wins.log": "1cb272c3be617654cdbbda15aeb2e7011b9be39d1751f844422ade0500e8d98b"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

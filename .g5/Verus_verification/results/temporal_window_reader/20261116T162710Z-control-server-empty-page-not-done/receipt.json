@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_server_full_page_nonempty",
+      "witness_exact_multiple_ends_with_empty_done_page"
+    ],
+    "find": "    if remaining < k { (remaining, true) } else { (k, false) }",
+    "name": "server-empty-page-not-done",
+    "replace": "    if remaining < k && remaining > 0 { (remaining, true) } else if remaining == 0 { (0nat, false) } else { (k, false) }",
+    "why": "Page answers an empty page without done when the walk has run out"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_server_full_page_nonempty",
+      "witness_exact_multiple_ends_with_empty_done_page"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_window_reader/model.json": "f2195d7d71681f08282f65b2e3d5428137a6e82f76bfbd8057321e4d8889a80f",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/controls/server-empty-page-not-done/20261116T162708Z/models/temporal_window_reader/temporal_window_reader.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_server_full_page_nonempty": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/20261116T162708Z-control-server-empty-page-not-done-theorem_server_full_page_nonempty.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_exact_multiple_ends_with_empty_done_page": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/20261116T162708Z-control-server-empty-page-not-done-witness_exact_multiple_ends_with_empty_done_page.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/20261116T162708Z-control-server-empty-page-not-done.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_window_reader/20261116T162710Z-control-server-empty-page-not-done/logs/20261116T162708Z-control-server-empty-page-not-done-theorem_server_full_page_nonempty.log": "3b2334cb48d688990b88192441e4737b91fe65aeca720190d5424fe7c06f674d",
+    ".g5/Verus_verification/results/temporal_window_reader/20261116T162710Z-control-server-empty-page-not-done/logs/20261116T162708Z-control-server-empty-page-not-done-witness_exact_multiple_ends_with_empty_done_page.log": "dcdf5ac68a6c5110d483879fa8ce0e85d42ff295635c1f587c4eee7c60e93bfd",
+    ".g5/Verus_verification/results/temporal_window_reader/20261116T162710Z-control-server-empty-page-not-done/logs/20261116T162708Z-control-server-empty-page-not-done.log": "25d7873cd27f8852dcec72a89a1ff41ea1fb54e2d2df52add16008c9c8bca7c2"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

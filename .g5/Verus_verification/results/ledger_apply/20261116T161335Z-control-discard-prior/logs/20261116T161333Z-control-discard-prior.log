@@ -1,0 +1,14 @@
+verification results:: 8 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_apply/controls/discard-prior/20261116T161333Z/models/ledger_apply/ledger_apply.rs:68:13
+   |
+67 |   pub proof fn theorem_two_writes_produce_priors()
+   |   ------------------------------------------------ at the end of the function body
+68 |       ensures ({ let r=commit(initial(),seq![Op::Create(0),Op::Set(0,0,1),Op::Set(0,0,2)]);
+   |  _____________^
+69 | |         r.error == None && value(r.store.graph,0,0)==Some(2)
+70 | |         && revision(r.store,1)==Some(seq![Record::Create(0),Record::Set(0,0,None,1),Record::Set(0,0,Some(1),2)]) }),
+   | |___________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

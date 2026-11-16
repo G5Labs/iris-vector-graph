@@ -1,0 +1,41 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/key-no-control-refusal/20261116T161306Z/models/graph_structure/graph_structure.rs:301:1
+    |
+301 | pub proof fn theorem_ledger_key_injective(n1: Name, n2: Name)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/key-no-control-refusal/20261116T161306Z/models/graph_structure/graph_structure.rs:306:9
+    |
+306 |           canonical(n1) == canonical(n2),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+314 | /     if c1.len() == 0 && c2.len() != 0 {
+315 | |         lemma_sub_of_injective(ledger_default_text(), c2);
+316 | |         // c2 == $Char(1) would contain a control character
+317 | |         assert(c2 == ledger_default_text() ==> contains_ctrl(c2));
+...   |
+324 | |         assert(c1 =~= c2);
+325 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/key-no-control-refusal/20261116T161306Z/models/graph_structure/graph_structure.rs:307:9
+    |
+307 |           l1_same_graph(n1, n2),
+    |           ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+314 | /     if c1.len() == 0 && c2.len() != 0 {
+315 | |         lemma_sub_of_injective(ledger_default_text(), c2);
+316 | |         // c2 == $Char(1) would contain a control character
+317 | |         assert(c2 == ledger_default_text() ==> contains_ctrl(c2));
+...   |
+324 | |         assert(c1 =~= c2);
+325 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

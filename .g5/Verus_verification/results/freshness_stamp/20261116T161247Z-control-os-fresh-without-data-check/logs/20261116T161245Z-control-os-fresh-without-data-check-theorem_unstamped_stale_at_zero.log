@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/controls/os-fresh-without-data-check/20261116T161245Z/models/freshness_stamp/freshness_stamp.rs:83:9
+   |
+78 | pub proof fn theorem_unstamped_stale_at_zero(t: Val)
+   | ---------------------------------------------------- at the end of the function body
+...
+83 |         !os_fresh(Val::Unset, t),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

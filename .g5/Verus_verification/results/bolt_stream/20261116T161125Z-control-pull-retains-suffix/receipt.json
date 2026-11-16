@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_pull_reads_input_rows_then_clears"
+    ],
+    "find": "state:Session{phase:Phase::Ready,pending:None,columns:None,types:None},\n            out:records(rows)",
+    "name": "pull-retains-suffix",
+    "replace": "state:Session{phase:Phase::Ready,pending:Some(remainder(s.pending.unwrap(),n)),columns:None,types:None},\n            out:records(rows)",
+    "why": "pull-retains-suffix"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_pull_reads_input_rows_then_clears"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/pull-retains-suffix/20261116T161117Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_pull_reads_input_rows_then_clears": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/20261116T161117Z-control-pull-retains-suffix-theorem_pull_reads_input_rows_then_clears.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/20261116T161117Z-control-pull-retains-suffix.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261116T161125Z-control-pull-retains-suffix/logs/20261116T161117Z-control-pull-retains-suffix-theorem_pull_reads_input_rows_then_clears.log": "d7d3c56acf53de30d7a8df7ba4e57ce39f15f09a4c59c5854c1ec7f552ba2d57",
+    ".g5/Verus_verification/results/bolt_stream/20261116T161125Z-control-pull-retains-suffix/logs/20261116T161117Z-control-pull-retains-suffix.log": "0384c2a5cbea9d456aa1317a16a332f413432643013a46418de0e7cd73d5debe"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,33 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/insert-without-removedoc/20261116T161846Z/models/search/search.rs:556:1
+    |
+556 | pub proof fn theorem_insert_preserves_counters(ix: Ix, d: Doc, bag: Map<Term, int>, dlen: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/insert-without-removedoc/20261116T161846Z/models/search/search.rs:562:9
+    |
+562 |           cons(insert_body(ix, d, bag, dlen)),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+575 | /     if dlen > 0 {
+576 | |         lemma_add_doc_preserves(ix1, d, bag, dlen);
+577 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/insert-without-removedoc/20261116T161846Z/models/search/search.rs:565:9
+    |
+565 |           dlen <= 0 ==> !insert_body(ix, d, bag, dlen).len.contains_key(d),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+575 | /     if dlen > 0 {
+576 | |         lemma_add_doc_preserves(ix1, d, bag, dlen);
+577 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

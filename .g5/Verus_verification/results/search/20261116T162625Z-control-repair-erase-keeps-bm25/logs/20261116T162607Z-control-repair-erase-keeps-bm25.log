@@ -1,0 +1,18 @@
+verification results:: 54 verified, 2 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/repair-erase-keeps-bm25/20261116T162607Z/models/search/search.rs:2938:9
+     |
+2936 | pub proof fn theorem_repaired_erase_removes_answers(s: GSys, g: Graph)
+     | ---------------------------------------------------------------------- at the end of the function body
+2937 |     ensures
+2938 |         no_erased_answer(s, erase_graph(s, g, true), g),
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/repair-erase-keeps-bm25/20261116T162607Z/models/search/search.rs:2970:12
+     |
+2970 |     assert(!hit(r2, 0, 7, 5));
+     |            ^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

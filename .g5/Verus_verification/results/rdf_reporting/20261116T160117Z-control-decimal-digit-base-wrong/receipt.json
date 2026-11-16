@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "codec",
+    "expect_fail_in": [
+      "theorem_two_raw_digits_determine_value"
+    ],
+    "find": "n*10+(s[0] as nat-48)",
+    "name": "decimal-digit-base-wrong",
+    "replace": "n*1+(s[0] as nat-48)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_two_raw_digits_determine_value"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "70eb4f615b746ea00e6b944d61f57c1900467e5158f67353782ce8fee7906550"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/decimal-digit-base-wrong/20261116T160112Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_two_raw_digits_determine_value": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/20261116T160112Z-control-decimal-digit-base-wrong-theorem_two_raw_digits_determine_value.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/20261116T160112Z-control-decimal-digit-base-wrong.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T160117Z-control-decimal-digit-base-wrong/logs/20261116T160112Z-control-decimal-digit-base-wrong-theorem_two_raw_digits_determine_value.log": "46a60446d8b8af5536a2a183495c5b11172acc4eb19a2e986e3716b91ef7cf84",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T160117Z-control-decimal-digit-base-wrong/logs/20261116T160112Z-control-decimal-digit-base-wrong.log": "f14cc8988d55d262f199eb5e5463805ec7c5bf5c69cdfbe02c8a845a992d0a9c"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

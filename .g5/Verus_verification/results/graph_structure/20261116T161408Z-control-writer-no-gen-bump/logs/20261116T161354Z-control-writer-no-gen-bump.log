@@ -1,0 +1,57 @@
+verification results:: 60 verified, 7 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:964:1
+    |
+964 | pub proof fn lemma_write(s: DS, v: DV, w: nat, d: int, granted: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:991:24
+    |
+991 |                 assert(!current(s2, e, v));
+    |                        ^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:1007:20
+     |
+1007 |             assert(!same(s2, rd, v));
+     |                    ^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:1416:12
+     |
+1416 |     assert(s7.gen == 1 && s7.vis == 1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:1450:12
+     |
+1450 |     assert(s10.gen == 2 && s10.epoch == 1 && s10.rs[1].tepoch == 0);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:1488:12
+     |
+1488 |     assert(s5.vis == 1 && s5.gen == 1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:1520:12
+     |
+1520 |     assert(s2.gen == 3 && s2.vis == 3 && s2.ws[1].locked);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:1643:12
+     |
+1643 |     assert(s10.gen == 5);
+     |            ^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/writer-no-gen-bump/20261116T161354Z/models/graph_structure/graph_structure.rs:1663:12
+     |
+1663 |     assert(s6.gen == 4 && s6.degc == Some(Entry { gen: 2, epoch: 0, n: 0 }));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 8 previous errors
+

@@ -1,0 +1,67 @@
+verification results:: 51 verified, 5 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-preserves-zero/20261116T162623Z/models/temporal_clock/temporal_clock.rs:132:1
+    |
+132 | pub proof fn theorem_server_empty_and_zero_differ(now:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-preserves-zero/20261116T162623Z/models/temporal_clock/temporal_clock.rs:135:9
+    |
+132 | pub proof fn theorem_server_empty_and_zero_differ(now:int)
+    | ---------------------------------------------------------- at the end of the function body
+...
+135 |         bulk_clock(0,now)==now,single_clock(NativeTime::Number(0),now)!=bulk_clock(0,now),
+    |         ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-preserves-zero/20261116T162623Z/models/temporal_clock/temporal_clock.rs:135:32
+    |
+132 | pub proof fn theorem_server_empty_and_zero_differ(now:int)
+    | ---------------------------------------------------------- at the end of the function body
+...
+135 |         bulk_clock(0,now)==now,single_clock(NativeTime::Number(0),now)!=bulk_clock(0,now),
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-preserves-zero/20261116T162623Z/models/temporal_clock/temporal_clock.rs:144:13
+    |
+142 | pub proof fn theorem_per_item_clock_is_not_batch_constant(now1:int,now2:int)
+    | ---------------------------------------------------------------------------- at the end of the function body
+143 |     requires now1!=now2,
+144 |     ensures coordinate(0,Route::Counts,now1)!=coordinate(0,Route::Counts,now2),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-preserves-zero/20261116T162623Z/models/temporal_clock/temporal_clock.rs:148:13
+    |
+146 | pub proof fn theorem_bulk_zero_fallback_differs(e:stores::Edge,now:int)
+    | ----------------------------------------------------------------------- at the end of the function body
+147 |     requires now!=0,
+148 |     ensures call_bulk(Map::empty(),e,Raw::Number(0),Raw::Missing,true,true,now,true,1,true).time==Some(now),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-preserves-zero/20261116T162623Z/models/temporal_clock/temporal_clock.rs:182:13
+    |
+179 |   pub proof fn theorem_raw_bulk_to_reader(s:stores::Global,e:stores::Edge,short:Raw,long:Raw,shape_ok:bool,available:bool,now:int,w:int)
+    |   -------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+182 |       ensures observe(call_bulk(s,e,short,long,shape_ok,available,now,true,w,true),e,
+    |  _____________^
+183 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),e.0,
+184 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),
+185 | |         produced_bulk_time(short,long,shape_ok,available,now).unwrap(),false,stores::paging::plain(None))==Some(w),
+    | |__________________________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-preserves-zero/20261116T162623Z/models/temporal_clock/temporal_clock.rs:211:13
+    |
+209 | pub proof fn theorem_bulk_clock_and_fallback_final_windows(e:stores::Edge,now:int)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+210 |     requires now>0,
+211 |     ensures observe(call_bulk(Map::empty(),e,Raw::Number(0),Raw::Missing,true,true,now,true,7,true),e,now,e.0,now,now,false,stores::paging::plain(None))==Some(7),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 6 previous errors
+

@@ -1,0 +1,24 @@
+verification results:: 70 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/cdlp-self-vote/20261116T161207Z/models/communities/communities.rs:333:13
+    |
+331 | pub proof fn theorem_self_loop_is_no_vote(a:Coord,u:Node,l:Labels,c:Counts)
+    | --------------------------------------------------------------------------- at the end of the function body
+332 |     requires a.owner==u,a.neighbor==u,
+333 |     ensures count_fold(seq![a],u,l,c)==c,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/cdlp-self-vote/20261116T161207Z/models/communities/communities.rs:433:26
+    |
+433 |     assert forall|x:Node|#[trigger] frequency(g,u,l,x)==0 by {lemma_frequency_witness(g,u,l,x);if frequency(g,u,l,x)>0{let i=choose...
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/cdlp-self-vote/20261116T161207Z/models/communities/communities.rs:523:1
+    |
+523 | pub proof fn lemma_page_remainder_properties(ids:Seq<Node>,limit:nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 3 previous errors
+

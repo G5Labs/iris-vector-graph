@@ -1,0 +1,12 @@
+verification results:: 49 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/property-null-emitted/20261116T160006Z/models/rdf_reporting/rdf_reporting.rs:170:10
+    |
+168 | pub proof fn theorem_property_null_is_omitted(p:Property,rs:Rows,c:Config)
+    | -------------------------------------------------------------------------- at the end of the function body
+169 |  requires p.value.is_none()
+170 |  ensures emit_prop(p,rs,c).len()==0
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

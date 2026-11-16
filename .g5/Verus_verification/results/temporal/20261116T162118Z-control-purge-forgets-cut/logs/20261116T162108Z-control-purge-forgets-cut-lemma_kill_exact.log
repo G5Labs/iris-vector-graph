@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/purge-forgets-cut/20261116T162108Z/models/temporal/temporal.rs:1328:1
+     |
+1328 | pub proof fn lemma_kill_exact(s: St, g: int, lo: int, hi: int)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/purge-forgets-cut/20261116T162108Z/models/temporal/temporal.rs:1351:24
+     |
+1351 |                 assert(sn2.purged.contains(x));
+     |                        ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/purge-forgets-cut/20261116T162108Z/models/temporal/temporal.rs:1366:24
+     |
+1366 |                 assert(sn2.purged.contains(x));
+     |                        ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

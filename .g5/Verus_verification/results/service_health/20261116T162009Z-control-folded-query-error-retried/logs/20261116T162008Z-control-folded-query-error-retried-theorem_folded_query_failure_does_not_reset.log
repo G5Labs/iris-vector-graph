@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/folded-query-error-retried/20261116T162008Z/models/service_health/service_health.rs:185:1
+    |
+185 | pub proof fn theorem_folded_query_failure_does_not_reset(s:Cache,f:Factory,next:Factory,msg:Seq<char>,q2:Query,close:Access)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/folded-query-error-retried/20261116T162008Z/models/service_health/service_health.rs:187:13
+    |
+185 | pub proof fn theorem_folded_query_failure_does_not_reset(s:Cache,f:Factory,next:Factory,msg:Seq<char>,q2:Query,close:Access)
+    | ---------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+186 |     requires s.engine.is_some(),msg.len()>0,
+187 |     ensures run_query(s,f,Query::Returned{error:Some(msg)},next,q2,close).state==s,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/folded-query-error-retried/20261116T162008Z/models/service_health/service_health.rs:188:9
+    |
+185 | pub proof fn theorem_folded_query_failure_does_not_reset(s:Cache,f:Factory,next:Factory,msg:Seq<char>,q2:Query,close:Access)
+    | ---------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+188 |         run_query(s,f,Query::Returned{error:Some(msg)},next,q2,close).attempts==1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-adds-negative-validation/20261116T162618Z/models/temporal_clock/temporal_clock.rs:125:13
+    |
+123 | pub proof fn theorem_bulk_keeps_negative(n:int)
+    | ----------------------------------------------- at the end of the function body
+124 |     requires n<0,
+125 |     ensures bulk_payload(Raw::Number(n),Raw::Missing,true)==Some(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

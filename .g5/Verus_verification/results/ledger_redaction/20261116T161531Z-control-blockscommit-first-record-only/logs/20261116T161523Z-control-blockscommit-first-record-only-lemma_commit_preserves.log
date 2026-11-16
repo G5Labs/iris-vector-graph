@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/blockscommit-first-record-only/20261116T161523Z/models/ledger_redaction/redaction.rs:756:9
+    |
+756 |         inv(append_commit(s, new, key, adds)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+769 |     assert(tombs_cleared(s2)) by {
+    |     ------ at the end of the function body
+
+error: aborting due to 1 previous error
+

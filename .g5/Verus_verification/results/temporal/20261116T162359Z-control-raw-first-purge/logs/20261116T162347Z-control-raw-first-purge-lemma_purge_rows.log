@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/raw-first-purge/20261116T162347Z/models/temporal/temporal.rs:2188:1
+     |
+2188 | pub proof fn lemma_purge_rows(s: St, g: int, lo: int, hi: int, stop: bool)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/raw-first-purge/20261116T162347Z/models/temporal/temporal.rs:2199:87
+     |
+2199 | ...key(t) && s2.rows[t] implies has_ts(s2.tout, t) || s2.optout.contains((t.g, t.p)) by {
+     |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/raw-first-purge/20261116T162347Z/models/temporal/temporal.rs:2200:16
+     |
+2200 |         assert(s.rows.contains_key(t) && s.rows[t] && !purge_doomed(s, t, g, lo, hi));
+     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,18 @@
+verification results:: 50 verified, 1 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-dropall/20261116T162519Z/models/platform/platform.rs:1953:9
+     |
+1951 |   pub proof fn lemma_deploy_discards(s: PSt, r: nat)
+     |   -------------------------------------------------- at the end of the function body
+1952 |       ensures
+1953 | /         ({
+1954 | |             let s2 = p_step(s, PAction::Deploy { recompiled: true, deployed: true })->Some_0;
+1955 | |             &&& p_step(s, PAction::Deploy { recompiled: true, deployed: true }) is Some
+1956 | |             &&& forall|k: CName| #[trigger] s2.classes.contains_key(k) ==> k is Other
+...    |
+1964 | |                 })
+1965 | |         }),
+     | |__________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

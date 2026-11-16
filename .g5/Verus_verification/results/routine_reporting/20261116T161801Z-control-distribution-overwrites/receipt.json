@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_distribution"
+    ],
+    "find": "tail[k]+1",
+    "name": "distribution-overwrites",
+    "replace": "1",
+    "role": "source-facing census/selection/reader rule"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_distribution"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/routine_reporting/model.json": "476529fece46dfdfebe64114446c9966bf6a4a68c3e07594a5e880e8c7618bac",
+    ".g5/Verus_verification/models/routine_reporting/routine_reporting.rs": "224e16eede8fda124658933601d304ffe1a0a2ce92edfc802e5c612cebfa4a8d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/distribution-overwrites/20261116T161759Z/models/routine_reporting/routine_reporting.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_distribution": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/20261116T161759Z-control-distribution-overwrites-lemma_distribution.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/20261116T161759Z-control-distribution-overwrites.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/routine_reporting/20261116T161801Z-control-distribution-overwrites/logs/20261116T161759Z-control-distribution-overwrites-lemma_distribution.log": "af57bad6c3133095b027be5ef6a3832f5bbd7db80d188af2cd631912c2c9423b",
+    ".g5/Verus_verification/results/routine_reporting/20261116T161801Z-control-distribution-overwrites/logs/20261116T161759Z-control-distribution-overwrites.log": "6a05c376097a9a4f8de4cf4ab043984c9284b931547bf35a17984238bcd5a27a"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

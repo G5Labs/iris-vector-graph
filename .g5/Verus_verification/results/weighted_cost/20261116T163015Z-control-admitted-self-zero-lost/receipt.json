@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_actual_dijkstra_cost_complete"
+    ],
+    "find": "if c.src==c.dst{Some(0)}else{finish",
+    "name": "admitted-self-zero-lost",
+    "replace": "if c.src==c.dst{None}else{finish",
+    "why": "Actual self request returns zero before search."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_actual_dijkstra_cost_complete"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/model.json": "97dd80c14a14ed02ad845b06201b71339cf5ede2a9694da586fb2a77a3692973",
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "602722835a1367bf97d2c548d3e256ddbdd96c8020fe775fbc0e7d88e7950093",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_cost/controls/admitted-self-zero-lost/20261116T163006Z/models/weighted_cost/weighted_cost.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_actual_dijkstra_cost_complete": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_cost/20261116T163006Z-control-admitted-self-zero-lost-theorem_actual_dijkstra_cost_complete.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_cost/20261116T163006Z-control-admitted-self-zero-lost.log",
+    "timed_out": false,
+    "verified": 87
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_cost/20261116T163015Z-control-admitted-self-zero-lost/logs/20261116T163006Z-control-admitted-self-zero-lost-theorem_actual_dijkstra_cost_complete.log": "ad1cdf4bfe4fa0f023f654ae84941db0072e6ed37febf802146c2c101278745b",
+    ".g5/Verus_verification/results/weighted_cost/20261116T163015Z-control-admitted-self-zero-lost/logs/20261116T163006Z-control-admitted-self-zero-lost.log": "6e1fa8a408636fcc236031e2e485e6b4c5c030e35e25bd5d02cdf48d58151d4b"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

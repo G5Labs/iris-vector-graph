@@ -1,0 +1,27 @@
+verification results:: 76 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/vector_admission/controls/primary-width-fault-falls-through/20261116T162822Z/models/vector_admission/vector_admission.rs:508:1
+    |
+508 | pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/vector_admission/controls/primary-width-fault-falls-through/20261116T162822Z/models/vector_admission/vector_admission.rs:510:13
+    |
+508 | pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    | ------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+509 |     requires vs.len()==3,qliteral(a.query),prepare(Entry::Primary,e,a,scenario(vs,Entry::Primary)).gate==(Gate::Ready{Name:table,r...
+510 |     ensures run(Entry::Primary,e,a,vs).outcome==Outcome::Error(diagnostic(a,scenario(vs,Entry::Primary),table).0),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/vector_admission/controls/primary-width-fault-falls-through/20261116T162822Z/models/vector_admission/vector_admission.rs:511:9
+    |
+508 | pub proof fn theorem_primary_width_fault_does_not_fallback(e:Engine,a:Args,vs:Seq<Env>,table:Name,route:Option<Route>,d:Cell,f:Fault)
+    | ------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+511 |         run(Entry::Primary,e,a,vs).trace.last()==Effect::DiagnosticRead(table,graph(scenario(vs,Entry::Primary).request)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

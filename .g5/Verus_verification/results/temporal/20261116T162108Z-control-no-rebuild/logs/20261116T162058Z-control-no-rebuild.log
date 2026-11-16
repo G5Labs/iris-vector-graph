@@ -1,0 +1,24 @@
+verification results:: 111 verified, 2 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/no-rebuild/20261116T162058Z/models/temporal/temporal.rs:1222:9
+     |
+1220 |   pub proof fn lemma_remove_temporal_row_shape(s: St, c: Coord)
+     |   ------------------------------------------------------------- at the end of the function body
+1221 |       ensures
+1222 | /         ({
+1223 | |             let r = remove_temporal_row(s, c);
+1224 | |             let r0 = remove_raw(s, c);
+1225 | |             &&& r.tout == s.tout.remove(c) && r.bucket == r0.bucket && r.rows == s.rows && r.nodes == s.nodes
+...    |
+1229 | |             &&& r == rebuild(journal_agg(r0, akey(c)), akey(c))
+1230 | |         }),
+     | |__________^ failed this postcondition
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/no-rebuild/20261116T162058Z/models/temporal/temporal.rs:1264:12
+     |
+1264 |     assert(r == remove_temporal_row(s, c));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

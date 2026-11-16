@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/task-save-rolled-back-on-sql-error/20261116T161234Z/models/fhir_tasks/fhir_tasks.rs:198:13
+    |
+196 |   pub proof fn theorem_orphan_survives_unschedule_and_can_tick(s:State,g:Str,ns:Str,fresh:Str,n:int,reply:SyncReply)
+    |   ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+197 |       requires s.rows.contains_key(g),n>=60,!object_exists(s,s.rows[g].task_id),fresh.len()>0,!s.tasks.contains_key(fresh),...
+198 |       ensures ({let saved=schedule(s,g,ns,n,fresh,Fault::Sql).state;let removed=unschedule(saved,g,ns,Fault::None);
+    |  _____________^
+199 | |         removed.reply==(Reply::Unscheduled{old_id:s.rows[g].task_id,removed:false}) && removed.state.rows[g].task_id==seq![]
+200 | |         && tick(removed.state,fresh,reply)==Some(on_task(g,ns,reply))}),
+    | |_______________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

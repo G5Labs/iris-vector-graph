@@ -1,0 +1,23 @@
+verification results:: 142 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/node-census-all-graphs/20261116T155848Z/models/ndjson_export/ndjson_export.rs:124:10
+    |
+124 |    ensures selected_ids(ns).contains(id)<==>parent_has(ns,0,id),decreases ns.len(),
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+125 |    {if ns.len()>0{let p=ns.drop_last();let r=ns.last();lemma_selected_parent_source(p,id);
+    |  ___-
+126 | |  if parent_has(p,0,id){let i=choose|i:int|0<=i<p.len()&&p[i].graph==0&&p[i].id==id;assert(p[i]==ns[i]);}
+127 | |  if parent_has(ns,0,id){let i=choose|i:int|0<=i<ns.len()&&ns[i].graph==0&&ns[i].id==id;if i<p.len(){assert(p[i]==ns[i]);}}
+128 | |  if r.graph==0{vstd::seq_lib::lemma_seq_contains_after_push(selected_ids(p),r.id,id);}}}
+    | |_______________________________________________________________________________________- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/node-census-all-graphs/20261116T155848Z/models/ndjson_export/ndjson_export.rs:282:75
+    |
+282 | pub proof fn witness_named_parent_does_not_duplicate_default_id() ensures export(seq![Parent{graph:0,id:0},Parent{graph:7,id:0}],seq![],seq![],seq![]).nodes==1, {...
+    | -----------------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 2 previous errors
+

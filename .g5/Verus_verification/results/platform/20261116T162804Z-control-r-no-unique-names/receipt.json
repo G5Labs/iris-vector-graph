@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_q_build_preserves",
+      "witness_repair_keeps_both_colliding_plans"
+    ],
+    "find": "    PVariant { build_checks: true, unique_names: true, readback_checks: true }",
+    "name": "r-no-unique-names",
+    "replace": "    PVariant { build_checks: true, unique_names: false, readback_checks: true }",
+    "why": "the repair with IVGC.P<CRC-32> names: the build lemma fails (a name no longer determines its code) and two colliding plans cannot coexist; the semantic counterexample is witness_build_check_leaves_the_mid_run_swap"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_q_build_preserves",
+      "witness_repair_keeps_both_colliding_plans"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/r-no-unique-names/20261116T162736Z/models/platform/platform.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_q_build_preserves": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T162736Z-control-r-no-unique-names-lemma_q_build_preserves.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_repair_keeps_both_colliding_plans": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T162736Z-control-r-no-unique-names-witness_repair_keeps_both_colliding_plans.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T162736Z-control-r-no-unique-names.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261116T162804Z-control-r-no-unique-names/logs/20261116T162736Z-control-r-no-unique-names-lemma_q_build_preserves.log": "4ba2eefefada30205e2c0e54771cf0b8955dab211f9f1f58c5a7d53b8007ed0a",
+    ".g5/Verus_verification/results/platform/20261116T162804Z-control-r-no-unique-names/logs/20261116T162736Z-control-r-no-unique-names-witness_repair_keeps_both_colliding_plans.log": "236d1c8687333dc9b2e71c73c48697d95f630e34440673d5e8cf2ce4f54c32d9",
+    ".g5/Verus_verification/results/platform/20261116T162804Z-control-r-no-unique-names/logs/20261116T162736Z-control-r-no-unique-names.log": "a0e31d6c9ff3d42de928da2c6592f16e2fbd560ce745a01fc285ecc7f083829a"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

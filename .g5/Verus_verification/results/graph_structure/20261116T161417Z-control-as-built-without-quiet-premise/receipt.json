@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_killcommitted"
+    ],
+    "find": "if !no_writer(s) || (v.quiet_kills && !no_reader(s)) {",
+    "name": "as-built-without-quiet-premise",
+    "replace": "if !no_writer(s) {",
+    "why": "Drop PREMISE P-QUIET: a committed erase of s while a Degree call is in flight. lemma_killcommitted's step `!same(s2, rd, v)` fails (a reader with tGen 0 matches the restarted gen); witness_aba_delete_and_recreate_serves_stale_degree and witness_gen0_erase_alone_serves_stale_degree are the concrete schedules"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_killcommitted"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "bda2567865779c90aa5ef3e84b2e77baf1d7468d3404c7ded9f2e30395ff6481",
+    ".g5/Verus_verification/models/graph_structure/model.json": "f4be757a33fc5a88a8752327e47764b36086a4cb6c3767144a721bd035b9cdfa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/as-built-without-quiet-premise/20261116T161408Z/models/graph_structure/graph_structure.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_killcommitted": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/20261116T161408Z-control-as-built-without-quiet-premise-lemma_killcommitted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/20261116T161408Z-control-as-built-without-quiet-premise.log",
+    "timed_out": false,
+    "verified": 65
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/graph_structure/20261116T161417Z-control-as-built-without-quiet-premise/logs/20261116T161408Z-control-as-built-without-quiet-premise-lemma_killcommitted.log": "16d80afc3c295ee4ce86c4efda034e2f39902818ae1f7d983e8e990d1db99f40",
+    ".g5/Verus_verification/results/graph_structure/20261116T161417Z-control-as-built-without-quiet-premise/logs/20261116T161408Z-control-as-built-without-quiet-premise.log": "400f9b7e3b615f8996724d11e3071f92c4e5978af84059bda0e977eec7059a32"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

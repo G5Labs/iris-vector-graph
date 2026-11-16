@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/optin-guard-off/20261116T162359Z/models/temporal/temporal.rs:2272:9
+     |
+2272 |           rows_ok(step(s, a, v)),
+     |           ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2276 | /     match a {
+2277 | |         Action::Write { c, w, attrs, mode, f } => {
+2278 | |             lemma_write_rows(s, c, w, attrs, mode, f, v);
+2279 | |             lemma_write_shape(s, c, w, attrs, mode, f, v);
+...    |
+2341 | |         },
+2342 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

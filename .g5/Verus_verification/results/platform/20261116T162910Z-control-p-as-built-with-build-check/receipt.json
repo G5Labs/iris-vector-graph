@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_collision_leaves_another_shapes_code_under_an_ok_entry",
+      "witness_reader_forges_a_collision_and_poisons_a_shape"
+    ],
+    "find": "    PVariant { build_checks: false, unique_names: false, readback_checks: false }",
+    "name": "p-as-built-with-build-check",
+    "replace": "    PVariant { build_checks: true, unique_names: false, readback_checks: false }",
+    "why": "as built plus Build's shape/stamp check: the persistent poisoning (W-O2b) and the forged-collision attack disappear"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_collision_leaves_another_shapes_code_under_an_ok_entry",
+      "witness_reader_forges_a_collision_and_poisons_a_shape"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-as-built-with-build-check/20261116T162830Z/models/platform/platform.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_collision_leaves_another_shapes_code_under_an_ok_entry": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T162830Z-control-p-as-built-with-build-check-witness_collision_leaves_another_shapes_code_under_an_ok_entry.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_reader_forges_a_collision_and_poisons_a_shape": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T162830Z-control-p-as-built-with-build-check-witness_reader_forges_a_collision_and_poisons_a_shape.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T162830Z-control-p-as-built-with-build-check.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261116T162910Z-control-p-as-built-with-build-check/logs/20261116T162830Z-control-p-as-built-with-build-check-witness_collision_leaves_another_shapes_code_under_an_ok_entry.log": "7e8900270c9fb3cb877229ef42b8d67cce4d0c91bf808362c9fc74318015be62",
+    ".g5/Verus_verification/results/platform/20261116T162910Z-control-p-as-built-with-build-check/logs/20261116T162830Z-control-p-as-built-with-build-check-witness_reader_forges_a_collision_and_poisons_a_shape.log": "fa19ece3a3eb62715fe9f7aaea223f71ae60319eb3fd08b86f8097096c213d5c",
+    ".g5/Verus_verification/results/platform/20261116T162910Z-control-p-as-built-with-build-check/logs/20261116T162830Z-control-p-as-built-with-build-check.log": "0266e5055fa91d4f19b3234bef7ab778157d13e8c597efdb095f72af73ce1e73"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

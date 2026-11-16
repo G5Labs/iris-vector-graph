@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_cut_scan"
+    ],
+    "find": "        if d == 0 {\n            s\n        } else {\n            CutSt {",
+    "name": "cutoff-counts-unknown-terms",
+    "replace": "        if false {\n            s\n        } else {\n            CutSt {",
+    "why": "Terms with df 0 are taken as known (the `If tD = 0 Continue` removed): FR-044-C2 'terms with df 0 are neither skipped nor kept'"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_cut_scan"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/cutoff-counts-unknown-terms/20261116T162148Z/models/search/search.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_cut_scan": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162148Z-control-cutoff-counts-unknown-terms-lemma_cut_scan.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162148Z-control-cutoff-counts-unknown-terms.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261116T162205Z-control-cutoff-counts-unknown-terms/logs/20261116T162148Z-control-cutoff-counts-unknown-terms-lemma_cut_scan.log": "4efc2186de791e2ef332615129569da6c6c9fd8ef65baa1b29841d5e5bf03101",
+    ".g5/Verus_verification/results/search/20261116T162205Z-control-cutoff-counts-unknown-terms/logs/20261116T162148Z-control-cutoff-counts-unknown-terms.log": "c0d19695e5b0c37531413c67527455e0201c828817f72914708e4d1625949b02"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

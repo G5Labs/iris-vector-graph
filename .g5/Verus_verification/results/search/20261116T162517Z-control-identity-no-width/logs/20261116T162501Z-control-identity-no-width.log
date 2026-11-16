@@ -1,0 +1,25 @@
+verification results:: 55 verified, 1 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/identity-no-width/20261116T162501Z/models/search/search.rs:2601:13
+     |
+2601 |       ensures ({
+     |  _____________^
+2602 | |         let out = store(s, g, node, off, None, Read::Ok, Read::Ok, false);
+2603 | |         let key = off.model;
+2604 | |         &&& (out is Refused <==> (target_row(s.reg, g, key) is Some
+...    |
+2608 | |                 && one_row(out->s.reg) && routed_rows_ok(out->s.reg)
+2609 | |     }),
+     | |______^ failed this postcondition
+...
+2613 | /     match read_route(s.reg, g, key) {
+2614 | |         Some(t) => {
+2615 | |             if row_for(s.reg, legacy(), g, key) {
+2616 | |                 assert(t == legacy());
+...    |
+2658 | |         },
+2659 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

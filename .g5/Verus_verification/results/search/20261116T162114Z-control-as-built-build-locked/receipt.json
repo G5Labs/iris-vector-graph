@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_build_insert_breaks_n",
+      "witness_build_insert_double_df"
+    ],
+    "find": "pub open spec fn as_built_writers() -> WVariant { WVariant { build_locked: false, delete_under_lock: false } }",
+    "name": "as-built-build-locked",
+    "replace": "pub open spec fn as_built_writers() -> WVariant { WVariant { build_locked: true, delete_under_lock: false } }",
+    "why": "The F2 witnesses depend on Build taking no lock: with the lock the interleaving is not enabled"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_build_insert_breaks_n",
+      "witness_build_insert_double_df"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/as-built-build-locked/20261116T162023Z/models/search/search.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_build_insert_breaks_n": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162023Z-control-as-built-build-locked-witness_build_insert_breaks_n.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_build_insert_double_df": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162023Z-control-as-built-build-locked-witness_build_insert_double_df.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162023Z-control-as-built-build-locked.log",
+    "timed_out": false,
+    "verified": 53
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261116T162114Z-control-as-built-build-locked/logs/20261116T162023Z-control-as-built-build-locked-witness_build_insert_breaks_n.log": "438099aaf9f522cce4188e4e69b477a7e391f50075d4d812afbc3fbfc0e8e037",
+    ".g5/Verus_verification/results/search/20261116T162114Z-control-as-built-build-locked/logs/20261116T162023Z-control-as-built-build-locked-witness_build_insert_double_df.log": "c6644f1f0281773b32e258e47a037108443834b977867fb95840ff84d39ffe42",
+    ".g5/Verus_verification/results/search/20261116T162114Z-control-as-built-build-locked/logs/20261116T162023Z-control-as-built-build-locked.log": "97e785dede9ce279e165abd405ec2c16dbb2e0896959a0bbd559731c6701359a"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

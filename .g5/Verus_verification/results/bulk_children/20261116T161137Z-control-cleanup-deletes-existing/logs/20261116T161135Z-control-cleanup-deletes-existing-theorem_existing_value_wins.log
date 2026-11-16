@@ -1,0 +1,39 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/cleanup-deletes-existing/20261116T161135Z/models/bulk_children/bulk_children.rs:141:1
+    |
+141 | pub proof fn theorem_existing_value_wins(s:Store,r:Input,k:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/cleanup-deletes-existing/20261116T161135Z/models/bulk_children/bulk_children.rs:143:13
+    |
+141 | pub proof fn theorem_existing_value_wins(s:Store,r:Input,k:int)
+    | --------------------------------------------------------------- at the end of the function body
+142 |     requires r.active,s.parents.contains(node(r)),s.props.contains_key((node(r),k)),
+143 |     ensures run(s,seq![r],no_fault(),false).store.props.contains_key((node(r),k)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/cleanup-deletes-existing/20261116T161135Z/models/bulk_children/bulk_children.rs:144:9
+    |
+144 |         run(s,seq![r],no_fault(),false).store.props[(node(r),k)]==s.props[(node(r),k)],
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/cleanup-deletes-existing/20261116T161135Z/models/bulk_children/bulk_children.rs:144:9
+    |
+141 | pub proof fn theorem_existing_value_wins(s:Store,r:Input,k:int)
+    | --------------------------------------------------------------- at the end of the function body
+...
+144 |         run(s,seq![r],no_fault(),false).store.props[(node(r),k)]==s.props[(node(r),k)],
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

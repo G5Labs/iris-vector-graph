@@ -1,0 +1,35 @@
+verification results:: 4 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/route_recheck/controls/keep-trial-timings/20261116T161731Z/models/route_recheck/route_recheck.rs:33:9
+   |
+29 | pub proof fn theorem_before_and_at_threshold(r: Route,n: nat)
+   | ------------------------------------------------------------- at the end of the function body
+...
+33 |         next_path(held_run(held_run(r,r.held,Some(n)),r.held,Some(n)))==Path::Native,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/route_recheck/controls/keep-trial-timings/20261116T161731Z/models/route_recheck/route_recheck.rs:35:1
+   |
+35 | pub proof fn theorem_reset_derives_native_first(r: Route)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/route_recheck/controls/keep-trial-timings/20261116T161731Z/models/route_recheck/route_recheck.rs:36:13
+   |
+35 | pub proof fn theorem_reset_derives_native_first(r: Route)
+   | --------------------------------------------------------- at the end of the function body
+36 |     ensures next_path(start_trial(r))==Path::Native,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/route_recheck/controls/keep-trial-timings/20261116T161731Z/models/route_recheck/route_recheck.rs:37:9
+   |
+35 | pub proof fn theorem_reset_derives_native_first(r: Route)
+   | --------------------------------------------------------- at the end of the function body
+36 |     ensures next_path(start_trial(r))==Path::Native,
+37 |         start_trial(r).native_ms==0,start_trial(r).sql_runs==0,start_trial(r).last==None,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

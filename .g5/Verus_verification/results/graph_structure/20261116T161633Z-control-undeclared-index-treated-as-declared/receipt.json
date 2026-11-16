@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_undeclared_index_sql_delete_leaves_entry"
+    ],
+    "find": "    if indexed { row_remove(t, rows.remove(e), e, multi) } else { t }",
+    "name": "undeclared-index-treated-as-declared",
+    "replace": "    row_remove(t, rows.remove(e), e, multi)",
+    "why": "R1-13 qualifier: a raw SQL delete in an undeclared namespace transcribed as if the callback ran; the witness that the L1 layout rule needs the declared index must fail"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_undeclared_index_sql_delete_leaves_entry"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "bda2567865779c90aa5ef3e84b2e77baf1d7468d3404c7ded9f2e30395ff6481",
+    ".g5/Verus_verification/models/graph_structure/model.json": "f4be757a33fc5a88a8752327e47764b36086a4cb6c3767144a721bd035b9cdfa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/undeclared-index-treated-as-declared/20261116T161625Z/models/graph_structure/graph_structure.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_undeclared_index_sql_delete_leaves_entry": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/20261116T161625Z-control-undeclared-index-treated-as-declared-witness_undeclared_index_sql_delete_leaves_entry.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/20261116T161625Z-control-undeclared-index-treated-as-declared.log",
+    "timed_out": false,
+    "verified": 66
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/graph_structure/20261116T161633Z-control-undeclared-index-treated-as-declared/logs/20261116T161625Z-control-undeclared-index-treated-as-declared-witness_undeclared_index_sql_delete_leaves_entry.log": "cd7966aa783b8051aada1ee9aa68ec6f47081bb112073cffc3baf574aa8f29be",
+    ".g5/Verus_verification/results/graph_structure/20261116T161633Z-control-undeclared-index-treated-as-declared/logs/20261116T161625Z-control-undeclared-index-treated-as-declared.log": "b820c549ea59e576f77f3069a4bf23eaf0f4fabcd1e730e6253431dc5f7343ad"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

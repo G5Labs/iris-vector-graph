@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_same_value_records_nothing"
+    ],
+    "find": "if value(g,n,k) == Some(v)",
+    "name": "same-value-recorded",
+    "replace": "if false",
+    "why": "same-value-recorded"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_same_value_records_nothing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_apply/ledger_apply.rs": "e38274cc4297ad371abb7a3486953615029bfb869f9ea8da012f11618b52682f",
+    ".g5/Verus_verification/models/ledger_apply/model.json": "88e35833153106d1d128ade392d459af8a88be17895af7bb90dc5fff7ae209f9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_apply/controls/same-value-recorded/20261116T161341Z/models/ledger_apply/ledger_apply.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_same_value_records_nothing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_apply/20261116T161341Z-control-same-value-recorded-theorem_same_value_records_nothing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_apply/20261116T161341Z-control-same-value-recorded.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_apply/20261116T161343Z-control-same-value-recorded/logs/20261116T161341Z-control-same-value-recorded-theorem_same_value_records_nothing.log": "c36edf5f11d1787b6c84a525af3e88d7c65045a01e90b435f933b58757058db9",
+    ".g5/Verus_verification/results/ledger_apply/20261116T161343Z-control-same-value-recorded/logs/20261116T161341Z-control-same-value-recorded.log": "5ea249dd056cffc72bdf7f9a237d580c04daf80c1a443029f8d82da024db4f0d"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

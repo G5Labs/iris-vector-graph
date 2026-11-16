@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/index_declaration/controls/skip-ekey-check/20261116T161328Z/models/index_declaration/index_declaration.rs:60:13
+   |
+58 | pub proof fn theorem_no_prereq_no_ddl(c: Catalog)
+   | ------------------------------------------------- at the end of the function body
+59 |     requires !c.callbacks || !c.procs || !c.ekey || !c.graph_cols,
+60 |     ensures forall|j: int| 0 <= j < plan(c).len() ==> !is_ddl(#[trigger] plan(c)[j]),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

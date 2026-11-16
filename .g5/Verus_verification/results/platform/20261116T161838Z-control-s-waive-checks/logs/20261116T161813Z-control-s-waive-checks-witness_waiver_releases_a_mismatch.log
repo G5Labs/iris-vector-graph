@@ -1,0 +1,33 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-waive-checks/20261116T161813Z/models/platform/platform.rs:753:1
+    |
+753 | pub proof fn witness_waiver_releases_a_mismatch() {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-waive-checks/20261116T161813Z/models/platform/platform.rs:765:12
+    |
+765 |     assert(s2.engines[4].accepted);
+    |            ^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-waive-checks/20261116T161813Z/models/platform/platform.rs:765:12
+    |
+765 |     assert(s2.engines[4].accepted);
+    |            ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-waive-checks/20261116T161813Z/models/platform/platform.rs:767:12
+    |
+767 |     assert(s_step(s2, SAction::Write { e: 4 }, v) is Some);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

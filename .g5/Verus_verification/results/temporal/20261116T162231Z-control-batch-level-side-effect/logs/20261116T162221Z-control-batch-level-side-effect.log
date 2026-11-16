@@ -1,0 +1,45 @@
+verification results:: 111 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/batch-level-side-effect/20261116T162221Z/models/temporal/temporal.rs:1689:1
+     |
+1689 | pub proof fn lemma_batch_split(s: St, a: Seq<Edge>, b: Seq<Edge>, mode: Mode, v: Variant)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/batch-level-side-effect/20261116T162221Z/models/temporal/temporal.rs:1693:9
+     |
+1693 |           bulk_counts(s, a + b, mode, Seq::empty(), v).st == bulk_counts(bulk_counts(s, a, mode, Seq::empty(), v).st, b, mode, Seq::empty(), v).st,
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1697 | /     if a.len() == 0 {
+1698 | |         assert(a + b =~= b);
+1699 | |     } else {
+1700 | |         let (s1, r) = write_stores(s, a[0].c, a[0].w, None, mode, Fail::No, v);
+...    |
+1703 | |         lemma_batch_split(s1, a.subrange(1, a.len() as int), b, mode, v);
+1704 | |     }
+     | |_____- at the end of the function body
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/batch-level-side-effect/20261116T162221Z/models/temporal/temporal.rs:1694:9
+     |
+1694 |           bulk_counts(s, a + b, mode, Seq::empty(), v).threw == bulk_counts(bulk_counts(s, a, mode, Seq::empty(), v).st, b, mode, Seq::empty(), v).threw,
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1697 | /     if a.len() == 0 {
+1698 | |         assert(a + b =~= b);
+1699 | |     } else {
+1700 | |         let (s1, r) = write_stores(s, a[0].c, a[0].w, None, mode, Fail::No, v);
+...    |
+1703 | |         lemma_batch_split(s1, a.subrange(1, a.len() as int), b, mode, v);
+1704 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/batch-level-side-effect/20261116T162221Z/models/temporal/temporal.rs:1907:12
+     |
+1907 |     assert(bulk_counts(s1, seq![Edge { c, w: 9 }], Mode::Insert, Seq::empty(), v).st == s1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

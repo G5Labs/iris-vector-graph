@@ -1,0 +1,61 @@
+verification results:: 52 verified, 4 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-no-flag/20261116T162205Z/models/search/search.rs:1636:9
+     |
+1636 |           uinv(ustep(s, a, upgrade_as_built())->Some_0),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1640 | /     match a {
+1641 | |         UAct::Start { p } => {
+1642 | |             if s2 != s {
+1643 | |                 lemma_dom_empty(s.ups);
+...    |
+1756 | |         },
+1757 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-no-flag/20261116T162205Z/models/search/search.rs:2055:12
+     |
+2055 |     assert(s1.ups.contains_key(1) && s1.ix.upgrading);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-no-flag/20261116T162205Z/models/search/search.rs:2096:12
+     |
+2096 |     assert(s6.ix.upgrading && schema_of(s6.ix) == 2 && s6.lock is None);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-no-flag/20261116T162205Z/models/search/search.rs:2124:12
+     |
+2124 |     assert(s8.ups[2] == UpPc::Flipped);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-no-flag/20261116T162205Z/models/search/search.rs:2127:5
+     |
+1403 |         a.tf == b.tf,
+     |         ------------ failed precondition
+...
+2127 |     lemma_cons_frame(counted(rebuilt(s1_index())), s8.ix);
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-no-flag/20261116T162205Z/models/search/search.rs:2111:1
+     |
+2111 | pub proof fn witness_repair_rerun_keeps_index() {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-no-flag/20261116T162205Z/models/search/search.rs:2124:12
+     |
+2124 |     assert(s8.ups[2] == UpPc::Flipped);
+     |            ^^^^^^^^^
+     |
+    --> map.rs:87:12
+     |
+     = note: recommendation not met
+
+error: aborting due to 5 previous errors
+

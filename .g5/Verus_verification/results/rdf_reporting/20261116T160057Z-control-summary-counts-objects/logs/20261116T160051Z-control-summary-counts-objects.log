@@ -1,0 +1,29 @@
+verification results:: 47 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/summary-counts-objects/20261116T160051Z/models/rdf_reporting/rdf_reporting.rs:213:65
+    |
+213 |  ensures reported(rs,c).triples==triples(generated(rs,c)).len(),reported(rs,c).nodes==subjects(generated(rs,c)).len(),
+    |                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+228 |  assert(ts.filter(edge_fn()).to_set() =~= ts.to_set().filter(edge_fn())) by {
+    |  ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/summary-counts-objects/20261116T160051Z/models/rdf_reporting/rdf_reporting.rs:270:49
+    |
+269 | pub proof fn theorem_summary_reads_union_not_rows(qs:Seq<Quad>)
+    | --------------------------------------------------------------- at the end of the function body
+270 |  ensures summary(qs).triples==triples(qs).len(),summary(qs).nodes==subjects(qs).len(),summary(qs).edges==qs.map_values(triple_fn())...
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/summary-counts-objects/20261116T160051Z/models/rdf_reporting/rdf_reporting.rs:318:10
+    |
+316 | pub proof fn theorem_summary_counts_subjects_not_objects(g:Text,sub:Term,p:Text,a:Term,b:Term)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+317 |  requires a!=b
+318 |  ensures summary(seq![Quad{graph:g,triple:Triple{s:sub,p,o:a}},Quad{graph:g,triple:Triple{s:sub,p,o:b}}]).nodes==1
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

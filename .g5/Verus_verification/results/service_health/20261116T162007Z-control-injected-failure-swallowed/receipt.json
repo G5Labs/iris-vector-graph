@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_constructor_and_injected_refusal_differ"
+    ],
+    "find": "Access::Ready=>Some(Main{engine:Some(id),factory_calls:0}),_=>None",
+    "name": "injected-failure-swallowed",
+    "replace": "Access::Ready=>Some(Main{engine:Some(id),factory_calls:0}),_=>Some(Main{engine:None,factory_calls:0})"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_constructor_and_injected_refusal_differ"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/service_health/model.json": "9e9c64a322b9016d1845da7e9d52c702e420bab831a1e476d5b548b760a724f9",
+    ".g5/Verus_verification/models/service_health/service_health.rs": "c768d2646b1eba243619f465348f463b5d3a50a98382965c1325f2e50a966d8e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/injected-failure-swallowed/20261116T162006Z/models/service_health/service_health.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_constructor_and_injected_refusal_differ": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/20261116T162006Z-control-injected-failure-swallowed-theorem_constructor_and_injected_refusal_differ.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/20261116T162006Z-control-injected-failure-swallowed.log",
+    "timed_out": false,
+    "verified": 17
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/service_health/20261116T162007Z-control-injected-failure-swallowed/logs/20261116T162006Z-control-injected-failure-swallowed-theorem_constructor_and_injected_refusal_differ.log": "b938bc27a91847fb8f3b03a3b95240d236889e53a2f6331cf1aa2eb699c09e42",
+    ".g5/Verus_verification/results/service_health/20261116T162007Z-control-injected-failure-swallowed/logs/20261116T162006Z-control-injected-failure-swallowed.log": "73e4b50197d7ac17e0280d00ff6cecb2a374296e0c37b35949fc74279afdb8e9"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

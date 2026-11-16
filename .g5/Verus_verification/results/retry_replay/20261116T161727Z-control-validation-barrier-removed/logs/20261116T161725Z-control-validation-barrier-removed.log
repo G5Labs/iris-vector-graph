@@ -1,0 +1,27 @@
+verification results:: 69 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/retry_replay/controls/validation-barrier-removed/20261116T161725Z/models/retry_replay/retry_replay.rs:46:1
+   |
+46 | pub proof fn theorem_validation_precedes_counts_and_fallback(s:clock::stores::Global,es:Seq<clock::Request>,clocks:Seq<int>,f:Fault,i:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/retry_replay/controls/validation-barrier-removed/20261116T161725Z/models/retry_replay/retry_replay.rs:48:13
+   |
+46 | pub proof fn theorem_validation_precedes_counts_and_fallback(s:clock::stores::Global,es:Seq<clock::Request>,clocks:Seq<int>,f:Fault,i:int)
+   | ------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+47 |     requires 0<=i<es.len(),clock::bulk_payload(es[i].short,es[i].long,es[i].shape_ok).is_none(),
+48 |     ensures run(s,es,clocks,f).outcome.state==s,!run(s,es,clocks,f).outcome.accepted,!run(s,es,clocks,f).fell_back,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/retry_replay/controls/validation-barrier-removed/20261116T161725Z/models/retry_replay/retry_replay.rs:48:49
+   |
+46 | pub proof fn theorem_validation_precedes_counts_and_fallback(s:clock::stores::Global,es:Seq<clock::Request>,clocks:Seq<int>,f:Fault,i:int)
+   | ------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+47 |     requires 0<=i<es.len(),clock::bulk_payload(es[i].short,es[i].long,es[i].shape_ok).is_none(),
+48 |     ensures run(s,es,clocks,f).outcome.state==s,!run(s,es,clocks,f).outcome.accepted,!run(s,es,clocks,f).fell_back,
+   |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

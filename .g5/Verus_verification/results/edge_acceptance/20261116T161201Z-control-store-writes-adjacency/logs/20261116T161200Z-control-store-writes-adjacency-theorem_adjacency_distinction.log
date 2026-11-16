@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/edge_acceptance/controls/store-writes-adjacency/20261116T161200Z/models/edge_acceptance/edge_acceptance.rs:52:9
+   |
+49 | pub proof fn theorem_adjacency_distinction(s:State,v:int)
+   | --------------------------------------------------------- at the end of the function body
+...
+52 |         !run(s,Api::Store,v,false,false,false).state.adjacency,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

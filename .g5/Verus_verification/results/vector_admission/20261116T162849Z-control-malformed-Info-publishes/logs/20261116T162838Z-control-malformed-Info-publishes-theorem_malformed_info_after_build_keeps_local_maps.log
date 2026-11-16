@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/vector_admission/controls/malformed-Info-publishes/20261116T162838Z/models/vector_admission/vector_admission.rs:514:1
+    |
+514 | pub proof fn theorem_malformed_info_after_build_keeps_local_maps(e:Engine,l:ivf::Local,r:Request,registry:Raw<Seq<Row>>,a:ivf::Args,p:ivf::Providers,table:Name,text:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/vector_admission/controls/malformed-Info-publishes/20261116T162838Z/models/vector_admission/vector_admission.rs:516:13
+    |
+514 | pub proof fn theorem_malformed_info_after_build_keeps_local_maps(e:Engine,l:ivf::Local,r:Request,registry:Raw<Seq<Row>>,a:ivf::Args,p:ivf::Providers,table:Name,text:Text)
+    | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+515 |     requires ivf::reaches_info(e,r,registry,a,p,table),p.info==Raw::Rows(Cell::Text(text)),json_width::parsed(text).is_none(),
+516 |     ensures ivf::run(e,l,r,registry,a,p).error==Some(Error::Info),ivf::run(e,l,r,registry,a,p).local==l,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/vector_admission/controls/malformed-Info-publishes/20261116T162838Z/models/vector_admission/vector_admission.rs:516:67
+    |
+514 | pub proof fn theorem_malformed_info_after_build_keeps_local_maps(e:Engine,l:ivf::Local,r:Request,registry:Raw<Seq<Row>>,a:ivf::Args,p:ivf::Providers,table:Name,text:Text)
+    | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+515 |     requires ivf::reaches_info(e,r,registry,a,p,table),p.info==Raw::Rows(Cell::Text(text)),json_width::parsed(text).is_none(),
+516 |     ensures ivf::run(e,l,r,registry,a,p).error==Some(Error::Info),ivf::run(e,l,r,registry,a,p).local==l,
+    |                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

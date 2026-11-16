@@ -1,0 +1,43 @@
+verification results:: 49 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-digest-check/20261116T162453Z/models/platform/platform.rs:2042:1
+     |
+2042 | pub proof fn lemma_build_preserves(s: PSt, h: int, d: int, gs: Shape, gst: Stamp)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-digest-check/20261116T162453Z/models/platform/platform.rs:2052:9
+     |
+2052 |           p_inv(build(s, h, d, gs, gst, p_as_built())),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2060 | /     if !s.entries.contains_key(h) || s.entries[h].status != Status::Pending || !s.src.contains_key(h) {
+2061 | |     } else if digest(s.src[h]) != d {
+2062 | |         assert forall|k: int| #[trigger] s2.entries.contains_key(k) implies entry_ok(s2, k, s2.entries[k]) by {
+2063 | |             assert(entry_ok(s, k, s.entries[k]));
+...    |
+2100 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-digest-check/20261116T162453Z/models/platform/platform.rs:2065:74
+     |
+2065 |         assert forall|r: nat| #[trigger] s2.runs.contains_key(r) implies run_ok(s2, s2.runs[r]) by {
+     |                                                                          ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-digest-check/20261116T162453Z/models/platform/platform.rs:2890:9
+     |
+2890 |           q_inv(build(s, h, d, gs, gst, p_repaired())),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2897 | /     if !s.entries.contains_key(h) || s.entries[h].status != Status::Pending || !s.src.contains_key(h) {
+2898 | |     } else if digest(s.src[h]) != d || s.entries[h].shape != gs || s.entries[h].stamp != gst {
+2899 | |         assert forall|k: int| #[trigger] s2.entries.contains_key(k) implies q_entry_ok(s2.entries[k]) by {
+2900 | |             assert(q_entry_ok(s.entries[k]));
+...    |
+2909 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 3 previous errors
+

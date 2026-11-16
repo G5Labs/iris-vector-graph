@@ -1,0 +1,27 @@
+verification results:: 3 verified, 4 errors
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/index_declaration/controls/redeclare-functional/20261116T161331Z/models/index_declaration/index_declaration.rs:78:12
+   |
+78 |     assert(plan(c) =~= for_index(Idx::Labels, c.labels));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/index_declaration/controls/redeclare-functional/20261116T161331Z/models/index_declaration/index_declaration.rs:90:20
+   |
+90 |             assert(plan(c) =~= for_index(Idx::Labels, c.labels));
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/index_declaration/controls/redeclare-functional/20261116T161331Z/models/index_declaration/index_declaration.rs:111:12
+    |
+111 |     assert(plan(c) =~= seq![Act::Drop(Idx::Edges), Act::Backfill, Act::Create(Idx::Edges)]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/index_declaration/controls/redeclare-functional/20261116T161331Z/models/index_declaration/index_declaration.rs:119:12
+    |
+119 |     assert(plan(apply(c)) =~= Seq::<Act>::empty());
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

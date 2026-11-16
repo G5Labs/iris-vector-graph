@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/reset-keeps-pending/20261116T161314Z/models/bolt_stream/bolt_stream.rs:327:9
+    |
+325 | pub proof fn theorem_discard_keeps_types_reset_clears(s:Session)
+    | ---------------------------------------------------------------- at the end of the function body
+326 |     ensures discard(s).state.pending==None,discard(s).state.columns==None,discard(s).state.types==s.types,
+327 |         reset(s).state.pending==None,reset(s).state.types==None,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

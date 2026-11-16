@@ -935,10 +935,19 @@ Added by review round 3 R3-reader M23 (the stage-A reconstruction check items 3,
 - Tests (live): [R088 default/named/temporal export](../../../tests/e2e/test_460_export_graph_ndjson_e2e.py); existing [import unit tests](../../../tests/unit/test_edgeprop_ndjson.py)
 - Related: [node reads](../features/graph-structure.g5.md#structure.node.read), [reserved aliases](../features/graph-structure.g5.md#structure.node.read.aliases), [NDJSON admission](#install.import.ndjson)
 - Evidence: [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md), [sealed13 full-record survey](../../uplift/consolidated/iteration-13/next-records-survey.md)
+- Verus: [ndjson_export.rs](../../Verus_verification/models/ndjson_export/ndjson_export.rs) `theorem_complete_export_line_sequence_and_counts`, `theorem_default_census_derived`, `theorem_raw_node_event_content`, `theorem_edge_census_derived`, `theorem_edge_qualifier_zero_not_omitted` and `theorem_actual_generated_export_to_import_callbacks`, with final-file witnesses; [scope and provider limits](../../Verus_verification/models/ndjson_export/NOTES.md)
 - agent
 - user-facing-behavior, data-integrity
 
-Recovered ordinary export scope, not a new product requirement. A stable SQL view, actual hydration truthiness, SQL order and ordinary JSON/filesystem laws qualify a complete file claim. Known aliases and value normalization remain as owned; import callback agreement alone is not persistence or inverse proof. Formal content correspondence is pending.
+Exporting writes only the default graph: first one node line for each node whose node row has the empty graph name, in node-ID order, then one edge line for each default-graph edge row, in edge-ID order. It returns `nodes` and `edges` equal to the lines of each kind it wrote.
+
+- A node line is written even when the node has no labels or properties. A node that exists only in a named graph gets no line, and its named-graph labels and properties do not enter a default node's line.
+- A node line carries every default-graph label and the properties as the node reader reports them, including the [reserved aliases](../features/graph-structure.g5.md#structure.node.read.aliases): a stored property named `id` appears as `p_id`. When both `id` and `p_id` are stored, only the value delivered last survives.
+- Every physical default-graph edge row is its own line, so two parallel rows with the same source, predicate and target give two lines. Temporal-marked rows (qualifiers starting `{"temporal"`) and named-graph rows are not written.
+- A non-empty qualifier object is copied, including `{"q": 0}`; an absent or empty qualifier is left out.
+- Reading the file with [NDJSON import](#install.import.ndjson) passes each line's labels, properties, graph and qualifiers to the create calls and counts the lines read. That is argument agreement, not a storage round trip: alias and value normalization mean a re-import need not restore the original rows.
+
+This recovers ordinary export behavior; it is not a new product requirement. The file claim assumes a stable SQL view, ordinary SQL ordering and successful JSON and file writes; failure, partial-file and concurrent-writer behavior are not covered.
 
 ### install.export.rdf.scope
 
@@ -946,10 +955,17 @@ Recovered ordinary export scope, not a new product requirement. A stable SQL vie
 - Tests (live): [R099 label filtering](../../../tests/e2e/test_460_rdf_export_label_filter_e2e.py), [R100 graph contexts](../../../tests/e2e/test_460_rdf_export_nquads_graphs_e2e.py), [graph scope unit tests](../../../tests/unit/test_230_rdf_export_scope.py)
 - Related: [graph scope](graph-scope.g5.md#graph.default), [content](#install.export.rdf.content), [report](#install.export.rdf.report)
 - Evidence: [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md), [sealed13 ordinary RDF survey](../../uplift/consolidated/iteration-13/next-reporting-survey.md)
+- Verus: [rdf_reporting.rs](../../Verus_verification/models/rdf_reporting/rdf_reporting.rs) `theorem_graph_filter_is_request_value`, `theorem_empty_filters_are_unfiltered`, `theorem_label_selection_is_raw`, `theorem_wrong_graph_membership_is_excluded`, `theorem_source_not_target_selects` and `theorem_outside_requested_ids_emits_nothing`; [scope and provider limits](../../Verus_verification/models/rdf_reporting/NOTES.md)
 - agent
 - user-facing-behavior, data-integrity
 
-The label projection and own-graph membership are explicit source and regression behavior; no new policy about all labels of selected nodes is inferred. SQL equality, nullable graph normalization and a stable relational view remain correspondence conditions. Formal producer correspondence is pending.
+RDF export selects rows by graph, node ID and label before building any triple.
+
+- `graph_id=None` exports every graph; `""` exports the default graph, including rows whose graph is SQL NULL; any other value exports only that named graph.
+- An empty or omitted ID list or label list does not filter. A non-empty ID list selects label, property and edge rows by their subject (the edge's source, not its target).
+- With a label filter, only matching label rows become `rdf:type` triples. A property or edge row is kept only when its subject carries a matching label in the row's own graph; a label on the edge's target, or on the same ID in another graph, does not qualify.
+
+The label projection and own-graph membership are explicit source and regression behavior; no policy about exporting all labels of a selected node is inferred. SQL equality, nullable-graph normalization and a stable relational view are correspondence conditions.
 
 ### install.export.rdf.content
 
@@ -957,17 +973,33 @@ The label projection and own-graph membership are explicit source and regression
 - Tests (live): [literal/qualifier unit tests](../../../tests/unit/test_rdf_export.py), [R100 generated context contents](../../../tests/e2e/test_460_rdf_export_nquads_graphs_e2e.py), [R122 named-graph IRIs](../../../tests/e2e/test_460_rdf_graph_id_not_an_iri_e2e.py)
 - Evidence: [sealed13 typed literal and actual file observations](../../uplift/consolidated/iteration-13/next-reporting-sanity.json)
 - Related: [scope](#install.export.rdf.scope), [report](#install.export.rdf.report)
+- Verus: [rdf_reporting.rs](../../Verus_verification/models/rdf_reporting/rdf_reporting.rs) `theorem_raw_rows_generate_exactly_the_quad_set`, `theorem_two_raw_digits_determine_value`, `theorem_dyadic_is_derived`, `theorem_property_null_is_omitted`, `theorem_node_property_prefixes_differ`, `theorem_original_object_decides_envelope`, `theorem_inferred_only_still_has_envelope`, `theorem_falsey_qualifier_fallback`, `theorem_unqualified_parallel_rows_collapse` and `theorem_selected_qualified_parallel_rows_keep_global_blanks`; [scope and provider limits](../../Verus_verification/models/rdf_reporting/NOTES.md)
 - agent
 - user-facing-behavior, data-integrity
 
-The public literal description does not directly adjudicate the false/zero qualifier exception; as-built support is kept separate from intended-policy approval. The general property-key IRI description is refined to the actual three pass-through prefixes, separately from node/edge FTP handling. Neither observation changes an existing confirmed requirement or claims a new owner decision. Graph-IRI encoding, arbitrary numeric text/IEEE normalization, JSON dictionary decoding, blank-node freshness and rdflib term/codec laws need explicit correspondence frames. Formal producer correspondence is pending.
+Each selected row becomes triples in its graph's context: the default graph, or the named graph's IRI.
+
+- A label row becomes an `rdf:type` triple. A property row with a NULL value emits nothing. Otherwise its value is typed: canonical integer text (`7`) becomes `xsd:integer`; other number text (`007`, `2.5`) becomes `xsd:decimal`; `true`/`false` in any case become booleans; anything else is a plain string.
+- Node IDs, labels and edge predicates starting `http://`, `https://`, `urn:` or `ftp://` are used as IRIs unchanged; other values get the base prefix. Property keys pass through only for `http://`, `https://` and `urn:`; any other key, including `ftp://`, becomes `urn:ivg:prop/<key>` whatever the base prefix.
+- Each edge row adds its subject–predicate–object triple. When its qualifier text decodes to a non-empty object, the row also gets its own fresh statement and reifier blank nodes: four envelope triples, then one `urn:ivg:qualifier/<key>` triple per key except `inferred`. An object holding only `inferred` still gets the envelope; an empty or absent qualifier gets none.
+- A qualifier value that would become a false literal (`0`, JSON `false`) is written as plain text (`"0"`, `"False"`), while the same value as a property keeps its type.
+- Two unqualified parallel rows give one triple; two qualified parallel rows keep separate blank nodes.
+
+The public literal description does not settle the false/zero qualifier exception, so this as-built behavior is not intended-policy approval. Graph-IRI encoding, wider numeric and JSON text, and rdflib's term, blank-node and serializer behavior are named provider conditions.
 
 ### install.export.rdf.report
 
 - Sources: [Semantic Layer metrics and formats](../../../docs/SEMANTIC_LAYER.md#L67-L93), [`RdfExportMixin.export_rdf`](../../../iris_vector_graph/_engine/rdf_export.py#L96-L157), [format inference](../../../iris_vector_graph/_engine/_rdf_utils.py#L56-L69)
 - Evidence: [sealed13 ordinary union/quad contrast](../../uplift/consolidated/iteration-13/next-reporting-survey.md), [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md)
 - Related: [content](#install.export.rdf.content)
+- Verus: [rdf_reporting.rs](../../Verus_verification/models/rdf_reporting/rdf_reporting.rs) `theorem_raw_rows_to_final_report`, `theorem_summary_reads_union_not_rows`, `theorem_summary_two_contexts_is_one_triple`, `theorem_summary_counts_subjects_not_objects` and `theorem_non_type_uri_count_rule`; [scope and provider limits](../../Verus_verification/models/rdf_reporting/NOTES.md)
 - agent
 - user-facing-behavior, data-integrity
 
-Public docs define triple/subject/IRI-object metrics; source and the ordinary10quad/8union-triple contrast settle their union reader. This clarifies the descriptive phrase "counts what was written" without promising equal serialized quad counts. Registered namespace binding and third-party serialization/parser details, provider failures and cross-read consistency remain qualified; no whole serializer or failed-file atomicity proof is inferred. Formal composition is pending.
+The returned counts read the generated triples merged across contexts, not the rows or the lines in the file.
+
+- `triples` counts distinct subject–predicate–object triples, so the same triple in two named graphs counts once even though N-Quads writes two lines.
+- `nodes` counts distinct subjects, including the blank statement and reifier nodes of qualified edges; a node that appears only as an object is not counted.
+- `edges` counts distinct triples whose object is an IRI and whose predicate is not `rdf:type`. This includes the IRI-valued envelope triples of qualified edges.
+
+This settles the docs' "counts what was written" wording as a union reader without promising equal serialized line counts. Namespace binding, third-party serialization and parsing, provider failures and cross-read consistency remain qualified; no whole-serializer or failed-file guarantee follows.

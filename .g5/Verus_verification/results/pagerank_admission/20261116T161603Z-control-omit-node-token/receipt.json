@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_insert_moves_key"
+    ],
+    "find": "Key{nodes:n,",
+    "name": "omit-node-token",
+    "replace": "Key{nodes:None,",
+    "why": "omit-node-token"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_insert_moves_key"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/pagerank_admission/model.json": "edff9c2481a756dd06a816df80caacd701f6856de0a8f7ee64ba89913ec3829c",
+    ".g5/Verus_verification/models/pagerank_admission/pagerank_admission.rs": "b67bef15cc35cd4b6ecd3d9927cfa7e67274cfd32436c8a15fc0c6fe0e108b0d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/pagerank_admission/controls/omit-node-token/20261116T161602Z/models/pagerank_admission/pagerank_admission.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_insert_moves_key": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/pagerank_admission/20261116T161602Z-control-omit-node-token-theorem_insert_moves_key.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/pagerank_admission/20261116T161602Z-control-omit-node-token.log",
+    "timed_out": false,
+    "verified": 8
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/pagerank_admission/20261116T161603Z-control-omit-node-token/logs/20261116T161602Z-control-omit-node-token-theorem_insert_moves_key.log": "7bb30f6a945802d2134502f24be4c9517c207528dc7b2094ce084fd97502de6b",
+    ".g5/Verus_verification/results/pagerank_admission/20261116T161603Z-control-omit-node-token/logs/20261116T161602Z-control-omit-node-token.log": "787f16744f8b06827816c43fa4da4ef11ea7ebb99d70ee8d12fc7e21996d66ba"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

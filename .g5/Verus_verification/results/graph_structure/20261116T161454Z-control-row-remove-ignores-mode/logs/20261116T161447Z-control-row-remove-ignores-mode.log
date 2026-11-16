@@ -1,0 +1,17 @@
+verification results:: 66 verified, 1 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/row-remove-ignores-mode/20261116T161447Z/models/graph_structure/graph_structure.rs:1881:9
+     |
+1881 |           row_remove(layout(rows), rows.remove(e), e, true) == layout(rows.remove(e)),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1886 | /     if rows.len() == 1 {
+1887 | |         lemma_len1_is_single(rows, e);
+1888 | |         assert(rows2 =~= Set::<int>::empty());
+1889 | |         assert(rows2.remove(e) =~= Set::<int>::empty());
+...    |
+1900 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

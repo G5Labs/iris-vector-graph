@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_fraction/controls/cost-best-hop-loses-half/20261116T163051Z/models/weighted_fraction/weighted_fraction.rs:518:13
+    |
+518 |       ensures crelax(c,cs(c,s),b,ce(c,e),a)==cs(c,kernel::relax(encoded(c),s,b,e,a)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+524 | /     if kernel::admitted(encoded(c),b,z,e,a) && kernel::side(t,!b).dist.contains_key(v){
+525 | |         assert(dec.dist.contains_key(v));assert(kernel::side(t,b).dist.contains_key(v));
+526 | |         let n=kernel::side(t,b).dist[v]+kernel::side(t,!b).dist[v];
+527 | |         theorem_decode_arithmetic(c,kernel::side(t,b).dist[v],kernel::side(t,!b).dist[v]);
+528 | |         if s.best.is_some(){theorem_decode_arithmetic(c,s.best.unwrap(),n);}
+529 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

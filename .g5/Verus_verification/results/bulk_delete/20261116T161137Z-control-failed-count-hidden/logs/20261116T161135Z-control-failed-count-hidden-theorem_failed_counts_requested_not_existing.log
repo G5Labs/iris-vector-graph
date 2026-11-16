@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_delete/controls/failed-count-hidden/20261116T161135Z/models/bulk_delete/bulk_delete.rs:60:13
+   |
+59 |   pub proof fn theorem_failed_counts_requested_not_existing()
+   |   ----------------------------------------------------------- at the end of the function body
+60 |       ensures ({let r=run(map![1=>()],seq![Input::Id(1),Input::Id(2)],2,set![1]);
+   |  _____________^
+61 | |         r.live==map![1=>()] && r.deleted==0 && r.failed==2 && !as_bool(r)}),
+   | |___________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

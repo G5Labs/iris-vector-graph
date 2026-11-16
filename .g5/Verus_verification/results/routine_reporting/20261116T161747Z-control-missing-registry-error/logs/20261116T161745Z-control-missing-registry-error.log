@@ -1,0 +1,12 @@
+verification results:: 34 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/missing-registry-error/20261116T161745Z/models/routine_reporting/routine_reporting.rs:163:2
+    |
+159 | pub proof fn theorem_missing_vs_unreadable_registry(c:Catalog,r:Registry,k:Kind)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+163 |  missing_registry(r.error.unwrap()) ==> registry_errors(r).len()==0,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

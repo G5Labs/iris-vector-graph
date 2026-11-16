@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/vector_admission/controls/route-cache-graph-key-collapsed/20261116T162710Z/models/vector_admission/vector_admission.rs:132:13
+    |
+130 | pub proof fn theorem_each_raw_key_field_prevents_alias(r:Request,s:Request)
+    | --------------------------------------------------------------------------- at the end of the function body
+131 |     requires r.registry!=s.registry || graph(r)!=graph(s) || r.model!=s.model || r.kind!=s.kind,
+132 |     ensures key(r)!=key(s),
+    |             ^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

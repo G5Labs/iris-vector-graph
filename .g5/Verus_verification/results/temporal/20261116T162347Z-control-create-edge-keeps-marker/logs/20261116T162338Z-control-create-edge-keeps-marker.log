@@ -1,0 +1,49 @@
+verification results:: 110 verified, 3 errors
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/create-edge-keeps-marker/20261116T162338Z/models/temporal/temporal.rs:2286:24
+     |
+2286 |                 assert(s.rows.contains_key(t2) && s.rows[t2]);
+     |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/create-edge-keeps-marker/20261116T162338Z/models/temporal/temporal.rs:2463:1
+     |
+2463 | pub proof fn lemma_explicit_create_clears_marker(s: St, t: Triple, a: Action, v: Variant)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/create-edge-keeps-marker/20261116T162338Z/models/temporal/temporal.rs:2468:9
+     |
+2463 | pub proof fn lemma_explicit_create_clears_marker(s: St, t: Triple, a: Action, v: Variant)
+     | ----------------------------------------------------------------------------------------- at the end of the function body
+...
+2468 |         !create_edge(s, t).rows[t],
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/create-edge-keeps-marker/20261116T162338Z/models/temporal/temporal.rs:2469:9
+     |
+2463 | pub proof fn lemma_explicit_create_clears_marker(s: St, t: Triple, a: Action, v: Variant)
+     | ----------------------------------------------------------------------------------------- at the end of the function body
+...
+2469 |         step(create_edge(s, t), a, v).rows.contains_key(t),
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/create-edge-keeps-marker/20261116T162338Z/models/temporal/temporal.rs:2470:10
+     |
+2470 |         !step(create_edge(s, t), a, v).rows[t],
+     |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    --> map.rs:87:12
+     |
+     = note: recommendation not met
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/create-edge-keeps-marker/20261116T162338Z/models/temporal/temporal.rs:3293:12
+     |
+3293 |     assert(s2.rows.contains_key(t) && !s2.rows[t]);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

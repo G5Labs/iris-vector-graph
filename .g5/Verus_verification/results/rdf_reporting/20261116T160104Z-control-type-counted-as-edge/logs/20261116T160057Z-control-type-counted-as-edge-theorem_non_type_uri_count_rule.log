@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/type-counted-as-edge/20261116T160057Z/models/rdf_reporting/rdf_reporting.rs:184:10
+    |
+183 | pub proof fn theorem_non_type_uri_count_rule(x:Triple)
+    | ------------------------------------------------------ at the end of the function body
+184 |  ensures edge_triple(x)==(matches!(x.o,Term::Iri(_)) && x.p!=t("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

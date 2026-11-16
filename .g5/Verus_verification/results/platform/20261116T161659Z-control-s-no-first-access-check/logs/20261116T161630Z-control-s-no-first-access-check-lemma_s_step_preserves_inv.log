@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-no-first-access-check/20261116T161630Z/models/platform/platform.rs:342:1
+    |
+342 | pub proof fn lemma_s_step_preserves_inv(s: SSt, a: SAction)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-no-first-access-check/20261116T161630Z/models/platform/platform.rs:361:107
+    |
+361 | ...x) && s2.engines[x].accepted implies s2.marker.contains(s2.engines[x].sch) by {
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-no-first-access-check/20261116T161630Z/models/platform/platform.rs:364:45
+    |
+364 |                         Some(r) => { assert(r == sch); }
+    |                                             ^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

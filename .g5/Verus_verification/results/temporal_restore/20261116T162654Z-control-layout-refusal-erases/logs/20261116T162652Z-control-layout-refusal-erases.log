@@ -1,0 +1,12 @@
+verification results:: 30 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_restore/controls/layout-refusal-erases/20261116T162652Z/models/temporal_restore/temporal_restore.rs:128:9
+    |
+125 | pub proof fn theorem_layout_refuses_before_erasure(s:Global,lines:Seq<Line>,merge:bool,rejected:Set<Key>,declared:Seq<char>)
+    | ---------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+128 |         restore(s,lines,Some(declared),merge,rejected).state==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

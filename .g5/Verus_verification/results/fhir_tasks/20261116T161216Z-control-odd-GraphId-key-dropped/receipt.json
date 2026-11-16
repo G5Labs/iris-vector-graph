@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_odd_or_missing_graph_key"
+    ],
+    "find": "{if xs.len()==0{None}else{",
+    "name": "odd-GraphId-key-dropped",
+    "replace": "{if xs.len()<2{None}else{"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_odd_or_missing_graph_key"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "0e93bb9d52074062d2ac146c9b2e6d161b099e72ef0d518fe6affbd7c65adad4",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "b26d8337375fecbed4b0c09e1206da5b052209556e7f95252738f77c23c7480b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/odd-GraphId-key-dropped/20261116T161213Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_odd_or_missing_graph_key": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/20261116T161213Z-control-odd-GraphId-key-dropped-theorem_odd_or_missing_graph_key.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/20261116T161213Z-control-odd-GraphId-key-dropped.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261116T161216Z-control-odd-GraphId-key-dropped/logs/20261116T161213Z-control-odd-GraphId-key-dropped-theorem_odd_or_missing_graph_key.log": "e29a1e3a9f2a66041f47212862d944d46375a6ab2c07d9be0e6e1c734df556e0",
+    ".g5/Verus_verification/results/fhir_tasks/20261116T161216Z-control-odd-GraphId-key-dropped/logs/20261116T161213Z-control-odd-GraphId-key-dropped.log": "c896c17413b7ac4b8e7d0f055cfd13b0b1d1011778257acf5ba1cf8e07268e29"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

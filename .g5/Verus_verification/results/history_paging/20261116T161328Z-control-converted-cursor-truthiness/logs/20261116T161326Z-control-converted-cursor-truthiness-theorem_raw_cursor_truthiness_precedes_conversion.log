@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/converted-cursor-truthiness/20261116T161326Z/models/history_paging/history_paging.rs:227:9
+    |
+224 | pub proof fn theorem_raw_cursor_truthiness_precedes_conversion(r:Row,c:Collation)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+227 |         !matches(r,cursor_input(defaults(2,true,0),CursorInput::IntegerText(0)),c),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

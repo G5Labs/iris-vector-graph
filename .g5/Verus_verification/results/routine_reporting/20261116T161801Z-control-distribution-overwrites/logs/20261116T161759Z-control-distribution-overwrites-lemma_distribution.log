@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/distribution-overwrites/20261116T161759Z/models/routine_reporting/routine_reporting.rs:241:2
+    |
+241 |    distribution(rs,g).contains_key(k) ==> distribution(rs,g)[k]==rs.filter(|r:Row|gid(r.graph)==gid(g)&&r.attr==k).len()
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+242 |    decreases rs.len(),
+243 |   {if rs.len()>0{lemma_distribution(rs.skip(1),g,k);
+    |  __-
+244 | |  assert(rs =~= seq![rs[0]]+rs.skip(1));Seq::filter_distributes_over_add(seq![rs[0]],rs.skip(1),|r:Row|gid(r.graph)==gid(g)&&r.att...
+245 | |  }else{reveal(Seq::filter);}}
+    | |____________________________- at the end of the function body
+
+error: aborting due to 1 previous error
+

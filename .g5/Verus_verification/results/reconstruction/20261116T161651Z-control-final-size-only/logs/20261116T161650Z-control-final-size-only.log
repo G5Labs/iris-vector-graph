@@ -1,0 +1,39 @@
+verification results:: 9 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/reconstruction/controls/final-size-only/20261116T161650Z/models/reconstruction/reconstruction.rs:53:1
+   |
+53 | pub proof fn theorem_bound_exactly_prefixes(s:State,rs:Seq<Record>,through:nat,b:nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/reconstruction/controls/final-size-only/20261116T161650Z/models/reconstruction/reconstruction.rs:54:13
+   |
+54 |     ensures run(s,rs,through,Some(b),false).is_some()==prefixes_fit(s,rs,through,b),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+58 |     if rs.len()>0 {theorem_bound_exactly_prefixes(next(s,rs[0],through),rs.drop_first(),through,b);}
+   |     ------------------------------------------------------------------------------------------------ at the end of the function body
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/reconstruction/controls/final-size-only/20261116T161650Z/models/reconstruction/reconstruction.rs:55:9
+   |
+55 |         prefixes_fit(s,rs,through,b) ==> run(s,rs,through,Some(b),false)==Some(fold(s,rs,through)),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+58 |     if rs.len()>0 {theorem_bound_exactly_prefixes(next(s,rs[0],through),rs.drop_first(),through,b);}
+   |     ------------------------------------------------------------------------------------------------ at the end of the function body
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/reconstruction/controls/final-size-only/20261116T161650Z/models/reconstruction/reconstruction.rs:62:13
+   |
+61 |   pub proof fn theorem_transient_oversize_refuses()
+   |   ------------------------------------------------- at the end of the function body
+62 |       ensures ({let rs=seq![record(1,Op::Create(false,0,0)),record(2,Op::Create(false,1,0)),record(3,Op::Delete(false,1))];
+   |  _____________^
+63 | |         fold(Map::empty(),rs,3)==map![(false,0)=>0]
+64 | |         && run(Map::empty(),rs,3,Some(1),false)==None
+65 | |         && run(Map::empty(),rs,3,Some(1),true)==Some(map![(false,0)=>0])}),
+   | |__________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

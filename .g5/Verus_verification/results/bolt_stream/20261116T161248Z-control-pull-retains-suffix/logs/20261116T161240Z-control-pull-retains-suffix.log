@@ -1,0 +1,51 @@
+verification results:: 40 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/pull-retains-suffix/20261116T161240Z/models/bolt_stream/bolt_stream.rs:307:58
+    |
+305 | pub proof fn theorem_pull_reads_input_rows_then_clears(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+306 |     requires s.pending==Some(rows),
+307 |     ensures record_rows(pull(s,n).out)==selected(rows,n),pull(s,n).state.pending==None,
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/pull-retains-suffix/20261116T161240Z/models/bolt_stream/bolt_stream.rs:310:1
+    |
+310 | pub proof fn theorem_partial_pull_drops_suffix_and_reports_no_more(s:Session,rows:Rows,n:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/pull-retains-suffix/20261116T161240Z/models/bolt_stream/bolt_stream.rs:312:39
+    |
+310 | pub proof fn theorem_partial_pull_drops_suffix_and_reports_no_more(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+311 |     requires s.pending==Some(rows),0<n<rows.len(),
+312 |     ensures remainder(rows,n).len()>0,pull(s,n).state.pending==None,
+    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/pull-retains-suffix/20261116T161240Z/models/bolt_stream/bolt_stream.rs:314:9
+    |
+310 | pub proof fn theorem_partial_pull_drops_suffix_and_reports_no_more(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+314 |         record_rows(pull(pull(s,n).state,n).out)==seq![],
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/pull-retains-suffix/20261116T161240Z/models/bolt_stream/bolt_stream.rs:391:13
+    |
+389 |   pub proof fn theorem_raw_wire_run_then_pull_final_records(s:Session,cols:Names,rows:Rows,n:u8)
+    |   ---------------------------------------------------------------------------------------------- at the end of the function body
+390 |       requires s.phase!=Phase::Failed,s.phase!=Phase::Defunct,cols.len()<3,0<n<=127,
+391 |       ensures ({let start=WireSession{receiver:empty_receiver(),session:s,open:true};
+    |  _____________^
+392 | |         let run_step=advance(start,encode(run_body(),max_chunk()),EngineResult::Rows{columns:cols,rows,error:None}).unwrap();
+393 | |         let pulled=advance(run_step.next,encode(pull_body(n),max_chunk()),failed_result()).unwrap();
+394 | |         let again=advance(pulled.next,encode(pull_body(n),max_chunk()),failed_result()).unwrap();
+395 | |         run_step.engine_calls==1 && pulled.engine_calls==0 && pulled.next.session.pending==None
+396 | |         && record_rows(pulled.out)==selected(rows,n as int) && record_rows(again.out)==seq![]}),
+    | |_______________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

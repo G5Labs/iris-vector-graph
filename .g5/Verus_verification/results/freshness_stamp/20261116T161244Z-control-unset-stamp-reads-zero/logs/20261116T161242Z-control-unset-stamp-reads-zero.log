@@ -1,0 +1,43 @@
+verification results:: 4 verified, 3 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/controls/unset-stamp-reads-zero/20261116T161242Z/models/freshness_stamp/freshness_stamp.rs:73:13
+   |
+72 | pub proof fn theorem_is_current_iff_stamped_equal(s: Val, t: Val)
+   | ----------------------------------------------------------------- at the end of the function body
+73 |     ensures is_current(s, t) <==> (s is Int && s->0 == token(t)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/controls/unset-stamp-reads-zero/20261116T161242Z/models/freshness_stamp/freshness_stamp.rs:78:1
+   |
+78 | pub proof fn theorem_unstamped_stale_at_zero(t: Val)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/controls/unset-stamp-reads-zero/20261116T161242Z/models/freshness_stamp/freshness_stamp.rs:81:9
+   |
+78 | pub proof fn theorem_unstamped_stale_at_zero(t: Val)
+   | ---------------------------------------------------- at the end of the function body
+...
+81 |         !is_current(Val::Unset, t),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/controls/unset-stamp-reads-zero/20261116T161242Z/models/freshness_stamp/freshness_stamp.rs:82:9
+   |
+78 | pub proof fn theorem_unstamped_stale_at_zero(t: Val)
+   | ---------------------------------------------------- at the end of the function body
+...
+82 |         !is_current(Val::Empty, t),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/controls/unset-stamp-reads-zero/20261116T161242Z/models/freshness_stamp/freshness_stamp.rs:101:13
+    |
+100 | pub proof fn theorem_python_agrees_with_objectscript(s: Val, t: Val)
+    | -------------------------------------------------------------------- at the end of the function body
+101 |     ensures is_current(s, t) == os_fresh(s, t),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

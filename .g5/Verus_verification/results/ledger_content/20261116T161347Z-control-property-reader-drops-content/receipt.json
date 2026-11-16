@@ -1,0 +1,53 @@
+{
+  "control": {
+    "classification": "source-algorithm-or-reader",
+    "expect_fail_in": [
+      "theorem_primitive_records_replay_full_content"
+    ],
+    "find": "props:s.nodes[id].props.insert(key,text(new))",
+    "name": "property-reader-drops-content",
+    "replace": "props:s.nodes[id].props"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_primitive_records_replay_full_content"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_content/alternate.rs": "47af78ac8fb4fa4e7c7b74b5100fb67dc8d759c6cb592c8a65dee126d546b45a",
+    ".g5/Verus_verification/models/ledger_content/ledger_content.rs": "6da398763cdf28d7e8805fd4944e7abfeecddb28c951187e7598ffbed3c1d4b3",
+    ".g5/Verus_verification/models/ledger_content/model.json": "2d1a3c259ca4f95079d0179ada659eb90555626ba60cdea57195923cb0ade4c4",
+    ".g5/Verus_verification/models/reconstruction/reconstruction.rs": "245d60d0106d1e850ed6b6b1623f2ed442b3d34424db5297aeb55e2c4a87b3f6"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/controls/property-reader-drops-content/20261116T161340Z/models/ledger_content/ledger_content.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_primitive_records_replay_full_content": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/20261116T161340Z-control-property-reader-drops-content-theorem_primitive_records_replay_full_content.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/20261116T161340Z-control-property-reader-drops-content.log",
+    "timed_out": false,
+    "verified": 104
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_content/20261116T161347Z-control-property-reader-drops-content/logs/20261116T161340Z-control-property-reader-drops-content-theorem_primitive_records_replay_full_content.log": "7a7ece5733fd903c8f2b2a3f0716d6e1f828a48354979bfd542933e3c20489d0",
+    ".g5/Verus_verification/results/ledger_content/20261116T161347Z-control-property-reader-drops-content/logs/20261116T161340Z-control-property-reader-drops-content.log": "bb0a249f7c464c1214eb85cabe57c565a78f9a25d74b5eb3bb790a3cb809c7d6"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -372,3 +372,28 @@ Independent replay accepts75aggregate units (62new+13unchanged node_read imports
 The source map grows231→249/4130:18new members,3strengthened,0lost.21selected active roles comprise18actual-Python/local-SQL roles and3native inspected typed transcriptions; the latter are not exercised by the16SQL-native cases.14observation rows earn no new reach. The remaining228prior credited members retain their previous grades. No executable product body is proved. Stable registry view/refusal across kind scans, schema/ancillary provider truth, SQL equality/JSON/IEEE/collation and cross-read snapshot boundaries remain explicit.
 
 Two source-grounded owners make405blocks, preserving all403prior bodies. New Low/Open bug-agg-001 records a leading grouped unmatched OPTIONAL returning NULL SUM versus newer R308's zero identity; ordinary/global/anchored passing neighbors are retained. All16fresh Native source forecasts agree;15ordinary/zero references agree and1differs, so this is not16intended conformance passes. Registers434bugs/55simplifications/146questions, no repair or owner decision. Sixty builder diagnostic rows retain49exact old after grades as both current before/after plus11overlapping ordinary extensions; no pooled private/population rate. RDF and full-record NDJSON producer/consumer boundaries remain material ordinary continuations; convergence is unsupported and no fixed round/time/percentage cap applies.
+
+## Cloud continuation on Linux (2026-11-16): iteration 14 completion and later
+
+[Iteration 14 handoff](../uplift/consolidated/iteration-14/HANDOFF.md); run identity, guidance hashes and fixture in
+[cloud-run.json](../uplift/consolidated/iteration-14/cloud-run.json). From the repository root:
+
+```sh
+export RUN_DIR=$HOME/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116
+export VERUS_BIN=$HOME/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus
+export IVG_PIN_DIR=$RUN_DIR/pin PYTHONDONTWRITEBYTECODE=1 G5_GUIDE=$G5_HARNESS/guidance
+git archive 3eaa79cf | tar -x -C $IVG_PIN_DIR        # once; then, from $IVG_PIN_DIR:
+UV_PROJECT_ENVIRONMENT=$RUN_DIR/venv uv sync --frozen --all-extras --python 3.11
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/rdf_reporting      # 50
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/ndjson_export    # 15 EXPECTED_FAIL
+$RUN_DIR/venv/bin/python -B -I .g5/Verus_verification/models/rdf_reporting/binding.py              # AGREES 2229
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach                          # 254/4130
+python3 .g5/Verus_verification/tools/check_consolidated.py                                        # PASS
+```
+
+Where to edit a link: `crosswalk/decision-links.tsv` (one row per member, formal item and role) and the family's row
+in `families.tsv`; `member_reach.py` builds the map and the reverse lookup (`bindings.json`, keyed by `path::symbol`).
+Worked lookup: `install.export.rdf.report` → `rdf_reporting.rs::theorem_raw_rows_to_final_report` → row for
+`iris_vector_graph/_engine/rdf_export.py::RdfExportMixin.export_rdf` (line 96); in reverse, that key in
+`bindings.json` lists the claim and its role. Native fixtures from iteration 15 on use only the run-isolated container
+`ivg-cloud-20261116-iris` (127.0.0.1:36116), identity-checked by the iteration's `runtime.py`.

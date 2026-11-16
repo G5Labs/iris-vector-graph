@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_failed_counts_requested_not_existing"
+    ],
+    "find": "failed:rest.failed+if caught {batch.len()} else {0}",
+    "name": "failed-count-hidden",
+    "replace": "failed:rest.failed",
+    "why": "failed-count-hidden"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failed_counts_requested_not_existing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_delete/bulk_delete.rs": "ca7bd0e16ab6cb9ff8a8b306e654197d409f42a7c0703d701ab6d0dac2c6ef04",
+    ".g5/Verus_verification/models/bulk_delete/model.json": "0b2e872e3b40403c5e56436625643988949e6f46862d1704c58a2b4082be5c2d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_delete/controls/failed-count-hidden/20261116T161135Z/models/bulk_delete/bulk_delete.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_failed_counts_requested_not_existing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_delete/20261116T161135Z-control-failed-count-hidden-theorem_failed_counts_requested_not_existing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_delete/20261116T161135Z-control-failed-count-hidden.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_delete/20261116T161137Z-control-failed-count-hidden/logs/20261116T161135Z-control-failed-count-hidden-theorem_failed_counts_requested_not_existing.log": "4493a299e72afce661fafce7ef928ff11f1344f4f5591c492cad89f546c5cc81",
+    ".g5/Verus_verification/results/bulk_delete/20261116T161137Z-control-failed-count-hidden/logs/20261116T161135Z-control-failed-count-hidden.log": "66672c9c851db0143e368e5eae9f73f2cf42e4ec797b792e599dec3b856d1abf"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

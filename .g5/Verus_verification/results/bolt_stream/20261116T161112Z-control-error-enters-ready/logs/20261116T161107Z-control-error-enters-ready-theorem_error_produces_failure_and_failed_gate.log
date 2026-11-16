@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/error-enters-ready/20261116T161107Z/models/bolt_stream/bolt_stream.rs:298:1
+    |
+298 | pub proof fn theorem_error_produces_failure_and_failed_gate(s:Session,body:Bytes,result:EngineResult)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/error-enters-ready/20261116T161107Z/models/bolt_stream/bolt_stream.rs:300:13
+    |
+298 | pub proof fn theorem_error_produces_failure_and_failed_gate(s:Session,body:Bytes,result:EngineResult)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+299 |     requires body.len()>=2,body[1]!=0x0f,body[1]!=0x02,
+300 |     ensures run(s,failed_result()).state.phase==Phase::Failed,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/error-enters-ready/20261116T161107Z/models/bolt_stream/bolt_stream.rs:303:9
+    |
+298 | pub proof fn theorem_error_produces_failure_and_failed_gate(s:Session,body:Bytes,result:EngineResult)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+303 |         dispatch(run(s,failed_result()).state,body,result)==Some(Step{out:seq![Answer::Ignored],..no_step(run(s,failed_result()).state)}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

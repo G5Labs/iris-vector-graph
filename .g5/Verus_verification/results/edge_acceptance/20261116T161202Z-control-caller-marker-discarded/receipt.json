@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_caller_marker_retained"
+    ],
+    "find": "row:true,temporal:marker,value",
+    "name": "caller-marker-discarded",
+    "replace": "row:true,temporal:false,value"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_caller_marker_retained"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/edge_acceptance/edge_acceptance.rs": "ef7c54c202ec2330605b8152cde61162775ab0c5cff0a1d11328d1a8c8375d79",
+    ".g5/Verus_verification/models/edge_acceptance/model.json": "18f69052abd4e16647e739c17708645eeba661f3a2c976299ba0d59482766bb0"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/edge_acceptance/controls/caller-marker-discarded/20261116T161201Z/models/edge_acceptance/edge_acceptance.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_caller_marker_retained": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/edge_acceptance/20261116T161201Z-control-caller-marker-discarded-theorem_caller_marker_retained.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/edge_acceptance/20261116T161201Z-control-caller-marker-discarded.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/edge_acceptance/20261116T161202Z-control-caller-marker-discarded/logs/20261116T161201Z-control-caller-marker-discarded-theorem_caller_marker_retained.log": "238797072e0327a44b833bb13eeb61355f6d7f8727c49b1033d7b282b0e0b768",
+    ".g5/Verus_verification/results/edge_acceptance/20261116T161202Z-control-caller-marker-discarded/logs/20261116T161201Z-control-caller-marker-discarded.log": "fe9eea6106c97fddfc3f87c5dd1595f9098ba7c3770ee5a2369e084058415b49"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

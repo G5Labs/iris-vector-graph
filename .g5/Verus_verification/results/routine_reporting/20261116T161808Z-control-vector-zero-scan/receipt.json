@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_empty_and_partial_vector_report"
+    ],
+    "find": "if s.nv==0{VectorView::Absent}",
+    "name": "vector-zero-scan",
+    "replace": "if s.nv==0{VectorView::Scan(0)}",
+    "role": "source-facing census/selection/reader rule"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_and_partial_vector_report"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/routine_reporting/model.json": "476529fece46dfdfebe64114446c9966bf6a4a68c3e07594a5e880e8c7618bac",
+    ".g5/Verus_verification/models/routine_reporting/routine_reporting.rs": "224e16eede8fda124658933601d304ffe1a0a2ce92edfc802e5c612cebfa4a8d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/vector-zero-scan/20261116T161806Z/models/routine_reporting/routine_reporting.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_and_partial_vector_report": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/20261116T161806Z-control-vector-zero-scan-theorem_empty_and_partial_vector_report.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/20261116T161806Z-control-vector-zero-scan.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/routine_reporting/20261116T161808Z-control-vector-zero-scan/logs/20261116T161806Z-control-vector-zero-scan-theorem_empty_and_partial_vector_report.log": "23d1f017ded1872d31a22736185a8d34160c71193bad592ea0ec59b4716de378",
+    ".g5/Verus_verification/results/routine_reporting/20261116T161808Z-control-vector-zero-scan/logs/20261116T161806Z-control-vector-zero-scan.log": "d6e91fdcf848125dab86144b4744354df77f4c0ff2e9cc2ecf23c512fb85a7d0"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

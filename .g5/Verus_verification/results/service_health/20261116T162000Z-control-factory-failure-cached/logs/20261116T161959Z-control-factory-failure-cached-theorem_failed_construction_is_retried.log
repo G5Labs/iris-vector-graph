@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/factory-failure-cached/20261116T161959Z/models/service_health/service_health.rs:142:13
+    |
+141 |   pub proof fn theorem_failed_construction_is_retried(error:Error,id:int)
+    |   ----------------------------------------------------------------------- at the end of the function body
+142 |       ensures ({let a=cache_request(empty_cache(),Factory::Raised(error),clean_query());
+    |  _____________^
+143 | |         let b=cache_request(a.state,Factory::Engine{id,connection:Access::Ready},clean_query());
+144 | |         a.response.status==Status::Unavailable && a.state.engine.is_none() && a.state.factory_calls==1
+145 | |         && b.response.status==Status::Ok && b.state.engine==Some(id) && b.state.factory_calls==2}),
+    | |__________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

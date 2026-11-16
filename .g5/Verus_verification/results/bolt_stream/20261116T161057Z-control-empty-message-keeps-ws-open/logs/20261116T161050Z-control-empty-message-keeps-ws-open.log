@@ -1,0 +1,29 @@
+verification results:: 40 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/empty-message-keeps-ws-open/20261116T161050Z/models/bolt_stream/bolt_stream.rs:127:9
+    |
+125 | pub proof fn theorem_empty_chunk_is_emitted()
+    | --------------------------------------------- at the end of the function body
+126 |     ensures decode(end()).bodies==seq![Seq::<u8>::empty()],decode(end()).used==2,
+127 |         !ws_continues(Read::Message(seq![])),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/empty-message-keeps-ws-open/20261116T161050Z/models/bolt_stream/bolt_stream.rs:158:1
+    |
+158 | pub proof fn theorem_small_chunk_reencoding_leaves_terminator()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/empty-message-keeps-ws-open/20261116T161050Z/models/bolt_stream/bolt_stream.rs:180:13
+    |
+178 |   pub proof fn theorem_left_terminator_returns_empty_then_queues_next(next:Bytes)
+    |   ------------------------------------------------------------------------------- at the end of the function body
+179 |       requires 0<next.len()<=max_chunk(),
+180 |       ensures ({let r=receive(Receive{buffer:end(),queue:seq![]},encode(next,max_chunk()));
+    |  _____________^
+181 | |         r.read==Read::Message(seq![]) && !ws_continues(r.read) && r.next.queue==seq![next]}),
+    | |____________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

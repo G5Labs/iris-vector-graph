@@ -1,0 +1,53 @@
+verification results:: 48 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-key-emitted/20261116T160025Z/models/rdf_reporting/rdf_reporting.rs:249:10
+    |
+249 |  ensures emit_quals(es,e,pos,c).len()==0
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+250 |  decreases es.len(),
+251 | {if es.len()>0{lemma_inferred_quals_empty(es.skip(1),e,pos,c);}}
+    |  -------------------------------------------------------------- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-key-emitted/20261116T160025Z/models/rdf_reporting/rdf_reporting.rs:300:1
+    |
+300 | pub proof fn lemma_qualifier_entries_generate_exact_content(es:Seq<Entry>,e:Edge,pos:nat,c:Config,x:Quad)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-key-emitted/20261116T160025Z/models/rdf_reporting/rdf_reporting.rs:301:10
+    |
+301 |    ensures emit_quals(es,e,pos,c).contains(x)==(exists|i:int|0<=i<es.len() && es[i].key!=t("inferred") && x==q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[i].key,Term::Literal(qualifier_literal(es[i].value))))
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+302 |    decreases es.len(),
+303 |   {if es.len()>0{lemma_qualifier_entries_generate_exact_content(es.skip(1),e,pos,c,x);
+    |  __-
+304 | |  if emit_quals(es,e,pos,c).contains(x) && !(es[0].key!=t("inferred") && x==q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[0].key,Term::Literal(qualifier_literal(es[0].value)))){let i=choose|i:int|0<=i<es.skip(1)...
+305 | |  if exists|i:int|0<=i<es.len() && es[i].key!=t("inferred") && x==q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[i].key,Term::Literal(qualifier_literal(es[i].value))){let i=choose|i:int|0<=i<es.len() && es[i].key...
+306 | | }}
+    | |_- at the end of the function body
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-key-emitted/20261116T160025Z/models/rdf_reporting/rdf_reporting.rs:304:226
+    |
+304 | ...nt|0<=i<es.skip(1).len() && es.skip(1)[i].key!=t("inferred") && x==q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es.skip(1)[i].key,Term::Literal(qualifier_literal(es.skip(1)[i].value)));as...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-key-emitted/20261116T160025Z/models/rdf_reporting/rdf_reporting.rs:304:443
+    |
+304 | ...rm::Literal(qualifier_literal(es.skip(1)[i].value)));assert(es[i+1]==es.skip(1)[i]);}
+    |                                                                ^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-key-emitted/20261116T160025Z/models/rdf_reporting/rdf_reporting.rs:304:443
+    |
+304 | ...ifier_literal(es.skip(1)[i].value)));assert(es[i+1]==es.skip(1)[i]);}
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

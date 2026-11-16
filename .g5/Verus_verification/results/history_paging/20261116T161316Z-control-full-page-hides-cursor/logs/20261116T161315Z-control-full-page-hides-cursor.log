@@ -1,0 +1,12 @@
+verification results:: 19 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/full-page-hides-cursor/20261116T161315Z/models/history_paging/history_paging.rs:172:13
+    |
+170 | pub proof fn theorem_full_page_supplies_cursor(rows:Seq<View>,limit:int)
+    | ------------------------------------------------------------------------ at the end of the function body
+171 |     requires rows.len()==limit,limit>0,
+172 |     ensures finish(rows,limit).next==Some(rows[rows.len()-1].seq),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

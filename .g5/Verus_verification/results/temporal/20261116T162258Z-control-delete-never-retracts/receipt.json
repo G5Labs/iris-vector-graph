@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_delete_rows"
+    ],
+    "find": "        let s2 = if !has_ts(s1.tout, tri(c)) { retract(s1, tri(c)) } else { s1 };",
+    "name": "delete-never-retracts",
+    "replace": "        let s2 = s1;",
+    "why": "DeleteTemporalEdge without RetractTemporalRow (:336): the last timestamp goes and the marked row stays (ADR-0009)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_delete_rows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/delete-never-retracts/20261116T162249Z/models/temporal/temporal.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_delete_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162249Z-control-delete-never-retracts-lemma_delete_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162249Z-control-delete-never-retracts.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261116T162258Z-control-delete-never-retracts/logs/20261116T162249Z-control-delete-never-retracts-lemma_delete_rows.log": "65ac691a2e765c87d9a5216acc1314d24ba16434fb32404a7c7f7e085742eee9",
+    ".g5/Verus_verification/results/temporal/20261116T162258Z-control-delete-never-retracts/logs/20261116T162249Z-control-delete-never-retracts.log": "a88e6db7c8a43fb75a4bc1f5dc4b9e13d4690c14a84b9d32c3ff7af1ee896f08"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

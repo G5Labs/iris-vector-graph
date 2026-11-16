@@ -1,0 +1,33 @@
+verification results:: 7 verified, 3 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_delete/controls/failed-count-hidden/20261116T161135Z/models/bulk_delete/bulk_delete.rs:52:13
+   |
+51 |   pub proof fn theorem_later_batch_runs_after_failure()
+   |   ----------------------------------------------------- at the end of the function body
+52 |       ensures ({let r=run(map![1=>(),2=>()],seq![Input::Id(1),Input::Id(2)],1,set![1]);
+   |  _____________^
+53 | |         r.live==map![1=>()] && r.deleted==1 && r.failed==1 && as_int(r)==1 && as_bool(r)}),
+   | |__________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_delete/controls/failed-count-hidden/20261116T161135Z/models/bulk_delete/bulk_delete.rs:60:13
+   |
+59 |   pub proof fn theorem_failed_counts_requested_not_existing()
+   |   ----------------------------------------------------------- at the end of the function body
+60 |       ensures ({let r=run(map![1=>()],seq![Input::Id(1),Input::Id(2)],2,set![1]);
+   |  _____________^
+61 | |         r.live==map![1=>()] && r.deleted==0 && r.failed==2 && !as_bool(r)}),
+   | |___________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_delete/controls/failed-count-hidden/20261116T161135Z/models/bulk_delete/bulk_delete.rs:64:13
+   |
+63 |   pub proof fn theorem_cleanup_failure_is_not_rollback()
+   |   ------------------------------------------------------ at the end of the function body
+64 |       ensures ({let r=batches(map![1=>(),2=>()],seq![1,2],2,Set::empty(),set![1]);
+   |  _____________^
+65 | |         r.live==Map::<int,()>::empty() && r.deleted==0 && r.failed==2 && !as_bool(r)}),
+   | |______________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

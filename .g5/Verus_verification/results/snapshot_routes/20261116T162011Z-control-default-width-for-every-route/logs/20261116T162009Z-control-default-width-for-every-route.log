@@ -1,0 +1,101 @@
+verification results:: 7 verified, 7 errors
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:66:13
+   |
+66 |     ensures prepare(s,key,t,Width::Present(w),engine,build,record,1).widths[t]==w,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:66:13
+   |
+64 | pub proof fn theorem_archived_width_not_engine(s:State,key:(int,int),t:int,w:int,engine:int,build:bool,record:bool)
+   | ------------------------------------------------------------------------------------------------------------------- at the end of the function body
+65 |     requires !s.widths.contains_key(t),w>0,
+66 |     ensures prepare(s,key,t,Width::Present(w),engine,build,record,1).widths[t]==w,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:68:1
+   |
+68 | pub proof fn theorem_fallback_and_invalid(s:State,key:(int,int),t:int,engine:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:70:13
+   |
+70 |     ensures prepare(s,key,t,Width::Falsy,engine,false,true,1).widths[t]==s.registry[key].width,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:70:13
+   |
+68 | pub proof fn theorem_fallback_and_invalid(s:State,key:(int,int),t:int,engine:int)
+   | --------------------------------------------------------------------------------- at the end of the function body
+69 |     requires s.registry.contains_key(key),s.registry[key].table==t,s.registry[key].width>0,!s.widths.contains_key(t),
+70 |     ensures prepare(s,key,t,Width::Falsy,engine,false,true,1).widths[t]==s.registry[key].width,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:71:9
+   |
+68 | pub proof fn theorem_fallback_and_invalid(s:State,key:(int,int),t:int,engine:int)
+   | --------------------------------------------------------------------------------- at the end of the function body
+...
+71 |         prepare(s,key,t,Width::Invalid,engine,false,true,1).failed==s.failed+1,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:77:13
+   |
+74 | pub proof fn theorem_restored_row_reaches_own_reader(s:State,key:(int,int),t:int,node:int,v:Seq<int>,engine:int,build:bool)
+   | --------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+77 |     ensures read(load(prepare(s,key,t,Width::Present(v.len() as int),engine,build,true,1),t,key.0,node,v,false).state,key,node)==Read::Value(v),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:89:9
+   |
+84 | pub proof fn theorem_existing_incompatible_width_is_not_redeclared(s:State,key:(int,int),t:int,g:int,n:int,v:Seq<int>,w:int,engine:int)
+   | --------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+89 |         load(prepare(s,key,t,Width::Present(w),engine,true,true,1),t,g,n,v,true).state.failed==s.failed+1,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:93:13
+   |
+91 | pub proof fn theorem_index_result_and_failed_record(s:State,key:(int,int),t:int,w:int,engine:int,build:bool)
+   | ------------------------------------------------------------------------------------------------------------ at the end of the function body
+92 |     requires s.registry.contains_key(key),s.registry[key].table==t,w>0,
+93 |     ensures prepare(s,key,t,Width::Present(w),engine,build,true,1).registry[key].indexed==build,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:107:13
+    |
+105 | pub proof fn theorem_invalid_width_leaves_reader_error(s:State,key:(int,int),t:int,n:int,engine:int)
+    | ---------------------------------------------------------------------------------------------------- at the end of the function body
+106 |     requires s.registry.contains_key(key),s.registry[key].table==t,!s.widths.contains_key(t),
+107 |     ensures read(prepare(s,key,t,Width::Invalid,engine,true,true,1),key,n)==Read::MissingTable,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/default-width-for-every-route/20261116T162009Z/models/snapshot_routes/snapshot_routes.rs:151:9
+    |
+149 | pub proof fn theorem_invalid_route_skips_insert(s:State,key:(int,int),t:int,n:int,v:Seq<int>,engine:int)
+    | -------------------------------------------------------------------------------------------------------- at the end of the function body
+150 |     ensures restore_one(s,key,t,Width::Invalid,engine,true,true,key.0,n,v,false).reported==0,
+151 |         restore_one(s,key,t,Width::Invalid,engine,true,true,key.0,n,v,false).state.failed==s.failed+1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 8 previous errors
+

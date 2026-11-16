@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_bare_alias_keeps_physical"
+    ],
+    "find": "if q.return_name.is_some(){q.return_name.unwrap()}else{physical()}",
+    "name": "bare-alias-projected",
+    "replace": "if q.return_name.is_some(){q.return_name.unwrap()}else{q.alias}",
+    "why": "bare-alias-projected"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bare_alias_keeps_physical"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/procedure_results/model.json": "6a39b16f5e69698e0a2c602aa11ebf654da8e13c82c1a0bcc9f9609fd70f03b8",
+    ".g5/Verus_verification/models/procedure_results/procedure_results.rs": "c1b5fd65835381087753328369b55ce89b2c7b04f9191a97736a5a98bef1b875"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/controls/bare-alias-projected/20261116T161636Z/models/procedure_results/procedure_results.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bare_alias_keeps_physical": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/20261116T161636Z-control-bare-alias-projected-theorem_bare_alias_keeps_physical.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/20261116T161636Z-control-bare-alias-projected.log",
+    "timed_out": false,
+    "verified": 17
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/procedure_results/20261116T161637Z-control-bare-alias-projected/logs/20261116T161636Z-control-bare-alias-projected-theorem_bare_alias_keeps_physical.log": "6a6074ab2312e2e725c23afdad7b606724c0d9dbd640af6c4f840ecc1ef85127",
+    ".g5/Verus_verification/results/procedure_results/20261116T161637Z-control-bare-alias-projected/logs/20261116T161636Z-control-bare-alias-projected.log": "cb78219bc73f118ed67a7fa792fa24d312a3ae90c21aaf481e57faeaf5f29888"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,15 @@
+verification results:: 111 verified, 2 errors
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/zero-counter-kept/20261116T162522Z/models/temporal/temporal.rs:1299:57
+     |
+1299 |     assert forall|k: BKey| !bcut(sn2.purged, k) implies (#[trigger] sn2.bucket.contains_key(k) <==> bset(sn2.tout, k).len() > 0) by {
+     |                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/zero-counter-kept/20261116T162522Z/models/temporal/temporal.rs:3551:12
+     |
+3551 |     assert(r0.txn[0].jbucket == Map::<BKey, Option<int>>::empty().insert(bk, Some(0int)));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

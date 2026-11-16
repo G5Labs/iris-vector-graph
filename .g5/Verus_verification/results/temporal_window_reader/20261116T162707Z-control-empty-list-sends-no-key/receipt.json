@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_spec_sources_omitted_vs_empty",
+      "theorem_server_filter_sources"
+    ],
+    "find": "pub open spec fn sources_key(s: Option<Seq<Seq<char>>>) -> Option<Seq<Seq<char>>> {\n    s\n}",
+    "name": "empty-list-sends-no-key",
+    "replace": "pub open spec fn sources_key(s: Option<Seq<Seq<char>>>) -> Option<Seq<Seq<char>>> {\n    if s is Some && s->0.len() == 0 { None } else { s }\n}",
+    "why": "window_spec drops an empty sources list (`if sources:` instead of `is not None`): the server then reads every source"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_spec_sources_omitted_vs_empty",
+      "theorem_server_filter_sources"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_window_reader/model.json": "f2195d7d71681f08282f65b2e3d5428137a6e82f76bfbd8057321e4d8889a80f",
+    ".g5/Verus_verification/models/temporal_window_reader/temporal_window_reader.rs": "4f14236f57a45c64e889f794b6d55f3fc823dccaba4a2759ed7cedc97fd3bd9d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/controls/empty-list-sends-no-key/20261116T162705Z/models/temporal_window_reader/temporal_window_reader.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_server_filter_sources": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/20261116T162705Z-control-empty-list-sends-no-key-theorem_server_filter_sources.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_spec_sources_omitted_vs_empty": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/20261116T162705Z-control-empty-list-sends-no-key-theorem_spec_sources_omitted_vs_empty.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_window_reader/20261116T162705Z-control-empty-list-sends-no-key.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_window_reader/20261116T162707Z-control-empty-list-sends-no-key/logs/20261116T162705Z-control-empty-list-sends-no-key-theorem_server_filter_sources.log": "f63eec96827093890465e3f7d811b51b0bb59ded5cd09c47c999978ab99edef9",
+    ".g5/Verus_verification/results/temporal_window_reader/20261116T162707Z-control-empty-list-sends-no-key/logs/20261116T162705Z-control-empty-list-sends-no-key-theorem_spec_sources_omitted_vs_empty.log": "d92876dc800334ac9fa5de8ba7c7428549277c5c09c199d8e97b1af78a3b7e34",
+    ".g5/Verus_verification/results/temporal_window_reader/20261116T162707Z-control-empty-list-sends-no-key/logs/20261116T162705Z-control-empty-list-sends-no-key.log": "568ad8b24da4a884a62407cdb048dc5fa56af688e4ab85d0ccc4786d33c1894e"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

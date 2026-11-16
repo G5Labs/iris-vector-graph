@@ -1,0 +1,39 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/wcc-out-only/20261116T161145Z/models/communities/communities.rs:124:1
+    |
+124 | pub proof fn lemma_min_fold(g:Seq<Coord>,u:Node,l:Labels,best:Node)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/wcc-out-only/20261116T161145Z/models/communities/communities.rs:132:85
+    |
+132 | ...ed(g[i]) && g[i].owner==u implies min_fold(g,u,l,best)<=get(l,g[i].neighbor) by {if i>0{assert(g.drop_first()[i-1]==g[i]);}}
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/wcc-out-only/20261116T161145Z/models/communities/communities.rs:135:37
+    |
+135 | ...nt|0<=i<g.drop_first().len() && selected(g.drop_first()[i]) && g.drop_first()[i].owner==u && min_fold(g,u,l,best)==get(l,g.drop_first()[i].neighbor);as...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/wcc-out-only/20261116T161145Z/models/communities/communities.rs:135:190
+    |
+135 | ...n_fold(g,u,l,best)==get(l,g.drop_first()[i].neighbor);assert(g[i+1]==g.drop_first()[i]);}
+    |                                                                 ^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/wcc-out-only/20261116T161145Z/models/communities/communities.rs:135:190
+    |
+135 | ...==get(l,g.drop_first()[i].neighbor);assert(g[i+1]==g.drop_first()[i]);}
+    |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

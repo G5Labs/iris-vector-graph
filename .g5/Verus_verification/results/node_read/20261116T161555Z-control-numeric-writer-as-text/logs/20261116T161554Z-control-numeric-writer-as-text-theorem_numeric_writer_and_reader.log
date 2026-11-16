@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/node_read/controls/numeric-writer-as-text/20261116T161554Z/models/node_read/node_read.rs:45:13
+   |
+43 | pub proof fn theorem_numeric_writer_and_reader(n: int)
+   | ------------------------------------------------------ at the end of the function body
+44 |     requires in64(n),
+45 |     ensures journey(Input::Integer(n)) == Value::Integer(n),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

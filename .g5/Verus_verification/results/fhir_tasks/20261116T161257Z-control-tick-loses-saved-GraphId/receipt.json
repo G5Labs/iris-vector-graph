@@ -1,0 +1,50 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_successful_schedule_derives_tick_target"
+    ],
+    "find": "Some(on_task(saved_graph(s.tasks[id].settings),s.tasks[id].namespace,reply))",
+    "name": "tick-loses-saved-GraphId",
+    "replace": "Some(on_task(seq![],s.tasks[id].namespace,reply))"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_successful_schedule_derives_tick_target"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/fhir_tasks/fhir_tasks.rs": "0e93bb9d52074062d2ac146c9b2e6d161b099e72ef0d518fe6affbd7c65adad4",
+    ".g5/Verus_verification/models/fhir_tasks/model.json": "b26d8337375fecbed4b0c09e1206da5b052209556e7f95252738f77c23c7480b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/tick-loses-saved-GraphId/20261116T161255Z/models/fhir_tasks/fhir_tasks.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_successful_schedule_derives_tick_target": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/20261116T161255Z-control-tick-loses-saved-GraphId-theorem_successful_schedule_derives_tick_target.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/20261116T161255Z-control-tick-loses-saved-GraphId.log",
+    "timed_out": false,
+    "verified": 24
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/fhir_tasks/20261116T161257Z-control-tick-loses-saved-GraphId/logs/20261116T161255Z-control-tick-loses-saved-GraphId-theorem_successful_schedule_derives_tick_target.log": "d8b8c0d44b607caa3c9919761cb71603f49d0cf25b9f3d7458ff92e22adcc783",
+    ".g5/Verus_verification/results/fhir_tasks/20261116T161257Z-control-tick-loses-saved-GraphId/logs/20261116T161255Z-control-tick-loses-saved-GraphId.log": "05037a37f5c3c9ce34bb4ab289534245680f00134f3fbe349b2d7f32fc1b82b9"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

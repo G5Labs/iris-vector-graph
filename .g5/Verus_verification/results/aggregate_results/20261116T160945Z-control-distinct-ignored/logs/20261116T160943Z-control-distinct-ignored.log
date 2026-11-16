@@ -1,0 +1,23 @@
+verification results:: 73 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/aggregate_results/controls/distinct-ignored/20261116T160943Z/models/aggregate_results/aggregate_results.rs:52:60
+   |
+52 |   pub proof fn lemma_fold(rs:Seq<Row>,q:Query,k:Key) ensures inv(fold(rs,q,k),rs,q,k) decreases rs.len(){
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+53 | /  if rs.len()>0{let p=rs.drop_last();let r=rs.last();lemma_fold(p,q,k);let raw=raw_values(p,q,k);let a=accepted(raw,q.distinct);
+54 | |  if selected(r,q)&&key(r,q)==k&&present(r.value){lemma_tokens_push(raw,r.value);lemma_seq_push(raw,r.value);if !q.distinct||!token...
+55 | |  assert(rs==p.push(r));
+56 | |  }
+   | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/aggregate_results/controls/distinct-ignored/20261116T160943Z/models/aggregate_results/aggregate_results.rs:113:10
+    |
+111 | pub proof fn theorem_float_presence_uses_all_inputs(n:int,q:Query,k:Key,g:nat)
+    | ------------------------------------------------------------------------------ at the end of the function body
+112 |  requires q.distinct,q.graph==None,!q.grouped,k==Key::Global,
+113 |  ensures ({let rs=seq![Row{graph:g,key:k,value:Val::I(n),entity:None},Row{graph:g,key:k,value:Val::D(2*n),entity:None}];let a=fold(rs,q,k);a.count==1&&a.float&&read_sum(sum_wire(a))==SumValue::Double(2*n)}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

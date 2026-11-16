@@ -1,0 +1,32 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/algo-repair-off/20261116T161525Z/models/graph_structure/graph_structure.rs:2148:1
+     |
+2148 | pub proof fn theorem_repaired_algo_cache_sound(s: AS, a: AA)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/algo-repair-off/20261116T161525Z/models/graph_structure/graph_structure.rs:2153:9
+     |
+2153 |           ainv(astep(s, a, av_repaired())->Some_0),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2159 | /     match a {
+2160 | |         AA::Begin { w } => {
+2161 | |             assert forall|r: nat| #[trigger] s2.rs.contains_key(r) implies
+2162 | |                 s2.rs[r].ttok <= s2.token && (s2.rs[r].computed && s2.rs[r].ttok == s2.token ==> s2.rs[r].ans == s2.content) by {
+...    |
+2202 | |         },
+2203 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/algo-repair-off/20261116T161525Z/models/graph_structure/graph_structure.rs:2180:17
+     |
+2180 |                 s2.rs[r].ttok <= s2.token && (s2.rs[r].computed && s2.rs[r].ttok == s2.token ==> s2.rs[r].ans == s2.content) by {
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

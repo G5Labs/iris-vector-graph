@@ -1,0 +1,45 @@
+verification results:: 15 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/wrong-select-accepted/20261116T161952Z/models/service_health/service_health.rs:93:1
+   |
+93 | pub proof fn theorem_main_refuses_wrong_probe(s:Main,p:Probe)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/wrong-select-accepted/20261116T161952Z/models/service_health/service_health.rs:95:13
+   |
+93 | pub proof fn theorem_main_refuses_wrong_probe(s:Main,p:Probe)
+   | ------------------------------------------------------------- at the end of the function body
+94 |     requires s.engine.is_some(),!selected_one(p.selected),
+95 |     ensures main_request(s,p).response.status==Status::Unavailable,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/wrong-select-accepted/20261116T161952Z/models/service_health/service_health.rs:96:9
+   |
+93 | pub proof fn theorem_main_refuses_wrong_probe(s:Main,p:Probe)
+   | ------------------------------------------------------------- at the end of the function body
+...
+96 |         main_request(s,p).response.reason==Some(Reason::Select),!main_request(s,p).record_read,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/wrong-select-accepted/20261116T161952Z/models/service_health/service_health.rs:137:13
+    |
+135 | pub proof fn theorem_bound_sample_can_recover(s:Main,bad:Probe,good:Probe)
+    | -------------------------------------------------------------------------- at the end of the function body
+136 |     requires s.engine.is_some(),!selected_one(bad.selected),selected_one(good.selected),!good.iris,
+137 |     ensures main_request(s,bad).response.status==Status::Unavailable,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/wrong-select-accepted/20261116T161952Z/models/service_health/service_health.rs:176:9
+    |
+173 | pub proof fn theorem_success_is_probe_specific(s:Cache,f:Factory,p:Probe)
+    | ------------------------------------------------------------------------- at the end of the function body
+...
+176 |         problem(p)==Some(Reason::Select),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

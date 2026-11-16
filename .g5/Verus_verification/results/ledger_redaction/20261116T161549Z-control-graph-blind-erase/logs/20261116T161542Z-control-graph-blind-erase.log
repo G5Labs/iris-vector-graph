@@ -1,0 +1,17 @@
+verification results:: 39 verified, 2 errors
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/graph-blind-erase/20261116T161542Z/models/ledger_redaction/redaction.rs:1189:12
+     |
+1189 |     assert(erased(dflt, t) && !erased(named, t));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/graph-blind-erase/20261116T161542Z/models/ledger_redaction/redaction.rs:1716:13
+     |
+1715 | pub proof fn lemma_erase_stays_in_target_graph(live: Set<Item>, it: Item, t: Target)
+     | ------------------------------------------------------------------------------------ at the end of the function body
+1716 |     ensures erased_in(live, it, t) ==> item_graph(it) == t.g,
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

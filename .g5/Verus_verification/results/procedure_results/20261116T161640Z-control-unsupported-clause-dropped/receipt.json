@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_unsupported_clause_always_refused"
+    ],
+    "find": "bad_tail(q.tail,q.alias) ||",
+    "name": "unsupported-clause-dropped",
+    "replace": "false ||",
+    "why": "unsupported-clause-dropped"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_unsupported_clause_always_refused"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/procedure_results/model.json": "6a39b16f5e69698e0a2c602aa11ebf654da8e13c82c1a0bcc9f9609fd70f03b8",
+    ".g5/Verus_verification/models/procedure_results/procedure_results.rs": "c1b5fd65835381087753328369b55ce89b2c7b04f9191a97736a5a98bef1b875"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/controls/unsupported-clause-dropped/20261116T161639Z/models/procedure_results/procedure_results.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_unsupported_clause_always_refused": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/20261116T161639Z-control-unsupported-clause-dropped-theorem_unsupported_clause_always_refused.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/20261116T161639Z-control-unsupported-clause-dropped.log",
+    "timed_out": false,
+    "verified": 17
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/procedure_results/20261116T161640Z-control-unsupported-clause-dropped/logs/20261116T161639Z-control-unsupported-clause-dropped-theorem_unsupported_clause_always_refused.log": "7aa2d8a8ef03c4a758adfb749fb4e784d2b857a91c1174cbccf027c20cd42a86",
+    ".g5/Verus_verification/results/procedure_results/20261116T161640Z-control-unsupported-clause-dropped/logs/20261116T161639Z-control-unsupported-clause-dropped.log": "042c598b990771c5808653c669bd1dbf42736e2219246e9d4043ebfb8d19d051"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

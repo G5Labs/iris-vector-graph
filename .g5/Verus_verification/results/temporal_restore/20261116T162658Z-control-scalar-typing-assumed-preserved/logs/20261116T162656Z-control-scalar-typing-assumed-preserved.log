@@ -1,0 +1,11 @@
+verification results:: 30 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_restore/controls/scalar-typing-assumed-preserved/20261116T162656Z/models/temporal_restore/temporal_restore.rs:137:13
+    |
+136 | pub proof fn theorem_numeric_attribute_becomes_text(e:Edge,a:Seq<char>,n:int)
+    | ----------------------------------------------------------------------------- at the end of the function body
+137 |     ensures attrs(restore(Map::empty(),export(map![prop(e,a)=>Scalar::Number(n)],seq![prop(e,a)],set![2nat],false),Some(current_layout()),false,Set::empty()).state,e)[a]==Scalar::NumericText(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

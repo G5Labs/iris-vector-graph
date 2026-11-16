@@ -1,0 +1,19 @@
+verification results:: 9 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fusion_ranking/controls/all-failures-raise/20261116T161253Z/models/fusion_ranking/fusion_ranking.rs:72:13
+   |
+71 | pub proof fn theorem_vector_failure_dropped_text_failure_raises(xs:Seq<Row>)
+   | ---------------------------------------------------------------------------- at the end of the function body
+72 |     ensures collect(Provider::Raises,Provider::Rows(xs)).error==false,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fusion_ranking/controls/all-failures-raise/20261116T161253Z/models/fusion_ranking/fusion_ranking.rs:81:13
+   |
+80 | pub proof fn theorem_graph_failure_dropped(l:Legs)
+   | -------------------------------------------------- at the end of the function body
+81 |     ensures add(Provider::Raises,2,l)==l,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,46 @@
+verification results:: 39 verified, 2 errors
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/replay-reads-tombstones/20261116T161442Z/models/ledger_redaction/redaction.rs:1372:20
+     |
+1372 |             assert(entity(ra.last()) is None);
+     |                    ^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/replay-reads-tombstones/20261116T161442Z/models/ledger_redaction/redaction.rs:1404:1
+     |
+1404 | pub proof fn lemma_keep_iff_entity_not_target(r: Rec, t: Target, k: Know, sg: Map<nat, Id>, truth: Map<nat, (Id, Id)>)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/replay-reads-tombstones/20261116T161442Z/models/ledger_redaction/redaction.rs:1410:9
+     |
+1410 |           keep(r, t, k) == !ent_of_target(entity(r)->Some_0, t, sg, truth),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1413 | /     if is_node_op(l.op) {
+1414 | |         if t.g.len() == 0 { assert(t.g =~= Seq::<char>::empty()); }
+1415 | |         assert(l.graph == Seq::<char>::empty());
+1416 | |     }
+     | |_____- at the end of the function body
+
+note: recommendation not met
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/replay-reads-tombstones/20261116T161442Z/models/ledger_redaction/redaction.rs:1412:13
+     |
+ 142 | / /// $LB("redacted", sha256(CanonicalRecord), flags, op, entityKind)
+ 143 | | pub enum Rec {
+ 144 | |     Live(Live),
+ 145 | |     Tomb { digest: int, op: Op, flags: int },
+ 146 | | }
+     | |_- recommendation not met
+...
+1412 |       let l = r->Live_0;
+     |               ^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/replay-reads-tombstones/20261116T161442Z/models/ledger_redaction/redaction.rs:1415:16
+     |
+1415 |         assert(l.graph == Seq::<char>::empty());
+     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

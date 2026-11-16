@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/stale-id-looks-existing/20261116T161231Z/models/fhir_tasks/fhir_tasks.rs:149:1
+    |
+149 | pub proof fn theorem_stale_id_creates_and_status_reads(s:State,g:Str,ns:Str,fresh:Str,current:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/stale-id-looks-existing/20261116T161231Z/models/fhir_tasks/fhir_tasks.rs:152:13
+    |
+149 | pub proof fn theorem_stale_id_creates_and_status_reads(s:State,g:Str,ns:Str,fresh:Str,current:int)
+    | -------------------------------------------------------------------------------------------------- at the end of the function body
+...
+152 |     ensures public_schedule(s,g,ns,Interval::Omitted,fresh,Fault::None).state.rows[g].task_id==fresh,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fhir_tasks/controls/stale-id-looks-existing/20261116T161231Z/models/fhir_tasks/fhir_tasks.rs:153:9
+    |
+149 | pub proof fn theorem_stale_id_creates_and_status_reads(s:State,g:Str,ns:Str,fresh:Str,current:int)
+    | -------------------------------------------------------------------------------------------------- at the end of the function body
+...
+153 |         public_schedule(s,g,ns,Interval::Omitted,fresh,Fault::None).state.tasks.contains_key(fresh),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

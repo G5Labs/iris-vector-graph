@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/width-refusal-still-inserts/20261116T162020Z/models/snapshot_routes/snapshot_routes.rs:149:1
+    |
+149 | pub proof fn theorem_invalid_route_skips_insert(s:State,key:(int,int),t:int,n:int,v:Seq<int>,engine:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/width-refusal-still-inserts/20261116T162020Z/models/snapshot_routes/snapshot_routes.rs:150:13
+    |
+149 | pub proof fn theorem_invalid_route_skips_insert(s:State,key:(int,int),t:int,n:int,v:Seq<int>,engine:int)
+    | -------------------------------------------------------------------------------------------------------- at the end of the function body
+150 |     ensures restore_one(s,key,t,Width::Invalid,engine,true,true,key.0,n,v,false).reported==0,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/width-refusal-still-inserts/20261116T162020Z/models/snapshot_routes/snapshot_routes.rs:151:9
+    |
+149 | pub proof fn theorem_invalid_route_skips_insert(s:State,key:(int,int),t:int,n:int,v:Seq<int>,engine:int)
+    | -------------------------------------------------------------------------------------------------------- at the end of the function body
+150 |     ensures restore_one(s,key,t,Width::Invalid,engine,true,true,key.0,n,v,false).reported==0,
+151 |         restore_one(s,key,t,Width::Invalid,engine,true,true,key.0,n,v,false).state.failed==s.failed+1,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,14 @@
+verification results:: 180 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_fraction/controls/cost-hop-fallback-removed/20261116T163123Z/models/weighted_fraction/weighted_fraction.rs:802:13
+    |
+802 |       ensures cfinish(c,cs(c,s))==option(c,kernel::finish(encoded(c),s)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+805 | /     if s.best.is_some(){theorem_decode_arithmetic(c,s.best.unwrap(),encoded(c).cap);
+806 | |         if s.best.unwrap()<=encoded(c).cap && c.bound>0 && s.best_hops>c.bound{theorem_json_answer_commutes(c);}
+807 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

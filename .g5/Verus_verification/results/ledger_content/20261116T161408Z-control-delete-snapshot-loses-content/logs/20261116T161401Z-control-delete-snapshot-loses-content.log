@@ -1,0 +1,40 @@
+verification results:: 107 verified, 1 errors
+warning: field `prior` has inconsistent type or visibility in different variants
+         ->prior syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/controls/delete-snapshot-loses-content/20261116T161401Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+warning: field `snapshot` has inconsistent type or visibility in different variants
+         ->snapshot syntax will not be available for this field
+         use #[allow(inconsistent_fields)] on the struct to silence the warnign
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/controls/delete-snapshot-loses-content/20261116T161401Z/models/ledger_content/ledger_content.rs:17:1
+   |
+17 | / pub enum Action {
+18 | |  CreateNode(int),DeleteNode{ id:int,snapshot:Node },AddLabel(int,Text),RemoveLabel(int,Text),
+19 | |  SetProp{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveProp{ id:int,key:Text,prior:Text },
+20 | |  CreateRel(int,Tuple),DeleteRel{ id:int,snapshot:Stmt },
+21 | |  SetQual{ id:int,key:Text,prior:Option<Text>,new:Option<Text> },RemoveQual{ id:int,key:Text,prior:Text },
+22 | |  Temporal,Other,Redacted,Audit,
+23 | | }
+   | |_^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_content/controls/delete-snapshot-loses-content/20261116T161401Z/models/ledger_content/ledger_content.rs:104:10
+    |
+102 | pub proof fn theorem_simple_snapshot_is_complete(s:State,id:int)
+    | ---------------------------------------------------------------- at the end of the function body
+103 |  requires s.nodes.contains_key(id),!(exists|rid:int|s.rels.contains_key(rid) && s.rels[rid].tuple.3....
+104 |  ensures produce(s,Op::DeleteNode(id)).records==seq![rec(Action::DeleteNode{id,snapshot:s.nodes[id]})],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 2 warnings emitted
+

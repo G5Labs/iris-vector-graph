@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/injected-failure-swallowed/20261116T162006Z/models/service_health/service_health.rs:132:9
+    |
+130 | pub proof fn theorem_constructor_and_injected_refusal_differ(id:int,error:Error)
+    | -------------------------------------------------------------------------------- at the end of the function body
+131 |     ensures main_boot(Factory::Engine{id,connection:Access::Raised(error)}).engine.is_none(),
+132 |         main_injected(id,Access::Raised(error)).is_none(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

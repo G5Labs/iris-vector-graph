@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/retry_replay/controls/prefix-count-added/20261116T161715Z/models/retry_replay/retry_replay.rs:75:9
+   |
+69 | pub proof fn theorem_zero_lost_reply_retains_two_events(e:clock::stores::Edge,now:int,w:int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+...
+75 |         single(Map::empty(),e,0,w,true,now,Fault::ErrorAfter(1)).outcome.count==1,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

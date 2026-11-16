@@ -1,0 +1,24 @@
+verification results:: 49 verified, 2 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/g-ledger-deletes-named-nodes/20261116T162205Z/models/platform/platform.rs:1499:9
+     |
+1499 |           locked(g_step(s, a, g_as_built())->Some_0),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1504 | /     match a {
+1505 | |         GAction::Begin { c, e, path, probe_ok, class_present } => {
+1506 | |             if guarded(path) {
+1507 | |                 assert(!blind_after(s, e, class_present).contains(e));
+...    |
+1525 | |         _ => {}
+1526 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/g-ledger-deletes-named-nodes/20261116T162205Z/models/platform/platform.rs:1543:12
+     |
+1543 |     assert(s5.g_edges == 0 && s5.g_nodes == 2);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

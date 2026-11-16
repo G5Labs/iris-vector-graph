@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_simple_delete_preserves_snapshot"
+    ],
+    "find": "Payload::Snapshot(r.prior)",
+    "name": "drop-delete-snapshot",
+    "replace": "Payload::Snapshot(None)",
+    "why": "producer snapshot must survive into inverse existence entry"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_simple_delete_preserves_snapshot"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/history_diff/history_diff.rs": "c4df415be363d277dc2225d8e19bad6b2e6e350c5c4f411ae38d11c837068d72",
+    ".g5/Verus_verification/models/history_diff/model.json": "34e5d4f154161baaa80dbbc003807ebb10ec255cd232e4343fd0b3da03568d20"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_diff/controls/drop-delete-snapshot/20261116T161305Z/models/history_diff/history_diff.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_simple_delete_preserves_snapshot": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_diff/20261116T161305Z-control-drop-delete-snapshot-theorem_simple_delete_preserves_snapshot.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_diff/20261116T161305Z-control-drop-delete-snapshot.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/history_diff/20261116T161307Z-control-drop-delete-snapshot/logs/20261116T161305Z-control-drop-delete-snapshot-theorem_simple_delete_preserves_snapshot.log": "d6e3d4402c12ba1b3442392c7294361a85dae8e57088c1ee3f6fadd40acac1fc",
+    ".g5/Verus_verification/results/history_diff/20261116T161307Z-control-drop-delete-snapshot/logs/20261116T161305Z-control-drop-delete-snapshot.log": "d21ad88d4a60a868102bdd997937fa7ff3bbd3fe1460f4a8fd0470cb35d6779a"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

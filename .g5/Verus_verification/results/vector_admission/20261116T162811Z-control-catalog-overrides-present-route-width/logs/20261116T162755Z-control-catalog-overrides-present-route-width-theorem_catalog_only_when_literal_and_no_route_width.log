@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/vector_admission/controls/catalog-overrides-present-route-width/20261116T162755Z/models/vector_admission/vector_admission.rs:499:13
+    |
+498 | pub proof fn theorem_catalog_only_when_literal_and_no_route_width(q:Query,r:Option<Route>,c:catalog::Catalog)
+    | ------------------------------------------------------------------------------------------------------------- at the end of the function body
+499 |     ensures !qliteral(q) || (declared(r).is_some() && declared(r).unwrap()!=0) ==> width_check(q,r,c).1==0,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,48 @@
+verification results:: 179 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_fraction/controls/json-reader-total-zero/20261116T163133Z/models/weighted_fraction/weighted_fraction.rs:736:1
+    |
+736 | pub proof fn theorem_json_answer_commutes(c:Config)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_fraction/controls/json-reader-total-zero/20261116T163133Z/models/weighted_fraction/weighted_fraction.rs:738:13
+    |
+738 |       ensures janswer(c)==option(c,kernel::actual_json_cost(encoded(c))),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+748 | /     match json::step(encoded(c),kt.last()){
+749 | |         json::Event::Returned{state:t,entry:e}=>{
+750 | |             theorem_cap_decode(c);lemma_proof_fuel(c,e.0);theorem_backtrack_commutes(c,t,c.src,json::key(e),e.0+1);
+751 | |             let p=json::backtrack(t,c.src,json::key(e),e.0+1);assert(json::feasible(encoded(c),p));
+...   |
+758 | |         },_=>{},
+759 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_fraction/controls/json-reader-total-zero/20261116T163133Z/models/weighted_fraction/weighted_fraction.rs:740:9
+    |
+740 | /         jresult(c).is_some() ==> feasible(c,jresult(c).unwrap().arcs) && jresult(c).unwrap().costs==weights(c,jresult(c).unwrap()...
+741 | |             && sum(jresult(c).unwrap().costs)==jresult(c).unwrap().total,
+    | |________________________________________________________________________^ failed this postcondition
+...
+748 | /     match json::step(encoded(c),kt.last()){
+749 | |         json::Event::Returned{state:t,entry:e}=>{
+750 | |             theorem_cap_decode(c);lemma_proof_fuel(c,e.0);theorem_backtrack_commutes(c,t,c.src,json::key(e),e.0+1);
+751 | |             let p=json::backtrack(t,c.src,json::key(e),e.0+1);assert(json::feasible(encoded(c),p));
+...   |
+758 | |         },_=>{},
+759 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/weighted_fraction/controls/json-reader-total-zero/20261116T163133Z/models/weighted_fraction/weighted_fraction.rs:912:13
+    |
+911 | pub proof fn theorem_json_reader_raw_fields(c:Config,s:JState,e:JEntry)
+    | ----------------------------------------------------------------------- at the end of the function body
+912 |     ensures jread(c,s,e).total==e.0,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

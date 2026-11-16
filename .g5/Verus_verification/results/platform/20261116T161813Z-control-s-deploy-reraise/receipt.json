@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_deploy_refusal_is_swallowed"
+    ],
+    "find": "    SVariant { serial: false, refuse_explicit_over_marker: false, deploy_refusal_aborts: false, cas: false, cas_raises: false }\n}",
+    "name": "s-deploy-reraise",
+    "replace": "    SVariant { serial: false, refuse_explicit_over_marker: false, deploy_refusal_aborts: true, cas: false, cas_raises: false }\n}",
+    "why": "the deploy's IVGSchemaError re-raised instead of kept as a warning (_engine/schema.py:2591-2594): W-S1b's overwrite no longer happens, so the swallow is decisive for that witness"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_deploy_refusal_is_swallowed"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/s-deploy-reraise/20261116T161748Z/models/platform/platform.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_deploy_refusal_is_swallowed": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161748Z-control-s-deploy-reraise-witness_deploy_refusal_is_swallowed.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161748Z-control-s-deploy-reraise.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261116T161813Z-control-s-deploy-reraise/logs/20261116T161748Z-control-s-deploy-reraise-witness_deploy_refusal_is_swallowed.log": "66c8c2009e44ef7e2b2bc487dd111b5c10d507030b1cb5ff280c36ef98290f76",
+    ".g5/Verus_verification/results/platform/20261116T161813Z-control-s-deploy-reraise/logs/20261116T161748Z-control-s-deploy-reraise.log": "32fadcf343a35b1b358e7abcc66720de17810ef3b6a35d0fc2ce5498b1c0dbde"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

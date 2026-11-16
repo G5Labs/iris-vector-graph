@@ -1,0 +1,33 @@
+verification results:: 36 verified, 5 errors
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/no-marker/20261116T161355Z/models/ledger_redaction/redaction.rs:862:24
+    |
+862 |                 assert(marker_names_started_run(s2)) by {
+    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/no-marker/20261116T161355Z/models/ledger_redaction/redaction.rs:1113:12
+     |
+1113 |     assert(s3.marker == Some(ta()));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/no-marker/20261116T161355Z/models/ledger_redaction/redaction.rs:1157:12
+     |
+1157 |     assert(s4.marker == Some(ta()) && ta() != tb()) by { assert(ta().m[0] != tb().m[0]); }
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/no-marker/20261116T161355Z/models/ledger_redaction/redaction.rs:1238:12
+     |
+1238 |     assert(s2.runs[1].cursor == s2.recs.len() && s2.marker == Some(ta()));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/no-marker/20261116T161355Z/models/ledger_redaction/redaction.rs:1276:12
+     |
+1276 |     assert(s3.recs[0] == tomb(node_rec(a1), 0) && s3.marker == Some(ta()) && s3.runs[1].done);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors
+

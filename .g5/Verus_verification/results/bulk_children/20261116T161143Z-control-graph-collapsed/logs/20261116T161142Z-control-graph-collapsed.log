@@ -1,0 +1,60 @@
+verification results:: 28 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/graph-collapsed/20261116T161142Z/models/bulk_children/bulk_children.rs:186:1
+    |
+186 | pub proof fn theorem_other_graph_frame(s:Store,r:Input,n:Node,k:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/graph-collapsed/20261116T161142Z/models/bulk_children/bulk_children.rs:188:13
+    |
+186 | pub proof fn theorem_other_graph_frame(s:Store,r:Input,n:Node,k:int)
+    | -------------------------------------------------------------------- at the end of the function body
+187 |     requires n.0!=r.graph,
+188 |     ensures run(s,seq![r],no_fault(),false).store.parents.contains(n)==s.parents.contains(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/graph-collapsed/20261116T161142Z/models/bulk_children/bulk_children.rs:189:9
+    |
+186 | pub proof fn theorem_other_graph_frame(s:Store,r:Input,n:Node,k:int)
+    | -------------------------------------------------------------------- at the end of the function body
+...
+189 |         run(s,seq![r],no_fault(),false).store.labels.contains((n,k))==s.labels.contains((n,k)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/graph-collapsed/20261116T161142Z/models/bulk_children/bulk_children.rs:191:41
+    |
+191 |         s.props.contains_key((n,k)) ==> run(s,seq![r],no_fault(),false).store.props[(n,k)]==s.props[(n,k)],
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/graph-collapsed/20261116T161142Z/models/bulk_children/bulk_children.rs:206:1
+    |
+206 | pub proof fn theorem_node_graph_key_wins(r:Input,g:int,keyword:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/graph-collapsed/20261116T161142Z/models/bulk_children/bulk_children.rs:207:13
+    |
+206 | pub proof fn theorem_node_graph_key_wins(r:Input,g:int,keyword:int)
+    | ------------------------------------------------------------------- at the end of the function body
+207 |     ensures node(prepare(r,GraphKey::Name(g),keyword)).0==g,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/graph-collapsed/20261116T161142Z/models/bulk_children/bulk_children.rs:209:9
+    |
+206 | pub proof fn theorem_node_graph_key_wins(r:Input,g:int,keyword:int)
+    | ------------------------------------------------------------------- at the end of the function body
+...
+209 |         node(prepare(r,GraphKey::Absent,keyword)).0==keyword,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

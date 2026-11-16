@@ -1,0 +1,114 @@
+verification results:: 101 verified, 12 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:1489:1
+     |
+1489 | pub proof fn lemma_step_stats(s: St, a: Action, v: Variant)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:1545:17
+     |
+1011 |         a.tout == b.tout,
+     |         ---------------- failed precondition
+...
+1545 |                 lemma_exact_frame(sn, snap(s2));
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:1565:17
+     |
+1011 |         a.tout == b.tout,
+     |         ---------------- failed precondition
+...
+1565 |                 lemma_exact_frame(snap(s), snap(s2));
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:1938:12
+     |
+1938 |     assert(s1.tout == s0.tout && s1.rows == s0.rows && s1.txn == s0.txn);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:1963:12
+     |
+1963 |     assert(s1.tout =~= Map::<Coord, int>::empty());
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:1979:12
+     |
+1979 |     assert(s1.tout =~= Map::<Coord, int>::empty());
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:1995:12
+     |
+1995 |     assert(s3.tout =~= Map::<Coord, int>::empty());
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:2012:12
+     |
+2012 |     assert(s1.tout == s0.tout && s1.cnt == s0.cnt && s1.sum == s0.sum && s1.bucket == s0.bucket && s1.purged == s0.purged);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:2040:9
+     |
+2036 | pub proof fn lemma_refused_commit_restores_journaled(s: St, ops: Seq<LOp>, blocked: bool, v: Variant)
+     | ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+2040 |         commit(s, ops, blocked, v).0.tout == s.tout,
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:2072:12
+     |
+2072 |     assert(s3.tout =~= Map::<Coord, int>::empty());
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:2272:9
+     |
+2272 |           rows_ok(step(s, a, v)),
+     |           ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2276 | /     match a {
+2277 | |         Action::Write { c, w, attrs, mode, f } => {
+2278 | |             lemma_write_rows(s, c, w, attrs, mode, f, v);
+2279 | |             lemma_write_shape(s, c, w, attrs, mode, f, v);
+...    |
+2341 | |         },
+2342 | |     }
+     | |_____- at the end of the function body
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:2948:9
+     |
+2948 |           fwd_ok(step(s, a, v)),
+     |           ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2952 | /     match a {
+2953 | |         Action::Write { c, w, attrs, mode, f } => {
+2954 | |             lemma_write_fwd(s, c, w, attrs, mode, f, v);
+2955 | |             lemma_write_shape(s, c, w, attrs, mode, f, v);
+...    |
+3050 | |         _ => {},
+3051 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:3558:12
+     |
+3558 |     assert(s4.tout == s1.tout);
+     |            ^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-raw-edges/20261116T162428Z/models/temporal/temporal.rs:3583:12
+     |
+3583 |     assert(s4.tout == s1.tout && s4.bucket == s1.bucket && s4.cnt == s1.cnt && s4.sum == s1.sum && s4.purged == s1.purged);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 13 previous errors
+

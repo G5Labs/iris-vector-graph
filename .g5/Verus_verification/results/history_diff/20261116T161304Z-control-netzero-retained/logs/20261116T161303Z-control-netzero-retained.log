@@ -1,0 +1,25 @@
+verification results:: 10 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_diff/controls/netzero-retained/20261116T161303Z/models/history_diff/history_diff.rs:80:13
+   |
+78 |   pub proof fn theorem_raw_history_endpoints(s:Entity,ops:Seq<Op>)
+   |   ---------------------------------------------------------------- at the end of the function body
+79 |       requires s.exists,attrs_only(ops),ops.len()>0,
+80 |       ensures ({let out=continuous(s,empty(),ops);let es=finish(out.1);
+   |  _____________^
+81 | |         if s.value==out.0.value {es.len()==0}
+82 | |         else {es==seq![Entry{attr:true,before:val(s.value),after:val(out.0.value)}]}}),
+   | |______________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_diff/controls/netzero-retained/20261116T161303Z/models/history_diff/history_diff.rs:101:13
+    |
+100 |   pub proof fn theorem_continuous_net_zero(v:int)
+    |   ----------------------------------------------- at the end of the function body
+101 |       ensures ({let s=Entity{exists:true,value:Some(v)};let (_,r)=writer(s,1,Op::Set(v));
+    |  _____________^
+102 | |         finish(track(empty(),r)).len()==0}),
+    | |___________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

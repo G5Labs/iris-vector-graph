@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bolt_stream/controls/positive-pull-slice-lost/20261116T161112Z/models/bolt_stream/bolt_stream.rs:424:13
+    |
+422 | pub proof fn theorem_positive_pull_is_prefix(s:Session,rows:Rows,n:int)
+    | ----------------------------------------------------------------------- at the end of the function body
+423 |     requires s.pending==Some(rows),0<n<rows.len(),
+424 |     ensures record_rows(pull(s,n).out)==rows.take(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

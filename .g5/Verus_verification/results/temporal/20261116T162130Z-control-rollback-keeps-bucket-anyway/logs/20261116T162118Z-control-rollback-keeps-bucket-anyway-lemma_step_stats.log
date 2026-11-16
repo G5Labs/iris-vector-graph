@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:1489:1
+     |
+1489 | pub proof fn lemma_step_stats(s: St, a: Action, v: Variant)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:1545:17
+     |
+1014 |         a.bucket == b.bucket,
+     |         -------------------- failed precondition
+...
+1545 |                 lemma_exact_frame(sn, snap(s2));
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs:1565:17
+     |
+1014 |         a.bucket == b.bucket,
+     |         -------------------- failed precondition
+...
+1565 |                 lemma_exact_frame(snap(s), snap(s2));
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors
+

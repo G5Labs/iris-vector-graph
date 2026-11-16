@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/embedded_no_data/controls/inline-none-not-folded/20261116T161205Z/models/embedded_no_data/embedded_no_data.rs:121:13
+    |
+114 | pub proof fn theorem_no_data_is_empty(verb: Verb, inline: bool, first: R, second: R, third: R)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+...
+121 |     ensures execute(verb, inline, first, second, third) == (Res::Done { rs: false, rowcount: 0 }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

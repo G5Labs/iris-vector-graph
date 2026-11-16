@@ -1,0 +1,15 @@
+verification results:: 49 verified, 2 errors
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/r-no-readback-check/20261116T162804Z/models/platform/platform.rs:2800:12
+     |
+2800 |     assert(readback(s12, s12.runs[1], p_repaired()) is None);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/r-no-readback-check/20261116T162804Z/models/platform/platform.rs:2981:78
+     |
+2981 |             assert forall|k: nat| #[trigger] s2.runs.contains_key(k) implies q_run_ok(s2.runs[k]) by {
+     |                                                                              ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

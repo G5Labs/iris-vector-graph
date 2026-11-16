@@ -1,0 +1,20 @@
+verification results:: 9 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fusion_ranking/controls/empty-mode-lost/20261116T161254Z/models/fusion_ranking/fusion_ranking.rs:73:9
+   |
+71 | pub proof fn theorem_vector_failure_dropped_text_failure_raises(xs:Seq<Row>)
+   | ---------------------------------------------------------------------------- at the end of the function body
+72 |     ensures collect(Provider::Raises,Provider::Rows(xs)).error==false,
+73 |         collect(Provider::Raises,Provider::Rows(xs)).modes==seq![1],
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/fusion_ranking/controls/empty-mode-lost/20261116T161254Z/models/fusion_ranking/fusion_ranking.rs:77:13
+   |
+76 | pub proof fn theorem_empty_success_is_a_retained_leg()
+   | ------------------------------------------------------ at the end of the function body
+77 |     ensures collect(Provider::Rows(seq![]),Provider::NotRequested).modes==seq![0],
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

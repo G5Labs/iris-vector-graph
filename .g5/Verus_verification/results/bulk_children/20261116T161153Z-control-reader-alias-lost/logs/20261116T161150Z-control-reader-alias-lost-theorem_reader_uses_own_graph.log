@@ -1,0 +1,24 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/reader-alias-lost/20261116T161150Z/models/bulk_children/bulk_children.rs:268:13
+    |
+268 |     ensures read(s,n,seq![k]).props[alias(k)]==s.props[(n,k)],read(s,n,seq![k]).present,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/reader-alias-lost/20261116T161150Z/models/bulk_children/bulk_children.rs:268:13
+    |
+266 | pub proof fn theorem_reader_uses_own_graph(s:Store,n:Node,k:int)
+    | ---------------------------------------------------------------- at the end of the function body
+267 |     requires s.props.contains_key((n,k)),
+268 |     ensures read(s,n,seq![k]).props[alias(k)]==s.props[(n,k)],read(s,n,seq![k]).present,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

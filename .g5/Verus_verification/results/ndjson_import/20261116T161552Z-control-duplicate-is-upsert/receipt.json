@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_new_vs_duplicate"
+    ],
+    "find": "if s.props.contains_key(id) { s.props } else { s.props.insert(id,value) }",
+    "name": "duplicate-is-upsert",
+    "replace": "s.props.insert(id,value)",
+    "why": "duplicate lines overwrite existing node properties"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_new_vs_duplicate"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ndjson_import/model.json": "4a61162edf36cef0555b58805d066bee27744eebf46adea9a49c7a33acda8bd9",
+    ".g5/Verus_verification/models/ndjson_import/ndjson_import.rs": "13b271835ec609f11372f795bf35a898d8ea5afa6d54074a4d796e0ce7e14020"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_import/controls/duplicate-is-upsert/20261116T161550Z/models/ndjson_import/ndjson_import.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_new_vs_duplicate": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_import/20261116T161550Z-control-duplicate-is-upsert-theorem_new_vs_duplicate.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_import/20261116T161550Z-control-duplicate-is-upsert.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ndjson_import/20261116T161552Z-control-duplicate-is-upsert/logs/20261116T161550Z-control-duplicate-is-upsert-theorem_new_vs_duplicate.log": "393653b780a882e764dcae9bfc7ec48e9f094b6a968333d7921f916d3c6a115b",
+    ".g5/Verus_verification/results/ndjson_import/20261116T161552Z-control-duplicate-is-upsert/logs/20261116T161550Z-control-duplicate-is-upsert.log": "2f21612c391019ee5347421523b836cbf50cfb735f99606de39149afa7d71110"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

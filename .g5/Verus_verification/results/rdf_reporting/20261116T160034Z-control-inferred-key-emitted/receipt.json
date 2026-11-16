@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "lemma_inferred_quals_empty"
+    ],
+    "find": "if es[0].key==t(\"inferred\"){seq![]}else",
+    "name": "inferred-key-emitted",
+    "replace": "if false{seq![]}else"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_inferred_quals_empty"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "70eb4f615b746ea00e6b944d61f57c1900467e5158f67353782ce8fee7906550"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-key-emitted/20261116T160025Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_inferred_quals_empty": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/20261116T160025Z-control-inferred-key-emitted-lemma_inferred_quals_empty.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/20261116T160025Z-control-inferred-key-emitted.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T160034Z-control-inferred-key-emitted/logs/20261116T160025Z-control-inferred-key-emitted-lemma_inferred_quals_empty.log": "0014207f401b538e08cda667ac23fe9e5f04e8d946a48e66eb5ade2481c673b1",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T160034Z-control-inferred-key-emitted/logs/20261116T160025Z-control-inferred-key-emitted.log": "50bc1596ecbb1f1e67618a95153b7d393b690a399d7d38e49c904343d13b6d9a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

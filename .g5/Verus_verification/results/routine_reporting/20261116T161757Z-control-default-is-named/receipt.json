@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_default_null_empty_named"
+    ],
+    "find": "pub open spec fn gid(g:Option<nat>)->nat {g.unwrap_or(0)}",
+    "name": "default-is-named",
+    "replace": "pub open spec fn gid(g:Option<nat>)->nat {g.unwrap_or(1)}",
+    "role": "source-facing census/selection/reader rule"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_default_null_empty_named"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/routine_reporting/model.json": "476529fece46dfdfebe64114446c9966bf6a4a68c3e07594a5e880e8c7618bac",
+    ".g5/Verus_verification/models/routine_reporting/routine_reporting.rs": "224e16eede8fda124658933601d304ffe1a0a2ce92edfc802e5c612cebfa4a8d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/controls/default-is-named/20261116T161755Z/models/routine_reporting/routine_reporting.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_default_null_empty_named": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/20261116T161755Z-control-default-is-named-theorem_default_null_empty_named.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/routine_reporting/20261116T161755Z-control-default-is-named.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/routine_reporting/20261116T161757Z-control-default-is-named/logs/20261116T161755Z-control-default-is-named-theorem_default_null_empty_named.log": "b7f25696816e54ca906e67c80c8b3ecdd28f9ddc43d75e335bba323bcb94e716",
+    ".g5/Verus_verification/results/routine_reporting/20261116T161757Z-control-default-is-named/logs/20261116T161755Z-control-default-is-named.log": "8edf69a71db7c4c4da948ad2f394a1c6566d5ae0e9c171a4e38651d4fafedfdb"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

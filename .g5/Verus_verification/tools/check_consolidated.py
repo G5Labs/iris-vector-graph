@@ -128,6 +128,10 @@ def run_tool(label: str, cmd: list[str]) -> None:
         ok(f"{label}: {' | '.join(tail)[:220]}")
 
 
+# Registers whose entries the 2026-11-15 findings audit moved to its review record (crosswalk canonical_path).
+ARCHIVES = {"bugs_issues.md": ["audits/register-20261115/bugs-review.md"]}
+
+
 def anchors(text: str) -> set[str]:
     return set(re.findall(r'<a id="([^"]+)"></a>', text))
 
@@ -136,11 +140,15 @@ def check_ratchet() -> None:
     for name in REGISTERS:
         old = anchors(git("show", f"{G_TIP}:.g5/Verus_verification/{name}"))
         new = anchors((V / name).read_text())
-        lost = sorted(old - new)
+        archived = set()
+        for arch in ARCHIVES.get(name, []):
+            archived |= anchors((V / arch).read_text())
+        lost = sorted(old - new - archived)
         if lost:
             fail(f"{name}: {len(lost)} entry IDs from 24c6b0c0 are gone: {lost[:10]}")
         else:
-            ok(f"{name}: all {len(old)} entry IDs from 24c6b0c0 are still anchors ({len(new)} now)")
+            moved = len((old - new) & archived)
+            ok(f"{name}: all {len(old)} entry IDs from 24c6b0c0 still resolve ({len(new)} live anchors; {moved} in the 2026-11-15 audit archive)")
 
 
 def ontology_ids() -> set[str]:
@@ -195,7 +203,13 @@ def check_register_crosswalks() -> None:
             k = (r["source_arm"], r["source_id"])
             seen[k] = seen.get(k, 0) + 1
         dup = [k for k, n in seen.items() if n > 1]
-        bad_c = sorted({r["canonical_id"] for r in rows if r["canonical_id"] not in reg_anchors})
+        arch_anchors = {a: anchors((V / a).read_text()) for a in ARCHIVES.get(reg, [])}
+        def resolves(r):
+            cp = r.get("canonical_path", "").removeprefix(".g5/Verus_verification/")
+            if cp in arch_anchors:
+                return r["canonical_id"] in arch_anchors[cp]
+            return r["canonical_id"] in reg_anchors
+        bad_c = sorted({r["canonical_id"] for r in rows if not resolves(r)})
         canon = {r["canonical_id"] for r in rows}
         orphan = sorted(reg_anchors - canon)
         for msg, items in (("source IDs listed more than once", dup), (f"canonical IDs that are not anchors of {reg}", bad_c),

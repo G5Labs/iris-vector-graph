@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_cut_scan"
+    ],
+    "find": "                    Some(m) => if d < m.1 { Some((tok, d)) } else { s.min },",
+    "name": "cutoff-ties-to-last",
+    "replace": "                    Some(m) => if d <= m.1 { Some((tok, d)) } else { s.min },",
+    "why": "tMinDf updated on <= instead of <: a tie keeps the last term in query order, not the first (FR-044-C2)"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_cut_scan"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/cutoff-ties-to-last/20261116T162114Z/models/search/search.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_cut_scan": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162114Z-control-cutoff-ties-to-last-lemma_cut_scan.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162114Z-control-cutoff-ties-to-last.log",
+    "timed_out": false,
+    "verified": 55
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261116T162132Z-control-cutoff-ties-to-last/logs/20261116T162114Z-control-cutoff-ties-to-last-lemma_cut_scan.log": "0d4f52d892c1264655a6f4954a79456da715f9a234084acfa4a6b9c572706bf1",
+    ".g5/Verus_verification/results/search/20261116T162132Z-control-cutoff-ties-to-last/logs/20261116T162114Z-control-cutoff-ties-to-last.log": "57daa2c8e7d5588945efc0385fa53057a77dffd3dc8e18b50dc298dea4d3e50a"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,27 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/full-page-no-confirming-read/20261116T161232Z/models/communities/communities.rs:567:1
+    |
+567 | pub proof fn theorem_full_final_page_requires_empty_page(x:Node,full:Map<Node,bool>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/full-page-no-confirming-read/20261116T161232Z/models/communities/communities.rs:568:13
+    |
+567 | pub proof fn theorem_full_final_page_requires_empty_page(x:Node,full:Map<Node,bool>)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+568 |     ensures page(seq![x],1).next==Some(x),native_pages(seq![x],full,1,0,None).native_calls==2,page(seq![],1).next==None,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/communities/controls/full-page-no-confirming-read/20261116T161232Z/models/communities/communities.rs:568:43
+    |
+567 | pub proof fn theorem_full_final_page_requires_empty_page(x:Node,full:Map<Node,bool>)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+568 |     ensures page(seq![x],1).next==Some(x),native_pages(seq![x],full,1,0,None).native_calls==2,page(seq![],1).next==None,
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

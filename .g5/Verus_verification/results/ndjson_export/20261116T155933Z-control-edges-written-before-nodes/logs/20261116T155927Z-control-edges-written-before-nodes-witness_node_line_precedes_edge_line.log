@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/edges-written-before-nodes/20261116T155927Z/models/ndjson_export/ndjson_export.rs:302:61
+    |
+302 | pub proof fn witness_node_line_precedes_edge_line() ensures ({let f=export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![EdgeRow{graph:0,serial:0,source:0,predicate:0,target:0,raw:None}]);is_node(f.lines[0])&&is_edge(f.lines[1])}), {...
+    | ---------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 1 previous error
+

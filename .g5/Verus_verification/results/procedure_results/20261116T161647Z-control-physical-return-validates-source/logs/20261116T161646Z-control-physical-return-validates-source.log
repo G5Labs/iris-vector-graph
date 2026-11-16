@@ -1,0 +1,22 @@
+verification results:: 17 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/controls/physical-return-validates-source/20261116T161646Z/models/procedure_results/procedure_results.rs:131:13
+    |
+129 |   pub proof fn theorem_wrong_source_empty_vs_nonempty(alias:Seq<char>,src:Seq<char>,rows:Seq<int>)
+    |   ------------------------------------------------------------------------------------------------ at the end of the function body
+130 |       requires src!=physical(),rows.len()>0,
+131 |       ensures consume(rows,Query{source:src,..simple(alias,Condition::All,true)})==
+    |  _____________^
+132 | |         (if alias==physical(){Outcome::Rows{column:physical(),values:rows}}else{Outcome::Refused}),
+    | |__________________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/controls/physical-return-validates-source/20261116T161646Z/models/procedure_results/procedure_results.rs:136:13
+    |
+135 | pub proof fn theorem_physical_return_bypasses_source_check(rows:Seq<int>,src:Seq<char>)
+    | --------------------------------------------------------------------------------------- at the end of the function body
+136 |     ensures consume(rows,Query{source:src,..simple(physical(),Condition::All,true)})==(Outcome::Rows{column:physical(),values:rows}),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/upgrade-writer-ignores-flag/20261116T162641Z/models/search/search.rs:1787:9
+     |
+1782 | pub proof fn theorem_writers_refused_while_upgrading(s: USys, d: Doc, bag: Map<Term, int>, dlen: int)
+     | ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+1787 |         ustep(s, UAct::Insert { d, bag, dlen }, upgrade_as_built()) is None,
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

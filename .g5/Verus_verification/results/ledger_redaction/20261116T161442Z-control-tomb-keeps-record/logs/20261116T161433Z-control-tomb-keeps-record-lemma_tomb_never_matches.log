@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/tomb-keeps-record/20261116T161433Z/models/ledger_redaction/redaction.rs:312:9
+    |
+310 | pub proof fn lemma_tomb_never_matches(l: Live, pos: nat, t: Target, k: Know)
+    | ---------------------------------------------------------------------------- at the end of the function body
+311 |     ensures
+312 |         matches(tomb(l, pos), t, k) == Tri::No,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

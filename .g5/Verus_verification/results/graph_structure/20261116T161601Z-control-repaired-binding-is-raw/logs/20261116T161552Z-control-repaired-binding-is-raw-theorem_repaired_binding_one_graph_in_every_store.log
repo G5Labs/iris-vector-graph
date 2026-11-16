@@ -1,0 +1,33 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/repaired-binding-is-raw/20261116T161552Z/models/graph_structure/graph_structure.rs:490:1
+    |
+490 | pub proof fn theorem_repaired_binding_one_graph_in_every_store(n1: Name, n2: Name)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/repaired-binding-is-raw/20261116T161552Z/models/graph_structure/graph_structure.rs:495:9
+    |
+495 |           binding_ok(n1, sql_gid_repaired(n1)),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+501 | /     if sql_gid_repaired(n1) == sql_gid_repaired(n2) {
+502 | |         theorem_key_is_function_of_graph(n1, n2);
+503 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/repaired-binding-is-raw/20261116T161552Z/models/graph_structure/graph_structure.rs:496:9
+    |
+496 |           (for_index(n1) == for_index(n2)) == (sql_gid_repaired(n1) == sql_gid_repaired(n2)),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+501 | /     if sql_gid_repaired(n1) == sql_gid_repaired(n2) {
+502 | |         theorem_key_is_function_of_graph(n1, n2);
+503 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

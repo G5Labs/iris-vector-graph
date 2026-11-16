@@ -1,0 +1,35 @@
+verification results:: 47 verified, 4 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-stamp-check/20261116T162350Z/models/platform/platform.rs:1921:9
+     |
+1918 |   pub proof fn lemma_for_hit_checks(s: PSt, rr: Run)
+     |   -------------------------------------------------- at the end of the function body
+...
+1921 | /         ({
+1922 | |             let out = for_check(s, rr, p_as_built());
+1923 | |             let h = hash_of(rr.shape);
+1924 | |             out.gen is Some ==> {
+...    |
+1932 | |         }),
+     | |__________^ failed this postcondition
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-stamp-check/20261116T162350Z/models/platform/platform.rs:2149:78
+     |
+2149 |             assert forall|k: nat| #[trigger] s2.runs.contains_key(k) implies run_ok(s2, s2.runs[k]) by {
+     |                                                                              ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-stamp-check/20261116T162350Z/models/platform/platform.rs:2511:12
+     |
+2511 |     assert(s11.runs[1].phase == RPhase::Write1);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/p-no-stamp-check/20261116T162350Z/models/platform/platform.rs:2940:78
+     |
+2940 |             assert forall|k: nat| #[trigger] s2.runs.contains_key(k) implies q_run_ok(s2.runs[k]) by {
+     |                                                                              ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

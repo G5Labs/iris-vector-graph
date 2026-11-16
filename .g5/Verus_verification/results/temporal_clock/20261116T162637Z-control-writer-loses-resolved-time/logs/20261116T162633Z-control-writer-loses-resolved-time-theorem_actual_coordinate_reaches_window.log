@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/writer-loses-resolved-time/20261116T162633Z/models/temporal_clock/temporal_clock.rs:161:1
+    |
+161 | pub proof fn theorem_actual_coordinate_reaches_window(s:stores::Global,e:stores::Edge,n:int,route:Route,now:int,w:int,reverse:bool,lo:int,hi:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/writer-loses-resolved-time/20261116T162633Z/models/temporal_clock/temporal_clock.rs:163:13
+    |
+161 | pub proof fn theorem_actual_coordinate_reaches_window(s:stores::Global,e:stores::Edge,n:int,route:Route,now:int,w:int,reverse:bool,lo:int,hi:int)
+    | ------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+162 |     requires !s.contains_key(stores::out(at(e,coordinate(n,route,now)))),lo<=coordinate(n,route,now)<=hi,
+163 |     ensures observe(write(s,e,n,route,now,true,w,reverse),e,coordinate(n,route,now),e.0,lo,hi,false,stores::paging::plain(None))==Some(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/writer-loses-resolved-time/20261116T162633Z/models/temporal_clock/temporal_clock.rs:164:9
+    |
+161 | pub proof fn theorem_actual_coordinate_reaches_window(s:stores::Global,e:stores::Edge,n:int,route:Route,now:int,w:int,reverse:bool,lo:int,hi:int)
+    | ------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+164 |         reverse ==> observe(write(s,e,n,route,now,true,w,reverse),e,coordinate(n,route,now),e.0,lo,hi,true,stores::paging::plain(None))==Some(w),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

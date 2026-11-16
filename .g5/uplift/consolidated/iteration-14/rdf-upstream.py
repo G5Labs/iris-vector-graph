@@ -1,6 +1,6 @@
 import json,os,socket,sys
 from pathlib import Path
-R=Path(__file__).resolve().parents[4];P=Path('/Users/ziniuw/runs/ivg-consolidated-20261114/pin');sys.path.insert(0,str(P));C=[]
+R=Path(__file__).resolve().parents[4];P=Path(os.environ.get('IVG_PIN_DIR','/Users/ziniuw/runs/ivg-consolidated-20261114/pin'));sys.path.insert(0,str(P));C=[]
 def denied(*a,**k):C.append('socket');raise AssertionError('RDF unit replay forbids sockets')
 socket.socket.connect=denied;socket.create_connection=denied
 import pytest

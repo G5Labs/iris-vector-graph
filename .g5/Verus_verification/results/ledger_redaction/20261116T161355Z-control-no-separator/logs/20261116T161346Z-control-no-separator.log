@@ -1,0 +1,24 @@
+verification results:: 38 verified, 3 errors
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/no-separator/20261116T161346Z/models/ledger_redaction/redaction.rs:57:12
+   |
+57 |     assert(match_string(prefix, sep) == m);
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/no-separator/20261116T161346Z/models/ledger_redaction/redaction.rs:73:9
+   |
+67 | pub proof fn lemma_match_string_not_doubled(prefix: Id, sep: Id)
+   | ---------------------------------------------------------------- at the end of the function body
+...
+73 |         match_string(prefix + sep, sep) == match_string(prefix, sep),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/no-separator/20261116T161346Z/models/ledger_redaction/redaction.rs:89:12
+   |
+89 |     assert(match_string(acme, bar) =~= seq!['a', 'c', 'm', 'e', '|']);
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/commit-ignores-marker/20261116T161508Z/models/ledger_redaction/redaction.rs:1586:13
+     |
+1583 |   pub proof fn lemma_commit_admits_matches_outcome(s: St, new: Seq<Live>, key: Option<int>, fp: int, max_ops: nat)
+     |   ---------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+1586 |       ensures ({
+     |  _____________^
+1587 | |         let blocked = match s.marker {
+1588 | |             Some(t) => exists|j: int| 0 <= j < new.len() && matches(Rec::Live(#[trigger] new[j]), t, K()) == Tri::Yes,
+1589 | |             None => false,
+...    |
+1597 | |         writes(commit_outcome(c)) == commit_admits(s, new, key, true)
+1598 | |     }),
+     | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

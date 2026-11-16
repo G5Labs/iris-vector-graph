@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_step_stats",
+      "witness_counters_undone_keep_exact"
+    ],
+    "find": "            bucket: if v.incr_undone { sn.bucket } else { restore_j(s.bucket, sn.jbucket) },",
+    "name": "rollback-keeps-bucket-anyway",
+    "replace": "            bucket: if v.incr_undone { s.bucket } else { restore_j(s.bucket, sn.jbucket) },",
+    "why": "P-INCR control: if TROLLBACK leaves ^KG(\"bucket\") even in the counters-undone variant, the refused changeset is no longer exact \u2014 the F3 violation rests on $Increment surviving rollback"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_step_stats",
+      "witness_counters_undone_keep_exact"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/rollback-keeps-bucket-anyway/20261116T162118Z/models/temporal/temporal.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_step_stats": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162118Z-control-rollback-keeps-bucket-anyway-lemma_step_stats.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_counters_undone_keep_exact": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162118Z-control-rollback-keeps-bucket-anyway-witness_counters_undone_keep_exact.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162118Z-control-rollback-keeps-bucket-anyway.log",
+    "timed_out": false,
+    "verified": 109
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261116T162130Z-control-rollback-keeps-bucket-anyway/logs/20261116T162118Z-control-rollback-keeps-bucket-anyway-lemma_step_stats.log": "a509c10787f37acbec643480d807534ad735288349d70a354811de8d71e610d8",
+    ".g5/Verus_verification/results/temporal/20261116T162130Z-control-rollback-keeps-bucket-anyway/logs/20261116T162118Z-control-rollback-keeps-bucket-anyway-witness_counters_undone_keep_exact.log": "5567e45d4210955d463a54fa4084e8ba588c087a07ecb474933cde4fcbe67992",
+    ".g5/Verus_verification/results/temporal/20261116T162130Z-control-rollback-keeps-bucket-anyway/logs/20261116T162118Z-control-rollback-keeps-bucket-anyway.log": "24478b0b6e61f43e7ae6ec3b0a7922c81909290866ad85634c6b7e3357968cc8"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

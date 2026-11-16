@@ -1,0 +1,27 @@
+verification results:: 55 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/batch-validation-bypassed/20261116T162641Z/models/temporal_clock/temporal_clock.rs:90:1
+   |
+90 | pub proof fn theorem_batch_validation_precedes_any_write(s:stores::Global,es:Seq<Request>,available:bool,clocks:Seq<int>,i:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/batch-validation-bypassed/20261116T162641Z/models/temporal_clock/temporal_clock.rs:92:13
+   |
+90 | pub proof fn theorem_batch_validation_precedes_any_write(s:stores::Global,es:Seq<Request>,available:bool,clocks:Seq<int>,i:int)
+   | ------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+91 |     requires 0<=i<es.len(),bulk_payload(es[i].short,es[i].long,es[i].shape_ok).is_none(),
+92 |     ensures call_batch(s,es,available,clocks,true).state==s,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/batch-validation-bypassed/20261116T162641Z/models/temporal_clock/temporal_clock.rs:93:9
+   |
+90 | pub proof fn theorem_batch_validation_precedes_any_write(s:stores::Global,es:Seq<Request>,available:bool,clocks:Seq<int>,i:int)
+   | ------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+93 |         !call_batch(s,es,available,clocks,true).accepted,call_batch(s,es,available,clocks,true).count==0,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

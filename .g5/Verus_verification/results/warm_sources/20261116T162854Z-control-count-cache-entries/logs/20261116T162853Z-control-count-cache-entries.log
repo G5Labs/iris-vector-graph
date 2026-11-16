@@ -1,0 +1,36 @@
+verification results:: 5 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/warm_sources/controls/count-cache-entries/20261116T162853Z/models/warm_sources/warm_sources.rs:23:1
+   |
+23 | pub proof fn theorem_global_source_fills_without_sql(s: Source,v: int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/warm_sources/controls/count-cache-entries/20261116T162853Z/models/warm_sources/warm_sources.rs:25:13
+   |
+23 | pub proof fn theorem_global_source_fills_without_sql(s: Source,v: int)
+   | ---------------------------------------------------------------------- at the end of the function body
+24 |     requires s.probe,!s.no_lock,s.gen_before==s.gen_store,s.gen_after==s.gen_before,
+25 |     ensures filled(seq![s])==1, all_warm(stamp(seq![s],v,v),v),
+   |             ^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/warm_sources/controls/count-cache-entries/20261116T162853Z/models/warm_sources/warm_sources.rs:25:33
+   |
+23 | pub proof fn theorem_global_source_fills_without_sql(s: Source,v: int)
+   | ---------------------------------------------------------------------- at the end of the function body
+24 |     requires s.probe,!s.no_lock,s.gen_before==s.gen_store,s.gen_after==s.gen_before,
+25 |     ensures filled(seq![s])==1, all_warm(stamp(seq![s],v,v),v),
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/warm_sources/controls/count-cache-entries/20261116T162853Z/models/warm_sources/warm_sources.rs:44:25
+   |
+42 | pub proof fn theorem_count_sources_not_entries(s: Source)
+   | --------------------------------------------------------- at the end of the function body
+43 |     requires s.probe,!s.no_lock,s.gen_before==s.gen_store,s.gen_after==s.gen_before,s.predicates>0,
+44 |     ensures stores(s)>1,filled(seq![s])==1,
+   |                         ^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

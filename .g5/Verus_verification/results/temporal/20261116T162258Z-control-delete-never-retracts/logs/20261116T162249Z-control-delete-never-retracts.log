@@ -1,0 +1,21 @@
+verification results:: 110 verified, 3 errors
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/delete-never-retracts/20261116T162249Z/models/temporal/temporal.rs:2178:87
+     |
+2178 | ...key(t) && s2.rows[t] implies has_ts(s2.tout, t) || s2.optout.contains((t.g, t.p)) by {
+     |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/delete-never-retracts/20261116T162249Z/models/temporal/temporal.rs:2620:12
+     |
+2620 |     assert(!sd.rows.contains_key(t));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/delete-never-retracts/20261116T162249Z/models/temporal/temporal.rs:3200:12
+     |
+3200 |     assert(s2 =~= delete_temporal(s, c).0);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

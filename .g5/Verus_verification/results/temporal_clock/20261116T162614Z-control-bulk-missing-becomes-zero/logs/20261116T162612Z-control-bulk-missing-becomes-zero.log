@@ -1,0 +1,50 @@
+verification results:: 54 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261116T162612Z/models/temporal_clock/temporal_clock.rs:108:1
+    |
+108 | pub proof fn theorem_bulk_missing_null_empty_refuse(shape:bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261116T162612Z/models/temporal_clock/temporal_clock.rs:109:13
+    |
+108 | pub proof fn theorem_bulk_missing_null_empty_refuse(shape:bool)
+    | --------------------------------------------------------------- at the end of the function body
+109 |     ensures bulk_payload(Raw::Missing,Raw::Missing,shape)==None,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261116T162612Z/models/temporal_clock/temporal_clock.rs:110:9
+    |
+108 | pub proof fn theorem_bulk_missing_null_empty_refuse(shape:bool)
+    | --------------------------------------------------------------- at the end of the function body
+109 |     ensures bulk_payload(Raw::Missing,Raw::Missing,shape)==None,
+110 |         bulk_payload(Raw::Null,Raw::Missing,shape)==None,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261116T162612Z/models/temporal_clock/temporal_clock.rs:156:1
+    |
+156 | pub proof fn theorem_invalid_input_refuses_before_write(s:stores::Global,e:stores::Edge,now:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261116T162612Z/models/temporal_clock/temporal_clock.rs:158:9
+    |
+156 | pub proof fn theorem_invalid_input_refuses_before_write(s:stores::Global,e:stores::Edge,now:int)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+157 |     ensures call_single(s,e,Raw::Bad,now,true,1,true).state==s,
+158 |         call_bulk(s,e,Raw::Missing,Raw::Missing,true,false,now,true,1,true).state==s,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_clock/controls/bulk-missing-becomes-zero/20261116T162612Z/models/temporal_clock/temporal_clock.rs:159:9
+    |
+156 | pub proof fn theorem_invalid_input_refuses_before_write(s:stores::Global,e:stores::Edge,now:int)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+159 |         !call_bulk(s,e,Raw::Missing,Raw::Missing,true,false,now,true,1,true).accepted,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

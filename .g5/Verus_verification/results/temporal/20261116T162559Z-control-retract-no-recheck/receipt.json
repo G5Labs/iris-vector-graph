@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_recheck_closes_race_row_at_decide",
+      "witness_recheck_closes_race_rowless_route",
+      "witness_recheck_closes_delete_race"
+    ],
+    "find": "                && (!v.race_recheck || still_doomed(s, pl, t)))), |t: Triple| s.rows[t]),",
+    "name": "retract-no-recheck",
+    "replace": "                )), |t: Triple| s.rows[t]),",
+    "why": "bug-tmp-011 repair without its retract-time re-test of survivors: RACE-1, the rowless route and RACE-3 are open again"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_recheck_closes_race_row_at_decide",
+      "witness_recheck_closes_race_rowless_route",
+      "witness_recheck_closes_delete_race"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal/model.json": "a2ba250d11e1dc3815d7cc4767c9ab1414f0ea91abea1f07f6e6768b666b7426",
+    ".g5/Verus_verification/models/temporal/temporal.rs": "9bade6a42c06775640604bf1c3cd7d9ad940878c784ee4fee5fde0ea6576b950"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/retract-no-recheck/20261116T162546Z/models/temporal/temporal.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_recheck_closes_delete_race": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162546Z-control-retract-no-recheck-witness_recheck_closes_delete_race.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_recheck_closes_race_row_at_decide": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162546Z-control-retract-no-recheck-witness_recheck_closes_race_row_at_decide.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_recheck_closes_race_rowless_route": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162546Z-control-retract-no-recheck-witness_recheck_closes_race_rowless_route.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/20261116T162546Z-control-retract-no-recheck.log",
+    "timed_out": false,
+    "verified": 110
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal/20261116T162559Z-control-retract-no-recheck/logs/20261116T162546Z-control-retract-no-recheck-witness_recheck_closes_delete_race.log": "8c62ccbd188e3804ca3d4c5f9e70eebf8c12e2b19928d8d2db87e2796cff9acd",
+    ".g5/Verus_verification/results/temporal/20261116T162559Z-control-retract-no-recheck/logs/20261116T162546Z-control-retract-no-recheck-witness_recheck_closes_race_row_at_decide.log": "e0de56ad90ac479cdf4075ddae80b44225af1734da0a933b9c4288e323469b5e",
+    ".g5/Verus_verification/results/temporal/20261116T162559Z-control-retract-no-recheck/logs/20261116T162546Z-control-retract-no-recheck-witness_recheck_closes_race_rowless_route.log": "4b489e7c9aa22a5ed6705e00a7e53473f29f29ce44756fecc9f00ac04f614afe",
+    ".g5/Verus_verification/results/temporal/20261116T162559Z-control-retract-no-recheck/logs/20261116T162546Z-control-retract-no-recheck.log": "400c7311780a0eae661b7a2d57b1ff31082d9b3f430dcfa9661b86a6d320c56b"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

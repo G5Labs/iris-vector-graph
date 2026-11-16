@@ -1,0 +1,12 @@
+verification results:: 13 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/snapshot_routes/controls/failed-record-still-updates/20261116T162014Z/models/snapshot_routes/snapshot_routes.rs:94:9
+   |
+91 | pub proof fn theorem_index_result_and_failed_record(s:State,key:(int,int),t:int,w:int,engine:int,build:bool)
+   | ------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+94 |         prepare(s,key,t,Width::Present(w),engine,build,false,1).registry[key].indexed==s.registry[key].indexed,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

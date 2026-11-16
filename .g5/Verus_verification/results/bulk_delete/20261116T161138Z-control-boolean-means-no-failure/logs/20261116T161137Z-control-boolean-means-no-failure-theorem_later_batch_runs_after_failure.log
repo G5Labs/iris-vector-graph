@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_delete/controls/boolean-means-no-failure/20261116T161137Z/models/bulk_delete/bulk_delete.rs:52:13
+   |
+51 |   pub proof fn theorem_later_batch_runs_after_failure()
+   |   ----------------------------------------------------- at the end of the function body
+52 |       ensures ({let r=run(map![1=>(),2=>()],seq![Input::Id(1),Input::Id(2)],1,set![1]);
+   |  _____________^
+53 | |         r.live==map![1=>()] && r.deleted==1 && r.failed==1 && as_int(r)==1 && as_bool(r)}),
+   | |__________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

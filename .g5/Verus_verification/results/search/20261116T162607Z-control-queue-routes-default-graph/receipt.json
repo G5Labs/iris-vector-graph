@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_queue_default_graph_misroutes",
+      "witness_queue_writes_into_claimed_table"
+    ],
+    "find": "    let target = if g == default_graph() { Some(legacy()) } else { route_table(s.reg, g, c) };",
+    "name": "queue-routes-default-graph",
+    "replace": "    let target = route_table(s.reg, g, c);",
+    "why": "The IRIS worker routes default-graph entries like named ones (RouteTable): the F8 witnesses no longer write into kg_NodeEmbeddings"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_queue_default_graph_misroutes",
+      "witness_queue_writes_into_claimed_table"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/queue-routes-default-graph/20261116T162549Z/models/search/search.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_queue_default_graph_misroutes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162549Z-control-queue-routes-default-graph-witness_queue_default_graph_misroutes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_queue_writes_into_claimed_table": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162549Z-control-queue-routes-default-graph-witness_queue_writes_into_claimed_table.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162549Z-control-queue-routes-default-graph.log",
+    "timed_out": false,
+    "verified": 54
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261116T162607Z-control-queue-routes-default-graph/logs/20261116T162549Z-control-queue-routes-default-graph-witness_queue_default_graph_misroutes.log": "9332d4fb3a48866a777a32a4701b938c099f011428180de589d1422d0b9368db",
+    ".g5/Verus_verification/results/search/20261116T162607Z-control-queue-routes-default-graph/logs/20261116T162549Z-control-queue-routes-default-graph-witness_queue_writes_into_claimed_table.log": "55809c037cd9bc4c406943ef47aa47cf3635c35ca196619b72646727d767cfd0",
+    ".g5/Verus_verification/results/search/20261116T162607Z-control-queue-routes-default-graph/logs/20261116T162549Z-control-queue-routes-default-graph.log": "c40bcecf2b56141dc00dfb935c0129ab75170a5a2ec36c874f00246744d57052"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

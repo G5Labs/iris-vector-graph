@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/aggregate_results/controls/avg-denominator-not-contributors/20261116T160953Z/models/aggregate_results/aggregate_results.rs:157:10
+    |
+155 | pub proof fn theorem_mean_is_not_sum(q:Query,k:Key,g:nat)
+    | --------------------------------------------------------- at the end of the function body
+156 |  requires q.graph==None,!q.grouped,k==Key::Global,!q.distinct,
+157 |  ensures ({let a=fold(seq![Row{graph:g,key:k,value:Val::I(1),entity:None},Row{graph:g,key:k,value:Val::I(2),entity:None}],q,k);avg(a).unwrap().numerator==6&&avg(a).unwrap().denominator==4}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

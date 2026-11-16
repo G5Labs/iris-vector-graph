@@ -1,0 +1,26 @@
+verification results:: 18 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/controls/empty-validates-expression/20261116T161637Z/models/procedure_results/procedure_results.rs:115:1
+    |
+115 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/controls/empty-validates-expression/20261116T161637Z/models/procedure_results/procedure_results.rs:116:13
+    |
+115 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+    | ----------------------------------------------------------------------- at the end of the function body
+116 |     ensures consume(seq![],simple(alias,Condition::Unsupported,true))==(Outcome::Rows{column:alias,values:seq![]}),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/procedure_results/controls/empty-validates-expression/20261116T161637Z/models/procedure_results/procedure_results.rs:117:9
+    |
+115 | pub proof fn theorem_empty_skips_expression_validation(alias:Seq<char>)
+    | ----------------------------------------------------------------------- at the end of the function body
+116 |     ensures consume(seq![],simple(alias,Condition::Unsupported,true))==(Outcome::Rows{column:alias,values:seq![]}),
+117 |         consume(seq![],simple(alias,Condition::MissingParam,true))==(Outcome::Rows{column:alias,values:seq![]}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

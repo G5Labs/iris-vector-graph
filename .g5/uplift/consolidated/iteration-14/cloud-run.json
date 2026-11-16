@@ -1,0 +1,44 @@
+{
+  "session": "cloud continuation 2026-11-16",
+  "start_tag": "cloud-uplift-start-20261116",
+  "start_commit": "f32c1c4ba88f1a627ef4641d72a4971059e864f4",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "harness": "$G5_HARNESS (run copy)",
+  "guidance_sha256": {
+    "AGENTS.md": "f771605fa065cd777c3192ff1359ef136fa77d58abc46fcc699148c5dcd3cb7a",
+    "guidance/Verus/uplift-iteration.md": "af3f5f7200a0e8ebd5bb9e014b4f651c259a5bebad2924a37a039ad5b8acc7ed",
+    "guidance/Verus/uplift-scoring.md": "f67cb9089aa6c8b03a56de79102908b5f3906a0391d74e6557456882da7328ec",
+    "guidance/Verus/uplift.md": "959656b52fb031116031057efdd0c1dd4a1df46ead1e33bc14877343ed7b35f7",
+    "guidance/Verus/setup_foundation.md": "5113691d48422a638b4fbad6d33f872bc9a5576697f24b1ee18240271bd636eb",
+    "guidance/TLC/setup_foundation.md": "7d7d1af71aa48b1727bfd937f201e0c9ca9dd38edd4a46670bd755878bf78c23",
+    "guidance/Verus/verification-playbook.txt": "665edc91f1bc8de442c5b2b35316f967ab32182cdf3cf8295714df865e4d3f4b",
+    "guidance/scripts/check_ontology.py": "e2e4adb6b0c6324dd1d9c145f0e76a6c9eb4b2f430fee6a3d1d4e5cac8fd3d54",
+    "guidance/scripts/check_findings.py": "b237dd9b006b56a75ea6e3c748e2f3856b127a16b9090743ecde507acbefb68b"
+  },
+  "verus": {
+    "version": "0.2026.10.04.426d8b0",
+    "platform": "linux_x86_64",
+    "toolchain": "1.98.1-x86_64-unknown-linux-gnu",
+    "binary": "~/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus"
+  },
+  "python": {
+    "interpreter": "CPython 3.11.18 (uv-managed)",
+    "environment": "uv sync --frozen --all-extras from the pin export (uv 0.13.8)",
+    "rdflib": "7.6.0"
+  },
+  "run_dir": "experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116 (outside the repository)",
+  "native_fixture": {
+    "container": "ivg-cloud-20261116-iris",
+    "hostname": "ivg-cloud-iris",
+    "port": "127.0.0.1:36116",
+    "image": "iris-community:2026.1 sha256:546fe52b9e68ed810ac848faec1ffe230b84ba4e66ac15fb8e76dfa0f3a24fdf",
+    "first_used": "iteration 15"
+  },
+  "path_adaptations": [
+    "rdf-upstream.py reads IVG_PIN_DIR",
+    "check_consolidated.py run with G5_GUIDE=$G5_HARNESS/guidance"
+  ],
+  "private_evaluator_inputs_read": false,
+  "interrupted_unassessed_inputs_opened": false,
+  "remote_publication": false
+}

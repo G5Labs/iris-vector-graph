@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/repair-insert-ignores-build/20261116T161949Z/models/search/search.rs:851:9
+    |
+851 |           winv(wstep(s, a, locked_build())->Some_0),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+855 | /     match a {
+856 | |         WAct::InsBegin { d, bag, dlen } => {
+857 | |             let r = s2.run->Some_0;
+858 | |             assert(s2.ix == stage(r));
+...   |
+902 | |         WAct::Drop => {},
+903 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

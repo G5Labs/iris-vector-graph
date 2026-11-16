@@ -1,0 +1,55 @@
+{
+  "control": {
+    "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut",
+    "expect_fail_in": [
+      "witness_named_edge_not_written"
+    ],
+    "find": "selected_edge(e:EdgeRow)->bool{e.graph==0&&!qualifier::marked(e.raw)}",
+    "name": "edge-census-all-graphs",
+    "replace": "selected_edge(e:EdgeRow)->bool{!qualifier::marked(e.raw)}"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_named_edge_not_written"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/ndjson_export/model.json": "aa2eb689af59adfdbc0c9cd59cfe8b27a8de38f897eba95e0b427af82ca0aa4d",
+    ".g5/Verus_verification/models/ndjson_export/ndjson_export.rs": "a3f696010e22734402713ce5fe30f2b3535b25e51002aa9ae8fa170c9cc73937",
+    ".g5/Verus_verification/models/ndjson_export/order.rs": "7079380793d0bc39b79e3ce624f2d1f9aa893804e8b448031d77804ea1326334",
+    ".g5/Verus_verification/models/ndjson_export/qualifier.rs": "362c631e64d47ef2374a42bf2c6199970497468cdb2df24b967b71198b66d742",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/controls/edge-census-all-graphs/20261116T155906Z/models/ndjson_export/ndjson_export.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_named_edge_not_written": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/20261116T155906Z-control-edge-census-all-graphs-witness_named_edge_not_written.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ndjson_export/20261116T155906Z-control-edge-census-all-graphs.log",
+    "timed_out": false,
+    "verified": 143
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ndjson_export/20261116T155911Z-control-edge-census-all-graphs/logs/20261116T155906Z-control-edge-census-all-graphs-witness_named_edge_not_written.log": "c744163e098ea29bbdde56c77cb08745400f491097c8fe6bec54d28e05b93dd5",
+    ".g5/Verus_verification/results/ndjson_export/20261116T155911Z-control-edge-census-all-graphs/logs/20261116T155906Z-control-edge-census-all-graphs.log": "95ed24e3e728317efb817c93cfe173600fc299972b247c2abb57d56ce5316aac"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

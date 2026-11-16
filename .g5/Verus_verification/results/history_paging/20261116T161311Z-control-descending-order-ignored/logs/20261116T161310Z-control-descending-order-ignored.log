@@ -1,0 +1,58 @@
+verification results:: 17 verified, 3 errors
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/descending-order-ignored/20261116T161310Z/models/history_paging/history_paging.rs:91:63
+   |
+91 |     ensures forall|i:int| 0<=i<ordered(t,p).len() ==> matches(t.rows[ordered(t,p)[i]],p,t.collation),
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/descending-order-ignored/20261116T161310Z/models/history_paging/history_paging.rs:95:66
+   |
+95 |     assert forall|i:int| 0<=i<ordered(t,p).len() implies matches(t.rows[ordered(t,p)[i]],p,t.collation) by {
+   |                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/descending-order-ignored/20261116T161310Z/models/history_paging/history_paging.rs:96:73
+   |
+96 |         let id=ordered(t,p)[i];assert(ordered(t,p).contains(id));assert(ids.contains(id));
+   |                                                                         ^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/descending-order-ignored/20261116T161310Z/models/history_paging/history_paging.rs:101:1
+    |
+101 | pub proof fn theorem_order_is_derived(t:Table,p:Params)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/descending-order-ignored/20261116T161310Z/models/history_paging/history_paging.rs:102:13
+    |
+101 | pub proof fn theorem_order_is_derived(t:Table,p:Params)
+    | ------------------------------------------------------- at the end of the function body
+102 |     ensures sorted_by(ordered(t,p),less(p.descending)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/descending-order-ignored/20261116T161310Z/models/history_paging/history_paging.rs:103:9
+    |
+101 | pub proof fn theorem_order_is_derived(t:Table,p:Params)
+    | ------------------------------------------------------- at the end of the function body
+102 |     ensures sorted_by(ordered(t,p),less(p.descending)),
+103 |         admitted(t,p).to_multiset()==ordered(t,p).to_multiset(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/history_paging/controls/descending-order-ignored/20261116T161310Z/models/history_paging/history_paging.rs:153:16
+    |
+153 |         assert(ids.contains(id));let j=choose|j:int| 0<=j<ids.len() && ids[j]==id;
+    |                ^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

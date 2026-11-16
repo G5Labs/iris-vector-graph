@@ -1,0 +1,12 @@
+verification results:: 17 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/service_health/controls/schema-case-sensitive/20261116T161956Z/models/service_health/service_health.rs:116:13
+    |
+116 |     ensures main_request(s,p).response.status==Status::Ok,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+117 | {
+118 |     assert(upper(upper(name)) =~= upper(name)) by {
+    |     ------ at the end of the function body
+
+error: aborting due to 1 previous error
+

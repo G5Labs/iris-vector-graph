@@ -1,0 +1,59 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_existing_value_wins",
+      "theorem_repeated_id_first_property_wins"
+    ],
+    "find": "if old.contains_key(k) {old[k]} else {p[k.1]}",
+    "name": "existing-values-overwritten",
+    "replace": "if k.0==node(r) && p.contains_key(k.1) {p[k.1]} else {old[k]}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_existing_value_wins",
+      "theorem_repeated_id_first_property_wins"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/bulk_children/model.json": "e7c7b7caa5f1bca34d53ef20a1119181fb993cf18b79c54f503f71b83653855b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/controls/existing-values-overwritten/20261116T161137Z/models/bulk_children/bulk_children.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_existing_value_wins": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/20261116T161137Z-control-existing-values-overwritten-theorem_existing_value_wins.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_repeated_id_first_property_wins": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/20261116T161137Z-control-existing-values-overwritten-theorem_repeated_id_first_property_wins.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bulk_children/20261116T161137Z-control-existing-values-overwritten.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_children/20261116T161140Z-control-existing-values-overwritten/logs/20261116T161137Z-control-existing-values-overwritten-theorem_existing_value_wins.log": "f66ff7f657b0b735ee7f8460f16a93b28a582f7c3d7b21ff95c74e7acabc3864",
+    ".g5/Verus_verification/results/bulk_children/20261116T161140Z-control-existing-values-overwritten/logs/20261116T161137Z-control-existing-values-overwritten-theorem_repeated_id_first_property_wins.log": "45b80befbd88c5e9ecf96f341e96b5b9a5a6bb49d310eb231784ddf41b27afcf",
+    ".g5/Verus_verification/results/bulk_children/20261116T161140Z-control-existing-values-overwritten/logs/20261116T161137Z-control-existing-values-overwritten.log": "577ac7c665c8db8dd3dfa9db8d7d2d89528758b68c33134fad1eae86763c3c95"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

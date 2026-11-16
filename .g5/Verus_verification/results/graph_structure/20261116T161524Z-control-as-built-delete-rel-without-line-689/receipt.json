@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_ledger_delete_rel_drops_survivor_indexed"
+    ],
+    "find": "    if present(t1) { remove(t1) } else { t1 }\n}",
+    "name": "as-built-delete-rel-without-line-689",
+    "replace": "    t1\n}",
+    "why": "Attribution: drop only LedgerApply.cls:689 from the as-built transcription; the F3 witness on the indexed path must then fail"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_ledger_delete_rel_drops_survivor_indexed"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/graph_structure/graph_structure.rs": "bda2567865779c90aa5ef3e84b2e77baf1d7468d3404c7ded9f2e30395ff6481",
+    ".g5/Verus_verification/models/graph_structure/model.json": "f4be757a33fc5a88a8752327e47764b36086a4cb6c3767144a721bd035b9cdfa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/as-built-delete-rel-without-line-689/20261116T161517Z/models/graph_structure/graph_structure.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_ledger_delete_rel_drops_survivor_indexed": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/20261116T161517Z-control-as-built-delete-rel-without-line-689-witness_ledger_delete_rel_drops_survivor_indexed.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/20261116T161517Z-control-as-built-delete-rel-without-line-689.log",
+    "timed_out": false,
+    "verified": 64
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/graph_structure/20261116T161524Z-control-as-built-delete-rel-without-line-689/logs/20261116T161517Z-control-as-built-delete-rel-without-line-689-witness_ledger_delete_rel_drops_survivor_indexed.log": "35d7de5405e826b8c0ecc1ea8833d8ffe83b488de7c89796b2f813c99dc223ed",
+    ".g5/Verus_verification/results/graph_structure/20261116T161524Z-control-as-built-delete-rel-without-line-689/logs/20261116T161517Z-control-as-built-delete-rel-without-line-689.log": "1d25ccbd53e6d5fdbf48717ab1fd8b37d9afab557d6351f5a5a89e1de6433012"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

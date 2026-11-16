@@ -1,0 +1,43 @@
+verification results:: 48 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-only-envelope-dropped/20261116T160018Z/models/rdf_reporting/rdf_reporting.rs:179:1
+    |
+179 | pub proof fn theorem_original_object_decides_envelope(e:Edge,rs:Rows,c:Config,pos:nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-only-envelope-dropped/20261116T160018Z/models/rdf_reporting/rdf_reporting.rs:181:10
+    |
+179 | pub proof fn theorem_original_object_decides_envelope(e:Edge,rs:Rows,c:Config,pos:nat)
+    | -------------------------------------------------------------------------------------- at the end of the function body
+180 |  requires edge_selected(e,rs,c),decode(e.qualifiers).len()>0
+181 |  ensures emit_edge(e,rs,pos,c).contains(envelope(e,pos,c)[0])
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-only-envelope-dropped/20261116T160018Z/models/rdf_reporting/rdf_reporting.rs:182:27
+    |
+182 | {reveal(emit_edge);assert(emit_edge(e,rs,pos,c)[1]==envelope(e,pos,c)[0]);}
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-only-envelope-dropped/20261116T160018Z/models/rdf_reporting/rdf_reporting.rs:182:27
+    |
+182 | {reveal(emit_edge);assert(emit_edge(e,rs,pos,c)[1]==envelope(e,pos,c)[0]);}
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-only-envelope-dropped/20261116T160018Z/models/rdf_reporting/rdf_reporting.rs:254:10
+    |
+252 | pub proof fn theorem_inferred_only_still_has_envelope(e:Edge,rs:Rows,c:Config,pos:nat)
+    | -------------------------------------------------------------------------------------- at the end of the function body
+253 |  requires edge_selected(e,rs,c),decode(e.qualifiers).len()>0,forall|i:int|0<=i<deco...
+254 |  ensures emit_edge(e,rs,pos,c).len()==5
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/freshness_stamp/controls/unset-stamp-reads-zero/20261116T161242Z/models/freshness_stamp/freshness_stamp.rs:73:13
+   |
+72 | pub proof fn theorem_is_current_iff_stamped_equal(s: Val, t: Val)
+   | ----------------------------------------------------------------- at the end of the function body
+73 |     ensures is_current(s, t) <==> (s is Int && s->0 == token(t)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

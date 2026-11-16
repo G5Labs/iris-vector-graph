@@ -1,0 +1,36 @@
+verification results:: 109 verified, 4 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/retract-ignores-marker-at-effect/20261116T162450Z/models/temporal/temporal.rs:2399:9
+     |
+2399 |           !s.rows[t] ==> step(s, a, v).rows.contains_key(t),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+2402 | /     match a {
+2403 | |         Action::Write { c, w, attrs, mode, f } => { lemma_write_shape(s, c, w, attrs, mode, f, v); },
+2404 | |         Action::Delete { c } => {
+2405 | |             if s.tout.contains_key(c) {
+...    |
+2421 | |         _ => {},
+2422 | |     }
+     | |_____- at the end of the function body
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/retract-ignores-marker-at-effect/20261116T162450Z/models/temporal/temporal.rs:3168:12
+     |
+3168 |     assert(s2.rows == rows1);
+     |            ^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/retract-ignores-marker-at-effect/20261116T162450Z/models/temporal/temporal.rs:3195:20
+     |
+3195 |             assert(s2.rows =~= r.rows);
+     |                    ^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal/controls/retract-ignores-marker-at-effect/20261116T162450Z/models/temporal/temporal.rs:3295:12
+     |
+3295 |     assert(s3.rows.contains_key(t) && !s3.rows[t]);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

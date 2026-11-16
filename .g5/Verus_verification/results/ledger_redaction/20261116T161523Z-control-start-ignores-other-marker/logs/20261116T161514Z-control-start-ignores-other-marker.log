@@ -1,0 +1,18 @@
+verification results:: 40 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/ledger_redaction/controls/start-ignores-other-marker/20261116T161514Z/models/ledger_redaction/redaction.rs:820:9
+    |
+820 |           inv(step(s, a, as_built())->Some_0),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+824 | /     match a {
+825 | |         Action::Commit { recs, key, adds } => {
+826 | |             lemma_commit_preserves(s, recs, key, adds);
+827 | |         },
+...   |
+944 | |         Action::Enable => {},
+945 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

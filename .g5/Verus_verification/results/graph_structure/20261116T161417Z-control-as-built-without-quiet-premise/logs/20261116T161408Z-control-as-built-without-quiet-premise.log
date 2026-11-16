@@ -1,0 +1,34 @@
+verification results:: 65 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/as-built-without-quiet-premise/20261116T161408Z/models/graph_structure/graph_structure.rs:1103:1
+     |
+1103 | pub proof fn lemma_killcommitted(s: DS, v: DV, clears_nolock: bool)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/as-built-without-quiet-premise/20261116T161408Z/models/graph_structure/graph_structure.rs:1119:72
+     |
+1119 |           assert forall|r: nat| #[trigger] s2.rs.contains_key(r) implies {
+     |  ________________________________________________________________________^
+1120 | |             let rd = s2.rs[r];
+1121 | |             &&& le(v, rd.tepoch, rd.tgen, s2.epoch, s2.gen)
+1122 | |             &&& ((rd.pc is Count || rd.pc is Check) && rd.got && same(s2, rd, v) && !s2.nolock ==> no_wrote(s2))
+1123 | |             &&& (rd.pc is Check && rd.got && same(s2, rd, v) && !s2.nolock ==> rd.n == s2.vis)
+1124 | |             &&& (rd.pc is Set && same(s2, rd, v) ==> !s2.nolock && rd.n == s2.vis && no_wrote(s2))
+1125 | |         } by {
+     | |_________^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/as-built-without-quiet-premise/20261116T161408Z/models/graph_structure/graph_structure.rs:1130:20
+     |
+1130 |             assert(!same(s2, rd, v));
+     |                    ^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/as-built-without-quiet-premise/20261116T161408Z/models/graph_structure/graph_structure.rs:1464:12
+     |
+1464 |     assert(dstep(s1, DA::KillCommitted { clears_nolock: false }, v) is None);
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

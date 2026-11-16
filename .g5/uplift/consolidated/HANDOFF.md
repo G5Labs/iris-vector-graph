@@ -1,4 +1,6 @@
-Latest checkpoint: [iteration 11](iteration-11/HANDOFF.md), continuing into iteration 12.
+**Current pointer (cloud continuation, 2026-11-16).** Iteration: 14 sealed, 15 in progress. Latest seal: the clean tip with subject `Seal iteration 14: RDF and full-record NDJSON export` — [iteration 14 handoff](iteration-14/HANDOFF.md): both export packages accepted on Linux, four export owners now state their cases, reach 249 → 254 of 4,130 (5 new, 3 strengthened, 0 lost). Cost: builder wall clock only (tokens/currency unavailable). Next missing role: the ADR-0009 temporal-origin marker row read by NDJSON, RDF and Cypher (producer `AssertTemporalRow` and the Cypher `properties(r)` reader are unbound). Convergence: not established.
+
+Older pointer, superseded: [iteration 11](iteration-11/HANDOFF.md), continuing into iteration 12.
 
 # IVG consolidated uplift — handoff
 

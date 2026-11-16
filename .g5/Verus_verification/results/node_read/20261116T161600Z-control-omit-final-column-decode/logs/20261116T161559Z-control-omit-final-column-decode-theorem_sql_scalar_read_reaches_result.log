@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/node_read/controls/omit-final-column-decode/20261116T161559Z/models/node_read/node_read.rs:75:1
+   |
+75 | pub proof fn theorem_sql_scalar_read_reaches_result(n: int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/node_read/controls/omit-final-column-decode/20261116T161559Z/models/node_read/node_read.rs:77:13
+   |
+75 | pub proof fn theorem_sql_scalar_read_reaches_result(n: int)
+   | ----------------------------------------------------------- at the end of the function body
+76 |     requires in64(n),
+77 |     ensures finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Integer(n))))==Cell::Decoded(Value::Integer(n)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/node_read/controls/omit-final-column-decode/20261116T161559Z/models/node_read/node_read.rs:78:9
+   |
+75 | pub proof fn theorem_sql_scalar_read_reaches_result(n: int)
+   | ----------------------------------------------------------- at the end of the function body
+...
+78 |         finish_scalar(Expr::Property(0),set![0],cy_typed(write(Input::Double(n))))==Cell::Decoded(Value::Double(n)),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

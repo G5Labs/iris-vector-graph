@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/put-keyed-ignores-other-rows/20261116T161502Z/models/graph_structure/graph_structure.rs:1859:32
+     |
+1859 |         let a = choose|a: int| rows.contains(a);
+     |                                ^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/put-keyed-ignores-other-rows/20261116T161502Z/models/graph_structure/graph_structure.rs:1868:16
+     |
+1868 |         assert(put_keyed(t, rows2, e) == Tri { leaf: true, kids: kids2, hash: Some(kids2.len()) });
+     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 1 previous error
+

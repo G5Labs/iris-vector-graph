@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/graph_structure/controls/repaired-delete-rel-keeps-line-689/20261116T161509Z/models/graph_structure/graph_structure.rs:1953:9
+     |
+1953 |           delete_rel_repaired(layout(rows), rows, e, multi, indexed) == layout(rows.remove(e)),
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+1956 | /     if !multi {
+1957 | |         lemma_len1_is_single(rows, e);
+1958 | |         assert(rows.remove(e) =~= Set::<int>::empty());
+1959 | |         assert(present(layout(rows)));
+1960 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

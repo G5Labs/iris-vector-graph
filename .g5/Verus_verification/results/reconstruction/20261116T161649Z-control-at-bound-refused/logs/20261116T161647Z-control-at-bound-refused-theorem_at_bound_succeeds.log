@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/reconstruction/controls/at-bound-refused/20261116T161647Z/models/reconstruction/reconstruction.rs:68:13
+   |
+67 | pub proof fn theorem_at_bound_succeeds()
+   | ---------------------------------------- at the end of the function body
+68 |     ensures run(Map::empty(),seq![record(1,Op::Create(false,0,0))],1,Some(1),false)==Some(map![(false,0)=>0]),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

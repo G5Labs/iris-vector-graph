@@ -1,0 +1,78 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_g_step_preserves_inv",
+      "theorem_strict_paths",
+      "witness_user_guide_strict_example",
+      "theorem_strict_blocks_named_graph_redaction"
+    ],
+    "find": "                if seen_strict(s, e, probe_ok, class_present, v) {",
+    "name": "g-no-refusal",
+    "replace": "                if false {",
+    "why": "check_structural_write that never raises (guard.py:75-80): every guarded path writes under strict mode"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_g_step_preserves_inv",
+      "theorem_strict_paths",
+      "witness_user_guide_strict_example",
+      "theorem_strict_blocks_named_graph_redaction"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/platform/model.json": "b9f28717e35a13434e947ab594cfaee5a8fd17f02fd976b73ea05f80ba3cdd13",
+    ".g5/Verus_verification/models/platform/platform.rs": "7596e0664af330b2e7b7d2d658651846a3cdbc86a38bba597977e81b5df57855"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/controls/g-no-refusal/20261116T161929Z/models/platform/platform.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 7,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_g_step_preserves_inv": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161929Z-control-g-no-refusal-lemma_g_step_preserves_inv.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_strict_blocks_named_graph_redaction": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161929Z-control-g-no-refusal-theorem_strict_blocks_named_graph_redaction.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_strict_paths": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161929Z-control-g-no-refusal-theorem_strict_paths.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_user_guide_strict_example": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161929Z-control-g-no-refusal-witness_user_guide_strict_example.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/platform/20261116T161929Z-control-g-no-refusal.log",
+    "timed_out": false,
+    "verified": 44
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/platform/20261116T162000Z-control-g-no-refusal/logs/20261116T161929Z-control-g-no-refusal-lemma_g_step_preserves_inv.log": "1839039901f8cf783c2be15460edd97996b4e52dd476620c37416ed0e82d1a6e",
+    ".g5/Verus_verification/results/platform/20261116T162000Z-control-g-no-refusal/logs/20261116T161929Z-control-g-no-refusal-theorem_strict_blocks_named_graph_redaction.log": "c817b7cf90b89d4f26ed641d9e1813efc2e805f2e8e37b02148543db6b7625c4",
+    ".g5/Verus_verification/results/platform/20261116T162000Z-control-g-no-refusal/logs/20261116T161929Z-control-g-no-refusal-theorem_strict_paths.log": "3a6ddef49e518e093d7ce47d8ab3051092dd4e85de75690b700d525d1754bd1c",
+    ".g5/Verus_verification/results/platform/20261116T162000Z-control-g-no-refusal/logs/20261116T161929Z-control-g-no-refusal-witness_user_guide_strict_example.log": "a0731b8379dabb7c3eb92094ae715fc2546833d26ba9806b26009d746824844f",
+    ".g5/Verus_verification/results/platform/20261116T162000Z-control-g-no-refusal/logs/20261116T161929Z-control-g-no-refusal.log": "d78a5403504535724046f9d4c14b28c9cc0e8704e208d3e054ba667a63dd4ef2"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,27 @@
+verification results:: 49 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/ids-ignored/20261116T155947Z/models/rdf_reporting/rdf_reporting.rs:272:1
+    |
+272 | pub proof fn theorem_outside_requested_ids_emits_nothing(l:Label,e:Edge,rs:Rows,c:Config)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/ids-ignored/20261116T155947Z/models/rdf_reporting/rdf_reporting.rs:274:10
+    |
+272 | pub proof fn theorem_outside_requested_ids_emits_nothing(l:Label,e:Edge,rs:Rows,c:Config)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+273 |  requires c.ids.len()>0,!c.ids.contains(l.s),!c.ids.contains(e.s)
+274 |  ensures emit_label(l,c).len()==0,emit_edge(e,rs,0,c).len()==0
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/ids-ignored/20261116T155947Z/models/rdf_reporting/rdf_reporting.rs:274:35
+    |
+272 | pub proof fn theorem_outside_requested_ids_emits_nothing(l:Label,e:Edge,rs:Rows,c:Config)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+273 |  requires c.ids.len()>0,!c.ids.contains(l.s),!c.ids.contains(e.s)
+274 |  ensures emit_label(l,c).len()==0,emit_edge(e,rs,0,c).len()==0
+    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

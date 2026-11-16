@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_repair_delete_takes_effect",
+      "witness_repair_delete_after_build"
+    ],
+    "find": "pub open spec fn locked_build() -> WVariant { WVariant { build_locked: true, delete_under_lock: true } }",
+    "name": "repair-delete-checks-n-first",
+    "replace": "pub open spec fn locked_build() -> WVariant { WVariant { build_locked: true, delete_under_lock: false } }",
+    "why": "R2-1: with Build and Drop locked but Delete still testing cfg N before the lock (the round-1 repair), a Delete issued during a Build returns 0 and the Build republishes the document"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_repair_delete_takes_effect",
+      "witness_repair_delete_after_build"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/search/model.json": "8db3bb79338259eb0e46b706766413759e6a7e94117d8400928869d49c9c32ad",
+    ".g5/Verus_verification/models/search/search.rs": "b5e41104bb22000bbb8055a2f8626e39812b02e467d6a389e04ae6634df8508f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/controls/repair-delete-checks-n-first/20261116T162939Z/models/search/search.rs --crate-type=lib --num-threads 3 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_repair_delete_takes_effect": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162939Z-control-repair-delete-checks-n-first-theorem_repair_delete_takes_effect.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_repair_delete_after_build": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162939Z-control-repair-delete-checks-n-first-witness_repair_delete_after_build.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/search/20261116T162939Z-control-repair-delete-checks-n-first.log",
+    "timed_out": false,
+    "verified": 54
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/search/20261116T163021Z-control-repair-delete-checks-n-first/logs/20261116T162939Z-control-repair-delete-checks-n-first-theorem_repair_delete_takes_effect.log": "26648eee4ce8b166bef172d85afbfb2c2b02d52d79ec0cfa71e2eac138997cf0",
+    ".g5/Verus_verification/results/search/20261116T163021Z-control-repair-delete-checks-n-first/logs/20261116T162939Z-control-repair-delete-checks-n-first-witness_repair_delete_after_build.log": "949aa9e615468fc6d0a46b2b4065756ce3ecf662d42d262e9c8e4be46556706f",
+    ".g5/Verus_verification/results/search/20261116T163021Z-control-repair-delete-checks-n-first/logs/20261116T162939Z-control-repair-delete-checks-n-first.log": "cbb03ae40a8ad8b58975932096823022ac168ab51a0bda761ca726ca0b59d8a0"
+  },
+  "threads": "3",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
