@@ -1,0 +1,1944 @@
+#!/usr/bin/env python3
+"""
+IRIS Graph Core Engine - Domain-Agnostic Graph Operations
+
+High-performance graph operations extracted from the biomedical implementation.
+Provides vector search, text search, graph traversal, and hybrid fusion capabilities
+that can be used across any domain.
+"""
+
+import contextlib
+import json
+import logging
+import os
+import time
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
+from iris_vector_graph._engine.admin import AdminMixin
+from iris_vector_graph._engine.algorithms import AlgorithmsMixin, check_ppr_args
+from iris_vector_graph._engine.embeddings import EmbeddingsMixin
+from iris_vector_graph._engine.fhir import FhirMixin
+from iris_vector_graph._engine.fhir_graph import FhirGraphMixin
+from iris_vector_graph._engine.ledger import LedgerMixin
+from iris_vector_graph._engine.nodes_edges import NodesEdgesMixin, _BulkLoadSession
+from iris_vector_graph._engine.prov import ProvMixin
+from iris_vector_graph._engine.query import QueryMixin
+from iris_vector_graph._engine.rdf_export import RdfExportMixin
+from iris_vector_graph._engine.schema import SchemaMixin
+from iris_vector_graph._engine.shacl import ShaclMixin
+from iris_vector_graph._engine.snapshot import SnapshotMixin
+from iris_vector_graph._engine.temporal import TemporalMixin
+from iris_vector_graph._engine.vector import VectorMixin
+from iris_vector_graph._validate import (
+    BM25BuildInput,
+    BM25SearchInput,
+    CypherInput,
+    EdgeInput,
+    IVFBuildInput,
+    KHop2Input,
+    NodeIdInput,
+    TemporalEdgeInput,
+    VecSearchInput,
+    VectorSearchInput,
+)
+from iris_vector_graph.capabilities import IRISCapabilities
+from iris_vector_graph.exceptions import ClassesUnreadable
+from iris_vector_graph.constants import BULK_CHUNK_SIZE
+from iris_vector_graph.cypher.parser import parse_query
+from iris_vector_graph.cypher.translator import (
+    _table,
+    translate_to_sql,
+)
+from iris_vector_graph.result import IVGResult
+from iris_vector_graph.schema import GraphSchema, _call_classmethod
+from iris_vector_graph.schema_name import (
+    DEFAULT_SCHEMA,
+    EXEMPT_METHODS,
+    FirstAccessCheck,
+    IVGSchemaError,
+    check_first_access,
+    guarded_connection,
+    is_iris_connection,
+    resolve_schema_name,
+    unwrap_connection,
+)
+from iris_vector_graph.security import validate_table_name, vector_element_type
+from iris_vector_graph.status import (
+    AdjacencyStatus,
+    ArnoStatus,
+    EngineStatus,
+    IndexInventory,
+    ObjectScriptStatus,
+    TableCounts,
+)
+
+logger = logging.getLogger(__name__)
+
+_sentence_transformers = None
+_torch = None
+#: Kept as an alias for anything that imported it from here; the readers are in
+#: ``_engine/nodes_edges.py`` and take it from ``constants``.
+_BULK_CHUNK_SIZE = BULK_CHUNK_SIZE
+
+
+def _get_sentence_transformers():
+    global _sentence_transformers
+    if _sentence_transformers is None:
+        import sentence_transformers as _st
+
+        _sentence_transformers = _st
+    return _sentence_transformers
+
+
+def _get_torch():
+    global _torch
+    if _torch is None:
+        import torch as _t
+
+        _torch = _t
+    return _torch
+
+
+def _load_sentence_transformer(model_name: str):
+    st = _get_sentence_transformers()
+    import warnings as _w
+
+    with _w.catch_warnings():
+        _w.simplefilter("ignore")
+        return st.SentenceTransformer(model_name, local_files_only=False)
+
+
+def _is_sentence_transformer(obj) -> bool:
+    try:
+        st = _get_sentence_transformers()
+        return isinstance(obj, st.SentenceTransformer)
+    except ImportError:
+        return False
+
+
+def _bfs_stream_pages(conn, tag, page_size=500):
+    import json as _j
+
+    cursor_step = ""
+    cursor_o = ""
+    while True:
+        raw = str(
+            _call_classmethod(
+                conn,
+                "Graph.KG.Traversal",
+                "ReadBFSPage",
+                tag,
+                cursor_step,
+                cursor_o,
+                page_size,
+            )
+        )
+        if raw.startswith("SORTED:"):
+            break
+        page = _j.loads(raw)
+        yield from page.get("items", [])
+        if page.get("done"):
+            break
+        next_step = page.get("next_step", -1)
+        if next_step == -1:
+            break
+        cursor_step = str(next_step)
+        cursor_o = page.get("next_o", "")
+
+
+# ── Sub-engine namespaces (spec-arch-2) ────────────────────────────────────
+# Each sub-engine is a thin delegator that groups related methods by domain.
+# All 192 top-level methods remain unchanged — sub-engines are additive only.
+# Callers who only need graph mutations learn `engine.graph.*`; temporal callers
+# learn `engine.temporal.*`. Fixture setup and IDE autocomplete improve because
+# the relevant method surface is 10-30 methods, not 192.
+
+class _GraphSubEngine:
+    """Structural graph mutations and queries."""
+    __slots__ = ("_e",)
+    def __init__(self, e): self._e = e
+    def create_node(self, *a, **kw): return self._e.create_node(*a, **kw)
+    def create_edge(self, *a, **kw): return self._e.create_edge(*a, **kw)
+    def delete_node(self, *a, **kw): return self._e.delete_node(*a, **kw)
+    def delete_nodes_by_prefix(self, *a, **kw): return self._e.delete_nodes_by_prefix(*a, **kw)
+    def delete_edge(self, *a, **kw): return self._e.delete_edge(*a, **kw)
+    def bulk_create_nodes(self, *a, **kw): return self._e.bulk_create_nodes(*a, **kw)
+    def bulk_create_edges(self, *a, **kw): return self._e.bulk_create_edges(*a, **kw)
+    def get_node_count(self, *a, **kw): return self._e.get_node_count(*a, **kw)
+    def get_edge_count(self, *a, **kw): return self._e.get_edge_count(*a, **kw)
+    def get_labels(self, *a, **kw): return self._e.get_labels(*a, **kw)
+    def get_relationship_types(self, *a, **kw): return self._e.get_relationship_types(*a, **kw)
+    def set_multigraph(self, *a, **kw): return self._e.set_multigraph(*a, **kw)
+    def is_multigraph(self, *a, **kw): return self._e.is_multigraph(*a, **kw)
+
+
+class _CypherSubEngine:
+    """Cypher query execution and adjacency index management."""
+    __slots__ = ("_e",)
+    def __init__(self, e): self._e = e
+    def execute_cypher(self, *a, **kw): return self._e.execute_cypher(*a, **kw)
+    # the store's (GraphStore protocol) methods; they forwarded to engine methods of these names, which do not exist
+    # (AttributeError; 4.6.0 R067)
+    def execute_bfs(self, *a, **kw): return self._e._store.execute_bfs(*a, **kw)
+    def execute_knn_vec(self, *a, **kw): return self._e._store.execute_knn_vec(*a, **kw)
+    def sync(self, *a, **kw): return self._e.sync(*a, **kw)
+    def rebuild_nkg(self, *a, **kw): return self._e.rebuild_nkg(*a, **kw)
+    def rebuild_kg(self, *a, **kw): return self._e.rebuild_kg(*a, **kw)
+
+
+class _TemporalSubEngine:
+    """Temporal edge graph — event-time writes and window queries."""
+    __slots__ = ("_e",)
+    def __init__(self, e): self._e = e
+    def create_edge_temporal(self, *a, **kw): return self._e.create_edge_temporal(*a, **kw)
+    def delete_edge_temporal(self, *a, **kw): return self._e.delete_edge_temporal(*a, **kw)
+    def bulk_create_edges_temporal(self, *a, **kw): return self._e.bulk_create_edges_temporal(*a, **kw)
+    def get_edges_in_window(self, *a, **kw): return self._e.get_edges_in_window(*a, **kw)
+    def iter_edges_in_window(self, *a, **kw): return self._e.iter_edges_in_window(*a, **kw)
+    def get_latest_edges(self, *a, **kw): return self._e.get_latest_edges(*a, **kw)
+    def rebuild_temporal_latest(self, *a, **kw): return self._e.rebuild_temporal_latest(*a, **kw)
+    def get_edge_velocity(self, *a, **kw): return self._e.get_edge_velocity(*a, **kw)
+    def find_burst_nodes(self, *a, **kw): return self._e.find_burst_nodes(*a, **kw)
+    def get_edge_attrs(self, *a, **kw): return self._e.get_edge_attrs(*a, **kw)
+    def get_temporal_aggregate(self, *a, **kw): return self._e.get_temporal_aggregate(*a, **kw)
+    def get_bucket_groups(self, *a, **kw): return self._e.get_bucket_groups(*a, **kw)
+    def get_bucket_group_targets(self, *a, **kw): return self._e.get_bucket_group_targets(*a, **kw)
+    def purge_raw_before(self, *a, **kw): return self._e.purge_raw_before(*a, **kw)
+    def erase_bare_nodes(self, *a, **kw): return self._e.erase_bare_nodes(*a, **kw)
+    def set_temporal_structural(self, *a, **kw): return self._e.set_temporal_structural(*a, **kw)
+    def get_temporal_structural(self, *a, **kw): return self._e.get_temporal_structural(*a, **kw)
+    def list_temporal_structural_opt_outs(self, *a, **kw): return self._e.list_temporal_structural_opt_outs(*a, **kw)
+    def drop_temporal_structural_rows(self, *a, **kw): return self._e.drop_temporal_structural_rows(*a, **kw)
+    def backfill_temporal_structural_rows(self, *a, **kw): return self._e.backfill_temporal_structural_rows(*a, **kw)
+
+
+class _AlgorithmsSubEngine:
+    """Graph algorithms — centrality, community detection, ranking."""
+    __slots__ = ("_e",)
+    def __init__(self, e): self._e = e
+    def degree_centrality(self, *a, **kw): return self._e.degree_centrality(*a, **kw)
+    def betweenness_centrality(self, *a, **kw): return self._e.betweenness_centrality(*a, **kw)
+    def closeness_centrality(self, *a, **kw): return self._e.closeness_centrality(*a, **kw)
+    def eigenvector_centrality(self, *a, **kw): return self._e.eigenvector_centrality(*a, **kw)
+    def leiden_communities(self, *a, **kw): return self._e.leiden_communities(*a, **kw)
+    # these five forwarded to engine methods of their own names, which do not exist (AttributeError; 4.6.0 R065)
+    def pagerank(self, *a, **kw): return self._e.kg_PAGERANK(*a, **kw)
+    def execute_wcc(self, *a, **kw): return self._e.kg_WCC(*a, **kw)
+    def execute_scc(self, *a, **kw): return self._e.strongly_connected_components(*a, **kw)
+    def execute_k_core(self, *a, **kw): return self._e.k_core(*a, **kw)
+    def execute_triangle_count(self, *a, **kw): return self._e.triangle_count(*a, **kw)
+
+
+class _EngineNative:
+    """A connection stand-in whose ``iris`` is the engine's dedicated native handle.
+
+    ``host_for`` uses ``conn.iris`` when a connection carries one, so a class method
+    called through this never runs ``createIRIS`` on the engine's cursor connection.
+    """
+
+    def __init__(self, engine: "IRISGraphEngine"):
+        self._engine = engine
+
+    @property
+    def iris(self):
+        return self._engine._iris_obj()
+
+
+class IRISGraphEngine(
+    LedgerMixin,
+    RdfExportMixin,
+    ShaclMixin,
+    ProvMixin,
+    TemporalMixin,
+    SnapshotMixin,
+    FhirGraphMixin,
+    FhirMixin,
+    AdminMixin,
+    EmbeddingsMixin,
+    SchemaMixin,
+    NodesEdgesMixin,
+    QueryMixin,
+    AlgorithmsMixin,
+    VectorMixin,
+):
+    """
+    A property graph in one IRIS namespace and IVG Schema: Cypher, node and edge writes, vector and text
+    search, graph algorithms, temporal edges, snapshots and RDF, over the ``Graph_KG`` tables and ``^KG``.
+
+    Among what it provides:
+    - Vector search via `VECTOR_COSINE` (`kg_KNN_VEC`) — an exact scan, linear in the
+      embedding count; the embedding tables carry no HNSW index and cannot (`ERROR #7222`)
+    - Native IRIS iFind text search
+    - Graph traversal with confidence filtering
+    - Reciprocal Rank Fusion for hybrid ranking
+    """
+
+    def __init__(
+        self,
+        connection,
+        embedding_dimension: Optional[int] = None,
+        embedder: Optional[Any] = None,
+        embedding_config: Optional[str] = None,
+        embed_fn=None,
+        use_iris_embedding: bool = False,
+        vector_dtype: Optional[str] = None,
+        store=None,
+        schema_prefix: Optional[str] = None,
+        namespace: Optional[str] = None,
+        temporal_structural_rows: bool = False,
+        native_cypher: Optional[bool] = None,
+        native_parallel_min: Optional[int] = None,
+        native_route_ms: Optional[float] = None,
+    ):
+        # Spec 262: the IVG Schema is the argument, else IVG_SCHEMA_PREFIX, else Graph_KG, and a name that cannot be one
+        # raises here, before anything below touches the database (FR-003, FR-004).
+        # Named by the caller (argument or IVG_SCHEMA_PREFIX), not defaulted: setup on a namespace holding IVG tables
+        # in several schemas records only a schema someone named (FR-009).
+        self._schema_explicit = schema_prefix is not None or bool(os.environ.get("IVG_SCHEMA_PREFIX"))
+        schema_prefix = resolve_schema_name(schema_prefix)
+        self._namespace = namespace
+        # Spec 253: read-only Cypher the planner supports runs natively over ^KG where the adjacency index is declared
+        # (FR-005). On by default since the shadow gate (FR-010: the TCK and the 40 SNB queries equal in shadow mode);
+        # IVG_NATIVE_CYPHER=0 turns it off for an environment, native_cypher=False for one engine.
+        if native_cypher is None:
+            native_cypher = os.environ.get("IVG_NATIVE_CYPHER", "1") != "0"
+        self.native_cypher = bool(native_cypher)
+        # A native aggregate whose estimated work (a label scan's anchors, or a variable-length first hop's ends, x the
+        # sampled fan-out after them) reaches this is split across worker processes (IVG_NATIVE_PARALLEL_MIN; 0 always,
+        # a negative value never).
+        if native_parallel_min is None:
+            native_parallel_min = int(os.environ.get("IVG_NATIVE_PARALLEL_MIN", "1500"))
+        self.native_parallel_min = int(native_parallel_min)
+        # A query shape native answers in under this many ms is also timed on the SQL path, which keeps it where its
+        # median is lower (cypher.native_route; IVG_NATIVE_ROUTE_MS, 0 never).
+        if native_route_ms is None:
+            native_route_ms = float(os.environ.get("IVG_NATIVE_ROUTE_MS", "50"))
+        self.native_route_ms = float(native_route_ms)
+        self._native_privileges_cached: Optional[bool] = None
+        self._native_executor_cached: Optional[bool] = None
+        # Spec 246: a temporal edge also owns a structural rdf_edges row marked
+        # {"temporal": true}. Off by default; the default SQL is unchanged.
+        self._temporal_structural_rows = bool(temporal_structural_rows)
+        self._schema_guard: Optional[FirstAccessCheck] = None
+        self.conn = connection
+        from .embedded import EmbeddedConnection, _require_iris_sql
+
+        if hasattr(connection, "prepare") and not hasattr(connection, "cursor"):
+            self.conn = EmbeddedConnection(iris_sql=connection)  # the iris.sql it was handed
+        if isinstance(self.conn, EmbeddedConnection) and self.conn._iris_sql is None:
+            # Outside IRIS the wrapper answers iris.sql with a MagicMock; refuse here, not after a "successful"
+            # setup that did nothing (4.6.0, R056)
+            _require_iris_sql()
+        self.embedding_dimension = embedding_dimension
+        self.embedder = embedder
+        self.embedding_config = embedding_config
+        self._embed_fn = embed_fn
+        self._use_iris_embedding = use_iris_embedding
+        self.vector_dtype = vector_element_type(vector_dtype)
+        # This engine's IVG Schema, and only this engine's: its stores and its Cypher translations read it from here,
+        # so two engines on different schemas in one process each keep their own (spec 2.5.1, spec 262). The
+        # translator's module prefix (set_schema_prefix) is not touched.
+        self._schema_prefix = schema_prefix
+        self._embedding_function_available: Optional[bool] = None
+        self._native_vec_available: Optional[bool] = None
+        # Read from %Dictionary on first use (see the `capabilities` property), not here:
+        # construction stays free of round trips, and initialize_schema() or a caller
+        # may set it outright.
+        self._capabilities: Optional[IRISCapabilities] = None
+        self._arno_available: Optional[bool] = None
+        self._arno_capabilities: Dict[str, Any] = {}
+        self._table_mapping_cache: Optional[Dict[str, dict]] = None
+        self._rel_mapping_cache: Optional[Dict[tuple, dict]] = None
+        self._connection_params: Optional[Dict[str, Any]] = None
+        self._nkg_dirty: bool = False
+        self._in_bulk_load: bool = False
+        self._fetch_first_unsafe_cached: Optional[bool] = None  # build-106 %qaqpre probe (lazy)
+        self._props_value_key_cached: Optional[bool] = None  # rdf_props value-key column + index (lazy)
+        self._kg_ppr_row_limit_cached: Optional[bool] = None  # kg_PPR takes 4.7.0's rowLimit (lazy)
+        self._adjacency_indexed_cached: Optional[bool] = None  # spec 252 adjacency functional index declared (lazy)
+        self._native_conn = (
+            None  # dedicated connection for iris.createIRIS — never used for cursor DDL
+        )
+        # Spec 262 (FR-006, FR-006a): before this engine sends any SQL, read the namespace's IVG Schema record. A
+        # namespace recorded under another schema, or one no 4.6.0 setup has touched, refuses every database access
+        # from here on (initialize_schema, status and remove_legacy_objects excepted), so the probes below are not run.
+        refused = self._check_namespace_schema()  # the pending check, installed at the end of construction
+        self._index_registry: Dict[str, str] = {} if refused is not None else self._build_index_registry()
+        self._pending_index_config: Dict[str, Any] = {}
+        if vector_dtype is None and refused is None:
+            # Nobody declared a dtype, so read one off a stored vector.  A caller who
+            # names a dtype is believed: the 4.0.0 migration knows it from the registry
+            # row, and ADR-0005 forbids reading a stored vector into Python to guess.
+            self.vector_dtype = vector_element_type(self._detect_stored_vector_dtype())
+        from iris_vector_graph.stores.iris_sql_store import IRISGraphStore
+
+        if store is None:
+            self._store = IRISGraphStore(self.conn, namespace=self._namespace, schema=self._schema_prefix)
+        else:
+            self._store = store
+        # the store's execute_knn_vec reads the table this engine routes the pair to (4.6.0, R073); a store that
+        # does not declare the hook (a mock, another GraphStore) is left alone
+        if getattr(self._store, "knn_route", False) is None:
+            self._store.knn_route = self._knn_route
+        if refused is not None:
+            # asked again once initialize_schema() has upgraded the namespace
+            self._store_capabilities = {}
+            self._schema_guard = refused
+            if isinstance(self._store, IRISGraphStore):
+                self._store._schema_guard = refused
+                refused.guard_methods(self._store)
+        else:
+            self._store_capabilities = self._store.capabilities()
+        # spec 213: the store shares the engine's strict-mode guard (FR-042)
+        try:
+            self._store._ledger_guard = self._ledger_guard
+        except Exception:  # pragma: no cover - foreign store objects
+            pass
+        # Assume graph_id column exists by default (post-214 schema).
+        # Set to False by initialize_schema() if the probe finds the column absent,
+        # allowing create_node to emit a compatible INSERT on pre-214 schemas.
+        # Defaulting True avoids an eager SQL round-trip on every engine construction.
+        self._nodes_has_graph_id: bool = True
+        # Spec 227 (FR-034): `rdf_labels` and `rdf_props` gained their own graph_id in
+        # the same re-key that made a node ID unique per graph, so a child row is no
+        # longer identified by `s` alone.  Tracked separately from the flag above: a
+        # 214-era schema has graph_id on `nodes` and not on the child tables, and
+        # naming the column there would fail the whole create_node with SQLCODE -29.
+        self._children_have_graph_id: bool = True
+        # Sub-engine namespaces (additive — top-level methods unchanged)
+        self.graph = _GraphSubEngine(self)
+        self.cypher = _CypherSubEngine(self)
+        self.temporal = _TemporalSubEngine(self)
+        self.algorithms = _AlgorithmsSubEngine(self)
+        if refused is not None:
+            # every public call raises the refusal at its entry, before a catch-all in it could swallow it
+            refused.guard_methods(self, EXEMPT_METHODS)
+        logger.debug(
+            "IRISGraphEngine initialized (dim=%s dtype=%s)",
+            embedding_dimension or "auto",
+            self.vector_dtype,
+        )
+
+    @property
+    def namespace(self) -> str:
+        """The IRIS namespace this engine works in: the connection's (4.6.0).
+
+        The store reads it from the server when the engine is built; ``namespace=`` names the one the caller
+        expects, and a different one is warned about. No IRIS call is made here.
+        """
+        ns = getattr(getattr(self, "_store", None), "_namespace", None)
+        return ns if isinstance(ns, str) and ns else (getattr(self, "_namespace", None) or "USER")
+
+    @property
+    def _ivg_schema(self) -> str:
+        """This engine's IVG Schema: what every statement it writes is qualified with (``Graph_KG`` if unset)."""
+        return getattr(self, "_schema_prefix", None) or DEFAULT_SCHEMA
+
+    def _t(self, name: str) -> str:
+        """Per-instance table qualifier — use this instead of the free _table() in all mixin code."""
+        return _table(name, prefix=getattr(self, "_schema_prefix", None))
+
+    def _probe_graph_id_column(self, table: str) -> bool:
+        """Return True if Graph_KG.<table> already has a graph_id column."""
+        return self._probe_column(table, "graph_id")
+
+    def _probe_column(self, table: str, column: str, cursor=None) -> bool:
+        """Return True if Graph_KG.<table> declares <column>.
+
+        ``cursor`` is taken when the caller already holds one mid-transaction; a
+        second cursor would be a second statement in the same unit of work for no
+        reason. An unreadable catalog answers False, because every caller is asking
+        "may I name this column", and the safe answer to a question the catalog
+        will not answer is no.
+        """
+        try:
+            cur = cursor if cursor is not None else self.conn.cursor()
+            cur.execute(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS "
+                "WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?",
+                [getattr(self, "_schema_prefix", "Graph_KG"), table, column],
+            )
+            row = cur.fetchone()
+            return bool(row and int(row[0]) > 0)
+        except Exception:
+            return False
+
+    def _probe_nodes_graph_id(self) -> bool:
+        """Return True if Graph_KG.nodes already has a graph_id column.
+
+        Called once at engine init.  Allows create_node to emit a compatible
+        INSERT on pre-214 schemas (no graph_id column) without failing.
+        """
+        return self._probe_graph_id_column("nodes")
+
+    def _probe_children_graph_id(self) -> bool:
+        """Return True if the label and property tables both carry graph_id (spec 227).
+
+        Both, not either: create_node writes them in one transaction, so a schema
+        that re-keyed one and not the other has to be treated as not re-keyed at
+        all rather than half-scoped.
+        """
+        return self._probe_graph_id_column("rdf_labels") and self._probe_graph_id_column(
+            "rdf_props"
+        )
+
+    @classmethod
+    def from_connect(
+        cls,
+        hostname: str,
+        port: int = 1972,
+        namespace: str = "USER",
+        username: str = "_SYSTEM",
+        password: str = "SYS",
+        embedding_dimension: Optional[int] = None,
+        **kwargs,
+    ) -> "IRISGraphEngine":
+        """Open a DB-API connection to ``hostname:port`` with ``iris.dbapi.connect`` and build an engine on it.
+
+        ``namespace`` is passed to the connection and to the engine, and ``kwargs`` to the constructor. The
+        connection parameters are kept, so an engine made this way reconnects once when a probe finds its
+        connection dropped (EPIPE, broken pipe, connection reset); an engine built on a connection the caller
+        made raises instead.
+        """
+        import iris as _iris
+
+        conn_params = dict(
+            hostname=hostname, port=port, namespace=namespace, username=username, password=password
+        )
+        # Standard connection seam: iris-embedded-python-wrapper's dbapi.connect
+        # (drop-in for iris.connect with DB-API exception semantics).
+        conn = _iris.dbapi.connect(**conn_params)
+        engine = cls(conn, embedding_dimension=embedding_dimension, namespace=namespace, **kwargs)
+        engine._connection_params = conn_params
+        return engine
+
+    @classmethod
+    def from_wrapper(
+        cls,
+        hostname: str = None,
+        port: int = 1972,
+        namespace: str = "USER",
+        username: str = "_SYSTEM",
+        password: str = "SYS",
+        embedding_dimension: Optional[int] = None,
+        **kwargs,
+    ) -> "IRISGraphEngine":
+        """Build an engine on a connection from iris-embedded-python-wrapper's ``dbapi.connect``.
+
+        With ``hostname`` it connects over TCP; without one, inside an IRIS process it opens an embedded
+        connection to ``namespace``, and elsewhere it raises ``RuntimeError``. Raises ``ImportError`` when the
+        wrapper is not installed. Unlike ``from_connect`` it keeps no connection parameters, so the engine
+        does not reconnect on its own.
+        """
+        try:
+            import iris as _iris_wrapper
+
+            state = _iris_wrapper.runtime.state
+        except ImportError:
+            raise ImportError(
+                "iris-embedded-python-wrapper not installed. "
+                "Run: pip install iris-embedded-python-wrapper"
+            )
+        if hostname:
+            conn = _iris_wrapper.dbapi.connect(
+                hostname=hostname,
+                port=port,
+                namespace=namespace,
+                username=username,
+                password=password,
+            )
+        elif state.startswith("embedded"):
+            conn = _iris_wrapper.dbapi.connect(mode="embedded", namespace=namespace)
+        else:
+            raise RuntimeError(
+                "No IRIS connection available via wrapper. Provide hostname= or run inside IRIS."
+            )
+        return cls(conn, embedding_dimension=embedding_dimension, namespace=namespace, **kwargs)
+
+    def _native_privileges(self) -> bool:
+        """Whether this connection's user holds SELECT on the four tables the native executor reads directly (spec 253,
+        FR-011): native reads bypass SQL privilege checks, so a user without them stays on the SQL path. Cached per
+        engine (its user does not change).
+
+        Asked with a SELECT that reads no row: its Prepare is where IRIS checks the privilege, and a missing one raises
+        SQLCODE -99. `%CHECKPRIV` (4.6.0 R081) reports a missing privilege as SQLCODE 100 without raising, which DB-API
+        does not show, so it answered True for every user. Any other failure (a table that is not there) also keeps the
+        engine on the SQL path, which answers every query the native one does."""
+        if self._native_privileges_cached is None:
+            from iris_vector_graph.schema_name import missing_privilege
+
+            cursor = self.conn.cursor()
+            ok = True
+            try:
+                for table in ("nodes", "rdf_labels", "rdf_props", "rdf_edges"):
+                    try:
+                        cursor.execute(f"SELECT TOP 1 1 FROM {self._ivg_schema}.{table} WHERE 1 = 0")
+                        cursor.fetchall()
+                    except Exception as exc:
+                        why = missing_privilege(exc) or str(exc)[:200]
+                        logger.info("native Cypher off for this engine: %s.%s: %s", self._ivg_schema, table, why)
+                        ok = False
+                        break
+            finally:
+                cursor.close()
+            self._native_privileges_cached = ok
+        return self._native_privileges_cached
+
+    def _native_executor_current(self) -> bool:
+        """Whether the deployed Graph.KG.Cypher.Exec reads this planner's plans (spec 253): the package and the classes
+        are deployed apart, and an executor older than the planner ignores the plan fields it predates and answers
+        wrongly. Asked once per engine (and again after initialize_schema); an executor too old to answer is not current,
+        while any other error (a dropped connection) keeps only this call on SQL."""
+        if self._native_executor_cached is None:
+            from iris_vector_graph.cypher.native_plan import PLAN_VERSION
+
+            try:
+                version = self._iris_obj().classMethodValue("Graph.KG.Cypher.Exec", "PlanVersion")
+                ok = int(version) == PLAN_VERSION
+            except Exception as ex:
+                if "DOES NOT EXIST" not in str(ex):
+                    logger.debug("native Cypher: could not ask the executor its plan version: %s", ex)
+                    return False
+                version, ok = "none (no PlanVersion)", False
+            if not ok:
+                logger.warning(
+                    "native Cypher off: Graph.KG.Cypher.Exec reads plan version %s, the planner writes %s; "
+                    "redeploy the classes (initialize_schema)", version, PLAN_VERSION,
+                )
+            self._native_executor_cached = ok
+        return self._native_executor_cached
+
+    def _more_than_one_graph(self) -> bool:
+        """Whether Graph_KG.nodes holds rows of more than one graph. Asked per translation, never cached: a graph
+        created after a cached answer would bring the cross-graph join back.
+
+        One row's graph, then the (graph_id, node_id) index asked for a graph above it and one below: three index
+        reads, about 0.4 ms. MIN/MAX(graph_id), the read before, scans every row (90 ms on 97,238 DRKG nodes); it stays
+        for a NULL graph id (a DDL-built legacy table), which compares as nothing and which MIN/MAX skips.
+        """
+        cursor = self.conn.cursor()
+        try:
+            # read each row before the cursor runs on or closes: a DataRow is unreadable after (it raised, and the
+            # caller's failure path then correlated every namespace)
+            cursor.execute(f"SELECT TOP 1 graph_id FROM {self._ivg_schema}.nodes")
+            row = cursor.fetchone()
+            if row is None:
+                return False
+            first = row[0]
+            if first is None:
+                cursor.execute(f"SELECT MIN(graph_id), MAX(graph_id) FROM {self._ivg_schema}.nodes")
+                row = cursor.fetchone()
+                return row is not None and row[0] != row[1]
+            for op in (">", "<"):
+                cursor.execute(f"SELECT TOP 1 graph_id FROM {self._ivg_schema}.nodes WHERE graph_id {op} ?", [first])
+                if cursor.fetchone() is not None:
+                    return True
+            return False
+        finally:
+            cursor.close()
+
+    @property
+    def _kg_ppr_row_limit(self) -> bool:
+        """True when the namespace's ``kg_PPR`` takes 4.7.0's seventh parameter, ``rowLimit``.
+
+        A namespace set up by an earlier release and not set up again since (nothing makes a caller run
+        ``initialize_schema()`` after an upgrade) has the six-parameter function, which a seventh argument fails with
+        ``<PARAMETER>`` (SQLCODE -149): the translator then sends six and the query reads the 1000 rows. Read once per
+        engine from INFORMATION_SCHEMA.PARAMETERS (about 20 ms); ``initialize_schema`` resets it. A read that fails
+        answers False, the six arguments every release's function takes, and says why.
+        """
+        if self._kg_ppr_row_limit_cached is None:
+            cur = self.conn.cursor()
+            try:
+                cur.execute(
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.PARAMETERS "
+                    "WHERE SPECIFIC_SCHEMA = ? AND SPECIFIC_NAME = 'kg_PPR' AND PARAMETER_NAME = 'rowLimit'",
+                    [self._ivg_schema],
+                )
+                row = cur.fetchone()
+                self._kg_ppr_row_limit_cached = bool(row and int(row[0]))
+            except Exception as exc:  # noqa: BLE001 - said; six arguments are what every kg_PPR takes
+                logger.warning("kg_PPR's parameters could not be read (%s); CALL ivg.ppr sends it six arguments", exc)
+                self._kg_ppr_row_limit_cached = False
+            finally:
+                cur.close()
+        return self._kg_ppr_row_limit_cached is True
+
+    @property
+    def _props_value_key(self) -> bool:
+        """True when ``rdf_props`` has ``val_key`` and its index ``idx_props_key_valkey``.
+
+        The translator then adds ``val_key = '<prefix>'`` to a lookup by a property value (see
+        ``GraphSchema.ensure_props_value_key``). The index is created after the backfill, so requiring it means the
+        column is complete. Detected once per engine; ``initialize_schema`` resets it.
+        """
+        if self._props_value_key_cached is None:
+            try:
+                cur = self.conn.cursor()
+                cur.execute(
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS "
+                    f"WHERE TABLE_SCHEMA = '{self._ivg_schema}' AND TABLE_NAME = 'rdf_props' AND COLUMN_NAME = 'val_key'"
+                )
+                row = cur.fetchone()
+                column = row[0] if row else 0  # read now: a DataRow is unreadable once the cursor runs the next query
+                cur.execute(
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.INDEXES "
+                    f"WHERE TABLE_SCHEMA = '{self._ivg_schema}' AND TABLE_NAME = 'rdf_props' AND INDEX_NAME = 'idx_props_key_valkey'"
+                )
+                row = cur.fetchone()
+                index = row[0] if row else 0
+                self._props_value_key_cached = bool(column) and bool(index)
+            except Exception:
+                self._props_value_key_cached = False
+        return self._props_value_key_cached is True
+
+    def _native_or_none(self):
+        """The engine's Native API handle, or None where the connection has none (a stand-in, a foreign DB-API)."""
+        try:
+            return self._iris_obj()
+        except TypeError:
+            return None
+
+    @property
+    def _adjacency_indexed(self) -> bool:
+        """True when ``rdf_edges`` carries the functional index ``idx_edges_adj`` (spec 252, ADR-0008); a plain index of
+        that name is not it (4.7.0 row 16).
+
+        The index then maintains ``^KG("out"/"in")`` from every row write, so the engine's edge writers write rows
+        only; without it (a DDL-only namespace, an install ``ensure_indexes`` has not reached) they keep writing
+        ``^KG`` themselves. Detected once per engine; ``initialize_schema`` resets it.
+        """
+        if getattr(self, "_adjacency_indexed_cached", None) is None:
+            from iris_vector_graph.schema import GraphSchema
+
+            try:
+                # A role refused the class dictionary (SQLCODE -99) is answered by Graph.KG.Adjacency.IndexKind
+                # through the Native API (4.7.0); without that answer the writers keep writing ^KG.
+                kind = GraphSchema.adjacency_index_kind(
+                    self.conn.cursor(), schema=self._ivg_schema, native=self._native_or_none())
+                self._adjacency_indexed_cached = kind == "functional"
+            except Exception:
+                self._adjacency_indexed_cached = False
+        return self._adjacency_indexed_cached is True
+
+    @property
+    def _fetch_first_unsafe(self) -> bool:
+        """True when this IRIS build SIGSEGVs in %qaqpre on a multi-table JOIN combined
+        with `FETCH FIRST n ROWS ONLY` (observed on irishealth 2026.3.0AI build 106), or refuses
+        an ORDER BY of an aggregate with it at Prepare (Community 2026.1, GitHub #13).
+
+        Detected once and cached. Primary signal is a behavioral probe run in a
+        SUBPROCESS (the crash is a hard SIGSEGV — uncatchable in-process), gated on
+        having stored connection params. Falls back to a $ZVERSION build check when a
+        subprocess probe is not possible (e.g. embedded context). Defaults to safe
+        (False) if neither can determine — `TOP` is only a workaround, never required.
+        """
+        if self._fetch_first_unsafe_cached is None:
+            self._fetch_first_unsafe_cached = self._detect_fetch_first_unsafe()
+        return self._fetch_first_unsafe_cached
+
+    def _fetch_first_probe_tables(self) -> Tuple[str, str]:
+        """The probe's two tables: in the IVG Schema, named for this probe, so concurrent probes never share one
+        (4.6.0 R130: they were `ivg_ff_probe_a`/`_b` unqualified, in SQLUser, and never dropped)."""
+        import secrets
+
+        tag = f"{os.getpid()}_{secrets.token_hex(4)}"
+        return (f"{self._ivg_schema}.ivg_ff_probe_a_{tag}", f"{self._ivg_schema}.ivg_ff_probe_b_{tag}")
+
+    def _drop_fetch_first_probe_tables(self, tables: Tuple[str, str]) -> None:
+        """Drop the probe's tables through a connection of its own, for a child that crashed or hung before it could
+        (the crash is the answer the probe exists for). A table that is not there (SQLCODE -30) is already gone; any
+        other failure is logged naming the tables, and does not change the probe's answer."""
+        import iris as _iris
+
+        try:
+            conn = _iris.dbapi.connect(**self._connection_params)
+        except Exception as exc:
+            logger.warning("FETCH FIRST probe: could not connect to drop %s (drop them by hand): %s",
+                           ", ".join(tables), exc)
+            return
+        try:
+            cur = conn.cursor()
+            for table in tables:
+                try:
+                    cur.execute(f"DROP TABLE {table}")
+                except Exception as exc:
+                    if "<-30>" not in str(exc):
+                        logger.warning("FETCH FIRST probe: could not drop %s (drop it by hand): %s", table, exc)
+        finally:
+            conn.close()
+
+    def _detect_fetch_first_unsafe(self) -> bool:
+        # Subprocess behavioral probe (most reliable): run the crashing shape against two
+        # VARCHAR-keyed tables; SIGSEGV (rc -11 / 139) => unsafe.
+        if self._connection_params:
+            try:
+                import json
+                import subprocess
+                import sys
+
+                cp = json.dumps(self._connection_params)
+                a, b = self._fetch_first_probe_tables()
+                script = (
+                    "import iris, json, sys\n"
+                    # on stdin, not pasted into the script: a password holding ''' ended the literal (4.6.0)
+                    "cp = json.loads(sys.stdin.read())\n"
+                    "c = iris.dbapi.connect(**cp); cur = c.cursor()\n"
+                    "try:\n"
+                    f"    cur.execute('CREATE TABLE {a} (id VARCHAR(64))')\n"
+                    f"    cur.execute('CREATE TABLE {b} (sid VARCHAR(64))')\n"
+                    f"    cur.execute('SELECT id FROM {a} FETCH FIRST 0 ROWS ONLY'); cur.fetchall()\n"
+                    f"    cur.execute('SELECT a.id FROM {a} a JOIN {b} b "
+                    "ON b.sid=a.id FETCH FIRST 1 ROWS ONLY'); cur.fetchall()\n"
+                    # 4.7.0 row 1 (GitHub #13): Community 2026.1 refuses an ORDER BY of an aggregate with FETCH FIRST
+                    # at Prepare (-400 <UNDEFINED>main+129^%qaqcasl *mt("top")), and takes the JOIN above
+                    "    try:\n"
+                    f"        cur.execute('SELECT id, COUNT(*) AS k FROM {a} GROUP BY id ORDER BY COUNT(*) DESC "
+                    "FETCH FIRST 1 ROWS ONLY'); cur.fetchall()\n"
+                    "    except Exception as e:\n"
+                    "        print('AGG_FF_REFUSED: ' + str(e)[:300])\n"
+                    "    print('OK')\n"
+                    "finally:\n"
+                    f"    for d in ('DROP TABLE {a}', 'DROP TABLE {b}'):\n"
+                    "        try: cur.execute(d)\n"
+                    "        except Exception as e:\n"
+                    "            if '<-30>' not in str(e): raise\n"
+                    "    print('DROPPED')\n"
+                )
+                try:
+                    r = subprocess.run(
+                        [sys.executable, "-c", script], input=cp, capture_output=True, text=True, timeout=5
+                    )
+                except subprocess.TimeoutExpired:
+                    self._drop_fetch_first_probe_tables((a, b))
+                    raise
+                out = r.stdout or ""
+                if "DROPPED" not in out:
+                    self._drop_fetch_first_probe_tables((a, b))
+                if "AGG_FF_REFUSED" in out:
+                    logger.info(
+                        "IRIS build refuses an ORDER BY of an aggregate with FETCH FIRST (Community 2026.1); ivg "
+                        "will emit TOP for LIMIT queries"
+                    )
+                    return True
+                if r.returncode in (-11, 139, -6, 134):
+                    logger.warning(
+                        "IRIS build SIGSEGVs in %%qaqpre on FETCH FIRST + multi-table JOIN "
+                        "(observed on 2026.2.0AI and 2026.3.0AI AI builds); ivg will emit "
+                        "TOP for LIMIT-only queries to avoid the crash."
+                    )
+                    return True
+                return False
+            except subprocess.TimeoutExpired:
+                # Probe query hung — IRIS hangs (not SIGSEGV) on FETCH FIRST + JOIN.
+                # This build is also unsafe; mark it and fall through to warn.
+                logger.warning(
+                    "IRIS FETCH FIRST + multi-table JOIN probe hung (timeout); "
+                    "marking build as fetch-first-unsafe and using TOP/ROW_NUMBER instead."
+                )
+                return True
+            except Exception as e:
+                logger.debug("fetch-first probe failed, falling back to version check: %s", e)
+        # Fallback: $ZVERSION check (no crash risk) when a subprocess probe is not
+        # possible (e.g. embedded context with no stored connection params). The bug
+        # affects IRIS "AI" builds (2026.2.0AI build 161, 2026.3.0AI build 106) AND
+        # IRIS 2026.1 community (Build 234U). Treat all 2026.x builds as unsafe
+        # conservatively. If a future 2026 build fixes it, the subprocess probe
+        # (which runs a live behavioral check) remains authoritative.
+        try:
+            cur = self.conn.cursor()
+            cur.execute("SELECT $ZVERSION")
+            ver = str(cur.fetchone()[0])
+            import re as _re
+
+            if _re.search(r"2026\.", ver):
+                return True
+        except Exception:
+            pass
+        return False
+
+    #: A connection dropped by the network layer after sitting idle (OrbStack: 300 to 420 s)
+    #: is the failure the probe exists for, so a probe more often than this buys nothing.
+    _PROBE_IDLE_SECONDS = 30.0
+
+    def _probe_if_idle(self) -> None:
+        """`_reconnect_if_stale`, but at most once per idle window.
+
+        `execute_cypher` used to probe with `SELECT 1` on every call: one extra round
+        trip, 20 to 35% of a point lookup (docs/dev/notes/research/cypher-stage-timing.md).
+        ``IVG_PROBE_IDLE_SECONDS=0`` restores a probe on every call. The window starts
+        only when a probe succeeds, so a failing one is retried by the next call.
+        """
+        raw = os.environ.get("IVG_PROBE_IDLE_SECONDS", "")
+        try:
+            window = float(raw) if raw.strip() else self._PROBE_IDLE_SECONDS
+        except ValueError:
+            window = self._PROBE_IDLE_SECONDS
+        now = time.monotonic()
+        last = getattr(self, "_last_probe_ok", None)
+        if last is not None and window > 0 and 0 <= now - last < window:
+            return
+        self._reconnect_if_stale()
+        self._last_probe_ok = time.monotonic()
+
+    def _reconnect_if_stale(self) -> None:
+        try:
+            cur = self.conn.cursor()
+            cur.execute("SELECT 1")
+        except Exception as probe_err:
+            err_str = str(probe_err).lower()
+            if any(x in err_str for x in ("epipe", "broken pipe", "connection reset", "closed")):
+                if self._connection_params:
+                    import iris as _iris
+
+                    self.conn = _iris.dbapi.connect(**self._connection_params)
+                    logger.info("IRIS connection re-established after EPIPE")
+                else:
+                    raise RuntimeError(
+                        "IRIS connection is stale (EPIPE/BrokenPipe) and cannot auto-reconnect "
+                        "because connection params were not stored. "
+                        "Create the engine with a fresh iris.connect() call."
+                    ) from probe_err
+
+    def _invalidate_mapping_cache(self) -> None:
+        self._table_mapping_cache = None
+        self._rel_mapping_cache = None
+
+    @staticmethod
+    def _is_conn_drop(exc: Exception) -> bool:
+        s = str(exc).lower()
+        if isinstance(exc, (BrokenPipeError, ConnectionError)):
+            return True
+        return any(
+            x in s
+            for x in (
+                "communication link",
+                "epipe",
+                "broken pipe",
+                "connection reset",
+                "operationalerror",
+            )
+        )
+
+    def _with_reconnect(self, fn, *args, max_retries: int = 3, **kwargs):
+        import time as _time
+
+        delay = 0.5
+        for attempt in range(max_retries + 1):
+            try:
+                return fn(*args, **kwargs)
+            except Exception as e:
+                if (not self._is_conn_drop(e)) or attempt == max_retries:
+                    raise
+                logger.warning(
+                    "bulk op hit connection drop (attempt %d/%d): %s — reconnecting",
+                    attempt + 1,
+                    max_retries,
+                    str(e)[:120],
+                )
+                self._reconnect_if_stale()
+                _time.sleep(delay)
+                delay *= 2
+
+    _SYSTEM_PROCEDURES = {
+        "ivg.vector.search": "_proc_ivg_vector_search",
+        "ivg.shortestpath.weighted": "_proc_ivg_shortestpath_weighted",
+        "db.labels": "_proc_db_labels",
+        "db.relationshiptypes": "_proc_db_relationshiptypes",
+        "db.schema.visualization": "_proc_db_schema_visualization",
+        "db.schema.nodetypeproperties": "_proc_db_schema_nodetypeproperties",
+        "db.schema.reltypeproperties": "_proc_db_schema_reltypeproperties",
+        "dbms.components": "_proc_dbms_components",
+        "dbms.procedures": "_proc_dbms_procedures",
+        "db.propertykeys": "_proc_db_propertykeys",
+        "dbms.clientconfig": "_proc_dbms_clientconfig",
+        "dbms.security.showcurrentuser": "_proc_dbms_security_showcurrentuser",
+        "dbms.showcurrentuser": "_proc_dbms_security_showcurrentuser",
+        "dbms.functions": "_proc_dbms_functions",
+        "dbms.queryjmx": "_proc_dbms_queryjmx",
+        "apoc.meta.data": "_proc_apoc_meta_data",
+        "apoc.meta.schema": "_proc_apoc_meta_schema",
+        "gds.pagerank.stream": "_proc_gds_pagerank_stream",
+        "gds.betweenness.stream": "_proc_gds_betweenness_stream",
+        "gds.shortestpath.dijkstra.stream": "_proc_gds_dijkstra_stream",
+        "gds.shortestpath.dijkstra": "_proc_gds_dijkstra_stream",
+    }
+
+    #: GDS Dijkstra's configuration keys that change its answer and IVG can honour (4.6.0 R183). The others it takes
+    #: (nodeLabels, concurrency, ...) raise, as an unread key does for R174's two: a projection filter IVG would not
+    #: apply, or a setting IVG has no counterpart for.
+    _DIJKSTRA_CONFIG = {
+        "sourceNode": "source", "targetNode": "target",
+        "relationshipWeightProperty": "weight_prop", "relationshipTypes": "types",
+    }
+
+    #: For each gds.* procedure answered here, the configuration keys it reads and the engine method's keyword each
+    #: one becomes (spec 195's data model: PageRank's dampingFactor and maxIterations; betweenness passes
+    #: ivg.betweenness's own keys through).
+    _GDS_CONFIG = {
+        "gds.pagerank.stream": {"dampingFactor": "damping", "maxIterations": "max_iterations"},
+        "gds.betweenness.stream": {
+            "sampleSize": "sample_size", "direction": "direction", "maxHops": "max_hops", "topK": "top_k",
+        },
+        "gds.shortestpath.dijkstra.stream": _DIJKSTRA_CONFIG,
+        "gds.shortestpath.dijkstra": _DIJKSTRA_CONFIG,
+    }
+
+    def _gds_arguments(self, proc, parameters, graph) -> Dict[str, Any]:
+        """The engine keywords a ``gds.<algorithm>.stream(graphName, configuration)`` call asks for (4.6.0 R174).
+
+        ``graphName`` names a GDS graph projection, which IVG does not have: it is accepted and not read, and the
+        procedure reads the graph its engine method reads. ``configuration`` is a map (or a ``$parameter`` holding
+        one) of the keys in :attr:`_GDS_CONFIG`. A key it does not read, a value that is neither a literal nor a
+        supplied parameter, and ``USE GRAPH`` raise ``ValueError``: none of them would change the answer, so
+        accepting them would answer a question that was not asked.
+        """
+        from iris_vector_graph.cypher import ast as cypher_ast
+
+        name = proc.procedure_name
+        keys = self._GDS_CONFIG[name.lower()]
+        if graph not in (None, ""):
+            raise ValueError(
+                f"{name} reads no named graph, so USE GRAPH {graph!r} cannot scope it; "
+                "see docs/USER_GUIDE.md, Components and centrality"
+            )
+        named = self._named_graph_with_edges() if graph is None else None
+        if isinstance(named, str):
+            # 4.6.0 R192: it answered the default graph's as if that were every graph's
+            raise ValueError(
+                f"{name}: without USE GRAPH a query answers the union of each graph's own answer, and this "
+                f"procedure cannot answer per graph: it reads the default graph only, and graph {named!r} has edges "
+                "in this namespace. USE GRAPH '' asks for the default graph's answer; see docs/USER_GUIDE.md, "
+                "Components and centrality"
+            )
+        args = list(proc.arguments or [])
+        if len(args) > 2:
+            raise ValueError(f"{name} takes (graphName, configuration), not {len(args)} arguments")
+
+        def value(v):
+            if isinstance(v, cypher_ast.Literal):
+                return v.value
+            if isinstance(v, cypher_ast.Variable) and getattr(v, "is_parameter", False):
+                if not parameters or v.name not in parameters:
+                    raise ValueError(f"{name}: parameter ${v.name} was not supplied")
+                return parameters[v.name]
+            raise ValueError(f"{name}: a configuration value must be a literal or a $parameter, not {v!r}")
+
+        opts = dict(getattr(proc, "options", None) or {})
+        if len(args) == 2:
+            config = value(args[1])
+            if not isinstance(config, dict):
+                raise ValueError(f"{name}: the configuration must be a map, not {config!r}")
+            opts.update({k: cypher_ast.Literal(v) for k, v in config.items()})
+        unknown = sorted(set(opts) - set(keys))
+        if unknown:
+            raise ValueError(f"{name}: configuration key(s) {unknown} are not read; it reads {sorted(keys)}")
+        return {keys[k]: value(v) for k, v in opts.items()}
+
+    def _proc_gds_pagerank_stream(self, proc, parameters=None, graph=None) -> IVGResult:
+        """``CALL gds.pageRank.stream(graphName [, {dampingFactor, maxIterations}]) YIELD nodeId, score``: IVG's
+        global PageRank (:meth:`kg_PAGERANK`, the default graph), whose scores sum to 1, where GDS's do not (they
+        start at 1 - dampingFactor each). ``nodeId`` is IVG's node ID. Without ``USE GRAPH`` it raises once a named
+        graph has edges, since it cannot answer each graph's own (4.6.0 R192); ``USE GRAPH ''`` asks for the default
+        graph's."""
+        from iris_vector_graph.cypher.translator import _int_argument, _number_argument
+
+        name = proc.procedure_name
+        kw = self._gds_arguments(proc, parameters, graph)
+        # a value of the wrong type is named (4.6.5): float() and int() truncated 2.5 and said "invalid literal" for 'x'
+        damping = _number_argument(name, "dampingFactor", kw["damping"]) if "damping" in kw else 0.85
+        max_iterations = _int_argument(name, "maxIterations", kw["max_iterations"]) if "max_iterations" in kw else 20
+        # GDS's names (4.7.0 row 8b: a dampingFactor of 2.0 answered negative scores)
+        check_ppr_args(name, damping, max_iterations, "dampingFactor", "maxIterations")
+        ranks = self.kg_PAGERANK(damping=damping, max_iterations=max_iterations)
+        return IVGResult(columns=["nodeId", "score"], rows=[[n, float(s)] for n, s in ranks])
+
+    def _proc_gds_betweenness_stream(self, proc, parameters=None, graph=None) -> IVGResult:
+        """``CALL gds.betweenness.stream(graphName [, {sampleSize, direction, maxHops, topK}]) YIELD nodeId, score``:
+        :meth:`betweenness_centrality` over every node (topK 0 unless given), with its defaults and its graph: the
+        default one (4.6.0 R184; it read ``^NKG``, every graph's edges together, before). Without ``USE GRAPH`` it
+        raises once a named graph has edges, since it cannot answer each graph's own (4.6.0 R192); ``USE GRAPH ''``
+        asks for the default graph's."""
+        from iris_vector_graph._validate import BetweennessInput, validate_procedure_options
+
+        kw = self._gds_arguments(proc, parameters, graph)
+        # the configuration goes through the model ivg.betweenness and betweenness_centrality run (4.6.5): before,
+        # int() truncated sampleSize 2.7 to 2 and the rest reached the method, which named a field of its own
+        keys = self._GDS_CONFIG[proc.procedure_name.lower()]
+        validate_procedure_options(
+            proc.procedure_name, BetweennessInput, {k: kw[f] for k, f in keys.items() if f in kw}, keys)
+        scores = self.betweenness_centrality(
+            sample_size=int(kw.get("sample_size", 0)), direction=str(kw.get("direction", "out")),
+            max_hops=int(kw.get("max_hops", 0)), top_k=int(kw.get("top_k", 0)),
+        )
+        # a row without an id is the accelerator's progress metadata, not a node's score
+        return IVGResult(columns=["nodeId", "score"], rows=[[d["id"], float(d["score"])] for d in scores if "id" in d])
+
+    #: No hop bound for the unweighted search (its breadth-first walk stops when nothing new is reached) and no cost
+    #: bound for Dijkstra: GDS has neither.
+    _GDS_NO_HOP_BOUND = 2**31 - 1
+    _GDS_NO_COST_BOUND = 1e100
+
+    def _proc_gds_dijkstra_stream(self, proc, parameters=None, graph=None) -> IVGResult:
+        """``CALL gds.shortestPath.dijkstra.stream(graphName, {sourceNode, targetNode [, relationshipWeightProperty,
+        relationshipTypes]}) YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs`` (4.6.0 R183).
+
+        GDS's configuration is read by key; before, the shim passed ``(graphName, configuration)`` to
+        ``ivg.shortestPath.weighted`` by position, the graph name as the source, and answered no rows. The search
+        follows out-edges in the default graph, with no hop or cost bound, as GDS's does (without ``USE GRAPH`` it
+        raises once a named graph has edges, 4.6.0 R192; ``USE GRAPH ''`` asks for the default graph's). Without
+        ``relationshipWeightProperty`` it is unweighted, as GDS's is: every relationship costs 1, whatever weight it
+        stores (``TraversalPaths.ShortestLength`` / ``ShortestPathJson``). With ``'weight'`` it is Dijkstra over the
+        stored weights (``DijkstraCost`` / ``DijkstraJson``), where IVG reads a weight of 0 or less, or none, as 1;
+        another property raises, as it does for ``ivg.shortestPath.weighted``. ``relationshipTypes`` lists the
+        predicates walked (``['*']``: all). ``sourceNode``/``targetNode`` are node IDs, ``nodeIds`` too. ``costs`` is
+        GDS's: the running totals, one per node of ``nodeIds``, the first 0.0 and the last ``totalCost`` (a -1.0-> b
+        -2.5-> c answers ``costs [0.0, 1.0, 3.5]``), not each relationship's weight, which
+        ``ivg.shortestPath.weighted``'s ``path.costs`` lists. Every cost is a float. GDS's ``path`` (a Path) is not
+        answered: yielding it raises."""
+        import json as _json
+        from itertools import accumulate
+
+        from iris_vector_graph.cypher import ast as cypher_ast
+        from iris_vector_graph.cypher.translator import _weighted_path_weight_prop
+
+        name = proc.procedure_name
+        kw = self._gds_arguments(proc, parameters, graph)
+        missing = [k for k in ("sourceNode", "targetNode") if self._DIJKSTRA_CONFIG[k] not in kw]
+        if missing:
+            raise ValueError(f"{name}: the configuration needs {missing}")
+        source, target = str(kw["source"]), str(kw["target"])
+        weighted = kw.get("weight_prop") is not None
+        weight_prop = _weighted_path_weight_prop(kw["weight_prop"]) if weighted else None
+        types = kw.get("types") or []
+        types = [types] if isinstance(types, str) else list(types)
+        names = [str(t.value if isinstance(t, cypher_ast.Literal) else t) for t in types]
+        preds = _json.dumps([] if names == ["*"] else names)
+
+        yields = [y[0] if isinstance(y, tuple) else y for y in (proc.yield_items or [])]
+        if yields == ["totalCost"]:
+            if weighted:
+                cost = _call_classmethod(self.conn, "Graph.KG.TraversalPaths", "DijkstraCost", source, target,
+                                         self._GDS_NO_COST_BOUND, "out", preds, "", 0)
+                found = cost is not None and str(cost) != ""
+            else:
+                cost = _call_classmethod(self.conn, "Graph.KG.TraversalPaths", "ShortestLength", source, target,
+                                         self._GDS_NO_HOP_BOUND, preds, "out")
+                found = cost is not None and int(cost) >= 0
+            return IVGResult(columns=["totalCost"], rows=[[float(cost)]] if found else [])
+
+        if weighted:
+            raw = _call_classmethod(self.conn, "Graph.KG.TraversalPaths", "DijkstraJson", source, target, weight_prop,
+                                    self._GDS_NO_COST_BOUND, 0, "out", preds, "")
+            path = _json.loads(str(raw) if raw else "{}")
+            steps = [float(c) for c in path.get("costs", [])]
+        else:
+            raw = _call_classmethod(self.conn, "Graph.KG.TraversalPaths", "ShortestPathJson", source, target,
+                                    self._GDS_NO_HOP_BOUND, preds, "out")
+            paths = _json.loads(str(raw) if raw else "[]")
+            path = paths[0] if paths else {}
+            steps = [1.0] * len(path.get("rels", []))
+        columns = ["index", "sourceNode", "targetNode", "totalCost", "nodeIds", "costs"]
+        if not path.get("nodes"):
+            return IVGResult(columns=columns, rows=[])
+        costs = list(accumulate(steps, initial=0.0))
+        return IVGResult(columns=columns, rows=[[0, source, target, costs[-1], list(path["nodes"]), costs]])
+
+    def _proc_ivg_vector_search(
+        self, proc, parameters=None, graph=None
+    ) -> Optional[Dict[str, Any]]:
+        from iris_vector_graph.cypher.ast import Literal as CypherLiteral
+        from iris_vector_graph.cypher.ast import Variable as CypherVariable
+
+        args = proc.arguments
+        label_filter = str(args[0].value) if args and isinstance(args[0], CypherLiteral) else None
+        k = int(args[3].value) if len(args) > 3 and isinstance(args[3], CypherLiteral) else 10
+        vec_arg = args[2] if len(args) > 2 else None
+        raw = None
+        if isinstance(vec_arg, CypherLiteral):
+            raw = vec_arg.value
+        elif isinstance(vec_arg, CypherVariable) and parameters:
+            # `CALL ivg.vector.search('Gene', 'emb', $vec, 5)` is the documented
+            # shape; `$vec` is a Variable, and ignoring it searched with an empty
+            # vector and answered "no neighbours".
+            raw = parameters.get(vec_arg.name)
+
+        if not isinstance(raw, list):
+            # A text query or a seed node ID. This handler can only send a vector,
+            # and the translated SQL knows how to embed text and read a seed row —
+            # so hand it back rather than answer an empty result.
+            return None
+
+        # The parser leaves the elements of a list literal as `Literal` nodes.
+        # Passing them through gave the store a list of AST objects, which it
+        # formatted with `str()` into `[Literal(value=1.0),…]`: IRIS accepted the
+        # text, matched nothing, and the CALL answered zero rows with no error.
+        query_vector = [
+            float(v.value) if isinstance(v, CypherLiteral) else float(v) for v in raw
+        ]
+        # Without USE GRAPH, each graph's own k nearest, searched in its own route (4.6.0 R192: the default graph's
+        # alone before). A database with no route registry holds every vector in the default table: one search.
+        routes = self._knn_routes(None) if graph is None else None
+        graphs = [g for g, *_ in routes or ()] or [graph]
+        result = None
+        for g in graphs:
+            part = self._store.execute_knn_vec(query_vector, k, label_filter, graph=g)
+            if getattr(part, "error", None):
+                result = part
+                break
+            if result is None:
+                result = part
+            else:
+                result.rows = list(result.rows) + list(part.rows)
+        # The store names its columns `id`/`score`; the caller named them in its
+        # YIELD clause and reads the result by those names.
+        yielded = list(getattr(proc, "yield_items", None) or []) or ["node", "score"]
+        if result is not None and result.columns and len(yielded) == len(result.columns):
+            result.columns = yielded
+        return result
+
+    def _proc_ivg_shortestpath_weighted(self, proc, parameters=None, graph=None) -> Optional[Dict[str, Any]]:
+        """`CALL ivg.shortestPath.weighted(from, to [, weightProp, maxCost, maxHops, direction, types])`, answered
+        by the server's Dijkstra in the `USE GRAPH` graph (`graph`); with None, in each graph with edges, a row per
+        graph that has a path (the union of each graph's own answer, CONTEXT.md All-graphs read).
+
+        `path` is `{nodes, rels, costs, length, totalCost}`: `costs` is each relationship's weight in path order (not
+        running totals, which `gds.shortestPath.dijkstra.stream`'s `costs` are) and `totalCost` their sum, all floats:
+        a -1.0-> b -2.5-> c answers `costs [1.0, 2.5]`, `totalCost 3.5`. Before 4.6.3 a whole-number weight read as an
+        integer there (`[1, 1]`, `2` for weights of 1.0; Graph.KG.TraversalPaths.PathJson)."""
+        from iris_vector_graph.cypher import ast as cypher_ast
+        from iris_vector_graph.cypher.translator import (
+            _WEIGHTED_PATH_ARGUMENTS,
+            _int_argument,
+            _number_argument,
+            _procedure_direction,
+            _refuse_positional_options_map,
+            _weighted_path_weight_prop,
+        )
+
+        # 4.6.5: a map, or a call without from and to, answered no rows and no error
+        name = "ivg.shortestPath.weighted"
+        _refuse_positional_options_map(proc, *_WEIGHTED_PATH_ARGUMENTS)
+        args = proc.arguments
+        if len(args) < 2:
+            raise ValueError(f"{name} requires at least 2 arguments: from, to")
+
+        def _arg_raw(a, params=None):
+            """The value a literal or a supplied $parameter holds, as it is (``_arg_str`` makes text of it)."""
+            if isinstance(a, cypher_ast.Literal):
+                return a.value
+            if isinstance(a, cypher_ast.Variable) and params and a.name in params:
+                return params[a.name]
+            return _arg_str(a, params)
+
+        def _arg_str(a, params=None):
+            if isinstance(a, cypher_ast.Literal):
+                return str(a.value)
+            if isinstance(a, cypher_ast.Variable):
+                if params and a.name in params:
+                    return str(params[a.name])
+                if getattr(a, "is_parameter", True):  # a $parameter nobody supplied is no node named after it
+                    return None
+                return a.name
+            return str(a)
+
+        source_id = _arg_str(args[0], parameters)
+        if not source_id:
+            raise ValueError(f"{name}: from parameter not supplied")
+        target_id = _arg_str(args[1], parameters)
+        if not target_id:
+            raise ValueError(f"{name}: to parameter not supplied")
+        weight_prop = _weighted_path_weight_prop(_arg_str(args[2], parameters) if len(args) > 2 else "weight")
+        # a value of the wrong type is named (4.6.5): float() said "could not convert string" and int() truncated 2.5
+        max_cost = _number_argument(name, "maxCost", _arg_raw(args[3], parameters)) if len(args) > 3 else 9999.0
+        max_hops = _int_argument(name, "maxHops", _arg_raw(args[4], parameters), 0) if len(args) > 4 else 10
+        direction = _procedure_direction(
+            "ivg.shortestPath.weighted", _arg_str(args[5], parameters) if len(args) > 5 else "out")
+
+        import json as _json
+
+        # Relationship types to walk (a list or one name); without them Dijkstra walks every predicate.
+        types = None
+        if len(args) > 6:
+            t = args[6]
+            if isinstance(t, cypher_ast.Literal):
+                types = t.value
+            elif isinstance(t, cypher_ast.Variable) and parameters and t.name in parameters:
+                types = parameters[t.name]
+        if isinstance(types, str):
+            types = [types]
+        names = [str(x.value if isinstance(x, cypher_ast.Literal) else x) for x in types or []]
+        preds = _json.dumps(names)
+        # the graph searched (4.6.0 R154: DijkstraJson walked the default graph's ^KG whatever USE GRAPH said); without
+        # USE GRAPH each graph with edges, one row per graph with a path (4.6.0 R192: the default graph's alone before)
+        graphs = [str(graph)] if graph is not None else (self._graphs_with_edges() or [""])
+
+        # YIELD totalCost alone: the cost, searched from both ends (TraversalPaths.DijkstraCost), without the path
+        yields = [y[0] if isinstance(y, tuple) else y for y in (proc.yield_items or [])]
+        cost_only = yields == ["totalCost"]
+        rows = []
+        for graph_id in graphs:
+            if cost_only:
+                cost = _call_classmethod(
+                    self.conn, "Graph.KG.TraversalPaths", "DijkstraCost",
+                    source_id, target_id, max_cost, direction, preds, graph_id, max_hops,
+                )
+                # "" is no path; 0 (a node to itself) is a cost
+                if cost is not None and str(cost) != "":
+                    rows.append(["", float(cost)])
+                continue
+            # a failed search raises, and so does an answer that is not JSON: before 4.6.0 (R155) both were logged and
+            # answered no rows, which reads as "there is no path"
+            raw = _call_classmethod(
+                self.conn,
+                "Graph.KG.Traversal",
+                "DijkstraJson",
+                source_id,
+                target_id,
+                weight_prop,
+                max_cost,
+                max_hops,
+                direction,
+                preds,
+                graph_id,
+            )
+            result_str = str(raw) if raw else "{}"
+            if result_str == "{}":
+                continue
+            path_obj = _json.loads(result_str)
+            # the path as the dict of its keys (nodes, rels, costs, length, totalCost), as the translated CALL answers
+            # it: 4.6.0 R314, it answered the JSON text
+            rows.append([path_obj, float(path_obj.get("totalCost", 0))])
+        return IVGResult(columns=["path", "totalCost"], rows=rows)
+
+    def _proc_db_labels(self, proc) -> Optional[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        cursor.execute(f"SELECT DISTINCT label FROM {self._ivg_schema}.rdf_labels ORDER BY label")
+        labels = [row[0] for row in cursor.fetchall()]
+        return IVGResult(columns=["label"], rows=[[l] for l in labels])
+
+    def _proc_db_relationshiptypes(self, proc) -> Optional[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        cursor.execute(f"SELECT DISTINCT p FROM {self._ivg_schema}.rdf_edges ORDER BY p")
+        types = [row[0] for row in cursor.fetchall()]
+        return IVGResult(columns=["relationshipType"], rows=[[t] for t in types])
+
+    def _proc_db_schema_visualization(self, proc) -> Optional[Dict[str, Any]]:
+        schema = self.get_schema_visualization()
+        nodes = schema.get("nodes", [])
+        rels = schema.get("relationships", [])
+        return IVGResult(columns=["nodes", "relationships"], rows=[[nodes, rels]])
+
+    def _proc_db_schema_nodetypeproperties(self, proc) -> Optional[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        cursor.execute(f"SELECT DISTINCT label FROM {self._ivg_schema}.rdf_labels ORDER BY label")
+        labels = [row[0] for row in cursor.fetchall()]
+        rows = []
+        for label in labels:
+            cursor.execute(
+                f"SELECT TOP 1 rl.s FROM {self._ivg_schema}.rdf_labels rl WHERE rl.label = ?",
+                [label],
+            )
+            sample = cursor.fetchone()
+            if sample:
+                cursor.execute(
+                    f'SELECT DISTINCT TOP 20 "key" FROM {self._ivg_schema}.rdf_props '
+                    'WHERE s = ? ORDER BY "key"',
+                    [sample[0]],
+                )
+                for (prop_name,) in cursor.fetchall():
+                    rows.append(
+                        [
+                            f":`{label}`",
+                            [label],
+                            prop_name,
+                            ["String"],
+                            False,
+                        ]
+                    )
+        return IVGResult(
+            columns=[
+                "nodeType",
+                "nodeLabels",
+                "propertyName",
+                "propertyTypes",
+                "mandatory",
+            ],
+            rows=rows,
+        )
+
+    def _proc_db_schema_reltypeproperties(self, proc) -> Optional[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        rows = []
+        try:
+            cursor.execute(
+                f"SELECT DISTINCT p FROM {self._ivg_schema}.rdf_edges WHERE p IS NOT NULL ORDER BY p"
+            )
+            rel_types = [r[0] for r in cursor.fetchall()]
+            for rel_type in rel_types[:50]:
+                props = {"weight"}
+                cursor.execute(
+                    f"SELECT TOP 1 qualifiers FROM {self._ivg_schema}.rdf_edges WHERE p = ? AND qualifiers IS NOT NULL",
+                    [rel_type],
+                )
+                row = cursor.fetchone()
+                if row and row[0]:
+                    try:
+                        keys = list(json.loads(str(row[0])).keys())
+                        props.update(keys[:20])
+                    except Exception:
+                        pass
+                for prop in sorted(props):
+                    rows.append([rel_type, prop, ["STRING"], False])
+        except Exception as e:
+            logger.debug("relTypeProperties query failed: %s", e)
+        return IVGResult(
+            columns=["relType", "propertyName", "propertyTypes", "mandatory"], rows=rows
+        )
+
+    def _proc_dbms_components(self, proc) -> Optional[Dict[str, Any]]:
+        return IVGResult(
+            columns=["name", "versions", "edition"],
+            rows=[["iris-vector-graph", ["5.0.0"], "community"]],
+        )
+
+    def _proc_dbms_procedures(self, proc) -> Optional[Dict[str, Any]]:
+        def _proc(n, sig, desc, mode="READ"):
+            return [n, sig, desc, mode, False, {}, "neo4j", False, True, []]
+
+        procs = [
+            _proc("db.labels", "db.labels() :: (label :: STRING)", "List all labels"),
+            _proc(
+                "db.relationshipTypes",
+                "db.relationshipTypes() :: (relationshipType :: STRING)",
+                "List all rel types",
+            ),
+            _proc(
+                "db.schema.visualization",
+                "db.schema.visualization() :: (nodes :: LIST, relationships :: LIST)",
+                "Schema visualization",
+            ),
+            _proc(
+                "db.schema.nodeTypeProperties",
+                "db.schema.nodeTypeProperties() :: (nodeType :: STRING, nodeLabels :: LIST, propertyName :: STRING, propertyTypes :: LIST, mandatory :: BOOLEAN)",
+                "Node type props",
+            ),
+            _proc(
+                "db.schema.relTypeProperties",
+                "db.schema.relTypeProperties() :: (relType :: STRING, propertyName :: STRING, propertyTypes :: LIST, mandatory :: BOOLEAN)",
+                "Rel type props",
+            ),
+            _proc(
+                "dbms.components",
+                "dbms.components() :: (name :: STRING, versions :: LIST, edition :: STRING)",
+                "Server components",
+                "DBMS",
+            ),
+            _proc(
+                "dbms.procedures",
+                "dbms.procedures() :: (name :: STRING, signature :: STRING, description :: STRING, mode :: STRING, "
+                "admin :: BOOLEAN, option :: MAP, defaultBuiltInRoles :: STRING, isDeprecated :: BOOLEAN, "
+                "worksOnSystem :: BOOLEAN, argumentDescription :: LIST)",
+                "List procedures",
+                "DBMS",
+            ),
+            _proc(
+                "dbms.functions",
+                "dbms.functions() :: (name :: STRING, signature :: STRING, description :: STRING, aggregating :: BOOLEAN, "
+                "defaultBuiltInRoles :: LIST, isDeprecated :: BOOLEAN, argumentDescription :: LIST, "
+                "returnDescription :: STRING, category :: STRING)",
+                "List functions",
+                "DBMS",
+            ),
+            _proc(
+                "dbms.clientConfig",
+                "dbms.clientConfig() :: (key :: STRING, value :: STRING)",
+                "Client config",
+                "DBMS",
+            ),
+            _proc(
+                "dbms.security.showCurrentUser",
+                "dbms.security.showCurrentUser() :: (username :: STRING, roles :: LIST, flags :: LIST)",
+                "Current user",
+                "DBMS",
+            ),
+            _proc(
+                "dbms.queryJmx",
+                "dbms.queryJmx(query :: STRING) :: (name :: STRING, description :: STRING, attributes :: MAP)",
+                "Query JMX management data",
+                "DBMS",
+            ),
+        ]
+        return IVGResult(
+            columns=[
+                "name",
+                "signature",
+                "description",
+                "mode",
+                "admin",
+                "option",
+                "defaultBuiltInRoles",
+                "isDeprecated",
+                "worksOnSystem",
+                "argumentDescription",
+            ],
+            rows=procs,
+        )
+
+    def _proc_db_propertykeys(self, proc) -> Optional[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        cursor.execute(f'SELECT DISTINCT TOP 1000 "key" FROM {self._ivg_schema}.rdf_props ORDER BY "key"')
+        keys = [row[0] for row in cursor.fetchall()]
+        return IVGResult(columns=["propertyKey"], rows=[[k] for k in keys])
+
+    def _proc_dbms_clientconfig(self, proc) -> Optional[Dict[str, Any]]:
+        return IVGResult(
+            columns=["key", "value"],
+            rows=[
+                ["browser.allow_outgoing_connections", "false"],
+                ["browser.credential_timeout", "0"],
+                ["browser.retain_connection_credentials", "true"],
+                ["browser.retain_editor_history", "true"],
+                ["browser.post_connect_cmd", ""],
+                ["dbms.security.auth_enabled", "false"],
+            ],
+        )
+
+    def _proc_dbms_security_showcurrentuser(self, proc) -> Optional[Dict[str, Any]]:
+        return IVGResult(columns=["username", "roles", "flags"], rows=[["neo4j", [], []]])
+
+    def _proc_dbms_functions(self, proc) -> Optional[Dict[str, Any]]:
+        return IVGResult(
+            columns=[
+                "name",
+                "signature",
+                "description",
+                "aggregating",
+                "defaultBuiltInRoles",
+                "isDeprecated",
+                "argumentDescription",
+                "returnDescription",
+                "category",
+            ],
+            rows=[],
+        )
+
+    def _proc_dbms_queryjmx(self, proc) -> Optional[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        cursor.execute(f"SELECT COUNT(*) FROM {self._ivg_schema}.nodes")
+        node_count = cursor.fetchone()[0]
+        cursor.execute(f"SELECT COUNT(*) FROM {self._ivg_schema}.rdf_edges")
+        edge_count = cursor.fetchone()[0]
+        pfx = "org.neo4j:instance=kernel#0"
+        return IVGResult(
+            columns=["name", "description", "attributes"],
+            rows=[
+                [
+                    f"{pfx},name=Store file sizes",
+                    "Store file sizes",
+                    {
+                        "TotalStoreSize": {"value": node_count * 200},
+                        "NodeStoreSize": {"value": node_count * 100},
+                        "RelationshipStoreSize": {"value": edge_count * 100},
+                        "PropertyStoreSize": {"value": node_count * 50},
+                        "StringStoreSize": {"value": node_count * 30},
+                        "ArrayStoreSize": {"value": 0},
+                        "IndexStoreSize": {"value": 0},
+                        "LabelStoreSize": {"value": node_count * 10},
+                        "SchemaStoreSize": {"value": 4096},
+                    },
+                ],
+                [
+                    f"{pfx},name=Primitive count",
+                    "Primitive count",
+                    {
+                        "NumberOfNodeIdsInUse": {"value": node_count},
+                        "NumberOfRelationshipIdsInUse": {"value": edge_count},
+                        "NumberOfPropertyIdsInUse": {"value": node_count * 3},
+                        "NumberOfRelationshipTypeIdsInUse": {"value": 20},
+                        "NumberOfLabelIdsInUse": {"value": 5},
+                    },
+                ],
+                [
+                    f"{pfx},name=Page cache",
+                    "Page cache statistics",
+                    {
+                        "Hits": {"value": 1000},
+                        "Faults": {"value": 10},
+                        "HitRatio": {"value": 0.99},
+                        "UsageRatio": {"value": 0.5},
+                        "FileMappings": {"value": 5},
+                        "FileUnmappings": {"value": 0},
+                        "BytesRead": {"value": 1024 * 1024},
+                        "BytesWritten": {"value": 1024},
+                        "FlushEvents": {"value": 0},
+                        "EvictionExceptions": {"value": 0},
+                    },
+                ],
+                [
+                    f"{pfx},name=Transactions",
+                    "Transaction statistics",
+                    {
+                        "LastCommittedTxId": {"value": 1},
+                        "CurrentCommittedTxId": {"value": 1},
+                        "LastClosedTxId": {"value": 1},
+                        "NumberOfOpenTransactions": {"value": 0},
+                        "PeakNumberOfConcurrentTransactions": {"value": 1},
+                        "NumberOfOpenedTransactions": {"value": 1},
+                        "NumberOfCommittedTransactions": {"value": 1},
+                        "NumberOfRolledBackTransactions": {"value": 0},
+                        "NumberOfTerminatedTransactions": {"value": 0},
+                    },
+                ],
+                [
+                    f"{pfx},name=Kernel",
+                    "Kernel information",
+                    {
+                        "KernelVersion": {"value": "iris-vector-graph-1.47.0"},
+                        "StoreId": {"value": "store-001"},
+                        "DatabaseName": {"value": "neo4j"},
+                        "ReadOnly": {"value": False},
+                        "MBeanQuery": {"value": pfx},
+                    },
+                ],
+                [
+                    f"{pfx},name=Configuration",
+                    "Configuration",
+                    {
+                        "dbms.jvm.heap.initial_size": {"value": "256m"},
+                        "dbms.jvm.heap.max_size": {"value": "512m"},
+                        "dbms.logs.native.size": {"value": "20m"},
+                    },
+                ],
+            ],
+        )
+
+    def _proc_apoc_meta_data(self, proc) -> Optional[Dict[str, Any]]:
+        cursor = self.conn.cursor()
+        cursor.execute(f"SELECT DISTINCT label FROM {self._ivg_schema}.rdf_labels ORDER BY label")
+        labels = [row[0] for row in cursor.fetchall()]
+        rows = []
+        for label in labels[:50]:
+            cursor.execute(
+                f'SELECT DISTINCT TOP 20 "key" FROM {self._ivg_schema}.rdf_props rp '
+                f"JOIN {self._ivg_schema}.rdf_labels rl ON rl.s = rp.s "
+                'WHERE rl.label = ? ORDER BY "key"',
+                [label],
+            )
+            props = [row[0] for row in cursor.fetchall()]
+            if props:
+                for prop_name in props:
+                    rows.append([label, prop_name, "STRING", "node", False, False, False])
+            else:
+                rows.append([label, None, "STRING", "node", False, False, False])
+        cursor.execute(f"SELECT DISTINCT p FROM {self._ivg_schema}.rdf_edges ORDER BY p")
+        for (rel_type,) in cursor.fetchall():
+            rows.append(
+                [
+                    rel_type,
+                    None,
+                    "RELATIONSHIP",
+                    "relationship",
+                    False,
+                    False,
+                    False,
+                ]
+            )
+        return IVGResult(
+            columns=[
+                "label",
+                "property",
+                "type",
+                "elementType",
+                "unique",
+                "index",
+                "existence",
+            ],
+            rows=rows,
+        )
+
+    def _proc_apoc_meta_schema(self, proc) -> Optional[Dict[str, Any]]:
+        """``CALL apoc.meta.schema() YIELD value``: one map, each label and relationship type of ``apoc.meta.data``
+        to ``{"type": "node" | "relationship", "properties": {name: {"type", "indexed", "unique", "existence"}}}``.
+        Before 4.6.0 (R314) ``value`` was ``apoc.meta.data``'s IVGResult object, not a map."""
+        data = self._proc_apoc_meta_data(proc)
+        schema: Dict[str, Any] = {}
+        for row in data.rows:
+            r = dict(zip(data.columns, row))
+            entry = schema.setdefault(r["label"], {"type": r["elementType"], "properties": {}})
+            if r["property"] is not None:
+                entry["properties"][r["property"]] = {
+                    "type": r["type"], "indexed": r["index"], "unique": r["unique"], "existence": r["existence"],
+                }
+        return IVGResult(columns=["value"], rows=[[schema]])
+
+    def _try_system_procedure(
+        self, proc, parameters=None, graph=None
+    ) -> Optional[Dict[str, Any]]:
+        name = proc.procedure_name.lower()
+
+        # GDS → ivg shim: intercept gds.* calls before normal dispatch (the ones answered here have handlers).
+        if name.startswith("gds.") and name not in self._SYSTEM_PROCEDURES:
+            from iris_vector_graph._engine.query import _handle_gds_shim
+
+            gds_result = _handle_gds_shim(proc)
+            if gds_result is not None:
+                if isinstance(gds_result, tuple):
+                    # (shimmed_proc, None) sentinel — re-dispatch with ivg procedure name.
+                    target = gds_result[0].procedure_name
+                    result = self._try_system_procedure(gds_result[0], parameters, graph)
+                    if result is None:
+                        # no handler answers the ivg name: the translator would answer the gds call with no rows
+                        raise ValueError(
+                            f"{proc.procedure_name} is not answered by IVG: its equivalent, {target}, takes IVG's "
+                            f"arguments, not a GDS graph name and configuration. Call {target}(...) instead."
+                        )
+                    return result
+                # IVGResult with error — return as-is.
+                return gds_result
+
+        handler_method_name = self._SYSTEM_PROCEDURES.get(name)
+        if handler_method_name is not None:
+            handler = getattr(self, handler_method_name)
+            # Most handlers read nothing but the call itself; the ones that need the
+            # query's parameters or its `USE GRAPH` scope declare them.
+            import inspect as _inspect
+
+            accepted = _inspect.signature(handler).parameters
+            extra = {
+                key: value
+                for key, value in (("parameters", parameters), ("graph", graph))
+                if key in accepted
+            }
+            return handler(proc, **extra)
+
+        if name.startswith("apoc."):
+            return IVGResult(columns=["value"], rows=[])
+
+        if name.startswith("dbms.") or name.startswith("db."):
+            return IVGResult(columns=["value"], rows=[])
+
+        return None
+
+    _LEGACY_TO_CONCEPT = {
+        "ivf": "vector",
+        "vec": "vector",
+        "bm25": "fulltext",
+        "plaid": "multivector",
+        "hnsw": "hnsw",
+        "neighborhood_vector": "neighborhood_vector",
+    }
+
+    # Text Search Operations
+
+    # Graph Traversal Operations
+
+    # Personalized PageRank Operations
+
+    # --- ObjectScript capabilities ---
+
+    @property
+    def capabilities(self) -> IRISCapabilities:
+        """What the namespace has deployed: the Graph.KG classes, ``^KG``, ``^NKG``.
+
+        Detected on first use, once, from ``%Dictionary`` (and, when the classes are
+        there, the ``Graph.KG.Meta`` markers), so a fresh engine on a deployed
+        namespace takes the server-side paths without ``initialize_schema()`` — which
+        on a loaded graph also builds the full-text index. ``initialize_schema()`` and
+        callers may assign it; assigning ``None`` detects again on next use.
+        """
+        caps = getattr(self, "_capabilities", None)
+        if caps is None:
+            caps = self._detect_capabilities()
+            self._capabilities = caps
+        return caps
+
+    @capabilities.setter
+    def capabilities(self, value: Optional[IRISCapabilities]) -> None:
+        self._capabilities = value
+        self.__dict__.pop("_prop_set_ok", None)  # setup may have deployed Prop_Set: ask again
+
+    @property
+    def _prop_set_deployed(self) -> bool:
+        """Whether the IVG Schema has Prop_Set (Graph.KG.PropWrite, 4.7.0), which every Cypher UPDATE of a node
+        property calls; asked once and kept until the capabilities are set again (initialize_schema). When the
+        dictionary cannot be read the answer is True: a missing function then fails the write (SQLCODE -359), where
+        False would silently leave a retyped value its old type."""
+        ok = self.__dict__.get("_prop_set_ok")
+        if ok is None:
+            from iris_vector_graph._dictionary import compiled_method_exists
+            from iris_vector_graph.schema_name import FORWARDER_CLASS, schema_package
+
+            try:
+                ok = compiled_method_exists(
+                    self.conn, f"{schema_package(self._ivg_schema)}.{FORWARDER_CLASS}", "PropSet"
+                )
+            except Exception as exc:
+                logger.debug("Prop_Set detection could not read the dictionary (%s): taken as deployed", exc)
+                ok = True
+            self.__dict__["_prop_set_ok"] = ok
+        return ok
+
+    @property
+    def _known_capabilities(self) -> IRISCapabilities:
+        """The capabilities as set so far, without detecting (all False if none were)."""
+        return getattr(self, "_capabilities", None) or IRISCapabilities()
+
+    def _detect_capabilities(self) -> IRISCapabilities:
+        from iris_vector_graph.embedded import EmbeddedConnection
+
+        try:
+            cursor = self.conn.cursor()
+        except Exception as exc:
+            logger.debug("capability detection: no cursor (%s)", exc)
+            return IRISCapabilities()
+        # The ^KG markers are a native call. createIRIS on the connection that runs
+        # cursor DDL corrupts its parameter binding (see _iris_obj), so they go through
+        # the engine's own native handle, opened only if the classes are there.
+        native = self.conn if isinstance(self.conn, EmbeddedConnection) else _EngineNative(self)
+        try:
+            caps = GraphSchema.check_objectscript_classes(cursor, conn=native)
+        except ClassesUnreadable:
+            raise  # refused, not absent: answering as "not deployed" made khop() answer [] (4.6.0 R050)
+        except Exception as exc:
+            logger.debug("capability detection failed (%s)", exc)
+            return IRISCapabilities()
+        if not caps.objectscript_deployed:
+            logger.info(
+                "Graph.KG classes not found in this namespace: bulk loads, BFS and "
+                "PageRank use the Python paths. initialize_schema() deploys them."
+            )
+        return caps
+
+    # --- Arno acceleration (optional) ---
+
+    def _detect_arno(self) -> bool:
+        if self._arno_available is not None:
+            return self._arno_available
+        detector = getattr(self._store, "_detect_arno", None)
+        if detector is None:
+            self._arno_available = False
+            self._arno_capabilities = {}
+            return False
+        self._arno_available = detector()
+        self._arno_capabilities = dict(getattr(self._store, "_arno_capabilities", {}) or {})
+        return self._arno_available
+
+    def _arno_call(self, cls: str, method: str, *args) -> str:
+        iris_obj = self._iris_obj()
+        raw = str(iris_obj.classMethodValue(cls, method, *args))
+        if not raw.startswith("CHUNKED:"):
+            return raw
+        _, tag, n_str = raw.split(":", 2)
+        n = int(n_str)
+        return "".join(
+            str(iris_obj.classMethodValue(cls, "ReadLargeOutChunk", tag, i))
+            for i in range(1, n + 1)
+        )
+
+    # ── The connection, behind the first-access check (spec 262, FR-006, FR-006a) ──
+
+    conn = guarded_connection(
+        """The engine's DB-API connection. Reading it is a database access: while the namespace refuses this engine
+        (its IVG Schema was set up by an earlier release and not upgraded) it raises ``IVGSchemaError`` instead."""
+    )
+
+    def _check_namespace_schema(self) -> Optional[FirstAccessCheck]:
+        """Read the namespace's IVG Schema record before any SQL; the pending check when the namespace refuses this
+        engine, else None.
+
+        Only an IRIS connection is checked (anything else has no Native API to read the record with). A refusal is
+        kept as a pending check that runs again on every read of ``conn`` until it passes, so a refused engine raises
+        on its first access with nothing sent (FR-006a) and an engine whose namespace was upgraded meanwhile goes on.
+        A record that cannot be read at all (no Native API privilege) is logged, and not checked.
+        """
+        if not is_iris_connection(self.__dict__.get("_conn")):
+            return None
+        guard = FirstAccessCheck(lambda: check_first_access(self._iris_obj(), self._schema_prefix))
+        try:
+            guard.ensure()
+        except IVGSchemaError:
+            return guard
+        except Exception as exc:
+            logger.warning(
+                "IVG could not read this namespace's IVG Schema record (%s); the check that the namespace's schema is "
+                "%s is skipped for this engine.", exc, self._schema_prefix,
+            )
+        return None
+
+    def _schema_check_suspended(self):
+        """For the calls that must reach a namespace that refuses this engine: setup, status, legacy removal."""
+        guard = self.__dict__.get("_schema_guard")
+        return guard.suspended() if guard is not None else contextlib.nullcontext()
+
+    def _schema_check_passed(self) -> None:
+        """Setup recorded this engine's schema: the namespace accepts it, and the probes construction skipped run."""
+        guard = self.__dict__.get("_schema_guard")
+        if guard is None or not guard.pending:
+            return
+        guard.satisfied()
+        FirstAccessCheck.release_methods(self)
+        store = getattr(self, "_store", None)
+        if store is not None:
+            FirstAccessCheck.release_methods(store)
+        self._index_registry = self._build_index_registry()
+
+    def _waive_schema_check(self) -> None:
+        """For an engine IVG builds inside a migration (``upgrade_to_4_0_0``, the temporal backfill): those run on
+        namespaces no 4.6.0 setup has recorded yet, by design, and name their tables themselves."""
+        self._schema_check_passed()
+
+    # ── VecIndex: lightweight ANN vector search in globals ──
+
+    def _iris_obj(self):
+        # Use a dedicated connection so that iris.createIRIS() never touches self.conn.
+        # Mixing createIRIS() and cursor DDL (DROP/CREATE INDEX) on the same connection
+        # permanently corrupts the IRIS Python driver's parameter binding state.
+        #
+        # In test contexts the pytest conftest monkeypatches iris.createIRIS to redirect
+        # createIRIS(self.conn) to a shared session-level native connection, avoiding
+        # redundant open connections under Community Edition's 5-connection limit.
+        # We detect the monkeypatch by checking the function name: the real createIRIS
+        # is a C extension; the monkeypatch is a Python closure named "_safe_createIRIS".
+        import iris
+
+        from iris_vector_graph.embedded import EmbeddedConnection, EmbeddedIRIS
+
+        if isinstance(unwrap_connection(self.conn), EmbeddedConnection):
+            # Inside IRIS there is no Native API connection to open; call classes directly.
+            return EmbeddedIRIS()
+
+        _create = iris.createIRIS
+        if getattr(_create, "__name__", "") == "_safe_createIRIS":
+            # Test context: monkeypatch handles isolation — call directly.
+            return _create(unwrap_connection(self.conn))
+        # Production path: open a dedicated native connection (never used for cursor DDL), as the
+        # caller. The credentials are the ones the engine was connected with (from_connect keeps
+        # them); a connection object does not retain them. They used to be a hard-coded superuser login
+        # here, so the BM25, vector and ledger calls ran with full rights whatever role the caller
+        # had connected as. When they are not known the caller's own connection is used instead,
+        # which carries its role, at the cost of sharing it with cursor DDL (see above).
+        if getattr(self, "_native_conn", None) is None or getattr(self._native_conn, "isClosed", lambda: True)():
+            params = getattr(self, "_connection_params", None) or {}
+            hostname = getattr(self.conn, "hostname", None) or params.get("hostname")
+            port = getattr(self.conn, "port", None) or params.get("port")
+            namespace = getattr(self.conn, "namespace", None) or params.get("namespace")
+            username = params.get("username")
+            if not (hostname and port and namespace and username):
+                return _create(unwrap_connection(self.conn))
+            try:
+                import iris.dbapi as _dbapi
+
+                self._native_conn = _dbapi.connect(
+                    hostname=hostname,
+                    port=port,
+                    namespace=namespace,
+                    username=username,
+                    password=params.get("password", ""),
+                )
+            except Exception:
+                return _create(self.conn)
+        return _create(self._native_conn)
+
+    # ── PLAID: multi-vector retrieval (ColBERT-style) ──

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/summary-counts-objects/20261116T021952Z/models/rdf_reporting/rdf_reporting.rs:318:10
+    |
+316 | pub proof fn theorem_summary_counts_subjects_not_objects(g:Text,sub:Term,p:Text,a:Term,b:Term)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+317 |  requires a!=b
+318 |  ensures summary(seq![Quad{graph:g,triple:Triple{s:sub,p,o:a}},Quad{graph:g,triple:Triple{s:sub,p,o:b}}]).nodes==1
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

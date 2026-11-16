@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_graph_filter_is_request_value"
+    ],
+    "find": "c.graph.is_none() || graph(g)==c.graph.unwrap()",
+    "name": "graph-scope-ignored",
+    "replace": "true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_graph_filter_is_request_value"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "f76eabe9ab4f917402fb5af6a89da9845e5beddd30e32e9ebbe9bc0c670aa24b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/graph-scope-ignored/20261116T015954Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_graph_filter_is_request_value": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T015954Z-control-graph-scope-ignored-theorem_graph_filter_is_request_value.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T015954Z-control-graph-scope-ignored.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T015957Z-control-graph-scope-ignored/logs/20261116T015954Z-control-graph-scope-ignored-theorem_graph_filter_is_request_value.log": "b6d0f73a8e155f1d6e9e52dc63f61fb5912e651d662ec0c6ebc443f3fc6eafc5",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T015957Z-control-graph-scope-ignored/logs/20261116T015954Z-control-graph-scope-ignored.log": "5e8ff586235ae9865cd5b7069fb5bce2377c73c6669f891581177b9654a08863"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

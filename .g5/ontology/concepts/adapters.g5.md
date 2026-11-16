@@ -52,3 +52,5 @@ New owner in the consolidated uplift: the guidance arm's ontology had no stateme
 Public case M17. The baseline scored the playbook arm's ontology 0 here although `OPS-T4.6.5` states the first outcome: the rule sat in the operations module with no adapters owner. The "other errors raise" half is from `_is_no_data` and the re-raise at `embedded.py:204-205`, `:361-362`. Suspected divergence (code reading and a scripted run, see the model notes): when IRIS refuses the prepared batch path as unsupported after some rows already ran, the fallback runs every row of the batch again from the first (`embedded.py:399-410`).
 
 Findings: [A batch fallback in the embedded cursor reruns the rows that already ran](../../Verus_verification/bugs_issues.md#bug-adp-001)
+
+Audit reproduction: [bug-adp-001](../../Verus_verification/bugs_issues.md#bug-adp-001) is partial reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/components.json). This is product observation, not executable-body verification.

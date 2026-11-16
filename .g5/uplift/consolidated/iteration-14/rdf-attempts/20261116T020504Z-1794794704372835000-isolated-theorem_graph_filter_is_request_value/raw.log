@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/graph-scope-ignored/20261116T020500Z/models/rdf_reporting/rdf_reporting.rs:309:10
+    |
+307 | pub proof fn theorem_graph_filter_is_request_value(g:Option<Text>,c:Config)
+    | --------------------------------------------------------------------------- at the end of the function body
+308 |  requires c.graph.is_some(),graph_selected(g,c)
+309 |  ensures graph(g)==c.graph.unwrap()
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

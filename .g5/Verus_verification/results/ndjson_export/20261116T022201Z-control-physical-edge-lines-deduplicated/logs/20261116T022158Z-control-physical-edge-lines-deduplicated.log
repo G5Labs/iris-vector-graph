@@ -1,0 +1,35 @@
+verification results:: 142 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/physical-edge-lines-deduplicated/20261116T022158Z/models/ndjson_export/ndjson_export.rs:193:1
+    |
+193 | pub proof fn theorem_edge_pass_actual_append(f:File,es:Seq<EdgeRow>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/physical-edge-lines-deduplicated/20261116T022158Z/models/ndjson_export/ndjson_export.rs:194:10
+    |
+194 |  ensures edge_pass(f,es).lines==f.lines+edge_events(es),edge_pass(f,es).nodes==f.nodes,edge_pass(f,es).edges==f.edges+es.len(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+195 |  decreases es.len(),
+196 |  {if es.len()>0{let next=append_edge(f,edge_ev...());assert(f.lines+Seq::empty()=~=f.lines);}}
+    |   --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/physical-edge-lines-deduplicated/20261116T022158Z/models/ndjson_export/ndjson_export.rs:194:57
+    |
+194 |  ensures edge_pass(f,es).lines==f.lines+edge_events(es),edge_pass(f,es).nodes==f.nodes,edge_pass(f,es).edges==f.edges+es.len(),
+    |                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+195 |  decreases es.len(),
+196 |  {if es.len()>0{let next=append_edge(f,edge_ev...());assert(f.lines+Seq::empty()=~=f.lines);}}
+    |   --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/physical-edge-lines-deduplicated/20261116T022158Z/models/ndjson_export/ndjson_export.rs:298:68
+    |
+298 | pub proof fn witness_parallel_physical_rows_both_written() ensures export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![EdgeRow{graph:0,serial:0,source:0,predicate:0,target:0,raw:None},EdgeRow{serial:1,..EdgeRow{graph:0,serial:0,source:0,predicate:0,target:0,raw:None}}]).edges==2, {...
+    | ----------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 3 previous errors
+

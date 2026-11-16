@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_inferred_only_still_has_envelope"
+    ],
+    "find": "if es.len()>0{envelope(e,pos,c)+emit_quals(es,e,pos,c)}",
+    "name": "inferred-only-envelope-dropped",
+    "replace": "if es.len()>0 && exists|i:int|0<=i<es.len() && es[i].key!=t(\"inferred\"){envelope(e,pos,c)+emit_quals(es,e,pos,c)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_inferred_only_still_has_envelope"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "70eb4f615b746ea00e6b944d61f57c1900467e5158f67353782ce8fee7906550"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/inferred-only-envelope-dropped/20261116T021938Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_inferred_only_still_has_envelope": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T021938Z-control-inferred-only-envelope-dropped-theorem_inferred_only_still_has_envelope.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T021938Z-control-inferred-only-envelope-dropped.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T021941Z-control-inferred-only-envelope-dropped/logs/20261116T021938Z-control-inferred-only-envelope-dropped-theorem_inferred_only_still_has_envelope.log": "4d8f2ec087ecfa9d3799ecb702637cd26205ef1370597d1e2f7fbe39070b430f",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T021941Z-control-inferred-only-envelope-dropped/logs/20261116T021938Z-control-inferred-only-envelope-dropped.log": "164f72cbddbafcc5207ff00a56e461b133ca5b58f982b54aae6f5fde3c7af656"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

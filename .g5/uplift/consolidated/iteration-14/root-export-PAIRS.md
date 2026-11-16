@@ -1,0 +1,14 @@
+# Root ordinary export contrasts before new model and selected implementation reads
+
+This panel is source-informed by sealed13 ordinary surveys. It is not blind discovery/private scoring. Product pin and before image are fixed in inputs.json. Primary public intent read first: SEMANTIC_LAYER39–148; USER_GUIDE1170–1181; API_REFERENCE2163–2169,2253–2284; DATA_FORMATS section3. Existing node_read/bulk_children/ndjson_import/ledger_content remain substantive prior hits. No interrupted input or outcome is used.
+
+1. RDF graph None selects all; empty selects default; named selects that graph. Same-ID labels in a different graph cannot select a source row. Empty node/label collections are unfiltered. Matching labels themselves, source properties and outgoing edges have distinct projections.
+2. A physical bare node adds no RDF subject; a label/property/edge subject does. Duplicate unqualified SPO collapse in one context; same SPO across two contexts serialize as two quads yet report one union triple. Distinct qualifier rows allocate distinct reifier envelopes.
+3. A nonempty inferred-only qualifier dictionary still produces its envelope while omitting its inferred property. A normal qualifier adds its property too. This is an as-built source-informed contrast; no policy change inferred.
+4. Canonical integer, decimal and boolean property lexemes yield typed literals; noncanonical numeric spelling can take the decimal path. The source survey reports false/zero qualifier fallback to plain text. Public docs broadly describe literal types but do not directly resolve this qualifier exception; preserve the distinction and authority uncertainty rather than silently give intended-policy credit.
+5. RDF triples/report nodes/report edges count union triples/distinct subjects/IRI-object non-rdf:type triples, including qualifier envelopes. None are physical node/edge row counts. Context count and union count are different readers.
+6. NDJSON default raw node census precedes structural edge events, excludes named and marked temporal rows and counts successful emitted lines. Two parallel structural rows yield two lines rather than RDF set collapse.
+7. Hydrated node properties use existing reserved-key aliases and delivered-row collision behavior; properties projection strips only structural id/labels. Export/import callback compatibility preserves that displayed projection, not raw-key identity or persisted physical inverse.
+8. Healthy returned counts equal actual parsed record kinds/file contents under explicit codec/SQL/stable-view premises. Generic failures, partial file atomicity and import writer persistence remain unassessed; no guarantee inferred.
+
+Root now traces selected bodies and narrow historical tests before final owner text. Builders may prepare architecture but no new proof until owners are ready. No fixed cap or convergence claim.

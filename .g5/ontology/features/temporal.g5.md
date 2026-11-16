@@ -219,6 +219,13 @@ Are the endpoint nodes that a temporal write creates, or that a purge retires, g
 - Alternative: treat such nodes like marked edges and skip them in the starting snapshot and verification.
 - Alternative: govern them, so these node writes are refused or recorded while the ledger is on, and a purge never retires a node the ledger recorded.
 
+<a id="temporal.structural.ledger-nodes.policy"></a>
+[Q · temporal.structural.ledger-nodes.policy]
+
+Are the end nodes a temporal write creates governed by the ledger?
+
+- Working assumption (agent, unratified): Treat temporal-created endpoint nodes as derived only when their provenance can distinguish them from unrecorded user nodes.
+
 <a id="temporal.structural.explicit-delete"></a>
 [Q · temporal.structural.explicit-delete]
 
@@ -380,6 +387,13 @@ What should an insert collision inside a changeset do?
 - Alternative: succeed without recording the write.
 
 
+<a id="temporal.ledger.scope-policy"></a>
+[Q · temporal.ledger.scope-policy]
+
+Is the temporal index inside the ledger's guarantee?
+
+- Working assumption (agent, unratified): Keep temporal operations in audit history while treating exact temporal replay and full verification coverage as separate unresolved promises.
+
 ## Metadata
 
 ### temporal.edge
@@ -393,6 +407,12 @@ The Python engine calls only the seconds entry point; the millisecond class shar
 
 Findings: [create_edge_temporal with no timestamp stores the event at time 0](../../Verus_verification/bugs_issues.md#bug-tmp-007)
 
+Audit reproduction: [bug-tmp-007](../../Verus_verification/bugs_issues.md#bug-tmp-007) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Audit reproduction: [F-0509](../../Verus_verification/bugs_issues.md#F-0509) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [InternLabelSet's canonical form is not valid JSON for some inputs](../../Verus_verification/bugs_issues.md#F-0509).
+
 ### temporal.edge.clock
 - agent
 - user-facing-behavior
@@ -401,6 +421,10 @@ Findings: [create_edge_temporal with no timestamp stores the event at time 0](..
 - Formal: [raw timestamp to final reader](../../Verus_verification/models/temporal_clock/temporal_clock.rs), [source roles and scope](../../Verus_verification/models/temporal_clock/NOTES.md).
 
 Evidence: [source-frozen neighboring outcomes](../../uplift/consolidated/iteration-7/timestamp-PAIRS.md), [actual native clock/fallback/window cases](../../uplift/consolidated/iteration-7/timestamp-native.json). Known bug-tmp-007/F-0502 is one missing-time issue; F-0513 separately concerns negative bulk values. The new proof covers default insert and pre-effect refusal, not partial-prefix replay, all native coercions, strict ledger, millisecond entry points or arbitrary clocks.
+
+Audit reproduction: [F-0502](../../Verus_verification/bugs_issues.md#F-0502) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [A temporal write with no time lands at epoch 0, not at the current time](../../Verus_verification/bugs_issues.md#F-0502).
 
 ### temporal.edge.graph-scope
 - Sources: [ADR-0003](../../../docs/adr/0003-two-graph-key-derivations.md), [GraphKey](../../../iris_src/src/Graph/KG/GraphKey.cls), [glossary](../../../CONTEXT.md#L28-L58); live tests: [graph scope](../../../tests/integration/test_223_temporal_graph_scope.py)
@@ -416,7 +440,7 @@ Evidence: [source-frozen neighboring outcomes](../../uplift/consolidated/iterati
 
 Observed divergence: the paged window reader reads the temporal stores directly, snapshot restore writes them from Python, and the source-text guard checks writers only.
 
-Findings: [Temporal documentation contradicts the code in several places](../../Verus_verification/bugs_issues.md#bug-doc-009)
+Findings: [Temporal documentation contradicts the code in several places](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-009)
 
 ### temporal.write
 - Sources: [WriteStores and BulkInsertCounts](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L67-L183), [Python writes](../../../iris_vector_graph/_engine/temporal.py#L246-L476), [inbound entry](../../../specs/204-temporal-index-gaps/spec.md#L50-L80), [glossary: Collision](../../../CONTEXT.md#L172-L176), [upsert history](../../../CHANGELOG.md#L4656-L4670); live tests: [collisions](../../../tests/e2e/test_254_collisions_e2e.py), [upsert weight](../../../tests/integration/test_221_upsert_weight_e2e.py)
@@ -428,6 +452,8 @@ Findings: [Temporal documentation contradicts the code in several places](../../
 As built (verified [temporal.py](../../../iris_vector_graph/_engine/temporal.py#L289-L332)): a direct write is one server call with no transaction. With the adjacency index declared, the marked structural edge is written inside that call, after the time-index entry and event counter and before the other statistics. Only without the declared index (a named graph) or with the undocumented alternative flag does the engine write the structural edge afterwards as a separate statement. The one-edge-batch advice comes from the [spec 254 plan](../../../specs/254-temporal-purge-collisions-rebuild/plan.md#L52-L62); the missing-timestamp divergence belongs to [Temporal edge](#temporal.edge).
 
 Findings: [A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written](../../Verus_verification/bugs_issues.md#bug-tmp-001)
+
+Audit reproduction: [bug-tmp-001](../../Verus_verification/bugs_issues.md#bug-tmp-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 ### temporal.write.collision
 - Sources: [spec 254 Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L142-L149), [FR-003](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L124-L126), [glossary: Collision](../../../CONTEXT.md#L172-L176); live tests: [collisions](../../../tests/e2e/test_254_collisions_e2e.py)
@@ -446,6 +472,8 @@ Findings: [A temporal write whose structural step fails keeps its raw entry, can
 Observed divergence: an update adds a second count, adds its weight to the sum and the event counter, and widens the minimum and maximum, so whole-bucket and cut-bucket reads disagree; no test reads statistics after an update (finding F1 in [stage-A notes](../../uplift/ivg-verus-initial/intent/temporal.md)).
 
 Findings: [An update at an occupied temporal coordinate counts the edge twice in the statistics](../../Verus_verification/bugs_issues.md#bug-tmp-002)
+
+Audit reproduction: [bug-tmp-002](../../Verus_verification/bugs_issues.md#bug-tmp-002) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 ### temporal.write.repeatable
 - Sources: [spec 254 US3 and Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L79-L149), [sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L86); live tests: [rebuild](../../../tests/e2e/test_254_rebuild_e2e.py)
@@ -467,6 +495,12 @@ Observed: when a batch call fails, the Python store re-sends every edge of the b
 
 Findings: [A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written](../../Verus_verification/bugs_issues.md#bug-tmp-001)
 
+Audit reproduction: [bug-tmp-001](../../Verus_verification/bugs_issues.md#bug-tmp-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Audit reproduction: [F-C0501](../../Verus_verification/bugs_issues.md#F-C0501) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [A refused temporal write raises but leaves the edge in the temporal index](../../Verus_verification/bugs_issues.md#F-C0501).
+
 ### temporal.write.retry
 - agent
 - user-facing-behavior
@@ -485,6 +519,8 @@ Evidence: [retained predictions](../../uplift/consolidated/iteration-8/retry-PAI
 
 Findings: [Must temporal writes stay exact when several writers touch the same coordinates or triple at once?](../../Verus_verification/open_questions.md#q-tmp-001)
 
+Audit (q-tmp-001): Open owner decision. Working assumption (agent, unratified): Keep first-write-wins and exactness as requirements; concurrent provider behavior is unestablished, not an approved one-writer exemption. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-tmp-001).
+
 ### temporal.stats
 - Sources: [GetAggregate](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1442-L1491), [exact window](../../../CHANGELOG.md#L1221-L1224), [distinct count](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L627-L686); live tests: [exact window](../../../tests/e2e/test_460_r217_temporal_aggregate_window_e2e.py)
 - Children: [after purge](#temporal.stats.after-purge), [cut bucket](#temporal.stats.cut-bucket)
@@ -495,6 +531,16 @@ Findings: [Must temporal writes stay exact when several writers touch the same c
 Velocity and bursts: [docstrings](../../../iris_vector_graph/_engine/temporal.py#L852-L910), [GetVelocity and FindBursts](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L757-L806). Observed divergence: the burst read accepts a predicate and ignores it, while its parameter documentation says it filters; in the millisecond entry point the default "now" is in seconds.
 
 Findings: [An update at an occupied temporal coordinate counts the edge twice in the statistics](../../Verus_verification/bugs_issues.md#bug-tmp-002); [A rolled-back temporal write leaves its statistics counted, so a retry counts the edge twice](../../Verus_verification/bugs_issues.md#bug-tmp-003); [A temporal aggregate read of min, max or avg over an empty window raises ValueError, although the method promises 0.0](../../Verus_verification/bugs_issues.md#bug-tmp-009)
+
+Audit reproduction: [bug-tmp-002](../../Verus_verification/bugs_issues.md#bug-tmp-002) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Audit reproduction: [bug-tmp-003](../../Verus_verification/bugs_issues.md#bug-tmp-003) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Audit reproduction: [bug-tmp-009](../../Verus_verification/bugs_issues.md#bug-tmp-009) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Audit reproduction: [F-0508](../../Verus_verification/bugs_issues.md#F-0508) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [find_burst_nodes accepts a predicate and ignores it](../../Verus_verification/bugs_issues.md#F-0508).
 
 ### temporal.stats.after-purge
 - Sources: [spec 204 US1](../../../specs/204-temporal-index-gaps/spec.md#L20-L48), [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L31-L49), [PurgeBucketRange](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1048-L1066); live tests: [ledger coexistence](../../../tests/integration/test_ledger_us11_temporal_coexist.py)
@@ -511,6 +557,8 @@ Findings: [An update at an occupied temporal coordinate counts the edge twice in
 - data-integrity
 
 Findings: [After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?](../../Verus_verification/open_questions.md#q-tmp-002)
+
+Audit (q-tmp-002): Open owner decision. Working assumption (agent, unratified): Keep retained aggregate history distinct from surviving raw edges; recomputation after partial raw purge needs an explicit history-retention rule. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-tmp-002).
 
 ### temporal.latest
 - Sources: [spec 255 Decisions](../../../specs/255-temporal-window-reader/spec.md#L162-L168), [US3 and FR-007](../../../specs/255-temporal-window-reader/spec.md#L88-L134), [spec 255 plan](../../../specs/255-temporal-window-reader/plan.md#L41-L52), [Latest](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L291-L443); live tests: [latest per source](../../../tests/e2e/test_255_window_reader_us3_e2e.py)
@@ -538,6 +586,8 @@ Spec 255 Decision 1 (Tom, 2026-10-22) chose an index maintained on every write a
 
 Findings: [A rolled-back temporal delete or node erase leaves the bucket's event counter decremented](../../Verus_verification/bugs_issues.md#bug-tmp-010)
 
+Audit reproduction: [bug-tmp-010](../../Verus_verification/bugs_issues.md#bug-tmp-010) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
 ### temporal.structural
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L29), [glossary](../../../CONTEXT.md#L65-L76), [spec 252 FR-014](../../../specs/252-adjacency-functional-index/spec.md#L127-L129), [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L560-L618); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py)
 - Children: [mark](#temporal.structural.mark), [adopt](#temporal.structural.adopt), [end](#temporal.structural.end), [upgrade](#temporal.structural.upgrade), [ledger](#temporal.structural.ledger), [ledger nodes](#temporal.structural.ledger-nodes), [explicit delete](#temporal.structural.explicit-delete)
@@ -545,10 +595,13 @@ Findings: [A rolled-back temporal delete or node erase leaves the bucket's event
 - architecture-decision, user-facing-behavior
 - test-coverage
 
-Findings: [A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written](../../Verus_verification/bugs_issues.md#bug-tmp-001); [A temporal write that races a purge or delete of the same triple can leave a live timestamp with no structural edge](../../Verus_verification/bugs_issues.md#bug-tmp-011); [Remove the unadopted spec-246 Python path for temporal structural rows](../../Verus_verification/design_simplification.md#simp-tmp-001)
+Findings: [A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written](../../Verus_verification/bugs_issues.md#bug-tmp-001); [A temporal write that races a purge or delete of the same triple can leave a live timestamp with no structural edge](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-011); [Remove the unadopted spec-246 Python path for temporal structural rows](../../Verus_verification/design_simplification.md#simp-tmp-001)
 
 
 The non-indexed mirror is [temporal.py](../../../iris_vector_graph/_engine/temporal.py#L304-L331): with a graph named, no declared index and no spec-246 flag, it inserts endpoint nodes and an unmarked `rdf_edges` row without reading the temporal-only registry (review round 3 R3-reader M17).
+
+Audit reproduction: [bug-tmp-001](../../Verus_verification/bugs_issues.md#bug-tmp-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
 ### temporal.structural.mark
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L42), [spec 254 plan, Decision 1](../../../specs/254-temporal-purge-collisions-rebuild/plan.md#L5-L26); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py)
 - Expands: [Implied structural edge](#temporal.structural)
@@ -564,12 +617,16 @@ Findings: [May an explicit delete_edge remove a marked structural row while its 
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [spec 254 sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L80), [create_edge adopt](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1300), [ledger adopt](../../../iris_src/src/Graph/KG/LedgerApply.cls#L465-L475); live tests: [purge path matrix](../../../tests/e2e/test_254_purge_e2e.py), [ledger adopt](../../../tests/integration/test_ledger_us11_temporal_coexist.py)
 - Expands: [Implied structural edge](#temporal.structural)
 - Formal contract: [Python marker and adoption cases](../../Verus_verification/models/edge_acceptance/edge_acceptance.rs)
-- Findings: [caller-supplied marker](../../Verus_verification/bugs_issues.md#F-C0351)
+- Findings: [caller-supplied marker](../../Verus_verification/audits/register-20261115/bugs-review.md#F-C0351)
 - agent
 - data-integrity
 - test-coverage
 
 Observed divergence: a multigraph `MERGE`, an undirected `MERGE` that matches the reverse row, and a `MERGE` with inline nodes still leave the mark; a bulk create adopts with empty qualifiers.
+
+Audit reproduction: [F-0304](../../Verus_verification/bugs_issues.md#F-0304) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [Storing an edge over a marked edge does not take the edge over](../../Verus_verification/bugs_issues.md#F-0304).
 
 ### temporal.structural.end
 - Sources: [spec 254 Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L142-L149), [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L31-L49), [RetractTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L620-L689); live tests: [purge](../../../tests/e2e/test_254_purge_e2e.py), [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py)
@@ -580,7 +637,7 @@ Observed divergence: a multigraph `MERGE`, an undirected `MERGE` that matches th
 
 Observed divergence: a write racing the delete or purge can leave a timestamp without its edge, recorded as open. The ObjectScript whole-index purge (`TemporalIndex.Purge`, which calls the temporal `EraseAll` outside the Eraser) removes every timestamp but leaves marked structural edges.
 
-Findings: [Making a temporal-only predicate structural again before dropping its rows strands marked rows that nothing removes](../../Verus_verification/bugs_issues.md#bug-tmp-005); [A temporal write inside a purge's range that lands after the purge removed the row leaves a marked row with no timestamp](../../Verus_verification/bugs_issues.md#bug-tmp-013); [Without the adjacency index, deleting a temporal edge removes the adjacency of an explicit edge on the same triple](../../Verus_verification/bugs_issues.md#bug-tmp-012)
+Findings: [Making a temporal-only predicate structural again before dropping its rows strands marked rows that nothing removes](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-005); [A temporal write inside a purge's range that lands after the purge removed the row leaves a marked row with no timestamp](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-013); [Without the adjacency index, deleting a temporal edge removes the adjacency of an explicit edge on the same triple](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-012)
 
 ### temporal.structural.upgrade
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [ADR-0015 upgrade](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L105-L110), [BackfillWalk](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L226-L302); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py), [opt-out](../../../tests/e2e/test_temporal_structural_optout_e2e.py)
@@ -598,7 +655,7 @@ Findings: [Making a temporal-only predicate structural again before dropping its
 
 Commit 43efd473 records the decision as "Decided with Tom 2026-10-19". Strict mode: [temporal.py](../../../iris_vector_graph/_engine/temporal.py#L304-L309) skips only the client-side step, and the live strict-mode case in the coexistence test writes a marked row with the tables unchanged for verify. Superseded: the [ledger-api](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L83-L93) sentence that strict mode "skips the structural mirror" predates the declared index and now holds only for that client-side step.
 
-Findings: [A temporal write creates endpoint nodes that the ledger never recorded, so verify diverges after the ledger's own temporal operation](../../Verus_verification/bugs_issues.md#bug-tmp-004)
+Findings: [A temporal write creates endpoint nodes that the ledger never recorded, so verify diverges after the ledger's own temporal operation](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-004)
 
 ### temporal.structural.ledger-nodes
 - Sources: [read_canonical](../../../iris_vector_graph/ledger/replay.py#L588-L604), [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L560-L618), [bare-node test](../../../iris_src/src/Graph/KG/Eraser.cls#L1333-L1352)
@@ -609,8 +666,19 @@ Findings: [A temporal write creates endpoint nodes that the ledger never recorde
 
 Observed ([temporal_endpoint_nodes_verify](../../Verus_verification/receipts/native/temporal_endpoint_nodes_verify.json)): verify diverges on the new endpoint node a temporal write created, for a direct write, the ledger's own temporal operation and under strict mode. The probe also shows that operation order decides: `[temporal, create_node]` in one changeset is refused `node_exists`, while `[create_node, temporal]` commits. Existing upstream tests use only nodes created beforehand (finding F4 in [stage-A notes](../../uplift/ivg-verus-initial/intent/temporal.md)).
 
-Findings: [A temporal write creates endpoint nodes that the ledger never recorded, so verify diverges after the ledger's own temporal operation](../../Verus_verification/bugs_issues.md#bug-tmp-004)
+Findings: [A temporal write creates endpoint nodes that the ledger never recorded, so verify diverges after the ledger's own temporal operation](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-004)
 
+### temporal.structural.ledger-nodes.policy
+- Expands: [parent](#temporal.structural.ledger-nodes)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Are the end nodes a temporal write creates governed by the ledger?](../../Verus_verification/open_questions.md#HD-0501).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0501).
+
+Audit (HD-0501): Open owner decision. Working assumption (agent, unratified): Engine-path endpoints: derived, with identifiable provenance (e.g. the 'bare temporal endpoint' rule purge already uses) and excluded from genesis/verify; changeset temporal ops: follow the relationship endpoint rule (refuse a missing endpoint or record a stub). Keep their real effects in the environment model; treat ledger-api.md:92 as stale for the indexed path. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0501).
 
 ### temporal.structural.explicit-delete
 
@@ -624,6 +692,13 @@ Findings: [A temporal write creates endpoint nodes that the ledger never recorde
 The upstream test pins today's behaviour (test_254_purge_e2e: 22 passed in this uplift). The temporal model shows the edge missing until the next write re-asserts it (`witness_explicit_delete_edge_drops_live_row`). Added by review round 3 R3-reader M17.
 
 Findings: [May an explicit delete_edge remove a marked structural row while its triple still has timestamps?](../../Verus_verification/open_questions.md#q-tmp-006)
+
+Audit (q-tmp-006): Open owner decision. Working assumption (agent, unratified): Preserve the temporal implication requirement and record the direct-delete exception; the maintainer must decide whether to refuse or repair it. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-tmp-006).
+
+Audit (HD-0302): Open owner decision. Working assumption (agent, unratified): For structural predicates, a triple with surviving timestamps keeps a structural row. A direct delete may remove the explicit assertion, but the row must stay (or revert to marked) while timestamps remain. Model as-built option (a) as the baseline that violates the implication, and keep the ADR-0015 temporal-only opt-out separate (no row ever). See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0302).
+
+Findings: [May a direct edge delete remove an edge row that a temporal edge still implies?](../../Verus_verification/open_questions.md#HD-0302).
+
 ### temporal.optout
 - Sources: [ADR-0015 decision](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L10-L30), [options](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L71-L90), [TemporalPolicy](../../../iris_src/src/Graph/KG/TemporalPolicy.cls#L1-L58), [glossary](../../../CONTEXT.md#L78-L81); live tests: [opt-out](../../../tests/e2e/test_temporal_structural_optout_e2e.py)
 - Children: [effect](#temporal.optout.effect), [toggle](#temporal.optout.toggle), [drop](#temporal.optout.drop), [stranded](#temporal.optout.stranded)
@@ -642,7 +717,7 @@ ADR-0015 is "Accepted (2026-10-25, Tom)".
 
 Observed divergence: the undocumented engine flag left over from an alternative design, and the Python mirror used without the declared index, write structural rows without reading the registry (finding F9).
 
-Findings: [Two Python temporal paths write structural rows for a temporal-only predicate](../../Verus_verification/bugs_issues.md#bug-tmp-006)
+Findings: [Two Python temporal paths write structural rows for a temporal-only predicate](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-006)
 
 ### temporal.optout.toggle
 - Sources: [ADR-0015 API](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L101-L106), [migration and rollback](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L111-L124), [BackfillRows](../../../iris_src/src/Graph/KG/TemporalPolicy.cls#L253-L272); live tests: [opt-out](../../../tests/e2e/test_temporal_structural_optout_e2e.py)
@@ -662,6 +737,8 @@ Observed: a single-edge delete of a triple's last timestamp still removes such a
 
 Findings: [Should deleting the last timestamp of a temporal-only predicate keep its old structural row, as a purge does?](../../Verus_verification/open_questions.md#q-tmp-005)
 
+Audit (q-tmp-005): Open owner decision. Working assumption (agent, unratified): Keep temporal-only structural row retention at the opt-out boundary and require drop before opt-in; define last-delete behavior separately. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-tmp-005).
+
 ### temporal.optout.stranded
 - Sources: [ADR-0015 migration and rollback](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L111-L124), [DropRows guard](../../../iris_src/src/Graph/KG/TemporalPolicy.cls#L124-L137); stage-A: [F8, Q4](../../uplift/ivg-verus-initial/intent/temporal.md)
 - Expands: [Temporal-only predicates](#temporal.optout)
@@ -669,7 +746,7 @@ Findings: [Should deleting the last timestamp of a temporal-only predicate keep 
 - uncertain
 - data-integrity, operations
 
-Findings: [Making a temporal-only predicate structural again before dropping its rows strands marked rows that nothing removes](../../Verus_verification/bugs_issues.md#bug-tmp-005)
+Findings: [Making a temporal-only predicate structural again before dropping its rows strands marked rows that nothing removes](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-005)
 
 ### temporal.window
 - Playbook: [TMP-B6.14](../../../experiment/playbook-completion/ontology/05-temporal.md#L220) (reversed window, lifted in the Tier 2 sweep); [TMP-B6.12](../../../experiment/playbook-completion/ontology/05-temporal.md#L218), [TMP-B6.1](../../../experiment/playbook-completion/ontology/05-temporal.md#L202) (already stated here)
@@ -715,6 +792,7 @@ Spec 255 FR-009 says the cursor "is closed when the iteration ends or is abandon
 - test-coverage
 
 Public cases M07 and M08. The client half is bound to the real `TemporalWindowCursor` by an enumerated comparison with a scripted server (the server substituted); the server's free-inside-Open and free-at-done are inspected at the pin, not observed here.
+
 ### temporal.window.concurrent-writes
 - Sources: [spec 255 edge cases](../../../specs/255-temporal-window-reader/spec.md#L107-L118), [Page](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L123-L193); stage-A question: [Q5](../../uplift/ivg-verus-initial/intent/temporal.md)
 - Expands: [Window reads](#temporal.window)
@@ -723,6 +801,8 @@ Public cases M07 and M08. The client half is bound to the real `TemporalWindowCu
 - user-facing-behavior
 
 Findings: [Must a paged temporal window read show one consistent moment while edges are written?](../../Verus_verification/open_questions.md#q-tmp-003)
+
+Audit (q-tmp-003): Open owner decision. Working assumption (agent, unratified): Treat a paged read as multiple observations today; a point-in-time promise needs an explicit snapshot/version protocol. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-tmp-003).
 
 ### temporal.purge
 - Sources: [spec 254 US1 and Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L38-L149), [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L31-L49), [PurgeRawBefore and RetireExpired](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L856-L1046), [PurgeBefore](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L813-L854); live tests: [purge](../../../tests/e2e/test_254_purge_e2e.py)
@@ -733,7 +813,7 @@ Findings: [Must a paged temporal window read show one consistent moment while ed
 
 Superseded: an earlier spec required the raw purge to leave adjacency untouched. The purge runs no transaction of its own outside node retirement, and no test interrupts one. Known cost: about 40 µs per purged edge ([known issues](../../../docs/KNOWN_ISSUES.md#L870-L876)).
 
-Findings: [A temporal write that races a purge or delete of the same triple can leave a live timestamp with no structural edge](../../Verus_verification/bugs_issues.md#bug-tmp-011); [The ObjectScript temporal purge-all and erase-all leave marked structural rows](../../Verus_verification/bugs_issues.md#bug-tmp-008); [A temporal write inside a purge's range that lands after the purge removed the row leaves a marked row with no timestamp](../../Verus_verification/bugs_issues.md#bug-tmp-013)
+Findings: [A temporal write that races a purge or delete of the same triple can leave a live timestamp with no structural edge](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-011); [The ObjectScript temporal purge-all and erase-all leave marked structural rows](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-008); [A temporal write inside a purge's range that lands after the purge removed the row leaves a marked row with no timestamp](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-013)
 
 ### temporal.purge.bare-nodes
 - Sources: [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L45-L48), [4.7.0 notes](../../../CHANGELOG.md#L21-L22), [Python purge](../../../iris_vector_graph/_engine/temporal.py#L656-L720), [RetireBareNodes](../../../iris_src/src/Graph/KG/Eraser.cls#L1250-L1310); live tests: [purge retires bare](../../../tests/e2e/test_470_purge_retires_bare_e2e.py), [bare nodes](../../../tests/e2e/test_temporal_bare_nodes_e2e.py)
@@ -748,12 +828,15 @@ Findings: [A temporal write that races a purge or delete of the same triple can 
 - data-integrity
 - test-coverage
 
-Findings: [A rolled-back temporal delete or node erase leaves the bucket's event counter decremented](../../Verus_verification/bugs_issues.md#bug-tmp-010); [The ObjectScript temporal purge-all and erase-all leave marked structural rows](../../Verus_verification/bugs_issues.md#bug-tmp-008)
+Findings: [A rolled-back temporal delete or node erase leaves the bucket's event counter decremented](../../Verus_verification/bugs_issues.md#bug-tmp-010); [The ObjectScript temporal purge-all and erase-all leave marked structural rows](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-008)
 
 
 Observed divergence (review round 2 R2-1, round 3 R3-reader H2): [erasure_prefix_temporal_only](../../Verus_verification/receipts/native/erasure_prefix_temporal_only.json); spec 256 put off a tenant-scoped erase of temporal data inside a shared graph ([spec 256](../../../specs/256-ledger-tenant-redaction/spec.md#L159-L163)). The explicit-ID route is from code reading (`EraseNodeIds` erases events incident on a named ID with or without a node row).
 
 Findings: [Erasing a tenant by prefix leaves its temporal-only events, and the redaction that follows completes while they stay readable](../../Verus_verification/bugs_issues.md#bug-led-007)
+
+Audit reproduction: [bug-tmp-010](../../Verus_verification/bugs_issues.md#bug-tmp-010) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
 ### temporal.ledger
 - Sources: [glossary](../../../CONTEXT.md#L180-L192), [Changeset](../../../iris_vector_graph/ledger/changeset.py#L307-L345), [OpCreateTemporalEdge](../../../iris_src/src/Graph/KG/LedgerApply.cls#L613-L641); live tests: [temporal changeset](../../../tests/integration/test_224_temporal_changeset_e2e.py)
 - Children: [atomic](#temporal.ledger.atomic), [insert collision](#temporal.ledger.insert-collision)
@@ -771,6 +854,8 @@ Observed divergence ([temporal_rollback_counters](../../Verus_verification/recei
 
 Findings: [A rolled-back temporal write leaves its statistics counted, so a retry counts the edge twice](../../Verus_verification/bugs_issues.md#bug-tmp-003)
 
+Audit reproduction: [bug-tmp-003](../../Verus_verification/bugs_issues.md#bug-tmp-003) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
 ### temporal.ledger.insert-collision
 - Sources: [Changeset docstring](../../../iris_vector_graph/ledger/changeset.py#L321-L336), [OpCreateTemporalEdge](../../../iris_src/src/Graph/KG/LedgerApply.cls#L613-L641); stage-A finding: [F5](../../uplift/ivg-verus-initial/intent/temporal.md)
 - Expands: [Ledger](#temporal.ledger)
@@ -779,3 +864,17 @@ Findings: [A rolled-back temporal write leaves its statistics counted, so a retr
 - data-integrity
 
 Findings: [What should an insert collision inside a changeset do?](../../Verus_verification/open_questions.md#q-tmp-004)
+
+Audit (q-tmp-004): Open owner decision. Working assumption (agent, unratified): Keep insert collision as an effect-free accepted temporal call today; ledger record/no-op policy still needs owner choice. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-tmp-004).
+
+### temporal.ledger.scope-policy
+- Expands: [parent](#temporal.ledger)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Is the temporal index inside the ledger's guarantee?](../../Verus_verification/open_questions.md#HD-0502).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0502).
+
+Audit (HD-0502): Open owner decision. Working assumption (agent, unratified): Unchanged reading: record the changeset temporal op in history (audit, redaction); treat temporal tiers, engine temporal writes, purges and temporal replay as outside the structural replay guarantee; model their real effects, including purges deleting endpoint nodes. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0502).

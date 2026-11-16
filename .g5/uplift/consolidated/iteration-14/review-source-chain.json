@@ -1,0 +1,67 @@
+{
+  "utc": "2026-11-16T01:37:06.073588+00:00",
+  "status": "SOURCE_CHAIN_TRACED_BEFORE_NEW_CANDIDATE_INSPECTION",
+  "source_inputs": {
+    "iris_vector_graph/_engine/_rdf_utils.py": "9bd59d40bb56aa1d7871e7347b6ad053df8d55b64ec0f873a3acdd6c6c6b9a6c",
+    "iris_vector_graph/_engine/rdf_export.py": "6e07f6660df061fbb384b5d07cdc9ff4e932f7f6d1828c7c41df91968ca2716b",
+    "iris_vector_graph/_engine/nodes_edges.py": "7eb2ea4761f66c683db0dd8b55132bb5c2347855acb14ab5ed0f8210543857c7",
+    "iris_vector_graph/_engine/snapshot.py": "531d13c55254657f278691aee1c13717ff0965924ee16b3b62a140de979d33bc",
+    "iris_vector_graph/prop_values.py": "27d03759444be20e7efc3498ec70925658d561e44ffbee75282b550a47ab4f56",
+    "iris_vector_graph/constants.py": "674b2b9efe0e43b4f23d5aee5c0c682d6a5b9e614cf9528ffa89cda2e16bd2b3"
+  },
+  "pin_export_matches": {
+    "iris_vector_graph/_engine/_rdf_utils.py": true,
+    "iris_vector_graph/_engine/rdf_export.py": true,
+    "iris_vector_graph/_engine/nodes_edges.py": true,
+    "iris_vector_graph/_engine/snapshot.py": true,
+    "iris_vector_graph/prop_values.py": true,
+    "iris_vector_graph/constants.py": true
+  },
+  "roles": [
+    {
+      "path": "iris_vector_graph/_engine/_rdf_utils.py",
+      "members": [
+        "_build_rdflib_graph",
+        "_mint_iri",
+        "_to_literal",
+        "graph_iri"
+      ],
+      "roles": "raw selection, lexical terms, contextual set/reifier writes; graph IRI provider boundary explicit"
+    },
+    {
+      "path": "iris_vector_graph/_engine/rdf_export.py",
+      "members": [
+        "RdfExportMixin.export_rdf"
+      ],
+      "roles": "serialization then actual union/subject/non-typeURI report readers; namespace/codec providers"
+    },
+    {
+      "path": "iris_vector_graph/_engine/nodes_edges.py",
+      "members": [
+        "NodesEdgesMixin.get_nodes",
+        "NodesEdgesMixin.get_node"
+      ],
+      "roles": "raw request/row hydration, complete typed map, parent/child inclusion and request-order final reader"
+    },
+    {
+      "path": "iris_vector_graph/_engine/snapshot.py",
+      "members": [
+        "SnapshotMixin.export_graph_ndjson",
+        "SnapshotMixin.import_graph_ndjson"
+      ],
+      "roles": "default census, raw marker selection, record append/count, generated-record callback reader"
+    }
+  ],
+  "new_proofs": 0,
+  "candidate_model_files_inspected": false,
+  "native_calls": 0,
+  "network_calls": 0,
+  "git_calls": 0,
+  "private_evaluator_read": false,
+  "interrupted_inputs_opened_or_reused": false,
+  "architecture_artifacts_read": [
+    "ndjson-architecture.md",
+    "ndjson-source-role-proposal.json"
+  ],
+  "source_notes": "See review-source-chain.md; earlier panels and owner audit remain separately frozen."
+}

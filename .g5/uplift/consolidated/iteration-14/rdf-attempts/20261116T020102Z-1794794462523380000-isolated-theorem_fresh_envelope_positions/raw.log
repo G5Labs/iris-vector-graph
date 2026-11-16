@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/blank-positions-reused/20261116T020056Z/models/rdf_reporting/rdf_reporting.rs:247:1
+    |
+247 | pub proof fn theorem_fresh_envelope_positions(e:Edge,c:Config,i:nat,j:nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/blank-positions-reused/20261116T020056Z/models/rdf_reporting/rdf_reporting.rs:249:10
+    |
+247 | pub proof fn theorem_fresh_envelope_positions(e:Edge,c:Config,i:nat,j:nat)
+    | -------------------------------------------------------------------------- at the end of the function body
+248 |  requires i!=j
+249 |  ensures !envelope(e,j,c).contains(envelope(e,i,c)[0]),envelope(e,i,c)[0].triple.s!=envelope(e,j,c)[0].triple.s
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/blank-positions-reused/20261116T020056Z/models/rdf_reporting/rdf_reporting.rs:249:56
+    |
+247 | pub proof fn theorem_fresh_envelope_positions(e:Edge,c:Config,i:nat,j:nat)
+    | -------------------------------------------------------------------------- at the end of the function body
+248 |  requires i!=j
+249 |  ensures !envelope(e,j,c).contains(envelope(e,i,c)[0]),envelope(e,i,c)[0].triple.s!=envelope(e,j,c)[0].triple.s
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

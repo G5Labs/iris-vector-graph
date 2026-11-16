@@ -1,0 +1,36 @@
+verification results:: 140 verified, 4 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/node-counter-doubled/20261116T022201Z/models/ndjson_export/ndjson_export.rs:190:77
+    |
+190 |  ensures node_pass(f,ids,ns,ls,ps).lines==f.lines+node_events(ids,ns,ls,ps),node_pass(f,ids,ns,ls,ps).nodes==f.nodes+node_events(ids,ns,ls,ps).len(),node_pass(f,ids,ns,ls,ps).edges==f.edges,
+    |                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+191 |  decreases ids.len(),
+192 |  {if ids.len()>0{let r=get_node(ids[0],ns,ls,p...lse{assert(f.lines+Seq::empty()=~=f.lines);}}
+    |   --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/node-counter-doubled/20261116T022201Z/models/ndjson_export/ndjson_export.rs:280:64
+    |
+280 | pub proof fn witness_bare_parent_still_writes_a_line() ensures export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![]).nodes==1 && export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![]).lines.len()==1, {...
+    | ------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/node-counter-doubled/20261116T022201Z/models/ndjson_export/ndjson_export.rs:282:75
+    |
+282 | pub proof fn witness_named_parent_does_not_duplicate_default_id() ensures export(seq![Parent{graph:0,id:0},Parent{graph:7,id:0}],seq![],seq![],seq![]).nodes==1, {...
+    | -----------------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/node-counter-doubled/20261116T022201Z/models/ndjson_export/ndjson_export.rs:292:67
+    |
+292 | pub proof fn witness_nodes_counter_counts_written_lines() ensures export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![]).nodes==export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![]).lines.len(), {...
+    | ---------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 4 previous errors
+

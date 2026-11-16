@@ -71,6 +71,13 @@ Should Native Readers work in any namespace? There is no provisional answer.
 
 ## The proof record
 
+<a id="algorithms.routing.capability-policy"></a>
+[Q · algorithms.routing.capability-policy]
+
+Should the SQL adapter's capability list say what this namespace can run?
+
+- Working assumption (agent, unratified): Distinguish implemented adapter methods from current namespace availability; route admission needs the latter evidence.
+
 <a id="algorithms.proof"></a>
 [D · algorithms.proof]
 
@@ -241,6 +248,13 @@ The walk operations follow outbound edges from one start node.
 - A graph path returns the two-hop paths start, first type, middle, second type, end, one row per step.
 - A random walk returns `num_walks` (10) walks of up to `length` (20) steps from a seed.
 
+<a id="algorithms.op.walks.result-policy"></a>
+[Q · algorithms.op.walks.result-policy]
+
+What should `random_walk` answer, and over which graph?
+
+- Working assumption (agent, unratified): Prefer an ObjectScript walk of the default graph without requiring Arno; result fields and probability semantics still need a contract.
+
 <a id="algorithms.op.paths"></a>
 [I · algorithms.op.paths]
 
@@ -353,6 +367,10 @@ A native answer that parses but is wrong is returned and cached; the evidence ga
 
 Findings: [Make the engine's Owner fallback uniform across algorithms](../../Verus_verification/design_simplification.md#simp-plt-002)
 
+Audit reproduction: [F-C1018](../../Verus_verification/bugs_issues.md#F-C1018) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [The store's membership decoder refuses the Owner's components and label-propagation answers when a default-graph node is named 'components', 'communities' or 'largest' (read as an accelerated summary…](../../Verus_verification/bugs_issues.md#F-C1018).
+
 ### algorithms.routing.reload
 
 - Sources: [Spec 236 Edge Cases](../../../specs/236-arno-callout-adoption/spec.md); [ArnoAccel.cls](../../../iris_src/src/Graph/KG/ArnoAccel.cls); [Stage A notes F-A2](../../uplift/ivg-verus-initial/intent/platform.md)
@@ -362,7 +380,7 @@ Findings: [Make the engine's Owner fallback uniform across algorithms](../../Ver
 
 Suspected divergence: the server-side loader reloads a replaced library without telling the Python side, so the engine keeps the old library's report. The unit test resets the report by hand. A failed availability probe is also kept for the life of the store.
 
-Findings: [After the native library is replaced, routing can keep using the old library's proof report](../../Verus_verification/bugs_issues.md#bug-plt-010)
+Findings: [After the native library is replaced, routing can keep using the old library's proof report](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-010)
 
 ### algorithms.routing.excluded
 
@@ -383,6 +401,8 @@ The sources disagree about what a Native Reader reads. CONTEXT.md says "the Adja
 
 Findings: [Can a default-graph algorithm call use a native reader once a named graph holds edges?](../../Verus_verification/open_questions.md#q-plt-007)
 
+Audit (q-plt-007): Open owner decision. Working assumption (agent, unratified): Require a proven graph-specific reader before relying on native default-graph results; an unavailable Arno provider does not settle its behavior. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-007).
+
 ### algorithms.routing.namespace
 
 - Sources: [Spec 236 research](../../../specs/236-arno-callout-adoption/research.md); [stores/iris_sql_store.py _arno_route](../../../iris_vector_graph/stores/iris_sql_store.py); [ADR-0016](../../../docs/adr/0016-one-ivg-schema-per-namespace.md)
@@ -393,6 +413,20 @@ Findings: [Can a default-graph algorithm call use a native reader once a named g
 
 Findings: [Should native readers work in namespaces other than USER?](../../Verus_verification/open_questions.md#q-plt-015)
 
+Audit (q-plt-015): Open owner decision. Working assumption (agent, unratified): Keep non-USER Owner routing as current availability; cross-namespace native support requires a provider deployment/proof contract. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-015).
+
+### algorithms.routing.capability-policy
+- Expands: [parent](#algorithms.routing)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should the SQL adapter's capability list say what this namespace can run?](../../Verus_verification/open_questions.md#HD-1703).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1703).
+
+Audit (HD-1703): Open owner decision. Working assumption (agent, unratified): Keep decisions.md: code support and namespace availability are different facts; treat store.capabilities() as a static catalogue (document it as such) and do not read it as availability; routing that needs availability uses engine.capabilities/status() or an explicit fallback. Changed from decisions.md: no. Probe and source confirm; added that the product already separates the facts (engine.capabilities, a06e1f50) so option (b) is the existing design, missing only documentation. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1703).
+
 ### algorithms.proof
 
 - Sources: [CONTEXT.md: Proof Record](../../../CONTEXT.md); [Spec 236 FR-007, FR-008, Edge Cases](../../../specs/236-arno-callout-adoption/spec.md); [docs/dev/arno-reader-proof.json](../../../docs/dev/arno-reader-proof.json); [arno_readers.py load_proof](../../../iris_vector_graph/arno_readers.py)
@@ -402,7 +436,7 @@ Findings: [Should native readers work in namespaces other than USER?](../../Veru
 
 Observed: one invalid entry, including an out-of-scope algorithm, empties the whole record (it fails safe). FR-007 asks for the build per algorithm, but the record keeps one build for all. Before 4.6.0 (R104) wheels shipped no proof record.
 
-Findings: [Capabilities and status report native algorithms that are not proven or routed](../../Verus_verification/bugs_issues.md#bug-plt-018)
+Findings: [Capabilities and status report native algorithms that are not proven or routed](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-018)
 
 ### algorithms.proof.gate
 
@@ -423,6 +457,8 @@ The gate's graphs are single-graph graphs in `USER`, with no multigraph mode and
 
 Findings: [Does a proven reader revision hold for every build and platform of the library?](../../Verus_verification/open_questions.md#q-plt-013)
 
+Audit (q-plt-013): Open owner decision. Working assumption (agent, unratified): Bind proof evidence to exact library/platform builds until source or owner authority permits broader reuse. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-013).
+
 ### algorithms.proof.ungated
 
 - Sources: [stores/iris_sql_store.py](../../../iris_vector_graph/stores/iris_sql_store.py); [Stage A notes F-A7](../../uplift/ivg-verus-initial/intent/platform.md)
@@ -432,6 +468,8 @@ Findings: [Does a proven reader revision hold for every build and platform of th
 - data-integrity
 
 Findings: [Must the evidence gate also cover the other algorithms the native library speeds up?](../../Verus_verification/open_questions.md#q-plt-014)
+
+Audit (q-plt-014): Open owner decision. Working assumption (agent, unratified): Do not infer proof coverage for accelerated algorithms absent from the gate; extending its inventory needs provider-specific evidence. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-014).
 
 ### algorithms.graph_scope
 
@@ -462,6 +500,14 @@ Textbook PageRank and weighting by edge count came in 4.6.0. Before, a parallel 
 
 Findings: [Owner result cap F-1003](../../Verus_verification/bugs_issues.md#F-1003); the numerical/every-node rule is not established by the new cache-admission contract.
 
+Audit (HD-1004): Existing authority: Global PageRank promises every default-graph node on every supported route; the hidden Owner output cap violates that documented contract. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1004).
+
+Findings: [How many nodes should global PageRank list?](../../Verus_verification/open_questions.md#HD-1004).
+
+Audit reproduction: [F-1003](../../Verus_verification/bugs_issues.md#F-1003) is e2e reproduced through the actual engine/Owner cap, with a passing small graph; [results](../../Verus_verification/audits/register-20261115/regressions.json). Arno route equivalence is untested.
+
+Findings: [Global PageRank output cap](../../Verus_verification/bugs_issues.md#F-1003).
+
 ### algorithms.op.ppr
 
 - Sources: [API_REFERENCE kg_PERSONALIZED_PAGERANK, ppr](../../../docs/API_REFERENCE.md); [USER_GUIDE PageRank](../../../docs/USER_GUIDE.md); [CHANGELOG v4.6.0 (R270)](../../../CHANGELOG.md)
@@ -482,7 +528,7 @@ networkx semantics, dangling handling and weighting of keyed parallel edges by t
 - user-facing-behavior, data-integrity
 - test-coverage
 
-Observed: without an exclusion list the caller omits return_top_k from the producer arguments, leaving the native1000 cap, while _ppr_every_node uses a larger positive caller limit. On1002 isolated valid seeds (one iteration, alpha1/2), public limit1002 then appends two nodes as0 although every seed scores1/1002. Supplying exclude_predicates=[] forwards limit1002 and all scores stay positive; public limit1000 and the actual fallback are passing neighbors. This is false score inference after truncation, not a complaint that an intentional cut has mass below1. [bug-plt-104](../../Verus_verification/bugs_issues.md#bug-plt-104). Runtime/provider/arbitrary numeric equivalence and the final public unavailable-provider dispatch remain qualified; no repair is implemented.
+Observed: without an exclusion list the caller omits return_top_k from the producer arguments, leaving the native1000 cap, while _ppr_every_node uses a larger positive caller limit. On1002 isolated valid seeds (one iteration, alpha1/2), public limit1002 then appends two nodes as0 although every seed scores1/1002. Supplying exclude_predicates=[] forwards limit1002 and all scores stay positive; public limit1000 and the actual fallback are passing neighbors. This is false score inference after truncation, not a complaint that an intentional cut has mass below1. [bug-plt-104](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-104). Runtime/provider/arbitrary numeric equivalence and the final public unavailable-provider dispatch remain qualified; no repair is implemented.
 
 ### algorithms.op.ppr.zero_ties
 - Sources: [USER_GUIDE generic ranking](../../../docs/USER_GUIDE.md#L547-L552), [PPR zero placement](../../../docs/USER_GUIDE.md#L590-L600), [rank_key](../../../iris_vector_graph/_collation.py#L24-L32), [native sparse/zero readers](../../../iris_src/src/Graph/KG/PageRank.cls#L33-L162), [Python fallback/every-node reader](../../../iris_vector_graph/_engine/algorithms.py#L392-L575), [six native neighbors](../../uplift/consolidated/iteration-10/root-ppr-tie-native.json), [independent review](../../uplift/consolidated/iteration-10/root-ppr-review-intent.md)
@@ -493,7 +539,9 @@ Observed: without an exclusion list the caller omits return_top_k from the produ
 - user-facing-behavior, data-integrity
 - test-coverage
 
-Actual named graph s:seed->t:tiny plus0:zero, alpha1e-13 and one iteration: native/store limit2 returns seed/tiny, while the actual Python fallback returns seed/zero. Full-order differs too. Limit1, alpha1e-11 and a later zero ID are passing neighbors. The probe calls the actual public native/store entry and the actual private fallback implementation over the same real DB; an availability-triggered public fallback dispatch is not observed. This is a route-consistency finding irrespective of the unresolved ordering choice. [bug-plt-103](../../Verus_verification/bugs_issues.md#bug-plt-103), [q-iter-008](../../Verus_verification/open_questions.md#q-iter-008). No policy/repair is approved or implemented; no generic floating/codec/native-body proof is inferred.
+Actual named graph s:seed->t:tiny plus0:zero, alpha1e-13 and one iteration: native/store limit2 returns seed/tiny, while the actual Python fallback returns seed/zero. Full-order differs too. Limit1, alpha1e-11 and a later zero ID are passing neighbors. The probe calls the actual public native/store entry and the actual private fallback implementation over the same real DB; an availability-triggered public fallback dispatch is not observed. This is a route-consistency finding irrespective of the unresolved ordering choice. [bug-plt-103](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-103), [q-iter-008](../../Verus_verification/open_questions.md#q-iter-008). No policy/repair is approved or implemented; no generic floating/codec/native-body proof is inferred.
+
+Audit (q-iter-008): Open owner decision. Working assumption (agent, unratified): Preserve the rounded-score tie rule today; giving every positive raw score priority over true zero would change top-k admission. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-iter-008).
 
 ### algorithms.op.wcc
 
@@ -505,6 +553,9 @@ Actual named graph s:seed->t:tiny plus0:zero, alpha1e-13 and one iteration: nati
 
 With a round limit the Owner answers even when Arno is loaded. Before 4.6.0 labels stopped after 100 rounds, so a long component could come back split.
 
+Audit reproduction: [F-C1018](../../Verus_verification/bugs_issues.md#F-C1018) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [The store's membership decoder refuses the Owner's components and label-propagation answers when a default-graph node is named 'components', 'communities' or 'largest' (read as an accelerated summary…](../../Verus_verification/bugs_issues.md#F-C1018).
 
 ### algorithms.op.cdlp
 
@@ -516,6 +567,9 @@ With a round limit the Owner answers even when Arno is loaded. Before 4.6.0 labe
 
 The self-loop rule and the collation tie-break changed in 4.6.0. The oscillation is documented; the documented check is to compare two adjacent round limits.
 
+Audit (HD-1002): Existing authority: CDLP returns its last fixed iteration without an in-band settledness flag; the documented diagnostic compares k with k+1. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1002).
+
+Findings: [Should label propagation say when its labels did not settle?](../../Verus_verification/open_questions.md#HD-1002).
 
 ### algorithms.op.subgraph
 
@@ -610,6 +664,18 @@ The Owner answers with or without Arno, so the result has one shape (4.6.0). A f
 
 Observed divergence: `random_walk` needs Arno, and without it returns an empty list after a warning, against the promise that every algorithm has an Owner. The graph path's `max_hops` argument is not used. Weighted shortest paths are a Cypher procedure and use each edge's `weight` property, 1.0 when absent; [weighted path search](#algorithms.op.paths.weighted) owns that rule.
 
+### algorithms.op.walks.result-policy
+- Expands: [parent](#algorithms.op.walks)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [What should `random_walk` answer, and over which graph?](../../Verus_verification/open_questions.md#HD-1001).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1001).
+
+Audit (HD-1001): Open owner decision. Working assumption (agent, unratified): Walk the default graph's adjacency (graph key 0) in ObjectScript, library or not (option (a)). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (option (c)) is a compatible extension. Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed ObjectScript walk runs without the library (upstream test and live), and ADMIN_GUIDE says every algorithm has an ObjectScript answer. So a real default-graph answer is the better-supported reading. 'Unavailable' remains only for a route that cannot honour the scope. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1001).
+
 ### algorithms.op.paths
 - Sources: [CHANGELOG 4.6.0 paths](../../../CHANGELOG.md#L525-L535); [`iris_src/src/Graph/KG/TraversalPaths.cls::ShortestPathJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L5-L116), [`::ShortestLength`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L117-L175)
 - Playbook: [ALG-B10](../../../experiment/playbook-completion/ontology/10-algorithms.md#L219), [ALG-B10.2](../../../experiment/playbook-completion/ontology/10-algorithms.md#L221)
@@ -643,6 +709,8 @@ Public case M12 now has substantive normalized one-sided and cost-only numerical
 
 The model's raw adjacency minimum and native4-vs1 observation are as-built evidence. No owner has selected the parallel-edge policy, no repair was accepted, and no new weighted product bug is counted. [q-iter-007](../../Verus_verification/open_questions.md#q-iter-007) records the decision. The earlier mode-off fixture miss is separately withdrawn as an unsupported lowest-key oracle, not evidence for this question.
 
+Audit (q-iter-007): Open owner decision. Working assumption (agent, unratified): Keep the current lowest-key representative route distinct from all-parallel-edge shortest path; the optimization domain needs owner choice. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-iter-007).
+
 ### algorithms.op.paths.direction
 - Sources: [`iris_src/src/Graph/KG/TraversalPaths.cls::ShortestPathJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L5-L116), [`::ShortestLength`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L117-L175)
 - Playbook: [ALG-Q4](../../../experiment/playbook-completion/ontology/10-algorithms.md#L224), decision [HD-1003](../../../experiment/playbook-completion/intent/HD-1003.md)
@@ -653,6 +721,8 @@ The model's raw adjacency minimum and native4-vs1 observation are as-built evide
 - user-facing-behavior
 
 Findings: [HD-1003](../../Verus_verification/open_questions.md#HD-1003)
+
+Audit (HD-1003): Open owner decision. Working assumption (agent, unratified): Keep the public 'in' semantics, caller reversal included. Require ShortestPathJson and ShortestLength to refuse any direction outside {out, both}, or to implement 'in' by walking from the far end. Require IRISGraphStore.shortest_path_length to reverse 'in' as execute_shortest_path does. Record the live false positive as a defect against its docstring. Changed from decisions.md: **yes**. Status moves from assumption to supported: maintainer commit 99b00ce9 states the refuse-outside-set policy for ObjectScript entry points. New live evidence shows a wrong positive answer, not just a missing one, on a public store method. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1003).
 
 ### algorithms.cache
 
@@ -669,6 +739,7 @@ Live coverage: `tests/integration/test_236_algo_cache.py`. Each graph's cache is
 
 Findings: [A cached personalized PageRank answer does not notice a node created after it](../../Verus_verification/bugs_issues.md#bug-plt-017)
 
+Audit reproduction: [bug-plt-017](../../Verus_verification/bugs_issues.md#bug-plt-017) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 ### algorithms.cache.token
 
@@ -685,6 +756,9 @@ Live coverage: `tests/integration/test_236_token_write_paths.py`, one case per a
 
 Findings: [A cached personalized PageRank answer does not notice a node created after it](../../Verus_verification/bugs_issues.md#bug-plt-017), [same creation trigger in F-1004](../../Verus_verification/bugs_issues.md#F-1004)
 
+Audit reproduction: [F-1004](../../Verus_verification/bugs_issues.md#F-1004) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Audit reproduction: [bug-plt-017](../../Verus_verification/bugs_issues.md#bug-plt-017) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 ### algorithms.cache.pagerank
 
@@ -696,6 +770,10 @@ Findings: [A cached personalized PageRank answer does not notice a node created 
 - test-coverage
 
 Findings: [F-1003](../../Verus_verification/bugs_issues.md#F-1003). Global PageRank's node key is not evidence of [PPR freshness](#algorithms.cache.token). No live IRIS or numerical proof.
+
+Audit reproduction: [F-1003](../../Verus_verification/bugs_issues.md#F-1003) is e2e reproduced through the actual engine/Owner cap, with a passing small graph; [results](../../Verus_verification/audits/register-20261115/regressions.json). Arno route equivalence is untested.
+
+Findings: [Global PageRank output cap](../../Verus_verification/bugs_issues.md#F-1003).
 
 ### algorithms.cache.erasure
 
@@ -714,4 +792,4 @@ Live coverage: the erase cases in `tests/integration/test_236_token_write_paths.
 - agent
 - operations
 
-Findings: [A cached algorithm answer computed over a write that later rolls back stays current](../../Verus_verification/bugs_issues.md#bug-str-002)
+Findings: [A cached algorithm answer computed over a write that later rolls back stays current](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-002)

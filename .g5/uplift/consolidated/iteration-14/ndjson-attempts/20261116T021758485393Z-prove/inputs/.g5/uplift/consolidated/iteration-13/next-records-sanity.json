@@ -1,0 +1,1213 @@
+{
+  "verdict": "AGREES",
+  "healthy_fixtures": 2,
+  "actual_source_cases": "Each fixture executes ordered/repeated/default hydrate, named hydrate, actual default export file, actual import parser dispatch.",
+  "cases": [
+    {
+      "variant": "ordinary",
+      "raw": {
+        "nodes": [
+          [
+            "",
+            "a"
+          ],
+          [
+            "",
+            "b"
+          ],
+          [
+            "",
+            "c"
+          ],
+          [
+            "other",
+            "a"
+          ]
+        ],
+        "labels": [
+          [
+            "",
+            "a",
+            "Person"
+          ],
+          [
+            "",
+            "a",
+            "Member"
+          ],
+          [
+            "",
+            "b",
+            "City"
+          ],
+          [
+            "other",
+            "a",
+            "Other"
+          ]
+        ],
+        "props": [
+          [
+            "",
+            "a",
+            "id",
+            "a"
+          ],
+          [
+            "",
+            "a",
+            "labels",
+            "user-label"
+          ],
+          [
+            "",
+            "a",
+            "name",
+            "Ann"
+          ],
+          [
+            "",
+            "a",
+            "age",
+            29
+          ],
+          [
+            "",
+            "a",
+            "ratio",
+            5.0
+          ],
+          [
+            "",
+            "a",
+            "text",
+            "29"
+          ],
+          [
+            "",
+            "a",
+            "active",
+            "true"
+          ],
+          [
+            "",
+            "a",
+            "aliases",
+            "[\"A\"]"
+          ],
+          [
+            "other",
+            "a",
+            "name",
+            "Elsewhere"
+          ]
+        ],
+        "edges": [
+          [
+            "",
+            10,
+            "a",
+            "R",
+            "b",
+            "{\"since\":2020}"
+          ],
+          [
+            "",
+            11,
+            "a",
+            "R",
+            "b",
+            null
+          ],
+          [
+            "",
+            12,
+            "a",
+            "Marked",
+            "b",
+            "{\"temporal\":true}"
+          ],
+          [
+            "other",
+            13,
+            "a",
+            "R",
+            "a",
+            null
+          ]
+        ]
+      },
+      "requested_ids": [
+        "b",
+        "a",
+        "b",
+        "absent",
+        "c"
+      ],
+      "hydrated": [
+        {
+          "id": "b",
+          "labels": [
+            "City"
+          ]
+        },
+        {
+          "id": "a",
+          "labels": [
+            "Person",
+            "Member"
+          ],
+          "p_id": "a",
+          "p_labels": "user-label",
+          "name": "Ann",
+          "age": 29,
+          "ratio": 5.0,
+          "text": "29",
+          "active": true,
+          "aliases": [
+            "A"
+          ]
+        },
+        {
+          "id": "b",
+          "labels": [
+            "City"
+          ]
+        },
+        {
+          "id": "c",
+          "labels": []
+        }
+      ],
+      "named": {
+        "id": "a",
+        "labels": [
+          "Other"
+        ],
+        "name": "Elsewhere"
+      },
+      "counts": {
+        "nodes": 3,
+        "edges": 2
+      },
+      "records": [
+        {
+          "kind": "node",
+          "id": "a",
+          "labels": [
+            "Person",
+            "Member"
+          ],
+          "properties": {
+            "p_id": "a",
+            "p_labels": "user-label",
+            "name": "Ann",
+            "age": 29,
+            "ratio": 5.0,
+            "text": "29",
+            "active": true,
+            "aliases": [
+              "A"
+            ]
+          }
+        },
+        {
+          "kind": "node",
+          "id": "b",
+          "labels": [
+            "City"
+          ],
+          "properties": {}
+        },
+        {
+          "kind": "node",
+          "id": "c",
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "kind": "edge",
+          "source": "a",
+          "predicate": "R",
+          "target": "b",
+          "qualifiers": {
+            "since": 2020
+          }
+        },
+        {
+          "kind": "edge",
+          "source": "a",
+          "predicate": "R",
+          "target": "b"
+        }
+      ],
+      "line_count": 5,
+      "file": ".g5/uplift/consolidated/iteration-13/next-records-files/ordinary.ndjson",
+      "file_sha256": "7131be57efde5f5162141b1da34b530cffe20f07e1d97b2aa710a743e06e8c96",
+      "import_counts": {
+        "nodes": 3,
+        "edges": 2,
+        "temporal_edges": 0,
+        "skipped": 0
+      },
+      "import_writer_arguments": [
+        {
+          "kind": "node",
+          "id": "a",
+          "labels": [
+            "Person",
+            "Member"
+          ],
+          "properties": {
+            "p_id": "a",
+            "p_labels": "user-label",
+            "name": "Ann",
+            "age": 29,
+            "ratio": 5.0,
+            "text": "29",
+            "active": true,
+            "aliases": [
+              "A"
+            ]
+          },
+          "graph": null
+        },
+        {
+          "kind": "node",
+          "id": "b",
+          "labels": [
+            "City"
+          ],
+          "properties": {},
+          "graph": null
+        },
+        {
+          "kind": "node",
+          "id": "c",
+          "labels": [],
+          "properties": {},
+          "graph": null
+        },
+        {
+          "kind": "edge",
+          "source": "a",
+          "predicate": "R",
+          "target": "b",
+          "kwargs": {
+            "qualifiers": {
+              "since": 2020
+            },
+            "graph": null
+          }
+        },
+        {
+          "kind": "edge",
+          "source": "a",
+          "predicate": "R",
+          "target": "b",
+          "kwargs": {}
+        }
+      ],
+      "source_projection_note": "stored id reads p_id and exports as properties.p_id, not original raw id key; collisions follow delivered property-row order. No generic storage inverse.",
+      "trace": [
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?,?,?,?,?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?,?,?,?,?)",
+          "args": [
+            "",
+            "b",
+            "a",
+            "b",
+            "absent",
+            "c"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "Person"
+            ],
+            [
+              "a",
+              "Member"
+            ],
+            [
+              "b",
+              "City"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?,?,?,?,?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?,?,?,?,?)",
+          "args": [
+            "",
+            "b",
+            "a",
+            "b",
+            "absent",
+            "c"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "id",
+              "a"
+            ],
+            [
+              "a",
+              "labels",
+              "user-label"
+            ],
+            [
+              "a",
+              "name",
+              "Ann"
+            ],
+            [
+              "a",
+              "age",
+              "\u0001N29"
+            ],
+            [
+              "a",
+              "ratio",
+              "\u0001D5.0"
+            ],
+            [
+              "a",
+              "text",
+              "29"
+            ],
+            [
+              "a",
+              "active",
+              "true"
+            ],
+            [
+              "a",
+              "aliases",
+              "[\"A\"]"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? AND node_id IN (?,?)",
+          "adapted": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? AND node_id IN (?,?)",
+          "args": [
+            "",
+            "absent",
+            "c"
+          ],
+          "raw_rows": [
+            [
+              "c"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "other",
+            "a"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "Other"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "other",
+            "a"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "name",
+              "Elsewhere"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = '' ORDER BY node_id",
+          "adapted": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = '' ORDER BY node_id",
+          "args": [],
+          "raw_rows": [
+            [
+              "a"
+            ],
+            [
+              "b"
+            ],
+            [
+              "c"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "a"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "Person"
+            ],
+            [
+              "a",
+              "Member"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "a"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "id",
+              "a"
+            ],
+            [
+              "a",
+              "labels",
+              "user-label"
+            ],
+            [
+              "a",
+              "name",
+              "Ann"
+            ],
+            [
+              "a",
+              "age",
+              "\u0001N29"
+            ],
+            [
+              "a",
+              "ratio",
+              "\u0001D5.0"
+            ],
+            [
+              "a",
+              "text",
+              "29"
+            ],
+            [
+              "a",
+              "active",
+              "true"
+            ],
+            [
+              "a",
+              "aliases",
+              "[\"A\"]"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "b"
+          ],
+          "raw_rows": [
+            [
+              "b",
+              "City"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "b"
+          ],
+          "raw_rows": []
+        },
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "c"
+          ],
+          "raw_rows": []
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "c"
+          ],
+          "raw_rows": []
+        },
+        {
+          "sql": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? AND node_id IN (?)",
+          "adapted": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? AND node_id IN (?)",
+          "args": [
+            "",
+            "c"
+          ],
+          "raw_rows": [
+            [
+              "c"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, p, o_id, qualifiers FROM Graph_KG.rdf_edges WHERE graph_id = '' AND (qualifiers IS NULL OR NOT (qualifiers %STARTSWITH '{\"temporal\"')) ORDER BY edge_id",
+          "adapted": "SELECT s, p, o_id, qualifiers FROM Graph_KG.rdf_edges WHERE graph_id = '' AND (qualifiers IS NULL OR NOT (STARTS(qualifiers, '{\"temporal\"'))) ORDER BY edge_id",
+          "args": [],
+          "raw_rows": [
+            [
+              "a",
+              "R",
+              "b",
+              "{\"since\":2020}"
+            ],
+            [
+              "a",
+              "R",
+              "b",
+              null
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "variant": "known-alias-collision",
+      "raw": {
+        "nodes": [
+          [
+            "",
+            "a"
+          ],
+          [
+            "",
+            "b"
+          ],
+          [
+            "",
+            "c"
+          ],
+          [
+            "other",
+            "a"
+          ]
+        ],
+        "labels": [
+          [
+            "",
+            "a",
+            "Person"
+          ],
+          [
+            "",
+            "a",
+            "Member"
+          ],
+          [
+            "",
+            "b",
+            "City"
+          ],
+          [
+            "other",
+            "a",
+            "Other"
+          ]
+        ],
+        "props": [
+          [
+            "",
+            "a",
+            "id",
+            "a"
+          ],
+          [
+            "",
+            "a",
+            "labels",
+            "user-label"
+          ],
+          [
+            "",
+            "a",
+            "name",
+            "Ann"
+          ],
+          [
+            "",
+            "a",
+            "age",
+            29
+          ],
+          [
+            "",
+            "a",
+            "ratio",
+            5.0
+          ],
+          [
+            "",
+            "a",
+            "text",
+            "29"
+          ],
+          [
+            "",
+            "a",
+            "active",
+            "true"
+          ],
+          [
+            "",
+            "a",
+            "aliases",
+            "[\"A\"]"
+          ],
+          [
+            "other",
+            "a",
+            "name",
+            "Elsewhere"
+          ],
+          [
+            "",
+            "a",
+            "p_id",
+            "stored-p"
+          ]
+        ],
+        "edges": [
+          [
+            "",
+            10,
+            "a",
+            "R",
+            "b",
+            "{\"since\":2020}"
+          ],
+          [
+            "",
+            11,
+            "a",
+            "R",
+            "b",
+            null
+          ],
+          [
+            "",
+            12,
+            "a",
+            "Marked",
+            "b",
+            "{\"temporal\":true}"
+          ],
+          [
+            "other",
+            13,
+            "a",
+            "R",
+            "a",
+            null
+          ]
+        ]
+      },
+      "requested_ids": [
+        "b",
+        "a",
+        "b",
+        "absent",
+        "c"
+      ],
+      "hydrated": [
+        {
+          "id": "b",
+          "labels": [
+            "City"
+          ]
+        },
+        {
+          "id": "a",
+          "labels": [
+            "Person",
+            "Member"
+          ],
+          "p_id": "stored-p",
+          "p_labels": "user-label",
+          "name": "Ann",
+          "age": 29,
+          "ratio": 5.0,
+          "text": "29",
+          "active": true,
+          "aliases": [
+            "A"
+          ]
+        },
+        {
+          "id": "b",
+          "labels": [
+            "City"
+          ]
+        },
+        {
+          "id": "c",
+          "labels": []
+        }
+      ],
+      "named": {
+        "id": "a",
+        "labels": [
+          "Other"
+        ],
+        "name": "Elsewhere"
+      },
+      "counts": {
+        "nodes": 3,
+        "edges": 2
+      },
+      "records": [
+        {
+          "kind": "node",
+          "id": "a",
+          "labels": [
+            "Person",
+            "Member"
+          ],
+          "properties": {
+            "p_id": "stored-p",
+            "p_labels": "user-label",
+            "name": "Ann",
+            "age": 29,
+            "ratio": 5.0,
+            "text": "29",
+            "active": true,
+            "aliases": [
+              "A"
+            ]
+          }
+        },
+        {
+          "kind": "node",
+          "id": "b",
+          "labels": [
+            "City"
+          ],
+          "properties": {}
+        },
+        {
+          "kind": "node",
+          "id": "c",
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "kind": "edge",
+          "source": "a",
+          "predicate": "R",
+          "target": "b",
+          "qualifiers": {
+            "since": 2020
+          }
+        },
+        {
+          "kind": "edge",
+          "source": "a",
+          "predicate": "R",
+          "target": "b"
+        }
+      ],
+      "line_count": 5,
+      "file": ".g5/uplift/consolidated/iteration-13/next-records-files/known-alias-collision.ndjson",
+      "file_sha256": "a683f6df2579fd9ba51f79ba0c287880af1d12c6d1df80692468996c5ce99617",
+      "import_counts": {
+        "nodes": 3,
+        "edges": 2,
+        "temporal_edges": 0,
+        "skipped": 0
+      },
+      "import_writer_arguments": [
+        {
+          "kind": "node",
+          "id": "a",
+          "labels": [
+            "Person",
+            "Member"
+          ],
+          "properties": {
+            "p_id": "stored-p",
+            "p_labels": "user-label",
+            "name": "Ann",
+            "age": 29,
+            "ratio": 5.0,
+            "text": "29",
+            "active": true,
+            "aliases": [
+              "A"
+            ]
+          },
+          "graph": null
+        },
+        {
+          "kind": "node",
+          "id": "b",
+          "labels": [
+            "City"
+          ],
+          "properties": {},
+          "graph": null
+        },
+        {
+          "kind": "node",
+          "id": "c",
+          "labels": [],
+          "properties": {},
+          "graph": null
+        },
+        {
+          "kind": "edge",
+          "source": "a",
+          "predicate": "R",
+          "target": "b",
+          "kwargs": {
+            "qualifiers": {
+              "since": 2020
+            },
+            "graph": null
+          }
+        },
+        {
+          "kind": "edge",
+          "source": "a",
+          "predicate": "R",
+          "target": "b",
+          "kwargs": {}
+        }
+      ],
+      "source_projection_note": "stored id reads p_id and exports as properties.p_id, not original raw id key; collisions follow delivered property-row order. No generic storage inverse.",
+      "trace": [
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?,?,?,?,?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?,?,?,?,?)",
+          "args": [
+            "",
+            "b",
+            "a",
+            "b",
+            "absent",
+            "c"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "Person"
+            ],
+            [
+              "a",
+              "Member"
+            ],
+            [
+              "b",
+              "City"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?,?,?,?,?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?,?,?,?,?)",
+          "args": [
+            "",
+            "b",
+            "a",
+            "b",
+            "absent",
+            "c"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "id",
+              "a"
+            ],
+            [
+              "a",
+              "labels",
+              "user-label"
+            ],
+            [
+              "a",
+              "name",
+              "Ann"
+            ],
+            [
+              "a",
+              "age",
+              "\u0001N29"
+            ],
+            [
+              "a",
+              "ratio",
+              "\u0001D5.0"
+            ],
+            [
+              "a",
+              "text",
+              "29"
+            ],
+            [
+              "a",
+              "active",
+              "true"
+            ],
+            [
+              "a",
+              "aliases",
+              "[\"A\"]"
+            ],
+            [
+              "a",
+              "p_id",
+              "stored-p"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? AND node_id IN (?,?)",
+          "adapted": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? AND node_id IN (?,?)",
+          "args": [
+            "",
+            "absent",
+            "c"
+          ],
+          "raw_rows": [
+            [
+              "c"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "other",
+            "a"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "Other"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "other",
+            "a"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "name",
+              "Elsewhere"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = '' ORDER BY node_id",
+          "adapted": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = '' ORDER BY node_id",
+          "args": [],
+          "raw_rows": [
+            [
+              "a"
+            ],
+            [
+              "b"
+            ],
+            [
+              "c"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "a"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "Person"
+            ],
+            [
+              "a",
+              "Member"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "a"
+          ],
+          "raw_rows": [
+            [
+              "a",
+              "id",
+              "a"
+            ],
+            [
+              "a",
+              "labels",
+              "user-label"
+            ],
+            [
+              "a",
+              "name",
+              "Ann"
+            ],
+            [
+              "a",
+              "age",
+              "\u0001N29"
+            ],
+            [
+              "a",
+              "ratio",
+              "\u0001D5.0"
+            ],
+            [
+              "a",
+              "text",
+              "29"
+            ],
+            [
+              "a",
+              "active",
+              "true"
+            ],
+            [
+              "a",
+              "aliases",
+              "[\"A\"]"
+            ],
+            [
+              "a",
+              "p_id",
+              "stored-p"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "b"
+          ],
+          "raw_rows": [
+            [
+              "b",
+              "City"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "b"
+          ],
+          "raw_rows": []
+        },
+        {
+          "sql": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, label FROM Graph_KG.rdf_labels WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "c"
+          ],
+          "raw_rows": []
+        },
+        {
+          "sql": "SELECT s, \"key\", Graph_KG.CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "adapted": "SELECT s, \"key\", CY_TYPED(val) FROM Graph_KG.rdf_props WHERE graph_id = ? AND s IN (?)",
+          "args": [
+            "",
+            "c"
+          ],
+          "raw_rows": []
+        },
+        {
+          "sql": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? AND node_id IN (?)",
+          "adapted": "SELECT node_id FROM Graph_KG.nodes WHERE graph_id = ? AND node_id IN (?)",
+          "args": [
+            "",
+            "c"
+          ],
+          "raw_rows": [
+            [
+              "c"
+            ]
+          ]
+        },
+        {
+          "sql": "SELECT s, p, o_id, qualifiers FROM Graph_KG.rdf_edges WHERE graph_id = '' AND (qualifiers IS NULL OR NOT (qualifiers %STARTSWITH '{\"temporal\"')) ORDER BY edge_id",
+          "adapted": "SELECT s, p, o_id, qualifiers FROM Graph_KG.rdf_edges WHERE graph_id = '' AND (qualifiers IS NULL OR NOT (STARTS(qualifiers, '{\"temporal\"'))) ORDER BY edge_id",
+          "args": [],
+          "raw_rows": [
+            [
+              "a",
+              "R",
+              "b",
+              "{\"since\":2020}"
+            ],
+            [
+              "a",
+              "R",
+              "b",
+              null
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "inputs": {
+    "iris_vector_graph/_engine/nodes_edges.py": "7eb2ea4761f66c683db0dd8b55132bb5c2347855acb14ab5ed0f8210543857c7",
+    "iris_vector_graph/_engine/snapshot.py": "531d13c55254657f278691aee1c13717ff0965924ee16b3b62a140de979d33bc",
+    "iris_vector_graph/_engine/ledger.py": "751e8c057ed58f7bfd44e32478c2a0b04cdf572423358b743094b4ea17cbe08c",
+    "iris_vector_graph/prop_values.py": "27d03759444be20e7efc3498ec70925658d561e44ffbee75282b550a47ab4f56",
+    "iris_vector_graph/constants.py": "674b2b9efe0e43b4f23d5aee5c0c682d6a5b9e614cf9528ffa89cda2e16bd2b3"
+  },
+  "socket_attempts": [],
+  "native_calls": 0,
+  "Git_calls": 0,
+  "elapsed_s": 0.0038545000134035945,
+  "scope": "Healthy ASCII raw rows only. SQLite executes selected source SQL, local CY_TYPED/STARTS scalar providers. Import writer callbacks record parsed fields, not actual persistence/transactions or inverse proof. Existing alias behavior, raw order/collation, JSON and native SQL providers qualified. No failure injection or forbidden next-phase work."
+}

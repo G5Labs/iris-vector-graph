@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/labels-overwritten/20261116T022141Z/models/ndjson_export/ndjson_export.rs:286:60
+    |
+286 | pub proof fn witness_two_label_rows_survive_file() ensures ({let f=export(seq![Parent{graph:0,id:0}],seq![Label{graph:0,id:0,label:1},Label{graph:0,id:0,label:2}],seq![],seq![]);match f.lines[0]{Event::Node{id:_,labels,props:_}=>labels==seq![1,2],_=>false}}), {...
+    | --------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,21 @@
+verification results:: 25 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:96:1
+   |
+96 | pub proof fn lemma_upsert_keys(es:Seq<Entry>,key:Text,value:Text)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:100:24
+    |
+100 |  if es.len()>0 {assert(seq![es[0].key].to_set() =~= set![es[0].key]);assert(es =~= seq![es[0]]+es.skip(1));assert(es.map_values(key...
+    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:107:136
+    |
+107 | ...values(key_fn()) =~= seq![key]);assert(seq![key].to_set() =~= set![key]);assert(Seq::<Text>::empty().to_set() =~= Set::<Text>::e...
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

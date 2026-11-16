@@ -1,0 +1,53 @@
+verification results:: 48 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/inferred-key-emitted/20261116T020535Z/models/rdf_reporting/rdf_reporting.rs:248:10
+    |
+248 |  ensures emit_quals(es,e,pos,c).len()==0
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+249 |  decreases es.len(),
+250 | {if es.len()>0{lemma_inferred_quals_empty(es.skip(1),e,pos,c);}}
+    |  -------------------------------------------------------------- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/inferred-key-emitted/20261116T020535Z/models/rdf_reporting/rdf_reporting.rs:299:1
+    |
+299 | pub proof fn lemma_qualifier_entries_generate_exact_content(es:Seq<Entry>,e:Edge,pos:nat,c:Config,x:Quad)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/inferred-key-emitted/20261116T020535Z/models/rdf_reporting/rdf_reporting.rs:300:10
+    |
+300 |    ensures emit_quals(es,e,pos,c).contains(x)==(exists|i:int|0<=i<es.len() && es[i].key!=t("inferred") && x==q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[i].key,Term::Literal(qualifier_literal(es[i].value))))
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+301 |    decreases es.len(),
+302 |   {if es.len()>0{lemma_qualifier_entries_generate_exact_content(es.skip(1),e,pos,c,x);
+    |  __-
+303 | |  if emit_quals(es,e,pos,c).contains(x) && !(es[0].key!=t("inferred") && x==q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[0].key,Term::Literal(qualifier_literal(es[0].value)))){let i=choose|i:int|0<=i<es.skip(1)...
+304 | |  if exists|i:int|0<=i<es.len() && es[i].key!=t("inferred") && x==q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[i].key,Term::Literal(qualifier_literal(es[i].value))){let i=choose|i:int|0<=i<es.len() && es[i].key...
+305 | | }}
+    | |_- at the end of the function body
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/inferred-key-emitted/20261116T020535Z/models/rdf_reporting/rdf_reporting.rs:303:226
+    |
+303 | ...nt|0<=i<es.skip(1).len() && es.skip(1)[i].key!=t("inferred") && x==q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es.skip(1)[i].key,Term::Literal(qualifier_literal(es.skip(1)[i].value)));as...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/inferred-key-emitted/20261116T020535Z/models/rdf_reporting/rdf_reporting.rs:303:443
+    |
+303 | ...rm::Literal(qualifier_literal(es.skip(1)[i].value)));assert(es[i+1]==es.skip(1)[i]);}
+    |                                                                ^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/inferred-key-emitted/20261116T020535Z/models/rdf_reporting/rdf_reporting.rs:303:443
+    |
+303 | ...ifier_literal(es.skip(1)[i].value)));assert(es[i+1]==es.skip(1)[i]);}
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

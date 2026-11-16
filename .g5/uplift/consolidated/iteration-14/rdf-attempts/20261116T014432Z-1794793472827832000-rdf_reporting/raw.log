@@ -1,0 +1,47 @@
+error[E0308]: mismatched types
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:251:62
+    |
+251 | pub open spec fn raw_triples(rs:Rows,c:Config)->Set<Triple> {Set::new(|tr:Triple|exists|x:Quad|origin(x,rs,c)&&x.triple==tr)}
+    |                                                 -----------  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<Triple>`, found `Option<Set<Triple>>`
+    |                                                 |
+    |                                                 expected `vstd::set::Set<Triple>` because of return type
+    |
+    = note: expected struct `vstd::set::Set<_>`
+                 found enum `std::option::Option<vstd::set::Set<_>>`
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<Triple>>` value, panicking if the value is an `Option::None`
+    |
+251 | pub open spec fn raw_triples(rs:Rows,c:Config)->Set<Triple> {Set::new(|tr:Triple|exists|x:Quad|origin(x,rs,c)&&x.triple==tr).expect("REASON")}
+    |                                                                                                                             +++++++++++++++++
+
+error[E0308]: mismatched types
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:252:61
+    |
+252 | pub open spec fn raw_subjects(rs:Rows,c:Config)->Set<Term> {Set::new(|s:Term|exists|x:Quad|origin(x,rs,c)&&x.triple.s==s)}
+    |                                                  ---------  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<Term>`, found `Option<Set<Term>>`
+    |                                                  |
+    |                                                  expected `vstd::set::Set<Term>` because of return type
+    |
+    = note: expected struct `vstd::set::Set<_>`
+                 found enum `std::option::Option<vstd::set::Set<_>>`
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<Term>>` value, panicking if the value is an `Option::None`
+    |
+252 | pub open spec fn raw_subjects(rs:Rows,c:Config)->Set<Term> {Set::new(|s:Term|exists|x:Quad|origin(x,rs,c)&&x.triple.s==s).expect("REASON")}
+    |                                                                                                                          +++++++++++++++++
+
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:254:28
+    |
+254 |  ensures raw_triples(rs,c).finite(),raw_subjects(rs,c).finite(),
+    |                            ^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:254:56
+    |
+254 |  ensures raw_triples(rs,c).finite(),raw_subjects(rs,c).finite(),
+    |                                                        ^^^^^^
+
+error: aborting due to 2 previous errors; 2 warnings emitted
+
+For more information about this error, try `rustc --explain E0308`.

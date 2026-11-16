@@ -1,0 +1,131 @@
+{
+  "name": "ndjson_export",
+  "root": "ndjson_export.rs",
+  "expected_verified": 143,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [
+    "../node_read/node_read.rs",
+    "../bulk_children/bulk_children.rs",
+    "qualifier.rs",
+    "order.rs"
+  ],
+  "controls": [
+    {
+      "name": "property-graph-lost",
+      "find": "if r.graph==g&&m.contains_key(r.id){let old=m[r.id];m.insert(r.id,Record{props:",
+      "replace": "if m.contains_key(r.id){let old=m[r.id];m.insert(r.id,Record{props:",
+      "expect_fail_in": [
+        "witness_named_property_does_not_enter_default_file"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "labels-overwritten",
+      "find": "labels:old.labels.push(r.label)",
+      "replace": "labels:seq![r.label]",
+      "expect_fail_in": [
+        "witness_two_label_rows_survive_file"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "alias-first-value-wins",
+      "find": "props:old.props.insert(alias(r.key),value(r))",
+      "replace": "props:if old.props.contains_key(alias(r.key)){old.props}else{old.props.insert(alias(r.key),value(r))}",
+      "expect_fail_in": [
+        "witness_last_alias_row_wins_in_file"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "structural-alias-lost",
+      "find": "alias(k:int)->int{if k==0{2}else if k==1{3}else{k}}",
+      "replace": "alias(k:int)->int{k}",
+      "expect_fail_in": [
+        "witness_id_property_reaches_alias_in_file"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "bare-parent-dropped",
+      "find": "r.labels.len()>0||r.props.dom().len()>0||parent_has(ns,g,r.id)",
+      "replace": "r.labels.len()>0||r.props.dom().len()>0",
+      "expect_fail_in": [
+        "witness_bare_parent_still_writes_a_line"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "node-census-all-graphs",
+      "find": "if r.graph==0{p.push(r.id)}else{p}",
+      "replace": "if true{p.push(r.id)}else{p}",
+      "expect_fail_in": [
+        "witness_named_parent_does_not_duplicate_default_id"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "projected-aliases-dropped",
+      "find": "flat.dom().filter(|k:int|k!=0&&k!=1)",
+      "replace": "flat.dom().filter(|k:int|k>3)",
+      "expect_fail_in": [
+        "witness_id_property_reaches_alias_in_file"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "zero-valued-qualifier-dropped",
+      "find": "Some(qualifier::Qual::Field(n))=>Event::Edge{source:e.source,predicate:e.predicate,target:e.target,qual:Some(n)}",
+      "replace": "Some(qualifier::Qual::Field(n))=>Event::Edge{source:e.source,predicate:e.predicate,target:e.target,qual:if n>0{Some(n)}else{None}}",
+      "expect_fail_in": [
+        "witness_zero_qualifier_kept_in_file"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "edge-census-all-graphs",
+      "find": "selected_edge(e:EdgeRow)->bool{e.graph==0&&!qualifier::marked(e.raw)}",
+      "replace": "selected_edge(e:EdgeRow)->bool{!qualifier::marked(e.raw)}",
+      "expect_fail_in": [
+        "witness_named_edge_not_written"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "raw-marker-filter-omitted",
+      "find": "selected_edge(e:EdgeRow)->bool{e.graph==0&&!qualifier::marked(e.raw)}",
+      "replace": "selected_edge(e:EdgeRow)->bool{e.graph==0}",
+      "expect_fail_in": [
+        "witness_marked_edge_not_written"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "physical-edge-lines-deduplicated",
+      "find": "edge_pass(append_edge(f,edge_event(es[0])),es.drop_first())",
+      "replace": "edge_pass(if f.lines.contains(edge_event(es[0])){f}else{append_edge(f,edge_event(es[0]))},es.drop_first())",
+      "expect_fail_in": [
+        "witness_parallel_physical_rows_both_written"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "node-counter-doubled",
+      "find": "nodes:f.nodes+1,..f",
+      "replace": "nodes:f.nodes+2,..f",
+      "expect_fail_in": [
+        "witness_nodes_counter_counts_written_lines"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    },
+    {
+      "name": "edges-written-before-nodes",
+      "find": "edge_pass(node_pass(start(),census(ns),ns,ls,ps),edge_census(es))",
+      "replace": "node_pass(edge_pass(start(),edge_census(es)),census(ns),ns,ls,ps)",
+      "expect_fail_in": [
+        "witness_node_line_precedes_edge_line"
+      ],
+      "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut"
+    }
+  ]
+}

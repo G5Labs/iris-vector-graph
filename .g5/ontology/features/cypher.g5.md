@@ -60,6 +60,13 @@ A read runs natively only when all of these hold; otherwise the SQL path answers
 
 A caller without SQL `SELECT` on the node, label, property and edge tables gets the SQL path, never the native one. SQL table privileges keep deciding what a caller can read, even though native reads do not pass through SQL.
 
+<a id="query.native.privileges.recheck-policy"></a>
+[Q · query.native.privileges.recheck-policy]
+
+Should a running engine notice a revoked table right or a dropped adjacency index?
+
+- Working assumption (agent, unratified): Require current privilege and index evidence before relying on cached native admission; revocation and database session caching need explicit limits.
+
 <a id="query.native.index-current"></a>
 [Q · query.native.index-current]
 
@@ -157,6 +164,13 @@ The interpreter answers any shape that is not compiled yet, is being compiled, f
 - A failed compile is logged once and not tried again until the compile stamp changes, which a deploy or a change of the property registry does.
 - A plan with no hop is always interpreted.
 
+<a id="query.compiled.fallback.failure-policy"></a>
+[Q · query.compiled.fallback.failure-policy]
+
+Should a compiled plan that fails while running be set aside?
+
+- Working assumption (agent, unratified): Prefer setting a failed compiled entry aside after fallback; its reset, retry and concurrent-reader policy remains undecided.
+
 <a id="query.compiled.integrity"></a>
 [D · query.compiled.integrity]
 
@@ -182,6 +196,13 @@ A Cypher read with no `USE GRAPH` keeps each match inside one graph, through eve
 - A node carried through `WITH` keeps its graph in later clauses.
 - Variable-length and shortest-path reads walk each graph on its own.
 - A procedure call answers the union of each graph's own answer, or refuses when it cannot answer per graph.
+
+<a id="query.graph-scope.read.mapped-label-policy"></a>
+[Q · query.graph-scope.read.mapped-label-policy]
+
+Does a mapped label belong to every graph?
+
+- Working assumption (agent, unratified): Treat mapped labels as namespace-global today; a graph-specific mapping needs an explicit registration and migration policy.
 
 <a id="query.graph-scope.row-graph"></a>
 [D · query.graph-scope.row-graph]
@@ -275,6 +296,13 @@ Should the second HTTP app's Cypher endpoints (`/api/cypher` and GraphQL `execut
 IVG answers the fixed metadata queries Neo4j Browser sends without running them, and gives those fixed answers to no other query.
 
 ## System procedures
+
+<a id="query.browser-metadata.ddl-notice-policy"></a>
+[Q · query.browser-metadata.ddl-notice-policy]
+
+Should `CREATE CONSTRAINT` / `CREATE INDEX` be refused rather than accepted as a no-op?
+
+- Working assumption (agent, unratified): Keep the source-decided DDL no-op; whether to add a warning or public documentation remains open.
 
 <a id="query.system-procedures"></a>
 [D · query.system-procedures]
@@ -385,6 +413,10 @@ Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no
 - user-facing-behavior
 - test-coverage
 
+Audit reproduction: [F-0824](../../Verus_verification/bugs_issues.md#F-0824) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [Two slashes inside an AQL string start a comment](../../Verus_verification/bugs_issues.md#F-0824).
+
 ### query.native
 - agent
 - architecture-decision, operations
@@ -411,6 +443,18 @@ Sources: [spec 253 FR-011, decided 2026-10-20](../../../specs/253-native-cypher-
 
 Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no decider, so under the uplift's authority rule ([sources](../../uplift/ivg-verus-initial/sources.md)) the block is `agent` (review round 3 R3-reader M16).
 
+### query.native.privileges.recheck-policy
+- Expands: [parent](#query.native.privileges)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should a running engine notice a revoked table right or a dropped adjacency index?](../../Verus_verification/open_questions.md#HD-0901).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0901).
+
+Audit (HD-0901): Open owner decision. Working assumption (agent, unratified): Split the question. (1) A SQL REVOKE is not guaranteed to reach running engines' native reads. To cut native access, revoke the database resource or %Native_ClassExecution, or start new engines. Treat FR-011's executor-side check as an unimplemented spec requirement (F-0908) whose amendment is the maintainer's call. (2) For the route capability, keep FR-003: native reads require the index to be declared at the time of the read. Model an out-of-band drop under running engines as a premise violation ('the index is not dropped while engines run'), not a supported transition, unless Run checks Indexed(). See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0901).
+
 ### query.native.index-current
 - agent
 - uncertain
@@ -420,6 +464,8 @@ Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no
 Sources: [spec 253 FR-014 and research §H](../../../specs/253-native-cypher-executor/research.md#L80-L86), [`BulkLoader` loads without index maintenance and rebuilds after](../../../iris_vector_graph/bulk_loader.py#L1-L12), [A-cypher notes, F7](../../uplift/ivg-verus-initial/intent/cypher.md#candidate-findings). The bulk loads themselves belong to the install page.
 
 Findings: [Should a bulk load by another process close the native query path while indexes lag the rows?](../../Verus_verification/open_questions.md#q-cyp-003)
+
+Audit (q-cyp-003): Open owner decision. Working assumption (agent, unratified): Prefer closing native admission during index-bypassing load; a cache/probe that misses that interval cannot justify current-index reliance. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-cyp-003).
 
 ### query.native.reads-only
 - agent
@@ -485,6 +531,12 @@ Sources: [spec 253 FR-006 and FR-007](../../../specs/253-native-cypher-executor/
 
 Findings: [In shadow mode, should a native failure be raised instead of answered by SQL?](../../Verus_verification/open_questions.md#q-cyp-002)
 
+Audit (q-cyp-002): Open owner decision. Working assumption (agent, unratified): Keep SQL fallback as the current shadow behavior; fail-fast diagnostic mode remains an unratified alternative. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-cyp-002).
+
+Audit (HD-0902): Open owner decision. Working assumption (agent, unratified): Keep ordinary SQL fallback. In shadow validation, record a native exception as an unsuccessful comparison: raise in shadow mode, or count failures and report them at the end of the run. Require a clean comparison (not a fallback) before claiming parity. The FR-010 default flip and the 3896/3896 figure establish only that no compared answer differed. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0902).
+
+Findings: [Should shadow mode fail when the native path raises an error?](../../Verus_verification/open_questions.md#HD-0902).
+
 ### query.compiled
 - agent
 - architecture-decision, operations
@@ -539,7 +591,19 @@ Sources: [ADR-0014](../../../docs/adr/0014-native-plans-are-compiled-to-classes-
 
 Sources: [ADR-0014](../../../docs/adr/0014-native-plans-are-compiled-to-classes-at-run-time.md#L19-L20), [spec 257 US3](../../../specs/257-compiled-native-plans/spec.md#L60-L63), [`Exec.RunA` catches a failed lookup](../../../iris_src/src/Graph/KG/Cypher/Exec.cls#L153-L166), [`Gen.For`, `Build`](../../../iris_src/src/Graph/KG/Cypher/Gen.cls#L61-L222). Live: the failed-build, unrecordable shape and generator-failure tests in `test_257_compiled_plans_e2e.py`. A compiled class that fails while it runs falls to the SQL path under [native fallback](#query.native.fallback), and its shape keeps doing so until a deploy ([A-cypher notes, F12](../../uplift/ivg-verus-initial/intent/cypher.md#candidate-findings)).
 
-Findings: [A build job queued before a layout change can leave a shape interpreted until the next change](../../Verus_verification/bugs_issues.md#bug-cyp-009); [Mark a compiled entry failed when its walk raises, so the interpreter answers next time](../../Verus_verification/design_simplification.md#simp-cyp-003)
+Findings: [A build job queued before a layout change can leave a shape interpreted until the next change](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-cyp-009); [Mark a compiled entry failed when its walk raises, so the interpreter answers next time](../../Verus_verification/design_simplification.md#simp-cyp-003)
+
+### query.compiled.fallback.failure-policy
+- Expands: [parent](#query.compiled.fallback)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should a compiled plan that fails while running be set aside?](../../Verus_verification/open_questions.md#HD-0904).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0904).
+
+Audit (HD-0904): Open owner decision. Working assumption (agent, unratified): Treat a run-time failure of a compiled entry as a fallback outcome: quarantine the entry for that plan generation (as a failed build already is), let the interpreter answer, and retry only after invalidation (a new stamp, DropAll or a deploy). SQL fallback for every later read (as built) is a correct-answer but degraded baseline that violates ADR-0014's 'answers exactly as the interpreter'. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0904).
 
 ### query.compiled.integrity
 - agent
@@ -568,6 +632,18 @@ Sources: [CONTEXT.md, All-graphs read, decided 2026-10-20](../../../CONTEXT.md#L
 
 Findings: [An all-graphs read skips graph correlation when only the nodes table looks single-graph](../../Verus_verification/bugs_issues.md#bug-cyp-005); [Carry each node binding's graph through Cypher translation instead of correlating graphs by regex afterwards](../../Verus_verification/design_simplification.md#simp-cyp-002)
 
+### query.graph-scope.read.mapped-label-policy
+- Expands: [parent](#query.graph-scope.read)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Does a mapped label belong to every graph?](../../Verus_verification/open_questions.md#HD-0802).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0802).
+
+Audit (HD-0802): Open owner decision. Working assumption (agent, unratified): Treat a mapping registration as namespace-wide (the as-built baseline). Under a named USE GRAPH scope, require either graph-aware mapping provenance or an explicitly documented exception. Model the current global visibility as a known deviation from the glossary's isolation rule. It is not a security breach, because the namespace is the boundary (USER_GUIDE:467-468). See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0802).
+
 ### query.graph-scope.row-graph
 - agent
 - user-facing-behavior
@@ -593,6 +669,8 @@ Sources: [CONTEXT.md, All-graphs write](../../../CONTEXT.md#L44-L48), [relations
 
 Findings: [When a write without USE GRAPH creates a relationship between nodes its MATCH bound in a named graph, which graph gets it?](../../Verus_verification/open_questions.md#q-cyp-001)
 
+Audit (q-cyp-001): Open owner decision. Working assumption (agent, unratified): Prefer the bound endpoints graph, with ambiguity refused; the actual default-write rule remains a behavior fact pending intent confirmation. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-cyp-001).
+
 ### query.graph-scope.names
 - agent
 - data-integrity
@@ -609,6 +687,18 @@ Findings: [USE GRAPH accepts graph names the graph keys refuse](../../Verus_veri
 - Children: [atomic](#query.writes.atomic), [adjacency](#query.writes.adjacency), [ledger](#query.writes.ledger), [subquery](#query.writes.subquery), [create existing](#query.writes.create-existing), [delete scope](#query.writes.delete-scope).
 
 Sources: [CHANGELOG 4.6.0, every statement uses the rows its MATCH bound](../../../CHANGELOG.md#L1742-L1744), [spec 229](../../../specs/229-tck-write-verification/spec.md), [`_write_ids`, `_capture_key`](../../../iris_vector_graph/cypher/translator.py#L13093-L13164), [`execute_transaction`](../../../iris_vector_graph/stores/iris_sql_store.py#L1580-L1818). Live: the TCK's write scenarios with side-effect counting, and `test_460_all_graphs_writes_e2e.py`.
+
+Audit reproduction: [F-C0848](../../Verus_verification/bugs_issues.md#F-C0848) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [A Cypher CREATE or MERGE with literal or parameter endpoint ids drops a parameter-bound relationship property without an error](../../Verus_verification/bugs_issues.md#F-C0848).
+
+Audit reproduction: [F-0822](../../Verus_verification/bugs_issues.md#F-0822) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [CREATE or MERGE after UNWIND $p AS e WITH e fails](../../Verus_verification/bugs_issues.md#F-0822).
+
+Audit reproduction: [F-C0849](../../Verus_verification/bugs_issues.md#F-C0849) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [A relationship property bound by a WITH before a literal-endpoint CREATE is stored as text that is not JSON](../../Verus_verification/bugs_issues.md#F-C0849).
 
 ### query.writes.atomic
 - agent
@@ -635,7 +725,7 @@ Sources: [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-
 
 Sources: [USER_GUIDE, writes outside the ledger](../../../docs/USER_GUIDE.md#L1107-L1110), [`_ledger_check` before each write batch](../../../iris_vector_graph/_engine/query.py#L2299-L2303), [`LedgerGuard`](../../../iris_vector_graph/ledger/guard.py#L20-L80). Live: [`test_ledger_us05_compat.py`](../../../tests/integration/test_ledger_us05_compat.py). CONTEXT.md says structural edges are "subject to the revision ledger" ([CONTEXT.md](../../../CONTEXT.md#L56-L59)); stage-A F10 left the decision to a human (review round 3 R3-reader M15). The guides name the engine's write methods, not Cypher, and the strict setting is re-read at most every 5 seconds; the [ledger strict rule](ledger.g5.md#ledger.strict) and [strict-mode surfaces](../concepts/access.g5.md#access.ledger_strict) own the general rule ([A-cypher notes, F10](../../uplift/ivg-verus-initial/intent/cypher.md#candidate-findings)).
 
-Findings: [The glossary says structural edges are subject to the ledger, but Cypher writes are never recorded](../../Verus_verification/bugs_issues.md#bug-doc-012)
+Findings: [The glossary says structural edges are subject to the ledger, but Cypher writes are never recorded](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-012)
 
 ### query.writes.subquery
 - agent
@@ -644,7 +734,7 @@ Findings: [The glossary says structural edges are subject to the ledger, but Cyp
 
 Sources: [read-only rule counts a `CALL { }` body's write](../../../iris_vector_graph/cypher/ast.py#L535-L550), [subquery translation](../../../iris_vector_graph/cypher/translator.py#L14561-L14703), [clause dispatch](../../../iris_vector_graph/cypher/translator.py#L5134-L5136), [reconstruction check 2(a)15 and correction 22](../../uplift/ivg-verus-initial/reconstruction-check.md). Native probe ([receipt](../../Verus_verification/receipts/native/cypher_subquery_write.json), current probe re-run): `CALL { CREATE ... } RETURN 1` writes nothing and returns IRIS's raw SQL syntax error (SQLCODE -12) in the result's error field, while a plain `CREATE` control writes its node. That meets this block, but the refusal is returned rather than raised as the `GraphWriteError` of [atomic writes](#query.writes.atomic), and the strict-mode check is never reached. The subquery translation reads only the body's `MATCH`, `WHERE` and `UNWIND` clauses, so a silent drop when the body's `RETURN` reads only matched variables is still suspected from source reading and not observed ([review round 1, R1-10](../../uplift/ivg-verus-initial/review/round1-platform.md)); KNOWN_ISSUES does not list either case.
 
-Findings: [A write inside CALL { } is refused with a raw SQL syntax error instead of a clear refusal](../../Verus_verification/bugs_issues.md#bug-cyp-004)
+Findings: [A write inside CALL { } is refused with a raw SQL syntax error instead of a clear refusal](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-cyp-004)
 
 ### query.writes.create-existing
 - agent
@@ -661,7 +751,7 @@ Sources: [USER_GUIDE, a node's ID is its identity](../../../docs/USER_GUIDE.md#L
 
 Sources: [`translate_delete_clause`](../../../iris_vector_graph/cypher/translator.py#L10625-L10803), [node delete](graph-structure.g5.md#structure.node.delete), [reconstruction check 2(a)15](../../uplift/ivg-verus-initial/reconstruction-check.md). Read in the translator: a node delete removes labels, properties, `kg_NodeEmbeddings`, reifier links and the node row; `DETACH DELETE` also removes incident edges and their reifications; `DELETE r` removes only the `rdf_edges` row. Ledger tuple entries are the ledger's ([query.writes.ledger](#query.writes.ledger)).
 
-Findings: [Deleting a relationship with delete_edge or Cypher DELETE leaves its reifications, edge embeddings and ledger statement behind](../../Verus_verification/bugs_issues.md#bug-str-013)
+Findings: [Deleting a relationship with delete_edge or Cypher DELETE leaves its reifications, edge embeddings and ledger statement behind](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-013)
 
 ### query.read-only
 - agent
@@ -685,7 +775,19 @@ Findings: [The sample API's Cypher endpoints run translated SQL on a raw cursor,
 
 Sources: [`execute_cypher` shortcuts](../../../iris_vector_graph/_engine/query.py#L1807-L1856), [`answered_without_parsing`](../../../iris_vector_graph/cypher/read_only.py#L53-L58). Observed divergence: two shortcuts match on words anywhere in the text (for example `RETURN DISTINCT`, `UNION ALL` and `ENTITY`), so other reads get the fixed answers, ignoring `USE GRAPH` ([A-cypher notes, F4](../../uplift/ivg-verus-initial/intent/cypher.md#candidate-findings)).
 
-Findings: [Text shortcuts meant for Neo4j Browser answer unrelated queries with canned rows](../../Verus_verification/bugs_issues.md#bug-cyp-003)
+Findings: [Text shortcuts meant for Neo4j Browser answer unrelated queries with canned rows](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-cyp-003)
+
+### query.browser-metadata.ddl-notice-policy
+- Expands: [parent](#query.browser-metadata)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should `CREATE CONSTRAINT` / `CREATE INDEX` be refused rather than accepted as a no-op?](../../Verus_verification/open_questions.md#HD-0804).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0804).
+
+Audit (HD-0804): Open owner decision. Working assumption (agent, unratified): Treat the accepted DDL as an acknowledged no-op that establishes no invariant (supported by f4a13d75 and pinned by tests). Model no uniqueness guarantee from it. As a proposed strengthening, not a decision: document it in USER_GUIDE beside the parse-error rule and add a metadata warning. Refusal (option c) would reverse a maintainer decision. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0804).
 
 ### query.system-procedures
 - agent
@@ -713,6 +815,8 @@ Evidence: [actual SQLite and native scope](../../Verus_verification/models/proce
 
 Evidence: [source-frozen survey](../../uplift/consolidated/iteration-6/breadth-survey.md), [actual IRIS neighbors](../../uplift/consolidated/iteration-7/procedure-native.json). No owner policy is inferred from the as-built alias exception. Question: [q-iter-004](../../Verus_verification/open_questions.md#q-iter-004).
 
+Audit (q-iter-004): Open owner decision. Working assumption (agent, unratified): Prefer declared YIELD aliases at the public reader, while documenting current handled-call names until the owner decides. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-iter-004).
+
 ### query.system-procedures.empty-validation
 - agent
 - uncertain
@@ -720,6 +824,8 @@ Evidence: [source-frozen survey](../../uplift/consolidated/iteration-6/breadth-s
 - Expands: [System procedures](#query.system-procedures).
 
 Evidence: [empty/nonempty producer cases](../../uplift/consolidated/iteration-7/procedure-native.json), [scope and controls](../../Verus_verification/models/procedure_results/NOTES.md). This concerns evaluation before rows exist, not permission to silently ignore a later clause. Question: [q-iter-005](../../Verus_verification/open_questions.md#q-iter-005).
+
+Audit (q-iter-005): Open owner decision. Working assumption (agent, unratified): Prefer validating a requested WHERE independent of row count; current empty-provider acceptance does not settle intent. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-iter-005).
 
 ### query.system-procedures.unknown
 - agent
@@ -730,6 +836,12 @@ Evidence: [empty/nonempty producer cases](../../uplift/consolidated/iteration-7/
 Sources: [`_try_system_procedure` answers an unknown `apoc.`, `db.` or `dbms.` name with no rows](../../../iris_vector_graph/engine.py#L1716-L1720), [unknown `ivg.*` raises](../../../iris_vector_graph/cypher/translator.py#L2265-L2270), [unknown `gds.*` answers an error](../../../iris_vector_graph/_engine/query.py#L682-L695). The empty answers date from the Bolt server and graph browser release; no source says why an unknown name should succeed.
 
 Findings: [Should a call to an unknown apoc, db or dbms procedure be refused?](../../Verus_verification/open_questions.md#q-cyp-005)
+
+Audit (q-cyp-005): Open owner decision. Working assumption (agent, unratified): Prefer a clear unknown-procedure refusal; preserve present empty results as observed compatibility until the owner decides. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-cyp-005).
+
+Audit reproduction: [F-0817](../../Verus_verification/bugs_issues.md#F-0817) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [An unknown db, dbms or apoc procedure answers no rows](../../Verus_verification/bugs_issues.md#F-0817).
 
 ### query.aggregation
 - Sources: [USER_GUIDE, grouped reporting](../../../docs/USER_GUIDE.md#L165); [typed property sums and WITH](../../../tests/unit/test_sum_column_typing.py); [known-list typed collection](../../../tests/unit/test_460_r308_collect_typed.py); [empty result columns](../../../tests/unit/test_empty_result_columns.py); [aggregate order and page scope](../../../tests/unit/test_order_limit_aggregate_scope.py); [count DISTINCT with LIMIT](../../../tests/e2e/test_470_issue13_count_distinct_limit_e2e.py)
@@ -748,6 +860,11 @@ The [newer all-null SUM regression](../../../tests/unit/test_460_r308_guards.py#
 
 Findings: [A grouped empty OPTIONAL returns NULL instead of a zero sum](../../Verus_verification/bugs_issues.md#bug-agg-001).
 
+Audit reproduction: [F-0823](../../Verus_verification/bugs_issues.md#F-0823) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [An aggregate in a CALL subquery that matches nothing answers 0](../../Verus_verification/bugs_issues.md#F-0823).
+
+Audit reproduction: [bug-agg-001](../../Verus_verification/bugs_issues.md#bug-agg-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 ### query.conformance
 - agent
@@ -756,7 +873,25 @@ Findings: [A grouped empty OPTIONAL returns NULL instead of a zero sum](../../Ve
 
 Sources: [TCK.md](../../../docs/dev/TCK.md#L157-L256), [KNOWN_ISSUES, application developers](../../../docs/KNOWN_ISSUES.md#L23-L117), [KNOWN_ISSUES, untyped values](../../../docs/KNOWN_ISSUES.md#L183-L190), [KNOWN_ISSUES, variable-length limits](../../../docs/KNOWN_ISSUES.md#L452-L481), [KNOWN_ISSUES, UNWIND then CREATE](../../../docs/KNOWN_ISSUES.md#L585-L596), [spec 229](../../../specs/229-tck-write-verification/spec.md). Recorded runs: 3896 of 3896 eligible scenarios at 4.6.0 with multigraph on and the native executor on; seven fail with multigraph off. The TCK at the pinned revision has no `CALL { }` write scenarios, and a dropped `CALL { }` write is not a listed deviation: it is held to [query.writes.subquery](#query.writes.subquery) instead.
 
-Findings: [A write inside CALL { } is refused with a raw SQL syntax error instead of a clear refusal](../../Verus_verification/bugs_issues.md#bug-cyp-004); [Does a Cypher path value come back as JSON text or as a map, and may that depend on the driver or execution path?](../../Verus_verification/open_questions.md#q-cyp-004)
+Findings: [A write inside CALL { } is refused with a raw SQL syntax error instead of a clear refusal](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-cyp-004); [Does a Cypher path value come back as JSON text or as a map, and may that depend on the driver or execution path?](../../Verus_verification/open_questions.md#q-cyp-004)
+
+Audit (q-cyp-004): Open owner decision. Working assumption (agent, unratified): Prefer a consistent structured path value; driver/path-dependent text is current behavior requiring a compatibility decision. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-cyp-004).
+
+Audit reproduction: [F-0803](../../Verus_verification/bugs_issues.md#F-0803) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [A WHERE after RETURN is parsed and dropped](../../Verus_verification/bugs_issues.md#F-0803).
+
+Audit reproduction: [F-C0101](../../Verus_verification/bugs_issues.md#F-C0101) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [An inline relationship property in a Cypher pattern fails on an edge with no properties](../../Verus_verification/bugs_issues.md#F-C0101).
+
+Audit reproduction: [F-0808](../../Verus_verification/bugs_issues.md#F-0808) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [FOREACH over a parameter list does not run per item](../../Verus_verification/bugs_issues.md#F-0808).
+
+Audit reproduction: [F-C0841](../../Verus_verification/bugs_issues.md#F-C0841) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [Cypher range() with a step of 0 known only at run time answers [] instead of raising NumberOutOfRange](../../Verus_verification/bugs_issues.md#F-C0841).
 
 ### query.values
 - Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
@@ -766,6 +901,10 @@ Findings: [A write inside CALL { } is refused with a raw SQL syntax error instea
 - user-facing-behavior
 
 New owner in the consolidated uplift. Node values and the typed-value marks are the playbook's `CYP-B17` family.
+
+Audit reproduction: [F-0810](../../Verus_verification/bugs_issues.md#F-0810) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [SET n.p = null keeps the key](../../Verus_verification/bugs_issues.md#F-0810).
 
 ### query.values.relationship_text
 - Sources: [`iris_vector_graph/prop_values.py::parse_rel_prop_text`](../../../iris_vector_graph/prop_values.py#L141-L168), [`::parse_prop_text`](../../../iris_vector_graph/prop_values.py#L129-L138), [`::decode_json_list_map`](../../../iris_vector_graph/prop_values.py#L234-L248), the two patterns [`_CANONICAL_INT_RE`, `_CANONICAL_FLOAT_RE`](../../../iris_vector_graph/prop_values.py#L90-L91); [`iris_vector_graph/_engine/query.py::_decode_rel_prop_text_columns`](../../../iris_vector_graph/_engine/query.py#L1200-L1216) (arity guard `:1207`); [`iris_vector_graph/cypher/translator.py::_rel_prop_text_columns`](../../../iris_vector_graph/cypher/translator.py#L7517-L7556); unit tests [test_relationship_property_typing.py](../../../tests/unit/test_relationship_property_typing.py)
@@ -779,3 +918,5 @@ New owner in the consolidated uplift. Node values and the typed-value marks are 
 Public case M18. The canonical rule is the decoder's own docstring and patterns; Python's `\d` also matches non-ASCII digits and `$` matches before a final line break, which is where the pin departs from it.
 
 Findings: [Relationship property text with a trailing line break or non-ASCII digits is read back as a number](../../Verus_verification/bugs_issues.md#bug-cyp-101)
+
+Audit reproduction: [bug-cyp-101](../../Verus_verification/bugs_issues.md#bug-cyp-101) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.

@@ -1,0 +1,20 @@
+# Full-record NDJSON — iteration14 frozen source-informed predictions
+
+Before new ndjson_export model/proof. Exposure is disclosed: safe sealed13 next-records-PAIRS/survey/plan and its two healthy local fixtures, source pin3eaa79cf, sealed13 eceb147d37720658e34b07f279cc267870fd393c, exact14before ec45a0098d3b35509529c82cc6b582babaf157f5bba746f46e1774be73922f8c. Primary authority remains USER_GUIDE1170–1181, API_REFERENCE2163–2182, DATA_FORMATS section3, R088 export e2e, get_nodes/graph-scope/type tests and current node-read/alias/import owners. This is known source-informed work, not blind/private discovery or convergence. Interrupted/unassessed inputs/outcomes and the prohibited lanes are not used.
+
+1. Raw scoped parent/label/property rows derive hydrated records. No supplied selected IDs, final key enumeration, property map, inclusion or decoded answer.
+2. Default and named get_nodes use only that graph's raw children and bare-parent existence; same ID in another graph contributes nothing. get_node is the actual one-ID delegate.
+3. Returned request order and duplicate IDs are preserved; empty/absent requests and bare nodes stay distinct. Existing node_read13 and bulk_children30 are substantive prior hits.
+4. Raw property names id/labels derive aliases p_id/p_labels. Structural fields remain; two raw names mapping to one alias follow actual delivered-row last-write order. No new alias policy or physical inverse claim.
+5. Numeric storage and D/N/text/boolean scalar read decisions use the actual admitted raw stored carrier and imported node_read relation; SQL/native spelling/JSON/rounding providers remain explicit.
+6. Full property and label enumeration must derive from raw rows, strengthening the supplied-key/map projection in bulk_children30. Any imported reader_order premise must itself be derived from the raw normal-uniqueness frame.
+7. Export derives its default node-ID census from raw parents, with actual source order modeled under the admitted SQL-order relation. It hydrates those IDs rather than accepting prepared records. Stable rows make a bare parent still exportable.
+8. Node event fields derive from hydrated structural ID/labels and the properties projection excluding only structural fields. The resulting properties contain reported aliases, not necessarily original storage keys.
+9. Structural edge events derive from every selected physical edge row in edge-ID order; ordinary parallel rows are not collapsed. The raw graph and raw TEMPORAL_MARKED_ROW prefix decide selection, not an is_temporal flag.
+10. Empty/absent qualifiers omit the qualifier field; admitted nonempty ordinary ASCII object text derives its content through a bounded grammar or named parser/provider relation. No supplied parsed map/nonempty verdict.
+11. Actual append/write transitions determine the emitted node-before-edge record sequence and node/edge counters. Counts equal written records, not unique triples or prepared lengths.
+12. Actual JSON file parsing must agree with the computed events on an admitted codec fragment/provider law. No literal-only observation control or supplied parse-success flag earns credit.
+13. The existing import reader should dispatch the generated full node/edge fields and report processed lines; callback compatibility is distinct from actual persistence/transaction/edge-mode behavior. ndjson_import9 remains a prior node-flow/count hit; no unrestricted inverse.
+14. Healthy ordinary ASCII/source-order/stable-view scope is explicit. Runtime/native bodies, all SQL/JSON/numeric/collation providers, failures/atomic-file guarantees and broader protocols remain partial rather than invented API refusals.
+
+Actual producer alterations must reach the final computed record/file/count claim. Independent oracle/specification alterations are a different sensitivity class. Exact pre-command source packages/dependencies, failed attempts, raw logs and costs will be retained. Root owns canonical readiness and native/integration; no proof begins before owner confirmation.

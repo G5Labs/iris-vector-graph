@@ -1,0 +1,162 @@
+{
+  "name": "rdf_reporting",
+  "root": "rdf_reporting.rs",
+  "expected_verified": 50,
+  "additional_inputs": [],
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "graph-scope-ignored",
+      "find": "c.graph.is_none() || graph(g)==c.graph.unwrap()",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_graph_filter_is_request_value"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "ids-ignored",
+      "find": "c.ids.len()==0 || c.ids.contains(s)",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_outside_requested_ids_emits_nothing"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "label-graph-correlation-ignored",
+      "find": "&& graph(ls[i].graph)==graph(g)",
+      "replace": "",
+      "expect_fail_in": [
+        "theorem_wrong_graph_membership_is_excluded"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "selected-labels-widened",
+      "find": "pub open spec fn label_selected(l:Label,c:Config)->bool {graph_selected(l.graph,c)&&id_selected(l.s,c)&&(c.labels.len()==0||c.labels.contains(l.label))}",
+      "replace": "pub open spec fn label_selected(l:Label,c:Config)->bool {graph_selected(l.graph,c)&&id_selected(l.s,c)}",
+      "expect_fail_in": [
+        "theorem_label_selection_is_raw"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "property-null-emitted",
+      "find": "prop_selected(p,rs,c)&&p.value.is_some()",
+      "replace": "prop_selected(p,rs,c)",
+      "expect_fail_in": [
+        "theorem_property_null_is_omitted"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "empty-object-enveloped",
+      "find": "if es.len()>0{envelope(e,pos,c)+emit_quals(es,e,pos,c)}",
+      "replace": "if true{envelope(e,pos,c)+emit_quals(es,e,pos,c)}",
+      "expect_fail_in": [
+        "theorem_empty_qualifier_has_no_envelope"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "inferred-only-envelope-dropped",
+      "find": "if es.len()>0{envelope(e,pos,c)+emit_quals(es,e,pos,c)}",
+      "replace": "if es.len()>0 && exists|i:int|0<=i<es.len() && es[i].key!=t(\"inferred\"){envelope(e,pos,c)+emit_quals(es,e,pos,c)}",
+      "expect_fail_in": [
+        "theorem_inferred_only_still_has_envelope"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "inferred-key-emitted",
+      "find": "if es[0].key==t(\"inferred\"){seq![]}else",
+      "replace": "if false{seq![]}else",
+      "expect_fail_in": [
+        "lemma_inferred_quals_empty"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "falsey-fallback-removed",
+      "find": "if truth(l){l}else{Literal::Plain(s)}",
+      "replace": "l",
+      "expect_fail_in": [
+        "theorem_false_and_zero_are_not_property_literals"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "ftp-node-mint-removed",
+      "find": "||starts(s,t(\"ftp://\"))",
+      "replace": "",
+      "expect_fail_in": [
+        "theorem_node_property_prefixes_differ"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "summary-counts-quads",
+      "find": "Report{triples:triples(qs).len()",
+      "replace": "Report{triples:qs.to_set().len()",
+      "expect_fail_in": [
+        "theorem_summary_two_contexts_is_one_triple"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "summary-counts-objects",
+      "find": "nodes:subjects(qs).len()",
+      "replace": "nodes:qs.map_values(|x:Quad|x.triple.o).to_set().len()",
+      "expect_fail_in": [
+        "theorem_summary_counts_subjects_not_objects"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "type-counted-as-edge",
+      "find": "pub open spec fn edge_triple(x:Triple)->bool {matches!(x.o,Term::Iri(_)) && x.p!=t(\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\")}",
+      "replace": "pub open spec fn edge_triple(x:Triple)->bool {matches!(x.o,Term::Iri(_))}",
+      "expect_fail_in": [
+        "theorem_non_type_uri_count_rule"
+      ],
+      "class": "source"
+    },
+    {
+      "name": "json-decoded-object-dropped",
+      "find": "if p.mode==9{p.entries}else{seq![]}",
+      "replace": "seq![]",
+      "expect_fail_in": [
+        "theorem_raw_string_zero_object_is_decoded"
+      ],
+      "class": "codec"
+    },
+    {
+      "name": "json-duplicate-keeps-old",
+      "find": "else if es[0].key==key{seq![Entry{key,value}]+es.skip(1)}",
+      "replace": "else if es[0].key==key{es}",
+      "expect_fail_in": [
+        "lemma_upsert_sets_current_value"
+      ],
+      "class": "codec"
+    },
+    {
+      "name": "decimal-digit-base-wrong",
+      "find": "n*10+(s[0] as nat-48)",
+      "replace": "n*1+(s[0] as nat-48)",
+      "expect_fail_in": [
+        "theorem_two_raw_digits_determine_value"
+      ],
+      "class": "codec"
+    },
+    {
+      "name": "blank-positions-reused",
+      "find": "let st=Term::Blank{position:pos,reifier:false};let rf=Term::Blank{position:pos,reifier:true};",
+      "replace": "let st=Term::Blank{position:0,reifier:false};let rf=Term::Blank{position:0,reifier:true};",
+      "expect_fail_in": [
+        "theorem_fresh_envelope_positions"
+      ],
+      "class": "allocation relation"
+    }
+  ]
+}

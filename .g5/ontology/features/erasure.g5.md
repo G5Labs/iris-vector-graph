@@ -22,6 +22,20 @@ An erase removes a graph's content from every store that holds it: its rows, its
 - The default graph is erased in both of its spellings: an empty graph ID and a missing one.
 - A graph name that cannot be stored safely is refused before anything is deleted.
 
+<a id="erasure.scope.embedding-queue-policy"></a>
+[Q · erasure.scope.embedding-queue-policy]
+
+Should erasure and redaction reach the store in REACH-1?
+
+- Working assumption (agent, unratified): Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
+
+<a id="erasure.scope.legacy-backup-policy"></a>
+[Q · erasure.scope.legacy-backup-policy]
+
+Should erasure and redaction reach the store in REACH-5?
+
+- Working assumption (agent, unratified): Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
+
 <a id="erasure.live-statements"></a>
 [I · erasure.live-statements]
 
@@ -45,6 +59,13 @@ A graph erase keeps configuration and stores that belong to no single graph.
 - Stores that record no graph are emptied by an erase of all graphs; what a single-graph erase must do to the search indexes among them is [open](search.g5.md#search.erasure.indexes).
 
 ## How an erase runs
+
+<a id="erasure.kept.snapshot-retention-policy"></a>
+[Q · erasure.kept.snapshot-retention-policy]
+
+Should erasure and redaction reach the store in REACH-4?
+
+- Working assumption (agent, unratified): Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 
 <a id="erasure.atomic"></a>
 [D · erasure.atomic]
@@ -122,6 +143,30 @@ Live tests: `tests/integration/test_erase_graph.py` (rows, adjacency, degree cac
 
 Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001); [Erasing a tenant by prefix leaves its temporal-only events, and the redaction that follows completes while they stay readable](../../Verus_verification/bugs_issues.md#bug-led-007)
 
+### erasure.scope.embedding-queue-policy
+- Expands: [parent](#erasure.scope)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should erasure and redaction reach the store in REACH-1?](../../Verus_verification/open_questions.md#REACH-1).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#REACH-1).
+
+Audit (REACH-1): Open owner decision. Working assumption (agent, unratified): Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#REACH-1).
+
+### erasure.scope.legacy-backup-policy
+- Expands: [parent](#erasure.scope)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should erasure and redaction reach the store in REACH-5?](../../Verus_verification/open_questions.md#REACH-5).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#REACH-5).
+
+Audit (REACH-5): Open owner decision. Working assumption (agent, unratified): Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#REACH-5).
+
 ### erasure.live-statements
 
 - Sources: [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md#L17-L44), [Eraser.cls EraseLedgerFor](../../../iris_src/src/Graph/KG/Eraser.cls#L1107-L1143), [Eraser.cls EraseEdgeRow](../../../iris_src/src/Graph/KG/Eraser.cls#L638-L680)
@@ -131,7 +176,7 @@ Findings: [Search indexes keep answering with content that was erased, and a re-
 
 A graph erase also removes closed statement entries, not only live ones ([spec 256 plan](../../../specs/256-ledger-tenant-redaction/plan.md#L12)). Observed divergence: deletes outside the Eraser, such as `delete_edge` and Cypher `DELETE`, leave the relationship's live statement behind ([single path](#erasure.entry-points.single-path)). Live test: `tests/integration/test_edgescan_ledger_erase.py::test_erasing_a_graph_removes_its_ledger_statements_and_leaves_other_graphs`. It checks the tuple lookup only.
 
-Findings: [Deleting a relationship with delete_edge or Cypher DELETE leaves its reifications, edge embeddings and ledger statement behind](../../Verus_verification/bugs_issues.md#bug-str-013)
+Findings: [Deleting a relationship with delete_edge or Cypher DELETE leaves its reifications, edge embeddings and ledger statement behind](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-013)
 
 ### erasure.history
 
@@ -153,6 +198,19 @@ The quarantine rule cites FR-039/FR-040 of an embedding spec that is not in `spe
 
 
 Review round 3 R3-reader M7: the multigraph mode is killed by a graph erase ([Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L243-L244), matching [the multigraph switch](graph-structure.g5.md#structure.multigraph.switch)) and the FHIR watermarks are reset ([Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L180-L181)); the embedding quarantine rule is in [Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L300-L302). No erase names the document or edge-vector quarantine tables either.
+
+### erasure.kept.snapshot-retention-policy
+- Expands: [parent](#erasure.kept)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should erasure and redaction reach the store in REACH-4?](../../Verus_verification/open_questions.md#REACH-4).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#REACH-4).
+
+Audit (REACH-4): Open owner decision. Working assumption (agent, unratified): Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#REACH-4).
+
 ### erasure.atomic
 
 - Sources: [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md#L21-L51), [Eraser.cls header](../../../iris_src/src/Graph/KG/Eraser.cls#L18-L24), [CHANGELOG 4.6.4](../../../CHANGELOG.md#L410-L426), [USER_GUIDE writes inside your transaction](../../../docs/USER_GUIDE.md#L285-L310)
@@ -166,7 +224,8 @@ Live test: `tests/integration/test_eraser_failures.py` (a refused delete in any 
 
 Observed divergence (code reading, review round 3 R3-reader M4): the store splits ID lists into chunks of 500 and calls the Eraser once per chunk, and with no caller transaction each call commits on its own ([iris_sql_store.py](../../../iris_vector_graph/stores/iris_sql_store.py#L1302-L1358), [_eraser_txn](../../../iris_vector_graph/stores/iris_sql_store.py#L1451-L1472)). `bulk_delete_nodes` batches by design and counts a failed batch as wholly failed even when its earlier chunks committed ([nodes_edges.py](../../../iris_vector_graph/_engine/nodes_edges.py#L2283-L2298)); `erase_bare_nodes` commits per 10,000 IDs ([Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L1297-L1304)). No failure was injected natively.
 
-Findings: [Erasing a long list of node IDs or relationships without a caller's transaction commits once per 500 entries](../../Verus_verification/bugs_issues.md#bug-led-011)
+Findings: [Erasing a long list of node IDs or relationships without a caller's transaction commits once per 500 entries](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-011)
+
 ### erasure.atomic.caller-transaction
 
 - Sources: [nodes_edges.py erase_graph](../../../iris_vector_graph/_engine/nodes_edges.py#L1513-L1517), [engine.py _iris_obj](../../../iris_vector_graph/engine.py#L1894-L1943), [iris_sql_store.py _eraser_txn](../../../iris_vector_graph/stores/iris_sql_store.py#L1451-L1471), [CHANGELOG 4.7.0](../../../CHANGELOG.md#L68-L79), [USER_GUIDE writes inside your transaction](../../../docs/USER_GUIDE.md#L296-L310), [reconstruction check 2(b)1](../../uplift/ivg-verus-initial/reconstruction-check.md)
@@ -181,6 +240,9 @@ Findings: [Should whether a write joins the caller's transaction depend on how t
 
 
 The general question, which also covers search-index writes, temporal purges and settings and FHIR graph calls, is [structure.write.engine-connection](graph-structure.g5.md#structure.write.engine-connection).
+
+Audit (q-plt-006): Open owner decision. Working assumption (agent, unratified): Record each transport-dependent transaction boundary; prefer an explicit consistent join-or-refuse contract before changing it. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-006).
+
 ### erasure.atomic.routes
 
 - Sources: [Eraser.cls after the commit](../../../iris_src/src/Graph/KG/Eraser.cls#L262-L303), [Eraser.cls route collection](../../../iris_src/src/Graph/KG/Eraser.cls#L67-L111)
@@ -203,6 +265,9 @@ ADR-0004 says "a returned 0 means nothing matched". The Eraser says the count de
 
 
 Findings: [What does erasure's returned count promise?](../../Verus_verification/open_questions.md#q-007)
+
+Audit (q-007): Open owner decision. Working assumption (agent, unratified): Treat the present count as a sum of store effects rather than a count of distinct entities; any stronger public count needs a defined unit. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-007).
+
 ### erasure.entry-points
 
 - Sources: [Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls#L307-L400), [nodes_edges.py](../../../iris_vector_graph/_engine/nodes_edges.py#L1473-L1595)
@@ -230,7 +295,7 @@ Observed divergence: several deletes bypass the Eraser and leave stores behind.
 
 The deprecated `bulk_delete_adjacency` still exists, but it now deletes through the Eraser's relationship erase, so it no longer leaves drift. ADR-0004 said it would be removed. Live test: `test_erase_graph.py::test_drop_graph_is_the_eraser_now`.
 
-Findings: [bulk_delete_adjacency deletes relationships under strict mode without a record](../../Verus_verification/bugs_issues.md#bug-plt-006); [Deleting a relationship with delete_edge or Cypher DELETE leaves its reifications, edge embeddings and ledger statement behind](../../Verus_verification/bugs_issues.md#bug-str-013); [Under strict mode the only API delete is a ledger changeset, which leaves documents, temporal, FHIR and search-index content that redaction and verify cannot see](../../Verus_verification/bugs_issues.md#bug-led-008); [ADR-0004 says bulk_delete_adjacency was removed, but it is still shipped and documented](../../Verus_verification/bugs_issues.md#bug-doc-007); [Delete a relationship through one Eraser path, whatever the caller](../../Verus_verification/design_simplification.md#simp-str-001)
+Findings: [bulk_delete_adjacency deletes relationships under strict mode without a record](../../Verus_verification/bugs_issues.md#bug-plt-006); [Deleting a relationship with delete_edge or Cypher DELETE leaves its reifications, edge embeddings and ledger statement behind](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-013); [Under strict mode the only API delete is a ledger changeset, which leaves documents, temporal, FHIR and search-index content that redaction and verify cannot see](../../Verus_verification/bugs_issues.md#bug-led-008); [ADR-0004 says bulk_delete_adjacency was removed, but it is still shipped and documented](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-007); [Delete a relationship through one Eraser path, whatever the caller](../../Verus_verification/design_simplification.md#simp-str-001)
 
 ### erasure.prefix-match
 
@@ -244,6 +309,8 @@ The match rule is in the Eraser's documentation ("exact and case-sensitive"). Th
 
 Findings: [Erasing a tenant by prefix leaves its temporal-only events, and the redaction that follows completes while they stay readable](../../Verus_verification/bugs_issues.md#bug-led-007); [A property row with no node row survives the prefix erase, and every later prefix redaction of its tenant is refused](../../Verus_verification/bugs_issues.md#bug-led-010); [Should erase-by-prefix and redact-by-prefix use the same prefix rule?](../../Verus_verification/open_questions.md#q-008)
 
+Audit (q-008): Open owner decision. Working assumption (agent, unratified): Keep generic erase as literal starts-with and use the separator explicitly in the tenant recipe; changing the generic API needs compatibility authority. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-008).
+
 ### erasure.concurrency
 
 - Sources: [Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls), [Ledger.cls caller transaction note](../../../iris_src/src/Graph/KG/Ledger.cls#L385-L396), [LedgerRedact.cls LiveRows](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L143-L178), [A-history notes F4](../../uplift/ivg-verus-initial/intent/ledger-history.md)
@@ -253,6 +320,12 @@ Findings: [Erasing a tenant by prefix leaves its temporal-only events, and the r
 
 Two cases. First, observed natively ([erasure_caller_transaction](../../Verus_verification/receipts/native/erasure_caller_transaction_redaction.json), [A redaction completes while its target's content is still uncommitted-deleted, and the caller's rollback brings the content back with its history tombstoned](../../Verus_verification/bugs_issues.md#bug-002)): a caller erases a target inside its own transaction, a redaction on another connection reads the uncommitted erase and finishes, and the caller rolls back, so the content is live again with its history redacted. Second, suspected and not tested: a ledger commit adds a statement between the erase's row delete and its statement cleanup.
 
-Findings: [A ledger commit into a graph during its erase can lose the new relationship's statement entry](../../Verus_verification/bugs_issues.md#bug-led-002)
+Findings: [A ledger commit into a graph during its erase can lose the new relationship's statement entry](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-002)
 
 Findings: [Must erasure and redaction be serialised with each other and with ledger commits?](../../Verus_verification/open_questions.md#q-004)
+
+Audit (q-004): Open owner decision. Working assumption (agent, unratified): Require committed erasure before redaction; treat caller transaction membership as unresolved rather than permitting dirty liveness reads. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-004).
+
+Audit (HD-1201): Open owner decision. Working assumption (agent, unratified): Serialize erasure with ledger commits and redaction on the same lock: the erasure holds the head lock until its outermost transaction ends (an IRIS lock released inside a transaction is held to its end, P-0003), AND the redaction's opening liveness check and marker run under that lock (HD-1301). Neither alone closes the open-erasure case: with only the erasure lock the dirty opening check still passes and the batches tombstone a target the erasure later restores; with only the locked opening check the erasure holds nothing to wait on. A liveness check that reads committed data only is an alternative to the erasure lock for the redaction half, but not for the F-1201 statement half. Changed from decisions.md: **yes**. Refined. decisions.md proposed 'initially model the ledger head lock'. The new live probe shows the open-erasure case is reachable through the public API (erase_graph inside… See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1201).
+
+Findings: [Should a graph erasure take the ledger head lock?](../../Verus_verification/open_questions.md#HD-1201).

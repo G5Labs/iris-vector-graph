@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/node-census-all-graphs/20261116T022148Z/models/ndjson_export/ndjson_export.rs:282:75
+    |
+282 | pub proof fn witness_named_parent_does_not_duplicate_default_id() ensures export(seq![Parent{graph:0,id:0},Parent{graph:7,id:0}],seq![],seq![],seq![]).nodes==1, {...
+    | -----------------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 1 previous error
+

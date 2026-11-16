@@ -1,0 +1,55 @@
+{
+  "control": {
+    "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut",
+    "expect_fail_in": [
+      "witness_zero_qualifier_kept_in_file"
+    ],
+    "find": "Some(qualifier::Qual::Field(n))=>Event::Edge{source:e.source,predicate:e.predicate,target:e.target,qual:Some(n)}",
+    "name": "zero-valued-qualifier-dropped",
+    "replace": "Some(qualifier::Qual::Field(n))=>Event::Edge{source:e.source,predicate:e.predicate,target:e.target,qual:if n>0{Some(n)}else{None}}"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_zero_qualifier_kept_in_file"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/ndjson_export/model.json": "aa2eb689af59adfdbc0c9cd59cfe8b27a8de38f897eba95e0b427af82ca0aa4d",
+    ".g5/Verus_verification/models/ndjson_export/ndjson_export.rs": "a3f696010e22734402713ce5fe30f2b3535b25e51002aa9ae8fa170c9cc73937",
+    ".g5/Verus_verification/models/ndjson_export/order.rs": "7079380793d0bc39b79e3ce624f2d1f9aa893804e8b448031d77804ea1326334",
+    ".g5/Verus_verification/models/ndjson_export/qualifier.rs": "362c631e64d47ef2374a42bf2c6199970497468cdb2df24b967b71198b66d742",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/zero-valued-qualifier-dropped/20261116T022152Z/models/ndjson_export/ndjson_export.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_zero_qualifier_kept_in_file": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/20261116T022152Z-control-zero-valued-qualifier-dropped-witness_zero_qualifier_kept_in_file.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/20261116T022152Z-control-zero-valued-qualifier-dropped.log",
+    "timed_out": false,
+    "verified": 142
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ndjson_export/20261116T022155Z-control-zero-valued-qualifier-dropped/logs/20261116T022152Z-control-zero-valued-qualifier-dropped-witness_zero_qualifier_kept_in_file.log": "7dab856ab8891889d3bba6f2ef40fbfe143bd3d7df6ce8225e3587c1a33dcfe1",
+    ".g5/Verus_verification/results/ndjson_export/20261116T022155Z-control-zero-valued-qualifier-dropped/logs/20261116T022152Z-control-zero-valued-qualifier-dropped.log": "21f86a23f720d62196286d474849d63a6b8214d5395288a53f4ff7ea9bbdfdf0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

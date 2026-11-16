@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/alias-first-value-wins/20261116T022142Z/models/ndjson_export/ndjson_export.rs:288:60
+    |
+288 | pub proof fn witness_last_alias_row_wins_in_file() ensures ({let f=export(seq![Parent{graph:0,id:0}],se...props[2]==nr::Value::Integer(20),_=>false}}), {...
+    | --------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 1 previous error
+

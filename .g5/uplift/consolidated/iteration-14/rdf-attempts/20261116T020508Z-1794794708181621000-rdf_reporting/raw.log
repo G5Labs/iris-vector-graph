@@ -1,0 +1,12 @@
+verification results:: 49 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/label-graph-correlation-ignored/20261116T020508Z/models/rdf_reporting/rdf_reporting.rs:161:10
+    |
+159 | pub proof fn theorem_wrong_graph_membership_is_excluded(ls:Seq<Label>,s:Text,g:Option<Text>,c:Config)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+160 |  requires c.labels.len()>0,forall|i:int|0<=i<ls.len() && ls[i].s==s ==> graph(ls[i].graph)!=graph(g)
+161 |  ensures !member(ls,s,g,c)
+    |          ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,24 @@
+verification results:: 48 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/graph-scope-ignored/20261116T015954Z/models/rdf_reporting/rdf_reporting.rs:315:10
+    |
+315 |    ensures x.graph==c.graph.unwrap()
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+316 |   {
+317 | /  if exists|i:int|0<=i<rs.labels.len()&&emit_label(rs.labels[i],c).contains(x){let i=choose|i:int|0<=i<rs.labels.len()&&emit_label(rs.labels[i],c).contains(x);}
+318 | |  else if exists|i:int|0<=i<rs.props.len()&&emit_prop(rs.props[i],rs,c).contains(x){let i=choose|i:int|0<=i<rs.props.len()&&emit_prop(rs.props[i],rs,c).contains(x);}
+319 | |  else{let i=choose|i:int|0<=i<rs.edges.len()&&emit_edge(rs.edges[i],rs,i as nat,c).contains(x);let e=rs.edges[i];lemma_quals_scope(decode(e.qualifiers),e,i as nat,c);
+320 | |  if emit_quals(decode(e.qualifiers),e,i as nat,c).contains(x){let j=choose|j:int|0<=j<emit_quals(decode(e.qualifiers),e,i as nat,c).len()&& #[trigger] emit_quals(decode(e.qualifiers),e,i as nat,c)[j]==x;}}
+    | |_____________________________________________________________________________________________________________________________________________________________________________________________________________- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/graph-scope-ignored/20261116T015954Z/models/rdf_reporting/rdf_reporting.rs:385:10
+    |
+383 | pub proof fn theorem_graph_filter_is_request_value(g:Option<Text>,c:Config)
+    | --------------------------------------------------------------------------- at the end of the function body
+384 |  requires c.graph.is_some(),graph_selected(g,c)
+385 |  ensures graph(g)==c.graph.unwrap()
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

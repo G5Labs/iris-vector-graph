@@ -41,6 +41,8 @@ def dom(i):
 
 
 def main():
+    if (D / "audits/register-20261115/APPLIED.json").exists():
+        raise SystemExit("The findings audit has an evidence-level index. Preserve findings.md and audits/register-20261115/reconciliation.json; the historical non-none/native heuristic does not apply.")
     B, S, Q = parse("bugs_issues.md"), parse("design_simplification.md"), parse("open_questions.md")
     cnt = lambda es, sev: sum(1 for e in es if e["sev"] == sev and e["open"])
     L = ["# Findings register — IVG Verus uplift, consolidated (2026-11-14)", "",

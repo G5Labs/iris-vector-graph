@@ -1,0 +1,18 @@
+verification results:: 120 verified, 2 errors
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:231:80
+    |
+231 |  assert forall|i:int|0<=i<ne.len() implies is_node(#[trigger] ne[i]) by{assert(i<census(ns).len());}
+    |                                                                                ^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:236:10
+    |
+234 | pub proof fn theorem_export_nodes_before_edges(ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,es:Seq<EdgeRow>,i:int)
+    | --------------------------------------------------------------------------------------------------------------- at the end of the function body
+235 |  requires ordinary_keys(ps),admitted_edges(es),0<=i<export(ns,ls,ps,es).lines.len(),
+236 |  ensures i<export(ns,ls,ps,es).nodes==>is_node(export(ns,ls,ps,es).lines[i]),i>=export(ns,ls,ps,es).nodes==>is_edge(export(ns,ls,ps...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

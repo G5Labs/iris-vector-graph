@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_empty_qualifier_has_no_envelope"
+    ],
+    "find": "if es.len()>0{envelope(e,pos,c)+emit_quals(es,e,pos,c)}",
+    "name": "empty-object-enveloped",
+    "replace": "if true{envelope(e,pos,c)+emit_quals(es,e,pos,c)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_qualifier_has_no_envelope"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "4e7980fa674ca0693bc7651437575bd0a1bd32e8f9718f7d191a745cd75ac07d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/empty-object-enveloped/20261116T020523Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_qualifier_has_no_envelope": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020523Z-control-empty-object-enveloped-theorem_empty_qualifier_has_no_envelope.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020523Z-control-empty-object-enveloped.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020528Z-control-empty-object-enveloped/logs/20261116T020523Z-control-empty-object-enveloped-theorem_empty_qualifier_has_no_envelope.log": "ef859a89f20778cfab719e036bd021f45bd55b68daf9c0f6f620207ca5cdd027",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020528Z-control-empty-object-enveloped/logs/20261116T020523Z-control-empty-object-enveloped.log": "a96c7761ebb1ff618deadb7eafe910e32d5c59094e38862a984295a0ae089df2"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

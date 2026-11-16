@@ -1,0 +1,27 @@
+verification results:: 49 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/decimal-digit-base-wrong/20261116T022002Z/models/rdf_reporting/rdf_reporting.rs:333:1
+    |
+333 | pub proof fn theorem_two_raw_digits_determine_value(a:char,b:char)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/decimal-digit-base-wrong/20261116T022002Z/models/rdf_reporting/rdf_reporting.rs:335:10
+    |
+333 | pub proof fn theorem_two_raw_digits_determine_value(a:char,b:char)
+    | ------------------------------------------------------------------ at the end of the function body
+334 |  requires digit(a),digit(b),a!='0'
+335 |  ensures canonical_integer(seq![a,b])==Some(((a as int)-48)*10+(b as int)-48),literal(seq![a,b])==(Literal::Integer{value:((a as in...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/decimal-digit-base-wrong/20261116T022002Z/models/rdf_reporting/rdf_reporting.rs:335:79
+    |
+333 | pub proof fn theorem_two_raw_digits_determine_value(a:char,b:char)
+    | ------------------------------------------------------------------ at the end of the function body
+334 |  requires digit(a),digit(b),a!='0'
+335 |  ensures canonical_integer(seq![a,b])==Some(((a as int)-48)*10+(b as int)-48),literal(seq![a,b])==(Literal::Integer{value:((a as int)-48)*10+(b as int)-48,spelling:seq![a,b]})
+    |                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,2401 @@
+[
+  {
+    "name": "optional_grouped_sum",
+    "ids": [
+      "bug-agg-001"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "neighbor": [
+        [
+          0,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "actual": [
+        [
+          null,
+          1,
+          0,
+          null,
+          null,
+          []
+        ]
+      ],
+      "expected": [
+        [
+          null,
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ]
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.7160638329805806
+  },
+  {
+    "name": "node_alias_collision",
+    "ids": [
+      "bug-str-101"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "stored": [
+        [
+          "id",
+          "stored-id"
+        ],
+        [
+          "p_id",
+          "user-value"
+        ]
+      ],
+      "actual": {
+        "id": "alias",
+        "labels": [],
+        "p_id": "user-value"
+      },
+      "expected": "both accepted property values recoverable",
+      "neighbor": {
+        "id": "neighbor",
+        "labels": [],
+        "ordinary": "kept",
+        "p_id": "neighbor"
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.3553099170094356
+  },
+  {
+    "name": "relationship_text",
+    "ids": [
+      "bug-cyp-101"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": [
+        {
+          "input": "12\n",
+          "output": [
+            [
+              12
+            ]
+          ]
+        },
+        {
+          "input": "1\u0662",
+          "output": [
+            [
+              12
+            ]
+          ]
+        }
+      ],
+      "expected": "noncanonical numeric text stays text",
+      "neighbor": {
+        "input": "12x",
+        "output": [
+          [
+            "12x"
+          ]
+        ]
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.17164879199117422
+  },
+  {
+    "name": "missing_temporal_time",
+    "ids": [
+      "bug-tmp-007",
+      "F-0502"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": [
+        {
+          "source": "s",
+          "predicate": "T",
+          "target": "o",
+          "timestamp": 0,
+          "weight": 1,
+          "s": "s",
+          "p": "T",
+          "o": "o",
+          "ts": 0,
+          "w": 1
+        }
+      ],
+      "expected": "missing timestamp resolves current server time",
+      "neighbor": [
+        {
+          "source": "s",
+          "predicate": "N",
+          "target": "o",
+          "timestamp": 100,
+          "weight": 1,
+          "s": "s",
+          "p": "N",
+          "o": "o",
+          "ts": 100,
+          "w": 1
+        }
+      ]
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.0935614169575274
+  },
+  {
+    "name": "empty_temporal_min",
+    "ids": [
+      "bug-tmp-009"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "type": "ValueError",
+        "text": "could not convert string to float: 'None'"
+      },
+      "expected": 0.0,
+      "neighbor": 2.0
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.05421987496083602
+  },
+  {
+    "name": "temporal_update_counts",
+    "ids": [
+      "bug-tmp-002"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "after_insert": {
+          "window_edges": [
+            {
+              "source": "probe:upd:s",
+              "predicate": "PROBE_TW",
+              "target": "probe:upd:o",
+              "timestamp": 1700000100,
+              "weight": 2,
+              "s": "probe:upd:s",
+              "p": "PROBE_TW",
+              "o": "probe:upd:o",
+              "ts": 1700000100,
+              "w": 2
+            }
+          ],
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 2.0,
+            "min": 2.0,
+            "max": 2.0
+          },
+          "agg_cut_window_T_T": {
+            "count": 1,
+            "sum": 2.0
+          },
+          "velocity_bucket": 1,
+          "rdf_edges_rows": 1,
+          "node_rows_for_target": 1,
+          "raw": {
+            "tout": "2.0",
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "2.0",
+            "tagg_min": "2.0",
+            "tagg_max": "2.0"
+          }
+        },
+        "after_update": {
+          "window_edges": [
+            {
+              "source": "probe:upd:s",
+              "predicate": "PROBE_TW",
+              "target": "probe:upd:o",
+              "timestamp": 1700000100,
+              "weight": 9,
+              "s": "probe:upd:s",
+              "p": "PROBE_TW",
+              "o": "probe:upd:o",
+              "ts": 1700000100,
+              "w": 9
+            }
+          ],
+          "agg_whole_bucket": {
+            "count": 2,
+            "sum": 11.0,
+            "min": 2.0,
+            "max": 9.0
+          },
+          "agg_cut_window_T_T": {
+            "count": 1,
+            "sum": 9.0
+          },
+          "velocity_bucket": 2,
+          "rdf_edges_rows": 1,
+          "node_rows_for_target": 1,
+          "raw": {
+            "tout": "9.0",
+            "bucket": 2,
+            "tagg_count": 2,
+            "tagg_sum": "11.0",
+            "tagg_min": "2.0",
+            "tagg_max": "9.0"
+          }
+        },
+        "expected_l1": {
+          "count": 1,
+          "sum": 9.0,
+          "velocity": 1
+        },
+        "expected_doc_original_value": {
+          "count": 1,
+          "sum": 2.0
+        },
+        "delete_returned": true,
+        "after_delete": {
+          "window_edges": [],
+          "agg_whole_bucket": {
+            "count": 0,
+            "sum": 0.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "agg_cut_window_T_T": {
+            "count": 0,
+            "sum": 0.0
+          },
+          "velocity_bucket": 1,
+          "rdf_edges_rows": 0,
+          "node_rows_for_target": 1,
+          "raw": {
+            "tout": null,
+            "bucket": 1,
+            "tagg_count": null,
+            "tagg_sum": null,
+            "tagg_min": null,
+            "tagg_max": null
+          }
+        },
+        "expected_l1_after_delete": {
+          "count": 0,
+          "sum": 0.0,
+          "velocity": 0
+        },
+        "l1_holds_after_update": false,
+        "doc_holds_after_update": false,
+        "l1_holds_after_delete": false,
+        "verdict": "OBSERVED_DEFECT: one raw edge (w=9) but whole-bucket count=2 sum=11.0 velocity=2 (L1 expects 1/9.0/1, the docstring 1/2.0)"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_TW",
+            "target": "o",
+            "timestamp": 1700000100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_TW",
+            "o": "o",
+            "ts": 1700000100,
+            "w": 2
+          }
+        ],
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "agg_cut_window_T_T": {
+          "count": 1,
+          "sum": 2.0
+        },
+        "velocity_bucket": 1,
+        "rdf_edges_rows": 1,
+        "node_rows_for_target": 1,
+        "raw": {
+          "tout": 2,
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_max": 2
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.11804387503070757
+  },
+  {
+    "name": "temporal_partial_retry",
+    "ids": [
+      "bug-tmp-001",
+      "F-C0501"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "first_write": "GraphWriteError: create_edge_temporal failed, the temporal stores written before the error stay (the temporal write runs no transaction): <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow node probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "after_first": {
+          "window_edges": [
+            {
+              "source": "probe:pw:s",
+              "predicate": "PROBE_TW",
+              "target": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "timestamp": 1700000100,
+              "weight": 2,
+              "s": "probe:pw:s",
+              "p": "PROBE_TW",
+              "o": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "ts": 1700000100,
+              "w": 2
+            }
+          ],
+          "agg_whole_bucket": {
+            "count": 0,
+            "sum": 0.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "agg_cut_window_T_T": {
+            "count": 1,
+            "sum": 2.0
+          },
+          "velocity_bucket": 1,
+          "rdf_edges_rows": 0,
+          "node_rows_for_target": 0,
+          "raw": {
+            "tout": "2.0",
+            "bucket": 1,
+            "tagg_count": null,
+            "tagg_sum": null,
+            "tagg_min": null,
+            "tagg_max": null
+          }
+        },
+        "retry_insert": "returned True (no error)",
+        "after_retry": {
+          "window_edges": [
+            {
+              "source": "probe:pw:s",
+              "predicate": "PROBE_TW",
+              "target": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "timestamp": 1700000100,
+              "weight": 2,
+              "s": "probe:pw:s",
+              "p": "PROBE_TW",
+              "o": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "ts": 1700000100,
+              "w": 2
+            }
+          ],
+          "agg_whole_bucket": {
+            "count": 0,
+            "sum": 0.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "agg_cut_window_T_T": {
+            "count": 1,
+            "sum": 2.0
+          },
+          "velocity_bucket": 1,
+          "rdf_edges_rows": 0,
+          "node_rows_for_target": 0,
+          "raw": {
+            "tout": "2.0",
+            "bucket": 1,
+            "tagg_count": null,
+            "tagg_sum": null,
+            "tagg_min": null,
+            "tagg_max": null
+          }
+        },
+        "retry_changed_nothing": true,
+        "verdict": "OBSERVED_DEFECT: the refused write left 1 raw edge(s), bucket=1, tagg count=None (docstring: writes nothing); the retry returned without error and wrote nothing more (L1-AGG holds: False)"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_TW",
+            "target": "o",
+            "timestamp": 1700000100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_TW",
+            "o": "o",
+            "ts": 1700000100,
+            "w": 2
+          }
+        ],
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "agg_cut_window_T_T": {
+          "count": 1,
+          "sum": 2.0
+        },
+        "velocity_bucket": 1,
+        "rdf_edges_rows": 1,
+        "node_rows_for_target": 1,
+        "raw": {
+          "tout": 2,
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_max": 2
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.06352512503508478
+  },
+  {
+    "name": "temporal_bulk_insert",
+    "ids": [
+      "bug-tmp-001"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "mode": "insert",
+        "returned": {
+          "written": 2,
+          "collisions": 0,
+          "skipped": 0
+        },
+        "window_all": [
+          {
+            "source": "probe:bulk:insert:s",
+            "predicate": "PROBE_TW",
+            "target": "probe:bulk:insert:o0",
+            "timestamp": 1700000100,
+            "weight": 1,
+            "s": "probe:bulk:insert:s",
+            "p": "PROBE_TW",
+            "o": "probe:bulk:insert:o0",
+            "ts": 1700000100,
+            "w": 1
+          },
+          {
+            "source": "probe:bulk:insert:s",
+            "predicate": "PROBE_TW",
+            "target": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "timestamp": 1700000101,
+            "weight": 5,
+            "s": "probe:bulk:insert:s",
+            "p": "PROBE_TW",
+            "o": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "ts": 1700000101,
+            "w": 5
+          }
+        ],
+        "expected_l1": {
+          "count": 2,
+          "sum": 6.0,
+          "velocity": 2
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 1.0
+        },
+        "velocity_bucket": 2,
+        "raw": {
+          "bucket": 2,
+          "tagg_count": 1,
+          "tagg_sum": "1.0"
+        },
+        "rdf_edges_rows_for_source": 1,
+        "l1_holds": false,
+        "refused_edge_raw_present": true,
+        "verdict": "OBSERVED_DEFECT: mode=insert batch with a refused edge returned written=2, collisions=0, no error; raw edges=2 (sum 6.0), tagg count=1 sum=1.0, velocity=2, rows=1"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_TW",
+            "target": "o",
+            "timestamp": 1700000100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_TW",
+            "o": "o",
+            "ts": 1700000100,
+            "w": 2
+          }
+        ],
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "agg_cut_window_T_T": {
+          "count": 1,
+          "sum": 2.0
+        },
+        "velocity_bucket": 1,
+        "rdf_edges_rows": 1,
+        "node_rows_for_target": 1,
+        "raw": {
+          "tout": 2,
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_max": 2
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.06953587499447167
+  },
+  {
+    "name": "temporal_rollback_r1",
+    "ids": [
+      "bug-tmp-003"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "ts": 1700000100,
+        "head_before": 2,
+        "commit": "NodeNotFoundError: create_relationship failed: node 'probe:rb:ghost-not-a-node' does not exist. Add upsert_node('probe:rb:ghost-not-a-node') to the changeset, or set auto_stub_missing_nodes=True on the Changeset.",
+        "refused_op_index": 1,
+        "head_after_refusal": 2,
+        "after_refusal": {
+          "window_edges": [],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 0,
+            "sum": 0.0,
+            "velocity": 0
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 2.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "2.0",
+            "tagg_min": null,
+            "tagg_hll": false
+          }
+        },
+        "after_retry": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700000100,
+              "weight": 2,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700000100,
+              "w": 2
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 1,
+            "sum": 2.0,
+            "velocity": 1
+          },
+          "agg_whole_bucket": {
+            "count": 2,
+            "sum": 4.0,
+            "min": 2.0,
+            "max": 2.0
+          },
+          "velocity_bucket": 2,
+          "raw": {
+            "bucket": 2,
+            "tagg_count": 2,
+            "tagg_sum": "4.0",
+            "tagg_min": "2.0",
+            "tagg_hll": true
+          }
+        },
+        "verdict": "OBSERVED_DEFECT: R1 refused changeset (op 1 refused, op 0 ran): no raw edge after the rollback, but whole-bucket count=1 sum=2.0 velocity=1; after the retry 1 raw edge(s) but count=2 sum=4.0 velocity=2"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_RB",
+            "target": "end",
+            "timestamp": 100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_RB",
+            "o": "end",
+            "ts": 100,
+            "w": 2
+          }
+        ],
+        "unparsable_weights": [],
+        "expected_l1": {
+          "count": 1,
+          "sum": 2.0,
+          "velocity": 1
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "velocity_bucket": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_hll": true
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.23610066605033353
+  },
+  {
+    "name": "temporal_rollback_r2",
+    "ids": [
+      "bug-tmp-003"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "ts": 1700000700,
+        "head_before": 2,
+        "commit": "committed inside the caller's transaction",
+        "inside": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700000700,
+              "weight": 3,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700000700,
+              "w": 3
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 1,
+            "sum": 3.0,
+            "velocity": 1
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 3.0,
+            "min": 3.0,
+            "max": 3.0
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "3.0",
+            "tagg_min": "3.0",
+            "tagg_hll": true
+          }
+        },
+        "head_after_rollback": 2,
+        "after_rollback": {
+          "window_edges": [],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 0,
+            "sum": 0.0,
+            "velocity": 0
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 3.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "3.0",
+            "tagg_min": null,
+            "tagg_hll": false
+          }
+        },
+        "verdict": "OBSERVED_DEFECT: R2 caller rollback of a ledger commit: no raw edge after the rollback, but whole-bucket count=1 sum=3.0 velocity=1"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_RB",
+            "target": "end",
+            "timestamp": 100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_RB",
+            "o": "end",
+            "ts": 100,
+            "w": 2
+          }
+        ],
+        "unparsable_weights": [],
+        "expected_l1": {
+          "count": 1,
+          "sum": 2.0,
+          "velocity": 1
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "velocity_bucket": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_hll": true
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.1190454590250738
+  },
+  {
+    "name": "temporal_rollback_r3",
+    "ids": [
+      "bug-tmp-003"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "ts": 1700001300,
+        "inside": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700001300,
+              "weight": 4,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700001300,
+              "w": 4
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 1,
+            "sum": 4.0,
+            "velocity": 1
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 4.0,
+            "min": 4.0,
+            "max": 4.0
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "4.0",
+            "tagg_min": "4.0",
+            "tagg_hll": true
+          }
+        },
+        "after_rollback": {
+          "window_edges": [],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 0,
+            "sum": 0.0,
+            "velocity": 0
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 4.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "4.0",
+            "tagg_min": null,
+            "tagg_hll": false
+          }
+        },
+        "verdict": "OBSERVED_DEFECT: R3 caller rollback of create_edge_temporal: no raw edge after the rollback, but whole-bucket count=1 sum=4.0 velocity=1"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_RB",
+            "target": "end",
+            "timestamp": 100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_RB",
+            "o": "end",
+            "ts": 100,
+            "w": 2
+          }
+        ],
+        "unparsable_weights": [],
+        "expected_l1": {
+          "count": 1,
+          "sum": 2.0,
+          "velocity": 1
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "velocity_bucket": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_hll": true
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.1273285420029424
+  },
+  {
+    "name": "temporal_rollback_r4",
+    "ids": [
+      "bug-tmp-003"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "ts": 1700001900,
+        "head_before": 2,
+        "commit": "LedgerInconsistencyError: ERROR #5001: AssertTemporalRow node probe:rb:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx: SQLCODE -104 Field 'Graph_KG.nodes.node_id' (value 'probe:rb:long:xxxxxxxxxxxxxxxxxxxxxxxxxx...') failed validation",
+        "head_after": 2,
+        "after": {
+          "window_edges": [],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 0,
+            "sum": 0.0,
+            "velocity": 0
+          },
+          "agg_whole_bucket": {
+            "count": 0,
+            "sum": 0.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": null,
+            "tagg_sum": null,
+            "tagg_min": null,
+            "tagg_hll": false
+          }
+        },
+        "verdict": "OBSERVED_DEFECT: R4 throw inside a changeset (AssertTemporalRow): no raw edge after the rollback, but whole-bucket count=0 sum=0.0 velocity=1"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_RB",
+            "target": "end",
+            "timestamp": 100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_RB",
+            "o": "end",
+            "ts": 100,
+            "w": 2
+          }
+        ],
+        "unparsable_weights": [],
+        "expected_l1": {
+          "count": 1,
+          "sum": 2.0,
+          "velocity": 1
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "velocity_bucket": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_hll": true
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.2030686250072904
+  },
+  {
+    "name": "temporal_rollback_r5",
+    "ids": [
+      "bug-tmp-010"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "ts": 1700002500,
+        "before": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700002500,
+              "weight": 2,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700002500,
+              "w": 2
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 1,
+            "sum": 2.0,
+            "velocity": 1
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 2.0,
+            "min": 2.0,
+            "max": 2.0
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "2.0",
+            "tagg_min": "2.0",
+            "tagg_hll": true
+          }
+        },
+        "delete_returned": true,
+        "inside": {
+          "window_edges": [],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 0,
+            "sum": 0.0,
+            "velocity": 0
+          },
+          "agg_whole_bucket": {
+            "count": 0,
+            "sum": 0.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "velocity_bucket": 0,
+          "raw": {
+            "bucket": null,
+            "tagg_count": null,
+            "tagg_sum": null,
+            "tagg_min": null,
+            "tagg_hll": false
+          }
+        },
+        "after_rollback": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700002500,
+              "weight": 2,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700002500,
+              "w": 2
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 1,
+            "sum": 2.0,
+            "velocity": 1
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 2.0,
+            "min": 2.0,
+            "max": 2.0
+          },
+          "velocity_bucket": 0,
+          "raw": {
+            "bucket": 0,
+            "tagg_count": 1,
+            "tagg_sum": "2.0",
+            "tagg_min": "2.0",
+            "tagg_hll": true
+          }
+        },
+        "verdict": "OBSERVED_DEFECT: R5 rolled-back delete of the only edge: 1 raw edge(s) back after the rollback, but whole-bucket count=1 sum=2.0 velocity=0 (raw bucket=0; expected 1/2.0/1)"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_RB",
+            "target": "end",
+            "timestamp": 100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_RB",
+            "o": "end",
+            "ts": 100,
+            "w": 2
+          }
+        ],
+        "unparsable_weights": [],
+        "expected_l1": {
+          "count": 1,
+          "sum": 2.0,
+          "velocity": 1
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "velocity_bucket": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_hll": true
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.14418716699583456
+  },
+  {
+    "name": "temporal_rollback_r5b",
+    "ids": [
+      "bug-tmp-010"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "ts": 1700003100,
+        "before": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700003100,
+              "weight": 2,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700003100,
+              "w": 2
+            },
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700003101,
+              "weight": 3,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700003101,
+              "w": 3
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 2,
+            "sum": 5.0,
+            "velocity": 2
+          },
+          "agg_whole_bucket": {
+            "count": 2,
+            "sum": 5.0,
+            "min": 2.0,
+            "max": 3.0
+          },
+          "velocity_bucket": 2,
+          "raw": {
+            "bucket": 2,
+            "tagg_count": 2,
+            "tagg_sum": "5.0",
+            "tagg_min": "2.0",
+            "tagg_hll": true
+          }
+        },
+        "delete_returned": true,
+        "inside": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700003101,
+              "weight": 3,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700003101,
+              "w": 3
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 1,
+            "sum": 3.0,
+            "velocity": 1
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 3.0,
+            "min": 3.0,
+            "max": 3.0
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "3.0",
+            "tagg_min": "3.0",
+            "tagg_hll": true
+          }
+        },
+        "after_rollback": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700003100,
+              "weight": 2,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700003100,
+              "w": 2
+            },
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700003101,
+              "weight": 3,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700003101,
+              "w": 3
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 2,
+            "sum": 5.0,
+            "velocity": 2
+          },
+          "agg_whole_bucket": {
+            "count": 2,
+            "sum": 5.0,
+            "min": 2.0,
+            "max": 3.0
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 2,
+            "tagg_sum": "5.0",
+            "tagg_min": "2.0",
+            "tagg_hll": true
+          }
+        },
+        "verdict": "OBSERVED_DEFECT: R5b rolled-back delete of one of two edges: 2 raw edge(s) back after the rollback, but whole-bucket count=2 sum=5.0 velocity=1 (raw bucket=1; expected 2/5.0/2)"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_RB",
+            "target": "end",
+            "timestamp": 100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_RB",
+            "o": "end",
+            "ts": 100,
+            "w": 2
+          }
+        ],
+        "unparsable_weights": [],
+        "expected_l1": {
+          "count": 1,
+          "sum": 2.0,
+          "velocity": 1
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "velocity_bucket": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_hll": true
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.12553179200040177
+  },
+  {
+    "name": "temporal_rollback_r6",
+    "ids": [
+      "bug-tmp-010"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "ts": 1700003700,
+        "before": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700003700,
+              "weight": 2,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700003700,
+              "w": 2
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 1,
+            "sum": 2.0,
+            "velocity": 1
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 2.0,
+            "min": 2.0,
+            "max": 2.0
+          },
+          "velocity_bucket": 1,
+          "raw": {
+            "bucket": 1,
+            "tagg_count": 1,
+            "tagg_sum": "2.0",
+            "tagg_min": "2.0",
+            "tagg_hll": true
+          }
+        },
+        "delete_node": "True",
+        "inside": {
+          "window_edges": [],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 0,
+            "sum": 0.0,
+            "velocity": 0
+          },
+          "agg_whole_bucket": {
+            "count": 0,
+            "sum": 0.0,
+            "min": "<reader error ValueError: could not convert string to float: 'None'>",
+            "max": "<reader error ValueError: could not convert string to float: 'None'>"
+          },
+          "velocity_bucket": 0,
+          "raw": {
+            "bucket": null,
+            "tagg_count": null,
+            "tagg_sum": null,
+            "tagg_min": null,
+            "tagg_hll": false
+          }
+        },
+        "after_rollback": {
+          "window_edges": [
+            {
+              "source": "probe:rb:a",
+              "predicate": "PROBE_RB",
+              "target": "probe:rb:b",
+              "timestamp": 1700003700,
+              "weight": 2,
+              "s": "probe:rb:a",
+              "p": "PROBE_RB",
+              "o": "probe:rb:b",
+              "ts": 1700003700,
+              "w": 2
+            }
+          ],
+          "unparsable_weights": [],
+          "expected_l1": {
+            "count": 1,
+            "sum": 2.0,
+            "velocity": 1
+          },
+          "agg_whole_bucket": {
+            "count": 1,
+            "sum": 2.0,
+            "min": 2.0,
+            "max": 2.0
+          },
+          "velocity_bucket": 0,
+          "raw": {
+            "bucket": 0,
+            "tagg_count": 1,
+            "tagg_sum": "2.0",
+            "tagg_min": "2.0",
+            "tagg_hll": true
+          }
+        },
+        "verdict": "OBSERVED_DEFECT: R6 rolled-back node erasure: 1 raw edge(s) back after the rollback, but whole-bucket count=1 sum=2.0 velocity=0 (raw bucket=0; expected 1/2.0/1)"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_RB",
+            "target": "end",
+            "timestamp": 100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_RB",
+            "o": "end",
+            "ts": 100,
+            "w": 2
+          }
+        ],
+        "unparsable_weights": [],
+        "expected_l1": {
+          "count": 1,
+          "sum": 2.0,
+          "velocity": 1
+        },
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "velocity_bucket": 1,
+        "raw": {
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_hll": true
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.2718084579682909
+  },
+  {
+    "name": "parallel_ledger_delete",
+    "ids": [
+      "bug-str-001",
+      "bug-str-004",
+      "F-0204",
+      "F-0403"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "graph": "parallel",
+        "gkey": "parallel",
+        "s": "g5ps:parallel:a",
+        "p": "G5PS_T",
+        "o": "g5ps:parallel:b",
+        "is_multigraph": true,
+        "rows_before": [
+          [
+            29,
+            0,
+            "parallel"
+          ],
+          [
+            30,
+            1,
+            "parallel"
+          ]
+        ],
+        "rows_before_n": 2,
+        "layout_before": {
+          "data": 11,
+          "leaf": true,
+          "children": [
+            "0",
+            "1"
+          ],
+          "hash": 2,
+          "in_data": 11
+        },
+        "degree_before": 2,
+        "count_before": 2,
+        "verify_before": {
+          "graph": "parallel",
+          "graphKey": "parallel",
+          "ok": 0,
+          "counts": {
+            "sqlEdges": 2,
+            "outEdges": 1,
+            "inEdges": 1,
+            "cacheEntries": 1
+          },
+          "drift": [
+            {
+              "store": "^KG(\"out\")",
+              "kind": "missing",
+              "count": 1,
+              "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them"
+            },
+            {
+              "store": "^KG(\"in\")",
+              "kind": "missing",
+              "count": 1,
+              "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them"
+            }
+          ],
+          "checked": [
+            "Graph_KG.rdf_edges",
+            "^KG(\"out\")",
+            "^KG(\"in\")",
+            "^KG(\"degc\")"
+          ],
+          "unverified": [
+            {
+              "store": "Graph_KG.nodes",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.rdf_labels",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.rdf_props",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.kg_NodeEmbeddings",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.kg_NodeEmbeddings_optimized",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.kg_EdgeEmbeddings",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.docs",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.embedding_registry",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.fhir_unresolved",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.fhir_definitions",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.fhir_canonical_refs",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"gen\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"degw\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"label\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"prop\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"deg2p\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"deg2p_exact\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"tout\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"tin\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"bucket\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"tagg\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"edgeprop\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"tlast\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.Ledger(\"tuple\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.Ledger(\"stmt\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.GraphMode",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.TemporalStructural",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.AlgoCache",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            }
+          ],
+          "unscoped": [
+            {
+              "store": "Graph_KG.rdf_reifications",
+              "kind": "sql",
+              "reason": "keyed by reifier and edge id alone, with no graph column and no join to one"
+            },
+            {
+              "store": "^NKG",
+              "kind": "global",
+              "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph"
+            },
+            {
+              "store": "^KG(\"deg2p_exact_merged\")",
+              "kind": "global",
+              "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it"
+            },
+            {
+              "store": "^KG(\"labelset\")",
+              "kind": "global",
+              "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it"
+            },
+            {
+              "store": "^ArnoKG",
+              "kind": "global",
+              "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph"
+            }
+          ]
+        },
+        "ledger_result": {
+          "revision": "1b58f4b0e16a11f1bd5dc62f3f4b8845",
+          "replayed": false
+        },
+        "rows_after": [
+          [
+            30,
+            1,
+            "parallel"
+          ]
+        ],
+        "rows_after_n": 1,
+        "layout_after": {
+          "data": 0,
+          "leaf": false,
+          "children": [],
+          "hash": null,
+          "in_data": 0
+        },
+        "degree_after": 0,
+        "count_after": 0,
+        "neighbours_cypher": [
+          [
+            "g5ps:parallel:b"
+          ]
+        ],
+        "verify_after": {
+          "graph": "parallel",
+          "graphKey": "parallel",
+          "ok": 0,
+          "counts": {
+            "sqlEdges": 1,
+            "outEdges": 0,
+            "inEdges": 0,
+            "cacheEntries": 1
+          },
+          "drift": [
+            {
+              "store": "^KG(\"out\")",
+              "kind": "missing",
+              "count": 1,
+              "detail": "rows in Graph_KG.rdf_edges with no ^KG(\"out\") entry, so traversal cannot see them"
+            },
+            {
+              "store": "^KG(\"in\")",
+              "kind": "missing",
+              "count": 1,
+              "detail": "rows with no ^KG(\"in\") entry, so inbound traversal cannot see them"
+            }
+          ],
+          "checked": [
+            "Graph_KG.rdf_edges",
+            "^KG(\"out\")",
+            "^KG(\"in\")",
+            "^KG(\"degc\")"
+          ],
+          "unverified": [
+            {
+              "store": "Graph_KG.nodes",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.rdf_labels",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.rdf_props",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.kg_NodeEmbeddings",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.kg_NodeEmbeddings_optimized",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.kg_EdgeEmbeddings",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.docs",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.embedding_registry",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.fhir_unresolved",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.fhir_definitions",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "Graph_KG.fhir_canonical_refs",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"gen\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"degw\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"label\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"prop\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"deg2p\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"deg2p_exact\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"tout\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"tin\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"bucket\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"tagg\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"edgeprop\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^KG(\"tlast\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.Ledger(\"tuple\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.Ledger(\"stmt\")",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.GraphMode",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.TemporalStructural",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            },
+            {
+              "store": "^IVG.AlgoCache",
+              "reason": "graph-scoped, but this oracle compares structural adjacency only"
+            }
+          ],
+          "unscoped": [
+            {
+              "store": "Graph_KG.rdf_reifications",
+              "kind": "sql",
+              "reason": "keyed by reifier and edge id alone, with no graph column and no join to one"
+            },
+            {
+              "store": "^NKG",
+              "kind": "global",
+              "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph"
+            },
+            {
+              "store": "^KG(\"deg2p_exact_merged\")",
+              "kind": "global",
+              "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it"
+            },
+            {
+              "store": "^KG(\"labelset\")",
+              "kind": "global",
+              "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it"
+            },
+            {
+              "store": "^ArnoKG",
+              "kind": "global",
+              "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph"
+            }
+          ]
+        },
+        "expected_after": {
+          "present": true,
+          "children": 0,
+          "hash": null,
+          "degree": 1
+        },
+        "observed_after": {
+          "present": false,
+          "children": 0,
+          "hash": null,
+          "degree": 0
+        }
+      },
+      "reason": "one row remains but the index reads {'present': False, 'children': 0, 'hash': None, 'degree': 0} (expected {'present': True, 'children': 0, 'hash': None, 'degree': 1}; recount 0)",
+      "neighbor": {
+        "graph": "neighbor",
+        "graphKey": "neighbor",
+        "ok": 1,
+        "counts": {
+          "sqlEdges": 1,
+          "outEdges": 1,
+          "inEdges": 1,
+          "cacheEntries": 0
+        },
+        "drift": [],
+        "checked": [
+          "Graph_KG.rdf_edges",
+          "^KG(\"out\")",
+          "^KG(\"in\")",
+          "^KG(\"degc\")"
+        ],
+        "unverified": [
+          {
+            "store": "Graph_KG.nodes",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.rdf_labels",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.rdf_props",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.kg_NodeEmbeddings",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.kg_NodeEmbeddings_optimized",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.kg_EdgeEmbeddings",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.docs",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.embedding_registry",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.fhir_unresolved",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.fhir_definitions",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "Graph_KG.fhir_canonical_refs",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"gen\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"degw\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"label\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"prop\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"deg2p\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"deg2p_exact\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"tout\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"tin\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"bucket\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"tagg\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"edgeprop\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^KG(\"tlast\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^IVG.Ledger(\"tuple\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^IVG.Ledger(\"stmt\")",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^IVG.GraphMode",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^IVG.TemporalStructural",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          },
+          {
+            "store": "^IVG.AlgoCache",
+            "reason": "graph-scoped, but this oracle compares structural adjacency only"
+          }
+        ],
+        "unscoped": [
+          {
+            "store": "Graph_KG.rdf_reifications",
+            "kind": "sql",
+            "reason": "keyed by reifier and edge id alone, with no graph column and no join to one"
+          },
+          {
+            "store": "^NKG",
+            "kind": "global",
+            "reason": "node interning is append-only and ignores graph_id, so its counters over-count and its ids cannot be attributed to one graph"
+          },
+          {
+            "store": "^KG(\"deg2p_exact_merged\")",
+            "kind": "global",
+            "reason": "Arno's two-hop counts, computed over ^NKG by Graph.KG.NKGAccelTraversal:Build2HopExact; since ^NKG's interning carries no graph, the number cannot be attributed to one graph and is kept apart from the scoped ^KG(\"deg2p_exact\") rather than written into it"
+          },
+          {
+            "store": "^KG(\"labelset\")",
+            "kind": "global",
+            "reason": "content-addressed interning of temporal label sets, deliberately append-only: Graph.KG.TemporalIndex documents that no purge touches it"
+          },
+          {
+            "store": "^ArnoKG",
+            "kind": "global",
+            "reason": "a whole-database JSON snapshot keyed by graph name \"KG\" with no graph dimension, invalidated by comparing ^KG(\"__version\") rather than by content, so erasing content without bumping that stamp leaves Arno serving the erased graph"
+          }
+        ]
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.28054887504549697
+  },
+  {
+    "name": "ppr_edgeless_seed",
+    "ids": [
+      "bug-plt-017",
+      "F-1004"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {},
+      "expected": "positive seed after creation",
+      "neighbor": {
+        "new-seed": 1.0,
+        "a": 0.0,
+        "b": 0.0
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.11437279201345518
+  },
+  {
+    "name": "where_after_return",
+    "ids": [
+      "F-0803"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": [
+        [
+          "node"
+        ]
+      ],
+      "expected": "syntax refusal",
+      "neighbor": []
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.11868704104563221
+  },
+  {
+    "name": "set_literal_null",
+    "ids": [
+      "F-0810"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": [
+        [
+          [
+            "z",
+            "neighbor",
+            "id"
+          ]
+        ]
+      ],
+      "expected": "z absent",
+      "neighbor": [
+        [
+          [
+            "z",
+            "id"
+          ]
+        ]
+      ]
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.1715962910093367
+  },
+  {
+    "name": "relationship_parameter",
+    "ids": [
+      "F-C0848"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": [
+        [
+          null
+        ]
+      ],
+      "expected": [
+        [
+          "value"
+        ]
+      ],
+      "neighbor": [
+        [
+          "value"
+        ]
+      ]
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.1586992500233464
+  },
+  {
+    "name": "foreach_parameter",
+    "ids": [
+      "F-0808"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "type": "SyntaxError",
+        "text": "Undefined variable: x"
+      },
+      "expected": "three nodes",
+      "neighbor": [
+        [
+          3
+        ]
+      ]
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.3135128750000149
+  },
+  {
+    "name": "unwind_with",
+    "ids": [
+      "F-0822"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "type": "GraphWriteError",
+        "text": "execute_cypher failed, nothing written: <PARAMETER ERROR>; Details: Invalid number of parameters."
+      },
+      "expected": "two nodes",
+      "neighbor": [
+        [
+          2
+        ]
+      ]
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.2927585419965908
+  },
+  {
+    "name": "temporal_bulk_update",
+    "ids": [
+      "bug-tmp-001"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "mode": "update",
+        "returned": "GraphWriteError: bulk_create_edges_temporal failed, 1 of 2 edges written: <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow node probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "window_all": [
+          {
+            "source": "probe:bulk:update:s",
+            "predicate": "PROBE_TW",
+            "target": "probe:bulk:update:o0",
+            "timestamp": 1700000100,
+            "weight": 1,
+            "s": "probe:bulk:update:s",
+            "p": "PROBE_TW",
+            "o": "probe:bulk:update:o0",
+            "ts": 1700000100,
+            "w": 1
+          },
+          {
+            "source": "probe:bulk:update:s",
+            "predicate": "PROBE_TW",
+            "target": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "timestamp": 1700000101,
+            "weight": 5,
+            "s": "probe:bulk:update:s",
+            "p": "PROBE_TW",
+            "o": "probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "ts": 1700000101,
+            "w": 5
+          }
+        ],
+        "expected_l1": {
+          "count": 2,
+          "sum": 6.0,
+          "velocity": 2
+        },
+        "agg_whole_bucket": {
+          "count": 2,
+          "sum": 2.0
+        },
+        "velocity_bucket": 4,
+        "raw": {
+          "bucket": 4,
+          "tagg_count": 2,
+          "tagg_sum": "2.0"
+        },
+        "rdf_edges_rows_for_source": 1,
+        "l1_holds": false,
+        "refused_edge_raw_present": true,
+        "verdict": "OBSERVED_DEFECT: mode=update after the fallback the whole-bucket count/sum/velocity 2/2.0/4 differ from the raw store 2/6.0/2 (call: GraphWriteError: bulk_create_edges_temporal failed, 1 of 2 edges written: <THROW> *%Exception.StatusException ERROR #5001: AssertTemporalRow node probe:long:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)"
+      },
+      "neighbor": {
+        "window_edges": [
+          {
+            "source": "neighbor",
+            "predicate": "PROBE_TW",
+            "target": "o",
+            "timestamp": 1700000100,
+            "weight": 2,
+            "s": "neighbor",
+            "p": "PROBE_TW",
+            "o": "o",
+            "ts": 1700000100,
+            "w": 2
+          }
+        ],
+        "agg_whole_bucket": {
+          "count": 1,
+          "sum": 2.0,
+          "min": 2.0,
+          "max": 2.0
+        },
+        "agg_cut_window_T_T": {
+          "count": 1,
+          "sum": 2.0
+        },
+        "velocity_bucket": 1,
+        "rdf_edges_rows": 1,
+        "node_rows_for_target": 1,
+        "raw": {
+          "tout": 2,
+          "bucket": 1,
+          "tagg_count": 1,
+          "tagg_sum": 2,
+          "tagg_min": 2,
+          "tagg_max": 2
+        }
+      }
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.38793337502283975
+  },
+  {
+    "name": "relationship_with",
+    "ids": [
+      "F-C0849"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_REL_PROP failed with error:  SQLCODE=-400,%msg=>]",
+        "type": "RuntimeError"
+      },
+      "raw": [
+        [
+          "{\"q\": value}"
+        ]
+      ],
+      "expected": [
+        [
+          "value"
+        ]
+      ],
+      "neighbor": [
+        [
+          "value"
+        ]
+      ]
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.11479775002226233
+  },
+  {
+    "name": "aql_string_comment",
+    "ids": [
+      "F-0824"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": {
+        "type": "AQLParseError",
+        "text": "AQL syntax error at line 2, col 1: Expected RETURN"
+      },
+      "expected": "ordinary string parsed and query run",
+      "neighbor": []
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.22007941600168124
+  },
+  {
+    "name": "snapshot_temporal_types",
+    "ids": [
+      "F-1804"
+    ],
+    "level": "e2e reproduced",
+    "providers": "actual pinned Python, DB-API, IRIS SQL/ObjectScript; no substituted dependency",
+    "observation": {
+      "actual": [
+        {
+          "s": "s",
+          "p": "T",
+          "o": "o",
+          "ts": 100,
+          "w": 1.0,
+          "source": "s",
+          "predicate": "T",
+          "target": "o",
+          "timestamp": 100,
+          "weight": 1.0,
+          "attrs": {
+            "label": "kept",
+            "n": "1"
+          }
+        }
+      ],
+      "expected": [
+        {
+          "s": "s",
+          "p": "T",
+          "o": "o",
+          "ts": 100,
+          "w": 1,
+          "source": "s",
+          "predicate": "T",
+          "target": "o",
+          "timestamp": 100,
+          "weight": 1,
+          "attrs": {
+            "label": "kept",
+            "n": 1
+          }
+        }
+      ],
+      "neighbor": "text label and numeric weight preserved"
+    },
+    "verdict": "REPRODUCED_WITH_PASSING_NEIGHBOR",
+    "elapsed_s": 0.26160450000315905
+  }
+]

@@ -1,0 +1,19 @@
+verification results:: 142 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/zero-valued-qualifier-dropped/20261116T022152Z/models/ndjson_export/ndjson_export.rs:162:10
+    |
+161 | pub proof fn theorem_edge_qualifier_zero_not_omitted(g:int,serial:int,source:Id,predicate:int,target:Id)
+    | -------------------------------------------------------------------------------------------------------- at the end of the function body
+162 |  ensures edge_event(EdgeRow{graph:g,serial,source,predicate,target,raw:Some(seq!['{','"','q','"',':','0','}'])})==(Event::Edge{source,predicate,target,qual:Some(0)}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/zero-valued-qualifier-dropped/20261116T022152Z/models/ndjson_export/ndjson_export.rs:300:60
+    |
+300 | pub proof fn witness_zero_qualifier_kept_in_file() ensures ({let f=export(seq![],seq![],seq![],seq![EdgeRow{graph:0,serial:0,source:0,predicate:0,target:0,raw:Some(seq!['{','"','q','"',':','0','}'])}]);f.lines[0]==(Event::Edge{source:0,predicate:0,target:0,qual:Some(0)})}), {...
+    | --------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 2 previous errors
+

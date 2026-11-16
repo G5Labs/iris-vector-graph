@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_wrong_graph_membership_is_excluded"
+    ],
+    "find": "&& graph(ls[i].graph)==graph(g)",
+    "name": "label-graph-correlation-ignored",
+    "replace": ""
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_wrong_graph_membership_is_excluded"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "4e7980fa674ca0693bc7651437575bd0a1bd32e8f9718f7d191a745cd75ac07d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/label-graph-correlation-ignored/20261116T020508Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_wrong_graph_membership_is_excluded": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020508Z-control-label-graph-correlation-ignored-theorem_wrong_graph_membership_is_excluded.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020508Z-control-label-graph-correlation-ignored.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020513Z-control-label-graph-correlation-ignored/logs/20261116T020508Z-control-label-graph-correlation-ignored-theorem_wrong_graph_membership_is_excluded.log": "8bdef933d573d1cc65df4e437c32b5288785277a75b0ea3f9e363eada6302ff8",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020513Z-control-label-graph-correlation-ignored/logs/20261116T020508Z-control-label-graph-correlation-ignored.log": "f916daa0c82c76edb6df4fc49e2465ba4e01a1f8cc038dc3774cd3457632db36"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

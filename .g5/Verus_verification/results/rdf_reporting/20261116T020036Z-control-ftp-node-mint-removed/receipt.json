@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_node_property_prefixes_differ"
+    ],
+    "find": "||starts(s,t(\"ftp://\"))",
+    "name": "ftp-node-mint-removed",
+    "replace": ""
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_node_property_prefixes_differ"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "f76eabe9ab4f917402fb5af6a89da9845e5beddd30e32e9ebbe9bc0c670aa24b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/ftp-node-mint-removed/20261116T020033Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_node_property_prefixes_differ": {
+        "errors": null,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020033Z-control-ftp-node-mint-removed-theorem_node_property_prefixes_differ.log",
+        "timed_out": false,
+        "verified": null
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020033Z-control-ftp-node-mint-removed.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020036Z-control-ftp-node-mint-removed/logs/20261116T020033Z-control-ftp-node-mint-removed-theorem_node_property_prefixes_differ.log": "e1344241cee4807eb7700997c75b95352c160d38d5733f588a1934918150e781",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020036Z-control-ftp-node-mint-removed/logs/20261116T020033Z-control-ftp-node-mint-removed.log": "897afd4516893a88f107ec016ba8661beaafecfe152272b42d9fc8c9a0fb16ba"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "FAIL_ELSEWHERE",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

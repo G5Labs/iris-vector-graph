@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/json-decoded-object-dropped/20261116T020601Z/models/rdf_reporting/rdf_reporting.rs:400:10
+    |
+399 | pub proof fn theorem_raw_string_zero_object_is_decoded()
+    | -------------------------------------------------------- at the end of the function body
+400 |  ensures decode(Some(seq!['{','"','q','"',':','"','0','"','}']))==seq![Entry{key:t("q"),value:t("0")}]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

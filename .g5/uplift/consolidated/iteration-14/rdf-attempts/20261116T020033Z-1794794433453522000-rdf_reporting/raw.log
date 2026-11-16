@@ -1,0 +1,12 @@
+verification results:: 49 verified, 1 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/ftp-node-mint-removed/20261116T020033Z/models/rdf_reporting/rdf_reporting.rs:68:10
+   |
+66 | pub proof fn theorem_node_property_prefixes_differ(s:Text,base:Text)
+   | -------------------------------------------------------------------- at the end of the function body
+67 |  requires starts(s,t("ftp://")),!starts(s,t("http://")),!starts(s,t("https://")),!starts(s,t("urn:"))
+68 |  ensures mint(s,base)==s,property_predicate(s,base)==t("urn:ivg:prop/")+s
+   |          ^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

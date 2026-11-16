@@ -1,0 +1,55 @@
+{
+  "control": {
+    "classification": "actual model producer altered; self-contained final completed-line/count witness, no proof-contract shortcut",
+    "expect_fail_in": [
+      "witness_two_label_rows_survive_file"
+    ],
+    "find": "labels:old.labels.push(r.label)",
+    "name": "labels-overwritten",
+    "replace": "labels:seq![r.label]"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_two_label_rows_survive_file"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_children/bulk_children.rs": "5c61e29afdfa02bff96e8eb564cc44c87b46c10e3c0491d17c9153bb223c2c14",
+    ".g5/Verus_verification/models/ndjson_export/model.json": "aa2eb689af59adfdbc0c9cd59cfe8b27a8de38f897eba95e0b427af82ca0aa4d",
+    ".g5/Verus_verification/models/ndjson_export/ndjson_export.rs": "a3f696010e22734402713ce5fe30f2b3535b25e51002aa9ae8fa170c9cc73937",
+    ".g5/Verus_verification/models/ndjson_export/order.rs": "7079380793d0bc39b79e3ce624f2d1f9aa893804e8b448031d77804ea1326334",
+    ".g5/Verus_verification/models/ndjson_export/qualifier.rs": "362c631e64d47ef2374a42bf2c6199970497468cdb2df24b967b71198b66d742",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/labels-overwritten/20261116T022141Z/models/ndjson_export/ndjson_export.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_two_label_rows_survive_file": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/20261116T022141Z-control-labels-overwritten-witness_two_label_rows_survive_file.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/20261116T022141Z-control-labels-overwritten.log",
+    "timed_out": false,
+    "verified": 142
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ndjson_export/20261116T022142Z-control-labels-overwritten/logs/20261116T022141Z-control-labels-overwritten-witness_two_label_rows_survive_file.log": "7951e14f520171ae47819cb271eb429a15c2e9d22859ad75255bce0518e3b810",
+    ".g5/Verus_verification/results/ndjson_export/20261116T022142Z-control-labels-overwritten/logs/20261116T022141Z-control-labels-overwritten.log": "7238926c28bb3b6f07ad0c755e1d16795a69180ba72ef11df8136e29b85c9002"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

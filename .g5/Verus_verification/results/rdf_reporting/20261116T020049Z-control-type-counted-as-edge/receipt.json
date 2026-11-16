@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_non_type_uri_count_rule"
+    ],
+    "find": "pub open spec fn edge_triple(x:Triple)->bool {matches!(x.o,Term::Iri(_)) && x.p!=t(\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\")}",
+    "name": "type-counted-as-edge",
+    "replace": "pub open spec fn edge_triple(x:Triple)->bool {matches!(x.o,Term::Iri(_))}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_non_type_uri_count_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "f76eabe9ab4f917402fb5af6a89da9845e5beddd30e32e9ebbe9bc0c670aa24b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/type-counted-as-edge/20261116T020044Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_non_type_uri_count_rule": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020044Z-control-type-counted-as-edge-theorem_non_type_uri_count_rule.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020044Z-control-type-counted-as-edge.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020049Z-control-type-counted-as-edge/logs/20261116T020044Z-control-type-counted-as-edge-theorem_non_type_uri_count_rule.log": "f8ada96cc1b0e2797a29e84cf32861778d11e6637186429ac389e05d8319995b",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020049Z-control-type-counted-as-edge/logs/20261116T020044Z-control-type-counted-as-edge.log": "5ee1939de99f17af1e301c29106169e61d27f088530208c4a216b85174f6b136"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

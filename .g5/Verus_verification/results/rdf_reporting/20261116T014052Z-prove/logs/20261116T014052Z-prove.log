@@ -1,0 +1,31 @@
+verification results:: 24 verified, 2 errors
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:102:9
+    |
+102 |  assert(upsert(es,key,value).map_values(|e:Entry|e.key).to_set() =~= es.map_values(|e:Entry|e.key).to_set().insert(key));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:53:1
+   |
+53 | pub proof fn theorem_node_property_prefixes_differ(base:Text)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:54:10
+   |
+53 | pub proof fn theorem_node_property_prefixes_differ(base:Text)
+   | ------------------------------------------------------------- at the end of the function body
+54 |  ensures mint(t("ftp://x"),base)==t("ftp://x"),property_predicate(t("ftp://x"),base)==t("urn:ivg:prop/ftp://x")
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:54:48
+   |
+53 | pub proof fn theorem_node_property_prefixes_differ(base:Text)
+   | ------------------------------------------------------------- at the end of the function body
+54 |  ensures mint(t("ftp://x"),base)==t("ftp://x"),property_predicate(t("ftp://x"),base)==t("urn:ivg:prop/ftp://x")
+   |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

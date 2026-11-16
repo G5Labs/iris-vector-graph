@@ -50,6 +50,13 @@ An engine or a class deploy that asks for a schema other than the recorded one i
 - Setup, status and legacy removal still run on a refusing namespace, because they are how an operator inspects or fixes it.
 - A login that cannot read the record gets a warning, and the check is skipped for that engine.
 
+<a id="install.schema.refusal.first-use-policy"></a>
+[Q · install.schema.refusal.first-use-policy]
+
+Should an engine that cannot read the schema record be refused?
+
+- Working assumption (agent, unratified): Supported deployments can read the schema record; callers that cannot read it need an explicit refusal or compatibility policy.
+
 <a id="install.schema.not_ready"></a>
 [I · install.schema.not_ready]
 
@@ -199,6 +206,20 @@ An object under a manifest name counts as IVG's only when its text matches a tex
 
 ## Data migrations
 
+<a id="install.legacy.support-policy"></a>
+[Q · install.legacy.support-policy]
+
+Are the files under sql/ part of the product?
+
+- Working assumption (agent, unratified): Keep the class deployment path canonical and classify each legacy SQL consumer explicitly before declaring the shipped SQL unsupported.
+
+<a id="install.legacy.sql-operators-policy"></a>
+[Q · install.legacy.sql-operators-policy]
+
+Is `sql/operators.sql` product code?
+
+- Working assumption (agent, unratified): Treat the class path as canonical; support for shipped sql/operators.sql remains a separate owner decision.
+
 <a id="install.migration"></a>
 [I · install.migration]
 
@@ -285,6 +306,13 @@ A temporal event saved in a snapshot answers a [window read](../features/tempora
 - The temporal subtrees saved are the events by time in both directions, the time buckets and their aggregates, the edge attributes, and the latest-event index.
 ## Bulk loading
 
+<a id="install.snapshot.consistency-policy"></a>
+[Q · install.snapshot.consistency-policy]
+
+Should a snapshot be a point-in-time view?
+
+- Working assumption (agent, unratified): Rely on a consistent archive only with quiescent writers until a point-in-time capture protocol is specified.
+
 <a id="install.bulk_load"></a>
 [D · install.bulk_load]
 
@@ -338,6 +366,40 @@ An NDJSON import ignores blank lines; logs and counts malformed JSON, non-object
 - Node lines use the caller's graph (default if omitted). Edge lines use the caller's graph if supplied, otherwise the line's graph; an explicitly empty caller graph overrides a named line graph. Temporal batches and any endpoints they create use the default graph even when the caller supplies a graph.
 - Temporal lines buffer until `batch_size` or end of file. Their counter advances by the flushed batch length, independently of the writer's return count; an exception prevents that increment and prevents the final pending flush. These counters do not establish rows created or atomicity of a failed temporal batch.
 
+## Ordinary graph exports
+
+<a id="install.export.ndjson"></a>
+[D · install.export.ndjson]
+
+`export_graph_ndjson` writes the default graph's node records, then its non-temporal structural edge records, in the format `import_graph_ndjson` reads. Its `nodes` and `edges` answers count lines written; parallel structural edges each have a line.
+
+- A node record uses the public [node-read projection](../features/graph-structure.g5.md#structure.node.read), including its property aliases and value conversions. Its properties omit only the structural `id` and `labels` fields; this does not promise an inverse of stored property keys.
+- Named graphs and marked temporal rows are excluded. Import-format compatibility does not promise that a later import preserves physical edge IDs, multiplicity or every stored type; those depend on the import writers.
+
+<a id="install.export.rdf.scope"></a>
+[D · install.export.rdf.scope]
+
+`export_rdf` writes labels, properties and outgoing edges from every graph when `graph_id` is None, only the default graph when it is empty, and only the named graph otherwise. Nonempty node and label filters narrow that selection; a label must belong to the source node in the row's own graph.
+
+- Empty filter collections do not narrow the export. A label filter writes the matching labels, the selected source nodes' properties and their outgoing edges; it does not pull in a target's other rows.
+- A physical node without any selected label, property or outgoing edge contributes no RDF subject. Context-aware formats keep each generated triple in its row's graph.
+
+<a id="install.export.rdf.content"></a>
+[D · install.export.rdf.content]
+
+A selected label becomes an `rdf:type` triple, a non-null property becomes a literal triple, and an edge becomes an IRI-object triple. Each physical edge with a nonempty qualifier dictionary also gets its own statement and reifier blank nodes; the `inferred` qualifier is omitted, even when it is the only qualifier.
+
+- Node IDs, labels and edge predicates use `base_uri` unless they already start with `http://`, `https://`, `urn:` or `ftp://`. Property keys pass through as IRIs for the first three prefixes; other keys use `urn:ivg:prop/`. Qualifier predicates use `urn:ivg:qualifier/`.
+- Property text tries a canonical integer spelling first, then a float as `xsd:decimal`, then a case-insensitive boolean, then plain text. The current qualifier path falls back to plain text when that literal is falsey, so zero and false qualifiers can differ from the same property value. This describes the current projection; the intended qualifier exception is not settled by the general literal description.
+- The envelope has statement subject, predicate and object triples, plus a reifier-to-statement `rdf:reifies` triple. All of these and the qualifier triples use the edge's context; equal unqualified triples can collapse while separate qualified rows retain separate envelopes.
+
+<a id="install.export.rdf.report"></a>
+[D · install.export.rdf.report]
+
+After serialization succeeds, RDF export reports the number of distinct triples across the union of contexts, the number of distinct subjects including blank nodes, and the number of those triples with an IRI object whose predicate is not `rdf:type`. These counts include qualifier envelopes and are not physical node or edge counts; the same triple in two contexts can be two serialized quads but one reported triple.
+
+- The format argument overrides extension inference. N-Quads and TriG preserve graph contexts; flat formats do not establish a context-preserving export, and no successful answer promises file atomicity on an earlier error.
+
 ## Metadata
 
 ### install.namespace
@@ -358,7 +420,7 @@ An NDJSON import ignores blank lines; logs and counts malformed JSON, non-object
 - architecture-decision, operations
 - test-coverage
 
-Findings: [ADR-0016 still describes the IVG Schema design before it was built](../../Verus_verification/bugs_issues.md#bug-doc-005)
+Findings: [ADR-0016 still describes the IVG Schema design before it was built](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-005)
 
 ### install.schema.name
 
@@ -369,7 +431,7 @@ Findings: [ADR-0016 still describes the IVG Schema design before it was built](.
 
 US3 is recorded as "Tom's requirement". ADR-0016 states the pattern as `[A-Z][A-Z0-9_]*`; the spec and the code accept mixed case, compared case-insensitively. Suspected divergence: the deploy rewrites class sources with the engine's spelling, not the recorded one (no test covers a lower-case engine on an upper-case record).
 
-Findings: [An engine whose schema name differs only in case from the record loads classes under its own spelling](../../Verus_verification/bugs_issues.md#bug-plt-015)
+Findings: [An engine whose schema name differs only in case from the record loads classes under its own spelling](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-015)
 
 ### install.schema.record
 
@@ -380,7 +442,7 @@ Findings: [An engine whose schema name differs only in case from the record load
 - architecture-decision, data-integrity
 - test-coverage
 
-Findings: [Two concurrent first setups can both record their IVG Schema, and the loser keeps writing to its own tables](../../Verus_verification/bugs_issues.md#bug-plt-003)
+Findings: [Two concurrent first setups can both record their IVG Schema, and the loser keeps writing to its own tables](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-003)
 
 ### install.schema.refusal
 
@@ -393,6 +455,18 @@ Findings: [Two concurrent first setups can both record their IVG Schema, and the
 Live coverage: `tests/e2e/test_262_record.py`. The skipped check for a login without `%Native_GlobalAccess` is documented in ADMIN_GUIDE §3. Observed divergence: migrations build their own engine and waive this refusal too ([receipt](../../Verus_verification/receipts/native/platform_schema_waiver.json); see [migration schema](#install.migration.schema)).
 
 Findings: [The migrations' schema-check waiver also releases the refusal of a mismatched schema](../../Verus_verification/bugs_issues.md#bug-plt-007); [The schema check is skipped silently for logins without global access and for non-IRIS connections](../../Verus_verification/bugs_issues.md#bug-plt-022)
+
+### install.schema.refusal.first-use-policy
+- Expands: [parent](#install.schema.refusal)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should an engine that cannot read the schema record be refused?](../../Verus_verification/open_questions.md#HD-0101).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0101).
+
+Audit (HD-0101): Open owner decision. Working assumption (agent, unratified): Supported deployments can read the record (premise: the ADMIN_GUIDE role table grants %Native_GlobalAccess:U). Under that premise a mismatch is refused. The documented fail-open path is a separate 'unchecked' outcome that admits a mismatched engine. It is outside the binding guarantee and should be modelled that way, not treated as an accepted engine. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0101).
 
 ### install.schema.not_ready
 
@@ -416,7 +490,8 @@ Live coverage: `tests/e2e/test_262_not_upgraded.py`. Known issue: after a setup 
 
 Observed divergence (code reading, review round 3 R3-reader H3): setup records an explicitly named engine schema even when IVG's tables are in one other schema ([schema.py](../../../iris_vector_graph/_engine/schema.py#L2229-L2242)); FR-009 allows an explicit name only when the tables are in several schemas, and the engine's own comment says the same ([engine.py](../../../iris_vector_graph/engine.py#L294-L297)). The only test uses a default engine.
 
-Findings: [Setup records an explicitly named schema while IVG's tables sit in one other schema](../../Verus_verification/bugs_issues.md#bug-plt-026)
+Findings: [Setup records an explicitly named schema while IVG's tables sit in one other schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-026)
+
 ### install.schema.concurrency
 
 - Sources: [Spec 262 FR-005, FR-006, SC-006](../../../specs/262-ivg-owned-sql-schema/spec.md); [ADR-0016](../../../docs/adr/0016-one-ivg-schema-per-namespace.md); [_engine/schema.py _record_and_initialize](../../../iris_vector_graph/_engine/schema.py); [Stage A notes F-S1](../../uplift/ivg-verus-initial/intent/platform.md); [Review round 1, R1-4](../../uplift/ivg-verus-initial/review/round1-platform.md)
@@ -427,7 +502,7 @@ Findings: [Setup records an explicitly named schema while IVG's tables sit in on
 
 Concurrency changes how the rule is kept, not which outcome FR-005, FR-006 and ADR-0016 require ("instead of sharing globals silently"). No human source mentions concurrent setups, and "refused before it writes" is the model's proposed lock, so the block is `agent` (review round 3 R3-reader M16). Suspected divergence (not yet observed natively): setup reads the record, runs for tens of seconds and writes it if none existed, with no lock, then releases its own engine, so two racing setups can both finish and the loser keeps writing under the other record. Review round 1 notes that a compare-and-set record write alone would not repair this; the losing setup must also stay refused.
 
-Findings: [Two concurrent first setups can both record their IVG Schema, and the loser keeps writing to its own tables](../../Verus_verification/bugs_issues.md#bug-plt-003)
+Findings: [Two concurrent first setups can both record their IVG Schema, and the loser keeps writing to its own tables](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-003)
 
 ### install.schema.concurrency.leftover
 
@@ -437,9 +512,11 @@ Findings: [Two concurrent first setups can both record their IVG Schema, and the
 - uncertain
 - data-integrity
 
-FR-009 allows an explicitly named schema only when IVG's tables are in several schemas; the code also records it when they are in one other schema ([Setup records an explicitly named schema while IVG's tables sit in one other schema](../../Verus_verification/bugs_issues.md#bug-plt-026)). FR-009 does not say what happens to the globals an unfinished current setup left behind. The case is a sequential interrupted setup; it sits under concurrency because its parent owns the one-record outcome.
+FR-009 allows an explicitly named schema only when IVG's tables are in several schemas; the code also records it when they are in one other schema ([Setup records an explicitly named schema while IVG's tables sit in one other schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-026)). FR-009 does not say what happens to the globals an unfinished current setup left behind. The case is a sequential interrupted setup; it sits under concurrency because its parent owns the one-record outcome.
 
 Findings: [Can an explicitly named schema be recorded over another schema's interrupted first setup?](../../Verus_verification/open_questions.md#q-plt-002)
+
+Audit (q-plt-002): Open owner decision. Working assumption (agent, unratified): Prefer refusing a conflicting unfinished setup; accepting it needs an explicit plan for the old globals and rebuild markers. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-002).
 
 ### install.schema.classes_follow
 
@@ -450,8 +527,7 @@ Findings: [Can an explicitly named schema be recorded over another schema's inte
 - agent
 - architecture-decision
 
-Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/bugs_issues.md#bug-plt-012)
-
+Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-012)
 
 ### install.schema.speed
 
@@ -461,6 +537,7 @@ Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verificati
 - operations
 
 The clarification is a recorded human answer; FR-020a names the baseline code state `a42db224` and the gate's run rule (medians of at least 5 interleaved runs per path; Tom's allowed paths may cost up to twice their recorded cost). The gate was not run in this uplift. Added by review round 3 R3-reader M24.
+
 ### install.status
 - Sources: [USER_GUIDE, status counts every graph](../../../docs/USER_GUIDE.md#L1203); [ADMIN_GUIDE, status fields and unknown probes](../../../docs/ADMIN_GUIDE.md#L920); [registry-kind and partial count tests](../../../tests/unit/test_230_status_counts.py); [report graph scope](../../../tests/unit/test_460_r050_status_counts_every_graph.py); [failed census and unknown report](../../../tests/unit/test_460_r050_status_unknown.py)
 - Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_raw_catalog_to_final_report`, `theorem_route_tables_never_double_count`, `theorem_registry_kind_and_shape_both_required`, `theorem_failed_table_keeps_other_counts` and `theorem_failure_is_unknown_not_empty`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). Raw rows and registry/error fields derive partial census and graph/node-vector report knowledge. Actual Python executes local SQL and the final reader under a stable registry view and refusal outcome across the two kind scans; transient per-read registry changes, native/index/schema truth, general IRIS comparison/driver semantics, other report fields and cross-read snapshots remain outside this correspondence. Label/property/edge-vector errors do not by themselves make graph size unknown.
@@ -469,7 +546,6 @@ The clarification is a recorded human answer; FR-020a names the baseline code st
 - test-coverage
 
 This owner recovers ordinary reporting intent from the primary docs and tests before the selected reporting implementation is modeled. Graph identity and the meaning of an omitted graph remain with [graph scope](graph-scope.g5.md#graph.default). Probe availability, native counters, readiness flags and other status fields are separate conditions; this count/report rule does not certify them or a transactionally consistent snapshot across separate reads. The selected producer-to-report relation has been independently replayed within the linked package's stated source and provider frame.
-
 
 ### install.setup
 
@@ -509,6 +585,12 @@ The caller-transaction refusal came in 4.7.0 (live: `tests/e2e/test_470_caller_t
 The deploy is best-effort and the reply carries the failed classes. Since 4.6.3, edge writes in a namespace with uncompiled classes raise rather than silently skip the adjacency index.
 
 Findings: [Should setup still record the schema when some classes failed to deploy?](../../Verus_verification/open_questions.md#q-plt-010)
+
+Audit (q-plt-010): Open owner decision. Working assumption (agent, unratified): Prefer no ready schema record after failed deployment; a partial-ready record would need explicit per-capability admission rules. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-010).
+
+Audit (HD-0102): Open owner decision. Working assumption (agent, unratified): Treat a stored schema name as a namespace binding only. Represent readiness of each deployed capability (classes, adjacency index, ledger, erase) separately. An engine accepted by the record check has no claim on feature readiness. A feature call on a class-less namespace must give a named failure, not silently degrade. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0102).
+
+Findings: [Should setup save the schema record when the class deploy failed or was turned off?](../../Verus_verification/open_questions.md#HD-0102).
 
 ### install.deploy
 
@@ -550,6 +632,7 @@ Only the three MCP classes name `%AI`. The upstream test fixture loads every cla
 
 
 The view exception is in [legacy.py copy_grants](../../../iris_vector_graph/_engine/legacy.py#L247-L250) and the ADMIN_GUIDE; added by review round 3 R3-reader M24.
+
 ### install.upgrade.arno_revoke
 
 - Sources: [Spec 262 FR-010c](../../../specs/262-ivg-owned-sql-schema/spec.md); [CHANGELOG v4.6.0 (R293)](../../../CHANGELOG.md)
@@ -569,10 +652,11 @@ FR-010c records this as Tom's decision of 2026-11-04. A grant held through a sch
 
 ADR-0016 says 5.0 removes legacy objects on upgrade and calls the function `remove_legacy_sql_objects`; the shipped name is `remove_legacy_objects`. Live coverage: `tests/e2e/test_262_upgrade_451.py`, `tests/e2e/test_460_legacy_manifest_400_e2e.py`, `tests/e2e/test_460_legacy_manifest_320_loader_e2e.py`. Observed divergence: when one class holds several SQL procedures and deleting it fails, the later procedures are still reported as removed.
 
-Findings: [remove_legacy_objects reports later procedures of a class as removed when the class's delete failed](../../Verus_verification/bugs_issues.md#bug-plt-014)
+Findings: [remove_legacy_objects reports later procedures of a class as removed when the class's delete failed](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-014)
 
 
 The caller-transaction refusal is 4.7.0 ([admin.py](../../../iris_vector_graph/_engine/admin.py#L385-L393)); added by review round 3 R3-reader L11.
+
 ### install.legacy.manifest
 
 - Sources: [Spec 262 FR-012](../../../specs/262-ivg-owned-sql-schema/spec.md); [legacy_manifest.py](../../../iris_vector_graph/legacy_manifest.py)
@@ -590,6 +674,30 @@ The caller-transaction refusal is 4.7.0 ([admin.py](../../../iris_vector_graph/_
 - data-integrity
 - test-coverage
 
+### install.legacy.support-policy
+- Expands: [parent](#install.legacy)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Are the files under sql/ part of the product?](../../Verus_verification/open_questions.md#HD-0103).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0103).
+
+Audit (HD-0103): Open owner decision. Working assumption (agent, unratified): Inventory both install paths. The product contract (spec 262 schema, inventory test) covers initialize_schema only. scripts/deploy_production.py + sql/schema.sql + sql/operators_fixed.sql form a reachable legacy path that produces a non-conforming namespace (DDL-only before its class step, unqualified procedures). sql/fraud_sample_data.sql is maintained demo data. Files with no loader are historical material. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0103).
+
+### install.legacy.sql-operators-policy
+- Expands: [parent](#install.legacy)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Is `sql/operators.sql` product code?](../../Verus_verification/open_questions.md#HD-0803).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0803).
+
+Audit (HD-0803): Open owner decision. Working assumption (agent, unratified): Classify sql/operators.sql as shipped historical/reference SQL with no deployment path. It is outside the executed product surface, but stays in the inventory as a shipped artifact whose definitions are not graph-scoped. Trace operators_fixed.sql (legacy deployer) and the schema.py procedures separately. If anyone runs the file by hand, it creates unqualified, graph-blind procedures (F-0820-like behaviour). See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0803).
+
 ### install.migration
 
 - Sources: [migrations/__init__.py](../../../iris_vector_graph/migrations/__init__.py); [migrations/_commit.py](../../../iris_vector_graph/migrations/_commit.py); [migrations/kg_node_stores.py](../../../iris_vector_graph/migrations/kg_node_stores.py); [docs/migration/v4.0.0.md](../../../docs/migration/v4.0.0.md)
@@ -600,7 +708,7 @@ The caller-transaction refusal is 4.7.0 ([admin.py](../../../iris_vector_graph/_
 
 Live coverage: the 3.2.0 cases in `tests/e2e/test_262_upgrade_451.py`. KNOWN_ISSUES records that a 2.x named-graph edge whose endpoints are only in the default graph is kept in an unplaced table. The adjacency re-key comes from spec 230, whose directory is not in the tree; a crash between its drop and rebuild leaves those entries empty until the step is re-run.
 
-Findings: [The 4.0.0 documents migration can drop the documents table after its copy failed with a tolerated error](../../Verus_verification/bugs_issues.md#bug-plt-001)
+Findings: [The 4.0.0 documents migration can drop the documents table after its copy failed with a tolerated error](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-001)
 
 ### install.migration.steps
 
@@ -611,7 +719,7 @@ Findings: [The 4.0.0 documents migration can drop the documents table after its 
 
 Specs 240 and 241 say "not adopted" or "Draft", but both are merged and shipped. Suspected risk: the docs step treats any error whose text contains "not found" or "does not exist" as already done, before a step that drops the source table.
 
-Findings: [The 4.0.0 documents migration can drop the documents table after its copy failed with a tolerated error](../../Verus_verification/bugs_issues.md#bug-plt-001)
+Findings: [The 4.0.0 documents migration can drop the documents table after its copy failed with a tolerated error](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-001)
 
 ### install.migration.schema
 
@@ -637,6 +745,8 @@ Related: the 4.0.0 upgrade's embeddings and adjacency steps address the default 
 
 Findings: [May a data migration run before any setup has recorded the namespace's IVG Schema, and on which schema?](../../Verus_verification/open_questions.md#q-plt-011)
 
+Audit (q-plt-011): Open owner decision. Working assumption (agent, unratified): Require an explicit schema choice before a migration with no namespace record; arbitrary fallback schemas are not an inferred supported policy. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-011).
+
 ### install.snapshot
 
 - Sources: [USER_GUIDE §10](../../../docs/USER_GUIDE.md); [ADMIN_GUIDE: backups and snapshots](../../../docs/ADMIN_GUIDE.md); [_engine/snapshot.py STORE_PLAN](../../../iris_vector_graph/_engine/snapshot.py); [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md)
@@ -649,6 +759,8 @@ Live coverage of the inventory: `tests/integration/test_snapshot_inventory.py`. 
 
 Findings: [A merge restore keeps at most one row per graph in the core tables and reports every row restored](../../Verus_verification/bugs_issues.md#bug-plt-004)
 
+Audit reproduction: [bug-plt-004](../../Verus_verification/bugs_issues.md#bug-plt-004) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
 ### install.snapshot.scope
 
 - Sources: [USER_GUIDE §10](../../../docs/USER_GUIDE.md); [ADMIN_GUIDE (configuration tables)](../../../docs/ADMIN_GUIDE.md); [_engine/snapshot.py restore_snapshot](../../../iris_vector_graph/_engine/snapshot.py); [Stage A notes F-B1, F-B2](../../uplift/ivg-verus-initial/intent/platform.md)
@@ -658,10 +770,11 @@ Findings: [A merge restore keeps at most one row per graph in the core tables an
 
 Suspected divergence: a merging restore matches the core tables' rows on the first exported column only (in practice the graph ID), so it may add at most one row per graph while counting every row as restored. A multigraph graph restored into an indexed namespace may lose its parallel-edge layout.
 
-Findings: [A replacing restore leaves the live search indexes in place and merges the archive's into them](../../Verus_verification/bugs_issues.md#bug-plt-024)
+Findings: [A replacing restore leaves the live search indexes in place and merges the archive's into them](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-024)
 
 
 Layout check: [snapshot.py restore_snapshot](../../../iris_vector_graph/_engine/snapshot.py#L1086-L1129) (added by review round 3 R3-reader M24).
+
 ### install.snapshot.failure
 
 - Sources: [_engine/snapshot.py](../../../iris_vector_graph/_engine/snapshot.py); [ADMIN_GUIDE](../../../docs/ADMIN_GUIDE.md); [Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls)
@@ -671,7 +784,7 @@ Layout check: [snapshot.py restore_snapshot](../../../iris_vector_graph/_engine/
 
 Introduced in 4.6.0 (R271, R276). Suspected divergence: one global line that fails to write during restore is logged and skipped without being counted or reported.
 
-Findings: [A restore swallows a global line that fails to import](../../Verus_verification/bugs_issues.md#bug-plt-016)
+Findings: [A restore swallows a global line that fails to import](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-016)
 
 ### install.snapshot.derived
 
@@ -693,6 +806,8 @@ Findings: [A restore swallows a global line that fails to import](../../Verus_ve
 
 Findings: [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004)
 
+Audit (q-plt-004): Open owner decision. Working assumption (agent, unratified): Prefer refusal while a live ledger exists until replace/merge history semantics are specified; do not count the current overlay as a decided contract. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-004).
+
 ### install.snapshot.routes
 - Sources: [`iris_vector_graph/_engine/snapshot.py::routed_export_plan`](../../../iris_vector_graph/_engine/snapshot.py#L299-L344); [`iris_vector_graph/_engine/snapshot.py::SnapshotMixin.restore_snapshot`](../../../iris_vector_graph/_engine/snapshot.py#L1077-L1611) (routed tables at the archived width `:1372-1500`; node and routed vectors matched on graph and node `:1341-1350`, `:1473-1480`); live tests [test_snapshot_routed_embeddings.py](../../../tests/integration/test_snapshot_routed_embeddings.py#L152-L200), unit [test_snapshot_inventory.py](../../../tests/unit/test_snapshot_inventory.py)
 - Playbook: [SNP-B1.7](../../../experiment/playbook-completion/ontology/18-snapshot.md#L51), [SNP-B2.11](../../../experiment/playbook-completion/ontology/18-snapshot.md#L84), [SNP-B4.5](../../../experiment/playbook-completion/ontology/18-snapshot.md#L119)
@@ -705,17 +820,37 @@ Findings: [What should a restore do when the namespace already has a live ledger
 
 Public case J01. Edge vectors matching with no graph is the playbook's finding F-1803.
 
+Audit reproduction: [bug-plt-004](../../Verus_verification/bugs_issues.md#bug-plt-004) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Audit reproduction: [F-1802](../../Verus_verification/bugs_issues.md#F-1802) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Findings: [A merge restore guards plain tables on their first column only, and counts skipped rows as restored](../../Verus_verification/bugs_issues.md#F-1802).
+
 ### install.snapshot.temporal
 - Sources: [`iris_vector_graph/_engine/snapshot.py::snapshot_globals`](../../../iris_vector_graph/_engine/snapshot.py#L387-L408), [`::kg_export_subscripts`](../../../iris_vector_graph/_engine/snapshot.py#L425-L437), `STORE_PLAN` temporal entries [`snapshot.py`](../../../iris_vector_graph/_engine/snapshot.py#L136-L144); live tests [`test_the_restored_temporal_edge_answers_a_window_query`](../../../tests/integration/test_snapshot_inventory.py#L116-L130), unit `tests/unit/test_snapshot_inventory.py::test_the_globals_export_is_derived_from_the_plan`
 - Playbook: [SNP-I1.1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L40), [SNP-B1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L42), [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201)
 - Formal contract: [temporal restore, scalar types and window projection](../../Verus_verification/models/temporal_restore/temporal_restore.rs). Critical source keys are derived from the finite source map under the Native API enumeration contract; full page-sequence/global-loop composition and general codecs remain open. The unchanged paging family is an explicitly stamped dependency, not new proof credit.
-- Findings: [scalar type loss](../../Verus_verification/bugs_issues.md#F-1804), [silent global-line loss](../../Verus_verification/bugs_issues.md#F-C1802)
+- Findings: [scalar type loss](../../Verus_verification/bugs_issues.md#F-1804), [silent global-line loss](../../Verus_verification/audits/register-20261115/bugs-review.md#F-C1802)
 - Expands: [Snapshots](#install.snapshot)
 - agent
 - user-facing-behavior, data-integrity
 - test-coverage
 
 Public case J02. A hand-kept second list of exported subtrees once dropped all five temporal subtrees from every archive (playbook note on SNP-I1.1); the list is now derived.
+
+Audit reproduction: [F-1804](../../Verus_verification/bugs_issues.md#F-1804) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+### install.snapshot.consistency-policy
+- Expands: [parent](#install.snapshot)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should a snapshot be a point-in-time view?](../../Verus_verification/open_questions.md#HD-1802).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1802).
+
+Audit (HD-1802): Open owner decision. Working assumption (agent, unratified): Claim a consistent snapshot only when writers are quiescent (an operator premise) or under a verified snapshot/epoch protocol; for the current exporter declare the quiet-writer premise. Changed from decisions.md: **no**. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1802).
 
 ### install.bulk_load
 
@@ -727,7 +862,7 @@ Public case J02. A hand-kept second list of exported subtrees once dropped all f
 
 The engine paths drop indexes only for batches of 500 rows or more. Inside a caller's transaction, `bulk_load_session` keeps its indexes and leaves the adjacency to rebuild after the caller commits (4.7.0); that rule is owned by [structure.adjacency.bulk](../features/graph-structure.g5.md#structure.adjacency.bulk). Observed divergence (review round 3 R3-reader M6): spec 252 FR-008 and ADR-0008 require every `%NOINDEX` bulk path to rebuild before it returns, but `BulkLoader.load_nodes` and `load_edges` tell the caller to call `rebuild_all_indices()` ([bulk_loader.py](../../../iris_vector_graph/bulk_loader.py#L380-L395)). Live coverage: `tests/integration/test_bulk_loader_live.py`, `tests/integration/test_bulk_loader_endpoints.py`.
 
-Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011)
+Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-011)
 
 ### install.bulk_load.loader
 
@@ -740,7 +875,7 @@ Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading ski
 
 Public case M23. A repeat is told from a refusal by the error text: SQLCODE -119 or the word "unique" in the message (`bulk_loader.py:105-106`), so a non-repeat refusal whose message happens to contain "unique" would be skipped as a repeat (code reading; not run). Suspected divergence: if a load fails after the node rows commit, a re-run that skips existing nodes never adds their labels and properties. Observed divergence: the loader defaults to `Graph_KG`, and its index rebuild names the `Graph_KG` table classes whatever schema it was given.
 
-Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/bugs_issues.md#bug-plt-012)
+Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-012)
 
 ### install.bulk_load.ledger
 
@@ -748,6 +883,10 @@ Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verificati
 - Expands: [Bulk loading](#install.bulk_load)
 - agent
 - data-integrity
+
+Audit (HD-0301): Existing authority: The standalone BulkLoader and raw SQL are expressly outside the client strict-mode guard. That exception does not exempt other engine writers. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0301).
+
+Findings: [Does ledger strict mode cover the standalone bulk loader?](../../Verus_verification/open_questions.md#HD-0301).
 
 ### install.bulk_load.rebuild
 
@@ -770,6 +909,8 @@ Findings: [Rebuild adjacency once after load_networkx](../../Verus_verification/
 
 Findings: [Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?](../../Verus_verification/open_questions.md#q-plt-005)
 
+Audit (q-plt-005): Open owner decision. Working assumption (agent, unratified): Keep documented loader exemptions and chunking; preserve other graphs and multigraph data unless a narrower supported envelope is expressly adopted. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-005).
+
 ### install.import
 - Children: [NDJSON](#install.import.ndjson)
 
@@ -787,3 +928,46 @@ Added by review round 3 R3-reader M23 (the stage-A reconstruction check items 3,
 - user-facing-behavior, data-integrity
 - test-coverage
 - Expands: [imports](#install.import)
+
+### install.export.ndjson
+
+- Sources: [User Guide export](../../../docs/USER_GUIDE.md#L1170-L1181), [API reference](../../../docs/API_REFERENCE.md#L2163-L2169), [NDJSON format](../../../docs/setup/DATA_FORMATS.md#3-ndjson), [`SnapshotMixin.export_graph_ndjson`](../../../iris_vector_graph/_engine/snapshot.py#L1857-L1908)
+- Tests (live): [R088 default/named/temporal export](../../../tests/e2e/test_460_export_graph_ndjson_e2e.py); existing [import unit tests](../../../tests/unit/test_edgeprop_ndjson.py)
+- Related: [node reads](../features/graph-structure.g5.md#structure.node.read), [reserved aliases](../features/graph-structure.g5.md#structure.node.read.aliases), [NDJSON admission](#install.import.ndjson)
+- Evidence: [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md), [sealed13 full-record survey](../../uplift/consolidated/iteration-13/next-records-survey.md)
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered ordinary export scope, not a new product requirement. A stable SQL view, actual hydration truthiness, SQL order and ordinary JSON/filesystem laws qualify a complete file claim. Known aliases and value normalization remain as owned; import callback agreement alone is not persistence or inverse proof. Formal content correspondence is pending.
+
+### install.export.rdf.scope
+
+- Sources: [Semantic Layer selection](../../../docs/SEMANTIC_LAYER.md#L95-L115), [API reference](../../../docs/API_REFERENCE.md#L2253-L2274), [`_build_rdflib_graph`](../../../iris_vector_graph/_engine/_rdf_utils.py#L102-L294)
+- Tests (live): [R099 label filtering](../../../tests/e2e/test_460_rdf_export_label_filter_e2e.py), [R100 graph contexts](../../../tests/e2e/test_460_rdf_export_nquads_graphs_e2e.py), [graph scope unit tests](../../../tests/unit/test_230_rdf_export_scope.py)
+- Related: [graph scope](graph-scope.g5.md#graph.default), [content](#install.export.rdf.content), [report](#install.export.rdf.report)
+- Evidence: [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md), [sealed13 ordinary RDF survey](../../uplift/consolidated/iteration-13/next-reporting-survey.md)
+- agent
+- user-facing-behavior, data-integrity
+
+The label projection and own-graph membership are explicit source and regression behavior; no new policy about all labels of selected nodes is inferred. SQL equality, nullable graph normalization and a stable relational view remain correspondence conditions. Formal producer correspondence is pending.
+
+### install.export.rdf.content
+
+- Sources: [Semantic Layer row/term/qualifier rules](../../../docs/SEMANTIC_LAYER.md#L39-L65), [`_mint_iri`, `graph_iri`, `_to_literal`, `_build_rdflib_graph`](../../../iris_vector_graph/_engine/_rdf_utils.py#L29-L294)
+- Tests (live): [literal/qualifier unit tests](../../../tests/unit/test_rdf_export.py), [R100 generated context contents](../../../tests/e2e/test_460_rdf_export_nquads_graphs_e2e.py), [R122 named-graph IRIs](../../../tests/e2e/test_460_rdf_graph_id_not_an_iri_e2e.py)
+- Evidence: [sealed13 typed literal and actual file observations](../../uplift/consolidated/iteration-13/next-reporting-sanity.json)
+- Related: [scope](#install.export.rdf.scope), [report](#install.export.rdf.report)
+- agent
+- user-facing-behavior, data-integrity
+
+The public literal description does not directly adjudicate the false/zero qualifier exception; as-built support is kept separate from intended-policy approval. The general property-key IRI description is refined to the actual three pass-through prefixes, separately from node/edge FTP handling. Neither observation changes an existing confirmed requirement or claims a new owner decision. Graph-IRI encoding, arbitrary numeric text/IEEE normalization, JSON dictionary decoding, blank-node freshness and rdflib term/codec laws need explicit correspondence frames. Formal producer correspondence is pending.
+
+### install.export.rdf.report
+
+- Sources: [Semantic Layer metrics and formats](../../../docs/SEMANTIC_LAYER.md#L67-L93), [`RdfExportMixin.export_rdf`](../../../iris_vector_graph/_engine/rdf_export.py#L96-L157), [format inference](../../../iris_vector_graph/_engine/_rdf_utils.py#L56-L69)
+- Evidence: [sealed13 ordinary union/quad contrast](../../uplift/consolidated/iteration-13/next-reporting-survey.md), [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md)
+- Related: [content](#install.export.rdf.content)
+- agent
+- user-facing-behavior, data-integrity
+
+Public docs define triple/subject/IRI-object metrics; source and the ordinary10quad/8union-triple contrast settle their union reader. This clarifies the descriptive phrase "counts what was written" without promising equal serialized quad counts. Registered namespace binding and third-party serialization/parser details, provider failures and cross-read consistency remain qualified; no whole serializer or failed-file atomicity proof is inferred. Formal composition is pending.

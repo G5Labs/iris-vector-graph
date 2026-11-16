@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_property_null_is_omitted"
+    ],
+    "find": "prop_selected(p,rs,c)&&p.value.is_some()",
+    "name": "property-null-emitted",
+    "replace": "prop_selected(p,rs,c)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_property_null_is_omitted"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "4e7980fa674ca0693bc7651437575bd0a1bd32e8f9718f7d191a745cd75ac07d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/property-null-emitted/20261116T020518Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_property_null_is_omitted": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020518Z-control-property-null-emitted-theorem_property_null_is_omitted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020518Z-control-property-null-emitted.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020523Z-control-property-null-emitted/logs/20261116T020518Z-control-property-null-emitted-theorem_property_null_is_omitted.log": "32e3ae0e77b95cb5c4130cba19f188a5b302adc828495d9849262fa889c95b62",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020523Z-control-property-null-emitted/logs/20261116T020518Z-control-property-null-emitted.log": "82f3380597e5d82b64c9f288dbf6787b5f1cc362c4b20fbef9133fd1afd14e31"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

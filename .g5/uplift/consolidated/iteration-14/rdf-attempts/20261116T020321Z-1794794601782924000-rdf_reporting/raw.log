@@ -1,0 +1,90 @@
+error[E0574]: expected struct, variant or union type, found trait `Decimal`
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:336:46
+    |
+336 |  ensures literal(t("2.5"))==Literal::Decimal(Decimal{n:5,d:2,spelling:t("2.5")})
+    |                                              ^^^^^^^ not a struct, variant or union type
+    |
+help: consider importing one of these items instead
+    |
+  1 + use crate::Literal::Decimal;
+    |
+  1 + use crate::lexical::Decimal;
+    |
+
+error[E0574]: expected struct, variant or union type, found trait `Decimal`
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:341:32
+    |
+341 |  assert(dyadic(t("2.5"))==Some(Decimal{n:5,d:2,spelling:t("2.5")}));
+    |                                ^^^^^^^ not a struct, variant or union type
+    |
+help: consider importing one of these items instead
+    |
+  1 + use crate::Literal::Decimal;
+    |
+  1 + use crate::lexical::Decimal;
+    |
+
+error[E0659]: `Decimal` is ambiguous
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:327:49
+    |
+327 | pub proof fn theorem_dyadic_is_derived(s:Text,d:Decimal)
+    |                                                 ^^^^^^^ ambiguous name
+    |
+    = note: ambiguous because of multiple glob imports of a name in the same module
+note: `Decimal` could refer to the trait imported here
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:1:5
+    |
+  1 | use vstd::prelude::*;
+    |     ^^^^^^^^^^^^^^^^
+    = help: consider adding an explicit import of `Decimal` to disambiguate
+note: `Decimal` could also refer to the struct imported here
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:98:5
+    |
+ 98 | use lexical::*;
+    |     ^^^^^^^^^^
+    = help: consider adding an explicit import of `Decimal` to disambiguate
+
+error[E0659]: `Decimal` is ambiguous
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:336:46
+    |
+336 |  ensures literal(t("2.5"))==Literal::Decimal(Decimal{n:5,d:2,spelling:t("2.5")})
+    |                                              ^^^^^^^ ambiguous name
+    |
+    = note: ambiguous because of multiple glob imports of a name in the same module
+note: `Decimal` could refer to the trait imported here
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:1:5
+    |
+  1 | use vstd::prelude::*;
+    |     ^^^^^^^^^^^^^^^^
+    = help: consider adding an explicit import of `Decimal` to disambiguate
+note: `Decimal` could also refer to the struct imported here
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:98:5
+    |
+ 98 | use lexical::*;
+    |     ^^^^^^^^^^
+    = help: consider adding an explicit import of `Decimal` to disambiguate
+
+error[E0659]: `Decimal` is ambiguous
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:341:32
+    |
+341 |  assert(dyadic(t("2.5"))==Some(Decimal{n:5,d:2,spelling:t("2.5")}));
+    |                                ^^^^^^^ ambiguous name
+    |
+    = note: ambiguous because of multiple glob imports of a name in the same module
+note: `Decimal` could refer to the trait imported here
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:1:5
+    |
+  1 | use vstd::prelude::*;
+    |     ^^^^^^^^^^^^^^^^
+    = help: consider adding an explicit import of `Decimal` to disambiguate
+note: `Decimal` could also refer to the struct imported here
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:98:5
+    |
+ 98 | use lexical::*;
+    |     ^^^^^^^^^^
+    = help: consider adding an explicit import of `Decimal` to disambiguate
+
+error: aborting due to 5 previous errors
+
+Some errors have detailed explanations: E0574, E0659.
+For more information about an error, try `rustc --explain E0574`.

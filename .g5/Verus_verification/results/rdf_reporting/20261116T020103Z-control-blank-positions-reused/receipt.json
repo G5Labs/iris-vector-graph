@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "allocation relation",
+    "expect_fail_in": [
+      "theorem_fresh_envelope_positions"
+    ],
+    "find": "let st=Term::Blank{position:pos,reifier:false};let rf=Term::Blank{position:pos,reifier:true};",
+    "name": "blank-positions-reused",
+    "replace": "let st=Term::Blank{position:0,reifier:false};let rf=Term::Blank{position:0,reifier:true};"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_fresh_envelope_positions"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "f76eabe9ab4f917402fb5af6a89da9845e5beddd30e32e9ebbe9bc0c670aa24b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/blank-positions-reused/20261116T020056Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": true,
+    "per_function": {
+      "theorem_fresh_envelope_positions": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020056Z-control-blank-positions-reused-theorem_fresh_envelope_positions.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020056Z-control-blank-positions-reused.log",
+    "timed_out": false,
+    "verified": 47
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020103Z-control-blank-positions-reused/logs/20261116T020056Z-control-blank-positions-reused-theorem_fresh_envelope_positions.log": "38e8b617c13564c393038c5c49316f01e0f7427a45072a319bda3bd5c024c719",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020103Z-control-blank-positions-reused/logs/20261116T020056Z-control-blank-positions-reused.log": "77d8b50cfe0967f5672baf5f7c2374edacc5421e9754b254ae4f89d0f6617d08"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

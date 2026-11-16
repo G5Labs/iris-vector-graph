@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_outside_requested_ids_emits_nothing"
+    ],
+    "find": "c.ids.len()==0 || c.ids.contains(s)",
+    "name": "ids-ignored",
+    "replace": "true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_outside_requested_ids_emits_nothing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "f76eabe9ab4f917402fb5af6a89da9845e5beddd30e32e9ebbe9bc0c670aa24b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/ids-ignored/20261116T015957Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_outside_requested_ids_emits_nothing": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T015957Z-control-ids-ignored-theorem_outside_requested_ids_emits_nothing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T015957Z-control-ids-ignored.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020001Z-control-ids-ignored/logs/20261116T015957Z-control-ids-ignored-theorem_outside_requested_ids_emits_nothing.log": "39d85b38fae3afe98152a29d8a37f32faa9181d049b75d4b214425dfd3282191",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020001Z-control-ids-ignored/logs/20261116T015957Z-control-ids-ignored.log": "a05789ce832585f6c30463c1444e56757a2a51e4662c03c3158ba85c46c8d06b"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

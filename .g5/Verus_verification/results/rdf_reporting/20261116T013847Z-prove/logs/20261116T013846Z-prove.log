@@ -1,0 +1,646 @@
+error: struct literals are not allowed here; try surrounding the struct literal with parentheses
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/lexical.rs:41:22
+   |
+41 |  ensures literal(s)==Literal::Integer{value:n,spelling:s}
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:4:27
+  |
+4 | pub struct Entry {pub key:Text,pub value:Text}
+  |                           ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:4:42
+  |
+4 | pub struct Entry {pub key:Text,pub value:Text}
+  |                                          ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:5:43
+  |
+5 | pub open spec fn upsert(es:Seq<Entry>,key:Text,value:Text)->Seq<Entry> decreases es.len() {
+  |                                           ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:5:54
+  |
+5 | pub open spec fn upsert(es:Seq<Entry>,key:Text,value:Text)->Seq<Entry> decreases es.len() {
+  |                                                      ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:8:41
+  |
+8 | pub struct Parser {pub mode:nat,pub key:Text,pub value:Text,pub entries:Seq<Entry>}
+  |                                         ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:8:56
+  |
+8 | pub struct Parser {pub mode:nat,pub key:Text,pub value:Text,pub entries:Seq<Entry>}
+  |                                                        ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:10:25
+   |
+10 | pub open spec fn bare(s:Text)->Option<Text> {
+   |                         ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:10:39
+   |
+10 | pub open spec fn bare(s:Text)->Option<Text> {
+   |                                       ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+10 | pub open spec fn bare<Text>(s:Text)->Option<Text> {
+   |                      ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:25:26
+   |
+25 | pub open spec fn parse(s:Text,p:Parser)->Parser decreases s.len() {
+   |                          ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:27:34
+   |
+27 | pub open spec fn decode(s:Option<Text>)->Seq<Entry> {
+   |                                  ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+27 | pub open spec fn decode<Text>(s:Option<Text>)->Seq<Entry> {
+   |                        ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:30:50
+   |
+30 | pub proof fn lemma_upsert_keys(es:Seq<Entry>,key:Text,value:Text)
+   |                                                  ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:30:61
+   |
+30 | pub proof fn lemma_upsert_keys(es:Seq<Entry>,key:Text,value:Text)
+   |                                                             ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:34:52
+   |
+34 | pub proof fn lemma_upsert_unique(es:Seq<Entry>,key:Text,value:Text)
+   |                                                    ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:34:63
+   |
+34 | pub proof fn lemma_upsert_unique(es:Seq<Entry>,key:Text,value:Text)
+   |                                                               ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:43:35
+   |
+43 | pub proof fn lemma_parse_unique(s:Text,p:Parser)
+   |                                   ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:48:70
+   |
+48 | pub proof fn theorem_raw_json_never_provides_duplicate_keys(s:Option<Text>)
+   |                                                                      ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+48 | pub proof fn theorem_raw_json_never_provides_duplicate_keys<Text>(s:Option<Text>)
+   |                                                            ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:8:36
+  |
+8 | pub struct Label {pub graph:Option<Text>,pub s:Text,pub label:Text}
+  |                                    ^^^^ not found in this scope
+  |
+help: you might be missing a type parameter
+  |
+8 | pub struct Label<Text> {pub graph:Option<Text>,pub s:Text,pub label:Text}
+  |                 ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:8:48
+  |
+8 | pub struct Label {pub graph:Option<Text>,pub s:Text,pub label:Text}
+  |                                                ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:8:63
+  |
+8 | pub struct Label {pub graph:Option<Text>,pub s:Text,pub label:Text}
+  |                                                               ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:9:39
+  |
+9 | pub struct Property {pub graph:Option<Text>,pub s:Text,pub key:Text,pub value:Option<Text>}
+  |                                       ^^^^ not found in this scope
+  |
+help: you might be missing a type parameter
+  |
+9 | pub struct Property<Text> {pub graph:Option<Text>,pub s:Text,pub key:Text,pub value:Option<Text>}
+  |                    ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:9:51
+  |
+9 | pub struct Property {pub graph:Option<Text>,pub s:Text,pub key:Text,pub value:Option<Text>}
+  |                                                   ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:9:64
+  |
+9 | pub struct Property {pub graph:Option<Text>,pub s:Text,pub key:Text,pub value:Option<Text>}
+  |                                                                ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+ --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:9:86
+  |
+9 | pub struct Property {pub graph:Option<Text>,pub s:Text,pub key:Text,pub value:Option<Text>}
+  |                                                                                      ^^^^ not found in this scope
+  |
+help: you might be missing a type parameter
+  |
+9 | pub struct Property<Text> {pub graph:Option<Text>,pub s:Text,pub key:Text,pub value:Option<Text>}
+  |                    ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:10:35
+   |
+10 | pub struct Edge {pub graph:Option<Text>,pub s:Text,pub p:Text,pub o:Text,pub qualifiers:Option<Text>}
+   |                                   ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+10 | pub struct Edge<Text> {pub graph:Option<Text>,pub s:Text,pub p:Text,pub o:Text,pub qualifiers:Option<Text>}
+   |                ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:10:47
+   |
+10 | pub struct Edge {pub graph:Option<Text>,pub s:Text,pub p:Text,pub o:Text,pub qualifiers:Option<Text>}
+   |                                               ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:10:58
+   |
+10 | pub struct Edge {pub graph:Option<Text>,pub s:Text,pub p:Text,pub o:Text,pub qualifiers:Option<Text>}
+   |                                                          ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:10:69
+   |
+10 | pub struct Edge {pub graph:Option<Text>,pub s:Text,pub p:Text,pub o:Text,pub qualifiers:Option<Text>}
+   |                                                                     ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:10:96
+   |
+10 | pub struct Edge {pub graph:Option<Text>,pub s:Text,pub p:Text,pub o:Text,pub qualifiers:Option<Text>}
+   |                                                                                                ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+10 | pub struct Edge<Text> {pub graph:Option<Text>,pub s:Text,pub p:Text,pub o:Text,pub qualifiers:Option<Text>}
+   |                ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:12:37
+   |
+12 | pub struct Config {pub graph:Option<Text>,pub ids:Seq<Text>,pub labels:Seq<Text>,pub base:Text}
+   |                                     ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+12 | pub struct Config<Text> {pub graph:Option<Text>,pub ids:Seq<Text>,pub labels:Seq<Text>,pub base:Text}
+   |                  ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:12:55
+   |
+12 | pub struct Config {pub graph:Option<Text>,pub ids:Seq<Text>,pub labels:Seq<Text>,pub base:Text}
+   |                                                       ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+12 | pub struct Config<Text> {pub graph:Option<Text>,pub ids:Seq<Text>,pub labels:Seq<Text>,pub base:Text}
+   |                  ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:12:76
+   |
+12 | pub struct Config {pub graph:Option<Text>,pub ids:Seq<Text>,pub labels:Seq<Text>,pub base:Text}
+   |                                                                            ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+12 | pub struct Config<Text> {pub graph:Option<Text>,pub ids:Seq<Text>,pub labels:Seq<Text>,pub base:Text}
+   |                  ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:12:91
+   |
+12 | pub struct Config {pub graph:Option<Text>,pub ids:Seq<Text>,pub labels:Seq<Text>,pub base:Text}
+   |                                                                                           ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:13:20
+   |
+13 | pub enum Term {Iri(Text),Blank{position:nat,reifier:bool},Literal(Literal)}
+   |                    ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Literal` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:13:67
+   |
+13 | pub enum Term {Iri(Text),Blank{position:nat,reifier:bool},Literal(Literal)}
+   |                                                                   ^^^^^^^ not found in this scope
+   |
+help: there is an enum variant `crate::Term::Literal`; try using the variant's enum
+   |
+13 - pub enum Term {Iri(Text),Blank{position:nat,reifier:bool},Literal(Literal)}
+13 + pub enum Term {Iri(Text),Blank{position:nat,reifier:bool},Literal(crate::Term)}
+   |
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:14:37
+   |
+14 | pub struct Triple {pub s:Term,pub p:Text,pub o:Term}
+   |                                     ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:15:28
+   |
+15 | pub struct Quad {pub graph:Text,pub triple:Triple}
+   |                            ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:17:33
+   |
+17 | pub open spec fn graph(g:Option<Text>)->Text {g.unwrap_or(Seq::empty())}
+   |                                 ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+17 | pub open spec fn graph<Text>(g:Option<Text>)->Text {g.unwrap_or(Seq::empty())}
+   |                       ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:17:41
+   |
+17 | pub open spec fn graph(g:Option<Text>)->Text {g.unwrap_or(Seq::empty())}
+   |                                         ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:18:42
+   |
+18 | pub open spec fn graph_selected(g:Option<Text>,c:Config)->bool {c.graph.is_none() || graph(g)==c.graph.unwrap()}
+   |                                          ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+18 | pub open spec fn graph_selected<Text>(g:Option<Text>,c:Config)->bool {c.graph.is_none() || graph(g)==c.graph.unwrap()}
+   |                                ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:19:32
+   |
+19 | pub open spec fn id_selected(s:Text,c:Config)->bool {c.ids.len()==0 || c.ids.contains(s)}
+   |                                ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:20:41
+   |
+20 | pub open spec fn member(ls:Seq<Label>,s:Text,g:Option<Text>,c:Config)->bool {
+   |                                         ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:20:55
+   |
+20 | pub open spec fn member(ls:Seq<Label>,s:Text,g:Option<Text>,c:Config)->bool {
+   |                                                       ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+20 | pub open spec fn member<Text>(ls:Seq<Label>,s:Text,g:Option<Text>,c:Config)->bool {
+   |                        ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:26:29
+   |
+26 | pub open spec fn q(g:Option<Text>,s:Term,p:Text,o:Term)->Quad {Quad{graph:graph(g),triple:Triple{s,p,o}}}
+   |                             ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+26 | pub open spec fn q<Text>(g:Option<Text>,s:Term,p:Text,o:Term)->Quad {Quad{graph:graph(g),triple:Triple{s,p,o}}}
+   |                   ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:26:44
+   |
+26 | pub open spec fn q(g:Option<Text>,s:Term,p:Text,o:Term)->Quad {Quad{graph:graph(g),triple:Triple{s,p,o}}}
+   |                                            ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:27:24
+   |
+27 | pub open spec fn uri(x:Text,c:Config)->Term {Term::Iri(mint(x,c.base))}
+   |                        ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:59:53
+   |
+59 | pub proof fn theorem_empty_filters_are_unfiltered(s:Text,ls:Seq<Label>,g:Option<Text>,base:Text)
+   |                                                     ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:59:81
+   |
+59 | pub proof fn theorem_empty_filters_are_unfiltered(s:Text,ls:Seq<Label>,g:Option<Text>,base:Text)
+   |                                                                                 ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+59 | pub proof fn theorem_empty_filters_are_unfiltered<Text>(s:Text,ls:Seq<Label>,g:Option<Text>,base:Text)
+   |                                                  ++++++
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:59:92
+   |
+59 | pub proof fn theorem_empty_filters_are_unfiltered(s:Text,ls:Seq<Label>,g:Option<Text>,base:Text)
+   |                                                                                            ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:62:73
+   |
+62 | pub proof fn theorem_wrong_graph_membership_is_excluded(ls:Seq<Label>,s:Text,g:Option<Text>,c:Config)
+   |                                                                         ^^^^ not found in this scope
+
+error[E0425]: cannot find type `Text` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:62:87
+   |
+62 | pub proof fn theorem_wrong_graph_membership_is_excluded(ls:Seq<Label>,s:Text,g:Option<Text>,c:Config)
+   |                                                                                       ^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+62 | pub proof fn theorem_wrong_graph_membership_is_excluded<Text>(ls:Seq<Label>,s:Text,g:Option<Text>,c:Config)
+   |                                                        ++++++
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:11:8
+   |
+11 |  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |        ^
+   |
+help: a local variable with a similar name exists
+   |
+11 -  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+11 +  if s==s("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:11:23
+   |
+11 |  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |                       ^
+   |
+help: a local variable with a similar name exists
+   |
+11 -  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+11 +  if s==t("true"){Some(s("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:11:45
+   |
+11 |  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |                                             ^
+   |
+help: a local variable with a similar name exists
+   |
+11 -  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+11 +  if s==t("true"){Some(t("True"))}else if s==s("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:11:61
+   |
+11 |  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |                                                             ^
+   |
+help: a local variable with a similar name exists
+   |
+11 -  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+11 +  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(s("False"))}else if s==t("null"){Some(t("None"))}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:11:84
+   |
+11 |  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |                                                                                    ^
+   |
+help: a local variable with a similar name exists
+   |
+11 -  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+11 +  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==s("null"){Some(t("None"))}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:11:99
+   |
+11 |  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+   |                                                                                                   ^
+   |
+help: a local variable with a similar name exists
+   |
+11 -  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(t("None"))}
+11 +  if s==t("true"){Some(t("True"))}else if s==t("false"){Some(t("False"))}else if s==t("null"){Some(s("None"))}
+   |
+
+error[E0425]: cannot find function `canonical_integer` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:12:10
+   |
+12 |  else if canonical_integer(s).is_some() || dyadic(s).is_some(){Some(s)}else{None}}
+   |          ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `dyadic` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/json.rs:12:44
+   |
+12 |  else if canonical_integer(s).is_some() || dyadic(s).is_some(){Some(s)}else{None}}
+   |                                            ^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `mint` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:27:56
+   |
+27 | pub open spec fn uri(x:Text,c:Config)->Term {Term::Iri(mint(x,c.base))}
+   |                                                        ^^^^
+   |
+  --> /Users/runner/work/verus/verus/source/builtin/src/lib.rs:673:0
+   |
+   = note: similarly named unit struct `int` defined here
+help: a unit struct with a similar name exists
+   |
+27 - pub open spec fn uri(x:Text,c:Config)->Term {Term::Iri(mint(x,c.base))}
+27 + pub open spec fn uri(x:Text,c:Config)->Term {Term::Iri(int(x,c.base))}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:28:108
+   |
+28 | pub open spec fn emit_label(l:Label,c:Config)->Seq<Quad> {if label_selected(l,c){seq![q(l.graph,uri(l.s,c),t("rdf:type"),uri(l.label...
+   |                                                                                                            ^
+   |
+help: a local variable with a similar name exists
+   |
+28 - pub open spec fn emit_label(l:Label,c:Config)->Seq<Quad> {if label_selected(l,c){seq![q(l.graph,uri(l.s,c),t("rdf:type"),uri(l.label,c))]}else{seq![]}}
+28 + pub open spec fn emit_label(l:Label,c:Config)->Seq<Quad> {if label_selected(l,c){seq![q(l.graph,uri(l.s,c),c("rdf:type"),uri(l.label,c))]}else{seq![]}}
+   |
+
+error[E0425]: cannot find function `property_predicate` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:29:139
+   |
+29 | ....value.is_some(){seq![q(p.graph,uri(p.s,c),property_predicate(p.key,c.base),Term::Literal(literal(p.value.unwrap())))]}else{seq![]}}
+   |                                               ^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `literal` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:29:186
+   |
+29 | ...),property_predicate(p.key,c.base),Term::Literal(literal(p.value.unwrap())))]}else{seq![]}}
+   |                                                     ^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:31:44
+   |
+31 |  if es.len()==0{seq![]}else{(if es[0].key==t("inferred"){seq![]}else{seq![q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:iv...
+   |                                            ^
+   |
+help: a local variable with a similar name exists
+   |
+31 -  if es.len()==0{seq![]}else{(if es[0].key==t("inferred"){seq![]}else{seq![q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[0].key,Term::Literal(qualifier_literal(es[0].value)))]})+emit_quals(es.skip(1),e,pos,c)}
+31 +  if es.len()==0{seq![]}else{(if es[0].key==c("inferred"){seq![]}else{seq![q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[0].key,Term::Literal(qualifier_literal(es[0].value)))]})+emit_quals(es.skip(1),e,pos,c)}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:31:124
+   |
+31 |  if es.len()==0{seq![]}else{(if es[0].key==t("inferred"){seq![]}else{seq![q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:iv...
+   |                                                                                                                            ^
+   |
+help: a local variable with a similar name exists
+   |
+31 -  if es.len()==0{seq![]}else{(if es[0].key==t("inferred"){seq![]}else{seq![q(e.graph,Term::Blank{position:pos,reifier:true},t("urn:ivg:qualifier/")+es[0].key,Term::Literal(qualifier_literal(es[0].value)))]})+emit_quals(es.skip(1),e,pos,c)}
+31 +  if es.len()==0{seq![]}else{(if es[0].key==t("inferred"){seq![]}else{seq![q(e.graph,Term::Blank{position:pos,reifier:true},c("urn:ivg:qualifier/")+es[0].key,Term::Literal(qualifier_literal(es[0].value)))]})+emit_quals(es.skip(1),e,pos,c)}
+   |
+
+error[E0425]: cannot find function `qualifier_literal` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:31:172
+   |
+31 | ...rn:ivg:qualifier/")+es[0].key,Term::Literal(qualifier_literal(es[0].value)))]})+emit_quals(es.skip(1),e,pos,c)}
+   |                                                ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:35:20
+   |
+35 |  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c))...
+   |                    ^
+   |
+help: a local variable with a similar name exists
+   |
+35 -  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c)),q(e.graph,rf,t("rdf:reifies"),st)]
+35 +  seq![q(e.graph,st,c("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c)),q(e.graph,rf,t("rdf:reifies"),st)]
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:35:62
+   |
+35 |  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c))...
+   |                                                              ^
+   |
+help: a local variable with a similar name exists
+   |
+35 -  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c)),q(e.graph,rf,t("rdf:reifies"),st)]
+35 +  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,c("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c)),q(e.graph,rf,t("rdf:reifies"),st)]
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:35:106
+   |
+35 |  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c))...
+   |                                                                                                          ^
+   |
+help: a local variable with a similar name exists
+   |
+35 -  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c)),q(e.graph,rf,t("rdf:reifies"),st)]
+35 +  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,c("rdf:object"),uri(e.o,c)),q(e.graph,rf,t("rdf:reifies"),st)]
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:35:147
+   |
+35 | ...i(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c)),q(e.graph,rf,t("rdf:reifies"),st)]
+   |                                                                    ^
+   |
+help: a local variable with a similar name exists
+   |
+35 -  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c)),q(e.graph,rf,t("rdf:reifies"),st)]
+35 +  seq![q(e.graph,st,t("rdf:subject"),uri(e.s,c)),q(e.graph,st,t("rdf:predicate"),uri(e.p,c)),q(e.graph,st,t("rdf:object"),uri(e.o,c)),q(e.graph,rf,c("rdf:reifies"),st)]
+   |
+
+error[E0425]: cannot find function `mint` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:39:28
+   |
+39 |  seq![q(e.graph,uri(e.s,c),mint(e.p,c.base),uri(e.o,c))]+(if es.len()>0{envelope(e,pos,c)+emit_quals(es,e,pos,c)}else{seq![]})}
+   |                            ^^^^
+   |
+  --> /Users/runner/work/verus/verus/source/builtin/src/lib.rs:673:0
+   |
+   = note: similarly named unit struct `int` defined here
+help: a unit struct with a similar name exists
+   |
+39 -  seq![q(e.graph,uri(e.s,c),mint(e.p,c.base),uri(e.o,c))]+(if es.len()>0{envelope(e,pos,c)+emit_quals(es,e,pos,c)}else{seq![]})}
+39 +  seq![q(e.graph,uri(e.s,c),int(e.p,c.base),uri(e.o,c))]+(if es.len()>0{envelope(e,pos,c)+emit_quals(es,e,pos,c)}else{seq![]})}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:48:82
+   |
+26 | pub open spec fn q(g:Option<Text>,s:Term,p:Text,o:Term)->Quad {Quad{graph:graph(g),triple:Triple{s,p,o}}}
+   | ------------------------------------------------------------- similarly named function `q` defined here
+...
+48 | pub open spec fn edge_triple(x:Triple)->bool {matches!(x.o,Term::Iri(_)) && x.p!=t("rdf:type")}
+   |                                                                                  ^
+   |
+help: a function with a similar name exists
+   |
+48 - pub open spec fn edge_triple(x:Triple)->bool {matches!(x.o,Term::Iri(_)) && x.p!=t("rdf:type")}
+48 + pub open spec fn edge_triple(x:Triple)->bool {matches!(x.o,Term::Iri(_)) && x.p!=q("rdf:type")}
+   |
+
+error[E0425]: cannot find function `t` in this scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:86:62
+   |
+26 | pub open spec fn q(g:Option<Text>,s:Term,p:Text,o:Term)->Quad {Quad{graph:graph(g),triple:Triple{s,p,o}}}
+   | ------------------------------------------------------------- similarly named function `q` defined here
+...
+86 |  ensures edge_triple(x)==(matches!(x.o,Term::Iri(_)) && x.p!=t("rdf:type"))
+   |                                                              ^
+   |
+help: a function with a similar name exists
+   |
+86 -  ensures edge_triple(x)==(matches!(x.o,Term::Iri(_)) && x.p!=t("rdf:type"))
+86 +  ensures edge_triple(x)==(matches!(x.o,Term::Iri(_)) && x.p!=q("rdf:type"))
+   |
+
+error: aborting due to 73 previous errors
+
+For more information about this error, try `rustc --explain E0425`.

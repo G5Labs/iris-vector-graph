@@ -1,0 +1,31 @@
+verification results:: 128 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:254:1
+    |
+254 | pub proof fn theorem_import_callback_arguments_and_counts(i:Import,es:Seq<Event>,g:Option<int>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:256:60
+    |
+256 |    ensures import_lines(i,es,g).calls==i.calls+actions(es,g),import_lines(i,es,g).nodes==i.nodes+ncount(es),import_lines(i,es,g).edges==i.edges+ecount(es),actions(es,g).len()==es.len()...
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+257 |    decreases es.len(),
+258 |    {if es.len()>0{assert(valid_events(es.drop_first()));assert(callback(es[0],g).is_some());let next=consume(i,es[0],g);theorem_import_callback_arguments_and_counts(next,es.drop_first(...
+    |  ___-
+259 | |  assert forall|j:int|0<=j<es.len() implies Some(actions(es,g)[j])==callback(es[j],g) by{if j>0{assert(es.drop_first()[j-1]==es[j]);}}}else{assert(i.calls+Seq::empty()=~=i.calls);}}
+    | |___________________________________________________________________________________________________________________________________________________________________________________- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:256:107
+    |
+256 |    ensures import_lines(i,es,g).calls==i.calls+actions(es,g),import_lines(i,es,g).nodes==i.nodes+ncount(es),import_lines(i,es,g).edges==i.edges+ecount(es),actions(es,g).len()==es.len()...
+    |                                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+257 |    decreases es.len(),
+258 |    {if es.len()>0{assert(valid_events(es.drop_first()));assert(callback(es[0],g).is_some());let next=consume(i,es[0],g);theorem_import_callback_arguments_and_counts(next,es.drop_first(...
+    |  ___-
+259 | |  assert forall|j:int|0<=j<es.len() implies Some(actions(es,g)[j])==callback(es[j],g) by{if j>0{assert(es.drop_first()[j-1]==es[j]);}}}else{assert(i.calls+Seq::empty()=~=i.calls);}}
+    | |___________________________________________________________________________________________________________________________________________________________________________________- at the end of the function body
+
+error: aborting due to 2 previous errors
+

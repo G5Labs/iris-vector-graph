@@ -1,0 +1,125 @@
+verification results:: 138 verified, 5 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:75:1
+   |
+75 | pub proof fn theorem_return_duplicate_after_single_hydration(id:Id,ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,g:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:77:10
+   |
+75 | pub proof fn theorem_return_duplicate_after_single_hydration(id:Id,ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,g:int)
+   | ------------------------------------------------------------------------------------------------------------------- at the end of the function body
+76 |  requires parent_has(ns,g,id),
+77 |  ensures get_nodes(seq![id,id],ns,ls,ps,Some(g)).len()==2,get_nodes(seq![id,id],ns,ls,ps,Some(g))[0]==get_nodes(seq![id,id],ns,ls,ps...
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:77:59
+   |
+77 |  ensures get_nodes(seq![id,id],ns,ls,ps,Some(g)).len()==2,get_nodes(seq![id,id],ns,ls,ps,Some(g))[0]==get_nodes(seq![id,id],ns,ls,ps...
+   |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> seq.rs:980:12
+   |
+   = note: recommendation not met
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:77:59
+   |
+75 | pub proof fn theorem_return_duplicate_after_single_hydration(id:Id,ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,g:int)
+   | ------------------------------------------------------------------------------------------------------------------- at the end of the function body
+76 |  requires parent_has(ns,g,id),
+77 |  ensures get_nodes(seq![id,id],ns,ls,ps,Some(g)).len()==2,get_nodes(seq![id,id],ns,ls,ps,Some(g))[0]==get_nodes(seq![id,id],ns,ls,ps,Some(g))[1],
+   |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:77:103
+   |
+77 | ...et_nodes(seq![id,id],ns,ls,ps,Some(g))[0]==get_nodes(seq![id,id],ns,ls,ps,Some(g))[1],
+   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> seq.rs:980:12
+   |
+   = note: recommendation not met
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:145:1
+    |
+145 | pub proof fn theorem_raw_get_node_present_and_fields(id:Id,ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,g:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:147:10
+    |
+145 | pub proof fn theorem_raw_get_node_present_and_fields(id:Id,ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,g:int)
+    | ----------------------------------------------------------------------------------------------------------- at the end of the function body
+146 |  requires parent_has(ns,g,id),
+147 |  ensures get_node(id,ns,ls,ps,Some(g)).is_some(),get_node(id,ns,ls,ps,Some(g)).unwrap().id==id,get_node(id,ns,ls,ps,Some(g)).unwrap...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:147:50
+    |
+147 |  ensures get_node(id,ns,ls,ps,Some(g)).is_some(),get_node(id,ns,ls,ps,Some(g)).unwrap().id==id,get_node(id,ns,ls,ps,Some(g)).unwrap...
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> std_specs/option.rs:154:8
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:147:50
+    |
+145 | pub proof fn theorem_raw_get_node_present_and_fields(id:Id,ns:Seq<Parent>,ls:Seq<Label>,ps:Seq<Prop>,g:int)
+    | ----------------------------------------------------------------------------------------------------------- at the end of the function body
+146 |  requires parent_has(ns,g,id),
+147 |  ensures get_node(id,ns,ls,ps,Some(g)).is_some(),get_node(id,ns,ls,ps,Some(g)).unwrap().id==id,get_node(id,ns,ls,ps,Some(g)).unwrap...
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:147:96
+    |
+147 | ...et_node(id,ns,ls,ps,Some(g)).unwrap().id==id,get_node(id,ns,ls,ps,Some(g)).unwrap().labels==labels(ls,g,id),get_node(id,ns,ls,ps...
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> std_specs/option.rs:154:8
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:147:159
+    |
+147 | ...ps,Some(g)).unwrap().labels==labels(ls,g,id),get_node(id,ns,ls,ps,Some(g)).unwrap().props==expected_props(ps,g,id),
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> std_specs/option.rs:154:8
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:280:64
+    |
+280 | pub proof fn witness_bare_parent_still_writes_a_line() ensures export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![]).nodes==1 && export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![]).lines.len()==1, {...
+    | ------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:282:75
+    |
+282 | pub proof fn witness_named_parent_does_not_duplicate_default_id() ensures export(seq![Parent{graph:0,id:0},Parent{graph:7,id:0}],seq![],seq![],seq![]).nodes==1, {...
+    | -----------------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/bare-parent-dropped/20261116T015949Z/models/ndjson_export/ndjson_export.rs:302:61
+    |
+302 | pub proof fn witness_node_line_precedes_edge_line() ensures ({let f=export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![EdgeRow{graph:0,serial:0,source:0,predicate:0,target:0,raw:None}]);is_node(f.lines[0])&&is_edge(f.lines[1])}), {...
+    | ---------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 7 previous errors
+
