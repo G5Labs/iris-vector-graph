@@ -428,6 +428,14 @@ A missing property, and on a relationship an absent qualifier object, an empty o
 - A node property stored as a number is tested through its canonical text: the number 12 starts with `'1'`, and the number 0.95 is tested as `.95`, while `RETURN` reads both as numbers. openCypher makes a string predicate on a number null.
 - A relationship property is tested through its `JSON_VALUE` text, so a JSON number behaves the same way.
 
+<a id="query.values.in_lists"></a>
+[I · query.values.in_lists]
+
+`x.p IN [list]` compares the property's stored text with each list value's text, not by the rules of `=`.
+- A node string that spells an integer exactly (`"1"`) is `IN [1]`, although `x.p = 1` is false for it; a node number 1 is `IN ['1']`. Near spellings (`"01"`, `"1.0"`) match neither.
+- A relationship number written as a whole float (`1.0`) is not `IN [1]`, although `x.p = 1` is true for it.
+- A boolean in the list matches the legacy spellings, as `=` does.
+
 <a id="query.values.relationship_text"></a>
 [I · query.values.relationship_text]
 
@@ -947,7 +955,7 @@ Findings: [Cypher range() with a step of 0 known only at run time answers [] ins
 
 ### query.values
 - Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
-- Children: [relationship property text](#query.values.relationship_text), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering), [sorting](#query.values.sorting), [nulls](#query.values.nulls), [string predicates](#query.values.string_predicates)
+- Children: [relationship property text](#query.values.relationship_text), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering), [sorting](#query.values.sorting), [nulls](#query.values.nulls), [string predicates](#query.values.string_predicates), [IN lists](#query.values.in_lists)
 - Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md), as-built numeric writer, D/N tag selection, S escape and numeric/text read distinctions. The scalar node-property projection reaches the final result in `theorem_sql_scalar_read_reaches_result`; JSON/J tags, N fractional/exponent parsing, nonfinite values, mixed expressions and the remaining SQL finishing pipeline are open modeling gaps. Numeric spelling/parse identity in `CY_TYPED` is an inspected provider premise, not a proved IRIS function.
 - agent
 - user-facing-behavior
@@ -968,7 +976,7 @@ Findings: [SET n.p = null keeps the key](../../Verus_verification/bugs_issues.md
 
 As-built SQL-path behavior on IRIS 2026.1 for values written by `create_node` and `create_edge`. The native executor declines every non-string equality value ([`native_plan._value`](../../../iris_vector_graph/cypher/native_plan.py#L62-L74); [observation](../../uplift/consolidated/iteration-17/native-equality-PAIRS.md)), so these rules hold on both paths. Parameters, `IN` lists, `MERGE` patterns and Cypher-written values were not checked.
 
-Findings: [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102); [A string predicate matches a node property stored as a number by its digits](../../Verus_verification/bugs_issues.md#bug-cyp-105)
+Findings: [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102); [A string predicate matches a node property stored as a number by its digits](../../Verus_verification/bugs_issues.md#bug-cyp-105); [IN lists compare a property's text with each value's spelling, so they disagree with = on nodes and relationships](../../Verus_verification/bugs_issues.md#bug-cyp-106)
 
 ### query.values.ordering
 - Sources: [`_translate_boolean_expression` ordering branch and `_as_number`](../../../iris_vector_graph/cypher/translator.py#L19003-L19040), [`_stored_number_value`](../../../iris_vector_graph/cypher/translator.py#L16244-L16249), [property-to-property orderability (R308)](../../../iris_vector_graph/cypher/translator.py#L18932-L18952), [boolean orderability (R307)](../../../iris_vector_graph/cypher/translator.py#L18973-L18980)
@@ -1012,6 +1020,16 @@ As-built agreement with openCypher, observed natively on the SQL path for litera
 - user-facing-behavior, data-integrity
 
 Findings: [A string predicate matches a node property stored as a number by its digits](../../Verus_verification/bugs_issues.md#bug-cyp-105)
+
+### query.values.in_lists
+- Sources: [`_boolean_expr_in`](../../../iris_vector_graph/cypher/translator.py#L18274-L18330); [known issue: a property cannot tell a number from a string that spells it](../../../docs/KNOWN_ISSUES.md#L183-L200) (names `=`, inline maps and `WITH` columns, not `IN`)
+- Verus: [typed_equality.rs](../../Verus_verification/models/typed_equality/typed_equality.rs) `theorem_node_in_disagrees_with_equality`; [scope](../../Verus_verification/models/typed_equality/NOTES.md)
+- Evidence: [predictions and native observations](../../uplift/consolidated/iteration-23/remaining-operators-PAIRS.md)
+- Expands: [Values in results](#query.values)
+- agent
+- user-facing-behavior, data-integrity
+
+Findings: [IN lists compare a property's text with each value's spelling, so they disagree with = on nodes and relationships](../../Verus_verification/bugs_issues.md#bug-cyp-106)
 
 ### query.values.relationship_text
 - Sources: [`iris_vector_graph/prop_values.py::parse_rel_prop_text`](../../../iris_vector_graph/prop_values.py#L141-L168), [`::parse_prop_text`](../../../iris_vector_graph/prop_values.py#L129-L138), [`::decode_json_list_map`](../../../iris_vector_graph/prop_values.py#L234-L248), the two patterns [`_CANONICAL_INT_RE`, `_CANONICAL_FLOAT_RE`](../../../iris_vector_graph/prop_values.py#L90-L91); [`iris_vector_graph/_engine/query.py::_decode_rel_prop_text_columns`](../../../iris_vector_graph/_engine/query.py#L1200-L1216) (arity guard `:1207`); [`iris_vector_graph/cypher/translator.py::_rel_prop_text_columns`](../../../iris_vector_graph/cypher/translator.py#L7517-L7556); unit tests [test_relationship_property_typing.py](../../../tests/unit/test_relationship_property_typing.py)

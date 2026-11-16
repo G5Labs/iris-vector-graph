@@ -1,0 +1,100 @@
+{
+  "name": "typed_equality",
+  "root": "typed_equality.rs",
+  "expected_verified": 43,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [
+    "../node_read/node_read.rs",
+    "../rel_prop_text/rel_prop_text.rs"
+  ],
+  "controls": [
+    {
+      "name": "legacy-one-not-true",
+      "find": "seq![seq!['t','r','u','e'],seq!['1'],seq!['T','r','u','e']]",
+      "replace": "seq![seq!['t','r','u','e'],seq!['t','r','u','e'],seq!['T','r','u','e']]",
+      "expect_fail_in": [
+        "theorem_node_true_exact",
+        "theorem_node_where_return_disagree",
+        "theorem_rel_integer_equals_true"
+      ],
+      "classification": "decision: TRUE_SPELLINGS without the legacy '1'"
+    },
+    {
+      "name": "node-number-by-text",
+      "find": "Lit::Int(m)=>match s {nr::Stored::Number{payload,double}=>if double {double_equals_int(payload,m)} else {payload==m},_=>false},",
+      "replace": "Lit::Int(m)=>node_matches_spelling(s,num_text(m)),",
+      "expect_fail_in": [
+        "theorem_node_integer_needs_stored_number",
+        "theorem_node_where_return_disagree",
+        "theorem_string_integer_kind_asymmetry"
+      ],
+      "classification": "decision: node number equality by spelling (the pre-4.7.0 rule) instead of the stored-number test"
+    },
+    {
+      "name": "json-boolean-reads-as-word",
+      "find": "Json::Bool(b)=>if b {seq!['1']} else {seq!['0']}}}\n/// The text RETURN decodes",
+      "replace": "Json::Bool(b)=>if b {rp::tru()} else {rp::fals()}}}\n/// The text RETURN decodes",
+      "expect_fail_in": [
+        "theorem_rel_bool_equals_integer"
+      ],
+      "classification": "provider: JSON_VALUE spelling of a JSON boolean"
+    },
+    {
+      "name": "stored-integer-not-a-spelling",
+      "find": "nr::Stored::Number{payload,double}=>if double {double_text(payload)==t} else {num_text(payload)==t},",
+      "replace": "nr::Stored::Number{payload,double}=>false,",
+      "expect_fail_in": [
+        "theorem_node_true_exact",
+        "theorem_node_where_return_disagree"
+      ],
+      "classification": "provider/decision: a stored number never equal to a boolean spelling (the typed alternative)"
+    },
+    {
+      "name": "twin-spelling-dropped",
+      "find": "Lit::Int(m)=>json_value(j)==num_text(m) || json_value(j)==num_text(m)+seq!['.','0'],",
+      "replace": "Lit::Int(m)=>json_value(j)==num_text(m),",
+      "expect_fail_in": [
+        "theorem_rel_twin_spelling_equals_integer"
+      ],
+      "classification": "decision: relationship integer equality without the float twin's spelling (the attempt-1 model miss)"
+    },
+    {
+      "name": "rel-ordering-typed",
+      "find": "pub open spec fn rel_where_ord(j:Json,o:Ord,m:int)->bool {holds(o,cast_double(json_value(j)),m as real)}",
+      "replace": "pub open spec fn rel_where_ord(j:Json,o:Ord,m:int)->bool {match j {Json::Num(n)=>holds(o,n as real,m as real),_=>false}}",
+      "expect_fail_in": [
+        "theorem_rel_text_orders_as_cast",
+        "theorem_rel_bool_orders_as_number"
+      ],
+      "classification": "decision: relationship ordering with the node's typed guard (the alternative the product applies to nodes)"
+    },
+    {
+      "name": "node-ordering-cast",
+      "find": "holds(o,if double {double_value(payload)} else {payload as real},m as real),_=>false}",
+      "replace": "holds(o,if double {double_value(payload)} else {payload as real},m as real),nr::Stored::Text(t)=>holds(o,cast_double(t),m as real),_=>false}",
+      "expect_fail_in": [
+        "theorem_node_text_never_orders",
+        "theorem_rel_text_orders_as_cast"
+      ],
+      "classification": "decision: node ordering by plain CAST (the pre-4.7.0 node rule)"
+    },
+    {
+      "name": "string-predicate-typed",
+      "find": "nr::Stored::Number{payload,double}=>if double {starts(double_text(payload),pre)} else {starts(num_text(payload),pre)},",
+      "replace": "nr::Stored::Number{payload,double}=>false,",
+      "expect_fail_in": [
+        "theorem_node_number_matches_string_prefix"
+      ],
+      "classification": "decision: string predicates null on stored numbers (openCypher, the typed alternative)"
+    },
+    {
+      "name": "node-in-typed",
+      "find": "pub open spec fn node_in_ints(s:nr::Stored,ms:Seq<int>)->bool {exists|i:int| 0<=i<ms.len() && node_matches_spelling(s,num_text(ms[i]))}",
+      "replace": "pub open spec fn node_in_ints(s:nr::Stored,ms:Seq<int>)->bool {exists|i:int| 0<=i<ms.len() && node_where_eq(s,Lit::Int(ms[i]))}",
+      "expect_fail_in": [
+        "theorem_node_in_disagrees_with_equality"
+      ],
+      "classification": "decision: node IN with the same stored-number test as = (the 4.7.0 rule)"
+    }
+  ]
+}

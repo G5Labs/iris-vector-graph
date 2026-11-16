@@ -233,4 +233,20 @@ pub proof fn theorem_node_number_matches_string_prefix()
  ensures node_starts_with(nr::Stored::Number{payload:12,double:false},seq!['1']),
   node_return(nr::Stored::Number{payload:12,double:false})==nr::Value::Integer(12),
 {reveal_with_fuel(nat_text,2);assert(nat_text(12)=~=seq!['1','2']);assert(num_text(12).subrange(0,1)=~=seq!['1']);}
+
+// ---- IN lists against a node property (iteration 23): _boolean_expr_in emits `val IN (?)` ----
+/// Node membership in a list of integers: the stored text is compared with each integer's text (no stored-number test).
+pub open spec fn node_in_ints(s:nr::Stored,ms:Seq<int>)->bool {exists|i:int| 0<=i<ms.len() && node_matches_spelling(s,num_text(ms[i]))}
+/// A node string that spells the integer is IN [m] although it is not = m; a near spelling is in neither.
+pub proof fn theorem_node_in_disagrees_with_equality()
+ ensures node_in_ints(nr::Stored::Text(seq!['1']),seq![1int]),!node_where_eq(nr::Stored::Text(seq!['1']),Lit::Int(1)),
+  !node_in_ints(nr::Stored::Text(seq!['0','1']),seq![1int]),
+  node_return(nr::Stored::Text(seq!['1']))==nr::Value::Text(seq!['1']),
+{
+ lemma_num_text_one_char(1);assert(seq![1int][0]==1);assert(node_matches_spelling(nr::Stored::Text(seq!['1']),num_text(seq![1int][0])));
+ assert(seq!['1']!=nr::bool_text(true));assert(seq!['1']!=nr::bool_text(false));
+ assert(!node_in_ints(nr::Stored::Text(seq!['0','1']),seq![1int])) by {
+  if node_in_ints(nr::Stored::Text(seq!['0','1']),seq![1int]) {let i=choose|i:int| 0<=i<seq![1int].len() && node_matches_spelling(nr::Stored::Text(seq!['0','1']),num_text(seq![1int][i]));assert(i==0);assert(num_text(1).len()==1);}
+ }
+}
 }

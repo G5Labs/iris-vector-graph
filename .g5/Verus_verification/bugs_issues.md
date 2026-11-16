@@ -2644,6 +2644,25 @@ Consequence: the order, and with `LIMIT` or `SKIP` the rows, depend on which exe
 
 Repair proposal (not implemented, not checked): have `Exec.SortKey` pass a stored empty string as `$Char(0)` (or have `Key` distinguish an empty stored value from a missing one on that path), preserving null-last for missing properties and the SQL path unchanged. Distinguishing case: the six-target query above.
 
+<a id="bug-cyp-106"></a>
+### IN lists compare a property's text with each value's spelling, so they disagree with = on nodes and relationships
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-16 (cloud continuation, iteration 23)
+
+Found by: the `IN`-list neighbor of the typed comparison workflows, with predictions frozen first ([predictions](../uplift/consolidated/iteration-23/remaining-operators-PAIRS.md)); [typed_equality](models/typed_equality/NOTES.md) `theorem_node_in_disagrees_with_equality`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([probes](../uplift/consolidated/iteration-23/remaining-operators-observed-20261116T172936Z.json), [near spellings](../uplift/consolidated/iteration-23/node-in-observed-20261116T173018Z.json); [52-world binding](results/typed_equality/20261116T173137Z-binding/receipt.json)). A node written with `p = "1"`: `WHERE x.p IN [1]` keeps it while `WHERE x.p = 1` drops it, and `RETURN x.p` reads `"1"`. A node number 1 is `IN ['1']`. An edge written with `qualifiers={"p": 1.0}`: `WHERE x.p = 1` keeps it while `WHERE x.p IN [1]` drops it. Passing neighbors: node `"01"`, `"1.0"`, `"abc"` and `""` match neither list; numbers in lists of numbers match on both kinds.
+
+Expected: openCypher defines `IN` by `=`. Since 4.7.0 node `=` requires a stored number of that value ([query.values.equality](../ontology/features/cypher.g5.md#query.values.equality)), and relationship `=` accepts an integer's float twin; `IN` follows neither. The documented known issue lists `=`, inline maps and `WITH` columns for these shapes, not `IN`. The as-built rule is [query.values.in_lists](../ontology/features/cypher.g5.md#query.values.in_lists).
+
+Cause: `_boolean_expr_in` emits `val IN (?)` (nodes) or the `JSON_VALUE` text `IN (?)` (relationships), comparing text with the bound value's text, without `_node_number_eq_sql` or `_number_texts`.
+
+Consequence: rewriting `x.p = 1 OR x.p = 2` as `x.p IN [1, 2]` changes the result, in opposite directions on nodes and relationships. Medium: wrong filter results with a confirmed trigger; destructive under `DELETE` or `SET`.
+
+Repair proposal (not implemented, not checked): translate a literal integer list through the same equality builders (`_node_number_eq_sql` for nodes, `_number_eq_sql` with `_number_texts` for relationships), preserving string lists and the boolean legacy spellings. Distinguishing cases: node `p = "1"` and relationship `p = 1.0` against `IN [1]`.
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 

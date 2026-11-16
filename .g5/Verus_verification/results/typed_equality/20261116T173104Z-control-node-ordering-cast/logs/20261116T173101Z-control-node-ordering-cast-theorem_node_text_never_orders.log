@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-ordering-cast/20261116T173101Z/models/typed_equality/typed_equality.rs:199:10
+    |
+198 | pub proof fn theorem_node_text_never_orders(t:Text,o:Ord,m:int)
+    | --------------------------------------------------------------- at the end of the function body
+199 |  ensures !node_where_ord(nr::Stored::Text(t),o,m),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

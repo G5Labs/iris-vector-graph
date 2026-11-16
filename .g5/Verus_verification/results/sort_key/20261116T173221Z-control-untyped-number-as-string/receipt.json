@@ -1,0 +1,72 @@
+{
+  "control": {
+    "classification": "decision: untyped numeric-looking text ranked as a string (openCypher, the alternative)",
+    "expect_fail_in": [
+      "theorem_untyped_numeric_text_sorts_as_number",
+      "theorem_node_where_and_order_by_disagree",
+      "theorem_bool_before_number"
+    ],
+    "find": "(t==Ty::Num) || (t==Ty::X && is_valid_num(s))",
+    "name": "untyped-number-as-string",
+    "replace": "(t==Ty::Num)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_untyped_numeric_text_sorts_as_number",
+      "theorem_node_where_and_order_by_disagree",
+      "theorem_bool_before_number"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+    ".g5/Verus_verification/models/sort_key/model.json": "4c92749581e1f45991c7696b15fc2bf79b8e91f7d61583c49258a3c124f474b6",
+    ".g5/Verus_verification/models/sort_key/sort_key.rs": "e68cf80430e1ac2a24384d6de913f483a9fd0d9e343e5b181b0f092ef7a47266",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "3a2b4a47c7820a699250c9a2b64d19116fdfa02592ae06bb1727dbdc6234f044"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/untyped-number-as-string/20261116T173218Z/models/sort_key/sort_key.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bool_before_number": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/20261116T173218Z-control-untyped-number-as-string-theorem_bool_before_number.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_node_where_and_order_by_disagree": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/20261116T173218Z-control-untyped-number-as-string-theorem_node_where_and_order_by_disagree.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_untyped_numeric_text_sorts_as_number": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/20261116T173218Z-control-untyped-number-as-string-theorem_untyped_numeric_text_sorts_as_number.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/20261116T173218Z-control-untyped-number-as-string.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sort_key/20261116T173221Z-control-untyped-number-as-string/logs/20261116T173218Z-control-untyped-number-as-string-theorem_bool_before_number.log": "831fb52ccc82a4ced7b537517393c5491efbbc7d243284627f1c5847338b5ff6",
+    ".g5/Verus_verification/results/sort_key/20261116T173221Z-control-untyped-number-as-string/logs/20261116T173218Z-control-untyped-number-as-string-theorem_node_where_and_order_by_disagree.log": "5c8c3023a161eaf954254155fe27858fde5557610b65bda9b9e72e3ff6bcabb8",
+    ".g5/Verus_verification/results/sort_key/20261116T173221Z-control-untyped-number-as-string/logs/20261116T173218Z-control-untyped-number-as-string-theorem_untyped_numeric_text_sorts_as_number.log": "24ad15b56dd05071a0c2da8bfb1c7f6a94be37e7fd7bb41a796e53b28d2940a9",
+    ".g5/Verus_verification/results/sort_key/20261116T173221Z-control-untyped-number-as-string/logs/20261116T173218Z-control-untyped-number-as-string.log": "e25a534e9d5494d0ef83e20363684f14d95e8cff09a15b6bda6b409829f11717"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

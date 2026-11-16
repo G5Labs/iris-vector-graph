@@ -1,0 +1,20 @@
+verification results:: 50 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/null-first/20261116T173225Z/models/sort_key/sort_key.rs:51:52
+   |
+51 | pub proof fn theorem_null_sorts_last(t:Ty) ensures rank(None,t)=='z' {}
+   | ------------------------------------------         ^^^^^^^^^^^^^^^^^ failed this postcondition
+   | |
+   | at the end of the function body
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/null-first/20261116T173225Z/models/sort_key/sort_key.rs:73:3
+   |
+70 | pub proof fn theorem_executors_disagree_on_empty_string(v:Text)
+   | --------------------------------------------------------------- at the end of the function body
+...
+73 |   rank(native_arg(v),Ty::X)<rank(native_arg(Seq::<char>::empty()),Ty::X),
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,7 +1,7 @@
 {
   "name": "typed_equality",
   "root": "typed_equality.rs",
-  "expected_verified": 42,
+  "expected_verified": 43,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [
     "../node_read/node_read.rs",
@@ -86,6 +86,15 @@
         "theorem_node_number_matches_string_prefix"
       ],
       "classification": "decision: string predicates null on stored numbers (openCypher, the typed alternative)"
+    },
+    {
+      "name": "node-in-typed",
+      "find": "pub open spec fn node_in_ints(s:nr::Stored,ms:Seq<int>)->bool {exists|i:int| 0<=i<ms.len() && node_matches_spelling(s,num_text(ms[i]))}",
+      "replace": "pub open spec fn node_in_ints(s:nr::Stored,ms:Seq<int>)->bool {exists|i:int| 0<=i<ms.len() && node_where_eq(s,Lit::Int(ms[i]))}",
+      "expect_fail_in": [
+        "theorem_node_in_disagrees_with_equality"
+      ],
+      "classification": "decision: node IN with the same stored-number test as = (the 4.7.0 rule)"
     }
   ]
 }

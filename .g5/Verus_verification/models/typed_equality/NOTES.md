@@ -34,9 +34,10 @@ its numeric equality with an integer are uninterpreted functions (`double_text`,
 | `theorem_rel_twin_spelling_equals_integer` | relationship text "12.0" equals 12 and reads as a float; node text "12.0" does not equal 12 |
 | `theorem_string_integer_kind_asymmetry` | the string "12" equals 12 on a relationship but not on a node |
 
-Counts: 42 verified = 19 new (18 proof functions and the `nat_text` termination check) + 23 unchanged imports
+Counts: 43 verified = 20 new (19 proof functions and the `nat_text` termination check) + 23 unchanged imports
 (`node_read` 13, `rel_prop_text` 10). Iteration 16 added 14; iteration 17 the four ordering theorems; iteration 20
-`theorem_node_number_matches_string_prefix` (owner `query.values.string_predicates`). No `assume`, `admit` or `external_body`.
+`theorem_node_number_matches_string_prefix` (owner `query.values.string_predicates`); iteration 23
+`theorem_node_in_disagrees_with_equality` (owner `query.values.in_lists`). No `assume`, `admit` or `external_body`.
 
 ## Ordering (iteration 17)
 
@@ -56,19 +57,20 @@ Provider prediction for the cast (numeric prefix, else 0) held on the first orde
 
 ## Controls
 
-Eight controls, each failing its named theorems in full and isolated runs with ordinary errors:
+Nine controls, each failing its named theorems in full and isolated runs with ordinary errors:
 `legacy-one-not-true`, `node-number-by-text` (the pre-4.7.0 node rule), `json-boolean-reads-as-word` (provider),
 `stored-integer-not-a-spelling` (the typed alternative), `twin-spelling-dropped`, `rel-ordering-typed` (the node rule on
-relationships) and `node-ordering-cast` (the pre-4.7.0 node rule) and `string-predicate-typed` (openCypher's rule). The first runs of
+relationships) and `node-ordering-cast` (the pre-4.7.0 node rule) and `string-predicate-typed` (openCypher's rule) and `node-in-typed` (the 4.7.0 equality rule for IN). The first runs of
 `legacy-one-not-true` and `stored-integer-not-a-spelling` were FAIL_ELSEWHERE because the disagreement theorem
 called `theorem_node_true_exact`, whose contract is trusted in an isolated run; it now derives its cases directly.
 
 ## Binding and misses
 
-[Final receipt](../../results/typed_equality/20261116T171733Z-binding/receipt.json): 26 values × {node, relationship}
-= 52 worlds, 884 comparisons (seven equality literals, five orderings, four `STARTS WITH` prefixes, and RETURN with its
-Python type), AGREES; each of eight port mutations is detected by 2–17 worlds. `20261116T170150Z-binding` (676
-comparisons) is the iteration-17 version. The iteration-16 equality receipt
+[Final receipt](../../results/typed_equality/20261116T173137Z-binding/receipt.json): 26 values × {node, relationship}
+= 52 worlds, 1,040 comparisons (seven equality literals, five orderings, four `STARTS WITH` prefixes, three `IN`
+lists, and RETURN with its Python type), AGREES; each of nine port mutations is detected. Earlier versions:
+`…171733Z` (884, iteration 20) and `…170150Z` (676, iteration 17); `…-attempt1-rel-in-miss` (iteration 23) assumed
+relationship `IN` follows relationship `=` and is kept. The iteration-16 equality receipt
 `20261116T165332Z-binding` (44 worlds, 352 comparisons) is the earlier accepted version. Two earlier attempts are kept:
 
 - `…165200Z-binding-attempt1-model-miss`: the model and port compared relationship integers with the canonical text

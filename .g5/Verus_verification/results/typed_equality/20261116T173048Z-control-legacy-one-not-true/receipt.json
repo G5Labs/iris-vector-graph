@@ -1,0 +1,71 @@
+{
+  "control": {
+    "classification": "decision: TRUE_SPELLINGS without the legacy '1'",
+    "expect_fail_in": [
+      "theorem_node_true_exact",
+      "theorem_node_where_return_disagree",
+      "theorem_rel_integer_equals_true"
+    ],
+    "find": "seq![seq!['t','r','u','e'],seq!['1'],seq!['T','r','u','e']]",
+    "name": "legacy-one-not-true",
+    "replace": "seq![seq!['t','r','u','e'],seq!['t','r','u','e'],seq!['T','r','u','e']]"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_node_true_exact",
+      "theorem_node_where_return_disagree",
+      "theorem_rel_integer_equals_true"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+    ".g5/Verus_verification/models/typed_equality/model.json": "181b851aff3367bd124657d6064abfa7652e25ec4f4447effbab6b7fe8d4e8f4",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "3a2b4a47c7820a699250c9a2b64d19116fdfa02592ae06bb1727dbdc6234f044"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/legacy-one-not-true/20261116T173044Z/models/typed_equality/typed_equality.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_node_true_exact": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T173044Z-control-legacy-one-not-true-theorem_node_true_exact.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_node_where_return_disagree": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T173044Z-control-legacy-one-not-true-theorem_node_where_return_disagree.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rel_integer_equals_true": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T173044Z-control-legacy-one-not-true-theorem_rel_integer_equals_true.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T173044Z-control-legacy-one-not-true.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/typed_equality/20261116T173048Z-control-legacy-one-not-true/logs/20261116T173044Z-control-legacy-one-not-true-theorem_node_true_exact.log": "3b6912fa10cf1d10d978dbfe37210505037d7db594995dccde719b3083662190",
+    ".g5/Verus_verification/results/typed_equality/20261116T173048Z-control-legacy-one-not-true/logs/20261116T173044Z-control-legacy-one-not-true-theorem_node_where_return_disagree.log": "f082d601f08d6560857b5cb4ea80e42e865e175093956e1708af1a14cdd37032",
+    ".g5/Verus_verification/results/typed_equality/20261116T173048Z-control-legacy-one-not-true/logs/20261116T173044Z-control-legacy-one-not-true-theorem_rel_integer_equals_true.log": "19724c944c8da2fce9df6bc88a38b5e1823125ceac8784142cc8f3779922c5e2",
+    ".g5/Verus_verification/results/typed_equality/20261116T173048Z-control-legacy-one-not-true/logs/20261116T173044Z-control-legacy-one-not-true.log": "839867754e1a6fa363a07d29eddf125d870a7bd2786067084e486132a7a5f793"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
