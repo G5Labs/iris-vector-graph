@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/controls/delete-node-keeps-edges/20261116T222418Z/models/node_edge_update/node_edge_update.rs:60:57
+   |
+58 | pub proof fn theorem_delete_node_removes_incident(db:Db,g:G,n:N,k:N,p:P)
+   | ------------------------------------------------------------------------ at the end of the function body
+59 |  requires db.edges.contains_key((g,n,p,k)),db.nodes.contains_key((g,k)),k!=n
+60 |  ensures !delete_node(db,g,n).nodes.contains_key((g,n)),!delete_node(db,g,n).edges.contains_key((g,n,p,k)),
+   |                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

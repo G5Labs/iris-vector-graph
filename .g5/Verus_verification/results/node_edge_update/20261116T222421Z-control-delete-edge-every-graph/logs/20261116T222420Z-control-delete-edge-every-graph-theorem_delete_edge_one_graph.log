@@ -1,0 +1,24 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/controls/delete-edge-every-graph/20261116T222420Z/models/node_edge_update/node_edge_update.rs:73:3
+   |
+73 |   delete_edge(db,g,s,p,o).0.edges[(h,s,p,o)]==db.edges[(h,s,p,o)],
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/controls/delete-edge-every-graph/20261116T222420Z/models/node_edge_update/node_edge_update.rs:73:3
+   |
+70 | pub proof fn theorem_delete_edge_one_graph(db:Db,g:G,h:G,s:N,p:P,o:N)
+   | --------------------------------------------------------------------- at the end of the function body
+...
+73 |   delete_edge(db,g,s,p,o).0.edges[(h,s,p,o)]==db.edges[(h,s,p,o)],
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

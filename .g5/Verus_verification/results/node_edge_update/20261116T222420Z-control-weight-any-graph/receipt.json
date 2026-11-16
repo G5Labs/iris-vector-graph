@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: a missing edge is created",
+    "expect_fail_in": [
+      "theorem_set_weight_default_graph_only"
+    ],
+    "find": " if db.edges.contains_key((DEFAULT(),s,p,o)) {(Db{nodes:db.nodes,edges:db.edges.insert((DEFAULT(),s,p,o),w)},true)} else {(db,false)}",
+    "name": "weight-any-graph",
+    "replace": " (Db{nodes:db.nodes,edges:db.edges.insert((DEFAULT(),s,p,o),w)},true)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_set_weight_default_graph_only"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_edge_update/model.json": "5024c966b502bed4ed56fee01d565834ed4c5cc99e7f7fbe75c3963d07ca7f79",
+    ".g5/Verus_verification/models/node_edge_update/node_edge_update.rs": "c810f7bde2af70ff3fc5924a8c66e18f69c32c6f51478968e6469aa76571e99b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/controls/weight-any-graph/20261116T222419Z/models/node_edge_update/node_edge_update.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_set_weight_default_graph_only": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/20261116T222419Z-control-weight-any-graph-theorem_set_weight_default_graph_only.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/20261116T222419Z-control-weight-any-graph.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/node_edge_update/20261116T222420Z-control-weight-any-graph/logs/20261116T222419Z-control-weight-any-graph-theorem_set_weight_default_graph_only.log": "fc7b6ba1834c8a52ab589df2c0a4ae42b0d345b038579778357ccf68eb4411a0",
+    ".g5/Verus_verification/results/node_edge_update/20261116T222420Z-control-weight-any-graph/logs/20261116T222419Z-control-weight-any-graph.log": "74ab006c72b5ca68f7b90bd89fe4c02d6364470a6df44f0eef86ea5cc9cc0aec"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

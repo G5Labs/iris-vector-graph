@@ -470,3 +470,5 @@ needs namespace `W37`, IVG Schema `Kg2`, created as recorded there) and `write_r
 
 Iteration 32 ([handoff](../uplift/consolidated/iteration-32/HANDOFF.md)) adds `models/http_rows` (3 verified, 3 controls) and an
 in-process binding (FastAPI `TestClient` with `IRIS_*` set to the fixture; no port is opened).
+
+Iteration 33 ([handoff](../uplift/consolidated/iteration-33/HANDOFF.md)) adds `models/node_edge_update` (5 verified, 6 controls) and its binding.

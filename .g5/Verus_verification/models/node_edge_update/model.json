@@ -1,0 +1,63 @@
+{
+  "name": "node_edge_update",
+  "root": "node_edge_update.rs",
+  "expected_verified": 5,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "none-keeps-property",
+      "find": "  .remove_keys(upd.dom().filter(|k:K| upd[k].is_none()))\n",
+      "replace": "\n",
+      "expect_fail_in": [
+        "theorem_store_node_updates"
+      ],
+      "classification": "decision: a None value leaves the property"
+    },
+    {
+      "name": "labels-replaced",
+      "find": "Node{props:p2,labels:old.labels+labels}",
+      "replace": "Node{props:p2,labels:labels}",
+      "expect_fail_in": [
+        "theorem_store_node_updates"
+      ],
+      "classification": "decision: given labels replace the existing ones"
+    },
+    {
+      "name": "delete-node-keeps-edges",
+      "find": " Db{nodes:db.nodes.remove((g,n)),edges:db.edges.remove_keys(db.edges.dom().filter(|e:(G,N,P,N)| incident(e,g,n)))}",
+      "replace": " Db{nodes:db.nodes.remove((g,n)),edges:db.edges}",
+      "expect_fail_in": [
+        "theorem_delete_node_removes_incident"
+      ],
+      "classification": "effect: incident edges left behind"
+    },
+    {
+      "name": "weight-any-graph",
+      "find": " if db.edges.contains_key((DEFAULT(),s,p,o)) {(Db{nodes:db.nodes,edges:db.edges.insert((DEFAULT(),s,p,o),w)},true)} else {(db,false)}",
+      "replace": " (Db{nodes:db.nodes,edges:db.edges.insert((DEFAULT(),s,p,o),w)},true)",
+      "expect_fail_in": [
+        "theorem_set_weight_default_graph_only"
+      ],
+      "classification": "decision: a missing edge is created"
+    },
+    {
+      "name": "delete-edge-every-graph",
+      "find": "edges:db.edges.remove((g,s,p,o))},true)}",
+      "replace": "edges:db.edges.remove_keys(db.edges.dom().filter(|e:(G,N,P,N)| e.1==s && e.2==p && e.3==o))},true)}",
+      "expect_fail_in": [
+        "theorem_delete_edge_one_graph"
+      ],
+      "classification": "decision: delete across graphs without being asked"
+    },
+    {
+      "name": "new-node-no-id",
+      "find": " let p2=if p.contains_key(ID_KEY()) {p} else {p.insert(ID_KEY(),idv)};",
+      "replace": " let p2=p;",
+      "expect_fail_in": [
+        "theorem_store_new_gets_id"
+      ],
+      "classification": "effect: a created node gets no id property"
+    }
+  ]
+}

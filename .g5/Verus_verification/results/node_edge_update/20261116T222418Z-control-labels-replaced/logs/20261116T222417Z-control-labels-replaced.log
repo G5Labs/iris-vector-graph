@@ -1,0 +1,14 @@
+verification results:: 4 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/controls/labels-replaced/20261116T222417Z/models/node_edge_update/node_edge_update.rs:38:10
+   |
+35 |   pub proof fn theorem_store_node_updates(db:Db,g:G,n:N,upd:Map<K,Option<V>>,labels:Set<L>,idv:V,k:K,j:K,l:L)
+   |   ----------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+38 |    ensures ({let r=store_node(db,g,n,upd,labels,idv).0.nodes[(g,n)];
+   |  __________^
+39 | |   r.props.contains_key(k) && (k==ID_KEY() || r.props[k]==upd[k].unwrap()) && !r.props.contains_key(j) && r.labels.contains(l) && r.labels.subset_of(db.nodes[(g,n)].labels+labels)}),
+   | |____________________________________________________________________________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

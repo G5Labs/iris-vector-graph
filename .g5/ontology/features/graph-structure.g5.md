@@ -398,12 +398,15 @@ State machines: [bulk children](../../Verus_verification/models/bulk_children/ma
 
 ### structure.node.delete
 - Sources: [API reference, delete_node](../../../docs/API_REFERENCE.md#L516-L522), [delete_node](../../../iris_vector_graph/_engine/nodes_edges.py#L2227-L2268), [Eraser.EraseIdSet](../../../iris_src/src/Graph/KG/Eraser.cls#L467-L632)
+- Verus: [node_edge_update](../../Verus_verification/models/node_edge_update/NOTES.md) `theorem_delete_node_removes_incident` (as built); [evidence](../../uplift/consolidated/iteration-33/update-delete-PAIRS.md)
 - Expands: [nodes](#structure.node)
 - Children: [bulk deletion counts](#structure.node.delete.bulk)
 - agent
 - user-facing-behavior, data-integrity
 
 Observed: the reifier nodes are deleted in later transactions, and a failure there raises an error that says the node is gone and its reifiers are not. Erasure semantics are owned by the erasure pages.
+
+State machines: [node edge update](../../Verus_verification/models/node_edge_update/manifest.json)
 
 ### structure.node.delete.bulk
 
@@ -420,11 +423,14 @@ State machines: [bulk delete](../../Verus_verification/models/bulk_delete/manife
 
 ### structure.node.update
 - Sources: [store_node](../../../iris_vector_graph/_engine/nodes_edges.py#L2393-L2530), [API reference, store_node](../../../docs/API_REFERENCE.md#L738-L750)
+- Verus: [node_edge_update](../../Verus_verification/models/node_edge_update/NOTES.md) `theorem_store_node_updates`, `theorem_store_new_gets_id` (as built); [evidence](../../uplift/consolidated/iteration-33/update-delete-PAIRS.md)
 - Expands: [nodes](#structure.node)
 - agent
 - user-facing-behavior
 
 Added after the stage-A reconstruction check (gap G15). The docstring and API reference state this contract. Before 4.5.0 a failed property was skipped after the node row had committed. Cypher `SET` and ledger property and label operations are the other ways to change a node, owned by the Cypher and ledger pages.
+
+State machines: [node edge update](../../Verus_verification/models/node_edge_update/manifest.json)
 
 ### structure.node.read
 
@@ -480,6 +486,7 @@ Findings: [A ledger qualifier update reweights a multigraph triple's leaf to an 
 
 ### structure.edge.weight.set
 - Sources: [set_edge_weight](../../../iris_vector_graph/_engine/nodes_edges.py#L1306-L1380), [API reference, set_edge_weight](../../../docs/API_REFERENCE.md#L716-L722)
+- Verus: [node_edge_update](../../Verus_verification/models/node_edge_update/NOTES.md) `theorem_set_weight_default_graph_only` (as built); [evidence](../../uplift/consolidated/iteration-33/update-delete-PAIRS.md)
 - Expands: [weight](#structure.edge.weight)
 - agent
 - user-facing-behavior
@@ -487,10 +494,13 @@ Findings: [A ledger qualifier update reweights a multigraph triple's leaf to an 
 
 Live coverage: [set_edge_weight is one transaction](../../../tests/e2e/test_set_edge_weight_txn_e2e.py). Added after the stage-A reconstruction check (gap G15). Before 4.6.0 a refused update answered False like a missing edge, and a multigraph triple's rows were updated one by one.
 
+State machines: [node edge update](../../Verus_verification/models/node_edge_update/manifest.json)
+
 ### structure.edge.delete
 
 - uncertain
 - Sources: [delete_edge](../../../iris_vector_graph/_engine/nodes_edges.py#L1382-L1456), [API reference, delete_edge](../../../docs/API_REFERENCE.md#L502-L514)
+- Verus: [node_edge_update](../../Verus_verification/models/node_edge_update/NOTES.md) `theorem_delete_edge_one_graph` (as built); [evidence](../../uplift/consolidated/iteration-33/update-delete-PAIRS.md)
 - Expands: [edges](#structure.edge)
 - Children: [Should deleting an edge also remove its reifications and edge embeddings, as deleting a node, deleting a relationship through the ledger, and erasing edges do?](../../Verus_verification/open_questions.md#structure.edge.delete.reifications)
 - agent
@@ -503,6 +513,8 @@ Audit (HD-0202): Existing authority: Without an edge ID, direct delete_edge remo
 Findings: [In a multigraph, does a direct edge delete remove one parallel edge or all of them?](../../Verus_verification/open_questions.md#HD-0202).
 
 Open questions: [Should deleting an edge also remove its reifications and edge embeddings, as deleting a node, deleting a relationship through the ledger, and erasing edges do?](../../Verus_verification/open_questions.md#structure.edge.delete.reifications)
+
+State machines: [node edge update](../../Verus_verification/models/node_edge_update/manifest.json)
 
 ### structure.reification
 - Sources: [reify_edge, get_reifications, delete_reification](../../../iris_vector_graph/_engine/schema.py#L3264-L3392), [API reference](../../../docs/API_REFERENCE.md#L140-L146), [one reifier names one edge](../../../iris_vector_graph/schema.py#L514-L520), [node deletion removes reifiers](../../../iris_vector_graph/_engine/nodes_edges.py#L2176-L2200)

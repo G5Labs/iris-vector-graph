@@ -1,0 +1,60 @@
+{
+  "title": "node edge update",
+  "question": "store_node property/label update, delete_node incident cleanup in its graph, set_edge_weight default graph only, delete_edge one graph and success when nothing matched; SQL and adjacency callbacks observed natively",
+  "ontology_ids": [
+    "structure.edge.delete",
+    "structure.edge.weight.set",
+    "structure.node.delete",
+    "structure.node.update"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 5}"
+    },
+    {
+      "label": "none-keeps-property",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_store_node_updates\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "labels-replaced",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_store_node_updates\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-node-keeps-edges",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_delete_node_removes_incident\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "weight-any-graph",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_set_weight_default_graph_only\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-edge-every-graph",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_delete_edge_one_graph\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "new-node-no-id",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_store_new_gets_id\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

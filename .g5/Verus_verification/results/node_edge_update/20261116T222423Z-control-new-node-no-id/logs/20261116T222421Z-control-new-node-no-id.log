@@ -1,0 +1,22 @@
+verification results:: 4 verified, 1 errors
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/controls/new-node-no-id/20261116T222421Z/models/node_edge_update/node_edge_update.rs:52:10
+   |
+52 |  ensures store_node(db,g,n,Map::empty(),Set::empty(),idv).0.nodes[(g,n)].props[ID_KEY()]==idv,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/controls/new-node-no-id/20261116T222421Z/models/node_edge_update/node_edge_update.rs:52:10
+   |
+50 | pub proof fn theorem_store_new_gets_id(db:Db,g:G,n:N,idv:V)
+   | ----------------------------------------------------------- at the end of the function body
+51 |  requires !db.nodes.contains_key((g,n))
+52 |  ensures store_node(db,g,n,Map::empty(),Set::empty(),idv).0.nodes[(g,n)].props[ID_KEY()]==idv,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

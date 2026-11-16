@@ -1,0 +1,113 @@
+{
+ "run": "20261116T222255Z",
+ "fixture": "ivg-retest-20261116-iris",
+ "cases": {
+  "U1_store_existing": {
+   "returned": true,
+   "get_node": {
+    "id": "ud222255n",
+    "labels": [
+     "UA",
+     "UB"
+    ],
+    "p_id": "ud222255n",
+    "p": 2
+   },
+   "cypher": [
+    [
+     2,
+     null,
+     [
+      "UA",
+      "UB"
+     ]
+    ]
+   ]
+  },
+  "U2_store_new": {
+   "returned": true,
+   "get_node": {
+    "id": "ud222255m",
+    "labels": [],
+    "p": 3,
+    "p_id": "ud222255m"
+   },
+   "cypher": [
+    [
+     3,
+     "ud222255m"
+    ]
+   ]
+  },
+  "D1_delete_node": {
+   "before": {
+    "edge": [
+     [
+      "ud222255k"
+     ]
+    ],
+    "kg": true
+   },
+   "returned": true,
+   "get_node": null,
+   "edge_from_k": [],
+   "kg_out": false,
+   "kg_in": false,
+   "k_stays": true
+  },
+  "W1_set_weight": {
+   "returned": true,
+   "cypher": [
+    [
+     2.5,
+     {
+      "weight": 2.5
+     }
+    ]
+   ],
+   "cypher_types": [
+    [
+     "float",
+     "dict"
+    ]
+   ],
+   "kg": "2.5"
+  },
+  "W2_set_weight_missing": {
+   "returned": false,
+   "cypher": [
+    [
+     0
+    ]
+   ]
+  },
+  "W3_set_weight_named_graph": {
+   "returned": false,
+   "named_graph_weight": [
+    [
+     1.0
+    ]
+   ]
+  },
+  "E1_delete_edge": {
+   "returned": true,
+   "cypher": [
+    [
+     0
+    ]
+   ],
+   "kg": false
+  },
+  "E2_delete_missing": {
+   "returned": true
+  },
+  "E3_delete_named_without_graph": {
+   "returned": true,
+   "named_graph_edge": [
+    [
+     1
+    ]
+   ]
+  }
+ }
+}

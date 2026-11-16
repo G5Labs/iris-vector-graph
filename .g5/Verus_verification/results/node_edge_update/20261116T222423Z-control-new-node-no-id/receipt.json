@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: a created node gets no id property",
+    "expect_fail_in": [
+      "theorem_store_new_gets_id"
+    ],
+    "find": " let p2=if p.contains_key(ID_KEY()) {p} else {p.insert(ID_KEY(),idv)};",
+    "name": "new-node-no-id",
+    "replace": " let p2=p;"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_store_new_gets_id"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_edge_update/model.json": "5024c966b502bed4ed56fee01d565834ed4c5cc99e7f7fbe75c3963d07ca7f79",
+    ".g5/Verus_verification/models/node_edge_update/node_edge_update.rs": "c810f7bde2af70ff3fc5924a8c66e18f69c32c6f51478968e6469aa76571e99b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/controls/new-node-no-id/20261116T222421Z/models/node_edge_update/node_edge_update.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_store_new_gets_id": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/20261116T222421Z-control-new-node-no-id-theorem_store_new_gets_id.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/node_edge_update/20261116T222421Z-control-new-node-no-id.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/node_edge_update/20261116T222423Z-control-new-node-no-id/logs/20261116T222421Z-control-new-node-no-id-theorem_store_new_gets_id.log": "92f4eadc9d84ee66ab1c4b04a993a3d72afc96a11b4b54741ebbe47c7fa47352",
+    ".g5/Verus_verification/results/node_edge_update/20261116T222423Z-control-new-node-no-id/logs/20261116T222421Z-control-new-node-no-id.log": "90a1497d72932023810bcc7ab0f2ea2bd7e76e8053f3af0de088e6f73558366b"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
