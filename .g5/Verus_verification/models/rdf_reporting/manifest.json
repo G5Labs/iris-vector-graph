@@ -1,0 +1,121 @@
+{
+  "title": "rdf reporting",
+  "question": "rdf reporting",
+  "ontology_ids": [],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built",
+      "expect": "{\"errors\": 0, \"verified\": 50}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built",
+      "expect": null
+    },
+    {
+      "label": "graph-scope-ignored",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_graph_filter_is_request_value\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ids-ignored",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_outside_requested_ids_emits_nothing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "label-graph-correlation-ignored",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_wrong_graph_membership_is_excluded\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "selected-labels-widened",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_label_selection_is_raw\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "property-null-emitted",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_property_null_is_omitted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-object-enveloped",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_empty_qualifier_has_no_envelope\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "inferred-only-envelope-dropped",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_inferred_only_still_has_envelope\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "inferred-key-emitted",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"lemma_inferred_quals_empty\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "falsey-fallback-removed",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_false_and_zero_are_not_property_literals\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ftp-node-mint-removed",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_node_property_prefixes_differ\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "summary-counts-quads",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_summary_two_contexts_is_one_triple\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "summary-counts-objects",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_summary_counts_subjects_not_objects\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "type-counted-as-edge",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_non_type_uri_count_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "json-decoded-object-dropped",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_raw_string_zero_object_is_decoded\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "json-duplicate-keeps-old",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"lemma_upsert_sets_current_value\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "decimal-digit-base-wrong",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_two_raw_digits_determine_value\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "blank-positions-reused",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_fresh_envelope_positions\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

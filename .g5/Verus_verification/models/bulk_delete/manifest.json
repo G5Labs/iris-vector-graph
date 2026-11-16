@@ -1,0 +1,51 @@
+{
+  "title": "bulk delete",
+  "question": "raw ID normalization, batch continuation, primary then cleanup failure, partial live effects and DeleteResult counts; one explicit graph",
+  "ontology_ids": [
+    "structure.node.delete.bulk"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 10}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "duplicates-kept",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_raw_ids_filtered_and_deduplicated\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failed-count-hidden",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_counts_requested_not_existing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stop-after-refusal",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_later_batch_runs_after_failure\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "boolean-means-no-failure",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_later_batch_runs_after_failure\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cleanup-failure-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_cleanup_failure_is_not_rollback\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

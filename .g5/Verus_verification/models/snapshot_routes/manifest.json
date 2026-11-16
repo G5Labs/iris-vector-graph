@@ -1,0 +1,81 @@
+{
+  "title": "snapshot routes",
+  "question": "source registry/archive width to declarations, restored route/rows, literal width guard and real vector reader; merge parent/row and provider limits",
+  "ontology_ids": [
+    "install.snapshot.routes"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 14}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "default-width-for-every-route",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_archived_width_not_engine\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ignore-physical-width",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_existing_incompatible_width_is_not_redeclared\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reader-default-graph",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_restored_row_reaches_own_reader\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "keep-archived-index-claim",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_index_result_and_failed_record\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failed-record-still-updates",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_index_result_and_failed_record\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "merge-overwrites",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_merge_reports_without_overwrite\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "registry-not-restored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_export_registry_restore_readback\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "missing-table-looks-empty",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_invalid_width_leaves_reader_error\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "parent-merge-uses-graph-key",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_merge_parent_collision_blocks_vector\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "width-refusal-still-inserts",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_invalid_route_skips_insert\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

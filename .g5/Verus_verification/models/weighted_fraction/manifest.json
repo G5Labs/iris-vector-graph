@@ -1,0 +1,99 @@
+{
+  "title": "weighted fraction",
+  "question": "derived grid/default/cap normalization; independent real JSON/Cost transitions, parent/history/fallback/terminal relation; native numeric and scalar mirror/writer providers explicit",
+  "ontology_ids": [
+    "algorithms.op.paths.weighted"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"errors\": 0, \"verified\": 181}"
+    },
+    {
+      "label": "default-unit-not-scaled",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_scalar_and_cap_decode\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "positive-numerator-not-scaled",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_scalar_and_cap_decode\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "zero-raw-not-defaulted",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_scalar_and_cap_decode\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cap-omits-common-factor",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_cap_decode\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "json-removes-stale-entry",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_json_relax_commutes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "json-parent-weight-one",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_json_relax_commutes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cost-retains-old-queue",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_cost_decrease_commutes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cost-best-hop-loses-half",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_cost_relax_commutes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cost-both-backward-order",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"lemma_cost_neighbor_sequence\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cost-frontsum-one-early",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_cost_step_commutes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cost-hop-fallback-removed",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_cost_finish_commutes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "json-reader-total-zero",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_json_reader_raw_fields\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "self-zero-one",
+      "kind": "control",
+      "variant": "as-built exact-rational transcription",
+      "expect": "{\"fail_in\": [\"theorem_raw_signed_rational_json\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built exact-rational transcription",
+      "expect": null
+    }
+  ]
+}

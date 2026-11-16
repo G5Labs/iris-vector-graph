@@ -1,0 +1,39 @@
+{
+  "title": "route recheck",
+  "question": "NativeRoute held-call counter, trial reset, next-path selection and permanent SQL failure; drift disabled",
+  "ontology_ids": [
+    "query.native.route"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 6}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "late-recheck",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_before_and_at_threshold\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "keep-trial-timings",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_reset_derives_native_first\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "retry-sql-after-failure",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_failure_survives_rechecks\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

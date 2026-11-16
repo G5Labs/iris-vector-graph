@@ -1,0 +1,71 @@
+{
+  "title": "temporal window reader",
+  "question": "the paged temporal window reader: window_spec, the Python cursor's paging and handle release, the server's filter and page producer",
+  "ontology_ids": [
+    "temporal.window.paging",
+    "temporal.window.paging.release",
+    "temporal.window.sources"
+  ],
+  "runs": [
+    {
+      "label": "stop-on-empty-page",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_drain\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 16}"
+    },
+    {
+      "label": "close-after-exhaustion",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_drain\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "server-keeps-handle-at-done",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_drain\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "skip-close-on-failure",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_page_closes_once\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "close-not-idempotent",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_close_mid_read_once\", \"theorem_exhaustion_frees_without_close\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-list-sends-no-key",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_spec_sources_omitted_vs_empty\", \"theorem_server_filter_sources\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "server-empty-list-reads-all",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_server_filter_sources\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "server-empty-page-not-done",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_server_full_page_nonempty\", \"witness_exact_multiple_ends_with_empty_done_page\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

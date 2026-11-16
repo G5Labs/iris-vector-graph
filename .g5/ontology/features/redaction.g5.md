@@ -20,8 +20,12 @@ Redaction removes an erased target's content from the [revision ledger](ledger.g
 
 After a target's content has been erased, an operator can remove that content from the ledger's history. The history keeps its shape: every revision and every record position stays, and only the target's content goes. Afterwards, no record, revision field or ledger index reachable through IVG holds the target's IDs, values or messages.
 
-- Known exceptions: records the run cannot attribute to the target ([unattributed](#redaction.unattributed)), reifier delete records reached by neither target ([target nodes](#redaction.target.nodes)), actor fields, which are [kept by design](#redaction.metadata.actor), and IVG's own snapshot archives and pre-upgrade ledger rows ([other copies](#redaction.out-of-reach.other-copies)).
+- Known exceptions: records the run cannot attribute to the target ([unattributed](../../Verus_verification/open_questions.md#redaction.unattributed)), reifier delete records reached by neither target ([target nodes](#redaction.target.nodes)), actor fields, which are [kept by design](#redaction.metadata.actor), and IVG's own snapshot archives and pre-upgrade ledger rows ([other copies](../../Verus_verification/open_questions.md#q-led-002)).
 - Live stores outside the ledger are erasure's job; today search indexes can still answer with erased text ([erasure](erasure.g5.md#erasure.scope)).
+
+- Working assumption: Document the present strict-off erasure sequence as an operational precondition; do not infer that disabling strict mode is the desired product interface.
+- Working assumption: List snapshots and legacy ledger copies as outside redaction reach; archive-retention/removal policy remains an owner decision.
+- Working assumption: Retain an unattributed record and disclose it in the receipt until prefix ownership is established.
 
 <a id="redaction.target"></a>
 [D · redaction.target]
@@ -31,6 +35,8 @@ A target is a graph, optionally narrowed to the entity IDs that begin with a pre
 - The separator is part of the match, so the prefix `acme` never matches `acme-health|…`.
 - A prefix that already ends with the separator is used as given.
 - An empty separator is refused.
+
+- Working assumption: Retain an unattributed record and disclose it in the receipt until prefix ownership is established.
 
 <a id="redaction.target.nodes"></a>
 [D · redaction.target.nodes]
@@ -50,14 +56,10 @@ With a prefix, a relationship record belongs to the target when the relationship
 Fully redacting a tenant whose relationships live in its own graph takes two targets: the tenant's graph, and the tenant's prefix in the default graph.
 
 - Erase the tenant's nodes first with the prefix and its separator, such as `tenant|`. Erasing by prefix has no separator rule, so `tenant` alone would also erase other tenants' nodes ([prefix match](erasure.g5.md#erasure.prefix-match)).
-- Keep each tenant's temporal edges in its own graph. Spec 256 put off erasing one tenant's temporal data inside a shared graph, and a prefix erase misses its temporal-only events ([open question](#redaction.after-erasure.temporal)).
+- Keep each tenant's temporal edges in its own graph. Spec 256 put off erasing one tenant's temporal data inside a shared graph, and a prefix erase misses its temporal-only events ([open question](../../Verus_verification/open_questions.md#q-009)).
 
-<a id="redaction.tenant.node-history-policy"></a>
-[Q · redaction.tenant.node-history-policy]
-
-How is a tenant's node history redacted when nodes live in the tenant's own graph?
-
-- Working assumption (agent, unratified): Require explicit tenant ID prefixes for the current redaction recipe; graph-only removal of bare node history needs a different identity contract.
+- Working assumption: Treat temporal entries as live content for the intended safety rule; the existing row-only check remains a documented behavior discrepancy pending scope confirmation.
+- Working assumption: Require tenant id prefixes for ledger-governed tenants and document it next to redact(); for a graph target whose erased nodes left graph-blind node records, return an explicit incomplete result (or refuse) instead of complete=true. Model graph-qualified node records for future history separately; a migration of existing history needs trustworthy provenance, which the genesis did not keep. Changed from decisions.md: **no**. Same choice; added the R290 maintainer statement, the genesis attribution contradiction, the receipt (FR-008) gap and fresh live evidence including the FR-007 divergence.
 
 <a id="redaction.call"></a>
 [D · redaction.call]
@@ -78,21 +80,14 @@ Redaction only follows erasure. It is refused while any row of the target is liv
 - The refusal names the live target and changes nothing.
 - Liveness is checked again, under the ledger lock, just before the run finishes.
 
+- Working assumption: Treat temporal entries as live content for the intended safety rule; the existing row-only check remains a documented behavior discrepancy pending scope confirmation.
+
 <a id="redaction.after-erasure.default-graph"></a>
 [I · redaction.after-erasure.default-graph]
 
 For a default-graph target, live node, label and property rows count in every graph, because the ledger's node records and verify both ignore graphs. Relationship rows count only in the target graph.
 
 - So the whole default graph, with no prefix, cannot be redacted while any graph holds a node.
-
-<a id="redaction.after-erasure.temporal"></a>
-[Q · redaction.after-erasure.temporal]
-
-Should the target's temporal-index entries count as live? There is no provisional answer.
-
-- Today only table rows count, so a target whose temporal edges have no plain relationship row (temporal-only predicates) can be redacted while those edges remain.
-- Possible answers: count temporal entries as live; or rely on erasure, which removes them only when the tenant has its own graph or the events are erased by ID. A prefix erase leaves temporal-only events whose endpoints have no node row.
-- Spec 256 put off erasing one tenant's temporal data inside a shared graph, because with one graph per tenant a graph erase covers it.
 
 <a id="redaction.refusals"></a>
 [I · redaction.refusals]
@@ -104,13 +99,6 @@ A redaction is also refused, with nothing changed, when:
 - the graph name is invalid or the separator is empty;
 - a redaction of another target has not finished ([rule](#redaction.batches.competing)).
 
-<a id="redaction.strict-mode"></a>
-[Q · redaction.strict-mode]
-
-How should an operator erase and redact a tenant while strict mode is on? There is no provisional answer.
-
-- Strict mode refuses the engine's erase methods, so the erase-first rule cannot be met without turning strict mode off.
-- Possible answers: let erasure run under strict mode; record an erase as a ledger operation; or document turning strict mode off for the erase.
 
 ## Tombstones
 
@@ -119,18 +107,14 @@ How should an operator erase and redact a tenant while strict mode is on? There 
 
 Each of the target's records becomes a tombstone at its own position. The tombstone keeps the kind of change, the entity kind and the record's flags, and holds the SHA-256 of the original canonical record. It holds no entity ID, attribute, value or graph.
 
+- Working assumption: Treat auditor-held original canonical records as required to recompute digests; the product does not promise a retained recoverable preimage.
+
 <a id="redaction.tombstone.digest"></a>
 [D · redaction.tombstone.digest]
 
 For now the digest is unsalted, so an auditor who holds the original canonical record can prove it was the one redacted. A guessable record, such as a short ID with a known shape, can be confirmed by guessing; the digest does not hide it.
 
-<a id="redaction.tombstone.digest-source"></a>
-[Q · redaction.tombstone.digest-source]
-
-Which copy of a record must an auditor keep to recompute its digest? Provisional answer: the server's canonical record, captured before the redaction.
-
-- Only the server's canonical form is known to reproduce the digest.
-- The Python reader spells a genesis default-graph relationship's graph differently, and exports carry no records.
+- Working assumption: Record the unsalted digest as built and keep its privacy adequacy open; no guessing or confirmability experiment is in scope.
 
 <a id="redaction.tombstone.canonical-form"></a>
 [D · redaction.tombstone.canonical-form]
@@ -142,13 +126,6 @@ The canonical record is a JSON object with the record's fields in alphabetical o
 
 Replay, diff and reconstruction treat a tombstone as contributing nothing. Record readers show a tombstone as a redacted change at its position instead of hiding the position. A diff lists the positions of the tombstones in its range.
 
-<a id="redaction.unattributed"></a>
-[Q · redaction.unattributed]
-
-What should happen to a record in the target graph when it cannot be determined whether the record belongs to a prefix target? There is no provisional answer.
-
-- Today it is left in place and counted in the receipt, and the run still reports complete.
-- Possible answers: block completion until it is resolved; tombstone it; or keep today's behavior and document it.
 
 ## Revision metadata and retries
 
@@ -172,10 +149,8 @@ A revision's actor, actor type and connection user are kept, because they identi
 
 The idempotency key of each revision that gets a tombstone is unbound and kept only as a digest. A later commit with that key is refused, so a retry can neither replay the redacted revision nor re-create the erased content.
 
-<a id="redaction.idempotency.other-tenant"></a>
-[Q · redaction.idempotency.other-tenant]
+- Working assumption: Preserve refusal of the whole shared revision key and loss of its correlation lookup until the maintainer specifies a tenant-specific retry result.
 
-When a revision spans tenants, should the other tenant also lose its retry protection and its correlation-ID lookup for that revision? Today it does, as a side effect of clearing the shared revision's fields. Provisional answer: yes, as part of the accepted cost of clearing on any redacted record, although only the lost message was weighed.
 
 ## The audit and the receipt
 
@@ -200,10 +175,8 @@ A redaction returns a receipt that says:
 
 Copies outside the ledger keep the content: exports written before the redaction, IRIS journals and backups. Every receipt says so.
 
-<a id="redaction.out-of-reach.other-copies"></a>
-[Q · redaction.out-of-reach.other-copies]
+- Working assumption: List snapshots and legacy ledger copies as outside redaction reach; archive-retention/removal policy remains an owner decision.
 
-Should the receipt also name IVG's own snapshot archives and the older ledger rows that an upgrade to a new schema leaves behind? Both can hold ledger content that a redaction does not reach. Provisional answer: name them in the receipt and the documentation.
 
 ## Batches and the in-progress marker
 
@@ -215,12 +188,17 @@ A redaction runs in bounded batches, and an in-progress marker records it while 
 - The final step, in its own transaction, re-checks liveness, removes the target's statement entries, writes the redaction revision and removes the marker.
 - Each batch holds the lock briefly; the performance target is a [child](#redaction.batches.speed).
 
+- Working assumption: Assume completion by rerun after fixing liveness; abandonment needs an owner-approved recovery meaning for partial tombstones.
+- Working assumption: (a) No generic abandon: tombstones are irreversible, so 'abandon' could only remove the marker and accept a permanently divergent history; the recovery is re-erase and resume, and the docs should say that this also erases content re-created during the run. An explicit, audited cancel that records the partial redaction as a redaction revision is the alternative. (b) Apply the plan's graph-blind liveness check to every default-graph target, so redact(None) without a prefix is refused while any node of any graph is live. Changed from decisions.md: **yes**. (b) upgraded from assumption to supported: plan.md:10, committed with the accepted ADR in 2b8ea46d, states the graph-blind rule, and the code comment gives its reason; the working answer becomes 'graph-blind liveness' rather than 'refuse unless ownership can be established'. (a) unchanged; added the plaintext-marker consequence…
+
 <a id="redaction.batches.readers"></a>
 [I · redaction.batches.readers]
 
 While the marker exists, record readers, diffs, reconstructions and exports refuse with `RedactionInProgressError`, and verify reports `redaction_in_progress` and adopts nothing.
 
 - History, statistics and the SQL `ledger_records` procedure still answer and can show a half-redacted ledger. Whether they must also refuse is open.
+
+- Working assumption: Keep the explicit redaction guards and list unguarded readers; do not infer that partial-redaction answers are acceptable.
 
 <a id="redaction.batches.commits"></a>
 [I · redaction.batches.commits]
@@ -238,11 +216,6 @@ A redaction of a different target is refused, with nothing changed, until the un
 Running the same redaction again resumes an unfinished run. Running a finished redaction again changes nothing and reports zero. A caller may stop a run after a set number of batches and resume it later.
 
 - If the ledger is disabled between batches, the run stops, keeps its marker and resumes after the ledger is enabled again.
-
-<a id="redaction.batches.abort"></a>
-[Q · redaction.batches.abort]
-
-Can an unfinished redaction be abandoned? Today a run whose target became live again can finish only after the target is erased again, and until then the marker blocks readers, verify and other targets. Provisional answer: no abort; erase again and resume.
 
 <a id="redaction.batches.marker-text"></a>
 [D · redaction.batches.marker-text]
@@ -265,6 +238,7 @@ After a target is erased and redacted, verify reports equal again; after the era
 
 ### redaction.purpose
 
+- uncertain
 - Sources: [spec 256 input and story 1](../../../specs/256-ledger-tenant-redaction/spec.md#L8-L58), [ADR-0013](../../../docs/adr/0013-redaction-removes-content-from-history.md), [CONTEXT.md Redaction](../../../CONTEXT.md#L206-L217), [OpsReview brief](../../../docs/dev/notes/for-opsreview/IVG-OPSREVIEW-BRIEF.md#L120-L126)
 - agent
 - security, user-facing-behavior
@@ -279,8 +253,11 @@ The exception bullets were added by review round 3 R3-reader M3; each links the 
 
 Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001)
 
+Open questions: [q-003](../../Verus_verification/open_questions.md#q-003), [q-led-002](../../Verus_verification/open_questions.md#q-led-002), [redaction.unattributed](../../Verus_verification/open_questions.md#redaction.unattributed)
+
 ### redaction.target
 
+- uncertain
 - Sources: [spec 256 FR-001 and edge cases](../../../specs/256-ledger-tenant-redaction/spec.md#L97-L116), [LedgerRedact.cls MatchString](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L45-L64), [client.py redact](../../../iris_vector_graph/ledger/client.py#L633-L680)
 - Children: [Node records](#redaction.target.nodes), [Relationship records](#redaction.target.relationships)
 - agent
@@ -290,6 +267,8 @@ Findings: [Search indexes keep answering with content that was erased, and a re-
 An empty prefix means the whole graph; the Eraser refuses an empty prefix for the analogous erase. Live tests: `TestDefaultGraphTenantByPrefix` in `test_256_ledger_redaction_e2e.py`.
 
 Findings: [Spell record graphs in redaction through GraphKey instead of an inline translate](../../Verus_verification/design_simplification.md#simp-led-001)
+
+Open questions: [redaction.unattributed](../../Verus_verification/open_questions.md#redaction.unattributed)
 
 ### redaction.target.nodes
 
@@ -315,6 +294,7 @@ Live test: `TestDefaultGraphTenantByPrefix::test_the_prefix_is_matched_with_its_
 
 ### redaction.tenant
 
+- uncertain
 - Sources: [ADR-0013 Context](../../../docs/adr/0013-redaction-removes-content-from-history.md#L37), [client.py redact docstring](../../../iris_vector_graph/ledger/client.py#L643-L665), [OpsReview brief usage](../../../docs/dev/notes/for-opsreview/IVG-OPSREVIEW-BRIEF.md#L125)
 - agent
 - user-facing-behavior, security
@@ -329,17 +309,7 @@ Observed divergences in the prefix step (review round 2 and 3): a prefix erase l
 
 Findings: [Erasing a tenant by prefix leaves its temporal-only events, and the redaction that follows completes while they stay readable](../../Verus_verification/bugs_issues.md#bug-led-007); [A property row with no node row survives the prefix erase, and every later prefix redaction of its tenant is refused](../../Verus_verification/bugs_issues.md#bug-led-010)
 
-### redaction.tenant.node-history-policy
-- Expands: [parent](#redaction.tenant)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [How is a tenant's node history redacted when nodes live in the tenant's own graph?](../../Verus_verification/open_questions.md#HD-1304).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1304).
-
-Audit (HD-1304): Open owner decision. Working assumption (agent, unratified): Require tenant id prefixes for ledger-governed tenants and document it next to redact(); for a graph target whose erased nodes left graph-blind node records, return an explicit incomplete result (or refuse) instead of complete=true. Model graph-qualified node records for future history separately; a migration of existing history needs trustworthy provenance, which the genesis did not keep. Changed from decisions.md: **no**. Same choice; added the R290 maintainer statement, the genesis attribution contradiction, the receipt (FR-008) gap and fresh live evidence including the FR-007 divergence. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1304).
+Open questions: [HD-1304](../../Verus_verification/open_questions.md#HD-1304), [q-009](../../Verus_verification/open_questions.md#q-009)
 
 ### redaction.call
 
@@ -352,8 +322,9 @@ The target's identity is the SHA-256 of the canonical graph name, a NUL and the 
 
 ### redaction.after-erasure
 
+- uncertain
 - Sources: [ADR-0013 Decision](../../../docs/adr/0013-redaction-removes-content-from-history.md#L17), [spec 256 story 3 and FR-005](../../../specs/256-ledger-tenant-redaction/spec.md#L84-L124), [LedgerRedact.cls LiveRows and Final](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L143-L178)
-- Children: [Default graph](#redaction.after-erasure.default-graph), [Temporal content](#redaction.after-erasure.temporal)
+- Children: [Default graph](#redaction.after-erasure.default-graph), [Temporal content](../../Verus_verification/open_questions.md#q-009)
 - agent
 - data-integrity, security
 - test-coverage
@@ -364,6 +335,8 @@ Findings: [A redaction completes while its target's content is still uncommitted
 
 
 Findings: [A property row with no node row survives the prefix erase, and every later prefix redaction of its tenant is refused](../../Verus_verification/bugs_issues.md#bug-led-010)
+
+Open questions: [q-009](../../Verus_verification/open_questions.md#q-009)
 
 ### redaction.after-erasure.default-graph
 
@@ -377,25 +350,6 @@ The bullet is a consequence of the plan's rule, which the sources do not discuss
 
 Findings: [Redacting the whole default graph ignores node rows in named graphs and destroys the history of nodes that are still live](../../Verus_verification/bugs_issues.md#bug-003)
 
-### redaction.after-erasure.temporal
-
-- Sources: [LedgerRedact.cls LiveRows](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L143-L178), [ADR-0015](../../../docs/adr/0015-temporal-structural-rows-opt-out.md), [replay.py apply](../../../iris_vector_graph/ledger/replay.py#L170-L210)
-- Expands: [After erasure](#redaction.after-erasure)
-- agent
-- uncertain
-- data-integrity
-
-Verify ignores temporal content as well ([verify scope](ledger.g5.md#ledger.verify.scope)), so verify cannot detect this case.
-
-Findings: [Erasing a tenant by prefix leaves its temporal-only events, and the redaction that follows completes while they stay readable](../../Verus_verification/bugs_issues.md#bug-led-007)
-
-
-The spec 256 deferral is in [spec.md "Not in this spec"](../../../specs/256-ledger-tenant-redaction/spec.md#L159-L163) and the [A-history notes](../../uplift/ivg-verus-initial/intent/ledger-history.md#L51) (Deferred). Observed: [erasure_prefix_temporal_only](../../Verus_verification/receipts/native/erasure_prefix_temporal_only.json) and [redaction_temporal_only_live](../../Verus_verification/receipts/native/redaction_temporal_only_live.json). Review round 3 R3-reader H2 removed the premise "erasure removes them anyway" from the body.
-
-Findings: [Should redaction count a target's temporal-only edges as live content?](../../Verus_verification/open_questions.md#q-009)
-
-Audit (q-009): Open owner decision. Working assumption (agent, unratified): Treat temporal entries as live content for the intended safety rule; the existing row-only check remains a documented behavior discrepancy pending scope confirmation. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-009).
-
 ### redaction.refusals
 
 - Sources: [LedgerRedact.cls Redact](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L182-L210), [spec 256 plan Design 1](../../../specs/256-ledger-tenant-redaction/plan.md#L21), [client.py refuse caller transaction](../../../iris_vector_graph/ledger/client.py#L268-L279)
@@ -405,24 +359,9 @@ Audit (q-009): Open owner decision. Working assumption (agent, unratified): Trea
 
 Live tests: `TestUS3Refusals::test_a_disabled_ledger_is_refused_and_nothing_changes`, `tests/e2e/test_470_ledger_caller_txn_e2e.py::test_enable_and_redact_refuse_the_callers_transaction`.
 
-### redaction.strict-mode
-
-- Sources: [nodes_edges.py erase_graph](../../../iris_vector_graph/_engine/nodes_edges.py#L1513), [ledger API contract strict mode](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L82-L93), [A-history notes F11](../../uplift/ivg-verus-initial/intent/ledger-history.md)
-- agent
-- uncertain
-- operations, security
-
-Erasing through ledger changesets cannot reach nodes that live in named graphs, because ledger node operations act on the default graph only. No document or test covers this combination.
-
-Findings: [Under strict mode the only API delete is a ledger changeset, which leaves documents, temporal, FHIR and search-index content that redaction and verify cannot see](../../Verus_verification/bugs_issues.md#bug-led-008)
-
-
-Findings: [How should strict mode and the erase-then-redact path fit together?](../../Verus_verification/open_questions.md#q-003)
-
-Audit (q-003): Open owner decision. Working assumption (agent, unratified): Document the present strict-off erasure sequence as an operational precondition; do not infer that disabling strict mode is the desired product interface. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-003).
-
 ### redaction.tombstone
 
+- uncertain
 - Sources: [ADR-0013 Decision](../../../docs/adr/0013-redaction-removes-content-from-history.md#L14), [spec 256 FR-002](../../../specs/256-ledger-tenant-redaction/spec.md#L117-L118), [LedgerRedact.cls Tombstone](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L332-L347), [Ledger.cls CanonicalRecord](../../../iris_src/src/Graph/KG/Ledger.cls#L571-L605)
 - Children: [Digest](#redaction.tombstone.digest), [Canonical form](#redaction.tombstone.canonical-form)
 - agent
@@ -433,11 +372,14 @@ The spec's Key Entities give a three-field tombstone; ADR-0013 and the code add 
 
 Findings: [Spec 256's text contradicts its own decisions and the shipped tombstone format](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-003)
 
+Open questions: [q-led-001](../../Verus_verification/open_questions.md#q-led-001)
+
 ### redaction.tombstone.digest
 
+- uncertain
 - Sources: [ADR-0013 Alternatives and Consequences](../../../docs/adr/0013-redaction-removes-content-from-history.md#L43-L49), [spec 256 story 2](../../../specs/256-ledger-tenant-redaction/spec.md#L63-L80)
 - Expands: [Tombstone](#redaction.tombstone)
-- Children: [Digest source](#redaction.tombstone.digest-source)
+- Children: [Digest source](../../Verus_verification/open_questions.md#q-led-001)
 - agent
 - security
 - test-coverage
@@ -449,19 +391,7 @@ Findings: [Is an unsalted SHA-256 of a tenant name and of each record acceptable
 
 Audit (q-005): Open owner decision. Working assumption (agent, unratified): Record the unsalted digest as built and keep its privacy adequacy open; no guessing or confirmability experiment is in scope. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-005).
 
-### redaction.tombstone.digest-source
-
-- Sources: [replay.py record decoding](../../../iris_vector_graph/ledger/replay.py#L56-L74), [replay.py default-graph spellings](../../../iris_vector_graph/ledger/replay.py#L136-L142), [Ledger.cls CanonicalRecord](../../../iris_src/src/Graph/KG/Ledger.cls#L571-L605)
-- Expands: [Digest](#redaction.tombstone.digest)
-- agent
-- uncertain
-- security
-
-The live digest test computes the original form with the server's canonical-record method, which is not a public Python API.
-
-Findings: [Which copy of a record must an auditor keep to recompute its tombstone digest?](../../Verus_verification/open_questions.md#q-led-001)
-
-Audit (q-led-001): Open owner decision. Working assumption (agent, unratified): Treat auditor-held original canonical records as required to recompute digests; the product does not promise a retained recoverable preimage. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-led-001).
+Open questions: [q-005](../../Verus_verification/open_questions.md#q-005)
 
 ### redaction.tombstone.canonical-form
 
@@ -471,7 +401,7 @@ Audit (q-led-001): Open owner decision. Working assumption (agent, unratified): 
 - security, data-integrity
 - test-coverage
 
-The JSON keys are `attr`, `entity_id`, `entity_kind`, `flags`, `graph`, `new`, `op`, `ordinal`, `prior`, `seq`. Values are written as IRIS's `%ToJSON` writes them. A genesis relationship in the default graph stores its graph as a NUL character, which is written as `"\u0000"`, not null ([digest source](#redaction.tombstone.digest-source)). A tombstone's own canonical form holds only `digest`, `flags`, `op`, `ordinal`, `redacted_op` and `seq`. Live test: `TestUS2Verifiable::test_each_tombstone_digest_is_sha256_of_the_canonical_record_it_replaced`.
+The JSON keys are `attr`, `entity_id`, `entity_kind`, `flags`, `graph`, `new`, `op`, `ordinal`, `prior`, `seq`. Values are written as IRIS's `%ToJSON` writes them. A genesis relationship in the default graph stores its graph as a NUL character, which is written as `"\u0000"`, not null ([digest source](../../Verus_verification/open_questions.md#q-led-001)). A tombstone's own canonical form holds only `digest`, `flags`, `op`, `ordinal`, `redacted_op` and `seq`. Live test: `TestUS2Verifiable::test_each_tombstone_digest_is_sha256_of_the_canonical_record_it_replaced`.
 
 ### redaction.readers
 
@@ -481,17 +411,6 @@ The JSON keys are `attr`, `entity_id`, `entity_kind`, `flags`, `graph`, `new`, `
 - test-coverage
 
 FR-003 also names history and export. Neither lists record positions, so neither can mark one. Live tests: `TestUS2Verifiable::test_replay_to_every_seq_holds_no_tenant_a_content`, `::test_diff_marks_tombstones_rather_than_hiding_them`.
-
-### redaction.unattributed
-
-- Sources: [LedgerRedact.cls BatchInLock](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L302-L330), [spec 256 FR-001](../../../specs/256-ledger-tenant-redaction/spec.md#L114-L116), [A-history notes F9](../../uplift/ivg-verus-initial/intent/ledger-history.md)
-- agent
-- uncertain
-- security, data-integrity
-
-FR-001 says every record of the target must become a tombstone. The count is reported as `unattributed_records`. No upstream test produces a non-zero count; the native probe [redaction_unattributed_qualifier](../../Verus_verification/receipts/native/redaction_unattributed_qualifier.json) did (`complete` with one unattributed record still holding the qualifier value).
-
-Findings: [A redaction reports complete while records it could not attribute still hold the target's content](../../Verus_verification/bugs_issues.md#bug-004)
 
 ### redaction.metadata
 
@@ -526,28 +445,16 @@ The exception records itself twice: in a per-revision flag and in the redaction 
 
 ### redaction.idempotency
 
+- uncertain
 - Sources: [ADR-0013 Decision](../../../docs/adr/0013-redaction-removes-content-from-history.md#L15), [spec 256 edge cases](../../../specs/256-ledger-tenant-redaction/spec.md#L104-L105), [Ledger.cls redacted key check](../../../iris_src/src/Graph/KG/Ledger.cls#L466-L473), [LedgerRedact.cls ClearRevision](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L359-L365)
-- Children: [Other tenant](#redaction.idempotency.other-tenant)
+- Children: [Other tenant](../../Verus_verification/open_questions.md#q-001)
 - agent
 - security, data-integrity
 - test-coverage
 
 The error is `IdempotencyRedactedError`, a kind of `IdempotencyConflictError`. Live test: `TestUS1RedactTenant::test_a_retry_with_a_redacted_idempotency_key_is_refused`.
 
-### redaction.idempotency.other-tenant
-
-- Sources: [spec 256 Decision 2](../../../specs/256-ledger-tenant-redaction/spec.md#L150-L157), [A-history notes F10](../../uplift/ivg-verus-initial/intent/ledger-history.md)
-- Expands: [Idempotency keys](#redaction.idempotency)
-- agent
-- uncertain
-- user-facing-behavior
-
-The draft's open question 2 (commit a140ed78) weighed only the lost commit message.
-
-
-Findings: [Should another tenant's retry of a revision it shared with a redacted tenant be refused?](../../Verus_verification/open_questions.md#q-001)
-
-Audit (q-001): Open owner decision. Working assumption (agent, unratified): Preserve refusal of the whole shared revision key and loss of its correlation lookup until the maintainer specifies a tenant-specific retry result. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-001).
+Open questions: [q-001](../../Verus_verification/open_questions.md#q-001)
 
 ### redaction.audit
 
@@ -571,37 +478,29 @@ Live test: `TestUS1RedactTenant::test_the_receipt_counts_what_it_did_and_names_w
 
 ### redaction.out-of-reach
 
+- uncertain
 - Sources: [ADR-0013 Consequences](../../../docs/adr/0013-redaction-removes-content-from-history.md#L48), [spec 256 Not in this spec](../../../specs/256-ledger-tenant-redaction/spec.md#L159-L163)
-- Children: [Other copies](#redaction.out-of-reach.other-copies)
+- Children: [Other copies](../../Verus_verification/open_questions.md#q-led-002)
 - agent
 - security
 - test-coverage
 
 Live test: the receipt test checks that the receipt names exports, journals and backups.
 
-### redaction.out-of-reach.other-copies
-
-- Sources: [ADMIN_GUIDE snapshots](../../../docs/ADMIN_GUIDE.md#L978-L991), [legacy.py copy_ledger_history](../../../iris_vector_graph/_engine/legacy.py#L606-L646), [A-history notes F8](../../uplift/ivg-verus-initial/intent/ledger-history.md)
-- Expands: [Out of reach](#redaction.out-of-reach)
-- agent
-- uncertain
-- security, operations
-
-Restoring a snapshot taken before a redaction would also bring back the redacted records and the old idempotency keys.
-
-Findings: [Should the redaction receipt name IVG's own snapshot archives and the ledger rows an upgrade left behind?](../../Verus_verification/open_questions.md#q-led-002)
-
-Audit (q-led-002): Open owner decision. Working assumption (agent, unratified): List snapshots and legacy ledger copies as outside redaction reach; archive-retention/removal policy remains an owner decision. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-led-002).
+Open questions: [q-led-002](../../Verus_verification/open_questions.md#q-led-002)
 
 ### redaction.batches
 
+- uncertain
 - Sources: [spec 256 Decision 3](../../../specs/256-ledger-tenant-redaction/spec.md#L156), [ADR-0013 Batches](../../../docs/adr/0013-redaction-removes-content-from-history.md#L18), [LedgerRedact.cls Batch and Final](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L271-L442), [spec 256 SC-003](../../../specs/256-ledger-tenant-redaction/spec.md#L146-L147)
-- Children: [Readers](#redaction.batches.readers), [Commits](#redaction.batches.commits), [Competing redactions](#redaction.batches.competing), [Resume](#redaction.batches.resume), [Abort](#redaction.batches.abort), [Marker text](#redaction.batches.marker-text), [Speed](#redaction.batches.speed)
+- Children: [Readers](#redaction.batches.readers), [Commits](#redaction.batches.commits), [Competing redactions](#redaction.batches.competing), [Resume](#redaction.batches.resume), [Abort](../../Verus_verification/open_questions.md#q-006), [Marker text](#redaction.batches.marker-text), [Speed](#redaction.batches.speed)
 - human-verified
 - architecture-decision, operations
 - test-coverage
 
 Decision 3 (Tom, 2026-10-22) chose batches with a marker over one long transaction. The draft's wish for the run to look atomic to readers was dropped. Observed divergence: the marker is created at the first tombstone, not when the run starts, so a run that has only scanned so far has no marker. The check for another target's marker runs before the lock and before liveness. Every run rescans from the first record ([LedgerRedact.cls](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L202-L226), [reconstruction check G10 and 2(b)11](../../uplift/ivg-verus-initial/reconstruction-check.md#L400)). Model scope: the final step's removal of statement entries (`DropStatements`) is not modeled in [redaction.rs](../../Verus_verification/models/ledger_redaction/redaction.rs). Nor is its branch that writes an audit revision with no marker when it drops statements ([review round 1, R1-11 / CV-5](../../uplift/ivg-verus-initial/review/round1-core.md#L139-L141)). Live tests: `TestBatchesAndMarker` and the opt-in performance test `test_256_ledger_redaction_perf.py` (SC-003).
+
+Open questions: [HD-1303](../../Verus_verification/open_questions.md#HD-1303), [q-006](../../Verus_verification/open_questions.md#q-006)
 
 ### redaction.batches.readers
 
@@ -617,6 +516,8 @@ Provenance: Decision 3 (Tom, 2026-10-22) says "readers and verify() honour" the 
 Findings: [Which ledger readers must refuse while a redaction is unfinished?](../../Verus_verification/open_questions.md#q-002)
 
 Audit (q-002): Open owner decision. Working assumption (agent, unratified): Keep the explicit redaction guards and list unguarded readers; do not infer that partial-redaction answers are acceptable. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-002).
+
+Open questions: [q-002](../../Verus_verification/open_questions.md#q-002)
 
 ### redaction.batches.commits
 
@@ -651,22 +552,6 @@ Findings: [Two redactions of different targets can run at once, and each one's a
 - test-coverage
 
 The stop on disable is stated in [LedgerRedact.cls BatchInLock](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L302-L305). Live tests: `TestUS1RedactTenant::test_running_the_same_redaction_again_changes_nothing`, `TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes`. Disable in the middle of a run and a crash in the middle of a batch are not tested. Resume is observed natively for a graph target ([redaction_interrupt_resume](../../Verus_verification/receipts/native/redaction_interrupt_resume.json)) and a prefix target ([redaction_prefix_resume](../../Verus_verification/receipts/native/redaction_prefix_resume.json)); the model proves batches compose within one call's knowledge only. `lemma_serial_resume_keeps_attribution` and `witness_race_then_resume_loses_attribution` in [redaction.rs](../../Verus_verification/models/ledger_redaction/redaction.rs) are classification facts about the attribution test, not a proof of resume: after the race of [Two redactions of different targets can run at once, and each one's audit and receipt then describes the other's work](../../Verus_verification/bugs_issues.md#bug-001), a resumed prefix run can lose the statement endpoints its earlier call learned.
-
-### redaction.batches.abort
-
-- Sources: [LedgerRedact.cls FinalInLock](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L409-L418), [A-history notes F12](../../uplift/ivg-verus-initial/intent/ledger-history.md), [How does an operator end a redaction that cannot finish?](../../Verus_verification/open_questions.md#q-006)
-- Expands: [Batches](#redaction.batches)
-- agent
-- uncertain
-- operations
-
-Evidence is limited. In the native interrupt probe, the "target live again" step is refused at entry, by the liveness check before the first batch, not by the final step's re-check. The final step's re-check under the lock is proved in the model (`theorem_completion` in [redaction.rs](../../Verus_verification/models/ledger_redaction/redaction.rs)) and was observed refusing ("became live again") in the native race run ([redaction_concurrent_targets](../../Verus_verification/receipts/native/redaction_concurrent_targets.json)); the serial case is not observed.
-
-Audit (q-006): Open owner decision. Working assumption (agent, unratified): Assume completion by rerun after fixing liveness; abandonment needs an owner-approved recovery meaning for partial tombstones. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-006).
-
-Audit (HD-1303): Open owner decision. Working assumption (agent, unratified): (a) No generic abandon: tombstones are irreversible, so 'abandon' could only remove the marker and accept a permanently divergent history; the recovery is re-erase and resume, and the docs should say that this also erases content re-created during the run. An explicit, audited cancel that records the partial redaction as a redaction revision is the alternative. (b) Apply the plan's graph-blind liveness check to every default-graph target, so redact(None) without a prefix is refused while any node of any graph is live. Changed from decisions.md: **yes**. (b) upgraded from assumption to supported: plan.md:10, committed with the accepted ADR in 2b8ea46d, states the graph-blind rule, and the code comment gives its reason; the working answer becomes 'graph-blind liveness' rather than 'refuse unless ownership can be established'. (a) unchanged; added the plaintext-marker consequence… See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1303).
-
-Findings: [Can an unfinished redaction be abandoned, and what may a default-graph target touch?](../../Verus_verification/open_questions.md#HD-1303).
 
 ### redaction.batches.marker-text
 

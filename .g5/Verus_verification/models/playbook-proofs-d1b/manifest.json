@@ -1,0 +1,79 @@
+{
+  "title": "playbook proofs d1b",
+  "question": "modules 18 (snap_l2) and 06 (vidx_l2 IVF lifecycle, vq_l2 embed queue)",
+  "ontology_ids": [],
+  "runs": [
+    {
+      "label": "baseline",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [], \"recorded_errors\": 0, \"recorded_verified\": 92}"
+    },
+    {
+      "label": "control_f1801_no_prefix_check",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/snap_l2.rs:524\"], \"recorded_errors\": 1, \"recorded_verified\": 91}"
+    },
+    {
+      "label": "control_f1801_restore_unredacts",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/snap_l2.rs:538\", \"src/snap_l2.rs:553\", \"src/snap_l2.rs:568\"], \"recorded_errors\": 3, \"recorded_verified\": 89}"
+    },
+    {
+      "label": "control_fc1304_receipt_omits_archives",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/snap_l2.rs:454\"], \"recorded_errors\": 1, \"recorded_verified\": 91}"
+    },
+    {
+      "label": "control_fc1801_dirty_export",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/snap_l2.rs:380\", \"src/snap_l2.rs:408\", \"src/snap_l2.rs:432\", \"src/snap_l2.rs:447\", \"src/snap_l2.rs:473\"], \"recorded_errors\": 5, \"recorded_verified\": 87}"
+    },
+    {
+      "label": "control_fc1802_swallowed_line",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/snap_l2.rs:536\"], \"recorded_errors\": 1, \"recorded_verified\": 91}"
+    },
+    {
+      "label": "control_fc1804_edge_routes_omitted",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/snap_l2.rs:369\"], \"recorded_errors\": 1, \"recorded_verified\": 91}"
+    },
+    {
+      "label": "control_f0606_erase_keeps_ivf",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/vidx_l2.rs:176\", \"src/vidx_l2.rs:180\"], \"recorded_errors\": 1, \"recorded_verified\": 91}"
+    },
+    {
+      "label": "control_hd0602_inplace_build",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/vidx_l2.rs:214\", \"src/vidx_l2.rs:228\"], \"recorded_errors\": 2, \"recorded_verified\": 90}"
+    },
+    {
+      "label": "control_hd0604_two_consumers",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/vq_l2.rs:171\", \"src/vq_l2.rs:172\"], \"recorded_errors\": 1, \"recorded_verified\": 91}"
+    },
+    {
+      "label": "control_f0604_done_without_vector",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/vq_l2.rs:229\"], \"recorded_errors\": 1, \"recorded_verified\": 91}"
+    },
+    {
+      "label": "control_fc0601_no_version_check",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/vq_l2.rs:231\"], \"recorded_errors\": 1, \"recorded_verified\": 91}"
+    }
+  ]
+}

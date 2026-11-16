@@ -1,0 +1,75 @@
+{
+  "title": "weighted paths",
+  "question": "actual stale-entry DijkstraJson/node-hop dominance/strict relax/frozen parent path, derived finite termination and minimum/no-path; exact integer raw scalar graph only, Cost unproved",
+  "ontology_ids": [
+    "algorithms.op.paths.weighted"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 45}"
+    },
+    {
+      "label": "descending-cost-queue",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_minimum\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "node-only-seen-dominance",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_relax_covers_neighbor\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "exact-cap-neighbor-rejected",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_relax_covers_neighbor\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "parent-does-not-point-to-accepted-predecessor",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_relax_preserves_base\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nonpositive-weight-zero",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_backtrack_derives_path_and_cost\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "exact-cap-target-not-returned",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_actual_continue_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "backtrack-stops-on-hopzero",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_backtrack_derives_path_and_cost\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "popped-entry-not-recorded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_pop_preserves_termination\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "observed",
+      "kind": "observed",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

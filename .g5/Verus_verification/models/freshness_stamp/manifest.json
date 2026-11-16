@@ -1,0 +1,45 @@
+{
+  "title": "freshness stamp",
+  "question": "Freshness and TraversalKHop.Fresh: a rebuilt store is current only when stamped and equal to the token",
+  "ontology_ids": [
+    "structure.rebuilt.stamp"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 7}"
+    },
+    {
+      "label": "unset-stamp-reads-zero",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_unstamped_stale_at_zero\", \"theorem_is_current_iff_stamped_equal\", \"theorem_python_agrees_with_objectscript\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unset-token-not-zero",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_stamped_zero_current\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "os-fresh-without-data-check",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_unstamped_stale_at_zero\", \"theorem_python_agrees_with_objectscript\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "stale-list-drops-unstamped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_stale_stores_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

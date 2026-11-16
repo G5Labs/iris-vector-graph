@@ -1,0 +1,51 @@
+{
+  "title": "rel prop text",
+  "question": "the relationship property text decoder by input class (ASCII canonical rule)",
+  "ontology_ids": [
+    "query.values.relationship_text"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "reviewed (ASCII); the as-built pattern departs, see NOTES",
+      "expect": "{\"errors\": 0, \"verified\": 10}"
+    },
+    {
+      "label": "leading-zero-canonical",
+      "kind": "control",
+      "variant": "reviewed (ASCII); the as-built pattern departs, see NOTES",
+      "expect": "{\"fail_in\": [\"theorem_noncanonical_stays_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "legacy-bool-spellings",
+      "kind": "control",
+      "variant": "reviewed (ASCII); the as-built pattern departs, see NOTES",
+      "expect": "{\"fail_in\": [\"theorem_decode_classes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sign-plus-canonical",
+      "kind": "control",
+      "variant": "reviewed (ASCII); the as-built pattern departs, see NOTES",
+      "expect": "{\"fail_in\": [\"theorem_noncanonical_stays_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "as-built-without-final-newline-match",
+      "kind": "control",
+      "variant": "reviewed (ASCII); the as-built pattern departs, see NOTES",
+      "expect": "{\"fail_in\": [\"witness_as_built_trailing_newline_promoted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "reviewed (ASCII); the as-built pattern departs, see NOTES",
+      "expect": null
+    },
+    {
+      "label": "as-built-ascii-digits",
+      "kind": "control",
+      "variant": "reviewed (ASCII); the as-built pattern departs, see NOTES",
+      "expect": "{\"fail_in\": [\"witness_as_built_unicode_digit_promoted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

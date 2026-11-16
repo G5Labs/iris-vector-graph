@@ -1,0 +1,45 @@
+{
+  "title": "index declaration",
+  "question": "GraphSchema.ensure_adjacency_index as an ordered action list from catalog state",
+  "ontology_ids": [
+    "structure.adjacency.declare"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 7}"
+    },
+    {
+      "label": "backfill-after-build",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_backfill_before_edge_index\", \"theorem_prereqs_declare_both\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "skip-ekey-check",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_no_prereq_no_ddl\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "plain-taken-as-declared",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_plain_replaced\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "redeclare-functional",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_declared_left_alone\", \"theorem_second_run_is_noop\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

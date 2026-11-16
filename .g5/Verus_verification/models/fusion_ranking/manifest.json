@@ -1,0 +1,58 @@
+{
+  "title": "fusion ranking",
+  "question": "Python first-rank producer, mathematical RRF scores, strict pair winner and provider catch/modes; general sort/details observed only",
+  "ontology_ids": [
+    "search.fusion.failed_leg",
+    "search.fusion.python"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 11}"
+    },
+    {
+      "label": "last-duplicate-wins",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_first_occurrence_wins\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "missing-contributes",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_absent_contributes_zero\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "all-failures-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_vector_failure_dropped_text_failure_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "drop-second-leg",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_second_leg_changes_winner\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "all-failures-raise",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_vector_failure_dropped_text_failure_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-mode-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_success_is_a_retained_leg\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

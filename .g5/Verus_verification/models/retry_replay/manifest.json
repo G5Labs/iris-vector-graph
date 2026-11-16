@@ -1,0 +1,75 @@
+{
+  "title": "retry replay",
+  "question": "derived completed Counts prefix plus whole-batch single fallback to final coordinates/counts; new units separated from imports",
+  "ontology_ids": [
+    "temporal.write.retry"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 70}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "completed-prefix-discarded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_zero_lost_reply_retains_two_events\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "fallback-resumes-tail",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_positive_lost_reply_collides\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "error-reply-accepted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_zero_lost_reply_retains_two_events\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "fallback-uses-counts-clock",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_zero_lost_reply_retains_two_events\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "prefix-count-added",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_zero_lost_reply_retains_two_events\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "prefix-collisions-leak",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_preexisting_collision_still_reports_one\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "fault-skips-first-item",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_zero_lost_reply_retains_two_events\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "validation-barrier-removed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_validation_precedes_counts_and_fallback\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-consults-provider",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_has_no_counts_or_fallback\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

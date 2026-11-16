@@ -130,7 +130,7 @@ Each model directory has a root `.rs`, `model.json` (expected count and controls
 
 ## Native checks
 
-Every probe under `native/probes/` drives only public product entry points on this arm's instance, through the identity-checked [harness](native/harness.py), resets the namespace's graph and ledger content first, derives its expectation independently of the implementation and prints `OBSERVED_AS_EXPECTED`, `OBSERVED_DEFECT` or `INCONCLUSIVE`. Observations land in `$RUN_DIR/native/<probe>-<stamp>.json` with the SHA-256 of the probe, its helper and the harness (`_probe_inputs`); copies of the final-candidate observations are in [`receipts/native/`](receipts/native/). Run probes one at a time: they share one IRIS namespace, and Community Edition allows only a handful of connections (concurrent probes and scratch-namespace suites hit "Unable to allocate a license").
+Every probe under `native/probes/` drives only public product entry points on this arm's instance, through the identity-checked [harness](native/harness.py), resets the namespace's graph and ledger content first, derives its expectation independently of the implementation and prints `OBSERVED_AS_EXPECTED`, `OBSERVED_DEFECT` or `INCONCLUSIVE`. Observations land in `$RUN_DIR/native/<probe>-<stamp>.json` with the SHA-256 of the probe, its helper and the harness (`_probe_inputs`); copies of the final-candidate observations are in [`receipts/native/`](receipts/native). Run probes one at a time: they share one IRIS namespace, and Community Edition allows only a handful of connections (concurrent probes and scratch-namespace suites hit "Unable to allocate a license").
 
 ## Upstream suites against the original product
 

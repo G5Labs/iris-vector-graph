@@ -32,12 +32,7 @@ A read or write that names no graph uses the default graph. In Python, a `graph=
 - Deleting an edge with `all_graphs` set deletes the triple from every graph.
 - Deleting a reifier removes its rows in every graph ([reifications](../features/graph-structure.g5.md#structure.reification)).
 
-<a id="graph.default.python-read-policy"></a>
-[Q · graph.default.python-read-policy]
-
-What does a Python read with no graph argument read?
-
-- Working assumption (agent, unratified): Omission selects the default graph for graph-aware Python reads; all-graphs reads require an explicit interface.
+- Working assumption: For graph-aware Python reads, omission selects the default graph. Keep the all-graph id helpers as separate discovery operations with their scope visible. Never hydrate ids from one scope with another scope's records. Model delete_node's 'holding graph or refuse' rule as its own documented operation.
 
 <a id="graph.named"></a>
 [I · graph.named]
@@ -96,15 +91,14 @@ A graph name that cannot be stored as a key is refused before anything is writte
 - NUL characters (code 0) are removed first, rather than refused, because IRIS SQL returns a NUL for an empty name.
 - A name that still contains a control character is refused: codes 1 to 31 and 127 to 159, the ones IRIS classes as control characters. This includes code 1, the ledger's default-graph key.
 
+- Working assumption: Preserve refusal of invalid new names and the promised legacy report; require an operator-visible migration plan before claiming old invalid names are supported.
+- Working assumption: Prefer the server GraphKey rule for all new names; control-character normalization versus refusal must be documented consistently.
+
 <a id="graph.names.report"></a>
 [D · graph.names.report]
 
 Graph verification must report any existing graph whose name is now refused. Today nothing reports them, verification itself refuses the name `"0"`, and a rebuild of the adjacency index fails on such a row.
 
-<a id="graph.names.legacy"></a>
-[Q · graph.names.legacy]
-
-What should an upgrade do with rows that carry a graph name that is now refused? There is no provisional answer. The key decision covers only [reporting them](#graph.names.report).
 
 ## Reads and writes that name no graph
 
@@ -134,6 +128,7 @@ Findings: [delete_reification deletes the reifier's rows in every graph](../../V
 
 ### graph.default
 
+- uncertain
 - Sources: [CONTEXT.md, Graph](../../../CONTEXT.md#L27-L31), [USER_GUIDE section 4](../../../docs/USER_GUIDE.md#L386-L388), [USER_GUIDE on deletes and graph=](../../../docs/USER_GUIDE.md#L431-L465), [the omitted-graph marker](../../../iris_vector_graph/_engine/nodes_edges.py#L82-L83), [holders of an ID](../../../iris_vector_graph/_engine/nodes_edges.py#L2134-L2153), [delete_node scopes](../../../iris_vector_graph/_engine/nodes_edges.py#L2202-L2268), [delete_edge all_graphs](../../../iris_vector_graph/_engine/nodes_edges.py#L1390-L1422), [delete_reification](../../../iris_vector_graph/_engine/schema.py#L3361-L3392)
 - Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_scalar_is_raw_scoped_cardinality`, `theorem_default_null_empty_named`, `theorem_empty_filter_is_unfiltered` and `theorem_scoped_failure_propagates`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). Canonical graph/filter tokens and a faithful SQL comparison frame bind physical row counts, including legacy NULL/default equivalence; all-graph status remains its documented exception. Grouped label cardinality is modeled, while arbitrary tie ordering, validation and native/collation internals remain outside this claim.
 - agent
@@ -141,17 +136,7 @@ Findings: [delete_reification deletes the reifier's rows in every graph](../../V
 
 The refusal of an ID held by several graphs dates from 4.6.0 (#112); before it, a delete without a graph removed the ID from every graph. The holder rule, the False answer for an ID with no holder and the omitted-versus-None distinction were added after the stage-A reconstruction check (gaps G1 and G2) and verified in the code; the same rule applies to `delete_node` and `bulk_delete_nodes`.
 
-### graph.default.python-read-policy
-- Expands: [parent](#graph.default)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [What does a Python read with no graph argument read?](../../Verus_verification/open_questions.md#HD-0201).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0201).
-
-Audit (HD-0201): Open owner decision. Working assumption (agent, unratified): For graph-aware Python reads, omission selects the default graph. Keep the all-graph id helpers as separate discovery operations with their scope visible. Never hydrate ids from one scope with another scope's records. Model delete_node's 'holding graph or refuse' rule as its own documented operation. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0201).
+Open questions: [HD-0201](../../Verus_verification/open_questions.md#HD-0201)
 
 ### graph.named
 
@@ -235,8 +220,9 @@ Live coverage: [default-graph scope of the snapshot readers](../../../tests/e2e/
 
 ### graph.names
 
+- uncertain
 - Sources: [ADR-0003](../../../docs/adr/0003-two-graph-key-derivations.md), [GraphKey.Validate](../../../iris_src/src/Graph/KG/GraphKey.cls#L23-L48), [validate_graph_name](../../../iris_vector_graph/_validate.py#L19-L49)
-- Children: [report refused names](#graph.names.report), [legacy names](#graph.names.legacy)
+- Children: [report refused names](#graph.names.report), [legacy names](../../Verus_verification/open_questions.md#q-str-001)
 - agent
 - data-integrity
 - test-coverage
@@ -246,6 +232,8 @@ Live coverage: [GraphKey's two refused names](../../../tests/integration/test_gr
 Findings: [create_edge stores the raw graph name in SQL, so a name with a NUL becomes a second SQL graph sharing one adjacency entry](../../Verus_verification/bugs_issues.md#bug-str-005); [Which control characters must a graph name refuse, and who owns the rule?](../../Verus_verification/open_questions.md#q-str-002)
 
 Audit (q-str-002): Open owner decision. Working assumption (agent, unratified): Prefer the server GraphKey rule for all new names; control-character normalization versus refusal must be documented consistently. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-str-002).
+
+Open questions: [q-str-001](../../Verus_verification/open_questions.md#q-str-001), [q-str-002](../../Verus_verification/open_questions.md#q-str-002)
 
 ### graph.names.report
 
@@ -257,20 +245,6 @@ Audit (q-str-002): Open owner decision. Working assumption (agent, unratified): 
 ADR-0003 (Accepted) says "the validator rejects new ones and `verify_graph` reports existing violations". Observed divergence (code reading): no code reports them, `verify_graph` derives the index key first and so refuses `"0"`, and the rebuild fails inside its transaction on such a row. Moved out of the Q by review round 3 R3-reader M10, which found the accepted decision demoted to a provisional answer.
 
 Findings: [How should an install that already holds a graph named "0", or one with a control character, find and migrate it?](../../Verus_verification/open_questions.md#q-str-001), [Nothing reports an existing graph whose name is now refused, as ADR-0003 promises, and verification itself refuses the name "0"](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-017)
-
-### graph.names.legacy
-
-- Sources: [ADR-0003 consequences](../../../docs/adr/0003-two-graph-key-derivations.md), [VerifyGraph derives the key first](../../../iris_src/src/Graph/KG/GraphVerify.cls#L39-L42), [BuildKG on rows with an illegal graph name](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L46-L53)
-- Expands: [graph names](#graph.names)
-- agent
-- uncertain
-- data-integrity, operations
-
-The reporting rule is [graph.names.report](#graph.names.report). Every rebuild of the adjacency index derives a key from each row's graph name, so a legacy row with a refused name makes the rebuild fail. The decision needed is what an upgrade does with such rows.
-
-Findings: [How should an install that already holds a graph named "0", or one with a control character, find and migrate it?](../../Verus_verification/open_questions.md#q-str-001)
-
-Audit (q-str-001): Open owner decision. Working assumption (agent, unratified): Preserve refusal of invalid new names and the promised legacy report; require an operator-visible migration plan before claiming old invalid names are supported. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-str-001).
 
 ### graph.all_graphs_read
 

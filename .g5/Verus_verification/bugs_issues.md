@@ -51,7 +51,7 @@ Observed: `TemporalIndex.WriteStores` writes `tout`, `tlast`, `tin` and `$Increm
 
 Consequence: a caller is told every edge was written while one has no structural edge, statistics or attributes, and no retry can complete it; windowed statistics disagree with the raw store.
 
-Repair proposal (not implemented): run the structural step before the first Set in `WriteStores`, or wrap `WriteStores` in its own `TSTART`/`TROLLBACK 1`; make the bulk fallback raise, or re-send only the edges not yet written. Open choice: [temporal.write.partial-failure](../ontology/features/temporal.g5.md#temporal.write.partial-failure). Governing statements: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.structural](../ontology/features/temporal.g5.md#temporal.structural).
+Repair proposal (not implemented): run the structural step before the first Set in `WriteStores`, or wrap `WriteStores` in its own `TSTART`/`TROLLBACK 1`; make the bulk fallback raise, or re-send only the edges not yet written. Open choice: [temporal.write.partial-failure](open_questions.md#temporal.write.partial-failure). Governing statements: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.structural](../ontology/features/temporal.g5.md#temporal.structural).
 
 
 Iteration 8 strengthens completed-prefix then whole-batch replay with the known F-0502 time carrier: after actual native full success followed by an injected reply error, raw0 can leave both current-time and epoch0 events while count1 is reported. retry_replay derives completed prefix state, entire fallback and final points; positive and prewrite neighbors remain. [Scope and controls](models/retry_replay/NOTES.md). Partial effects within one write, real transport faults, failing fallback items and other modes remain open; no repair or new bug count.
@@ -59,7 +59,7 @@ Iteration 8 strengthens completed-prefix then whole-batch replay with the known 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.write.partial-failure](../ontology/features/temporal.g5.md#temporal.write.partial-failure), [temporal.structural](../ontology/features/temporal.g5.md#temporal.structural).
+Canonical owner and evidence: [temporal.write](../ontology/features/temporal.g5.md#temporal.write), [temporal.write.partial-failure](open_questions.md#temporal.write.partial-failure), [temporal.structural](../ontology/features/temporal.g5.md#temporal.structural).
 
 <a id="bug-tmp-002"></a>
 ### An update at an occupied temporal coordinate counts the edge twice in the statistics
@@ -82,12 +82,12 @@ Observed: with `pMode="update"` `WriteStores` has no early return (`TemporalInde
 
 Consequence: insert w=2 then update w=9 gives count 2, sum 11, bucket 2 for one raw edge; a window aligned to the bucket and one that cuts it answer differently; after the delete the bucket counts an edge that no longer exists.
 
-Repair proposal (not implemented): on an update, rebuild the bucket's statistics from the raw edges (as delete does) and leave `bucket` alone. Open choice: [temporal.write.update-statistics](../ontology/features/temporal.g5.md#temporal.write.update-statistics). Governing statement: [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats).
+Repair proposal (not implemented): on an update, rebuild the bucket's statistics from the raw edges (as delete does) and leave `bucket` alone. Open choice: [temporal.write.update-statistics](open_questions.md#temporal.write.update-statistics). Governing statement: [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [temporal.write.update-statistics](../ontology/features/temporal.g5.md#temporal.write.update-statistics), [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats).
+Canonical owner and evidence: [temporal.write.update-statistics](open_questions.md#temporal.write.update-statistics), [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats).
 
 <a id="bug-tmp-003"></a>
 ### A rolled-back temporal write leaves its statistics counted, so a retry counts the edge twice
@@ -1102,12 +1102,12 @@ Observed: the engine's RRF scores an absent item at a rank derived from the leg'
 
 Consequence: with c=60 and legs of 200, an item at vector rank 1 only (1/61 + 1/320 = 0.01952) outranks one at rank 50 in both legs (2/110 = 0.01818), the reverse of standard RRF; the four entry points rank the same inputs differently.
 
-Repair proposal (not implemented): [simp-srch-001](design_simplification.md#simp-srch-001). Open choice: [search.fusion.absent](../ontology/features/search.g5.md#search.fusion.absent). Governing statement: [search.fusion](../ontology/features/search.g5.md#search.fusion).
+Repair proposal (not implemented): [simp-srch-001](design_simplification.md#simp-srch-001). Open choice: [search.fusion.absent](open_questions.md#HD-0702). Governing statement: [search.fusion](../ontology/features/search.g5.md#search.fusion).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). a real pair of vector/BM25 providers and final reader ranking contrast remain; absent-rank policy is still Q search.fusion.absent
 
-Canonical owner and evidence: [search.fusion](../ontology/features/search.g5.md#search.fusion), [search.fusion.absent](../ontology/features/search.g5.md#search.fusion.absent).
+Canonical owner and evidence: [search.fusion](../ontology/features/search.g5.md#search.fusion), [search.fusion.absent](open_questions.md#HD-0702).
 
 <a id="bug-plt-004"></a>
 ### A merge restore keeps at most one row per graph in the core tables and reports every row restored
@@ -1121,7 +1121,7 @@ Found by: A-platform F-B1 (sub-reader b, re-read by A-platform).
 
 Reproduced by: **e2e reproduced** — [fresh pinned-product regressions](audits/register-20261115/regressions.py), cases `snapshot_merge_parent`; [actual results and passing neighbors](audits/register-20261115/regressions.json). No provider substitution in these cases.
 
-Historical reproduction record: original two-edge/column-order scenario not rerun; iteration 5 real IRIS parent-key/vector consequence via [snapshot binding](models/snapshot_routes/binding.py) and its retained [receipts](results/snapshot_routes/).
+Historical reproduction record: original two-edge/column-order scenario not rerun; iteration 5 real IRIS parent-key/vector consequence via [snapshot binding](models/snapshot_routes/binding.py) and its retained [receipts](results/snapshot_routes).
 
 Expected: a merge restore adds the archive's rows that are not already present; the v4.1.0 CHANGELOG (3926-3932) names this dedupe defect and fixes it for the FHIR tables.
 
@@ -1488,7 +1488,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [temporal.write.partial-failure](../ontology/features/temporal.g5.md#temporal.write.partial-failure).
+Canonical owner and evidence: [temporal.write.partial-failure](open_questions.md#temporal.write.partial-failure).
 
 <a id="F-C0602"></a>
 ### SQL kg_KNN_VEC answers a node once per label, so a multi-label node takes several of the k places
@@ -1591,7 +1591,7 @@ Consequence: after an erase by prefix and a prefix redaction of a tenant that sh
 
 Why Medium: lowered from High in review round 3, because the governing spec deferred this case and the documented recipe assumes one graph per tenant; it stays Medium because the incompleteness is silent (`complete`, `verify()` equal) for a privacy operation.
 
-Repair proposal (not implemented): let `EraseNodes` and `TemporalIndex.EraseNodes` also select temporal endpoints by ID prefix, not only IDs that have node rows; count temporal entries as live content in redaction ([q-009](open_questions.md#q-009)). Without the first change, [simp-003](design_simplification.md#simp-003)'s full live-content check would turn every as-built prefix erase of such a tenant into a refusal until the events are removed by ID. Open part: [redaction.after-erasure.temporal](../ontology/features/redaction.g5.md#redaction.after-erasure.temporal). Governing statements: [erasure.scope](../ontology/features/erasure.g5.md#erasure.scope), [erasure.prefix-match](../ontology/features/erasure.g5.md#erasure.prefix-match).
+Repair proposal (not implemented): let `EraseNodes` and `TemporalIndex.EraseNodes` also select temporal endpoints by ID prefix, not only IDs that have node rows; count temporal entries as live content in redaction ([q-009](open_questions.md#q-009)). Without the first change, [simp-003](design_simplification.md#simp-003)'s full live-content check would turn every as-built prefix erase of such a tenant into a refusal until the events are removed by ID. Open part: [redaction.after-erasure.temporal](open_questions.md#q-009). Governing statements: [erasure.scope](../ontology/features/erasure.g5.md#erasure.scope), [erasure.prefix-match](../ontology/features/erasure.g5.md#erasure.prefix-match).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -1641,7 +1641,7 @@ Observed: `LedgerRedact.Matches` answers -1 when a qualifier record's statement 
 
 Consequence: tenant strings survive a "complete" redaction; only the undocumented receipt count reveals it.
 
-Repair proposal (not implemented): [simp-002](design_simplification.md#simp-002); at minimum refuse completion (or report incomplete) while the count is above zero. Open choice: [redaction.unattributed](../ontology/features/redaction.g5.md#redaction.unattributed).
+Repair proposal (not implemented): [simp-002](design_simplification.md#simp-002); at minimum refuse completion (or report incomplete) while the count is above zero. Open choice: [redaction.unattributed](open_questions.md#redaction.unattributed).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -1741,7 +1741,7 @@ Observed: `api/routers/cypher.py:130-166` and GraphQL `executeCypher` (`api/gql/
 
 Consequence: unrecorded structural writes under strict mode; Cypher `DELETE`, pinned `SET` and all-graphs writes in a multi-graph namespace cannot execute correctly on these routes.
 
-Repair proposal (not implemented): route both through `engine.execute_cypher(read_only=…)`, keeping the hop cap and error redaction. Related: [query.routes](../ontology/features/cypher.g5.md#query.routes). Governing statements: [access.ledger_strict.bypasses](../ontology/concepts/access.g5.md#access.ledger_strict.bypasses), [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces).
+Repair proposal (not implemented): route both through `engine.execute_cypher(read_only=…)`, keeping the hop cap and error redaction. Related: [query.routes](open_questions.md#query.routes). Governing statements: [access.ledger_strict.bypasses](../ontology/concepts/access.g5.md#access.ledger_strict.bypasses), [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
@@ -2749,12 +2749,12 @@ Observed: the node's structural `id` remains `n`; property `id` maps to `p_id`, 
 
 Comparison with inherited findings: F-0206/RC-01 lose values by mixing graphs; F-0813/RC-17 concern value types. Neither has this single-graph key-remapping trigger or loss. No matching alias finding was found in the three registers; this is a builder-discovered candidate, not a held-out result.
 
-Recommendation (not implemented): preserve properties in a separate map, or reserve and validate a documented alias namespace. Owner/default/alternative: [structure.node.read.aliases](../ontology/features/graph-structure.g5.md#structure.node.read.aliases), [q-iter-001](open_questions.md#q-iter-001). No human has chosen the API migration.
+Recommendation (not implemented): preserve properties in a separate map, or reserve and validate a documented alias namespace. Owner/default/alternative: [structure.node.read.aliases](open_questions.md#q-iter-001), [q-iter-001](open_questions.md#q-iter-001). No human has chosen the API migration.
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [structure.node.read](../ontology/features/graph-structure.g5.md#structure.node.read), [structure.node.read.aliases](../ontology/features/graph-structure.g5.md#structure.node.read.aliases).
+Canonical owner and evidence: [structure.node.read](../ontology/features/graph-structure.g5.md#structure.node.read), [structure.node.read.aliases](open_questions.md#q-iter-001).
 
 <a id="bug-cyp-101"></a>
 ### Relationship property text with a trailing line break or non-ASCII digits is read back as a number
@@ -2885,7 +2885,7 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
-Canonical owner and evidence: [query.system-procedures.unknown](../ontology/features/cypher.g5.md#query.system-procedures.unknown).
+Canonical owner and evidence: [query.system-procedures.unknown](open_questions.md#q-cyp-005).
 
 Intent qualification: empty success is reproduced. Whether an unknown procedure must be refused remains the canonical open policy question; this is not an owner-ratified semantic rule.
 
@@ -3434,7 +3434,7 @@ Observed: under strict mode `erase_graph`, `erase_all` and `delete_nodes_by_pref
 
 Consequence: "delete through the ledger, then redact" completes with `verify()` equal while the tenant's text, vectors and events remain.
 
-Repair proposal (not implemented): route the ledger's node delete through the Eraser's node erase ([simp-str-001](design_simplification.md#simp-str-001)'s single path), or let erasure run under strict mode as a recorded operation; see [q-003](open_questions.md#q-003). Open part: [redaction.strict-mode](../ontology/features/redaction.g5.md#redaction.strict-mode). Governing statements: [erasure.entry-points.single-path](../ontology/features/erasure.g5.md#erasure.entry-points.single-path), [redaction.after-erasure](../ontology/features/redaction.g5.md#redaction.after-erasure).
+Repair proposal (not implemented): route the ledger's node delete through the Eraser's node erase ([simp-str-001](design_simplification.md#simp-str-001)'s single path), or let erasure run under strict mode as a recorded operation; see [q-003](open_questions.md#q-003). Open part: [redaction.strict-mode](open_questions.md#q-003). Governing statements: [erasure.entry-points.single-path](../ontology/features/erasure.g5.md#erasure.entry-points.single-path), [redaction.after-erasure](../ontology/features/redaction.g5.md#redaction.after-erasure).
 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.

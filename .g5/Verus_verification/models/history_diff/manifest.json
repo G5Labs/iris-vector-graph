@@ -1,0 +1,57 @@
+{
+  "title": "history diff",
+  "question": "named range/inverse and continuous per-attribute endpoints; deletion snapshot correction and range-prior lifecycle witness",
+  "ontology_ids": [
+    "ledger.readers.diff"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 12}"
+    },
+    {
+      "label": "include-lower-endpoint",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_range_lower_exclusive\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reverse-unswapped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_named_reverse_and_equal\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "last-prior-wins",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_first_prior_survives\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "netzero-retained",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_continuous_net_zero\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "created-delete-visible",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_created_then_deleted_cancels\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "drop-delete-snapshot",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_simple_delete_preserves_snapshot\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

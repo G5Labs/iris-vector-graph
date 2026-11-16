@@ -1,0 +1,109 @@
+{
+  "title": "ndjson export",
+  "question": "ndjson export",
+  "ontology_ids": [],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built",
+      "expect": "{\"errors\": 0, \"verified\": 144}"
+    },
+    {
+      "label": "property-graph-lost",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_named_property_does_not_enter_default_file\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "labels-overwritten",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_two_label_rows_survive_file\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "alias-first-value-wins",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_last_alias_row_wins_in_file\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "structural-alias-lost",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_id_property_reaches_alias_in_file\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bare-parent-dropped",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_bare_parent_still_writes_a_line\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "node-census-all-graphs",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_named_parent_does_not_duplicate_default_id\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "projected-aliases-dropped",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_id_property_reaches_alias_in_file\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "zero-valued-qualifier-dropped",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_zero_qualifier_kept_in_file\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "edge-census-all-graphs",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_named_edge_not_written\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "raw-marker-filter-omitted",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_marked_edge_not_written\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "physical-edge-lines-deduplicated",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_parallel_physical_rows_both_written\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "node-counter-doubled",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_nodes_counter_counts_written_lines\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "edges-written-before-nodes",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"witness_node_line_precedes_edge_line\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built",
+      "expect": null
+    },
+    {
+      "label": "node-callback-graph-dropped",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_generated_node_callback_preserves_graph\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "zero-qualifier-keywords-lost",
+      "kind": "control",
+      "variant": "as-built",
+      "expect": "{\"fail_in\": [\"theorem_zero_qualifier_uses_keyword_call\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

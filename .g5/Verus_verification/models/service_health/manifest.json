@@ -1,0 +1,100 @@
+{
+  "title": "service health",
+  "question": "actual construction/query/schema provider results to HTTP health plus sticky capture/lazy cache recovery",
+  "ontology_ids": [
+    "access.health",
+    "access.health.lifecycle"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 18}"
+    },
+    {
+      "label": "wrong-select-accepted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_main_refuses_wrong_probe\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "record-mismatch-accepted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_main_checks_actual_namespace\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "missing-record-accepted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_main_checks_actual_namespace\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "schema-case-sensitive",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_ascii_case_match\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sticky-app-rebuild-count",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_sample_startup_absence_is_sticky\", \"theorem_bound_sample_can_recover\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "factory-failure-cached",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_construction_is_retried\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "folded-error-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_folded_error_controls_status\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-error-refused",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_folded_error_controls_status\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cached-failure-clears-engine",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_cached_query_failure_keeps_engine\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reset-close-failure-retains-cache",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_reset_clears_even_when_close_fails\", \"theorem_reset_allows_replacement\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "injected-failure-swallowed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_constructor_and_injected_refusal_differ\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "query-exception-not-retried",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_query_exception_replaces_cache\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "folded-query-error-retried",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_folded_query_failure_does_not_reset\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

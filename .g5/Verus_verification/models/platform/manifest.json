@@ -1,0 +1,238 @@
+{
+  "title": "platform",
+  "question": "the IVG Schema record and refusals, the strict-mode write surface, compiled-plan eligibility and stamps",
+  "ontology_ids": [
+    "query.compiled.fallback",
+    "query.compiled.modes"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"errors\": 0, \"verified\": 51}"
+    },
+    {
+      "label": "s-no-mismatch-refusal",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_s_step_preserves_inv\", \"theorem_schema_one_per_namespace\", \"witness_serial_first_setup_and_refusal\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "s-no-first-access-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_s_step_preserves_inv\", \"theorem_refusal_changes_nothing\", \"witness_serial_first_setup_and_refusal\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "s-serial-off",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_s_step_preserves_inv\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "s-explicit-over-marker-allowed",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_s_step_preserves_inv\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "s-deploy-reraise",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_deploy_refusal_is_swallowed\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "s-waive-checks",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_waiver_releases_a_mismatch\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "s-setup-does-not-release",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_serial_first_setup_and_refusal\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "s-cas-raise-releases",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_cas_with_raise_still_admits_late_ddl\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-no-refusal",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_g_step_preserves_inv\", \"theorem_strict_paths\", \"witness_user_guide_strict_example\", \"theorem_strict_blocks_named_graph_redaction\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-set-strict-no-refresh",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_g_step_preserves_inv\", \"witness_user_guide_strict_example\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-bda-guarded",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_undocumented_bypasses_break_the_contract\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-fhir-exempt",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_undecided_paths_write_under_strict\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-index-writes-undecided",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_exempt_and_out_of_scope_writes_are_permitted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-class-present-recomputed",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_class_absent_cached_for_the_engines_lifetime\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-ledger-deletes-named-nodes",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_strict_blocks_named_graph_redaction\", \"witness_strict_erase_then_redact_needs_strict_off\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-ttl-zero",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_ttl_window_admits_a_write_after_set_strict\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "g-fail-closed",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_failed_probe_admits_a_write\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-no-class-name-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_for_hit_checks\", \"witness_readback_trusts_the_entrys_class\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-no-stamp-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_for_hit_checks\", \"lemma_p_step_preserves_inv\", \"witness_straggler_recompiles_for_an_old_layout\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-no-shape-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_for_hit_checks\", \"witness_collision_swaps_the_class_mid_run\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-no-digest-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_build_preserves\", \"lemma_q_build_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-no-dropall",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_deploy_discards\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-build-never-ok",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_compiled_plan_is_used\", \"witness_repair_keeps_both_colliding_plans\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-collision-premise-dropped",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_p_step_preserves_inv\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-quiescence-premise-dropped",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_p_step_preserves_inv\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "r-no-build-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_q_build_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "r-no-unique-names",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_q_build_preserves\", \"witness_repair_keeps_both_colliding_plans\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "r-no-readback-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_q_step_preserves_inv\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-as-built-with-build-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_collision_leaves_another_shapes_code_under_an_ok_entry\", \"witness_reader_forges_a_collision_and_poisons_a_shape\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "p-forge-needs-affine-crc",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_forge_collision\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "platform_schema_refusal",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "platform_schema_waiver",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "platform_strict_api_sample",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "platform_strict_bulk_delete_adjacency",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "platform_strict_paths",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "platform_strict_redaction",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "platform_strict_ttl",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    }
+  ]
+}

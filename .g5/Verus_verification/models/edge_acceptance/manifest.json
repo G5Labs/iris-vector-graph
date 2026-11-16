@@ -1,0 +1,58 @@
+{
+  "title": "edge acceptance",
+  "question": "ordinary create/store duplicate returns, temporal adoption, endpoint/refusal and SQL/adjacency distinction; one triple",
+  "ontology_ids": [
+    "structure.edge.single",
+    "temporal.structural.adopt"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 7}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "same-duplicate-return",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_duplicate_returns_differ\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "duplicate-overwrites",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_repeat_counts_one\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "refusal-leaks-row",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_refusal_leaves_state\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "adoption-forgot-marker",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_temporal_adoption\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "store-writes-adjacency",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_adjacency_distinction\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "caller-marker-discarded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_caller_marker_retained\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

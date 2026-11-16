@@ -32,43 +32,24 @@ The ledger is off until someone enables it.
 - Enabling a ledger that is already enabled changes nothing and returns the head.
 - The first enable sets strict mode, the size limit for a changeset and the size bound for a reconstruction. Strict mode can be switched later.
 - Disabling is safe to repeat. While the ledger is disabled, commits and redactions are refused with `LedgerDisabledError` and nothing is recorded. Before the first enable they are refused with `LedgerNotEnabledError`.
-- Today, disabling does not cancel an unfinished redaction: its next batch is refused with `LedgerDisabledError`, the marker stays, and the caller runs the same redaction again after enabling. Whether disable should be refused instead is [open](#ledger.lifecycle.disable-during-redaction).
+- Today, disabling does not cancel an unfinished redaction: its next batch is refused with `LedgerDisabledError`, the marker stays, and the caller runs the same redaction again after enabling. Whether disable should be refused instead is [open](../../Verus_verification/open_questions.md#q-led-003).
 - Enabling again while a redaction is unfinished skips the adoption below without an error.
 - Enabling again records the changes made while it was disabled as an adoption revision.
+
+- Working assumption: Prefer refusal of disable during unfinished redaction; resumption and blocked readers require a deliberate lifecycle rule.
+- Working assumption: Refuse `disable()` and `set_strict()` inside a caller transaction on every engine, as `enable()`/`redact()`. Changed from decisions.md: **no** (strengthened). The live run adds a reason: ledger lifecycle state is global and read dirty by other processes, so a joined toggle that is later rolled back has already changed what other writers and guards did.
+- Working assumption: Keep `max_ops` and `recon_bound` fixed at genesis. Model strict as set by `enable(strict=...)` on genesis and on every re-enable (default False) and by `set_strict`; record the reset on re-enable as an explicit transition and do not assume strict survives a disable/enable cycle. Changed from decisions.md: **no**.
 
 <a id="ledger.lifecycle.genesis"></a>
 [D · ledger.lifecycle.genesis]
 
 The genesis records every node, label and property in the namespace as default-graph content, and every relationship with its own graph. It leaves out the plain relationship row that a temporal edge creates, because the ledger does not govern that row. So a node ID held by two graphs gets two node-create records, and the labels and properties of both nodes are recorded under that one ID.
 
-<a id="ledger.lifecycle.genesis.shared-ids"></a>
-[Q · ledger.lifecycle.genesis.shared-ids]
+- Working assumption: Keep namespace-wide bare node IDs in current genesis behavior; graph-specific ledger identity would require a record/migration decision.
+- Working assumption: (a) Compare the identity the ledger governs: default-graph node rows for node records (R290), with named-graph node rows either reported as outside node governance or recorded with their graph (linked to HD-1101/1304). (b) A reader takes a redaction epoch that every redaction start and finish advances, checks the marker, reads, and re-checks both; if either changed it refuses or retries. A post-read marker check alone is not sufficient (a whole redaction can complete inside one read); a shared lock or a genuine snapshot are alternatives. Verify additionally needs a coherent cut between its record read and its table read. Changed from decisions.md: **yes**. (b) the mechanism changes: decisions.md left 'epoch validation, locking or snapshots' open and the original reviewed model used a second marker check; the new live probe shows a complete redaction inside one paged read (default page…
 
-How should the genesis treat a node ID that two graphs hold? Provisional answer: none recorded. Today the two nodes are merged under one ID, although a human decision says the same ID in two graphs is two nodes.
-
-- Merging matches how verify compares nodes, but loses which graph held which label or property, against the decision that each graph's labels and properties are its own.
-- When both graphs give the same property different values, which value the replay keeps and which one verify reads are not tied to each other, so verify could report a false difference.
-
-<a id="ledger.lifecycle.disable-during-redaction"></a>
-[Q · ledger.lifecycle.disable-during-redaction]
-
-What should disabling the ledger do while a redaction is unfinished? There is no provisional answer. Today disable is accepted, the redaction's next batch is refused, and the caller must run the redaction again after enabling; that enable skips its adoption without an error.
 
 ## Changesets and commits
-
-<a id="ledger.lifecycle.settings-transaction-policy"></a>
-[Q · ledger.lifecycle.settings-transaction-policy]
-
-Should disable() and set_strict() refuse a caller's open transaction, as enable() does?
-
-- Working assumption (agent, unratified): Prefer refusing settings changes inside an open caller transaction until their nesting behavior is specified.
-
-<a id="ledger.lifecycle.settings-policy"></a>
-[Q · ledger.lifecycle.settings-policy]
-
-Should the ledger's settings be changeable after the genesis?
-
-- Working assumption (agent, unratified): Prefer keeping maximum operation and reconstruction bounds fixed at genesis, with strict-mode changes treated separately.
 
 <a id="ledger.changeset"></a>
 [I · ledger.changeset]
@@ -91,6 +72,8 @@ A commit applies a whole changeset as one new revision, or applies nothing. The 
 - A revision, its records and its changes become visible together.
 - The changes apply in order, each on top of the last. Two writes of one property in a changeset keep both records, prior value and new value each time, and the property shows the last value. Writing the value a property already has records nothing.
 - The first change that fails stops the commit, and every earlier change of the changeset is rolled back with it: no revision, no record and no content change remains.
+
+- Working assumption: Treat kind as caller data today while reserving system meaning in analysis; any restricted vocabulary needs an explicit compatibility decision.
 
 <a id="ledger.commit.admission"></a>
 [D · ledger.commit.admission]
@@ -115,15 +98,6 @@ A changeset may name the head it expects. If another revision was committed firs
 
 For a changeset commit, an empty changeset is refused with `EmptyChangesetError`. So is a changeset with more operations than the ledger's limit, with `ChangesetTooLargeError`; the limit is 50,000 unless set otherwise when the ledger is enabled.
 
-<a id="ledger.commit.kind"></a>
-[Q · ledger.commit.kind]
-
-Should callers be able to choose a commit's kind? Provisional answer: no, it should be internal, because only verify needs the adoption kind.
-
-- Today `commit` accepts any kind. A kind other than changeset skips the empty and size checks.
-- The adoption kind records the given differences without changing the tables.
-- Any other kind, such as `genesis` or `redaction`, is applied like a changeset but labeled with that kind.
-
 <a id="ledger.commit.caller-transaction"></a>
 [D · ledger.commit.caller-transaction]
 
@@ -139,10 +113,9 @@ A changeset can carry post-commit properties: default-graph node properties writ
 - Without a caller's transaction they are a second commit, so a failure keeps the revision and is returned in the result as `post_commit_error`, not raised.
 - Inside a caller's transaction they join it, and the caller's rollback removes them with the revision.
 
-<a id="ledger.commit.post-commit.recorded"></a>
-[Q · ledger.commit.post-commit.recorded]
+- Working assumption: Treat post-commit properties as unrecorded writes today and keep verify divergence visible; skip-on-replay is a separate already documented idempotency obligation.
+- Working assumption: Treat post-commit properties as a separate direct write outside revision replay; `verify()` reports them until adopted. Require that a replayed commit not re-apply them (idempotency contract), recording the pin's re-application as a defect (F-1101). Changed from decisions.md: **no**.
 
-Should post-commit properties be recorded in the ledger, left out of verify, or only documented as unrecorded writes? There is no provisional answer. Today they are unrecorded, verify reports them, and neither strict mode nor the block on commits into a target being redacted checks them.
 
 ## Idempotency and retries
 
@@ -172,12 +145,7 @@ The ledger keeps nodes in the default graph. Its node operations read and write 
 - One exception: a relationship created in a named graph adds bare node rows for its endpoints in that graph, if they are missing there. The database requires those rows. They get no node records.
 - An endpoint counts as existing if its ID exists in any graph.
 
-<a id="ledger.node-scope.missing-default-policy"></a>
-[Q · ledger.node-scope.missing-default-policy]
-
-What should a node change do when only a named graph holds the id?
-
-- Working assumption (agent, unratified): Keep current namespace-wide bare node identity visible and distinguish an absent default row from a node held only in a named graph.
+- Working assumption: Keep graph-blind existence. A node change that needs the default-graph row (`set_prop`, `remove_prop`, `add_label`, `remove_label`, `delete_node`, `upsert_node` with labels or properties) refuses with nothing applied and no record when that row is absent, under a reason distinct from `node_not_found` (the maintainer's meaning of that code stays). Model edge endpoint lookup separately (`EnsureEndpoint`). Changed from decisions.md: **yes, refined**: the refusal outcome is kept, but it is not an existence failure; the existence semantics are now supported by a maintainer commit.
 
 <a id="ledger.immutability"></a>
 [I · ledger.immutability]
@@ -204,19 +172,13 @@ In strict mode, these engine calls are refused with `LedgerStrictModeError` and 
 - The bulk loader class and raw SQL are not guarded.
 - A direct temporal-edge write is never refused, because strict mode does not govern direct temporal writes or their plain rows ([rule](temporal.g5.md#temporal.structural.ledger)). A temporal write inside a changeset is part of the revision ([temporal edges in a changeset](temporal.g5.md#temporal.ledger)).
 
-<a id="ledger.strict.fail-open"></a>
-[Q · ledger.strict.fail-open]
+- Working assumption: Record immediate enforcement in the calling engine and a five-second cache elsewhere; the time promised to other engines still needs a decision.
+- Working assumption: Keep failures visible in analysis and prefer fail-closed admission; the current fail-open compatibility behavior is not owner ratification.
+- Working assumption: Take the contract text as intended: strict refuses with no window. Record the 5 s cache window (reproduced live) and fail-open (tested) as product defects against ledger-api.md (F-0801), and keep their obligations open. Downstream modules (erasure, redaction, verify) may not assume that every graph-table change under strict mode has a ledger record. verify() detects bypass rows after the fact. Raw SQL and BulkLoader remain outside by the contract's own text (HD-0301/1103).
+- Working assumption: Treat strict mode as a client-side, cached (5 s), fail-open guard on the contract's listed calls at this pin; inventory uncovered Python paths, server writers (Eraser, TemporalIndex, FHIR sync, SQL procedures) and external writers as possible unrecorded writers. Changed from decisions.md: **no**.
 
-When the engine cannot read the ledger's state, should a strict-mode check allow the write or refuse it? Provisional answer: none; today the check allows the write. A later fix treated one such case, a writer without access to the class dictionary, as a defect.
 
 ## Reading the ledger
-
-<a id="ledger.strict.server-policy"></a>
-[Q · ledger.strict.server-policy]
-
-Should strict mode be enforced by the server, or stay a Python-only check?
-
-- Working assumption (agent, unratified): Treat the cached client guard as current behavior; server enforcement and the exact exemption set still need owner choice.
 
 <a id="ledger.readers"></a>
 [I · ledger.readers]
@@ -237,12 +199,9 @@ History filters the current revision rows before it sorts and limits a page. Old
 - Time bounds include equality. A filter set to None is omitted; empty text is still a supplied filter.
 - Text comparisons follow the database: this provider accepts ASCII case changes and trailing spaces or tabs, but interior JSON spacing still matters for stored source text. Decoding that source for display is a separate step.
 - A zero limit returns an empty page, and IRIS refuses a negative one. A failed read or required-field decode raises instead of becoming an empty page. Each acquired cursor gets one close attempt.
-- Pages are live reads, not one fixed snapshot. Text "0" is tested as true before cursor conversion, so in newest-first order it selects sequences below zero instead of the initial page. The scope of exact text matching is [open](#ledger.readers.history.text-policy).
+- Pages are live reads, not one fixed snapshot. Text "0" is tested as true before cursor conversion, so in newest-first order it selects sequences below zero instead of the initial page. The scope of exact text matching is [open](../../Verus_verification/open_questions.md#q-iter-003).
 
-<a id="ledger.readers.history.text-policy"></a>
-[Q · ledger.readers.history.text-policy]
-
-Should history text filters keep the database's case and trailing-space matching, or use binary string identity? Working answer: document current matching to preserve existing queries until the maintainer decides; binary matching would distinguish correlation IDs and source JSON text that currently compare equal. The API says "exact" for correlation IDs, but no source settles whether that requires binary matching.
+- Working assumption: Preserve current database comparison for compatibility and expose the difference from binary Python identity; a portable text rule needs owner choice.
 
 <a id="ledger.readers.bound"></a>
 [D · ledger.readers.bound]
@@ -251,12 +210,10 @@ Ordinary reconstruction checks its size after each record, so it can refuse a hi
 
 - The count is nodes plus relationships; labels and properties add no entities. Redaction tombstones and audit records change no content.
 - A read stops at the named revision, so later records cannot change its content or cause its size refusal.
-- Today a stored limit of zero is read as the default 250,000. Whether the limit should instead concern only the final graph is [open](#ledger.readers.bound.policy).
+- Today a stored limit of zero is read as the default 250,000. Whether the limit should instead concern only the final graph is [open](../../Verus_verification/open_questions.md#q-iter-002).
 
-<a id="ledger.readers.bound.policy"></a>
-[Q · ledger.readers.bound.policy]
-
-Should reconstruction's limit cap every intermediate graph or just the requested graph? Working answer: keep the current check after each record and document it; the alternative is a final-size limit, which permits a history to use more memory before it shrinks.
+- Working assumption: Keep delivery streaming separate from bounded-memory guarantees; full materialization is current behavior and a memory promise needs a separate bound.
+- Working assumption: Prefer an explicit peak reconstruction bound; current per-intermediate graph checks do not settle a final-graph-only policy.
 
 <a id="ledger.readers.diff"></a>
 [I · ledger.readers.diff]
@@ -268,12 +225,8 @@ A diff selects records after the earlier revision through the later revision, in
 - Node deletion carries its labels and properties in the deletion's JSON snapshot. The reverse existence entry keeps that snapshot; a separate property entry with an absent after value does not by itself say the old life lacked that property.
 - As built, changing a property before deleting and recreating the node can lose the range's original value: the snapshot holds the value at deletion, and closing that life drops its earlier attribute prior. The promised net change remains the requirement; this [reported gap](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-101) has no product repair here.
 
-<a id="ledger.readers.diff.order"></a>
-[Q · ledger.readers.diff.order]
+- Working assumption: Treat lifecycle diff as an unordered net-change result until a stable script order is specified; consumers must not infer dependency order.
 
-May callers apply a diff in its listed order as a script? Working answer: treat it as a set of lifecycle-aware net entries, sorted for display; the alternative requires a defined application order, especially when deletion and creation have equal sort keys.
-
-- The maintainer must ratify that choice and whether deletion snapshots describe the value at deletion or the range's starting value. Until then, report the actual snapshots and keep full endpoint reconstruction from lifecycle diffs unproved.
 
 ## Verification
 
@@ -281,6 +234,8 @@ May callers apply a diff in its listed order as a script? Working answer: treat 
 [I · ledger.verify]
 
 Verify replays every revision from the first to the head and compares the result with the current tables. It reports `equal`, or `diverges` with the differences. When asked to adopt, it records the differences as an adoption revision so that the next verify is equal.
+
+- Working assumption: Treat verify as requiring quiescent inputs for reliance until a consistent-view protocol is specified; unlocked multi-scan behavior is not a snapshot proof.
 
 <a id="ledger.verify.meaning"></a>
 [D · ledger.verify.meaning]
@@ -296,14 +251,6 @@ Verify compares the structural graph only.
 - Relationships are matched by source, predicate, target and graph, with their qualifiers. Statement IDs are not compared.
 - The plain relationship row of a temporal edge is left out on both sides, and the temporal index itself is not compared.
 
-<a id="ledger.verify.consistency"></a>
-[Q · ledger.verify.consistency]
-
-Must verify compare one consistent moment of the ledger and the tables? Provisional answer: verify is best-effort, so run it when writes are quiet.
-
-- Today it reads both without a lock, and the adoption it commits names no expected head.
-- So a commit made during a verify can show up as a difference or be recorded twice.
-
 ## Metadata
 
 ### ledger.revision
@@ -318,10 +265,11 @@ Live test: `tests/integration/test_ledger_us03_concurrency.py` (eight writers, c
 
 ### ledger.lifecycle
 
+- uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [Ledger.cls Enable/Disable](../../../iris_src/src/Graph/KG/Ledger.cls#L250-L358), [client.py enable](../../../iris_vector_graph/ledger/client.py#L281-L303)
 - Verus (inspected typed adoption slice): [ledger_content alternate](../../Verus_verification/models/ledger_content/NOTES.md) derives adopted identity reuse/allocation and typed contents while retaining permissive payload and duplicate-view boundaries. Raw envelope/parser/tuple-JSON reference handling, canonical SQL changes and truth of supplied priors are not proved. Actual downstream Python readers execute the typed records; bounded native Adopt producer assertions were not run.
 - Expands: [Revision](#ledger.revision)
-- Children: [Genesis](#ledger.lifecycle.genesis), [Disable during a redaction](#ledger.lifecycle.disable-during-redaction)
+- Children: [Genesis](#ledger.lifecycle.genesis), [Disable during a redaction](../../Verus_verification/open_questions.md#q-led-003)
 - agent
 - user-facing-behavior, operations
 - test-coverage
@@ -330,74 +278,22 @@ Live tests: `test_ledger_us01_commit_head.py` (genesis) and `test_ledger_us09_ve
 
 Findings: [Re-enabling the ledger during an unfinished redaction skips the adoption without telling the caller](../../Verus_verification/bugs_issues.md#bug-led-004); [What should disabling the ledger do while a redaction is unfinished?](../../Verus_verification/open_questions.md#q-led-003)
 
+Open questions: [HD-1102](../../Verus_verification/open_questions.md#HD-1102), [HD-1104](../../Verus_verification/open_questions.md#HD-1104), [q-led-003](../../Verus_verification/open_questions.md#q-led-003)
+
 ### ledger.lifecycle.genesis
 
+- uncertain
 - Sources: [LedgerGenesis.cls](../../../iris_src/src/Graph/KG/LedgerGenesis.cls), [CHANGELOG 4.6.0 ledger fixes](../../../CHANGELOG.md#L2210-L2227), [CHANGELOG 4.4.0](../../../CHANGELOG.md#L2767-L2769)
 - Verus (inspected typed projection): [ledger_content alternate](../../Verus_verification/models/ledger_content/NOTES.md) derives Capture records/content from already-projected ordered scan rows, including distinct IDs per physical edge and bare-node graph loss. Source and typed ports are checked, but the native producer, SQL scan completeness/order and arbitrary coercion are unexecuted/unproved; no one-tuple/one-statement invariant is inferred.
 - Expands: [Lifecycle](#ledger.lifecycle)
-- Children: [Shared node IDs](#ledger.lifecycle.genesis.shared-ids)
+- Children: [Shared node IDs](../../Verus_verification/open_questions.md#q-led-004)
 - agent
 - data-integrity
 - test-coverage
 
 The genesis scans the node, label and property tables with no graph condition ([LedgerGenesis.cls Capture](../../../iris_src/src/Graph/KG/LedgerGenesis.cls#L14-L36)). The genesis spells a default-graph relationship's graph as the NUL character read from SQL; verify treats every spelling of the default graph as one. Before 4.6.0 the genesis recorded temporal edges' plain rows, which made verify diverge right after enable (R094). Live tests: `test_ledger_us01_commit_head.py::test_genesis_on_prepopulated_graph_describes_it_and_leaves_view_unchanged`, `tests/e2e/test_460_ledger_temporal_edge_e2e.py`.
 
-### ledger.lifecycle.genesis.shared-ids
-
-- Sources: [LedgerGenesis.cls Capture](../../../iris_src/src/Graph/KG/LedgerGenesis.cls#L14-L36), [replay.py read_canonical](../../../iris_vector_graph/ledger/replay.py#L588-L612), [reconstruction check G8](../../uplift/ivg-verus-initial/reconstruction-check.md#L398)
-- Expands: [Genesis](#ledger.lifecycle.genesis)
-- agent
-- uncertain
-- data-integrity
-
-Since the node table is keyed by (graph, node ID), one ID can be held by two graphs. Genesis reads properties ordered by node ID and key only, and verify reads them unordered, so the two sides need not keep the same value when the graphs disagree. Not tested.
-
-Findings: [How should the ledger's genesis record a node ID that two graphs hold?](../../Verus_verification/open_questions.md#q-led-004)
-
-Audit (q-led-004): Open owner decision. Working assumption (agent, unratified): Keep namespace-wide bare node IDs in current genesis behavior; graph-specific ledger identity would require a record/migration decision. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-led-004).
-
-Audit (HD-1401): Open owner decision. Working assumption (agent, unratified): (a) Compare the identity the ledger governs: default-graph node rows for node records (R290), with named-graph node rows either reported as outside node governance or recorded with their graph (linked to HD-1101/1304). (b) A reader takes a redaction epoch that every redaction start and finish advances, checks the marker, reads, and re-checks both; if either changed it refuses or retries. A post-read marker check alone is not sufficient (a whole redaction can complete inside one read); a shared lock or a genuine snapshot are alternatives. Verify additionally needs a coherent cut between its record read and its table read. Changed from decisions.md: **yes**. (b) the mechanism changes: decisions.md left 'epoch validation, locking or snapshots' open and the original reviewed model used a second marker check; the new live probe shows a complete redaction inside one paged read (default page… See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1401).
-
-Findings: [Verification and record readers: node identity and redaction checks](../../Verus_verification/open_questions.md#HD-1401).
-
-### ledger.lifecycle.disable-during-redaction
-
-- Sources: [LedgerRedact.cls BatchInLock](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L302-L305), [Ledger.cls Enable/Disable](../../../iris_src/src/Graph/KG/Ledger.cls#L331-L351)
-- Expands: [Lifecycle](#ledger.lifecycle)
-- agent
-- uncertain
-- operations, data-integrity
-- test-coverage
-
-Observed: [redaction_interrupt_resume](../../Verus_verification/receipts/native/redaction_interrupt_resume.json) (the batch after disable is refused `LedgerDisabledError`, verify mid-way reports `redaction_in_progress`, the rerun after enable completes with the uninterrupted end state). Review round 3 R3-reader M2 moved this out of the lifecycle body, where it read as a rule.
-
-Findings: [What should disabling the ledger do while a redaction is unfinished?](../../Verus_verification/open_questions.md#q-led-003); [Re-enabling the ledger during an unfinished redaction skips the adoption without telling the caller](../../Verus_verification/bugs_issues.md#bug-led-004)
-
-Audit (q-led-003): Open owner decision. Working assumption (agent, unratified): Prefer refusal of disable during unfinished redaction; resumption and blocked readers require a deliberate lifecycle rule. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-led-003).
-
-### ledger.lifecycle.settings-transaction-policy
-- Expands: [parent](#ledger.lifecycle)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Should disable() and set_strict() refuse a caller's open transaction, as enable() does?](../../Verus_verification/open_questions.md#HD-1102).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1102).
-
-Audit (HD-1102): Open owner decision. Working assumption (agent, unratified): Refuse `disable()` and `set_strict()` inside a caller transaction on every engine, as `enable()`/`redact()`. Changed from decisions.md: **no** (strengthened). The live run adds a reason: ledger lifecycle state is global and read dirty by other processes, so a joined toggle that is later rolled back has already changed what other writers and guards did. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1102).
-
-### ledger.lifecycle.settings-policy
-- Expands: [parent](#ledger.lifecycle)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Should the ledger's settings be changeable after the genesis?](../../Verus_verification/open_questions.md#HD-1104).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1104).
-
-Audit (HD-1104): Open owner decision. Working assumption (agent, unratified): Keep `max_ops` and `recon_bound` fixed at genesis. Model strict as set by `enable(strict=...)` on genesis and on every re-enable (default False) and by `set_strict`; record the reset on re-enable as an explicit transition and do not assume strict survives a disable/enable cycle. Changed from decisions.md: **no**. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1104).
+Open questions: [HD-1401](../../Verus_verification/open_questions.md#HD-1401), [q-led-004](../../Verus_verification/open_questions.md#q-led-004)
 
 ### ledger.changeset
 
@@ -411,10 +307,11 @@ Live test: `test_ledger_us02_rollback.py::test_reserved_property_rejected_before
 
 ### ledger.commit
 
+- uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [USER_GUIDE section 9](../../../docs/USER_GUIDE.md#L1052-L1115), [errors.py](../../../iris_vector_graph/ledger/errors.py); ordered application and stop at the first failure: [`iris_src/src/Graph/KG/LedgerApply.cls::ApplyAll`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L18-L48); set property records prior and new, same value writes nothing: [`LedgerApply.cls`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L265-L317); live tests [`test_duplicate_set_property_records_both_and_last_wins`, `test_failing_op_mid_changeset_leaves_everything_unchanged`](../../../tests/integration/test_ledger_us02_rollback.py#L62-L136)
 - Playbook: [LED-B4.10](../../../experiment/playbook-completion/ontology/11-ledger.md#L190), [LED-B5.9](../../../experiment/playbook-completion/ontology/11-ledger.md#L236), record fold [RPL-T90](../../../experiment/playbook-completion/ontology/14-replay.md#L61)
 - Verus: new as-built transcription [`ledger_apply`](../../Verus_verification/models/ledger_apply/ledger_apply.rs), `theorem_two_writes_produce_priors`, `theorem_mid_failure_rolls_back_prefix`, `theorem_valid_relationship_reachable`: derives records from raw create/label/set/relationship operations, stops at a missing endpoint and rolls back the transaction before the revision reader. This covers the M03 distinction in a single default graph under successful SQL/global transaction and head-serialization premises; ObjectScript is inspected, not executed or implementation-verified here. Other operation kinds, admission, concurrent writers, redaction, post-commit properties and caller transactions remain outside this new model. The playbook's `proofs-pa3` remains active for its admission/binding protocol and partial for M03: Op has no prior and rec_put copies supplied records. See [families](../../Verus_verification/families.tsv).
-- Children: [Admission order](#ledger.commit.admission), [One at a time](#ledger.commit.serial), [Expected head](#ledger.commit.expected-head), [Size](#ledger.commit.size), [Commit kind](#ledger.commit.kind), [Caller's transaction](#ledger.commit.caller-transaction), [Post-commit properties](#ledger.commit.post-commit)
+- Children: [Admission order](#ledger.commit.admission), [One at a time](#ledger.commit.serial), [Expected head](#ledger.commit.expected-head), [Size](#ledger.commit.size), [Commit kind](../../Verus_verification/open_questions.md#q-led-005), [Caller's transaction](#ledger.commit.caller-transaction), [Post-commit properties](#ledger.commit.post-commit)
 - Verus: [ledger_content](../../Verus_verification/models/ledger_content/NOTES.md) independently derives complete maps and separate records, current priors/noops/snapshots, deletion context and fresh coherent identities across whole histories. Native source correspondence is an inductive default/canonical/no-marker profile from empty with complete successful providers and no competing/reifier/post-commit writes. Legal marker/named histories remain explicit partial boundaries; native cross-key removal/envelope ordering and exact ordinals are not established by the typed sequence laws. This is not a native transaction/body or whole-wrapper proof.
 - agent
 - user-facing-behavior, data-integrity
@@ -423,6 +320,8 @@ Live test: `test_ledger_us02_rollback.py::test_reserved_property_rejected_before
 Relationship create, upsert and the take-over of a temporal edge's plain row: [LedgerApply.cls OpCreateRel](../../../iris_src/src/Graph/KG/LedgerApply.cls#L450-L487). The endpoint check is graph-blind on purpose: `node_not_found` means the ID is unknown anywhere ([LedgerApply.cls EnsureEndpoint](../../../iris_src/src/Graph/KG/LedgerApply.cls#L85-L110)). Observed divergence: a replayed commit returns no statement IDs (see [idempotency](#ledger.idempotency)). Live tests: `test_ledger_us02_rollback.py` (a failing operation in the middle leaves everything unchanged), `tests/integration/test_217_ledger_missing_node_e2e.py` and `test_ledger_us11_temporal_coexist.py::test_a_governed_relationship_on_a_temporal_triple_adopts_its_row`.
 
 Ordinary qualifier `temporal: "true"` can also select the internal adoption branch: a second create rewrites one row but leaves two statement IDs in replay and export. This strengthens the existing [caller marker finding](../../Verus_verification/audits/register-20261115/bugs-review.md#F-C0351), not a new defect count; [native observations](../../uplift/consolidated/iteration-12/root-ledger-marker-native.json) retain the passing false-value refusal neighbor. The normal duplicate-create commitment above remains.
+
+Open questions: [q-led-005](../../Verus_verification/open_questions.md#q-led-005)
 
 ### ledger.commit.admission
 
@@ -448,6 +347,8 @@ The precedence is spec 213 FR-019, cited by the code; the spec text itself is no
 
 Live tests: `test_ledger_us03_concurrency.py`, `test_ledger_lock_and_chunks.py::test_commit_gives_up_when_another_process_holds_the_head_lock`.
 
+State machines: [ledger redaction](../../Verus_verification/models/ledger_redaction/manifest.json)
+
 ### ledger.commit.expected-head
 
 - Sources: [Ledger.cls expected_head](../../../iris_src/src/Graph/KG/Ledger.cls#L475-L486), [USER_GUIDE Concurrency](../../../docs/USER_GUIDE.md#L1100-L1101)
@@ -468,20 +369,6 @@ Live tests: `test_ledger_us03_concurrency.py::test_two_writers_same_expected_hea
 
 Live tests: `test_ledger_us01_commit_head.py::test_foundation_enable_and_reject_empty`, `test_ledger_us02_rollback.py::test_too_large_rejected_before_apply`.
 
-### ledger.commit.kind
-
-- Sources: [client.py commit](../../../iris_vector_graph/ledger/client.py#L381-L401), [Ledger.cls kind handling](../../../iris_src/src/Graph/KG/Ledger.cls#L488-L509), [replay.py adoption commit](../../../iris_vector_graph/ledger/replay.py#L851-L858), [reconstruction check 2(a)11](../../uplift/ivg-verus-initial/reconstruction-check.md#L515-L523)
-- Expands: [Commit](#ledger.commit)
-- agent
-- uncertain
-- data-integrity, security
-
-A caller-chosen `redaction` kind would put a revision in history that looks like a redaction's audit. The spec 213 contract lists `commit(changeset)` with no kind parameter.
-
-Findings: [Should callers be able to choose a commit's kind?](../../Verus_verification/open_questions.md#q-led-005)
-
-Audit (q-led-005): Open owner decision. Working assumption (agent, unratified): Treat kind as caller data today while reserving system meaning in analysis; any restricted vocabulary needs an explicit compatibility decision. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-led-005).
-
 ### ledger.commit.caller-transaction
 
 - Sources: [Ledger.cls Commit](../../../iris_src/src/Graph/KG/Ledger.cls#L385-L415), [CHANGELOG 4.7.0](../../../CHANGELOG.md#L76-L86), [USER_GUIDE writes inside your transaction](../../../docs/USER_GUIDE.md#L285-L310), [client.py commit](../../../iris_vector_graph/ledger/client.py#L381-L401)
@@ -494,9 +381,10 @@ This supersedes spec 213 FR-047, under which a commit refused an open transactio
 
 ### ledger.commit.post-commit
 
+- uncertain
 - Sources: [changeset.py post_commit_properties](../../../iris_vector_graph/ledger/changeset.py#L18-L25), [client.py _apply_post_commit_properties](../../../iris_vector_graph/ledger/client.py#L430-L487), [CHANGELOG spec 218](../../../CHANGELOG.md#L4991-L4998), [USER_GUIDE writes inside your transaction](../../../docs/USER_GUIDE.md#L288-L289)
 - Expands: [Commit](#ledger.commit)
-- Children: [Recorded?](#ledger.commit.post-commit.recorded)
+- Children: [Recorded?](../../Verus_verification/open_questions.md#q-010)
 - agent
 - user-facing-behavior, data-integrity
 - test-coverage
@@ -505,23 +393,7 @@ The code calls this "Approach A — direct SQL, no new revision"; each property 
 
 Findings: [Post-commit properties bypass strict mode and the block on commits into a target being redacted](../../Verus_verification/bugs_issues.md#bug-led-009); [A property row with no node row survives the prefix erase, and every later prefix redaction of its tenant is refused](../../Verus_verification/bugs_issues.md#bug-led-010)
 
-### ledger.commit.post-commit.recorded
-
-- Sources: [client.py _apply_post_commit_properties](../../../iris_vector_graph/ledger/client.py#L430-L487), [replay.py verify](../../../iris_vector_graph/ledger/replay.py#L806-L867)
-- Expands: [Post-commit properties](#ledger.commit.post-commit)
-- agent
-- uncertain
-- data-integrity, security
-
-The strict-mode and redaction-marker gaps are from code reading (suspected); the verify divergence is observed.
-
-Findings: [Should post-commit properties be recorded, excluded from verify, or documented as unrecorded writes?](../../Verus_verification/open_questions.md#q-010)
-
-Audit (q-010): Open owner decision. Working assumption (agent, unratified): Treat post-commit properties as unrecorded writes today and keep verify divergence visible; skip-on-replay is a separate already documented idempotency obligation. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-010).
-
-Audit (HD-1105): Open owner decision. Working assumption (agent, unratified): Treat post-commit properties as a separate direct write outside revision replay; `verify()` reports them until adopted. Require that a replayed commit not re-apply them (idempotency contract), recording the pin's re-application as a defect (F-1101). Changed from decisions.md: **no**. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1105).
-
-Findings: [Should post-commit properties be recorded by the ledger?](../../Verus_verification/open_questions.md#HD-1105).
+Open questions: [HD-1105](../../Verus_verification/open_questions.md#HD-1105), [q-010](../../Verus_verification/open_questions.md#q-010)
 
 ### ledger.idempotency
 
@@ -541,6 +413,8 @@ Audit (HD-1305): Existing authority: A keyed replay returns the original outcome
 
 Findings: [Should a replayed commit apply its post-commit properties?](../../Verus_verification/open_questions.md#HD-1305).
 
+State machines: [ledger redaction](../../Verus_verification/models/ledger_redaction/manifest.json)
+
 ### ledger.idempotency.key-required
 
 - Sources: [Ledger.cls idempotency](../../../iris_src/src/Graph/KG/Ledger.cls#L455-L465), [USER_GUIDE Retries](../../../docs/USER_GUIDE.md#L1102), [errors.py IdempotencyConflictError](../../../iris_vector_graph/ledger/errors.py#L42-L43)
@@ -554,6 +428,7 @@ Findings: [The user guide says a repeated commit replays, which holds only with 
 
 ### ledger.node-scope
 
+- uncertain
 - Sources: [ADR-0013 Context](../../../docs/adr/0013-redaction-removes-content-from-history.md#L37), [LedgerApply.cls node statements](../../../iris_src/src/Graph/KG/LedgerApply.cls), [CHANGELOG 4.6.0 ledger node writes](../../../CHANGELOG.md#L2220-L2227)
 - agent
 - architecture-decision, data-integrity
@@ -561,17 +436,7 @@ Findings: [The user guide says a repeated commit replays, which holds only with 
 
 Before 4.6.0, node operations matched rows by ID in every graph (R290, R281). The endpoint rows come from `EnsureEndpoint` ([LedgerApply.cls](../../../iris_src/src/Graph/KG/LedgerApply.cls#L85-L110)): the table's composite foreign keys need an endpoint row in the relationship's graph. Verify does not see these unrecorded rows as differences, because it compares nodes by ID across graphs. Consequence: a named-graph target can never reach node records ([redaction target](redaction.g5.md#redaction.target.nodes)), and verify compares nodes without regard to graph. Live test: `tests/e2e/test_460_r290_ledger_node_ops_graph_e2e.py`.
 
-### ledger.node-scope.missing-default-policy
-- Expands: [parent](#ledger.node-scope)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [What should a node change do when only a named graph holds the id?](../../Verus_verification/open_questions.md#HD-1101).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1101).
-
-Audit (HD-1101): Open owner decision. Working assumption (agent, unratified): Keep graph-blind existence. A node change that needs the default-graph row (`set_prop`, `remove_prop`, `add_label`, `remove_label`, `delete_node`, `upsert_node` with labels or properties) refuses with nothing applied and no record when that row is absent, under a reason distinct from `node_not_found` (the maintainer's meaning of that code stays). Model edge endpoint lookup separately (`EnsureEndpoint`). Changed from decisions.md: **yes, refined**: the refusal outcome is kept, but it is not an existence failure; the existence semantics are now supported by a maintainer commit. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1101).
+Open questions: [HD-1101](../../Verus_verification/open_questions.md#HD-1101)
 
 ### ledger.immutability
 
@@ -595,13 +460,14 @@ Findings: [Post-commit properties bypass strict mode and the block on commits in
 
 ### ledger.strict
 
+- uncertain
 - Sources: [ledger API contract strict mode](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L82-L93), [guard.py](../../../iris_vector_graph/ledger/guard.py), [nodes_edges.py erase_graph](../../../iris_vector_graph/_engine/nodes_edges.py#L1473-L1530), [temporal.py structural step](../../../iris_vector_graph/_engine/temporal.py#L304-L312), [access.ledger_strict](../concepts/access.g5.md#access.ledger_strict)
-- Children: [Fail open](#ledger.strict.fail-open)
+- Children: [Fail open](../../Verus_verification/open_questions.md#q-plt-009)
 - agent
 - user-facing-behavior, security
 - test-coverage
 
-The list is the contract's, plus calls added after it: `erase_graph` replaced `drop_graph`, and `erase_all`, `delete_nodes_by_prefix`, `import_rdf`, `bulk_load_session` and `erase_bare_nodes` are guarded the same way. The erase guards block the erase step that redaction needs ([open question](redaction.g5.md#redaction.strict-mode)). The contract's sentence that a temporal write "skips the structural mirror" predates ADR-0009. The engine skips only its own client-side structural step; with the adjacency index declared, the server still writes the marked row. Observed and not guarded: embedding, vector-index and BM25 writes are outside the ledger by decision ([surfaces](../concepts/access.g5.md#access.ledger_strict.surfaces)); the deprecated `bulk_delete_adjacency` and the sample API's Cypher route are undocumented bypasses ([bypasses](../concepts/access.g5.md#access.ledger_strict.bypasses)); `set_multigraph`, FHIR sync and the `Prop_Set` and `Txn_*` SQL procedures are undecided ([open question](../concepts/access.g5.md#access.ledger_strict.undecided)) ([operations inventory](../../uplift/ivg-verus-initial/intent/operations.md#L257-L262)). Live test: `test_ledger_us05_compat.py::test_every_guarded_api_is_rejected_and_nothing_changes`.
+The list is the contract's, plus calls added after it: `erase_graph` replaced `drop_graph`, and `erase_all`, `delete_nodes_by_prefix`, `import_rdf`, `bulk_load_session` and `erase_bare_nodes` are guarded the same way. The erase guards block the erase step that redaction needs ([open question](../../Verus_verification/open_questions.md#q-003)). The contract's sentence that a temporal write "skips the structural mirror" predates ADR-0009. The engine skips only its own client-side structural step; with the adjacency index declared, the server still writes the marked row. Observed and not guarded: embedding, vector-index and BM25 writes are outside the ledger by decision ([surfaces](../concepts/access.g5.md#access.ledger_strict.surfaces)); the deprecated `bulk_delete_adjacency` and the sample API's Cypher route are undocumented bypasses ([bypasses](../concepts/access.g5.md#access.ledger_strict.bypasses)); `set_multigraph`, FHIR sync and the `Prop_Set` and `Txn_*` SQL procedures are undecided ([open question](../../Verus_verification/open_questions.md#q-plt-008)) ([operations inventory](../../uplift/ivg-verus-initial/intent/operations.md#L257-L262)). Live test: `test_ledger_us05_compat.py::test_every_guarded_api_is_rejected_and_nothing_changes`.
 
 Findings: [bulk_delete_adjacency deletes relationships under strict mode without a record](../../Verus_verification/bugs_issues.md#bug-plt-006); [Enforce strict ledger mode once, on the server, instead of in each Python engine](../../Verus_verification/design_simplification.md#simp-plt-001); [Is strict mode promised from the moment set_strict returns, or within a few seconds for other engines?](../../Verus_verification/open_questions.md#q-plt-001)
 
@@ -611,31 +477,7 @@ Audit (HD-0801): Open owner decision. Working assumption (agent, unratified): Ta
 
 Findings: [Where and how should ledger strict mode refuse a Cypher write?](../../Verus_verification/open_questions.md#HD-0801).
 
-### ledger.strict.fail-open
-
-- Sources: [guard.py probe](../../../iris_vector_graph/ledger/guard.py#L38-L59), [CHANGELOG 4.6.0 R206](../../../CHANGELOG.md#L701-L712)
-- Expands: [Strict mode](#ledger.strict)
-- agent
-- uncertain
-- security
-
-The guard runs in Python and caches the ledger's state for five seconds, so another engine's change to strict mode can take that long to apply.
-
-Findings: [When the strict-mode guard cannot read the ledger's state, should it allow the write?](../../Verus_verification/open_questions.md#q-plt-009)
-
-Audit (q-plt-009): Open owner decision. Working assumption (agent, unratified): Keep failures visible in analysis and prefer fail-closed admission; the current fail-open compatibility behavior is not owner ratification. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-009).
-
-### ledger.strict.server-policy
-- Expands: [parent](#ledger.strict)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Should strict mode be enforced by the server, or stay a Python-only check?](../../Verus_verification/open_questions.md#HD-1103).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1103).
-
-Audit (HD-1103): Open owner decision. Working assumption (agent, unratified): Treat strict mode as a client-side, cached (5 s), fail-open guard on the contract's listed calls at this pin; inventory uncovered Python paths, server writers (Eraser, TemporalIndex, FHIR sync, SQL procedures) and external writers as possible unrecorded writers. Changed from decisions.md: **no**. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1103).
+Open questions: [HD-0801](../../Verus_verification/open_questions.md#HD-0801), [HD-1103](../../Verus_verification/open_questions.md#HD-1103), [q-plt-001](../../Verus_verification/open_questions.md#q-plt-001), [q-plt-009](../../Verus_verification/open_questions.md#q-plt-009)
 
 ### ledger.readers
 
@@ -651,30 +493,26 @@ The diff order is [replay.py _sort_key](../../../iris_vector_graph/ledger/replay
 Findings: [Lifecycle diff range priors](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-101); questions [Must the streaming history reader bound its memory?](../../Verus_verification/open_questions.md#q-con-001), [Is a ledger diff an ordered script?](../../Verus_verification/open_questions.md#q-con-002). Public cases M04, M05 and J03 read this block. The new [diff owner](#ledger.readers.diff) and as-built history_diff contract represent named endpoint selection, inversion and continuous per-attribute endpoint values; unrestricted lifecycle/native correspondence remains open; the new full typed-content extension is described below.
 
 ### ledger.readers.history
+
+- uncertain
 - Sources: [history caller](../../../iris_vector_graph/ledger/client.py#L585-L629), [SQL and row producer](../../../iris_vector_graph/ledger/replay.py#L275-L370), [history contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [revision string columns](../../../iris_src/src/Graph/KG/LedgerRevision.cls#L20-L36)
 - Expands: [readers](#ledger.readers)
 - Formal contract: [history paging and typed view](../../Verus_verification/models/history_paging/history_paging.rs)
-- Children: [text matching policy](#ledger.readers.history.text-policy)
+- Children: [text matching policy](../../Verus_verification/open_questions.md#q-iter-003)
 - agent
 - user-facing-behavior
 - test-coverage
 
-### ledger.readers.history.text-policy
-- Sources: [API exact correlation filter](../../../iris_vector_graph/ledger/client.py#L607-L609), [native comparison evidence](../../uplift/consolidated/iteration-6/history-collation-native.json), [space comparisons](../../uplift/consolidated/iteration-6/history-collation-spaces-native.json)
-- Expands: [history pages](#ledger.readers.history)
-- Findings: [text policy question](../../Verus_verification/open_questions.md#q-iter-003)
-- agent
-- assumption
-- uncertain
-
-Audit (q-iter-003): Open owner decision. Working assumption (agent, unratified): Preserve current database comparison for compatibility and expose the difference from binary Python identity; a portable text rule needs owner choice. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-iter-003).
+Open questions: [q-iter-003](../../Verus_verification/open_questions.md#q-iter-003)
 
 ### ledger.readers.bound
+
+- uncertain
 - Sources: [`GraphLedger.reconstruct`](../../../iris_vector_graph/ledger/client.py#L720-L729), [`::export_reconstruction`](../../../iris_vector_graph/ledger/client.py#L731-L739), [`replay.reconstruct`](../../../iris_vector_graph/ledger/replay.py#L544-L566), [`GraphState.apply`](../../../iris_vector_graph/ledger/replay.py#L172-L212), [numeric metadata producer `Ledger.Meta`](../../../iris_src/src/Graph/KG/Ledger.cls#L143-L151), [API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L30-L31)
 - Verus: [reconstruction](../../Verus_verification/models/reconstruction/NOTES.md) as-built `theorem_bound_exactly_prefixes`, `theorem_stream_and_export_fold`, `theorem_named_revision_ignores_later`, `theorem_transient_oversize_refuses`; structural entity and abstract content projection. That retained model does not prove complete maps, tuple decoding or diff; the new typed full-content extension below supplies the scoped map layer. Actual Python named readers, record paging/decoding and NDJSON writer are observed with substituted SQL and meta.
 - Verus (full-content extension): [ledger_content](../../Verus_verification/models/ledger_content/NOTES.md) proves an explicit projection from complete typed states to the retained reconstruction entity/count model, composing named cutoff and intermediate bound. Later records cannot change earlier full contents/refusal; stream and export fold eagerly without that bound. This is not a byte/memory bound, generic iterable/SQL snapshot or raw tuple decoder proof.
 - Expands: [ledger readers](#ledger.readers)
-- Children: [limit policy](#ledger.readers.bound.policy)
+- Children: [limit policy](../../Verus_verification/open_questions.md#q-iter-002)
 - agent
 - user-facing-behavior
 - test-coverage
@@ -683,46 +521,29 @@ Findings: [streaming memory question](../../Verus_verification/open_questions.md
 
 Audit (q-con-001): Open owner decision. Working assumption (agent, unratified): Keep delivery streaming separate from bounded-memory guarantees; full materialization is current behavior and a memory promise needs a separate bound. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-con-001).
 
-### ledger.readers.bound.policy
-- Sources: [API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L30-L31), [`reconstruct` check inside fold](../../../iris_vector_graph/ledger/replay.py#L550-L556)
-- Expands: [reconstruction bound](#ledger.readers.bound)
-- agent
-- uncertain
-- user-facing-behavior
-
-Findings: [q-iter-002](../../Verus_verification/open_questions.md#q-iter-002). Existing source settles the current check, but no recovered authority chooses a final-size promise over a memory-protection check.
-
-Audit (q-iter-002): Open owner decision. Working assumption (agent, unratified): Prefer an explicit peak reconstruction bound; current per-intermediate graph checks do not settle a final-graph-only policy. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-iter-002).
+Open questions: [q-con-001](../../Verus_verification/open_questions.md#q-con-001), [q-iter-002](../../Verus_verification/open_questions.md#q-iter-002)
 
 ### ledger.readers.diff
 
+- uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L29), [GraphLedger.diff](../../../iris_vector_graph/ledger/client.py#L706-L718), [compute_diff and Diff.inverse](../../../iris_vector_graph/ledger/replay.py#L404-L536), [NodeSnapshotJson and DeleteNodeRows](../../../iris_src/src/Graph/KG/LedgerApply.cls#L339-L371)
 - Verus: [history_diff](../../Verus_verification/models/history_diff/NOTES.md), as-built `theorem_named_reverse_and_equal`, `theorem_raw_history_endpoints`, `theorem_simple_delete_preserves_snapshot`, `theorem_change_then_delete_loses_range_prior`; per-attribute projection. No unrestricted lifecycle/native full-graph refinement proof; the continuous full-field extension below is separate.
 - Verus (continuous full fields): [ledger_content](../../Verus_verification/models/ledger_content/NOTES.md) derives raw-base named endpoint maps and stamped label/property/qualifier records, proving exactly changed field pairs and omission of restored values. The rich deletion-time snapshot witness strengthens known bug-led-101; q-con-002, unrestricted lifecycle semantics and executable inverse scripts remain unresolved.
 - Expands: [readers](#ledger.readers)
-- Children: [order and snapshot policy](#ledger.readers.diff.order)
+- Children: [order and snapshot policy](../../Verus_verification/open_questions.md#q-con-002)
 - agent
 - user-facing-behavior
 - test-coverage
 
 Findings: [bug-led-101](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-101).
 
-### ledger.readers.diff.order
-
-- Sources: [ledger API](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L29), [stable sort and inverse](../../../iris_vector_graph/ledger/replay.py#L404-L418)
-- Expands: [diff](#ledger.readers.diff)
-- agent
-- uncertain
-- user-facing-behavior
-
-Findings: [q-con-002](../../Verus_verification/open_questions.md#q-con-002), [bug-led-101](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-101). Maintainer decision pending; a passing inverse equality is not semantic endpoint reconstruction.
-
-Audit (q-con-002): Open owner decision. Working assumption (agent, unratified): Treat lifecycle diff as an unordered net-change result until a stable script order is specified; consumers must not infer dependency order. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-con-002).
+Open questions: [q-con-002](../../Verus_verification/open_questions.md#q-con-002)
 
 ### ledger.verify
 
+- uncertain
 - Sources: [replay.py verify](../../../iris_vector_graph/ledger/replay.py#L806-L867), [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L32), [USER_GUIDE section 9](../../../docs/USER_GUIDE.md#L1084-L1092)
-- Children: [Meaning](#ledger.verify.meaning), [Scope](#ledger.verify.scope), [Consistency](#ledger.verify.consistency)
+- Children: [Meaning](#ledger.verify.meaning), [Scope](#ledger.verify.scope), [Consistency](../../Verus_verification/open_questions.md#q-led-006)
 - agent
 - user-facing-behavior, data-integrity
 - test-coverage
@@ -730,6 +551,8 @@ Audit (q-con-002): Open owner decision. Working assumption (agent, unratified): 
 Live test: `test_ledger_us09_verify.py`.
 
 Findings: [A temporal write creates endpoint nodes that the ledger never recorded, so verify diverges after the ledger's own temporal operation](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-004); [An adopting verify that races a redaction can append the redacted tenant's IDs after the redaction finished](../../Verus_verification/bugs_issues.md#bug-led-001)
+
+Open questions: [q-led-006](../../Verus_verification/open_questions.md#q-led-006)
 
 ### ledger.verify.meaning
 
@@ -749,17 +572,3 @@ The consumer asked for a "chain" that stays verifiable; this block records that 
 - test-coverage
 
 The temporal exclusion follows spec 213 US11, which the code cites ("temporal writes create no revisions"). Ignoring graphs for nodes follows [node scope](#ledger.node-scope). Live tests: `test_ledger_us11_temporal_coexist.py`, `test_ledger_verify_pre_enable_writes.py`.
-
-### ledger.verify.consistency
-
-- Sources: [replay.py verify](../../../iris_vector_graph/ledger/replay.py#L806-L867), [A-history notes F5](../../uplift/ivg-verus-initial/intent/ledger-history.md)
-- Expands: [Verify](#ledger.verify)
-- agent
-- uncertain
-- data-integrity
-
-Existing evidence for part of the intent: `test_ledger_us09_verify.py::test_verify_reports_head_observed_at_start` pins the head that verify reports.
-
-Findings: [Must verify compare one consistent moment of the ledger and the tables?](../../Verus_verification/open_questions.md#q-led-006)
-
-Audit (q-led-006): Open owner decision. Working assumption (agent, unratified): Treat verify as requiring quiescent inputs for reliance until a consistent-view protocol is specified; unlocked multi-scan behavior is not a snapshot proof. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-led-006).

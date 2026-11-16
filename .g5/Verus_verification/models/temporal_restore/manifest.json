@@ -1,0 +1,63 @@
+{
+  "title": "temporal restore",
+  "question": "event/global export/import to window, graph0/epoch0, scalar type loss and silent line refusal; imported paging units separated",
+  "ontology_ids": [
+    "install.snapshot.temporal"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 31}"
+    },
+    {
+      "label": "zero-start-export",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_zero_graph_epoch_is_preserved\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "import-loses-value",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_export_import_key\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reader-loses-graph",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_wrong_graph_and_empty_sources\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "attrs-not-written",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_writer_derives_direction_and_attrs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "layout-refusal-erases",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_layout_refuses_before_erasure\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "refused-line-still-written",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_swallowed_line_is_not_reported\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "scalar-typing-assumed-preserved",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_numeric_attribute_becomes_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}
