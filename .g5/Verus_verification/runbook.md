@@ -472,3 +472,6 @@ Iteration 32 ([handoff](../uplift/consolidated/iteration-32/HANDOFF.md)) adds `m
 in-process binding (FastAPI `TestClient` with `IRIS_*` set to the fixture; no port is opened).
 
 Iteration 33 ([handoff](../uplift/consolidated/iteration-33/HANDOFF.md)) adds `models/node_edge_update` (5 verified, 6 controls) and its binding.
+
+Iteration 35 ([handoff](../uplift/consolidated/iteration-35/HANDOFF.md)): W41 is probe-only. The retest converged after iteration 35
+([basis](../uplift/consolidated/HANDOFF.md#retest-convergence-2026-11-16)). Native replays need `docker start ivg-retest-20261116-iris` first.

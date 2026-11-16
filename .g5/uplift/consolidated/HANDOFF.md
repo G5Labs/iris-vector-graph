@@ -1,4 +1,4 @@
-**Current pointer (retest, 2026-11-16).** Running, iteration 34 sealed (subject `Seal iteration 34: property readers`). Material outcome: new Low bug-str-102; HD-0201 confirmed again; new owner `structure.node.read.properties`; reach 375 of 4,130. Cost: builder wall clock about 1 h 15 min since 21:15Z (earlier pointers overstated it; see iteration 34). Not converged: W38 and W40 still changed predictions; next `bulk_load_session`. Retest log: [below](#retest-2026-11-16).
+**Current pointer (retest, 2026-11-16).** CONVERGED after iteration 35. Latest seal: the clean tip with subject `Record convergence of the retest` (its parent is the iteration-35 seal). Session: iterations 25-35 (W30-W41), 6 new findings (1 High, 1 Medium, 4 Low), 4 inherited suspicions reproduced, 8 new models, reach 279 → 375 of 4,130 (96 new, 10 strengthened, 0 lost). Cost: builder wall clock about 1 h 20 min (21:15-22:35 UTC; tokens/currency unavailable). Convergence basis: [below](#retest-convergence-2026-11-16).
 
 <a id="retest-2026-11-16"></a>
 ## Retest (2026-11-16, from `cloud-iris-retest-start-20261116`)
@@ -17,6 +17,87 @@ Guidance: run copy `$G5_HARNESS`, `Verus/uplift-iteration.md` sha256 `a7521d0e20
 | [32](iteration-32/HANDOFF.md) | W38 one Cypher answer through three HTTP readers | Medium bug-plt-108 (new); model `http_rows`; 368 → 371 |
 | [33](iteration-33/HANDOFF.md) | W39 node and edge updates and deletes | all agree (negative result); model `node_edge_update`; 371 → 375 |
 | [34](iteration-34/HANDOFF.md) | W40 Python property readers over API-written values | Low bug-str-102 (new); HD-0201 evidence; owner `structure.node.read.properties`; 375 |
+| [35](iteration-35/HANDOFF.md) | W41 `bulk_load_session` with and without a caller transaction | all agree (reader corrected); `structure.adjacency.bulk` extended; 375 |
+
+
+<a id="retest-convergence-2026-11-16"></a>
+## Retest convergence (2026-11-16)
+
+Guidance: `$G5_HARNESS` run copy (byte-identical to `$HOME/.agents`): `Verus/uplift-iteration.md` sha256
+`a7521d0e208c34bdf84e83537c5ffd2acc52b7aeec9d730a2a53ee89013fc563`, `Verus/uplift-scoring.md`
+`7e250023ffaa55fc6c891f137ac54b8cecbc424f69add756a3e5e9d91736e233` (all hashes in
+[retest-run.json](iteration-25/retest-run.json)). Start: tag `cloud-iris-retest-start-20261116` (`ce5b2f7d`); iteration
+24's stop was reopened under the revised step 1. Product `3eaa79cf` unchanged throughout; nothing outside `.g5/`
+changed; nothing was published. No private evaluator input or quarantined iteration-13 material was opened. The later
+viewer, question-card and model-binding commits were preserved; two derived crosswalks were reconciled to them.
+
+### Discoveries and repairs (matched by trigger and observable consequence)
+
+| Kind | Entries |
+|---|---|
+| New, not recorded anywhere before | **High bug-tmp-102** (autocommit-off rollback splits temporal writes, batches and deletes from their structural side), **Medium bug-plt-108** (Neo4j HTTP routes silently cap answers at 1,000 rows), Low bug-plt-107 (guide misnames which `from_connect` calls escape a transaction), Low bug-srch-101 (VecIndex re-create reports count 0), Low bug-srch-102 (VecIndex insert docs), Low bug-str-102 (property readers return a boolean as "true") |
+| Inherited suspicions now E2E reproduced | bug-plt-011 (interrupted bulk load), bug-plt-027 (default bulk load invisible until rebuild; bug-plt-106 merged into it), bug-plt-012 (BulkLoader ignores the IVG Schema), F-0608 VecIndex and PLAID branches (PLAID differs from IVF: stale vectors do not answer) |
+| Corrections | iterations 25-26 had read owner predictions from metadata only (A1, T5, T8, T10 were in fact predicted by statement bodies); builder wall-clock estimates in pointers 25-33 were overstated; seal 31 carries iteration 32's first receipts |
+| Questions | none opened or closed; evidence added to `structure.write.engine-connection` and HD-0201 |
+| Simplifications | none proposed, tested or retired (55 unchanged) |
+
+Registers: 170 live bug entries (160 at the start), 55 simplifications, 256 question anchors. Ontology 344 → 348 blocks:
+new owners `search.vecindex`, `search.plaid`, `search.routes.inventory`, `structure.node.read.properties`; extended
+`install.bulk_load.loader`, `structure.write`, `temporal.write`, `algorithms.op`, `access.surfaces`,
+`structure.adjacency.bulk`. New models (each with full and isolated controls and a native or in-process binding):
+`bulk_load`, `write_routing`, `vec_index`, `algo_options`, `embedding_inventory`, `plaid_index`, `http_rows`,
+`node_edge_update`. Every sampled workflow, its frozen predictions, misses and set-asides are in the iterations' `*-PAIRS.md`.
+
+### Reach ([session-retest-20261116-reach.json](session-retest-20261116-reach.json))
+
+Active behavioral bindings 279 → **375** of 4130: 96 newly reached and bound, 10 existing members with an
+added claim, overlap 0, lost 0. Direct executable-body verification remains 0.
+
+| Area | Members | Bound at retest start | Bound now | Unbound |
+|---|---:|---:|---:|---:|
+| Cypher translator/parser | 996 | 29 | 33 | 963 |
+| ObjectScript iris_src | 972 | 69 | 94 | 878 |
+| engine mixins | 711 | 100 | 130 | 581 |
+| ledger | 151 | 19 | 19 | 132 |
+| migrations | 161 | 0 | 0 | 161 |
+| other package modules | 955 | 55 | 90 | 865 |
+| stores | 184 | 7 | 9 | 175 |
+
+### Why the step-5 check now supports stopping
+
+The last step-5 pair: the strongest remaining candidate (W40, API-written values through the Python property readers,
+the counterpart of the vein that yielded seven findings in iterations 16-24) gave one Low type-presentation finding and
+an already-open question; the outside-family workflow (W41, the engine's bulk session) agreed fully with its owners, as
+did W39 (node and edge updates and deletes). Severity of new discoveries fell from High and Medium (W31, W38, both in a
+transaction mode or final reader no iteration had examined) to Low and none. Further modeling in the examined families
+(bulk loading, caller transactions, named vector indexes, option validation, reporting, HTTP readers, CRUD, property
+readers) would add Low presentation variants that the owners now predict.
+
+### Remaining areas, by reason
+
+- Scope limits: erasure, ledger redaction and tenant removal (security-related), FHIR mapping (external provider),
+  Cypher `MERGE` (quarantined iteration-13 subject), the sample API under `api/` and its GraphQL schema (`gql`).
+- Blockers: Arno and NKG accelerators (library not installed; 61 ObjectScript members), embedded in-IRIS execution
+  (`embedded.py`; needs the package inside the container's embedded Python, about one iteration), IRIS 2026.3 (F-C1705).
+- Internals of modeled decisions: `TraversalBuild` sweeps and sketches (rebuilt-store token rule modeled), the Cypher
+  translator and parser (TCK-covered for Cypher-written data; the API-writer boundary examined in 16-24), engine and
+  store delegates, `store_protocol` (abstract), ledger client and replay delegates (ledger family modeled).
+- Low yield for the cost: the 3.2.0 → 4.0.0 migrations (161 members; need a reconstructed 3.2.0 install, about one
+  iteration; affect installs two major versions back) — the largest unknown, with that settling cost.
+
+### Stop reasons, labeled
+
+1. **Evidenced diminishing returns** (primary), limited to the families named above.
+2. **Scope limits** and **blockers** as listed.
+3. **Budget**: not binding.
+
+### Honest limits
+
+No independent reviewer ran. Bindings are transcriptions with native or in-process agreement; provider premises are
+named in each model. Probe-only claims, open in Verus: bug-str-102 and W41. One detail is unexplained: a two-edge
+temporal batch's window read returned one edge (W37; the binding uses one-edge batches). The run-isolated fixture
+`ivg-retest-20261116-iris` (with namespaces `USER` and `W37`) was stopped, not removed: `docker start
+ivg-retest-20261116-iris` restores it for every binding.
 
 Earlier pointer (superseded): **Current pointer (cloud continuation, 2026-11-16).** CONVERGED after iteration 24. Latest seal: the clean tip with subject `Record convergence of the cloud continuation` (its parent `0575c5de` is the last iteration seal). Session: iterations 14–24, seven new findings, reach 249 → 279 of 4,130 (30 new, 0 lost). Cost: builder wall clock about 1 h 50 min (tokens/currency unavailable). Convergence basis: [below](#convergence-cloud-continuation-2026-11-16).
 
