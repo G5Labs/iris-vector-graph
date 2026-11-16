@@ -1,0 +1,53 @@
+{
+  "control": {
+    "classification": "provider: JSON_VALUE spelling of a JSON boolean",
+    "expect_fail_in": [
+      "theorem_rel_bool_equals_integer"
+    ],
+    "find": "Json::Bool(b)=>if b {seq!['1']} else {seq!['0']}}}\n/// The text RETURN decodes",
+    "name": "json-boolean-reads-as-word",
+    "replace": "Json::Bool(b)=>if b {rp::tru()} else {rp::fals()}}}\n/// The text RETURN decodes"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_rel_bool_equals_integer"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+    ".g5/Verus_verification/models/typed_equality/model.json": "edc554cbf17f6e2ade57a1e01d75131ed21085f6e3fc8f138ca2936821d7b2a5",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "26ee3577ed614f9e0c0b148d6ddd0a845e8d872f5e88a9601b169068d6a41235"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/typed_equality/controls/json-boolean-reads-as-word/20261116T171746Z/models/typed_equality/typed_equality.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_rel_bool_equals_integer": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/typed_equality/20261116T171746Z-control-json-boolean-reads-as-word-theorem_rel_bool_equals_integer.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/typed_equality/20261116T171746Z-control-json-boolean-reads-as-word.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/typed_equality/20261116T171747Z-control-json-boolean-reads-as-word/logs/20261116T171746Z-control-json-boolean-reads-as-word-theorem_rel_bool_equals_integer.log": "7d21eaa30ae8f2f263b7b85eda9efa507ecb8ff1099f2a3d9c1610f2e485f067",
+    ".g5/Verus_verification/results/typed_equality/20261116T171747Z-control-json-boolean-reads-as-word/logs/20261116T171746Z-control-json-boolean-reads-as-word.log": "d8584982501d9fa01dad688724d804e8183bf03cdc9c8116a1ada90824f06fa3"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

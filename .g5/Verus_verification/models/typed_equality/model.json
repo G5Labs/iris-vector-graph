@@ -1,7 +1,7 @@
 {
   "name": "typed_equality",
   "root": "typed_equality.rs",
-  "expected_verified": 41,
+  "expected_verified": 42,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [
     "../node_read/node_read.rs",
@@ -77,6 +77,15 @@
         "theorem_rel_text_orders_as_cast"
       ],
       "classification": "decision: node ordering by plain CAST (the pre-4.7.0 node rule)"
+    },
+    {
+      "name": "string-predicate-typed",
+      "find": "nr::Stored::Number{payload,double}=>if double {starts(double_text(payload),pre)} else {starts(num_text(payload),pre)},",
+      "replace": "nr::Stored::Number{payload,double}=>false,",
+      "expect_fail_in": [
+        "theorem_node_number_matches_string_prefix"
+      ],
+      "classification": "decision: string predicates null on stored numbers (openCypher, the typed alternative)"
     }
   ]
 }

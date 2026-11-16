@@ -1,0 +1,53 @@
+{
+  "control": {
+    "classification": "decision: relationship integer equality without the float twin's spelling (the attempt-1 model miss)",
+    "expect_fail_in": [
+      "theorem_rel_twin_spelling_equals_integer"
+    ],
+    "find": "Lit::Int(m)=>json_value(j)==num_text(m) || json_value(j)==num_text(m)+seq!['.','0'],",
+    "name": "twin-spelling-dropped",
+    "replace": "Lit::Int(m)=>json_value(j)==num_text(m),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_rel_twin_spelling_equals_integer"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+    ".g5/Verus_verification/models/typed_equality/model.json": "edc554cbf17f6e2ade57a1e01d75131ed21085f6e3fc8f138ca2936821d7b2a5",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "26ee3577ed614f9e0c0b148d6ddd0a845e8d872f5e88a9601b169068d6a41235"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/typed_equality/controls/twin-spelling-dropped/20261116T171750Z/models/typed_equality/typed_equality.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_rel_twin_spelling_equals_integer": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/typed_equality/20261116T171750Z-control-twin-spelling-dropped-theorem_rel_twin_spelling_equals_integer.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/typed_equality/20261116T171750Z-control-twin-spelling-dropped.log",
+    "timed_out": false,
+    "verified": 41
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/typed_equality/20261116T171752Z-control-twin-spelling-dropped/logs/20261116T171750Z-control-twin-spelling-dropped-theorem_rel_twin_spelling_equals_integer.log": "3fa58bf053d050a06e992a1f29e119c83b7eba8f5c6c2ea4642b2c4d8bede91c",
+    ".g5/Verus_verification/results/typed_equality/20261116T171752Z-control-twin-spelling-dropped/logs/20261116T171750Z-control-twin-spelling-dropped.log": "1573acb7ee0a2ac64cedec087bb1b92db84dfe21048594f96001263c054ef9cf"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

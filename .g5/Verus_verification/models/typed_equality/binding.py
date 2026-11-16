@@ -23,6 +23,7 @@ import runtime  # noqa: E402
 RUN = os.environ.get("TE_RUN", time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()))
 VALUES = [0, 1, 2, -1, 12, True, False, "1", "0", "True", "False", "true", "false", "12", "01", "x", "1.0", "12.0", 1.0, 0.0, 0.95, 12.0, ".95", "0.95", "12abc", ""]
 ORDERS = [("<", 2), (">", 0), (">=", 1), ("<", 1), ("<=", -1)]
+PREFIXES = ["1", "a", "t", "0."]
 LITERALS = [("bool", True), ("bool", False), ("int", 0), ("int", 1), ("int", 2), ("int", 12), ("int", -1)]
 TRUE_SP, FALSE_SP = ("true", "1", "True"), ("false", "0", "False")
 INT_RE, FLOAT_RE = re.compile(r"^-?(0|[1-9]\d*)$"), re.compile(r"^-?(0|[1-9]\d*)\.\d+$")
@@ -151,9 +152,24 @@ def rel_ord(v, op, m, rules):
     return holds(op, cast_double(json_value(v, rules)), m)
 
 
+def node_starts(st, pre, rules):
+    k, x = st
+    if k == "text":
+        return x.startswith(pre)
+    if rules.get("string_predicate_typed"):
+        return False
+    return (canonical(x) if k == "double" else str(x)).startswith(pre)
+
+
+def rel_starts(v, pre, rules):
+    return json_value(v, rules).startswith(pre)
+
+
 def predict(kind, v, rules=None):
     rules = rules or {}
     out = {}
+    for pre in PREFIXES:
+        out[f"starts {pre}"] = node_starts(node_stored(v), pre, rules) if kind == "node" else rel_starts(v, pre, rules)
     for op, m in ORDERS:
         out[f"{op} {m}"] = node_ord(node_stored(v), op, m, rules) if kind == "node" else rel_ord(v, op, m, rules)
     for lit in LITERALS:
@@ -189,6 +205,9 @@ def main():
             for op, m in ORDERS:
                 rows = e.execute_cypher(f"{base} AND x.p {op} {m} RETURN count(*) AS n")["rows"]
                 obs[f"{op} {m}"] = bool(rows[0][0])
+            for pre in PREFIXES:
+                rows = e.execute_cypher(f"{base} AND x.p STARTS WITH '{pre}' RETURN count(*) AS n")["rows"]
+                obs[f"starts {pre}"] = bool(rows[0][0])
             got = e.execute_cypher(f"{base} RETURN x.p AS p")["rows"]
             obs["return"] = got[0][0] if got else "NO ROW"
             want = predict(kind, v)
@@ -199,7 +218,7 @@ def main():
     c.close()
     mismatches = [w for w in worlds if not w["agrees"]]
     sens = {}
-    for rule in ["legacy_one_not_true", "node_number_by_text", "json_boolean_reads_as_word", "stored_integer_not_a_spelling", "twin_spelling_dropped", "rel_ordering_typed", "node_ordering_cast"]:
+    for rule in ["legacy_one_not_true", "node_number_by_text", "json_boolean_reads_as_word", "stored_integer_not_a_spelling", "twin_spelling_dropped", "rel_ordering_typed", "node_ordering_cast", "string_predicate_typed"]:
         n = 0
         for w in worlds:
             v = w["value"][1]
@@ -210,7 +229,7 @@ def main():
     body = {
         "kind": "binding", "model": "typed_equality", "fixture": runtime.NAME, "port": runtime.PORT, "run": RUN,
         "product_baseline": runtime.PRODUCT, "verdict": "AGREES" if not mismatches else "DISAGREES",
-        "worlds": len(worlds), "comparisons": len(worlds) * (len(LITERALS) + len(ORDERS) + 1), "mismatches": mismatches,
+        "worlds": len(worlds), "comparisons": len(worlds) * (len(LITERALS) + len(ORDERS) + len(PREFIXES) + 1), "mismatches": mismatches,
         "sensitivities_detected_worlds": sens, "all_sensitivities_detected": all(v > 0 for v in sens.values()),
         "elapsed_s": time.monotonic() - start,
         "inputs": {str(p.relative_to(REPO)): sha(p) for p in [HERE / "binding.py", HERE / "typed_equality.rs", HERE / "model.json"]},

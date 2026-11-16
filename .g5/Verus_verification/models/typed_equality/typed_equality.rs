@@ -220,4 +220,17 @@ pub proof fn theorem_rel_bool_orders_as_number()
  requires cast_double(seq!['1'])==1real,
  ensures rel_where_ord(Json::Bool(true),Ord::Ge,1),!node_where_ord(nr::write(nr::Input::Bool(true)),Ord::Ge,1),
 {}
+
+// ---- string predicates (STARTS WITH) against a stored property (iteration 20) ----
+pub open spec fn starts(x:Text,pre:Text)->bool {x.len()>=pre.len() && x.subrange(0,pre.len() as int)==pre}
+/// Node: the stored value's text is tested, a stored number through its canonical text (observed natively).
+pub open spec fn node_starts_with(s:nr::Stored,pre:Text)->bool {
+ match s {nr::Stored::Text(x)=>starts(x,pre),nr::Stored::Number{payload,double}=>if double {starts(double_text(payload),pre)} else {starts(num_text(payload),pre)},nr::Stored::BigText(_)=>false}
+}
+/// A stored node integer satisfies a string prefix test on its digits, while RETURN reads it as an integer
+/// (openCypher: a string predicate on a number is null).
+pub proof fn theorem_node_number_matches_string_prefix()
+ ensures node_starts_with(nr::Stored::Number{payload:12,double:false},seq!['1']),
+  node_return(nr::Stored::Number{payload:12,double:false})==nr::Value::Integer(12),
+{reveal_with_fuel(nat_text,2);assert(nat_text(12)=~=seq!['1','2']);assert(num_text(12).subrange(0,1)=~=seq!['1']);}
 }

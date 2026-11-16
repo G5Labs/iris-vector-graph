@@ -1,0 +1,54 @@
+{
+  "control": {
+    "classification": "provider/repair: the native executor passing an empty string as a string (equal answers restored)",
+    "expect_fail_in": [
+      "theorem_executors_disagree_on_empty_string"
+    ],
+    "find": "pub open spec fn native_arg(s:Text)->Option<Text> {if s.len()==0 {None} else {Some(s)}}",
+    "name": "native-empty-as-string",
+    "replace": "pub open spec fn native_arg(s:Text)->Option<Text> {Some(s)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_executors_disagree_on_empty_string"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+    ".g5/Verus_verification/models/sort_key/model.json": "a0ec6223f573c6693379aa3c30c135d5fb33a874b83631bf0cc8ab55cf97f9e5",
+    ".g5/Verus_verification/models/sort_key/sort_key.rs": "e68cf80430e1ac2a24384d6de913f483a9fd0d9e343e5b181b0f092ef7a47266",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "26ee3577ed614f9e0c0b148d6ddd0a845e8d872f5e88a9601b169068d6a41235"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/native-empty-as-string/20261116T172017Z/models/sort_key/sort_key.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_executors_disagree_on_empty_string": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/20261116T172017Z-control-native-empty-as-string-theorem_executors_disagree_on_empty_string.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/20261116T172017Z-control-native-empty-as-string.log",
+    "timed_out": false,
+    "verified": 50
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sort_key/20261116T172019Z-control-native-empty-as-string/logs/20261116T172017Z-control-native-empty-as-string-theorem_executors_disagree_on_empty_string.log": "efffceacfc5d5bdf5a0645807274773d81edfe2876dbb286c791211a8091e8cb",
+    ".g5/Verus_verification/results/sort_key/20261116T172019Z-control-native-empty-as-string/logs/20261116T172017Z-control-native-empty-as-string.log": "3d194d5f8322f2ac0a7098ffd8ce683bb165de58c4815188e9b86d3dd59ded5f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

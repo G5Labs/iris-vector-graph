@@ -1,0 +1,11 @@
+verification results:: 41 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/typed_equality/controls/twin-spelling-dropped/20261116T171750Z/models/typed_equality/typed_equality.rs:160:10
+    |
+159 | pub proof fn theorem_rel_twin_spelling_equals_integer()
+    | ------------------------------------------------------- at the end of the function body
+160 |  ensures rel_where_eq(Json::Str(seq!['1','2','.','0']),Lit::Int(12)),!node_where_eq(nr::Stored::Text(seq!['1','2','.','0']),Lit::In...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

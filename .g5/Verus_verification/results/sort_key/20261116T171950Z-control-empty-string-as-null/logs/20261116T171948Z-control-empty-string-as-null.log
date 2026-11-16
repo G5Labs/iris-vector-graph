@@ -1,0 +1,28 @@
+verification results:: 48 verified, 3 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/empty-string-as-null/20261116T171948Z/models/sort_key/sort_key.rs:42:67
+   |
+42 | pub proof fn theorem_typed_string_sorts_as_string(v:Text) ensures rank(Some(v),Ty::Str)=='l' {}
+   | ---------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+   | |
+   | at the end of the function body
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/empty-string-as-null/20261116T171948Z/models/sort_key/sort_key.rs:49:86
+   |
+49 | pub proof fn theorem_empty_string_sorts_as_string(t:Ty) requires t!=Ty::Null ensures rank(Some(Seq::<char>::empty()),t)=='l' {}
+   | -------------------------------------------------------                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+   | |
+   | at the end of the function body
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/empty-string-as-null/20261116T171948Z/models/sort_key/sort_key.rs:72:10
+   |
+70 | pub proof fn theorem_executors_disagree_on_empty_string(v:Text)
+   | --------------------------------------------------------------- at the end of the function body
+71 |  requires scalar_text(v),is_valid_num(v),v!=tru(),v!=fals(),v!=nan(),
+72 |  ensures rank(sql_arg(Seq::<char>::empty()),Ty::X)<rank(sql_arg(v),Ty::X),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

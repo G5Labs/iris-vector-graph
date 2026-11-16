@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/string-predicate-typed/20261116T171729Z/models/typed_equality/typed_equality.rs:233:10
+    |
+232 | pub proof fn theorem_node_number_matches_string_prefix()
+    | -------------------------------------------------------- at the end of the function body
+233 |  ensures node_starts_with(nr::Stored::Number{payload:12,double:false},seq!['1']),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

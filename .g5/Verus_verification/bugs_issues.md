@@ -3918,6 +3918,25 @@ Consequence: for the same visible triple, the edge's properties and the RDF cont
 
 Repair proposal (not implemented, not checked): keep the edge and its weight visible but omit the `temporal` key from Cypher relationship maps and RDF qualifiers (and from the RDF envelope when it is the only remaining key), preserving NDJSON's documented omission and every marker-based delete, purge and adoption rule. Writers and readers affected: `AssertTemporalRow`, `CY_RETYPE_MAP`/`_edge_props_sql`, `_build_rdflib_graph`; distinguishing case: the marked-versus-plain pair above.
 
+<a id="bug-cyp-105"></a>
+### A string predicate matches a node property stored as a number by its digits
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-16 (cloud continuation, iteration 20)
+
+Found by: the string-predicate neighbor of the typed comparison workflows, with the prediction frozen first ([predictions](../uplift/consolidated/iteration-20/null-semantics-PAIRS.md)); [typed_equality](models/typed_equality/NOTES.md) `theorem_node_number_matches_string_prefix`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-20/string-predicate-observed-20261116T171621Z.json); [52-world binding](results/typed_equality/20261116T171733Z-binding/receipt.json)). `create_node(a, properties={"p": 12})` stores the number 12; `MATCH (x) WHERE x.id = a AND x.p STARTS WITH '1' RETURN count(*)` counts it and `CONTAINS '2'` too, while `RETURN x.p` returns the integer 12. The stored double 0.95 does not start with `'0.'` (it is tested as `.95`). Passing neighbors: the string "abc" behaves as text on both kinds; `= 12` and `< 20` on the same node honor the stored type.
+
+Expected: openCypher makes `STARTS WITH`, `ENDS WITH` and `CONTAINS` null when an operand is not a string. Since 4.7.0 the node path reads equality and ordering by the stored type ([query.values.equality](../ontology/features/cypher.g5.md#query.values.equality), [query.values.ordering](../ontology/features/cypher.g5.md#query.values.ordering)); string predicates do not. The documented known issue about numbers and strings does not mention string predicates. The as-built rule is [query.values.string_predicates](../ontology/features/cypher.g5.md#query.values.string_predicates).
+
+Cause: `_boolean_expr_comparison_ops` emits `%EXACT(value) LIKE %EXACT(prefix || '%')` over the stored value with no stored-number test.
+
+Consequence: a prefix or substring filter over a property that holds numbers on some nodes and strings on others also returns the numbers, and a decimal's match depends on IRIS's canonical spelling. Low: narrow trigger and no data loss.
+
+Repair proposal (not implemented, not checked): apply the stored-number test (`_stored_number_test`) so a node number is null for string predicates, leaving strings unchanged. Distinguishing case: node `p = 12` against `STARTS WITH '1'`.
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 

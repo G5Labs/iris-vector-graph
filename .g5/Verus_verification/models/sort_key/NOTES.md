@@ -13,7 +13,7 @@ accepts, `n`; other text `l`. Lists, maps, graph JSON, durations, dates and time
 `$IsValidNum` is an uninterpreted provider. The executors' argument is a stated transport premise: the SQL path gives
 `Some("")` (`$Char(0)`), the native path gives ObjectScript `""`, i.e. null (`native_arg`).
 
-## Theorems (50 verified = 9 new + 41 unchanged imports from typed_equality, node_read and rel_prop_text)
+## Theorems (51 verified = 9 new + 42 unchanged imports from typed_equality, node_read and rel_prop_text)
 
 `theorem_rank_order`, `theorem_untyped_numeric_text_sorts_as_number`, `theorem_typed_string_sorts_as_string`,
 `theorem_word_sorts_as_string`, `theorem_empty_string_sorts_as_string`, `theorem_null_sorts_last`,
@@ -34,3 +34,7 @@ the first run. `…170611Z-binding` is the SQL-only first version; `…170637Z-b
 first run with class calls, where `Key("")` returned the null rank. That observation is the transport premise, and the
 executor comparison ([observation](../../../uplift/consolidated/iteration-18/empty-string-order-observed-20261116T170714Z.json))
 confirmed it at the public reader. No executable product body is verified.
+
+Iteration 20 extended the imported `typed_equality` by one theorem, so this crate grew from 50 to 51 with no change
+here; the evidence gate marked the old receipts stale, the proof and all five controls were re-run, and the
+intermediate receipt with the old expected count (UNEXPECTED 51 != 50) is kept.

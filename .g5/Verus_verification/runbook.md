@@ -414,3 +414,6 @@ binding calls `Graph_KG.CY_SORT_KEY` and `Graph.KG.Cypher.SortKey.Key` on the fi
 
 Iteration 19 ([handoff](../uplift/consolidated/iteration-19/HANDOFF.md)) adds `models/setup_record` (7 verified, 4 controls); its native
 observations need a fresh namespace (`W21`) created in the fixture from `%SYS` as recorded in `iteration-19/inputs.json`.
+
+Iteration 20 ([handoff](../uplift/consolidated/iteration-20/HANDOFF.md)) extends `typed_equality` to 42 verified and 8 controls;
+`sort_key` re-verified at 51 after the import grew.

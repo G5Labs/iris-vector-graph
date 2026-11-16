@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/untyped-number-as-string/20261116T171943Z/models/sort_key/sort_key.rs:39:10
+   |
+37 | pub proof fn theorem_untyped_numeric_text_sorts_as_number(v:Text)
+   | ----------------------------------------------------------------- at the end of the function body
+38 |  requires scalar_text(v),is_valid_num(v),v!=tru(),v!=fals(),v!=nan(),
+39 |  ensures rank(Some(v),Ty::X)=='n',
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

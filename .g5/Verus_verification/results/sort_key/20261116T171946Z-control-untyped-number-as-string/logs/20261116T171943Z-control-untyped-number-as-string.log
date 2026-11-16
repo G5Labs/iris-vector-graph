@@ -1,0 +1,39 @@
+verification results:: 47 verified, 4 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/untyped-number-as-string/20261116T171943Z/models/sort_key/sort_key.rs:39:10
+   |
+37 | pub proof fn theorem_untyped_numeric_text_sorts_as_number(v:Text)
+   | ----------------------------------------------------------------- at the end of the function body
+38 |  requires scalar_text(v),is_valid_num(v),v!=tru(),v!=fals(),v!=nan(),
+39 |  ensures rank(Some(v),Ty::X)=='n',
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/untyped-number-as-string/20261116T171943Z/models/sort_key/sort_key.rs:55:10
+   |
+53 | pub proof fn theorem_bool_before_number(v:Text)
+   | ----------------------------------------------- at the end of the function body
+54 |  requires scalar_text(v),is_valid_num(v),v!=tru(),v!=fals(),v!=nan(),
+55 |  ensures rank(Some(tru()),Ty::X)<rank(Some(v),Ty::X),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/untyped-number-as-string/20261116T171943Z/models/sort_key/sort_key.rs:60:55
+   |
+58 | pub proof fn theorem_node_where_and_order_by_disagree(v:Text,o:te::Ord,m:int)
+   | ----------------------------------------------------------------------------- at the end of the function body
+59 |  requires scalar_text(v),is_valid_num(v),v!=tru(),v!=fals(),v!=nan(),
+60 |  ensures !te::node_where_ord(nr::Stored::Text(v),o,m),rank(Some(v),Ty::X)=='n',
+   |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/untyped-number-as-string/20261116T171943Z/models/sort_key/sort_key.rs:72:10
+   |
+70 | pub proof fn theorem_executors_disagree_on_empty_string(v:Text)
+   | --------------------------------------------------------------- at the end of the function body
+71 |  requires scalar_text(v),is_valid_num(v),v!=tru(),v!=fals(),v!=nan(),
+72 |  ensures rank(sql_arg(Seq::<char>::empty()),Ty::X)<rank(sql_arg(v),Ty::X),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+
