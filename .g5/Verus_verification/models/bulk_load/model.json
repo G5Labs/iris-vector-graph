@@ -1,0 +1,51 @@
+{
+  "name": "bulk_load",
+  "root": "bulk_load.rs",
+  "expected_verified": 8,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "phase1-not-committed",
+      "find": "  Stop::FailLabels=>d1,",
+      "replace": "  Stop::FailLabels=>db0,",
+      "expect_fail_in": ["theorem_interrupted_load_is_never_completed", "witness_interrupted_rerun_strands"],
+      "classification": "effect: a failed load leaves its node rows uncommitted (no per-batch commit)"
+    },
+    {
+      "name": "rerun-completes-stranded",
+      "find": "pub open spec fn is_new(db0:Db,c:Call,n:Node)->bool {!exists_in(db0,c.graph,n)}",
+      "replace": "pub open spec fn is_new(db0:Db,c:Call,n:Node)->bool {!exists_in(db0,c.graph,n) || (db0[(c.graph,n)].labels.len()==0 && db0[(c.graph,n)].props.len()==0)}",
+      "expect_fail_in": ["theorem_interrupted_load_is_never_completed", "witness_interrupted_rerun_strands"],
+      "classification": "decision: the re-run also processes nodes that have no labels or properties (the repair proposal)"
+    },
+    {
+      "name": "skip-sees-indexed-only",
+      "find": "pub open spec fn exists_in(db:Db,g:Graph,n:Node)->bool {db.contains_key((g,n))}",
+      "replace": "pub open spec fn exists_in(db:Db,g:Graph,n:Node)->bool {db.contains_key((g,n)) && db[(g,n)].node_ix}",
+      "expect_fail_in": ["theorem_complete_rerun_is_noop"],
+      "classification": "decision: the skip scan without the %NOINDEX hint misses unindexed rows"
+    },
+    {
+      "name": "skip-across-graphs",
+      "find": "pub open spec fn exists_in(db:Db,g:Graph,n:Node)->bool {db.contains_key((g,n))}",
+      "replace": "pub open spec fn exists_in(db:Db,g:Graph,n:Node)->bool {exists|h:Graph| db.contains_key((h,n))}",
+      "expect_fail_in": ["theorem_same_id_other_graph_is_written"],
+      "classification": "decision: the skip scan is not scoped to the loader's graph"
+    },
+    {
+      "name": "reader-ignores-index",
+      "find": "pub open spec fn visible(db:Db,g:Graph,n:Node)->bool {db.contains_key((g,n)) && db[(g,n)].node_ix}",
+      "replace": "pub open spec fn visible(db:Db,g:Graph,n:Node)->bool {db.contains_key((g,n))}",
+      "expect_fail_in": ["theorem_noindex_invisible_until_rebuild"],
+      "classification": "reader: an index read that also sees %NOINDEX rows"
+    },
+    {
+      "name": "rebuild-skips-labels",
+      "find": "Rec{node_ix:true,labels:db[k].labels,labels_ix:true,",
+      "replace": "Rec{node_ix:true,labels:db[k].labels,labels_ix:db[k].labels_ix,",
+      "expect_fail_in": ["theorem_done_then_rebuild_reads_input"],
+      "classification": "effect: rebuild_all_indices leaves the label index unbuilt"
+    }
+  ]
+}

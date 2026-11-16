@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the skip scan without the %NOINDEX hint misses unindexed rows",
+    "expect_fail_in": [
+      "theorem_complete_rerun_is_noop"
+    ],
+    "find": "pub open spec fn exists_in(db:Db,g:Graph,n:Node)->bool {db.contains_key((g,n))}",
+    "name": "skip-sees-indexed-only",
+    "replace": "pub open spec fn exists_in(db:Db,g:Graph,n:Node)->bool {db.contains_key((g,n)) && db[(g,n)].node_ix}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_complete_rerun_is_noop"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_load/bulk_load.rs": "4040bf31670d73c5d28e8cb75206287c37bdf430bcc4f616f72d93871aaeb0df",
+    ".g5/Verus_verification/models/bulk_load/model.json": "c48732d4d27590e1bb6e2446e27de1db0fb2221d5abc215efe7a608910be54b3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/skip-sees-indexed-only/20261116T212747Z/models/bulk_load/bulk_load.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_complete_rerun_is_noop": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/20261116T212747Z-control-skip-sees-indexed-only-theorem_complete_rerun_is_noop.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/20261116T212747Z-control-skip-sees-indexed-only.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_load/20261116T212748Z-control-skip-sees-indexed-only/logs/20261116T212747Z-control-skip-sees-indexed-only-theorem_complete_rerun_is_noop.log": "10c619be640fc3213fbfecbd563cf1ebc238873eb715d80393a08eb8e2baea13",
+    ".g5/Verus_verification/results/bulk_load/20261116T212748Z-control-skip-sees-indexed-only/logs/20261116T212747Z-control-skip-sees-indexed-only.log": "c80bfd41dde7d1c9cdb8897d6de43ac45f9f0814f07d52845a465edd78e21b03"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -792,7 +792,7 @@ State machines: [temporal restore](../../Verus_verification/models/temporal_rest
 
 The engine paths drop indexes only for batches of 500 rows or more. Inside a caller's transaction, `bulk_load_session` keeps its indexes and leaves the adjacency to rebuild after the caller commits (4.7.0); that rule is owned by [structure.adjacency.bulk](../features/graph-structure.g5.md#structure.adjacency.bulk). Observed divergence (review round 3 R3-reader M6): spec 252 FR-008 and ADR-0008 require every `%NOINDEX` bulk path to rebuild before it returns, but `BulkLoader.load_nodes` and `load_edges` tell the caller to call `rebuild_all_indices()` ([bulk_loader.py](../../../iris_vector_graph/bulk_loader.py#L380-L395)). Live coverage: `tests/integration/test_bulk_loader_live.py`, `tests/integration/test_bulk_loader_endpoints.py`.
 
-Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-011)
+Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011); [A default BulkLoader load returns before its rows can be read: get_node, Cypher and counts see nothing until rebuild_all_indices](../../Verus_verification/bugs_issues.md#bug-plt-106)
 
 Open questions: [Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?](../../Verus_verification/open_questions.md#q-plt-005)
 
@@ -800,14 +800,23 @@ Open questions: [Is BulkLoader meant to be the only writer, on single-edge graph
 
 - Sources: [bulk_loader.py](../../../iris_vector_graph/bulk_loader.py); [USER_GUIDE](../../../docs/USER_GUIDE.md); [ADR-0016](../../../docs/adr/0016-one-ivg-schema-per-namespace.md); endpoints: [`iris_vector_graph/bulk_loader.py::BulkLoader._register_endpoints`](../../../iris_vector_graph/bulk_loader.py#L201-L228) (indexed insert into the loader's graph); refusals: [`::BulkLoader._executemany_batched`](../../../iris_vector_graph/bulk_loader.py#L83-L154) (batch failure or short count goes row by row `:118-143`; `BulkLoadError` `:126`, `:142`); live tests [test_bulk_loader_endpoints.py](../../../tests/integration/test_bulk_loader_endpoints.py), unit `tests/unit/test_bulk_loader_unit.py::TestExecutemanyBatched::test_non_unique_error_raises`
 - Playbook: [WRT-B7.12](../../../experiment/playbook-completion/ontology/03-writes.md#L207), [WRT-B7.14](../../../experiment/playbook-completion/ontology/03-writes.md#L209)
-- Verus: no formal contract for endpoint registration or the refusal path in either arm. The playbook's `proofs-d1c` `bulk_l2` (reviewed design) models chunk checkpoints and atomicity only (control `control_f0305_chunks_commit_alone`).
+- Verus: [bulk_load](../../Verus_verification/models/bulk_load/NOTES.md) `theorem_complete_rerun_is_noop`, `theorem_interrupted_load_is_never_completed`, `theorem_noindex_invisible_until_rebuild`, `theorem_done_then_rebuild_reads_input`, `theorem_same_id_other_graph_is_written` (as-built, node loads). Endpoint registration and the duplicate-or-refusal decision have no formal contract; the playbook's `proofs-d1c` `bulk_l2` (reviewed design) models chunk checkpoints only.
 - Expands: [Bulk loading](#install.bulk_load)
 - agent
 - user-facing-behavior, operations
 
-Public case M23. A repeat is told from a refusal by the error text: SQLCODE -119 or the word "unique" in the message (`bulk_loader.py:105-106`), so a non-repeat refusal whose message happens to contain "unique" would be skipped as a repeat (code reading; not run). Suspected divergence: if a load fails after the node rows commit, a re-run that skips existing nodes never adds their labels and properties. Observed divergence: the loader defaults to `Graph_KG`, and its index rebuild names the `Graph_KG` table classes whatever schema it was given.
+`BulkLoader.load_nodes` writes node rows, then labels, then properties, and commits each batch as it goes. A re-run skips every input node that already has a node row in the loader's graph and writes nothing for it.
 
-Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-012)
+- After a completed load, running the same load again writes nothing, and the nodes keep their labels and properties.
+- After a load that failed while writing labels or properties, its nodes stay without them, and running the same load again does not add them. Observed divergence from the loader's own idempotency rule.
+- With the default `use_noindex=True`, `get_node`, Cypher and counts see none of the loaded rows until `rebuild_all_indices()` runs; `load_networkx` runs it before returning. With `use_noindex=False` the rows read back at once. Observed divergence from spec 252 FR-008.
+- One loader loads one graph. The same node ID in another graph does not stop the load, and other graphs are unchanged.
+
+Public case M23. A repeat is told from a refusal by the error text: SQLCODE -119 or the word "unique" in the message (`bulk_loader.py:105-106`), so a non-repeat refusal whose message happens to contain "unique" would be skipped as a repeat (code reading; not run). Observed divergence: the loader defaults to `Graph_KG`, and its index rebuild names the `Graph_KG` table classes whatever schema it was given.
+
+Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-012); [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011); [A default BulkLoader load returns before its rows can be read: get_node, Cypher and counts see nothing until rebuild_all_indices](../../Verus_verification/bugs_issues.md#bug-plt-106)
+
+State machines: [bulk load](../../Verus_verification/models/bulk_load/manifest.json)
 
 ### install.bulk_load.ledger
 
@@ -823,6 +832,7 @@ Findings: [Does ledger strict mode cover the standalone bulk loader?](../../Veru
 ### install.bulk_load.rebuild
 
 - Sources: [bulk_loader.py](../../../iris_vector_graph/bulk_loader.py); [_engine/nodes_edges.py _rebuild_after_load](../../../iris_vector_graph/_engine/nodes_edges.py); [ADR-0011](../../../docs/adr/0011-the-adjacency-index-has-one-writer-module.md); [ADR-0012](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md)
+- Verus: [bulk_load](../../Verus_verification/models/bulk_load/NOTES.md) `theorem_done_then_rebuild_reads_input` (`BulkLoader.rebuild_all_indices` for node loads)
 - Expands: [Bulk loading](#install.bulk_load)
 - agent
 - data-integrity
@@ -830,6 +840,8 @@ Findings: [Does ledger strict mode cover the standalone bulk loader?](../../Veru
 The warning for an index that was not rebuilt dates from 4.6.0 (R257). The `BulkLoader` rebuild goes through the adjacency index's own writer, so it keeps ADR-0011's single writer. No test checks the degree cache or the token after a bulk load.
 
 Findings: [Rebuild adjacency once after load_networkx](../../Verus_verification/design_simplification.md#simp-plt-004)
+
+State machines: [bulk load](../../Verus_verification/models/bulk_load/manifest.json)
 
 ### install.import
 - Children: [NDJSON](#install.import.ndjson)

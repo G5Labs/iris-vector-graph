@@ -1,0 +1,250 @@
+{
+ "run": "20261116T212413Z",
+ "fixture": "ivg-retest-20261116-iris",
+ "port": 36216,
+ "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "cases": {
+  "A1_noindex_no_rebuild": {
+   "stats_nodes": {
+    "nodes": 2,
+    "labels": 2,
+    "props": 4,
+    "elapsed_s": 0.1
+   },
+   "stats_edges": {
+    "edges": 1,
+    "endpoints_registered": 0,
+    "elapsed_s": 0.0,
+    "noindex": true
+   },
+   "rebuild": null,
+   "read": {
+    "get_node": null,
+    "edge": "columns=['y.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413a1a', 'w3016212413a1a'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[0]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30A116212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30A116212413', 'id', 'id'] bolt_column_types=['scalar']"
+   }
+  },
+  "A2_indexed": {
+   "stats_nodes": {
+    "nodes": 2,
+    "labels": 2,
+    "props": 4,
+    "elapsed_s": 0.4
+   },
+   "stats_edges": {
+    "edges": 1,
+    "endpoints_registered": 0,
+    "elapsed_s": 0.0,
+    "noindex": false
+   },
+   "rebuild": null,
+   "read": {
+    "get_node": {
+     "labels": [
+      "W30A216212413"
+     ],
+     "props": {
+      "id": "w3016212413a2a",
+      "p_id": "w3016212413a2a",
+      "p": 7
+     }
+    },
+    "edge": "columns=['y.id'] rows=[['w3016212413a2b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413a2a', 'w3016212413a2a'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[2]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30A216212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[['w3016212413a2a'], ['w3016212413a2b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30A216212413', 'id', 'id'] bolt_column_types=['scalar']"
+   }
+  },
+  "A3_noindex_then_rebuild": {
+   "stats_nodes": {
+    "nodes": 2,
+    "labels": 2,
+    "props": 4,
+    "elapsed_s": 0.0
+   },
+   "stats_edges": {
+    "edges": 1,
+    "endpoints_registered": 0,
+    "elapsed_s": 0.0,
+    "noindex": true
+   },
+   "rebuild": {
+    "Graph.KG.rdfedges": true,
+    "Graph.KG.rdflabels": true,
+    "Graph.KG.rdfprops": true,
+    "Graph.KG.nodes": true
+   },
+   "read": {
+    "get_node": {
+     "labels": [
+      "W30A316212413"
+     ],
+     "props": {
+      "id": "w3016212413a3a",
+      "p_id": "w3016212413a3a",
+      "p": 7
+     }
+    },
+    "edge": "columns=['y.id'] rows=[['w3016212413a3b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413a3a', 'w3016212413a3a'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[2]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30A316212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[['w3016212413a3a'], ['w3016212413a3b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30A316212413', 'id', 'id'] bolt_column_types=['scalar']"
+   }
+  },
+  "A1_after_A3_rebuild": {
+   "get_node": {
+    "labels": [
+     "W30A116212413"
+    ],
+    "props": {
+     "id": "w3016212413a1a",
+     "p_id": "w3016212413a1a",
+     "p": 7
+    }
+   },
+   "edge": "columns=['y.id'] rows=[['w3016212413a1b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413a1a', 'w3016212413a1a'] bolt_column_types=['scalar']",
+   "label_count": "columns=['count(x)'] rows=[[2]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30A116212413'] bolt_column_types=['scalar']",
+   "label_ids": "columns=['x.id'] rows=[['w3016212413a1a'], ['w3016212413a1b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30A116212413', 'id', 'id'] bolt_column_types=['scalar']"
+  },
+  "A7_load_networkx": {
+   "stats": {
+    "input_nodes": 2,
+    "input_edges": 1,
+    "loaded_nodes": 2,
+    "loaded_labels": 2,
+    "loaded_props": 4,
+    "loaded_elapsed_s": 0.0,
+    "loaded_edges": 1,
+    "loaded_endpoints_registered": 0,
+    "loaded_noindex": true,
+    "index_rebuild_s": 0.5,
+    "index_rebuild": {
+     "Graph.KG.rdfedges": true,
+     "Graph.KG.rdflabels": true,
+     "Graph.KG.rdfprops": true,
+     "Graph.KG.nodes": true
+    },
+    "globals_built": true,
+    "globals_build_s": 0.0,
+    "total_elapsed_s": 0.6,
+    "final_nodes_count": 8,
+    "final_rdf_edges_count": 4,
+    "final_rdf_labels_count": 8,
+    "final_rdf_props_count": 16
+   },
+   "read": {
+    "get_node": {
+     "labels": [
+      "W30A716212413"
+     ],
+     "props": {
+      "id": "w3016212413a7a",
+      "p_id": "w3016212413a7a",
+      "p": 7
+     }
+    },
+    "edge": "columns=['y.id'] rows=[['w3016212413a7b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413a7a', 'w3016212413a7a'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[2]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30A716212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[['w3016212413a7a'], ['w3016212413a7b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30A716212413', 'id', 'id'] bolt_column_types=['scalar']"
+   }
+  },
+  "B1_interrupted_then_rerun": {
+   "fault_fired": true,
+   "first": "BulkLoadError: Labels: 2 row(s) rejected after 0 inserted, and the batch was rolled back: injected: connection lost during label insert",
+   "after_first": {
+    "get_node": {
+     "labels": [],
+     "props": {
+      "id": "w3016212413b1a"
+     }
+    },
+    "edge": "columns=['y.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413b1a', 'w3016212413b1a'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[0]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30B116212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30B116212413', 'id', 'id'] bolt_column_types=['scalar']"
+   },
+   "second": {
+    "nodes": 0,
+    "labels": 0,
+    "props": 0,
+    "elapsed_s": 0.0
+   },
+   "after_second": {
+    "get_node": {
+     "labels": [],
+     "props": {
+      "id": "w3016212413b1a"
+     }
+    },
+    "edge": "columns=['y.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413b1a', 'w3016212413b1a'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[0]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30B116212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30B116212413', 'id', 'id'] bolt_column_types=['scalar']"
+   }
+  },
+  "B2_complete_then_rerun": {
+   "first": {
+    "nodes": 2,
+    "labels": 2,
+    "props": 4,
+    "elapsed_s": 0.0
+   },
+   "second": {
+    "nodes": 0,
+    "labels": 0,
+    "props": 0,
+    "elapsed_s": 0.0
+   },
+   "read": {
+    "get_node": {
+     "labels": [
+      "W30B216212413"
+     ],
+     "props": {
+      "id": "w3016212413b2a",
+      "p_id": "w3016212413b2a",
+      "p": 7
+     }
+    },
+    "edge": "columns=['y.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413b2a', 'w3016212413b2a'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[2]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30B216212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[['w3016212413b2a'], ['w3016212413b2b']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30B216212413', 'id', 'id'] bolt_column_types=['scalar']"
+   }
+  },
+  "C1_other_graph": {
+   "stats": {
+    "nodes": 1,
+    "labels": 1,
+    "props": 2,
+    "elapsed_s": 0.0
+   },
+   "default": {
+    "get_node": {
+     "labels": [
+      "W30C116212413"
+     ],
+     "props": {
+      "id": "w3016212413c1x",
+      "p": "default",
+      "p_id": "w3016212413c1x"
+     }
+    },
+    "edge": "columns=['y.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id AND e2.graph_id = n0.graph_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id AND n1.graph_id = e2.graph_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.graph_id = n1.graph_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413c1x', 'w3016212413c1x'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[2]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30C116212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[['w3016212413c1x'], ['w3016212413c1x']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30C116212413', 'id', 'id'] bolt_column_types=['scalar']"
+   },
+   "w30g": {
+    "get_node": {
+     "labels": [
+      "W30C116212413"
+     ],
+     "props": {
+      "id": "w3016212413c1x",
+      "p_id": "w3016212413c1x",
+      "p": "w30g"
+     }
+    },
+    "edge": "columns=['y.id'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS y_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id AND e2.graph_id = n0.graph_id\\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id AND n1.graph_id = e2.graph_id\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n1.node_id AND p3.graph_id = n1.graph_id AND p3.\"key\" = ?\\nWHERE n0.node_id = ? AND n0.node_id = ?' params=['id', 'w3016212413c1x', 'w3016212413c1x'] bolt_column_types=['scalar']",
+    "label_count": "columns=['count(x)'] rows=[[2]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT COUNT(*) AS count_x_ FROM Graph_KG.rdf_labels WHERE label = ?' params=['W30C116212413'] bolt_column_types=['scalar']",
+    "label_ids": "columns=['x.id'] rows=[['w3016212413c1x'], ['w3016212413c1x']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS x_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p3.val, \\'x\\')) ASC' params=['W30C116212413', 'id', 'id'] bolt_column_types=['scalar']"
+   }
+  }
+ }
+}

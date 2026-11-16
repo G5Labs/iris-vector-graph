@@ -2663,6 +2663,44 @@ Consequence: rewriting `x.p = 1 OR x.p = 2` as `x.p IN [1, 2]` changes the resul
 
 Repair proposal (not implemented, not checked): translate a literal integer list through the same equality builders (`_node_number_eq_sql` for nodes, `_number_eq_sql` with `_number_texts` for relationships), preserving string lists and the boolean legacy spellings. Distinguishing cases: node `p = "1"` and relationship `p = 1.0` against `IN [1]`.
 
+<a id="bug-plt-011"></a>
+### An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-13
+
+Found by: A-platform F-B5 (sub-reader b), source reading; confirmed in the retest's iteration 25 with predictions frozen first ([predictions](../uplift/consolidated/iteration-25/bulk-loader-PAIRS.md)); [bulk_load](models/bulk_load/NOTES.md) `theorem_interrupted_load_is_never_completed`, `witness_interrupted_rerun_strands`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-25/bulk-loader-observed-20261116T212413Z.json), case B1; [binding](results/bulk_load/20261116T213301Z-binding/receipt.json), 24 interrupted histories). `BulkLoader.load_nodes` of two new nodes with a label and a property, interrupted at the label insert (injected: the first `rdf_labels` `executemany` raises, the state a lost connection leaves after phase 1 commits per batch), raises `BulkLoadError`. The same call again returns `{"nodes": 0, "labels": 0, "props": 0}`, and `get_node` then shows both nodes with no labels and no properties; `MATCH (n:L)` finds neither, also after `rebuild_all_indices`. Passing neighbor (B2): when the first call completes, the same call again also returns zeros and both nodes keep their labels and properties.
+
+Expected: "re-loading the same data has to stay idempotent" (`bulk_loader.py:93-95`); the owner [install.bulk_load.loader](../ontology/concepts/install.g5.md#install.bulk_load.loader) promises that a completed load reads back as its input.
+
+Cause: the skip scan selects input ids that already have a node row (`_known_nodes_sql`), and phases 2 and 3 write labels and properties only for the ids that scan did not see (`nodes_to_process = new_nodes`, `bulk_loader.py:314`). Phase 1 has already committed.
+
+Consequence: after any failure in phase 2 or 3, the loaded nodes stay without their labels and properties, and the re-run's counts read as "already loaded". An administrator can delete the stranded nodes and load again. Medium: visible wrong data with a confirmed trigger path; the interruption itself was injected.
+
+Repair proposal (checked in the model only): let the re-run also process nodes of its input that have neither labels nor properties (control `rerun-completes-stranded` makes the stranding theorems fail), preserving the documented rule that an existing node keeps the property values it has. Distinguishing case: B1 against B2 above.
+
+<a id="bug-plt-106"></a>
+### A default BulkLoader load returns before its rows can be read: get_node, Cypher and counts see nothing until rebuild_all_indices
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-16 (retest, iteration 25)
+
+Found by: the owner's recorded divergence from spec 252 FR-008, observed at the readers with predictions frozen first ([predictions](../uplift/consolidated/iteration-25/bulk-loader-PAIRS.md), cases A1-A7); [bulk_load](models/bulk_load/NOTES.md) `theorem_noindex_invisible_until_rebuild`, `theorem_indexed_load_reads_now`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-25/bulk-loader-observed-20261116T212413Z.json); [binding](results/bulk_load/20261116T213301Z-binding/receipt.json)). `load_nodes` and `load_edges` with their default `use_noindex=True` return counts of 2 nodes, 2 labels, 4 properties and 1 edge; then `get_node` returns `None`, `MATCH (a {id: …})-[r]->(b)` returns no row and `MATCH (n:L) RETURN count(n)` returns 0. Passing neighbors: the same load with `use_noindex=False` reads back at once (A2); after `rebuild_all_indices()` the default load reads back (A3), and so does the earlier unrebuilt load (A1 re-read); `load_networkx`, which rebuilds, reads back (A7).
+
+Expected: spec 252 FR-008: "Bulk paths that write `%NOINDEX` MUST dedupe and MUST end in `%BuildIndices` before returning, success or failure." `load_nodes`' docstring does not mention a rebuild; `load_edges`' says to call `rebuild_all_indices()`.
+
+Cause: `INSERT %NOINDEX %NOCHECK` leaves the rows out of the indexes, and the readers use index lookups; only `load_networkx` calls `rebuild_all_indices` before returning.
+
+Consequence: a caller who uses `load_nodes`/`load_edges` directly sees an apparently empty graph until it rebuilds, and other writers' dedupe and delete paths that use the index cannot see these rows either (related inherited entries F-C1250, F-C1351). Medium: visible misbehavior an administrator can repair with one call.
+
+Repair proposal (not implemented, not checked): end each `%NOINDEX` public load in `rebuild_all_indices()` (as `load_networkx` does), or default `use_noindex` to `False` for the per-phase methods; preserve `load_networkx`'s single rebuild. Distinguishing case: A1 against A2.
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -4065,8 +4103,6 @@ These anchors preserve older links. The corresponding claims and review disposit
 <span id="bug-plt-008"></span> [bug-plt-008: review record](audits/register-20261115/bugs-review.md#bug-plt-008)
 
 <span id="bug-plt-010"></span> [bug-plt-010: review record](audits/register-20261115/bugs-review.md#bug-plt-010)
-
-<span id="bug-plt-011"></span> [bug-plt-011: review record](audits/register-20261115/bugs-review.md#bug-plt-011)
 
 <span id="bug-plt-012"></span> [bug-plt-012: review record](audits/register-20261115/bugs-review.md#bug-plt-012)
 

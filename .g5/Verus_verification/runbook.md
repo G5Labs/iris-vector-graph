@@ -423,3 +423,24 @@ its binding needs the fixture and reads `^BM25Idx` over the Native API.
 
 The cloud continuation converged after iteration 24 ([basis](../uplift/consolidated/HANDOFF.md#convergence-cloud-continuation-2026-11-16)).
 Native replays need `docker start ivg-cloud-20261116-iris` first; the container was stopped, not removed.
+
+## Retest on Linux (2026-11-16): iteration 25 and later
+
+[Iteration 25 handoff](../uplift/consolidated/iteration-25/HANDOFF.md); run identity, guidance hashes and the dedicated
+fixture in [retest-run.json](../uplift/consolidated/iteration-25/retest-run.json). From the repository root:
+
+```sh
+export RUN_DIR=$HOME/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116
+export VERUS_BIN=$HOME/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus
+export PATH=$HOME/.cargo/bin:$PATH IVG_PIN_DIR=$RUN_DIR/pin PYTHONDONTWRITEBYTECODE=1 G5_GUIDE=$G5_HARNESS/guidance
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/bulk_load       # PASS 8
+CONTROL=rerun-completes-stranded python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/bulk_load
+docker start ivg-retest-20261116-iris                                                          # 127.0.0.1:36216
+(cd $IVG_PIN_DIR && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/bulk_load/binding.py)  # AGREES 360
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach                       # 287/4130
+python3 .g5/Verus_verification/tools/check_consolidated.py                                    # PASS
+```
+
+Worked lookup: `install.bulk_load.loader` → `bulk_load.rs::theorem_interrupted_load_is_never_completed` → rows for
+`iris_vector_graph/bulk_loader.py::BulkLoader.load_nodes` (line 252, decision) and `::_executemany_batched` (line 83,
+effect) in `crosswalk/decision-links.tsv`; in reverse, `bindings.json` under that key lists the claim and its role.

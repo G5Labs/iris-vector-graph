@@ -1,0 +1,56 @@
+{
+  "session": "retest continuation 2026-11-16 (unit g5-iris-retest-20261116)",
+  "start_tag": "cloud-iris-retest-start-20261116",
+  "start_commit": "ce5b2f7d50c4b19b988859fcb4934dd9684b08f5",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "harness": "$G5_HARNESS (run copy; identical to $HOME/.agents)",
+  "guidance_sha256": {
+    "AGENTS.md": "f771605fa065cd777c3192ff1359ef136fa77d58abc46fcc699148c5dcd3cb7a",
+    "guidance/Verus/uplift-iteration.md": "a7521d0e208c34bdf84e83537c5ffd2acc52b7aeec9d730a2a53ee89013fc563",
+    "guidance/Verus/uplift-scoring.md": "7e250023ffaa55fc6c891f137ac54b8cecbc424f69add756a3e5e9d91736e233",
+    "guidance/Verus/uplift.md": "959656b52fb031116031057efdd0c1dd4a1df46ead1e33bc14877343ed7b35f7",
+    "guidance/Verus/setup_foundation.md": "5113691d48422a638b4fbad6d33f872bc9a5576697f24b1ee18240271bd636eb",
+    "guidance/TLC/setup_foundation.md": "7d7d1af71aa48b1727bfd937f201e0c9ca9dd38edd4a46670bd755878bf78c23",
+    "guidance/Verus/verification.md": "3449a886d0f83eee72c422a3b815a5582bc3e577b43ca8dfc62ca7624bfde4b2",
+    "guidance/Verus/verification-playbook.txt": "665edc91f1bc8de442c5b2b35316f967ab32182cdf3cf8295714df865e4d3f4b",
+    "guidance/uplift-intent-recovery.md": "2eff4fc891ea5a8460b5bd62f81022a53e1b4ae517e8d2e927d6c25d6bce0549",
+    "guidance/uplift-evidence.md": "63762e469d74084f5342be1a83c058c3afaa8c9590c2edd6f6a5246f47ce4c64",
+    "guidance/scripts/check_ontology.py": "e2e4adb6b0c6324dd1d9c145f0e76a6c9eb4b2f430fee6a3d1d4e5cac8fd3d54",
+    "guidance/scripts/check_findings.py": "b237dd9b006b56a75ea6e3c748e2f3856b127a16b9090743ecde507acbefb68b"
+  },
+  "guidance_changed_since_iteration_24": {
+    "guidance/Verus/uplift-iteration.md": "af3f5f72 -> a7521d0e",
+    "guidance/Verus/uplift-scoring.md": "f67cb908 -> 7e250023"
+  },
+  "verus": {
+    "version": "0.2026.10.04.426d8b0",
+    "platform": "linux_x86_64",
+    "binary": "~/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "rustup": "~/.cargo/bin on PATH"
+  },
+  "python": {
+    "interpreter": "CPython 3.11.18 (uv-managed, copied into the run dir)",
+    "environment": "uv 0.13.8 sync --frozen --all-extras from the pin export, run-isolated cache"
+  },
+  "run_dir": "experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116 (outside the repository)",
+  "native_fixture": {
+    "container": "ivg-retest-20261116-iris",
+    "hostname": "ivg-retest-iris",
+    "port": "127.0.0.1:36216",
+    "image": "containers.intersystems.com/intersystems/iris-community:2026.1 (546fe52b9e68)",
+    "label": "g5.unit=g5-iris-retest-20261116",
+    "deployed_by": "iteration-25/runtime.py (pin classes compiled; only the three %AI MCP classes skipped)"
+  },
+  "separate_from": [
+    "ivg-cloud-20261116-iris (earlier cloud continuation; not started)",
+    "ivg-g5-verus-20261113-iris, ivg-playbook-20261113-audit-iris, ipm-* (neighboring experiments; not touched)"
+  ],
+  "path_adaptations": [
+    "runtime.py copied from iteration 15 with the retest container, port and pin path",
+    "Verus needs ~/.cargo/bin (rustup) on PATH on this VM"
+  ],
+  "start_gate": "check_consolidated FAIL at the start commit: statements.tsv and questions.tsv did not reflect the question-card refresh (9c649ed9); reconciled by make_statements.py and iteration-25/reconcile_question_cards.py (110 rows appended, none removed); gate PASS except the correspondence stamp, captured at seal",
+  "private_evaluator_inputs_read": false,
+  "interrupted_unassessed_inputs_opened": false,
+  "remote_publication": false
+}

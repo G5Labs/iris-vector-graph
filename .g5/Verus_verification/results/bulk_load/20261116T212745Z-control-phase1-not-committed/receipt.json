@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: a failed load leaves its node rows uncommitted (no per-batch commit)",
+    "expect_fail_in": [
+      "theorem_interrupted_load_is_never_completed",
+      "witness_interrupted_rerun_strands"
+    ],
+    "find": "  Stop::FailLabels=>d1,",
+    "name": "phase1-not-committed",
+    "replace": "  Stop::FailLabels=>db0,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_interrupted_load_is_never_completed",
+      "witness_interrupted_rerun_strands"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_load/bulk_load.rs": "4040bf31670d73c5d28e8cb75206287c37bdf430bcc4f616f72d93871aaeb0df",
+    ".g5/Verus_verification/models/bulk_load/model.json": "c48732d4d27590e1bb6e2446e27de1db0fb2221d5abc215efe7a608910be54b3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/phase1-not-committed/20261116T212743Z/models/bulk_load/bulk_load.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_interrupted_load_is_never_completed": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/20261116T212743Z-control-phase1-not-committed-theorem_interrupted_load_is_never_completed.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "witness_interrupted_rerun_strands": {
+        "errors": 0,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/20261116T212743Z-control-phase1-not-committed-witness_interrupted_rerun_strands.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/20261116T212743Z-control-phase1-not-committed.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_load/20261116T212745Z-control-phase1-not-committed/logs/20261116T212743Z-control-phase1-not-committed-theorem_interrupted_load_is_never_completed.log": "8391b73cca8a4ea169c27e8eaaeb21b17219895ae698ad7b01e478e356e063bd",
+    ".g5/Verus_verification/results/bulk_load/20261116T212745Z-control-phase1-not-committed/logs/20261116T212743Z-control-phase1-not-committed-witness_interrupted_rerun_strands.log": "06aee624ceefb0f504401bde45618b53b002b11f413534c07dd4771d593a2dc7",
+    ".g5/Verus_verification/results/bulk_load/20261116T212745Z-control-phase1-not-committed/logs/20261116T212743Z-control-phase1-not-committed.log": "89e27fa940737f855d0aac89d02ac60b8bad0f9d850fe6f5686bc3308e3d14f2"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "FAIL_ELSEWHERE",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

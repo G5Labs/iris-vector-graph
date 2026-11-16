@@ -1,4 +1,15 @@
-**Current pointer (cloud continuation, 2026-11-16).** CONVERGED after iteration 24. Latest seal: the clean tip with subject `Record convergence of the cloud continuation` (its parent `0575c5de` is the last iteration seal). Session: iterations 14–24, seven new findings, reach 249 → 279 of 4,130 (30 new, 0 lost). Cost: builder wall clock about 1 h 50 min (tokens/currency unavailable). Convergence basis: [below](#convergence-cloud-continuation-2026-11-16).
+**Current pointer (retest, 2026-11-16).** Running, iteration 25 sealed (subject `Seal iteration 25: BulkLoader re-runs and index visibility`). Material outcome: bug-plt-011 e2e reproduced and bug-plt-106 recorded; new model `bulk_load`; reach 279 → 287 of 4,130. Cost: builder wall clock about 1 h so far (tokens/currency unavailable). Next missing role: writes inside a caller's transaction (`_write_txn.py`). Retest log: [below](#retest-2026-11-16).
+
+<a id="retest-2026-11-16"></a>
+## Retest (2026-11-16, from `cloud-iris-retest-start-20261116`)
+
+Guidance: run copy `$G5_HARNESS`, `Verus/uplift-iteration.md` sha256 `a7521d0e208c34bdf84e83537c5ffd2acc52b7aeec9d730a2a53ee89013fc563`, `Verus/uplift-scoring.md` `7e250023ffaa55fc6c891f137ac54b8cecbc424f69add756a3e5e9d91736e233` ([retest-run.json](iteration-25/retest-run.json)). The cloud continuation's convergence below is reopened under the revised step 1 and step 5.
+
+| Iteration | Workflow (predictions frozen first) | Material outcome |
+|---|---|---|
+| [25](iteration-25/HANDOFF.md) | start reconciliation; W30 standalone BulkLoader through `get_node`/Cypher | bug-plt-011 e2e reproduced; bug-plt-106; model `bulk_load`; 279 → 287 |
+
+Earlier pointer (superseded): **Current pointer (cloud continuation, 2026-11-16).** CONVERGED after iteration 24. Latest seal: the clean tip with subject `Record convergence of the cloud continuation` (its parent `0575c5de` is the last iteration seal). Session: iterations 14–24, seven new findings, reach 249 → 279 of 4,130 (30 new, 0 lost). Cost: builder wall clock about 1 h 50 min (tokens/currency unavailable). Convergence basis: [below](#convergence-cloud-continuation-2026-11-16).
 
 <a id="convergence-cloud-continuation-2026-11-16"></a>
 ## Convergence (cloud continuation, 2026-11-16)

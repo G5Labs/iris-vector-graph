@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: rebuild_all_indices leaves the label index unbuilt",
+    "expect_fail_in": [
+      "theorem_done_then_rebuild_reads_input"
+    ],
+    "find": "Rec{node_ix:true,labels:db[k].labels,labels_ix:true,",
+    "name": "rebuild-skips-labels",
+    "replace": "Rec{node_ix:true,labels:db[k].labels,labels_ix:db[k].labels_ix,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_done_then_rebuild_reads_input"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bulk_load/bulk_load.rs": "4040bf31670d73c5d28e8cb75206287c37bdf430bcc4f616f72d93871aaeb0df",
+    ".g5/Verus_verification/models/bulk_load/model.json": "c48732d4d27590e1bb6e2446e27de1db0fb2221d5abc215efe7a608910be54b3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/rebuild-skips-labels/20261116T212750Z/models/bulk_load/bulk_load.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_done_then_rebuild_reads_input": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/20261116T212750Z-control-rebuild-skips-labels-theorem_done_then_rebuild_reads_input.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/20261116T212750Z-control-rebuild-skips-labels.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bulk_load/20261116T212752Z-control-rebuild-skips-labels/logs/20261116T212750Z-control-rebuild-skips-labels-theorem_done_then_rebuild_reads_input.log": "4139d4db7e87dc6cde4eff471a9c0ee21041c9a8af9de244cc189b96fd0115ea",
+    ".g5/Verus_verification/results/bulk_load/20261116T212752Z-control-rebuild-skips-labels/logs/20261116T212750Z-control-rebuild-skips-labels.log": "6c8983d1ed29ed7bc6fb2f615272a5a3bbd9a3172fa1de842a596c7f97bd41e8"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

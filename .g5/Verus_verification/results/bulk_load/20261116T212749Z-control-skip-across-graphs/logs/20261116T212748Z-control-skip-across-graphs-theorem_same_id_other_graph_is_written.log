@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/skip-across-graphs/20261116T212748Z/models/bulk_load/bulk_load.rs:129:10
+    |
+127 | pub proof fn theorem_same_id_other_graph_is_written(db:Db,c:Call,inp:Input,n:Node,h:Graph)
+    | ------------------------------------------------------------------------------------------ at the end of the function body
+128 |  requires c.stop==Stop::Done,!c.noindex,h!=c.graph,db.contains_key((h,n)),fresh(db,c.graph,inp),inp.contains_key(n)
+129 |  ensures readable_as_input(load(db,c,inp),c.graph,inp,n),load(db,c,inp)[(h,n)]==db[(h,n)],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

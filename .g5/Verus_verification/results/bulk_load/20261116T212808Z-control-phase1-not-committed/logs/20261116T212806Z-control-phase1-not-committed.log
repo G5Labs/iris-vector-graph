@@ -1,0 +1,48 @@
+verification results:: 5 verified, 3 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/phase1-not-committed/20261116T212806Z/models/bulk_load/bulk_load.rs:84:10
+   |
+82 | pub proof fn theorem_noindex_invisible_until_rebuild(db:Db,c:Call,inp:Input,n:Node)
+   | ----------------------------------------------------------------------------------- at the end of the function body
+83 |  requires c.noindex,fresh(db,c.graph,inp),inp.contains_key(n)
+84 |  ensures load(db,c,inp).contains_key((c.graph,n)),!visible(load(db,c,inp),c.graph,n),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/phase1-not-committed/20261116T212806Z/models/bulk_load/bulk_load.rs:98:1
+   |
+98 | pub proof fn theorem_interrupted_load_is_never_completed(db:Db,c:Call,c2:Call,inp:Input,n:Node)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/phase1-not-committed/20261116T212806Z/models/bulk_load/bulk_load.rs:107:32
+    |
+107 |  assert forall|k:(Graph,Node)| !targets(d,c2,inp,k) by {}
+    |                                ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/phase1-not-committed/20261116T212806Z/models/bulk_load/bulk_load.rs:108:9
+    |
+108 |  assert(phase_nodes(d,c2,inp)=~=d);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/phase1-not-committed/20261116T212806Z/models/bulk_load/bulk_load.rs:111:1
+    |
+111 | pub proof fn witness_interrupted_rerun_strands(db:Db,c:Call,c2:Call,inp:Input,n:Node,l:Lbl)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/phase1-not-committed/20261116T212806Z/models/bulk_load/bulk_load.rs:118:32
+    |
+118 |  assert forall|k:(Graph,Node)| !targets(d,c2,inp,k) by {}
+    |                                ^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/phase1-not-committed/20261116T212806Z/models/bulk_load/bulk_load.rs:119:9
+    |
+119 |  assert(phase_nodes(d,c2,inp)=~=d);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors
+
