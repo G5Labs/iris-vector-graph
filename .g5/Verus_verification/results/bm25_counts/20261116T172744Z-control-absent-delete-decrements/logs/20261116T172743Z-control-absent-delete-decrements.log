@@ -1,0 +1,24 @@
+verification results:: 5 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bm25_counts/controls/absent-delete-decrements/20261116T172743Z/models/bm25_counts/bm25_counts.rs:59:34
+   |
+59 |    requires consistent(ix) ensures consistent(remove(ix,d)),
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+60 |   {
+61 | /  if ix.docs.contains_key(d) {
+62 | |   let r=remove(ix,d);
+63 | |   assert(r.docs.dom()=~=ix.docs.dom().remove(d));
+64 | |   assert forall|t:Term| #[trigger] (r.df)(t)==count(r.docs,t) by {lemma_holders_remove(ix.docs,d,t);}
+65 | |  }
+   | |__- at the end of the function body
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bm25_counts/controls/absent-delete-decrements/20261116T172743Z/models/bm25_counts/bm25_counts.rs:85:44
+   |
+84 | pub proof fn theorem_absent_delete_is_noop(ix:Index,d:Doc)
+   | ---------------------------------------------------------- at the end of the function body
+85 |  requires !ix.docs.contains_key(d) ensures remove(ix,d)==ix {}
+   |                                            ^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

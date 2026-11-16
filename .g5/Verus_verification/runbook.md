@@ -417,3 +417,6 @@ observations need a fresh namespace (`W21`) created in the fixture from `%SYS` a
 
 Iteration 20 ([handoff](../uplift/consolidated/iteration-20/HANDOFF.md)) extends `typed_equality` to 42 verified and 8 controls;
 `sort_key` re-verified at 51 after the import grew.
+
+Iteration 22 ([handoff](../uplift/consolidated/iteration-22/HANDOFF.md)) adds `models/bm25_counts` (7 verified, 4 controls);
+its binding needs the fixture and reads `^BM25Idx` over the Native API.

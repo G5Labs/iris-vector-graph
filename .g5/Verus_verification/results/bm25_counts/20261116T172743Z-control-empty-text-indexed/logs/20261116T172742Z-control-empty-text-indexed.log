@@ -1,0 +1,40 @@
+verification results:: 5 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bm25_counts/controls/empty-text-indexed/20261116T172742Z/models/bm25_counts/bm25_counts.rs:69:34
+   |
+69 |    requires consistent(ix) ensures consistent(insert(ix,d,ts)),
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+73 | /  if ts.len()>0 {
+74 | |   let w=insert(ix,d,ts);
+75 | |   assert(w.docs.dom()=~=r.docs.dom().insert(d));
+76 | |   assert forall|t:Term| #[trigger] (w.df)(t)==count(w.docs,t) by {lemma_holders_insert(r.docs,d,ts,t);}
+77 | |  }
+   | |__- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bm25_counts/controls/empty-text-indexed/20261116T172742Z/models/bm25_counts/bm25_counts.rs:80:1
+   |
+80 | pub proof fn theorem_empty_replacement_removes(ix:Index,d:Doc)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bm25_counts/controls/empty-text-indexed/20261116T172742Z/models/bm25_counts/bm25_counts.rs:82:10
+   |
+80 | pub proof fn theorem_empty_replacement_removes(ix:Index,d:Doc)
+   | -------------------------------------------------------------- at the end of the function body
+81 |  requires consistent(ix),ix.docs.contains_key(d)
+82 |  ensures !insert(ix,d,Set::empty()).docs.contains_key(d),insert(ix,d,Set::empty()).n==ix.n-1,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bm25_counts/controls/empty-text-indexed/20261116T172742Z/models/bm25_counts/bm25_counts.rs:82:58
+   |
+80 | pub proof fn theorem_empty_replacement_removes(ix:Index,d:Doc)
+   | -------------------------------------------------------------- at the end of the function body
+81 |  requires consistent(ix),ix.docs.contains_key(d)
+82 |  ensures !insert(ix,d,Set::empty()).docs.contains_key(d),insert(ix,d,Set::empty()).n==ix.n-1,
+   |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

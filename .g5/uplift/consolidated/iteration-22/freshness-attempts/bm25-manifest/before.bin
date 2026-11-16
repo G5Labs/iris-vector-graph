@@ -1,0 +1,45 @@
+{
+  "name": "bm25_counts",
+  "root": "bm25_counts.rs",
+  "expected_verified": 7,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "remove-keeps-df",
+      "find": "   df:|t:Term| ((ix.df)(t)-one(ts,t)) as nat,",
+      "replace": "   df:|t:Term| (ix.df)(t),",
+      "expect_fail_in": [
+        "theorem_remove_consistent"
+      ],
+      "classification": "writer: RemoveDoc without the df decrement"
+    },
+    {
+      "name": "insert-without-remove",
+      "find": " let r=remove(ix,d);\n if ts.len()==0 {r} else {",
+      "replace": " let r=ix;\n if ts.len()==0 {r} else {",
+      "expect_fail_in": [
+        "theorem_insert_consistent"
+      ],
+      "classification": "writer: Insert adding the new record without removing the old one"
+    },
+    {
+      "name": "empty-text-indexed",
+      "find": " if ts.len()==0 {r} else {",
+      "replace": " if false {r} else {",
+      "expect_fail_in": [
+        "theorem_empty_replacement_removes"
+      ],
+      "classification": "writer: a document with no terms indexed"
+    },
+    {
+      "name": "absent-delete-decrements",
+      "find": " if !ix.docs.contains_key(d) {ix} else {",
+      "replace": " if !ix.docs.contains_key(d) {Index{n:(ix.n-1) as nat,..ix}} else {",
+      "expect_fail_in": [
+        "theorem_absent_delete_is_noop"
+      ],
+      "classification": "writer: RemoveDoc decrementing N for an absent document"
+    }
+  ]
+}

@@ -721,6 +721,7 @@ Findings: [bm25_search rewrites document ids: its leading-dot patch runs over th
 ### search.bm25.scoring
 - Sources: [spec 044 FR-003 and FR-004](../../../specs/044-bm25-index/spec.md#L149-L150), [USER_GUIDE BM25 text search and the stopword list](../../../docs/USER_GUIDE.md#L854-L896), [InitStopwords](../../../iris_src/src/Graph/KG/BM25Index.cls#L41-L50), [bm25_build docstring](../../../iris_vector_graph/_engine/vector.py#L1749-L1785), [formula test](../../../tests/integration/test_044_bm25_incremental.py#L401-L413)
 - Expands: [BM25 index](#search.bm25)
+- Evidence: [native scores equal the formula within 1e-6 across build and incremental writes](../../uplift/consolidated/iteration-22/bm25-PAIRS.md); no formal contract (IDF uses ln)
 - agent
 - user-facing-behavior
 - test-coverage
@@ -736,6 +737,8 @@ Findings: [bm25_search rewrites document ids: its leading-dot patch runs over th
 ### search.bm25.counts
 - Sources: [spec 044 FR-016 and FR-018](../../../specs/044-bm25-index/spec.md#L162-L164), [Insert and RemoveDoc](../../../iris_src/src/Graph/KG/BM25Index.cls#L412-L493), [df test](../../../tests/integration/test_044_bm25_incremental.py#L157-L203)
 - Expands: [BM25 index](#search.bm25)
+- Verus: [bm25_counts.rs](../../Verus_verification/models/bm25_counts/bm25_counts.rs) `theorem_insert_consistent`, `theorem_remove_consistent`, `theorem_empty_replacement_removes`, `theorem_absent_delete_is_noop` and `theorem_replace_keeps_n`; [scope](../../Verus_verification/models/bm25_counts/NOTES.md). Sequential writes only; the concurrent build below is outside the model.
+- Evidence: [frozen predictions and native scoring/count observations](../../uplift/consolidated/iteration-22/bm25-PAIRS.md)
 - Observed divergence: a full build running at the same time as an insert can leave df and the document count disagreeing (F2 in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings)).
 - agent
 - data-integrity

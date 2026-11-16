@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/bm25_counts/controls/absent-delete-decrements/20261116T172743Z/models/bm25_counts/bm25_counts.rs:85:44
+   |
+84 | pub proof fn theorem_absent_delete_is_noop(ix:Index,d:Doc)
+   | ---------------------------------------------------------- at the end of the function body
+85 |  requires !ix.docs.contains_key(d) ensures remove(ix,d)==ix {}
+   |                                            ^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
