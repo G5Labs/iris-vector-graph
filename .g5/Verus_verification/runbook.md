@@ -420,3 +420,6 @@ Iteration 20 ([handoff](../uplift/consolidated/iteration-20/HANDOFF.md)) extends
 
 Iteration 22 ([handoff](../uplift/consolidated/iteration-22/HANDOFF.md)) adds `models/bm25_counts` (7 verified, 4 controls);
 its binding needs the fixture and reads `^BM25Idx` over the Native API.
+
+The cloud continuation converged after iteration 24 ([basis](../uplift/consolidated/HANDOFF.md#convergence-cloud-continuation-2026-11-16)).
+Native replays need `docker start ivg-cloud-20261116-iris` first; the container was stopped, not removed.

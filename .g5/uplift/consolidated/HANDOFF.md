@@ -1,4 +1,83 @@
-**Current pointer (cloud continuation, 2026-11-16).** Iteration: 23 sealed, 24 next. Latest seal: the clean tip with subject `Seal iteration 23: IN lists at the writer/reader boundary` — [iteration 23 handoff](iteration-23/HANDOFF.md): IN lists disagree with = on nodes and relationships (new Medium bug-cyp-106); reach 278 → 279 of 4,130. This session: iterations 14–23, six new findings (bug-tmp-101, bug-cyp-102…106), reach 249 → 279. Cost: builder wall clock only (tokens/currency unavailable). Next: inline map patterns and parameters on nodes. Convergence: not established.
+**Current pointer (cloud continuation, 2026-11-16).** CONVERGED after iteration 24. Latest seal: the clean tip with subject `Record convergence of the cloud continuation` (its parent `0575c5de` is the last iteration seal). Session: iterations 14–24, seven new findings, reach 249 → 279 of 4,130 (30 new, 0 lost). Cost: builder wall clock about 1 h 50 min (tokens/currency unavailable). Convergence basis: [below](#convergence-cloud-continuation-2026-11-16).
+
+<a id="convergence-cloud-continuation-2026-11-16"></a>
+## Convergence (cloud continuation, 2026-11-16)
+
+Guidance: `$G5_HARNESS` run copy; `Verus/uplift-iteration.md` sha256
+`af3f5f7200a0e8ebd5bb9e014b4f651c259a5bebad2924a37a039ad5b8acc7ed`, `Verus/uplift-scoring.md`
+`f67cb9089aa6c8b03a56de79102908b5f3906a0391d74e6557456882da7328ec` (all hashes in
+[iteration-14/cloud-run.json](iteration-14/cloud-run.json)). Start: tag `cloud-uplift-start-20261116` (`f32c1c4b`).
+Product `3eaa79cf` unchanged throughout; nothing outside `.g5/` changed; nothing was published. No private evaluator
+input or quarantined iteration-13 material was opened.
+
+### What this session did
+
+| Iteration | Workflow (predictions frozen first) | Material outcome |
+|---|---|---|
+| [14](iteration-14/HANDOFF.md) | completed the inherited RDF and NDJSON export packages on Linux; re-proved all 44 models and replayed all 499 controls after the toolchain change | four export owners now state their cases; 249 → 254 |
+| [15](iteration-15/HANDOFF.md) | ADR-0009 temporal mark through NDJSON, RDF and Cypher readers | Low bug-tmp-101; new owner and question; model `temporal_marker`; 254 → 257 |
+| [16](iteration-16/HANDOFF.md) | `WHERE` equality, node vs relationship | Medium bug-cyp-102 (stored integers equal booleans); model `typed_equality`; 257 → 264 |
+| [17](iteration-17/HANDOFF.md) | equality on the native executor; ordering comparisons | native declines typed equality (no divergence); Medium bug-cyp-103 (relationship text orders as 0); 264 → 266 |
+| [18](iteration-18/HANDOFF.md) | ORDER BY sort key; empty string under both executors | Medium bug-cyp-104 (executors order an empty string differently); model `sort_key`; 266 → 269 |
+| [19](iteration-19/HANDOFF.md) | strongest candidate (16 native shapes) and setup lifecycle on a fresh namespace | both agree with owners; model `setup_record`; 269 → 272 |
+| [20](iteration-20/HANDOFF.md) | null semantics; string predicates | nulls agree; Low bug-cyp-105; 272 → 273 |
+| [21](iteration-21/HANDOFF.md) | variable-length multiplicity; adjacency rebuild | both agree; 273 |
+| [22](iteration-22/HANDOFF.md) | BM25 build, incremental writes, scoring | all agree; model `bm25_counts`; 273 → 278 |
+| [23](iteration-23/HANDOFF.md) | IN lists, min/max | Medium bug-cyp-106 (IN disagrees with =); 278 → 279 |
+| [24](iteration-24/HANDOFF.md) | inline patterns and parameters; value functions | patterns fully predicted by owners; Low bug-cyp-107 (relationship coalesce returns text); 279 |
+
+Every sampled workflow, its predictions, misses and set-asides are in the iteration's `*-PAIRS.md`. New formal claims:
+`temporal_marker` (81), `typed_equality` (43), `sort_key` (52), `setup_record` (7), `bm25_counts` (7), plus the accepted
+`rdf_reporting` (50) and `ndjson_export` (144); every model has full and isolated ordinary control failures and a
+native or local-SQL binding. Reach by area and the 30 new members: [session-20261116-reach.json](session-20261116-reach.json).
+Registers: 160 live bug entries (7 new, all e2e reproduced), 55 simplifications, 146 questions plus one new owner
+question (`temporal.structural.mark.visibility`).
+
+### Why the strongest remaining candidate does not justify another batch
+
+The productive vein this session was the boundary where values written by the Python API are read by Cypher, which
+the product's 100% openCypher TCK does not exercise (it writes through Cypher). Its comparison operators are now
+owned and observed: `=`, `<>`, `<`/`>`, `STARTS WITH`, `IN` (literal and parameter), inline maps, parameters, `ORDER BY`,
+`min`/`max`, nulls. In the last two iterations the owners predicted every W28 cell, and W29's one new item follows
+from an existing owner clause (only marked relationship columns are decoded). Severity fell from Medium to Low. The
+strongest remaining candidate is further value functions and list operators at the same boundary, at about 10–15
+minutes per family. Expected yield: Low type-presentation variants that a reader can already predict from
+`query.values.relationship_text`, `.equality` and the documented known issue. Further modeling there would not change
+a material prediction.
+
+### Why a different underserved workflow does not either
+
+Five different workflows outside that vein were tested against frozen predictions and all agreed with their owners:
+native-executor shapes, setup lifecycle (including resume and mismatch refusal), variable-length paths, adjacency
+rebuild, and BM25 text search. The largest remaining unbound areas are, by reason:
+
+- Scope limits: Cypher `MERGE` (adjacent to the quarantined iteration-13 investigation; not pursued), FHIR mapping
+  (needs an external FHIR provider), ledger redaction and tenant removal (security-related, out of scope), Arno and NKG
+  accelerators (the Arno library is not installed on the fixture).
+- Low yield for the cost: the 3.2.0 → 4.0.0 migrations (161 members) need a reconstructed 3.2.0 install (about one
+  iteration) and affect only installs two major versions back.
+
+Unbound members by area at the end: Cypher translator/parser 967 of 996, ObjectScript 903 of 972, other package
+modules 900 of 955, engine mixins 611 of 711, stores 177 of 184, migrations 161 of 161, ledger 132 of 151. Most are
+delegates, DDL, validation shells or the excluded areas above. No sampled workflow from this session's survey points
+to a consequential, tractable gap that would change a material prediction.
+
+### Stop reasons, labeled
+
+1. **Evidenced diminishing returns** (primary): the five most recent workflows outside the boundary vein agreed with
+   owners; inside it, owners now predict new shapes and severity fell to Low.
+2. **Scope limits**: quarantined iteration-13 subject, security-related workflows, external providers.
+3. **Budget**: not binding.
+
+### Honest limits
+
+Direct executable-body verification remains 0; bindings are transcriptions with native or local-SQL agreement, and
+provider premises are named in each model (IRIS SQL comparison, `JSON_VALUE` spelling, text-to-double cast,
+`$IsValidNum`, `%ToJSON` spelling, executor transports, tokenization). Four inherited controls hit collateral resource
+limits in full runs on the Linux toolchain and rest on their isolated failures ([control replay](iteration-14/control-replay.json)).
+No independent reviewer ran in this session. The run-isolated fixture `ivg-cloud-20261116-iris` was stopped, not
+removed; `docker start ivg-cloud-20261116-iris` restores it for native replays (namespaces USER and W21).
+
 
 Older pointer, superseded: [iteration 11](iteration-11/HANDOFF.md), continuing into iteration 12.
 
