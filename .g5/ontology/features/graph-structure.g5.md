@@ -109,6 +109,16 @@ Writing a node with `store_node` creates its row if it is missing and always rep
 ## Edges
 
 
+<a id="structure.node.read.properties"></a>
+[I · structure.node.read.properties]
+
+The property lookups match and return values as they are stored.
+
+- `get_nodes_by_property` and `get_node_ids_by_property` compare `val` with the stored text, so "7" finds both a number 7 and a string "7", and "true" finds a stored true.
+- `get_nodes_by_property` and `get_nodes_by_label` return default-graph nodes as `get_node` does; `get_node_ids_by_property`, `get_property_values` and `get_property_pairs` read every graph ([open question](../../Verus_verification/open_questions.md#HD-0201)).
+- `get_property_values` and `get_property_pairs` return numbers as numbers. Today they return a stored true as the string "true", where `get_node` returns true.
+- `get_node_properties` is `get_node` without `id` and `labels`; `nodes_exist` looks in every graph; `list_graphs` lists the named graphs that have edges.
+
 <a id="structure.edge"></a>
 [I · structure.edge]
 
@@ -444,13 +454,25 @@ State machines: [node edge update](../../Verus_verification/models/node_edge_upd
 - Expands: [nodes](#structure.node)
 - Children: [How should flat node reads preserve colliding property aliases?](../../Verus_verification/open_questions.md#q-iter-001)
 
-Findings: [Colliding flat property aliases](../../Verus_verification/bugs_issues.md#bug-str-101).
+Findings: [Colliding flat property aliases](../../Verus_verification/bugs_issues.md#bug-str-101).; [get_property_values and get_property_pairs return a stored boolean as the string "true"](../../Verus_verification/bugs_issues.md#bug-str-102)
 
 Audit reproduction: [bug-str-101](../../Verus_verification/bugs_issues.md#bug-str-101) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 Open questions: [How should flat node reads preserve colliding property aliases?](../../Verus_verification/open_questions.md#q-iter-001)
 
 State machines: [ndjson export](../../Verus_verification/models/ndjson_export/manifest.json), [node read](../../Verus_verification/models/node_read/manifest.json)
+
+### structure.node.read.properties
+
+- Sources: [API reference, property readers](../../../docs/API_REFERENCE.md#L588-L720), [readers](../../../iris_vector_graph/_engine/nodes_edges.py)
+- Evidence: [frozen predictions and native observations](../../uplift/consolidated/iteration-34/property-readers-PAIRS.md)
+- Expands: [node reads](#structure.node.read)
+- agent
+- user-facing-behavior
+
+No formal contract: the outcomes are observed natively only.
+
+Findings: [get_property_values and get_property_pairs return a stored boolean as the string "true"](../../Verus_verification/bugs_issues.md#bug-str-102)
 
 ### structure.edge
 - Sources: [CONTEXT.md, Structural Edge](../../../CONTEXT.md#L60-L63), [create_edge](../../../iris_vector_graph/_engine/nodes_edges.py#L1151-L1255), [rdf_edges DDL](../../../iris_vector_graph/schema.py#L34-L45)

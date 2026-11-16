@@ -4140,6 +4140,23 @@ Consequence: callers may run needless builds; the description of which search ru
 
 Repair proposal (not implemented): say that inserts are placed in the existing trees and that `vec_build` re-places every vector with new planes.
 
+<a id="bug-str-102"></a>
+### get_property_values and get_property_pairs return a stored boolean as the string "true"
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-16 (retest, iteration 34)
+
+Found by: the frozen W40 prediction R3 ("typed as `get_node` types them") missed ([predictions](../uplift/consolidated/iteration-34/property-readers-PAIRS.md)).
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-34/property-readers-observed-20261116T222559Z.json), R3, R4, R5). For a node created with `properties={"p": True}`, `get_node` and `get_node_properties` return `True`, while `get_property_values("p")` and `get_property_pairs("p")` return `"true"`. Passing neighbors: in the same calls an integer 7 and a float 7.5 come back as `int` and `float`, and a string "7" as `str`.
+
+Expected: [structure.node.read](../ontology/features/graph-structure.g5.md#structure.node.read) reads typed properties; the API reference says `get_property_values` returns "every value stored", with no sign that booleans alone come back as text.
+
+Consequence: a caller that gathers values with these readers sees `"true"` and cannot tell it from a stored string "true"; `get_node` disagrees. Low: wrong result type, no data change. Not checked: the cause in code, and the other value readers (`get_property_pairs_like`).
+
+Repair proposal (not implemented): decode the stored boolean spelling in these two readers as `get_node` does. Governing statement: [structure.node.read.properties](../ontology/features/graph-structure.g5.md#structure.node.read.properties).
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 

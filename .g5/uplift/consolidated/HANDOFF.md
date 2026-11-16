@@ -1,4 +1,4 @@
-**Current pointer (retest, 2026-11-16).** Running, iteration 33 sealed (subject `Seal iteration 33: node and edge updates and deletes`). Material outcome: no defect (owners predicted all nine cases); model `node_edge_update`; reach 371 → 375 of 4,130. Cost: builder wall clock about 5 h 50 min so far (tokens/currency unavailable). Next: Python property-lookup readers, then the step-5 judgment. Retest log: [below](#retest-2026-11-16).
+**Current pointer (retest, 2026-11-16).** Running, iteration 34 sealed (subject `Seal iteration 34: property readers`). Material outcome: new Low bug-str-102; HD-0201 confirmed again; new owner `structure.node.read.properties`; reach 375 of 4,130. Cost: builder wall clock about 1 h 15 min since 21:15Z (earlier pointers overstated it; see iteration 34). Not converged: W38 and W40 still changed predictions; next `bulk_load_session`. Retest log: [below](#retest-2026-11-16).
 
 <a id="retest-2026-11-16"></a>
 ## Retest (2026-11-16, from `cloud-iris-retest-start-20261116`)
@@ -16,6 +16,7 @@ Guidance: run copy `$G5_HARNESS`, `Verus/uplift-iteration.md` sha256 `a7521d0e20
 | [31](iteration-31/HANDOFF.md) | W36 BulkLoader in a non-default IVG Schema; W37 bug-tmp-102's rule on batch and delete | bug-plt-012 reproduced; bug-tmp-102 widened; `bulk_load` and `write_routing` extended; 364 → 368 |
 | [32](iteration-32/HANDOFF.md) | W38 one Cypher answer through three HTTP readers | Medium bug-plt-108 (new); model `http_rows`; 368 → 371 |
 | [33](iteration-33/HANDOFF.md) | W39 node and edge updates and deletes | all agree (negative result); model `node_edge_update`; 371 → 375 |
+| [34](iteration-34/HANDOFF.md) | W40 Python property readers over API-written values | Low bug-str-102 (new); HD-0201 evidence; owner `structure.node.read.properties`; 375 |
 
 Earlier pointer (superseded): **Current pointer (cloud continuation, 2026-11-16).** CONVERGED after iteration 24. Latest seal: the clean tip with subject `Record convergence of the cloud continuation` (its parent `0575c5de` is the last iteration seal). Session: iterations 14–24, seven new findings, reach 249 → 279 of 4,130 (30 new, 0 lost). Cost: builder wall clock about 1 h 50 min (tokens/currency unavailable). Convergence basis: [below](#convergence-cloud-continuation-2026-11-16).
 

@@ -2845,6 +2845,8 @@ Audit: Working assumption (agent, unratified): For graph-aware Python reads, omi
 
 Canonical owner: [graph.default.python-read-policy](#HD-0201).
 
+Evidence (retest iteration 34, [observation](../uplift/consolidated/iteration-34/property-readers-observed-20261116T222559Z.json)): `get_node_ids_by_property(key, "7")` returned a named-graph node's ID that `get_nodes_by_property(key, "7")` with the same arguments left out, and `get_property_values`/`get_property_pairs` included the named graph's value; `get_nodes_by_property` and `get_nodes_by_label` read the default graph only.
+
 ```g5-question
 {
   "schema": 1,
