@@ -402,3 +402,7 @@ Iteration 15 ([handoff](../uplift/consolidated/iteration-15/HANDOFF.md)) adds `m
 6 controls) and a native binding that needs the fixture running: start the container recorded in
 `iteration-15/runtime.json`, then `$RUN_DIR/venv/bin/python -B .g5/Verus_verification/models/temporal_marker/binding.py`.
 
+Iteration 16 ([handoff](../uplift/consolidated/iteration-16/HANDOFF.md)) adds `models/typed_equality` (37 verified,
+5 controls) and a native binding (`models/typed_equality/binding.py`, fixture required) plus a translation-only route
+trace (`iteration-16/route_trace.py`, no database).
+

@@ -1,0 +1,71 @@
+{
+  "control": {
+    "classification": "decision: node number equality by spelling (the pre-4.7.0 rule) instead of the stored-number test",
+    "expect_fail_in": [
+      "theorem_node_integer_needs_stored_number",
+      "theorem_node_where_return_disagree",
+      "theorem_string_integer_kind_asymmetry"
+    ],
+    "find": "Lit::Int(m)=>match s {nr::Stored::Number{payload,double}=>if double {double_equals_int(payload,m)} else {payload==m},_=>false},",
+    "name": "node-number-by-text",
+    "replace": "Lit::Int(m)=>node_matches_spelling(s,num_text(m)),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_node_integer_needs_stored_number",
+      "theorem_node_where_return_disagree",
+      "theorem_string_integer_kind_asymmetry"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+    ".g5/Verus_verification/models/typed_equality/model.json": "02be83cbd0de25dcca5e3c2020bb0bc39705f6716974c8e15fc90cd06f978be0",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "a2fb05c7e94694a84cb9901639078466f377dccba7a93abd017146da22dffb83"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-number-by-text/20261116T165306Z/models/typed_equality/typed_equality.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_node_integer_needs_stored_number": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T165306Z-control-node-number-by-text-theorem_node_integer_needs_stored_number.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_node_where_return_disagree": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T165306Z-control-node-number-by-text-theorem_node_where_return_disagree.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_string_integer_kind_asymmetry": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T165306Z-control-node-number-by-text-theorem_string_integer_kind_asymmetry.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T165306Z-control-node-number-by-text.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/typed_equality/20261116T165310Z-control-node-number-by-text/logs/20261116T165306Z-control-node-number-by-text-theorem_node_integer_needs_stored_number.log": "194bcf719de6840311c923d7258daddfb8711991f33d7363c0ef7e69ee70ef58",
+    ".g5/Verus_verification/results/typed_equality/20261116T165310Z-control-node-number-by-text/logs/20261116T165306Z-control-node-number-by-text-theorem_node_where_return_disagree.log": "f7192137099df942ec4929b20790f347de036012eeca46c6d08b175a005fe2bf",
+    ".g5/Verus_verification/results/typed_equality/20261116T165310Z-control-node-number-by-text/logs/20261116T165306Z-control-node-number-by-text-theorem_string_integer_kind_asymmetry.log": "b8bb8d038df11ef082fa96f07bbf477a50d76efbd373b6c447276762dc8dcec1",
+    ".g5/Verus_verification/results/typed_equality/20261116T165310Z-control-node-number-by-text/logs/20261116T165306Z-control-node-number-by-text.log": "98b5c2ca9d6198e63f1c90d18faf14ebb26aa3b6cc42fd3c444528782a623c18"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "all_sensitivities_detected": true,
+  "comparisons": 320,
+  "elapsed_s": 2.430716048926115,
+  "fixture": "ivg-cloud-20261116-iris",
+  "inputs": {
+    ".g5/Verus_verification/models/typed_equality/binding.py": "5b8a264ea2511138ad511c3fc7d674e197e03986b5b85422f0d74a1fb838595f",
+    ".g5/Verus_verification/models/typed_equality/model.json": "f9c4d97ebc15ec23fd1e5f493eaff217aa3ad34e9ca82bc53d8dc76c39a42412",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "5f75df234bf3904f96d8bfa62754312bbd5310693e5a3bd5a0741e03235989ee"
+  },
+  "kind": "binding",
+  "mismatches": [
+    {
+      "agrees": false,
+      "expected": {
+        "-1": false,
+        "0": false,
+        "1": false,
+        "12": false,
+        "2": false,
+        "false": false,
+        "return": [
+          "float",
+          1.0
+        ],
+        "true": false
+      },
+      "kind": "rel",
+      "observed": {
+        "-1": false,
+        "0": false,
+        "1": true,
+        "12": false,
+        "2": false,
+        "false": false,
+        "return": [
+          "float",
+          1.0
+        ],
+        "true": false
+      },
+      "provider_dependent": false,
+      "value": [
+        "str",
+        "1.0"
+      ]
+    },
+    {
+      "agrees": false,
+      "expected": {
+        "-1": false,
+        "0": false,
+        "1": true,
+        "12": false,
+        "2": false,
+        "false": false,
+        "return": [
+          "float",
+          1.0
+        ],
+        "true": true
+      },
+      "kind": "rel",
+      "observed": {
+        "-1": false,
+        "0": false,
+        "1": true,
+        "12": false,
+        "2": false,
+        "false": false,
+        "return": [
+          "float",
+          1.0
+        ],
+        "true": false
+      },
+      "provider_dependent": true,
+      "value": [
+        "float",
+        1.0
+      ]
+    },
+    {
+      "agrees": false,
+      "expected": {
+        "-1": false,
+        "0": true,
+        "1": false,
+        "12": false,
+        "2": false,
+        "false": true,
+        "return": [
+          "float",
+          0.0
+        ],
+        "true": false
+      },
+      "kind": "rel",
+      "observed": {
+        "-1": false,
+        "0": true,
+        "1": false,
+        "12": false,
+        "2": false,
+        "false": false,
+        "return": [
+          "float",
+          0.0
+        ],
+        "true": false
+      },
+      "provider_dependent": true,
+      "value": [
+        "float",
+        0.0
+      ]
+    }
+  ],
+  "model": "typed_equality",
+  "port": 36116,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "run": "20261116T165158Z",
+  "scope": "SQL path (engine native_cypher=False) on IRIS 2026.1 Community; create_node/create_edge writers; WHERE x.p = <boolean or integer literal> and RETURN x.p. Doubles use declared providers. No parameters, IN lists, MERGE patterns, native executor, Cypher-written values or legacy rows.",
+  "sensitivities_detected_worlds": {
+    "json_boolean_reads_as_word": 5,
+    "legacy_one_not_true": 8,
+    "node_number_by_text": 6,
+    "stored_integer_not_a_spelling": 7
+  },
+  "verdict": "DISAGREES",
+  "worlds": 40,
+  "worlds_sha256": "554585cc5456c4876290c6e6456db6e414dfe30b881de89e5d504bfa7e9e10eb"
+}

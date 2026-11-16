@@ -20,3 +20,4 @@ does not regenerate this file.
 | Entry | Severity · status | Iteration | Reproduction |
 |---|---|---|---|
 | [bug-tmp-101](bugs_issues.md#bug-tmp-101) A temporal edge's internal mark is returned as relationship data by Cypher and written as an RDF qualifier | Low · Open | 15 (cloud continuation) | e2e reproduced on the run-isolated IRIS fixture, with plain and adopted neighbors |
+| [bug-cyp-102](bugs_issues.md#bug-cyp-102) A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names | Medium · Open | 16 (cloud continuation) | e2e reproduced on the run-isolated IRIS fixture, with integer and boolean neighbors |

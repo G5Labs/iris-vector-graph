@@ -1,0 +1,39 @@
+{
+ "MATCH (x:TE) WHERE x.id = 'a' AND x.p = true RETURN count(*) AS n": {
+  "members": [
+   "_stored_bool_comparison",
+   "_stored_bool_in",
+   "bool_spellings_sql"
+  ],
+  "legacy_in_list": true,
+  "sql": "SELECT COUNT(*) AS n\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'id') AND EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'p') AND l1.s IS NOT NULL AND (p2.val = 'a' AND (p3.val IN ('true', '1', 'True')))"
+ },
+ "MATCH (x:TE) WHERE x.id = 'a' AND x.p = 1 RETURN count(*) AS n": {
+  "members": [
+   "_node_number_eq_sql",
+   "_number_eq_sql",
+   "_stored_bool_comparison",
+   "_stored_number_test"
+  ],
+  "legacy_in_list": false,
+  "sql": "SELECT COUNT(*) AS n\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'id') AND EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'p') AND l1.s IS NOT NULL AND (p2.val = 'a' AND ((ASCII($LISTBUILD(%EXACT(p3.val))) > 0 AND ASCII(SUBSTRING($LISTBUILD(%EXACT(p3.val)), 2, 1)) BETWEEN 4 AND 9) AND CAST(p3.val AS DOUBLE) = CAST('1' AS DOUBLE)))"
+ },
+ "MATCH (s)-[x:TER]->(t) WHERE s.id = 'a' AND x.p = true RETURN count(*) AS n": {
+  "members": [
+   "_stored_bool_comparison",
+   "_stored_bool_in",
+   "bool_spellings_sql"
+  ],
+  "legacy_in_list": true,
+  "sql": "SELECT COUNT(*) AS n\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id AND e2.graph_id = n0.graph_id AND e2.p = ?\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id AND n1.graph_id = e2.graph_id\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'id') AND (p3.val = 'a' AND (CASE WHEN e2.qualifiers IS NULL THEN NULL ELSE Graph_KG.JSON_VALUE(e2.qualifiers, '$.p') END IN ('true', '1', 'True')))"
+ },
+ "MATCH (s)-[x:TER]->(t) WHERE s.id = 'a' AND x.p = 12 RETURN count(*) AS n": {
+  "members": [
+   "_number_eq_sql",
+   "_number_texts",
+   "_stored_bool_comparison"
+  ],
+  "legacy_in_list": false,
+  "sql": "SELECT COUNT(*) AS n\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_edges e2 ON e2.s = n0.node_id AND e2.graph_id = n0.graph_id AND e2.p = ?\nJOIN Graph_KG.nodes n1 ON n1.node_id = e2.o_id AND n1.graph_id = e2.graph_id\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'id') AND (p3.val = 'a' AND (CASE WHEN e2.qualifiers IS NULL THEN NULL ELSE Graph_KG.JSON_VALUE(e2.qualifiers, '$.p') END) IN ('12', '12.0'))"
+ }
+}

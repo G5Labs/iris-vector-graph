@@ -1,0 +1,42 @@
+verification results:: 33 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-number-by-text/20261116T165031Z/models/typed_equality/typed_equality.rs:105:62
+    |
+101 | pub proof fn theorem_node_where_return_disagree()
+    | ------------------------------------------------- at the end of the function body
+...
+105 |   node_where_eq(nr::Stored::Text(seq!['1']),Lit::Bool(true)),!node_where_eq(nr::Stored::Text(seq!['1']),Lit::Int(1)),
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-number-by-text/20261116T165031Z/models/typed_equality/typed_equality.rs:122:1
+    |
+122 | pub proof fn theorem_node_integer_needs_stored_number(t:Text,n:int,m:int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-number-by-text/20261116T165031Z/models/typed_equality/typed_equality.rs:123:10
+    |
+122 | pub proof fn theorem_node_integer_needs_stored_number(t:Text,n:int,m:int)
+    | ------------------------------------------------------------------------- at the end of the function body
+123 |  ensures !node_where_eq(nr::Stored::Text(t),Lit::Int(m)),node_where_eq(nr::Stored::Number{payload:n,double:false},Lit::Int(m))==(n=...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-number-by-text/20261116T165031Z/models/typed_equality/typed_equality.rs:123:58
+    |
+122 | pub proof fn theorem_node_integer_needs_stored_number(t:Text,n:int,m:int)
+    | ------------------------------------------------------------------------- at the end of the function body
+123 |  ensures !node_where_eq(nr::Stored::Text(t),Lit::Int(m)),node_where_eq(nr::Stored::Number{payload:n,double:false},Lit::Int(m))==(n==m),
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-number-by-text/20261116T165031Z/models/typed_equality/typed_equality.rs:153:62
+    |
+152 | pub proof fn theorem_string_integer_kind_asymmetry()
+    | ---------------------------------------------------- at the end of the function body
+153 |  ensures rel_where_eq(Json::Str(seq!['1','2']),Lit::Int(12)),!node_where_eq(nr::Stored::Text(seq!['1','2']),Lit::Int(12)),
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

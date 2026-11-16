@@ -2587,6 +2587,25 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: Actual public engine and ObjectScript Owner list 10000 of 10002 ordinary nodes with score sum below one; a one-node public caller passes. No Arno reader is available, so cross-route equivalence remains untested. Canonical owners: [algorithms.op.pagerank](../ontology/features/algorithms.g5.md#algorithms.op.pagerank), [algorithms.cache.pagerank](../ontology/features/algorithms.g5.md#algorithms.cache.pagerank).
 
+<a id="bug-cyp-102"></a>
+### A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-16 (cloud continuation, iteration 16)
+
+Found by: source-first contrast of Cypher `WHERE` equality against the `RETURN` readers, with predictions frozen before observation ([predictions](../uplift/consolidated/iteration-16/typed-equality-PAIRS.md)); [typed_equality](models/typed_equality/NOTES.md) `theorem_node_true_exact` and `theorem_node_where_return_disagree`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-16/typed-equality-observed-20261116T164516Z.json); [44-world binding](results/typed_equality/20261116T165332Z-binding/receipt.json)). A node written by `create_node(properties={"p": 1})` stores the number 1; `MATCH (x) WHERE x.p = true RETURN count(*)` counts it and `RETURN x.p` returns the integer 1. A stored integer 0 matches `= false`. The string "1" also matches `= true` while `= 1` does not. Passing neighbors: a node boolean `true` matches `= true` and not `= 1`; integers 2, 12 and -1 match no boolean.
+
+Expected: openCypher equality is false between a boolean and an integer, and [query.values](../ontology/features/cypher.g5.md#query.values) reads these values back as integers and strings. The product documents the legacy boolean match as a known issue ([KNOWN_ISSUES](../../docs/KNOWN_ISSUES.md#L597-L612)), planned to go with typed storage in 4.8.0, but scopes it to stored strings `'1'` and `'True'`; since 4.6.4 the API stores integers as numbers, and those match as well. The full as-built rule is [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality).
+
+Cause: `_stored_bool_in` emits `val IN ('true', '1', 'True')`, and IRIS compares a stored number with the text `'1'` as equal.
+
+Consequence: a filter on a boolean flag also returns, updates or deletes rows whose property is the integer 1 or 0, which the known issue's workaround ("compare with the string you mean") does not avoid. Medium: visible wrong results with a confirmed trigger; destructive when the filter feeds `DELETE` or `SET`.
+
+Repair proposal (not implemented, not checked): until typed storage, restrict the numeric arm of the boolean test to stored text (exclude rows that `_stored_number_test` marks as numbers), and extend the known issue's symptom to stored integers. Preserve: legacy text rows `'1'`/`'True'` keep matching, booleans written since 4.1.0 match, integer equality is unchanged. Distinguishing case: node `p = 1` (number) against `p = true`.
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 

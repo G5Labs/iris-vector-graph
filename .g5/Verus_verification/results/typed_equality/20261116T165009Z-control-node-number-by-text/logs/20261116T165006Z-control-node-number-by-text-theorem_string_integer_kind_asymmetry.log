@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-number-by-text/20261116T165006Z/models/typed_equality/typed_equality.rs:150:62
+    |
+149 | pub proof fn theorem_string_integer_kind_asymmetry()
+    | ---------------------------------------------------- at the end of the function body
+150 |  ensures rel_where_eq(Json::Str(seq!['1','2']),Lit::Int(12)),!node_where_eq(nr::Stored::Text(seq!['1','2']),Lit::Int(12)),
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
