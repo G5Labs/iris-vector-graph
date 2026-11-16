@@ -3842,6 +3842,25 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
 
+<a id="bug-tmp-101"></a>
+### A temporal edge's internal mark is returned as relationship data by Cypher and written as an RDF qualifier
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-16 (cloud continuation, iteration 15)
+
+Found by: source-first contrast across the three edge readers, with predictions frozen before observation ([predictions](../uplift/consolidated/iteration-15/temporal-marker-PAIRS.md)); [temporal_marker](models/temporal_marker/NOTES.md) `theorem_cypher_reports_marker_key`, `theorem_rdf_marked_row_is_reified` and `theorem_rdf_report_counts`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([observations](../uplift/consolidated/iteration-15/temporal-marker-observed-20261116T161532Z.json); [160-world binding panel](results/temporal_marker/20261116T164055Z-binding/receipt.json)). One default-graph triple `(a, KNOWS, b)` written by `create_edge_temporal(weight=1.5)` stores `{"temporal":true,"weight":1.5}`. Cypher `MATCH (a)-[r:KNOWS]->(b) RETURN properties(r), r.temporal` returns `{temporal: True, weight: 1.5}` and `True`. `export_rdf` writes the triple plus a reification envelope and qualifiers `temporal` (boolean true) and `weight`; the report is 11 triples / 4 nodes / 4 edges. Passing neighbors: the same triple from `create_edge` returns `{}` and reports 5 / 2 / 1; after adoption by `create_edge` or `bulk_create_edges` every reader matches the unmarked edge. `export_graph_ndjson` writes no line for the marked edge, as documented.
+
+Expected: [temporal.structural.mark](../ontology/features/temporal.g5.md#temporal.structural.mark) says the mark lets counts, exports and cleanup tell an implied edge from an explicit one. ADR-0009 makes the triple visible to Cypher `MATCH` and to exports, and spec 252 planned the mark as a separate "temporal-origin column" (implemented as a qualifier, task T033). No source says the mark itself is relationship data. The intended reader representation is the child question [temporal.structural.mark.visibility](../ontology/features/temporal.g5.md#temporal.structural.mark.visibility).
+
+Cause: `AssertTemporalRow` stores the mark inside `qualifiers`. Cypher's relationship map is `CY_RETYPE_MAP(qualifiers)` with no key filter (translator `_edge_props_sql`), and RDF export's qualifier loop hides only `inferred`. The NDJSON exporter instead drops marked rows with `TEMPORAL_MARKED_ROW`.
+
+Consequence: for the same visible triple, the edge's properties and the RDF content and report depend on which writer created it. A user query over `properties(r)` or a consumer of RDF qualifiers sees an internal flag, and RDF report `edges`/`nodes` grow by 3 and 2 per marked edge. Low because the expected representation is not settled and no stored data is lost.
+
+Repair proposal (not implemented, not checked): keep the edge and its weight visible but omit the `temporal` key from Cypher relationship maps and RDF qualifiers (and from the RDF envelope when it is the only remaining key), preserving NDJSON's documented omission and every marker-based delete, purge and adoption rule. Writers and readers affected: `AssertTemporalRow`, `CY_RETYPE_MAP`/`_edge_props_sql`, `_build_rdflib_graph`; distinguishing case: the marked-versus-plain pair above.
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 

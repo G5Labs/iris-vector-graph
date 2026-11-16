@@ -1,0 +1,62 @@
+{
+  "control": {
+    "classification": "producer: the weight-is-1 omission removed; changes decoded entries and the final RDF report",
+    "expect_fail_in": [
+      "theorem_marker_decodes",
+      "theorem_rdf_report_counts"
+    ],
+    "find": "if unit(w){head()+seq!['}']}else{",
+    "name": "unit-weight-written",
+    "replace": "if false{head()+seq!['}']}else{"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_marker_decodes",
+      "theorem_rdf_report_counts"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ndjson_export/qualifier.rs": "362c631e64d47ef2374a42bf2c6199970497468cdb2df24b967b71198b66d742",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "89595f2c64b4e082cbd0118692f664acc203b623ee35ecc7bb11f438ac52019f",
+    ".g5/Verus_verification/models/temporal_marker/model.json": "e7c4c347dd502bf9fa89df0605d7a7023d35b4d1eaa9d1663a48e397a09aa66b",
+    ".g5/Verus_verification/models/temporal_marker/temporal_marker.rs": "9d3c2643b31af4c0dd8a0dc1cd49b2e7d516df8acdc79c5163e3ec830beb28d0"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/unit-weight-written/20261116T163801Z/models/temporal_marker/temporal_marker.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_marker_decodes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/20261116T163801Z-control-unit-weight-written-theorem_marker_decodes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rdf_report_counts": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/20261116T163801Z-control-unit-weight-written-theorem_rdf_report_counts.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/20261116T163801Z-control-unit-weight-written.log",
+    "timed_out": false,
+    "verified": 79
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_marker/20261116T163814Z-control-unit-weight-written/logs/20261116T163801Z-control-unit-weight-written-theorem_marker_decodes.log": "1e1a1b394f08b5c008927ae3ea6a7890b0e9355627071a906b4ed9334058f51c",
+    ".g5/Verus_verification/results/temporal_marker/20261116T163814Z-control-unit-weight-written/logs/20261116T163801Z-control-unit-weight-written-theorem_rdf_report_counts.log": "ec1383364974f553b4d56a533b24f5070552376f88d5672f21f764bfcf331126",
+    ".g5/Verus_verification/results/temporal_marker/20261116T163814Z-control-unit-weight-written/logs/20261116T163801Z-control-unit-weight-written.log": "80015a74246a55d5f4b552c52b0a7e3c2e9e47377dbd3eb0a5359c6c5c8202bd"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

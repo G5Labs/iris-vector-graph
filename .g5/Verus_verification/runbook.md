@@ -397,3 +397,8 @@ Worked lookup: `install.export.rdf.report` → `rdf_reporting.rs::theorem_raw_ro
 `iris_vector_graph/_engine/rdf_export.py::RdfExportMixin.export_rdf` (line 96); in reverse, that key in
 `bindings.json` lists the claim and its role. Native fixtures from iteration 15 on use only the run-isolated container
 `ivg-cloud-20261116-iris` (127.0.0.1:36116), identity-checked by the iteration's `runtime.py`.
+
+Iteration 15 ([handoff](../uplift/consolidated/iteration-15/HANDOFF.md)) adds `models/temporal_marker` (81 verified,
+6 controls) and a native binding that needs the fixture running: start the container recorded in
+`iteration-15/runtime.json`, then `$RUN_DIR/venv/bin/python -B .g5/Verus_verification/models/temporal_marker/binding.py`.
+

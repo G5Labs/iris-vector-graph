@@ -1,0 +1,54 @@
+{
+  "name": "temporal_marker",
+  "root": "temporal_marker.rs",
+  "expected_verified": 81,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [
+    "../rdf_reporting/rdf_reporting.rs",
+    "../ndjson_export/qualifier.rs"
+  ],
+  "controls": [
+    {
+      "name": "temporal-overwrites-row",
+      "find": "Row::Present{..}=>r}}",
+      "replace": "Row::Present{..}=>Row::Present{quals:Some(marker(w))}}}",
+      "expect_fail_in": ["theorem_temporal_never_rewrites_a_row", "theorem_first_temporal_weight_wins", "theorem_explicit_first_stays_unmarked"],
+      "classification": "producer: AssertTemporalRow's INSERT ... WHERE NOT EXISTS replaced by an overwrite"
+    },
+    {
+      "name": "unit-weight-written",
+      "find": "if unit(w){head()+seq!['}']}else{",
+      "replace": "if false{head()+seq!['}']}else{",
+      "expect_fail_in": ["theorem_marker_decodes", "theorem_rdf_report_counts"],
+      "classification": "producer: the weight-is-1 omission removed; changes decoded entries and the final RDF report"
+    },
+    {
+      "name": "adoption-ignores-marker",
+      "find": "Row::Present{quals}=>if object_marked(quals){Row::Present{quals:own}}else{r}",
+      "replace": "Row::Present{quals}=>Row::Present{quals:own}",
+      "expect_fail_in": ["theorem_explicit_duplicate_keeps_unmarked"],
+      "classification": "producer: create_edge overwrites any duplicate instead of adopting only a marked row"
+    },
+    {
+      "name": "bulk-keeps-marker",
+      "find": "Row::Present{quals}=>if nq::marked(quals){Row::Present{quals:None}}else{r}",
+      "replace": "Row::Present{quals}=>r",
+      "expect_fail_in": ["theorem_bulk_adopts_marked_to_null", "theorem_ndjson_omits_marked_includes_adopted", "theorem_cypher_reports_marker_key"],
+      "classification": "producer: bulk_create_edges' adoption UPDATE omitted"
+    },
+    {
+      "name": "ndjson-writes-marked",
+      "find": "Row::Present{quals}=>!nq::marked(quals)}}",
+      "replace": "Row::Present{quals}=>true}}",
+      "expect_fail_in": ["theorem_ndjson_omits_marked_includes_adopted"],
+      "classification": "reader: export_graph_ndjson's marker filter omitted"
+    },
+    {
+      "name": "cypher-hides-marker",
+      "find": "Row::Present{quals}=>decode(quals).map_values(|e:Entry|e.key)}}",
+      "replace": "Row::Present{quals}=>decode(quals).filter(|e:Entry|e.key!=kt()).map_values(|e:Entry|e.key)}}",
+      "expect_fail_in": ["theorem_cypher_reports_marker_key"],
+      "classification": "reader: properties(r) filtering the marker key, the alternative representation"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+verification results:: 78 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/unit-weight-written/20261116T163540Z/models/temporal_marker/temporal_marker.rs:100:10
+    |
+100 |    ensures unit(w) ==> decode(Some(marker(w)))==seq![Entry{key:kt(),value:seq!['T','r','u','e']}],
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+104 | /  if unit(w) {
+105 | |   lemma_parse_concat(head(),seq!['}'],p0);reveal_with_fuel(parse,2);
+106 | |   assert(upsert(Seq::<Entry>::empty(),kt(),seq!['T','r','u','e'])=~=seq![Entry{key:kt(),value:seq!['T','r','u','e']}]);
+107 | |  } else {
+...   |
+135 | |   assert(parse(marker(w),p0)==pend);
+136 | |  }
+    | |__- at the end of the function body
+
+error: function body check: Resource limit (rlimit) exceeded; consider rerunning with --profile for more details
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/unit-weight-written/20261116T163540Z/models/temporal_marker/temporal_marker.rs:230:1
+    |
+230 | pub proof fn theorem_rdf_report_counts(s:Text,p:Text,o:Text,base:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,37 @@
+verification results:: 77 verified, 4 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/bulk-keeps-marker/20261116T163823Z/models/temporal_marker/temporal_marker.rs:169:10
+    |
+167 | pub proof fn theorem_bulk_adopts_marked_to_null(w:Text)
+    | ------------------------------------------------------- at the end of the function body
+168 |  requires weight_spelling(w)
+169 |  ensures bulk_write(temporal_write(Row::Absent,w))==(Row::Present{quals:None}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/bulk-keeps-marker/20261116T163823Z/models/temporal_marker/temporal_marker.rs:188:3
+    |
+185 | pub proof fn theorem_ndjson_omits_marked_includes_adopted(w:Text,own:Option<Text>)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+...
+188 |   ndjson_line(bulk_write(temporal_write(Row::Absent,w))),
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/bulk-keeps-marker/20261116T163823Z/models/temporal_marker/temporal_marker.rs:197:54
+    |
+197 |  assert(decode(None)=~=Seq::<Entry>::empty());assert(cypher_keys(bulk_write(temporal_write(Row::Absent,w)))=~=Seq::<Text>::empty());
+    |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/bulk-keeps-marker/20261116T163823Z/models/temporal_marker/temporal_marker.rs:207:3
+    |
+201 |   pub proof fn theorem_rdf_marked_row_is_reified(w:Text,s:Text,p:Text,o:Text,base:Text)
+    |   ------------------------------------------------------------------------------------- at the end of the function body
+...
+207 | /   ({let r=bulk_write(temporal_write(Row::Absent,w));let c=all_graphs(base);
+208 | |    emit_edge(edge_of(r,s,p,o),world(r,s,p,o),0,c)==seq![q(None,uri(s,c),mint(p,base),uri(o,c))]}),
+    | |_________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

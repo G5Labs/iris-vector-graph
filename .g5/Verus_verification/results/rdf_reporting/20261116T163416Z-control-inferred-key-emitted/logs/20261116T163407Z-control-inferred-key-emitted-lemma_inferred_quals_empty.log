@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/inferred-key-emitted/20261116T163407Z/models/rdf_reporting/rdf_reporting.rs:249:10
+    |
+249 |  ensures emit_quals(es,e,pos,c).len()==0
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+250 |  decreases es.len(),
+251 | {if es.len()>0{lemma_inferred_quals_empty(es.skip(1),e,pos,c);}}
+    |  -------------------------------------------------------------- at the end of the function body
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,39 @@
+verification results:: 47 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/blank-positions-reused/20261116T163459Z/models/rdf_reporting/rdf_reporting.rs:172:1
+    |
+172 | pub proof fn theorem_fresh_envelope_positions(e:Edge,c:Config,i:nat,j:nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/blank-positions-reused/20261116T163459Z/models/rdf_reporting/rdf_reporting.rs:174:10
+    |
+172 | pub proof fn theorem_fresh_envelope_positions(e:Edge,c:Config,i:nat,j:nat)
+    | -------------------------------------------------------------------------- at the end of the function body
+173 |  requires i!=j
+174 |  ensures !envelope(e,j,c).contains(envelope(e,i,c)[0]),envelope(e,i,c)[0].triple.s!=envelope(e,j,c)[0].triple.s
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/blank-positions-reused/20261116T163459Z/models/rdf_reporting/rdf_reporting.rs:174:56
+    |
+172 | pub proof fn theorem_fresh_envelope_positions(e:Edge,c:Config,i:nat,j:nat)
+    | -------------------------------------------------------------------------- at the end of the function body
+173 |  requires i!=j
+174 |  ensures !envelope(e,j,c).contains(envelope(e,i,c)[0]),envelope(e,i,c)[0].triple.s!=envelope(e,j,c)[0].triple.s
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/blank-positions-reused/20261116T163459Z/models/rdf_reporting/rdf_reporting.rs:178:9
+    |
+178 | ...rt(envelope(e,i,c).map_values(|q:Quad|q.triple.s) =~= seq![Term::Blank{position:i,reifier:false},Term::Blank{position:i,reifier:false},Term::Blank{position:i,reifier:false},Term::Blank{position:i,reifier:true}]);}
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/rdf_reporting/controls/blank-positions-reused/20261116T163459Z/models/rdf_reporting/rdf_reporting.rs:280:9
+    |
+280 | {assert(envelope(e,1,c)[0].triple.s==(Term::Blank{position:1,reifier:false}));
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

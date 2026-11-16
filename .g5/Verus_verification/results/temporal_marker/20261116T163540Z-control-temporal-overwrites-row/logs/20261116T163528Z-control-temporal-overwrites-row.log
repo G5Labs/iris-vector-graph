@@ -1,0 +1,30 @@
+verification results:: 77 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/temporal-overwrites-row/20261116T163528Z/models/temporal_marker/temporal_marker.rs:154:10
+    |
+152 | pub proof fn theorem_temporal_never_rewrites_a_row(r:Row,w:Text)
+    | ---------------------------------------------------------------- at the end of the function body
+153 |  requires r!=Row::Absent
+154 |  ensures temporal_write(r,w)==r,
+    |          ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/temporal-overwrites-row/20261116T163528Z/models/temporal_marker/temporal_marker.rs:166:10
+    |
+164 | pub proof fn theorem_first_temporal_weight_wins(w1:Text,w2:Text)
+    | ---------------------------------------------------------------- at the end of the function body
+165 |  requires weight_spelling(w1),weight_spelling(w2)
+166 |  ensures temporal_write(temporal_write(Row::Absent,w1),w2)==(Row::Present{quals:Some(marker(w1))}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/temporal-overwrites-row/20261116T163528Z/models/temporal_marker/temporal_marker.rs:170:10
+    |
+168 | pub proof fn theorem_explicit_first_stays_unmarked(own:Option<Text>,w:Text)
+    | --------------------------------------------------------------------------- at the end of the function body
+169 |  requires weight_spelling(w)
+170 |  ensures temporal_write(explicit_write(Row::Absent,own),w)==(Row::Present{quals:own}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

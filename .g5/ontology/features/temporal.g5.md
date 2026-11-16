@@ -179,6 +179,24 @@ An implied structural edge carries the temporal mark, so counts, exports and lat
 - All timestamps of one triple share one structural edge.
 - The mark, not a count of timestamps, decides whether the edge may be removed; the purge itself checks whether any surviving timestamp still holds the triple.
 
+<a id="temporal.structural.mark.readers"></a>
+[I · temporal.structural.mark.readers]
+
+Edge readers treat a marked structural edge differently from the same edge written explicitly.
+- NDJSON export writes no line for it; the temporal export writes the edge instead.
+- RDF export writes the triple plus a reification with a `temporal` qualifier (true) and the weight when it is not 1, so the export report counts 3 more edges and 2 more nodes for it.
+- Cypher `properties(r)` and `r.temporal` return `temporal: true`, with the weight.
+- After an explicit write adopts the edge, every reader sees an ordinary edge with that write's qualifiers. A bulk create adopts with none.
+- The mark is written only when the triple has no row yet: an explicit edge written first is never marked, and a later temporal write never changes the stored weight.
+
+<a id="temporal.structural.mark.visibility"></a>
+[Q · temporal.structural.mark.visibility]
+
+Should readers show the temporal mark as part of the edge's data?
+- Provisional answer (agent, unratified): no. The mark is bookkeeping (spec 252 planned it as a separate column), so Cypher maps and RDF qualifiers would leave it out while the edge and its weight stay visible.
+- Alternative, as built: the mark is one of the edge's qualifiers, and Cypher and RDF show it.
+- Alternative: RDF export leaves marked edges out, as NDJSON export does, and the PROV-O export carries them.
+
 <a id="temporal.structural.adopt"></a>
 [I · temporal.structural.adopt]
 
@@ -590,7 +608,7 @@ Audit reproduction: [bug-tmp-010](../../Verus_verification/bugs_issues.md#bug-tm
 
 ### temporal.structural
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L29), [glossary](../../../CONTEXT.md#L65-L76), [spec 252 FR-014](../../../specs/252-adjacency-functional-index/spec.md#L127-L129), [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L560-L618); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py)
-- Children: [mark](#temporal.structural.mark), [adopt](#temporal.structural.adopt), [end](#temporal.structural.end), [upgrade](#temporal.structural.upgrade), [ledger](#temporal.structural.ledger), [ledger nodes](#temporal.structural.ledger-nodes), [explicit delete](#temporal.structural.explicit-delete)
+- Children: [mark](#temporal.structural.mark), [mark readers](#temporal.structural.mark.readers), [adopt](#temporal.structural.adopt), [end](#temporal.structural.end), [upgrade](#temporal.structural.upgrade), [ledger](#temporal.structural.ledger), [ledger nodes](#temporal.structural.ledger-nodes), [explicit delete](#temporal.structural.explicit-delete)
 - agent
 - architecture-decision, user-facing-behavior
 - test-coverage
@@ -611,7 +629,28 @@ Audit reproduction: [bug-tmp-001](../../Verus_verification/bugs_issues.md#bug-tm
 
 The plan chose the mark over a count because a counter is not undone by a rollback, needs a new store and needs a migration. The upgrade backfill gives an edge the weight of its earliest timestamp, while live writes keep the first-written weight.
 
-Findings: [May an explicit delete_edge remove a marked structural row while its triple still has timestamps?](../../Verus_verification/open_questions.md#q-tmp-006)
+Findings: [May an explicit delete_edge remove a marked structural row while its triple still has timestamps?](../../Verus_verification/open_questions.md#q-tmp-006); [A temporal edge's internal mark is returned as relationship data by Cypher and written as an RDF qualifier](../../Verus_verification/bugs_issues.md#bug-tmp-101)
+
+### temporal.structural.mark.readers
+- Sources: [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls#L575-L618), [export_graph_ndjson](../../../iris_vector_graph/_engine/snapshot.py#L1857-L1908), [RDF qualifier loop](../../../iris_vector_graph/_engine/_rdf_utils.py#L264-L284), [Cypher relationship map](../../../iris_vector_graph/cypher/translator.py#L23187-L23191), [create_edge adoption](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1304), [bulk adoption](../../../iris_vector_graph/_engine/nodes_edges.py#L1990-L2001), [changelog: a temporal edge is visible structurally](../../../CHANGELOG.md#L3042-L3047)
+- Expands: [the mark](#temporal.structural.mark)
+- Verus: [temporal_marker.rs](../../Verus_verification/models/temporal_marker/temporal_marker.rs) `theorem_marker_decodes`, `theorem_temporal_never_rewrites_a_row`, `theorem_explicit_adopts_marked_with_own`, `theorem_bulk_adopts_marked_to_null`, `theorem_ndjson_omits_marked_includes_adopted`, `theorem_cypher_reports_marker_key`, `theorem_rdf_marked_row_is_reified` and `theorem_rdf_report_counts`; [scope](../../Verus_verification/models/temporal_marker/NOTES.md)
+- Evidence: [predictions and native observations](../../uplift/consolidated/iteration-15/temporal-marker-PAIRS.md)
+- agent
+- user-facing-behavior, data-integrity
+
+As-built reader behavior, observed on IRIS 2026.1 with the unchanged product for default-graph triples with one row each; a named-graph probe gave the same export results.
+
+Findings: [A temporal edge's internal mark is returned as relationship data by Cypher and written as an RDF qualifier](../../Verus_verification/bugs_issues.md#bug-tmp-101)
+
+### temporal.structural.mark.visibility
+- Sources: [ADR-0009 consequences](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L24-L29), [spec 252 plan, storage](../../../specs/252-adjacency-functional-index/plan.md#L20), [spec 252 task T033](../../../specs/252-adjacency-functional-index/tasks.md#L43)
+- Expands: [reader treatment](#temporal.structural.mark.readers)
+- agent
+- uncertain
+- user-facing-behavior
+
+Findings: [A temporal edge's internal mark is returned as relationship data by Cypher and written as an RDF qualifier](../../Verus_verification/bugs_issues.md#bug-tmp-101)
 
 ### temporal.structural.adopt
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [spec 254 sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L80), [create_edge adopt](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1300), [ledger adopt](../../../iris_src/src/Graph/KG/LedgerApply.cls#L465-L475); live tests: [purge path matrix](../../../tests/e2e/test_254_purge_e2e.py), [ledger adopt](../../../tests/integration/test_ledger_us11_temporal_coexist.py)

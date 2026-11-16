@@ -1,0 +1,24 @@
+verification results:: 79 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/unit-weight-written/20261116T163801Z/models/temporal_marker/temporal_marker.rs:108:10
+    |
+108 |    ensures unit(w) ==> decode(Some(marker(w)))==seq![Entry{key:kt(),value:seq!['T','r','u','e']}],
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+112 | /  if unit(w) {
+113 | |   lemma_unit_text_decodes();
+114 | |  } else {
+115 | |   let tail=seq![',','"']+kw()+seq!['"',':']+w+seq!['}'];
+...   |
+142 | |   assert(parse(marker(w),p0)==pend);
+143 | |  }
+    | |__- at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/unit-weight-written/20261116T163801Z/models/temporal_marker/temporal_marker.rs:259:27
+    |
+259 |  assert(unit(one));assert(r==Row::Present{quals:Some(head()+seq!['}'])});
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

@@ -1,6 +1,6 @@
 use vstd::prelude::*;
 use vstd::seq_lib::*;
-mod lexical {
+pub mod lexical {
 use vstd::prelude::*;
 verus! {
 broadcast use {vstd::seq_lib::group_seq_properties,vstd::set_lib::group_set_properties};
@@ -50,7 +50,7 @@ pub open spec fn property_predicate(s:Text,base:Text)->Text {
 }
 
 }
-mod json {
+pub mod json {
 use vstd::prelude::*;
 use vstd::seq_lib::*;
 use super::lexical::*;

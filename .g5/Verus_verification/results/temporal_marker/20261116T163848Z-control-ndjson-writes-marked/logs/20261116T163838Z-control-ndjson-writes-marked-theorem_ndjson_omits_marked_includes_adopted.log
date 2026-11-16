@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/temporal_marker/controls/ndjson-writes-marked/20261116T163838Z/models/temporal_marker/temporal_marker.rs:187:10
+    |
+185 | pub proof fn theorem_ndjson_omits_marked_includes_adopted(w:Text,own:Option<Text>)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+186 |  requires weight_spelling(w),!nq::marked(own)
+187 |  ensures !ndjson_line(temporal_write(Row::Absent,w)),ndjson_line(explicit_write(temporal_write(Row::Absent,w),own)),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
