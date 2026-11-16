@@ -244,11 +244,12 @@ Findings: [bulk_delete_adjacency deletes relationships under strict mode without
 
 ### erasure.prefix-match
 
+- design-verified
+
 - Sources: [Eraser.cls EraseNodes](../../../iris_src/src/Graph/KG/Eraser.cls#L307-L350), [LedgerRedact.cls MatchString](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L45-L53), [nodes_edges.py delete_nodes_by_prefix](../../../iris_vector_graph/_engine/nodes_edges.py#L1529-L1560), [reconstruction check G14](../../uplift/ivg-verus-initial/reconstruction-check.md#L407)
 - agent
 - uncertain
 - user-facing-behavior, security
-- test-coverage
 
 The match rule is in the Eraser's documentation ("exact and case-sensitive"). The separator advice follows from the [redaction target](redaction.g5.md#redaction.target) and the [tenant recipe](redaction.g5.md#redaction.tenant). The redaction tests erase with `tenantA|` and `acme|`. Observed divergence: the prefix erase collects its ids from node rows, so a tenant's events of a temporal-only predicate whose endpoints have no node row are not erased; after the documented erase-then-redact recipe such an event is still readable and verify reports equal ([native observation](../../Verus_verification/receipts/native/erasure_prefix_temporal_only.json); model witness W5 in the [ledger_redaction model](../../Verus_verification/models/ledger_redaction/redaction.rs)). The same node-row selection leaves a property row with no node row, which then refuses every later prefix redaction ([native observation](../../Verus_verification/receipts/native/redaction_orphan_prop_blocks.json); model witness W6).
 

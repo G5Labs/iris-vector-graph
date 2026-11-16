@@ -228,6 +228,8 @@ Assumption review evidence: Changed from decisions.md: **no**. Same reading. Add
 
 ### access.bolt
 
+- design-verified
+
 - uncertain
 - Sources: [Bolt protocol commitment](../../../iris_vector_graph/bolt_server.py#L1-L8), [ADMIN_API](../../../docs/ADMIN_API.md); [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/)
 - Verus: [bolt_stream model and limits](../../Verus_verification/models/bolt_stream/NOTES.md), as-built byte/state transcription; raw framing through admitted RUN/PULL final records, no generic codec/provider/network or database transaction proof.
@@ -235,7 +237,6 @@ Assumption review evidence: Changed from decisions.md: **no**. Same reading. Add
 - Expands: [Entry points](#access.surfaces)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Recovered in iteration9 from the shipped Bolt4.4 compatibility commitment and primary protocol, independently of the current decoder. This does not change the [Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning?](../../Verus_verification/open_questions.md#access.transactions): pending rows and database transaction atomicity are different decisions.
 
@@ -246,12 +247,13 @@ State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manife
 Assumption review evidence: Changed from decisions.md: **no**. Same direction as decisions.md. New history evidence (9c683292 to 7d62dbf5) and a live duplicate write strengthen it. Changed from decisions.md: no. Probe confirms; added that the retry itself is a documented maintainer feature (so the working answer is a narrowing, not a bug fix) and that statement failures are 400 and not retried.
 
 ### access.bolt.framing
+
+- design-verified
 - Sources: [primary message specification: Chunking and versions4.1/4.3](https://neo4j.com/docs/bolt/current/bolt/message/), [`BoltSession.run/_recv_message`](../../../iris_vector_graph/bolt_server.py#L396-L459), [`TcpBoltSession.run/_recv_message`](../../../iris_vector_graph/bolt_server.py#L936-L987)
 - Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `lemma_scan_encoded_prefix`, `theorem_small_chunk_reencoding_leaves_terminator`, `theorem_small_chunk_empty_closes_before_queued_run`, `theorem_coalesced_small_chunks_still_deliver_queued_run`, `theorem_noop_closes_wire_without_engine`; [fragment](../../Verus_verification/models/bolt_stream/NOTES.md). Raw scanner and actual re-encoding cut/queue are derived, with separate and coalesced passing/failing neighbors; transport scheduling and generic handshake/authentication remain outside the contract.
 - Expands: [Bolt stream](#access.bolt)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Observed at the pin: WebSocket consumption is computed by default re-encoding each decoded body instead of counting received chunk headers. A fragmented HELLO followed by separately delivered RUN/PULL can therefore lose the result stream: the retained full HELLO trace executes RUN once but never emits its record. The smaller RESET witness loses the later RUN itself. Coalescing all messages can queue a successful exchange while leaving residue, so failure is packetization dependent. Separately, the WebSocket run loop closes on empty bytes from a valid NOOP; the TCP loop continues. [36 full-session local-transport cases and localized method-copy repairs](../../uplift/consolidated/iteration-9/bolt-session-probe.json) execute the actual session/codec over a one-row engine adapter, with no listener, socket, authentication scenario or database. Native network reachability remains unassessed.
 
@@ -264,12 +266,13 @@ Audit reproduction: [bug-plt-102](../../Verus_verification/bugs_issues.md#bug-pl
 State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manifest.json)
 
 ### access.bolt.results
+
+- design-verified
 - Sources: [primary message specification: PULL](https://neo4j.com/docs/bolt/current/bolt/message/), [`_handle_run/_handle_pull/_handle_reset` and dispatch](../../../iris_vector_graph/bolt_server.py#L500-L669)
 - Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `theorem_raw_wire_run_then_pull_final_records`, `theorem_partial_pull_drops_suffix_and_reports_no_more`, `theorem_raw_error_string_decides_failure`, `theorem_commit_preserves_but_rollback_discards`, `theorem_reset_allows_next_result`; [scope](../../Verus_verification/models/bolt_stream/NOTES.md). Admitted scalar/list/map cells and fixed canonical request fragments, not general PackStream/graph objects or SQL/provider execution.
 - Expands: [Bolt stream](#access.bolt)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Observed: positive n slices rows then clears the entire pending result and omits has_more (known F-1602); n=0 emits all rows but is only an as-built out-of-domain neighbor, not a compatible PULL request. RUN replaces pending rows. DISCARD, RESET and ROLLBACK clear pending rows; COMMIT leaves them despite returning READY. These as-built transitions do not establish that every sequence is allowed by the protocol. Scalar/list/map admitted codec values and final records are a narrower scope than all graph objects or arbitrary query providers.
 

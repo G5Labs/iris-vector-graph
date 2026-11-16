@@ -513,11 +513,12 @@ Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verificati
 The clarification is a recorded human answer; FR-020a names the baseline code state `a42db224` and the gate's run rule (medians of at least 5 interleaved runs per path; Tom's allowed paths may cost up to twice their recorded cost). The gate was not run in this uplift. Added by review round 3 R3-reader M24.
 
 ### install.status
+
+- design-verified
 - Sources: [USER_GUIDE, status counts every graph](../../../docs/USER_GUIDE.md#L1203); [ADMIN_GUIDE, status fields and unknown probes](../../../docs/ADMIN_GUIDE.md#L920); [registry-kind and partial count tests](../../../tests/unit/test_230_status_counts.py); [report graph scope](../../../tests/unit/test_460_r050_status_counts_every_graph.py); [failed census and unknown report](../../../tests/unit/test_460_r050_status_unknown.py)
 - Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_raw_catalog_to_final_report`, `theorem_route_tables_never_double_count`, `theorem_registry_kind_and_shape_both_required`, `theorem_failed_table_keeps_other_counts` and `theorem_failure_is_unknown_not_empty`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). Raw rows and registry/error fields derive partial census and graph/node-vector report knowledge. Actual Python executes local SQL and the final reader under a stable registry view and refusal outcome across the two kind scans; transient per-read registry changes, native/index/schema truth, general IRIS comparison/driver semantics, other report fields and cross-read snapshots remain outside this correspondence. Label/property/edge-vector errors do not by themselves make graph size unknown.
 - agent
 - user-facing-behavior, operations
-- test-coverage
 
 This owner recovers ordinary reporting intent from the primary docs and tests before the selected reporting implementation is modeled. Graph identity and the meaning of an omitted graph remain with [graph scope](graph-scope.g5.md#graph.default). Probe availability, native counters, readiness flags and other status fields are separate conditions; this count/report rule does not certify them or a transactionally consistent snapshot across separate reads. The selected producer-to-report relation has been independently replayed within the linked package's stated source and provider frame.
 
@@ -542,17 +543,20 @@ State machines: [setup record](../../Verus_verification/models/setup_record/mani
 
 ### install.setup.dry_run
 
+- design-verified
+
 - Sources: [Spec 262 FR-013, Edge Cases (Read-only and dry runs)](../../../specs/262-ivg-owned-sql-schema/spec.md)
 - Tests (live): whole-namespace before/after snapshots in `tests/e2e/test_262_record.py` and `tests/e2e/test_262_upgrade_451.py`
 - Verus: [setup_record.rs](../../Verus_verification/models/setup_record/setup_record.rs) `theorem_dry_run_writes_nothing` and `theorem_refusal_writes_nothing`; [scope and native lifecycle observations](../../Verus_verification/models/setup_record/NOTES.md)
 - Expands: [Setup](#install.setup)
 - agent
 - operations
-- test-coverage
 
 State machines: [setup record](../../Verus_verification/models/setup_record/manifest.json)
 
 ### install.setup.resume
+
+- design-verified
 
 - Sources: [Spec 262 Edge Cases (An interrupted upgrade)](../../../specs/262-ivg-owned-sql-schema/spec.md); [KNOWN_ISSUES: After an interrupted setup](../../../docs/KNOWN_ISSUES.md)
 - Tests (live): `tests/e2e/test_262_upgrade_451.py::test_an_interrupted_upgrade_resumes_to_the_same_end` covers only an interruption after the functions exist and before the record is written
@@ -560,7 +564,6 @@ State machines: [setup record](../../Verus_verification/models/setup_record/mani
 - Expands: [Setup](#install.setup)
 - agent
 - operations, data-integrity
-- test-coverage
 
 State machines: [setup record](../../Verus_verification/models/setup_record/manifest.json)
 
@@ -741,6 +744,8 @@ Findings: [A restore swallows a global line that fails to import](../../Verus_ve
 - test-coverage
 
 ### install.snapshot.routes
+
+- design-verified
 - Sources: [`iris_vector_graph/_engine/snapshot.py::routed_export_plan`](../../../iris_vector_graph/_engine/snapshot.py#L299-L344); [`iris_vector_graph/_engine/snapshot.py::SnapshotMixin.restore_snapshot`](../../../iris_vector_graph/_engine/snapshot.py#L1077-L1611) (routed tables at the archived width `:1372-1500`; node and routed vectors matched on graph and node `:1341-1350`, `:1473-1480`); live tests [test_snapshot_routed_embeddings.py](../../../tests/integration/test_snapshot_routed_embeddings.py#L152-L200), unit [test_snapshot_inventory.py](../../../tests/unit/test_snapshot_inventory.py)
 - Playbook: [SNP-B1.7](../../../experiment/playbook-completion/ontology/18-snapshot.md#L51), [SNP-B2.11](../../../experiment/playbook-completion/ontology/18-snapshot.md#L84), [SNP-B4.5](../../../experiment/playbook-completion/ontology/18-snapshot.md#L119)
 - Formal contract: [routed snapshot stages and reader](../../Verus_verification/models/snapshot_routes/snapshot_routes.rs). It covers decoded node routes, declaration/registry/row stages and literal width admission; full archive loops, temporal globals and arbitrary provider failure outcomes remain open. The imported reviewed `snap_l2` is retained as partial historical evidence.
@@ -748,7 +753,6 @@ Findings: [A restore swallows a global line that fails to import](../../Verus_ve
 - Expands: [Snapshots](#install.snapshot)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Public case J01. Edge vectors matching with no graph is the playbook's finding F-1803.
 
@@ -761,6 +765,8 @@ Findings: [A merge restore guards plain tables on their first column only, and c
 State machines: [snapshot routes](../../Verus_verification/models/snapshot_routes/manifest.json)
 
 ### install.snapshot.temporal
+
+- design-verified
 - Sources: [`iris_vector_graph/_engine/snapshot.py::snapshot_globals`](../../../iris_vector_graph/_engine/snapshot.py#L387-L408), [`::kg_export_subscripts`](../../../iris_vector_graph/_engine/snapshot.py#L425-L437), `STORE_PLAN` temporal entries [`snapshot.py`](../../../iris_vector_graph/_engine/snapshot.py#L136-L144); live tests [`test_the_restored_temporal_edge_answers_a_window_query`](../../../tests/integration/test_snapshot_inventory.py#L116-L130), unit `tests/unit/test_snapshot_inventory.py::test_the_globals_export_is_derived_from_the_plan`
 - Playbook: [SNP-I1.1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L40), [SNP-B1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L42), [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201)
 - Formal contract: [temporal restore, scalar types and window projection](../../Verus_verification/models/temporal_restore/temporal_restore.rs). Critical source keys are derived from the finite source map under the Native API enumeration contract; full page-sequence/global-loop composition and general codecs remain open. The unchanged paging family is an explicitly stamped dependency, not new proof credit.
@@ -768,7 +774,6 @@ State machines: [snapshot routes](../../Verus_verification/models/snapshot_route
 - Expands: [Snapshots](#install.snapshot)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Public case J02. A hand-kept second list of exported subtrees once dropped all five temporal subtrees from every archive (playbook note on SNP-I1.1); the list is now derived.
 
@@ -836,12 +841,13 @@ Findings: [Rebuild adjacency once after load_networkx](../../Verus_verification/
 Added by review round 3 R3-reader M23 (the stage-A reconstruction check items 3, 4 and 7 had raised it). `import_rdf`'s docstring says it "commits per batch"; inside a caller's transaction each batch is an IVG level nested in it, and a non-indexed install refuses the caller's transaction. Whether re-running an import after a failure finishes it cleanly was not checked. The inference commit boundary was not traced. Not modelled and not observed natively.
 
 ### install.import.ndjson
+
+- design-verified
 - Sources: [`SnapshotMixin.import_graph_ndjson`](../../../iris_vector_graph/_engine/snapshot.py#L1727-L1855), [`NodesEdgesMixin.create_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1107), [unit tests](../../../tests/unit/test_edgeprop_ndjson.py#L45-L95)
 - Playbook: [WRT-B7.86](../../../experiment/playbook-completion/ontology/03-writes.md#L221), [WRT-T7.87](../../../experiment/playbook-completion/ontology/03-writes.md#L222), [WRT-B2.80](../../../experiment/playbook-completion/ontology/03-writes.md#L92)
 - Verus: [ndjson_import](../../Verus_verification/models/ndjson_import/NOTES.md), as-built node admission, width refusal, prefix preservation and duplicate counts. Edge routing and temporal batching are unit observations only and remain formal gaps; parser behavior is a scoped boundary assumption.
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 - Expands: [imports](#install.import)
 
 State machines: [ndjson export](../../Verus_verification/models/ndjson_export/manifest.json), [ndjson import](../../Verus_verification/models/ndjson_import/manifest.json)

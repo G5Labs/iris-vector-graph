@@ -382,12 +382,13 @@ Open questions: [What may a native read answer while another writer's transactio
 The `id` property dates from 4.6.0 (R181), so that `MATCH (n {id: ...})` finds the node. The concurrent-create bullet answers reconstruction gap G36 for nodes: uniqueness rests on the node table's key, with no lock.
 
 ### structure.node.bulk
+
+- design-verified
 - Sources: [bulk writer](../../../iris_vector_graph/_engine/nodes_edges.py#L1648-L1873), [orphan cleanup](../../../iris_vector_graph/_engine/nodes_edges.py#L1617-L1646), [child merge tests](../../../tests/e2e/test_460_bulk_create_nodes_paths_e2e.py), [orphan tests](../../../tests/e2e/test_470_bulk_orphan_props_e2e.py)
 - Expands: [nodes](#structure.node)
 - Formal contract: [bulk children](../../Verus_verification/models/bulk_children/bulk_children.rs)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 State machines: [bulk children](../../Verus_verification/models/bulk_children/manifest.json)
 
@@ -401,12 +402,13 @@ State machines: [bulk children](../../Verus_verification/models/bulk_children/ma
 Observed: the reifier nodes are deleted in later transactions, and a failure there raises an error that says the node is gone and its reifiers are not. Erasure semantics are owned by the erasure pages.
 
 ### structure.node.delete.bulk
+
+- design-verified
 - Sources: [`NodesEdgesMixin.bulk_delete_nodes`](../../../iris_vector_graph/_engine/nodes_edges.py#L2270-L2299), [`_delete_in_scope`](../../../iris_vector_graph/_engine/nodes_edges.py#L2176-L2200), [`DeleteResult`](../../../iris_vector_graph/_engine/nodes_edges.py#L103-L111), [`_delete_scopes`](../../../iris_vector_graph/_engine/nodes_edges.py#L2202-L2225), [`IRISGraphStore.delete_nodes`](../../../iris_vector_graph/stores/iris_sql_store.py#L1323-L1361)
 - Verus: [bulk_delete](../../Verus_verification/models/bulk_delete/NOTES.md), as-built `theorem_later_batch_runs_after_failure`, `theorem_failed_counts_requested_not_existing`, `theorem_cleanup_failure_is_not_rollback`; raw ID filtering, positive batching and primary/cleanup failure ordering. Provider calls are substituted in the Python comparison; no live erase or implementation proof.
 - Expands: [deleting nodes](#structure.node.delete)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Findings: [inherited partial erase](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-011). Reifier cleanup is another inspected partial-effect path; the new unit comparison observes its Python caller with a substituted store, not IRIS erasure.
 
@@ -422,12 +424,13 @@ Added after the stage-A reconstruction check (gap G15). The docstring and API re
 
 ### structure.node.read
 
+- design-verified
+
 - uncertain
 - Sources: [`NodesEdgesMixin.get_nodes`](../../../iris_vector_graph/_engine/nodes_edges.py#L621-L702), [`::get_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L563-L585), [`::create_node`](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1107), [typed node values](../../../iris_vector_graph/prop_values.py#L211-L232)
 - Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md) `theorem_bare_node_vs_absent`, `theorem_requested_duplicates_remain`, `theorem_structural_keys_kept`, `witness_alias_collision` (as-built); real Python writer/reader comparison with substituted storage and `CY_TYPED`. Graph isolation remains the existing graph owner's obligation, not a new live cross-graph claim.
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 - Expands: [nodes](#structure.node)
 - Children: [How should flat node reads preserve colliding property aliases?](../../Verus_verification/open_questions.md#q-iter-001)
 
@@ -564,6 +567,8 @@ Iteration9 finite source/native qualification: the actual RowPut callback checks
 Audit reproduction: [bug-str-001](../../Verus_verification/bugs_issues.md#bug-str-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 ### structure.multigraph.count
+
+- design-verified
 - Sources: [spec 234 clarifications](../../../specs/234-multigraph-parallel-edges/spec.md#L47-L51), [ADR-0010](../../../docs/adr/0010-degree-is-counted-never-stored.md), [Adj.Count](../../../iris_src/src/Graph/KG/Adj.cls#L108-L133); one-hop rows: [`iris_src/src/Graph/KG/TraversalKHop.cls::KHopNeighborIds`](../../../iris_src/src/Graph/KG/TraversalKHop.cls#L28-L66) (repeats a target `#` times, `:42-44`), [`iris_vector_graph/_engine/query.py::_try_khop_fast_path`](../../../iris_vector_graph/_engine/query.py#L4294-L4330) (answers only when the default graph alone holds edges); live test [test_460_one_hop_parallel_edges_e2e.py](../../../tests/e2e/test_460_one_hop_parallel_edges_e2e.py)
 - Playbook: [GID-B5.4](../../../experiment/playbook-completion/ontology/02-graph-identity.md#L131), [GID-B5.5](../../../experiment/playbook-completion/ontology/02-graph-identity.md#L132), [NAT-B1.6](../../../experiment/playbook-completion/ontology/09-native-executor.md#L75)
 - Verus: no formal contract for the one-hop projection in either arm. `graph_structure` (as-built) models the keyed layout and counts; the playbook's `proofs-d1d` `nread_l2` models native reads of a reviewed design. Neither derives the one-hop row list.
@@ -571,7 +576,6 @@ Audit reproduction: [bug-str-001](../../Verus_verification/bugs_issues.md#bug-st
 - Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_appending_row_counts_physical_multiplicity` and `theorem_scalar_is_raw_scoped_cardinality`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). SQL/report census counts matching physical rows. This source relation does not establish ordinary writer uniqueness, adjacency callback maintenance or cache correctness.
 - agent
 - user-facing-behavior
-- test-coverage
 
 Live coverage: [parallel edges count their multiplicity](../../../tests/e2e/test_degree_cache_live.py). Superseded in part: the spec's choice of set semantics for PageRank and personalized PageRank was reversed in 4.6.0, when parallel edges began to weigh their count ([changelog](../../../CHANGELOG.md#L1174-L1179)); the algorithm pages own that rule.
 
@@ -645,13 +649,14 @@ Rewritten after the stage-A reconstruction check (gap G7, G34 and section 3 item
 Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leaves a partial adjacency index](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-009), [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-027)
 
 ### structure.adjacency.declare
+
+- design-verified
 - Sources: [spec 252](../../../specs/252-adjacency-functional-index/spec.md), [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L40-L41), [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md); [`iris_vector_graph/schema.py::GraphSchema.ensure_adjacency_index`](../../../iris_vector_graph/schema.py#L821-L898) (prerequisites `:831-860`; per index `:863-897`; backfill before the edge index `:879-884`), [`::GraphSchema.adjacency_index_kind`](../../../iris_vector_graph/schema.py#L785-L818), called last by [`::GraphSchema.ensure_indexes`](../../../iris_vector_graph/schema.py#L600-L731) (`:726`); [`iris_src/src/Graph/KG/TemporalIndex.cls`](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L226-L235) (the backfill); unit tests [test_252_index_declaration.py](../../../tests/unit/test_252_index_declaration.py#L52-L135)
 - Playbook: [ADJ-B2.9](../../../experiment/playbook-completion/ontology/04-adjacency.md#L98), [TMP-B11.3](../../../experiment/playbook-completion/ontology/05-temporal.md#L301)
 - Verus: see [index_declaration](../../Verus_verification/models/index_declaration/NOTES.md) (`theorem_no_prereq_no_ddl`, `theorem_prereqs_declare_both`, `theorem_declared_left_alone`, `theorem_backfill_before_edge_index`; as-built; controls `skip-ekey-check`, `backfill-after-build`, `redeclare-functional`)
 - Expands: [adjacency index](#structure.adjacency)
 - agent
 - architecture-decision, operations
-- test-coverage
 
 Public cases M16 and J07. The playbook's `TMP-B11.3` sits in its temporal module, which is why the baseline found no canonical owner for the backfill order.
 
@@ -680,13 +685,14 @@ Findings: [A degree cached before a node is deleted and re-created can be served
 Open questions: [How should erase and rebuild retire a source generation?](../../Verus_verification/open_questions.md#HD-0401)
 
 ### structure.degree.cache.uncommitted
+
+- design-verified
 - Sources: [ADR-0012](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md#L10-L27), [Adjacency.WriterLock](../../../iris_src/src/Graph/KG/Adjacency.cls#L51-L73), [changelog 4.7.0 adjacency lock](../../../CHANGELOG.md#L174-L178)
 - Playbook: [ADJ-I5.8](../../../experiment/playbook-completion/ontology/04-adjacency.md#L222), [ADJ-I5.9](../../../experiment/playbook-completion/ontology/04-adjacency.md#L223)
 - Verus: active (public M10): `G-graph_structure` (as-built) [`graph_structure.rs`](../../Verus_verification/models/graph_structure/graph_structure.rs) `theorem_as_built_cache_sound` with witnesses `witness_aba_delete_and_recreate_serves_stale_degree`, `witness_gen0_erase_alone_serves_stale_degree` and repaired `theorem_repaired_cache_sound`. Overlapping: the playbook's `proofs-pa3` `adj_l2` (reviewed design; controls `control_fc0401_write_before_gen`, `control_hd0401_erase_kills_gen`).
 - Expands: [degree cache](#structure.degree.cache)
 - agent
 - data-integrity
-- test-coverage
 
 Live coverage: [rollback race over two connections](../../../tests/e2e/test_degree_cache_live.py). The lock details answer reconstruction gap G26: the lock is per graph, held shared by writers until commit or rollback, probed exclusively without waiting by readers ([Adj.Degree](../../../iris_src/src/Graph/KG/Adj.cls#L63-L80)). Superseded in part: ADR-0012 and the degree-cache spec said a writer that cannot lock writes nothing; 4.7.0 changed that so the row and its entry are written, and caching stops for the graph instead. No ADR records the change.
 
@@ -706,13 +712,14 @@ Live coverage: [erase clears generations and cached degrees](../../../tests/e2e/
 Findings: [A degree cached before a node is deleted and re-created can be served afterwards as current](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-003)
 
 ### structure.degree.cache.warm
+
+- design-verified
 - Playbook: [ADJ-B5.17](../../../experiment/playbook-completion/ontology/04-adjacency.md#L235), [ADJ-B5.17.2](../../../experiment/playbook-completion/ontology/04-adjacency.md#L241), [ADJ-B5.17.4](../../../experiment/playbook-completion/ontology/04-adjacency.md#L243)
 - Verus: [warm_sources](../../Verus_verification/models/warm_sources/NOTES.md), as-built source fill/count and stamp contracts with failed-probe, token-motion and generation-motion controls. ObjectScript binding is inspected only; source enumeration completeness during concurrent changes remains an environment premise.
 - Sources: [ADR-0012 consequences](../../../docs/adr/0012-degree-is-served-from-a-generation-validated-cache.md#L29-L35), [Adjacency.EndRebuild](../../../iris_src/src/Graph/KG/Adjacency.cls#L857-L869), [Adj.WarmAll](../../../iris_src/src/Graph/KG/Adj.cls#L177-L205)
 - Expands: [degree cache](#structure.degree.cache)
 - agent
 - operations
-- test-coverage
 
 Live coverage: [a rebuild leaves the cache warm](../../../tests/e2e/test_degree_cache_live.py). Observed: the rebuild advances the graph-version token right after filling the cache, which voids the whole-graph stamp it has just set; the per-node entries stay valid ([stage-A notes, S5](../../uplift/ivg-verus-initial/intent/graph-structure.md#design-simplifications-p)).
 
@@ -744,13 +751,14 @@ Live coverage: [every write path moves the token](../../../tests/integration/tes
 Findings: [Without the adjacency index, a temporal write to an existing triple changes its stored weight without moving the version token](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-016)
 
 ### structure.rebuilt.stamp
+
+- design-verified
 - Sources: [CONTEXT.md, Rebuilt store](../../../CONTEXT.md#L109-L114), [spec 244 freshness](../../../specs/244-alt-freshness-module/spec.md#L70-L74); [`iris_vector_graph/freshness.py::Freshness._read_int`](../../../iris_vector_graph/freshness.py#L45-L52), [`::Freshness.token`](../../../iris_vector_graph/freshness.py#L54-L57), [`::Freshness.built_from`](../../../iris_vector_graph/freshness.py#L66-L68), [`::Freshness.is_current`](../../../iris_vector_graph/freshness.py#L70-L72), [`::Freshness.stale_stores`](../../../iris_vector_graph/freshness.py#L74-L77); [`iris_src/src/Graph/KG/TraversalKHop.cls::Fresh`](../../../iris_src/src/Graph/KG/TraversalKHop.cls#L237-L243); unit tests [test_freshness.py](../../../tests/unit/test_freshness.py)
 - Playbook: [ADJ-B7](../../../experiment/playbook-completion/ontology/04-adjacency.md#L255), [ADJ-B7.1](../../../experiment/playbook-completion/ontology/04-adjacency.md#L256)
 - Verus: see [freshness_stamp](../../Verus_verification/models/freshness_stamp/NOTES.md) (`theorem_is_current_iff_stamped_equal`, `theorem_unstamped_stale_at_zero`, `theorem_stamped_zero_current`; as-built; control `unset-stamp-reads-zero`)
 - Expands: [rebuilt stores](#structure.rebuilt)
 - agent
 - data-integrity
-- test-coverage
 
 Public case M09. The Python `Freshness` class has no caller inside the product package (no module imports `iris_vector_graph.freshness`); the reader that decides freshness at run time is `TraversalKHop.Fresh` for the two-hop counts. Both are bound: the Python class by an enumerated comparison against the model's twin, the ObjectScript method by inspection only.
 

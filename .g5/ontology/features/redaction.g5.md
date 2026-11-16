@@ -520,12 +520,13 @@ Open questions: [Should the redaction receipt name IVG's own snapshot archives a
 
 ### redaction.batches
 
+- design-verified
+
 - uncertain
 - Sources: [spec 256 Decision 3](../../../specs/256-ledger-tenant-redaction/spec.md#L156), [ADR-0013 Batches](../../../docs/adr/0013-redaction-removes-content-from-history.md#L18), [LedgerRedact.cls Batch and Final](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L271-L442), [spec 256 SC-003](../../../specs/256-ledger-tenant-redaction/spec.md#L146-L147)
 - Children: [Readers](#redaction.batches.readers), [Commits](#redaction.batches.commits), [Competing redactions](#redaction.batches.competing), [Resume](#redaction.batches.resume), [How does an operator end a redaction that cannot finish?](../../Verus_verification/open_questions.md#q-006), [Marker text](#redaction.batches.marker-text), [Speed](#redaction.batches.speed)
 - human-verified
 - architecture-decision, operations
-- test-coverage
 
 Decision 3 (Tom, 2026-10-22) chose batches with a marker over one long transaction. The draft's wish for the run to look atomic to readers was dropped. Observed divergence: the marker is created at the first tombstone, not when the run starts, so a run that has only scanned so far has no marker. The check for another target's marker runs before the lock and before liveness. Every run rescans from the first record ([LedgerRedact.cls](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L202-L226), [reconstruction check G10 and 2(b)11](../../uplift/ivg-verus-initial/reconstruction-check.md#L400)). Model scope: the final step's removal of statement entries (`DropStatements`) is not modeled in [redaction.rs](../../Verus_verification/models/ledger_redaction/redaction.rs). Nor is its branch that writes an audit revision with no marker when it drops statements ([review round 1, R1-11 / CV-5](../../uplift/ivg-verus-initial/review/round1-core.md#L139-L141)). Live tests: `TestBatchesAndMarker` and the opt-in performance test `test_256_ledger_redaction_perf.py` (SC-003).
 
@@ -578,11 +579,12 @@ Findings: [Two redactions of different targets can run at once, and each one's a
 
 ### redaction.batches.resume
 
+- design-verified
+
 - Sources: [ADR-0013 Batches](../../../docs/adr/0013-redaction-removes-content-from-history.md#L18), [spec 256 acceptance 3 and FR-006](../../../specs/256-ledger-tenant-redaction/spec.md#L59-L125), [LedgerRedact.cls Redact](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L182-L239)
 - Expands: [Batches](#redaction.batches)
 - agent
 - operations, user-facing-behavior
-- test-coverage
 
 The stop on disable is stated in [LedgerRedact.cls BatchInLock](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L302-L305). Live tests: `TestUS1RedactTenant::test_running_the_same_redaction_again_changes_nothing`, `TestBatchesAndMarker::test_a_paused_redaction_is_honoured_and_resumes`. Disable in the middle of a run and a crash in the middle of a batch are not tested. Resume is observed natively for a graph target ([redaction_interrupt_resume](../../Verus_verification/receipts/native/redaction_interrupt_resume.json)) and a prefix target ([redaction_prefix_resume](../../Verus_verification/receipts/native/redaction_prefix_resume.json)); the model proves batches compose within one call's knowledge only. `lemma_serial_resume_keeps_attribution` and `witness_race_then_resume_loses_attribution` in [redaction.rs](../../Verus_verification/models/ledger_redaction/redaction.rs) are classification facts about the attribution test, not a proof of resume: after the race of [Two redactions of different targets can run at once, and each one's audit and receipt then describes the other's work](../../Verus_verification/bugs_issues.md#bug-001), a resumed prefix run can lose the statement endpoints its earlier call learned.
 

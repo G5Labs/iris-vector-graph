@@ -402,9 +402,10 @@ Audit reproduction: [F-0509](../../Verus_verification/bugs_issues.md#F-0509) is 
 Findings: [InternLabelSet's canonical form is not valid JSON for some inputs](../../Verus_verification/bugs_issues.md#F-0509).
 
 ### temporal.edge.clock
+
+- design-verified
 - agent
 - user-facing-behavior
-- test-coverage
 - Expands: [Temporal edge](#temporal.edge).
 - Formal: [raw timestamp to final reader](../../Verus_verification/models/temporal_clock/temporal_clock.rs), [source roles and scope](../../Verus_verification/models/temporal_clock/NOTES.md).
 
@@ -596,13 +597,14 @@ Findings: [A temporal edge's internal mark is returned as relationship data by C
 State machines: [temporal marker](../../Verus_verification/models/temporal_marker/manifest.json)
 
 ### temporal.structural.adopt
+
+- design-verified
 - Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [spec 254 sign-off](../../../specs/254-temporal-purge-collisions-rebuild/tasks.md#L72-L80), [create_edge adopt](../../../iris_vector_graph/_engine/nodes_edges.py#L1275-L1300), [ledger adopt](../../../iris_src/src/Graph/KG/LedgerApply.cls#L465-L475); live tests: [purge path matrix](../../../tests/e2e/test_254_purge_e2e.py), [ledger adopt](../../../tests/integration/test_ledger_us11_temporal_coexist.py)
 - Expands: [Implied structural edge](#temporal.structural)
 - Formal contract: [Python marker and adoption cases](../../Verus_verification/models/edge_acceptance/edge_acceptance.rs)
 - Findings: [caller-supplied marker](../../Verus_verification/audits/register-20261115/bugs-review.md#F-C0351)
 - agent
 - data-integrity
-- test-coverage
 
 Observed divergence: a multigraph `MERGE`, an undirected `MERGE` that matches the reverse row, and a `MERGE` with inline nodes still leave the mark; a bulk create adopts with empty qualifiers.
 
@@ -704,19 +706,22 @@ The spec records Tom's go-ahead (2026-10-22) for this reader.
 Open questions: [Must a paged temporal window read show one consistent moment while edges are written?](../../Verus_verification/open_questions.md#q-tmp-003)
 
 ### temporal.window.sources
+
+- design-verified
 - Sources: [spec 255 FR-003, FR-004](../../../specs/255-temporal-window-reader/spec.md#L127-L130); [`iris_vector_graph/_engine/temporal_window.py::window_spec`](../../../iris_vector_graph/_engine/temporal_window.py#L37-L58); [`iris_src/src/Graph/KG/TemporalWindow.cls::Open`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L44-L81) (filter mode 0 only with no source, list or prefix; a list stores its non-empty names, `:56-66`); [`TemporalWindow.cls::NextKey`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L196-L239); unit test [`test_an_empty_source_list_is_a_list_not_every_source`](../../../tests/unit/test_255_temporal_window_reader.py#L99-L101), live test `test_255_window_reader_us1_e2e.py::test_an_empty_list_reads_nothing`
 - Playbook: [TMP-B6.11](../../../experiment/playbook-completion/ontology/05-temporal.md#L217) (same rule; the omitted half added from `window_spec`)
 - Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_spec_sources_omitted_vs_empty`, `theorem_server_filter_sources`, both as-built; controls `empty-list-sends-no-key`, `server-empty-list-reads-all`)
 - Expands: [Window reads](#temporal.window)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 The omitted-versus-empty distinction is public case M06. The server half (an absent key reads every source) is inspected at the pin, not observed here.
 
 State machines: [temporal window reader](../../Verus_verification/models/temporal_window_reader/manifest.json)
 
 ### temporal.window.paging
+
+- design-verified
 - Sources: [spec 255 Decisions](../../../specs/255-temporal-window-reader/spec.md#L162-L168), [edge cases](../../../specs/255-temporal-window-reader/spec.md#L107-L118), [Page](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L123-L193), [cursor](../../../iris_vector_graph/_engine/temporal_window.py#L74-L136); live tests: [US1](../../../tests/e2e/test_255_window_reader_us1_e2e.py), [US2](../../../tests/e2e/test_255_window_reader_us2_e2e.py); empty middle page: [`iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__next__`](../../../iris_vector_graph/_engine/temporal_window.py#L102-L113), unit test [`test_an_empty_middle_page_does_not_end_the_read`](../../../tests/unit/test_255_temporal_window_reader.py#L160-L162)
 - Playbook: [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201), [TMP-B6.9](../../../experiment/playbook-completion/ontology/05-temporal.md#L215), [TMP-B6.3](../../../experiment/playbook-completion/ontology/05-temporal.md#L209), [TMP-B6.4](../../../experiment/playbook-completion/ontology/05-temporal.md#L210)
 - Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_yield_is_concat_to_done`, as-built transcription of the Python cursor; control `stop-on-empty-page`)
@@ -724,7 +729,6 @@ State machines: [temporal window reader](../../Verus_verification/models/tempora
 - Children: [releasing the reader](#temporal.window.paging.release)
 - human-verified
 - architecture-decision
-- test-coverage
 
 
 Spec 255 FR-009 says the cursor "is closed when the iteration ends or is abandoned"; the earlier wording "when its connection ends" was an agent inference (review round 3 R3-reader L6). The empty-middle-page rule (public case M08) was in neither prior ontology; it is the cursor's loop at `temporal_window.py:103-112`.
@@ -732,13 +736,14 @@ Spec 255 FR-009 says the cursor "is closed when the iteration ends or is abandon
 State machines: [temporal window reader](../../Verus_verification/models/temporal_window_reader/manifest.json)
 
 ### temporal.window.paging.release
+
+- design-verified
 - Sources: [spec 255 FR-006, FR-009](../../../specs/255-temporal-window-reader/spec.md#L131-L138); [`iris_vector_graph/_engine/temporal_window.py::TemporalWindowCursor.__init__`](../../../iris_vector_graph/_engine/temporal_window.py#L82-L93), [`::TemporalWindowCursor.__next__`](../../../iris_vector_graph/_engine/temporal_window.py#L102-L113), [`::TemporalWindowCursor.close`](../../../iris_vector_graph/_engine/temporal_window.py#L115-L124), [`::TemporalWindowCursor.__exit__`](../../../iris_vector_graph/_engine/temporal_window.py#L129-L130), [`::TemporalWindowCursor.__del__`](../../../iris_vector_graph/_engine/temporal_window.py#L132-L136), [`::_server_call`](../../../iris_vector_graph/_engine/temporal_window.py#L67-L71); server: [`TemporalWindow.cls::Next`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L85-L91), [`::Close`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L94-L97), [`::Page`](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L128-L193) (frees at `done`, `:187-191`; a full page stops at `:185`); unit tests [test_255_temporal_window_reader.py `TestCursor`](../../../tests/unit/test_255_temporal_window_reader.py#L131-L201)
 - Playbook: [TMP-B6.6](../../../experiment/playbook-completion/ontology/05-temporal.md#L212), [TMP-B6.8](../../../experiment/playbook-completion/ontology/05-temporal.md#L214), [TMP-B6.15](../../../experiment/playbook-completion/ontology/05-temporal.md#L221), [TMP-B6.16](../../../experiment/playbook-completion/ontology/05-temporal.md#L222), [TMP-B6.7](../../../experiment/playbook-completion/ontology/05-temporal.md#L213) (the handle's process and connection)
 - Verus: see [temporal_window_reader](../../Verus_verification/models/temporal_window_reader/NOTES.md) (`theorem_exhaustion_frees_without_close`, `theorem_close_mid_read_once`, `theorem_failed_page_closes_once`, `theorem_server_full_page_nonempty`; as-built; controls `close-after-exhaustion`, `skip-close-on-failure`, `close-not-idempotent`)
 - Expands: [paging](#temporal.window.paging)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Public cases M07 and M08. The client half is bound to the real `TemporalWindowCursor` by an enumerated comparison with a scripted server (the server substituted); the server's free-inside-Open and free-at-done are inspected at the pin, not observed here.
 

@@ -459,12 +459,13 @@ Open questions: [Should tiny positive PPR scores share the rounded zero tie or a
 State machines: [ppr walk](../../Verus_verification/models/ppr_walk/manifest.json)
 
 ### algorithms.op.ppr.completion
+
+- design-verified
 - Sources: [PPR definition/return contract](../../../iris_vector_graph/_engine/algorithms.py#L216-L278), [native producer limit](../../../iris_src/src/Graph/KG/PageRank.cls#L33-L72), [caller cap and graph arguments](../../../iris_vector_graph/_engine/algorithms.py#L303-L317), [every-node reader](../../../iris_vector_graph/_engine/algorithms.py#L392-L421), [store native default limit](../../../iris_vector_graph/stores/iris_sql_store.py#L2280-L2314), [four native cases](../../uplift/consolidated/iteration-10/root-ppr-cap-native.json), [independent review](../../uplift/consolidated/iteration-10/root-ppr-review-cap.md)
 - Verus: [ppr_walk.rs](../../Verus_verification/models/ppr_walk/ppr_walk.rs), `theorem_producer_limit_is_derived`, `theorem_positive_input_cap_gap`, `theorem_public_default_cap_gap_from_raw_seeds`; [limits and receipts](../../Verus_verification/models/ppr_walk/NOTES.md). Any distinct raw list of more than1000 isolated valid seeds produces positive one-step scores, the actual default producer1000 and a missing ID which the larger final reader emits as0. A normalized score map, assumed cap or supplied missing-membership flag does not decide that chain. Native1002 corroboration and actual Python provider-dispatch cases remain finite evidence, not a general float/cache/runtime proof.
 - Expands: [PPR](#algorithms.op.ppr)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Observed: without an exclusion list the caller omits return_top_k from the producer arguments, leaving the native1000 cap, while _ppr_every_node uses a larger positive caller limit. On1002 isolated valid seeds (one iteration, alpha1/2), public limit1002 then appends two nodes as0 although every seed scores1/1002. Supplying exclude_predicates=[] forwards limit1002 and all scores stay positive; public limit1000 and the actual fallback are passing neighbors. This is false score inference after truncation, not a complaint that an intentional cut has mass below1. [bug-plt-104](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-104). Runtime/provider/arbitrary numeric equivalence and the final public unavailable-provider dispatch remain qualified; no repair is implemented.
 
@@ -622,6 +623,8 @@ Assumption review evidence: Changed from decisions.md: **yes**. Status moves fro
 
 ### algorithms.op.paths.weighted
 
+- design-verified
+
 - uncertain
 - Sources: [`iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L256-L346) (cost order and settling `:293-342`; weight of zero or less is one `:329-331`; hop bound `:265`, `:312`; no path `"{}"` `:344-345`), [`::DijkstraCost`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L378-L448), [`::CheckDirection`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L350-L355), [`::CheckWeightProp`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L359-L365); [`iris_vector_graph/engine.py::IRISGraphEngine._proc_ivg_shortestpath_weighted`](../../../iris_vector_graph/engine.py#L1201-L1313) (one search per graph `:1275-1282`); tests [test_weighted_shortest_path.py](../../../tests/unit/test_weighted_shortest_path.py) (they drive a live engine)
 - Playbook: [ALG-B10.5](../../../experiment/playbook-completion/ontology/10-algorithms.md#L225), [ALG-B10.6](../../../experiment/playbook-completion/ontology/10-algorithms.md#L226), [ALG-B10.7](../../../experiment/playbook-completion/ontology/10-algorithms.md#L227), [ALG-B10.8](../../../experiment/playbook-completion/ontology/10-algorithms.md#L228), [ALG-B10.90](../../../experiment/playbook-completion/ontology/10-algorithms.md#L229)
@@ -631,7 +634,6 @@ Assumption review evidence: Changed from decisions.md: **yes**. Status moves fro
 - Expands: [Path search](#algorithms.op.paths)
 - agent
 - user-facing-behavior
-- test-coverage
 
 Public case M12 now has substantive normalized one-sided and cost-only numerical-search contracts within the stated integer/provider fragments; broader public/numeric/serialization correspondence remains qualified. The queue proof retains stale entries and minimum-hop dominance rather than replacing the algorithm with a supplied shortest answer. [9000 paired native searches,14 public queries](../../uplift/consolidated/iteration-9/weighted-native.json), [18 boundary neighbors](../../uplift/consolidated/iteration-9/weighted-native-neighbors.json) and [four explicit mirror-state variations](../../uplift/consolidated/iteration-9/weighted-mirror-native.json) are finite correspondence evidence, not a native-body or general cost-only proof. The mode-off lowest-key harness miss is retained and withdrawn as an unsupported producer expectation; the valid mode-on4-vs1 policy remains open. Iteration10 adds [15 actual Cost/JSON/public neighbors on20 mirrored triples](../../uplift/consolidated/iteration-10/root-cost-native.json); those outputs do not expose internal BestHop or prove the fallback branch. Formal and source-port traces distinguish a Both scan-order case with equal returned8 but historical hops4/fallback versus3/no fallback. The initial shared-order81 candidate and mixed-resource83 controls are retained with their correspondence/control credit withdrawn; final88 and all8 controls independently replay cleanly. The cost-only route requires equal-effective-weight reverse mirrors: in the explicit provider-state fixture JSON keeps cost20, while a missing reverse point makes Cost answer no path and a reverse weight1 replacing10 makes Cost answer11; restoring the point restores20. These deliberately altered provider states are not ordinary-writer defects or a promise about malformed graphs.
 
@@ -641,6 +643,8 @@ State machines: [weighted cost](../../Verus_verification/models/weighted_cost/ma
 
 ### algorithms.cache
 
+- design-verified
+
 - Sources: [Spec 236 FR-016, FR-017, FR-022, Story 4](../../../specs/236-arno-callout-adoption/spec.md); [algo_cache.py](../../../iris_vector_graph/algo_cache.py); [AlgoCache.cls](../../../iris_src/src/Graph/KG/AlgoCache.cls)
 - Playbook: [ALG-B16](../../../experiment/playbook-completion/ontology/10-algorithms.md#L309), [ALG-B16.3](../../../experiment/playbook-completion/ontology/10-algorithms.md#L312)
 - Verus: active for modeled PageRank/PPR keys and repeated calls (partial for public M21): the playbook's `proofs-d1e` [`acache_l1.rs`](../../../experiment/playbook-completion/proofs-d1e/src/acache_l1.rs) `theorem_answer_is_fresh` and `acache_l2.rs` (**reviewed design**: freshness is keyed on a node token `nver` the pin does not have; the pin's behavior is control `control_f1004_create_moves_no_token`, finding F-1004, rerun here). Its theorem supports "the reviewed design returns fresh answers", not "the product does". Overlapping: `G-graph_structure` (as-built) algorithm-cache token model, which omits the parameters from the key; its witness of a rolled-back write is finding bug-str-002. Scope correction in iteration 1: Q contains only PageRank and seeded PPR, not CDLP iteration keys; Ans does not carry CDLP labels or iteration counts. M21 remains partial.
@@ -648,7 +652,6 @@ State machines: [weighted cost](../../Verus_verification/models/weighted_cost/ma
 - Verus (new bounded composition): [communities](../../Verus_verification/models/communities/NOTES.md) derives immutable core payloads from raw origins and composes selected-key/token reuse with a fresh raw live census. It proves same-core isolate visibility and retains stale same-token/different-origin counterexamples. Front/shared implementation, hashing, capacity/large results, disabled/failing cache paths, concurrent publication and actual token-writer correctness are wider than this relation; prior reviewed-design and rollback findings remain.
 - agent
 - data-integrity
-- test-coverage
 
 Live coverage: `tests/integration/test_236_algo_cache.py`. Each graph's cache is keyed by the adjacency form of its graph key. The cached set is fixed in `algo_cache.py` (`CACHEABLE`).
 
@@ -660,6 +663,8 @@ State machines: [communities](../../Verus_verification/models/communities/manife
 
 ### algorithms.cache.token
 
+- design-verified
+
 - Sources: [Spec 236 FR-017, FR-018, FR-019, research R2](../../../specs/236-arno-callout-adoption/spec.md); [Spec 236 token audit](../../../specs/236-arno-callout-adoption/research-token-audit.md); [algo_cache.py](../../../iris_vector_graph/algo_cache.py); [Adjacency.cls](../../../iris_src/src/Graph/KG/Adjacency.cls); [structure.rebuilt.token](graph-structure.g5.md#structure.rebuilt.token)
 - Playbook: [ALG-B16.6](../../../experiment/playbook-completion/ontology/10-algorithms.md#L315), [ALG-B16.7](../../../experiment/playbook-completion/ontology/10-algorithms.md#L316)
 - Verus: active for abstract shared-cache hits and recompute after a write (partial for public J04): the playbook's `proofs-d1e` `acache_l2.rs` (**reviewed design**, see [algorithm cache](#algorithms.cache); control `control_f1004_create_moves_no_token`). As-built evidence: `G-graph_structure` `theorem_as_built_cache_sound` and the rollback witness behind bug-str-002 (not the same defect as F-1004). Scope correction in iteration 1: WCC components and the public second-connection WCC reader are not represented, so J04 remains partial; an abstract shared-cache hit is not that workflow.
@@ -667,7 +672,6 @@ State machines: [communities](../../Verus_verification/models/communities/manife
 - Expands: [Algorithm cache](#algorithms.cache)
 - agent
 - data-integrity
-- test-coverage
 
 Live coverage: `tests/integration/test_236_token_write_paths.py`, one case per audited write path. Where the label index is declared, label writes also move the token, so the stated reason subgraph is not cached is out of date; the decision stands. The case of a write that rolls back after a reader stored an answer is the open question [When a computation sees a write that is not yet committed and that write later rolls back, must the cached result be thrown away?](../../Verus_verification/open_questions.md#structure.rebuilt.rollback). Suspected divergence: a cached PPR answer for a seed that is not yet a node survives the node's creation, since PPR is not keyed on the node set.
 
@@ -681,12 +685,13 @@ State machines: [communities](../../Verus_verification/models/communities/manife
 
 ### algorithms.cache.pagerank
 
+- design-verified
+
 - Sources: [COUNT:MAX producer and engine consumer](../../../iris_vector_graph/_engine/algorithms.py#L179-L194), [global engine](../../../iris_vector_graph/_engine/algorithms.py#L782-L804), [store and cache](../../../iris_vector_graph/stores/iris_sql_store.py#L2362-L2424), [edgeless producer](../../../iris_vector_graph/_edgeless.py#L65-L67), [R313 tests](../../../tests/unit/test_460_r313_pagerank_loners_lazy.py)
 - Verus: [pagerank_admission](../../Verus_verification/models/pagerank_admission/NOTES.md), as-built `token`, `key`, `edgeless`, `call` and named neighbor theorems. COUNT:MAX SQL, row-ID monotonicity, snapshot consistency and actual PageRank numerics remain provider obligations.
 - Expands: [cache](#algorithms.cache)
 - agent
 - data-integrity
-- test-coverage
 
 Findings: [F-1003](../../Verus_verification/bugs_issues.md#F-1003). Global PageRank's node key is not evidence of [PPR freshness](#algorithms.cache.token). No live IRIS or numerical proof.
 

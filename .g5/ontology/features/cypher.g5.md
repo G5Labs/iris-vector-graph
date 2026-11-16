@@ -467,12 +467,13 @@ As-built agreement with openCypher, observed natively; no formal contract.
 
 ### query.aql
 
+- design-verified
+
 - Sources: [numeric lexer](../../../iris_vector_graph/cypher/aql/lexer.py#L164-L174), [depth parser](../../../iris_vector_graph/cypher/aql/parser.py#L89-L105), [null translator](../../../iris_vector_graph/cypher/aql/translator.py#L97-L110), [hop writer](../../../iris_vector_graph/cypher/aql/translator.py#L159-L180), [execute_aql](../../../iris_vector_graph/_engine/query.py#L1730-L1745)
 - Verus: [aql_frontend](../../Verus_verification/models/aql_frontend/NOTES.md), as-built `lex`, `depth`, `hops`, `resolve`; raw suffix/typed token/AST/predicate projection. Actual output text and public adapter observed with a recorded Cypher consumer; query execution remains unproved.
 - Expands: [query paths](#query.paths)
 - agent
 - user-facing-behavior
-- test-coverage
 
 Audit reproduction: [F-0824](../../Verus_verification/bugs_issues.md#F-0824) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
@@ -598,10 +599,11 @@ Sources: [ADR-0014](../../../docs/adr/0014-native-plans-are-compiled-to-classes-
 Findings: [A caller with Cypher read access can forge a CRC-32 collision so that another shape's queries run its compiled code](../../Verus_verification/bugs_issues.md#bug-cyp-001)
 
 ### query.compiled.modes
+
+- design-verified
 - Verus: see [compiled fallback](#query.compiled.fallback): `proofs-d1d` `planc_l2` (reviewed design) is active for job-mode answers during a build (public J08); `G-platform` (as-built) overlaps for stamps.
 - agent
 - operations
-- test-coverage
 - Expands: [Compiled plans](#query.compiled).
 
 Sources: [ADR-0014 decision and consequences](../../../docs/adr/0014-native-plans-are-compiled-to-classes-at-run-time.md#L16-L18), [ADMIN_GUIDE, Compiled native plans](../../../docs/ADMIN_GUIDE.md#L742-L780), [`Gen.Mode`, `Effective`, `ModeOf`](../../../iris_src/src/Graph/KG/Cypher/Gen.cls#L26-L50). Live: the job-mode test in `test_257_compiled_plans_e2e.py`.
@@ -628,12 +630,13 @@ Sources: [ADR-0014](../../../docs/adr/0014-native-plans-are-compiled-to-classes-
 
 ### query.compiled.fallback
 
+- design-verified
+
 - uncertain
 - Playbook: [NAT-B5.1](../../../experiment/playbook-completion/ontology/09-native-executor.md#L172), [NAT-T5.1](../../../experiment/playbook-completion/ontology/09-native-executor.md#L173)
 - Verus: active for failed and pending builds answering through the interpreter (public J08, M20): the playbook's `proofs-d1d` [`planc_l2.rs`](../../../experiment/playbook-completion/proofs-d1d/src/planc_l2.rs) `theorem_ok_entry_runs_its_shapes_class`, `lemma_bcompile`, `lemma_for` (**reviewed design**; controls `control_f0901_shared_class_name`, `control_fc0901_mark_any_entry`, rerun here). Overlapping: `G-platform` (as-built) [`platform.rs`](../../Verus_verification/models/platform/platform.rs) stamps and eligibility (`witness_compiled_plan_is_used`).
 - agent
 - user-facing-behavior, operations
-- test-coverage
 - Expands: [Compiled plans](#query.compiled).
 
 Sources: [ADR-0014](../../../docs/adr/0014-native-plans-are-compiled-to-classes-at-run-time.md#L19-L20), [spec 257 US3](../../../specs/257-compiled-native-plans/spec.md#L60-L63), [`Exec.RunA` catches a failed lookup](../../../iris_src/src/Graph/KG/Cypher/Exec.cls#L153-L166), [`Gen.For`, `Build`](../../../iris_src/src/Graph/KG/Cypher/Gen.cls#L61-L222). Live: the failed-build, unrecordable shape and generator-failure tests in `test_257_compiled_plans_e2e.py`. A compiled class that fails while it runs falls to the SQL path under [native fallback](#query.native.fallback), and its shape keeps doing so until a deploy ([A-cypher notes, F12](../../uplift/ivg-verus-initial/intent/cypher.md#candidate-findings)).
@@ -791,10 +794,11 @@ Open questions: [Should `CREATE CONSTRAINT` / `CREATE INDEX` be refused rather t
 
 ### query.system-procedures
 
+- design-verified
+
 - uncertain
 - agent
 - user-facing-behavior
-- test-coverage
 - Formal: [procedure results and qualified source roles](../../Verus_verification/models/procedure_results/NOTES.md).
 - Children: [result rules](#query.system-procedures.results), [Should a call to an unknown apoc, db or dbms procedure be refused?](../../Verus_verification/open_questions.md#q-cyp-005), [Should standalone handled metadata calls expose YIELD aliases as result columns?](../../Verus_verification/open_questions.md#q-iter-004), [Should handled WHERE validation happen when no rows exist?](../../Verus_verification/open_questions.md#q-iter-005).
 
@@ -805,9 +809,10 @@ Open questions: [Should a call to an unknown apoc, db or dbms procedure be refus
 State machines: [procedure results](../../Verus_verification/models/procedure_results/manifest.json)
 
 ### query.system-procedures.results
+
+- design-verified
 - agent
 - user-facing-behavior
-- test-coverage
 - Expands: [System procedures](#query.system-procedures).
 - Formal: [procedure result model and exact source roles](../../Verus_verification/models/procedure_results/NOTES.md).
 
@@ -816,11 +821,12 @@ Evidence: [actual SQLite and native scope](../../Verus_verification/models/proce
 State machines: [procedure results](../../Verus_verification/models/procedure_results/manifest.json)
 
 ### query.aggregation
+
+- design-verified
 - Sources: [USER_GUIDE, grouped reporting](../../../docs/USER_GUIDE.md#L165); [typed property sums and WITH](../../../tests/unit/test_sum_column_typing.py); [known-list typed collection](../../../tests/unit/test_460_r308_collect_typed.py); [empty result columns](../../../tests/unit/test_empty_result_columns.py); [aggregate order and page scope](../../../tests/unit/test_order_limit_aggregate_scope.py); [count DISTINCT with LIMIT](../../../tests/e2e/test_470_issue13_count_distinct_limit_e2e.py)
 - Verus: [aggregate_results.rs](../../Verus_verification/models/aggregate_results/aggregate_results.rs) `theorem_raw_group_SUM_reaches_typed_scalar_reader`, `theorem_key_enumeration_complete_unique`, `theorem_full_output_before_page` and `theorem_reader_projection_keeps_exact_public_cells`; [scope](../../Verus_verification/models/aggregate_results/NOTES.md). Raw rows and a RETURN AST fragment derive groups, folds, result kind and full output before paging; exact integer/half-unit arithmetic, SQL equality/aggregate operations, JSON spelling/parsing, raw-name generation and collation remain stated provider frames. Native Group/GroupOf/EmitGroups have inspected typed count transcriptions only, under their nonnull/pW1/equality/order premises; the SQL native panels do not execute those bodies. OPTIONAL synthetic fallback remains observed and partial under bug-agg-001.
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 This owner makes the ordinary aggregate reporting contract explicit before the new formal model. Exact numeric equality, SQL/JSON carriers, unsupported expressions, runtime list ambiguity, numeric overflow, collation and ordering without a total sort key remain source conditions to state in the model and binding, not supplied aggregate answers. Scalar typed-reader proofs and a native planner accepting COUNT do not establish the aggregate producer.
 
@@ -974,6 +980,8 @@ Findings: [IN lists compare a property's text with each value's spelling, so the
 State machines: [typed equality](../../Verus_verification/models/typed_equality/manifest.json)
 
 ### query.values.relationship_text
+
+- design-verified
 - Sources: [`iris_vector_graph/prop_values.py::parse_rel_prop_text`](../../../iris_vector_graph/prop_values.py#L141-L168), [`::parse_prop_text`](../../../iris_vector_graph/prop_values.py#L129-L138), [`::decode_json_list_map`](../../../iris_vector_graph/prop_values.py#L234-L248), the two patterns [`_CANONICAL_INT_RE`, `_CANONICAL_FLOAT_RE`](../../../iris_vector_graph/prop_values.py#L90-L91); [`iris_vector_graph/_engine/query.py::_decode_rel_prop_text_columns`](../../../iris_vector_graph/_engine/query.py#L1200-L1216) (arity guard `:1207`); [`iris_vector_graph/cypher/translator.py::_rel_prop_text_columns`](../../../iris_vector_graph/cypher/translator.py#L7517-L7556); unit tests [test_relationship_property_typing.py](../../../tests/unit/test_relationship_property_typing.py)
 - Playbook: no statement for this decoder in either arm; neighbor [CYP-B17.1](../../../experiment/playbook-completion/ontology/08-cypher-sql.md#L307) (finding F-0811: no 64-bit cap on this path)
 - Verus: see [rel_prop_text](../../Verus_verification/models/rel_prop_text/NOTES.md) (`theorem_decode_classes`, `theorem_noncanonical_stays_text`; reviewed design over ASCII text; control `leading-zero-canonical`). The as-built divergence is recorded as a finding and is observed at unit level on the real function.
@@ -981,7 +989,6 @@ State machines: [typed equality](../../Verus_verification/models/typed_equality/
 - Evidence (cloud iteration 24): [value-function observations](../../uplift/consolidated/iteration-24/patterns-params-PAIRS.md)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Public case M18. The canonical rule is the decoder's own docstring and patterns; Python's `\d` also matches non-ASCII digits and `$` matches before a final line break, which is where the pin departs from it.
 

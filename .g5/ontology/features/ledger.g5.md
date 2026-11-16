@@ -288,6 +288,8 @@ Live test: `tests/integration/test_ledger_us03_concurrency.py` (eight writers, c
 
 ### ledger.lifecycle
 
+- design-verified
+
 - uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [Ledger.cls Enable/Disable](../../../iris_src/src/Graph/KG/Ledger.cls#L250-L358), [client.py enable](../../../iris_vector_graph/ledger/client.py#L281-L303)
 - Verus (inspected typed adoption slice): [ledger_content alternate](../../Verus_verification/models/ledger_content/NOTES.md) derives adopted identity reuse/allocation and typed contents while retaining permissive payload and duplicate-view boundaries. Raw envelope/parser/tuple-JSON reference handling, canonical SQL changes and truth of supplied priors are not proved. Actual downstream Python readers execute the typed records; bounded native Adopt producer assertions were not run.
@@ -295,7 +297,6 @@ Live test: `tests/integration/test_ledger_us03_concurrency.py` (eight writers, c
 - Children: [Genesis](#ledger.lifecycle.genesis), [What should disabling the ledger do while a redaction is unfinished?](../../Verus_verification/open_questions.md#q-led-003)
 - agent
 - user-facing-behavior, operations
-- test-coverage
 
 Live tests: `test_ledger_us01_commit_head.py` (genesis) and `test_ledger_us09_verify.py::test_disable_and_reenable_adopts`. Enable takes `strict`, `max_ops` and `recon_bound`; `set_strict` switches strict mode and takes no head lock. The redaction's stop on disable is a code comment in [LedgerRedact.cls BatchInLock](../../../iris_src/src/Graph/KG/LedgerRedact.cls#L302-L305); disable itself takes no head lock and does not refuse while a redaction is unfinished. Observed divergence: re-enabling while a redaction is unfinished skips the adoption without reporting it, because verify returns `redaction_in_progress`.
 
@@ -309,6 +310,8 @@ Assumption review evidence: Changed from decisions.md: **no** (strengthened). Th
 
 ### ledger.lifecycle.genesis
 
+- design-verified
+
 - uncertain
 - Sources: [LedgerGenesis.cls](../../../iris_src/src/Graph/KG/LedgerGenesis.cls), [CHANGELOG 4.6.0 ledger fixes](../../../CHANGELOG.md#L2210-L2227), [CHANGELOG 4.4.0](../../../CHANGELOG.md#L2767-L2769)
 - Verus (inspected typed projection): [ledger_content alternate](../../Verus_verification/models/ledger_content/NOTES.md) derives Capture records/content from already-projected ordered scan rows, including distinct IDs per physical edge and bare-node graph loss. Source and typed ports are checked, but the native producer, SQL scan completeness/order and arbitrary coercion are unexecuted/unproved; no one-tuple/one-statement invariant is inferred.
@@ -316,7 +319,6 @@ Assumption review evidence: Changed from decisions.md: **no** (strengthened). Th
 - Children: [How should the ledger's genesis record a node ID that two graphs hold?](../../Verus_verification/open_questions.md#q-led-004)
 - agent
 - data-integrity
-- test-coverage
 
 The genesis scans the node, label and property tables with no graph condition ([LedgerGenesis.cls Capture](../../../iris_src/src/Graph/KG/LedgerGenesis.cls#L14-L36)). The genesis spells a default-graph relationship's graph as the NUL character read from SQL; verify treats every spelling of the default graph as one. Before 4.6.0 the genesis recorded temporal edges' plain rows, which made verify diverge right after enable (R094). Live tests: `test_ledger_us01_commit_head.py::test_genesis_on_prepopulated_graph_describes_it_and_leaves_view_unchanged`, `tests/e2e/test_460_ledger_temporal_edge_e2e.py`.
 
@@ -328,17 +330,20 @@ Assumption review evidence: Changed from decisions.md: **yes**. (b) the mechanis
 
 ### ledger.changeset
 
+- design-verified
+
 - Sources: [changeset schema](../../../specs/213-graph-revision-ledger/contracts/changeset.schema.json), [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L36-L80), [changeset.py](../../../iris_vector_graph/ledger/changeset.py)
 - Verus (scalar slice): [ledger_content](../../Verus_verification/models/ledger_content/NOTES.md) distinguishes text/boolean values from null/container refusal and typed nullable record fields. Arbitrary numeric stringification, Python carriers, raw wire grammar and all constructor/protocol branches remain external; values are opaque stored strings, not recursively typed JSON.
 - agent
 - user-facing-behavior
-- test-coverage
 
 Live test: `test_ledger_us02_rollback.py::test_reserved_property_rejected_before_any_apply`. The contract schema has not been updated for temporal-edge operations or for redaction's record kinds.
 
 State machines: [ledger content](../../Verus_verification/models/ledger_content/manifest.json)
 
 ### ledger.commit
+
+- design-verified
 
 - uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [USER_GUIDE section 9](../../../docs/USER_GUIDE.md#L1052-L1115), [errors.py](../../../iris_vector_graph/ledger/errors.py); ordered application and stop at the first failure: [`iris_src/src/Graph/KG/LedgerApply.cls::ApplyAll`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L18-L48); set property records prior and new, same value writes nothing: [`LedgerApply.cls`](../../../iris_src/src/Graph/KG/LedgerApply.cls#L265-L317); live tests [`test_duplicate_set_property_records_both_and_last_wins`, `test_failing_op_mid_changeset_leaves_everything_unchanged`](../../../tests/integration/test_ledger_us02_rollback.py#L62-L136)
@@ -348,7 +353,6 @@ State machines: [ledger content](../../Verus_verification/models/ledger_content/
 - Verus: [ledger_content](../../Verus_verification/models/ledger_content/NOTES.md) independently derives complete maps and separate records, current priors/noops/snapshots, deletion context and fresh coherent identities across whole histories. Native source correspondence is an inductive default/canonical/no-marker profile from empty with complete successful providers and no competing/reifier/post-commit writes. Legal marker/named histories remain explicit partial boundaries; native cross-key removal/envelope ordering and exact ordinals are not established by the typed sequence laws. This is not a native transaction/body or whole-wrapper proof.
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Relationship create, upsert and the take-over of a temporal edge's plain row: [LedgerApply.cls OpCreateRel](../../../iris_src/src/Graph/KG/LedgerApply.cls#L450-L487). The endpoint check is graph-blind on purpose: `node_not_found` means the ID is unknown anywhere ([LedgerApply.cls EnsureEndpoint](../../../iris_src/src/Graph/KG/LedgerApply.cls#L85-L110)). Observed divergence: a replayed commit returns no statement IDs (see [idempotency](#ledger.idempotency)). Live tests: `test_ledger_us02_rollback.py` (a failing operation in the middle leaves everything unchanged), `tests/integration/test_217_ledger_missing_node_e2e.py` and `test_ledger_us11_temporal_coexist.py::test_a_governed_relationship_on_a_temporal_triple_adopts_its_row`.
 
@@ -360,13 +364,14 @@ State machines: [ledger apply](../../Verus_verification/models/ledger_apply/mani
 
 ### ledger.commit.admission
 
+- design-verified
+
 - Sources: [Ledger.cls CommitInTxn](../../../iris_src/src/Graph/KG/Ledger.cls#L419-L528), [Ledger.cls header](../../../iris_src/src/Graph/KG/Ledger.cls#L16-L17)
 - Playbook: [LED-B4.1](../../../experiment/playbook-completion/ontology/11-ledger.md#L144), [LED-B4.7](../../../experiment/playbook-completion/ontology/11-ledger.md#L153)
 - Verus: active for the replay-versus-conflict outcomes (public M01): `G-ledger_redaction` (as-built) [`redaction.rs`](../../Verus_verification/models/ledger_redaction/redaction.rs) `theorem_retry_replays_first`, `theorem_commit_writes_only_when_admitted`, `lemma_commit_admits_matches_outcome` (controls in its model.json); overlapping: the playbook's `proofs-pa3` `ledger_l1.rs::theorem_replay_returns_bound_revision`, `theorem_key_binds_one_fingerprint` (reviewed design). See [families](../../Verus_verification/families.tsv).
 - Expands: [Commit](#ledger.commit)
 - agent
 - architecture-decision
-- test-coverage
 
 The precedence is spec 213 FR-019, cited by the code; the spec text itself is not in the repository. The redaction-target check runs after `ApplyAll`, inside the commit transaction ([Ledger.cls](../../../iris_src/src/Graph/KG/Ledger.cls#L500-L518)). The reserved-property check is in the changeset builder ([changeset.py](../../../iris_vector_graph/ledger/changeset.py#L63-L67)) and again in each node operation ([LedgerApply.cls](../../../iris_src/src/Graph/KG/LedgerApply.cls#L223-L227)). Live tests: `test_ledger_us04_idempotency.py::test_replay_wins_over_stale_expected_head`, `test_ledger_us02_rollback.py::test_reserved_property_rejected_before_any_apply`, `test_256_ledger_redaction_e2e.py::TestBatchesAndMarker`.
 
@@ -374,13 +379,14 @@ State machines: [ledger redaction](../../Verus_verification/models/ledger_redact
 
 ### ledger.commit.serial
 
+- design-verified
+
 - Sources: [Ledger.cls LOCKTIMEOUT and lock](../../../iris_src/src/Graph/KG/Ledger.cls#L21), [errors.py LedgerLockTimeoutError](../../../iris_vector_graph/ledger/errors.py#L78-L79)
 - Playbook: [LED-B4.7.5](../../../experiment/playbook-completion/ontology/11-ledger.md#L162), [LED-B4.7.6](../../../experiment/playbook-completion/ontology/11-ledger.md#L166)
 - Verus: active for one winner among concurrent same-key writers (public J05): the playbook's `proofs-pa3` `ledger_l2.rs` head lock and binding steps (**reviewed design**; the pin's departure for erasure, which takes no head lock, is control `control_f1201_erase_no_head_lock`, finding F-1201, rerun here). Overlapping: `G-ledger_redaction` (as-built), which takes the lock and the binding as inputs.
 - Expands: [Commit](#ledger.commit)
 - agent
 - data-integrity, operations
-- test-coverage
 
 Live tests: `test_ledger_us03_concurrency.py`, `test_ledger_lock_and_chunks.py::test_commit_gives_up_when_another_process_holds_the_head_lock`.
 
@@ -436,13 +442,14 @@ Assumption review evidence: Changed from decisions.md: **no**.
 
 ### ledger.idempotency
 
+- design-verified
+
 - Sources: [Ledger.cls idempotency](../../../iris_src/src/Graph/KG/Ledger.cls#L454-L473), [changeset.py fingerprint](../../../iris_vector_graph/ledger/changeset.py#L365-L386), [ledger API contract commit](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L26)
 - Playbook: [LED-B4.7](../../../experiment/playbook-completion/ontology/11-ledger.md#L153), [LED-B4.7.4](../../../experiment/playbook-completion/ontology/11-ledger.md#L161)
 - Verus: active for the binding history across refused and successful attempts (public M02): the playbook's `proofs-pa3` [`ledger_l2.rs`](../../../experiment/playbook-completion/proofs-pa3/src/ledger_l2.rs) `commit_glob`, `lay_idem` with [`ledger_l1.rs`](../../../experiment/playbook-completion/proofs-pa3/src/ledger_l1.rs) `theorem_key_binds_one_fingerprint`, `theorem_replay_returns_bound_revision` (**reviewed design**; no control in that family reintroduces a pin departure for the binding, so the design and the pin agree there by the playbook's audit, not by proof). Overlapping: `G-ledger_redaction` `theorem_retry_replays_first` (as-built), which reads a supplied binding instead of deriving it.
 - Children: [Key required](#ledger.idempotency.key-required)
 - agent
 - user-facing-behavior, data-integrity
-- test-coverage
 
 Live test: `test_ledger_us04_idempotency.py`. Observed divergence: a replay returns no statement IDs, although the contract promises the original outcome. Also, `post_commit_properties` are outside the fingerprint and are applied again on a replay.
 
@@ -524,12 +531,13 @@ Assumption review evidence: Changed from decisions.md: **no**.
 
 ### ledger.readers
 
+- design-verified
+
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L27-L31), [client.py readers](../../../iris_vector_graph/ledger/client.py#L585-L739), [export.py](../../../iris_vector_graph/ledger/export.py)
 - Children: [history pages](#ledger.readers.history), [diff](#ledger.readers.diff), [bound during reconstruction](#ledger.readers.bound)
 - Verus: [ledger_content](../../Verus_verification/models/ledger_content/NOTES.md) adds complete typed label/property/tuple/qualifier folds, source-derived ordinary records and full entity/export projections. Statement-ID maps and exports retain duplicate tuples while tuple lookup/comparable may collapse them. Native producer breadth, raw codecs, graph-scoped node fidelity, temporal/unknown operation diff and unrestricted lifecycle reconstruction remain qualified.
 - agent
 - user-facing-behavior
-- test-coverage
 
 The diff order is [replay.py _sort_key](../../../iris_vector_graph/ledger/replay.py#L404-L405); the reconstruct bound counts nodes plus relationships while folding ([replay.py reconstruct](../../../iris_vector_graph/ledger/replay.py#L544-L558)). Live tests: `test_ledger_us06_history.py`, `test_ledger_us07_diff.py`, `test_ledger_us08_reconstruct.py`. While a redaction is unfinished some readers refuse ([rule](redaction.g5.md#redaction.batches.readers)).
 
@@ -539,6 +547,8 @@ State machines: [ledger content](../../Verus_verification/models/ledger_content/
 
 ### ledger.readers.history
 
+- design-verified
+
 - uncertain
 - Sources: [history caller](../../../iris_vector_graph/ledger/client.py#L585-L629), [SQL and row producer](../../../iris_vector_graph/ledger/replay.py#L275-L370), [history contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md), [revision string columns](../../../iris_src/src/Graph/KG/LedgerRevision.cls#L20-L36)
 - Expands: [readers](#ledger.readers)
@@ -546,13 +556,14 @@ State machines: [ledger content](../../Verus_verification/models/ledger_content/
 - Children: [Should history text filters use binary identity or the current database comparison?](../../Verus_verification/open_questions.md#q-iter-003)
 - agent
 - user-facing-behavior
-- test-coverage
 
 Open questions: [Should history text filters use binary identity or the current database comparison?](../../Verus_verification/open_questions.md#q-iter-003)
 
 State machines: [history paging](../../Verus_verification/models/history_paging/manifest.json)
 
 ### ledger.readers.bound
+
+- design-verified
 
 - uncertain
 - Sources: [`GraphLedger.reconstruct`](../../../iris_vector_graph/ledger/client.py#L720-L729), [`::export_reconstruction`](../../../iris_vector_graph/ledger/client.py#L731-L739), [`replay.reconstruct`](../../../iris_vector_graph/ledger/replay.py#L544-L566), [`GraphState.apply`](../../../iris_vector_graph/ledger/replay.py#L172-L212), [numeric metadata producer `Ledger.Meta`](../../../iris_src/src/Graph/KG/Ledger.cls#L143-L151), [API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L30-L31)
@@ -562,7 +573,6 @@ State machines: [history paging](../../Verus_verification/models/history_paging/
 - Children: [Must reconstruction's bound concern each intermediate graph or only the requested graph?](../../Verus_verification/open_questions.md#q-iter-002)
 - agent
 - user-facing-behavior
-- test-coverage
 
 Findings: [Must the streaming history reader bound its memory, or only its delivery?](../../Verus_verification/open_questions.md#q-con-001), [Must reconstruction's bound concern each intermediate graph or only the requested graph?](../../Verus_verification/open_questions.md#q-iter-002).
 
@@ -574,6 +584,8 @@ State machines: [ledger content](../../Verus_verification/models/ledger_content/
 
 ### ledger.readers.diff
 
+- design-verified
+
 - uncertain
 - Sources: [ledger API contract](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L29), [GraphLedger.diff](../../../iris_vector_graph/ledger/client.py#L706-L718), [compute_diff and Diff.inverse](../../../iris_vector_graph/ledger/replay.py#L404-L536), [NodeSnapshotJson and DeleteNodeRows](../../../iris_src/src/Graph/KG/LedgerApply.cls#L339-L371)
 - Verus: [history_diff](../../Verus_verification/models/history_diff/NOTES.md), as-built `theorem_named_reverse_and_equal`, `theorem_raw_history_endpoints`, `theorem_simple_delete_preserves_snapshot`, `theorem_change_then_delete_loses_range_prior`; per-attribute projection. No unrestricted lifecycle/native full-graph refinement proof; the continuous full-field extension below is separate.
@@ -582,7 +594,6 @@ State machines: [ledger content](../../Verus_verification/models/ledger_content/
 - Children: [Is a ledger diff an ordered script or an unordered set of net changes?](../../Verus_verification/open_questions.md#q-con-002)
 - agent
 - user-facing-behavior
-- test-coverage
 
 Findings: [bug-led-101](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-led-101).
 
