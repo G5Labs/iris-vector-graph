@@ -252,6 +252,7 @@ A bulk path that writes rows without index upkeep must leave no duplicate rows a
 - `bulk_create_nodes` and `bulk_create_edges`, which drop the indexes for a large batch and rebuild them afterwards;
 - `bulk_load_session`;
 - the bulk loader, whose own contract is on the [install page](../concepts/install.g5.md#install.bulk_load).
+- `bulk_load_session` keeps `^NKG` current when no caller transaction is open. Inside one it leaves `^NKG` to `sync()`, and the loading engine's `status().pending_sync` stays True until then, even after a rollback; another engine or process reports False.
 
 ## Degree
 
@@ -678,6 +679,7 @@ Coverage is a source scan of the ObjectScript classes: [single-writer guard](../
 
 ### structure.adjacency.bulk
 - Sources: [ADR-0008, bulk loads and consequences](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md#L38-L39), [spec 252 FR-008](../../../specs/252-adjacency-functional-index/spec.md#L119), [engine bulk paths rebuild in finally](../../../iris_vector_graph/_engine/nodes_edges.py#L1866-L1871), [rebuild failures only warn](../../../iris_vector_graph/_engine/nodes_edges.py#L67-L79), [the bulk loader](../../../iris_vector_graph/bulk_loader.py#L1-L22), [loader rebuilds only after a full load](../../../iris_vector_graph/bulk_loader.py#L578-L603)
+- Evidence: [bulk_load_session predictions and observations](../../uplift/consolidated/iteration-35/bulk-session-PAIRS.md) (observed natively; no formal contract)
 - Expands: [adjacency index](#structure.adjacency)
 - agent
 - data-integrity, operations

@@ -1,0 +1,35 @@
+{
+ "run": "20261116T222856Z",
+ "fixture": "ivg-retest-20261116-iris",
+ "cases": {
+  "start": {
+   "pending_sync": false
+  },
+  "S1_no_caller_txn": {
+   "node": true,
+   "edges": 2,
+   "kg": true,
+   "pending_sync": false
+  },
+  "S2_caller_txn_commit": {
+   "after_commit": {
+    "node": true,
+    "edges": 2,
+    "kg": true,
+    "pending_sync": false
+   },
+   "after_sync": {
+    "pending_sync": false
+   }
+  },
+  "S3_caller_txn_rollback": {
+   "node": false,
+   "edges": 0,
+   "kg": false,
+   "pending_sync": false
+  },
+  "S3_then_sync": {
+   "pending_sync": false
+  }
+ }
+}
