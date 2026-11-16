@@ -1,0 +1,474 @@
+/// Graph.KG.EdgeScan — adjacency-global maintenance + scan procedures.
+///
+/// ============================================================================
+/// ^KG ADJACENCY LAYOUT OF RECORD (spec 214 — named-graph aware)
+/// ============================================================================
+///
+///     ^KG("out", graph, s, p, o) = weight
+///     ^KG("in",  graph, o, p, s) = weight
+///     ^KG("gen", graph, s)           = generation of a source (bumped by every write)
+///     ^KG("degc", graph, s, key)     = $ListBuild(gen, count): cached out-degree
+///
+/// The stored counters ^KG("deg") and ^KG("degp") are gone (spec 248): the degree is
+/// counted, and Graph.KG.Adj.Degree caches the count against the generation.
+///
+/// graph is the derived index key, not the graph name: integer 0 for the default
+/// graph, the name itself otherwise. Derive it with Graph.KG.GraphKey.ForIndex()
+/// (ADR-0001, ADR-0003). The earlier note here said "" was the default sentinel;
+/// it is not, and never was in this global — WriteAdjacency has always defaulted
+/// the parameter to 0.
+///
+/// Merged-view traversal iterates the full ^KG("out") tree (all graph subscripts)
+/// and is spelled MatchEdgesAllGraphs. Graph-filtered traversal uses a fixed graph
+/// subscript and is spelled MatchEdges. Both read 0 as "the default graph", the
+/// same as WriteAdjacency and DeleteAdjacency, so one graph key means one thing
+/// everywhere in this class.
+///
+/// It did not. MatchEdges alone read 0 as "every graph" — the value every caller
+/// passes for the default graph, and the parameter's own default — so asking for
+/// the default graph returned every graph's edges, and there was no way to ask for
+/// the default graph alone. A cross-graph read now requires naming the method that
+/// does it, which makes every one of them greppable (spec 230, FR-002).
+///
+/// ^NKG is per-identifier (no graph dimension); InternNode unchanged.
+///
+/// Who writes these stores: Graph.KG.Adjacency, and only it (spec 245). The adjacency
+/// primitives below delegate there. This class scans them and holds the bulk paths.
+/// ============================================================================
+Class Graph.KG.EdgeScan Extends %RegisteredObject
+{
+
+/// Scan one graph's adjacency. graph is a derived index key: 0 for the default
+/// graph, the graph name otherwise — WriteAdjacency's convention (ADR-0003).
+///
+/// For every graph at once, call MatchEdgesAllGraphs. There is deliberately no
+/// value of this parameter that means "all of them".
+ClassMethod MatchEdges(sourceId As %String, predicate As %String, shard As %Integer = 0, graph = 0) As %String
+{
+	Set results = ##class(%DynamicArray).%New()
+	// SQL's empty string reaches an SQL procedure's body as $Char(0): MatchEdges(src, pred, 0, '') scanned a graph named
+	// $Char(0) and answered [], and a predicate '' matched none (4.6.0 R269, as R125).
+	Set:graph=$Char(0) graph = ""
+	Set:sourceId=$Char(0) sourceId = ""
+	Set:predicate=$Char(0) predicate = ""
+	// "" is the default graph here as it is everywhere else in IVG, and the
+	// subscript that holds it is 0 — WriteAdjacency has never written under "".
+	If graph = "" {
+		Set graph = 0
+	}
+	Do ..ScanOneGraph(graph, $Get(sourceId, ""), $Get(predicate, ""), results)
+	Return results.%ToJSON()
+}
+
+/// Scan every graph's adjacency and merge the results.
+///
+/// The cross-graph read, named. "Every graph" is not a key value, so it cannot be
+/// expressed by handing MatchEdges a particular graph — the walk over the graph
+/// subscripts has to live somewhere, and putting it behind its own name is what
+/// makes a cross-graph read visible at the call site.
+ClassMethod MatchEdgesAllGraphs(sourceId As %String, predicate As %String, shard As %Integer = 0) As %String
+{
+	Set results = ##class(%DynamicArray).%New()
+	Set sourceId = $Get(sourceId, "")
+	Set predicate = $Get(predicate, "")
+	// SQL's '' arrives as $Char(0) (4.6.0 R269, as MatchEdges)
+	Set:sourceId=$Char(0) sourceId = ""
+	Set:predicate=$Char(0) predicate = ""
+	Set g = ""
+	For {
+		Set g = $Order(^KG("out", g))
+		Quit:g=""
+		Do ..ScanOneGraph(g, sourceId, predicate, results)
+	}
+	Return results.%ToJSON()
+}
+
+/// Push one graph subscript's matching edges onto results.
+///
+/// The shared walk behind both scans, so the scoped read and the merged read cannot
+/// come to disagree about what an edge is or how it is shaped.
+///
+/// results is a %DynamicArray, passed by reference as every object is; it is
+/// appended to, never replaced.
+ClassMethod ScanOneGraph(graph, sourceId As %String, predicate As %String, results As %DynamicArray) [ Internal, Private ]
+{
+	// "g": the edge's graph name ("" the default graph), so an all-graphs read can keep each edge with its own
+	// graph's nodes (spec 253, FR-009)
+	Set tG = $Select(graph = 0: "", 1: graph)
+	If sourceId '= "" {
+		If $Length(predicate) > 0 {
+			Set o = ""
+			For {
+				Set o = $Order(^KG("out", graph, sourceId, predicate, o))
+				Quit:o=""
+				Set w = $Get(^KG("out", graph, sourceId, predicate, o), 1.0)
+				Set entry = ##class(%DynamicObject).%New()
+				Do entry.%Set("s", sourceId) Do entry.%Set("p", predicate) Do entry.%Set("o", o) Do entry.%Set("w", +w) Do entry.%Set("g", tG)
+				Do results.%Push(entry)
+			}
+		} Else {
+			Set p = ""
+			For {
+				Set p = $Order(^KG("out", graph, sourceId, p))
+				Quit:p=""
+				Set o = ""
+				For {
+					Set o = $Order(^KG("out", graph, sourceId, p, o))
+					Quit:o=""
+					Set w = $Get(^KG("out", graph, sourceId, p, o), 1.0)
+					Set entry = ##class(%DynamicObject).%New()
+					Do entry.%Set("s", sourceId) Do entry.%Set("p", p) Do entry.%Set("o", o) Do entry.%Set("w", +w) Do entry.%Set("g", tG)
+					Do results.%Push(entry)
+				}
+			}
+		}
+	} Else {
+		Set s = ""
+		For {
+			Set s = $Order(^KG("out", graph, s))
+			Quit:s=""
+			Set p = ""
+			For {
+				Set p = $Order(^KG("out", graph, s, p))
+				Quit:p=""
+				If ($Length(predicate) > 0) && (p '= predicate) Continue
+				Set o = ""
+				For {
+					Set o = $Order(^KG("out", graph, s, p, o))
+					Quit:o=""
+					Set w = $Get(^KG("out", graph, s, p, o), 1.0)
+					Set entry = ##class(%DynamicObject).%New()
+					Do entry.%Set("s", s) Do entry.%Set("p", p) Do entry.%Set("o", o) Do entry.%Set("w", +w) Do entry.%Set("g", tG)
+					Do results.%Push(entry)
+				}
+			}
+		}
+	}
+}
+
+/// Write adjacency entries for one edge. graph="" = default graph (spec 214).
+///
+/// Delegates to Graph.KG.Adjacency, the one writer of ^KG("out") and ^KG("in") (spec
+/// 245). The name and signature are kept so existing callers, Python included, are
+/// unchanged.
+ClassMethod WriteAdjacency(s As %String, p As %String, o As %String, w As %String = "1.0", graph = 0)
+{
+	Do ##class(Graph.KG.Adjacency).Put(graph, s, p, o, w)
+}
+
+/// Delete adjacency entries for one edge.
+///
+/// graph is an already-derived index key, as WriteAdjacency takes: integer 0 for
+/// the default graph, the graph name otherwise. Derive it with
+/// Graph.KG.GraphKey.ForIndex() before calling — ForIndex() rejects "0", so it
+/// cannot be applied to a key that has already been derived (ADR-0003).
+///
+/// Delegates to Graph.KG.Adjacency.Remove, which owns the stores WriteAdjacency
+/// writes (spec 245). The history of the two modules disagreeing is in that class.
+ClassMethod DeleteAdjacency(s As %String, p As %String, o As %String, graph = 0)
+{
+	Do ##class(Graph.KG.Adjacency).Remove(graph, s, p, o)
+}
+
+/// Write one keyed edge of a multigraph (spec 234). Beside WriteAdjacency, not
+/// through it: with the mode off nothing calls this, and the single-edge writer
+/// stays exactly what it was.
+///
+/// Delegates to Graph.KG.Adjacency.PutKeyed (spec 245). The layout is documented there.
+ClassMethod WriteAdjacencyKeyed(s As %String, p As %String, o As %String, w As %String = "1.0", graph = 0, ekey As %Integer = 0) As %Status
+{
+	Quit ##class(Graph.KG.Adjacency).PutKeyed(graph, s, p, o, ekey, w)
+}
+
+/// Delete one keyed edge of a multigraph (spec 234); the inverse of
+/// WriteAdjacencyKeyed. Delegates to Graph.KG.Adjacency.RemoveKeyed (spec 245).
+ClassMethod DeleteAdjacencyKeyed(s As %String, p As %String, o As %String, graph = 0, ekey As %Integer = 0) As %Status
+{
+	Quit ##class(Graph.KG.Adjacency).RemoveKeyed(graph, s, p, o, ekey)
+}
+
+/// Remove one edge's adjacency from every graph it appears in.
+///
+/// "Every graph" is not a key value, so DeleteAdjacency cannot express it by
+/// being handed one — it would have to be called once per graph, and the caller
+/// would need the list. The walk therefore lives beside the delete it drives
+/// rather than in Python, on the far side of the seam from ^KG.
+///
+/// Collect first, delete after: DeleteAdjacency mutates the tree being walked.
+ClassMethod DeleteAdjacencyAllGraphs(s As %String, p As %String, o As %String)
+{
+	Kill tGraphs
+	Set g = ""
+	For {
+		Set g = $Order(^KG("out", g))
+		Quit:g=""
+		If $Data(^KG("out", g, s, p, o)) {
+			Set tGraphs(g) = ""
+		}
+	}
+	// ^KG("in") is checked separately: a half-written edge may have only the
+	// mirror, and leaving it behind is the drift this method exists to remove.
+	Set g = ""
+	For {
+		Set g = $Order(^KG("in", g))
+		Quit:g=""
+		If $Data(^KG("in", g, o, p, s)) {
+			Set tGraphs(g) = ""
+		}
+	}
+	Set g = ""
+	For {
+		Set g = $Order(tGraphs(g))
+		Quit:g=""
+		Do ..DeleteAdjacency(s, p, o, g)
+	}
+}
+
+/// Register one node in the default graph, without a failed INSERT (spec 230 FR-034).
+///
+/// The bulk paths used to insert every endpoint and tolerate SQLCODE -119, the
+/// duplicate. Inside the transaction they wrap a whole batch in, that is the most
+/// expensive thing they do: IRIS rolls a failed statement back to its own implicit
+/// savepoint, measured at ~40ms. Edges arrive chained — an edge's target is the next
+/// edge's source — so about half of every batch's node inserts were duplicates, which
+/// paced ingest at 25 edges/s regardless of batch size or caller. Measured live on
+/// 200 chained edges in one transaction: the -119 idiom 39.53 ms per edge, a seen-set
+/// plus an existence check 0.16, an existence check alone 0.03.
+///
+/// So ask first. pSeen remembers what this batch already registered, so a repeated
+/// endpoint costs nothing at all; -119 is still tolerated below, for the row another
+/// process inserts between the check and the write.
+///
+/// Returns 0 when the node is registered, otherwise the SQLCODE that stopped it —
+/// which the caller has to treat as "this edge did not land", because rdf_edges'
+/// foreign keys are composite since spec 227 ((graph_id, s) and (graph_id, o_id)
+/// against nodes (graph_id, node_id)) and an unregistered endpoint makes the edge
+/// INSERT SQLCODE -121.
+ClassMethod RegisterDefaultNode(pNodeId As %String, ByRef pSeen) As %Integer
+{
+	If pNodeId = "" { Return -1 }
+	If $Data(pSeen(pNodeId)) { Return 0 }
+	Set pSeen(pNodeId) = ""
+	Set tFound = 0
+	&sql(SELECT 1 INTO :tFound FROM Graph_KG.nodes WHERE node_id = :pNodeId AND graph_id = '')
+	If SQLCODE = 0 { Return 0 }
+	&sql(INSERT INTO Graph_KG.nodes (node_id, graph_id) VALUES (:pNodeId, ''))
+	If (SQLCODE '= 0) && (SQLCODE '= -119) { Return SQLCODE }
+	Return 0
+}
+
+/// Bulk ingest edges via SQL INSERT + persistent ^KG global writes.
+///
+/// graph_id is named explicitly and written as '', the same spelling create_edge
+/// uses. Omitting the column left NULL, giving the default graph two spellings in
+/// one table: every reader matching one of them silently missed the other half.
+/// This writes the default graph only, which is what the hardcoded
+/// WriteAdjacency graph key below has always meant.
+ClassMethod BulkIngestEdgesSQL(edgesJson As %String, predicate As %String = "KNOWS") As %Integer
+{
+	Set data = {}.%FromJSON(edgesJson)
+	Set n = 0
+	Kill tSeen
+	// With the adjacency functional index (spec 252) the INSERT writes ^KG itself; without it, this does.
+	Set tIndexed = ##class(Graph.KG.Adjacency).Indexed()
+	// 4.6.4: a failure takes back this call's level alone, never a caller's transaction under it
+	Set tTxnLevel = $TLevel
+	Try {
+		TSTART
+		Set iter = data.%GetIterator()
+		While iter.%GetNext(.idx, .edge) {
+			Set s = edge.s
+			Set p = $Select(edge.p'="":edge.p, 1:predicate)
+			Set o = edge.o
+			// a self-loop is an edge (create_edge stores one): skipping it dropped DRKG's 3,499 gene self-interactions
+			If (s = "") || (o = "") { Continue }
+			// The endpoints first, through RegisterDefaultNode: an edge needs both of them
+			// registered in its own graph — always the default one on this path — or the
+			// INSERT below is SQLCODE -121 and the Continue that follows skips the row
+			// without counting it, so the caller is told how many edges landed and it is
+			// wrong.
+			If ..RegisterDefaultNode(s, .tSeen) '= 0 { Continue }
+			If ..RegisterDefaultNode(o, .tSeen) '= 0 { Continue }
+			// The edge itself is asked for before it is written, for the same reason: on a
+			// re-ingest every one of these INSERTs is the duplicate u_spo_graph refuses,
+			// and a refused statement inside this transaction costs ~40ms. -119 is still
+			// tolerated, for the row a concurrent writer lands in between.
+			Set tEdge = 0
+			&sql(SELECT 1 INTO :tEdge FROM Graph_KG.rdf_edges WHERE graph_id = '' AND s = :s AND p = :p AND o_id = :o)
+			If SQLCODE '= 0 {
+				&sql(INSERT INTO Graph_KG.rdf_edges (s, p, o_id, graph_id) VALUES (:s, :p, :o, ''))
+				If (SQLCODE '= 0) && (SQLCODE '= -119) { Continue }
+			}
+			If 'tIndexed {
+				Do ..WriteAdjacency(s, p, o, "1.0", 0)
+			}
+			Set n = n + 1
+		}
+		TCOMMIT
+	} Catch ex {
+		While $TLevel > tTxnLevel { TROLLBACK 1 }
+		Throw ex
+	}
+	Quit n
+}
+
+ClassMethod BulkIngestEdgesFile(filePath As %String, predicate As %String = "KNOWS") As %Integer
+{
+	Set stream = ##class(%Stream.FileCharacter).%New()
+	Do stream.LinkToFile(filePath)
+	Set json = ""
+	While 'stream.AtEnd {
+		Set json = json _ stream.Read(32000)
+	}
+	Quit ..BulkIngestEdgesSQL(json, predicate)
+}
+
+/// Bulk ingest nodes, their labels and their properties, in the default graph.
+///
+/// Every write here names graph_id and writes '', the spelling create_node uses.
+/// The label and property inserts used to omit the column, which left NULL: the
+/// default graph then had two spellings in one table and a reader matching one
+/// silently missed the rows written the other way (spec 230, FR-035).
+///
+/// Nothing is written by a failed statement either — see RegisterDefaultNode for what
+/// that costs inside this transaction. A label and a property are each asked for before
+/// they are inserted, and a property the node already has keeps its stored value, as
+/// bulk_create_nodes' SQL path keeps it (R089: this wrote INSERT OR UPDATE, so one batch
+/// overwrote values here and kept them there; store_node is the call that replaces).
+/// A failed write rolls the whole batch back and raises. It used to skip the node or the
+/// property and count on, so the caller named nodes as written that were not.
+ClassMethod BulkIngestNodesSQL(nodesJson As %String) As %Integer
+{
+	Set data = {}.%FromJSON(nodesJson)
+	Set n = 0
+	Kill tSeen, tIdSeen
+	// 4.7.0 gate: the batch's ids, for the one DELETE below
+	Set tIds = ""
+	Set iter = data.%GetIterator()
+	While iter.%GetNext(.idx, .node) {
+		Set id = node.id
+		If (id '= "") && '$Data(tIdSeen(id)) { Set tIdSeen(id) = "", tIds = tIds _ $ListBuild(id) }
+	}
+	TSTART
+	Try {
+		// 4.7.0 gate: rdf_props has no foreign key on nodes, so a node removed by SQL leaves its property rows, and
+		// the guarded inserts below kept their values for a node of that id loaded again. A node this batch inserts
+		// holds what it is given, as create_node's does: the rows of the batch's ids that have no node row yet go
+		// first, in one statement. A node already there keeps every row (the batch merges into it).
+		If tIds '= "" {
+			&sql(DELETE FROM Graph_KG.rdf_props WHERE graph_id = '' AND s %INLIST :tIds AND s NOT IN (SELECT node_id FROM Graph_KG.nodes WHERE graph_id = '' AND node_id %INLIST :tIds))
+			If SQLCODE < 0 { Throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE, "orphaned properties") }
+		}
+		Set iter = data.%GetIterator()
+		While iter.%GetNext(.idx, .node) {
+			Set id = node.id
+			If id = "" { Continue }
+			Set tRC = ..RegisterDefaultNode(id, .tSeen)
+			If tRC '= 0 { Throw ##class(%Exception.SQL).CreateFromSQLCODE(tRC, "node "_id) }
+			If $IsObject(node.labels) {
+				Set liter = node.labels.%GetIterator()
+				While liter.%GetNext(.li, .label) {
+					If label = "" { Continue }
+					Set tHasLabel = 0
+					// %IGNOREINDEX: on a table whose statistics were taken near empty (a new namespace) the optimizer
+					// read idx_labels_label, every node of the label, for each lookup: a load grew quadratically
+					// (4.7.0 row 2). idx_labels_s reads the node's own rows.
+					&sql(SELECT 1 INTO :tHasLabel FROM %IGNOREINDEX Graph_KG.rdf_labels.idx_labels_label Graph_KG.rdf_labels WHERE graph_id = '' AND s = :id AND label = :label)
+					If SQLCODE = 100 {
+						&sql(INSERT INTO Graph_KG.rdf_labels (graph_id, s, label) VALUES ('', :id, :label))
+					}
+					If SQLCODE < 0 { Throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE, "label "_label_" of "_id) }
+				}
+			}
+			If $IsObject(node.props) {
+				// 4.6.4: the keys whose value is a float, sent as its text and stored as a $DOUBLE, as a Cypher
+				// write stores a float (JSON cannot tell 2.0 from 2)
+				Kill tDoubles
+				If $IsObject(node.doubles) {
+					Set diter = node.doubles.%GetIterator()
+					While diter.%GetNext(.di, .dkey) {
+						If dkey '= "" { Set tDoubles(dkey) = "" }
+					}
+				}
+				Set piter = node.props.%GetIterator()
+				While piter.%GetNext(.key, .val) {
+					If key = "" { Continue }
+					// The caller sends prop_value(): a number as a JSON number, stored as an IRIS number (4.6.4: it
+					// was stored as its text, which read back as a string), a float as its text named in doubles,
+					// anything else as its text, stored as given like create_node. A boolean (for direct callers)
+					// is stored as true/false.
+					Set tType = node.props.%GetTypeOf(key)
+					If (tType = "string") && $Data(tDoubles(key)) {
+						Set valStr = $DOUBLE(val)
+					} ElseIf tType = "number" {
+						Set valStr = +val
+					} Else {
+						Set valStr = $Select($IsObject(val):val.%ToJSON(), tType="boolean":$Select(val:"true",1:"false"), 1:val_"")
+					}
+					// SQL's empty string is $Char(0): a host variable holding "" binds as NULL, and '' read back as null
+					// (4.6.0 R307; create_node stores '')
+					Set:valStr="" valStr = $Char(0)
+					Set tHasProp = 0
+					// %IGNOREINDEX, as for the labels above: idx_props_key and idx_props_key_valkey lead with the key, every
+					// node holding it (every node's `id`, which the loader writes since 4.6.0 R089). Without them the
+					// plan reads idx_props_s, else idx_props_s_key, else pk_props: never the whole table.
+					&sql(SELECT 1 INTO :tHasProp FROM %IGNOREINDEX Graph_KG.rdf_props.idx_props_key, Graph_KG.rdf_props.idx_props_key_valkey Graph_KG.rdf_props WHERE graph_id = '' AND s = :id AND "key" = :key)
+					If SQLCODE = 100 {
+						&sql(INSERT INTO Graph_KG.rdf_props (graph_id, s, "key", val) VALUES ('', :id, :key, :valStr))
+					}
+					If SQLCODE < 0 { Throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE, "property "_key_" of "_id) }
+				}
+			}
+			Set n = n + 1
+		}
+		TCOMMIT
+	} Catch ex {
+		If $TLevel > 0 { TROLLBACK 1 }
+		Throw ex
+	}
+	Quit n
+}
+
+/// Remove all ^KG adjacency for each node in a JSON array, in every graph.
+///
+/// Graph.KG.Adjacency.RemoveNode does the work for each graph that holds the node,
+/// because removing a node touches both ends of each of its edges:
+///
+///   its outbound edges leave a mirror ^KG("in") entry at each target, and
+///   its inbound edges leave every source holding an out entry that points at it.
+///
+/// Killing ^KG("out", g, node) and ^KG("in", g, node) directly reached neither, and left
+/// the sources' cached degrees stale. One owner keeps the per-edge rule in one place.
+ClassMethod BulkDeleteAdjacency(nodeIdsJSON As %String) As %Integer
+{
+	Set arr = ##class(%DynamicArray).%FromJSON(nodeIdsJSON)
+	Set count = 0
+	Set iter = arr.%GetIterator()
+	While iter.%GetNext(.idx, .nodeId) {
+		If nodeId = "" { Continue }
+		// Collect the graphs first: RemoveNode mutates the trees walked here.
+		Kill tGraphs
+		Set g = ""
+		For {
+			Set g = $Order(^KG("out", g))
+			Quit:g=""
+			If $Data(^KG("out", g, nodeId)) || $Data(^KG("in", g, nodeId)) { Set tGraphs(g) = "" }
+		}
+		Set g = ""
+		For {
+			Set g = $Order(^KG("in", g))
+			Quit:g=""
+			If $Data(^KG("in", g, nodeId)) { Set tGraphs(g) = "" }
+		}
+		Set g = ""
+		For {
+			Set g = $Order(tGraphs(g))
+			Quit:g=""
+			Do ##class(Graph.KG.Adjacency).RemoveNode(g, nodeId)
+		}
+		Set count = count + 1
+	}
+	Quit count
+}
+
+}

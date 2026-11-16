@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_entity_same_id_two_graphs_both_count"
+    ],
+    "find": "let e=r.entity.unwrap();EntityAcc",
+    "name": "entity-graph-erased",
+    "replace": "let e=Entity{graph:0,id:r.entity.unwrap().id};EntityAcc"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_entity_same_id_two_graphs_both_count"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/entity-graph-erased/20261116T005527Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_entity_same_id_two_graphs_both_count": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005527Z-control-entity-graph-erased-theorem_entity_same_id_two_graphs_both_count.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005527Z-control-entity-graph-erased.log",
+    "timed_out": false,
+    "verified": 73
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T005528Z-control-entity-graph-erased/logs/20261116T005527Z-control-entity-graph-erased-theorem_entity_same_id_two_graphs_both_count.log": "71d71e7c77e548e0f4337d6a487f12f29fe3db2c2f7336072638e8767d607770",
+    ".g5/Verus_verification/results/aggregate_results/20261116T005528Z-control-entity-graph-erased/logs/20261116T005527Z-control-entity-graph-erased.log": "e2e05010d44a03edc4c4d9c599b5b37d91a65c472a5b389c22dda8ad413583be"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

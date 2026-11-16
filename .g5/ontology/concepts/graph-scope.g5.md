@@ -126,10 +126,12 @@ Findings: [delete_reification deletes the reifier's rows in every graph](../../V
 ### graph.default
 
 - Sources: [CONTEXT.md, Graph](../../../CONTEXT.md#L27-L31), [USER_GUIDE section 4](../../../docs/USER_GUIDE.md#L386-L388), [USER_GUIDE on deletes and graph=](../../../docs/USER_GUIDE.md#L431-L465), [the omitted-graph marker](../../../iris_vector_graph/_engine/nodes_edges.py#L82-L83), [holders of an ID](../../../iris_vector_graph/_engine/nodes_edges.py#L2134-L2153), [delete_node scopes](../../../iris_vector_graph/_engine/nodes_edges.py#L2202-L2268), [delete_edge all_graphs](../../../iris_vector_graph/_engine/nodes_edges.py#L1390-L1422), [delete_reification](../../../iris_vector_graph/_engine/schema.py#L3361-L3392)
+- Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_scalar_is_raw_scoped_cardinality`, `theorem_default_null_empty_named`, `theorem_empty_filter_is_unfiltered` and `theorem_scoped_failure_propagates`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). Canonical graph/filter tokens and a faithful SQL comparison frame bind physical row counts, including legacy NULL/default equivalence; all-graph status remains its documented exception. Grouped label cardinality is modeled, while arbitrary tie ordering, validation and native/collation internals remain outside this claim.
 - agent
 - user-facing-behavior
 
 The refusal of an ID held by several graphs dates from 4.6.0 (#112); before it, a delete without a graph removed the ID from every graph. The holder rule, the False answer for an ID with no holder and the omitted-versus-None distinction were added after the stage-A reconstruction check (gaps G1 and G2) and verified in the code; the same rule applies to `delete_node` and `bulk_delete_nodes`.
+
 
 ### graph.named
 
@@ -161,12 +163,14 @@ ADR-0001 calls the layout a storage contract that only a new major version may c
 
 - Sources: [ADR-0003](../../../docs/adr/0003-two-graph-key-derivations.md), [GraphKey.ForIndex / ForLedger / ForName](../../../iris_src/src/Graph/KG/GraphKey.cls#L50-L77), [delete_edge on the two SQL spellings](../../../iris_vector_graph/_engine/nodes_edges.py#L1424-L1433), [restore translates NULL](../../../iris_vector_graph/_engine/snapshot.py#L1249-L1255)
 - Expands: [graph keys](#graph.key)
+- Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_scalar_is_raw_scoped_cardinality`, `theorem_default_null_empty_named`, `theorem_empty_filter_is_unfiltered` and `theorem_scoped_failure_propagates`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). Canonical graph/filter tokens and a faithful SQL comparison frame bind physical row counts, including legacy NULL/default equivalence; all-graph status remains its documented exception. Grouped label cardinality is modeled, while arbitrary tie ordering, validation and native/collation internals remain outside this claim.
 - agent
 - architecture-decision, data-integrity
 
 In ObjectScript the ledger's default key is `$Char(1)` ([GraphKey.LEDGERDEFAULT](../../../iris_src/src/Graph/KG/GraphKey.cls#L20-L21)). The ledger keeps its own spelling because IRIS stores the subscript `"0"` as the number 0, so a graph named `"0"` would be the default graph under the index convention. ADR-0003 defers unifying the two spellings to a major version, together with a ledger layout stamp. The NULL spelling of the default graph is recorded in code comments and the restore, not in an ADR.
 
 Findings: [ADR-0003 says control characters are stripped from named-graph keys, but the code refuses them](../../Verus_verification/bugs_issues.md#bug-doc-006)
+
 
 ### graph.key.derive
 

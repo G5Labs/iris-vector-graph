@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_multiplicity_divisor_not_distinct_neighbors"
+    ],
+    "find": "\n  let keep=e.graph==g && !ex.contains(e.pred);",
+    "name": "excluded-edge-kept",
+    "replace": "\n  let keep=e.graph==g;",
+    "why": "Eligible edges determine numerator and divisor alike."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_multiplicity_divisor_not_distinct_neighbors"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/excluded-edge-kept/20261115T202329Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_multiplicity_divisor_not_distinct_neighbors": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202329Z-control-excluded-edge-kept-theorem_multiplicity_divisor_not_distinct_neighbors.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202329Z-control-excluded-edge-kept.log",
+    "timed_out": false,
+    "verified": 101
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202336Z-control-excluded-edge-kept/logs/20261115T202329Z-control-excluded-edge-kept-theorem_multiplicity_divisor_not_distinct_neighbors.log": "434a7a406ba51f01a26cd7de755542836244f27fc3f8fe8a0acc25e1b9df0478",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202336Z-control-excluded-edge-kept/logs/20261115T202329Z-control-excluded-edge-kept.log": "6939a7320951fc7fbeb6537814167e0e38f222c43c5e21311c167ccbc7efa9c7"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

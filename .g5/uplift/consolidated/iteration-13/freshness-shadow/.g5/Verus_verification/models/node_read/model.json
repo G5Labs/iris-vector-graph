@@ -1,0 +1,62 @@
+{
+  "name": "node_read",
+  "root": "node_read.rs",
+  "expected_verified": 13,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "numeric-writer-as-text",
+      "why": "legacy writer stores every integer as text",
+      "find": "if in64(n) { Stored::Number { payload: n, double: false } } else { Stored::BigText(n) }",
+      "replace": "Stored::BigText(n)",
+      "expect_fail_in": [
+        "theorem_numeric_writer_and_reader"
+      ]
+    },
+    {
+      "name": "double-tag-lost",
+      "why": "provider loses the D/N distinction",
+      "find": "if double { Wire::D(payload) } else { Wire::N(payload) }",
+      "replace": "Wire::N(payload)",
+      "expect_fail_in": [
+        "theorem_numeric_writer_and_reader"
+      ]
+    },
+    {
+      "name": "discard-bare-node",
+      "why": "reader assumes no labels or properties means absent",
+      "find": "r.label_rows > 0 || r.property_rows > 0 || r.node_row",
+      "replace": "r.label_rows > 0 || r.property_rows > 0",
+      "expect_fail_in": [
+        "theorem_bare_node_vs_absent"
+      ]
+    },
+    {
+      "name": "skip-structural-alias",
+      "why": "property id overwrites the structural id",
+      "find": "if k == 0 { 2 } else if k == 1 { 3 } else { k }",
+      "replace": "k",
+      "expect_fail_in": [
+        "theorem_structural_keys_kept"
+      ]
+    },
+    {
+      "name": "omit-final-column-decode",
+      "why": "selected Cypher result leaves numeric tag as raw text",
+      "find": "if typed_column(e,nodes) { Cell::Decoded(read(w)) } else { Cell::Raw(w) }",
+      "replace": "Cell::Raw(w)",
+      "expect_fail_in": [
+        "theorem_sql_scalar_read_reaches_result"
+      ]
+    },
+    {
+      "name": "decode-unselected-literal",
+      "why": "translator marks a literal as a typed node property",
+      "find": "Expr::Literal => false",
+      "replace": "Expr::Literal => true",
+      "expect_fail_in": [
+        "theorem_unselected_scalar_not_decoded"
+      ]
+    }
+  ]
+}

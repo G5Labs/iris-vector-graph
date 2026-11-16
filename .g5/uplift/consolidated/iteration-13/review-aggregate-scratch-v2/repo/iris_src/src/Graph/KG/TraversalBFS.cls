@@ -1,0 +1,695 @@
+Class Graph.KG.TraversalBFS Extends %RegisteredObject
+{
+
+/// Render a numeric value as valid JSON (leading-zero normalization).
+/// ObjectScript renders 0.5 as ".5" — not valid JSON for external parsers.
+ClassMethod jsonNum(pValue As %String) As %String [ Internal ]
+{
+	If pValue = "" { Return "null" }
+	If $Extract(pValue, 1, 2) = "-." { Return "-0" _ $Extract(pValue, 2, *) }
+	If $Extract(pValue, 1) = "." { Return "0" _ pValue }
+	Return pValue
+}
+
+/// Escape a string for embedding inside a JSON double-quoted value.
+ClassMethod jsonEsc(pValue As %String) As %String [ Internal ]
+{
+	// RFC 8259 §7: U+0000–U+001F must be escaped. Named escapes for common ones;
+	// \uXXXX for the rest (NUL $Char(0), SOH–BEL, VT, SO–US).
+	Set result = $Replace(pValue, "\", "\\")
+	Set result = $Replace(result, """", "\""")
+	Set result = $Replace(result, $Char(8),  "\b")
+	Set result = $Replace(result, $Char(9),  "\t")
+	Set result = $Replace(result, $Char(10), "\n")
+	Set result = $Replace(result, $Char(12), "\f")
+	Set result = $Replace(result, $Char(13), "\r")
+	For i = 0:1:7,11,14:1:31 {
+		If result [ $Char(i) {
+			Set hex = $Select(i<16: "000"_$ZHex(i), 1: "00"_$ZHex(i))
+			Set result = $Replace(result, $Char(i), "\u"_hex)
+		}
+	}
+	Return result
+}
+
+/// BFS the adjacency index for one graph.
+///
+/// `graph` is a graph *name*, not a subscript: the empty string means the default
+/// graph and ##class(Graph.KG.GraphKey).ForIndex() turns it into the integer 0 that
+/// keys it in ^KG (ADR-0003 — no caller re-derives either graph key). Every helper
+/// below takes the derived subscript as `pGraph` rather than deriving its own, which
+/// is how the two would come to disagree about which graph they are walking.
+ClassMethod BFS(srcId As %String, preds As %DynamicArray = "", maxHops As %Integer = 2, dstLabel As %String = "", graph As %String = "") As %DynamicArray
+{
+    Set results = ##class(%DynamicArray).%New()
+    If (srcId = "") || (maxHops <= 0) Return results
+
+    Set pGraph = ##class(Graph.KG.GraphKey).ForIndex(graph)
+    Set pathId = 0
+    Set seen(srcId) = ""
+    Set frontier(srcId) = ""
+    
+    For hop = 1:1:maxHops {
+        Kill nextFrontier
+        Set s = ""
+        // Reuse last predicate when preds has fewer entries than hops.
+        If $IsObject(preds) && (preds.%Size()>0) {
+            Set predIdx = hop-1
+            If predIdx >= preds.%Size() Set predIdx = preds.%Size()-1
+            Set fixedP = preds.%Get(predIdx)
+            If hop < maxHops {
+                Set nextPredIdx = hop
+                If nextPredIdx >= preds.%Size() Set nextPredIdx = preds.%Size()-1
+                Set nextP = preds.%Get(nextPredIdx)
+            } Else {
+                Set nextP = ""
+            }
+        } Else {
+            Set fixedP = ""
+            Set nextP = ""
+        }
+        
+        For {
+            Set s = $Order(frontier(s))
+            If s = "" Quit
+            
+            If fixedP '= "" {
+                Do ..TraverseWithPredicate(pGraph, s, fixedP, hop, maxHops, nextP, dstLabel, .pathId, results, .nextFrontier, .seen)
+            } Else {
+                Do ..TraverseAllPredicates(pGraph, s, hop, maxHops, nextP, dstLabel, .pathId, results, .nextFrontier, .seen)
+            }
+        }
+        
+        If '$Data(nextFrontier) Quit
+        // The next hop starts from this hop's new nodes only. Merging into the old
+        // frontier re-expanded every earlier node and recorded its edges again.
+        Kill frontier
+        Merge frontier = nextFrontier
+        
+        Set node = ""
+        For {
+            Set node = $Order(nextFrontier(node))
+            If node = "" Quit
+            Set seen(node) = ""
+        }
+    }
+    Return results
+}
+/// BFS into the ^||BFS.Results process-private global, scoped to one graph.
+///
+/// `graph` is a name, not a subscript — see BFS() above. ForIndex() also validates
+/// it, so a graph name that could collide with the default graph's subscript throws
+/// here rather than silently walking the wrong subtree.
+///
+/// preds is a predicate sequence: hop h walks preds[h-1], the last one repeating (spec 243). pAnyType = 1 reads it
+/// as a set instead, every hop walking an edge of any type it names, as Cypher's [:A|B*] and IRISGraphStore.execute_bfs
+/// (and the Arno library's BFS) read it (4.6.0: the store's ObjectScript route walked ["U","T"] as U then T).
+ClassMethod BFSFast(srcId As %String, preds As %DynamicArray = "", maxHops As %Integer = 2, dstLabel As %String = "", direction As %String = "out", maxResults As %Integer = 0, graph As %String = "", pAnyType As %Boolean = 0) As %Integer
+{
+    Kill ^||BFS.Results
+    If (srcId = "") || (maxHops <= 0) Return 0
+
+    Set pGraph = ##class(Graph.KG.GraphKey).ForIndex(graph)
+    Set count = 0
+    Set seen(srcId) = ""
+    Set frontier(srcId) = ""
+    If pAnyType && $IsObject(preds) {
+        For tI = 0:1:(preds.%Size() - 1) {
+            Set tTypes(preds.%Get(tI)) = ""
+        }
+    }
+
+    For hop = 1:1:maxHops {
+        Kill nextFrontier
+        Set s = ""
+        If $Data(tTypes) {
+            // the type set: every hop walks each type, with no next-hop lookahead (the lookahead reads out-edges
+            // alone, and one type of the set)
+            For {
+                Set s = $Order(frontier(s))
+                Quit:s=""
+                Quit:(maxResults>0)&&(count>=maxResults)
+                Set tP = ""
+                For {
+                    Set tP = $Order(tTypes(tP))
+                    Quit:tP=""
+                    Do:(direction="out")||(direction="both") ..TraverseWithPredicateFast(pGraph, s, tP, hop, maxHops, "", dstLabel, .count, .nextFrontier, .seen)
+                    Do:(direction="in")||(direction="both") ..TraverseWithPredicateFastInbound(pGraph, s, tP, hop, .count, .nextFrontier, .seen)
+                }
+            }
+            If (maxResults > 0) && (count >= maxResults) Quit
+            If '$Data(nextFrontier) Quit
+            Kill frontier
+            Merge frontier = nextFrontier
+            Set node = ""
+            For {
+                Set node = $Order(nextFrontier(node))
+                Quit:node=""
+                Set seen(node) = ""
+            }
+            Continue
+        }
+        // Reuse last predicate when preds has fewer entries than hops.
+        // [:BINDS*1..3] passes preds=["BINDS"] — apply "BINDS" at every hop.
+        If $IsObject(preds) && (preds.%Size()>0) {
+            Set predIdx = hop-1
+            If predIdx >= preds.%Size() Set predIdx = preds.%Size()-1
+            Set fixedP = preds.%Get(predIdx)
+            // nextP is only used as a lookahead for hops before the last.
+            // At the last hop, nextP="" disables the lookahead filter.
+            If hop < maxHops {
+                Set nextPredIdx = hop
+                If nextPredIdx >= preds.%Size() Set nextPredIdx = preds.%Size()-1
+                Set nextP = preds.%Get(nextPredIdx)
+            } Else {
+                Set nextP = ""
+            }
+        } Else {
+            Set fixedP = ""
+            Set nextP = ""
+        }
+        
+        For {
+            Set s = $Order(frontier(s))
+            If s = "" Quit
+            If (maxResults > 0) && (count >= maxResults) Quit
+            
+            If direction = "out" || (direction = "both") {
+                If fixedP '= "" {
+                    Do ..TraverseWithPredicateFast(pGraph, s, fixedP, hop, maxHops, nextP, dstLabel, .count, .nextFrontier, .seen)
+                } Else {
+                    Do ..TraverseAllPredicatesFast(pGraph, s, hop, maxHops, nextP, dstLabel, .count, .nextFrontier, .seen)
+                }
+            }
+
+            If direction = "in" || (direction = "both") {
+                If fixedP '= "" {
+                    Do ..TraverseWithPredicateFastInbound(pGraph, s, fixedP, hop, .count, .nextFrontier, .seen)
+                } Else {
+                    Do ..TraverseAllPredicatesFastInbound(pGraph, s, hop, .count, .nextFrontier, .seen)
+                }
+            }
+        }
+        
+        If (maxResults > 0) && (count >= maxResults) Quit
+        If '$Data(nextFrontier) Quit
+        // The next hop starts from this hop's new nodes only. Merging into the old
+        // frontier re-expanded every earlier node and recorded its edges again.
+        Kill frontier
+        Merge frontier = nextFrontier
+        Set node = ""
+        For {
+            Set node = $Order(nextFrontier(node))
+            If node = "" Quit
+            Set seen(node) = ""
+        }
+    }
+    Return count
+}
+ClassMethod BFSJSON(srcId As %String, preds As %DynamicArray, maxHops As %Integer = 2, dstLabel As %String = "", graph As %String = "") As %DynamicArray
+{
+    Return ..BFS(srcId, preds, maxHops, dstLabel, graph)
+}
+ClassMethod BFSFastJson(srcId As %String, predsJson As %String = "", maxHops As %Integer = 2, dstLabel As %String = "", direction As %String = "out", graph As %String = "") As %String
+{
+    // Parse predicates JSON into a %DynamicArray (null/"" means all predicates)
+    Set preds = ""
+    If (predsJson '= "") && (predsJson '= "null") {
+        Try {
+            Set preds = ##class(%DynamicArray).%FromJSON(predsJson)
+        } Catch {
+            Set preds = ""
+        }
+    }
+
+    // Run BFSFast -- writes to ^||BFS.Results(i) = $ListBuild(s,p,o,w,step)
+    Set count = ..BFSFast(srcId, preds, maxHops, dstLabel, direction, 0, graph)
+
+    If count = 0 Return "[]"
+
+    // Build JSON array from ^||BFS.Results
+    Set result = ##class(%DynamicArray).%New()
+    For i = 1:1:count {
+        Set lb = $Get(^||BFS.Results(i))
+        If lb = "" Continue
+        Set obj = ##class(%DynamicObject).%New()
+        Do obj.%Set("s",    $ListGet(lb, 1))
+        Do obj.%Set("p",    $ListGet(lb, 2))
+        Do obj.%Set("o",    $ListGet(lb, 3))
+        Do obj.%Set("w",    +$ListGet(lb, 4))
+        Do obj.%Set("step", +$ListGet(lb, 5))
+        Do result.%Push(obj)
+    }
+
+    Return result.%ToJSON()
+}
+/// BFSFastJsonDirect — same semantics as BFSFastJson but builds the JSON string
+/// via direct concatenation instead of %DynamicObject allocation (one per row).
+/// Drop-in replacement: identical signature, identical output format.
+ClassMethod BFSFastJsonDirect(srcId As %String, predsJson As %String = "", maxHops As %Integer = 2, dstLabel As %String = "", direction As %String = "out", graph As %String = "") As %String
+{
+    Set preds = ""
+    If (predsJson '= "") && (predsJson '= "null") {
+        Try { Set preds = ##class(%DynamicArray).%FromJSON(predsJson) } Catch { Set preds = "" }
+    }
+
+    Set count = ..BFSFast(srcId, preds, maxHops, dstLabel, direction, 0, graph)
+    If count = 0 Return "[]"
+
+    // Build JSON without per-row %DynamicObject allocation.
+    // NOTE: wins at hops=1 (small row counts); at hops>=2 %DynamicArray's C-level
+    // internal builder is faster than ObjectScript string concat regardless of strategy.
+    // Beating it for large result sets requires a C callout (libarno or similar).
+    Set result = "["
+    Set first = 1
+    For i = 1:1:count {
+        Set lb = $Get(^||BFS.Results(i))
+        If lb = "" Continue
+        If 'first Set result = result _ ","
+        Set first = 0
+        Set s = $ListGet(lb, 1)
+        Set p = $ListGet(lb, 2)
+        Set o = $ListGet(lb, 3)
+        If $Find(s, """") Set s = $Replace(s, """", "\""")
+        If $Find(p, """") Set p = $Replace(p, """", "\""")
+        If $Find(o, """") Set o = $Replace(o, """", "\""")
+        Set result = result
+            _ "{""s"":""" _ ..jsonEsc(s) _ """,""p"":""" _ ..jsonEsc(p) _ """,""o"":""" _ ..jsonEsc(o) _ """,""w"":" _ ..jsonNum($ListGet(lb, 4)) _ ",""step"":" _ +$ListGet(lb, 5) _ "}"
+    }
+    Return result _ "]"
+}
+ClassMethod BFSFastJsonChunked(srcId As %String, predsJson As %String = "", maxHops As %Integer = 2, dstLabel As %String = "", direction As %String = "out", maxResults As %Integer = 0, graph As %String = "") As %String
+{
+    Set preds = ""
+    If (predsJson '= "") && (predsJson '= "null") {
+        Try {
+            Set preds = ##class(%DynamicArray).%FromJSON(predsJson)
+        } Catch {
+            Set preds = ""
+        }
+    }
+
+    Set count = ..BFSFast(srcId, preds, maxHops, dstLabel, direction, maxResults, graph)
+
+    If count = 0 Return "CHUNKED:0"
+    If (maxResults > 0) && (count > maxResults) Set count = maxResults
+
+    Set tag = $TR($ZHex($Now())_$ZHex($RANDOM(999999)),":.","__")
+    Set chunkSize = 9000
+    Set chunk = ""
+    Set chunkNum = 0
+    Set first = 1
+
+    For i = 1:1:count {
+        Set lb = $Get(^||BFS.Results(i))
+        If lb = "" Continue
+        Set obj = "{""s"":"""_..jsonEsc($ListGet(lb,1))_""",""p"":"""_..jsonEsc($ListGet(lb,2))_""",""o"":"""_..jsonEsc($ListGet(lb,3))_""",""w"":"_..jsonNum($ListGet(lb,4))_",""step"":"_(+$ListGet(lb,5))_"}"
+        If 'first Set obj = "," _ obj
+        Set first = 0
+        Set chunk = chunk _ obj
+        If $Length(chunk) > chunkSize {
+            Set chunkNum = chunkNum + 1
+            Set ^ArnoKG("bfs_chunk", tag, chunkNum) = chunk
+            Set chunk = ""
+        }
+    }
+    If chunk '= "" {
+        Set chunkNum = chunkNum + 1
+        Set ^ArnoKG("bfs_chunk", tag, chunkNum) = chunk
+    }
+
+    Return "CHUNKED:" _ tag _ ":" _ chunkNum
+}
+/// BFSFastJson's answer when it is too large to be one string.
+///
+/// IRIS raises <MAXSTRING> on a string over 3,641,144 characters, and BFSFastJson builds the whole
+/// answer as one: a 2-hop walk on a 100,000-node graph is past that. This stages the same rows in
+/// the process-private ^||BFS.Out(tag, n), cut at row boundaries, and answers "CHUNKED:<tag>:<n>".
+/// A chunk is the rows comma-joined with no enclosing brackets; the caller reads
+/// ReadLargeOutChunk(tag, 1..n) in order and wraps the join in "[" and "]". An answer with no
+/// rows is "[]", as in BFSFastJson. Same arguments and same rows as BFSFastJson (jsonNum
+/// writes the weight the way %ToJSON does), and ^||BFS.Out is the staging area, so nothing
+/// is left in a persistent global. Python's Host.call_large asks for this only after
+/// BFSFastJson has raised <MAXSTRING>.
+ClassMethod BFSFastStream(srcId As %String, predsJson As %String = "", maxHops As %Integer = 2, dstLabel As %String = "", direction As %String = "out", graph As %String = "") As %String
+{
+    Kill ^||BFS.Out
+    Set preds = ""
+    If (predsJson '= "") && (predsJson '= "null") {
+        Try {
+            Set preds = ##class(%DynamicArray).%FromJSON(predsJson)
+        } Catch {
+            Set preds = ""
+        }
+    }
+
+    Set count = ..BFSFast(srcId, preds, maxHops, dstLabel, direction, 0, graph)
+    If count = 0 Return "[]"
+
+    Set tag = "S"
+    Set chunkLimit = 500000
+    Set chunk = ""
+    Set chunkNum = 0
+    Set first = 1
+    For i = 1:1:count {
+        Set lb = $Get(^||BFS.Results(i))
+        If lb = "" Continue
+        Set obj = "{""s"":"""_..jsonEsc($ListGet(lb,1))_""",""p"":"""_..jsonEsc($ListGet(lb,2))_""",""o"":"""_..jsonEsc($ListGet(lb,3))_""",""w"":"_..jsonNum($ListGet(lb,4))_",""step"":"_(+$ListGet(lb,5))_"}"
+        If 'first Set obj = "," _ obj
+        Set first = 0
+        Set chunk = chunk _ obj
+        If $Length(chunk) > chunkLimit {
+            Set chunkNum = chunkNum + 1
+            Set ^||BFS.Out(tag, chunkNum) = chunk
+            Set chunk = ""
+        }
+    }
+    If chunk '= "" {
+        Set chunkNum = chunkNum + 1
+        Set ^||BFS.Out(tag, chunkNum) = chunk
+    }
+    Kill ^||BFS.Results
+    If chunkNum = 0 Return "[]"
+    Return "CHUNKED:" _ tag _ ":" _ chunkNum
+}
+/// For IRISGraphStore.execute_bfs (4.6.0): pDepthJson {node: BFS depth, ...} (the source at 0), and the answer
+/// {node: type, ...}, for each node at depth h >= 1 the first type (in collation) of the edges, of pPredsJson's when it
+/// names any, that reach it from a node at depth h - 1, walked in pDirection ("out", "in", "both") in graph pGraph;
+/// "" when none does. The same answer whichever walk found the depths: the Arno library reports a node once, at the
+/// edge it took, and BFSFast a node at each depth, with the type it staged last.
+ClassMethod ReachTypes(pDepthJson As %String, pPredsJson As %String = "", pDirection As %String = "out", pGraph As %String = "") As %String
+{
+    Set tG = ##class(Graph.KG.GraphKey).ForIndex(pGraph)
+    Set tDepth = ##class(%DynamicObject).%FromJSON(pDepthJson)
+    If (pPredsJson '= "") && (pPredsJson '= "[]") && (pPredsJson '= "null") && (pPredsJson '= $Char(0)) {
+        Set tPA = ##class(%DynamicArray).%FromJSON(pPredsJson)
+        For tI = 0:1:(tPA.%Size() - 1) {
+            Set tPred(tPA.%Get(tI)) = ""
+        }
+    }
+    Set tAny = '$Data(tPred)
+    // read back from the reached node: its "in" entries reach it along the edges, its "out" entries against them
+    Set tSubs = $Select(pDirection = "out": "in", pDirection = "in": "out", 1: "in,out")
+    Set tOut = ##class(%DynamicObject).%New()
+    Set tIter = tDepth.%GetIterator()
+    While tIter.%GetNext(.tV, .tH) {
+        Continue:tH<1
+        Set tBest = ""
+        For tK = 1:1:$Length(tSubs, ",") {
+            Set tSub = $Piece(tSubs, ",", tK), tP = ""
+            For {
+                Set tP = $Order(^KG(tSub, tG, tV, tP))
+                Quit:tP=""
+                Continue:('tAny)&&'$Data(tPred(tP))
+                Set tU = "", tHit = 0
+                For {
+                    Set tU = $Order(^KG(tSub, tG, tV, tP, tU))
+                    Quit:tU=""
+                    If tDepth.%Get(tU) = (tH - 1) {
+                        Set tHit = 1
+                        Quit
+                    }
+                }
+                Continue:'tHit
+                // types come in collation order: the first that reaches it is this direction's answer
+                If (tBest = "") || (tBest ]] tP) Set tBest = tP
+                Quit
+            }
+        }
+        Do tOut.%Set(tV, tBest, "string")
+    }
+    Quit tOut.%ToJSON()
+}
+
+/// One chunk staged by BFSFastStream. A chunk is handed over once: it is killed as it is read.
+ClassMethod ReadLargeOutChunk(tag As %String, chunkNum As %Integer) As %String
+{
+    Set val = $Get(^||BFS.Out(tag, chunkNum), "")
+    Kill ^||BFS.Out(tag, chunkNum)
+    Return val
+}
+/// pAnyType: predsJson is a set of types, not a per-hop sequence (BFSFast).
+ClassMethod BFSFastJsonSorted(srcId As %String, predsJson As %String = "", maxHops As %Integer = 2, dstLabel As %String = "", direction As %String = "out", maxResults As %Integer = 0, graph As %String = "", pAnyType As %Boolean = 0) As %String
+{
+    Set preds = ""
+    If (predsJson '= "") && (predsJson '= "null") {
+        Try {
+            Set preds = ##class(%DynamicArray).%FromJSON(predsJson)
+        } Catch {
+            Set preds = ""
+        }
+    }
+
+    Set count = ..BFSFast(srcId, preds, maxHops, dstLabel, direction, maxResults, graph, pAnyType)
+
+    If count = 0 Return "SORTED:0"
+    If (maxResults > 0) && (count > maxResults) Set count = maxResults
+
+    Set tag = $TR($ZHex($Now())_$ZHex($RANDOM(999999)),":.","__")
+
+    For i = 1:1:count {
+        Set lb = $Get(^||BFS.Results(i))
+        If lb = "" Continue
+        Set s = $ListGet(lb, 1)
+        Set p = $ListGet(lb, 2)
+        Set o = $ListGet(lb, 3)
+        Set w = +$ListGet(lb, 4)
+        Set step = +$ListGet(lb, 5)
+        Set ^ArnoKG("bfs_r", tag, step, o) = $ListBuild(s, p, w)
+    }
+
+    Return "SORTED:" _ tag _ ":" _ count
+}
+ClassMethod BFSFastCountDistinct(srcId As %String, predsJson As %String = "", maxHops As %Integer = 2, dstLabel As %String = "", direction As %String = "out", graph As %String = "") As %Integer
+{
+    Set preds = ""
+    If (predsJson '= "") && (predsJson '= "null") {
+        Try {
+            Set preds = ##class(%DynamicArray).%FromJSON(predsJson)
+        } Catch {
+            Set preds = ""
+        }
+    }
+    Set count = ..BFSFast(srcId, preds, maxHops, dstLabel, direction, 0, graph)
+    Set distinct = 0
+    Set seen2 = ""
+    For i = 1:1:count {
+        Set lb = $Get(^||BFS.Results(i))
+        If lb = "" Continue
+        Set o = $ListGet(lb, 3)
+        If '$Data(seen2(o)) {
+            Set seen2(o) = ""
+            Set distinct = distinct + 1
+        }
+    }
+    Return distinct
+}
+ClassMethod ReadBFSChunk(tag As %String, chunkNum As %Integer) As %String
+{
+    Set val = $Get(^ArnoKG("bfs_chunk", tag, chunkNum), "")
+    Kill ^ArnoKG("bfs_chunk", tag, chunkNum)
+    Return val
+}
+ClassMethod ReadBFSResults(tag As %String) As %String
+{
+    Set result = "["
+    Set first = 1
+    Set step = ""
+    For {
+        Set step = $Order(^ArnoKG("bfs_r", tag, step))
+        Quit:step=""
+        Set o = ""
+        For {
+            Set o = $Order(^ArnoKG("bfs_r", tag, step, o), 1, lb)
+            Quit:o=""
+            If 'first Set result = result _ ","
+            Set first = 0
+            Set s = $ListGet(lb, 1)
+            Set p = $ListGet(lb, 2)
+            Set w = +$ListGet(lb, 3)
+            Set result = result _ "{""s"":"""_..jsonEsc(s)_""",""p"":"""_..jsonEsc(p)_""",""o"":"""_..jsonEsc(o)_""",""w"":"_..jsonNum(w)_",""step"":"_step_"}"
+        }
+    }
+    Kill ^ArnoKG("bfs_r", tag)
+    Return result _ "]"
+}
+/// ReadBFSResults for a staged tree too large to be one string: the same rows in the same
+/// order (step, then node), staged as BFSFastStream stages them in ^||BFS.Out and read with
+/// ReadLargeOutChunk. Answers "CHUNKED:S:<n>", or "[]" for an empty tree. Kills the staged
+/// tree once it is copied, as ReadBFSResults does.
+ClassMethod ReadBFSResultsStream(tag As %String) As %String
+{
+    Kill ^||BFS.Out
+    Set chunkLimit = 500000
+    Set chunk = ""
+    Set chunkNum = 0
+    Set first = 1
+    Set step = ""
+    For {
+        Set step = $Order(^ArnoKG("bfs_r", tag, step))
+        Quit:step=""
+        Set o = ""
+        For {
+            Set o = $Order(^ArnoKG("bfs_r", tag, step, o), 1, lb)
+            Quit:o=""
+            Set obj = "{""s"":"""_..jsonEsc($ListGet(lb,1))_""",""p"":"""_..jsonEsc($ListGet(lb,2))_""",""o"":"""_..jsonEsc(o)_""",""w"":"_..jsonNum(+$ListGet(lb,3))_",""step"":"_step_"}"
+            If 'first Set obj = "," _ obj
+            Set first = 0
+            Set chunk = chunk _ obj
+            If $Length(chunk) > chunkLimit {
+                Set chunkNum = chunkNum + 1
+                Set ^||BFS.Out("S", chunkNum) = chunk
+                Set chunk = ""
+            }
+        }
+    }
+    If chunk '= "" {
+        Set chunkNum = chunkNum + 1
+        Set ^||BFS.Out("S", chunkNum) = chunk
+    }
+    Kill ^ArnoKG("bfs_r", tag)
+    If chunkNum = 0 Return "[]"
+    Return "CHUNKED:S:" _ chunkNum
+}
+ClassMethod ReadBFSPage(tag As %String, cursorStep As %String, cursorO As %String, pageSize As %Integer = 500) As %String
+{
+    Set result = ""
+    Set count = 0
+    Set nextStep = ""
+    Set nextO = ""
+
+    Set step = cursorStep
+    Set o = cursorO
+
+    If step = "" {
+        Set step = $Order(^ArnoKG("bfs_r", tag, ""))
+        Set o = ""
+    }
+    If step = "" {
+        Kill ^ArnoKG("bfs_r", tag)
+        Return "{""items"":[],""next_step"":-1,""next_o"":"""",""done"":true}"
+    }
+
+    For {
+        Quit:step=""
+        Set o = $Order(^ArnoKG("bfs_r", tag, step, o), 1, lb)
+        If o = "" {
+            Set step = $Order(^ArnoKG("bfs_r", tag, step))
+            Set o = ""
+            Continue
+        }
+
+        Set s = $ListGet(lb, 1)
+        Set p = $ListGet(lb, 2)
+        Set w = +$ListGet(lb, 3)
+        Set entry = "{""s"":"""_..jsonEsc(s)_""",""p"":"""_..jsonEsc(p)_""",""o"":"""_..jsonEsc(o)_""",""w"":"_..jsonNum(w)_",""step"":"_step_"}"
+        If result '= "" Set result = result _ ","
+        Set result = result _ entry
+        Set count = count + 1
+
+        If count >= pageSize {
+            // The cursor is the LAST item returned: the next call resumes after it.
+            // Handing back the next unread item instead made the following page start
+            // one past it, so one result was lost at every page boundary.
+            If ($Order(^ArnoKG("bfs_r", tag, step, o)) = "") && ($Order(^ArnoKG("bfs_r", tag, step)) = "") {
+                Kill ^ArnoKG("bfs_r", tag)
+                Return "{""items"":["_result_"],""next_step"":-1,""next_o"":"""",""done"":true}"
+            }
+            // the cursor is a node id: escaped as the items are (4.6.3: a quote only, so a backslash broke the page)
+            Set oVal = """"_..jsonEsc(o)_""""
+            Return "{""items"":["_result_"],""next_step"":"_step_",""next_o"":"_oVal_",""done"":false}"
+        }
+    }
+
+    Kill ^ArnoKG("bfs_r", tag)
+    Return "{""items"":["_result_"],""next_step"":-1,""next_o"":"""",""done"":true}"
+}
+ClassMethod TraverseWithPredicate(pGraph As %String, s As %String, p As %String, hop As %Integer, maxHops As %Integer, nextP As %String, dstLabel As %String, ByRef pathId As %Integer, results As %DynamicArray, ByRef nextFrontier, ByRef seen) [ Internal, Private ]
+{
+    Set o = ""
+    For {
+        Set o = $Order(^KG("out", pGraph, s, p, o))
+        If o = "" Quit
+        
+        // Filter by label if requested
+        If (dstLabel '= "") && ('$Data(^KG("label", pGraph, dstLabel, o))) Continue
+        
+        // T014: O(1) Hop Rejection
+        If (hop < maxHops) && (nextP '= "") && ('$Data(^KG("out", pGraph, o, nextP))) Continue
+        
+        Set pathId = pathId + 1
+        Set obj = ##class(%DynamicObject).%New()
+        Set obj.id = pathId
+        Set obj.step = hop
+        Set obj.s = s
+        Set obj.p = p
+        Set obj.o = o
+        Set obj.w = $Get(^KG("out", pGraph, s, p, o), 1.0)
+        Do results.%Push(obj)
+        
+        If '$Data(seen(o)) Set nextFrontier(o) = ""
+    }
+}
+ClassMethod TraverseAllPredicates(pGraph As %String, s As %String, hop As %Integer, maxHops As %Integer, nextP As %String, dstLabel As %String, ByRef pathId As %Integer, results As %DynamicArray, ByRef nextFrontier, ByRef seen) [ Internal, Private ]
+{
+    Set p = ""
+    For {
+        Set p = $Order(^KG("out", pGraph, s, p))
+        If p = "" Quit
+        Do ..TraverseWithPredicate(pGraph, s, p, hop, maxHops, nextP, dstLabel, .pathId, results, .nextFrontier, .seen)
+    }
+}
+ClassMethod TraverseWithPredicateFast(pGraph As %String, s As %String, p As %String, hop As %Integer, maxHops As %Integer, nextP As %String, dstLabel As %String, ByRef count As %Integer, ByRef nextFrontier, ByRef seen) [ Internal, Private ]
+{
+    Set o = ""
+    For {
+        Set o = $Order(^KG("out", pGraph, s, p, o))
+        If o = "" Quit
+        If (dstLabel '= "") && ('$Data(^KG("label", pGraph, dstLabel, o))) Continue
+        
+        // Always record this hop's result — leaf nodes at hop N are valid results
+        // even when hop N < maxHops.
+        Set count = count + 1
+        Set ^||BFS.Results(count) = $ListBuild(s, p, o, $Get(^KG("out", pGraph, s, p, o), 1.0), hop)
+        
+        // Only add to nextFrontier if the node can continue on the next hop.
+        // The nextP lookahead prunes the frontier, not the result set.
+        If '$Data(seen(o)) {
+            If (hop < maxHops) && (nextP '= "") && ('$Data(^KG("out", pGraph, o, nextP))) {
+                // Node has no next-hop edges — don't add to frontier, but result was recorded.
+            } Else {
+                Set nextFrontier(o) = ""
+            }
+        }
+    }
+}
+ClassMethod TraverseAllPredicatesFast(pGraph As %String, s As %String, hop As %Integer, maxHops As %Integer, nextP As %String, dstLabel As %String, ByRef count As %Integer, ByRef nextFrontier, ByRef seen) [ Internal, Private ]
+{
+    Set p = ""
+    For {
+        Set p = $Order(^KG("out", pGraph, s, p))
+        If p = "" Quit
+        Do ..TraverseWithPredicateFast(pGraph, s, p, hop, maxHops, nextP, dstLabel, .count, .nextFrontier, .seen)
+    }
+}
+ClassMethod TraverseWithPredicateFastInbound(pGraph As %String, s As %String, p As %String, hop As %Integer, ByRef count As %Integer, ByRef nextFrontier, ByRef seen) [ Internal, Private ]
+{
+    Set o = ""
+    For {
+        Set o = $Order(^KG("in", pGraph, s, p, o))
+        If o = "" Quit
+        Set count = count + 1
+        Set ^||BFS.Results(count) = $ListBuild(s, p, o, $Get(^KG("out", pGraph, o, p, s), 1.0), hop)
+        If '$Data(seen(o)) Set nextFrontier(o) = ""
+    }
+}
+ClassMethod TraverseAllPredicatesFastInbound(pGraph As %String, s As %String, hop As %Integer, ByRef count As %Integer, ByRef nextFrontier, ByRef seen) [ Internal, Private ]
+{
+    Set p = ""
+    For {
+        Set p = $Order(^KG("in", pGraph, s, p))
+        If p = "" Quit
+        Do ..TraverseWithPredicateFastInbound(pGraph, s, p, hop, .count, .nextFrontier, .seen)
+    }
+}
+}

@@ -1,0 +1,17 @@
+verification results:: 33 verified, 2 errors
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/error-dedup-disabled/20261116T003459Z/models/routine_reporting/routine_reporting.rs:253:25
+    |
+253 |  assert forall|e:Error| dedup(es,held).contains(e)==(held.contains(e)||es.contains(e)) by {
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/error-dedup-disabled/20261116T003459Z/models/routine_reporting/routine_reporting.rs:273:10
+    |
+272 | pub proof fn theorem_same_raw_message_core_failures_share_error(text:Text)
+    | -------------------------------------------------------------------------- at the end of the function body
+273 |  ensures dedup(seq![Error::Core(Diagnostic::Provider(text)),Error::Core(Diagnostic::Provider(text))],seq![])==seq![Error::Core(Diagnostic::Provider(text))]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

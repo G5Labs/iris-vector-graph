@@ -1,0 +1,1041 @@
+import json
+import logging
+from typing import Dict, Any, List, Optional
+
+from iris_vector_graph.status import (
+    STATUS_PARTS,
+    EngineStatus,
+    TableCounts,
+    AdjacencyStatus,
+    ObjectScriptStatus,
+    ArnoStatus,
+    IndexInventory,
+    SyncReport,
+)
+from iris_vector_graph.result import IVGResult
+from iris_vector_graph.exceptions import ClassesUnreadable
+
+logger = logging.getLogger(__name__)
+
+
+def arno_library_path(native, loaded: bool) -> str:
+    """The Arno library file for ``status().arno.lib_path`` (4.6.0 R132): the one this server process loaded
+    (``Graph.KG.ArnoAccel.LoadedPath``) when it is loaded, else the path both loaders resolve and would try
+    (``LibPath``, given ``IVG_ARNO_LIB`` when set)."""
+    from iris_vector_graph.stores.arno_bridge import loader_args
+
+    if loaded:
+        path = str(native.classMethodValue("Graph.KG.ArnoAccel", "LoadedPath") or "")
+        if path:
+            return path
+    return str(native.classMethodValue("Graph.KG.ArnoAccel", "LibPath", *loader_args()) or "")
+
+
+def arno_status(native, *, deployed: bool, loaded: bool, version: str, capabilities: dict,
+                errors: Optional[list] = None) -> ArnoStatus:
+    """``status().arno``. Under ``IVG_DISABLE_ARNO=1`` nothing is asked of the server: no library was tried, so none is
+    named, and the status says the switch is on (4.6.0 R207, P3). Otherwise the library path, and whether that file is
+    on the server (``Graph.KG.ArnoAccel.LibExists``; R225: a missing file read "not loaded" like a broken one)."""
+    from iris_vector_graph.stores.arno_bridge import arno_disabled
+
+    if arno_disabled():
+        return ArnoStatus(loaded=False, capabilities={}, version="", lib_path="", disabled=True)
+    lib_path, lib_found = "", None
+    if deployed:
+        try:
+            lib_path = arno_library_path(native, loaded=loaded)
+        except Exception as exc:
+            if errors is not None:
+                errors.append(f"Arno library path: {exc}")
+        if loaded:
+            lib_found = True
+        elif lib_path:
+            try:
+                lib_found = bool(int(native.classMethodValue("Graph.KG.ArnoAccel", "LibExists", lib_path) or 0))
+            except Exception as exc:  # a namespace whose classes predate LibExists: not known, and said
+                if errors is not None:
+                    errors.append(f"Arno library file check: {exc}")
+    return ArnoStatus(loaded=loaded, capabilities=dict(capabilities), version=version, lib_path=lib_path,
+                      lib_found=lib_found)
+
+
+def _degree_cache_off(native) -> List[str]:
+    """The names of the graphs ``^IVG.AdjNoLock`` holds (4.7.0 row 17); "" is the default graph (key 0)."""
+    out: List[str] = []
+    key = native.nextSubscript(False, "^IVG.AdjNoLock", "")
+    # a subscript is a graph key: 0 or a graph name; anything else (no Native API answer) ends the walk
+    while isinstance(key, (str, int)) and not isinstance(key, bool) and key != "":
+        out.append("" if str(key) == "0" else str(key))
+        key = native.nextSubscript(False, "^IVG.AdjNoLock", key)
+    return out
+
+
+def _first_adjacency_entry(native):
+    """``(graph, s, p, o)`` of the first edge in ``^KG("out", graph key, s, p, o)`` in collation order, or None when
+    there is none. ``graph`` is the graph's name ("" for the default graph, whose key is 0; Graph.KG.GraphKey).
+    """
+
+    def first(*subs):
+        key = native.nextSubscript(False, "^KG", "out", *subs, "")
+        return None if key is None or key == "" else key
+
+    graph_key = first()
+    if graph_key is None:
+        return None
+    src = first(graph_key)
+    pred = None if src is None else first(graph_key, src)
+    if pred is None:
+        return None
+    dst = first(graph_key, src, pred)
+    graph = "" if str(graph_key) == "0" else str(graph_key)
+    return graph, str(src), str(pred), "" if dst is None else str(dst)
+
+
+def active_queries_sql(limit: int) -> str:
+    """The statement that lists running SQL, one row per statement.
+
+    Columns: process ID (what `kill_query` takes), status, user, statement text.
+    `%SYS.ProcessQuery` has no statement column, and the `ClientName` / `Command`
+    this used to name do not exist there; with `FETCH FIRST` the resulting Prepare
+    error SIGSEGVs the driver instead of raising. The limit is `TOP`, inlined as an
+    integer.
+    """
+    return (
+        f"SELECT TOP {int(limit)} c.ProcessID, c.Status, c.UserName, s.Statement "
+        "FROM INFORMATION_SCHEMA.CURRENT_STATEMENTS c "
+        "LEFT JOIN INFORMATION_SCHEMA.STATEMENTS s ON s.Hash = c.StatementIndexHash"
+    )
+
+
+class AdminMixin:
+    """Administrative/system operations mixin for IRISGraphEngine.
+
+    Provides schema introspection, query management, index visibility,
+    and diagnostic warning aggregation.
+    """
+
+    def _handle_show_command(self, cmd: str) -> Dict[str, Any]:
+        if "DATABASES" in cmd:
+            return IVGResult(
+                columns=[
+                    "name",
+                    "type",
+                    "aliases",
+                    "access",
+                    "address",
+                    "role",
+                    "writer",
+                    "requestedStatus",
+                    "currentStatus",
+                    "statusMessage",
+                    "default",
+                    "home",
+                    "constituents",
+                ],
+                rows=[
+                    [
+                        "neo4j",
+                        "standard",
+                        [],
+                        "read-write",
+                        "localhost:7687",
+                        "primary",
+                        True,
+                        "online",
+                        "online",
+                        "",
+                        True,
+                        True,
+                        [],
+                    ]
+                ],
+            )
+        if "PROCEDURES" in cmd:
+            procs = self._try_system_procedure(
+                type("P", (), {"procedure_name": "dbms.procedures"})()
+            )
+            if procs:
+                return IVGResult(
+                    columns=["name", "description", "signature"],
+                    rows=[[r[0], r[2], r[1]] for r in procs.rows],
+                )
+            return IVGResult(columns=["name", "description", "signature"], rows=[])
+        if "FUNCTIONS" in cmd:
+            fns = self._try_system_procedure(type("P", (), {"procedure_name": "dbms.functions"})())
+            if fns:
+                return IVGResult(
+                    columns=["name", "description", "signature"],
+                    rows=[[r[0], r[2], r[1]] for r in fns.rows],
+                )
+            return IVGResult(columns=["name", "description", "signature"], rows=[])
+        if "INDEXES" in cmd:
+            return self._show_indexes()
+        if "CONSTRAINTS" in cmd:
+            return self._show_constraints()
+        return IVGResult(columns=["value"], rows=[])
+
+    def _hnsw_indexes(self, table_name: str) -> List[tuple]:
+        """The HNSW indexes IRIS actually holds on ``table_name``, as ``(name, properties)``.
+
+        Delegates to :meth:`GraphSchema.hnsw_indexes`, which owns the dictionary read. The
+        name is the index's ``SqlName`` — what the operator typed in ``CREATE INDEX`` and
+        what they would type to drop it.
+        """
+        from iris_vector_graph.schema import GraphSchema
+
+        cursor = self.conn.cursor()
+        try:
+            return GraphSchema.hnsw_indexes(cursor, table_name)
+        finally:
+            try:
+                cursor.close()
+            except Exception:
+                pass
+
+    def _show_indexes(self) -> "IVGResult":
+        cols = ["name", "type", "entityType", "labelsOrTypes", "properties", "state"]
+        rows = []
+
+        # HNSW vector indexes, read from the class dictionary. Nothing is emitted when no
+        # index exists (spec 226, FR-018): this used to append a `hnsw_node_embeddings` row
+        # unconditionally and derive its state from the row count of
+        # `kg_NodeEmbeddings_optimized` — `ONLINE` with rows, `BUILDING` without. A row
+        # count is not an index, and `BUILDING` told operators to wait for a build that was
+        # never running. On the shipped schema it could not run: both embedding tables key
+        # on a VARCHAR `id`, and IRIS refuses ANN indices there (ERROR #7222).
+        for table_name in ("kg_NodeEmbeddings", "kg_NodeEmbeddings_optimized"):
+            table = self._t(table_name)
+            for index_name, properties in self._hnsw_indexes(table):
+                rows.append(
+                    [
+                        index_name,
+                        "VECTOR(HNSW)",
+                        "NODE",
+                        [table],
+                        [p for p in str(properties).split(",") if p] or ["emb"],
+                        "ONLINE",
+                    ]
+                )
+
+        from iris_vector_graph.schema import GraphSchema, _call_classmethod
+
+        for name, index_type in GraphSchema.global_indexes(
+            lambda cls, method: _call_classmethod(self.conn, cls, method)
+        ):
+            properties = ["*"] if index_type == "FULLTEXT(BM25)" else ["emb"]
+            rows.append([name, index_type, "NODE", ["*"], properties, "ONLINE"])
+
+        try:
+            native = self._iris_obj()
+            nkg_ok = bool(int(native.classMethodValue("Graph.KG.Traversal", "NKGPopulated")))
+        except Exception:
+            nkg_ok = False
+        rows.append(
+            [
+                "nkg_adjacency",
+                "ADJACENCY(^NKG)",
+                "RELATIONSHIP",
+                ["*"],
+                ["*"],
+                "ONLINE" if nkg_ok else "NOT_BUILT",
+            ]
+        )
+
+        kg_ok = False
+        try:
+            native = self._iris_obj()
+            kg_ok = int(native.classMethodValue("Graph.KG.Traversal", "KGEdgeCount", 1)) > 0
+        except Exception:
+            pass
+        rows.append(
+            [
+                "kg_adjacency",
+                "ADJACENCY(^KG)",
+                "RELATIONSHIP",
+                ["*"],
+                ["*"],
+                "ONLINE" if kg_ok else "NOT_BUILT",
+            ]
+        )
+
+        rows.append(["pk_nodes", "UNIQUE", "NODE", ["*"], ["node_id"], "ONLINE"])
+        rows.append(["pk_rdf_edges", "UNIQUE", "RELATIONSHIP", ["*"], ["s", "p", "o_id"], "ONLINE"])
+
+        return IVGResult(columns=cols, rows=rows)
+
+    def _show_constraints(self) -> "IVGResult":
+        cols = ["name", "type", "entityType", "labelsOrTypes", "properties", "ownedIndex"]
+        rows = [
+            ["node_id_unique", "UNIQUENESS", "NODE", ["*"], ["node_id"], "pk_nodes"],
+            [
+                "edge_spo_unique",
+                "UNIQUENESS",
+                "RELATIONSHIP",
+                ["*"],
+                ["s", "p", "o_id"],
+                "pk_rdf_edges",
+            ],
+        ]
+        try:
+            cursor = self.conn.cursor()
+            # Check table existence via %Dictionary before querying it — the IRIS
+            # Python driver segfaults on SELECT against a non-existent table.
+            #
+            # `fhir_bridges` is DDL-declared (schema.py); no `Graph.KG.FHIRBridge` class
+            # has ever shipped, so probing for one reported nothing on every install.
+            cursor.execute(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES "
+                f"WHERE TABLE_SCHEMA = '{self._ivg_schema}' AND TABLE_NAME = 'fhir_bridges'"
+            )
+            if int((cursor.fetchone() or [0])[0]) > 0:
+                rows.append(
+                    [
+                        "fhir_bridge_unique",
+                        "UNIQUENESS",
+                        "NODE",
+                        ["*"],
+                        ["fhir_code", "kg_node_id"],
+                        "pk_bridge",
+                    ]
+                )
+        except Exception:
+            pass
+        return IVGResult(columns=cols, rows=rows)
+
+    def _embedding_tables(self, cursor, kind: str, errors: Optional[list] = None) -> List[str]:
+        """Every table this install can hold ``kind`` vectors in (spec 230, FR-006).
+
+        The legacy table first — it is the default route, and on an install that has
+        never routed anything it is the whole answer — then every route the registry
+        names of that kind.
+
+        Kind comes off the registry row, not off a prefix test: `kg_eemb_` and `kg_emb_`
+        are unreachable from each other by ``startswith``, but the name is a hash and the
+        row is the record of what was created (FR-011). A row with no kind is a node
+        route, which is what every row written before 4.0.0 is.
+
+        ``kg_NodeEmbeddings_optimized`` is deliberately not in the node list: it mirrors
+        `kg_NodeEmbeddings`'s rows for the ANN index, so adding it would double-count an
+        install that built one.
+        """
+        from iris_vector_graph._engine.schema import ROUTE_KIND_EDGE, ROUTE_KIND_NODE
+        from iris_vector_graph.security import (
+            is_routed_edge_embedding_table,
+            is_routed_embedding_table,
+        )
+
+        is_route = (
+            is_routed_edge_embedding_table
+            if kind == ROUTE_KIND_EDGE
+            else is_routed_embedding_table
+        )
+        legacy = self._legacy_table_for(kind)
+        tables = [legacy]
+        seen = {legacy.lower()}
+        try:
+            cursor.execute(
+                "SELECT DISTINCT table_name, COALESCE(kind, 'node')"
+                f" FROM {self._registry_table()}"
+            )
+            rows = cursor.fetchall() or []
+        except Exception as e:
+            # No registry: a 3.2.0 database, where the legacy table is every table
+            # there is. Not an error on the report — nothing is missing. Any other failure is reported
+            # (4.6.0 R160): the routed tables are then left out of what the report counts.
+            if errors is not None and "SQLCODE: <-30>" not in str(e):
+                errors.append(f"embedding registry read failed (routed tables not counted): {e}")
+            return tables
+        for row in rows:
+            name = str(row[0]) if row and row[0] else ""
+            row_kind = str(row[1]) if len(row) > 1 and row[1] else ROUTE_KIND_NODE
+            if row_kind != kind or not is_route(name) or name.lower() in seen:
+                continue
+            seen.add(name.lower())
+            tables.append(name)
+        return tables
+
+    def _embedding_row_count(self, cursor, kind: str, errors: list) -> int:
+        """Rows of ``kind`` across every table that holds them (spec 230, FR-006).
+
+        Counting one table name reported zero for an install whose vectors are all
+        routed — a number an operator reads as "the embeddings are gone" while a search
+        over the same rows answers fine.
+
+        A table the registry names but the database has lost is reported and skipped:
+        the sum is then short, and saying so is the difference between a count that can
+        be acted on and a wrong one.
+        """
+        total = 0
+        for table in self._embedding_tables(cursor, kind, errors):
+            try:
+                cursor.execute(f"SELECT COUNT(*) FROM {self._t(table)}")
+                row = cursor.fetchone()
+                total += int(row[0]) if row else 0
+            except Exception as e:
+                errors.append(f"count probe failed for {table}: {e}")
+        return total
+
+    def remove_legacy_objects(self, dry_run: bool = True) -> list:
+        """The objects IVG 4.5.x created in SQLUser and the User package that are still here, by the frozen manifest
+        (spec 262, FR-011); ``dry_run=False`` removes exactly the ones that are IVG's. Each item: ``kind``,
+        ``sql_name``, ``class_name``, ``present``, ``grants``, ``removed``, ``ivg_owned`` and ``note``. A name not on
+        the manifest is never listed or touched. An object under a manifest name whose body (a view's query, a class's
+        source) no IVG release shipped, such as an operator's own ``JSON_VALUE`` in SQLUser installed again after 4.5.x
+        overwrote it, is listed with ``ivg_owned`` False and a ``note`` saying it is kept, and is never removed."""
+        from iris_vector_graph._engine.legacy import remove_legacy_objects
+        from iris_vector_graph._write_txn import refuse_in_caller_transaction
+
+        # Works on any namespace, upgraded or not: it reads and drops SQLUser and User objects by the manifest only.
+        with self._schema_check_suspended():
+            if not dry_run:  # 4.7.0 (row 3b's audit): drops, revokes and a commit (legacy.py), not the caller's
+                refuse_in_caller_transaction(
+                    self.conn, "remove_legacy_objects()", "it drops SQL objects and classes and commits",
+                )
+            return remove_legacy_objects(self.conn, self._iris_obj(), dry_run=dry_run)
+
+    def status(self, internals: bool = False) -> "EngineStatus":
+        """What the namespace holds and what answers this engine's calls. Its row counts (``tables``, the report's
+        ``Graph:`` line) are every graph's together; ``node_count()`` and ``edge_count()`` count one graph. Never
+        refused by the first-access check (spec 262): on a namespace that refuses this engine it reports the namespace's
+        IVG Schema (``None`` with no record), the legacy-object count and the refusal, and probes nothing else."""
+        with self._schema_check_suspended():
+            schema, refusal, legacy, problem = self._status_schema()
+            if refusal is not None:
+                return EngineStatus(embedding_dimension=self.embedding_dimension, errors=[refusal], schema=schema,
+                                    legacy_objects=legacy, pending_sync=self._nkg_dirty,
+                                    unknown=list(STATUS_PARTS))  # nothing was probed (R050)
+        status = self._status_probes(internals)
+        status.schema, status.legacy_objects = schema, legacy
+        if problem:
+            status.errors.append(problem)
+        return status
+
+    def _status_schema(self):
+        """(the namespace's IVG Schema or None, the first-access refusal's text or None, the legacy-object count, a
+        probe error or None). Read only over an IRIS connection, the one kind the first-access check reads too."""
+        from iris_vector_graph._engine import legacy
+        from iris_vector_graph.schema_name import IVGSchemaError, check_first_access, is_iris_connection, read_record
+
+        if not is_iris_connection(getattr(self, "conn", None)):
+            return self._schema_prefix, None, 0, None
+        try:
+            native = self._iris_obj()
+            recorded = read_record(native)
+            refusal = None
+            try:
+                check_first_access(native, self._schema_prefix)
+            except IVGSchemaError as exc:
+                refusal = str(exc)
+            count = legacy.legacy_count(self.conn, native)
+        except Exception as exc:  # status reports what it could not read rather than failing (as its other probes do)
+            return self._schema_prefix, None, 0, f"schema record probe failed: {exc}"
+        if refusal is None and recorded is None:
+            # This release's objects are there but no record: setup writes it last, so it stopped before the end.
+            return None, None, count, (
+                f"no IVG Schema record: setup has not finished here ({self._schema_prefix}'s objects are there, but "
+                "initialize_schema() records the schema as its last step). Run initialize_schema() again.")
+        return recorded, refusal, count, None
+
+    def _status_probes(self, internals: bool) -> "EngineStatus":
+        import time as _time
+
+        from iris_vector_graph._engine.schema import ROUTE_KIND_EDGE, ROUTE_KIND_NODE
+
+        t0 = _time.perf_counter()
+        errors: list = []
+        unknown: list = []  # what the report cannot tell (4.6.0 R050)
+        cursor = self.conn.cursor()
+
+        def _count(sql, part=None):
+            try:
+                cursor.execute(sql)
+                row = cursor.fetchone()
+                return int(row[0]) if row else 0
+            except Exception as e:
+                errors.append(f"count probe failed: {e}")
+                if part:
+                    unknown.append(part)
+                return 0
+
+        def _failed(part, probe):
+            """``probe()``'s answer, with ``part`` unknown when it adds a probe error (round 3, expert W8: a failed
+            index or ledger probe printed ``absent`` and ``not enabled``)."""
+            before = len(errors)
+            answer = probe()
+            if len(errors) > before:
+                unknown.append(part)
+            return answer
+
+        tables = TableCounts(
+            nodes=_count(f"SELECT COUNT(*) FROM {self._t('nodes')}", "graph"),
+            edges=_count(f"SELECT COUNT(*) FROM {self._t('rdf_edges')}", "graph"),
+            labels=_count(f"SELECT COUNT(*) FROM {self._t('rdf_labels')}"),
+            props=_count(f"SELECT COUNT(*) FROM {self._t('rdf_props')}"),
+            node_embeddings=_failed("vector_index",
+                                    lambda: self._embedding_row_count(cursor, ROUTE_KIND_NODE, errors)),
+            edge_embeddings=self._embedding_row_count(cursor, ROUTE_KIND_EDGE, errors),
+        )
+
+        kg_count = 0
+        kg_capped = False
+        kg_populated = False
+        nkg_populated = False
+        try:
+            native = self._iris_obj()
+            kg_count = int(native.classMethodValue("Graph.KG.Traversal", "KGEdgeCount", 10000))
+            kg_populated = kg_count > 0
+            kg_capped = kg_count >= 10000
+            nkg_populated = bool(int(native.classMethodValue("Graph.KG.Traversal", "NKGPopulated")))
+        except Exception as e:
+            # the count is unknown whether or not the fallback says ^KG holds something (4.6.0 R160: it was silent
+            # when the fallback answered)
+            errors.append(f"adjacency count probe failed (Graph.KG.Traversal.KGEdgeCount): {e}")
+            unknown.append("sync")
+            try:
+                # the global's name, then its subscripts: a list in its place was <SYNTAX> on every server (R050)
+                kg_populated = bool(self._iris_obj().isDefined("^KG", "out"))
+            except Exception as e2:
+                errors.append(f'adjacency probe failed (isDefined ^KG("out")): {e2}')
+
+        kg_predicates_consistent = True
+        if kg_populated and tables.edges > 0:
+            # The first entry of ^KG("out", graph key, s, p, o) must be a row of rdf_edges. 4.6.0 R199: this read
+            # `native.get(["KG", "out", "", 0, ""])`, a list where the Native API takes the global's name, which every
+            # server rejects with <SYNTAX>, and fell back to `orderAll`, which the Native API does not have: every
+            # status() of a namespace with edges listed the error, and the check never ran.
+            entry = None
+            try:
+                entry = _first_adjacency_entry(self._iris_obj())
+            except Exception as e:
+                errors.append(f"adjacency predicate probe failed: {e}")
+                unknown.append("sync")
+
+            if entry is not None:
+                graph, src, pred, dst = entry
+                try:
+                    cursor.execute(
+                        f"SELECT COUNT(*) FROM {self._t('rdf_edges')} "
+                        "WHERE s = ? AND p = ? AND COALESCE(graph_id, '') = ?",
+                        [src, pred, graph],
+                    )
+                    row = cursor.fetchone()
+                    if row and int(row[0]) == 0:
+                        kg_predicates_consistent = False
+                        where = f" in graph {graph!r}" if graph else ""
+                        errors.append(
+                            f"Index mismatch: the adjacency index holds {src} -{pred}-> {dst}{where}, which "
+                            f"{self._t('rdf_edges')} has no row for. Call engine.sync() after reloading graph data."
+                        )
+                except Exception as e:
+                    errors.append(f"predicate consistency probe failed: {e}")
+                    unknown.append("sync")
+
+        adjacency = AdjacencyStatus(
+            kg_populated=kg_populated,
+            kg_edge_count=kg_count,
+            kg_edge_count_capped=kg_capped,
+            nkg_populated=nkg_populated,
+            kg_predicates_consistent=kg_predicates_consistent,
+            bfs_path="none",
+        )
+        try:
+            from iris_vector_graph.schema import GraphSchema
+
+            # a role refused the class dictionary is answered through the Native API (4.7.0)
+            adjacency.index = GraphSchema.adjacency_index_kind(
+                cursor, schema=self._ivg_schema, native=getattr(self, "_native_or_none", lambda: None)())
+        except Exception as e:
+            from iris_vector_graph._dictionary import sql_refused
+
+            if sql_refused(e):
+                unknown.append("adjacency")  # not readable for this role: unknown, not an error (R050)
+            else:
+                errors.append(f"adjacency index probe failed (%Dictionary.CompiledIndex): {e}")
+        if adjacency.index == "plain":
+            errors.append(
+                f"{self._ivg_schema}.rdf_edges' idx_edges_adj is a plain index, not the adjacency index "
+                "(Graph.KG.AdjIndex): IVG's writers keep ^KG themselves until initialize_schema() replaces it"
+            )
+        elif adjacency.index == "absent":
+            errors.append(
+                f"{self._ivg_schema}.rdf_edges has no adjacency index (idx_edges_adj): Cypher writes won't maintain "
+                "^KG; run initialize_schema()"
+            )
+        try:
+            adjacency.degree_cache_off = _degree_cache_off(self._iris_obj())
+        except Exception as e:
+            errors.append(f"degree cache probe failed (^IVG.AdjNoLock): {e}")
+        for graph in adjacency.degree_cache_off:
+            where = "the default graph" if graph == "" else f"graph {graph!r}"
+            errors.append(
+                f"the degree cache of {where} is off: a write went in without the adjacency writer lock "
+                "(Graph.KG.Adjacency.WriterLock); run engine.sync() to clear"
+            )
+
+        os_classes = []
+        try:
+            os_deployed = self.capabilities.objectscript_deployed
+        except ClassesUnreadable as exc:  # status() reports what it could not read rather than failing (R050)
+            os_deployed = False
+            errors.append(str(exc))
+            unknown.append("acceleration")
+        _known_classes = [
+            "Graph.KG.Traversal",
+            "Graph.KG.PageRank",
+            "Graph.KG.IVFIndex",
+            "Graph.KG.BM25Index",
+            "Graph.KG.ArnoAccel",
+            "Graph.KG.Snapshot",
+            "Graph.KG.Dijkstra",
+        ]
+        if os_deployed:
+            from iris_vector_graph._dictionary import compiled_class_exists
+
+            for cls in _known_classes:
+                try:
+                    # Over the Native API when the dictionary SELECT is refused (ADMIN_GUIDE's reading role): it was
+                    # one "class check failed" per class for every reader (4.6.0 R202)
+                    if compiled_class_exists(self.conn, cls, native=self._iris_obj()):
+                        os_classes.append(cls)
+                except Exception as e:
+                    errors.append(f"class check failed for {cls}: {e}")
+
+        objectscript = ObjectScriptStatus(deployed=os_deployed, classes=os_classes)
+
+        self._detect_arno()
+        arno_version = ""
+        if self._arno_available:
+            try:
+                arno_version = str(self._iris_obj().classMethodValue("Graph.KG.ArnoAccel", "LibraryVersion") or "")
+            except Exception as exc:
+                errors.append(f"Arno version: {exc}")
+        native = None
+        if os_deployed:
+            try:
+                native = self._iris_obj()
+            except Exception as exc:  # no Native API on this connection: said, as before
+                errors.append(f"Arno library path: {exc}")
+        arno = arno_status(
+            native,
+            deployed=native is not None,
+            loaded=bool(self._arno_available),
+            version=arno_version,
+            capabilities=self._arno_capabilities,
+            errors=errors,
+        )
+
+        # An HNSW index on any table holding node vectors, read from the class dictionary as SHOW INDEXES reads it
+        # (GraphSchema.hnsw_indexes). This was a row count of kg_NodeEmbeddings_optimized, which is not an index: rows
+        # with no index read "built", and an index on the default table or a routed one read "not built" (4.6.0 R160).
+        from iris_vector_graph.schema import GraphSchema
+
+        def _hnsw_built():
+            hnsw_tables = self._embedding_tables(cursor, ROUTE_KIND_NODE, errors)
+            hnsw_tables.insert(1, "kg_NodeEmbeddings_optimized")
+            try:
+                hnsw_native = self._iris_obj()
+            except Exception:  # noqa: BLE001 - no Native API: a refused dictionary read is reported as it was
+                hnsw_native = None
+            return any(GraphSchema.hnsw_indexes(cursor, self._t(t), errors, native=hnsw_native) for t in hnsw_tables)
+
+        hnsw_built = _failed("vector_index", _hnsw_built)
+
+        # BM25, IVF and PLAID indexes are recorded in their classes' globals (^BM25Idx, ^IVF, ^PLAID), one subscript per
+        # index, and each class's List() answers the names, as SHOW INDEXES reads them (R103). This read the tables
+        # kg_BM25Meta, kg_IVFMeta and kg_PlaidMeta, which nothing creates, and swallowed the error, so every list was
+        # empty (4.6.0 R134). An empty list is "none built"; a List() that fails is an error on the report.
+        from iris_vector_graph.schema import GraphSchema, _call_classmethod
+
+        listed = {}
+        kind_names = {"FULLTEXT(BM25)": "BM25", "VECTOR(IVF)": "IVF", "VECTOR(PLAID)": "PLAID"}
+        kind_parts = {"FULLTEXT(BM25)": "fulltext_index", "VECTOR(IVF)": "ivf_index", "VECTOR(PLAID)": "plaid_index"}
+        for class_name, index_type in GraphSchema.GLOBAL_INDEX_KINDS:
+            try:
+                names = str(_call_classmethod(self.conn, class_name, "List") or "")
+            except Exception as e:
+                errors.append(f"{kind_names[index_type]} index list failed ({class_name}.List): {e}")
+                unknown.append(kind_parts[index_type])
+                names = ""
+            listed[index_type] = [name for name in names.split(",") if name]
+        ivf = listed["VECTOR(IVF)"]
+        bm25 = listed["FULLTEXT(BM25)"]
+        plaid = listed["VECTOR(PLAID)"]
+
+        indexes = IndexInventory(
+            hnsw_built=hnsw_built,
+            ivf_indexes=ivf,
+            bm25_indexes=bm25,
+            plaid_indexes=plaid,
+        )
+
+        if arno.loaded and arno.capabilities.get("bfs") and adjacency.nkg_populated:
+            adjacency.bfs_path = "arno"
+        elif objectscript.deployed and adjacency.kg_populated:
+            adjacency.bfs_path = "objectscript"
+
+        missing_routines = self._missing_routines(cursor, errors, unknown)
+
+        probe_ms = (_time.perf_counter() - t0) * 1000
+        try:
+            ledger_status = _failed("ledger", lambda: self._ledger_status(errors))  # spec 213 FR-050
+        except Exception as e:
+            errors.append(f"ledger status probe failed: {e}")
+            unknown.append("ledger")
+            ledger_status = None
+        return EngineStatus(
+            missing_routines=missing_routines,
+            ledger=ledger_status,
+            tables=tables,
+            adjacency=adjacency,
+            objectscript=objectscript,
+            arno=arno,
+            indexes=indexes,
+            embedding_dimension=self.embedding_dimension,
+            probe_ms=probe_ms,
+            errors=list(dict.fromkeys(errors)),  # one entry per failure, however many probes it failed
+            pending_sync=self._nkg_dirty,
+            unknown=list(dict.fromkeys(unknown)),
+            internals=(
+                {"^KG_populated": adjacency.kg_populated, "^NKG_populated": adjacency.nkg_populated}
+                if internals
+                else None
+            ),
+        )
+
+    def _missing_routines(self, cursor, errors: List[str], unknown: Optional[List[str]] = None) -> List[str]:
+        """The functions and procedures setup declares (``GraphSchema.get_procedures_sql_list``) that this engine's IVG
+        Schema lacks, as the DDL names them (4.6.0 R200: ``kg_RRF_FUSE`` was absent on Community 2026.1 and nothing
+        said so).
+
+        ``INFORMATION_SCHEMA.ROUTINES`` lists only the routines the caller may run, so a user holding SELECT and no
+        EXECUTE saw none and every declared routine was reported missing on a complete namespace (4.7.0 row 29). A
+        routine the view does not list is asked of the database: ``SELECT TOP 0 <schema>.<name>(NULL)`` is refused at
+        Prepare with SQLCODE -359 when there is no such routine and -99 when the caller may not run it, and runs
+        nothing. Only -359 is missing; the -99 ones are named in ``errors`` and ``routines`` goes under ``unknown``."""
+        import re as _re
+
+        from iris_vector_graph.routine_record import declared_routine_name
+        from iris_vector_graph.schema import GraphSchema
+
+        schema = getattr(self, "_schema_prefix", "Graph_KG")
+        try:
+            cursor.execute("SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = ?", [schema])
+            present = {str(row[0]).upper() for row in cursor.fetchall()}
+        except Exception as e:
+            errors.append(f"routine check failed (INFORMATION_SCHEMA.ROUTINES): {e}")
+            return []
+        declared = [declared_routine_name(s) for s in GraphSchema.get_procedures_sql_list(table_schema=schema)]
+        missing, unchecked, failed = [], [], False
+        for name in declared:
+            if not name or name.upper() in present:
+                continue
+            try:
+                cursor.execute(f"SELECT TOP 0 {schema}.{name}(NULL)")
+                cursor.fetchall()
+            except Exception as e:
+                m = _re.search(r"SQLCODE: <(-?\d+)>", str(e))
+                code = m.group(1) if m else None
+                if code == "-359":
+                    missing.append(name)
+                elif code == "-99":
+                    unchecked.append(name)
+                elif code != "-357":  # -357: a procedure, which is there
+                    failed = True
+                    errors.append(f"routine check of {schema}.{name} failed: {e}")
+            # no error: it is there and the caller may run it (the view had not listed it)
+        if unchecked:
+            errors.append(
+                f"status() could not check {len(unchecked)} routine(s) this user may not run (no EXECUTE on "
+                f"them, SQLCODE -99; INFORMATION_SCHEMA.ROUTINES lists only routines the caller may run): "
+                f"{', '.join(unchecked)}"
+            )
+        if (unchecked or failed) and unknown is not None and "routines" not in unknown:
+            unknown.append("routines")
+        return missing
+
+    def verify_sync(self, heal: bool = False) -> "SyncReport":
+        """Check whether the ^KG/^NKG adjacency indexes agree with the SQL tables.
+
+        The authoritative graph state lives in ``Graph_KG.rdf_edges``. The ^KG/^NKG
+        globals are a derived acceleration index, maintained inline by
+        ``create_edge`` / ``bulk_*`` / ``WriteAdjacency`` but NOT by every write
+        path. BYPASS paths — ``drop_graph``, ``delete_node``, raw SQL inserts, the
+        ``map_sql_table`` bridge, or an interrupted bulk load — mutate the table
+        without touching the globals, leaving BFS / centrality / var-length Cypher
+        silently stale. This compares the SQL edge count against the ^NKG edge
+        count and reports the divergence.
+
+        Args:
+            heal: When True, run ``sync()`` to rebuild the globals if drift is found.
+
+        Returns:
+            SyncReport. ``report.in_sync`` is False when counts diverge OR the
+            in-process ``_nkg_dirty`` flag is set. ``bool(report)`` mirrors
+            ``in_sync`` for ``if not engine.verify_sync(): engine.sync()`` usage.
+        """
+        sql_edges = 0
+        global_edges = 0
+        global_nodes = 0
+        detail = None
+        indeterminate = False
+
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute(f"SELECT COUNT(*) FROM {self._t('rdf_edges')}")
+            row = cursor.fetchone()
+            sql_edges = int(row[0]) if row else 0
+        except Exception as e:
+            indeterminate = True
+            detail = f"SQL edge count failed: {str(e)[:120]}"
+
+        try:
+            iris_obj = self._iris_obj()
+            global_edges = int(iris_obj.classMethodValue("Graph.KG.Traversal", "NKGEdgeCount"))
+            # Nodes with a row as the last ^NKG rewrite counted them, not $meta("nodeCount"),
+            # which is the interning high-water mark (indices are stable and never reused, so
+            # it exceeds the node count once a rebuild has removed nodes).
+            global_nodes = int(iris_obj.classMethodValue("Graph.KG.Traversal", "NKGLiveNodeCount"))
+        except Exception as e:
+            indeterminate = True
+            detail = f"NKG count failed (globals likely unbuilt): {str(e)[:120]}"
+
+        pending = bool(getattr(self, "_nkg_dirty", False))
+
+        # Drift oracle. ``_nkg_dirty`` is the authoritative in-process signal: a
+        # write path that bypassed adjacency maintenance set it. The count
+        # comparison is a SECONDARY heuristic and is deliberately one-directional:
+        # we only flag drift when SQL edges *exceed* indexed edges (the
+        # unambiguous "rows exist in the table but not in the index" case).
+        #
+        # We do NOT flag the reverse (globals > SQL), because ^NKG's meta
+        # edgeCount is known to over-count: InternNode/InternLabel are
+        # append-only (never decremented on delete) and NKG interning ignores
+        # graph_id while the SQL UNIQUE is on (s,p,o,graph_id). Treating
+        # globals>SQL as drift would produce false positives on any DB that has
+        # seen deletes. A full rebuild (sync()) is the only way to reconcile
+        # the meta counter, and verify_sync(heal=True) does exactly that.
+        sql_exceeds = sql_edges > global_edges
+        in_sync = (not sql_exceeds) and (not pending) and (not indeterminate)
+
+        if not in_sync and detail is None:
+            if pending and not sql_exceeds:
+                detail = "pending_sync flag set — writes occurred without sync()"
+            else:
+                detail = (
+                    f"drift: {sql_edges} SQL edges vs {global_edges} indexed edges. "
+                    "A write path bypassed adjacency maintenance — call engine.sync()."
+                )
+
+        report = SyncReport(
+            in_sync=in_sync,
+            sql_edges=sql_edges,
+            global_edges=global_edges,
+            global_nodes=global_nodes,
+            pending_sync=pending,
+            healed=False,
+            detail=detail,
+        )
+
+        if heal and not in_sync:
+            try:
+                self.sync()
+                report.healed = True
+                report.in_sync = True
+                report.detail = (detail or "") + " | healed via sync()"
+            except Exception as e:
+                report.detail = (detail or "") + f" | heal failed: {str(e)[:120]}"
+
+        return report
+
+    def verify_graph(self, graph: Optional[str] = None) -> Dict[str, Any]:
+        """Check whether one graph's ^KG adjacency still agrees with its rows.
+
+        Additive alongside ``verify_sync``, which cannot see the drift that
+        matters here. ``verify_sync`` compares one SQL count against ^NKG's
+        ``edgeCount``: graph-blind, and one-directional by design, because ^NKG
+        interning is append-only and ignores ``graph_id`` so its counter
+        over-counts. It flags ``sql_edges > global_edges`` and stays silent on
+        the reverse — which is precisely what every deletion path produces.
+        ``drop_graph`` deletes the rows and leaves the adjacency behind, so
+        afterwards ``sql_edges`` is *below* ``global_edges`` and ``verify_sync``
+        reports in-sync over a graph that still answers traversals.
+
+        This one is scoped to a single graph, bidirectional, and reads ^KG
+        directly.
+
+        Args:
+            graph: The graph to check. ``None`` and ``""`` both mean the default
+                graph. Names that cannot be represented as a subscript raise
+                ``ValueError`` before the round trip (see ADR-0003).
+
+        Returns:
+            The report as a dict, with keys ``graph``, ``graphKey``, ``ok``,
+            ``counts``, ``drift``, ``checked``, ``unverified`` and ``unscoped``.
+
+            A dict rather than a dataclass on purpose: ``Graph.KG.GraphVerify``
+            produces the report and is its single owner. A Python class mirroring
+            the shape would be a second declaration of it, free to drift — the
+            same failure the one-inventory rule exists to remove.
+
+            ``ok`` answers only "does this graph's adjacency agree with its
+            rows?". ``unscoped`` lists stores that hold graph content but carry
+            no graph column at all; that is a standing schema gap rather than
+            per-graph drift, so it does not move ``ok``.
+        """
+        from iris_vector_graph._validate import validate_graph_name
+
+        canonical = validate_graph_name(graph)
+        raw = self._iris_obj().classMethodValue(
+            "Graph.KG.GraphVerify", "VerifyGraph", canonical
+        )
+        return json.loads(str(raw))
+
+    def set_multigraph(self, graph: Optional[str], enabled: bool) -> None:
+        """Turn multigraph mode on or off for one graph (spec 234).
+
+        In multigraph mode a graph may hold several edges with the same
+        ``(s, p, o)``; everywhere else it is off, and the graph behaves exactly
+        as before. Turning it off is refused with ``ParallelEdgesPresentError``
+        while any triple still has two edges.
+        """
+        from iris_vector_graph._validate import validate_graph_name
+        from iris_vector_graph.errors import ParallelEdgesPresentError
+
+        canonical = validate_graph_name(graph)
+        self._graph_mode_forget(canonical)
+        raw = str(
+            self._iris_obj().classMethodValue(
+                "Graph.KG.GraphMode", "Apply", canonical, 1 if enabled else 0
+            )
+        )
+        if raw.startswith("parallel_edges_present"):
+            count = int(raw.split(":", 1)[1]) if ":" in raw else 0
+            raise ParallelEdgesPresentError(canonical, count)
+        if raw != "ok":
+            raise RuntimeError(f"GraphMode.Apply({canonical!r}) failed: {raw}")
+
+    def is_multigraph(self, graph: Optional[str]) -> bool:
+        """Whether ``graph`` is in multigraph mode. Cached per engine."""
+        from iris_vector_graph._validate import validate_graph_name
+
+        canonical = validate_graph_name(graph)
+        cache = self.__dict__.setdefault("_graph_mode_cache", {})
+        if canonical not in cache:
+            raw = self._iris_obj().classMethodValue("Graph.KG.GraphMode", "IsMulti", canonical)
+            cache[canonical] = str(raw) == "1"
+        return cache[canonical]
+
+    def _graph_mode_forget(self, graph: Optional[str] = None) -> None:
+        """Drop the cached mode of one graph, or of every graph when ``graph`` is None."""
+        cache = self.__dict__.get("_graph_mode_cache")
+        if not cache:
+            return
+        if graph is None:
+            cache.clear()
+        else:
+            cache.pop(graph, None)
+
+    def list_active_queries(self, limit: int = 50) -> List[Dict[str, Any]]:
+        """Return the SQL statements running now. A failed listing raises (4.6.0; it answered [], which read as none).
+
+        There used to be a Community guard here on `GetISCProduct() == 4`, but 4
+        is every InterSystems IRIS, so it returned [] everywhere. The segfault it
+        was written for came from the old statement (see `active_queries_sql`).
+        """
+        cursor = self.conn.cursor()
+        cursor.execute(active_queries_sql(max(1, int(limit))))
+        return [
+            {
+                "id": str(r[0]),
+                "state": str(r[1]),
+                "client": str(r[2]),
+                "command": str(r[3])[:200],
+            }
+            for r in cursor.fetchall()
+        ]
+
+    def kill_query(self, query_id: str) -> bool:
+        """End the IRIS process with ID ``query_id`` (an ``id`` from ``list_active_queries``).
+
+        Calls ``%SYSTEM.SYS.KillProcess`` through SQL. True when the statement ran, which does
+        not prove the process was found; False when it failed (logged as a warning).
+        """
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute("SELECT %SYSTEM.SYS.KillProcess(?)", [int(query_id)])
+            return True
+        except Exception as e:
+            logger.warning("kill_query %s failed: %s", query_id, e)
+            return False
+
+    def get_centrality_warnings(self, max_entries: int = 50) -> List[Dict[str, Any]]:
+        """The warnings centrality runs left in ``^IVG.warnings("centrality")``, oldest first.
+
+        Each is ``{"timestamp", "source", "reason"}`` (betweenness writes one per source it
+        skipped when its memory budget ran out); at most ``max_entries``. Read-only; ``[]``
+        when there are none or the global cannot be read.
+        """
+        try:
+            import iris as _iris
+
+            iris_inst = self._iris_obj()
+        except Exception as e:
+            logger.debug("get_centrality_warnings: createIRIS failed: %s", e)
+            return []
+
+        warnings_list: List[Dict[str, Any]] = []
+        try:
+            ts = iris_inst.nextSubscript(False, "^IVG.warnings", "centrality", "")
+            while ts is not None and ts != "":
+                src = iris_inst.nextSubscript(False, "^IVG.warnings", "centrality", ts, "")
+                while src is not None and src != "":
+                    reason = iris_inst.get("^IVG.warnings", "centrality", ts, src)
+                    warnings_list.append(
+                        {
+                            "timestamp": str(ts),
+                            "source": str(src),
+                            "reason": str(reason) if reason is not None else "",
+                        }
+                    )
+                    if len(warnings_list) >= max_entries:
+                        return warnings_list
+                    src = iris_inst.nextSubscript(False, "^IVG.warnings", "centrality", ts, src)
+                ts = iris_inst.nextSubscript(False, "^IVG.warnings", "centrality", ts)
+        except Exception as e:
+            logger.debug("get_centrality_warnings: ^IVG.warnings traversal failed: %s", e)
+        return warnings_list
+
+    def get_community_warnings(self, max_entries: int = 50) -> List[Dict[str, Any]]:
+        """The entries under ``^IVG.warnings("communities")``, oldest first, as dicts.
+
+        Each is ``{"timestamp", "source", "reason"}``; at most ``max_entries``. Read-only;
+        ``[]`` when there are none or the global cannot be read. No code in this package or
+        in ``iris_src`` writes that subscript, so the answer is normally ``[]``.
+        """
+        try:
+            import iris as _iris
+
+            iris_inst = self._iris_obj()
+        except Exception:
+            return []
+        warnings_list: List[Dict[str, Any]] = []
+        try:
+            ts = iris_inst.nextSubscript(False, "^IVG.warnings", "communities", "")
+            while ts is not None and ts != "":
+                src = iris_inst.nextSubscript(False, "^IVG.warnings", "communities", ts, "")
+                while src is not None and src != "":
+                    reason = iris_inst.get("^IVG.warnings", "communities", ts, src)
+                    warnings_list.append(
+                        {
+                            "timestamp": str(ts),
+                            "source": str(src),
+                            "reason": str(reason) if reason is not None else "",
+                        }
+                    )
+                    if len(warnings_list) >= max_entries:
+                        return warnings_list
+                    src = iris_inst.nextSubscript(False, "^IVG.warnings", "communities", ts, src)
+                ts = iris_inst.nextSubscript(False, "^IVG.warnings", "communities", ts)
+        except Exception as e:
+            logger.debug("get_community_warnings: ^IVG.warnings traversal failed: %s", e)
+        return warnings_list

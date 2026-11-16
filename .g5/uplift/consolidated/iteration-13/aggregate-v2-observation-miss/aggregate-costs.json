@@ -1,0 +1,630 @@
+{
+  "source_first_utc": "2026-11-16T00:26:44.654793+00:00",
+  "audit_utc": "2026-11-16T00:56:30.577702+00:00",
+  "elapsed_source_first_to_audit_s": 1785.922909,
+  "attempts": [
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003416795249Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 0.2986752499709837,
+      "input_count": 6,
+      "originals_unchanged": true,
+      "raw_log_sha256": "3f046b22a185d6faad4475e362f73c09a0214bb8def76bc51e4d9563d8c3fa28",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003416795249Z-prove/receipts/20261116T003417Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: ERROR (None verified, None errors) -> .g5/Verus_verification/results/aggregate_results/20261116T003417Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003444126447Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 0.5060465839924291,
+      "input_count": 6,
+      "originals_unchanged": true,
+      "raw_log_sha256": "afa1820d97f5962349ec126aeb646d31da2724faf81ba6e0317531e63cd52b23",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003444126447Z-prove/receipts/20261116T003444Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: UNEXPECTED (42 verified, 3 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T003444Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003454957132Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 0.7905673749628477,
+      "input_count": 6,
+      "originals_unchanged": true,
+      "raw_log_sha256": "bb121fe8897f0d4fceb4ba4b9e565a0fee082f8a8785f098c8784429d0b287d7",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003454957132Z-prove/receipts/20261116T003455Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (46 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T003455Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003524175344Z-probe",
+      "kind": "probe",
+      "exit_code": 0,
+      "elapsed_s": 0.26839149999432266,
+      "input_count": 7,
+      "originals_unchanged": true,
+      "raw_log_sha256": "26de6e5851f18ff4759834c248c289f5972335d38ccde08886df0263daf76aaa",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)) __q\n) __paged WHERE __rn > 1 AND __rn <= 2 ORDER BY __rn\n{'parameters': [['Report', 'k']], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['scalar', 'scalar'], 'graph_context': 'g', 'bool_text_columns': [0], 'int_expr_columns': ['c'], 'prop_text_expr_columns': ['k'], 'typed_value_columns': ['k'], 'return_arity': 2, 'select_aliases': ['k', 'c']}\nMATCH (n:Report) RETURN count(DISTINCT n) AS c\nSELECT COUNT(DISTINCT s) AS c FROM Graph_KG.rdf_labels WHERE label = ?\n{'parameters': [['Report']], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['scalar'], 'int_expr_columns': ['c'], 'return_arity': 1, 'select_aliases': ['c']}\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003548085820Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 0.6626569160143845,
+      "input_count": 7,
+      "originals_unchanged": true,
+      "raw_log_sha256": "6f128321867a9b1dcecd3a42d744a7bd0fcdfc23ddab20b7a53746f43663adf1",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003548085820Z-prove/receipts/20261116T003548Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (54 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T003548Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003730206968Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.09632020798744634,
+      "input_count": 10,
+      "originals_unchanged": true,
+      "raw_log_sha256": "ab0b76a38553ec6bb8b7d629648f2b00b271a91b89a7e599adc174c40c8f1b9c",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "a import CoreConfig, CoreSchema, CoreSchemaType, ErrorType\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/pydantic_core/core_schema.py\", line 4367, in <module>\n    @deprecated('`field_before_validator_function` is deprecated, use `with_info_before_validator_function` instead.')\n     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/typing_extensions.py\", line 2997, in __call__\n    import asyncio.coroutines\n  File \"/Users/ziniuw/miniconda3/lib/python3.11/asyncio/__init__.py\", line 8, in <module>\n    from .base_events import *\n  File \"/Users/ziniuw/miniconda3/lib/python3.11/asyncio/base_events.py\", line 35, in <module>\n    import ssl\n  File \"/Users/ziniuw/miniconda3/lib/python3.11/ssl.py\", line 1006, in <module>\n    class SSLSocket(socket):\nTypeError: function() argument 'code' must be code, not str\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003743808238Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.3786640420439653,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "d3bc469174a3dc5be9880a2268d3dfa8621829ed195b6f431a6855b2ddc473c2",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 20, in <module>\n    from iris_vector_graph.stores.iris_sql_store import IRISSQLStore\nImportError: cannot import name 'IRISSQLStore' from 'iris_vector_graph.stores.iris_sql_store' (/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/stores/iris_sql_store.py)\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003750061019Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.2737150409957394,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "6ba074d06caf3d89ed5e5a771dc621c6f65745a046622b2cf3ec59c74e509038",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 20, in <module>\n    from iris_vector_graph.stores.iris_sql_store import IRISSqlStore\nImportError: cannot import name 'IRISSqlStore' from 'iris_vector_graph.stores.iris_sql_store' (/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/stores/iris_sql_store.py)\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003754486885Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.5843899170286022,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "0ad63fdcca79c4c2895508ccdd3cb1a6d7debe4bfc2f5f62cbc681115dc46917",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "CE(n2.graph_id, '') = COALESCE('g', '')\\nJOIN Graph_KG.rdf_labels l4 ON l4.s = n2.node_id AND l4.label = ? AND COALESCE(l4.graph_id, '') = COALESCE('g', '')\\nWHERE l1.s IS NOT NULL AND l4.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\", 'adapted': \"SELECT COUNT(*) AS c, COUNT(DISTINCT e3.edge_id) AS d\\nFROM nodes n0\\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\\nJOIN rdf_edges e3 ON e3.s = n0.node_id AND e3.p = ? AND COALESCE(e3.graph_id, '') = COALESCE('g', '')\\nJOIN nodes n2 ON n2.node_id = e3.o_id AND COALESCE(n2.graph_id, '') = COALESCE('g', '')\\nJOIN rdf_labels l4 ON l4.s = n2.node_id AND l4.label = ? AND COALESCE(l4.graph_id, '') = COALESCE('g', '')\\nWHERE l1.s IS NOT NULL AND l4.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\", 'params': ['Report', 'R', 'Report']}], 'query': \"USE GRAPH 'g' MATCH (n:Report)-[r:R]->(m:Report) RETURN count(*) AS c,count(DISTINCT r) AS d\"}\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003800037459Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.9323023339966312,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "26a7e04a7eaece2ae4f6f9dd553ada4e1b70dca6416e4cd5d1d37d2cf18faebd",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 149, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 118, in main\n    detect('actual translator raw-float presence lost',lambda:tagged(r.rows)!=tagged([[4.0]]))\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 105, in detect\n    detected=check();assert detected,name;sensitivities.append(dict(name=name,detected=True))\n                     ^^^^^^^^^^^^^^^^^^^^\nAssertionError: actual translator raw-float presence lost\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003818115926Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.8980483749764971,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "24bb64a4a0771cc8e0effdf4e315ecd900530b7d55552c32207529cf806a11e9",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "Traceback (most recent call last):\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 149, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 124, in main\n    assert sockets==[]\n           ^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003825930153Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.8736408750410192,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "7cb9076d0b39dcc7377f64c234f750132079dc97bb363139036e10a44024bf44",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "\", line 940, in exec_module\\n', '  File \"<frozen importlib._bootstrap>\", line 241, in _call_with_frames_removed\\n', '  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/urllib3/util/connection.py\", line 137, in <module>\\n    HAS_IPV6 = _has_ipv6(\"::1\")\\n', '  File \"/Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/urllib3/util/connection.py\", line 126, in _has_ipv6\\n    sock = socket.socket(socket.AF_INET6)\\n', '  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 14, in __new__\\n    def __new__(cls,*a,**k):return no_socket(*a,**k)\\n', '  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 12, in no_socket\\n    def no_socket(*a,**k):sockets.append(dict(args=str(a),kwargs=str(k),stack=traceback.format_stack()));raise AssertionError(\\'network prohibited\\')\\n']}]\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003833465768Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.8737382920226082,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "dcc948381c5797bc7fe4cbe24627b5b03ca91bf278bfdc68ad9f3131d6d96ccb",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 133, in <dictcomp>\n    identity={f:hashlib.sha256((PIN/f).read_bytes()).hexdigest()==hashlib.sha256((ROOT/f).read_bytes()).hexdigest() for f in product};assert all(identity.values())\n                                                                                 ^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/miniconda3/lib/python3.11/pathlib.py\", line 1050, in read_bytes\n    with self.open(mode='rb') as f:\n         ^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/miniconda3/lib/python3.11/pathlib.py\", line 1044, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/iris_vector_graph/cypher/parser.py'\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003840943852Z-binding",
+      "kind": "binding",
+      "exit_code": 0,
+      "elapsed_s": 0.9058705000206828,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "edb7ae50c2573d44682d8ed8b7ef7896f992580b56248f3c0c605ddd0da67dda",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003840943852Z-binding/receipts/20261116T003841Z-binding"
+      ],
+      "diagnostic_excerpt": "{\"verdict\": \"AGREES\", \"comparisons\": 647, \"fixtures\": 158, \"socket_attempts\": 0, \"elapsed_s\": 0.6374968749587424}\n/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/aggregate_results/20261116T003841Z-binding/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003908533111Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 0.8724379999912344,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "d464d09355a5e7548981627e8929b4c3569f12000d93fa9ccc9678cc900a47fc",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003908533111Z-prove/receipts/20261116T003909Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: ERROR (None verified, None errors) -> .g5/Verus_verification/results/aggregate_results/20261116T003909Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003917471741Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 0.7866109159658663,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "2b3d86d13204cd82e20ed72f883458dbb0ab7c9348759926d1ead7c4f404b49f",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003917471741Z-prove/receipts/20261116T003918Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: UNEXPECTED (57 verified, 3 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T003918Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003934132065Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 23.85104333300842,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "1b162e1fd8771f2dfa73e3c60b8b3ead9a59882cfc4f1a7634787b7262a1b615",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T003934132065Z-prove/receipts/20261116T003957Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: UNEXPECTED (58 verified, 3 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T003957Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004040966612Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 0.7312211249954998,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "c4d94b4865d2393a234803cb98ec7a6a19e4db726ad4f3426fa6343d74c8c734",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004040966612Z-prove/receipts/20261116T004041Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: UNEXPECTED (60 verified, 1 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004041Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004053855024Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 0.6865997919812799,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "99de0088627d014b9acb80873bef51e469a1652255028fb0b5173f760f0e1082",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004053855024Z-prove/receipts/20261116T004054Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (61 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004054Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004120097720Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 0.6981146670295857,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "6977558d503586a3d201e874640da1b604b82d6e2bf39cf00b781e89cbb13b70",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004120097720Z-prove/receipts/20261116T004120Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (64 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004120Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls",
+      "kind": "controls",
+      "exit_code": 0,
+      "elapsed_s": 10.947356457996648,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "7a4b3ce857bfc61444694e2cee337ba93236478e395c0c970927b6f070e5bd2d",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004135Z-control-foreign-graph-admitted",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004136Z-control-null-enters-count-and-collect",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004137Z-control-distinct-ignored",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004138Z-control-count-overwritten",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004139Z-control-sum-overwritten",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004140Z-control-float-from-dedup-only",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004141Z-control-avg-denominator-not-contributors",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004142Z-control-entity-graph-erased",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004143Z-control-global-empty-row-omitted",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004144Z-control-duplicate-group-emission",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004144Z-control-grouped-empty-row-fabricated",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004134906185Z-controls/receipts/20261116T004145Z-control-sort-single-digit-not-recognized"
+      ],
+      "diagnostic_excerpt": "T004140Z-control-float-from-dedup-only/receipt.json\navg-denominator-not-contributors  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T004141Z-control-avg-denominator-not-contributors/receipt.json\nentity-graph-erased  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T004142Z-control-entity-graph-erased/receipt.json\nglobal-empty-row-omitted  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T004143Z-control-global-empty-row-omitted/receipt.json\ngrouped-empty-row-fabricated  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T004144Z-control-grouped-empty-row-fabricated/receipt.json\nduplicate-group-emission  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T004144Z-control-duplicate-group-emission/receipt.json\nsort-single-digit-not-recognized  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T004145Z-control-sort-single-digit-not-recognized/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004152098106Z-probe",
+      "kind": "probe",
+      "exit_code": 0,
+      "elapsed_s": 0.36828575003892183,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "0c7cf55452f56c9f5b630d52970c677f62e362efed745a1b3edd6e2c1becf932",
+      "receipt_copies": [],
+      "diagnostic_excerpt": " COALESCE(p2.graph_id, \\'\\') = COALESCE(\\'g\\', \\'\\')\\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, \\'\\') = COALESCE(\\'g\\', \\'\\') AND 1=1', 'adapted': 'SELECT COALESCE(\\'[\\' || LIST(NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p2.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p2.val)) WHEN EXACT(p2.val) = \\'true\\' OR EXACT(p2.val) = \\'false\\' THEN EXACT(p2.val) WHEN EXACT(p2.val) = \\'\\' THEN \\'\"\"\\' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p2.val)), TRIM(TRAILING \\']\\' FROM SUBSTRING(JSON_ARRAY(EXACT(p2.val)), 2))) END, \\'null\\')) || \\']\\', CAST(\\'[]\\' AS VARCHAR(256))) AS xs\\nFROM nodes n0\\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, \\'\\') = COALESCE(\\'g\\', \\'\\')\\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, \\'\\') = COALESCE(\\'g\\', \\'\\')\\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, \\'\\') = COALESCE(\\'g\\', \\'\\') AND 1=1', 'params': ['Report', 'v']}], 'query': \"USE GRAPH 'g' MATCH (n:Report) RETURN collect(n.v) AS xs\"})\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004245398659Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 0.1059820830123499,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "c4dbb5048ebe25b86c3bc7d9b16619ecec2001790b9915dca4c5dc21f92783d0",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004245398659Z-prove/receipts/20261116T004245Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: ERROR (None verified, None errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004245Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004300790654Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 0.7423810409964062,
+      "input_count": 32,
+      "originals_unchanged": true,
+      "raw_log_sha256": "608f470a791c00ea7bd597131bec93417c4ad2b8cd515d282bd1c1167026774b",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004300790654Z-prove/receipts/20261116T004301Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: UNEXPECTED (67 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004301Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004329649297Z-binding",
+      "kind": "binding",
+      "exit_code": 0,
+      "elapsed_s": 0.9075912089901976,
+      "input_count": 34,
+      "originals_unchanged": true,
+      "raw_log_sha256": "752343e42d150c4347f40a7ecaf8b0b22700638670c636b4e83b29d6f4d5552c",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004329649297Z-binding/receipts/20261116T004330Z-binding"
+      ],
+      "diagnostic_excerpt": "{\"verdict\": \"AGREES\", \"comparisons\": 655, \"fixtures\": 158, \"socket_attempts\": 0, \"elapsed_s\": 0.646142499987036}\n/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/aggregate_results/20261116T004330Z-binding/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004404973342Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 0.7281213749665767,
+      "input_count": 34,
+      "originals_unchanged": true,
+      "raw_log_sha256": "12759f7a18cae541fb8cbaa78fa9cc98b617d76a24206cf5249cf9f52e0d2f8a",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004404973342Z-prove/receipts/20261116T004405Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: UNEXPECTED (73 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004405Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004430776530Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 0.9352661250159144,
+      "input_count": 34,
+      "originals_unchanged": true,
+      "raw_log_sha256": "7d04ad42f72de171cdc4810d0c02f46f62c5af3fad39f44656f8ab85708081ae",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004430776530Z-prove/receipts/20261116T004431Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (74 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004431Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004452182267Z-binding",
+      "kind": "binding",
+      "exit_code": 1,
+      "elapsed_s": 0.6202788749942556,
+      "input_count": 34,
+      "originals_unchanged": true,
+      "raw_log_sha256": "0897a3eacc2c0d861de67fca28d35b54f1de9fbc3e4b6ef890afe352170a1d6d",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "s-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 90, in main\n    r,tr=execute([],query,params)\n         ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/binding.py\", line 37, in execute\n    assert not r.error,dict(error=r.error,trace=p.trace,query=text)\nAssertionError: {'error': 'near \"COLUMNS\": syntax error', 'trace': [{'source': \"SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\\nFROM JSON_TABLE(?, '$[*]' COLUMNS (x VARCHAR(1000) PATH '$')) u0\", 'adapted': \"SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\\nFROM JSON_TABLE(?, '$[*]' COLUMNS (x VARCHAR(1000) PATH '$')) u0\", 'params': ['[]']}], 'query': 'UNWIND $values AS x RETURN collect(x) AS xs,collect(DISTINCT x) AS dx'}\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004503588081Z-binding",
+      "kind": "binding",
+      "exit_code": 0,
+      "elapsed_s": 1.0610449999803677,
+      "input_count": 34,
+      "originals_unchanged": true,
+      "raw_log_sha256": "169957f44ba1b4b8991a284700bc0131c882d4bdf14fd07de17b3d004ded5bd8",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004503588081Z-binding/receipts/20261116T004504Z-binding"
+      ],
+      "diagnostic_excerpt": "{\"verdict\": \"AGREES\", \"comparisons\": 661, \"fixtures\": 158, \"socket_attempts\": 0, \"elapsed_s\": 0.778133167012129}\n/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/aggregate_results/20261116T004504Z-binding/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004525698310Z-upstream",
+      "kind": "upstream",
+      "exit_code": 0,
+      "elapsed_s": 0.7937947080354206,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "8f0f6c78055a44f52a915e0f72aafb8a91c02f13c587777c62bf3670454787e2",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "pin/tests/unit/test_order_limit_aggregate_scope.py . [ 62%]\n................                                                         [ 77%]\n../../../../runs/ivg-consolidated-20261114/pin/tests/unit/test_460_r298_fixes46_leftovers.py . [ 77%]\n........................                                                 [100%]\n\n=============================== warnings summary ===============================\n../../../../runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1434\n  /Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1434: PytestConfigWarning: Unknown config option: asyncio_mode\n  \n    self._warn_or_fail_if_strict(f\"Unknown config option: {key}\\n\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================== 109 passed, 1 warning in 0.57s ========================\n{\"passed\": 109, \"elapsed_s\": 0.6336539160110988, \"native_calls\": 0, \"socket_attempts\": []}\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004642324137Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 1.0706629579653963,
+      "input_count": 43,
+      "originals_unchanged": true,
+      "raw_log_sha256": "0f07ae57fd2d35010bf3d798d56b7808946282b1e1e2ed1e013d596468a770ae",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004642324137Z-prove/receipts/20261116T004643Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: UNEXPECTED (74 verified, 1 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004643Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004652276682Z-prove",
+      "kind": "prove",
+      "exit_code": 1,
+      "elapsed_s": 4.822623542044312,
+      "input_count": 43,
+      "originals_unchanged": true,
+      "raw_log_sha256": "225ff1391fad856f4d1ab2e51e8f29d4c936e7a3e4c3444380881f49ca5c9346",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004652276682Z-prove/receipts/20261116T004657Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: UNEXPECTED (74 verified, 1 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004657Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004717996355Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 1.0513967089937069,
+      "input_count": 43,
+      "originals_unchanged": true,
+      "raw_log_sha256": "5fb4146b694a21ebeae328d26eb107a2fabf3d8aeea9ca16a1204ba43f38a334",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004717996355Z-prove/receipts/20261116T004719Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (75 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004719Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004901198565Z-binding",
+      "kind": "binding",
+      "exit_code": 0,
+      "elapsed_s": 1.1030957080074586,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "30bea9abafa22176d1c110ff43f33301e9ef4e02cb6314fd54257fc2a15f8c49",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004901198565Z-binding/receipts/20261116T004902Z-binding"
+      ],
+      "diagnostic_excerpt": "{\"verdict\": \"AGREES\", \"comparisons\": 669, \"fixtures\": 160, \"socket_attempts\": 0, \"elapsed_s\": 0.8274595409748144}\n/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/aggregate_results/20261116T004902Z-binding/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004928524947Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 1.1849829169805162,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "7de91863f0c670b4d8f348f421d4b0981f6c7a0fe31165daef66d068c6ba8629",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T004928524947Z-prove/receipts/20261116T004929Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (75 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T004929Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls",
+      "kind": "controls",
+      "exit_code": 0,
+      "elapsed_s": 12.513005542044993,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "f369aac342af8dff8e7a3867febb2eeb87845dacc68a94a0ce998766f86fd2e2",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005127Z-control-foreign-graph-admitted",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005127Z-control-null-enters-count-and-collect",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005128Z-control-distinct-ignored",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005129Z-control-count-overwritten",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005130Z-control-sum-overwritten",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005131Z-control-float-from-dedup-only",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005132Z-control-avg-denominator-not-contributors",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005133Z-control-entity-graph-erased",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005134Z-control-global-empty-row-omitted",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005136Z-binding",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005136Z-control-grouped-empty-row-fabricated",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005137Z-control-duplicate-group-emission",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005125862064Z-controls/receipts/20261116T005138Z-control-sort-single-digit-not-recognized"
+      ],
+      "diagnostic_excerpt": "T005131Z-control-float-from-dedup-only/receipt.json\navg-denominator-not-contributors  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005132Z-control-avg-denominator-not-contributors/receipt.json\nentity-graph-erased  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005133Z-control-entity-graph-erased/receipt.json\nglobal-empty-row-omitted  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005134Z-control-global-empty-row-omitted/receipt.json\ngrouped-empty-row-fabricated  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005136Z-control-grouped-empty-row-fabricated/receipt.json\nduplicate-group-emission  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005137Z-control-duplicate-group-emission/receipt.json\nsort-single-digit-not-recognized  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005138Z-control-sort-single-digit-not-recognized/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005134950113Z-upstream",
+      "kind": "upstream",
+      "exit_code": 0,
+      "elapsed_s": 1.0464844169910066,
+      "input_count": 45,
+      "originals_unchanged": true,
+      "raw_log_sha256": "9208a2eccbf5645a2e3dabf4ba38c917b91158be0ece1931f0900823fb9e9110",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "pin/tests/unit/test_order_limit_aggregate_scope.py . [ 62%]\n................                                                         [ 77%]\n../../../../runs/ivg-consolidated-20261114/pin/tests/unit/test_460_r298_fixes46_leftovers.py . [ 77%]\n........................                                                 [100%]\n\n=============================== warnings summary ===============================\n../../../../runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1434\n  /Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1434: PytestConfigWarning: Unknown config option: asyncio_mode\n  \n    self._warn_or_fail_if_strict(f\"Unknown config option: {key}\\n\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================== 109 passed, 1 warning in 0.54s ========================\n{\"passed\": 109, \"elapsed_s\": 0.7261252920143306, \"native_calls\": 0, \"socket_attempts\": []}\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005134950155Z-binding",
+      "kind": "binding",
+      "exit_code": 0,
+      "elapsed_s": 1.4414174589910544,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "3dd95bbfa15cd404d59f42c44d0ddf26179c946293396ec756fa3047600ee371",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005134950155Z-binding/receipts/20261116T005136Z-binding",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005134950155Z-binding/receipts/20261116T005136Z-control-grouped-empty-row-fabricated"
+      ],
+      "diagnostic_excerpt": "{\"verdict\": \"AGREES\", \"comparisons\": 669, \"fixtures\": 160, \"socket_attempts\": 0, \"elapsed_s\": 0.7239003750146367}\n/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/aggregate_results/20261116T005136Z-binding/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005140761448Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 0.8388085410115309,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "93f8c912e25a749dbac8ad2e2732a97eee8b05984bdd49c20497cd2b5f00f313",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005140761448Z-prove/receipts/20261116T005141Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (75 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T005141Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005228182369Z-binding",
+      "kind": "binding",
+      "exit_code": 0,
+      "elapsed_s": 1.151238165970426,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "fb869ebeb213bec97feeb751ca7bada4f403734ded52cbdde54145ed0ca74eab",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005228182369Z-binding/receipts/20261116T005229Z-binding"
+      ],
+      "diagnostic_excerpt": "{\"verdict\": \"AGREES\", \"comparisons\": 669, \"fixtures\": 160, \"socket_attempts\": 0, \"elapsed_s\": 0.8047573340008967}\n/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/aggregate_results/20261116T005229Z-binding/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls",
+      "kind": "controls",
+      "exit_code": 0,
+      "elapsed_s": 12.338030459010042,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "b59edb92d9f13fcbacbb5fadb2fcbc5e03c95ed5e308aa5217fdc16e3fd0bc7a",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005521Z-control-foreign-graph-admitted",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005522Z-control-null-enters-count-and-collect",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005523Z-control-distinct-ignored",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005524Z-control-count-overwritten",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005525Z-control-sum-overwritten",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005526Z-control-float-from-dedup-only",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005527Z-control-avg-denominator-not-contributors",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005528Z-control-entity-graph-erased",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005529Z-control-global-empty-row-omitted",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005530Z-control-grouped-empty-row-fabricated",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005531Z-control-duplicate-group-emission",
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005519706180Z-controls/receipts/20261116T005532Z-control-sort-single-digit-not-recognized"
+      ],
+      "diagnostic_excerpt": "T005526Z-control-float-from-dedup-only/receipt.json\navg-denominator-not-contributors  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005527Z-control-avg-denominator-not-contributors/receipt.json\nentity-graph-erased  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005528Z-control-entity-graph-erased/receipt.json\nglobal-empty-row-omitted  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005529Z-control-global-empty-row-omitted/receipt.json\ngrouped-empty-row-fabricated  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005530Z-control-grouped-empty-row-fabricated/receipt.json\nduplicate-group-emission  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005531Z-control-duplicate-group-emission/receipt.json\nsort-single-digit-not-recognized  EXPECTED_FAIL  .g5/Verus_verification/results/aggregate_results/20261116T005532Z-control-sort-single-digit-not-recognized/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005538606654Z-prove",
+      "kind": "prove",
+      "exit_code": 0,
+      "elapsed_s": 0.8248287919559516,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "354885d999e4daf126f5d0868d52da4bfd1079a375b9f1420eb45cf2a995c39a",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005538606654Z-prove/receipts/20261116T005539Z-prove"
+      ],
+      "diagnostic_excerpt": "aggregate_results: PASS (75 verified, 0 errors) -> .g5/Verus_verification/results/aggregate_results/20261116T005539Z-prove/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005539473633Z-binding",
+      "kind": "binding",
+      "exit_code": 0,
+      "elapsed_s": 1.160200290963985,
+      "input_count": 44,
+      "originals_unchanged": true,
+      "raw_log_sha256": "99d7944e9e393ccd75bf4c8d67396a1e03c8d2785aece123511596ab0e345631",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005539473633Z-binding/receipts/20261116T005540Z-binding"
+      ],
+      "diagnostic_excerpt": "{\"verdict\": \"AGREES\", \"comparisons\": 669, \"fixtures\": 160, \"socket_attempts\": 0, \"elapsed_s\": 0.710022791987285}\n/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/aggregate_results/20261116T005540Z-binding/receipt.json\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005540632943Z-upstream",
+      "kind": "upstream",
+      "exit_code": 0,
+      "elapsed_s": 0.9213231669855304,
+      "input_count": 45,
+      "originals_unchanged": true,
+      "raw_log_sha256": "57923c160446549de54339517dfdc5d2b09cef668e683023c5f2b4beacb70fba",
+      "receipt_copies": [],
+      "diagnostic_excerpt": "pin/tests/unit/test_order_limit_aggregate_scope.py . [ 62%]\n................                                                         [ 77%]\n../../../../runs/ivg-consolidated-20261114/pin/tests/unit/test_460_r298_fixes46_leftovers.py . [ 77%]\n........................                                                 [100%]\n\n=============================== warnings summary ===============================\n../../../../runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1434\n  /Users/ziniuw/runs/ivg-consolidated-20261114/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1434: PytestConfigWarning: Unknown config option: asyncio_mode\n  \n    self._warn_or_fail_if_strict(f\"Unknown config option: {key}\\n\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n======================== 109 passed, 1 warning in 0.69s ========================\n{\"passed\": 109, \"elapsed_s\": 0.7457095420104451, \"native_calls\": 0, \"socket_attempts\": []}\n"
+    },
+    {
+      "path": ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005615073422Z-binding",
+      "kind": "binding",
+      "exit_code": 0,
+      "elapsed_s": 1.0898218750371598,
+      "input_count": 47,
+      "originals_unchanged": true,
+      "raw_log_sha256": "841d9605dadbc1fd9eb7e6d01545026f0584b57340dce2889c310ce26eee4f73",
+      "receipt_copies": [
+        ".g5/uplift/consolidated/iteration-13/aggregate-attempts/20261116T005615073422Z-binding/receipts/20261116T005616Z-binding"
+      ],
+      "diagnostic_excerpt": "{\"verdict\": \"AGREES\", \"comparisons\": 669, \"fixtures\": 160, \"socket_attempts\": 0, \"elapsed_s\": 0.7308447500108741}\n/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/results/aggregate_results/20261116T005616Z-binding/receipt.json\n"
+    }
+  ],
+  "count": 45,
+  "command_wall_seconds": 95.73707820900017,
+  "by_kind": {
+    "binding": {
+      "count": 17,
+      "wall_seconds": 14.351378167048097,
+      "nonzero_exits": 9
+    },
+    "controls": {
+      "count": 3,
+      "wall_seconds": 35.79839245905168,
+      "nonzero_exits": 0
+    },
+    "probe": {
+      "count": 2,
+      "wall_seconds": 0.6366772500332445,
+      "nonzero_exits": 0
+    },
+    "prove": {
+      "count": 20,
+      "wall_seconds": 42.18902804085519,
+      "nonzero_exits": 11
+    },
+    "upstream": {
+      "count": 3,
+      "wall_seconds": 2.7616022920119576,
+      "nonzero_exits": 0
+    }
+  },
+  "failures_preserved": true,
+  "scope": "Actual subprocess wall time, not solver CPU or a deadline. Early build/trigger/type and invariant failures; count-only UNEXPECTED receipts; binding startup/schema/syntax/insufficient-carrier attempts retained byteexact. No old-lane inputs or new tests are consumed by this audit."
+}

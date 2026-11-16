@@ -1,0 +1,24 @@
+"""Read-only fresh OPTIONAL aggregate facts and primary-source boundary audit."""
+from pathlib import Path
+import hashlib,json,time,datetime,re
+R=Path(__file__).resolve().parents[4];H=Path(__file__).resolve().parent;P=Path('/Users/ziniuw/runs/ivg-consolidated-20261114/pin');start=time.monotonic();checks=[];inputs={}
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def read(p):inputs[str(p.relative_to(R))]=sha(p);return p.read_text()
+def ck(n,v):checks.append({'name':n,'passed':bool(v)});assert v,n
+j=json.loads(read(H/'root-optional-aggregate-native.json'));ck('four complete source forecasts',j['failure'] is None and j['completed_cases']==4 and len(j['cases'])==4 and j['verdict']=='SOURCE_FORECAST_AGREES' and j['identity_checked'])
+for rel,h in j['inputs'].items():ck('flat input '+rel,sha(R/rel)==h);read(R/rel)
+for rel,h in j['source_inputs'].items():ck('source current/export '+rel,sha(R/rel)==sha(P/rel)==h);read(R/rel)
+for n in ['root-optional-aggregate-native.log','root-optional-aggregate-PAIRS.md','review-aggregate-expectations.md']:read(H/n)
+ck('only fresh graph and anchor identity',j['graph'].startswith('ordinary13optional_') and j['anchor_id'].startswith('ordinary13optional:'))
+want=[[[0,0,0,None,[]]],[[1,0,0,None,[]]],[[None,1,0,None,None,[]]],[[1,0,0,None,[]]]];reference=[[[0,0,0,None,[]]],[[1,0,0,None,[]]],[[None,1,0,0,None,[]]],[[1,0,0,None,[]]]]
+for i,(case,a,z) in enumerate(zip(j['cases'],want,reference)):
+ ck(str(i)+' independently derived source forecast',case['actual']==a and case['source_forecast']==a and case['agrees_with_source_forecast'])
+ ck(str(i)+' normative zero-sum reference separately retained',case['r308_zero_sum_reference']==z and case['agrees_with_zero_sum_reference']==(a==z))
+q=j['queries'];ck('five healthy actual scoped queries',len(q)==5 and all(x.get('error') is None and 'raised' not in x and x['query'].startswith("USE GRAPH '"+j['graph']+"' ") for x in q));ck('actual anchor readback',q[0]['rows']==[[j['anchor_id'],'anchor']]);ck('only grouped fallback differs from zero reference',[x['agrees_with_zero_sum_reference'] for x in j['cases']]==[True,True,False,True]);ck('leading grouped actual output columns',q[3]['columns']==['k','rows','nodes','total','mean','xs'])
+source=read(R/'iris_vector_graph/cypher/translator.py');r298=read(R/'tests/unit/test_460_r298_fixes46_leftovers.py');r308=read(R/'tests/unit/test_460_r308_guards.py');owner=read(R/'.g5/ontology/features/cypher.g5.md');reg=read(R/'.g5/Verus_verification/bugs_issues.md');questions=read(R/'.g5/Verus_verification/open_questions.md')
+ck('R298 helper NULL behavior explicitly tested','("sum(b.k)", "NULL")' in r298 and 'def test_an_aggregate_over_the_null_row' in r298)
+ck('newer R308 all-null group zero authority explicit','def test_a_sum_of_only_nulls_is_zero' in r308 and "openCypher's sum over no values is 0" in r308 and 'every value is null' in source)
+ck('source helper and grouped-only fallback path identified','def _null_row_aggregate' in source and 'and not context.return_is_pure_aggregation' in source and 'context.optional_null_row_items.append(_null_row_aggregate(item.expression))' in source)
+ck('existing CALL-empty aggregate finding kept distinct','<a id="F-0823"></a>' in reg and 'An aggregate in a CALL subquery that matches nothing answers 0' in reg)
+entries=[m.group(0) for m in re.finditer(r'<a id="[^"]+"></a>\n.*?(?=<a id=|\Z)',reg,re.S)];exact=[e.splitlines()[0] for e in entries if re.search(r'optional.{0,150}sum|sum.{0,150}optional|_null_row_aggregate',e,re.I|re.S)];ck('no exact optional-SUM/helper entry in bounded current-register search',not exact)
+out={'verdict':'PASS_FRESH_OPTIONAL_SOURCE_FACT_AUDIT','utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'checks':checks,'inputs':inputs,'elapsed_s':time.monotonic()-start,'native_fact_cases':4,'source_forecasts_agree':4,'r308_zero_references_agree':3,'r308_zero_references_differ':1,'reviewer_native_calls':0,'reviewer_network_calls':0,'git_calls':0,'interrupted_inputs_opened_or_reused':False,'formal_credit':0,'disposition_recommendation':'Retain as-built grouped-leading-OPTIONAL SUM-null counterexample and a partial caller boundary. R298 tests the old helper result; newer R308 states all-null group SUM0. Synthetic-null-row cardinality explains COUNT*1 but alone does not justify SUM-null. Root adjudicates whether to record a distinct Low read-result issue; no policy/repair or issue opened by reviewer.','dedup':'F-0823 is CALL-subquery empty max/avg→0 and collect text; different producer/default and trigger. Temporal empty-window aggregate findings are a different API/provider. Bounded search only, no private/history/evaluator input.'};(H/'review-optional-aggregate-audit.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps({'verdict':out['verdict'],'checks':len(checks),'seconds':out['elapsed_s']}))

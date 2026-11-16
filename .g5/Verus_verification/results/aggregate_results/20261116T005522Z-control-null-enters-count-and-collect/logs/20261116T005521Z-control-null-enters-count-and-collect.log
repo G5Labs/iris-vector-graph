@@ -1,0 +1,21 @@
+verification results:: 73 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/null-enters-count-and-collect/20261116T005521Z/models/aggregate_results/aggregate_results.rs:109:10
+    |
+107 | pub proof fn theorem_null_count_star_differs(q:Query,k:Key,g:nat)
+    | ----------------------------------------------------------------- at the end of the function body
+108 |  requires q.graph==None,
+109 |  ensures ({let r=Row{graph:g,key:k,value:Val::Null,entity:None};let a=fold(seq![r],q,key(r,q));a.rows==1&&a.count==0&&a.items.len()==0&&a.total==0&&avg(a).is_none()}),{r...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/null-enters-count-and-collect/20261116T005521Z/models/aggregate_results/aggregate_results.rs:191:10
+    |
+191 |  ensures forall|i:int|0<=i<fold(rs,q,k).items.len()==>fold(rs,q,k).items[i]!=Val::Null,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+192 |  decreases rs.len(),
+193 |  {if rs.len()>0{let p=rs.drop_last();let r=rs.last();theorem_collection_contains_no_nulls(p,q,k);}}
+    |   ------------------------------------------------------------------------------------------------ at the end of the function body
+
+error: aborting due to 2 previous errors
+

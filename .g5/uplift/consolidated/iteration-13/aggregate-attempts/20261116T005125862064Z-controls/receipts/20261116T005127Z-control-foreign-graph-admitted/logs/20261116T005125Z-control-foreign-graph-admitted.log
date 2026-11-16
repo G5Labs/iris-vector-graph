@@ -1,0 +1,9 @@
+verification results:: 74 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/foreign-graph-admitted/20261116T005125Z/models/aggregate_results/aggregate_results.rs:106:136
+    |
+106 | pub proof fn theorem_foreign_graph_row_skipped(a:Acc,r:Row,q:Query,k:Key) requires q.graph.is_some(),q.graph.unwrap()!=r.graph,ensures step(a,r,q,k)==a,{}
+    | ------------------------------------------------------------------------- at the end of the function body                              ^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

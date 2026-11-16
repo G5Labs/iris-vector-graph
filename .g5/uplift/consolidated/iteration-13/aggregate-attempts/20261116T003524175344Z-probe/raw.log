@@ -1,0 +1,53 @@
+WARNING:root:IRISINSTALLDIR or ISC_PACKAGE_INSTALLDIR environment variable is not set
+WARNING:root:Embedded Python not configured; call iris.connect(path=...) to configure it
+USE GRAPH 'g' MATCH (n:Report) RETURN count(*) AS allrows,count(n.v) AS nonnull,count(DISTINCT n.v) AS uniq
+SELECT COUNT(*) AS allrows, COUNT(%EXACT(p2.val)) AS nonnull, COUNT(DISTINCT %EXACT(p3.val)) AS uniq
+FROM Graph_KG.nodes n0
+JOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')
+LEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2."key" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')
+LEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3."key" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')
+WHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1
+{'parameters': [['Report', 'v', 'v']], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['scalar', 'scalar', 'scalar'], 'graph_context': 'g', 'int_expr_columns': ['allrows', 'nonnull', 'uniq'], 'return_arity': 3, 'select_aliases': ['allrows', 'nonnull', 'uniq']}
+USE GRAPH 'g' MATCH (n:Report) RETURN n.k AS k,count(*) AS c,sum(n.v) AS total,avg(n.v) AS mean
+SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p3.val))) = 1 THEN CAST(SUM(%EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p3.val)) END END) AS total, AVG(%EXACT(p4.val)) AS mean
+FROM Graph_KG.nodes n0
+JOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')
+LEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2."key" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')
+LEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3."key" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')
+LEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4."key" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')
+WHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1
+GROUP BY %EXACT(p2.val)
+{'parameters': [['Report', 'k', 'v', 'v']], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['scalar', 'scalar', 'scalar', 'scalar'], 'graph_context': 'g', 'bool_text_columns': [0], 'int_expr_columns': ['c'], 'float_expr_columns': ['mean'], 'prop_text_expr_columns': ['k'], 'typed_value_columns': ['k', 'total'], 'return_arity': 4, 'select_aliases': ['k', 'c', 'total', 'mean']}
+USE GRAPH 'g' MATCH (n:Report) WITH sum(n.v) AS s RETURN s
+WITH Stage1 AS (
+SELECT CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s
+FROM Graph_KG.nodes n0
+JOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')
+LEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2."key" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')
+WHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')
+)
+SELECT Graph_KG.CY_TYPED(Stage1.s) AS s
+FROM Stage1
+WHERE 1=1
+{'parameters': [['Report', 'v']], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['node'], 'graph_context': 'g', 'typed_value_columns': ['s'], 'return_arity': 1, 'select_aliases': ['s']}
+UNWIND [1, null, 1, 2.5] AS x RETURN collect(x) AS xs,collect(DISTINCT x) AS dx
+SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx
+FROM (SELECT ? AS x UNION ALL SELECT NULL AS x UNION ALL SELECT ? AS x UNION ALL SELECT ? AS x) u0
+{'parameters': [[1, 1, 2.5]], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['scalar', 'scalar'], 'json_value_columns': ['xs', 'dx'], 'return_arity': 2, 'select_aliases': ['xs', 'dx']}
+UNWIND [false,true,null] AS x RETURN collect(x) AS xs
+SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs
+FROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x) u0
+{'parameters': [[False, True]], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['scalar'], 'json_value_columns': ['xs'], 'return_arity': 1, 'select_aliases': ['xs']}
+USE GRAPH 'g' MATCH (n:Report) RETURN n.k AS k,count(*) AS c ORDER BY c DESC SKIP 1 LIMIT 1
+SELECT * FROM (
+SELECT ROW_NUMBER() OVER(ORDER BY __sort0 DESC) AS __rn, __q.* FROM (SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS c, %EXACT(Graph_KG.CY_SORT_KEY(COUNT(*), 'x')) AS __sort0
+FROM Graph_KG.nodes n0
+JOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')
+LEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2."key" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')
+WHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1
+GROUP BY %EXACT(p2.val)) __q
+) __paged WHERE __rn > 1 AND __rn <= 2 ORDER BY __rn
+{'parameters': [['Report', 'k']], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['scalar', 'scalar'], 'graph_context': 'g', 'bool_text_columns': [0], 'int_expr_columns': ['c'], 'prop_text_expr_columns': ['k'], 'typed_value_columns': ['k'], 'return_arity': 2, 'select_aliases': ['k', 'c']}
+MATCH (n:Report) RETURN count(DISTINCT n) AS c
+SELECT COUNT(DISTINCT s) AS c FROM Graph_KG.rdf_labels WHERE label = ?
+{'parameters': [['Report']], 'query_metadata': QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]), 'bolt_column_types': ['scalar'], 'int_expr_columns': ['c'], 'return_arity': 1, 'select_aliases': ['c']}

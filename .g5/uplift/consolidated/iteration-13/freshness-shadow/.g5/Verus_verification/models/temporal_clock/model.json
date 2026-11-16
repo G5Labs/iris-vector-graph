@@ -1,0 +1,147 @@
+{
+  "name": "temporal_clock",
+  "root": "temporal_clock.rs",
+  "expected_verified": 56,
+  "additional_inputs": [
+    "../temporal_restore/temporal_restore.rs",
+    "../temporal_window_reader/temporal_window_reader.rs"
+  ],
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "none-carrier-becomes-one",
+      "find": "r==Raw::Null {Some(0)}",
+      "replace": "r==Raw::Null {Some(1)}",
+      "expect_fail_in": [
+        "theorem_single_omission_and_epoch_share_carrier",
+        "theorem_raw_omission_misses_recent_window"
+      ]
+    },
+    {
+      "name": "single-admits-negative",
+      "find": "n.unwrap()>=0",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_single_validation"
+      ]
+    },
+    {
+      "name": "bulk-missing-becomes-zero",
+      "find": "}else{None}\n}",
+      "replace": "}else{Some(0)}\n}",
+      "expect_fail_in": [
+        "theorem_bulk_missing_null_empty_refuse"
+      ]
+    },
+    {
+      "name": "alias-presence-replaces-truthiness",
+      "find": "if truthy(short){short}",
+      "replace": "if present(short){short}",
+      "expect_fail_in": [
+        "theorem_alias_truthiness_changes_coordinate"
+      ]
+    },
+    {
+      "name": "null-alias-treated-as-missing",
+      "find": "if present(long){long}",
+      "replace": "if supplied(long){long}",
+      "expect_fail_in": [
+        "theorem_present_null_is_not_missing"
+      ]
+    },
+    {
+      "name": "bulk-adds-negative-validation",
+      "find": "if bulk_shape(short,long,shape_ok){integer(bulk_selected(short,long))}",
+      "replace": "if bulk_shape(short,long,shape_ok){let n=integer(bulk_selected(short,long));if n.is_some() && n.unwrap()>=0{n}else{None}}",
+      "expect_fail_in": [
+        "theorem_bulk_keeps_negative"
+      ]
+    },
+    {
+      "name": "single-zero-becomes-clock",
+      "find": "NativeTime::Number(n)=>n}",
+      "replace": "NativeTime::Number(n)=>if n==0{now}else{n}}",
+      "expect_fail_in": [
+        "theorem_server_empty_and_zero_differ",
+        "theorem_bulk_zero_fallback_differs"
+      ]
+    },
+    {
+      "name": "bulk-preserves-zero",
+      "find": "pub open spec fn bulk_clock(n:int,now:int)->int {if n==0{now}else{n}}",
+      "replace": "pub open spec fn bulk_clock(n:int,now:int)->int {n}",
+      "expect_fail_in": [
+        "theorem_server_empty_and_zero_differ",
+        "theorem_bulk_clock_and_fallback_final_windows"
+      ]
+    },
+    {
+      "name": "bulk-clock-hard-coded",
+      "find": "pub open spec fn bulk_clock(n:int,now:int)->int {if n==0{now}else{n}}",
+      "replace": "pub open spec fn bulk_clock(n:int,now:int)->int {if n==0{1}else{n}}",
+      "expect_fail_in": [
+        "theorem_per_item_clock_is_not_batch_constant"
+      ]
+    },
+    {
+      "name": "fallback-routes-to-counts",
+      "find": "if available{Route::Counts}else{Route::PrewriteFallback}",
+      "replace": "Route::Counts",
+      "expect_fail_in": [
+        "theorem_bulk_zero_fallback_differs",
+        "theorem_bulk_clock_and_fallback_final_windows",
+        "theorem_raw_bulk_to_reader"
+      ]
+    },
+    {
+      "name": "provider-refusal-ignored",
+      "find": "if !provider_ok {refused(s)}",
+      "replace": "if false {refused(s)}",
+      "expect_fail_in": [
+        "theorem_refusal_no_effect"
+      ]
+    },
+    {
+      "name": "writer-loses-resolved-time",
+      "find": "let e=at(identity,ts);",
+      "replace": "let e=at(identity,0);",
+      "expect_fail_in": [
+        "theorem_actual_coordinate_reaches_window",
+        "theorem_raw_single_to_reader",
+        "theorem_raw_bulk_to_reader"
+      ]
+    },
+    {
+      "name": "fallback-counts-collisions",
+      "find": "count:if route==Route::Counts && exists{0}else{1}",
+      "replace": "count:if exists{0}else{1}",
+      "expect_fail_in": [
+        "theorem_duplicate_counts_differ"
+      ]
+    },
+    {
+      "name": "reader-uses-raw-identity-time",
+      "find": "stores::weight(r.state,at(e,ts),",
+      "replace": "stores::weight(r.state,e,",
+      "expect_fail_in": [
+        "theorem_actual_coordinate_reaches_window"
+      ]
+    },
+    {
+      "name": "batch-validation-bypassed",
+      "find": "else if !batch_valid(es) || !provider_ok",
+      "replace": "else if !provider_ok",
+      "expect_fail_in": [
+        "theorem_batch_validation_precedes_any_write"
+      ]
+    },
+    {
+      "name": "empty-batch-provider-dependent",
+      "find": "if es.len()==0 {fold(s,es,available,clocks)}",
+      "replace": "if es.len()==0 && provider_ok {fold(s,es,available,clocks)}",
+      "expect_fail_in": [
+        "theorem_empty_batch_no_provider_dependency"
+      ]
+    }
+  ]
+}

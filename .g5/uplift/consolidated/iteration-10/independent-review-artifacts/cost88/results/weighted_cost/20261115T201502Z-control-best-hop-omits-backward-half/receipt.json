@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_relax_best"
+    ],
+    "find": "best_hops:side(t,false).hop[v]+side(t,true).hop[v]",
+    "name": "best-hop-omits-backward-half",
+    "replace": "best_hops:side(t,false).hop[v]",
+    "why": "The fitting-hop branch needs a witness for both halves."
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_relax_best"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/model.json": "97dd80c14a14ed02ad845b06201b71339cf5ede2a9694da586fb2a77a3692973",
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "602722835a1367bf97d2c548d3e256ddbdd96c8020fe775fbc0e7d88e7950093",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/run/verus/weighted_cost/controls/best-hop-omits-backward-half/20261115T201456Z/models/weighted_cost/weighted_cost.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_relax_best": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/run/verus/weighted_cost/20261115T201456Z-control-best-hop-omits-backward-half-lemma_relax_best.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-frozen-review-c3901dri/run/verus/weighted_cost/20261115T201456Z-control-best-hop-omits-backward-half.log",
+    "timed_out": false,
+    "verified": 87
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_cost/20261115T201502Z-control-best-hop-omits-backward-half/logs/20261115T201456Z-control-best-hop-omits-backward-half-lemma_relax_best.log": "201edf94dbe7d7bad184a11c3def64cf9e63fd9ed4bd4743448267c87cc319e8",
+    ".g5/Verus_verification/results/weighted_cost/20261115T201502Z-control-best-hop-omits-backward-half/logs/20261115T201456Z-control-best-hop-omits-backward-half.log": "3d72216d5cc203d54270798fe53c0ba363ebdd2b89268de793cf0238cdbc1a95"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

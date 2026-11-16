@@ -1,0 +1,67 @@
+{
+  "name": "temporal_restore",
+  "root": "temporal_restore.rs",
+  "expected_verified": 31,
+  "additional_inputs": [
+    "../temporal_window_reader/temporal_window_reader.rs"
+  ],
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "zero-start-export",
+      "find": "(!zero_start || (k.1>0 && k.2>0))",
+      "replace": "(k.1>0 && k.2>0)",
+      "expect_fail_in": [
+        "theorem_zero_graph_epoch_is_preserved"
+      ]
+    },
+    {
+      "name": "import-loses-value",
+      "find": "state:s.insert(key,value),applied:1",
+      "replace": "state:s.insert(key,Scalar::Number(999)),applied:1",
+      "expect_fail_in": [
+        "lemma_export_import_key"
+      ]
+    },
+    {
+      "name": "reader-loses-graph",
+      "find": "if e.0==g && lo<=e.1",
+      "replace": "if true && lo<=e.1",
+      "expect_fail_in": [
+        "theorem_wrong_graph_and_empty_sources"
+      ]
+    },
+    {
+      "name": "attrs-not-written",
+      "find": "if k.0==2 && same_event(k,e) && attrs.contains_key(k.6)",
+      "replace": "if false",
+      "expect_fail_in": [
+        "theorem_writer_derives_direction_and_attrs"
+      ]
+    },
+    {
+      "name": "layout-refusal-erases",
+      "find": "Restored{state:s,refused:true",
+      "replace": "Restored{state:Map::empty(),refused:true",
+      "expect_fail_in": [
+        "theorem_layout_refuses_before_erasure"
+      ]
+    },
+    {
+      "name": "refused-line-still-written",
+      "find": "if rejected.contains(key){Imported{state:s,applied:0}}",
+      "replace": "if false{Imported{state:s,applied:0}}",
+      "expect_fail_in": [
+        "theorem_swallowed_line_is_not_reported"
+      ]
+    },
+    {
+      "name": "scalar-typing-assumed-preserved",
+      "find": "Scalar::Number(n)=>Scalar::NumericText(n)",
+      "replace": "Scalar::Number(n)=>Scalar::Number(n)",
+      "expect_fail_in": [
+        "theorem_numeric_attribute_becomes_text"
+      ]
+    }
+  ]
+}

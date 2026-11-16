@@ -1,0 +1,36 @@
+# Independent ordinary aggregate review — accepted bounded V3
+
+The source-informed panel was frozen in `review-aggregate-expectations.md` before this candidate was inspected. Only the fresh ordinary iteration-13 lane and completed seals were used. Interrupted inputs were not opened, assessed, replayed, or reused. This is a builder-visible source-informed review, not an external grader claim.
+
+The accepted chain starts with ordered raw MATCH rows and admitted RETURN ASTs. Grouping and individual DISTINCT decisions come from the AST; first-encounter group enumeration is derived from those rows and proved complete and unique. The raw fold derives null exclusion, multiplicity, distinct tokens, exact half-unit sums, numeric contributor counts, raw float presence, scalar collections, and graph-plus-ID entity counts. Complete typed RETURN matrices are constructed before paging. A separate source-shaped numeric storage relation reaches the unchanged typed scalar reader. Raw generated column names drive the final public-cell projection.
+
+This supplies a producer-to-reader contract rather than an assumed result matrix or prepared group list. Generic COUNT, grouping, null, multiplicity, exact numeric, collection-membership, and page-composition laws are substantive. SQL sorting itself is a provider relation: the ORDER variant requires a complete unique group permutation. Native Group/GroupOf/EmitGroups remain inspected typed transcriptions, not executed native bodies.
+
+| Frozen obligations | Independent disposition |
+| --- | --- |
+| A1–A4 empty/global/grouped, NULL, multiplicity, DISTINCT | Supported within admitted raw-row/scalar fragment; actual empty key-order producer controls fail decisively. |
+| A5 graph-plus-ID entity identity | Supported for ordinary nonnull bound identity, pW=1; compressed/parallel/provider enumeration excluded. |
+| A6–A7 raw keys, NULL versus empty text, derived grouping | Supported under exact key/equality carrier; generic SQL collation and mixed numeric representative type remain partial. |
+| A8 typed SUM/AVG and WITH | Supported for exact integer/half-unit inputs and explicit canonical SQL numeric/typed-text carrier relations. Arbitrary binary64/coercion is unproved. |
+| A9–A11 typed scalar/collection/readers | Scalar final cells and null-excluded collection sequence supported; generic JSON bytes, nested/runtime containers and whole graph-object codec remain partial. |
+| A12–A14 order/page/internal columns/names | Aggregate-before-page and derived ASCII generated-name projection supported. SQL ORDER winner/tie/collation and arbitrary aliases/Unicode names are provider or observation limits. |
+| A15 error/empty column handling | Selected actual Python examples and upstream tests only; no whole finalizer/error contract. |
+| A16 OPTIONAL synthetic null row | Partial/observation. Fresh leading grouped OPTIONAL returns SUM NULL despite newer R308 zero identity; root owns ordinary bug-agg-001 disposition. COUNT(*)=1 is retained. |
+| A17 native planner decline | Actual selected Python route composition observed; no general planner/native-body proof or invented unsupported-input refusal. |
+| A18–A20 raw provider → final readers, limits, role fidelity | Supported only at the stated typed/provider frames and six bounded roles below. |
+
+Exact independent scratch evidence is retained in `review-aggregate-scratch-v2/`. Source names preserve the V2 proof/control run; the final binding and NOTES are exact V3. `review-aggregate-final-validation.json` and replay commands/logs make the following independently reproducible:
+
+- **75 verified, 0 errors**: 62 new units = 46 ordinary proof declarations (38 theorem, 8 helper) + 16 recursive spec checks; 13 unchanged imported units = 12 proof + 1 recursive. No nonlinear subqueries or extra decreases hints.
+- **12/12 controls**: every full and named run fails by an ordinary assertion/postcondition/precondition diagnostic, without resource exhaustion or timeout. Each exact generated mutant equals its recorded single source replacement. The two empty-result controls mutate actual `key_order` producer branches and target the complete report theorem.
+- **669 comparisons, 160 fixtures**, no mismatch: actual parser/translator/caller/store/finalizer over executing local SQLite plus named SQL/numeric/codec provider fragments. Nine detections comprise seven actual Python source-copy mutations, one SQL-provider contrast, and one actual-observation corruption check. The last first affirms actual returned COUNT cells against an input-derived raw oracle, then rejects a deep-copied changed COUNT cell through the same comparator.
+- **109 upstream tests pass**. Reviewer socket, native and Git call counts are all zero. Twenty-five actual verification commands plus thirteen verifier-version metadata queries are distinguished.
+- All **14 final central and 14 scratch receipts** are fresh. Nine package/import files and the 45-input binding closure match current bytes. The union of each of the three fresh native fact maps' `inputs` and `source_inputs` is flat-stamped and current. These native facts were read as evidence, never executed by the reviewer.
+
+Replay command wall time was **80.571252s**: baseline 66.369522s (includes command/startup time), controls 11.998900s, upstream 0.928485s, V3 binding 1.274345s. This is measured replay command cost, not a solver-only or complete historical investigation cost. The audit itself took about 0.027s.
+
+The retained misses matter. V1's two empty controls edited an independent key spec and receive no producer-control credit; the exact V1 and its disposition remain preserved. V2's literal edited-versus-original inequality receives no observation-control credit; exact V2 remains under `preserved-v2-before-observation-refresh`, and V3 supplies the actual observation/oracle check. Proof source, manifest, import, and controls did not change for V3; only binding/NOTES were refreshed and the binding rerun. An initial reviewer audit used the wrong local comparator variable name; its source/log are retained as `review-aggregate-final-audit-attempt-1.*`, corrected without rerunning passing candidate work. Only active binding/NOTES advanced during the V2 upstream command; neither was consumed by those product tests and all exact scratch test inputs stayed unchanged.
+
+Recommend the six proposed bounded active roles: `_expr_aggregation` (property-SUM deciding/storage fragment), `_drop_internal_columns` (generated ASCII name projection), and `decode_typed_text` (unchanged scalar-reader composition) at actual Python evidence tier; `Exec.Group`, `GroupOf`, and `EmitGroups` at **inspection plus typed transcription** tier. Keep the fourteen other source roles observation-only, including the OPTIONAL helper, broad caller/store/finalizer, native key codec and GroupRow. Whole-member reach and direct executable-body verification remain zero. Root's fresh SQL-route native cases do not promote the three native transcription roles to native-body execution.
+
+No further semantic edit is requested. Canonical integration must preserve the exact numeric/key/codec/order/provider frames and the OPTIONAL nonanswer rather than turn this acceptance into an all-language or all-backend claim.

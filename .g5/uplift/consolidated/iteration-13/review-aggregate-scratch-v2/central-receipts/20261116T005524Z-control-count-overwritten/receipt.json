@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_scalar_duplicate_rows_count_twice"
+    ],
+    "find": "count:a.count+if yes{1nat}else{0nat}",
+    "name": "count-overwritten",
+    "replace": "count:if yes{1nat}else{0nat}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_scalar_duplicate_rows_count_twice"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/count-overwritten/20261116T005523Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_scalar_duplicate_rows_count_twice": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005523Z-control-count-overwritten-theorem_scalar_duplicate_rows_count_twice.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005523Z-control-count-overwritten.log",
+    "timed_out": false,
+    "verified": 72
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T005524Z-control-count-overwritten/logs/20261116T005523Z-control-count-overwritten-theorem_scalar_duplicate_rows_count_twice.log": "97fda66ce5b0f9859380153c48053c7dc624349904d3a8506403fb2db8ccd80f",
+    ".g5/Verus_verification/results/aggregate_results/20261116T005524Z-control-count-overwritten/logs/20261116T005523Z-control-count-overwritten.log": "cd92654018cd060b2df63b761c74e31c8face74decd1d84f7c69ee3fae16520a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,12 @@
+verification results:: 34 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/vector-zero-scan/20261116T003502Z/models/routine_reporting/routine_reporting.rs:206:2
+    |
+204 | pub proof fn theorem_empty_and_partial_vector_report(s:Census)
+    | -------------------------------------------------------------- at the end of the function body
+205 |  ensures s.vector_unknown ==> report(s,false).vector==VectorView::Unknown,
+206 |  !s.vector_unknown && s.nv==0 ==> report(s,false).vector==VectorView::Absent,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

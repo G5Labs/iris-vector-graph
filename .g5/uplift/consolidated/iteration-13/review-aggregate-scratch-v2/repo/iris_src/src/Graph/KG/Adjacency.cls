@@ -1,0 +1,904 @@
+/// Graph.KG.Adjacency — the one writer of ^KG("out") and ^KG("in") (specs 245, 248).
+///
+/// Every structural edge is mirrored in two stores under its graph key (ADR-0001,
+/// ADR-0003):
+///
+///     ^KG("out", graph, s, p, o) = weight
+///     ^KG("in",  graph, o, p, s) = weight
+///
+/// Nothing else may Set, Kill, Merge or $Increment those two stores. The scan in
+/// tests/unit/test_adjacency_single_writer.py enforces it, with an empty allow-list.
+/// Callers that used to write them reach this class instead:
+///
+///   Graph.KG.EdgeScan       WriteAdjacency / DeleteAdjacency / BulkDeleteAdjacency and the
+///                           keyed variants: one-line delegations, names kept for Python
+///   Graph.KG.LedgerApply    relationship create, weight refresh and delete
+///   Graph.KG.BenchFormat    seed
+///   Graph.KG.Eraser         RemoveGraph, RemoveAll, RemoveNode, Remove
+///   Graph.KG.TemporalIndex  PutShadow, Remove; the purge's RetractTemporalRows / RetractTemporalShadows
+///   Graph.KG.TraversalBuild BuildKG: BeginRebuild, FillEdge, FillTriple, EndRebuild
+///
+/// THE DEGREE CACHE (spec 248, docs/dev/notes/research/alt-impl/BRIEF-PARITY.md). The stored
+/// counters ^KG("deg") and ^KG("degp") are gone. Graph.KG.Adj.Degree validates a cached
+/// count against a per-source generation, ^KG("gen", graph, src), and that is what this
+/// class maintains. The writer rule, for every code path that adds or removes an out entry:
+///
+///     Lock +^IVG.AdjW(graph)#"S":5        shared: writers never wait for writers
+///     change out/in
+///     $Increment(^KG("gen", graph, src))  $Increment survives a rollback; a rolled-back
+///                                         write over-bumps, which only makes an entry look stale
+///     Lock -^IVG.AdjW(graph)#"S"          inside a transaction the unlock waits for commit or
+///                                         rollback, which is what makes Degree's exclusive
+///                                         no-wait probe fail while an uncommitted write is visible
+///
+/// Erase and rebuild kill the affected gen and degc subtrees with the out/in kill, under the
+/// same lock. A lock that cannot be taken in 5 seconds is an error status and nothing is written, but for the row
+/// writers (4.7.0 row 17: IRIS ignores a functional index's error), which write without it: see WriterLock.
+/// Reweight does not change a degree, so it takes no lock and does not bump.
+///
+/// graph is a derived index key: integer 0 for the default graph, the graph name
+/// otherwise. Derive it with Graph.KG.GraphKey.ForIndex() before calling.
+///
+/// ^KG("__version") is bumped once per write exactly as before the cache; ^ArnoKG serves a
+/// cached snapshot while its stamp equals it.
+///
+/// Errors: Put, Remove and Reweight do not catch. An exception from ^NKG interning
+/// reaches the caller, as it always did. PutKeyed and RemoveKeyed keep the Try/Catch
+/// they had, because they are the multigraph writers that report a status.
+Class Graph.KG.Adjacency Extends %RegisteredObject
+{
+
+/// The shared writer lock on graph pGraph, for a row writer (pWho names it): 1 when granted in 5 seconds. 4.7.0 row
+/// 17: refused, the writer returned an error status, which IRIS's SQL filing does not read from a functional index
+/// callback (Graph.KG.AdjIndex), so the row was written and its ^KG entry was not. Now the writer goes on without the
+/// lock and answers 0. What the lock keeps safe is the degree cache: a reader's exclusive no-wait probe (Graph.KG.Adj
+/// Degree, WarmFill) fails while a writer holds it, and the unlock waits for the writer's commit or rollback, so no
+/// count that includes an uncommitted entry is stored. Without the lock that probe would succeed, so the writer marks
+/// the graph in ^IVG.AdjNoLock(pGraph) with $Increment, which a rollback does not take back, and the readers store no
+/// degree for that graph until a rebuild of ^KG from the rows (RemoveAll, RemoveGraph) clears it. ^KG("gen") and
+/// ^KG("__version") move as with the lock, so ^IVG.AlgoCache and ^ArnoKG see the write. A WARNING goes to messages.log
+/// once per process and graph.
+ClassMethod WriterLock(pGraph, pWho As %String) As %Boolean
+{
+	Lock +^IVG.AdjW(pGraph)#"S":5
+	If $Test {
+		Quit 1
+	}
+	Set tmp = $Increment(^IVG.AdjNoLock(pGraph))
+	If '$Data(^||IVG.AdjNoLockWarned(pGraph)) {
+		Set ^||IVG.AdjNoLockWarned(pGraph) = 1
+		Do ##class(%SYS.System).WriteToConsoleLog("IVG Graph.KG.Adjacency."_pWho_": the writer lock for graph "_pGraph_" was not granted in 5 seconds; ^KG was written without it, and the graph's degree cache is not stored until sync() rebuilds ^KG", 0, 1)
+	}
+	Quit 0
+}
+
+/// Write adjacency for one edge. pWeight "" means 1.0.
+///
+/// The generation is bumped on every call, so this is for an edge that is new to the
+/// graph; an overwrite over-bumps, which is harmless. An edge already present is handled
+/// by PutKeyed or Reweight.
+ClassMethod Put(pGraph, pSrc As %String, pPred As %String, pDst As %String, pWeight As %String = "") As %Status
+{
+	Set tSC = $$$OK
+	If pWeight = "" {
+		Set pWeight = "1.0"
+	}
+	Set tLocked = ..WriterLock(pGraph, "Put")
+	Set ^KG("out", pGraph, pSrc, pPred, pDst) = +pWeight
+	Set ^KG("in", pGraph, pDst, pPred, pSrc) = +pWeight
+	Set tmp = $Increment(^KG("gen", pGraph, pSrc))
+	// ^ArnoKG serves a cached snapshot while its stamp equals ^KG("__version"), so a
+	// write that leaves the stamp alone is invisible to the next Arno walk.
+	Set tmp = $Increment(^KG("__version"))
+	Lock:tLocked -^IVG.AdjW(pGraph)#"S"
+	// ^NKG is per-identifier (no graph dimension); unchanged by spec 214
+	If $Data(^NKG("$meta", "nodeCount")) {
+		Set sIdx = ##class(Graph.KG.GraphIndex).InternNode(pSrc)
+		Set oIdx = ##class(Graph.KG.GraphIndex).InternNode(pDst)
+		Set pIdx = ##class(Graph.KG.GraphIndex).InternLabel(pPred)
+		If '$Data(^NKG(-1, sIdx, -(pIdx+1), oIdx)) {
+			Set ^NKG(-1, sIdx, -(pIdx+1), oIdx) = +pWeight
+			Set ^NKG(-2, oIdx, -(pIdx+1), sIdx) = +pWeight
+			Set tmp = $Increment(^NKG(-3, sIdx))
+			Set tmp = $Increment(^NKG("$meta", "edgeCount"))
+		}
+		Set tmp = $Increment(^NKG("$meta", "version"))
+		Do ##class(Graph.KG.GraphIndex).UpdateStructuralHLL(sIdx, pIdx, oIdx)
+	}
+	Quit tSC
+}
+
+/// Write the structural mirror for one edge, without interning.
+///
+/// Put's twin, for callers whose edges must be visible to the ^KG readers but are
+/// deliberately absent from ^NKG: a temporal edge keeps a structural shadow so
+/// MatchEdges and the centrality readers see it, and is interned only by a BuildNKG.
+/// That is the ADJACENCY CONTRACT documented on create_edge_temporal; calling Put
+/// instead would quietly break it by interning on every temporal insert.
+///
+/// Idempotent in the generation: several temporal edges at different timestamps are one
+/// structural edge, so a repeat only refreshes the weight and the degree does not move.
+ClassMethod PutShadow(pGraph, pSrc As %String, pPred As %String, pDst As %String, pWeight As %String = "") As %Status
+{
+	Set tSC = $$$OK
+	If pWeight = "" {
+		Set pWeight = "1.0"
+	}
+	Set tLocked = ..WriterLock(pGraph, "PutShadow")
+	// Same structural edge at a new timestamp: refresh the weight, leave the
+	// generation alone. Killing and rewriting would be the same thing more slowly.
+	Set tExists = $Data(^KG("out", pGraph, pSrc, pPred, pDst))
+	Set ^KG("out", pGraph, pSrc, pPred, pDst) = +pWeight
+	Set ^KG("in", pGraph, pDst, pPred, pSrc) = +pWeight
+	If 'tExists {
+		Set tmp = $Increment(^KG("gen", pGraph, pSrc))
+		Set tmp = $Increment(^KG("__version"))
+	}
+	Lock:tLocked -^IVG.AdjW(pGraph)#"S"
+	Quit tSC
+}
+
+/// Remove adjacency for one edge.
+///
+/// The inverse of Put. The generation is bumped only when the out entry was really there.
+/// ^NKG has no graph dimension, so its entry for the triple goes only when no other graph
+/// still holds the triple: deleting a named graph's edge used to take the default graph's
+/// merged entry (and its degree) with it.
+ClassMethod Remove(pGraph, pSrc As %String, pPred As %String, pDst As %String) As %Status
+{
+	Set tSC = $$$OK
+	Set tLocked = ..WriterLock(pGraph, "Remove")
+	Set tHad = $Data(^KG("out", pGraph, pSrc, pPred, pDst))
+	Kill ^KG("out", pGraph, pSrc, pPred, pDst)
+	Kill ^KG("in", pGraph, pDst, pPred, pSrc)
+	If tHad {
+		Set tmp = $Increment(^KG("gen", pGraph, pSrc))
+	}
+	Set tmp = $Increment(^KG("__version"))
+	Lock:tLocked -^IVG.AdjW(pGraph)#"S"
+	// Only when the entry was there: a row delete removes it through the index (spec 252), and a
+	// caller's own Remove after that must not count ^NKG down a second time.
+	If (tHad) && ($Data(^NKG("$meta", "nodeCount"))) && ('..HeldElsewhere(pGraph, pSrc, pPred, pDst)) {
+		// The first argument is unused: ^NKG is merged across graphs.
+		Do ##class(Graph.KG.GraphIndex).DeleteIndex("", pSrc, pPred, pDst, "")
+	}
+	Do:tHad ..MarkGraphGone(pGraph, pSrc, pDst)
+	Quit tSC
+}
+
+/// After a removal from graph pGraph of an edge from pSrc (to pDst): when it was a named graph's last edge, ^NKG is
+/// built and interns an end of it, mark ^NKG stale. Its dictionary still interns that graph's nodes, and once no named
+/// graph has an edge an algorithm reads ^NKG for the default graph (R184) and answered them too;
+/// TraversalBuild.EnsureNKG rebuilds before the next read, and the rebuild's sweep drops them (4.6.0 R274). A graph
+/// ^NKG never held (its ends not interned) leaves ^NKG as it is. The default graph's key is 0 (ADR-0001).
+ClassMethod MarkGraphGone(pGraph, pSrc As %String, pDst As %String = "") [ Private ]
+{
+	Quit:pGraph=0
+	Quit:$Data(^KG("out", pGraph))
+	Quit:'$Data(^NKG("$meta", "nodeCount"))
+	Quit:'$Data(^NKG("$NI", pSrc))&&((pDst="")||'$Data(^NKG("$NI", pDst)))
+	Set ^NKG("$meta", "stale") = 1
+}
+
+/// 1 when a graph other than pGraph holds the triple in ^KG("out").
+ClassMethod HeldElsewhere(pGraph, pSrc As %String, pPred As %String, pDst As %String) As %Boolean [ Private ]
+{
+	Set tG = ""
+	For {
+		Set tG = $Order(^KG("out", tG))
+		Quit:tG=""
+		If (tG '= pGraph) && $Data(^KG("out", tG, pSrc, pPred, pDst)) {
+			Return 1
+		}
+	}
+	Quit 0
+}
+
+/// Write one keyed edge of a multigraph (spec 234). Beside Put, not through it: with the
+/// mode off nothing calls this, and the single-edge writer stays what it was.
+///
+/// pEkey is the row's Graph_KG.rdf_edges.ekey, and the row must already be written. The
+/// layout:
+///
+///   ^KG("out", g, s, p, o)          weight of the lowest live ekey
+///   ^KG("out", g, s, p, o, ekey)    that edge's weight   } only while the triple
+///   ^KG("out", g, s, p, o, "#")     live edge count      } has 2+ edges
+///   ^KG("in", g, o, p, s[, ekey])   mirror
+///
+/// A triple with one edge is byte-identical to one Put wrote. The generation moves when
+/// the edge count of the triple does.
+ClassMethod PutKeyed(pGraph, pSrc As %String, pPred As %String, pDst As %String, pEkey As %Integer, pWeight As %String = "") As %Status
+{
+	Set tSC = $$$OK
+	Set tLocked = 0
+	Try {
+		If pWeight = "" {
+			Set pWeight = "1.0"
+		}
+		Set tW = +pWeight
+		Set tEkey = +pEkey
+		If '$Data(^KG("out", pGraph, pSrc, pPred, pDst)) {
+			Set tSC = ..Put(pGraph, pSrc, pPred, pDst, pWeight)
+			Quit
+		}
+		Set tHash = $Data(^KG("out", pGraph, pSrc, pPred, pDst, "#"))
+		Set tOthers = 0
+		If 'tHash {
+			// One edge so far, spelled as a bare leaf: which ekey it is lives only in its row. Every other
+			// row of the triple becomes a child: during a %BuildIndices (spec 252) the others may all be
+			// there before any of them is put, so which one the leaf is cannot be known, and each later put
+			// then finds its child present. Every job that gets here writes the same state.
+			Set tOthers = ..OtherEdgeKeys(pSrc, pPred, pDst, pGraph, tEkey, .tKeys)
+		}
+		Set tLocked = ..WriterLock(pGraph, "PutKeyed")
+		If ('tHash) && (tOthers = 0) {
+			// The same edge again: refresh its weight, count nothing.
+			Set ^KG("out", pGraph, pSrc, pPred, pDst) = tW
+			Set ^KG("in", pGraph, pDst, pPred, pSrc) = tW
+		} Else {
+			If 'tHash {
+				// With one other row the leaf is that edge, and holds its weight.
+				Set tOldW = ^KG("out", pGraph, pSrc, pPred, pDst)
+				Set tK = ""
+				For {
+					Set tK = $Order(tKeys(tK), 1, tKW)
+					Quit:tK=""
+					Set:tOthers=1 tKW = tOldW
+					Set ^KG("out", pGraph, pSrc, pPred, pDst, tK) = tKW
+					Set ^KG("in", pGraph, pDst, pPred, pSrc, tK) = tKW
+				}
+			}
+			Set tNew = '$Data(^KG("out", pGraph, pSrc, pPred, pDst, tEkey))
+			Set ^KG("out", pGraph, pSrc, pPred, pDst, tEkey) = tW
+			Set ^KG("in", pGraph, pDst, pPred, pSrc, tEkey) = tW
+			// Recounted, not $Increment: a rolled-back row must take its count with it (spec 252)
+			Set ^KG("out", pGraph, pSrc, pPred, pDst, "#") = ..KeyCount(pGraph, pSrc, pPred, pDst)
+			Set:(tNew)||('tHash) tmp = $Increment(^KG("gen", pGraph, pSrc))
+			Do ..SetLeafFromLowest(pSrc, pPred, pDst, pGraph)
+			// A count changed, which PageRank divides by (spec 236, audit item 4). The
+			// Put path above bumps the version in Put.
+			Set tmp = $Increment(^KG("__version"))
+		}
+		Lock:tLocked -^IVG.AdjW(pGraph)#"S"
+		Set tLocked = 0
+	} Catch tEx {
+		Lock:tLocked -^IVG.AdjW(pGraph)#"S"
+		Set tSC = tEx.AsStatus()
+	}
+	Quit tSC
+}
+
+/// Remove one keyed edge of a multigraph (spec 234); the inverse of PutKeyed. A triple
+/// whose last edge goes is removed by Remove, which takes ^NKG with it; a triple that
+/// drops from two edges to one loses its children and count, and is then byte-identical
+/// to one Put wrote with the survivor's weight.
+ClassMethod RemoveKeyed(pGraph, pSrc As %String, pPred As %String, pDst As %String, pEkey As %Integer) As %Status
+{
+	Set tSC = $$$OK
+	Set tLocked = 0
+	Try {
+		Set tEkey = +pEkey
+		If '$Data(^KG("out", pGraph, pSrc, pPred, pDst, "#")) {
+			// One edge: the leaf carries no ekey. While a row for the triple under another ekey is
+			// there, the leaf is that edge's, and this is a late delete of the edge that left (with the
+			// spec 252 index the row delete already made the transition).
+			Quit:..OtherEdgeKeys(pSrc, pPred, pDst, pGraph, tEkey)
+			Set tSC = ..Remove(pGraph, pSrc, pPred, pDst)
+			Quit
+		}
+		// A repeated delete of a gone edge is a no-op, not a second bump.
+		Quit:'$Data(^KG("out", pGraph, pSrc, pPred, pDst, tEkey))
+		Set tLocked = ..WriterLock(pGraph, "RemoveKeyed")
+		Kill ^KG("out", pGraph, pSrc, pPred, pDst, tEkey)
+		Kill ^KG("in", pGraph, pDst, pPred, pSrc, tEkey)
+		Set tmp = $Increment(^KG("gen", pGraph, pSrc))
+		Set tCount = ..KeyCount(pGraph, pSrc, pPred, pDst)
+		If tCount > 1 {
+			Set ^KG("out", pGraph, pSrc, pPred, pDst, "#") = tCount
+			Do ..SetLeafFromLowest(pSrc, pPred, pDst, pGraph)
+			Set tmp = $Increment(^KG("__version"))
+		} Else {
+			// Back to one edge: the leaf takes the survivor's weight and the children go.
+			// Each is killed on its own; a Kill of the leaf would take the leaf too.
+			Set tLast = $Order(^KG("out", pGraph, pSrc, pPred, pDst, ""))
+			If (tLast '= "") && (tLast '= "#") {
+				Set tW = ^KG("out", pGraph, pSrc, pPred, pDst, tLast)
+				Kill ^KG("out", pGraph, pSrc, pPred, pDst, tLast)
+				Kill ^KG("in", pGraph, pDst, pPred, pSrc, tLast)
+				Set ^KG("out", pGraph, pSrc, pPred, pDst) = tW
+				Set ^KG("in", pGraph, pDst, pPred, pSrc) = tW
+			}
+			Kill ^KG("out", pGraph, pSrc, pPred, pDst, "#")
+			Set tmp = $Increment(^KG("__version"))
+		}
+		Lock:tLocked -^IVG.AdjW(pGraph)#"S"
+		Set tLocked = 0
+	} Catch tEx {
+		Lock:tLocked -^IVG.AdjW(pGraph)#"S"
+		Set tSC = tEx.AsStatus()
+	}
+	Quit tSC
+}
+
+/// Refresh the weight of an edge that is already in the mirror. Counts nothing.
+///
+/// Used when a relationship's weight changes (LedgerApply). Each store is set only if
+/// it exists, so a mirror that is half present is not completed by a weight change. The
+/// set of out entries does not change, so neither does a degree: no lock, no generation.
+ClassMethod Reweight(pGraph, pSrc As %String, pPred As %String, pDst As %String, pWeight As %String = "") As %Status
+{
+	Set tSC = $$$OK
+	If pWeight = "" {
+		Set pWeight = "1.0"
+	}
+	If $Data(^KG("out", pGraph, pSrc, pPred, pDst)) {
+		Set ^KG("out", pGraph, pSrc, pPred, pDst) = +pWeight
+	}
+	If $Data(^KG("in", pGraph, pDst, pPred, pSrc)) {
+		Set ^KG("in", pGraph, pDst, pPred, pSrc) = +pWeight
+	}
+	Set tmp = $Increment(^KG("__version"))
+	Quit tSC
+}
+
+/// Remove every outgoing edge of pSrc in graph pGraph, with the in mirror at each target,
+/// and the source's generation and cache entries (a node that is gone leaves no residue,
+/// including a stored counter an older version left behind).
+/// Inbound edges stay: they belong to other sources. See RemoveNode.
+ClassMethod RemoveSource(pGraph, pSrc As %String) As %Status
+{
+	Set tSC = $$$OK
+	If pSrc = "" {
+		Quit tSC
+	}
+	Set tLocked = ..WriterLock(pGraph, "RemoveSource")
+	Set tNkg = $Data(^NKG("$meta", "nodeCount"))
+	Kill tEdges
+	Set tN = 0
+	Set tP = ""
+	For {
+		Set tP = $Order(^KG("out", pGraph, pSrc, tP))
+		Quit:tP=""
+		Set tO = ""
+		For {
+			Set tO = $Order(^KG("out", pGraph, pSrc, tP, tO))
+			Quit:tO=""
+			Kill ^KG("in", pGraph, tO, tP, pSrc)
+			If tNkg {
+				Set tN = tN + 1
+				Set tEdges(tN) = $ListBuild(tP, tO)
+			}
+		}
+	}
+	Kill ^KG("out", pGraph, pSrc)
+	// gen before degc: a reader that stores after this point sees the moved generation
+	// and removes its own entry (Graph.KG.Adj.Degree).
+	Kill ^KG("gen", pGraph, pSrc)
+	Kill ^KG("degc", pGraph, pSrc)
+	// Residue of the stored counters (before spec 248). Nothing writes them any more; a database
+	// upgraded in place may still hold them, and an erase must not leave a node's counter behind.
+	Kill ^KG("deg", pGraph, pSrc)
+	Kill ^KG("degp", pGraph, pSrc)
+	Set tmp = $Increment(^KG("__version"))
+	Lock:tLocked -^IVG.AdjW(pGraph)#"S"
+	For tI = 1:1:tN {
+		If '..HeldElsewhere(pGraph, pSrc, $List(tEdges(tI), 1), $List(tEdges(tI), 2)) {
+			Do ##class(Graph.KG.GraphIndex).DeleteIndex("", pSrc, $List(tEdges(tI), 1), $List(tEdges(tI), 2), "")
+		}
+	}
+	Do ..MarkGraphGone(pGraph, pSrc)
+	Quit tSC
+}
+
+/// Remove a node from graph pGraph as a source and as a target: RemoveSource, then every
+/// edge that points at it, through Remove. Edges are collected before any is removed,
+/// because the walk must not mutate the tree it reads.
+ClassMethod RemoveNode(pGraph, pNode As %String) As %Status
+{
+	Set tSC = ..RemoveSource(pGraph, pNode)
+	If $$$ISERR(tSC) {
+		Quit tSC
+	}
+	Kill tIn
+	Set tN = 0
+	Set tP = ""
+	For {
+		Set tP = $Order(^KG("in", pGraph, pNode, tP))
+		Quit:tP=""
+		Set tS = ""
+		For {
+			Set tS = $Order(^KG("in", pGraph, pNode, tP, tS))
+			Quit:tS=""
+			Set tN = tN + 1
+			Set tIn(tN) = $ListBuild(tS, tP)
+		}
+	}
+	For tI = 1:1:tN {
+		Set tOne = ..Remove(pGraph, $List(tIn(tI), 1), $List(tIn(tI), 2), pNode)
+		If $$$ISERR(tOne) {
+			Set tSC = tOne
+		}
+	}
+	Quit tSC
+}
+
+/// Remove one graph's adjacency and its degree cache: out, in, gen and degc, each with one
+/// Kill because the graph key is the first subscript (ADR-0001). The caller owns the
+/// transaction (Graph.KG.Eraser), so an erase that rolls back restores them together.
+ClassMethod RemoveGraph(pGraph) As %Status
+{
+	Set tSC = $$$OK
+	Lock +^IVG.AdjW(pGraph)#"S":5
+	If '$Test {
+		Quit $$$ERROR($$$GeneralError, "Adjacency.RemoveGraph: the writer lock for graph "_pGraph_" was not granted in 5 seconds")
+	}
+	Kill ^KG("out", pGraph)
+	Kill ^KG("in", pGraph)
+	Kill ^KG("gen", pGraph)
+	Kill ^KG("degc", pGraph)
+	Kill ^KG("degw", pGraph)
+	Kill ^IVG.AdjNoLock(pGraph)  // nothing of the graph is left in the degree cache (WriterLock)
+	// Residue of the stored counters, as in RemoveSource.
+	Kill ^KG("deg", pGraph)
+	Kill ^KG("degp", pGraph)
+	Set tmp = $Increment(^KG("__version"))
+	Lock -^IVG.AdjW(pGraph)#"S"
+	Quit tSC
+}
+
+/// Remove every graph's adjacency and degree cache. The lock is taken on the parent name,
+/// which covers every graph's ^IVG.AdjW(graph) (a reader's exclusive probe on a child
+/// conflicts with a shared lock on the parent).
+ClassMethod RemoveAll() As %Status
+{
+	Set tSC = $$$OK
+	Lock +^IVG.AdjW#"S":5
+	If '$Test {
+		Quit $$$ERROR($$$GeneralError, "Adjacency.RemoveAll: the writer lock was not granted in 5 seconds")
+	}
+	Kill ^KG("out")
+	Kill ^KG("in")
+	Kill ^KG("gen")
+	Kill ^KG("degc")
+	Kill ^KG("degw")
+	// rebuilt from the rows next: no lock-less write is left in the degree cache (WriterLock)
+	Kill ^IVG.AdjNoLock
+	// Residue of the stored counters, as in RemoveSource.
+	Kill ^KG("deg")
+	Kill ^KG("degp")
+	Set tmp = $Increment(^KG("__version"))
+	Lock -^IVG.AdjW#"S"
+	Quit tSC
+}
+
+/// The Adjacency Index entry of one rdf_edges row (spec 252, ADR-0008): called by the functional
+/// index Graph.KG.AdjIndex in the row's transaction. pGraphId is the row's graph_id ("" or $Char(0)
+/// for the default graph), pQuals its qualifiers (the weight), pEkey its multigraph key.
+ClassMethod RowPut(pGraphId As %String, pSrc As %String, pPred As %String, pDst As %String, pQuals As %String = "", pEkey As %String = "") As %Status
+{
+	If (pSrc = "") || (pPred = "") || (pDst = "") {
+		Quit $$$OK
+	}
+	Set tG = ##class(Graph.KG.GraphKey).ForIndex(pGraphId)
+	Set tW = ..WeightOf(pQuals)
+	If $Get(^IVG.GraphMode(tG)) = "multi" {
+		Quit ..PutKeyed(tG, pSrc, pPred, pDst, +pEkey, tW)
+	}
+	Quit ..Put(tG, pSrc, pPred, pDst, tW)
+}
+
+/// The inverse of RowPut, for a deleted row.
+ClassMethod RowRemove(pGraphId As %String, pSrc As %String, pPred As %String, pDst As %String, pEkey As %String = "") As %Status
+{
+	If (pSrc = "") || (pPred = "") || (pDst = "") {
+		Quit $$$OK
+	}
+	Set tG = ##class(Graph.KG.GraphKey).ForIndex(pGraphId)
+	If $Get(^IVG.GraphMode(tG)) = "multi" {
+		Quit ..RemoveKeyed(tG, pSrc, pPred, pDst, +pEkey)
+	}
+	Quit ..Remove(tG, pSrc, pPred, pDst)
+}
+
+/// An updated row: new values first, old values after, as %Library.FunctionalIndex passes them.
+/// The same edge with new qualifiers is a weight change; anything else is a delete and an insert.
+ClassMethod RowUpdate(pGraphId As %String, pSrc As %String, pPred As %String, pDst As %String, pQuals As %String, pEkey As %String, pOldGraphId As %String, pOldSrc As %String, pOldPred As %String, pOldDst As %String, pOldQuals As %String, pOldEkey As %String) As %Status
+{
+	Set tG = ##class(Graph.KG.GraphKey).ForIndex(pGraphId)
+	Set tEkey = +pEkey
+	Set tSame = (tG = ##class(Graph.KG.GraphKey).ForIndex(pOldGraphId)) && (pSrc = pOldSrc) && (pPred = pOldPred) && (pDst = pOldDst) && (tEkey = +pOldEkey)
+	If 'tSame {
+		Set tSC = ..RowRemove(pOldGraphId, pOldSrc, pOldPred, pOldDst, pOldEkey)
+		If $$$ISERR(tSC) {
+			Quit tSC
+		}
+		Quit ..RowPut(pGraphId, pSrc, pPred, pDst, pQuals, pEkey)
+	}
+	If pQuals = pOldQuals {
+		Quit $$$OK
+	}
+	Set tW = ..WeightOf(pQuals)
+	If $Data(^KG("out", tG, pSrc, pPred, pDst, tEkey)) {
+		// A keyed edge of a multigraph triple: its child, then the leaf from the lowest key.
+		Set tLocked = ..WriterLock(tG, "RowUpdate")
+		Set ^KG("out", tG, pSrc, pPred, pDst, tEkey) = +tW
+		Set ^KG("in", tG, pDst, pPred, pSrc, tEkey) = +tW
+		Do ..SetLeafFromLowest(pSrc, pPred, pDst, tG)
+		// The degree is unchanged, but the weighted degree cache (degw) rides on the same generation.
+		Set tmp = $Increment(^KG("gen", tG, pSrc))
+		Set tmp = $Increment(^KG("__version"))
+		Lock:tLocked -^IVG.AdjW(tG)#"S"
+		Quit $$$OK
+	}
+	Quit ..Reweight(tG, pSrc, pPred, pDst, tW)
+}
+
+/// 1 when Graph_KG.rdf_edges carries the adjacency functional index (spec 252): its row writes then
+/// maintain ^KG("out"/"in"), and a writer that also calls Put would do the work twice. 4.7.0: the index of that
+/// name must be a functional one (a TypeClass, Graph.KG.AdjIndex); a plain index named idx_edges_adj maintains no
+/// ^KG, and taking it for the adjacency index left every write's ^KG unwritten.
+ClassMethod Indexed() As %Boolean
+{
+	Quit (..IndexKind() = "functional")
+}
+
+/// "functional" when pTableClass (the rdf_edges class of an IVG Schema) has idx_edges_adj as a functional index (a
+/// TypeClass, Graph.KG.AdjIndex), "plain" when an index of that name is an ordinary one, "absent" when there is none.
+/// The SQL check (GraphSchema.adjacency_index_kind) reads %Dictionary.CompiledIndex, which a role without SELECT on
+/// the class dictionary may not (SQLCODE -99, ADMIN_GUIDE §3's reading and writing roles); any user may call this
+/// through the Native API (4.7.0).
+ClassMethod IndexKind(pTableClass As %String = "Graph.KG.rdfedges") As %String
+{
+	Set tIdx = ##class(%Dictionary.CompiledIndex).%OpenId(pTableClass _ "||idxedgesadj", 0)
+	If '$IsObject(tIdx) {
+		Quit "absent"
+	}
+	Quit $Select(tIdx.TypeClass '= "": "functional", 1: "plain")
+}
+
+/// ADR-0009: the structural row a temporal edge implies, marked {"temporal": true}, with its two endpoint
+/// nodes in the edge's graph. The row's functional index then writes ^KG("out"/"in"). pGKey is the graph
+/// key (0 for the default graph). With pTrustIndex the SQL is skipped when ^KG already has the triple,
+/// which the index keeps in step with the rows: further timestamps of one triple cost a $Data. The
+/// upgrade backfill passes 0, because there ^KG may hold a pre-ADR-0009 shadow with no row behind it.
+///
+/// pNodes (by reference) is the caller's memory of the endpoint nodes it has already seen in this graph:
+/// pNodes(id) set means "the row exists, do not insert it again". A batch that writes many edges from a few
+/// sources passes one array and pays for each source's INSERT once. The memory can be stale, because a
+/// purge that retires bare nodes (Graph.KG.Eraser.RetireBareNodes) or any other delete can remove a node in
+/// between; the edge INSERT then fails its foreign key (SQLCODE -121), the entries are dropped and the
+/// nodes and the edge are written again, up to three times. Rows and ^KG are the same as without pNodes.
+///
+/// Embedded SQL: measured at 55 us for the three statements against 129 us as three %ExecDirect (a dynamic
+/// statement is prepared on every call), with the same rows. The remaining ~50 us is the foreign keys and the
+/// two indexes the edge row maintains.
+ClassMethod AssertTemporalRow(pGKey, pSrc As %String, pPred As %String, pDst As %String, pWeight As %String = "1.0", pTrustIndex As %Boolean = 1, ByRef pNodes) As %Status
+{
+	If (pTrustIndex) && ($Data(^KG("out", pGKey, pSrc, pPred, pDst))) {
+		Quit $$$OK
+	}
+	Set tSC = $$$OK
+	Try {
+		// $Char(0) is SQL's '': a bound "" arrives as NULL, which graph_id refuses (the default graph is '')
+		Set tGraphId = $Select(pGKey = 0: $Char(0), 1: pGKey)
+		Set tQuals = ##class(%DynamicObject).%New()
+		Do tQuals.%Set("temporal", 1, "boolean")
+		If (pWeight '= "") && (+pWeight '= 1) {
+			Do tQuals.%Set("weight", +pWeight, "number")
+		}
+		Set tQ = tQuals.%ToJSON()
+		Set tS = pSrc, tP = pPred, tO = pDst, tG = tGraphId
+		For tTry = 1:1:3 {
+			For tNode = pSrc, pDst {
+				If $Data(pNodes(tNode)) {
+					Continue
+				}
+				Set tN = tNode
+				&sql(INSERT INTO Graph_KG.nodes (node_id, graph_id) SELECT :tN, :tG WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.nodes WHERE node_id = :tN AND COALESCE(graph_id, '') = COALESCE(:tG, '')))
+				If SQLCODE < 0 {
+					$$$ThrowStatus($$$ERROR($$$GeneralError, "AssertTemporalRow node "_tNode_": SQLCODE "_SQLCODE_" "_$Get(%msg)))
+				}
+				Set pNodes(tNode) = ""
+			}
+			&sql(INSERT INTO Graph_KG.rdf_edges (s, p, o_id, graph_id, qualifiers) SELECT :tS, :tP, :tO, :tG, :tQ WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.rdf_edges WHERE s = :tS AND p = :tP AND o_id = :tO AND COALESCE(graph_id, '') = COALESCE(:tG, '')))
+			If (SQLCODE = -121) && (tTry < 3) {
+				// a node row this call relied on is gone: it was remembered, or deleted since it was written
+				Kill pNodes(pSrc), pNodes(pDst)
+				Continue
+			}
+			If SQLCODE < 0 {
+				$$$ThrowStatus($$$ERROR($$$GeneralError, "AssertTemporalRow edge: SQLCODE "_SQLCODE_" "_$Get(%msg)))
+			}
+			Quit
+		}
+	} Catch tEx {
+		Set tSC = tEx.AsStatus()
+	}
+	Quit tSC
+}
+
+/// ADR-0009: the inverse, once the triple's last timestamp is gone: the row is deleted only while it still
+/// carries the temporal marker, so an edge created explicitly outlives its temporal edges. The row's index
+/// removes the ^KG entries.
+ClassMethod RetractTemporalRow(pGKey, pSrc As %String, pPred As %String, pDst As %String) As %Status
+{
+	Set tSC = $$$OK
+	Try {
+		Set tGraphId = $Select(pGKey = 0: $Char(0), 1: pGKey)
+		Set tRS = ##class(%SQL.Statement).%ExecDirect(, "SELECT %ID, qualifiers FROM Graph_KG.rdf_edges WHERE s = ? AND p = ? AND o_id = ? AND COALESCE(graph_id, '') = COALESCE(?, '')", pSrc, pPred, pDst, tGraphId)
+		Set tN = 0
+		While tRS.%Next() {
+			If ..IsTemporalMarked(tRS.%GetData(2)) {
+				Set tN = tN + 1, tIds(tN) = tRS.%GetData(1)
+			}
+		}
+		For tI = 1:1:tN {
+			Set tDel = ##class(%SQL.Statement).%ExecDirect(, "DELETE FROM Graph_KG.rdf_edges WHERE %ID = ?", tIds(tI))
+			If tDel.%SQLCODE < 0 {
+				$$$ThrowStatus($$$ERROR($$$GeneralError, "RetractTemporalRow: SQLCODE "_tDel.%SQLCODE_" "_tDel.%Message))
+			}
+		}
+	} Catch tEx {
+		Set tSC = tEx.AsStatus()
+	}
+	Quit tSC
+}
+
+/// RetractTemporalRow for a set of triples (spec 254, the purge): pRoot names a global whose
+/// nodes are @pRoot@(s, p, o), every one a triple of graph key pGKey no timestamp holds any more.
+/// One statement prepared once for the set; each triple's rows are deleted only while marked.
+ClassMethod RetractTemporalRows(pGKey, pRoot As %String) As %Status
+{
+	Set tSC = $$$OK
+	Try {
+		Set tGraphId = $Select(pGKey = 0: $Char(0), 1: pGKey)
+		// One statement per triple, for the rows both writers produce: the marker first
+		// (AssertTemporalRow's %ToJSON, json.dumps of TEMPORAL_QUALIFIERS). Anything else (no row, an
+		// explicit row, a marker later in the object) takes RetractTemporalRow, which parses: the
+		// rule stays IsTemporalMarked, and the prefix is only the fast way to most of its answers.
+		// Measured on 6,667 triples: 66 us a triple as SELECT then DELETE, 49 as one prepared dynamic statement,
+		// and less as embedded SQL, whose per-row execution skips the dynamic statement's overhead.
+		Set tM1 = "{""temporal"":true", tM2 = "{""temporal"": true"
+		Set tS = ""
+		For {
+			Set tS = $Order(@pRoot@(tS))
+			Quit:tS=""
+			Set tP = ""
+			For {
+				Set tP = $Order(@pRoot@(tS, tP))
+				Quit:tP=""
+				Set tO = ""
+				For {
+					Set tO = $Order(@pRoot@(tS, tP, tO))
+					Quit:tO=""
+					&sql(DELETE FROM Graph_KG.rdf_edges WHERE s = :tS AND p = :tP AND o_id = :tO AND COALESCE(graph_id, '') = COALESCE(:tGraphId, '') AND (qualifiers %STARTSWITH :tM1 OR qualifiers %STARTSWITH :tM2))
+					If SQLCODE < 0 {
+						$$$ThrowStatus($$$ERROR($$$GeneralError, "RetractTemporalRows: SQLCODE "_SQLCODE_" "_$Get(%msg)))
+					}
+					If SQLCODE = 100 {
+						$$$ThrowOnError(..RetractTemporalRow(pGKey, tS, tP, tO))
+					}
+				}
+			}
+		}
+	} Catch tEx {
+		Set tSC = tEx.AsStatus()
+	}
+	Quit tSC
+}
+
+/// The purge's retirement without the adjacency index (an install spec 252's ensure_indexes has
+/// not reached): temporal edges there have a shadow and no row, so the shadow of each triple in
+/// @pRoot@(s, p, o) is removed unless an rdf_edges row holds the triple. Adjacency then never
+/// disagrees with the rows, which is what a BuildKG would rebuild it from.
+ClassMethod RetractTemporalShadows(pGKey, pRoot As %String) As %Status
+{
+	Set tSC = $$$OK
+	Try {
+		Set tGraphId = $Select(pGKey = 0: $Char(0), 1: pGKey)
+		Set tSel = ##class(%SQL.Statement).%New()
+		Set tHaveTable = $$$ISOK(tSel.%Prepare("SELECT COUNT(*) FROM Graph_KG.rdf_edges WHERE s = ? AND p = ? AND o_id = ? AND COALESCE(graph_id, '') = COALESCE(?, '')"))
+		Set tS = ""
+		For {
+			Set tS = $Order(@pRoot@(tS))
+			Quit:tS=""
+			Set tP = ""
+			For {
+				Set tP = $Order(@pRoot@(tS, tP))
+				Quit:tP=""
+				Set tO = ""
+				For {
+					Set tO = $Order(@pRoot@(tS, tP, tO))
+					Quit:tO=""
+					Set tRows = 0
+					If tHaveTable {
+						Set tRS = tSel.%Execute(tS, tP, tO, tGraphId)
+						If tRS.%SQLCODE < 0 {
+							$$$ThrowStatus($$$ERROR($$$GeneralError, "RetractTemporalShadows: SQLCODE "_tRS.%SQLCODE_" "_tRS.%Message))
+						}
+						If tRS.%Next() {
+							Set tRows = +tRS.%GetData(1)
+						}
+					}
+					If tRows = 0 {
+						$$$ThrowOnError(..Remove(pGKey, tS, tP, tO))
+					}
+				}
+			}
+		}
+	} Catch tEx {
+		Set tSC = tEx.AsStatus()
+	}
+	Quit tSC
+}
+
+/// 1 when a row's qualifiers carry the temporal marker {"temporal": true} (ADR-0009).
+ClassMethod IsTemporalMarked(pQuals As %String) As %Boolean
+{
+	If (pQuals = "") || (pQuals = $Char(0)) {
+		Quit 0
+	}
+	Set tMarked = 0
+	Try {
+		Set tObj = ##class(%DynamicObject).%FromJSON(pQuals)
+		Set tMarked = ($IsObject(tObj)) && (tObj.%Get("temporal") = 1)
+	} Catch {
+	}
+	Quit tMarked
+}
+
+/// The weight a row's qualifiers give its edge: qualifiers.weight, else 1.0 (TraversalBuild.BuildKG's rule).
+ClassMethod WeightOf(pQuals As %String) As %String
+{
+	Set tW = "1.0"
+	If (pQuals = "") || (pQuals = $Char(0)) {
+		Quit tW
+	}
+	Try {
+		Set tObj = ##class(%DynamicObject).%FromJSON(pQuals)
+		If ($IsObject(tObj)) && (tObj.%IsDefined("weight")) && (tObj.%Get("weight") '= "") {
+			Set tW = tObj.%Get("weight")
+		}
+	} Catch {
+	}
+	Quit tW
+}
+
+/// The ^KG("label") entry of one rdf_labels row (spec 252), from Graph.KG.LabelIndex.
+ClassMethod PutLabel(pGraphId As %String, pSrc As %String, pLabel As %String) As %Status
+{
+	If (pSrc = "") || (pLabel = "") {
+		Quit $$$OK
+	}
+	Set ^KG("label", ##class(Graph.KG.GraphKey).ForIndex(pGraphId), pLabel, pSrc) = ""
+	Set tmp = $Increment(^KG("__version"))
+	Quit $$$OK
+}
+
+/// The inverse of PutLabel.
+ClassMethod RemoveLabel(pGraphId As %String, pSrc As %String, pLabel As %String) As %Status
+{
+	If (pSrc = "") || (pLabel = "") {
+		Quit $$$OK
+	}
+	Kill ^KG("label", ##class(Graph.KG.GraphKey).ForIndex(pGraphId), pLabel, pSrc)
+	Set tmp = $Increment(^KG("__version"))
+	Quit $$$OK
+}
+
+/// Every graph's label store, for Graph.KG.LabelIndex's PurgeIndex.
+ClassMethod RemoveAllLabels() As %Status
+{
+	Kill ^KG("label")
+	Set tmp = $Increment(^KG("__version"))
+	Quit $$$OK
+}
+
+/// The live edge count of a multigraph triple: its integer children (the "#" count is derived from them).
+ClassMethod KeyCount(pGraph, pSrc As %String, pPred As %String, pDst As %String) As %Integer [ Private ]
+{
+	Set tN = 0
+	Set tK = ""
+	For {
+		Set tK = $Order(^KG("out", pGraph, pSrc, pPred, pDst, tK))
+		Quit:(tK="")||(tK="#")
+		Set tN = tN + 1
+	}
+	Quit tN
+}
+
+/// Start a wholesale rebuild of the adjacency (Graph.KG.TraversalBuild.BuildKG): take the
+/// shared lock on the parent name and hold it until EndRebuild, so no reader stores a
+/// count taken from the half-built tree. Call before the transaction opens; the lock is
+/// not tied to it.
+ClassMethod BeginRebuild() As %Status
+{
+	Set tSC = $$$OK
+	Lock +^IVG.AdjW#"S":5
+	If '$Test {
+		Quit $$$ERROR($$$GeneralError, "Adjacency.BeginRebuild: the writer lock was not granted in 5 seconds")
+	}
+	Quit tSC
+}
+
+/// One edge of a rebuild: out and in, nothing else. BeginRebuild holds the lock, and the
+/// generation was killed with the rest by RemoveAll, so no bump is needed here.
+ClassMethod FillEdge(pGraph, pSrc As %String, pPred As %String, pDst As %String, pWeight As %String = "1.0")
+{
+	Set ^KG("out", pGraph, pSrc, pPred, pDst) = pWeight
+	Set ^KG("in", pGraph, pDst, pPred, pSrc) = pWeight
+}
+
+/// One triple of a rebuild when some graph is a multigraph (spec 234): pN rows
+/// (pEdges(i) = $ListBuild(ekey, weight), lowest ekey first). The leaf takes the lowest
+/// ekey's weight, and a multigraph triple with two or more edges also gets its children
+/// and "#" count, the layout PutKeyed keeps incrementally. A graph not in multigraph
+/// mode gets the leaf only, with the last row's weight, whatever its rows.
+ClassMethod FillTriple(pGraph, pSrc As %String, pPred As %String, pDst As %String, ByRef pEdges, pN As %Integer)
+{
+	Set tMulti = (pN > 1) && ($Get(^IVG.GraphMode(pGraph)) = "multi")
+	Set tLeaf = $List(pEdges(1), 2)
+	If 'tMulti {
+		// The single-edge loop's answer: the last row's weight on a bare leaf.
+		Set tLeaf = $List(pEdges(pN), 2)
+	}
+	Set ^KG("out", pGraph, pSrc, pPred, pDst) = tLeaf
+	Set ^KG("in", pGraph, pDst, pPred, pSrc) = tLeaf
+	If tMulti {
+		For tI = 1:1:pN {
+			Set tEkey = $List(pEdges(tI), 1), tW = $List(pEdges(tI), 2)
+			Set ^KG("out", pGraph, pSrc, pPred, pDst, tEkey) = tW
+			Set ^KG("in", pGraph, pDst, pPred, pSrc, tEkey) = tW
+		}
+		Set ^KG("out", pGraph, pSrc, pPred, pDst, "#") = pN
+	}
+}
+
+/// End a rebuild: release the lock BeginRebuild took, then (pWarm = 1) leave the degree
+/// cache warm. The fill runs after the unlock under the ordinary reader protocol, one
+/// probe per source, so a writer that arrives meanwhile is never read dirty. A failed
+/// rebuild calls this with pWarm = 0.
+ClassMethod EndRebuild(pWarm As %Boolean = 1) As %Status
+{
+	Set tSC = $$$OK
+	Lock -^IVG.AdjW#"S"
+	If pWarm {
+		Do ##class(Graph.KG.Adj).WarmCache()
+	}
+	Quit tSC
+}
+
+/// Point the leaf (out and in) at the weight of the lowest live ekey. Integer
+/// subscripts collate before "#", so the first $Order is that ekey. Runs inside the lock
+/// window of PutKeyed and RemoveKeyed.
+ClassMethod SetLeafFromLowest(pSrc As %String, pPred As %String, pDst As %String, pGraph) [ Private ]
+{
+	Set tLow = $Order(^KG("out", pGraph, pSrc, pPred, pDst, ""))
+	Quit:(tLow = "")||(tLow = "#")
+	Set tW = ^KG("out", pGraph, pSrc, pPred, pDst, tLow)
+	Set ^KG("out", pGraph, pSrc, pPred, pDst) = tW
+	Set ^KG("in", pGraph, pDst, pPred, pSrc) = tW
+}
+
+/// How many (s, p, o) rows graph pGraph (an index key) holds under an ekey other than pEkey, with
+/// pKeys(ekey) = the row's weight. Dynamic SQL, so this class still compiles in a namespace whose
+/// rdf_edges has no ekey column yet.
+ClassMethod OtherEdgeKeys(pSrc As %String, pPred As %String, pDst As %String, pGraph, pEkey As %Integer, Output pKeys) As %Integer [ Private ]
+{
+	Kill pKeys
+	Set tName = $Select((pGraph = 0) || (pGraph = ""): "", 1: pGraph)
+	Set tSQL = "SELECT ekey, qualifiers FROM Graph_KG.rdf_edges WHERE s = ? AND p = ? AND o_id = ?"
+	Set tSQL = tSQL_" AND COALESCE(graph_id, '') = COALESCE(?, '') AND ekey <> ?"
+	Set tRS = ##class(%SQL.Statement).%ExecDirect(, tSQL, pSrc, pPred, pDst, tName, pEkey)
+	If tRS.%SQLCODE < 0 {
+		$$$ThrowStatus($$$ERROR($$$GeneralError, "OtherEdgeKeys SQLCODE "_tRS.%SQLCODE_": "_tRS.%Message))
+	}
+	Set tN = 0
+	While tRS.%Next() {
+		Set pKeys(+tRS.%GetData(1)) = +..WeightOf(tRS.%GetData(2))
+		Set tN = tN + 1
+	}
+	Quit tN
+}
+
+}

@@ -1,0 +1,78 @@
+error[E0308]: mismatched types
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:26:92
+   |
+26 | ...)->Set<Key> {if !q.grouped{set![Key::Global]}else{Set::new(|k:Key|exists|i:int|0<=i<rs.len() && selected(rs[i],q) && key(rs[i],q)==k)}}
+   |       --------                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<Key>`, found `Option<Set<Key>>`
+   |       |
+   |       expected `vstd::set::Set<Key>` because of return type
+   |
+   = note: expected struct `vstd::set::Set<_>`
+                found enum `std::option::Option<vstd::set::Set<_>>`
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<Key>>` value, panicking if the value is an `Option::None`
+   |
+26 | pub open spec fn keys(rs:Seq<Row>,q:Query)->Set<Key> {if !q.grouped{set![Key::Global]}else{Set::new(|k:Key|exists|i:int|0<=i<rs.len() && selected(rs[i],q) && key(rs[i],q)==k).expect("REASON")}}
+   |                                                                                                                                                                               +++++++++++++++++
+
+error[E0308]: mismatched types
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:27:51
+   |
+27 | pub open spec fn tokens(vs:Seq<Val>)->Set<Token> {Set::new(|t:Token|exists|i:int|0<=i<vs.len() && token(vs[i])==t)}
+   |                                       ----------  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<Token>`, found `Option<Set<Token>>`
+   |                                       |
+   |                                       expected `vstd::set::Set<Token>` because of return type
+   |
+   = note: expected struct `vstd::set::Set<_>`
+                found enum `std::option::Option<vstd::set::Set<_>>`
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<Token>>` value, panicking if the value is an `Option::None`
+   |
+27 | pub open spec fn tokens(vs:Seq<Val>)->Set<Token> {Set::new(|t:Token|exists|i:int|0<=i<vs.len() && token(vs[i])==t).expect("REASON")}
+   |                                                                                                                   +++++++++++++++++
+
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:64:98
+   |
+64 | pub proof fn lemma_unique_tokens(vs:Seq<Val>) ensures tokens(unique(vs))==tokens(vs), tokens(vs).finite(),unique(vs).len()==tokens(v...
+   |                                                                                                  ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+error[E0599]: no method named `lemma_len_insert` found for struct `vstd::set::Set<A>` in the current scope
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:66:76
+   |
+66 |  if !tokens(p).contains(token(v)){lemma_tokens_push(unique(p),v);tokens(p).lemma_len_insert(token(v));}
+   |                                                                            ^^^^^^^^^^^^^^^^
+   |
+help: there is a method `lemma_len_filter` with a similar name
+   |
+66 -  if !tokens(p).contains(token(v)){lemma_tokens_push(unique(p),v);tokens(p).lemma_len_insert(token(v));}
+66 +  if !tokens(p).contains(token(v)){lemma_tokens_push(unique(p),v);tokens(p).lemma_len_filter(token(v));}
+   |
+
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:71:90
+   |
+71 |  ensures fold(rs,q,k).count==tokens(raw_values(rs,q,k)).len(),tokens(raw_values(rs,q,k)).finite(),
+   |                                                                                          ^^^^^^
+
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:102:92
+    |
+102 | pub proof fn lemma_entity_set_finite(rs:Seq<Row>,q:Query,k:Key) ensures entity_set(rs,q,k).finite(),decreases rs.len(){if rs.len()>...
+    |                                                                                            ^^^^^^
+
+error[E0599]: no method named `lemma_len_insert` found for struct `vstd::set::Set<A>` in the current scope
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:103:181
+    |
+103 | ...graph:b,id}].len()==2,{let s=set![Entity{graph:a,id}];s.lemma_len_insert(Entity{graph:b,id});}
+    |                                                            ^^^^^^^^^^^^^^^^
+    |
+help: there is a method `lemma_len_filter` with a similar name
+    |
+103 - pub proof fn theorem_graph_part_of_entity_identity(id:nat,a:nat,b:nat) requires a!=b,ensures set![Entity{graph:a,id},Entity{graph:b,id}].len()==2,{let s=set![Entity{graph:a,id}];s.lemma_len_insert(Entity{graph:b,id});}
+103 + pub proof fn theorem_graph_part_of_entity_identity(id:nat,a:nat,b:nat) requires a!=b,ensures set![Entity{graph:a,id},Entity{graph:b,id}].len()==2,{let s=set![Entity{graph:a,id}];s.lemma_len_filter(Entity{graph:b,id});}
+    |
+
+error: aborting due to 4 previous errors; 3 warnings emitted
+
+Some errors have detailed explanations: E0308, E0599.
+For more information about an error, try `rustc --explain E0308`.

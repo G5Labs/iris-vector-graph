@@ -1,0 +1,557 @@
+"""Unit and E2E tests for Graph.KG.BM25Index — BM25 lexical search (spec 044).
+
+Unit tests use mocked IRIS connection (no container required).
+E2E tests run against the live ivg-iris container.
+"""
+import json
+import os
+from unittest.mock import MagicMock
+
+import pytest
+
+SKIP_IRIS_TESTS = os.environ.get("SKIP_IRIS_TESTS", "false").lower() == "true"
+
+
+def _make_engine():
+    """Create an IRISGraphEngine with a mocked _iris_obj."""
+    from iris_vector_graph.engine import IRISGraphEngine
+
+    engine = IRISGraphEngine.__new__(IRISGraphEngine)
+    engine.conn = MagicMock()
+    engine._index_registry = {}
+    engine._arno_available = None
+    engine._arno_capabilities = {}
+    engine._nkg_dirty = False
+    engine._native_vec_available = None
+    return engine
+
+
+# ================================================================
+# Unit tests — no IRIS container required
+# ================================================================
+
+
+class TestBM25IndexUnit:
+    """Unit tests — all IRIS calls are mocked."""
+
+    # T005 ─────────────────────────────────────────────────────────
+    def test_tokenize_lowercases_and_splits(self):
+        """Tokenize returns lowercase alphanumeric tokens; punctuation split."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        # Simulate iFind returning a $List‑like value that Python receives as a list
+        iris_mock.classMethodValue.return_value = [
+            "ankylosing", "spondylitis", "hla", "b27"
+        ]
+        engine._iris_obj = lambda: iris_mock
+
+        # We test the ObjectScript method via classMethodValue indirectly.
+        # The unit assertion is: the values are lowercase, no punctuation.
+        result = iris_mock.classMethodValue("Graph.KG.BM25Index", "Tokenize", "Ankylosing Spondylitis HLA-B27")
+        tokens = list(result)
+        assert all(t == t.lower() for t in tokens), "tokens must be lowercase"
+        assert "hla" in tokens or any("hla" in t for t in tokens)
+        assert "b27" in tokens or any("b27" in t for t in tokens)
+
+    # T007 ─────────────────────────────────────────────────────────
+    def test_bm25_build_calls_classmethod(self):
+        """bm25_build calls Graph.KG.BM25Index.Build with correct args."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '{"indexed":3,"avgdl":5.0,"vocab_size":12}'
+        engine._iris_obj = lambda: iris_mock
+
+        engine.bm25_build("ncit", ["name", "definition"])
+
+        calls = iris_mock.classMethodValue.call_args_list
+        assert any(
+            call.args[0] == "Graph.KG.BM25Index" and call.args[1] == "Build"
+            for call in calls
+        ), "bm25_build must call Graph.KG.BM25Index.Build"
+        # First call should have name="ncit" as 3rd arg
+        build_calls = [c for c in calls if len(c.args) > 2 and c.args[1] == "Build"]
+        assert build_calls, "Build classMethod not called"
+        assert build_calls[0].args[2] == "ncit"
+
+    # T008 ─────────────────────────────────────────────────────────
+    def test_bm25_build_returns_dict(self):
+        """bm25_build parses JSON response into a dict with expected keys."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '{"indexed":3,"avgdl":5.0,"vocab_size":12}'
+        engine._iris_obj = lambda: iris_mock
+
+        result = engine.bm25_build("ncit", ["name"])
+        assert isinstance(result, dict)
+        assert "indexed" in result
+        assert "avgdl" in result
+        assert "vocab_size" in result
+        assert result["indexed"] == 3
+        assert result["vocab_size"] == 12
+
+    # T014 ─────────────────────────────────────────────────────────
+    def test_bm25_search_returns_sorted_tuples(self):
+        """bm25_search returns list of (id, score) tuples sorted DESC."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '[{"id":"A","score":8.4},{"id":"B","score":3.1}]'
+        engine._iris_obj = lambda: iris_mock
+
+        results = engine.bm25_search("ncit", "some query", 5)
+        assert isinstance(results, list)
+        assert len(results) == 2
+        assert results[0] == ("A", 8.4)
+        assert results[1] == ("B", 3.1)
+        # Verify descending order
+        scores = [s for _, s in results]
+        assert scores == sorted(scores, reverse=True)
+
+    # T015 ─────────────────────────────────────────────────────────
+    def test_bm25_search_empty_query_raises_validation_error(self):
+        """bm25_search with empty query raises ValidationError — validated behavior."""
+        from pydantic import ValidationError
+        engine = _make_engine()
+        with pytest.raises(ValidationError, match="query"):
+            engine.bm25_search("ncit", "", 5)
+
+    # T022 ─────────────────────────────────────────────────────────
+    def test_bm25_insert_calls_classmethod(self):
+        """bm25_insert calls Graph.KG.BM25Index.Insert with correct args."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = "1"
+        engine._iris_obj = lambda: iris_mock
+
+        engine.bm25_insert("idx", "doc1", "some text")
+
+        calls = iris_mock.classMethodValue.call_args_list
+        insert_calls = [c for c in calls if len(c.args) > 1 and c.args[1] == "Insert"]
+        assert insert_calls, "Insert classMethod not called"
+        assert insert_calls[0].args[2] == "idx"
+        assert insert_calls[0].args[3] == "doc1"
+        assert insert_calls[0].args[4] == "some text"
+
+    # T028 ─────────────────────────────────────────────────────────
+    def test_bm25_drop_calls_classmethod(self):
+        """bm25_drop calls classMethodVoid Graph.KG.BM25Index.Drop."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        engine._iris_obj = lambda: iris_mock
+
+        engine.bm25_drop("idx")
+
+        calls = iris_mock.classMethodVoid.call_args_list
+        drop_calls = [c for c in calls if len(c.args) > 1 and c.args[1] == "Drop"]
+        assert drop_calls, "Drop classMethodVoid not called"
+        assert drop_calls[0].args[2] == "idx"
+
+    # T029 ─────────────────────────────────────────────────────────
+    def test_bm25_info_returns_dict(self):
+        """bm25_info parses JSON to dict with N, avgdl, vocab_size keys."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = '{"N":5,"avgdl":4.0,"vocab_size":20}'
+        engine._iris_obj = lambda: iris_mock
+
+        result = engine.bm25_info("idx")
+        assert isinstance(result, dict)
+        assert result["N"] == 5
+        assert result["avgdl"] == 4.0
+        assert result["vocab_size"] == 20
+
+    def test_bm25_info_not_found_returns_type_key(self):
+        """bm25_info for non-existent index returns dict with type key set.
+        The 'type' key is always added by bm25_info for protocol consistency."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = "{}"
+        engine._iris_obj = lambda: iris_mock
+
+        result = engine.bm25_info("nonexistent")
+        assert result.get("type") == "bm25"
+
+    # T032 ─────────────────────────────────────────────────────────
+    def test_kgtxt_returns_list(self):
+        from iris_vector_graph.operators import IRISGraphOperators
+        from iris_vector_graph.engine import IRISGraphEngine
+        ops = IRISGraphOperators.__new__(IRISGraphOperators)
+        ops.conn = MagicMock()
+        ops._engine = MagicMock(spec=IRISGraphEngine)
+        ops._engine.kg_TXT.return_value = [("NCIT:C001", 3.5)]
+        result = ops.kg_TXT("diabetes", k=5)
+        # graph=None reaches the engine explicitly: the shim must not let the
+        # default graph be decided by whichever engine version it forwards to.
+        ops._engine.kg_TXT.assert_called_once_with(
+            "diabetes", k=5, min_confidence=0, graph=None
+        )
+        assert result == [("NCIT:C001", 3.5)]
+
+    # T033 ─────────────────────────────────────────────────────────
+    def test_kgtxt_fallback_returns_list(self):
+        from iris_vector_graph.operators import IRISGraphOperators
+        from iris_vector_graph.engine import IRISGraphEngine
+        ops = IRISGraphOperators.__new__(IRISGraphOperators)
+        ops.conn = MagicMock()
+        ops._engine = MagicMock(spec=IRISGraphEngine)
+        ops._engine.kg_TXT.return_value = []
+        result = ops.kg_TXT("diabetes", k=5)
+        assert isinstance(result, list)
+
+    # T038 ─────────────────────────────────────────────────────────
+    def test_ivg_bm25_search_procedure_registered(self):
+        """translate_procedure_call handles ivg.bm25.search without ValueError."""
+        from iris_vector_graph.cypher.translator import (
+            TranslationContext,
+            translate_procedure_call,
+        )
+        from iris_vector_graph.cypher import ast
+
+        # Build a minimal procedure call AST node
+        proc = ast.CypherProcedureCall(
+            procedure_name="ivg.bm25.search",
+            arguments=[
+                ast.Literal("test44"),
+                ast.Literal("diabetes"),
+                ast.Literal(5),
+            ],
+            yield_items=["node", "score"],
+        )
+        context = TranslationContext()
+        translate_procedure_call(proc, context)
+
+    def test_bm25_delete_calls_classmethod(self):
+        """bm25_delete calls Graph.KG.BM25Index.Delete with correct args."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = "1"
+        engine._iris_obj = lambda: iris_mock
+
+        engine.bm25_delete("idx", "doc1")
+
+        calls = iris_mock.classMethodValue.call_args_list
+        del_calls = [c for c in calls if len(c.args) > 1 and c.args[1] == "Delete"]
+        assert del_calls, "Delete classMethod not called"
+        assert del_calls[0].args[2] == "idx"
+        assert del_calls[0].args[3] == "doc1"
+
+    def test_bm25_delete_missing_doc_returns_false(self):
+        """bm25_delete returns False when doc not in index."""
+        engine = _make_engine()
+        iris_mock = MagicMock()
+        iris_mock.classMethodValue.return_value = "0"
+        engine._iris_obj = lambda: iris_mock
+
+        result = engine.bm25_delete("idx", "nonexistent_doc")
+        assert result is False
+
+    # T041 ─────────────────────────────────────────────────────────
+    def test_ivg_bm25_search_yields_node_score(self):
+        """ivg.bm25.search registers variable_aliases for node and score."""
+        from iris_vector_graph.cypher.translator import (
+            TranslationContext,
+            translate_procedure_call,
+        )
+        from iris_vector_graph.cypher import ast
+
+        proc = ast.CypherProcedureCall(
+            procedure_name="ivg.bm25.search",
+            arguments=[
+                ast.Literal("idx"),
+                ast.Literal("query text"),
+                ast.Literal(10),
+            ],
+            yield_items=["node", "score"],
+        )
+        context = TranslationContext()
+        translate_procedure_call(proc, context)
+
+        assert context.variable_aliases.get("node") == "BM25"
+        assert context.variable_aliases.get("score") == "BM25"
+        assert "score" in context.scalar_variables
+
+
+# ================================================================
+# E2E tests — require live ivg-iris container
+# ================================================================
+
+
+@pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+class TestBM25IndexE2E:
+    """E2E tests against the live ivg-iris container."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self, iris_connection):
+        import uuid
+        from iris_vector_graph.engine import IRISGraphEngine
+
+        self.engine = IRISGraphEngine(iris_connection, embedding_dimension=768)
+        self._test_run_id = uuid.uuid4().hex[:8]
+        yield
+        # Cleanup: drop any test indexes we may have left
+        for idx_name in [
+            "test44a", "test44b", "test44c", "test44d", "test44e",
+            "test44f", "test44g", "test44h", "default",
+        ]:
+            try:
+                self.engine.bm25_drop(idx_name)
+            except Exception:
+                pass
+
+    def _create_node_with_name(self, node_id: str, name: str) -> None:
+        unique_id = f"{node_id}_{self._test_run_id}"
+        self.engine.create_node(unique_id, labels=["TestBM25"], properties={"name": name})
+        return unique_id
+
+    # T011 ─────────────────────────────────────────────────────────
+    def test_build_indexes_nodes(self):
+        """bm25_build indexes nodes; bm25_info reports correct count."""
+        self._create_node_with_name("bm25test:001", "ankylosing spondylitis")
+        self._create_node_with_name("bm25test:002", "HLA-B27 antigen disease")
+        self._create_node_with_name("bm25test:003", "rheumatoid arthritis")
+
+        idx = f"test44a_{self._test_run_id}"
+        result = self.engine.bm25_build(idx, ["name"])
+        assert isinstance(result, dict)
+        assert result.get("indexed", 0) >= 3
+        assert result.get("vocab_size", 0) > 0
+
+        info = self.engine.bm25_info(idx)
+        assert info.get("N", 0) >= 3
+        self.engine.bm25_drop(idx)
+
+    # T012 ─────────────────────────────────────────────────────────
+    def test_build_idempotent(self):
+        """Building same index twice gives same indexed count, no error."""
+        self._create_node_with_name("bm25test:004", "rheumatoid arthritis")
+        self._create_node_with_name("bm25test:005", "lupus erythematosus")
+
+        idx = f"test44a_{self._test_run_id}"
+        result1 = self.engine.bm25_build(idx, ["name"])
+        result2 = self.engine.bm25_build(idx, ["name"])
+        assert result1["indexed"] == result2["indexed"]
+        assert result2["vocab_size"] > 0
+        self.engine.bm25_drop(idx)
+
+    # T018 ─────────────────────────────────────────────────────────
+    def test_search_ranks_correctly(self):
+        """Node matching unique query term is top result."""
+        run = self._test_run_id
+        node_a_id = f"bm25rankA_{run}"
+        node_b_id = f"bm25rankB_{run}"
+        unique_term = f"spondylarthropathy{run}"
+
+        self.engine.create_node(node_a_id, labels=["TestBM25"], properties={"name": f"{unique_term} disease"})
+        self.engine.create_node(node_b_id, labels=["TestBM25"], properties={"name": "rheumatoid arthritis obesity"})
+
+        idx = f"test44b_{run}"
+        self.engine.bm25_build(idx, ["name"])
+        results = self.engine.bm25_search(idx, unique_term, 5)
+
+        ids = [r[0] for r in results]
+        assert node_a_id in ids, f"Node {node_a_id} not found in results {ids}"
+        assert results[0][0] == node_a_id, f"Node A should be top result, got {results[0][0]}"
+        self.engine.bm25_drop(idx)
+
+    # T019 ─────────────────────────────────────────────────────────
+    def test_search_empty_query_raises(self):
+        """bm25_search with empty query raises ValidationError."""
+        self._create_node_with_name("bm25test:C", "some node text")
+        idx = f"test44c_{self._test_run_id}"
+        self.engine.bm25_build(idx, ["name"])
+        from pydantic import ValidationError
+        with pytest.raises(ValidationError, match="query"):
+            self.engine.bm25_search(idx, "", 5)
+        self.engine.bm25_drop(idx)
+
+    # T020 ─────────────────────────────────────────────────────────
+    def test_search_no_match_returns_empty(self):
+        """bm25_search with zero-overlap query returns []."""
+        self._create_node_with_name("bm25test:D", "rheumatoid arthritis node")
+        idx = f"test44d_{self._test_run_id}"
+        self.engine.bm25_build(idx, ["name"])
+        results = self.engine.bm25_search(idx, "xyzzy quantum flux", 5)
+        assert results == []
+        self.engine.bm25_drop(idx)
+
+    # T025 ─────────────────────────────────────────────────────────
+    def test_insert_new_doc_findable(self):
+        """After bm25_insert, new doc is findable by its unique term."""
+        self._create_node_with_name("bm25test:E1", "rheumatoid arthritis")
+        self._create_node_with_name("bm25test:E2", "lupus disease")
+        idx = f"test44e_{self._test_run_id}"
+        self.engine.bm25_build(idx, ["name"])
+
+        ok = self.engine.bm25_insert(idx, f"new_{self._test_run_id}", "xylophone unique rare term")
+        assert ok is True
+
+        results = self.engine.bm25_search(idx, "xylophone", 5)
+        ids = [r[0] for r in results]
+        assert f"new_{self._test_run_id}" in ids
+        self.engine.bm25_drop(idx)
+
+    # T026 ─────────────────────────────────────────────────────────
+    def test_insert_replaces_existing(self):
+        """Inserting same docId twice replaces old content."""
+        self._create_node_with_name("bm25test:F1", "arthritis pain")
+        idx = f"test44f_{self._test_run_id}"
+        self.engine.bm25_build(idx, ["name"])
+
+        doc_id = f"replace_{self._test_run_id}"
+        self.engine.bm25_insert(idx, doc_id, "first content here")
+        self.engine.bm25_insert(idx, doc_id, "completely different zygote words")
+
+        results = self.engine.bm25_search(idx, "zygote", 5)
+        ids = [r[0] for r in results]
+        assert doc_id in ids
+
+        results_first = self.engine.bm25_search(idx, "first content", 5)
+        assert isinstance(results_first, list)
+        self.engine.bm25_drop(idx)
+
+    # T030 ─────────────────────────────────────────────────────────
+    def test_drop_removes_all_data(self):
+        """After bm25_drop, bm25_info returns {} and bm25_search returns []."""
+        self._create_node_with_name("bm25test:G", "some text to index")
+        idx = f"test44g_{self._test_run_id}"
+        self.engine.bm25_build(idx, ["name"])
+
+        info_before = self.engine.bm25_info(idx)
+        assert info_before.get("N", 0) > 0
+
+        self.engine.bm25_drop(idx)
+
+        info_after = self.engine.bm25_info(idx)
+        assert info_after.get("type") == "bm25"  # type key always present
+
+        results_after = self.engine.bm25_search(idx, "some", 3)
+        assert results_after == []
+
+    def test_delete_removes_doc(self):
+        """After bm25_delete, doc is no longer findable."""
+        run = self._test_run_id
+        node_id = f"bm25del_{run}"
+        unique = f"deletemeterm{run}"
+        self.engine.create_node(node_id, labels=["TestBM25"], properties={"name": unique})
+        idx = f"test44del_{run}"
+        self.engine.bm25_build(idx, ["name"])
+
+        results_before = self.engine.bm25_search(idx, unique, 5)
+        assert any(r[0] == node_id for r in results_before), "doc should be findable before delete"
+
+        ok = self.engine.bm25_delete(idx, node_id)
+        assert ok is True
+
+        results_after = self.engine.bm25_search(idx, unique, 5)
+        ids_after = [r[0] for r in results_after]
+        assert node_id not in ids_after, "deleted doc should not appear in search results"
+        self.engine.bm25_drop(idx)
+
+    def test_insert_vocab_size_grows(self):
+        """Inserting a doc with new terms increments vocab_size."""
+        run = self._test_run_id
+        self._create_node_with_name(f"bm25vocab_{run}", "some baseline text")
+        idx = f"test44vocab_{run}"
+        self.engine.bm25_build(idx, ["name"])
+
+        info_before = self.engine.bm25_info(idx)
+        vocab_before = info_before.get("vocab_size", 0)
+
+        unique_term = f"xquorumzyx{run}"
+        self.engine.bm25_insert(idx, f"vocabdoc_{run}", f"{unique_term} word")
+
+        info_after = self.engine.bm25_info(idx)
+        vocab_after = info_after.get("vocab_size", 0)
+        assert vocab_after > vocab_before, "vocab_size should grow after inserting new terms"
+        self.engine.bm25_drop(idx)
+
+    def test_build_batch_same_result_as_sequential(self):
+        """Build produces same vocab_size and ranking whether 1 or many nodes exist."""
+        run = self._test_run_id
+        terms = [
+            ("bm25batch_a", "diabetes mellitus glucose"),
+            ("bm25batch_b", "insulin resistance glucose"),
+            ("bm25batch_c", "rheumatoid arthritis inflammation"),
+            ("bm25batch_d", "lupus erythematosus autoimmune"),
+            ("bm25batch_e", "ankylosing spondylitis hla"),
+        ]
+        for nid, text in terms:
+            self.engine.create_node(f"{nid}_{run}", labels=["TestBM25"], properties={"name": text})
+
+        idx = f"test44batch_{run}"
+        result = self.engine.bm25_build(idx, ["name"])
+        assert result.get("indexed", 0) >= 5
+        assert result.get("vocab_size", 0) > 0
+
+        hits = self.engine.bm25_search(idx, "glucose", 5)
+        ids = [r[0] for r in hits]
+        assert f"bm25batch_a_{run}" in ids or f"bm25batch_b_{run}" in ids, \
+            "glucose-containing docs should rank"
+        self.engine.bm25_drop(idx)
+
+    def test_high_score_doc_ranked_first(self):
+        """Doc with 20M-range score is still sorted correctly — no negated-score overflow."""
+        run = self._test_run_id
+        for i in range(50):
+            self.engine.create_node(
+                f"bm25overflow_{run}_{i}", labels=["TestBM25"],
+                properties={"name": " ".join([f"rare{run}term"] * 20)}
+            )
+        idx = f"test44overflow_{run}"
+        self.engine.bm25_build(idx, ["name"])
+        results = self.engine.bm25_search(idx, f"rare{run}term", 5)
+        assert results, "should get results on saturated-term query"
+        scores = [s for _, s in results]
+        assert scores == sorted(scores, reverse=True), "results must be descending by score"
+        self.engine.bm25_drop(idx)
+
+    # T035 ─────────────────────────────────────────────────────────
+    def test_kgtxt_returns_bm25_scores_not_like_scores(self):
+        n1 = self._create_node_with_name("bm25test:H1", "diabetes mellitus type 2")
+        n2 = self._create_node_with_name("bm25test:H2", "insulin resistance diabetes")
+        self._create_node_with_name("bm25test:H3", "rheumatoid arthritis")
+
+        self.engine.bm25_build("bm25test_default", ["name"])
+        results = self.engine.bm25_search("bm25test_default", "diabetes", k=5)
+        assert isinstance(results, list)
+        assert len(results) > 0
+        scores = [s for _, s in results]
+        assert any(s not in (0.0, 1.0) for s in scores), (
+            "BM25 should return varied float scores, not binary 0/1"
+        )
+        self.engine.bm25_drop("bm25test_default")
+
+    # T040 ─────────────────────────────────────────────────────────
+    def test_cypher_bm25_search_executes(self):
+        """CALL ivg.bm25.search generates correct SQL; verifies translation and direct SQL execution."""
+        from iris_vector_graph.cypher.translator import translate_to_sql, set_schema_prefix
+        from iris_vector_graph.cypher.parser import parse_query
+
+        node_a = self._create_node_with_name("bm25test:I1", "diabetes mellitus")
+        node_b = self._create_node_with_name("bm25test:I2", "insulin resistance")
+
+        idx = f"test44h_{self._test_run_id}"
+        self.engine.bm25_build(idx, ["name"])
+
+        set_schema_prefix("Graph_KG")
+        cypher = f"CALL ivg.bm25.search('{idx}', $q, 3) YIELD node, score RETURN node, score"
+        q = parse_query(cypher)
+        result = translate_to_sql(q, {"q": "diabetes"})
+
+        assert "kg_BM25" in result.sql
+        assert "JSON_TABLE" in result.sql
+        assert "BM25" in result.sql
+
+        cursor = self.engine.conn.cursor()
+        literal_sql = f"""SELECT j.node AS node_id, j.score AS score
+FROM JSON_TABLE(
+  Graph_KG.kg_BM25('{idx}', 'diabetes', 3),
+  '$[*]' COLUMNS(
+    node VARCHAR(256) PATH '$.id',
+    score DOUBLE PATH '$.score'
+  )
+) j"""
+        cursor.execute(literal_sql)
+        rows = cursor.fetchall()
+        assert rows is not None
+
+        self.engine.bm25_drop(idx)

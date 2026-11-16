@@ -1,0 +1,56 @@
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:35:2
+   |
+35 |  choose(rs.skip(1),k,next)}
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:38:44
+   |
+38 |  if r.error.is_some(){seq![legacy(k)]}else{choose(r.rows,k,seq![legacy(k)])}
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:91:19
+   |
+91 |  ensures no_dupes(choose(rs,k,held))
+   |                   ^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:106:10
+    |
+106 |  ensures choose(rs,k,held).len()>=held.len(), choose(rs,k,held).take(held.len() as int)==held
+    |          ^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:106:47
+    |
+106 |  ensures choose(rs,k,held).len()>=held.len(), choose(rs,k,held).take(held.len() as int)==held
+    |                                               ^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:111:9
+    |
+111 |  assert(choose(rs,k,held).take(held.len() as int) =~= held);}
+    |         ^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:114:25
+    |
+114 |  ensures forall|t:Text| choose(rs,k,held).contains(t) ==> held.contains(t) || exists|i:int|0<=i<rs.len() && rs[i].name==t && eligib...
+    |                         ^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:119:24
+    |
+119 |  assert forall|t:Text| choose(rs,k,held).contains(t) implies held.contains(t) || exists|i:int|0<=i<rs.len() && rs[i].name==t && eli...
+    |                        ^^^^^^^^^^^^^^^^^
+
+error: forall, choose, and exists do not allow parentheses, use `choose|<vars>| expr` instead
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:130:10
+    |
+130 |  ensures choose(rs,k,held).map_values(|x:Text|lower(x)).contains(lower(t))
+    |          ^^^^^^^^^^^^^^^^^
+
+error: aborting due to 9 previous errors
+

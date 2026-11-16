@@ -1,0 +1,156 @@
+{
+  "name": "ledger_redaction",
+  "root": "redaction.rs",
+  "expected_verified": 41,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "no-separator",
+      "why": "MatchString without the separator: prefix 'acme' would select 'acme-health|1' (spec 256 US1 neighbouring prefix)",
+      "find": "    } else {\n        prefix + sep\n    }",
+      "replace": "    } else {\n        prefix\n    }",
+      "expect_fail_in": [
+        "lemma_acme_does_not_select_acme_health",
+        "lemma_match_string_has_separator_boundary"
+      ]
+    },
+    {
+      "name": "no-marker",
+      "why": "BatchInLock never writes ^IVG.Ledger(\"redacting\"): readers and target commits are not refused between batches (Decision 3)",
+      "find": "                            marker: if s.marker is None { Some(r.t) } else { s.marker },",
+      "replace": "                            marker: s.marker,",
+      "expect_fail_in": [
+        "lemma_step_preserves_inv",
+        "witness_erase_then_redact_completes"
+      ]
+    },
+    {
+      "name": "no-blockscommit",
+      "why": "CommitInTxn without LedgerRedact.BlocksCommit: a target record committed after the scan survives a completed run",
+      "find": "    Variant { serial: true, repaired: false, blocks: true, full_check: false }\n}",
+      "replace": "    Variant { serial: true, repaired: false, blocks: false, full_check: false }\n}",
+      "expect_fail_in": [
+        "lemma_step_preserves_inv"
+      ]
+    },
+    {
+      "name": "no-final-liveness",
+      "why": "FinalInLock without the liveness re-check under the head lock",
+      "find": "            if !s.runs.contains_key(p) || !s.runs[p].done || !s.enabled || live_hit(s, s.runs[p].t, v) {",
+      "replace": "            if !s.runs.contains_key(p) || !s.runs[p].done || !s.enabled {",
+      "expect_fail_in": [
+        "theorem_completion"
+      ]
+    },
+    {
+      "name": "key-not-moved",
+      "why": "ClearRevision leaves ^IVG.Ledger(\"idem\", key) bound and records no idemRedacted entry: a retry replays the redacted revision",
+      "find": "        idem_redacted: if first && has_key { s.idem_redacted.insert(s.key_of[rv]) } else { s.idem_redacted },",
+      "replace": "        idem_redacted: s.idem_redacted,",
+      "expect_fail_in": [
+        "lemma_step_preserves_inv"
+      ]
+    },
+    {
+      "name": "tomb-keeps-record",
+      "why": "Tombstone writes the original record back (no content removed) \u2014 the rescan lemma consumes lemma_tomb_never_matches's contract, so the failure is attributed there and in replay",
+      "find": "pub open spec fn tomb(l: Live, pos: nat) -> Rec {\n    Rec::Tomb { digest: digest_of(l, pos), op: l.op, flags: l.flags }\n}",
+      "replace": "pub open spec fn tomb(l: Live, pos: nat) -> Rec {\n    Rec::Live(l)\n}",
+      "expect_fail_in": [
+        "lemma_tomb_never_matches",
+        "theorem_replay_skips_target"
+      ]
+    },
+    {
+      "name": "replay-reads-tombstones",
+      "why": "GraphState.apply does not skip tombstones (replay.contributes removed)",
+      "find": "        Rec::Tomb { .. } => None,\n        Rec::Live(l) =>\n            if l.op == Op::Redact",
+      "replace": "        Rec::Tomb { .. } => Some(Ent::StmtE(0)),\n        Rec::Live(l) =>\n            if l.op == Op::Redact",
+      "expect_fail_in": [
+        "theorem_replay_skips_target"
+      ]
+    },
+    {
+      "name": "repair-off",
+      "why": "The proposed repair (refuse a batch while the marker names another target) is what refuses the concurrent schedule",
+      "find": "pub open spec fn concurrent_repaired() -> Variant { Variant { serial: false, repaired: true, blocks: true, full_check: false } }",
+      "replace": "pub open spec fn concurrent_repaired() -> Variant { Variant { serial: false, repaired: false, blocks: true, full_check: false } }",
+      "expect_fail_in": [
+        "witness_repair_refuses_the_interleaving"
+      ]
+    },
+    {
+      "name": "independence-broken",
+      "why": "A qualifier record attributed to a statement other than its own (endpoints disagree with the statement map): replay equality must fail",
+      "find": "                && (l.op == Op::CreateRel || l.op == Op::DeleteRel ==> l.ends == Some(truth[l.stmt]))",
+      "replace": "                && (l.op == Op::CreateRel || l.op == Op::DeleteRel ==> l.ends is Some)",
+      "expect_fail_in": [
+        "lemma_keep_iff_entity_not_target"
+      ]
+    },
+    {
+      "name": "redacted-key-after-head",
+      "why": "CommitInTxn checking expected_head before the idemRedacted refusal: a stale-head retry with a redacted key gets stale_head (and a later fresh-head retry would get through to apply) instead of idempotency_redacted",
+      "find": "    else if c.key is Some && c.key_redacted { Outcome::IdempotencyRedacted }\n    else if c.expected_head is Some && !c.head_known { Outcome::UnknownHead }\n    else if c.expected_head is Some && c.expected_head->Some_0 != c.head { Outcome::StaleHead }",
+      "replace": "    else if c.expected_head is Some && !c.head_known { Outcome::UnknownHead }\n    else if c.expected_head is Some && c.expected_head->Some_0 != c.head { Outcome::StaleHead }\n    else if c.key is Some && c.key_redacted { Outcome::IdempotencyRedacted }",
+      "expect_fail_in": [
+        "theorem_redacted_key_refused_before_apply"
+      ]
+    },
+    {
+      "name": "commit-ignores-marker",
+      "why": "CommitInTxn without the BlocksCommit call: a changeset into the target commits while the marker exists",
+      "find": "    else if c.blocked { Outcome::RedactionInProgress }\n",
+      "replace": "",
+      "expect_fail_in": [
+        "theorem_commit_writes_only_when_admitted",
+        "lemma_commit_admits_matches_outcome"
+      ]
+    },
+    {
+      "name": "start-ignores-other-marker",
+      "why": "Redact() without the entry refusal of another target's marker (review A1): a run starts under a marker that names another target",
+      "find": "            } else if s.marker is Some && s.marker != Some(t) {\n                None  // redaction_in_progress",
+      "replace": "            } else if false {\n                None  // redaction_in_progress",
+      "expect_fail_in": [
+        "lemma_step_preserves_inv"
+      ]
+    },
+    {
+      "name": "blockscommit-first-record-only",
+      "why": "BlocksCommit that inspects only the changeset's first record (review B1)",
+      "find": "            Some(t) => forall|j: int| 0 <= j < new.len() ==> matches(Rec::Live(#[trigger] new[j]), t, K()) != Tri::Yes,",
+      "replace": "            Some(t) => forall|j: int| 0 <= j < new.len() && j == 0 ==> matches(Rec::Live(#[trigger] new[j]), t, K()) != Tri::Yes,",
+      "expect_fail_in": [
+        "lemma_commit_preserves"
+      ]
+    },
+    {
+      "name": "prefix-erase-reaches-temporal",
+      "why": "An erase-by-prefix that also removed temporal-only entries whose endpoints have no node row (what ADR-0004 requires, not what EraseNodes does): W5 must then fail, showing the witness depends on the product-faithful erase",
+      "find": "            (has_prefix(s, t.m) && live.contains(Item::NodeRow { g, id: s }))\n            || (has_prefix(o, t.m) && live.contains(Item::NodeRow { g, id: o }))),",
+      "replace": "            has_prefix(s, t.m) || has_prefix(o, t.m)),",
+      "expect_fail_in": [
+        "witness_prefix_erase_leaves_temporal_only_content"
+      ]
+    },
+    {
+      "name": "prefix-erase-takes-orphan-props",
+      "why": "A prefix erase that also deleted property rows without a node row (what an erase of every store requires): W6 must then fail, showing it depends on the product-faithful erase",
+      "find": "        Item::PropRow { g, id } => g == t.g && t.m.len() > 0 && has_prefix(id, t.m) && live.contains(Item::NodeRow { g, id }),",
+      "replace": "        Item::PropRow { g, id } => g == t.g && t.m.len() > 0 && has_prefix(id, t.m),",
+      "expect_fail_in": [
+        "witness_orphan_prop_row_blocks_prefix_redaction"
+      ]
+    },
+    {
+      "name": "graph-blind-erase",
+      "why": "An erase of the default graph that also removed node rows of every graph (graph-blind, as the redaction's L1 content is): the erase frame must fail (lemma_erase_keeps_other_graphs consumes the frame lemma's contract, so the failure is attributed to the frame lemma itself; first attempt FAIL_ELSEWHERE is kept)",
+      "find": "        Item::NodeRow { g, id } => g == t.g && (t.m.len() == 0 || has_prefix(id, t.m)),\n        // EraseGraph deletes",
+      "replace": "        Item::NodeRow { g, id } => (t.g.len() == 0 || g == t.g) && (t.m.len() == 0 || has_prefix(id, t.m)),\n        // EraseGraph deletes",
+      "expect_fail_in": [
+        "lemma_erase_stays_in_target_graph"
+      ]
+    }
+  ]
+}

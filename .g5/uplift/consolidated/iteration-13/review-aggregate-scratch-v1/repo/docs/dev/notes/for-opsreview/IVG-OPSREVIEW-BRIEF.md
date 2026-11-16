@@ -1,0 +1,209 @@
+<!-- markdownlint-disable MD013 -->
+
+# IVG × OpsReview Integration Brief
+
+**Date**: 2026-03-30
+**Updated**: 2026-10-25, for IVG 4.4.1
+**Status**: Strategic — for CRISP prioritization and spec sequencing
+**Audience**: OpsReview team (Tom), IVG maintainer (Andre)
+
+> Written 2026-03-30; updated for 4.4.1. The strategy and the feature list are as written. The
+> statements about what IVG has were corrected: temporal edges ship, and 4.3.0 added the three
+> changes opsreview's event store asked for (specs 254–256). The ingest sample now uses the
+> engine's API.
+>
+> 4.4.0 fixes two problems opsreview found: a duplicate `create_edge` cost about 30 ms (it is now a
+> guarded insert, a probe instead of a refused insert rolled back through the journal), and
+> `ledger.verify()` right after `ledger.enable()` reported divergence for relationships written
+> before enable. 4.4.1 fixes Arno library calls leaving the process in USER when the namespace was
+> not USER; redeploy the classes with `initialize_schema()` to get it.
+
+---
+
+## The Problem Statement
+
+OpsReview spec 002 (SQL Workload Intelligence) answers "what is expensive?" via cost share ranking and parameter sensitivity. But advisors immediately ask the follow-up: **"When did it get expensive? Did it coincide with anything else?"**
+
+Today there is no time dimension. The agent knows:
+
+- QueryGroup A is 27.7% of total SQL cost
+- QueryGroup A is parameter-sensitive (35.7× tail/normal ratio)
+
+It does not know:
+
+- Whether that 27.7% appeared last Tuesday or has been stable for 6 months
+- Whether it spiked at the same moment WD queue depth spiked in the P-Buttons data
+- Whether Customer B had the same query group go critical last quarter
+
+IVG's temporal graph is the missing primitive that answers all three questions.
+
+---
+
+## IVG Capabilities Relevant to OpsReview
+
+| Primitive              | How                               | Current Speed |
+| ---------------------- | --------------------------------- | ------------- |
+| k-hop ego graph        | `BFSFastJson`, `kg_SUBGRAPH`      | 1–20ms        |
+| Node similarity (KNN)  | `kg_KNN_VEC` (HNSW, 384-dim)      | 1.7ms         |
+| Community detection    | `WCCJson`, `CDLPJson`             | batch         |
+| Pattern matching       | Cypher `[*1..3]`, EXISTS          | varies        |
+| VECTOR similarity      | IRIS `VECTOR(DOUBLE, 384)` + HNSW | <10ms         |
+| Multi-vector retrieval | PLAIDSearch                       | 9ms           |
+
+**What's missing for OpsReview** (see roadmap below):
+
+- ~~Temporal edges — not yet in globals~~ Shipped: `^KG("tout", graph, ts, s, p, o)` and its reverse `^KG("tin")`, written by
+  `create_edge_temporal` / `bulk_create_edges_temporal`; 4.3.0 added a paged window reader
+  (`iter_edges_in_window`), `get_latest_edges`, collision reporting and purges that retire
+  structural rows (specs 254–255), and `ledger.redact` (spec 256)
+- Per-workload KG ingest pipeline (Statement Index → graph edges)
+- Incident correlation across the P-Buttons + SQL signal stream
+
+---
+
+## Five IVG Features for OpsReview
+
+### Feature 1: Routine Sampler → CPU Flamegraph
+
+**What it does**: Translate `%SYS.PTools` routine samples (already captured in P-Buttons) into a call graph stored as IVG edges. Each `CALLED_BY` edge gets a weight = execution count.
+
+**IVG role**: Stores call graph, runs PPR from hot nodes to surface highest-centrality routines.
+
+**OpsReview role**: Advisor sees "Routine X is the hot path — it's called by 4 of your top 5 SQL groups."
+
+**Infrastructure needed**: P-Buttons ETL → `CALLS` edge ingest. `pbuttons_tools.py` already parses the data.
+
+**Dependency**: Requires IVG `opsreview-iris` container wired to P-Buttons namespace.
+
+---
+
+### Feature 2: Ensemble Call Topology
+
+**What it does**: Map Business Service → Business Process → Business Operation routing chains from Ensemble/Interoperability message journal into IVG as a directed graph. Edge weight = message count.
+
+**IVG role**: Stores the topology, detects high-betweenness-centrality bottleneck components.
+
+**OpsReview role**: "Your Order Filler has a fan-in of 47 — it's the single point where these 12 SQL queries converge."
+
+**Infrastructure needed**: Ensemble message log ETL (new data source — not yet in OpsReview).
+
+**Dependency**: Requires access to `Ens.MessageHeader` / `Ens.MessageBody` tables on the customer instance.
+
+---
+
+### Feature 3: Incident Correlation
+
+**What it does**: When a new OpsReview analysis runs, query IVG for whether any known pattern (from the PatternLibrary or a temporal graph anomaly) correlates with current findings. Output: "3 similar incidents in IVG knowledge base; last occurred Customer B, 2026-01-12."
+
+**IVG role**: Pattern library lookup via VECTOR_COSINE similarity (already implemented in spec 002), extended with temporal context: "when did similar patterns first appear at each customer?"
+
+**OpsReview role**: Proactive: "We've seen this before — Customer B fixed it with index X."
+
+**Infrastructure needed**: Extends existing PatternLibrary (IRIS OpsReview_PatternLibrary table). Needs `analysis_date` field already present.
+
+**Dependency**: Builds directly on spec 002's PatternLibrary. No new infrastructure required beyond populating the library with more data.
+
+---
+
+### Feature 4: SQL Query Timeline
+
+**What it does**: Feed `INFORMATION_SCHEMA.STATEMENT_DAILY_STATS` into IVG as temporal edges:
+
+```text
+QueryGroup_A --[COST_ON]--> Date_2026-03-15 (weight=cost_share_pct)
+QueryGroup_A --[EXECUTED_AT]--> Date_2026-03-15 (weight=avg_latency_ms)
+```
+
+Time-window queries then answer: "Show me the 7-day cost trajectory for this group" and "Did the cost spike correlate with a P-Buttons WD queue spike?"
+
+**IVG role**: Stores temporal cost graph. Sliding window query (`iter_edges_in_window`, a `$Order` walk of `^KG("tout", graph, ts)`) runs sub-millisecond for a small window. IVG then does neighborhood queries: "what else changed on the same days QueryGroup_A spiked?"
+
+**OpsReview role**: Advisor gets a timeline view in the report: cost stable → sudden spike on date X → correlates with 3 other signals.
+
+**Infrastructure needed**: `STATEMENT_DAILY_STATS` is already fetched in spec 002. The ETL step is a 30-line wrapper that builds one batch of edges, `StatDate` as each edge's `ts`, and passes it to `engine.bulk_create_edges_temporal()`.
+
+**Dependency on IVG side**: None beyond IVG 4.3.0. Write with `engine.bulk_create_edges_temporal()`; it returns a `TemporalWriteCount` whose `.collisions` counts edges at coordinates that already held one (mode `"insert"`), which change no store. Read a window of any size with `engine.iter_edges_in_window(start, end, source_prefix=..., predicates=...)`, which pages 1,000 events at a time with their attributes; `QueryWindow` builds its answer as one string and fails past about 35k edges. `engine.get_latest_edges(...)` gives each source's newest event, `engine.get_temporal_aggregate(...)` the bucket aggregates. Retention (`purge_raw_before`) also deletes the structural `rdf_edges` row of every triple none of whose timestamps survive. An erased tenant's history can be removed from the ledger with `engine.ledger.redact(graph, prefix="tenant|")`.
+
+---
+
+### Feature 5: Cross-Customer Health Knowledge Graph
+
+**What it does**: Aggregate anonymized QueryGroup signatures, severity, and resolution outcomes across all OpsReview analyses into a shared knowledge graph on `dpgenai1`. Each QueryGroup is a node; edges connect groups that co-occur or have been resolved by the same remediation.
+
+**IVG role**: Full KG substrate on `dpgenai1`. Cypher queries: "find all QueryGroups within 2 hops of this one that were resolved by adding an index."
+
+**OpsReview role**: Long-term: AI-assisted remediation recommendations grounded in a real cross-customer graph.
+
+**Infrastructure needed**: Significant. Requires data anonymization pipeline, secure cross-customer store, consent/governance framework, `dpgenai1` IVG deployment.
+
+**Dependency**: Everything else comes first. This is a 6–12 month horizon.
+
+---
+
+## Implementation Sequence (CRISP-aligned)
+
+| Priority | Feature                         | IVG Gap                                 | OpsReview Gap                                               | Weeks |
+| -------- | ------------------------------- | --------------------------------------- | ----------------------------------------------------------- | ----- |
+| **P1**   | Feature 3: Incident Correlation | None — VECTOR already in IRIS           | Populate PatternLibrary with real runs                      | 1–2   |
+| **P2**   | Feature 4: SQL Query Timeline   | None — shipped in 4.3.0 (specs 254–256) | ETL: STATEMENT_DAILY_STATS → `bulk_create_edges_temporal()` | 2–3   |
+| **P3**   | Feature 1: Routine Sampler      | None — graph ingest exists              | P-Buttons ETL for routine samples                           | 4–6   |
+| **P4**   | Feature 2: Ensemble Topology    | None                                    | New data source: Ens.MessageHeader                          | 6–9   |
+| **P5**   | Feature 5: Cross-Customer KG    | dpgenai1 deployment                     | Anonymization + governance                                  | 12+   |
+
+---
+
+## Why Feature 4 (SQL Query Timeline) Is the Highest-Impact Next IVG Spec
+
+1. **Direct extension of spec 002** — the data is already in memory. `STATEMENT_DAILY_STATS` is fetched in every run. The ETL from DataFrame → IVG edges is ~30 lines.
+
+2. **Zero new infrastructure on the OpsReview side** — `opsreview-iris` container already exists. sqlalchemy-iris already connected.
+
+3. **Answers the most urgent advisor question** — after seeing "QueryGroup A = 27.7% of cost", the next question is always "was it always this high?" A timeline answers it without a follow-up analysis.
+
+4. **Unlocks Feature 3 (Incident Correlation) from the time dimension** — knowing _when_ a pattern first appeared turns a static similarity match into a historical incident log.
+
+5. **No further IVG changes required** — IVG 4.3.0 shipped what this needs: `bulk_create_edges_temporal()` (with `.collisions`), the paged reader `iter_edges_in_window()`, `get_latest_edges()`, purges that retire structural rows, and `ledger.redact()` (specs 254–256). `GetVelocity()` and `FindBursts()` are on `Graph.KG.TemporalIndex`. The integration is OpsReview-side Python.
+
+---
+
+## The Integration Work (OpsReview-side only)
+
+IVG 4.3.0 has what this needs. To connect `STATEMENT_DAILY_STATS` to it:
+
+```python
+# In sql_workload_tools.py — new method on SQLWorkloadSession
+def ingest_to_ivg(self, groups: list[QueryGroup], daily_df: pd.DataFrame, engine, graph=None):
+    """Feed daily stats into IVG as temporal edges in one batch."""
+    import datetime
+    edges = []
+    for group in groups:
+        for _, row in daily_df[daily_df["Hash"].isin(group.member_hashes)].iterrows():
+            ts = int(datetime.datetime.strptime(str(row["StatDate"]), "%Y-%m-%d").timestamp())
+            edges.append({
+                "s": f"QueryGroup:{group.group_id}",
+                "p": "COST_ON",
+                "o": f"Date:{row['StatDate']}",
+                "ts": ts,
+                "w": float(row["StatTotal"]),
+            })
+    written = engine.bulk_create_edges_temporal(edges, graph=graph, mode="insert")
+    if written.collisions:
+        logger.warning("%d daily stats already ingested; left unchanged", written.collisions)
+    return written
+```
+
+Then `engine.iter_edges_in_window(start, end, source_prefix="QueryGroup:", predicates=["COST_ON"])`
+and `engine.get_temporal_aggregate(source, "COST_ON", "sum", ts_start, ts_end)` answer "what was
+the cost trajectory?" without any new ObjectScript.
+
+---
+
+## CRISP Phase Mapping for Feature 4
+
+| CRISP Phase         | Output                                                                                           | Status                     |
+| ------------------- | ------------------------------------------------------------------------------------------------ | -------------------------- |
+| **C — Clarify**     | Problem: "no time dimension on SQL cost data"; constraint: use existing IVG + IRIS               | Done (this doc)            |
+| **R — Results**     | Baseline: 0 temporal queries today; Target: advisor can ask "when did X spike?" in same report   | Needs `success-metrics.md` |
+| **I — Investigate** | Process flow: `STATEMENT_DAILY_STATS` → IVG edge ingest → temporal Cypher query → report section | Needs `process-flow.md`    |
+| **S — Spec**        | AI Spec Sprint 1: temporal edges in IVG; ETL wrapper in `sql_workload_tools.py`; report section  | Needs spec                 |
+| **P — Prove**       | Validate: report for a customer shows 7-day cost trajectory for top 3 groups                     | Deferred to post-build     |

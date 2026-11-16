@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/vector-uses-edge-error/20261116T003501Z/models/routine_reporting/routine_reporting.rs:202:2
+    |
+200 | pub proof fn theorem_graph_unknown_is_only_core_node_edge_errors(c:Catalog,r:Registry)
+    | -------------------------------------------------------------------------------------- at the end of the function body
+201 |  ensures census(c,r).graph_unknown==(read(c,nodes()).error.is_some() || read(c,edges()).error.is_some()),
+202 |  census(c,r).vector_unknown==(embeddings(c,r,Kind::Node).errors.len()>0)
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

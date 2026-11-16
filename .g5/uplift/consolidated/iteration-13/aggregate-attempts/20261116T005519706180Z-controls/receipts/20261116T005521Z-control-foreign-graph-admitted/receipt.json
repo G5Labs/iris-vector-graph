@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_foreign_graph_row_skipped"
+    ],
+    "find": "q.graph.is_none() || q.graph==Some(r.graph)",
+    "name": "foreign-graph-admitted",
+    "replace": "true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_foreign_graph_row_skipped"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/foreign-graph-admitted/20261116T005519Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_foreign_graph_row_skipped": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005519Z-control-foreign-graph-admitted-theorem_foreign_graph_row_skipped.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005519Z-control-foreign-graph-admitted.log",
+    "timed_out": false,
+    "verified": 74
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T005521Z-control-foreign-graph-admitted/logs/20261116T005519Z-control-foreign-graph-admitted-theorem_foreign_graph_row_skipped.log": "5e4ff9541751b1983f64aa7a18e29657ab03557351f548839b1c795bc76c714a",
+    ".g5/Verus_verification/results/aggregate_results/20261116T005521Z-control-foreign-graph-admitted/logs/20261116T005519Z-control-foreign-graph-admitted.log": "fb4d17d7a98790dd55e1e16c04cf8ad0b781bbbb521e8926970aad4f4a34e49d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

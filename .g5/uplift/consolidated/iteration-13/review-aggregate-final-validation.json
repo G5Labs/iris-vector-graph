@@ -1,0 +1,717 @@
+{
+  "verdict": "ACCEPT_BOUNDED_ORDINARY_AGGREGATE_FRAGMENT",
+  "utc": "2026-11-16T01:05:13.474347+00:00",
+  "package": {
+    ".g5/Verus_verification/models/aggregate_results/NOTES.md": "da49ad270b2172570199fa726406a0267fa74874b4c02d9020c206f71b9f8a4e",
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/binding.py": "1f46e6fd82cd0ee32a362be5c75ece98820b54635880881a082508b5610f9a2a",
+    ".g5/Verus_verification/models/aggregate_results/binding_inputs.json": "692b9daccc585040575fe387272bf4324ec2f8b0c82a1080c6e4c1b08beeaf9b",
+    ".g5/Verus_verification/models/aggregate_results/functional_model.py": "19f96e81f4e546f0713193e9d7958465de2e4d026ba9f9a4f36eeaf98c8d56e4",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/aggregate_results/probe.py": "b8f88e1905e433844d48d76362e1994da31b5009a225fb8e2c65f9f51fabc338",
+    ".g5/Verus_verification/models/aggregate_results/provider.py": "86b5b3a06db87bedfa820c895969b0e9d246451c69bc408896a1c4724802e00e",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "current_scratch_bytes_equal": true,
+  "verified": 75,
+  "new_units": 62,
+  "new_proof_queries": 46,
+  "new_recursive_spec_queries": 16,
+  "imports": {
+    "units": 13,
+    "proof_queries": 12,
+    "recursive_spec_queries": 1
+  },
+  "NLA": 0,
+  "extra_hints": 0,
+  "controls": 12,
+  "all_full_and_named_ordinary": true,
+  "mutant_inputs": [
+    {
+      "name": "foreign-graph-admitted",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/foreign-graph-admitted/20261116T005859Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "ed4b1e78a88098a4e9716338da4e1ee74cbc9dd70b206c38e2a62233137b588c"
+    },
+    {
+      "name": "null-enters-count-and-collect",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/null-enters-count-and-collect/20261116T005900Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "2db66b9ddb7916d79964461b256f50324e7209465a7c8a21aba935e46ddc4325"
+    },
+    {
+      "name": "distinct-ignored",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/distinct-ignored/20261116T005901Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "8b3ca4efc1042e9c3fc0fd4be92f7ab8f303686f55b696550b5d424193d6320d"
+    },
+    {
+      "name": "count-overwritten",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/count-overwritten/20261116T005902Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "e394b70fb362905a5e321bb4980f50008f8848c926512603b6bec8fdc3e13cdc"
+    },
+    {
+      "name": "sum-overwritten",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/sum-overwritten/20261116T005903Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "5e039e0cb66703c425ac4e2b6f2cc6d4f6f163dabfd24485c94f5759554b28f1"
+    },
+    {
+      "name": "float-from-dedup-only",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/float-from-dedup-only/20261116T005904Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "3470aee23bcef349e9d3731d2ee528513c8e8f1525be42a4c79bfa0589899f98"
+    },
+    {
+      "name": "avg-denominator-not-contributors",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/avg-denominator-not-contributors/20261116T005905Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "066694b6fddb140d61539d06fca55e5b74b4ce628a2083aecbd7fa67fbcd26d3"
+    },
+    {
+      "name": "entity-graph-erased",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/entity-graph-erased/20261116T005906Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "49ad290faaee17f3a00b75fc220f06f79cfeafb571e9d301f73c35d2e7535f60"
+    },
+    {
+      "name": "global-empty-row-omitted",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/global-empty-row-omitted/20261116T005907Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "0dee5e0c8bd14f69455c63658721ea336ddf1b2059706a102c9ad3ccb62977c3"
+    },
+    {
+      "name": "grouped-empty-row-fabricated",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/grouped-empty-row-fabricated/20261116T005908Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "9ba93f63ce91bfc23580f11694a3341fa01113ec09905f64c0d249514e31bc50"
+    },
+    {
+      "name": "duplicate-group-emission",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/duplicate-group-emission/20261116T005909Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "6ae634c4313f9e6c6b4feb0bc7ce546fa74848cdb4242460871c1533d1671a63"
+    },
+    {
+      "name": "sort-single-digit-not-recognized",
+      "path": "review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/sort-single-digit-not-recognized/20261116T005910Z/models/aggregate_results/aggregate_results.rs",
+      "sha256": "9225b29ff61126ed6e781932e1ed9a36883da0b8035c6c98a080ce3a32092c1f"
+    }
+  ],
+  "scratch_receipts": [
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005837Z-prove/receipt.json",
+      "sha256": "200d9ab3ec1dafe6b897ea3d8c6fe76846608d42fd801d43bf8f765a8bb5c4e0",
+      "kind": "proof",
+      "verdict": "PASS",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005837Z-prove/logs/20261116T005731Z-prove.log",
+          "sha256": "7f7e00ade0083f4284bbdf3f931eabb1ddb3fa30786bddf856ca765a8686b5fc",
+          "ordinary": false,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005900Z-control-foreign-graph-admitted/receipt.json",
+      "sha256": "0dca7ce5611e119870329aafac8f188b81e4b8ad7018d6feaf606e69ecb41214",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005900Z-control-foreign-graph-admitted/logs/20261116T005859Z-control-foreign-graph-admitted-theorem_foreign_graph_row_skipped.log",
+          "sha256": "995c95b697cf1b1e6f64b55bf4c97a26f13dfb6bfb7e9534beb76ac6552c0378",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005900Z-control-foreign-graph-admitted/logs/20261116T005859Z-control-foreign-graph-admitted.log",
+          "sha256": "ebdcc6b5cf868aca5ea855355ef67338df0d7df4b9427fc0236daa6736893990",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005901Z-control-null-enters-count-and-collect/receipt.json",
+      "sha256": "3d8f26f5856775419ef4fe1d5b3be2e23376808d1c1a06ad663cfda283173d9b",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005901Z-control-null-enters-count-and-collect/logs/20261116T005900Z-control-null-enters-count-and-collect-theorem_null_count_star_differs.log",
+          "sha256": "88c4454b7e2eca2f4a5cebd3f90d743b47b30f7de78347a879ffae22b9d74af7",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005901Z-control-null-enters-count-and-collect/logs/20261116T005900Z-control-null-enters-count-and-collect.log",
+          "sha256": "9f709489c6919848a773f38cb5e8c18c4e23d091b744913c9baf58e36f0e4094",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005902Z-control-distinct-ignored/receipt.json",
+      "sha256": "aa0638294ea9ee466ac3f0e409882600123411b6d926e96cc8aad444f7c9862c",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005902Z-control-distinct-ignored/logs/20261116T005901Z-control-distinct-ignored-theorem_float_presence_uses_all_inputs.log",
+          "sha256": "bc577f2c39de0fb9498c344f5e775edfbd27bb1c1ec48853128f1a78f9985919",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005902Z-control-distinct-ignored/logs/20261116T005901Z-control-distinct-ignored.log",
+          "sha256": "4543acd07bf357c14a7895bfb4b81f5e7aabc799857d12b88a330df6c136b3d7",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005903Z-control-count-overwritten/receipt.json",
+      "sha256": "03fa214325b1206711b2daa31f76c0b5099f160242d285fe44f75de489d91f5c",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005903Z-control-count-overwritten/logs/20261116T005902Z-control-count-overwritten-theorem_scalar_duplicate_rows_count_twice.log",
+          "sha256": "a75972b4716ba140e4e9769b7783a7e0db8f79e65656f671c5439126e7e77e27",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005903Z-control-count-overwritten/logs/20261116T005902Z-control-count-overwritten.log",
+          "sha256": "17d01dbfc935a467ea892e46e3ab9f0342990086b9d26dea67e073b79b663a87",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005904Z-control-sum-overwritten/receipt.json",
+      "sha256": "ddd26c28b84ab4118b905f1097fb0ff22ae62639f5c28da806a20bd1f6d7c3a2",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005904Z-control-sum-overwritten/logs/20261116T005903Z-control-sum-overwritten-theorem_scalar_duplicate_rows_count_twice.log",
+          "sha256": "c05dc520209718bbd031576cbd26fc64cf674d4d4f78a458f5323ad3ab2081df",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005904Z-control-sum-overwritten/logs/20261116T005903Z-control-sum-overwritten.log",
+          "sha256": "971009650b3a1880a1a566b0cb6269c30516ce5bfc2cbc90d5d28fbae8b6b0d6",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005905Z-control-float-from-dedup-only/receipt.json",
+      "sha256": "d2f8ffd8f047c564307da36515f025584508cea7c54df2ecd2ea836669f070c1",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005905Z-control-float-from-dedup-only/logs/20261116T005904Z-control-float-from-dedup-only-theorem_float_presence_uses_all_inputs.log",
+          "sha256": "ab0087d25e2636aa0a0b04cdd52c084c187e6b4bf86135d1c5d0947cb8264ac8",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005905Z-control-float-from-dedup-only/logs/20261116T005904Z-control-float-from-dedup-only.log",
+          "sha256": "74ab8da072923ff61acb2f98f445efc547c983684f6e9b0f2925043d54993376",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005906Z-control-avg-denominator-not-contributors/receipt.json",
+      "sha256": "634d3e1ed82c407130cf701db5f6dd8e70575359adeffc575133cef34dfdf6d8",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005906Z-control-avg-denominator-not-contributors/logs/20261116T005905Z-control-avg-denominator-not-contributors-theorem_mean_is_not_sum.log",
+          "sha256": "fe3030ee552ffcfdcb77f16bc8673ec10c1a935893f86219a290eb842cbe8771",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005906Z-control-avg-denominator-not-contributors/logs/20261116T005905Z-control-avg-denominator-not-contributors.log",
+          "sha256": "60c37437842e90a780f25c4f7859190402fdd8494ae7cfa511b5bf8625e6eb82",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005907Z-control-entity-graph-erased/receipt.json",
+      "sha256": "b9868803f709156e0097fd2082331cab0344a3be44534abe75a7f2167df89905",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005907Z-control-entity-graph-erased/logs/20261116T005906Z-control-entity-graph-erased-theorem_entity_same_id_two_graphs_both_count.log",
+          "sha256": "693159af67b08b5b8cc3ab533a7cbe01fae197a4f8cf68ec624106729cbdd62b",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005907Z-control-entity-graph-erased/logs/20261116T005906Z-control-entity-graph-erased.log",
+          "sha256": "eeca3192ebdd7276d59ed77cae67abb94f8e766163733b74fe71c91c1af09838",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005908Z-control-global-empty-row-omitted/receipt.json",
+      "sha256": "44ceca6e2642ff76fd78ff723f29cf69f9d882d3710b2e9c73f35b6b05712497",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005908Z-control-global-empty-row-omitted/logs/20261116T005907Z-control-global-empty-row-omitted-theorem_full_report_one_row_global_empty_and_none_grouped.log",
+          "sha256": "ca5d25a583c34a97c6351b82ed2bc58ab45bbf8380fbf3b6dc9e1aafac3fd2c0",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005908Z-control-global-empty-row-omitted/logs/20261116T005907Z-control-global-empty-row-omitted.log",
+          "sha256": "c37e18a849e86ff598bf78ce2a2fab631d9fd1896948b89f979fa890000fba45",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005909Z-control-grouped-empty-row-fabricated/receipt.json",
+      "sha256": "1e64d4fba241f4aab612225e1224549373dde2bf305a5e2a2b178fd30ca98712",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005909Z-control-grouped-empty-row-fabricated/logs/20261116T005908Z-control-grouped-empty-row-fabricated-theorem_full_report_one_row_global_empty_and_none_grouped.log",
+          "sha256": "1b167af5c21647400088625c25cbcbb3a659a1e230eef4146892543a931a50fc",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005909Z-control-grouped-empty-row-fabricated/logs/20261116T005908Z-control-grouped-empty-row-fabricated.log",
+          "sha256": "5972e002871b2ff482d240e648e3c54a13cd422f90c338abf00369975f206887",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005910Z-control-duplicate-group-emission/receipt.json",
+      "sha256": "009db2538dcc323b32c249dd564642d3ed53ce6f22e9746f513cbd61b4b02042",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005910Z-control-duplicate-group-emission/logs/20261116T005909Z-control-duplicate-group-emission-theorem_key_enumeration_complete_unique.log",
+          "sha256": "a16c162169f56ecab54be9797d8b563613a2c21b7eeb81c2ea47a8cc230d8b35",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005910Z-control-duplicate-group-emission/logs/20261116T005909Z-control-duplicate-group-emission.log",
+          "sha256": "cc40d14ffcd648b608d70f1dda99bb86d9e4f27f5dc83aad12e00981831e8f9a",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005911Z-control-sort-single-digit-not-recognized/receipt.json",
+      "sha256": "a853d4ac2995bd2dbc77a9d3ad5c8acdafa9db456fadc1a1d99bd2f33382144d",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005911Z-control-sort-single-digit-not-recognized/logs/20261116T005910Z-control-sort-single-digit-not-recognized-theorem_finalizer_drops_generated_internal_names.log",
+          "sha256": "6e0789484fb619d16169e9b2ef65d543142f9c82d2e1220c1e844d07d351cf73",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005911Z-control-sort-single-digit-not-recognized/logs/20261116T005910Z-control-sort-single-digit-not-recognized.log",
+          "sha256": "104b9603e95ae89f1079637723e38ab53211953bc325834339c547c2d76a0f64",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T010157Z-binding/receipt.json",
+      "sha256": "c3ecb4998ce8644ae324af0d050b0615cd91c228f60b770d92731468a9c78b26",
+      "kind": "binding",
+      "verdict": "AGREES",
+      "flat_inputs": 45,
+      "logs": []
+    }
+  ],
+  "central_fresh_receipts": [
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005539Z-prove/receipt.json",
+      "sha256": "8df1125858860ea102038bff32e6c5419ad6ebd7f0e1810d576c8a6f03258fcc",
+      "kind": "proof",
+      "verdict": "PASS",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005539Z-prove/logs/20261116T005538Z-prove.log",
+          "sha256": "1ae146c7f39436f00c5ba70451e267cfc7f456fbe52ad1344cb92223752b4d1f",
+          "ordinary": false,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T010011Z-binding/receipt.json",
+      "sha256": "ab69b1a4d657f774ee755d9add18cd14653b6ac47ca37fdb97b3a78e4c88c42d",
+      "kind": "binding",
+      "verdict": "AGREES",
+      "flat_inputs": 45,
+      "logs": []
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005521Z-control-foreign-graph-admitted/receipt.json",
+      "sha256": "dbea35275456155e8f4b1f504cfa6db76f89e9991bd6a84e3d9c400dabc630c5",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005521Z-control-foreign-graph-admitted/logs/20261116T005519Z-control-foreign-graph-admitted-theorem_foreign_graph_row_skipped.log",
+          "sha256": "5e4ff9541751b1983f64aa7a18e29657ab03557351f548839b1c795bc76c714a",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005521Z-control-foreign-graph-admitted/logs/20261116T005519Z-control-foreign-graph-admitted.log",
+          "sha256": "fb4d17d7a98790dd55e1e16c04cf8ad0b781bbbb521e8926970aad4f4a34e49d",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005522Z-control-null-enters-count-and-collect/receipt.json",
+      "sha256": "a668ba83cd0f04ca453ef72edefe25bfb5c1b7874b21d1458a470ed5498bd6c3",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005522Z-control-null-enters-count-and-collect/logs/20261116T005521Z-control-null-enters-count-and-collect-theorem_null_count_star_differs.log",
+          "sha256": "1c2647e04be90d4e6017581cb7da3ec45443e88246c2a2d7adff801c5dbcbe62",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005522Z-control-null-enters-count-and-collect/logs/20261116T005521Z-control-null-enters-count-and-collect.log",
+          "sha256": "91ec5443829be6b197bc30ae98bade02b11f27a8987d98b00f0771490be82a9b",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005523Z-control-distinct-ignored/receipt.json",
+      "sha256": "54ba6ba2f7d430e5634d8a0c77a4947740d8df9b5394552e120341663a8d3d44",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005523Z-control-distinct-ignored/logs/20261116T005522Z-control-distinct-ignored-theorem_float_presence_uses_all_inputs.log",
+          "sha256": "ca187fb9c20d59a49674dedeb98de615c14c1ea9ed8e3c77556b0bcf88610f44",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005523Z-control-distinct-ignored/logs/20261116T005522Z-control-distinct-ignored.log",
+          "sha256": "077dac4d631dc5a624ed1bbb2d97681d565c49bcef13e5b2997bab111deed920",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005524Z-control-count-overwritten/receipt.json",
+      "sha256": "67e68dbce3e8297c202f7376e407f02741aff26c1c8b477d99f248386bf63bbc",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005524Z-control-count-overwritten/logs/20261116T005523Z-control-count-overwritten-theorem_scalar_duplicate_rows_count_twice.log",
+          "sha256": "97fda66ce5b0f9859380153c48053c7dc624349904d3a8506403fb2db8ccd80f",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005524Z-control-count-overwritten/logs/20261116T005523Z-control-count-overwritten.log",
+          "sha256": "cd92654018cd060b2df63b761c74e31c8face74decd1d84f7c69ee3fae16520a",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005525Z-control-sum-overwritten/receipt.json",
+      "sha256": "bf15aeda2df62bd7c2226cfe04b134a07fd831c3a47b2b329d55b6b68f6caadb",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005525Z-control-sum-overwritten/logs/20261116T005524Z-control-sum-overwritten-theorem_scalar_duplicate_rows_count_twice.log",
+          "sha256": "7d14485b139b9159df666549f0f7ffcb6451f926082443fe32dd24d93a600cc6",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005525Z-control-sum-overwritten/logs/20261116T005524Z-control-sum-overwritten.log",
+          "sha256": "11d742eff633a3e1e2b7954c7a98092ac800e5ba2818b107e0b8d1cbcbe9e97c",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005526Z-control-float-from-dedup-only/receipt.json",
+      "sha256": "73466a1f30ff118ae9d48b6b4bfadfbcbfeb66c9b95115b5352472a90360b63e",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005526Z-control-float-from-dedup-only/logs/20261116T005525Z-control-float-from-dedup-only-theorem_float_presence_uses_all_inputs.log",
+          "sha256": "3a8f3366f6abb184a14e0f708343a01bdafca1a3061b0127be50b7b238329a66",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005526Z-control-float-from-dedup-only/logs/20261116T005525Z-control-float-from-dedup-only.log",
+          "sha256": "e2ba054a8cd69261552979007467f389e0a346f7718e1007c0fcf6a2dd99cfea",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005527Z-control-avg-denominator-not-contributors/receipt.json",
+      "sha256": "8cd439199bdd9e47b2655b9d0e86cf7bd9c54ff28698581a63815648755ff608",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005527Z-control-avg-denominator-not-contributors/logs/20261116T005526Z-control-avg-denominator-not-contributors-theorem_mean_is_not_sum.log",
+          "sha256": "4272ad8222a7b76f1ccea80a6ae9f0bd42539b2898acf0e88e11ca9f1f8838ba",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005527Z-control-avg-denominator-not-contributors/logs/20261116T005526Z-control-avg-denominator-not-contributors.log",
+          "sha256": "89743fc3bf4e9951ca35f8259fba6f2fb81fba14fed03476f0a64d2d68a36038",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005528Z-control-entity-graph-erased/receipt.json",
+      "sha256": "10d223851fda9d7997bfddbf834e52db7eda1ff5a947053da667058c259be99f",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005528Z-control-entity-graph-erased/logs/20261116T005527Z-control-entity-graph-erased-theorem_entity_same_id_two_graphs_both_count.log",
+          "sha256": "71d71e7c77e548e0f4337d6a487f12f29fe3db2c2f7336072638e8767d607770",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005528Z-control-entity-graph-erased/logs/20261116T005527Z-control-entity-graph-erased.log",
+          "sha256": "e2e05010d44a03edc4c4d9c599b5b37d91a65c472a5b389c22dda8ad413583be",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005529Z-control-global-empty-row-omitted/receipt.json",
+      "sha256": "c9643d389d705c1594eece3f04e44994d126b147fd483ce4a5c08f6a26e72b12",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005529Z-control-global-empty-row-omitted/logs/20261116T005528Z-control-global-empty-row-omitted-theorem_full_report_one_row_global_empty_and_none_grouped.log",
+          "sha256": "a353fc7d1f21fae9563d977ca80b1cca59eb00d32afdf9f7483782eebe3711a8",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005529Z-control-global-empty-row-omitted/logs/20261116T005528Z-control-global-empty-row-omitted.log",
+          "sha256": "b784217cae5d4c10c884216d4e4ea1be36e14f6886d530485192c382a13819b3",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005530Z-control-grouped-empty-row-fabricated/receipt.json",
+      "sha256": "4f0634224d9a13d4a298b33d457ce10540a2d158b7da0c0acd4fd5dab030198e",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005530Z-control-grouped-empty-row-fabricated/logs/20261116T005529Z-control-grouped-empty-row-fabricated-theorem_full_report_one_row_global_empty_and_none_grouped.log",
+          "sha256": "734c726a1b77b3b91fd07271490c7b9a1a64ef1979fd59c4d4e769a80b52b597",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005530Z-control-grouped-empty-row-fabricated/logs/20261116T005529Z-control-grouped-empty-row-fabricated.log",
+          "sha256": "a6561c575912bc41ee406e552c7b0ffaff48e90fafc8e8b666d26de7b184c7eb",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005531Z-control-duplicate-group-emission/receipt.json",
+      "sha256": "52b8229295c28ec4b07ab2448c2d9ad665c6cb6d835df3d6ce43e5f5825d56aa",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005531Z-control-duplicate-group-emission/logs/20261116T005530Z-control-duplicate-group-emission-theorem_key_enumeration_complete_unique.log",
+          "sha256": "46433e687ef1a8ecb89acac5b768d1c2d2790fd1aa1e9773c268c8123d4968c1",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005531Z-control-duplicate-group-emission/logs/20261116T005530Z-control-duplicate-group-emission.log",
+          "sha256": "0808e6b9ad93b5fab07955a8479ac8e3f2cc860af858d5c074df9d820cda48b2",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    },
+    {
+      "path": ".g5/Verus_verification/results/aggregate_results/20261116T005532Z-control-sort-single-digit-not-recognized/receipt.json",
+      "sha256": "ebe3a341ece48384dcb5bc25aac33a72b54784af75887ff6fa8808f283e047c3",
+      "kind": "control",
+      "verdict": "EXPECTED_FAIL",
+      "flat_inputs": 3,
+      "logs": [
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005532Z-control-sort-single-digit-not-recognized/logs/20261116T005531Z-control-sort-single-digit-not-recognized-theorem_finalizer_drops_generated_internal_names.log",
+          "sha256": "922c090a771260c56f74a674d09871b9a6a21b846543406f3f495b405b1f557e",
+          "ordinary": true,
+          "resource_or_timeout": false
+        },
+        {
+          "path": ".g5/Verus_verification/results/aggregate_results/20261116T005532Z-control-sort-single-digit-not-recognized/logs/20261116T005531Z-control-sort-single-digit-not-recognized.log",
+          "sha256": "d07dabb16cfdf423998aa1f8235b22bcafd4a3db2f37bbd693450e272269f1d3",
+          "ordinary": true,
+          "resource_or_timeout": false
+        }
+      ]
+    }
+  ],
+  "binding": {
+    "comparisons": 669,
+    "fixtures": 160,
+    "sensitivities": {
+      "actual_python": 7,
+      "SQL_provider": 1,
+      "actual_observation": 1
+    },
+    "all_detected": true,
+    "flat_inputs": 45,
+    "native_fact_maps_flat_and_current": true,
+    "observation_raw_oracle_and_actual_output_checked": true,
+    "sockets": 0,
+    "native": 0
+  },
+  "upstream_passed": 109,
+  "runs": [
+    {
+      "path": "review-aggregate-scratch-v2/runs/20261116T005730.846725Z-prove",
+      "op": "prove",
+      "elapsed_s": 66.36952220799867,
+      "raw_log_sha256": "029406508505f0480206d878440441cfa7f8257ed6b7ec4a8b0c0b7adeb29d8f",
+      "git_reads": 0
+    },
+    {
+      "path": "review-aggregate-scratch-v2/runs/20261116T005859.920198Z-controls",
+      "op": "controls",
+      "elapsed_s": 11.998899625032209,
+      "raw_log_sha256": "95fc1d20aac4566d83348d25aef997db5f47ad5f7298d5b368621377c3700c02",
+      "git_reads": 0
+    },
+    {
+      "path": "review-aggregate-scratch-v2/runs/20261116T010032.560158Z-upstream",
+      "op": "upstream",
+      "elapsed_s": 0.928484792006202,
+      "raw_log_sha256": "69fa619e32eba70dd656bf6c9179bfd5aba42b9e175695f8c6465d4f591c68b9",
+      "git_reads": 0
+    },
+    {
+      "path": "review-aggregate-scratch-v2/runs/20261116T010156.241536Z-binding",
+      "op": "binding",
+      "elapsed_s": 1.2743454580195248,
+      "raw_log_sha256": "e85bca6dfc91d59011f535b036f111fcb4cc139eec3c8e5d22cbbac8f072a0b7",
+      "git_reads": 0
+    }
+  ],
+  "measured_replay_command_s": 80.5712520830566,
+  "audit_s": 0.027008917008060962,
+  "actual_verification_commands": 25,
+  "verus_version_metadata_queries": 13,
+  "total_verus_binary_invocations": 38,
+  "actual_git_reads": 0,
+  "git_mutations": 0,
+  "reviewer_native_calls": 0,
+  "interrupted_inputs_opened_or_reused": false,
+  "V1_preservation": "review-aggregate-scratch-v1; aggregate-v1-spec-controls (builder)",
+  "V2_preservation": "review-aggregate-scratch-v2/preserved-v2-before-observation-refresh; aggregate-v2-observation-miss (builder)",
+  "V3_qualification": "Proof/controls/upstream ran exact V2 rs/manifest/imports, unchanged in V3; binding and NOTES refreshed then binding independently rerun. Only binding/NOTES advanced while V2 upstream ran; neither was used by product upstream tests. All exact scratch inputs remained unchanged.",
+  "roles_recommended_active": 6,
+  "role_tiers": {
+    "actual_python": 3,
+    "inspected_typed_transcription": 3
+  },
+  "observation_roles": 14,
+  "direct_executable_bodies_verified": 0,
+  "residuals": [
+    "ORDER BY relation is a complete unique permutation/provider premise; the theorem proves aggregation-before-page and projection, not generic SQL ordering/collation.",
+    "Exact integer/half-unit SUM/AVG fragment and canonical SQL numeric/typed-text carriers; arbitrary binary64, overflow, NaN, general coercion and JSON codecs remain provider boundaries.",
+    "Native Group/GroupOf/EmitGroups are inspected typed transcriptions at pW=1 with ordinary nonnull identity/key/order frames; fresh native facts execute SQL routes and do not upgrade native-body evidence.",
+    "OPTIONAL synthetic-null grouped SUM path remains partial/observation and violates newer R308 zero identity in fresh native case; existing new ordinary bug-agg-001 retains as-built null rather than claiming proof.",
+    "Internal ASCII generated-column projection is proved; arbitrary alias collisions, Unicode name regex, all error/empty-column branches and complete finalizer are not whole-member proofs."
+  ]
+}

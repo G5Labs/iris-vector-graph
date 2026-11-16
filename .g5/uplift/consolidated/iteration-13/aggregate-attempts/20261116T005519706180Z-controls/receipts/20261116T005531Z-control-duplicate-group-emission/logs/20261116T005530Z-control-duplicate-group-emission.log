@@ -1,0 +1,27 @@
+verification results:: 74 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/duplicate-group-emission/20261116T005530Z/models/aggregate_results/aggregate_results.rs:167:1
+    |
+167 | pub proof fn theorem_key_enumeration_complete_unique(rs:Seq<Row>,q:Query)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/duplicate-group-emission/20261116T005530Z/models/aggregate_results/aggregate_results.rs:168:10
+    |
+168 |  ensures key_order(rs,q).to_set()==keys(rs,q),key_order(rs,q).no_duplicates(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+169 |  decreases rs.len(),
+170 |  {if !q.grouped{let e=Seq::<Key>::empty();e.to...(keys(p,q).insert(key(r,q))=~=keys(p,q));}}}}
+    |   --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/duplicate-group-emission/20261116T005530Z/models/aggregate_results/aggregate_results.rs:168:47
+    |
+168 |  ensures key_order(rs,q).to_set()==keys(rs,q),key_order(rs,q).no_duplicates(),
+    |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+169 |  decreases rs.len(),
+170 |  {if !q.grouped{let e=Seq::<Key>::empty();e.to...(keys(p,q).insert(key(r,q))=~=keys(p,q));}}}}
+    |   --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_strict_held_change_decides"
+    ],
+    "find": "if d<(h as real)*tol || left==1",
+    "name": "stop-tolerance-ignored",
+    "replace": "if d<0real || left==1",
+    "why": "Tolerance materially decides early stop."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_strict_held_change_decides"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/stop-tolerance-ignored/20261115T202430Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_strict_held_change_decides": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202430Z-control-stop-tolerance-ignored-theorem_strict_held_change_decides.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202430Z-control-stop-tolerance-ignored.log",
+    "timed_out": false,
+    "verified": 99
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202437Z-control-stop-tolerance-ignored/logs/20261115T202430Z-control-stop-tolerance-ignored-theorem_strict_held_change_decides.log": "ca4ce8fbb93907ea848adc58d33d45c72f9c57d136b0be940a78a4bcfd9d56ef",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202437Z-control-stop-tolerance-ignored/logs/20261115T202430Z-control-stop-tolerance-ignored.log": "3c79bff1d67ab329010e0203159101f6760f69b7e07e3cfecade557a9420f141"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

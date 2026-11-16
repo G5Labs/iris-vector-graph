@@ -1,0 +1,37 @@
+{
+  "purpose": "Toolchain, solver and library provenance for the IVG initial Verus uplift (2026-11-13).",
+  "product": {
+    "repository": "intersystems-community/iris-vector-graph",
+    "baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "worktree_head_at_start": "0e441f1c557b8d4c7d18eb54bfa98a95d77919a9"
+  },
+  "verus": {
+    "selected": {
+      "version": "0.2026.10.04.426d8b0",
+      "commit": "426d8b01e7ffb910a36c15e1f870ff985bb61eef",
+      "binary": "$G5_VERUS_TWENTY/verus (experiment/g5-verus/environment.sh sets VERUS_BIN to it)",
+      "verus_sha256": "2fe2fca366846ec5aaaaaf80edf061f7d19564c097cb9840c7638719e8bc1854",
+      "libvstd_rlib_sha256": "fe6862f26cb6a8a1ecf737ab87ce29a55abc0fe74a7d77e3d1ecfb783b17853c",
+      "vstd_vir_sha256": "4bac8025e64a8fdc5b24bc6aa32f94cd462eab83d7b36dd621fad2f570a82ff0",
+      "solver": {"name": "z3", "version": "4.16.0", "sha256": "e583c4186a45e72411fa2cb2048401eed03f0f8e5f24694676a8f6271a50b765"},
+      "rust_toolchain": "1.98.1-x86_64-unknown-linux-gnu",
+      "threads": "VERUS_THREADS=8 in ~/.config/g5-verification/env.sh; runs pass --num-threads explicitly"
+    },
+    "bank_of_ziniu_pin": {
+      "version": "0.2026.09.27.3cf1832",
+      "note": "bank-of-ziniu setup-verus.sh pins this release (vstd crate =0.0.0-2026-09-20-0158). The experiment environment selects the newer 0.2026.10.04 release. The models here use only the bundled vstd of the selected binary and no bank-of-ziniu crate, so no library from the bank pin is linked. Cross-runs with the bank pin are recorded in the runbook when performed."
+    }
+  },
+  "libraries_used": {
+    "vstd": "bundled with the selected Verus binary (no crates.io resolution)",
+    "G5Labs/actors": "not used: the modeled participants are one IRIS namespace's processes sharing globals under the ledger head lock; no actor contract was instantiated",
+    "pgspec": "not applicable: the product runs on InterSystems IRIS, not PostgreSQL",
+    "explorer": "not linked; bounded exploration is done by verified exhaustive enumeration inside the Verus models (see runbook)"
+  },
+  "bank_of_ziniu_snapshot": {
+    "path": "~/experiments/bank-of-ziniu",
+    "source_commit": "0171d8169291ab4ac6a873943ef5d3fb35831e52",
+    "archive_sha256": "ae65c7ed927a443b549d029950edf02934ba1c94181be2fea7e0d2e4f75ac157",
+    "used": false
+  }
+}

@@ -1,0 +1,20 @@
+verification results:: 73 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/sort-single-digit-not-recognized/20261116T005137Z/models/aggregate_results/aggregate_results.rs:142:10
+    |
+140 | pub proof fn theorem_finalizer_drops_generated_internal_names(v:int,name:Seq<char>)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+141 |  requires !internal(name),
+142 |  ensures public_cells(seq![RawCell{name:seq!['_','_','r','n'],value:9},RawCell{name,value:v},RawCell{name:seq!['_','_','s','o','r','t','0'],value:4}])==seq![RawCell{name,value:v}],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/sort-single-digit-not-recognized/20261116T005137Z/models/aggregate_results/aggregate_results.rs:145:116
+    |
+144 | pub proof fn theorem_internal_name_classifier_exact_generated_forms()
+    | --------------------------------------------------------------------- at the end of the function body
+145 |  ensures sort_name(seq!['_','_','s','o','r','t','1','2']),sort_name(seq!['_','_','s','o','r','t','1','2','_','n']),sort_name(seq!['_','_','s','o','r','t','0','_','s']),!s...
+    |                                                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

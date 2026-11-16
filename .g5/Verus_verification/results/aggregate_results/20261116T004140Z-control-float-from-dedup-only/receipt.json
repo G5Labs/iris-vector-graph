@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_float_presence_uses_all_inputs"
+    ],
+    "find": "float:a.float||is_float(v)",
+    "name": "float-from-dedup-only",
+    "replace": "float:a.float||(yes&&is_float(v))"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_float_presence_uses_all_inputs"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "9dc3ef361a27e0eb725d3200a9cb7e71528ef5bb0c816480740b4cfc3c2e18e4",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "d3c59eb7614f31e369bb8b1c29ae31b90d04551e3571f089dfe2e2b0cf3f3e17",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/float-from-dedup-only/20261116T004139Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_float_presence_uses_all_inputs": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T004139Z-control-float-from-dedup-only-theorem_float_presence_uses_all_inputs.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T004139Z-control-float-from-dedup-only.log",
+    "timed_out": false,
+    "verified": 62
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T004140Z-control-float-from-dedup-only/logs/20261116T004139Z-control-float-from-dedup-only-theorem_float_presence_uses_all_inputs.log": "2d43031ee2b5b43a08ffd1e3ac5048344b2f27f71261e745c3a43ae9866c5ec6",
+    ".g5/Verus_verification/results/aggregate_results/20261116T004140Z-control-float-from-dedup-only/logs/20261116T004139Z-control-float-from-dedup-only.log": "8d5c41f3d96ef515baf82e3e339b01c4efc9a9257fb2e21541021986c83d5d46"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

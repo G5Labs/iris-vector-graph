@@ -1,0 +1,52 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_terminal_minimum"
+    ],
+    "find": "f.0+r.0>=s.best.unwrap()",
+    "name": "frontsum-stops-two-units-early",
+    "replace": "f.0+r.0+2>=s.best.unwrap()",
+    "why": "A still-cheaper route may remain between the frontiers."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_terminal_minimum"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/model.json": "66602ffc451bfc5dccdb1485b2b79d6e40b4d8b9adfda786cba51bcd13b06fb3",
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "15181dfa57c938dee00edddd223fc63497d2e2efe1ac5dffe1ccf076e541c66d",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-final-review-cr2oov90/run/verus/weighted_cost/controls/frontsum-stops-two-units-early/20261115T200544Z/models/weighted_cost/weighted_cost.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_terminal_minimum": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-final-review-cr2oov90/run/verus/weighted_cost/20261115T200544Z-control-frontsum-stops-two-units-early-theorem_terminal_minimum.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-cost-final-review-cr2oov90/run/verus/weighted_cost/20261115T200544Z-control-frontsum-stops-two-units-early.log",
+    "timed_out": false,
+    "verified": 82
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_cost/20261115T200552Z-control-frontsum-stops-two-units-early/logs/20261115T200544Z-control-frontsum-stops-two-units-early-theorem_terminal_minimum.log": "898c195e913567876f546d768c07f0ecd232149eeaadbd93dde3662d7d62e743",
+    ".g5/Verus_verification/results/weighted_cost/20261115T200552Z-control-frontsum-stops-two-units-early/logs/20261115T200544Z-control-frontsum-stops-two-units-early.log": "e7327108fef40c9b41e68289104d10c63573f4e365f026535e8ffa273f7b58fa"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

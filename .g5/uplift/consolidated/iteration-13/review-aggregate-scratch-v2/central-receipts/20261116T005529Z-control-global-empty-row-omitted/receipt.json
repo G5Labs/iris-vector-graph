@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_full_report_one_row_global_empty_and_none_grouped"
+    ],
+    "find": "if !q.grouped{seq![Key::Global]}",
+    "name": "global-empty-row-omitted",
+    "replace": "if !q.grouped{seq![]}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_full_report_one_row_global_empty_and_none_grouped"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/global-empty-row-omitted/20261116T005528Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_full_report_one_row_global_empty_and_none_grouped": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005528Z-control-global-empty-row-omitted-theorem_full_report_one_row_global_empty_and_none_grouped.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005528Z-control-global-empty-row-omitted.log",
+    "timed_out": false,
+    "verified": 72
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T005529Z-control-global-empty-row-omitted/logs/20261116T005528Z-control-global-empty-row-omitted-theorem_full_report_one_row_global_empty_and_none_grouped.log": "a353fc7d1f21fae9563d977ca80b1cca59eb00d32afdf9f7483782eebe3711a8",
+    ".g5/Verus_verification/results/aggregate_results/20261116T005529Z-control-global-empty-row-omitted/logs/20261116T005528Z-control-global-empty-row-omitted.log": "b784217cae5d4c10c884216d4e4ea1be36e14f6886d530485192c382a13819b3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

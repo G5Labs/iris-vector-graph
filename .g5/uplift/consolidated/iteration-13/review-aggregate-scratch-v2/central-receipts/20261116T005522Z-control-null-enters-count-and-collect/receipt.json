@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_null_count_star_differs"
+    ],
+    "find": "present(v:Val)->bool {v!=Val::Null}",
+    "name": "null-enters-count-and-collect",
+    "replace": "present(v:Val)->bool {true}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_null_count_star_differs"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/null-enters-count-and-collect/20261116T005521Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_null_count_star_differs": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005521Z-control-null-enters-count-and-collect-theorem_null_count_star_differs.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005521Z-control-null-enters-count-and-collect.log",
+    "timed_out": false,
+    "verified": 73
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T005522Z-control-null-enters-count-and-collect/logs/20261116T005521Z-control-null-enters-count-and-collect-theorem_null_count_star_differs.log": "1c2647e04be90d4e6017581cb7da3ec45443e88246c2a2d7adff801c5dbcbe62",
+    ".g5/Verus_verification/results/aggregate_results/20261116T005522Z-control-null-enters-count-and-collect/logs/20261116T005521Z-control-null-enters-count-and-collect.log": "91ec5443829be6b197bc30ae98bade02b11f27a8987d98b00f0771490be82a9b"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

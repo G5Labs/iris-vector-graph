@@ -1,0 +1,32 @@
+verification results:: 61 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/sum-overwritten/20261116T004138Z/models/aggregate_results/aggregate_results.rs:52:60
+   |
+52 |   pub proof fn lemma_fold(rs:Seq<Row>,q:Query,k:Key) ensures inv(fold(rs,q,k),rs,q,k) decreases rs.len(){
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+53 | /  if rs.len()>0{let p=rs.drop_last();let r=rs.last();lemma_fold(p,q,k);let raw=raw_values(p,q,k);let a=accepted(raw,q.distinct);
+54 | |  if selected(r,q)&&key(r,q)==k&&present(r.value){lemma_tokens_push(raw,r.value);lemma_seq_push(raw,r.value);if !q.distinct||!token...
+55 | |  assert(rs==p.push(r));
+56 | |  }
+   | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/sum-overwritten/20261116T004138Z/models/aggregate_results/aggregate_results.rs:149:10
+    |
+147 | pub proof fn theorem_scalar_duplicate_rows_count_twice(q:Query,k:Key,g:nat)
+    | --------------------------------------------------------------------------- at the end of the function body
+148 |  requires q.graph==None,!q.grouped,k==Key::Global,!q.distinct,
+149 |  ensures ({let r=Row{graph:g,key:k,value:Val::I(2),entity:None};let a=fold(seq![r,r],q,k);a.rows==2&&a.count==2&&a.total==8&&a.items==seq![Val::I(2),Val::I(2)]}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/sum-overwritten/20261116T004138Z/models/aggregate_results/aggregate_results.rs:157:10
+    |
+155 | pub proof fn theorem_mean_is_not_sum(q:Query,k:Key,g:nat)
+    | --------------------------------------------------------- at the end of the function body
+156 |  requires q.graph==None,!q.grouped,k==Key::Global,!q.distinct,
+157 |  ensures ({let a=fold(seq![Row{graph:g,key:k,value:Val::I(1),entity:None},Row{graph:g,key:k,value:Val::I(2),entity:None}],q,k);avg(a).unwrap().numerator==6&&avg(a).unwrap().denominator==4}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

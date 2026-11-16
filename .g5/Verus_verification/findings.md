@@ -4,7 +4,7 @@ Product baseline `3eaa79cf`. The register covers every bug, design simplificatio
 
 | File | Entries | High | Medium | Low | Observations / drift | Natively reproduced |
 |---|---:|---:|---:|---:|---:|---:|
-| [Bugs and issues](bugs_issues.md) | 433 | 48 | 130 | 224 | 31 | 243 of 402 |
+| [Bugs and issues](bugs_issues.md) | 434 | 48 | 130 | 225 | 31 | 244 of 403 |
 | [Design simplifications](design_simplification.md) | 55 | 16 | 25 | 13 | 1 | n/a |
 | [Open questions](open_questions.md) | 146 | 1 | 23 | 42 | 16 | n/a |
 
@@ -137,6 +137,12 @@ How to read an entry: a bug cites the governing source of the expected behavior 
 | [q-iter-004](open_questions.md#q-iter-004) | Should standalone handled metadata calls expose YIELD aliases as result columns? |
 | [q-iter-005](open_questions.md#q-iter-005) | Should handled WHERE validation happen when no rows exist? |
 | [q-iter-003](open_questions.md#q-iter-003) | Should history text filters use binary identity or the current database comparison? |
+
+## Ordinary iteration 13 finding
+
+| ID | Severity | Finding | Native reproduction |
+|---|---|---|---|
+| [bug-agg-001](bugs_issues.md#bug-agg-001) | Low · Open | Leading grouped unmatched OPTIONAL returns NULL for SUM instead of zero | yes, fresh scoped caller contrasts |
 
 ## Sources of the findings
 

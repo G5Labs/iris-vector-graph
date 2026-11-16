@@ -1,0 +1,218 @@
+{
+  "name": "graph_structure",
+  "root": "graph_structure.rs",
+  "expected_verified": 67,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "key-no-zero-refusal",
+      "why": "GraphKey.Validate without the \"0\" refusal (GraphKey.cls:42-43): the graph named \"0\" gets the default graph's ^KG key (IRIS canonicalizes subscript \"0\" to 0), so one index key names two graphs",
+      "find": "    &&& c != zero_name()\n    &&& !contains_ctrl(c)\n}",
+      "replace": "    &&& !contains_ctrl(c)\n}",
+      "expect_fail_in": [
+        "theorem_index_key_injective",
+        "theorem_cross_store_key_reads_nothing_foreign",
+        "theorem_refusals"
+      ]
+    },
+    {
+      "name": "key-no-control-refusal",
+      "why": "GraphKey.Validate without the control-character refusal (GraphKey.cls:44-45): a graph named $Char(1) gets the default graph's ledger key",
+      "find": "    &&& c != zero_name()\n    &&& !contains_ctrl(c)\n}",
+      "replace": "    &&& c != zero_name()\n}",
+      "expect_fail_in": [
+        "theorem_ledger_key_injective",
+        "theorem_refusals",
+        "theorem_cross_store_key_reads_nothing_foreign"
+      ]
+    },
+    {
+      "name": "key-no-nul-strip",
+      "why": "GraphKey.Canonical without the $Char(0) removal (GraphKey.cls:84): SQL's NUL-padded default graph is refused instead of being the default graph",
+      "find": "pub open spec fn canonical(n: Name) -> Name {\n    strip_nul(n)\n}",
+      "replace": "pub open spec fn canonical(n: Name) -> Name {\n    n\n}",
+      "expect_fail_in": [
+        "theorem_nul_is_stripped"
+      ]
+    },
+    {
+      "name": "ledger-key-skips-canonical",
+      "why": "ForLedger deriving from the raw name although Validate canonicalizes (the drift the GraphKey header records for the old Ledger.GKey): two spellings of one graph get two ledger keys",
+      "find": "    } else if canonical(n).len() == 0 {\n        Some(sub_of(ledger_default_text()))\n    } else {\n        Some(sub_of(canonical(n)))\n    }",
+      "replace": "    } else if n.len() == 0 {\n        Some(sub_of(ledger_default_text()))\n    } else {\n        Some(sub_of(n))\n    }",
+      "expect_fail_in": [
+        "theorem_key_is_function_of_graph",
+        "theorem_nul_is_stripped"
+      ]
+    },
+    {
+      "name": "degree-no-probe",
+      "why": "Adj.Degree without the exclusive no-wait probe of ^IVG.AdjW(g) (Adj.cls:68-72): a count that includes an uncommitted entry is stored and survives the writer's rollback (witness_without_probe_rollback_poisons is the concrete schedule)",
+      "find": "let got = if v.probe { !any_locked(s) } else { true };",
+      "replace": "let got = true;",
+      "expect_fail_in": [
+        "lemma_probe"
+      ]
+    },
+    {
+      "name": "degree-no-nolock-check",
+      "why": "Adj.Degree's store test without '$Data(^IVG.AdjNoLock(g)) (Adj.cls:75; 4.7.0 row 17): a lockless writer's uncommitted entry is cached",
+      "find": "if rd.got && (!v.nolock_check || !s.nolock) && (!v.gen_check || same(s, rd, v)) {",
+      "replace": "if rd.got && (!v.gen_check || same(s, rd, v)) {",
+      "expect_fail_in": [
+        "lemma_check"
+      ]
+    },
+    {
+      "name": "writer-no-gen-bump",
+      "why": "An Adjacency writer that changes out entries without $Increment(^KG(\"gen\", g, s)) (Adjacency.cls:89, 155, 256, 294)",
+      "find": "gen: if v.bump { s.gen + 1 } else { s.gen },",
+      "replace": "gen: s.gen,",
+      "expect_fail_in": [
+        "lemma_write"
+      ]
+    },
+    {
+      "name": "as-built-without-quiet-premise",
+      "why": "Drop PREMISE P-QUIET: a committed erase of s while a Degree call is in flight. lemma_killcommitted's step `!same(s2, rd, v)` fails (a reader with tGen 0 matches the restarted gen); witness_aba_delete_and_recreate_serves_stale_degree and witness_gen0_erase_alone_serves_stale_degree are the concrete schedules",
+      "find": "if !no_writer(s) || (v.quiet_kills && !no_reader(s)) {",
+      "replace": "if !no_writer(s) {",
+      "expect_fail_in": [
+        "lemma_killcommitted"
+      ]
+    },
+    {
+      "name": "repair-epoch-off",
+      "why": "The proposed repair without its epoch stamp: the repaired variant is the as-built one without P-QUIET (theorem_repaired_cache_sound then fails at covered(v), a scope precondition; the witness fails on the trace itself)",
+      "find": "pub open spec fn dv_repaired() -> DV {\n    DV { probe: true, gen_check: true, nolock_check: true, bump: true, epoch_stamp: true, quiet_kills: false, kill_in_tx: false, set_gen: false, kill_bumps: false }\n}",
+      "replace": "pub open spec fn dv_repaired() -> DV {\n    DV { probe: true, gen_check: true, nolock_check: true, bump: true, epoch_stamp: false, quiet_kills: false, kill_in_tx: false, set_gen: false, kill_bumps: false }\n}",
+      "expect_fail_in": [
+        "theorem_repaired_cache_sound",
+        "witness_repair_refuses_the_aba_store"
+      ]
+    },
+    {
+      "name": "repair-kill-keeps-epoch",
+      "why": "The repair's decisive effect removed: a committed kill that does not $Increment the epoch",
+      "find": "                    vis: 0,\n                    gen: if v.kill_bumps { s.gen + 1 } else { 0 },\n                    epoch: s.epoch + 1,\n                    degc: None,\n                    nolock: if clears_nolock",
+      "replace": "                    vis: 0,\n                    gen: if v.kill_bumps { s.gen + 1 } else { 0 },\n                    epoch: s.epoch,\n                    degc: None,\n                    nolock: if clears_nolock",
+      "expect_fail_in": [
+        "lemma_killcommitted",
+        "witness_repair_refuses_the_aba_store"
+      ]
+    },
+    {
+      "name": "row-remove-ignores-mode",
+      "why": "RowRemove calling Remove whatever ^IVG.GraphMode says (Adjacency.cls:497-500): deleting one parallel edge kills the triple (theorem_index_delete_keeps_parallel_edges consumes this lemma's contract, so the failure is attributed to the lemma)",
+      "find": "    if multi { remove_keyed(t, rows, e) } else { remove(t) }",
+      "replace": "    remove(t)",
+      "expect_fail_in": [
+        "lemma_row_remove_keeps_layout"
+      ]
+    },
+    {
+      "name": "remove-keyed-no-collapse",
+      "why": "RemoveKeyed without the 2->1 collapse (Adjacency.cls:300-311): the survivor keeps a child and \"#\"=1 instead of the bare leaf FR-004 requires",
+      "find": "            Tri { leaf: true, kids: Set::empty(), hash: None }    // 303-311",
+      "replace": "            Tri { leaf: true, kids: kids1, hash: Some(1) }    // 303-311",
+      "expect_fail_in": [
+        "lemma_row_remove_keeps_layout"
+      ]
+    },
+    {
+      "name": "put-keyed-ignores-other-rows",
+      "why": "PutKeyed's 1->2 transition without OtherEdgeKeys' children (Adjacency.cls:226-250): the first edge gets no child",
+      "find": "let kids1 = if !has_hash { t.kids.union(others) } else { t.kids };",
+      "replace": "let kids1 = t.kids;",
+      "expect_fail_in": [
+        "lemma_row_put_keeps_layout"
+      ]
+    },
+    {
+      "name": "repaired-delete-rel-keeps-line-689",
+      "why": "The proposed DeleteRelInternal with the unconditional Remove of LedgerApply.cls:689 put back on the indexed path",
+      "find": "    if indexed {\n        row_remove(t, rows2, e, multi)\n    } else if multi {",
+      "replace": "    if indexed {\n        let t1 = row_remove(t, rows2, e, multi);\n        if present(t1) { remove(t1) } else { t1 }\n    } else if multi {",
+      "expect_fail_in": [
+        "theorem_repaired_delete_rel_keeps_layout"
+      ]
+    },
+    {
+      "name": "as-built-delete-rel-without-line-689",
+      "why": "Attribution: drop only LedgerApply.cls:689 from the as-built transcription; the F3 witness on the indexed path must then fail",
+      "find": "    if present(t1) { remove(t1) } else { t1 }\n}",
+      "replace": "    t1\n}",
+      "expect_fail_in": [
+        "witness_ledger_delete_rel_drops_survivor_indexed"
+      ]
+    },
+    {
+      "name": "algo-repair-off",
+      "why": "The proposed bump of ^KG(\"__version\") after every rollback removed: the token rule alone admits the poisoned entry",
+      "find": "pub open spec fn av_repaired() -> AV { AV { bump_after_rollback: true } }",
+      "replace": "pub open spec fn av_repaired() -> AV { AV { bump_after_rollback: false } }",
+      "expect_fail_in": [
+        "theorem_repaired_algo_cache_sound",
+        "witness_bump_after_rollback_refuses_the_poison"
+      ]
+    },
+    {
+      "name": "algo-write-no-token-bump",
+      "why": "A write that changes content without $Increment(^KG(\"__version\")) (CONTEXT.md: every write path that can change an answer bumps it)",
+      "find": "                    token: s.token + 1,\n                    ws: s.ws.insert(w, s.ws[w].insert(e)),",
+      "replace": "                    token: s.token,\n                    ws: s.ws.insert(w, s.ws[w].insert(e)),",
+      "expect_fail_in": [
+        "theorem_repaired_algo_cache_sound"
+      ]
+    },
+    {
+      "name": "canonical-strips-controls",
+      "why": "Review Check A: the normalization removes every control character (ADR-0003:14's table wording $ZStrip(graphId,\"*C\")) instead of only NUL, so 'a'+$Char(1) is merged with 'a' instead of refused. The injectivity theorems consume lemma_canonical_is_nul_free's contract, so the failure is attributed there and to the concrete theorem",
+      "find": "        if n.last() == '\\0' { r } else { r.push(n.last()) }",
+      "replace": "        if is_ctrl(n.last()) { r } else { r.push(n.last()) }",
+      "expect_fail_in": [
+        "lemma_canonical_is_nul_free",
+        "theorem_control_names_never_merge"
+      ]
+    },
+    {
+      "name": "repaired-binding-is-raw",
+      "why": "R1-4: the proposed SQL binding replaced by create_edge's as-built raw name (nodes_edges.py:1213): one index graph, two SQL graphs",
+      "find": "pub open spec fn sql_gid_repaired(n: Name) -> Option<Name> {\n    for_name(n)\n}",
+      "replace": "pub open spec fn sql_gid_repaired(n: Name) -> Option<Name> {\n    if !valid(n) { None } else { Some(n) }\n}",
+      "expect_fail_in": [
+        "theorem_repaired_binding_one_graph_in_every_store"
+      ]
+    },
+    {
+      "name": "repair-kill-bumps-off",
+      "why": "Review Check B's repair switched off: erases kill gen again, so the variant is the as-built one without P-QUIET",
+      "find": "    DV { probe: true, gen_check: true, nolock_check: true, bump: true, epoch_stamp: false, quiet_kills: false, kill_in_tx: false, set_gen: false, kill_bumps: true }",
+      "replace": "    DV { probe: true, gen_check: true, nolock_check: true, bump: true, epoch_stamp: false, quiet_kills: false, kill_in_tx: false, set_gen: false, kill_bumps: false }",
+      "expect_fail_in": [
+        "theorem_kill_bump_cache_sound",
+        "witness_kill_bump_refuses_the_aba_store",
+        "witness_gen0_kill_bump_refuses"
+      ]
+    },
+    {
+      "name": "kill-bump-restarts-gen",
+      "why": "The bump repair's decisive effect removed in KillCommitted: the erase restarts gen at 0 even in the repaired variant",
+      "find": "                    gen: if v.kill_bumps { s.gen + 1 } else { 0 },\n                    epoch: s.epoch + 1,\n                    degc: None,\n                    nolock: if clears_nolock",
+      "replace": "                    gen: 0,\n                    epoch: s.epoch + 1,\n                    degc: None,\n                    nolock: if clears_nolock",
+      "expect_fail_in": [
+        "lemma_killcommitted",
+        "witness_gen0_kill_bump_refuses"
+      ]
+    },
+    {
+      "name": "undeclared-index-treated-as-declared",
+      "why": "R1-13 qualifier: a raw SQL delete in an undeclared namespace transcribed as if the callback ran; the witness that the L1 layout rule needs the declared index must fail",
+      "find": "    if indexed { row_remove(t, rows.remove(e), e, multi) } else { t }",
+      "replace": "    row_remove(t, rows.remove(e), e, multi)",
+      "expect_fail_in": [
+        "witness_undeclared_index_sql_delete_leaves_entry"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "index_declaration",
+  "root": "index_declaration.rs",
+  "expected_verified": 7,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "skip-ekey-check",
+      "why": "declare without checking for rdf_edges.ekey (:848-853 removed): the edge index is declared before spec 234's migration adds the column it reads",
+      "find": "    c.callbacks && c.procs && c.ekey && c.graph_cols\n}",
+      "replace": "    c.callbacks && c.procs && c.graph_cols\n}",
+      "expect_fail_in": [
+        "theorem_no_prereq_no_ddl"
+      ]
+    },
+    {
+      "name": "backfill-after-build",
+      "why": "build the edge index, then backfill the temporal rows (:879-884 after :896): the build derives ^KG from rows that are not there yet",
+      "find": "            drop + fill + seq![Act::Create(i)]",
+      "replace": "            drop + seq![Act::Create(i)] + fill",
+      "expect_fail_in": [
+        "theorem_backfill_before_edge_index",
+        "theorem_prereqs_declare_both"
+      ]
+    },
+    {
+      "name": "redeclare-functional",
+      "why": "declare an index that is already the adjacency index (:865-867 removed)",
+      "find": "        Kind::Functional => Seq::empty(),\n        _ => {",
+      "replace": "        _ => {",
+      "expect_fail_in": [
+        "theorem_declared_left_alone",
+        "theorem_second_run_is_noop"
+      ]
+    },
+    {
+      "name": "plain-taken-as-declared",
+      "why": "historical defect (4.7.0 row 16, CHANGELOG): a plain index named idx_edges_adj was taken for the adjacency index and ^KG went unwritten",
+      "find": "pub open spec fn for_index(i: Idx, k: Kind) -> Seq<Act> {\n    match k {",
+      "replace": "pub open spec fn for_index(i: Idx, k: Kind) -> Seq<Act> {\n    match (if k is Plain { Kind::Functional } else { k }) {",
+      "expect_fail_in": [
+        "theorem_plain_replaced"
+      ]
+    }
+  ]
+}

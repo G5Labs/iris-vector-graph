@@ -1,0 +1,104 @@
+{
+  "name": "communities",
+  "root": "communities.rs",
+  "expected_verified": 73,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "foreign-graph-admitted",
+      "find": "selected(a:Coord)->bool {a.graph==0}",
+      "replace": "selected(a:Coord)->bool {true}",
+      "expect_fail_in": [
+        "theorem_foreign_graph_coordinates_do_not_enter_default_core"
+      ]
+    },
+    {
+      "name": "wcc-out-only",
+      "find": "min_fold(g.drop_first(),u,l,if selected(a) && a.owner==u && x<best{x}",
+      "replace": "min_fold(g.drop_first(),u,l,if selected(a) && !a.incoming && a.owner==u && x<best{x}",
+      "expect_fail_in": [
+        "lemma_min_fold"
+      ]
+    },
+    {
+      "name": "wcc-budget-off-by-one",
+      "find": "k as int>=limit.unwrap()",
+      "replace": "k as int>limit.unwrap()",
+      "expect_fail_in": [
+        "theorem_already_correct_pair_still_needs_confirmation"
+      ]
+    },
+    {
+      "name": "wcc-unconfirmed-return",
+      "find": "if changed(g,old,next)==0",
+      "replace": "if true",
+      "expect_fail_in": [
+        "theorem_already_correct_pair_still_needs_confirmation"
+      ]
+    },
+    {
+      "name": "cdlp-count-overwrite",
+      "find": "c.insert(x,count(c,x)+1)",
+      "replace": "c.insert(x,1)",
+      "expect_fail_in": [
+        "lemma_raw_coordinate_count_at"
+      ]
+    },
+    {
+      "name": "cdlp-self-vote",
+      "find": "selected(a) && a.owner==u && a.neighbor!=u",
+      "replace": "selected(a) && a.owner==u",
+      "expect_fail_in": [
+        "theorem_self_loop_is_no_vote"
+      ]
+    },
+    {
+      "name": "cdlp-tie-largest",
+      "find": "best_fold(keys.drop_first(),c,if n>b.1 || (n==b.1 && x<b.0)",
+      "replace": "best_fold(keys.drop_first(),c,if n>b.1 || (n==b.1 && x>b.0)",
+      "expect_fail_in": [
+        "lemma_best_fold"
+      ]
+    },
+    {
+      "name": "cdlp-wrong-old-map",
+      "find": "|u:Node|winner(g,u,l)",
+      "replace": "|u:Node|winner(g,u,initial(g))",
+      "expect_fail_in": [
+        "lemma_pair_cdlp_swaps_old_labels"
+      ]
+    },
+    {
+      "name": "live-completion-omitted",
+      "find": "Map::new(core.dom().union(loners.dom()),",
+      "replace": "Map::new(core.dom(),",
+      "expect_fail_in": [
+        "theorem_complete_preserves_core_and_adds_only_absent"
+      ]
+    },
+    {
+      "name": "sql-failure-silenced",
+      "find": "Transport::Failed=>Census::Failure",
+      "replace": "Transport::Failed=>Census::Success(Map::empty())",
+      "expect_fail_in": [
+        "theorem_census_success_empty_and_failure_are_distinct"
+      ]
+    },
+    {
+      "name": "full-page-no-confirming-read",
+      "find": "limit>0 && ids.len()>=limit",
+      "replace": "limit>0 && ids.len()>limit",
+      "expect_fail_in": [
+        "theorem_full_final_page_requires_empty_page"
+      ]
+    },
+    {
+      "name": "cursor-overadvanced",
+      "find": "Some(selected.last())",
+      "replace": "Some(if ids.len()>selected.len(){ids[selected.len() as int]}else{selected.last()})",
+      "expect_fail_in": [
+        "lemma_cursor_tail_equivalence"
+      ]
+    }
+  ]
+}

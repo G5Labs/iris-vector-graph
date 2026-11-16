@@ -1,0 +1,107 @@
+{
+  "name": "aggregate_results",
+  "root": "aggregate_results.rs",
+  "expected_verified": 75,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [
+    "../node_read/node_read.rs"
+  ],
+  "controls": [
+    {
+      "name": "foreign-graph-admitted",
+      "find": "q.graph.is_none() || q.graph==Some(r.graph)",
+      "replace": "true",
+      "expect_fail_in": [
+        "theorem_foreign_graph_row_skipped"
+      ]
+    },
+    {
+      "name": "null-enters-count-and-collect",
+      "find": "present(v:Val)->bool {v!=Val::Null}",
+      "replace": "present(v:Val)->bool {true}",
+      "expect_fail_in": [
+        "theorem_null_count_star_differs"
+      ]
+    },
+    {
+      "name": "distinct-ignored",
+      "find": "present(v)&&(!q.distinct||!a.seen.contains(token(v)))",
+      "replace": "present(v)",
+      "expect_fail_in": [
+        "theorem_float_presence_uses_all_inputs"
+      ]
+    },
+    {
+      "name": "count-overwritten",
+      "find": "count:a.count+if yes{1nat}else{0nat}",
+      "replace": "count:if yes{1nat}else{0nat}",
+      "expect_fail_in": [
+        "theorem_scalar_duplicate_rows_count_twice"
+      ]
+    },
+    {
+      "name": "sum-overwritten",
+      "find": "total:a.total+if yes{ticks(v)}else{0}",
+      "replace": "total:if yes{ticks(v)}else{a.total}",
+      "expect_fail_in": [
+        "theorem_scalar_duplicate_rows_count_twice"
+      ]
+    },
+    {
+      "name": "float-from-dedup-only",
+      "find": "float:a.float||is_float(v)",
+      "replace": "float:a.float||(yes&&is_float(v))",
+      "expect_fail_in": [
+        "theorem_float_presence_uses_all_inputs"
+      ]
+    },
+    {
+      "name": "avg-denominator-not-contributors",
+      "find": "denominator:2*a.nums",
+      "replace": "denominator:2",
+      "expect_fail_in": [
+        "theorem_mean_is_not_sum"
+      ]
+    },
+    {
+      "name": "entity-graph-erased",
+      "find": "let e=r.entity.unwrap();EntityAcc",
+      "replace": "let e=Entity{graph:0,id:r.entity.unwrap().id};EntityAcc",
+      "expect_fail_in": [
+        "theorem_entity_same_id_two_graphs_both_count"
+      ]
+    },
+    {
+      "name": "global-empty-row-omitted",
+      "find": "if !q.grouped{seq![Key::Global]}",
+      "replace": "if !q.grouped{seq![]}",
+      "expect_fail_in": [
+        "theorem_full_report_one_row_global_empty_and_none_grouped"
+      ]
+    },
+    {
+      "name": "grouped-empty-row-fabricated",
+      "find": "else if rs.len()==0{seq![]}else{let r=rs.last();let order=key_order",
+      "replace": "else if rs.len()==0{seq![Key::Global]}else{let r=rs.last();let order=key_order",
+      "expect_fail_in": [
+        "theorem_full_report_one_row_global_empty_and_none_grouped"
+      ]
+    },
+    {
+      "name": "duplicate-group-emission",
+      "find": "selected(r,q)&&!order.contains(key(r,q))",
+      "replace": "selected(r,q)",
+      "expect_fail_in": [
+        "theorem_key_enumeration_complete_unique"
+      ]
+    },
+    {
+      "name": "sort-single-digit-not-recognized",
+      "find": "end>6&&n[0]",
+      "replace": "end>7&&n[0]",
+      "expect_fail_in": [
+        "theorem_finalizer_drops_generated_internal_names"
+      ]
+    }
+  ]
+}

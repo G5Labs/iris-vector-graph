@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_producer_limit_is_derived"
+    ],
+    "find": "if top>0{top}else{cap}",
+    "name": "cap-precedes-explicit-top",
+    "replace": "if cap>0{cap}else{top}",
+    "why": "Positive caller top remains the reader limit."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_producer_limit_is_derived"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/cap-precedes-explicit-top/20261115T202535Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_producer_limit_is_derived": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202535Z-control-cap-precedes-explicit-top-theorem_producer_limit_is_derived.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202535Z-control-cap-precedes-explicit-top.log",
+    "timed_out": false,
+    "verified": 98
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202541Z-control-cap-precedes-explicit-top/logs/20261115T202535Z-control-cap-precedes-explicit-top-theorem_producer_limit_is_derived.log": "64b832863a7f30416b5cdb6a68e23d232ccc70b630949ae1632e8f1cdea752c1",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202541Z-control-cap-precedes-explicit-top/logs/20261115T202535Z-control-cap-precedes-explicit-top.log": "ec76b0a591f693a5e847187d8bb096c1c2e773079edfa853dd9b2333361f20db"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

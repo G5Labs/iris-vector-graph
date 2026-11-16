@@ -1,0 +1,93 @@
+verification results:: 32 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:107:1
+    |
+107 | pub proof fn theorem_route_tables_never_double_count(r:Registry,k:Kind)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:108:10
+    |
+108 |  ensures no_dupes(tables(r,k)), tables(r,k).len()>0, tables(r,k)[0]==legacy(k)
+    |          ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+109 | {
+110 |  if r.error.is_none(){lemma_choose_unique(r.rows,k,seq![legacy(k)]);lemma_choose_prefix(r.rows,k,seq![legacy(k)]);assert(tables(r,k).take(1)[0]==tables(r,k)[0]);}
+    |  ----------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:110:122
+    |
+110 | ...lemma_choose_prefix(r.rows,k,seq![legacy(k)]);assert(tables(r,k).take(1)[0]==tables(r,k)[0]);}
+    |                                                         ^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:110:122
+    |
+110 | ...ix(r.rows,k,seq![legacy(k)]);assert(tables(r,k).take(1)[0]==tables(r,k)[0]);}
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:110:146
+    |
+110 | ...r.rows,k,seq![legacy(k)]);assert(tables(r,k).take(1)[0]==tables(r,k)[0]);}
+    |                                                             ^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:131:1
+    |
+131 | pub proof fn theorem_registry_kind_and_shape_both_required(r:Registry,k:Kind,t:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:133:28
+    |
+133 |    ensures r.error.is_none(),route_name(t,k),exists|i:int|0<=i<r.rows.len() && r.rows[i].name==t && registry_kind(r.rows[i])==kind_...
+    |                              ^^^^^^^^^^^^^^^ failed this postcondition
+134 |   {if r.error.is_none(){lemma_chosen_members(r.rows,k,seq![legacy(k)]);
+    |  __-
+135 | |  assert(!seq![legacy(k)].contains(t));
+136 | |  let i=choose|i:int|0<=i<r.rows.len() && r.rows[i].name==t && eligible(r.rows[i],k);
+137 | |  assert(route_name(r.rows[i].name,k));}}
+    | |_______________________________________- at the end of the function body
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:136:21
+    |
+136 |  let i=choose|i:int|0<=i<r.rows.len() && r.rows[i].name==t && eligible(r.rows[i],k);
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:137:9
+    |
+137 |  assert(route_name(r.rows[i].name,k));}}
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:137:20
+    |
+137 |  assert(route_name(r.rows[i].name,k));}}
+    |                    ^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:157:10
+    |
+155 | pub proof fn theorem_registry_eligible_routes_are_not_omitted(r:Registry,k:Kind,i:int)
+    | -------------------------------------------------------------------------------------- at the end of the function body
+156 |  requires r.error.is_none(),0<=i<r.rows.len(),eligible(r.rows[i],k)
+157 |  ensures tables(r,k).map_values(|x:Text|lower(x)).contains(lower(r.rows[i].name))
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

@@ -1,0 +1,98 @@
+{
+  "name": "procedure_results",
+  "root": "procedure_results.rs",
+  "expected_verified": 19,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "where-removed",
+      "why": "where-removed",
+      "find": "rows.filter(|l:int|passes(l,c))",
+      "replace": "rows",
+      "expect_fail_in": [
+        "theorem_final_filter_sound"
+      ]
+    },
+    {
+      "name": "return-alias-lost",
+      "why": "return-alias-lost",
+      "find": "if q.return_name.is_some(){q.return_name.unwrap()}else{physical()}",
+      "replace": "physical()",
+      "expect_fail_in": [
+        "theorem_alias_return"
+      ]
+    },
+    {
+      "name": "bare-alias-projected",
+      "why": "bare-alias-projected",
+      "find": "if q.return_name.is_some(){q.return_name.unwrap()}else{physical()}",
+      "replace": "if q.return_name.is_some(){q.return_name.unwrap()}else{q.alias}",
+      "expect_fail_in": [
+        "theorem_bare_alias_keeps_physical"
+      ]
+    },
+    {
+      "name": "empty-validates-expression",
+      "why": "empty-validates-expression",
+      "find": "rows.len()>0 && !matches!(q.condition,Condition::All)",
+      "replace": "!matches!(q.condition,Condition::All)",
+      "expect_fail_in": [
+        "theorem_empty_skips_expression_validation"
+      ]
+    },
+    {
+      "name": "unsupported-clause-dropped",
+      "why": "unsupported-clause-dropped",
+      "find": "bad_tail(q.tail,q.alias) ||",
+      "replace": "false ||",
+      "expect_fail_in": [
+        "theorem_unsupported_clause_always_refused"
+      ]
+    },
+    {
+      "name": "order-alias-guessed",
+      "why": "order-alias-guessed",
+      "find": "q.order_name.unwrap()!=column",
+      "replace": "q.order_name.unwrap()!=q.alias",
+      "expect_fail_in": [
+        "theorem_order_requires_result_column"
+      ]
+    },
+    {
+      "name": "limit-before-where",
+      "why": "limit-before-where",
+      "find": "let selected=filtered(rows,q.condition);",
+      "replace": "let selected=filtered(cut(rows,q.skip,q.limit),q.condition);",
+      "expect_fail_in": [
+        "theorem_filter_before_limit"
+      ]
+    },
+    {
+      "name": "labels-scoped",
+      "why": "labels-scoped",
+      "find": "texts(records).to_set().to_seq().sort_by(leq())",
+      "replace": "texts(records.filter(|r:Label|r.graph==requested_graph)).to_set().to_seq().sort_by(leq())",
+      "expect_fail_in": [
+        "theorem_graph_is_ignored"
+      ]
+    },
+    {
+      "name": "distinct-dropped",
+      "why": "distinct-dropped",
+      "find": "texts(records).to_set().to_seq().sort_by(leq())",
+      "replace": "texts(records).sort_by(leq())",
+      "expect_fail_in": [
+        "theorem_distinct_provider"
+      ]
+    },
+    {
+      "name": "physical-return-validates-source",
+      "why": "rejecting a physical-name projection before its early return contradicts actual empty/nonempty result flow",
+      "find": "q.return_name.unwrap()!=physical() && q.source!=physical()",
+      "replace": "q.source!=physical()",
+      "expect_fail_in": [
+        "theorem_physical_return_bypasses_source_check"
+      ]
+    }
+  ]
+}

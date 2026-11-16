@@ -1,0 +1,53 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_scalar_and_cap_decode"
+    ],
+    "find": "(c.raw[a].unwrap().num as nat)*factor(c,a)",
+    "name": "positive-numerator-not-scaled",
+    "replace": "(c.raw[a].unwrap().num as nat)",
+    "why": "Positive raw numerator needs every other denominator factor."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_scalar_and_cap_decode"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "602722835a1367bf97d2c548d3e256ddbdd96c8020fe775fbc0e7d88e7950093",
+    ".g5/Verus_verification/models/weighted_fraction/model.json": "22c689b76b80f23705c9beaee5d42c7ba7c297f5581927d1f6d963dbc7da7329",
+    ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs": "6e2216cd3140b056bd2537a7e076b0d3116103ebf02de24e18db7711da36e738",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration11-fraction-20261115/verus/weighted_fraction/controls/positive-numerator-not-scaled/20261115T211816Z/models/weighted_fraction/weighted_fraction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_scalar_and_cap_decode": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration11-fraction-20261115/verus/weighted_fraction/20261115T211816Z-control-positive-numerator-not-scaled-theorem_scalar_and_cap_decode.log",
+        "timed_out": false,
+        "verified": 3
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration11-fraction-20261115/verus/weighted_fraction/20261115T211816Z-control-positive-numerator-not-scaled.log",
+    "timed_out": false,
+    "verified": 180
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_fraction/20261115T211824Z-control-positive-numerator-not-scaled/logs/20261115T211816Z-control-positive-numerator-not-scaled-theorem_scalar_and_cap_decode.log": "ebd0579ba1e812e371d7d1c63c3469efdbb0e44715e5d0ccd82b6b161969699d",
+    ".g5/Verus_verification/results/weighted_fraction/20261115T211824Z-control-positive-numerator-not-scaled/logs/20261115T211816Z-control-positive-numerator-not-scaled.log": "a96a1ec6335733a4eac3e4031cee54d3da2e14413f8d1eac4833b317b2176d1c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

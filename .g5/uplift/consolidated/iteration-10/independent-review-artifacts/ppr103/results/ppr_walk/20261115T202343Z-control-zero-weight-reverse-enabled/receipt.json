@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_reverse_zero_uses_dangling_restart"
+    ],
+    "find": "let r=if keep && rev && w>0real && e.dst==u {copies(Hop{dst:e.src,weight:w},mult(e))}else{seq![]};\n  f+r+tail",
+    "name": "zero-weight-reverse-enabled",
+    "replace": "let r=if keep && rev && e.dst==u {copies(Hop{dst:e.src,weight:w},mult(e))}else{seq![]};\n  f+r+tail",
+    "why": "Weight zero disables reverse traversal."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_reverse_zero_uses_dangling_restart"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/zero-weight-reverse-enabled/20261115T202336Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_reverse_zero_uses_dangling_restart": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202336Z-control-zero-weight-reverse-enabled-theorem_reverse_zero_uses_dangling_restart.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202336Z-control-zero-weight-reverse-enabled.log",
+    "timed_out": false,
+    "verified": 101
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202343Z-control-zero-weight-reverse-enabled/logs/20261115T202336Z-control-zero-weight-reverse-enabled-theorem_reverse_zero_uses_dangling_restart.log": "5bd52f8a20aecccd40c98300f1333c8d94243703482c4648e44d6a5d46ab25bd",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202343Z-control-zero-weight-reverse-enabled/logs/20261115T202336Z-control-zero-weight-reverse-enabled.log": "5b18e9004e88015516c2d989501bf490a7dc35d29e8eec8cb66c4edd90a8488c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

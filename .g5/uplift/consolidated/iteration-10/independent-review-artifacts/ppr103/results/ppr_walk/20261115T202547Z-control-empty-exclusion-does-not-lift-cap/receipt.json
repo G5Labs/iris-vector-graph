@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_producer_limit_is_derived"
+    ],
+    "find": "if q.excluded.is_some(){if q.top>0{q.top}else{0}}else{1000}",
+    "name": "empty-exclusion-does-not-lift-cap",
+    "replace": "if q.excluded.is_some(){1000}else{1000}",
+    "why": "Explicit empty exclusion forwards caller limit."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_producer_limit_is_derived"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/empty-exclusion-does-not-lift-cap/20261115T202541Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_producer_limit_is_derived": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202541Z-control-empty-exclusion-does-not-lift-cap-theorem_producer_limit_is_derived.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202541Z-control-empty-exclusion-does-not-lift-cap.log",
+    "timed_out": false,
+    "verified": 102
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202547Z-control-empty-exclusion-does-not-lift-cap/logs/20261115T202541Z-control-empty-exclusion-does-not-lift-cap-theorem_producer_limit_is_derived.log": "27b5964af059c51e3762047caa26e36a544254b7f0f509895657c9c5da8707eb",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202547Z-control-empty-exclusion-does-not-lift-cap/logs/20261115T202541Z-control-empty-exclusion-does-not-lift-cap.log": "237087707afe8f10b7f72413a53dcfd77d4db4144eb3baa9a8360e59d11b5394"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

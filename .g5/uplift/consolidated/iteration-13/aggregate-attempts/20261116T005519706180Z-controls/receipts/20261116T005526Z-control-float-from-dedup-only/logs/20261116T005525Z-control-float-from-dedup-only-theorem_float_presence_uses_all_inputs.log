@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/float-from-dedup-only/20261116T005525Z/models/aggregate_results/aggregate_results.rs:113:10
+    |
+111 | pub proof fn theorem_float_presence_uses_all_inputs(n:int,q:Query,k:Key,g:nat)
+    | ------------------------------------------------------------------------------ at the end of the function body
+112 |  requires q.distinct,q.graph==None,!q.grouped,k==Key::Global,
+113 |  ensures ({let rs=seq![Row{graph:g,key:k,value:Val::I(n),entity:None},Row{graph:g,key:k,value:Val::D(2*n),entity:None}];let a=fold(rs,q,k);a.count==1&&a.float&&read_sum(sum_wire(a))==SumValue::Double(2*n)}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

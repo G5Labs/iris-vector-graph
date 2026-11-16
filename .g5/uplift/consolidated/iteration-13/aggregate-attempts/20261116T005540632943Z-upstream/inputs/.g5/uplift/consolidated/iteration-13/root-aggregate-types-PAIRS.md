@@ -1,0 +1,7 @@
+# Ordinary typed sum neighbors before native execution
+
+Fresh ordinary continuation only; no interrupted inputs or outcomes. Primary test_sum_column_typing.py explicitly distinguishes a typed property sum from the old whole-result-means-integer fallback: integer inputs keep integer kind, a float contributor keeps float kind even for a whole total, and WITH must carry that type to RETURN. Fresh query.aggregation recovers that requirement; the builder's exact half-unit logical arithmetic leaves actual SQL/driver/numeric/JSON providers explicit.
+
+Create two new isolated graphs, each with two newly labelled nodes: integer1,3 and float1.5,2.5. Predict direct integer SUM→integer4, direct float SUM→float4.0, the same float SUM through WITH→float4.0, and the float AVG→float2.0. Check Python type as well as numerical equality, after independent raw fixture readback. Exact finite half-unit arithmetic avoids asserting general floating equivalence.
+
+Root-only actual pinned create_node/SQL-path Cypher on the owned runtime. Query only these fresh graphs, no namespace census or interrupted data; no injected rows/faults, product patch, global erase, other container, parallel mode or security scenario. No universal aggregate, arbitrary numeric/storage/JSON/driver/collation/concurrency or native executable-body claim. Completed setup5 compiled/source audit reused, with current/export input hashes retained. Four supplemental ordinary cases, separate from the previous eight COUNT cases.

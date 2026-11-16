@@ -1,0 +1,20 @@
+--- V2
++++ V3
+@@ -132,7 +132,16 @@
+   detected=check();assert detected,name;sensitivities.append(dict(name=name,detected=True))
+  old=pr.sql_adapter
+  detect('SQL distinct removed provider contrast',lambda: _adapter_contrast())
+- detect('observation corruption rejected',lambda: tagged([[99]])!=tagged([[3]]))
++ # Affirm the actual produced observation against the input-derived oracle before corrupting one deciding cell.
++ observation_records=[('g','x','A',2),('g','y','A',2),('g','z','B',None)]
++ observation_oracle=raw_oracle(observation_records,'g',False,True)[None]
++ wanted_observation=[[observation_oracle['star'],observation_oracle['count']]]
++ produced,observation_trace=execute(observation_records,"USE GRAPH 'g' MATCH (n:Report) RETURN count(*) AS star,count(DISTINCT n.v) AS c")
++ comparator=lambda rows:tagged(rows)==tagged(wanted_observation)
++ assert comparator(produced.rows)
++ corrupted=copy.deepcopy(produced.rows);corrupted[0][0]+=1
++ detect('actual produced observation corruption rejected',lambda:not comparator(corrupted))
++ cases.append(dict(kind='actual-observation sensitivity',raw=observation_records,oracle=observation_oracle,produced=produced.rows,wanted=wanted_observation,corrupted=corrupted,baseline_agrees=comparator(produced.rows),corrupted_rejected=not comparator(corrupted),trace=observation_trace))
+  # Additional source mutants installed only in private module dictionaries.
+  tpath='iris_vector_graph/cypher/translator.py';qpath='iris_vector_graph/_engine/query.py'
+  original=qm.translate_to_sql

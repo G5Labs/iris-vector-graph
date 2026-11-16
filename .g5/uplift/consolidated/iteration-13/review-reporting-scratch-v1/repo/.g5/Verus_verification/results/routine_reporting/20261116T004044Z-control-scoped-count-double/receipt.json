@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_scan_filter"
+    ],
+    "find": "(if matches(rs[0],g,a){1nat}else{0nat})",
+    "name": "scoped-count-double",
+    "replace": "(if matches(rs[0],g,a){2nat}else{0nat})",
+    "role": "source-facing census/selection/reader rule"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_scan_filter"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/routine_reporting/model.json": "476529fece46dfdfebe64114446c9966bf6a4a68c3e07594a5e880e8c7618bac",
+    ".g5/Verus_verification/models/routine_reporting/routine_reporting.rs": "224e16eede8fda124658933601d304ffe1a0a2ce92edfc802e5c612cebfa4a8d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/scoped-count-double/20261116T004043Z/models/routine_reporting/routine_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_scan_filter": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/20261116T004043Z-control-scoped-count-double-lemma_scan_filter.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/20261116T004043Z-control-scoped-count-double.log",
+    "timed_out": false,
+    "verified": 32
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/routine_reporting/20261116T004044Z-control-scoped-count-double/logs/20261116T004043Z-control-scoped-count-double-lemma_scan_filter.log": "70a528fed35493117af244a01dd7319e3e3c6925b8249359d93bcb12b5f5004c",
+    ".g5/Verus_verification/results/routine_reporting/20261116T004044Z-control-scoped-count-double/logs/20261116T004043Z-control-scoped-count-double.log": "833e1091d4bba9b8c5beb69b670960bac1b81d533d5b6f6e5c41afaddbd87c11"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

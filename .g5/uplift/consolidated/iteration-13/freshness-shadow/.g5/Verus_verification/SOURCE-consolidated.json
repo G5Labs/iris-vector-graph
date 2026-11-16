@@ -1,0 +1,38 @@
+{
+  "purpose": "Toolchain and library provenance of the consolidated uplift's runs on this machine (2026-11-14/15).",
+  "machine": {
+    "os": "macOS 26.2 (Darwin 25.2.0)",
+    "arch": "arm64",
+    "cores": 10,
+    "memory_gb": 32
+  },
+  "verus": {
+    "binary": "~/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "sha256": "fc13e79bb3c13d93bc05b37e9b1b6518fde7f4687b3d442ce5c6318c5737c668",
+    "version_output": [
+      "Verus",
+      "  Version: 0.2026.10.04.426d8b0",
+      "  Profile: release",
+      "  Platform: macos_aarch64",
+      "  Toolchain: 1.98.1-aarch64-apple-darwin (overridden by environment variable RUSTUP_TOOLCHAIN)"
+    ],
+    "z3_sha256": "edae32f9e37ea4b5bb35310d72f0e352d0dc07626cac4e9e30bc1ea9a5bc8efb",
+    "cargo_verus": "same directory",
+    "note": "same release as the guidance arm's x86_64 binary (0.2026.10.04.426d8b0); a different platform build, so its SHA-256 differs from SOURCE.json"
+  },
+  "vstd": {
+    "bundled": "with the binary (single-file models)",
+    "cargo": "0.0.0-2026-09-20-0158 from the local cargo registry cache (--offline)"
+  },
+  "actors": {
+    "path": "~/.cache/g5-verification/ivg-actors-c03f9fa",
+    "source_tgz_sha256": "567a1dcb5de30795d581a487824bd3ff358779a0d600c5ff449173cd03197722",
+    "own_SOURCE_json": "Bank of Ziniu 47bbd846 (sql/next)",
+    "identified_as": "the playbook VM's actors at c03f9fa (launch request); actors verified 121 here, as recorded on the VM; not hash-compared with the VM checkout"
+  },
+  "python": {
+    "pin_venv": "$RUN_DIR/venv from the pin's uv.lock (uv sync --frozen --all-extras)",
+    "version": "3.11.8"
+  },
+  "run_dir": "$HOME/runs/ivg-consolidated-20261114 (outside the repository)"
+}

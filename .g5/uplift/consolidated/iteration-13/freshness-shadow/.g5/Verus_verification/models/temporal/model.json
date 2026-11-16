@@ -1,0 +1,317 @@
+{
+  "name": "temporal",
+  "root": "temporal.rs",
+  "expected_verified": 113,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "no-collision-guard",
+      "why": "WriteStores without the $Data(tout) guard (:84-85): an 'insert' at occupied coordinates is counted again (spec 254 FR-003, the pre-254 behaviour)",
+      "find": "    mode != Mode::Update && s.tout.contains_key(c)\n}",
+      "replace": "    false\n}",
+      "expect_fail_in": [
+        "lemma_collision_changes_nothing",
+        "lemma_write_exact"
+      ]
+    },
+    {
+      "name": "refuse-all-writes",
+      "why": "Valid outcome: a guard that stops every write keeps every invariant by stuttering; the first-write-wins and repaired-retry witnesses must catch it",
+      "find": "    mode != Mode::Update && s.tout.contains_key(c)\n}",
+      "replace": "    s.tout.contains_key(c) || true\n}",
+      "expect_fail_in": [
+        "witness_same_batch_collision_first_write_wins",
+        "witness_assert_first_repairs_the_retry"
+      ]
+    },
+    {
+      "name": "no-bucket-decrement",
+      "why": "RemoveTemporalRow without $Increment(bucket,-1) (:357): a deleted edge stays in the per-source count (the decrement is stated in lemma_remove_raw_shape, which lemma_delete_exact consumes)",
+      "find": "    let s1 = St { tout: s.tout.remove(c), eprop: s.eprop.remove(c), bucket: s.bucket.insert(bk, nb), ..s };\n    if nb",
+      "replace": "    let s1 = St { tout: s.tout.remove(c), eprop: s.eprop.remove(c), bucket: s.bucket, ..s };\n    if nb",
+      "expect_fail_in": [
+        "lemma_remove_raw_shape"
+      ]
+    },
+    {
+      "name": "no-rebuild",
+      "why": "RemoveTemporalRow without RebuildBucketAggregate (:359): tagg keeps counting the deleted edge",
+      "find": "    rebuild(journal_agg(remove_raw(s, c), akey(c)), akey(c))\n}",
+      "replace": "    journal_agg(remove_raw(s, c), akey(c))\n}",
+      "expect_fail_in": [
+        "lemma_delete_exact"
+      ]
+    },
+    {
+      "name": "purge-forgets-cut",
+      "why": "Without the purge-cut exception (ADR-0009:49 'aggregates describe the past') the purge breaks L1-AGG: the rule must exclude purged buckets",
+      "find": "        purged: s.purged.union(s.tout.dom().filter(|c: Coord| in_range(c, g, lo, hi))),",
+      "replace": "        purged: s.purged,",
+      "expect_fail_in": [
+        "lemma_kill_exact"
+      ]
+    },
+    {
+      "name": "rollback-keeps-bucket-anyway",
+      "why": "P-INCR control: if TROLLBACK leaves ^KG(\"bucket\") even in the counters-undone variant, the refused changeset is no longer exact \u2014 the F3 violation rests on $Increment surviving rollback",
+      "find": "            bucket: if v.incr_undone { sn.bucket } else { restore_j(s.bucket, sn.jbucket) },",
+      "replace": "            bucket: if v.incr_undone { s.bucket } else { restore_j(s.bucket, sn.jbucket) },",
+      "expect_fail_in": [
+        "lemma_step_stats",
+        "witness_counters_undone_keep_exact"
+      ]
+    },
+    {
+      "name": "assert-first-writes-raw-first",
+      "why": "S2 repair undone: the structural step throws after tout/bucket were Set \u2014 the repaired retry no longer completes",
+      "find": "        if fails {\n            (assert_row_partial(s, t, f), WRes::Threw)",
+      "replace": "        if fails {\n            (assert_row_partial(raw_part(s, c, w, mode, v), t, f), WRes::Threw)",
+      "expect_fail_in": [
+        "lemma_write_exact",
+        "witness_assert_first_repairs_the_retry"
+      ]
+    },
+    {
+      "name": "update-rebuild-ignored-in-tagg",
+      "why": "Q1(b) repair half-done: 'update' leaves ^KG(\"bucket\") but still $Increments tagg",
+      "find": "        rebuild(s, k)\n    } else {",
+      "replace": "        St { cnt: s.cnt.insert(k, get0(s.cnt, k) + 1), sum: s.sum.insert(k, get0(s.sum, k) + w), ..s }\n    } else {",
+      "expect_fail_in": [
+        "lemma_write_exact"
+      ]
+    },
+    {
+      "name": "repaired-without-assert-first",
+      "why": "The total statistics theorem needs S2: without it a throw from AssertTemporalRow leaves raw stores without tagg",
+      "find": "    Variant { assert_first: true, incr_undone: true, update_rebuilds: true, optin_guard: true, race_recheck: true }",
+      "replace": "    Variant { assert_first: false, incr_undone: true, update_rebuilds: true, optin_guard: true, race_recheck: true }",
+      "expect_fail_in": [
+        "theorem_stats_repaired_total"
+      ]
+    },
+    {
+      "name": "repaired-without-incr-undone",
+      "why": "The total statistics theorem needs counters a rollback takes back (P-INCR is what IRIS does)",
+      "find": "    Variant { assert_first: true, incr_undone: true, update_rebuilds: true, optin_guard: true, race_recheck: true }",
+      "replace": "    Variant { assert_first: true, incr_undone: false, update_rebuilds: true, optin_guard: true, race_recheck: true }",
+      "expect_fail_in": [
+        "theorem_stats_repaired_total"
+      ]
+    },
+    {
+      "name": "repaired-without-update-rebuild",
+      "why": "The total statistics theorem needs Q1 option (b): an 'update' that only $Increments double counts",
+      "find": "    Variant { assert_first: true, incr_undone: true, update_rebuilds: true, optin_guard: true, race_recheck: true }",
+      "replace": "    Variant { assert_first: true, incr_undone: true, update_rebuilds: false, optin_guard: true, race_recheck: true }",
+      "expect_fail_in": [
+        "theorem_stats_repaired_total"
+      ]
+    },
+    {
+      "name": "batch-level-side-effect",
+      "why": "FR-004: a store write made once per BulkInsertCounts call (here a per-batch counter) makes batch boundaries observable",
+      "find": "        Counts { st: s, written: 0, collided: 0, skipped: 0, threw: false }",
+      "replace": "        Counts { st: St { bucket: s.bucket.insert(BKey { g: 0, b: 0, s: 0 }, get0(s.bucket, BKey { g: 0, b: 0, s: 0 }) + 1), ..s }, written: 0, collided: 0, skipped: 0, threw: false }",
+      "expect_fail_in": [
+        "lemma_batch_split"
+      ]
+    },
+    {
+      "name": "retract-ignores-marker",
+      "why": "RetractTemporalRow without IsTemporalMarked (Adjacency.cls:631): deleting the last timestamp removes an explicit row (ADR-0009, spec 254 FR-002)",
+      "find": "    if s.rows.contains_key(t) && s.rows[t] { St { rows: s.rows.remove(t), ..s } } else { s }",
+      "replace": "    if s.rows.contains_key(t) { St { rows: s.rows.remove(t), ..s } } else { s }",
+      "expect_fail_in": [
+        "lemma_temporal_ops_keep_explicit_rows"
+      ]
+    },
+    {
+      "name": "delete-retracts-while-timestamps-remain",
+      "why": "DeleteTemporalEdge without HasTemporalEdge (:333): the row goes while another timestamp of the triple remains",
+      "find": "        let s2 = if !has_ts(s1.tout, tri(c)) { retract(s1, tri(c)) } else { s1 };",
+      "replace": "        let s2 = if true { retract(s1, tri(c)) } else { s1 };",
+      "expect_fail_in": [
+        "lemma_marked_row_goes_with_last_timestamp"
+      ]
+    },
+    {
+      "name": "delete-never-retracts",
+      "why": "DeleteTemporalEdge without RetractTemporalRow (:336): the last timestamp goes and the marked row stays (ADR-0009)",
+      "find": "        let s2 = if !has_ts(s1.tout, tri(c)) { retract(s1, tri(c)) } else { s1 };",
+      "replace": "        let s2 = s1;",
+      "expect_fail_in": [
+        "lemma_delete_rows"
+      ]
+    },
+    {
+      "name": "purge-skips-survivor-walk",
+      "why": "RetireExpired without the walk of surviving timestamps (:990-1022): a row is retired while a timestamp outside the range holds it (spec 254 US1 scenario 2)",
+      "find": "    purge_candidate(s, t, g, lo, hi) && !has_ts(tout_after_purge(s, g, lo, hi), t)\n",
+      "replace": "    purge_candidate(s, t, g, lo, hi)\n",
+      "expect_fail_in": [
+        "lemma_marked_row_goes_with_last_timestamp"
+      ]
+    },
+    {
+      "name": "purge-ignores-registry",
+      "why": "RetireExpired without IsStructuralKey (:966): the purge retracts a registered predicate's old rows, against ADR-0015's decision",
+      "find": "    t.g == g && structural(s, g, t.p)\n",
+      "replace": "    t.g == g\n",
+      "expect_fail_in": [
+        "lemma_purge_leaves_registered_rows",
+        "witness_optin_strands_marked_row"
+      ]
+    },
+    {
+      "name": "write-ignores-registry",
+      "why": "WriteStores without IsStructuralKey (:109): an opted-out predicate's write asserts a row and nodes (ADR-0015); the ADR-0015 frame (!structural ==> rows and nodes unchanged) is stated in lemma_write_shape, which lemma_optout_write_writes_no_row and lemma_temporal_write_keeps_verify consume",
+      "find": "    let st = structural(s, c.g, c.p);\n    let fails",
+      "replace": "    let st = true;\n    let fails",
+      "expect_fail_in": [
+        "lemma_write_shape"
+      ]
+    },
+    {
+      "name": "assert-row-marks-existing-row",
+      "why": "AssertTemporalRow without the ^KG(\"out\") shortcut / NOT EXISTS: an explicit row gets the marker back",
+      "find": "    if s.rows.contains_key(t) {\n        s\n    } else {\n        St { nodes: s.nodes.insert((t.g, t.s)).insert((t.g, t.o)), rows: s.rows.insert(t, true), ..s }",
+      "replace": "    if false {\n        s\n    } else {\n        St { nodes: s.nodes.insert((t.g, t.s)).insert((t.g, t.o)), rows: s.rows.insert(t, true), ..s }",
+      "expect_fail_in": [
+        "lemma_write_shape"
+      ]
+    },
+    {
+      "name": "create-edge-keeps-marker",
+      "why": "create_edge without the adoption UPDATE (nodes_edges._adopt_temporal_row): the marker stays and a temporal delete can remove an explicit edge",
+      "find": "    St { rows: s.rows.insert(t, false), nodes: s.nodes.insert((t.g, t.s)).insert((t.g, t.o)), ..s }\n}",
+      "replace": "    St { rows: s.rows.insert(t, true), nodes: s.nodes.insert((t.g, t.s)).insert((t.g, t.o)), ..s }\n}",
+      "expect_fail_in": [
+        "lemma_explicit_create_clears_marker"
+      ]
+    },
+    {
+      "name": "raw-first-purge",
+      "why": "ADR-0009 'rows first': a purge that kills the raw entries first and fails before its row step leaves marked rows no purge can find",
+      "find": "    if stop_after_rows {\n        St { rows: rows1, ..s }",
+      "replace": "    if stop_after_rows {\n        St { tout: tout_after_purge(s, g, lo, hi), ..s }",
+      "expect_fail_in": [
+        "lemma_purge_rows",
+        "lemma_purge_rerun_finishes"
+      ]
+    },
+    {
+      "name": "optin-guard-off",
+      "why": "Q4 repair removed: opting back in is no longer refused while a marked row is stranded",
+      "find": "        if v.optin_guard && stranded(s, g, p) { s } else { St { optout: s.optout.remove((g, p)), ..s } }",
+      "replace": "        if false { s } else { St { optout: s.optout.remove((g, p)), ..s } }",
+      "expect_fail_in": [
+        "lemma_step_rows",
+        "witness_optin_guard_refuses"
+      ]
+    },
+    {
+      "name": "optin-always-refused",
+      "why": "Valid outcome: a guard that refuses every opt-in keeps L1-ROW by stuttering; the clean opt-in witness must catch it",
+      "find": "        if v.optin_guard && stranded(s, g, p) { s } else { St { optout: s.optout.remove((g, p)), ..s } }",
+      "replace": "        if v.optin_guard { s } else { St { optout: s.optout.remove((g, p)), ..s } }",
+      "expect_fail_in": [
+        "witness_optin_guard_allows_clean_optin"
+      ]
+    },
+    {
+      "name": "verify-reads-marked-rows",
+      "why": "read_canonical without the marked-row skip (replay.py:617-620): every temporal triple is an unrecorded write (43efd473 decision)",
+      "find": "            (rows.contains_key(t) && !rows[t]) <==> gov_rels.contains(t)",
+      "replace": "            rows.contains_key(t) <==> gov_rels.contains(t)",
+      "expect_fail_in": [
+        "lemma_temporal_write_keeps_verify"
+      ]
+    },
+    {
+      "name": "rollback-keeps-raw-edges",
+      "why": "TROLLBACK that leaves the Set of ^KG(\"tout\") in place: a refused changeset's temporal edge survives (spec 224 'atomically with all structural ops')",
+      "find": "            tout: sn.tout, eprop: sn.eprop, rows: sn.rows, nodes: sn.nodes, optout: sn.optout,",
+      "replace": "            tout: s.tout, eprop: sn.eprop, rows: sn.rows, nodes: sn.nodes, optout: sn.optout,",
+      "expect_fail_in": [
+        "lemma_refused_commit_restores_journaled"
+      ]
+    },
+    {
+      "name": "write-skips-assert-row",
+      "why": "WriteStores without the structural step (:109-115): a complete write of a structural predicate leaves its timestamp without a row (ADR-0009 Decision, L1-FWD)",
+      "find": "            let s2 = if st { assert_row(s1, t) } else { s1 };",
+      "replace": "            let s2 = s1;",
+      "expect_fail_in": [
+        "lemma_write_fwd"
+      ]
+    },
+    {
+      "name": "retract-ignores-marker-at-effect",
+      "why": "A retraction that does not re-test the marker when it runs (RetractTemporalRows' DELETE ... AND marker, RetractTemporalRow's IsTemporalMarked): a row adopted between the purge's decision and its retraction is deleted (FR-002 under interleaving)",
+      "find": "filter(|t: Triple| !(pl.doomed.contains(t) && s.rows[t]\n",
+      "replace": "filter(|t: Triple| !(pl.doomed.contains(t)\n",
+      "expect_fail_in": [
+        "lemma_temporal_ops_keep_explicit_rows",
+        "witness_adoption_between_decide_and_retract_survives"
+      ]
+    },
+    {
+      "name": "delete-decide-always-dooms",
+      "why": "Binding check for the phased delete: a decision that skips HasTemporalEdge no longer composes to DeleteTemporalEdge run serially",
+      "find": "        let d = if !has_ts(s1.tout, tri(c)) { set![tri(c)] } else { Set::<Triple>::empty() };",
+      "replace": "        let d = set![tri(c)];",
+      "expect_fail_in": [
+        "lemma_phased_delete_serial"
+      ]
+    },
+    {
+      "name": "rebuild-not-journaled",
+      "why": "R1-9 fidelity: if RebuildBucketAggregate's Sets/Kill were not journaled, the rolled-back delete would also lose tagg; the witness rests on journaling them",
+      "find": "    rebuild(journal_agg(remove_raw(s, c), akey(c)), akey(c))\n}",
+      "replace": "    rebuild(remove_raw(s, c), akey(c))\n}",
+      "expect_fail_in": [
+        "lemma_remove_temporal_row_shape",
+        "witness_rolled_back_delete_undercounts"
+      ]
+    },
+    {
+      "name": "zero-counter-kept",
+      "why": "Review R2-4 (T-b): RemoveTemporalRow keeps a zero ^KG(\"bucket\") node instead of killing it (:358); FindBursts and GetVelocity read a present node as an active source. L1-AGG now requires a key with no raw edge to be absent",
+      "find": "    if nb <= 0 {\n        let s2 = journal_bucket(s1, bk, Some(nb));",
+      "replace": "    if nb < 0 {\n        let s2 = journal_bucket(s1, bk, Some(nb));",
+      "expect_fail_in": [
+        "lemma_delete_exact"
+      ]
+    },
+    {
+      "name": "decide-rows-only",
+      "why": "Review R2-2 (T-a1): a purge decision that takes only triples with a marked row now (the round-1 model) hides the rowless race route; the product's ^||IVG.TPurge holds every candidate without survivors",
+      "find": "    s.tout.dom().filter(|c: Coord| in_range(c, g, lo, hi) && structural(s, g, c.p)\n        && !has_ts(tout_after_purge(s, g, lo, hi), tri(c))).map(|c: Coord| tri(c))\n}",
+      "replace": "    s.rows.dom().filter(|t: Triple| purge_doomed(s, t, g, lo, hi))\n}",
+      "expect_fail_in": [
+        "lemma_doomed_set_iff",
+        "witness_purge_write_race_rowless_route"
+      ]
+    },
+    {
+      "name": "retract-no-recheck",
+      "why": "bug-tmp-011 repair without its retract-time re-test of survivors: RACE-1, the rowless route and RACE-3 are open again",
+      "find": "                && (!v.race_recheck || still_doomed(s, pl, t)))), |t: Triple| s.rows[t]),",
+      "replace": "                )), |t: Triple| s.rows[t]),",
+      "expect_fail_in": [
+        "witness_recheck_closes_race_row_at_decide",
+        "witness_recheck_closes_race_rowless_route",
+        "witness_recheck_closes_delete_race"
+      ]
+    },
+    {
+      "name": "kill-no-reretract",
+      "why": "bug-tmp-011 repair without the kill loop's re-retraction: RACE-2 and RACE-5 (a marked row asserted inside the range after the retraction) are open again",
+      "find": "            rows: if v.race_recheck {",
+      "replace": "            rows: if false {",
+      "expect_fail_in": [
+        "witness_recheck_closes_kill_window"
+      ]
+    }
+  ]
+}

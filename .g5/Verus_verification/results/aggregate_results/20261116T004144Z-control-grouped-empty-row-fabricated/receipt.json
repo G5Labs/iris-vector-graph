@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_empty_grouped_has_no_rows"
+    ],
+    "find": "else if rs.len()==0{Set::empty()}else{let r=rs.last();let s=keys",
+    "name": "grouped-empty-row-fabricated",
+    "replace": "else if rs.len()==0{set![Key::Global]}else{let r=rs.last();let s=keys"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_grouped_has_no_rows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "9dc3ef361a27e0eb725d3200a9cb7e71528ef5bb0c816480740b4cfc3c2e18e4",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "d3c59eb7614f31e369bb8b1c29ae31b90d04551e3571f089dfe2e2b0cf3f3e17",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/grouped-empty-row-fabricated/20261116T004143Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_grouped_has_no_rows": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T004143Z-control-grouped-empty-row-fabricated-theorem_empty_grouped_has_no_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T004143Z-control-grouped-empty-row-fabricated.log",
+    "timed_out": false,
+    "verified": 61
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T004144Z-control-grouped-empty-row-fabricated/logs/20261116T004143Z-control-grouped-empty-row-fabricated-theorem_empty_grouped_has_no_rows.log": "aa894608025d30ee22f6d805950eaf542bc33e6bcf9aca17ad15356da8028343",
+    ".g5/Verus_verification/results/aggregate_results/20261116T004144Z-control-grouped-empty-row-fabricated/logs/20261116T004143Z-control-grouped-empty-row-fabricated.log": "17a69791a1faa40a5ed81100a0f0325533b1f6778805a1aa327c0789545989d0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

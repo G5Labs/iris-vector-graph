@@ -1,0 +1,31 @@
+verification results:: 32 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/scoped-count-double/20261116T004043Z/models/routine_reporting/routine_reporting.rs:211:10
+    |
+211 |    ensures scan(rs,g,a)==rs.filter(|r:Row|matches(r,g,a)).len()
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+212 |    decreases rs.len(),
+213 |   {if rs.len()>0{lemma_scan_filter(rs.skip(1),g,a);
+    |  __-
+214 | |  assert(rs =~= seq![rs[0]]+rs.skip(1));Seq::filter_distributes_over_add(seq![rs[0]],rs.skip(1),|r:Row|matches(r,g,a));reveal_with...
+215 | |  }else{reveal(Seq::filter);}}
+    | |____________________________- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/scoped-count-double/20261116T004043Z/models/routine_reporting/routine_reporting.rs:237:10
+    |
+236 | pub proof fn theorem_appending_row_counts_physical_multiplicity(rs:Seq<Row>,r:Row,g:Option<nat>,a:Option<nat>)
+    | -------------------------------------------------------------------------------------------------------------- at the end of the function body
+237 |  ensures scan(seq![r]+rs,g,a)==scan(rs,g,a)+(if matches(r,g,a){1nat}else{0nat})
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/scoped-count-double/20261116T004043Z/models/routine_reporting/routine_reporting.rs:276:10
+    |
+275 | pub proof fn theorem_all_graphs_not_distinct_ids()
+    | -------------------------------------------------- at the end of the function body
+276 |  ensures scan(seq![Row{graph:None,id:1,attr:None},Row{graph:Some(2),id:1,attr:None}],None,None)==1,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

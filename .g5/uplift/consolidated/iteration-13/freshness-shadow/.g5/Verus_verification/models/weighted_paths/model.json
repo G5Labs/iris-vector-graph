@@ -1,0 +1,80 @@
+{
+  "name": "weighted_paths",
+  "root": "weighted_paths.rs",
+  "expected_verified": 45,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "descending-cost-queue",
+      "why": "Reverses actual cost ordering; minimum must still be least cost.",
+      "find": "a.0<b.0 || (a.0==b.0",
+      "replace": "a.0>b.0 || (a.0==b.0",
+      "expect_fail_in": [
+        "lemma_minimum"
+      ]
+    },
+    {
+      "name": "node-only-seen-dominance",
+      "why": "Rejects a newly reached smaller-hop label just because the node was seen.",
+      "find": "(s.seen.contains_key(a.4) && s.seen[a.4]<=h)",
+      "replace": "s.seen.contains_key(a.4)",
+      "expect_fail_in": [
+        "theorem_relax_covers_neighbor"
+      ]
+    },
+    {
+      "name": "exact-cap-neighbor-rejected",
+      "why": "Makes the actual inclusive maxCost admission exclusive.",
+      "find": "n>c.cap ||",
+      "replace": "n>=c.cap ||",
+      "expect_fail_in": [
+        "theorem_relax_covers_neighbor"
+      ]
+    },
+    {
+      "name": "parent-does-not-point-to-accepted-predecessor",
+      "why": "Stores child state as its own predecessor.",
+      "find": "parent:s.parent.insert(k,(key(from),a))",
+      "replace": "parent:s.parent.insert(k,(k,a))",
+      "expect_fail_in": [
+        "theorem_relax_preserves_base"
+      ]
+    },
+    {
+      "name": "nonpositive-weight-zero",
+      "why": "Changes default/nonpositive effective weight from one to zero.",
+      "find": "v.unwrap() as nat}else{1}",
+      "replace": "v.unwrap() as nat}else{0}",
+      "expect_fail_in": [
+        "theorem_backtrack_derives_path_and_cost"
+      ]
+    },
+    {
+      "name": "exact-cap-target-not-returned",
+      "why": "Tests target only below maxCost, losing exact-cap accepted paths.",
+      "find": "if e.1==c.dst{Event::Returned",
+      "replace": "if e.1==c.dst && e.0<c.cap{Event::Returned",
+      "expect_fail_in": [
+        "theorem_actual_continue_preserves"
+      ]
+    },
+    {
+      "name": "backtrack-stops-on-hopzero",
+      "why": "Unbounded search uses hop zero at every node, so hop zero is not the root test.",
+      "find": "fuel==0 || k.0==src ||",
+      "replace": "fuel==0 || k.1==0 ||",
+      "expect_fail_in": [
+        "theorem_backtrack_derives_path_and_cost"
+      ]
+    },
+    {
+      "name": "popped-entry-not-recorded",
+      "why": "Loses the derived finite-pop history needed for the strict Continue rank.",
+      "find": "removed:s.removed.insert(e),..s",
+      "replace": "removed:s.removed,..s",
+      "expect_fail_in": [
+        "theorem_pop_preserves_termination"
+      ]
+    }
+  ]
+}

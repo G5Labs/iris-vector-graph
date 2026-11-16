@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/scoped-count-double/20261116T003455Z/models/routine_reporting/routine_reporting.rs:211:10
+    |
+211 |    ensures scan(rs,g,a)==rs.filter(|r:Row|matches(r,g,a)).len()
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+212 |    decreases rs.len(),
+213 |   {if rs.len()>0{lemma_scan_filter(rs.skip(1),g,a);
+    |  __-
+214 | |  assert(rs =~= seq![rs[0]]+rs.skip(1));Seq::filter_distributes_over_add(seq![rs[0]],rs.skip(1),|r:Row|matches(r,g,a));reveal_with...
+215 | |  }else{reveal(Seq::filter);}}
+    | |____________________________- at the end of the function body
+
+error: aborting due to 1 previous error
+

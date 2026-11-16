@@ -1,0 +1,327 @@
+import os
+import time
+import uuid
+import json
+
+import pytest
+from tests.e2e import namespace_width
+
+IRIS_HOST = os.environ.get("IRIS_HOST", "localhost")
+IRIS_PORT = int(os.environ.get("IVG_PORT", "31972"))
+IRIS_NS = os.environ.get("IVG_NAMESPACE", "USER")  # the run's namespace (R266: IRIS_NAMESPACE put scratch runs in USER)
+IRIS_USER = os.environ.get("IRIS_USERNAME", "_SYSTEM")
+IRIS_PASS = os.environ.get("IRIS_PASSWORD", "SYS")
+API_BASE = os.environ.get("IVG_API_URL", "http://localhost:8000")
+
+
+@pytest.fixture(scope="module")
+def iris_conn():
+    try:
+        import iris
+        from iris_vector_graph.engine import IRISGraphEngine
+        c = iris.connect(IRIS_HOST, IRIS_PORT, IRIS_NS, IRIS_USER, IRIS_PASS)
+        e = IRISGraphEngine(c, embedding_dimension=namespace_width.of(c))
+        e.initialize_schema()
+        yield c, e
+        c.close()
+    except Exception as ex:
+        pytest.skip(f"IRIS unavailable: {ex}")
+
+
+@pytest.fixture(scope="module")
+def api_client(iris_conn):
+    try:
+        from fastapi.testclient import TestClient
+        from api.main import create_app
+        from iris_vector_graph.engine import IRISGraphEngine
+        conn, engine = iris_conn
+        app = create_app(engine=engine)
+        return TestClient(app)
+    except Exception as ex:
+        pytest.skip(f"API not available: {ex}")
+
+
+@pytest.fixture(scope="module")
+def gql_client(iris_conn):
+    try:
+        from fastapi.testclient import TestClient
+        from api.main import create_app
+        conn, engine = iris_conn
+        app = create_app(engine=engine)
+        return TestClient(app)
+    except Exception as ex:
+        pytest.skip(f"API not available: {ex}")
+
+
+class TestCypherRESTEndpoint:
+
+    def test_simple_match_returns_200(self, api_client, iris_conn):
+        conn, engine = iris_conn
+        pfx = f"api_{uuid.uuid4().hex[:6]}"
+        engine.create_node(f"{pfx}:n1", labels=["APINode"], properties={"val": 1})
+        r = api_client.post("/api/cypher", json={
+            "query": f"MATCH (n:APINode) WHERE n.node_id = '{pfx}:n1' RETURN n.node_id"
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert "rows" in body
+        assert "columns" in body
+
+    def test_syntax_error_returns_400(self, api_client):
+        r = api_client.post("/api/cypher", json={"query": "MATCH (n RETURN n"})
+        assert r.status_code == 400
+        body = r.json()
+        assert "errorType" in body or "error" in body
+
+    def test_parameterized_query(self, api_client, iris_conn):
+        conn, engine = iris_conn
+        pfx = f"apip_{uuid.uuid4().hex[:6]}"
+        engine.create_node(f"{pfx}:p1", labels=["APIParam"], properties={"score": 99})
+        r = api_client.post("/api/cypher", json={
+            "query": "MATCH (n:APIParam) WHERE n.node_id = $nid RETURN n.score",
+            "parameters": {"nid": f"{pfx}:p1"}
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert body["rowCount"] >= 1
+
+    def test_response_includes_timing(self, api_client):
+        r = api_client.post("/api/cypher", json={
+            "query": "MATCH (n:__NeverExists__999) RETURN n.node_id"
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert "executionTimeMs" in body or "translationTimeMs" in body
+
+    def test_response_includes_trace_id(self, api_client):
+        r = api_client.post("/api/cypher", json={
+            "query": "MATCH (n:__NeverExists__999) RETURN n.node_id"
+        })
+        body = r.json()
+        assert "traceId" in body
+
+    def test_empty_query_returns_error(self, api_client):
+        r = api_client.post("/api/cypher", json={"query": ""})
+        assert r.status_code in (400, 422, 500)
+
+    def test_missing_query_field_returns_422(self, api_client):
+        r = api_client.post("/api/cypher", json={"parameters": {}})
+        assert r.status_code == 422
+
+    def test_large_result_set(self, api_client, iris_conn):
+        conn, engine = iris_conn
+        pfx = f"large_{uuid.uuid4().hex[:6]}"
+        for i in range(500):
+            engine.create_node(f"{pfx}:{i}", labels=["LargeResult"])
+        r = api_client.post("/api/cypher", json={
+            "query": f"MATCH (n:LargeResult) WHERE n.node_id STARTS WITH '{pfx}:' RETURN n.node_id"
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert body["rowCount"] >= 500
+
+    def test_sql_execution_error_returns_500(self, api_client):
+        # `1/0` used to stand in for an execution error here and answered 200: the
+        # translator guarded a zero divisor with a NaN CASE (it raises ArithmeticError
+        # since 4.6.0 R297, the next test). `sqrt(-1)` reaches IRIS and fails with
+        # <ILLEGAL VALUE> at Query Open.
+        r = api_client.post("/api/cypher", json={
+            "query": "MATCH (n) RETURN sqrt(-1) LIMIT 1"
+        })
+        assert r.status_code in (400, 500), r.text
+        assert r.json()["errorType"] == "execution"
+
+    def test_an_integer_divided_by_zero_is_an_execution_error(self, api_client):
+        """openCypher raises ArithmeticError for an integer divided by zero, and so does IVG
+        since 4.6.0 R297 (CypherFn_IVGTYPEERROR, while the query runs). Until then it answered
+        NaN, JSON null, with 200: a documented deviation, removed from docs/KNOWN_ISSUES.md.
+        """
+        r = api_client.post("/api/cypher", json={
+            "query": "MATCH (n) RETURN 1/0 LIMIT 1"
+        })
+        assert r.status_code in (400, 500), r.text
+        assert r.json()["errorType"] == "execution"
+
+    def test_write_query_create_node(self, api_client):
+        pfx = f"wq_{uuid.uuid4().hex[:6]}"
+        r = api_client.post("/api/cypher", json={
+            "query": f"CREATE (n:WriteQueryNode {{node_id: '{pfx}:created'}}) RETURN n.node_id"
+        })
+        assert r.status_code in (200, 201, 400, 405)
+
+    def test_concurrent_requests(self, api_client, iris_conn):
+        import threading
+        conn, engine = iris_conn
+        pfx = f"concapi_{uuid.uuid4().hex[:6]}"
+        for i in range(10):
+            engine.create_node(f"{pfx}:{i}", labels=["ConcAPI"])
+
+        results = []
+        errors = []
+
+        def do_request(i):
+            try:
+                r = api_client.post("/api/cypher", json={
+                    "query": f"MATCH (n:ConcAPI) WHERE n.node_id STARTS WITH '{pfx}:' RETURN count(n) AS c"
+                })
+                results.append(r.status_code)
+            except Exception as e:
+                errors.append(str(e))
+
+        threads = [threading.Thread(target=do_request, args=(i,)) for i in range(10)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join(timeout=30)
+
+        assert not errors, f"Concurrent API requests failed: {errors}"
+        assert all(s == 200 for s in results), f"Some requests failed: {results}"
+
+    def test_enable_optimization_flag(self, api_client):
+        r = api_client.post("/api/cypher", json={
+            "query": "MATCH (n:__NeverExists__999) RETURN n.node_id",
+            "enable_optimization": True
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert "queryMetadata" in body
+
+    def test_sql_query_exposed_in_metadata(self, api_client):
+        r = api_client.post("/api/cypher", json={
+            "query": "MATCH (n:__NeverExists__999) RETURN n.node_id",
+            "enable_optimization": True
+        })
+        body = r.json()
+        meta = body.get("queryMetadata", {})
+        assert "sqlQuery" in meta
+
+
+class TestGraphQLEndpoint:
+
+    def test_gql_stats_query(self, gql_client):
+        # `nodeCount`/`edgeCount`/`labelCount` are the admin REST payload's names
+        # (docs/ADMIN_API.md:22) and ^NKG's meta subscripts. `GraphStats` publishes
+        # totals, and GraphQL rejected the old spelling at validation without ever
+        # reaching the resolver. Pinned in tests/contract/test_graphql_schema.py.
+        r = gql_client.post("/graphql", json={
+            "query": "{ stats { totalNodes totalEdges nodesByLabel } }"
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert body.get("errors") is None, body["errors"]
+        stats = body["data"].get("stats")
+        assert stats is not None
+        assert isinstance(stats["totalNodes"], int)
+
+    def test_gql_node_query_by_id(self, gql_client, iris_conn):
+        conn, engine = iris_conn
+        pfx = f"gql_{uuid.uuid4().hex[:6]}"
+        engine.create_node(f"{pfx}:g1", labels=["GQLNode"], properties={"name": "test_gql"})
+        r = gql_client.post("/graphql", json={
+            "query": f'{{ node(id: "{pfx}:g1") {{ id labels }} }}'
+        })
+        assert r.status_code == 200
+        body = r.json()
+        # `assert "data" in body` used to be the whole test, and `data` is present (as
+        # null) even for a query GraphQL refused — which is how an unregistered
+        # GenericNode and an engine-less context both went unnoticed here.
+        assert body.get("errors") is None, body["errors"]
+        assert body["data"]["node"]["id"] == f"{pfx}:g1"
+        assert "GQLNode" in body["data"]["node"]["labels"]
+
+    def test_gql_nodes_query_with_label(self, iris_conn):
+        conn, engine = iris_conn
+        pfx = f"gqln_{uuid.uuid4().hex[:6]}"
+        for i in range(5):
+            engine.create_node(f"{pfx}:{i}", labels=["GQLNodes"])
+        from fastapi.testclient import TestClient
+        from api.main import create_app
+        fresh_app = create_app(engine=engine)
+        client = TestClient(fresh_app)
+        # `nodes` filters on a list: `labels`, not `label` (CoreQuery.nodes).
+        r = client.post("/graphql", json={
+            "query": '{ nodes(labels: ["GQLNodes"], limit: 10) { id labels } }'
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert body.get("errors") is None, body["errors"]
+        nodes = body["data"].get("nodes", [])
+        assert len(nodes) >= 5
+
+    def test_gql_cypher_passthrough(self, gql_client, iris_conn):
+        conn, engine = iris_conn
+        pfx = f"gqlc_{uuid.uuid4().hex[:6]}"
+        engine.create_node(f"{pfx}:c1", labels=["GQLCypher"])
+        # The field is `executeCypher`; `cypher` has never existed, and GraphQL answered
+        # `{"data": null, "errors": [...]}`, which satisfied the old `"data" in body`.
+        r = gql_client.post("/graphql", json={
+            "query": f'{{ executeCypher(query: "MATCH (n:GQLCypher) WHERE n.node_id = \\"{pfx}:c1\\" RETURN n.node_id") }}'
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert body.get("errors") is None, body["errors"]
+        rows = body["data"]["executeCypher"]
+        assert isinstance(rows, list), rows
+        assert any(f"{pfx}:c1" in str(row) for row in rows), rows
+
+    def test_gql_introspection(self, gql_client):
+        r = gql_client.post("/graphql", json={
+            "query": "{ __schema { types { name } } }"
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert "data" in body
+        types = body["data"]["__schema"]["types"]
+        type_names = [t["name"] for t in types]
+        assert "Query" in type_names
+
+    def test_gql_syntax_error_returns_errors(self, gql_client):
+        r = gql_client.post("/graphql", json={
+            "query": "{ invalid_field_xyz }"
+        })
+        assert r.status_code == 200
+        body = r.json()
+        assert "errors" in body
+
+    def test_gql_missing_required_arg_returns_error(self, gql_client):
+        r = gql_client.post("/graphql", json={
+            "query": "{ node { id } }"
+        })
+        body = r.json()
+        assert "errors" in body
+
+
+class TestAPIHealthAndEdgeCases:
+
+    def test_health_check_endpoint(self, api_client):
+        for path in ["/health", "/healthz", "/api/health", "/"]:
+            r = api_client.get(path)
+            if r.status_code in (200, 204):
+                return
+        pytest.skip("No health endpoint found")
+
+    def test_post_with_wrong_content_type(self, api_client):
+        import httpx
+        r = api_client.post(
+            "/api/cypher",
+            content=b"MATCH (n) RETURN n",
+            headers={"Content-Type": "text/plain"}
+        )
+        assert r.status_code in (415, 422, 400)
+
+    def test_malformed_json_returns_422(self, api_client):
+        r = api_client.post(
+            "/api/cypher",
+            content=b"{invalid json",
+            headers={"Content-Type": "application/json"}
+        )
+        assert r.status_code in (400, 422)
+
+    def test_very_long_query_string(self, api_client):
+        # 4.7.0 gate: it ran for over 13 minutes on a namespace holding data, and IRIS's cached-query regeneration then
+        # re-planned it while holding locks other tests waited on. A hang cannot be an xfail. Planned for 4.7.1.
+        pytest.skip("IRIS planner blows up at Prepare on k property equalities (k=5 does not finish in 60 s; "
+                    "4.6.5 the same), KNOWN_ISSUES")
+        long_query = "MATCH (n:X) WHERE " + " AND ".join([f"n.prop{i} = {i}" for i in range(10)]) + " RETURN n"
+        r = api_client.post("/api/cypher", json={"query": long_query})
+        assert r.status_code in (200, 400, 413, 500)

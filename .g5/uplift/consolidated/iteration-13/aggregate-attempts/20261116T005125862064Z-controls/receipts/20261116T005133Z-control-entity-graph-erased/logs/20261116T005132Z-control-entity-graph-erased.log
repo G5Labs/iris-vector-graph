@@ -1,0 +1,36 @@
+verification results:: 73 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/entity-graph-erased/20261116T005132Z/models/aggregate_results/aggregate_results.rs:120:1
+    |
+120 | pub proof fn theorem_native_entity_count_is_raw_identity_set(rs:Seq<Row>,q:Query,k:Key)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/entity-graph-erased/20261116T005132Z/models/aggregate_results/aggregate_results.rs:121:10
+    |
+121 |  ensures entity_fold(rs,q,k).seen==entity_set(rs,q,k),entity_fold(rs,q,k).count==entity_set(rs,q,k).len(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+122 |  decreases rs.len(),
+123 |  {if rs.len()>0{let r=rs.last();let p=rs.drop_last();theorem_native_entity_count_is_raw_identity_set(p,q,k);if selected(r,q)&&key(r,q)==k&&r.entity.is_some(){vstd::set::lemma_set_insert_len(entity_set(p,q,k),r.entity.unwrap());}}}
+    |   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/entity-graph-erased/20261116T005132Z/models/aggregate_results/aggregate_results.rs:121:55
+    |
+121 |  ensures entity_fold(rs,q,k).seen==entity_set(rs,q,k),entity_fold(rs,q,k).count==entity_set(rs,q,k).len(),
+    |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+122 |  decreases rs.len(),
+123 |  {if rs.len()>0{let r=rs.last();let p=rs.drop_last();theorem_native_entity_count_is_raw_identity_set(p,q,k);if selected(r,q)&&key(r,q)==k&&r.entity.is_some(){vstd::set::lemma_set_insert_len(entity_set(p,q,k),r.entity.unwrap());}}}
+    |   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/entity-graph-erased/20261116T005132Z/models/aggregate_results/aggregate_results.rs:182:10
+    |
+180 | pub proof fn theorem_entity_same_id_two_graphs_both_count(id:nat,a:nat,b:nat)
+    | ----------------------------------------------------------------------------- at the end of the function body
+181 |  requires a!=b,
+182 |  ensures ({let q=Query{graph:None,grouped:false,distinct:false};let r=seq![Row{graph:a,key:Key::Missing,value:Val::Null,entity:Some(Entity{graph:a,id})},Row{graph:b,key:Key::Missing,value:Val::Null,entity:Some(Entity{graph:b,id})}];entity_fold(r,q,Key::Global).count==2}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

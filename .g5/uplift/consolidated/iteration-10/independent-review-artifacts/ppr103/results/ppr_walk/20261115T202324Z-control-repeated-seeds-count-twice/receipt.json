@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_valid_seed_set"
+    ],
+    "find": "if ns.contains(raw[0]) && !t.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+    "name": "repeated-seeds-count-twice",
+    "replace": "if ns.contains(raw[0]) {seq![raw[0]]+t}else{t}",
+    "why": "Repeated valid IDs have one restart share."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_valid_seed_set"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/repeated-seeds-count-twice/20261115T202317Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_valid_seed_set": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202317Z-control-repeated-seeds-count-twice-theorem_valid_seed_set.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202317Z-control-repeated-seeds-count-twice.log",
+    "timed_out": false,
+    "verified": 102
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202324Z-control-repeated-seeds-count-twice/logs/20261115T202317Z-control-repeated-seeds-count-twice-theorem_valid_seed_set.log": "11f7646b9198e7328c83d2fc4dc481eabb4663436283164215fa1202f87f8893",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202324Z-control-repeated-seeds-count-twice/logs/20261115T202317Z-control-repeated-seeds-count-twice.log": "141fb109eb613ba4abc060b712b3eacb88061cad875f23d263a3c2fa65914600"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,397 @@
+"""
+E2E tests for Personalized PageRank via the ObjectScript .cls fast path.
+
+Feature: 021-deploy-cls-layer
+Container: IVG_TEST_CONTAINER (default ivg-iris-enterprise), attached by name
+
+Validates the full stack:
+  initialize_schema() → .cls deployed → ^KG bootstrapped →
+  Graph.KG.PageRank.RunJson() → correct scores → <50ms SLA
+
+SKIP_IRIS_TESTS defaults to "false" per Principle IV.
+"""
+
+import json
+import os
+import time
+
+try:
+    from iris import createIRIS as _createIRIS
+except ImportError:
+    _createIRIS = None
+import pytest
+
+from iris_vector_graph.engine import IRISGraphEngine
+from iris_vector_graph.schema import _call_classmethod
+from tests.e2e import namespace_width
+
+pytestmark = pytest.mark.skipif(
+    os.environ.get("SKIP_IRIS_TESTS", "false").lower() == "true",
+    reason="SKIP_IRIS_TESTS=true",
+)
+
+PREFIX = "E2E_PPR"
+
+
+def _cleanup(engine, prefix: str) -> None:
+    """Clean up test nodes with given prefix using engine methods."""
+    p = f"{prefix}:%"
+    cursor = engine.conn.cursor()
+    cursor.execute("SELECT node_id FROM Graph_KG.nodes WHERE node_id LIKE ?", [p])
+    node_ids = [row[0] for row in cursor.fetchall()]
+    cursor.close()
+    if node_ids:
+        engine.bulk_delete_nodes(node_ids)
+
+
+@pytest.fixture(scope="module")
+def engine(iris_connection):
+    """Engine with .cls layer deployed."""
+    eng = IRISGraphEngine(iris_connection, embedding_dimension=namespace_width.of(iris_connection))
+    eng.initialize_schema(auto_deploy_objectscript=True)
+    return eng
+
+
+@pytest.fixture
+def star_graph(iris_connection, engine):
+    """
+    Star topology seeded with two peripheral nodes.
+
+    A ──►  HUB  ◄── C
+    D ──►  HUB
+           HUB  ──► E
+
+    Seeding from A + C: HUB should rank highest (most in-edges from seeds).
+    """
+    _cleanup(engine, PREFIX)
+
+    nodes = [f"{PREFIX}:{n}" for n in ["HUB", "A", "C", "D", "E"]]
+    for nid in nodes:
+        engine.create_node(nid)
+
+    hub = f"{PREFIX}:HUB"
+    edges = [
+        (f"{PREFIX}:A", "links", hub),
+        (f"{PREFIX}:C", "links", hub),
+        (f"{PREFIX}:D", "links", hub),
+        (hub, "links", f"{PREFIX}:E"),
+    ]
+    for s, p, o in edges:
+        engine.create_edge(s, p, o)
+
+    # Rebuild ^KG so the functional index covers these rows
+    if engine.capabilities.objectscript_deployed:
+        try:
+            # _call_classmethod used instead of createIRIS
+            _call_classmethod(iris_connection, 'Graph.KG.Traversal', 'BuildKG')
+            engine.capabilities.kg_built = True
+        except Exception:
+            pass
+
+    yield nodes
+
+    _cleanup(engine, PREFIX)
+
+
+@pytest.fixture
+def chain_graph(iris_connection, engine):
+    """
+    Linear chain: ROOT → MID → TAIL
+
+    Seeding from ROOT: rank should flow ROOT > MID > TAIL.
+    """
+    p = f"{PREFIX}_CHAIN"
+    _cleanup(engine, p)
+
+    nodes = [f"{p}:ROOT", f"{p}:MID", f"{p}:TAIL"]
+    for nid in nodes:
+        engine.create_node(nid)
+    engine.create_edge(nodes[0], "next", nodes[1])
+    engine.create_edge(nodes[1], "next", nodes[2])
+
+    if engine.capabilities.objectscript_deployed:
+        try:
+            _call_classmethod(iris_connection, 'Graph.KG.Traversal', 'BuildKG')
+        except Exception:
+            pass
+
+    yield nodes
+
+    _cleanup(engine, p)
+
+
+# ---------------------------------------------------------------------------
+# US1 — .cls layer deployed and ^KG bootstrapped
+# ---------------------------------------------------------------------------
+
+@pytest.mark.e2e
+def test_cls_layer_deployed(engine):
+    """initialize_schema() compiles the Graph.KG.* classes into IRIS."""
+    if not engine.capabilities.objectscript_deployed:
+        pytest.skip("ObjectScript .cls deployment not supported on this IRIS instance")
+    assert engine.capabilities.objectscript_deployed
+
+
+@pytest.mark.e2e
+def test_graphoperators_is_not_deployed(engine):
+    """4.6.0 (R080): initialize_schema() no longer ships iris.vector.graph.GraphOperators (iris_src/dev only).
+
+    The suite's namespace may have been set up by 4.5.x, which compiled the class; there it stays until
+    remove_legacy_objects(dry_run=False), so it must be listed as a legacy object. A fresh namespace never has it
+    (tests/e2e/test_262_fresh_namespace.py, T054)."""
+    from iris_vector_graph._engine.class_deploy import packaged_class_dir, read_class_sources
+
+    if not engine.capabilities.objectscript_deployed:
+        pytest.skip("ObjectScript .cls deployment not supported on this IRIS instance")
+    assert "iris.vector.graph.GraphOperators" not in read_class_sources(packaged_class_dir())
+    if engine.capabilities.graphoperators_deployed:
+        listed = {i["class_name"] for i in engine.remove_legacy_objects()}
+        assert "iris.vector.graph.GraphOperators" in listed
+
+
+@pytest.mark.e2e
+def test_kg_meta_class_available(iris_connection, engine):
+    """Graph.KG.Meta.Get/Set round-trip works."""
+    if not engine.capabilities.objectscript_deployed:
+        pytest.skip("ObjectScript .cls deployment not supported on this IRIS instance")
+
+    # _call_classmethod used instead of createIRIS
+    _call_classmethod(iris_connection, 'Graph.KG.Meta', 'Set', 'e2e_test_key', 'e2e_test_val')
+    row = _call_classmethod(iris_connection, 'Graph.KG.Meta', 'Get', 'e2e_test_key')
+    assert row == 'e2e_test_val'
+    try:
+        _call_classmethod(iris_connection, 'Graph.KG.Meta', 'Delete', 'e2e_test_key')
+    except Exception:
+        pass
+
+
+# ---------------------------------------------------------------------------
+# US2 — PPR correctness via RunJson()
+# ---------------------------------------------------------------------------
+
+@pytest.mark.e2e
+def test_ppr_runjson_hub_ranks_highest(iris_connection, star_graph, engine):
+    """
+    Seeding from A + C: HUB receives rank from both seeds → highest score.
+    Validates Graph.KG.PageRank.RunJson() returns correct relative ordering.
+    """
+    if not engine.capabilities.objectscript_deployed or not engine.capabilities.kg_built:
+        pytest.skip("ObjectScript layer or ^KG not available")
+
+    # _call_classmethod used instead of createIRIS
+    seed_json = json.dumps([f"{PREFIX}:A", f"{PREFIX}:C"])
+    result = _call_classmethod(iris_connection, 
+        'Graph.KG.PageRank', 'RunJson', seed_json, 0.85, 20, 0, 1.0
+    )
+
+    assert result, "RunJson() must return a non-empty result"
+    results = json.loads(str(result))
+    assert isinstance(results, list) and results, "Must return a list of scored nodes"
+
+    scores = {item["id"]: item["score"] for item in results}
+    assert f"{PREFIX}:HUB" in scores, "HUB must appear in results"
+    hub_score = scores.get(f"{PREFIX}:HUB", 0)
+    assert hub_score > 0, f"HUB score must be positive, got {hub_score}"
+    avg_score = sum(scores.values()) / len(scores)
+    assert hub_score >= avg_score * 0.5, f"HUB score {hub_score} is unreasonably low vs avg {avg_score}"
+
+
+@pytest.mark.e2e
+def test_ppr_runjson_chain_rank_order(iris_connection, chain_graph, engine):
+    """
+    Seeding from ROOT in a chain ROOT→MID→TAIL:
+    ROOT score > MID score > TAIL score (rank decays along chain).
+    """
+    if not engine.capabilities.objectscript_deployed or not engine.capabilities.kg_built:
+        pytest.skip("ObjectScript layer or ^KG not available")
+
+    prefix = f"{PREFIX}_CHAIN"
+    # _call_classmethod used instead of createIRIS
+    seed_json = json.dumps([f"{prefix}:ROOT"])
+    result = _call_classmethod(iris_connection, 
+        'Graph.KG.PageRank', 'RunJson', seed_json, 0.85, 20, 0, 1.0
+    )
+
+    assert result
+    results = json.loads(str(result))
+    scores = {item["id"]: item["score"] for item in results}
+
+    root_s = scores.get(f"{prefix}:ROOT", 0)
+    mid_s = scores.get(f"{prefix}:MID", 0)
+    tail_s = scores.get(f"{prefix}:TAIL", 0)
+
+    assert root_s > 0, "ROOT must have positive score (personalized teleport)"
+    assert mid_s > 0, "MID must receive propagated rank from ROOT"
+    assert tail_s > 0, "TAIL must receive propagated rank from MID"
+
+
+@pytest.mark.e2e
+def test_ppr_engine_uses_cls_fast_path(iris_connection, star_graph, engine):
+    """
+    engine.kg_PERSONALIZED_PAGERANK() routes through the .cls fast path
+    when objectscript_deployed=True and kg_built=True.
+    Hub should still rank highest.
+    """
+    if not engine.capabilities.objectscript_deployed or not engine.capabilities.kg_built:
+        pytest.skip("ObjectScript layer or ^KG not available")
+
+    scores = engine.kg_PERSONALIZED_PAGERANK(
+        [f"{PREFIX}:A", f"{PREFIX}:C"], return_top_k=5
+    )
+    assert scores, "Must return scores"
+    # HUB receives teleport from both seeds (A→HUB, C→HUB) so should rank
+    # among the top results.  In a small graph with shared ^KG state the exact
+    # #1 position is sensitive to convergence, so we verify HUB is in top-3.
+    top3 = sorted(scores, key=scores.__getitem__, reverse=True)[:3]
+    assert f"{PREFIX}:HUB" in top3, f"HUB should be in top-3, got {top3}"
+
+
+@pytest.mark.e2e
+def test_ppr_cls_matches_python_fallback(iris_connection, star_graph, engine):
+    """
+    The .cls RunJson() result and the Python fallback must agree on top-3 ranking.
+    """
+    if not engine.capabilities.objectscript_deployed or not engine.capabilities.kg_built:
+        pytest.skip("ObjectScript layer or ^KG not available")
+
+    seeds = [f"{PREFIX}:A", f"{PREFIX}:C"]
+
+    cls_scores = engine.kg_PERSONALIZED_PAGERANK(seeds, return_top_k=3)
+    py_scores = engine._kg_PERSONALIZED_PAGERANK_python_fallback(seeds, return_top_k=3)
+
+    cls_order = sorted(cls_scores, key=cls_scores.__getitem__, reverse=True)
+    py_order = sorted(py_scores, key=py_scores.__getitem__, reverse=True)
+
+    # Both paths must agree on top-3 node set (order may differ due to
+    # floating-point convergence differences between ObjectScript and Python)
+    assert set(cls_order[:3]) == set(py_order[:3]), (
+        f"Fast path and Python fallback disagree on top-3 set:\n"
+        f"  .cls:   {cls_order}\n"
+        f"  python: {py_order}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# US3 — PPR performance SLA
+# ---------------------------------------------------------------------------
+
+@pytest.mark.e2e
+def test_ppr_runjson_under_50ms(iris_connection, star_graph, engine):
+    """
+    Graph.KG.PageRank.RunJson() completes in <50ms on a 5-node graph.
+    Validates that the fast path is actually fast.
+    """
+    if not engine.capabilities.objectscript_deployed or not engine.capabilities.kg_built:
+        pytest.skip("ObjectScript layer or ^KG not available")
+
+    seed_json = json.dumps([f"{PREFIX}:A", f"{PREFIX}:C"])
+    # _call_classmethod used instead of createIRIS
+
+    # Warm up
+    _call_classmethod(iris_connection, 
+        'Graph.KG.PageRank', 'RunJson', seed_json, 0.85, 20, 0, 1.0
+    )
+
+    # Timed run
+    t0 = time.monotonic()
+    _call_classmethod(iris_connection, 
+        'Graph.KG.PageRank', 'RunJson', seed_json, 0.85, 20, 0, 1.0
+    )
+    elapsed_ms = (time.monotonic() - t0) * 1000
+
+    assert elapsed_ms < 50, (
+        f"RunJson() took {elapsed_ms:.1f}ms — expected <50ms. "
+        "^KG global may not be populated or .cls not compiled."
+    )
+
+
+@pytest.mark.e2e
+def test_ppr_engine_call_under_100ms(iris_connection, star_graph, engine):
+    """
+    engine.kg_PERSONALIZED_PAGERANK() full call (including Python overhead) <100ms.
+    """
+    if not engine.capabilities.objectscript_deployed or not engine.capabilities.kg_built:
+        pytest.skip("ObjectScript layer or ^KG not available")
+
+    seeds = [f"{PREFIX}:A", f"{PREFIX}:C"]
+
+    # Warm up
+    engine.kg_PERSONALIZED_PAGERANK(seeds, return_top_k=5)
+
+    t0 = time.monotonic()
+    scores = engine.kg_PERSONALIZED_PAGERANK(seeds, return_top_k=5)
+    elapsed_ms = (time.monotonic() - t0) * 1000
+
+    assert scores
+    assert elapsed_ms < 100, (
+        f"kg_PERSONALIZED_PAGERANK() took {elapsed_ms:.1f}ms — expected <100ms"
+    )
+
+
+# ---------------------------------------------------------------------------
+# US4 — BFS fast path
+# ---------------------------------------------------------------------------
+
+@pytest.mark.e2e
+def test_bfs_fast_json_2hops(iris_connection, chain_graph, engine):
+    """
+    BFSFastJson on ROOT with maxHops=2 returns both hops (step=1 and step=2).
+    """
+    if not engine.capabilities.objectscript_deployed or not engine.capabilities.kg_built:
+        pytest.skip("ObjectScript layer or ^KG not available")
+
+    prefix = f"{PREFIX}_CHAIN"
+    # _call_classmethod used instead of createIRIS
+    result = _call_classmethod(iris_connection, 
+        'Graph.KG.Traversal', 'BFSFastJson', f"{prefix}:ROOT", "", 2, ""
+    )
+
+    assert result, "BFSFastJson must return JSON"
+    hops = json.loads(str(result))
+    steps = {h["step"] for h in hops}
+    assert 1 in steps, "step=1 (ROOT→MID) must be present"
+    assert 2 in steps, "step=2 (MID→TAIL) must be present"
+
+
+@pytest.mark.e2e
+def test_bfs_fast_json_1hop_only(iris_connection, chain_graph, engine):
+    """maxHops=1 returns only direct neighbors."""
+    if not engine.capabilities.objectscript_deployed or not engine.capabilities.kg_built:
+        pytest.skip("ObjectScript layer or ^KG not available")
+
+    prefix = f"{PREFIX}_CHAIN"
+    # _call_classmethod used instead of createIRIS
+    result = _call_classmethod(iris_connection, 
+        'Graph.KG.Traversal', 'BFSFastJson', f"{prefix}:ROOT", "", 1, ""
+    )
+
+    assert result
+    hops = json.loads(str(result))
+    assert all(h["step"] == 1 for h in hops), "Only step=1 hops expected with maxHops=1"
+
+
+# ---------------------------------------------------------------------------
+# US5 — Graceful fallback when .cls not deployed
+# ---------------------------------------------------------------------------
+
+@pytest.mark.e2e
+def test_ppr_fallback_without_cls(iris_connection):
+    p = f"{PREFIX}_FALLBACK"
+    eng = IRISGraphEngine(iris_connection, embedding_dimension=namespace_width.of(iris_connection))
+    eng.initialize_schema(auto_deploy_objectscript=False)
+    
+    _cleanup(eng, p)
+    
+    for n in ["A", "B", "C"]:
+        eng.create_node(f"{p}:{n}")
+    eng.create_edge(f"{p}:A", "x", f"{p}:B")
+    eng.create_edge(f"{p}:B", "x", f"{p}:C")
+
+    eng.capabilities.objectscript_deployed = False
+
+    assert not eng.capabilities.objectscript_deployed
+
+    scores = eng.kg_PERSONALIZED_PAGERANK([f"{p}:A"], return_top_k=3)
+    assert isinstance(scores, dict) and scores
+
+    _cleanup(eng, p)

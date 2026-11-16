@@ -1,0 +1,20 @@
+verification results:: 73 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/avg-denominator-not-contributors/20261116T005905Z/models/aggregate_results/aggregate_results.rs:92:10
+   |
+91 | pub proof fn theorem_avg_derived_numerator_and_denominator(rs:Seq<Row>,q:Query,k:Key)
+   | ------------------------------------------------------------------------------------- at the end of the function body
+92 |  ensures ({let vs=accepted(raw_values(rs,q,k),q.distinct);let r=avg(fold(rs,q,k));if nnum(vs)==0{r.is_none()}else{r.is_some()&&r.unwrap().numerator==sum(vs)&&r.unwrap().denominator==2*nnum(vs)&&r.unwrap().denominator>0}}),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/avg-denominator-not-contributors/20261116T005905Z/models/aggregate_results/aggregate_results.rs:157:10
+    |
+155 | pub proof fn theorem_mean_is_not_sum(q:Query,k:Key,g:nat)
+    | --------------------------------------------------------- at the end of the function body
+156 |  requires q.graph==None,!q.grouped,k==Key::Global,!q.distinct,
+157 |  ensures ({let a=fold(seq![Row{graph:g,key:k,value:Val::I(1),entity:None},Row{graph:g,key:k,value:Val::I(2),entity:None}],q,k);avg(a).unwrap().numerator==6&&avg(a).unwrap().denominator==4}),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

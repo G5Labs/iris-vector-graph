@@ -1,0 +1,62 @@
+{
+  "name": "fusion_ranking",
+  "root": "fusion_ranking.rs",
+  "expected_verified": 11,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "missing-contributes",
+      "why": "missing-contributes",
+      "find": "None => 0real",
+      "replace": "None => 1real / (2real * c as real + xs.len() as real)",
+      "expect_fail_in": [
+        "theorem_absent_contributes_zero"
+      ]
+    },
+    {
+      "name": "last-duplicate-wins",
+      "why": "last-duplicate-wins",
+      "find": "else if xs[0].0==id",
+      "replace": "else if xs[0].0==id && rank(xs.drop_first(),id,offset+1).is_none()",
+      "expect_fail_in": [
+        "theorem_first_occurrence_wins"
+      ]
+    },
+    {
+      "name": "drop-second-leg",
+      "why": "drop-second-leg",
+      "find": "part(lists[0],id,c)+score(lists.drop_first(),id,c)",
+      "replace": "part(lists[0],id,c)+score(seq![],id,c)",
+      "expect_fail_in": [
+        "theorem_second_leg_changes_winner"
+      ]
+    },
+    {
+      "name": "all-failures-dropped",
+      "why": "all-failures-dropped",
+      "find": "if mode==1",
+      "replace": "if false",
+      "expect_fail_in": [
+        "theorem_vector_failure_dropped_text_failure_raises"
+      ]
+    },
+    {
+      "name": "all-failures-raise",
+      "why": "all-failures-raise",
+      "find": "if mode==1",
+      "replace": "if true",
+      "expect_fail_in": [
+        "theorem_vector_failure_dropped_text_failure_raises"
+      ]
+    },
+    {
+      "name": "empty-mode-lost",
+      "why": "empty-mode-lost",
+      "find": "modes:legs.modes.push(mode)",
+      "replace": "modes:if xs.len()==0 {legs.modes} else {legs.modes.push(mode)}",
+      "expect_fail_in": [
+        "theorem_empty_success_is_a_retained_leg"
+      ]
+    }
+  ]
+}

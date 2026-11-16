@@ -1,0 +1,287 @@
+"""Spec 252, T020: every writer path leaves the Adjacency Index equal to a recount from the tables.
+
+One case per path in FR-005 that the engine exposes. Each writes through the path, then recounts
+(tests/e2e/adjacency_recount.py): no entry missing, none without a row behind it. Weights are left at
+their default here; the weight paths are Phase 3 (T031).
+
+Run against a scratch namespace: `IVG_NAMESPACE=TCKJ`.
+"""
+
+from __future__ import annotations
+
+import os
+import uuid
+
+import pytest
+
+from iris_vector_graph.engine import IRISGraphEngine
+
+from .adjacency_recount import differences
+
+SKIP_IRIS_TESTS = os.environ.get("SKIP_IRIS_TESTS", "false").lower() == "true"
+pytestmark = pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+
+
+@pytest.fixture(scope="module", autouse=True)
+def declared(iris_connection):
+    from iris_vector_graph.schema import GraphSchema
+
+    status = GraphSchema.ensure_adjacency_index(iris_connection.cursor())
+    iris_connection.commit()
+    assert "skipped" not in status, status
+
+
+@pytest.fixture
+def ids(iris_master_cleanup):
+    t = uuid.uuid4().hex[:8]
+    return [f"wp_{t}_{i}" for i in range(4)]
+
+
+@pytest.fixture
+def engine(iris_connection):
+    return IRISGraphEngine(iris_connection)
+
+
+def _nodes(engine, ids, label="WP"):
+    for n in ids:
+        engine.create_node(n, labels=[label])
+
+
+def test_create_edge_and_delete_edge(engine, iris_connection, ids):
+    a, b = ids[:2]
+    _nodes(engine, ids[:2])
+    engine.create_edge(a, "R", b)
+    assert differences(iris_connection, ids[:2]) == []
+    engine.delete_edge(a, "R", b)
+    assert differences(iris_connection, ids[:2]) == []
+
+
+def test_create_edge_in_a_named_graph_then_erase_the_graph(engine, iris_connection, ids):
+    a, b = ids[:2]
+    g = f"g_{ids[0][-8:]}"
+    engine.create_edge(a, "R", b, graph=g)
+    assert differences(iris_connection, ids[:2], graphs=(0, g)) == []
+    engine.erase_graph(g)
+    assert differences(iris_connection, ids[:2], graphs=(0, g)) == []
+
+
+def test_bulk_ingest_edges(engine, iris_connection, ids):
+    _nodes(engine, ids)
+    engine.bulk_ingest_edges([{"s": ids[i], "p": "R", "o": ids[i + 1]} for i in range(3)], predicate="R")
+    assert differences(iris_connection, ids) == []
+
+
+@pytest.mark.parametrize("auto_sync", [True, False])
+def test_bulk_create_edges(engine, iris_connection, ids, auto_sync):
+    _nodes(engine, ids)
+    edges = [{"source_id": ids[i], "predicate": "R", "target_id": ids[i + 1]} for i in range(3)]
+    engine.bulk_create_edges(edges, auto_sync=auto_sync)
+    assert differences(iris_connection, ids) == []
+
+
+def test_raw_sql_update_moves_the_entry(engine, iris_connection, ids):
+    a, b, c = ids[:3]
+    _nodes(engine, ids[:3])
+    cur = iris_connection.cursor()
+    cur.execute("INSERT INTO Graph_KG.rdf_edges (s, p, o_id) VALUES (?, 'R', ?)", [a, b])
+    cur.execute("UPDATE Graph_KG.rdf_edges SET o_id = ? WHERE s = ? AND o_id = ?", [c, a, b])
+    cur.execute("UPDATE Graph_KG.rdf_edges SET p = 'S' WHERE s = ? AND o_id = ?", [a, c])
+    iris_connection.commit()
+    assert differences(iris_connection, ids[:3]) == []
+
+
+def test_erase_all(engine, iris_connection, ids):
+    _nodes(engine, ids)
+    engine.bulk_ingest_edges([{"s": ids[i], "p": "R", "o": ids[i + 1]} for i in range(3)], predicate="R")
+    engine.erase_all()
+    assert differences(iris_connection, ids) == []
+
+
+def test_delete_node_removes_its_edges(engine, iris_connection, ids):
+    _nodes(engine, ids[:3])
+    engine.create_edge(ids[0], "R", ids[1])
+    engine.create_edge(ids[2], "R", ids[1])
+    engine.delete_node(ids[1])
+    assert differences(iris_connection, ids[:3]) == []
+
+
+def test_materialize_and_retract_inference(engine, iris_connection, ids):
+    a, c, d = ids[:3]
+    rdf_type, sub = "rdf:type", "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+    engine.create_edge(a, rdf_type, c)
+    engine.create_edge(c, sub, d)
+    engine.materialize_inference()
+    assert differences(iris_connection, ids[:3]) == []
+    engine.retract_inference()
+    assert differences(iris_connection, ids[:3]) == []
+
+
+def test_snapshot_restore(engine, iris_connection, ids, tmp_path):
+    _nodes(engine, ids)
+    engine.bulk_ingest_edges([{"s": ids[i], "p": "R", "o": ids[i + 1]} for i in range(3)], predicate="R")
+    path = str(tmp_path / "snap.ivg")
+    engine.save_snapshot(path)
+    engine.erase_all()
+    engine.restore_snapshot(path)
+    assert differences(iris_connection, ids) == []
+
+
+def test_rebuild_from_the_rows_equals_the_recount(engine, iris_connection, ids):
+    _nodes(engine, ids)
+    engine.bulk_ingest_edges([{"s": ids[i], "p": "R", "o": ids[i + 1]} for i in range(3)], predicate="R")
+    engine.sync()
+    assert differences(iris_connection, ids) == []
+
+
+WEIGHTED = "CALL ivg.shortestPath.weighted($a, $b, 'weight', 9999, 10, 'out', ['R']) YIELD totalCost RETURN totalCost"
+
+
+def _cost(engine, a, b):
+    r = engine.execute_cypher(WEIGHTED, {"a": a, "b": b})
+    assert getattr(r, "error", None) is None, r.error
+    return [row[-1] for row in r.rows]
+
+
+def test_create_edge_weight_survives_a_rebuild(engine, iris_connection, ids):
+    a, b = ids[:2]
+    _nodes(engine, ids[:2])
+    engine.create_edge(a, "R", b, weight=5.0)
+    assert _cost(engine, a, b) == [5.0]
+    engine.sync()
+    assert _cost(engine, a, b) == [5.0]
+    assert differences(iris_connection, ids[:2]) == []
+
+
+def test_set_edge_weight_survives_a_rebuild(engine, iris_connection, ids):
+    a, b = ids[:2]
+    _nodes(engine, ids[:2])
+    engine.create_edge(a, "R", b)
+    assert engine.set_edge_weight(a, "R", b, 3.0) is True
+    engine.sync()
+    assert _cost(engine, a, b) == [3.0]
+    assert differences(iris_connection, ids[:2]) == []
+
+
+def test_set_edge_weight_on_no_edge_creates_nothing(engine, iris_connection, ids):
+    a, b = ids[:2]
+    _nodes(engine, ids[:2])
+    assert engine.set_edge_weight(a, "R", b, 3.0) is False
+    assert differences(iris_connection, ids[:2]) == []
+
+
+def test_bulk_delete_adjacency_deletes_the_incident_rows_and_keeps_the_nodes(engine, iris_connection, ids):
+    # FR-016: it removed adjacency and left the rows, so the edges came back; now it deletes the rows (deprecated)
+    a, b, c = ids[:3]
+    g = f"g_{ids[0][-8:]}"
+    _nodes(engine, ids[:3])
+    engine.create_edge(a, "R", b)
+    engine.create_edge(c, "R", a)
+    engine.create_edge(b, "R", c)
+    engine.create_edge(a, "R", c, graph=g)
+    cur = iris_connection.cursor()
+    nodes = "SELECT COUNT(*) FROM Graph_KG.nodes WHERE node_id IN (?, ?, ?)"
+    cur.execute(nodes, ids[:3])
+    before = cur.fetchone()[0]
+    with pytest.warns(DeprecationWarning, match="deletes"):
+        assert engine.bulk_delete_adjacency([a]) == 1
+    cur.execute("SELECT s, o_id FROM Graph_KG.rdf_edges WHERE s IN (?, ?, ?)", ids[:3])
+    assert sorted(cur.fetchall()) == [(b, c)]
+    cur.execute(nodes, ids[:3])
+    assert cur.fetchone()[0] == before
+    engine.sync()
+    assert differences(iris_connection, ids[:3], graphs=(0, g)) == []
+
+
+def test_a_restore_does_not_bring_back_an_archived_entry_with_no_row(engine, iris_connection, ids, tmp_path):
+    # FR-016: the restored rows rebuild out / in through the index; the archive's own entries are skipped
+    _nodes(engine, ids)
+    engine.create_edge(ids[0], "R", ids[1])
+    native = engine._iris_obj()
+    native.set("1", "^KG", "out", 0, ids[2], "R", ids[3])  # a drifted source install: an entry, no row
+    native.set("1", "^KG", "in", 0, ids[3], "R", ids[2])
+    path = str(tmp_path / "drifted.ivg")
+    engine.save_snapshot(path)
+    engine.erase_all()
+    engine.restore_snapshot(path)
+    assert differences(iris_connection, ids) == []
+
+
+@pytest.fixture
+def ledgered(engine, ledger_reset):
+    engine.ledger.enable()
+    yield engine
+    engine.ledger.disable()
+
+
+def test_ledger_commit_create_and_delete_rel(ledgered, iris_connection, ids):
+    from iris_vector_graph.ledger import Changeset
+
+    a, b = ids[:2]
+    cs = Changeset(actor="t252", actor_type="system")
+    cs.create_node(a, labels=["WP"])
+    cs.create_node(b, labels=["WP"])
+    cs.create_relationship(a, "R", b)
+    ledgered.ledger.commit(cs)
+    assert differences(iris_connection, ids[:2]) == []
+    cs = Changeset(actor="t252", actor_type="system")
+    cs.delete_relationship((a, "R", b))
+    ledgered.ledger.commit(cs)
+    assert differences(iris_connection, ids[:2]) == []
+
+
+def test_a_failed_ledger_commit_leaves_no_adjacency(ledgered, iris_connection, ids):
+    from iris_vector_graph.ledger import Changeset
+
+    a, b, c, d = ids
+    cs = Changeset(actor="t252", actor_type="system")
+    cs.create_node(a, labels=["WP"])
+    cs.create_node(b, labels=["WP"])
+    cs.create_relationship(a, "R", b)
+    cs.delete_relationship((c, "R", d))  # no such relationship: the changeset rolls back
+    with pytest.raises(Exception):
+        ledgered.ledger.commit(cs)
+    cur = iris_connection.cursor()
+    cur.execute("SELECT COUNT(*) FROM Graph_KG.rdf_edges WHERE s = ?", [a])
+    assert cur.fetchone()[0] == 0
+    assert differences(iris_connection, ids) == []
+
+
+def test_import_rdf(engine, iris_connection, ids, tmp_path):
+    a, b, c = (f"http://example.org/{n}" for n in ids[:3])
+    path = tmp_path / "g.nt"
+    path.write_text(f"<{a}> <http://example.org/R> <{b}> .\n<{b}> <http://example.org/R> <{c}> .\n")
+    engine.import_rdf(str(path))
+    cur = iris_connection.cursor()
+    cur.execute("SELECT COUNT(*) FROM Graph_KG.rdf_edges WHERE s IN (?, ?)", [a, b])
+    assert cur.fetchone()[0] == 2
+    assert differences(iris_connection, [a, b, c]) == []
+
+
+def _out_count(conn, s, p, o):
+    import iris
+
+    return int(iris.createIRIS(conn).isDefined("^KG", "out", 0, s, p, o))
+
+
+def test_bulk_load_session_with_a_duplicate_edge(engine, iris_connection, ids):
+    # T040: the index keeps up during the session; a duplicate edge is one row and one entry
+    a, b, c, d = ids
+    with engine.bulk_load_session() as s:
+        s.add_nodes([{"id": n, "labels": ["WP"]} for n in ids])
+        s.add_edges([{"s": a, "p": "R", "o": b}, {"s": b, "p": "R", "o": c}, {"s": a, "p": "R", "o": b}], predicate="R")
+        s.add_edges([{"s": c, "p": "R", "o": d}], predicate="R")
+    cur = iris_connection.cursor()
+    cur.execute("SELECT COUNT(*) FROM Graph_KG.rdf_edges WHERE s = ? AND o_id = ?", [a, b])
+    assert cur.fetchone()[0] == 1
+    assert _out_count(iris_connection, a, "R", b) == 1
+    assert differences(iris_connection, ids) == []
+
+
+def test_bulk_load_session_that_fails_midway(engine, iris_connection, ids):
+    a, b, c, d = ids
+    with pytest.raises(RuntimeError, match="midway"):
+        with engine.bulk_load_session() as s:
+            s.add_nodes([{"id": n, "labels": ["WP"]} for n in ids])
+            s.add_edges([{"s": a, "p": "R", "o": b}, {"s": b, "p": "R", "o": c}], predicate="R")
+            raise RuntimeError("midway")
+    assert differences(iris_connection, ids) == []

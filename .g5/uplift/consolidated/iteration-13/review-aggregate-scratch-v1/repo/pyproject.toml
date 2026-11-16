@@ -1,0 +1,317 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iris-vector-graph"
+version = "4.7.0"
+description = "Native graph database layer for InterSystems IRIS — openCypher, hybrid vector search, temporal property graph, RDF export, SHACL validation"
+readme = "README.md"
+license = "MIT"
+authors = [
+  { name = "InterSystems Community Team", email = "grants@intersystems.com" },
+]
+keywords = [
+    "graph",
+    "biomedical",
+    "iris",
+    "knowledge-graph",
+    "bioinformatics",
+    "vector-search",
+    "protein-interactions"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Database",
+    "Topic :: Scientific/Engineering"
+]
+requires-python = ">=3.10"
+
+# Core dependencies
+dependencies = [
+    "intersystems-iris>=1.0.0",
+    # iris-embedded-python-wrapper provides a unified top-level `iris` module that
+    # works both as an external SDK client (iris.dbapi.connect / iris.connect) and
+    # inside IRIS embedded Python (iris.sql / iris.gref / runtime.state). It is the
+    # standard connection seam — base dependency so `import iris` always resolves to
+    # the superset. See iris_vector_graph/embedded.py for the embedded context.
+    "iris-embedded-python-wrapper>=0.5.20",
+    # pydantic and numpy are imported unconditionally at module level in result.py,
+    # _validate.py, cypher/translator.py, fusion.py, and vector_utils.py — all of
+    # which load when IRISGraphEngine is imported. They must be declared here, not
+    # only in [full], so that a bare `pip install iris-vector-graph` works.
+    "pydantic>=2.0.0",
+    "numpy>=1.24.0",
+    # requests is the same case: __init__.py imports fhir_bridge eagerly and
+    # fhir_bridge.py imports requests at module level, so a bare install that lacks
+    # it cannot `import iris_vector_graph` at all. Declaring it only in [full]
+    # shipped an unimportable package in 3.0.1 and 3.1.0.
+    # tests/unit/test_core_dependencies_cover_eager_imports.py enforces this rule
+    # for every eager import, not just these.
+    "requests>=2.28.0",
+    # A named zone's offset comes from this wheel before the host's tz database (iris_vector_graph/_tz.py, 4.7.0):
+    # Debian and Ubuntu build theirs with backzone, so Europe/Stockholm in 1818 answered +01:12:12 there and
+    # +00:53:28 (the openCypher TCK's) on macOS. 2025.2 and 2026.6 both answer +00:53:28.
+    "tzdata>=2025.2",
+]
+
+[project.optional-dependencies]
+core = [
+    "intersystems-iris>=1.0.0",
+]
+full = [
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "networkx>=3.0",
+    "python-igraph>=0.11",
+    "leidenalg>=0.10",
+    "requests>=2.28.0",
+    "rdflib>=6.0.0,<8",  # 8 removes ConjunctiveGraph; see KNOWN_ISSUES
+    "pyshacl>=0.25.0",
+    "python-dotenv>=1.0.0",
+    "fastapi>=0.118.0",
+    "uvicorn>=0.37.0",
+    "pydantic>=2.11.9",
+    "httpx>=0.28.1",
+    "strawberry-graphql[fastapi]>=0.280.0",
+    "iris-embedded-python-wrapper>=0.5.20",
+]
+rdf = [
+    "rdflib>=6.0.0,<8",  # 8 removes ConjunctiveGraph; see KNOWN_ISSUES
+    "pyshacl>=0.25.0",
+]
+communities = [
+    "python-igraph>=0.11",
+    "leidenalg>=0.10",
+    "networkx>=3.0",
+]
+plaid = [
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",
+]
+cli = [
+    "click>=8.0.0",
+    "httpx>=0.28.1",
+    "tabulate>=0.9.0",
+]
+dev = [
+    "pytest>=7.4.0",
+    # tests/unit/test_wheel_contents.py builds the wheel with `uv build`, as scripts/ci-parity.sh does; without it
+    # the 9 wheel checks fail at setup (CI on 4c29a30f).
+    "uv>=0.4",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.5.0",
+    # 1.20 drops testcontainers-iris, whose sqlalchemy-iris dependency overwrote
+    # iris/__init__.py in uv-resolved venvs (see _iris_compat).
+    "iris-devtester>=1.20.1",
+    "pytest-playwright>=0.7.0",
+    "behave>=1.2.6",
+    "scikit-learn>=1.3.0",
+    # Validates the ledger changeset wire format against its JSON schema; without it
+    # that test skips, in CI too.
+    "jsonschema>=4.0",
+    # The reference global PageRank is checked against (tests/e2e/test_pagerank_textbook_e2e.py).
+    "networkx>=3.0",
+    # load_obo reads OBO files with it (tests/e2e/test_460_load_obo_relationships_e2e.py, DATA_FORMATS.md).
+    "obonet>=1.0.0",
+    # The RDF export round trips (tests/e2e/test_460_rdf_export_*_e2e.py) parse the file back.
+    "rdflib>=6.0.0,<8",
+    # The demo server's tests (tests/unit/test_demo_pages.py, test_fhir_demo_routes.py and three E2E files) import
+    # it; without it they skip, in CI too. Same floor as the `demo` extra; 0.12.39 and 0.14.19 both pass them.
+    "python-fasthtml>=0.12.0",
+    # The Bolt driver tests/e2e/test_460_r311_return_json_values_e2e.py::test_bolt reads values through; without it
+    # those 52 cases skipped, in CI too. 5.0.0 and 6.4.1 both pass them (IVG's server speaks Bolt 4.4 and 5.4).
+    "neo4j>=5.0",
+]
+performance = [
+    "psutil>=5.9.0",
+    "memory-profiler>=0.61.0"
+]
+visualization = [
+    "matplotlib>=3.7.0",
+    "plotly>=5.15.0",
+    "graphviz>=0.20.0"
+]
+ml = [
+    "scikit-learn>=1.3.0",
+    "scipy>=1.11.0",
+    "torch>=2.0.0"
+]
+biodata = [
+    "biopython>=1.81",
+    "bioservices>=1.11.0",
+    "mygene>=3.2.0",
+    "obonet>=1.0.0",
+]
+demo = [
+    "python-fasthtml>=0.12.0"
+]
+browser = [
+    "fastapi>=0.118.0",
+    "uvicorn>=0.37.0",
+]
+tck = [
+    "behave>=1.2.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/intersystems-community/iris-vector-graph"
+Documentation = "https://github.com/intersystems-community/iris-vector-graph/tree/main/docs"
+Repository = "https://github.com/intersystems-community/iris-vector-graph"
+Issues = "https://github.com/intersystems-community/iris-vector-graph/issues"
+
+[project.scripts]
+run-tests = "scripts.test:main"
+networkx-loader = "scripts.ingest.networkx_loader:main"
+ivg = "iris_vector_graph.cli:main"
+
+[tool.hatch.build.targets.sdist]
+include = ["/iris_vector_graph", "/iris_src", "/sql", "/examples", "/tests", "/README.md", "/LICENSE",
+           "/docs/dev/arno-reader-proof.json"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["iris_vector_graph"]
+exclude = [
+    "iris_vector_graph/browser_static",
+]
+
+# The ObjectScript classes live outside the package; `artifacts` did not put them
+# in the wheel, so 4.1.0 installs had none to deploy. `initialize_schema` reads
+# them from here (see _engine/class_deploy.py).
+[tool.hatch.build.targets.wheel.force-include]
+"iris_src/src" = "iris_vector_graph/iris_src/src"
+# The Arno reader proof routing reads (arno_readers._DEFAULT_PROOF); outside the
+# package in a checkout, so an install had none before 4.6.0 (R104).
+"docs/dev/arno-reader-proof.json" = "iris_vector_graph/_data/arno-reader-proof.json"
+
+# Tool configurations
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "iris",
+    "networkx",
+    "plotly.*",
+    "bioservices.*",
+    "mygene"
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "-m", "not perf"
+]
+# Never hide warnings wholesale: --disable-warnings hid an invalid-escape
+# SyntaxWarning in schema.py through 4.1.0. Our own deprecations and syntax
+# warnings fail the run; third-party noise shows in the summary.
+filterwarnings = [
+    "error::SyntaxWarning",
+    "error::DeprecationWarning:iris_vector_graph",
+    # rdflib 7 deprecates ConjunctiveGraph (removed in 8). Moving to Dataset
+    # changes default-union semantics; tracked in docs/KNOWN_ISSUES.md.
+    "ignore:ConjunctiveGraph is deprecated:DeprecationWarning",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "performance: marks tests as performance benchmarks",
+    "perf: marks tests as opt-in performance benchmarks (run with '-m perf')",
+    "requires_iris: marks tests that require IRIS database connection",
+    "requires_database: marks tests that require database connection (alias for requires_iris)",
+    "e2e: marks tests as end-to-end system tests (all query engines)",
+    "requires_clean_isolation: marks tests needing an unpolluted database (run in isolation)",
+    "tck: marks tests as openCypher TCK conformance tests (requires ivg-iris)"
+]
+
+[tool.coverage.run]
+source = ["iris_vector_graph"]
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+    "*/.venv/*",
+    "*/build/*",
+    "*/dist/*",
+    # Bolt server: network I/O — covered by integration tests (ivg-iris container required)
+    "iris_vector_graph/bolt_server.py",
+    # IRIS-native store layer: ~95% of lines call IRIS ObjectScript directly;
+    # meaningful coverage only via integration tests (ivg-iris or ivg-iris-enterprise).
+    # Unit coverage intentionally omitted — see docs/dev/coverage.md
+    "iris_vector_graph/stores/iris_sql_store.py",
+    "iris_vector_graph/stores/arno_bridge.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:"
+]

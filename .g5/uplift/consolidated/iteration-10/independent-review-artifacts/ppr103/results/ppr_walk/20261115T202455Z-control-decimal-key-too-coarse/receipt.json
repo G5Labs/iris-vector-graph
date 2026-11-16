@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_above_zero_bucket_readers_agree"
+    ],
+    "find": "let y=x*1000000000000real;",
+    "name": "decimal-key-too-coarse",
+    "replace": "let y=x*10real;",
+    "why": "Above-zero twelve-decimal bucket stays distinct."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_above_zero_bucket_readers_agree"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/decimal-key-too-coarse/20261115T202449Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_above_zero_bucket_readers_agree": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202449Z-control-decimal-key-too-coarse-theorem_above_zero_bucket_readers_agree.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202449Z-control-decimal-key-too-coarse.log",
+    "timed_out": false,
+    "verified": 100
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202455Z-control-decimal-key-too-coarse/logs/20261115T202449Z-control-decimal-key-too-coarse-theorem_above_zero_bucket_readers_agree.log": "c6cec4713786d58d6ae87b1418cb631731575a54b28e85a2b7172112d620f2b4",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202455Z-control-decimal-key-too-coarse/logs/20261115T202449Z-control-decimal-key-too-coarse.log": "20bbdab6493a260cbebae60dbdca7d44383025926d8905d1a5e900c79b61ca8d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

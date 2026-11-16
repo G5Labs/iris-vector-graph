@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/report-unknown-ignored/20261116T003453Z/models/routine_reporting/routine_reporting.rs:195:36
+    |
+193 | pub proof fn theorem_failure_is_unknown_not_empty(c:Catalog,r:Registry,hnsw:bool)
+    | --------------------------------------------------------------------------------- at the end of the function body
+194 |  requires !c.tables.contains_key(nodes()) || c.refused.contains_key(nodes()) || !c...
+195 |  ensures census(c,r).graph_unknown,report(census(c,r),hnsw).graph==GraphView::Unknown
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

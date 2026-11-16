@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/global-empty-row-omitted/20261116T004142Z/models/aggregate_results/aggregate_results.rs:76:10
+   |
+74 | pub proof fn theorem_empty_global_group(q:Query)
+   | ------------------------------------------------ at the end of the function body
+75 |  requires !q.grouped,
+76 |  ensures keys(seq![],q)==set![Key::Global],fold(seq![],q,Key::Global).rows==0,fold(seq![],q,Key::Global).count==0,fold(seq![],q,Key:...
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

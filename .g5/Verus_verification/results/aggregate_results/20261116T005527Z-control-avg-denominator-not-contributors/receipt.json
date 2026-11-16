@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_mean_is_not_sum"
+    ],
+    "find": "denominator:2*a.nums",
+    "name": "avg-denominator-not-contributors",
+    "replace": "denominator:2"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_mean_is_not_sum"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/avg-denominator-not-contributors/20261116T005526Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_mean_is_not_sum": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005526Z-control-avg-denominator-not-contributors-theorem_mean_is_not_sum.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005526Z-control-avg-denominator-not-contributors.log",
+    "timed_out": false,
+    "verified": 73
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T005527Z-control-avg-denominator-not-contributors/logs/20261116T005526Z-control-avg-denominator-not-contributors-theorem_mean_is_not_sum.log": "4272ad8222a7b76f1ccea80a6ae9f0bd42539b2898acf0e88e11ca9f1f8838ba",
+    ".g5/Verus_verification/results/aggregate_results/20261116T005527Z-control-avg-denominator-not-contributors/logs/20261116T005526Z-control-avg-denominator-not-contributors.log": "89743fc3bf4e9951ca35f8259fba6f2fb81fba14fed03476f0a64d2d68a36038"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

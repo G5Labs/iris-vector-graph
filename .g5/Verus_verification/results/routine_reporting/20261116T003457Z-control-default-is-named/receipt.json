@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_default_null_empty_named"
+    ],
+    "find": "pub open spec fn gid(g:Option<nat>)->nat {g.unwrap_or(0)}",
+    "name": "default-is-named",
+    "replace": "pub open spec fn gid(g:Option<nat>)->nat {g.unwrap_or(1)}",
+    "role": "source-facing census/selection/reader rule"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_default_null_empty_named"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/routine_reporting/model.json": "476529fece46dfdfebe64114446c9966bf6a4a68c3e07594a5e880e8c7618bac",
+    ".g5/Verus_verification/models/routine_reporting/routine_reporting.rs": "224e16eede8fda124658933601d304ffe1a0a2ce92edfc802e5c612cebfa4a8d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/default-is-named/20261116T003456Z/models/routine_reporting/routine_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_default_null_empty_named": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/20261116T003456Z-control-default-is-named-theorem_default_null_empty_named.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/20261116T003456Z-control-default-is-named.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/routine_reporting/20261116T003457Z-control-default-is-named/logs/20261116T003456Z-control-default-is-named-theorem_default_null_empty_named.log": "6f3bc6bbb8b32f2333fd0ec64bbeab490f03e9fc0f1ebd14a96f8efe3306dd20",
+    ".g5/Verus_verification/results/routine_reporting/20261116T003457Z-control-default-is-named/logs/20261116T003456Z-control-default-is-named.log": "5d67d62651476918ddf093e92e90af17673dba4387a7fedd0cf1b91a457359ad"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

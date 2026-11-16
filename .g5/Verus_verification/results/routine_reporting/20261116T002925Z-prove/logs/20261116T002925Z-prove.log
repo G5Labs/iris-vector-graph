@@ -1,0 +1,150 @@
+verification results:: 20 verified, 9 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:103:54
+    |
+103 |  ensures no_dupes(tables(r,k)), tables(r,k).len()>0, tables(r,k)[0]==legacy(k)
+    |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+104 | {
+105 |  if r.error.is_none(){lemma_choose_unique(r.rows,k,seq![legacy(k)]);lemma_choose_prefix(r.rows,k,seq![legacy(k)]);}
+    |  ------------------------------------------------------------------------------------------------------------------ at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:126:1
+    |
+126 | pub proof fn theorem_registry_kind_and_shape_both_required(r:Registry,k:Kind,t:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:128:28
+    |
+128 |  ensures r.error.is_none(),route_name(t,k),exists|i:int|0<=i<r.rows.len() && r.rows[i].name==t && registry_kind(r.rows[i])==kind_wo...
+    |                            ^^^^^^^^^^^^^^^ failed this postcondition
+129 | {if r.error.is_none(){lemma_chosen_members(r.rows,k,seq![legacy(k)]);}}
+    |  --------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:128:44
+    |
+128 |  ensures r.error.is_none(),route_name(t,k),exists|i:int|0<=i<r.rows.len() && r.rows[i].name==t && registry_kind(r.rows[i])==kind_word(k)
+    |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+129 | {if r.error.is_none(){lemma_chosen_members(r.rows,k,seq![legacy(k)]);}}
+    |  --------------------------------------------------------------------- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:130:1
+    |
+130 | pub proof fn lemma_choose_covers(rs:Seq<Route>,k:Kind,held:Seq<Text>,t:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:137:21
+    |
+137 |  let i=choose|i:int|0<=i<rs.len() && eligible(rs[i],k)&&lower(rs[i].name)==lower(t);
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:138:9
+    |
+138 |  assert(i>0);assert(rs.skip(1)[i-1]==rs[i]);}
+    |         ^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:138:21
+    |
+138 |  assert(i>0);assert(rs.skip(1)[i-1]==rs[i]);}
+    |                     ^^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:138:21
+    |
+138 |  assert(i>0);assert(rs.skip(1)[i-1]==rs[i]);}
+    |                     ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:148:2
+    |
+145 | pub proof fn theorem_missing_vs_unreadable_registry(c:Catalog,r:Registry,k:Kind)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+148 |  embeddings(c,r,k).count==read(c,legacy(k)).count,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:161:1
+    |
+161 | pub proof fn theorem_failed_table_keeps_other_counts(c:Catalog,a:Seq<Text>,b:Seq<Text>,bad:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:163:10
+    |
+161 | pub proof fn theorem_failed_table_keeps_other_counts(c:Catalog,a:Seq<Text>,b:Seq<Text>,bad:Text)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+162 |  requires !c.tables.contains_key(bad) || c.refused.contains(bad)
+163 |  ensures sum(c,a+seq![bad]+b).count==sum(c,a).count+sum(c,b).count,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:164:2
+    |
+161 | pub proof fn theorem_failed_table_keeps_other_counts(c:Catalog,a:Seq<Text>,b:Seq<Text>,bad:Text)
+    | ------------------------------------------------------------------------------------------------ at the end of the function body
+...
+164 |  sum(c,a+seq![bad]+b).errors==sum(c,a).errors+seq![Error::Count(bad)]+sum(c,b).errors
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:197:10
+    |
+197 |  ensures scan(rs,g,a)==rs.filter(|r:Row|matches(r,g,a)).len()
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+198 |  decreases rs.len(),
+199 | {if rs.len()>0{lemma_scan_filter(rs.skip(1),g,a);reveal(Seq::filter);}}
+    |  --------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:214:10
+    |
+213 | pub proof fn theorem_empty_filter_is_unfiltered(c:Catalog,g:Option<nat>)
+    | ------------------------------------------------------------------------ at the end of the function body
+214 |  ensures node_query(c,g,None)==node_query(c,g,Some(0)),node_query(c,g,Some(1))==scoped(c,labels(),g,Some(1))
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:217:10
+    |
+216 | pub proof fn theorem_appending_row_counts_physical_multiplicity(rs:Seq<Row>,r:Row,g:Option<nat>,a:Option<nat>)
+    | -------------------------------------------------------------------------------------------------------------- at the end of the function body
+217 |  ensures scan(seq![r]+rs,g,a)==scan(rs,g,a)+(if matches(r,g,a){1nat}else{0nat})
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:219:1
+    |
+219 | pub proof fn lemma_distribution(rs:Seq<Row>,g:Option<nat>,k:Option<nat>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:220:10
+    |
+220 |  ensures distribution(rs,g).contains_key(k)==(rs.filter(|r:Row|gid(r.graph)==gid(g)&&r.attr==k).len()>0),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+223 | {if rs.len()>0{lemma_distribution(rs.skip(1),g,k);reveal(Seq::filter);}}
+    |  ---------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:221:2
+    |
+221 |  distribution(rs,g).contains_key(k) ==> distribution(rs,g)[k]==rs.filter(|r:Row|gid(r.graph)==gid(g)&&r.attr==k).len()
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+222 |  decreases rs.len(),
+223 | {if rs.len()>0{lemma_distribution(rs.skip(1),g,k);reveal(Seq::filter);}}
+    |  ---------------------------------------------------------------------- at the end of the function body
+
+error: aborting due to 13 previous errors
+

@@ -1,0 +1,757 @@
+Class Graph.KG.NKGAccelCentrality Extends %RegisteredObject
+{
+
+ClassMethod ClosenessGlobal(formula As %String = "harmonic", direction As %String = "out", maxHops As %Integer = 0, topK As %Integer = 10000) As %String
+{
+    // 4.6.0, round 3: any other value walked "out"
+    If '$ListFind($ListBuild("out","in","both"), direction) Quit "ERROR:direction must be out, in or both, not "_direction
+    Do ##class(Graph.KG.TraversalBuild).EnsureNKG()
+    Set firstNode = $Order(^NKG("$NI",""))
+    If firstNode = "" Quit "ERROR:^NKG not built"
+    Set n = 0
+    Set nidTmp = ""
+    For {
+        Set nidTmp = $Order(^NKG("$NI",nidTmp))
+        Quit:nidTmp=""
+        Set n = n + 1
+    }
+    If n = 0 { Quit "ERROR:^NKG nodeCount=0" }
+    Set adjDirs = $Select(direction="in": "-2", direction="both": "-1,-2", 1: "-1")
+
+    // every node's score, ranked before topK cuts (4.6.0 R050: emitted in node order and cut there)
+    Kill ^||rank
+    Set nid = ""
+    For {
+        Set nid = $Order(^NKG("$NI",nid))
+        Quit:nid=""
+        Set sIdx = ^NKG("$NI",nid)
+        Kill ^||bfsDist
+        Set ^||bfsDist(sIdx) = 0
+        Set queue = sIdx _ ","
+        Set qStart = 1, qLen = 1
+        Set hop = 0
+        While (qLen > 0) && ((maxHops = 0) || (hop < maxHops)) {
+            Set hop = hop + 1
+            Set newQueue = "", newLen = 0
+            For qi = 1:1:qLen {
+                Set vIdx = $Piece(queue,",",qi)
+                // "out" ^NKG(-1), "in" ^NKG(-2), "both" the two (4.6.0 R306: "both" walked "out")
+                For di = 1:1:$Length(adjDirs, ",") {
+                    Set adjDir = +$Piece(adjDirs, ",", di)
+                    Set negP = $Order(^NKG(adjDir,vIdx,""))
+                    While negP '= "" {
+                        Set oIdx = $Order(^NKG(adjDir,vIdx,negP,""))
+                        While oIdx '= "" {
+                            If '$Data(^||bfsDist(oIdx)) {
+                                Set ^||bfsDist(oIdx) = hop
+                                Set newQueue = newQueue_oIdx_","
+                                Set newLen = newLen + 1
+                            }
+                            Set oIdx = $Order(^NKG(adjDir,vIdx,negP,oIdx))
+                        }
+                        Set negP = $Order(^NKG(adjDir,vIdx,negP))
+                    }
+                }
+            }
+            Set queue = newQueue, qLen = newLen
+        }
+        Set sumDist = 0, sumInv = 0, reached = 0
+        Set uIdx = ""
+        For {
+            Set uIdx = $Order(^||bfsDist(uIdx))
+            Quit:uIdx=""
+            If uIdx = sIdx Continue
+            Set d = ^||bfsDist(uIdx)
+            Set sumDist = sumDist + d
+            Set sumInv = sumInv + (1 / d)
+            Set reached = reached + 1
+        }
+        If formula = "classical" {
+            // Classical (Bavelas) closeness is defined only when the node reaches
+            // every other node (reached = n-1). On a disconnected graph no node
+            // reaches the full graph, so score is 0 — matches the standard
+            // (non-Wasserman-Faust) definition.
+            Set score = $Select((sumDist > 0) && (reached = (n - 1)): reached / sumDist, 1: 0)
+        } Else {
+            // Harmonic centrality: raw sum of 1/d — matches networkx.harmonic_centrality default
+            Set score = $Select(reached > 0: sumInv, 1: 0)
+        }
+        Set ^||rank(-$Normalize(score, 12), nid) = score
+    }
+    Kill ^||bfsDist
+    Quit "OK:"_..RankedJson(topK)
+}
+/// Eigenvector centrality as networkx's eigenvector_centrality(G, max_iter=maxIter, tol=tol) computes it on the
+/// directed graph G of ^NKG (4.6.0): from 1/N, each round xNew = x (A + I), a node keeping its own score and gaining
+/// the score of each node with an edge to it (once however many predicates link them), then L2-normalised; converged
+/// once the scores' summed change is below N * tol. Not converged after maxIter rounds, the answer is
+/// "ERROR:PowerIterationFailedConvergence: ...", as networkx raises (iris_vector_graph raises
+/// PowerIterationFailedConvergence on it). pSchema, the IVG Schema of the nodes table, makes the graph's nodes with
+/// no edge (Graph.KG.Edgeless.Loners), which ^NKG lacks, take part as networkx's do: each keeps its own score through
+/// the shift and is normalised with the rest, and they count in N. "" leaves them out.
+/// Before 4.6.0 this iterated x A with no shift and stopped on the largest single change, answering the last round
+/// when tol was never met: on a periodic strongly connected component (a directed 3-cycle with tails) that cycles
+/// with the period, and the answer depended on maxIter mod 3.
+ClassMethod EigenvectorGlobal(maxIter As %Integer = 100, tol As %Float = 0.000001, topK As %Integer = 10000, pSchema As %String = "") As %String
+{
+    Do ##class(Graph.KG.TraversalBuild).EnsureNKG()
+
+    Kill ^||x, ^||xNew, ^||nodeList
+    Set n = 0, nid = ""
+    For {
+        Set nid = $Order(^NKG("$NI",nid))
+        Quit:nid=""
+        Set ^||nodeList(^NKG("$NI",nid)) = nid
+        Set n = n + 1
+    }
+    // the nodes with no edge, not in ^NKG: all start at 1/N and only the shift and the norm move them, so they
+    // keep one value between them, tLoner
+    Set nLoners = 0
+    If pSchema '= "" {
+        Do ##class(Graph.KG.Edgeless).Loners(pSchema, "", .tAll)
+        Set tId = ""
+        For {
+            Set tId = $Order(tAll(tId))
+            Quit:tId=""
+            Continue:$Data(^NKG("$NI",tId))
+            Set tLoners(tId) = ""
+            Set nLoners = nLoners + 1
+        }
+    }
+    Set nAll = n + nLoners
+    If nAll = 0 Quit "ERROR:^NKG not built"
+    // Iterate the node list, not 0..n-1: indices are stable and can have gaps below
+    // $meta("nodeCount") once a rebuild has removed nodes (spec 260 D-NKG-SWAP).
+    Set i = ""
+    For {
+        Set i = $Order(^||nodeList(i))
+        Quit:i=""
+        Set ^||x(i) = 1 / nAll
+    }
+    Set tLoner = 1 / nAll
+    Set converged = 0
+
+    For iter = 1:1:maxIter {
+        Set normSq = 0
+        // the shift: each node starts the round with its own score
+        Kill ^||xNew
+        Merge ^||xNew = ^||x
+        Set src = ""
+        For {
+            Set src = $Order(^NKG("$NI",src))
+            Quit:src=""
+            Set sIdx = ^NKG("$NI",src)
+            Set xSrc = $Get(^||x(sIdx),0)
+            If xSrc = 0 Continue
+            // each node with an edge to oIdx once, however many predicates link them, as networkx's
+            // eigenvector_centrality(G) and the ^KG walk count (4.6.0 R306: an edge under each predicate counted)
+            Kill tTo
+            Set negP = $Order(^NKG(-1,sIdx,""))
+            While negP '= "" {
+                Set oIdx = $Order(^NKG(-1,sIdx,negP,""))
+                While oIdx '= "" {
+                    Set tTo(oIdx) = ""
+                    Set oIdx = $Order(^NKG(-1,sIdx,negP,oIdx))
+                }
+                Set negP = $Order(^NKG(-1,sIdx,negP))
+            }
+            Set oIdx = ""
+            For {
+                Set oIdx = $Order(tTo(oIdx))
+                Quit:oIdx=""
+                Set ^||xNew(oIdx) = $Get(^||xNew(oIdx),0) + xSrc
+            }
+        }
+        Set i = ""
+        For {
+            Set i = $Order(^||nodeList(i))
+            Quit:i=""
+            Set normSq = normSq + ($Get(^||xNew(i),0) * $Get(^||xNew(i),0))
+        }
+        Set normSq = normSq + (nLoners * (tLoner * tLoner))
+        // networkx takes a norm of 0 (numerical error only) as 1
+        Set norm = $Select(normSq > 0: $ZSqr(normSq), 1: 1)
+        Set sumDelta = 0
+        Set i = ""
+        For {
+            Set i = $Order(^||nodeList(i))
+            Quit:i=""
+            Set newVal = $Get(^||xNew(i),0) / norm
+            Set sumDelta = sumDelta + $ZAbs(newVal - $Get(^||x(i),0))
+            Set ^||x(i) = newVal
+        }
+        Set newVal = tLoner / norm
+        Set sumDelta = sumDelta + (nLoners * $ZAbs(newVal - tLoner))
+        Set tLoner = newVal
+        If sumDelta < (nAll * tol) {
+            Set converged = 1
+            Quit
+        }
+    }
+    If 'converged {
+        Kill ^||x, ^||xNew, ^||nodeList
+        Quit "ERROR:PowerIterationFailedConvergence: eigenvector centrality did not converge in "_maxIter_" iterations (tol "_$Decimal(tol, 12)_"), where networkx's eigenvector_centrality raises PowerIterationFailedConvergence too; raise maxIter (at most 1000) or tol"
+    }
+
+    // ranked, then cut to topK (4.6.0 R050: every node, in index order, whatever topK said)
+    Kill ^||rank
+    Set idx = ""
+    For {
+        Set idx = $Order(^||nodeList(idx))
+        Quit:idx=""
+        Set score = $Get(^||x(idx),0)
+        Set ^||rank(-$Normalize(score, 12), ^||nodeList(idx)) = score
+    }
+    Set tId = ""
+    For {
+        Set tId = $Order(tLoners(tId))
+        Quit:tId=""
+        Set ^||rank(-$Normalize(tLoner, 12), tId) = tLoner
+    }
+    Kill ^||x, ^||xNew, ^||nodeList
+    Quit "OK:"_..RankedJson(topK)
+}
+/// Exact directed Brandes in ObjectScript. kg_betweenness_global_v scores the graph as
+/// undirected (Pearson vs networkx 0.741 directed, 1.000 undirected on ER(20, 0.25)),
+/// so it is not asked until Arno fixes it. See tests/unit/test_411_betweenness_direction.py.
+/// direction "out" and "in" score the directed graph (reversing every edge leaves betweenness unchanged), "both" the
+/// undirected one, each pair of endpoints counted once as networkx does; maxHops > 0 counts only the pairs at most
+/// that many hops apart (4.6.0 R232: kg_Betweenness passed neither, so CALL ivg.betweenness ignored both).
+ClassMethod BetweennessGlobal(sampleSize As %Integer = 0, topK As %Integer = 10000, maxSources As %Integer = 200, direction As %String = "out", maxHops As %Integer = 0) As %String
+{
+    Quit ..BetweennessGlobalParallel(sampleSize, topK, maxSources, 0, direction, maxHops)
+}
+ClassMethod BetweennessWorker(parentPid As %Integer, workerN As %Integer, srcFirst As %Integer, srcLast As %Integer, scale As %Double, maxHops As %Integer = 0) As %Status
+{
+    Set n = +$Get(^NKG("$meta","nodeCount"),0)
+    If n = 0 Return $$$OK
+
+    Kill ^||bwSigma, ^||bwDist, ^||bwPred, ^||bwStack, ^||bwDelta
+
+    For si = srcFirst:1:srcLast {
+        Set srcNid = $Get(^bcParSrc(parentPid, si),"")
+        If srcNid = "" Continue
+        Set sIdx = $Get(^NKG("$NI",srcNid),-1)
+        If sIdx = -1 Continue
+
+        Kill ^||bwSigma, ^||bwDist, ^||bwPred, ^||bwStack
+        Set ^||bwSigma(sIdx)=1, ^||bwDist(sIdx)=0
+        Set frontier = ""
+        Set $BIT(frontier, sIdx+1) = 1
+        Set visited = frontier
+        Set stackTop = 0, bfsLevel = 0
+        Set ^||bwStack(0) = sIdx
+
+        While $BITCOUNT(frontier,1) > 0 {
+            // no node farther than maxHops is reached, so no pair farther apart is counted
+            Quit:(maxHops > 0)&&(bfsLevel >= maxHops)
+            Set bfsLevel = bfsLevel + 1
+            Set candidates = ""
+            Set pos = 0
+            For {
+                Set pos = $BITFIND(frontier, 1, pos+1)
+                Quit:pos=0
+                Set v = pos-1
+                If $Data(^bcBitAdj(parentPid,v)) {
+                    Set candidates = $BITLOGIC(candidates | ^bcBitAdj(parentPid,v))
+                }
+            }
+            Set newFrontier = $BITLOGIC(candidates & ~visited)
+            Quit:$BITCOUNT(newFrontier,1)=0
+
+            Set pos = 0
+            For {
+                Set pos = $BITFIND(newFrontier, 1, pos+1)
+                Quit:pos=0
+                Set w = pos-1
+                Set ^||bwDist(w) = bfsLevel
+                Set ^||bwSigma(w) = 0
+                Set stackTop = stackTop+1
+                Set ^||bwStack(stackTop) = w
+            }
+            Set pos = 0
+            For {
+                Set pos = $BITFIND(frontier, 1, pos+1)
+                Quit:pos=0
+                Set v = pos-1
+                If $Data(^bcBitAdj(parentPid,v)) {
+                    Set vToNew = $BITLOGIC(^bcBitAdj(parentPid,v) & newFrontier)
+                    Set pos2 = 0
+                    For {
+                        Set pos2 = $BITFIND(vToNew, 1, pos2+1)
+                        Quit:pos2=0
+                        Set w = pos2-1
+                        Set ^||bwSigma(w) = +$Number($Get(^||bwSigma(w),0)+$Get(^||bwSigma(v),1),15)
+                        Set ^||bwPred(w,v) = ""
+                    }
+                }
+            }
+            Set visited = $BITLOGIC(visited | newFrontier)
+            Set frontier = newFrontier
+        }
+
+        Kill ^||bwDelta
+        Set wi = stackTop
+        While wi >= 0 {
+            Set wIdx = ^||bwStack(wi), wi = wi-1
+            Set v2 = $Order(^||bwPred(wIdx,""))
+            While v2 '= "" {
+                Set sv = +$Number($Get(^||bwSigma(v2),1),15)
+                Set sw = +$Number($Get(^||bwSigma(wIdx),1),15)
+                If sw > 0 {
+                    Set dv = +$Number($Get(^||bwDelta(v2),0),15)
+                    Set dw = +$Number($Get(^||bwDelta(wIdx),0),15)
+                    Set r  = +$Number(sv/sw,15)
+                    Set c  = +$Number(r*(1+dw),15)
+                    Set ^||bwDelta(v2) = +$Number(dv+c,15)
+                }
+                Set v2 = $Order(^||bwPred(wIdx,v2))
+            }
+            If wIdx '= sIdx {
+                Set d   = +$Number($Get(^||bwDelta(wIdx),0),15)
+                Set cur = $Get(^bcParScore(parentPid,workerN,wIdx),0)
+                Set ^bcParScore(parentPid,workerN,wIdx) = +$Number(cur + +$Number(d*scale,15),15)
+            }
+        }
+    }
+
+    Kill ^||bwSigma, ^||bwDist, ^||bwPred, ^||bwStack, ^||bwDelta
+    Return $$$OK
+}
+/// Kill one run's work areas (4.6.0 R136). They are globals, not process-private, because the Brandes workers
+/// (BetweennessWorker, queued on %SYSTEM.WorkMgr) run in other processes and read and write them there.
+ClassMethod ClearWork(pPid As %Integer) [ Private ]
+{
+    Kill ^bcParSrc(pPid), ^bcParScore(pPid), ^bcBitAdj(pPid)
+}
+/// Kill the work areas of every run whose process is gone (4.6.0 R136): a run killed mid-way left its $Job's subtree,
+/// and the next run, another process, cleared only its own. A live process's run, this one's or a concurrent one's,
+/// is left alone.
+ClassMethod ClearStaleWork() [ Private ]
+{
+    Set tPid = ""
+    For {
+        Set tPid = $Order(^bcParSrc(tPid))
+        Quit:tPid=""
+        If (tPid '= $Job) && ('$Data(^$JOB(tPid))) { Do ..ClearWork(tPid) }
+    }
+    Set tPid = ""
+    For {
+        Set tPid = $Order(^bcParScore(tPid))
+        Quit:tPid=""
+        If (tPid '= $Job) && ('$Data(^$JOB(tPid))) { Do ..ClearWork(tPid) }
+    }
+    Set tPid = ""
+    For {
+        Set tPid = $Order(^bcBitAdj(tPid))
+        Quit:tPid=""
+        If (tPid '= $Job) && ('$Data(^$JOB(tPid))) { Do ..ClearWork(tPid) }
+    }
+}
+ClassMethod BetweennessGlobalParallel(sampleSize As %Integer = 0, topK As %Integer = 10000, maxSources As %Integer = 200, numJobs As %Integer = 0, direction As %String = "out", maxHops As %Integer = 0) As %String
+{
+    If '$ListFind($ListBuild("out","in","both"), direction) Quit "ERROR:direction must be out, in or both, not "_direction
+    If ($Number(maxHops,"I") = "") || (maxHops < 0) Quit "ERROR:maxHops must be a whole number 0 or more, not "_maxHops
+    Do ##class(Graph.KG.TraversalBuild).EnsureNKG()
+    Set firstNode = $Order(^NKG("$NI",""))
+    If firstNode = "" Quit "ERROR:^NKG not built"
+
+    Set n = 0, nid = ""
+    Kill ^||parNodes
+    For {
+        Set nid = $Order(^NKG("$NI",nid))
+        Quit:nid=""
+        Set ^||parNodes(n) = nid
+        Set n = n + 1
+    }
+    If n = 0 Quit "ERROR:no nodes"
+
+    If (sampleSize > 0) && (sampleSize < n) {
+        Set srcCount = sampleSize
+    } ElseIf (maxSources > 0) && (maxSources < n) {
+        Set srcCount = maxSources
+    } Else {
+        Set srcCount = n
+    }
+    Set scale = +$Number(n / srcCount, 15)
+    // undirected, Brandes from every source meets each pair from both ends; networkx counts it once (R216, R232)
+    Set:direction="both" scale = +$Number(scale / 2, 15)
+
+    If numJobs <= 0 {
+        Set numJobs = $System.Util.NumberOfCPUs()
+        If numJobs > 8 { Set numJobs = 8 }
+        If numJobs < 1 { Set numJobs = 1 }
+    }
+    If numJobs > srcCount { Set numJobs = srcCount }
+
+    Do ..ClearStaleWork()
+    Set parentPid = $Job
+    Do ..ClearWork(parentPid)
+
+    // A sample is the srcCount IDs first by the SHA-1 of their UTF-8 bytes (first 7 bytes, big-endian), then by ID:
+    // fixed, uniform over the nodes, the same as the Python walk's (4.6.0 R233: it was the first srcCount by ID).
+    If srcCount < n {
+        Kill ^||bcPick
+        For si = 0:1:n-1 {
+            Set tNid = ^||parNodes(si)
+            Set tHash = $System.Encryption.SHA1Hash($ZConvert(tNid, "O", "UTF8"))
+            Set tKey = 0
+            For tB = 1:1:7 { Set tKey = (tKey * 256) + $Ascii(tHash, tB) }
+            Set ^||bcPick(tKey, tNid) = ""
+        }
+        Set si = 0, tKey = ""
+        For {
+            Set tKey = $Order(^||bcPick(tKey))
+            Quit:(tKey = "")||(si >= srcCount)
+            Set tNid = ""
+            For {
+                Set tNid = $Order(^||bcPick(tKey, tNid))
+                Quit:(tNid = "")||(si >= srcCount)
+                Set ^||parNodes(si) = tNid, si = si + 1
+            }
+        }
+        Kill ^||bcPick
+    }
+    For si = 0:1:srcCount-1 {
+        Set ^bcParSrc(parentPid, si) = ^||parNodes(si)
+    }
+
+    Set queue = ##class(%SYSTEM.WorkMgr).%New("", numJobs)
+    Set chunkSize = srcCount \ numJobs
+    Set remainder = srcCount # numJobs
+    Set cursor = 0
+
+    Do ..BuildBitAdj(parentPid, (direction = "both"))
+
+    For w = 1:1:numJobs {
+        Set wSize = chunkSize + $Select(w <= remainder: 1, 1: 0)
+        Set srcFirst = cursor
+        Set srcLast  = cursor + wSize - 1
+        Set cursor   = cursor + wSize
+        Set sc = queue.Queue("##class(Graph.KG.NKGAccel).BetweennessWorker", parentPid, w, srcFirst, srcLast, scale, maxHops)
+        If $$$ISERR(sc) {
+            Do ..ClearWork(parentPid)
+            Kill ^||parNodes
+            Return "ERROR:Queue failed "_$System.Status.GetErrorText(sc)
+        }
+    }
+
+    Set sc = queue.Sync()
+    Kill ^bcParSrc(parentPid)
+    If $$$ISERR(sc) {
+        Do ..ClearWork(parentPid)
+        Kill ^||parNodes
+        Quit "ERROR:Worker failed "_$System.Status.GetErrorText(sc)
+    }
+
+    // ranked by score, then id: topK is the topK highest (4.6.0 R232: it was the first topK scoring nodes by id)
+    Kill ^||rank
+    Set i2 = ""
+    For {
+        Set i2 = $Order(^NKG("$NI",i2))
+        Quit:i2=""
+        Set idx = ^NKG("$NI",i2)
+        Set total = 0
+        For w = 1:1:numJobs {
+            Set total = total + $Get(^bcParScore(parentPid, w, idx), 0)
+        }
+        If total = 0 Continue
+        Set ^||rank(-$Normalize(total, 12), i2) = total
+    }
+
+    Do ..ClearWork(parentPid)
+    Kill ^||parNodes
+    Quit "OK:"_..RankedJson(topK)
+}
+/// Each node's out-neighbours as a bit string in ^bcBitAdj(parentPid, node), a global because the workers read it;
+/// with pBoth its in-neighbours too: the undirected graph.
+ClassMethod BuildBitAdj(parentPid As %Integer, pBoth As %Boolean = 0) [ Private ]
+{
+    Kill ^bcBitAdj(parentPid)
+    Set srcIdx = ""
+    For {
+        Set srcIdx = $Order(^NKG(-3,srcIdx))
+        Quit:srcIdx=""
+        Set negP = $Order(^NKG(-1,srcIdx,""))
+        While negP '= "" {
+            Set dstIdx = $Order(^NKG(-1,srcIdx,negP,""))
+            While dstIdx '= "" {
+                Set $BIT(^bcBitAdj(parentPid,srcIdx), dstIdx+1) = 1
+                Set:pBoth $BIT(^bcBitAdj(parentPid,dstIdx), srcIdx+1) = 1
+                Set dstIdx = $Order(^NKG(-1,srcIdx,negP,dstIdx))
+            }
+            Set negP = $Order(^NKG(-1,srcIdx,negP))
+        }
+    }
+}
+ClassMethod BetweennessNeighborhood(seedId As %String, hops As %Integer = 2, sampleSize As %Integer = 200, topK As %Integer = 20) As %String
+{
+    Do ##class(Graph.KG.TraversalBuild).EnsureNKG()
+    Set firstNode = $Order(^NKG("$NI",""))
+    If firstNode = "" Quit "ERROR:^NKG not built"
+    If $Get(^NKG("$NI",seedId),-1) = -1 Quit "ERROR:seed node not found: "_seedId
+
+    Set hopsRaw = ##class(Graph.KG.NKGAccelTraversal).KHopNeighbors(seedId, hops, 1000000)
+    If $Extract(hopsRaw,1,7) = "ERROR: " Quit hopsRaw
+    If hopsRaw = "" Quit "ERROR:empty neighborhood"
+
+    // Parse node list from KHopNeighbors JSON response
+    Kill ^||nbhIdx, ^||nbhNodes
+    Set n = 0, parseErr = ""
+    Try {
+        Set obj = ##class(%DynamicObject).%FromJSON(hopsRaw)
+        Set nodesArr = obj.nodes
+        If '$IsObject(nodesArr) { Set parseErr = "ERROR:no nodes in neighborhood" }
+        Else {
+            Set iter = nodesArr.%GetIterator()
+            While iter.%GetNext(.k, .nodeObj) {
+                Set nodeId = $Select($IsObject(nodeObj):nodeObj.id, 1:nodeObj)
+                Set idx = $Get(^NKG("$NI",nodeId),-1)
+                If idx >= 0 {
+                    Set ^||nbhIdx(idx) = ""
+                    Set ^||nbhNodes(n) = nodeId
+                    Set n = n + 1
+                }
+            }
+        }
+    } Catch ex {
+        Set parseErr = "ERROR:parse failed "_ex.DisplayString()
+    }
+    If parseErr '= "" Quit parseErr
+    If n = 0 Quit "ERROR:no valid nodes in neighborhood"
+
+    // Brandes in ObjectScript on the neighbourhood, directed (4.6.0 R050). The Arno call (kg_betweenness_neighborhood_v,
+    // reached only in USER since R234) is not made: nothing checks its answer against this one, and Arno's global
+    // kg_betweenness_global_v scores the graph undirected, which is why global betweenness does not ask it either.
+    Quit ..BetweennessNeighborhoodOS(n, sampleSize, topK)
+}
+ClassMethod BetweennessNeighborhoodOS(n As %Integer, sampleSize As %Integer, topK As %Integer) As %String [ Private ]
+{
+    If n = 0 Quit "ERROR:no nodes"
+
+    Set srcCount = $Select((sampleSize>0)&&(sampleSize<n):sampleSize, 1:n)
+    Set scale = +$Number(n/srcCount,15)
+
+    Do ..ClearStaleWork()
+    Set parentPid = $Job
+    Do ..ClearWork(parentPid)
+
+    // Build $BIT adjacency restricted to neighborhood
+    Set idx = "", pos = 0
+    For {
+        Set idx = $Order(^||nbhIdx(idx))
+        Quit:idx=""
+        Set negP = $Order(^NKG(-1,idx,""))
+        While negP '= "" {
+            Set dstIdx = $Order(^NKG(-1,idx,negP,""))
+            While dstIdx '= "" {
+                // the out-edge alone (4.6.0 R050: both bits made it undirected, each pair counted from both ends)
+                If $Data(^||nbhIdx(dstIdx)) Set $BIT(^bcBitAdj(parentPid,idx),dstIdx+1) = 1
+                Set dstIdx = $Order(^NKG(-1,idx,negP,dstIdx))
+            }
+            Set negP = $Order(^NKG(-1,idx,negP))
+        }
+    }
+
+    For si = 0:1:srcCount-1 {
+        Set ^bcParSrc(parentPid,si) = ^||nbhNodes(si)
+    }
+
+    Set numJobs = $System.Util.NumberOfCPUs()
+    If numJobs > 8 { Set numJobs = 8 }
+    If numJobs > srcCount { Set numJobs = srcCount }
+
+    Set queue = ##class(%SYSTEM.WorkMgr).%New("",numJobs)
+    Set chunkSize = srcCount\numJobs, remainder = srcCount#numJobs, cursor = 0
+    // The worker of the class this runs as: this class's, or a subclass's (tests force a worker failure that way).
+    Set worker = "##class("_$ClassName()_").BetweennessWorker"
+    For w = 1:1:numJobs {
+        Set wSize = chunkSize + $Select(w<=remainder:1,1:0)
+        Set sc = queue.Queue(worker,parentPid,w,cursor,cursor+wSize-1,scale)
+        Set cursor = cursor + wSize
+        If $$$ISERR(sc) {
+            Do ..ClearWork(parentPid)
+            Kill ^||nbhIdx, ^||nbhNodes
+            Return "ERROR:Queue failed "_$System.Status.GetErrorText(sc)
+        }
+    }
+
+    // A worker that failed left its sources unscored, and the sum below would answer the scores of the others as
+    // the neighborhood's (4.6.0 R152: the status was not read). BetweennessGlobalParallel reads it the same way.
+    Set sc = queue.Sync()
+    Kill ^bcParSrc(parentPid), ^bcBitAdj(parentPid)
+    If $$$ISERR(sc) {
+        Do ..ClearWork(parentPid)
+        Kill ^||nbhIdx, ^||nbhNodes
+        Return "ERROR:Worker failed "_$System.Status.GetErrorText(sc)
+    }
+
+    // ranked, then cut to topK (4.6.0 R050: cut in index order, so topK kept the first scoring nodes, not the highest)
+    Kill ^||rank
+    Set idx = ""
+    For {
+        Set idx = $Order(^||nbhIdx(idx))
+        Quit:idx=""
+        Set nid = $Get(^NKG("$ND",idx),"")
+        If nid = "" Continue
+        Set total = 0
+        For w = 1:1:numJobs { Set total = total + $Get(^bcParScore(parentPid,w,idx),0) }
+        If total = 0 Continue
+        Set ^||rank(-$Normalize(total, 12), nid) = total
+    }
+
+    Do ..ClearWork(parentPid)
+    Kill ^||nbhIdx, ^||nbhNodes
+    Quit "OK:"_..RankedJson(topK)
+}
+
+ClassMethod ClosenessGlobalMSBFS(formula As %String = "harmonic", direction As %String = "out", maxHops As %Integer = 0, topK As %Integer = 10000) As %String
+{
+    // 4.6.0, round 3: any other value walked "out"
+    If '$ListFind($ListBuild("out","in","both"), direction) Quit "ERROR:direction must be out, in or both, not "_direction
+    Do ##class(Graph.KG.TraversalBuild).EnsureNKG()
+    Set firstNode = $Order(^NKG("$NI",""))
+    If firstNode = "" Quit "ERROR:^NKG not built"
+
+    Kill ^||msAdj, ^||msVisit, ^||msNext, ^||msSeen, ^||msFar, ^||msReach, ^||msIdxNid
+    // "out" walks ^NKG(-1) (out-edges), "in" ^NKG(-2) (in-edges), "both" the two (4.6.0 R306: "both" walked "out")
+    Set adjDirs = $Select(direction="in": "-2", direction="both": "-1,-2", 1: "-1")
+    Set nid = ""
+    For {
+        Set nid = $Order(^NKG("$NI",nid))
+        Quit:nid=""
+        Set vIdx = ^NKG("$NI",nid)
+        Set ^||msIdxNid(vIdx) = nid
+        For di = 1:1:$Length(adjDirs, ",") {
+            Set adjDir = +$Piece(adjDirs, ",", di)
+            Set negP = $Order(^NKG(adjDir,vIdx,""))
+            While negP '= "" {
+                Set oIdx = $Order(^NKG(adjDir,vIdx,negP,""))
+                While oIdx '= "" {
+                    Set $BIT(^||msAdj(vIdx), oIdx+1) = 1
+                    Set oIdx = $Order(^NKG(adjDir,vIdx,negP,oIdx))
+                }
+                Set negP = $Order(^NKG(adjDir,vIdx,negP))
+            }
+        }
+    }
+    // n is the number of nodes, counted. $meta("nodeCount") is the interning high-water mark:
+    // indices are stable and never reused, so after a rebuild has removed nodes it is larger
+    // than the node count and "reached = n-1" below would never hold (spec 260 D-NKG-SWAP).
+    Set n = 0, tIx = ""
+    For {
+        Set tIx = $Order(^||msIdxNid(tIx))
+        Quit:tIx=""
+        Set n = n + 1
+    }
+    If n = 0 {
+        Kill ^||msAdj, ^||msIdxNid
+        Quit "ERROR:^NKG nodeCount=0"
+    }
+
+    Set sIdx = ""
+    For {
+        Set sIdx = $Order(^||msIdxNid(sIdx))
+        Quit:sIdx=""
+        Set $BIT(^||msVisit(sIdx), sIdx+1) = 1
+        Set $BIT(^||msSeen(sIdx), sIdx+1) = 1
+    }
+
+    Set hop = 0
+    For {
+        Quit:(maxHops>0)&&(hop>=maxHops)
+        Set hop = hop + 1
+        Kill ^||msNext
+        Set anyFrontier = 0
+        Set v = ""
+        For {
+            Set v = $Order(^||msVisit(v))
+            Quit:v=""
+            Set vb = ^||msVisit(v)
+            If $BITCOUNT(vb,1)=0 Continue
+            If '$Data(^||msAdj(v)) Continue
+            Set adj = ^||msAdj(v)
+            Set wpos = 0
+            For {
+                Set wpos = $BITFIND(adj, 1, wpos+1)
+                Quit:wpos=0
+                Set w = wpos-1
+                Set nxw = $Get(^||msNext(w))
+                Set ^||msNext(w) = $BITLOGIC(nxw|vb)
+                Set anyFrontier = 1
+            }
+        }
+        Quit:anyFrontier=0
+
+        Kill ^||msVisit
+        Set w = ""
+        For {
+            Set w = $Order(^||msNext(w))
+            Quit:w=""
+            Set nb = ^||msNext(w)
+            Set seenw = $Get(^||msSeen(w))
+            Set new = $BITLOGIC(nb&~seenw)
+            If $BITCOUNT(new,1)=0 Continue
+            Set ^||msSeen(w) = $BITLOGIC(seenw|new)
+            Set ^||msVisit(w) = new
+            Set spos = 0
+            For {
+                Set spos = $BITFIND(new, 1, spos+1)
+                Quit:spos=0
+                Set s = spos-1
+                If formula = "classical" {
+                    Set ^||msFar(s) = $Get(^||msFar(s),0) + hop
+                    Set ^||msReach(s) = $Get(^||msReach(s),0) + 1
+                } Else {
+                    Set ^||msFar(s) = $Get(^||msFar(s),0) + (1/hop)
+                }
+            }
+        }
+    }
+
+    // ranked, then cut to topK (4.6.0 R050: emitted in node order and cut there)
+    Kill ^||rank
+    Set sIdx = ""
+    For {
+        Set sIdx = $Order(^||msIdxNid(sIdx))
+        Quit:sIdx=""
+        If formula = "classical" {
+            Set reached = $Get(^||msReach(sIdx),0)
+            Set fdist = $Get(^||msFar(sIdx),0)
+            Set score = $Select((fdist>0)&&(reached=(n-1)): reached/fdist, 1: 0)
+        } Else {
+            Set score = $Get(^||msFar(sIdx),0)
+        }
+        Set ^||rank(-$Normalize(score, 12), ^||msIdxNid(sIdx)) = score
+    }
+    Kill ^||msAdj, ^||msVisit, ^||msNext, ^||msSeen, ^||msFar, ^||msReach, ^||msIdxNid
+    Quit "OK:"_..RankedJson(topK)
+}
+
+/// The JSON array of ^||rank(-score, id) = score: highest score first, ties by id, at most topK entries (0: all).
+/// The score subscript is $Normalize(score, 12): scores equal to 12 places are a tie, so float noise between two
+/// nodes in the same position does not order them (4.6.0 R306).
+/// Kills ^||rank. Every ranked answer here goes through it, so topK is always the topK highest (4.6.0 R050).
+ClassMethod RankedJson(topK As %Integer) As %String [ Private ]
+{
+    Set json = "[", sep = "", cnt = 0, negS = ""
+    For {
+        Set negS = $Order(^||rank(negS))
+        Quit:negS=""
+        Set id = ""
+        For {
+            Set id = $Order(^||rank(negS, id), 1, score)
+            Quit:id=""
+            // a JSON number (4.6.0 R195: ObjectScript writes 0.5 as .5)
+            Set json = json_sep_"{""id"":"""_##class(Graph.KG.TraversalBFS).jsonEsc(id)_""",""score"":"_##class(Graph.KG.TraversalBFS).jsonNum(score)_"}"
+            Set sep = ","
+            Set cnt = cnt + 1
+            Quit:(topK>0)&&(cnt>=topK)
+        }
+        Quit:(topK>0)&&(cnt>=topK)
+    }
+    Kill ^||rank
+    Quit json_"]"
+}
+
+}

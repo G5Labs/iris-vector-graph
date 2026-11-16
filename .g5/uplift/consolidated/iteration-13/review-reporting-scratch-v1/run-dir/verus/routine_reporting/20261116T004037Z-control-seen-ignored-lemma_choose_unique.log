@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:98:10
+    |
+ 98 |    ensures no_dupes(select_routes(rs,k,held))
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+101 | /  if rs.len()>0 {let r=rs[0];let low=held.map_values(|x:Text|lower(x));
+102 | |  if eligible(r,k) && !low.contains(lower(r.name)) {
+103 | |  assert(held.push(r.name).map_values(|x:Text|lower(x)) =~= low.push(lower(r.name)));
+104 | |  lemma_choose_unique(rs.skip(1),k,held.push(r.name));
+105 | |  }else{lemma_choose_unique(rs.skip(1),k,held);}}
+    | |________________________________________________- at the end of the function body
+
+error: aborting due to 1 previous error
+

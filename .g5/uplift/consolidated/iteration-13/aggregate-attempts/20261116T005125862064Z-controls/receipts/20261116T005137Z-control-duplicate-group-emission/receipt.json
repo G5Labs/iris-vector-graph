@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_key_enumeration_complete_unique"
+    ],
+    "find": "selected(r,q)&&!order.contains(key(r,q))",
+    "name": "duplicate-group-emission",
+    "replace": "selected(r,q)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_key_enumeration_complete_unique"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "eeee3fb43c2aa15200c86df368ae92a142d83b4eeb478d2f973cc92a1cf2cdd1",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/duplicate-group-emission/20261116T005136Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_key_enumeration_complete_unique": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005136Z-control-duplicate-group-emission-theorem_key_enumeration_complete_unique.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005136Z-control-duplicate-group-emission.log",
+    "timed_out": false,
+    "verified": 74
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T005137Z-control-duplicate-group-emission/logs/20261116T005136Z-control-duplicate-group-emission-theorem_key_enumeration_complete_unique.log": "67ce1e2628ad42b9f0d9aac337d2342a8c8c47d4845a382e36d885026c3fb7fa",
+    ".g5/Verus_verification/results/aggregate_results/20261116T005137Z-control-duplicate-group-emission/logs/20261116T005136Z-control-duplicate-group-emission.log": "9d8cbb8aa08d6f4ff41bf44176405708c65412150c5af04ba7638099a6fb632c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

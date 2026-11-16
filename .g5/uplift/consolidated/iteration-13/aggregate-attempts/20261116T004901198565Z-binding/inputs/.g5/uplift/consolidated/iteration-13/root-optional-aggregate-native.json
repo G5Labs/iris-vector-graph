@@ -1,0 +1,299 @@
+{
+  "verdict": "SOURCE_FORECAST_AGREES",
+  "completed_cases": 4,
+  "cases": [
+    {
+      "name": "ordinary empty global",
+      "actual": [
+        [
+          0,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "source_forecast": [
+        [
+          0,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "r308_zero_sum_reference": [
+        [
+          0,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "agrees_with_source_forecast": true,
+      "agrees_with_zero_sum_reference": true
+    },
+    {
+      "name": "leading optional global",
+      "actual": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "source_forecast": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "r308_zero_sum_reference": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "agrees_with_source_forecast": true,
+      "agrees_with_zero_sum_reference": true
+    },
+    {
+      "name": "leading optional grouped",
+      "actual": [
+        [
+          null,
+          1,
+          0,
+          null,
+          null,
+          []
+        ]
+      ],
+      "source_forecast": [
+        [
+          null,
+          1,
+          0,
+          null,
+          null,
+          []
+        ]
+      ],
+      "r308_zero_sum_reference": [
+        [
+          null,
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "agrees_with_source_forecast": true,
+      "agrees_with_zero_sum_reference": false
+    },
+    {
+      "name": "anchored optional global",
+      "actual": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "source_forecast": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "r308_zero_sum_reference": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "agrees_with_source_forecast": true,
+      "agrees_with_zero_sum_reference": true
+    }
+  ],
+  "queries": [
+    {
+      "query": "USE GRAPH 'ordinary13optional_5e167e1f' MATCH (a:OrdOptAnchor5e167e1f) RETURN a.id,a.kind",
+      "rows": [
+        [
+          "ordinary13optional:5e167e1f",
+          "anchor"
+        ]
+      ],
+      "columns": [
+        "a.id",
+        "a.kind"
+      ],
+      "types": [
+        [
+          "str",
+          "str"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "query": "USE GRAPH 'ordinary13optional_5e167e1f' MATCH (n:OrdOptMissing5e167e1f) RETURN count(*) AS rows,count(n) AS nodes,sum(n.x) AS total,avg(n.x) AS mean,collect(n.x) AS xs",
+      "rows": [
+        [
+          0,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "columns": [
+        "rows",
+        "nodes",
+        "total",
+        "mean",
+        "xs"
+      ],
+      "types": [
+        [
+          "int",
+          "int",
+          "int",
+          "NoneType",
+          "list"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "query": "USE GRAPH 'ordinary13optional_5e167e1f' OPTIONAL MATCH (n:OrdOptMissing5e167e1f) RETURN count(*) AS rows,count(n) AS nodes,sum(n.x) AS total,avg(n.x) AS mean,collect(n.x) AS xs",
+      "rows": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "columns": [
+        "rows",
+        "nodes",
+        "total",
+        "mean",
+        "xs"
+      ],
+      "types": [
+        [
+          "int",
+          "int",
+          "int",
+          "NoneType",
+          "list"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "query": "USE GRAPH 'ordinary13optional_5e167e1f' OPTIONAL MATCH (n:OrdOptMissing5e167e1f) RETURN n.kind AS k,count(*) AS rows,count(n) AS nodes,sum(n.x) AS total,avg(n.x) AS mean,collect(n.x) AS xs",
+      "rows": [
+        [
+          null,
+          1,
+          0,
+          null,
+          null,
+          []
+        ]
+      ],
+      "columns": [
+        "k",
+        "rows",
+        "nodes",
+        "total",
+        "mean",
+        "xs"
+      ],
+      "types": [
+        [
+          "NoneType",
+          "int",
+          "int",
+          "NoneType",
+          "NoneType",
+          "list"
+        ]
+      ],
+      "error": null
+    },
+    {
+      "query": "USE GRAPH 'ordinary13optional_5e167e1f' MATCH (a:OrdOptAnchor5e167e1f) OPTIONAL MATCH (a)-[:OrdinaryMissingEdge]->(n:OrdOptMissing5e167e1f) RETURN count(*) AS rows,count(n) AS nodes,sum(n.x) AS total,avg(n.x) AS mean,collect(n.x) AS xs",
+      "rows": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "columns": [
+        "rows",
+        "nodes",
+        "total",
+        "mean",
+        "xs"
+      ],
+      "types": [
+        [
+          "int",
+          "int",
+          "int",
+          "NoneType",
+          "list"
+        ]
+      ],
+      "error": null
+    }
+  ],
+  "failure": null,
+  "elapsed": 0.5815470840316266,
+  "graph": "ordinary13optional_5e167e1f",
+  "anchor_id": "ordinary13optional:5e167e1f",
+  "container": "ivg-uplift-next-20261115",
+  "identity_checked": true,
+  "source_inputs": {
+    "iris_vector_graph/cypher/parser.py": "fb75d7be8289d65934e3bf40673c8e77db29e220a030d781b548f55820061805",
+    "iris_vector_graph/cypher/translator.py": "0a37bc8fb5c00a26a3b672eb524de6cbc8e5c8092f4415fb5c83a96c7fe8d78c",
+    "iris_vector_graph/_engine/query.py": "197e7abc8ae204165b363ba4fc17445cb6fc7f789efd3b9dad6d88b0334945a3",
+    "tests/unit/test_460_r298_fixes46_leftovers.py": "5494cec6a91433c835c14941495a23c4e0583c74b45a8c65cb04e096d9c3bdf2",
+    "tests/unit/test_460_r308_guards.py": "48af8a8436c13adadc32c61963d1ef57cd2dee75881fe6bb40c347f25816538b"
+  },
+  "inputs": {
+    ".g5/uplift/consolidated/iteration-13/root-optional-aggregate-native.py": "0ecc1893e3b4dc84c6b25b65d2f0b308bd9b31dd9c19404221ac9bcdebf33770",
+    ".g5/uplift/consolidated/iteration-13/root-optional-aggregate-PAIRS.md": "46ae8a0e7d828bc52f0be930ab8d1dd7f21e25f9f6f70b00fc3dcd76af35030e",
+    ".g5/uplift/consolidated/iteration-13/inputs.json": "0bedc61fdb9418ec503a1b48364cc93d82d4af7ccd93289f7b0f7ad9c139149a",
+    ".g5/Verus_verification/models/temporal_restore/binding.py": "cdd4459d65727c894b6be1aca1a1f61ad56cb1325592bacc9dcb5471a7608fe1",
+    ".g5/uplift/consolidated/iteration-5/native-setup.json": "00f2a10ec6c71dcfef54013d462875481bd76ef3d7a8c9dc0e291aae63058cdf"
+  },
+  "scope": "Fresh ordinary13 scoped healthy empty/optional caller observations only. Source forecast and newer zero-sum reference separated prospectively. No interrupted inputs/data or namespacecensus, sourcepatch/providerfault/security/globalerase/nativebody/generalSQL/JSON/IEEE or intent-adjudication claim. setup5compiledsourceauditreused."
+}

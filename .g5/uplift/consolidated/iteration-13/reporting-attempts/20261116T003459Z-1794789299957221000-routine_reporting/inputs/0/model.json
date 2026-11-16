@@ -1,0 +1,143 @@
+{
+  "name": "routine_reporting",
+  "root": "routine_reporting.rs",
+  "expected_verified": 35,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "kind-ignored",
+      "find": "registry_kind(r)==kind_word(k) && route_name(r.name,k)",
+      "replace": "route_name(r.name,k)",
+      "expect_fail_in": [
+        "theorem_registry_kind_and_shape_both_required"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "name-shape-ignored",
+      "find": "registry_kind(r)==kind_word(k) && route_name(r.name,k)",
+      "replace": "registry_kind(r)==kind_word(k)",
+      "expect_fail_in": [
+        "theorem_registry_kind_and_shape_both_required"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "seen-ignored",
+      "find": "eligible(r,k) && !held.map_values(|x:Text|lower(x)).contains(lower(r.name))",
+      "replace": "eligible(r,k)",
+      "expect_fail_in": [
+        "lemma_choose_unique"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "legacy-omitted",
+      "find": "select_routes(r.rows,k,seq![legacy(k)])",
+      "replace": "select_routes(r.rows,k,seq![])",
+      "expect_fail_in": [
+        "theorem_route_tables_never_double_count"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "table-sum-overwritten",
+      "find": "count:h.count+tail.count",
+      "replace": "count:tail.count",
+      "expect_fail_in": [
+        "theorem_missing_vs_unreadable_registry"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "missing-registry-error",
+      "find": "r.error.is_some() && !missing_registry(r.error.unwrap())",
+      "replace": "r.error.is_some()",
+      "expect_fail_in": [
+        "theorem_missing_vs_unreadable_registry"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "graph-edge-error-known",
+      "find": "graph_unknown:n.error.is_some() || e.error.is_some()",
+      "replace": "graph_unknown:n.error.is_some()",
+      "expect_fail_in": [
+        "theorem_failure_is_unknown_not_empty"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "report-unknown-ignored",
+      "find": "graph:if s.graph_unknown",
+      "replace": "graph:if false",
+      "expect_fail_in": [
+        "theorem_failure_is_unknown_not_empty"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "scoped-count-double",
+      "find": "(if matches(rs[0],g,a){1nat}else{0nat})",
+      "replace": "(if matches(rs[0],g,a){2nat}else{0nat})",
+      "expect_fail_in": [
+        "lemma_scan_filter"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "default-is-named",
+      "find": "pub open spec fn gid(g:Option<nat>)->nat {g.unwrap_or(0)}",
+      "replace": "pub open spec fn gid(g:Option<nat>)->nat {g.unwrap_or(1)}",
+      "expect_fail_in": [
+        "theorem_default_null_empty_named"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "empty-filter-used",
+      "find": "(a.is_none() || a==Some(0) || r.attr==a)",
+      "replace": "(a.is_none() || r.attr==a)",
+      "expect_fail_in": [
+        "lemma_empty_filter"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "distribution-overwrites",
+      "find": "tail[k]+1",
+      "replace": "1",
+      "expect_fail_in": [
+        "lemma_distribution"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "error-dedup-disabled",
+      "find": "dedup(es.skip(1),if held.contains(es[0]){held}else{held.push(es[0])})",
+      "replace": "dedup(es.skip(1),held.push(es[0]))",
+      "expect_fail_in": [
+        "theorem_same_raw_message_core_failures_share_error"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "vector-uses-edge-error",
+      "find": "vector_unknown:nv.errors.len()>0",
+      "replace": "vector_unknown:ev.errors.len()>0",
+      "expect_fail_in": [
+        "theorem_graph_unknown_is_only_core_node_edge_errors"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    },
+    {
+      "name": "vector-zero-scan",
+      "find": "if s.nv==0{VectorView::Absent}",
+      "replace": "if s.nv==0{VectorView::Scan(0)}",
+      "expect_fail_in": [
+        "theorem_empty_and_partial_vector_report"
+      ],
+      "role": "source-facing census/selection/reader rule"
+    }
+  ]
+}

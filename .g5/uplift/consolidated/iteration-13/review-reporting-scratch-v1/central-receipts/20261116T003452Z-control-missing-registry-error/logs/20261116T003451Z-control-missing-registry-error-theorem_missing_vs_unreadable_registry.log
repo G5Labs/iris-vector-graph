@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/missing-registry-error/20261116T003451Z/models/routine_reporting/routine_reporting.rs:163:2
+    |
+159 | pub proof fn theorem_missing_vs_unreadable_registry(c:Catalog,r:Registry,k:Kind)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+163 |  missing_registry(r.error.unwrap()) ==> registry_errors(r).len()==0,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

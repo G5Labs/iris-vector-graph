@@ -1,0 +1,53 @@
+{
+  "name": "rel_prop_text",
+  "root": "rel_prop_text.rs",
+  "expected_verified": 10,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "leading-zero-canonical",
+      "why": "accept a leading zero as canonical ([0-9]\\d* instead of 0|[1-9]\\d*)",
+      "find": "s.len() >= 1 && ((s.len() == 1 && s[0] == '0') || ('1' <= s[0] && s[0] <= '9' && digits(s.drop_first(), uni)))",
+      "replace": "s.len() >= 1 && ((s.len() == 1 && s[0] == '0') || ('0' <= s[0] && s[0] <= '9' && digits(s.drop_first(), uni)))",
+      "expect_fail_in": [
+        "theorem_noncanonical_stays_text"
+      ]
+    },
+    {
+      "name": "sign-plus-canonical",
+      "why": "accept a leading plus sign as well as a minus",
+      "find": "    if u.len() > 0 && u[0] == '-' { u.drop_first() } else { u }",
+      "replace": "    if u.len() > 0 && (u[0] == '-' || u[0] == '+') { u.drop_first() } else { u }",
+      "expect_fail_in": [
+        "theorem_noncanonical_stays_text"
+      ]
+    },
+    {
+      "name": "legacy-bool-spellings",
+      "why": "read the legacy spelling True as a boolean on the relationship path",
+      "find": "    if t == tru() { Val::Bool(true) }\n    else if t == fals() { Val::Bool(false) }\n    else if shaped(t) && parses { Val::Container }\n    else if int_text(t, false)",
+      "replace": "    if t == tru() || t == seq!['T', 'r', 'u', 'e'] { Val::Bool(true) }\n    else if t == fals() { Val::Bool(false) }\n    else if shaped(t) && parses { Val::Container }\n    else if int_text(t, false)",
+      "expect_fail_in": [
+        "theorem_decode_classes"
+      ]
+    },
+    {
+      "name": "as-built-without-final-newline-match",
+      "why": "the as-built pattern with \\Z instead of $ (no match before a final line break); the newline witness must fail",
+      "find": "    int_text(t, true) || (t.len() >= 1 && t.last() == '\\n' && int_text(t.drop_last(), true))\n}",
+      "replace": "    int_text(t, true)\n}",
+      "expect_fail_in": [
+        "witness_as_built_trailing_newline_promoted"
+      ]
+    },
+    {
+      "name": "as-built-ascii-digits",
+      "why": "the as-built pattern with re.ASCII (\\d is [0-9]); the non-ASCII digit witness must fail",
+      "find": "    ascii_digit(c) || ('\\u{0660}' <= c && c <= '\\u{0669}') || ('\\u{06F0}' <= c && c <= '\\u{06F9}')\n        || ('\\u{0966}' <= c && c <= '\\u{096F}') || ('\\u{FF10}' <= c && c <= '\\u{FF19}')\n}",
+      "replace": "    ascii_digit(c)\n}",
+      "expect_fail_in": [
+        "witness_as_built_unicode_digit_promoted"
+      ]
+    }
+  ]
+}

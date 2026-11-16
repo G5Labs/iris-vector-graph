@@ -1,0 +1,398 @@
+# Mandatory IRIS Integration Policy
+
+> **Version**: 1.0.0 | **Effective**: 2026-01-25 | **Supersedes**: None
+
+This document establishes the **non-negotiable** testing policy for IRIS Vector Graph. All contributors MUST comply with these requirements. Violations will cause test failures at the pytest collection phase.
+
+---
+
+## Core Mandate
+
+**NO MOCKING of InterSystems IRIS is permitted for any test marked `integration` or `e2e`.**
+
+This policy derives directly from [Constitution Principle II](../../.specify/memory/constitution.md):
+
+> "TDD with running IRIS instance. No mocked database for integration tests. All tests involving data storage, vector operations, or graph operations MUST use live IRIS."
+
+---
+
+## Fixture Requirements
+
+### Mandatory Fixtures for Database Tests
+
+All tests that interact with the database MUST use the official fixtures defined in `tests/conftest.py`:
+
+| Fixture               | Scope    | Required For                                |
+| --------------------- | -------- | ------------------------------------------- |
+| `iris_connection`     | Module   | Any test requiring a database connection    |
+| `iris_cursor`         | Function | Any test executing SQL statements           |
+| `iris_test_container` | Session  | Managed container lifecycle (auto-injected) |
+| `clean_test_data`     | Function | Tests that create data requiring cleanup    |
+
+### Prohibited Patterns
+
+The following patterns are **FORBIDDEN** in `integration` and `e2e` tests:
+
+```python
+# ❌ FORBIDDEN: Mocking IRIS connection
+@patch('iris.connect')
+def test_something(mock_connect):
+    mock_connect.return_value = MagicMock()
+    ...
+
+# ❌ FORBIDDEN: Mocking cursor/connection objects
+def test_something():
+    mock_cursor = MagicMock()
+    mock_cursor.fetchall.return_value = [...]
+    ...
+
+# ❌ FORBIDDEN: Fake database fixtures
+@pytest.fixture
+def fake_db():
+    return {"nodes": [...]}  # In-memory fake
+```
+
+### Required Patterns
+
+```python
+# ✅ CORRECT: Use official fixtures with proper markers
+@pytest.mark.requires_database
+@pytest.mark.integration
+def test_vector_search(iris_connection, clean_test_data):
+    cursor = iris_connection.cursor()
+    # Real IRIS operations
+    ...
+
+# ✅ CORRECT: E2E tests with full stack
+@pytest.mark.requires_database
+@pytest.mark.e2e
+def test_full_workflow(iris_cursor, clean_test_data):
+    # Real IRIS operations through the entire stack
+    ...
+```
+
+---
+
+## Marker Requirements
+
+### Marker-Fixture Consistency (ENFORCED)
+
+Any test using `iris_connection` or `iris_cursor` fixtures **MUST** have the `@pytest.mark.requires_database` marker. This is enforced by a pytest hook that will **fail tests** violating this policy.
+
+| If Test Uses...       | MUST Have Marker                 |
+| --------------------- | -------------------------------- |
+| `iris_connection`     | `@pytest.mark.requires_database` |
+| `iris_cursor`         | `@pytest.mark.requires_database` |
+| `iris_test_container` | `@pytest.mark.requires_database` |
+
+### Marker Definitions
+
+| Marker                           | Meaning                 | IRIS Required          |
+| -------------------------------- | ----------------------- | ---------------------- |
+| `@pytest.mark.requires_database` | Test requires live IRIS | **YES**                |
+| `@pytest.mark.integration`       | Integration test        | **YES**                |
+| `@pytest.mark.e2e`               | End-to-end test         | **YES**                |
+| `@pytest.mark.performance`       | Performance benchmark   | **YES**                |
+| (no marker)                      | Unit test               | May mock for isolation |
+
+---
+
+## Runtime Environment
+
+### Supported Runtime: `iris-devtester` Containers ONLY
+
+The **only supported runtime** for database tests is a dedicated container managed by `iris-devtester`:
+
+```python
+# From tests/conftest.py: attach to this project's container by name
+from iris_devtester import IRISContainer
+
+name = os.environ.get("IVG_TEST_CONTAINER", "ivg-iris-enterprise")
+container = IRISContainer.attach(name)
+```
+
+The user path runs on a stock container in `scripts/quickstart_e2e.py`: the
+repo's `docker-compose.yml`, the built wheel in a clean venv, the README and
+`docs/setup/QUICKSTART.md` code as published, `examples/demo_*.py`, and an
+upgrade from the last PyPI release. CI runs it on every push and weekly with a
+fresh image pull. Locally: `python scripts/quickstart_e2e.py --isolated`.
+
+### Prohibited Runtimes
+
+- ❌ Shared development IRIS instances
+- ❌ Production IRIS instances
+- ❌ Hardcoded port connections (e.g., `iris.connect(port=1972)`)
+- ❌ SQLite or other mock databases
+
+---
+
+## Policy Enforcement
+
+### Automated Enforcement
+
+A `pytest_runtest_setup` hook in `tests/conftest.py` enforces marker-fixture consistency:
+
+1. Before each test runs, the hook inspects the test's fixtures
+2. If `iris_connection` or `iris_cursor` is used without `@pytest.mark.requires_database`, the test **fails immediately**
+3. The failure message includes this policy document reference
+
+---
+
+## Coverage That Counts
+
+4.1.0 shipped five bugs (DEBT entry 10) that the suite had every chance to
+catch. Each rule below closes the gap one of them went through. Line coverage
+was above 89% the whole time: coverage says a line ran, not that the test would
+notice it doing the wrong thing.
+
+### CI must see what the tests see
+
+- **Main's CI is green before anything merges to it.** Main was red for eight
+  pushes; a red run that everyone ignores tests nothing. Check with `gh run
+list --branch main --limit 3` before a merge.
+- **Run `scripts/ci-parity.sh` before pushing.** It copies exactly what a
+  commit would carry into a scratch directory, builds fresh venvs from
+  `pyproject.toml` on 3.12 and 3.13, runs `tests/unit` with the live container
+  hidden, then builds the wheel, installs it into a clean venv and imports it
+  with `-W error`.
+- **No test reads a gitignored file.** `specs/` is ignored; spec files a test
+  reads are force-added (`git add -f`).
+  `tests/unit/test_ci_sees_what_tests_read.py` fails locally on any file
+  present but ignored.
+- **An optional package a test needs goes in the `dev` extra.** A bare
+  `importorskip` turns a missing dependency into a silent skip in CI
+  (jsonschema did that to the ledger schema check). CI prints `-rs`; read the
+  skips.
+- **`SKIP_IRIS_TESTS=true` does not hide a running container.** conftest skips
+  IRIS fixtures only when the container is absent, so a local "unit" run with
+  `ivg-iris-enterprise` up runs live tests CI never does. ci-parity hides the
+  Docker daemon (`DOCKER_HOST` at a socket that does not exist), as CI's runner
+  has none.
+- **The local `.venv` is not a clean install.** Three packages write
+  `iris/__init__.py` (intersystems-irispython, iris-embedded-python-wrapper,
+  sqlalchemy-iris, which iris-devtester pulled in before 1.20) and the last
+  installed wins. The `.venv` had the driver's copy; a uv-built venv got
+  sqlalchemy-iris 0.18.1's, whose driver loader looks for a file the driver
+  renamed in 5.2.0, so `iris.createIRIS` and `iris.IRISConnection` became the
+  wrapper's placeholder MagicMocks. pip resolved a newer sqlalchemy-iris, so CI
+  never saw it: a venv from a different resolver is a different install. Connections
+  "succeeded", `import iris.dbapi` failed on 3.12+, and tests that fed a
+  MagicMock connection into code expecting `createIRIS` to raise took other
+  branches. `iris_vector_graph/_iris_compat.py` repairs the namespace at
+  import; `tests/unit/test_iris_dbapi_import.py` checks it in a fresh
+  interpreter.
+- **A mock connection pins the branch it tests.** If the code under test has
+  a fallback, patch the step before it to fail or return nothing; do not rely
+  on a MagicMock making the driver raise. Patch what the code calls
+  (`eng._iris_obj`, `iris.dbapi` as an attribute), not a helper it does not.
+- **Never `--disable-warnings`, never a blanket `filterwarnings = ignore`.**
+  They hid the `SyntaxWarning` in `schema.py`. `SyntaxWarning` and IVG's own
+  `DeprecationWarning` are errors (`pyproject.toml` `filterwarnings`); other
+  warnings print in the summary, and a new filter targets one source and says
+  which in a comment.
+- **Anything that compares source text is normalized per interpreter.** 3.12's
+  f-string grammar (PEP 701) changed `ast.unparse` output, and an exact-text
+  allowlist failed on 3.12 only. Normalize both sides with
+  `ast.unparse(ast.parse(x))`. The CI matrix is `fail-fast: false` so a
+  one-version failure is not cancelled away.
+
+### Why 4.6.0's defects passed the suite, and what the gate now checks
+
+The 4.6.0 gates looked green while tier-1 defects shipped: wrong algorithm answers, numbers read back as text. Four
+causes, each closed by a check that fails rather than a rule someone has to remember (4.6.0 R306–R309):
+
+1. **100 E2E files never ran in a "full E2E".** 98 skip unless `IVG_NAMESPACE` names an `IVG460*` scratch namespace (49
+   test `startswith("IVG460F…")`, 12 use `reading_role460.requires_namespace`, 37 use `ns460alt.requires_namespace`,
+   whose namespace has the IVG Schema `RAG`), one unless `IVG_NS_IVG236` is set and one without
+   `IVG_SECONDARY_NAMESPACE`; a run in `USER` reported them as skips among 1577 others. `tests/e2e/gate.py` (`GateNamespaces`) now gives each such module a namespace made for the
+   run from the checkout under test (`IVG460FXG<run id>P` for `Graph_KG`, `…R` for `RAG`, and per-run names for
+   `IVG_SECONDARY_NAMESPACE`, `IVG_SPLIT_NAMESPACE`, `IVG_DRY_RUN_NS`, `IVG_NS_IVG236` and the two R299 variables). The
+   variable is set for that module only, while it is collected and while its tests run, so the session's own
+   namespace stays where it is. The namespaces the collected tests need are made together when collection ends,
+   before the first test, and dropped after the last, never mid-run: namespace creation and drops overlapping heavy
+   test writes preceded a container freeze (2026-11-05). `--collect-only` makes none (`IVG_GATE_KEEP_NAMESPACES=1` keeps them, `IVG_GATE_NAMESPACES=0` turns this off, a variable you set yourself is
+   left alone). A plain `pytest tests/e2e` runs them.
+2. **One driver.** The repo's `.venv` has intersystems-irispython 5.4.0 and a fresh install gets 5.4.1, which decode a
+   `$DOUBLE` stored in a `VARCHAR` column differently ([driver-drift.md](driver-drift.md)). `scripts/ci-parity.sh` now
+   runs the unit suite with each driver pinned, and when the test container is running,
+   `scripts/dev/driver_matrix.sh` runs the property-reading E2E files under both, in a namespace made for the run.
+3. **Expected answers taken from IVG's own output.** `test_235_patient_ranking_e2e.py` compared PPR with 4.1.0's
+   scores, which stopped early, so it held a wrong answer as the right one. It now checks each call against a walk
+   over the rows. `tests/unit/test_460_r309_no_captured_oracles.py` flags any test that reads a baseline, capture or
+   golden file, or imports a capture module, unless it is listed with the reason its content is not IVG's answer (a
+   golden SQL shape, an API surface, a seed manifest, timings, a recording for the TCK rescore tool).
+4. **Offline unit tests cannot see the IRIS boundary.** They mock IRIS, so a wrong decode, a wrong SQL answer or an
+   ObjectScript walk that disagrees with its docstring passes them. The live oracles cover that boundary: R306 runs
+   every algorithm method and `CALL` procedure against networkx over generated adversarial graphs; R307 runs every
+   writer against every reader under both drivers over an adversarial value set; R308 runs the native and SQL Cypher
+   executors as each other's oracle over generated queries, with hand-written expectations where they disagree. A
+   behaviour that crosses the driver, SQL or ObjectScript needs a live test with an independent expected answer, not
+   a unit test with a mock.
+
+**Gate mode.** `IVG_GATE=1` (exported by `scripts/ci-parity.sh`) turns any skipped test under `tests/e2e` into a
+failure that quotes the skip message, unless a line of `tests/e2e/gate_skips.txt` allows it:
+`<node id pattern> | <text the skip message contains> | <why>`. A module skipped at import is listed at the end and
+fails the run's exit status, a bare `pytest --collect-only` included, so a file whose scratch namespace is unset skips
+at setup, test by test, through `requires(...)` from `tests/e2e/scratch_vars.py` in its `pytestmark`, never at import
+(`tests/unit/test_460_scratch_namespace_skip_at_setup.py`). The list is reviewed like code. It never allows a skip that means the gate did not run:
+the container not running, `SKIP_IRIS_TESTS`, a scratch namespace not provided (`tests/unit/test_460_r309_gate_skips.py`
+refuses those). Run the full E2E in gate mode before a release:
+
+```bash
+IVG_GATE=1 IVG_TEST_CONTAINER=ivg-iris-enterprise IVG_PORT=31972 pytest tests/e2e -rs
+```
+
+### Test what ships, where it runs
+
+- **Test the installed wheel, not the checkout.** The wheel shipped no
+  ObjectScript classes because every test ran from the source tree, where
+  `iris_src/` exists. CI's `wheel` job and ci-parity install the wheel and
+  assert the classes are in site-packages.
+- **Deploy into a fresh namespace at least once per release**, and on a
+  container without embedded Python or `%AI.*` where the change touches class
+  deployment. The enterprise image has both, which hid a compile set that
+  fails without them.
+- **Legacy installs come from frozen DDL, not hand-written tables.** Every
+  release in `tests/e2e/fixtures/old_releases.py` freezes its own
+  `initialize_schema` statements (`generate_old_snapshot.py --ddl`). The 2.x
+  fixtures once had none, so no test could build a 2.x schema and the dry run
+  crashed on the first real one. `tests/e2e/test_upgrade_dry_run_2x.py` is the
+  model: replay the DDL, rows and globals into `IVGLEGACY`, run the operation,
+  check the result.
+
+### ObjectScript is measured, not assumed
+
+A class in `iris_src/` that no test executes is the same debt as an untested Python module, and the
+Python coverage number cannot see it. The line monitor can: `scripts/line_coverage/run_gate.sh` runs
+the suite under `%Monitor.System.LineByLine` and `check_gate.py` holds the union to
+`docs/dev/objectscript-coverage-floor.json` (adjusted percentage, no unexplained zero-coverage class,
+every shipped class listed). The monitor undercounts in ways that matter when you read a number:
+routines are per namespace (FHIR code runs in IVGFHIR, scratch tests in IVG236), a pooled job that
+loaded a routine before the monitor started is not counted, and recompiling a class mid-run stops the
+count for jobs already running. See `docs/dev/notes/research/objectscript-line-coverage.md`. Reaching code a test
+cannot call is usually possible: drive a REST dispatcher with stubbed `%request`, make one table refuse
+a write with a `BEFORE INSERT` trigger that sets `%ok=0`, write drift straight into `^KG`, reach a
+Private method through a throwaway subclass.
+
+### Assert the state, not the call
+
+- **Integration tests assert what the database holds afterwards,** not the SQL
+  that was sent. `delete_node` issued the right `DELETE`s, and a named-graph
+  node's vectors stayed in `kg_emb_<hash>` because none of them targeted that
+  table.
+- **A dry run is proven read-only by a before/after snapshot** of columns,
+  constraints, indexes, routines, compiled classes, row counts and globals.
+  Every step of a multi-step operation gets a whole dry run, not a per-helper
+  one.
+- **Cover the cross product the feature introduces.** Named graphs x vectors x
+  delete was never exercised together. When a spec adds a dimension (graph
+  scope, a new store), list the existing write/delete paths and add a case per
+  path.
+- **No `except Exception: return False` on a path that changes data.** It
+  turned a failed delete into a quiet `False`. Let it raise, or catch the
+  specific error and say what was not done.
+- **Every message that names a call which writes says it writes.** An operator
+  running a dry run reads the hint as safe.
+  `test_upgrade_dry_run_read_only.py` scans the migrations' `RuntimeError`
+  messages for this.
+
+### Environment
+
+- The spec 236 files (`ivg_236_scratch`) run in the namespace `IVG_NS_IVG236` names, and skip
+  until it is set: the fixture deploys the checkout's classes and setup there, and the tests
+  erase it, so name one you own (`scripts/dev/make_scratch_namespace.py`). Any fixture that
+  puts IVG into a namespace takes the name from an environment variable its module docstring
+  names (`tests/unit/test_460_r191_scratch_namespace_env.py`).
+- Enterprise container only (`ivg-iris-enterprise`, 31972). Scratch
+  namespaces: `IVGTEST`, `IVGREKEY`, `IVGSEC`
+  (`IVG_SECONDARY_NAMESPACE=IVGSEC`), `IVGLEGACY`, `IVGFIX`, `IVGFIX20`. The
+  FHIR files run in `IVGFHIR`; CONTRIBUTING.md, "The FHIR namespace (IVGFHIR)",
+  makes it on a new container.
+- Timing assertions do not run under load. A full-suite run alongside other
+  work is not a benchmark; rerun a timing failure alone before believing it.
+
+---
+
+## Rationale
+
+### Why No Mocking?
+
+1. **IRIS-Specific Behavior**: IRIS SQL has unique behaviors (`VECTOR` column width enforcement, `%ID` columns, stored procedures) that mocks cannot replicate
+2. **Vector Operations**: Embedding similarity calculations require a real `VECTOR_COSINE` scan over declared-width columns
+3. **Graph Queries**: Multi-hop traversals and RRF fusion depend on actual data distribution
+4. **Regression Prevention**: Mocked tests pass while production fails—we've learned this the hard way
+
+### Why Dedicated Containers?
+
+1. **Isolation**: Each test session gets a clean database state
+2. **Reproducibility**: CI/CD produces identical results to local development
+3. **Port Safety**: Dynamic port allocation prevents conflicts
+4. **Password Handling**: fixtures log in as `_SYSTEM`; iris-devtester 1.20 no longer creates a `test`/`test` user
+
+---
+
+**Author**: Thomas Dyar (<thomas.dyar@intersystems.com>)
+
+---
+
+## Unified Test Runner
+
+The project's standard test command is `pytest`. The `run-tests` entry point described below is a project-specific CLI wrapper that may or may not be present depending on how the package was installed.
+
+> **Current recommended commands:**
+>
+> ```bash
+> pytest tests/unit/ -q                  # unit tests (no IRIS required)
+> pytest tests/e2e/ -q                   # e2e tests (requires IRIS container)
+> pytest tests/ -q -m "not e2e"          # all non-e2e tests
+> ```
+>
+> **DEPRECATED**: `tests/python/run_all_tests.py` is deprecated. Use `run-tests` instead.
+
+### Usage
+
+```bash
+# Entry point (after uv sync)
+run-tests                    # Run all tests
+run-tests unit               # Fast unit tests (no database)
+run-tests integration        # Database integration tests
+run-tests e2e                # Full end-to-end tests
+run-tests ux                 # UI tests (auto-starts demo server)
+run-tests --quick            # Run unit + integration only
+
+# Pytest passthrough
+run-tests unit -- -x --pdb   # Pass arguments directly to pytest
+```
+
+### Test Categories
+
+| Category      | Markers                                         | Demo Server | Database |
+| ------------- | ----------------------------------------------- | ----------- | -------- |
+| `unit`        | `not (requires_database or e2e or integration)` | No          | No       |
+| `integration` | `integration` or `requires_database`            | No          | Required |
+| `e2e`         | `e2e`                                           | Optional    | Required |
+| `ux`          | `e2e` + `*_ui.py`                               | **Auto**    | Required |
+| `contract`    | `tests/contract/`                               | No          | Required |
+
+### Demo Server Lifecycle
+
+For `ux` tests, the runner automatically:
+
+1. Starts the demo server on port 8200
+2. Waits for health check (up to 30s)
+3. Executes requested tests
+4. Gracefully shuts down the server
+
+Override with `--no-demo-server` if the server is already running.
+
+### Migration from Legacy Runner
+
+```bash
+# Old (deprecated)
+python tests/python/run_all_tests.py --category api
+python tests/python/run_all_tests.py --quick
+
+# New
+run-tests integration
+run-tests --quick
+```

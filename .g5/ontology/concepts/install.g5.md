@@ -93,6 +93,17 @@ The ObjectScript classes follow the IVG Schema because setup rewrites their sour
 
 Using any IVG Schema, the default one or another, must not make a write, erase or read path more than 5% slower than the last code state before spec 262. A benchmark gate checks it.
 
+## Status reports
+
+<a id="install.status"></a>
+[I · install.status]
+
+Status reports current row counts across every graph, while the ordinary count methods report the default graph or the graph named by the caller. Its embedding totals count each distinct legacy or registered table of that kind, treating an older registry row with no kind as a node route.
+
+- An install without a registry still reports its legacy embedding counts.
+- A registered table that cannot be counted is named as an error, and completed counts remain available.
+- If the graph census fails, the human report marks the graph size as unknown rather than printing an invented zero; the structured status keeps completed counts and probe errors.
+
 ## Setup
 
 <a id="install.setup"></a>
@@ -450,6 +461,16 @@ Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verificati
 - operations
 
 The clarification is a recorded human answer; FR-020a names the baseline code state `a42db224` and the gate's run rule (medians of at least 5 interleaved runs per path; Tom's allowed paths may cost up to twice their recorded cost). The gate was not run in this uplift. Added by review round 3 R3-reader M24.
+### install.status
+- Sources: [USER_GUIDE, status counts every graph](../../../docs/USER_GUIDE.md#L1203); [ADMIN_GUIDE, status fields and unknown probes](../../../docs/ADMIN_GUIDE.md#L920); [registry-kind and partial count tests](../../../tests/unit/test_230_status_counts.py); [report graph scope](../../../tests/unit/test_460_r050_status_counts_every_graph.py); [failed census and unknown report](../../../tests/unit/test_460_r050_status_unknown.py)
+- Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_raw_catalog_to_final_report`, `theorem_route_tables_never_double_count`, `theorem_registry_kind_and_shape_both_required`, `theorem_failed_table_keeps_other_counts` and `theorem_failure_is_unknown_not_empty`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). Raw rows and registry/error fields derive partial census and graph/node-vector report knowledge. Actual Python executes local SQL and the final reader under a stable registry view and refusal outcome across the two kind scans; transient per-read registry changes, native/index/schema truth, general IRIS comparison/driver semantics, other report fields and cross-read snapshots remain outside this correspondence. Label/property/edge-vector errors do not by themselves make graph size unknown.
+- agent
+- user-facing-behavior, operations
+- test-coverage
+
+This owner recovers ordinary reporting intent from the primary docs and tests before the selected reporting implementation is modeled. Graph identity and the meaning of an omitted graph remain with [graph scope](graph-scope.g5.md#graph.default). Probe availability, native counters, readiness flags and other status fields are separate conditions; this count/report rule does not certify them or a transactionally consistent snapshot across separate reads. The selected producer-to-report relation has been independently replayed within the linked package's stated source and provider frame.
+
+
 ### install.setup
 
 - Sources: [ADMIN_GUIDE: Running setup again](../../../docs/ADMIN_GUIDE.md); [_engine/schema.py initialize_schema](../../../iris_vector_graph/_engine/schema.py); [Spec 262 Edge Cases (Privileges)](../../../specs/262-ivg-owned-sql-schema/spec.md); [CHANGELOG v4.7.0](../../../CHANGELOG.md)

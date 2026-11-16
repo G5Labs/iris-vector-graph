@@ -1,0 +1,55 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_reader_none_difference"
+    ],
+    "find": "else if embedded && r[0] is Null{read_scores(rows.drop_first(),embedded,exact)}",
+    "name": "embedded-keeps-None-id",
+    "replace": "else if false{read_scores(rows.drop_first(),embedded,exact)}",
+    "why": "Actual embedded reader filters None ID before float conversion, unlike DBAPI."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_reader_none_difference"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/vector_admission/catalog.rs": "17f002c56f196ca6a21a616d83e971a575f4f91042a9768a190c78b9c57b53cd",
+    ".g5/Verus_verification/models/vector_admission/json_width.rs": "74b80e052447a335fe4aeb81de069dad03a99cbf56f02a9736bb6261998170e2",
+    ".g5/Verus_verification/models/vector_admission/model.json": "d66a2896070991db3935a3927a246ce57a52bf495e0a1fa57cdcc4c57fd584d6",
+    ".g5/Verus_verification/models/vector_admission/numbers.rs": "1d179939e358597a336d4ab7cbcd6a3facc34858ddc665a5132b07d26cab96f0",
+    ".g5/Verus_verification/models/vector_admission/parser.rs": "e1eb5e6d8846c94f950acaf0a8eeb2639fbd86d4d4ed8fbbcf21160e8d142642",
+    ".g5/Verus_verification/models/vector_admission/vector_admission.rs": "1d4b0e46d75da60cb4b5e3852f9d361e4fcd4c6fb994143240b1271ff1ffda2b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/controls/embedded-keeps-None-id/20261115T213428Z/models/vector_admission/vector_admission.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_reader_none_difference": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/20261115T213428Z-control-embedded-keeps-None-id-theorem_reader_none_difference.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration11-vector-20261115/verus/vector_admission/20261115T213428Z-control-embedded-keeps-None-id.log",
+    "timed_out": false,
+    "verified": 76
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/vector_admission/20261115T213434Z-control-embedded-keeps-None-id/logs/20261115T213428Z-control-embedded-keeps-None-id-theorem_reader_none_difference.log": "530cf961015a060e71b9512dfa4097205f829ddbfe592233a30c7a544b40dbf1",
+    ".g5/Verus_verification/results/vector_admission/20261115T213434Z-control-embedded-keeps-None-id/logs/20261115T213428Z-control-embedded-keeps-None-id.log": "f737c2e9ab88cedc42b29e6220340132bb2c7a9b867f2bdb47bd99cddcb61bf8"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

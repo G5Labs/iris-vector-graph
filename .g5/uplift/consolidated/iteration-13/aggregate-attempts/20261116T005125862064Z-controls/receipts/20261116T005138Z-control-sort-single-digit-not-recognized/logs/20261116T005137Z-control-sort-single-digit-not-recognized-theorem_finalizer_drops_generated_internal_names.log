@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/sort-single-digit-not-recognized/20261116T005137Z/models/aggregate_results/aggregate_results.rs:142:10
+    |
+140 | pub proof fn theorem_finalizer_drops_generated_internal_names(v:int,name:Seq<char>)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+141 |  requires !internal(name),
+142 |  ensures public_cells(seq![RawCell{name:seq!['_','_','r','n'],value:9},RawCell{name,value:v},RawCell{name:seq!['_','_','s','o','r','t','0'],value:4}])==seq![RawCell{name,value:v}],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

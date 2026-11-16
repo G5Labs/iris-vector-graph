@@ -1,0 +1,5 @@
+{"name":"route_recheck","root":"route_recheck.rs","expected_verified":6,"product_baseline":"3eaa79cf77d3e0a879b2cced634cf2729d81499e","controls":[
+{"name":"late-recheck","why":"threshold call fails to restart","find":"t.since >= n","replace":"t.since > n","expect_fail_in":["theorem_before_and_at_threshold"]},
+{"name":"keep-trial-timings","why":"a new trial reuses old timing counts","find":"trial: true, native_ms: 0, sql_runs: 0, last: None","replace":"trial: true, native_ms: r.native_ms, sql_runs: r.sql_runs, last: r.last","expect_fail_in":["theorem_reset_derives_native_first"]},
+{"name":"retry-sql-after-failure","why":"permanent failed-SQL guard removed","find":"if path != r.held || r.failed { r }","replace":"if path != r.held { r }","expect_fail_in":["theorem_sql_failure_survives_rechecks"]}
+]}

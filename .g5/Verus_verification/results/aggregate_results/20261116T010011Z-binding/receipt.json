@@ -1,0 +1,1540 @@
+{
+  "cases": [
+    {
+      "kind": "WITH sum",
+      "raw": [],
+      "rows": [
+        [
+          0
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1",
+          "params": [
+            "Report",
+            "v"
+          ],
+          "source": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT Graph_KG.CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "WITH sum",
+      "raw": [
+        [
+          "g",
+          "0",
+          "A",
+          null
+        ]
+      ],
+      "rows": [
+        [
+          0
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1",
+          "params": [
+            "Report",
+            "v"
+          ],
+          "source": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT Graph_KG.CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "WITH sum",
+      "raw": [
+        [
+          "g",
+          "0",
+          "A",
+          1
+        ],
+        [
+          "g",
+          "1",
+          "A",
+          3
+        ]
+      ],
+      "rows": [
+        [
+          4
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1",
+          "params": [
+            "Report",
+            "v"
+          ],
+          "source": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT Graph_KG.CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "WITH sum",
+      "raw": [
+        [
+          "g",
+          "0",
+          "A",
+          1.5
+        ],
+        [
+          "g",
+          "1",
+          "A",
+          2.5
+        ]
+      ],
+      "rows": [
+        [
+          4.0
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1",
+          "params": [
+            "Report",
+            "v"
+          ],
+          "source": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT Graph_KG.CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "WITH sum",
+      "raw": [
+        [
+          "g",
+          "0",
+          "A",
+          1
+        ],
+        [
+          "g",
+          "1",
+          "A",
+          1.5
+        ]
+      ],
+      "rows": [
+        [
+          2.5
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1",
+          "params": [
+            "Report",
+            "v"
+          ],
+          "source": "WITH Stage1 AS (\nSELECT CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(p2.val)) = 1 THEN CAST(SUM(p2.val) AS DOUBLE) ELSE CASE WHEN SUM(p2.val) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(p2.val) END END AS s\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '')\n)\nSELECT Graph_KG.CY_TYPED(Stage1.s) AS s\nFROM Stage1\nWHERE 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {},
+      "raw": [],
+      "rows": [
+        [
+          [],
+          []
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x FROM (SELECT 1) _empty WHERE 1=0) u0",
+          "params": [
+            null
+          ],
+          "source": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x FROM (SELECT 1) _empty WHERE 1=0) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {
+        "values": []
+      },
+      "raw": [],
+      "rows": [
+        [
+          [],
+          []
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT value AS x FROM json_each(?)) u0",
+          "params": [
+            "[]"
+          ],
+          "source": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM JSON_TABLE(?, '$[*]' COLUMNS (x VARCHAR(1000) PATH '$')) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {},
+      "raw": [
+        null
+      ],
+      "rows": [
+        [
+          [],
+          []
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT NULL AS x) u0",
+          "params": [],
+          "source": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT NULL AS x) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {
+        "values": [
+          null
+        ]
+      },
+      "raw": [
+        null
+      ],
+      "rows": [
+        [
+          [],
+          []
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT value AS x FROM json_each(?)) u0",
+          "params": [
+            "[null]"
+          ],
+          "source": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM JSON_TABLE(?, '$[*]' COLUMNS (x VARCHAR(1000) PATH '$')) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {},
+      "raw": [
+        1,
+        1,
+        null,
+        2.5
+      ],
+      "rows": [
+        [
+          [
+            1,
+            1,
+            2.5
+          ],
+          [
+            1,
+            2.5
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x UNION ALL SELECT ? AS x) u0",
+          "params": [
+            1,
+            1,
+            2.5
+          ],
+          "source": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x UNION ALL SELECT ? AS x) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {
+        "values": [
+          1,
+          1,
+          null,
+          2.5
+        ]
+      },
+      "raw": [
+        1,
+        1,
+        null,
+        2.5
+      ],
+      "rows": [
+        [
+          [
+            1,
+            1,
+            2.5
+          ],
+          [
+            1,
+            2.5
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT value AS x FROM json_each(?)) u0",
+          "params": [
+            "[1, 1, null, 2.5]"
+          ],
+          "source": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM JSON_TABLE(?, '$[*]' COLUMNS (x VARCHAR(1000) PATH '$')) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {},
+      "raw": [
+        "a",
+        "b",
+        "a",
+        null
+      ],
+      "rows": [
+        [
+          [
+            "a",
+            "b",
+            "a"
+          ],
+          [
+            "a",
+            "b"
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x) u0",
+          "params": [
+            "a",
+            "b",
+            "a"
+          ],
+          "source": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {
+        "values": [
+          "a",
+          "b",
+          "a",
+          null
+        ]
+      },
+      "raw": [
+        "a",
+        "b",
+        "a",
+        null
+      ],
+      "rows": [
+        [
+          [
+            "a",
+            "b",
+            "a"
+          ],
+          [
+            "a",
+            "b"
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT value AS x FROM json_each(?)) u0",
+          "params": [
+            "[\"a\", \"b\", \"a\", null]"
+          ],
+          "source": "SELECT COALESCE(JSON_ARRAYAGG(u0.x), CAST('[]' AS VARCHAR(256))) AS xs, COALESCE(JSON_ARRAYAGG(DISTINCT u0.x), CAST('[]' AS VARCHAR(256))) AS dx\nFROM JSON_TABLE(?, '$[*]' COLUMNS (x VARCHAR(1000) PATH '$')) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {},
+      "raw": [
+        false,
+        true,
+        null
+      ],
+      "rows": [
+        [
+          [
+            false,
+            true
+          ],
+          [
+            false,
+            true
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x) u0",
+          "params": [
+            false,
+            true
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {
+        "values": [
+          false,
+          true,
+          null
+        ]
+      },
+      "raw": [
+        false,
+        true,
+        null
+      ],
+      "rows": [
+        [
+          [
+            false,
+            true
+          ],
+          [
+            false,
+            true
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x) u0",
+          "params": [
+            false,
+            true
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT NULL AS x) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {},
+      "raw": [
+        true,
+        true,
+        false
+      ],
+      "rows": [
+        [
+          [
+            true,
+            true,
+            false
+          ],
+          [
+            true,
+            false
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT ? AS x) u0",
+          "params": [
+            true,
+            true,
+            false
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT ? AS x) u0"
+        }
+      ]
+    },
+    {
+      "kind": "collect literal/parameter",
+      "params": {
+        "values": [
+          true,
+          true,
+          false
+        ]
+      },
+      "raw": [
+        true,
+        true,
+        false
+      ],
+      "rows": [
+        [
+          [
+            true,
+            true,
+            false
+          ],
+          [
+            true,
+            false
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT ? AS x) u0",
+          "params": [
+            true,
+            true,
+            false
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN u0.x = 1 THEN 'true' WHEN u0.x = 0 THEN 'false' ELSE 'null' END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM (SELECT ? AS x UNION ALL SELECT ? AS x UNION ALL SELECT ? AS x) u0"
+        }
+      ]
+    },
+    {
+      "kind": "property collect",
+      "raw": [],
+      "rows": [
+        [
+          [],
+          []
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p2.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p2.val)) WHEN EXACT(p2.val) = 'true' OR EXACT(p2.val) = 'false' THEN EXACT(p2.val) WHEN EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p2.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p2.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p3.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p3.val)) WHEN EXACT(p3.val) = 'true' OR EXACT(p3.val) = 'false' THEN EXACT(p3.val) WHEN EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p3.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p3.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) WHEN %EXACT(p2.val) = 'true' OR %EXACT(p2.val) = 'false' THEN %EXACT(p2.val) WHEN %EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p2.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p2.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) WHEN %EXACT(p3.val) = 'true' OR %EXACT(p3.val) = 'false' THEN %EXACT(p3.val) WHEN %EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p3.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p3.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "property collect",
+      "raw": [
+        [
+          "g",
+          "0",
+          "A",
+          null
+        ],
+        [
+          "g",
+          "1",
+          "A",
+          null
+        ]
+      ],
+      "rows": [
+        [
+          [],
+          []
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p2.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p2.val)) WHEN EXACT(p2.val) = 'true' OR EXACT(p2.val) = 'false' THEN EXACT(p2.val) WHEN EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p2.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p2.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p3.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p3.val)) WHEN EXACT(p3.val) = 'true' OR EXACT(p3.val) = 'false' THEN EXACT(p3.val) WHEN EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p3.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p3.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) WHEN %EXACT(p2.val) = 'true' OR %EXACT(p2.val) = 'false' THEN %EXACT(p2.val) WHEN %EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p2.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p2.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) WHEN %EXACT(p3.val) = 'true' OR %EXACT(p3.val) = 'false' THEN %EXACT(p3.val) WHEN %EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p3.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p3.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "property collect",
+      "raw": [
+        [
+          "g",
+          "0",
+          "A",
+          1
+        ],
+        [
+          "g",
+          "1",
+          "A",
+          2.5
+        ],
+        [
+          "g",
+          "2",
+          "A",
+          null
+        ],
+        [
+          "g",
+          "3",
+          "A",
+          1
+        ]
+      ],
+      "rows": [
+        [
+          [
+            1,
+            2.5,
+            1
+          ],
+          [
+            1,
+            2.5
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p2.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p2.val)) WHEN EXACT(p2.val) = 'true' OR EXACT(p2.val) = 'false' THEN EXACT(p2.val) WHEN EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p2.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p2.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p3.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p3.val)) WHEN EXACT(p3.val) = 'true' OR EXACT(p3.val) = 'false' THEN EXACT(p3.val) WHEN EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p3.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p3.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) WHEN %EXACT(p2.val) = 'true' OR %EXACT(p2.val) = 'false' THEN %EXACT(p2.val) WHEN %EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p2.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p2.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) WHEN %EXACT(p3.val) = 'true' OR %EXACT(p3.val) = 'false' THEN %EXACT(p3.val) WHEN %EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p3.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p3.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "property collect",
+      "raw": [
+        [
+          "g",
+          "0",
+          "A",
+          "7"
+        ],
+        [
+          "g",
+          "1",
+          "A",
+          "text"
+        ],
+        [
+          "g",
+          "2",
+          "A",
+          ""
+        ],
+        [
+          "g",
+          "3",
+          "A",
+          null
+        ]
+      ],
+      "rows": [
+        [
+          [
+            "7",
+            "text",
+            ""
+          ],
+          [
+            "7",
+            "text",
+            ""
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p2.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p2.val)) WHEN EXACT(p2.val) = 'true' OR EXACT(p2.val) = 'false' THEN EXACT(p2.val) WHEN EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p2.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p2.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p3.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p3.val)) WHEN EXACT(p3.val) = 'true' OR EXACT(p3.val) = 'false' THEN EXACT(p3.val) WHEN EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p3.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p3.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) WHEN %EXACT(p2.val) = 'true' OR %EXACT(p2.val) = 'false' THEN %EXACT(p2.val) WHEN %EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p2.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p2.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) WHEN %EXACT(p3.val) = 'true' OR %EXACT(p3.val) = 'false' THEN %EXACT(p3.val) WHEN %EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p3.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p3.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "property collect",
+      "raw": [
+        [
+          "g",
+          "0",
+          "A",
+          "true"
+        ],
+        [
+          "g",
+          "1",
+          "A",
+          "false"
+        ]
+      ],
+      "rows": [
+        [
+          [
+            true,
+            false
+          ],
+          [
+            true,
+            false
+          ]
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p2.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p2.val)) WHEN EXACT(p2.val) = 'true' OR EXACT(p2.val) = 'false' THEN EXACT(p2.val) WHEN EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p2.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p2.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p3.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p3.val)) WHEN EXACT(p3.val) = 'true' OR EXACT(p3.val) = 'false' THEN EXACT(p3.val) WHEN EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p3.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p3.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COALESCE('[' || LIST(NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p2.val)) WHEN %EXACT(p2.val) = 'true' OR %EXACT(p2.val) = 'false' THEN %EXACT(p2.val) WHEN %EXACT(p2.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p2.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p2.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs, COALESCE('[' || LIST(DISTINCT NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p3.val)) WHEN %EXACT(p3.val) = 'true' OR %EXACT(p3.val) = 'false' THEN %EXACT(p3.val) WHEN %EXACT(p3.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p3.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p3.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS dx\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "kind": "generic graph+ID distinct",
+      "raw": [
+        [
+          "g",
+          "same",
+          "A",
+          2
+        ],
+        [
+          "other",
+          "same",
+          "A",
+          9
+        ]
+      ],
+      "rows": [
+        [
+          "A",
+          2
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(DISTINCT EXACT(n0.graph_id || CHAR(1) || n0.node_id)) AS c\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\nWHERE l1.s IS NOT NULL\nGROUP BY EXACT(p2.val)",
+          "params": [
+            "Report",
+            "k"
+          ],
+          "source": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(DISTINCT %EXACT(n0.graph_id || CHAR(1) || n0.node_id)) AS c\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\nWHERE l1.s IS NOT NULL\nGROUP BY %EXACT(p2.val)"
+        }
+      ]
+    },
+    {
+      "disposition": "As-built R298 typed fallback; not equated to ordinary raw-row SUM fold; no new issue inferred.",
+      "kind": "leading OPTIONAL null-row",
+      "query": "USE GRAPH 'g' OPTIONAL MATCH (n:Report) RETURN count(*) AS star,count(n.v) AS c,sum(n.v) AS s,avg(n.v) AS a,collect(n.v) AS xs",
+      "raw": [],
+      "rows": [
+        [
+          1,
+          0,
+          0,
+          null,
+          []
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT CASE WHEN COUNT(*) = 0 THEN 1 ELSE COUNT(*) END AS star, COUNT(EXACT(p2.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p3.val))) = 1 THEN CAST(SUM(EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(EXACT(p3.val)) END END) AS s, AVG(EXACT(p4.val)) AS a, COALESCE('[' || LIST(NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p5.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p5.val)) WHEN EXACT(p5.val) = 'true' OR EXACT(p5.val) = 'false' THEN EXACT(p5.val) WHEN EXACT(p5.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p5.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p5.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT CASE WHEN COUNT(*) = 0 THEN 1 ELSE COUNT(*) END AS star, COUNT(%EXACT(p2.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p3.val))) = 1 THEN CAST(SUM(%EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p3.val)) END END) AS s, AVG(%EXACT(p4.val)) AS a, COALESCE('[' || LIST(NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p5.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p5.val)) WHEN %EXACT(p5.val) = 'true' OR %EXACT(p5.val) = 'false' THEN %EXACT(p5.val) WHEN %EXACT(p5.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p5.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p5.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "disposition": "As-built R298 typed fallback; not equated to ordinary raw-row SUM fold; no new issue inferred.",
+      "kind": "leading OPTIONAL null-row",
+      "query": "USE GRAPH 'g' OPTIONAL MATCH (n:Report) RETURN n.k AS k,count(*) AS star,count(n.v) AS c,sum(n.v) AS s,avg(n.v) AS a,collect(n.v) AS xs",
+      "raw": [],
+      "rows": [
+        [
+          null,
+          1,
+          0,
+          null,
+          null,
+          []
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(EXACT(p3.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p4.val))) = 1 THEN CAST(SUM(EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(EXACT(p4.val)) END END) AS s, AVG(EXACT(p5.val)) AS a, COALESCE('[' || LIST(NULLIF(CASE WHEN CY_JSON_NUM(EXACT(p6.val)) IS NOT NULL THEN CY_JSON_NUM(EXACT(p6.val)) WHEN EXACT(p6.val) = 'true' OR EXACT(p6.val) = 'false' THEN EXACT(p6.val) WHEN EXACT(p6.val) = '' THEN '\"\"' ELSE COALESCE(CY_JSON_LISTMAP(EXACT(p6.val)), RTRIM(SUBSTR(JSON_ARRAY(EXACT(p6.val)), 2), ']')) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p6 ON p6.s = n0.node_id AND p6.\"key\" = ? AND COALESCE(p6.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)\nUNION ALL\nSELECT NULL, 1, 0, NULL, NULL, '[]' WHERE NOT EXISTS (SELECT 1 FROM rdf_labels WHERE COALESCE(graph_id, '') = COALESCE('g', '') AND label = ?)",
+          "params": [
+            "Report",
+            "k",
+            "v",
+            "v",
+            "v",
+            "v",
+            "Report"
+          ],
+          "source": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(%EXACT(p3.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p4.val))) = 1 THEN CAST(SUM(%EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p4.val)) END END) AS s, AVG(%EXACT(p5.val)) AS a, COALESCE('[' || LIST(NULLIF(CASE WHEN Graph_KG.CY_JSON_NUM(%EXACT(p6.val)) IS NOT NULL THEN Graph_KG.CY_JSON_NUM(%EXACT(p6.val)) WHEN %EXACT(p6.val) = 'true' OR %EXACT(p6.val) = 'false' THEN %EXACT(p6.val) WHEN %EXACT(p6.val) = '' THEN '\"\"' ELSE COALESCE(Graph_KG.CY_JSON_LISTMAP(%EXACT(p6.val)), TRIM(TRAILING ']' FROM SUBSTRING(JSON_ARRAY(%EXACT(p6.val)), 2))) END, 'null')) || ']', CAST('[]' AS VARCHAR(256))) AS xs\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n0.node_id AND p6.\"key\" = ? AND COALESCE(p6.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)\nUNION ALL\nSELECT NULL, 1, 0, NULL, NULL, '[]' WHERE NOT EXISTS (SELECT 1 FROM Graph_KG.rdf_labels WHERE COALESCE(graph_id, '') = COALESCE('g', '') AND label = ?)"
+        }
+      ]
+    },
+    {
+      "kind": "edge multiplicity",
+      "raw_edges": [
+        [
+          "g",
+          "a",
+          "R",
+          "b",
+          "e0"
+        ],
+        [
+          "g",
+          "a",
+          "R",
+          "b",
+          "e1"
+        ]
+      ],
+      "rows": [
+        [
+          2,
+          2
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COUNT(*) AS c, COUNT(DISTINCT e3.edge_id) AS d\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nJOIN rdf_edges e3 ON e3.s = n0.node_id AND e3.p = ? AND COALESCE(e3.graph_id, '') = COALESCE('g', '')\nJOIN nodes n2 ON n2.node_id = e3.o_id AND COALESCE(n2.graph_id, '') = COALESCE('g', '')\nJOIN rdf_labels l4 ON l4.s = n2.node_id AND l4.label = ? AND COALESCE(l4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND l4.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "R",
+            "Report"
+          ],
+          "source": "SELECT COUNT(*) AS c, COUNT(DISTINCT e3.edge_id) AS d\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nJOIN Graph_KG.rdf_edges e3 ON e3.s = n0.node_id AND e3.p = ? AND COALESCE(e3.graph_id, '') = COALESCE('g', '')\nJOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND COALESCE(n2.graph_id, '') = COALESCE('g', '')\nJOIN Graph_KG.rdf_labels l4 ON l4.s = n2.node_id AND l4.label = ? AND COALESCE(l4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND l4.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "c"
+      ],
+      "kind": "page",
+      "rows": [
+        [
+          "A",
+          2
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT * FROM (SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS c, EXACT(CY_SORT_KEY(COUNT(*), 'x')) AS __sort0\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)) __ob ORDER BY __sort0 DESC LIMIT 1",
+          "params": [
+            "Report",
+            "k"
+          ],
+          "source": "SELECT TOP 1 * FROM (SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS c, %EXACT(Graph_KG.CY_SORT_KEY(COUNT(*), 'x')) AS __sort0\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)) __ob ORDER BY __sort0 DESC"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "c"
+      ],
+      "kind": "page",
+      "rows": [
+        [
+          "B",
+          1
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT * FROM (\nSELECT ROW_NUMBER() OVER(ORDER BY __sort0 DESC) AS __rn, __q.* FROM (SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS c, EXACT(CY_SORT_KEY(COUNT(*), 'x')) AS __sort0\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)) __q\n) __paged WHERE __rn > 1 AND __rn <= 2 ORDER BY __rn",
+          "params": [
+            "Report",
+            "k"
+          ],
+          "source": "SELECT * FROM (\nSELECT ROW_NUMBER() OVER(ORDER BY __sort0 DESC) AS __rn, __q.* FROM (SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS c, %EXACT(Graph_KG.CY_SORT_KEY(COUNT(*), 'x')) AS __sort0\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)) __q\n) __paged WHERE __rn > 1 AND __rn <= 2 ORDER BY __rn"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "c"
+      ],
+      "kind": "page",
+      "rows": [],
+      "trace": [
+        {
+          "adapted": "SELECT * FROM (SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS c, EXACT(CY_SORT_KEY(COUNT(*), 'x')) AS __sort0\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)) __ob ORDER BY __sort0 DESC LIMIT 0",
+          "params": [
+            "Report",
+            "k"
+          ],
+          "source": "SELECT TOP 0 * FROM (SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS c, %EXACT(Graph_KG.CY_SORT_KEY(COUNT(*), 'x')) AS __sort0\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)) __ob ORDER BY __sort0 DESC"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "value",
+        "c"
+      ],
+      "kind": "empty columns",
+      "query": "MATCH (n) RETURN n.v AS value,count(*) AS c LIMIT 0"
+    },
+    {
+      "columns": [],
+      "kind": "empty columns",
+      "query": "MATCH (n) RETURN *"
+    },
+    {
+      "baseline_agrees": true,
+      "corrupted": [
+        [
+          4,
+          1
+        ]
+      ],
+      "corrupted_rejected": true,
+      "kind": "actual-observation sensitivity",
+      "oracle": {
+        "count": 1,
+        "items": [
+          2
+        ],
+        "mean": 2.0,
+        "star": 3,
+        "total": 2
+      },
+      "produced": [
+        [
+          3,
+          1
+        ]
+      ],
+      "raw": [
+        [
+          "g",
+          "x",
+          "A",
+          2
+        ],
+        [
+          "g",
+          "y",
+          "A",
+          2
+        ],
+        [
+          "g",
+          "z",
+          "B",
+          null
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COUNT(*) AS star, COUNT(DISTINCT EXACT(p2.val)) AS c\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v"
+          ],
+          "source": "SELECT COUNT(*) AS star, COUNT(DISTINCT %EXACT(p2.val)) AS c\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ],
+      "wanted": [
+        [
+          3,
+          1
+        ]
+      ]
+    }
+  ],
+  "comparisons": 669,
+  "elapsed_s": 0.7115461670327932,
+  "fixtures": 160,
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/NOTES.md": "da49ad270b2172570199fa726406a0267fa74874b4c02d9020c206f71b9f8a4e",
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/binding.py": "1f46e6fd82cd0ee32a362be5c75ece98820b54635880881a082508b5610f9a2a",
+    ".g5/Verus_verification/models/aggregate_results/binding_inputs.json": "692b9daccc585040575fe387272bf4324ec2f8b0c82a1080c6e4c1b08beeaf9b",
+    ".g5/Verus_verification/models/aggregate_results/functional_model.py": "19f96e81f4e546f0713193e9d7958465de2e4d026ba9f9a4f36eeaf98c8d56e4",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/aggregate_results/probe.py": "b8f88e1905e433844d48d76362e1994da31b5009a225fb8e2c65f9f51fabc338",
+    ".g5/Verus_verification/models/aggregate_results/provider.py": "86b5b3a06db87bedfa820c895969b0e9d246451c69bc408896a1c4724802e00e",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/temporal_restore/binding.py": "cdd4459d65727c894b6be1aca1a1f61ad56cb1325592bacc9dcb5471a7608fe1",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    ".g5/uplift/consolidated/iteration-13/aggregate-PAIRS.md": "6149c50425968f5bec4a71f42a7524d76fb2af19363695741deb00876e4cde4d",
+    ".g5/uplift/consolidated/iteration-13/aggregate-start.json": "99c6f2e6ccfb86f121598cc22e318d8b6f9e705dff31c789efb25eef3392ba35",
+    ".g5/uplift/consolidated/iteration-13/inputs.json": "0bedc61fdb9418ec503a1b48364cc93d82d4af7ccd93289f7b0f7ad9c139149a",
+    ".g5/uplift/consolidated/iteration-13/root-aggregate-native-PAIRS.md": "9003f04854741882c8b2d65fcbaca8271a518a2de550666d854b7c19faf950fa",
+    ".g5/uplift/consolidated/iteration-13/root-aggregate-native.json": "d352baad29a0a2b18d22e51238e89f1d6c95794b3900351094f0ad95dfc33c2f",
+    ".g5/uplift/consolidated/iteration-13/root-aggregate-native.log": "b7904e125a9b5c488c5b733e8ccf078b66a972555497e0f62f346726236b0297",
+    ".g5/uplift/consolidated/iteration-13/root-aggregate-native.py": "979b7cc551d39ad2c27731e38537ce0ff54baa4300b430842a67d7faabe7e848",
+    ".g5/uplift/consolidated/iteration-13/root-aggregate-types-PAIRS.md": "c7c20d9d6d67f86732e74a0e30754c7fe6b85e18cfc64af2bea439d9d0d0c644",
+    ".g5/uplift/consolidated/iteration-13/root-aggregate-types-native.json": "5e0445513a0bf14ac4bb79b30486a170a708988e852bebbe6d9cda18502152a6",
+    ".g5/uplift/consolidated/iteration-13/root-aggregate-types-native.log": "e5406105766777dc78d9285e4dc5f30ec632c53837d0116c1b9f6fdc7a406489",
+    ".g5/uplift/consolidated/iteration-13/root-aggregate-types-native.py": "dbf5b76e9eecf61a739d092a7b0ee680877604055a59fedd5f390f3f40e45433",
+    ".g5/uplift/consolidated/iteration-13/root-optional-aggregate-PAIRS.md": "46ae8a0e7d828bc52f0be930ab8d1dd7f21e25f9f6f70b00fc3dcd76af35030e",
+    ".g5/uplift/consolidated/iteration-13/root-optional-aggregate-native.json": "4a5de7b237c7200fdffca4aa7a7a127b72e359383b592eb34241d91e618c74ba",
+    ".g5/uplift/consolidated/iteration-13/root-optional-aggregate-native.log": "493b95ad49391ecf6b80525c818c70b3248703ed6370e14bb97bce8d4cc8e47a",
+    ".g5/uplift/consolidated/iteration-13/root-optional-aggregate-native.py": "0ecc1893e3b4dc84c6b25b65d2f0b308bd9b31dd9c19404221ac9bcdebf33770",
+    ".g5/uplift/consolidated/iteration-5/native-setup.json": "00f2a10ec6c71dcfef54013d462875481bd76ef3d7a8c9dc0e291aae63058cdf",
+    "iris_src/src/Graph/KG/Cypher/Exec.cls": "fb9d10518bdf1ef6c342f63782db906df365a078e9dd64270ec7111d3bfb8213",
+    "iris_vector_graph/_engine/nodes_edges.py": "7eb2ea4761f66c683db0dd8b55132bb5c2347855acb14ab5ed0f8210543857c7",
+    "iris_vector_graph/_engine/query.py": "197e7abc8ae204165b363ba4fc17445cb6fc7f789efd3b9dad6d88b0334945a3",
+    "iris_vector_graph/cypher/ast.py": "7f496760b78a58e40a785b0a13301fcc182c1d31d9e97451a84902aed9d75d5e",
+    "iris_vector_graph/cypher/native_plan.py": "43073cfa2e413162e5c96bbe9103c3faedc9ff572574a6b3cf6857cde8fb91d6",
+    "iris_vector_graph/cypher/parser.py": "fb75d7be8289d65934e3bf40673c8e77db29e220a030d781b548f55820061805",
+    "iris_vector_graph/cypher/translator.py": "0a37bc8fb5c00a26a3b672eb524de6cbc8e5c8092f4415fb5c83a96c7fe8d78c",
+    "iris_vector_graph/prop_values.py": "27d03759444be20e7efc3498ec70925658d561e44ffbee75282b550a47ab4f56",
+    "iris_vector_graph/schema.py": "711bc93c5fc6d485dace4ebdd1815b278bb52ed696e03cd483f978e65958a0b7",
+    "iris_vector_graph/stores/iris_sql_store.py": "737df8a794a979d2c2e4f3af100508fd05c1907893ec2fa65f2fc440e34ff153",
+    "tests/e2e/test_470_issue13_count_distinct_limit_e2e.py": "23507d1e73a02fe0c2e19913b695a6f9ab50ac4e2f0bcd395773f6c5850e55ca",
+    "tests/unit/test_253_native_plan_groups.py": "36c62d095a5707825b5a6bcc86af2b953bff8012c440a3e1d96e47010ae5085e",
+    "tests/unit/test_460_r298_fixes46_leftovers.py": "5494cec6a91433c835c14941495a23c4e0583c74b45a8c65cb04e096d9c3bdf2",
+    "tests/unit/test_460_r308_collect_typed.py": "5bfd0831bed0fb66a9ceadce3306f3a0b4dd219f34939c200c49b94989b792bd",
+    "tests/unit/test_460_r308_guards.py": "48af8a8436c13adadc32c61963d1ef57cd2dee75881fe6bb40c347f25816538b",
+    "tests/unit/test_empty_result_columns.py": "f352d773d780307c31780a190d5a4cc1cb368134b2aafc28005d23f582dd157f",
+    "tests/unit/test_order_limit_aggregate_scope.py": "a8b32f663905b7e34c89cf5c1e7460355086797fd96a5810b6bbe24abc03f745",
+    "tests/unit/test_sum_column_typing.py": "ed7bcd0e19cc564e8f0f83d974f7c160c1940de13a6988b11bf8b8d1fde6ee0f"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "aggregate_results",
+  "native_calls": 0,
+  "pin_export_equals_current": {
+    "iris_src/src/Graph/KG/Cypher/Exec.cls": true,
+    "iris_vector_graph/_engine/query.py": true,
+    "iris_vector_graph/cypher/ast.py": true,
+    "iris_vector_graph/cypher/parser.py": true,
+    "iris_vector_graph/cypher/translator.py": true,
+    "iris_vector_graph/prop_values.py": true,
+    "iris_vector_graph/schema.py": true,
+    "iris_vector_graph/stores/iris_sql_store.py": true
+  },
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.8",
+  "scope": "Finite correspondence of real parser, translator, QueryMixin._execute_parsed_sql, IRISGraphStore.execute_sql and _finish_sql_result with a local executing SQLite provider. SQL numeric/equality/collation/UDF/JSON substitutes, not native-body/driver/codec theorem. Numeric inputs exact half units; scalar collection cases; actual source mutants separate from provider/observation controls.",
+  "sensitivities": [
+    {
+      "detected": true,
+      "name": "SQL distinct removed provider contrast"
+    },
+    {
+      "detected": true,
+      "name": "actual produced observation corruption rejected"
+    },
+    {
+      "detected": true,
+      "name": "actual translator DISTINCT omission"
+    },
+    {
+      "detected": true,
+      "name": "actual translator raw-float presence lost"
+    },
+    {
+      "detected": true,
+      "name": "actual finalizer internal sort retained"
+    },
+    {
+      "detected": true,
+      "name": "actual finalizer JSON decode omitted"
+    },
+    {
+      "detected": true,
+      "name": "actual translator collection null admitted"
+    },
+    {
+      "detected": true,
+      "name": "actual finalizer AVG float type omitted"
+    },
+    {
+      "detected": true,
+      "name": "actual finalizer SUM tag decode omitted"
+    }
+  ],
+  "socket_attempts": 0,
+  "trace_examples": [
+    {
+      "columns": [
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN count(*) AS star,count(n.v) AS c,sum(n.v) AS s,avg(n.v) AS a",
+      "raw": [],
+      "rows": [
+        [
+          0,
+          0,
+          0,
+          null
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COUNT(*) AS star, COUNT(EXACT(p2.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p3.val))) = 1 THEN CAST(SUM(EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(EXACT(p3.val)) END END) AS s, AVG(EXACT(p4.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COUNT(*) AS star, COUNT(%EXACT(p2.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p3.val))) = 1 THEN CAST(SUM(%EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p3.val)) END END) AS s, AVG(%EXACT(p4.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN count(*) AS star,count(DISTINCT n.v) AS c,sum(DISTINCT n.v) AS s,avg(DISTINCT n.v) AS a",
+      "raw": [],
+      "rows": [
+        [
+          0,
+          0,
+          0,
+          null
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COUNT(*) AS star, COUNT(DISTINCT EXACT(p2.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p3.val))) = 1 THEN CAST(SUM(DISTINCT EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT EXACT(p3.val)) END END) AS s, AVG(DISTINCT EXACT(p4.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COUNT(*) AS star, COUNT(DISTINCT %EXACT(p2.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p3.val))) = 1 THEN CAST(SUM(DISTINCT %EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT %EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT %EXACT(p3.val)) END END) AS s, AVG(DISTINCT %EXACT(p4.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN n.k AS k, count(*) AS star,count(n.v) AS c,sum(n.v) AS s,avg(n.v) AS a",
+      "raw": [],
+      "rows": [],
+      "trace": [
+        {
+          "adapted": "SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(EXACT(p3.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p4.val))) = 1 THEN CAST(SUM(EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(EXACT(p4.val)) END END) AS s, AVG(EXACT(p5.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)",
+          "params": [
+            "Report",
+            "k",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(%EXACT(p3.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p4.val))) = 1 THEN CAST(SUM(%EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p4.val)) END END) AS s, AVG(%EXACT(p5.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN n.k AS k, count(*) AS star,count(DISTINCT n.v) AS c,sum(DISTINCT n.v) AS s,avg(DISTINCT n.v) AS a",
+      "raw": [],
+      "rows": [],
+      "trace": [
+        {
+          "adapted": "SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(DISTINCT EXACT(p3.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p4.val))) = 1 THEN CAST(SUM(DISTINCT EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT EXACT(p4.val)) END END) AS s, AVG(DISTINCT EXACT(p5.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)",
+          "params": [
+            "Report",
+            "k",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(DISTINCT %EXACT(p3.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p4.val))) = 1 THEN CAST(SUM(DISTINCT %EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT %EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT %EXACT(p4.val)) END END) AS s, AVG(DISTINCT %EXACT(p5.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN count(*) AS star,count(n.v) AS c,sum(n.v) AS s,avg(n.v) AS a",
+      "raw": [
+        [
+          "g",
+          "n0",
+          "A",
+          null
+        ]
+      ],
+      "rows": [
+        [
+          1,
+          0,
+          0,
+          null
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COUNT(*) AS star, COUNT(EXACT(p2.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p3.val))) = 1 THEN CAST(SUM(EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(EXACT(p3.val)) END END) AS s, AVG(EXACT(p4.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COUNT(*) AS star, COUNT(%EXACT(p2.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p3.val))) = 1 THEN CAST(SUM(%EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p3.val)) END END) AS s, AVG(%EXACT(p4.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN count(*) AS star,count(DISTINCT n.v) AS c,sum(DISTINCT n.v) AS s,avg(DISTINCT n.v) AS a",
+      "raw": [
+        [
+          "g",
+          "n0",
+          "A",
+          null
+        ]
+      ],
+      "rows": [
+        [
+          1,
+          0,
+          0,
+          null
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COUNT(*) AS star, COUNT(DISTINCT EXACT(p2.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p3.val))) = 1 THEN CAST(SUM(DISTINCT EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT EXACT(p3.val)) END END) AS s, AVG(DISTINCT EXACT(p4.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COUNT(*) AS star, COUNT(DISTINCT %EXACT(p2.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p3.val))) = 1 THEN CAST(SUM(DISTINCT %EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT %EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT %EXACT(p3.val)) END END) AS s, AVG(DISTINCT %EXACT(p4.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN n.k AS k, count(*) AS star,count(n.v) AS c,sum(n.v) AS s,avg(n.v) AS a",
+      "raw": [
+        [
+          "g",
+          "n0",
+          "A",
+          null
+        ]
+      ],
+      "rows": [
+        [
+          "A",
+          1,
+          0,
+          0,
+          null
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(EXACT(p3.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p4.val))) = 1 THEN CAST(SUM(EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(EXACT(p4.val)) END END) AS s, AVG(EXACT(p5.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)",
+          "params": [
+            "Report",
+            "k",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(%EXACT(p3.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p4.val))) = 1 THEN CAST(SUM(%EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p4.val)) END END) AS s, AVG(%EXACT(p5.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN n.k AS k, count(*) AS star,count(DISTINCT n.v) AS c,sum(DISTINCT n.v) AS s,avg(DISTINCT n.v) AS a",
+      "raw": [
+        [
+          "g",
+          "n0",
+          "A",
+          null
+        ]
+      ],
+      "rows": [
+        [
+          "A",
+          1,
+          0,
+          0,
+          null
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(DISTINCT EXACT(p3.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p4.val))) = 1 THEN CAST(SUM(DISTINCT EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT EXACT(p4.val)) END END) AS s, AVG(DISTINCT EXACT(p5.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)",
+          "params": [
+            "Report",
+            "k",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(DISTINCT %EXACT(p3.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p4.val))) = 1 THEN CAST(SUM(DISTINCT %EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT %EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT %EXACT(p4.val)) END END) AS s, AVG(DISTINCT %EXACT(p5.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN count(*) AS star,count(n.v) AS c,sum(n.v) AS s,avg(n.v) AS a",
+      "raw": [
+        [
+          "g",
+          "n0",
+          "A",
+          1
+        ],
+        [
+          "other",
+          "n0",
+          "A",
+          99
+        ]
+      ],
+      "rows": [
+        [
+          1,
+          1,
+          1,
+          1.0
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COUNT(*) AS star, COUNT(EXACT(p2.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p3.val))) = 1 THEN CAST(SUM(EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(EXACT(p3.val)) END END) AS s, AVG(EXACT(p4.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COUNT(*) AS star, COUNT(%EXACT(p2.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p3.val))) = 1 THEN CAST(SUM(%EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p3.val)) END END) AS s, AVG(%EXACT(p4.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN count(*) AS star,count(DISTINCT n.v) AS c,sum(DISTINCT n.v) AS s,avg(DISTINCT n.v) AS a",
+      "raw": [
+        [
+          "g",
+          "n0",
+          "A",
+          1
+        ],
+        [
+          "other",
+          "n0",
+          "A",
+          99
+        ]
+      ],
+      "rows": [
+        [
+          1,
+          1,
+          1,
+          1.0
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT COUNT(*) AS star, COUNT(DISTINCT EXACT(p2.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p3.val))) = 1 THEN CAST(SUM(DISTINCT EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT EXACT(p3.val)) END END) AS s, AVG(DISTINCT EXACT(p4.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1",
+          "params": [
+            "Report",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT COUNT(*) AS star, COUNT(DISTINCT %EXACT(p2.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p3.val))) = 1 THEN CAST(SUM(DISTINCT %EXACT(p3.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT %EXACT(p3.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT %EXACT(p3.val)) END END) AS s, AVG(DISTINCT %EXACT(p4.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN n.k AS k, count(*) AS star,count(n.v) AS c,sum(n.v) AS s,avg(n.v) AS a",
+      "raw": [
+        [
+          "g",
+          "n0",
+          "A",
+          1
+        ],
+        [
+          "other",
+          "n0",
+          "A",
+          99
+        ]
+      ],
+      "rows": [
+        [
+          "A",
+          1,
+          1,
+          1,
+          1.0
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(EXACT(p3.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p4.val))) = 1 THEN CAST(SUM(EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(EXACT(p4.val)) END END) AS s, AVG(EXACT(p5.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)",
+          "params": [
+            "Report",
+            "k",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(%EXACT(p3.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p4.val))) = 1 THEN CAST(SUM(%EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(%EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(%EXACT(p4.val)) END END) AS s, AVG(%EXACT(p5.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)"
+        }
+      ]
+    },
+    {
+      "columns": [
+        "k",
+        "star",
+        "c",
+        "s",
+        "a"
+      ],
+      "query": "USE GRAPH 'g' MATCH (n:Report) RETURN n.k AS k, count(*) AS star,count(DISTINCT n.v) AS c,sum(DISTINCT n.v) AS s,avg(DISTINCT n.v) AS a",
+      "raw": [
+        [
+          "g",
+          "n0",
+          "A",
+          1
+        ],
+        [
+          "other",
+          "n0",
+          "A",
+          99
+        ]
+      ],
+      "rows": [
+        [
+          "A",
+          1,
+          1,
+          1,
+          1.0
+        ]
+      ],
+      "trace": [
+        {
+          "adapted": "SELECT CY_TYPED(EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(DISTINCT EXACT(p3.val)) AS c, CY_TYPED(CASE WHEN MAX(CY_IS_FLOAT(EXACT(p4.val))) = 1 THEN CAST(SUM(DISTINCT EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT EXACT(p4.val)) END END) AS s, AVG(DISTINCT EXACT(p5.val)) AS a\nFROM nodes n0\nJOIN rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY EXACT(p2.val)",
+          "params": [
+            "Report",
+            "k",
+            "v",
+            "v",
+            "v"
+          ],
+          "source": "SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS k, COUNT(*) AS star, COUNT(DISTINCT %EXACT(p3.val)) AS c, Graph_KG.CY_TYPED(CASE WHEN MAX(Graph_KG.CY_IS_FLOAT(%EXACT(p4.val))) = 1 THEN CAST(SUM(DISTINCT %EXACT(p4.val)) AS DOUBLE) ELSE CASE WHEN SUM(DISTINCT %EXACT(p4.val)) IS NULL THEN CAST(0 AS INTEGER) ELSE SUM(DISTINCT %EXACT(p4.val)) END END) AS s, AVG(DISTINCT %EXACT(p5.val)) AS a\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.label = ? AND COALESCE(l1.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.\"key\" = ? AND COALESCE(p2.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.\"key\" = ? AND COALESCE(p3.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.\"key\" = ? AND COALESCE(p4.graph_id, '') = COALESCE('g', '')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.\"key\" = ? AND COALESCE(p5.graph_id, '') = COALESCE('g', '')\nWHERE l1.s IS NOT NULL AND COALESCE(n0.graph_id, '') = COALESCE('g', '') AND 1=1\nGROUP BY %EXACT(p2.val)"
+        }
+      ]
+    }
+  ],
+  "verdict": "AGREES"
+}

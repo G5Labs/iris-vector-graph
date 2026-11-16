@@ -1,0 +1,367 @@
+"""Deploy IVG's ObjectScript classes from the installed package, over the connection.
+
+The ``.cls`` sources ship inside the wheel (``iris_vector_graph/iris_src/src``) and
+travel to the server as ``%Stream.GlobalCharacter`` streams loaded with
+``%SYSTEM.OBJ.LoadStream``, so nothing has to be copied onto the server's
+filesystem first. (``%Compiler.UDL.TextServices.SetTextFromString`` is not used:
+it rejects ``[ SqlSchemaName = ... ]`` class headers and some argumented QUITs
+that ``%SYSTEM.OBJ.Load`` accepts.) Only classes the server can compile are
+compiled: a class with ``[ Language = python ]`` methods needs embedded Python, a
+class naming ``%AI.*`` needs those classes installed, and a class that names a
+skipped class is skipped with it. A fingerprint of the compiled source set is kept
+in :data:`MARKER`, and an unchanged set is not reinstalled.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import logging
+import os
+import re
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Callable, Dict, List, Optional, Tuple
+
+from iris_vector_graph.schema_name import (
+    FORWARDER_CLASS,
+    SCHEMA_CLASS_MARKER,
+    SCHEMA_CLASSES,
+    refuse_other_record,
+    rewrite_schema_text,
+    same_schema,
+    schema_package,
+)
+
+logger = logging.getLogger(__name__)
+
+#: ``(global, subscript)`` holding the fingerprint of the last source set compiled.
+MARKER = ("^IVG.Deploy", "fingerprint")
+
+#: A class that every deploy compiles; its absence means the marker is stale.
+SENTINEL_CLASS = "Graph.KG.PageRank"
+
+#: Characters per stream ``Write``: every class IVG ships is one (the largest is about 114,000), each call well under
+#: IRIS's longest string (3,641,144). One Write per 16,000 characters cost 108 round trips for 67 classes (fixes74).
+STREAM_CHUNK = 1_000_000
+
+_PY_METHOD = re.compile(r"\[[^\]\n]*\bLanguage\s*=\s*python\b", re.IGNORECASE)
+_AI_CLASS = re.compile(r"(?<![\w.])%AI(?:\.\w+)+")
+_FUNCTIONAL_INDEX = re.compile(r"^Class\s+\S+\s+Extends\s+\(?[^\n]*%(?:Library\.)?FunctionalIndex", re.M)
+
+
+def packaged_class_dir() -> Optional[Path]:
+    """The directory of ``.cls`` sources: the wheel's copy, else the source tree's."""
+    pkg = Path(__file__).resolve().parent.parent
+    for candidate in (pkg / "iris_src" / "src", pkg.parent / "iris_src" / "src"):
+        if (candidate / "Graph" / "KG").is_dir():
+            return candidate
+    return None
+
+
+def read_class_sources(class_dir: Path) -> Dict[str, str]:
+    """``{class name: UDL text}`` for every ``.cls`` under ``class_dir``."""
+    sources = {}
+    for path in sorted(class_dir.rglob("*.cls")):
+        name = ".".join(path.relative_to(class_dir).with_suffix("").parts)
+        sources[name] = path.read_text(encoding="utf-8")
+    return sources
+
+
+def uses_embedded_python(source: str) -> bool:
+    return bool(_PY_METHOD.search(source))
+
+
+def _names(name: str) -> re.Pattern:
+    return re.compile(r"(?<![\w.%])" + re.escape(name) + r"(?![\w])")
+
+
+def select_classes(
+    sources: Dict[str, str],
+    embedded_python: bool,
+    class_exists: Callable[[str], bool],
+) -> Tuple[List[str], Dict[str, str]]:
+    """Split ``sources`` into the classes to compile and ``{skipped: reason}``."""
+    skipped: Dict[str, str] = {}
+    for name, text in sources.items():
+        if not embedded_python and uses_embedded_python(text):
+            skipped[name] = "needs embedded Python, which this server does not have"
+            continue
+        missing = sorted({c for c in _AI_CLASS.findall(text) if not class_exists(c)})
+        if missing:
+            skipped[name] = f"needs {', '.join(missing)}, not installed on this server"
+
+    changed = True
+    while changed:
+        changed = False
+        for name, text in sources.items():
+            if name in skipped:
+                continue
+            for dep in list(skipped):
+                if _names(dep).search(text):
+                    skipped[name] = f"depends on {dep}, which is skipped"
+                    changed = True
+                    break
+
+    selected = [n for n in sources if n not in skipped]
+    return selected, skipped
+
+
+def rewrite_sources(sources: Dict[str, str], schema: str) -> Dict[str, str]:
+    """``sources`` rewritten for the namespace's IVG Schema (spec 262, research R1).
+
+    Every SQL name of IVG's moves from ``Graph_KG`` to ``schema`` (the token, so ``Graph_KG.rdf_edges`` and
+    ``'Graph_KG'`` alike, but not a code class's ``SqlSchemaName = Graph_KG``), every table or function class from
+    ``Graph.KG`` to the schema's package, and so do the schema classes (``Graph.KG.SqlProcs``, the ledger tables:
+    R084), which are keyed under their new names; IVG's code classes and globals stay. Done before the classes load,
+    so their embedded SQL names the schema at compile time and nothing reads it at run time. The identity for
+    ``Graph_KG``.
+    """
+    return {rewrite_schema_text(name, schema): rewrite_schema_text(text, schema) for name, text in sources.items()}
+
+
+def fingerprint(sources: Dict[str, str]) -> str:
+    h = hashlib.sha256()
+    for name in sorted(sources):
+        h.update(name.encode())
+        h.update(b"\0")
+        h.update(sources[name].encode("utf-8"))
+        h.update(b"\0")
+    return h.hexdigest()
+
+
+def embedded_python_available(iris_obj) -> bool:
+    """Whether the server can run ``[ Language = python ]``; ``IVG_EMBEDDED_PYTHON`` overrides."""
+    override = os.environ.get("IVG_EMBEDDED_PYTHON", "").strip()
+    if override in ("0", "1"):
+        return override == "1"
+    try:
+        iris_obj.classMethodObject("%SYS.Python", "Import", "sys")
+        return True
+    except Exception as exc:
+        logger.debug("Embedded Python unavailable (%s); skipping Python classes", exc)
+        return False
+
+
+def class_exists(iris_obj, name: str) -> bool:
+    try:
+        return bool(int(iris_obj.classMethodValue("%Dictionary.CompiledClass", "%ExistsId", name)))
+    except Exception:
+        return False
+
+
+@dataclass
+class DeployResult:
+    deployed: bool = False
+    unchanged: bool = False
+    compiled: List[str] = field(default_factory=list)
+    skipped: Dict[str, str] = field(default_factory=dict)
+    errors: List[str] = field(default_factory=list)
+    #: ``{class: the server's error}`` for each class whose load or compile failed: ``initialize_schema()`` replies it
+    #: as ``objectscript_failed`` (4.6.0 R299). ``errors`` holds the same as ``"class: error"`` lines, and also errors
+    #: that belong to no one class.
+    failed: Dict[str, str] = field(default_factory=dict)
+
+    def fail(self, name: str, error: str) -> None:
+        self.failed[name] = error
+        self.errors.append(f"{name}: {error}")
+
+
+def _invoke(obj, method, *args):
+    """``obj.invoke`` on a Native API object; a plain call on an ``iris.cls`` object."""
+    if hasattr(obj, "invoke"):
+        return obj.invoke(method, *args)
+    # irispython spells `%Save` as `_Save`.
+    return getattr(obj, "_" + method[1:] if method.startswith("%") else method)(*args)
+
+
+def _ok(iris_obj, status) -> bool:
+    if status == 1 or str(status) == "1":  # $$$OK as the server returns it: no round trip to read it (fixes74)
+        return True
+    try:
+        return bool(int(iris_obj.classMethodValue("%SYSTEM.Status", "IsOK", status)))
+    except Exception:
+        return False
+
+
+def _error_text(iris_obj, status) -> str:
+    try:
+        return str(iris_obj.classMethodValue("%SYSTEM.Status", "GetErrorText", status) or "")
+    except Exception:
+        return str(status)
+
+
+def foreign_schema_classes(iris_obj, sources: Dict[str, str], schema: str) -> List[str]:
+    """The schema classes about to load into ``schema``'s package whose name is already taken by a class without
+    the marker parameter: an application's own (its table ``IVGALT.SqlProcs``), which a load would replace. None for
+    ``Graph_KG``, whose package ``Graph.KG`` is IVG's own. Asked of ``^oddDEF`` through the Native API, which an
+    embedded process has too; no dictionary object is opened (4.6.0 pre-release truth-tested one, which irispython
+    cannot do)."""
+    if same_schema(schema, "Graph_KG"):
+        return []
+    package = schema_package(schema)
+    taken = []
+    for name in sorted(sources):
+        name_package, _, short = name.rpartition(".")
+        if name_package != package or short not in SCHEMA_CLASSES:
+            continue
+        defined = int(iris_obj.isDefined("^oddDEF", name) or 0)
+        if defined and not int(iris_obj.isDefined("^oddDEF", name, "p", SCHEMA_CLASS_MARKER) or 0):
+            taken.append(name)
+    return taken
+
+
+def _unchanged(iris_obj, sources: Dict[str, str]) -> bool:
+    """Whether :data:`MARKER` holds ``sources``' fingerprint and every one of them is compiled.
+
+    Every class, not only the sentinel (4.6.0 R299): another release's deploy that failed over this one leaves the
+    marker as it was and the classes it could not compile gone (pre-R084 code over 4.6.0 left IVG.Percentile and nine
+    more uncompiled), so a skip on the marker alone kept them gone.
+    """
+    try:
+        current = iris_obj.get(*MARKER)
+    except Exception:
+        current = None
+    return current == fingerprint(sources) and class_exists(iris_obj, SENTINEL_CLASS) and all(
+        class_exists(iris_obj, name) for name in sorted(sources)
+    )
+
+
+def upload_and_compile(
+    iris_obj, namespace: str, sources: Dict[str, str], force: bool = False, schema: str = "Graph_KG"
+) -> DeployResult:
+    """Load ``sources`` into ``namespace`` and compile them as one list.
+
+    Skipped when :data:`MARKER` already holds this source set's fingerprint and
+    :data:`SENTINEL_CLASS` and every class of ``sources`` are compiled, unless ``force``. The
+    marker is cleared before the load and written only after a clean compile, so a failed
+    deploy is retried next time.
+    """
+    result = DeployResult(compiled=sorted(sources))
+    fp = fingerprint(sources)
+    if not force and _unchanged(iris_obj, sources):
+        result.unchanged = True
+        return result
+
+    # R084: the schema classes load into the IVG Schema's package; never over a class IVG did not make there.
+    taken = foreign_schema_classes(iris_obj, sources, schema)
+    if taken:
+        for name in taken:
+            result.fail(name, f"a class of this name that IVG did not create is in package {name.rsplit('.', 1)[0]}; "
+                              "nothing was loaded (choose another IVG Schema, or move that class)")
+        return result
+
+    # The marker of the last clean deploy goes before anything loads: if this one fails partway, the next setup
+    # deploys again instead of skipping over what it left (R299).
+    iris_obj.kill(*MARKER)
+    for name in sorted(sources):
+        text = sources[name]
+        stream = iris_obj.classMethodObject("%Stream.GlobalCharacter", "%New")
+        for i in range(0, len(text), STREAM_CHUNK):
+            _invoke(stream, "Write", text[i : i + STREAM_CHUNK])
+        _invoke(stream, "Rewind")
+        # Load only; compiling one class at a time would fail on forward references.
+        status = iris_obj.classMethodValue("%SYSTEM.OBJ", "LoadStream", stream, "-d")
+        if not _ok(iris_obj, status):
+            result.fail(name, _error_text(iris_obj, status))
+
+    # A functional-index type has to exist before a class indexing with it compiles
+    # (7e13672: `Graph.KG.Edge` failed every LoadDir because it sorted first).
+    first = sorted(n for n in sources if _FUNCTIONAL_INDEX.search(sources[n]))
+    # The SQL procedures' forwarder last: until the code classes recompile without [ SqlProc ], an upgraded
+    # namespace's copies still project the same names, and its compile fails on them (ERROR #5083; R084).
+    last = sorted(n for n in sources if n.rsplit(".", 1)[-1] == FORWARDER_CLASS and n not in first)
+    rest = sorted(n for n in sources if n not in first and n not in last)
+    for batch in (first, rest, last):
+        if not batch:
+            continue
+        spec = ",".join(f"{n}.cls" for n in batch)
+        # A method generator may read another class of the batch (%AI.ToolSet's %Discover reads Graph.KG.MCPTools,
+        # which Graph.KG.MCPToolSet declares with DependsOn). For a dependency not declared, CompileList compiles
+        # every class it can, so a second pass finds those compiled. Only its errors count.
+        for _ in range(2):
+            status = iris_obj.classMethodValue("%SYSTEM.OBJ", "CompileList", spec, "ck-d")
+            if _ok(iris_obj, status):
+                break
+        else:
+            # Build 154 failed the batch on Graph.KG.MCPToolSet ("MCPTools has not had inheritance
+            # resolved", before its DependsOn) although every class compiles alone, so compile them one at
+            # a time before calling the deploy failed.
+            for name in batch:
+                one = iris_obj.classMethodValue("%SYSTEM.OBJ", "CompileList", f"{name}.cls", "ck-d")
+                if not _ok(iris_obj, one):
+                    result.fail(name, _error_text(iris_obj, one))
+
+    result.deployed = True
+    if not result.errors:
+        iris_obj.set(fp, *MARKER)
+    return result
+
+
+def native_for(conn):
+    """The Native API object the deploy works through: ``EmbeddedIRIS`` inside IRIS (which has no
+    ``iris.createIRIS``), else ``iris.createIRIS`` on the real connection under a schema wrapper."""
+    from iris_vector_graph.embedded import EmbeddedConnection, EmbeddedIRIS
+
+    if isinstance(conn, EmbeddedConnection):
+        return EmbeddedIRIS(py_names=True)  # %New is _New under irispython
+    import iris as _iris_pkg
+
+    return _iris_pkg.createIRIS(getattr(conn, "_connection", conn))
+
+
+def _selected_sources(iris_obj, class_dir: Path, schema: str) -> Tuple[Dict[str, str], Dict[str, str]]:
+    """The packaged sources the server can compile, rewritten for ``schema``, and ``{skipped: reason}``.
+
+    Spec 262: the sources name the namespace's IVG Schema before they load, and the fingerprint is taken over what
+    loads, so a namespace on another schema compiles its own text (research R1).
+    """
+    sources = rewrite_sources(read_class_sources(class_dir), schema)
+    selected, skipped = select_classes(
+        sources,
+        embedded_python=embedded_python_available(iris_obj),
+        class_exists=lambda n: class_exists(iris_obj, n),
+    )
+    return {n: sources[n] for n in selected}, skipped
+
+
+def plan_packaged_classes(iris_obj, force: Optional[bool] = None, schema: str = "Graph_KG") -> Optional[DeployResult]:
+    """What :func:`deploy_packaged_classes` would do on ``iris_obj``'s namespace, loading and writing nothing (4.6.0
+    R050, the dry run): ``compiled`` the classes it would compile (none when the set is unchanged), ``unchanged`` and
+    ``skipped`` as a deploy reports them. None when no sources ship."""
+    class_dir = packaged_class_dir()
+    if class_dir is None:
+        return None
+    if force is None:
+        force = os.environ.get("IVG_FORCE_CLASS_DEPLOY", "") == "1"
+    chosen, skipped = _selected_sources(iris_obj, class_dir, schema)
+    unchanged = not force and _unchanged(iris_obj, chosen)
+    return DeployResult(unchanged=unchanged, compiled=[] if unchanged else sorted(chosen), skipped=skipped)
+
+
+def deploy_packaged_classes(
+    conn, force: Optional[bool] = None, schema: str = "Graph_KG"
+) -> Optional[DeployResult]:
+    """Deploy the packaged classes into ``conn``'s namespace; None when none ship.
+
+    ``force`` defaults to ``IVG_FORCE_CLASS_DEPLOY=1``. Raises ``IVGSchemaError``, having loaded nothing, when the
+    namespace records an IVG Schema other than ``schema`` (4.6.0 R173).
+    """
+    class_dir = packaged_class_dir()
+    if class_dir is None:
+        return None
+    if force is None:
+        force = os.environ.get("IVG_FORCE_CLASS_DEPLOY", "") == "1"
+
+    iris_obj = native_for(conn)
+    # R173: a namespace recorded under another IVG Schema gets nothing, not this schema's classes beside its own.
+    refuse_other_record(iris_obj, schema)
+    namespace = str(iris_obj.classMethodValue("%SYSTEM.SYS", "NameSpace"))
+
+    chosen, skipped = _selected_sources(iris_obj, class_dir, schema)
+    result = upload_and_compile(iris_obj, namespace, chosen, force, schema=schema)
+    result.skipped = skipped
+    for name, reason in sorted(skipped.items()):
+        logger.debug("ObjectScript class %s not deployed: %s", name, reason)  # initialize_schema's summary names it
+    for err in result.errors:
+        logger.warning("ObjectScript deploy: %s", err)
+    return result

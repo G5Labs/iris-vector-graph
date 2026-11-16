@@ -1,0 +1,12 @@
+verification results:: 74 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:251:10
+    |
+251 |  ensures public_cells(cs).contains(c)<==>(cs.contains(c)&&!internal(c.name)),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+252 |  decreases cs.len(),
+253 |  {if cs.len()>0{let p=cs.drop_last();theorem_reader_projection_keeps_exact_public_cells(p,c);}}
+    |   -------------------------------------------------------------------------------------------- at the end of the function body
+
+error: aborting due to 1 previous error
+

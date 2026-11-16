@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_scatter"
+    ],
+    "find": "ship(out,c.nodes,hs,c.alpha*old[i as int]/(hs.len() as real))",
+    "name": "divisor-added-one",
+    "replace": "ship(out,c.nodes,hs,c.alpha*old[i as int]/((hs.len() as real)+1real))",
+    "why": "Divisor is derived eligible slot count."
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_scatter"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/divisor-added-one/20261115T202343Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_scatter": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202343Z-control-divisor-added-one-lemma_scatter.log",
+        "timed_out": false,
+        "verified": 3
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202343Z-control-divisor-added-one.log",
+    "timed_out": false,
+    "verified": 98
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202350Z-control-divisor-added-one/logs/20261115T202343Z-control-divisor-added-one-lemma_scatter.log": "96f9d9c932e3c5fde16929f625786263ed22e67e4c853e1468d5cae2d04a827e",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202350Z-control-divisor-added-one/logs/20261115T202343Z-control-divisor-added-one.log": "5b60b73eb9cb70751e543f4e0b008186fd7043fb142455a6e023e93509e93ca0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,20 @@
+verification results:: 33 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:250:10
+    |
+250 |  ensures forall|e:Error|dedup(es,held).contains(e)==(held.contains(e)||es.contains(e))
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+251 |  decreases es.len(),
+252 | {if es.len()>0{lemma_dedup_members(es.skip(1),if held.contains(es[0]){held}else{held.push(es[0])});}}
+    |  --------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:258:10
+    |
+257 | pub proof fn theorem_same_raw_message_core_failures_share_error(text:Text)
+    | -------------------------------------------------------------------------- at the end of the function body
+258 |  ensures dedup(seq![Error::Core(Diagnostic::Provider(text)),Error::Core(Diagnostic::Provider(text))],seq![])==seq![Error::Core(Diagnostic::Provider(text))]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

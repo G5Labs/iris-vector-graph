@@ -1,0 +1,100 @@
+"""Translator tests for the FETCH FIRST + JOIN %qaqpre crash workaround (build-106).
+
+ROOT CAUSE (proven on a live irishealth:2026.3.0AI.106.0 container): the DB-API driver
+SIGSEGVs in %qaqpre when executing a query that combines a multi-table JOIN with
+`FETCH FIRST n ROWS ONLY` on VARCHAR-keyed tables (the ivg schema). It is NOT the
+INNER JOIN keyword (the original report's guess) — comma-join and LEFT OUTER JOIN crash
+too. `SELECT TOP n` does NOT crash and is the fix.
+
+The engine detects the bug at connect time (subprocess probe) and sets
+`engine._fetch_first_unsafe`. When set, the translator emits `SELECT TOP n` instead of a
+trailing `FETCH FIRST n ROWS ONLY` for LIMIT-only queries.
+"""
+import pytest
+from iris_vector_graph.cypher.translator import translate_to_sql
+from iris_vector_graph.cypher.parser import parse_query
+
+
+class _StubEngine:
+    """Minimal engine carrying just the bug flag the translator reads."""
+    def __init__(self, fetch_first_unsafe):
+        self._fetch_first_unsafe = fetch_first_unsafe
+    def get_table_mapping(self, label):
+        return None
+    def get_rel_mapping(self, *args):
+        return None
+
+
+def _sql(cypher, *, unsafe, params=None):
+    ast = parse_query(cypher)
+    res = translate_to_sql(ast, params or {}, engine=_StubEngine(unsafe))
+    return res if isinstance(res, str) else str(res)
+
+
+class TestFetchFirstJoinWorkaround:
+    CYPHER = "MATCH (n)-[:R]->(m) RETURN n.node_id AS id LIMIT 5"
+
+    def test_unsafe_build_emits_top_not_fetch_first(self):
+        sql = _sql(self.CYPHER, unsafe=True)
+        assert "FETCH FIRST" not in sql, f"FETCH FIRST must not be emitted on unsafe build:\n{sql}"
+        assert "TOP 5" in sql, f"expected SELECT TOP 5:\n{sql}"
+
+    def test_safe_build_keeps_fetch_first(self):
+        sql = _sql(self.CYPHER, unsafe=False)
+        # On safe builds the existing FETCH FIRST behavior is preserved.
+        assert "FETCH FIRST 5 ROWS ONLY" in sql, f"expected FETCH FIRST on safe build:\n{sql}"
+
+    def test_unsafe_limit_only_simple_match(self):
+        sql = _sql("MATCH (n) RETURN n.node_id LIMIT 3", unsafe=True)
+        assert "FETCH FIRST" not in sql
+        assert "TOP 3" in sql
+
+    def test_unsafe_skip_plus_limit_keeps_fetch_first(self):
+        # TOP cannot express OFFSET; SKIP+LIMIT uses ROW_NUMBER pagination instead.
+        # Verified: translator emits ROW_NUMBER() OVER() window with __rn range filter.
+        sql = _sql("MATCH (n) RETURN n.node_id SKIP 2 LIMIT 4", unsafe=True)
+        assert "FETCH FIRST" not in sql, f"FETCH FIRST must not appear for SKIP+LIMIT on unsafe build:\n{sql}"
+        assert "TOP 4" not in sql, f"TOP must not appear for SKIP+LIMIT:\n{sql}"
+        # ROW_NUMBER-based pagination: rows 3-6 (SKIP 2 LIMIT 4)
+        assert "ROW_NUMBER" in sql or "__rn" in sql, f"expected ROW_NUMBER pagination:\n{sql}"
+
+
+def test_unsafe_order_by_an_alias_of_an_earlier_stage_column_reads_only_outer_columns():
+    # SNB BI12: `postCount` is Stage1.n; outside the TOP wrapper the bare `n` does not exist
+    sql = _sql(
+        "MATCH (p:Person)<-[:HAS_CREATOR]-(m:Post) WITH p, count(m) AS n "
+        "RETURN n AS postCount, count(p) AS people ORDER BY people DESC, postCount LIMIT 10",
+        unsafe=True,
+    )
+    outer_order = sql.rsplit("__ob ORDER BY", 1)[1]
+    assert "(n," not in outer_order, sql
+    assert "__sort1" in outer_order, sql
+
+
+def test_a_range_between_two_properties_compares_by_cypher_orderability():
+    # CAST(val AS DOUBLE) made every string 0, so `a.name < b.name` matched nothing on strings; CY_CMP orders numbers
+    # as numbers, strings as strings, and answers null across kinds
+    sql = _sql("MATCH (a:P)-[:R]->(b:P) WHERE a.name < b.name RETURN a.name", unsafe=False)
+    assert "CY_CMP(" in sql and "AS DOUBLE) <" not in sql, sql
+
+
+def test_an_optional_match_where_compares_over_subqueries_iris_takes_in_an_outer_join():
+    # IRIS refuses CY_CMP in an outer join's ON over an outer-joined column beside one of the join's own (-94); over
+    # correlated subqueries it takes it (4.6.0 R308: the cast to DOUBLE read every string as 0)
+    sql = _sql("MATCH (x:X) OPTIONAL MATCH (x)-[:E1]->(y:Y) WHERE x.val < y.val RETURN x, y", unsafe=False)
+    assert "CY_CMP((SELECT val FROM" in sql and "AS DOUBLE) <" not in sql, sql
+
+
+def test_skip_with_limit_puts_offset_before_fetch_first():
+    """4.7.0: `FETCH FIRST n ROWS ONLY OFFSET k` is refused by IRIS (SQLCODE -25); OFFSET k ROWS comes first."""
+    from iris_vector_graph.cypher.parser import parse_query
+    from iris_vector_graph.cypher.translator import translate_to_sql
+
+    for q in ("MATCH (n:P) RETURN n.name AS a ORDER BY a SKIP 2 LIMIT 3",
+              "MATCH (n:P)-[:R]->(m) RETURN m.name AS a, count(n) AS k ORDER BY k DESC SKIP 2 LIMIT 3"):
+        sql = translate_to_sql(parse_query(q), {}).sql
+        sql = sql if isinstance(sql, str) else "\n".join(sql)
+        assert "\nOFFSET 2 ROWS\nFETCH FIRST 3 ROWS ONLY" in sql, sql
+        assert "ROWS ONLY\nOFFSET" not in sql, sql
+    sql = translate_to_sql(parse_query("MATCH (n:P) RETURN n.name AS a ORDER BY a SKIP 2"), {}).sql
+    assert "\nOFFSET 2 ROWS" in sql and "FETCH" not in sql, sql

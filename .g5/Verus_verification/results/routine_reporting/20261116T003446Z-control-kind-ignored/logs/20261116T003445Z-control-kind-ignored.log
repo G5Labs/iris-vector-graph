@@ -1,0 +1,15 @@
+verification results:: 34 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/kind-ignored/20261116T003445Z/models/routine_reporting/routine_reporting.rs:133:44
+    |
+133 |    ensures r.error.is_none(),route_name(t,k),exists|i:int|0<=i<r.rows.len() && r.rows[i].name==t && registry_kind(r.rows[i])==kind_word(k)
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+134 |   {if r.error.is_none(){lemma_chosen_members(r.rows,k,seq![legacy(k)]);
+    |  __-
+135 | |  assert(!seq![legacy(k)].contains(t));
+136 | |  let i=choose|i:int|0<=i<r.rows.len() && r.rows[i].name==t && eligible(r.rows[i],k);
+137 | |  assert(route_name(r.rows[i].name,k));}}
+    | |_______________________________________- at the end of the function body
+
+error: aborting due to 1 previous error
+

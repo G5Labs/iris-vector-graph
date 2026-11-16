@@ -1,0 +1,19 @@
+WARNING:root:IRISINSTALLDIR or ISC_PACKAGE_INSTALLDIR environment variable is not set
+WARNING:root:Embedded Python not configured; call iris.connect(path=...) to configure it
+Traceback (most recent call last):
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/binding.py", line 23, in <module>
+    SOURCE_INPUTS={s:{'pin_sha256':sha(PIN/s),'current_sha256':sha(REPO/s)} for s in SOURCES}
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/binding.py", line 23, in <dictcomp>
+    SOURCE_INPUTS={s:{'pin_sha256':sha(PIN/s),'current_sha256':sha(REPO/s)} for s in SOURCES}
+                                   ^^^^^^^^^^
+  File "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/binding.py", line 22, in sha
+    def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+                                     ^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/pathlib.py", line 1050, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ziniuw/miniconda3/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/ziniuw/runs/ivg-consolidated-20261114/pin/iris_vector_graph/graph_scope.py'

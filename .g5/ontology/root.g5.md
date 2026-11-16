@@ -24,7 +24,7 @@ Each topic owns the statements with its prefix.
 | `temporal.` | Timestamped edges, their statistics and their structural rows | [Temporal edges](features/temporal.g5.md) |
 | `search.` | Embeddings, vector routes, BM25 text search and result fusion | [Search](features/search.g5.md) |
 | `query.` | openCypher execution: the SQL path, the native executor and compiled plans | [Cypher](features/cypher.g5.md) |
-| `install.` | The IVG schema per namespace, setup, upgrades, legacy objects, snapshots and bulk loads | [Install and upgrade](concepts/install.g5.md) |
+| `install.` | The IVG schema per namespace, status reports, setup, upgrades, legacy objects, snapshots and bulk loads | [Install and upgrade](concepts/install.g5.md) |
 | `access.` | Network entry points, authentication and which write paths the ledger governs | [Access](concepts/access.g5.md) |
 | `adapters.` | How Python code reaches IRIS: the embedded cursor inside IRIS and its no-row rule | [Adapters](concepts/adapters.g5.md) |
 | `fhir.` | Projecting a FHIR repository into a graph | [FHIR](features/fhir.g5.md) |

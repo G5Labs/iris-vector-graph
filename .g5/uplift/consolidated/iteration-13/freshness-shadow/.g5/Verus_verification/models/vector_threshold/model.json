@@ -1,0 +1,35 @@
+{
+  "name": "vector_threshold",
+  "root": "vector_threshold.rs",
+  "expected_verified": 6,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "threshold-ignored",
+      "why": "threshold-ignored",
+      "find": "predicate:t",
+      "replace": "predicate:None",
+      "expect_fail_in": [
+        "theorem_threshold_decides"
+      ]
+    },
+    {
+      "name": "equal-excluded",
+      "why": "equal-excluded",
+      "find": "score>=p.predicate.unwrap()",
+      "replace": "score>p.predicate.unwrap()",
+      "expect_fail_in": [
+        "theorem_boundary_included"
+      ]
+    },
+    {
+      "name": "second-vector-omitted",
+      "why": "second-vector-omitted",
+      "find": "vector_binds:if t.is_some(){2}else{1}",
+      "replace": "vector_binds:1",
+      "expect_fail_in": [
+        "theorem_threshold_decides"
+      ]
+    }
+  ]
+}

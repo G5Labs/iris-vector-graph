@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_failure_is_unknown_not_empty"
+    ],
+    "find": "graph:if s.graph_unknown",
+    "name": "report-unknown-ignored",
+    "replace": "graph:if false",
+    "role": "source-facing census/selection/reader rule"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failure_is_unknown_not_empty"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/routine_reporting/model.json": "476529fece46dfdfebe64114446c9966bf6a4a68c3e07594a5e880e8c7618bac",
+    ".g5/Verus_verification/models/routine_reporting/routine_reporting.rs": "224e16eede8fda124658933601d304ffe1a0a2ce92edfc802e5c612cebfa4a8d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/controls/report-unknown-ignored/20261116T003453Z/models/routine_reporting/routine_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_failure_is_unknown_not_empty": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/20261116T003453Z-control-report-unknown-ignored-theorem_failure_is_unknown_not_empty.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-reporting-20261115/verus/routine_reporting/20261116T003453Z-control-report-unknown-ignored.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/routine_reporting/20261116T003455Z-control-report-unknown-ignored/logs/20261116T003453Z-control-report-unknown-ignored-theorem_failure_is_unknown_not_empty.log": "8673a0f43fcedbf9c2b584557a68d4fc670af60ca5898c1ada51d59730c34638",
+    ".g5/Verus_verification/results/routine_reporting/20261116T003455Z-control-report-unknown-ignored/logs/20261116T003453Z-control-report-unknown-ignored.log": "592e4d7d99acdc8448a2c75efdbaa99586b1cc0d9222cf0fdcd0a681ef8364f6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

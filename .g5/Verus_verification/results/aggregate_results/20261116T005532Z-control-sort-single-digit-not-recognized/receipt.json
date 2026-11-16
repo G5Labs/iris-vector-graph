@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_finalizer_drops_generated_internal_names"
+    ],
+    "find": "end>6&&n[0]",
+    "name": "sort-single-digit-not-recognized",
+    "replace": "end>7&&n[0]"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_finalizer_drops_generated_internal_names"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "7abb7878f7c5305eccb5e838f3bb3499269067488c5a9f4816b73a3e637a41fc",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/sort-single-digit-not-recognized/20261116T005531Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_finalizer_drops_generated_internal_names": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005531Z-control-sort-single-digit-not-recognized-theorem_finalizer_drops_generated_internal_names.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/20261116T005531Z-control-sort-single-digit-not-recognized.log",
+    "timed_out": false,
+    "verified": 73
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261116T005532Z-control-sort-single-digit-not-recognized/logs/20261116T005531Z-control-sort-single-digit-not-recognized-theorem_finalizer_drops_generated_internal_names.log": "922c090a771260c56f74a674d09871b9a6a21b846543406f3f495b405b1f557e",
+    ".g5/Verus_verification/results/aggregate_results/20261116T005532Z-control-sort-single-digit-not-recognized/logs/20261116T005531Z-control-sort-single-digit-not-recognized.log": "d07dabb16cfdf423998aa1f8235b22bcafd4a3db2f37bbd693450e272269f1d3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

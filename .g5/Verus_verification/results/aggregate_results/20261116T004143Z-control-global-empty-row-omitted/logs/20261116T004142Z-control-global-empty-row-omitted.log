@@ -1,0 +1,21 @@
+verification results:: 62 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/global-empty-row-omitted/20261116T004142Z/models/aggregate_results/aggregate_results.rs:76:10
+   |
+74 | pub proof fn theorem_empty_global_group(q:Query)
+   | ------------------------------------------------ at the end of the function body
+75 |  requires !q.grouped,
+76 |  ensures keys(seq![],q)==set![Key::Global],fold(seq![],q,Key::Global).rows==0,fold(seq![],q,Key::Global).count==0,fold(seq![],q,Key:...
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration13-aggregate-20261116/verus/aggregate_results/controls/global-empty-row-omitted/20261116T004142Z/models/aggregate_results/aggregate_results.rs:168:10
+    |
+168 |  ensures key_order(rs,q).to_set()==keys(rs,q),key_order(rs,q).no_duplicates(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+169 |  decreases rs.len(),
+170 |  {if !q.grouped{let e=Seq::<Key>::empty();e.to...(keys(p,q).insert(key(r,q))=~=keys(p,q));}}}}
+    |   --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: aborting due to 2 previous errors
+

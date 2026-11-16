@@ -1,0 +1,87 @@
+verification results:: 31 verified, 4 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:98:10
+    |
+ 98 |    ensures no_dupes(select_routes(rs,k,held))
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+101 | /  if rs.len()>0 {let r=rs[0];let low=held.map_values(|x:Text|lower(x));
+102 | |  if eligible(r,k) && !low.contains(lower(r.name)) {
+103 | |  assert(held.push(r.name).map_values(|x:Text|lower(x)) =~= low.push(lower(r.name)));
+104 | |  lemma_choose_unique(rs.skip(1),k,held.push(r.name));
+105 | |  }else{lemma_choose_unique(rs.skip(1),k,held);}}
+    | |________________________________________________- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:112:1
+    |
+112 | pub proof fn lemma_choose_prefix(rs:Seq<Route>,k:Kind,held:Seq<Text>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:113:10
+    |
+113 |    ensures select_routes(rs,k,held).len()>=held.len(), select_routes(rs,k,held).take(held.len() as int)==held
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+116 | /  if rs.len()>0{let r=rs[0];let next=if eligible(r,k)&&!held.map_values(|x:Text|lower(x)).contains(lower(r.name)){held.push(r.name...
+117 | |  lemma_choose_prefix(rs.skip(1),k,next);
+118 | |  assert(select_routes(rs,k,held).take(held.len() as int) =~= held);}
+    | |____________________________________________________________________- at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:118:9
+    |
+118 |  assert(select_routes(rs,k,held).take(held.len() as int) =~= held);}
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:120:1
+    |
+120 | pub proof fn lemma_chosen_members(rs:Seq<Route>,k:Kind,held:Seq<Text>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:126:69
+    |
+126 | ...s(t) implies held.contains(t) || exists|i:int|0<=i<rs.len() && rs[i].name==t && eligible(rs[i],k) by {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:128:26
+    |
+128 |  else{let i=choose|i:int|0<=i<rs.skip(1).len() && rs.skip(1)[i].name==t && eligible(rs.skip(1)[i],k);assert(rs[i+1]==rs.skip(1)[i])...
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:128:109
+    |
+128 |  else{let i=choose|i:int|0<=i<rs.skip(1).len() && rs.skip(1)[i].name==t && eligible(rs.skip(1)[i],k);assert(rs[i+1]==rs.skip(1)[i])...
+    |                                                                                                             ^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:128:109
+    |
+128 | ...name==t && eligible(rs.skip(1)[i],k);assert(rs[i+1]==rs.skip(1)[i]);}}}
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/seen-ignored/20261116T004037Z/models/routine_reporting/routine_reporting.rs:140:10
+    |
+140 |    ensures select_routes(rs,k,held).map_values(|x:Text|lower(x)).contains(lower(t))
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+143 | /  if rs.len()>0 {let r=rs[0];let next=if eligible(r,k)&&!held.map_values(|x:Text|lower(x)).contains(lower(r.name)){held.push(r.nam...
+144 | |  assert(held.map_values(|x:Text|lower(x)).contains(lower(t)) ==> next.map_values(|x:Text|lower(x)).contains(lower(t))) by {
+145 | |   if held.map_values(|x:Text|lower(x)).contains(lower(t)){let j=choose|j:int|0<=j<held.len() && lower(held[j])==lower(t);assert(n...
+...   |
+152 | |  }}assert(i>0);assert(rs.skip(1)[i-1]==rs[i]);}
+153 | |  lemma_choose_covers(rs.skip(1),k,next,t);}
+    | |___________________________________________- at the end of the function body
+
+error: aborting due to 6 previous errors
+

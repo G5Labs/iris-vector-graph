@@ -539,6 +539,7 @@ Iteration9 finite source/native qualification: the actual RowPut callback checks
 - Playbook: [GID-B5.4](../../../experiment/playbook-completion/ontology/02-graph-identity.md#L131), [GID-B5.5](../../../experiment/playbook-completion/ontology/02-graph-identity.md#L132), [NAT-B1.6](../../../experiment/playbook-completion/ontology/09-native-executor.md#L75)
 - Verus: no formal contract for the one-hop projection in either arm. `graph_structure` (as-built) models the keyed layout and counts; the playbook's `proofs-d1d` `nread_l2` models native reads of a reviewed design. Neither derives the one-hop row list.
 - Expands: [multigraph mode](#structure.multigraph)
+- Verus: [routine_reporting.rs](../../Verus_verification/models/routine_reporting/routine_reporting.rs) `theorem_appending_row_counts_physical_multiplicity` and `theorem_scalar_is_raw_scoped_cardinality`; [scope](../../Verus_verification/models/routine_reporting/NOTES.md). SQL/report census counts matching physical rows. This source relation does not establish ordinary writer uniqueness, adjacency callback maintenance or cache correctness.
 - agent
 - user-facing-behavior
 - test-coverage
@@ -546,6 +547,7 @@ Iteration9 finite source/native qualification: the actual RowPut callback checks
 Live coverage: [parallel edges count their multiplicity](../../../tests/e2e/test_degree_cache_live.py). Superseded in part: the spec's choice of set semantics for PageRank and personalized PageRank was reversed in 4.6.0, when parallel edges began to weigh their count ([changelog](../../../CHANGELOG.md#L1174-L1179)); the algorithm pages own that rule.
 
 Findings: [Deleting one of several parallel edges through the ledger removes the adjacency of the edges that remain](../../Verus_verification/bugs_issues.md#bug-str-001)
+
 
 ### structure.multigraph.create_edge
 - Sources: [spec 234 FR-007 and clarifications](../../../specs/234-multigraph-parallel-edges/spec.md#L246-L250), [create_edge](../../../iris_vector_graph/_engine/nodes_edges.py#L1211-L1219), [Known issue: workaround through Cypher](../../../docs/KNOWN_ISSUES.md#a-cypher-create-of-a-relationship-that-already-exists-adds-nothing)

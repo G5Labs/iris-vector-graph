@@ -1,0 +1,30 @@
+verification results:: 72 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/grouped-empty-row-fabricated/20261116T005908Z/models/aggregate_results/aggregate_results.rs:168:10
+    |
+168 |  ensures key_order(rs,q).to_set()==keys(rs,q),key_order(rs,q).no_duplicates(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+169 |  decreases rs.len(),
+170 |  {if !q.grouped{let e=Seq::<Key>::empty();e.to...(keys(p,q).insert(key(r,q))=~=keys(p,q));}}}}
+    |   --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/grouped-empty-row-fabricated/20261116T005908Z/models/aggregate_results/aggregate_results.rs:213:2
+    |
+211 | pub proof fn theorem_AST_global_empty_and_grouped_empty(d:bool)
+    | --------------------------------------------------------------- at the end of the function body
+212 |  ensures ast_output(seq![],RawAst{graph:None,returns:seq![ReturnExpr::Agg{kind:AggKind::CountValue,distinct:d}]},0).len()==1,
+213 |  ast_output(seq![],RawAst{graph:None,returns:seq![ReturnExpr::GroupKey,ReturnExpr::Agg{kind:AggKind::CountValue,distinct:d}]},1).len()==0,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-aggregate-scratch-v2/run-dir/verus/aggregate_results/controls/grouped-empty-row-fabricated/20261116T005908Z/models/aggregate_results/aggregate_results.rs:241:2
+    |
+239 | pub proof fn theorem_full_report_one_row_global_empty_and_none_grouped(d:bool)
+    | ------------------------------------------------------------------------------ at the end of the function body
+240 |  ensures report(seq![],RawAst{graph:None,returns:seq![ReturnExpr::Agg{kind:AggKind::CountStar,distinct:d}]}).len()==1,
+241 |  report(seq![],RawAst{graph:None,returns:seq![ReturnExpr::GroupKey,ReturnExpr::Agg{kind:AggKind::CountStar,distinct:d}]}).len()==0,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

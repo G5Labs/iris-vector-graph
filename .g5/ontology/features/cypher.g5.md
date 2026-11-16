@@ -316,6 +316,19 @@ Alternative: validate the supported expression and parameter surface eagerly.
 
 Should a call to an unknown `apoc.*`, `db.*` or `dbms.*` procedure be refused, as an unknown `ivg.*` or `gds.*` procedure is? Provisional answer, as built: it answers no rows and no error.
 
+## Aggregate results
+
+<a id="query.aggregation"></a>
+[I · query.aggregation]
+
+An aggregate uses the rows reaching its query stage, and grouping chooses which rows contribute to each result. The result keeps the types required by the aggregate and its typed inputs.
+
+- `COUNT(*)` counts rows, while `COUNT(value)` leaves out null or missing values. `DISTINCT` removes repeated equal values before aggregation.
+- Empty input without grouping yields one aggregate row: count 0, sum 0, average null and an empty collection. Empty grouped input yields no group.
+- SUM leaves out null and returns 0 if no value contributes. With typed numeric inputs, it stays an integer when every contributor is an integer and a float when one is a float, even for a whole total; `WITH` preserves that type.
+- A collection leaves out null and preserves its elements' types; a nested list or map is different from text spelling it.
+- Aggregation precedes final ordering, skipping and limiting. An empty result still has its declared return columns.
+
 ## Conformance
 
 <a id="query.conformance"></a>
@@ -717,6 +730,24 @@ Evidence: [empty/nonempty producer cases](../../uplift/consolidated/iteration-7/
 Sources: [`_try_system_procedure` answers an unknown `apoc.`, `db.` or `dbms.` name with no rows](../../../iris_vector_graph/engine.py#L1716-L1720), [unknown `ivg.*` raises](../../../iris_vector_graph/cypher/translator.py#L2265-L2270), [unknown `gds.*` answers an error](../../../iris_vector_graph/_engine/query.py#L682-L695). The empty answers date from the Bolt server and graph browser release; no source says why an unknown name should succeed.
 
 Findings: [Should a call to an unknown apoc, db or dbms procedure be refused?](../../Verus_verification/open_questions.md#q-cyp-005)
+
+### query.aggregation
+- Sources: [USER_GUIDE, grouped reporting](../../../docs/USER_GUIDE.md#L165); [typed property sums and WITH](../../../tests/unit/test_sum_column_typing.py); [known-list typed collection](../../../tests/unit/test_460_r308_collect_typed.py); [empty result columns](../../../tests/unit/test_empty_result_columns.py); [aggregate order and page scope](../../../tests/unit/test_order_limit_aggregate_scope.py); [count DISTINCT with LIMIT](../../../tests/e2e/test_470_issue13_count_distinct_limit_e2e.py)
+- Verus: [aggregate_results.rs](../../Verus_verification/models/aggregate_results/aggregate_results.rs) `theorem_raw_group_SUM_reaches_typed_scalar_reader`, `theorem_key_enumeration_complete_unique`, `theorem_full_output_before_page` and `theorem_reader_projection_keeps_exact_public_cells`; [scope](../../Verus_verification/models/aggregate_results/NOTES.md). Raw rows and a RETURN AST fragment derive groups, folds, result kind and full output before paging; exact integer/half-unit arithmetic, SQL equality/aggregate operations, JSON spelling/parsing, raw-name generation and collation remain stated provider frames. Native Group/GroupOf/EmitGroups have inspected typed count transcriptions only, under their nonnull/pW1/equality/order premises; the SQL native panels do not execute those bodies. OPTIONAL synthetic fallback remains observed and partial under bug-agg-001.
+- agent
+- user-facing-behavior, data-integrity
+- test-coverage
+
+This owner makes the ordinary aggregate reporting contract explicit before the new formal model. Exact numeric equality, SQL/JSON carriers, unsupported expressions, runtime list ambiguity, numeric overflow, collation and ordering without a total sort key remain source conditions to state in the model and binding, not supplied aggregate answers. Scalar typed-reader proofs and a native planner accepting COUNT do not establish the aggregate producer.
+
+Finite correspondence: [eight ordinary native cases](../../uplift/consolidated/iteration-13/root-aggregate-native.json), with [predictions frozen before execution](../../uplift/consolidated/iteration-13/root-aggregate-native-PAIRS.md), derive bag/null/distinct counts, global versus grouped empty input, post-aggregate pagination and fresh graph isolation. The [independent35-check audit](../../uplift/consolidated/iteration-13/review-aggregate-native-audit.json) derives expectations from the raw fixture. These sampled counts do not certify SUM, AVG, collection, arbitrary numeric/JSON providers or native executable bodies; the selected ordinary fragment has been independently replayed within its stated domain. Existing [typed values](#query.values) and [conformance limits](#query.conformance) retain their own scope.
+
+[Four further native neighbors](../../uplift/consolidated/iteration-13/root-aggregate-types-native.json) check integer SUM, a whole-valued float SUM, its type through WITH, and float AVG over newly created exact half-unit values. The [independent27-check audit](../../uplift/consolidated/iteration-13/review-aggregate-types-audit.json) derives sums and mean from the raw values and checks the returned Python types. These finite cases keep the general numeric, storage, driver and JSON provider limits open.
+
+The [newer all-null SUM regression](../../../tests/unit/test_460_r308_guards.py#L53) explicitly requires zero when no value contributes. [Four fresh native empty/optional contrasts](../../uplift/consolidated/iteration-13/root-optional-aggregate-native.json), with [independent29-check audit and authority triage](../../uplift/consolidated/iteration-13/review-optional-aggregate-audit.json), confirm that a leading grouped OPTIONAL instead emits NULL from its synthetic fallback. The older [R298 helper test](../../../tests/unit/test_460_r298_fixes46_leftovers.py#L28) preserves that as-built NULL. This exception stays an observed partial caller boundary in Verus; it does not weaken the intended SUM identity or turn an ordinary legal query into a refusal.
+
+Findings: [A grouped empty OPTIONAL returns NULL instead of a zero sum](../../Verus_verification/bugs_issues.md#bug-agg-001).
+
 
 ### query.conformance
 - agent

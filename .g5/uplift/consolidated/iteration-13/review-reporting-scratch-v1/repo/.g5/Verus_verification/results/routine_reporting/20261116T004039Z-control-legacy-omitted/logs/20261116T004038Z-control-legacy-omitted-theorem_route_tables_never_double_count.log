@@ -1,0 +1,46 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:107:1
+    |
+107 | pub proof fn theorem_route_tables_never_double_count(r:Registry,k:Kind)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:108:10
+    |
+108 |  ensures no_dupes(tables(r,k)), tables(r,k).len()>0, tables(r,k)[0]==legacy(k)
+    |          ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+109 | {
+110 |  if r.error.is_none(){lemma_choose_unique(r.rows,k,seq![legacy(k)]);lemma_choose_prefix(r.rows,k,seq![legacy(k)]);assert(tables(r,k).take(1)[0]==tables(r,k)[0]);}
+    |  ----------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:110:122
+    |
+110 | ...lemma_choose_prefix(r.rows,k,seq![legacy(k)]);assert(tables(r,k).take(1)[0]==tables(r,k)[0]);}
+    |                                                         ^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:110:122
+    |
+110 | ...ix(r.rows,k,seq![legacy(k)]);assert(tables(r,k).take(1)[0]==tables(r,k)[0]);}
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-13/review-reporting-scratch-v1/run-dir/verus/routine_reporting/controls/legacy-omitted/20261116T004038Z/models/routine_reporting/routine_reporting.rs:110:146
+    |
+110 | ...r.rows,k,seq![legacy(k)]);assert(tables(r,k).take(1)[0]==tables(r,k)[0]);}
+    |                                                             ^^^^^^^^^^^^^^
+    |
+   --> seq.rs:980:12
+    |
+    = note: recommendation not met
+
+error: aborting due to 2 previous errors
+

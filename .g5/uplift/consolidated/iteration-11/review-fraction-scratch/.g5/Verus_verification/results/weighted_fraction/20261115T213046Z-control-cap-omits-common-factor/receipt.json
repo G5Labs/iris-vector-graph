@@ -1,0 +1,53 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_cap_decode"
+    ],
+    "find": "(c.cap.num as nat)*omitted(denominations(c),c.arcs.len())",
+    "name": "cap-omits-common-factor",
+    "replace": "(c.cap.num as nat)",
+    "why": "Cap denominator participates in the derived common grid."
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cap_decode"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/weighted_cost/weighted_cost.rs": "602722835a1367bf97d2c548d3e256ddbdd96c8020fe775fbc0e7d88e7950093",
+    ".g5/Verus_verification/models/weighted_fraction/model.json": "22c689b76b80f23705c9beaee5d42c7ba7c297f5581927d1f6d963dbc7da7329",
+    ".g5/Verus_verification/models/weighted_fraction/weighted_fraction.rs": "6e2216cd3140b056bd2537a7e076b0d3116103ebf02de24e18db7711da36e738",
+    ".g5/Verus_verification/models/weighted_paths/weighted_paths.rs": "0a58dc4b09a37717356c72b29a9df4cbee07d82985df5cb16058f19ce6c97907"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-fraction-scratch/run/verus/weighted_fraction/controls/cap-omits-common-factor/20261115T213038Z/models/weighted_fraction/weighted_fraction.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cap_decode": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-fraction-scratch/run/verus/weighted_fraction/20261115T213038Z-control-cap-omits-common-factor-theorem_cap_decode.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/uplift/consolidated/iteration-11/review-fraction-scratch/run/verus/weighted_fraction/20261115T213038Z-control-cap-omits-common-factor.log",
+    "timed_out": false,
+    "verified": 179
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/weighted_fraction/20261115T213046Z-control-cap-omits-common-factor/logs/20261115T213038Z-control-cap-omits-common-factor-theorem_cap_decode.log": "037ebf3b9c23e1ca6f9556e0035b24ce1702d1884ca89365d8b94c028d729873",
+    ".g5/Verus_verification/results/weighted_fraction/20261115T213046Z-control-cap-omits-common-factor/logs/20261115T213038Z-control-cap-omits-common-factor.log": "01d3368465226192b0d153e6902e83d19e08f716211b5778665ca68fdc9eb30f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

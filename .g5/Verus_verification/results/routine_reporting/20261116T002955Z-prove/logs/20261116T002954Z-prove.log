@@ -1,0 +1,30 @@
+verification results:: 28 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:133:1
+    |
+133 | pub proof fn lemma_choose_covers(rs:Seq<Route>,k:Kind,held:Seq<Text>,t:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:139:9
+    |
+139 |  assert(held.map_values(|x:Text|lower(x)).contains(lower(t)) ==> next.map_values(|x:Text|lower(x)).contains(lower(t))) by {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:145:18
+    |
+145 |  if i==0 {assert(next.map_values(|x:Text|lower(x)).contains(lower(r.name))) by {
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/routine_reporting/routine_reporting.rs:157:2
+    |
+154 | pub proof fn theorem_missing_vs_unreadable_registry(c:Catalog,r:Registry,k:Kind)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+157 |  embeddings(c,r,k).count==read(c,legacy(k)).count,
+    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

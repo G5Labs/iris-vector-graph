@@ -1,0 +1,46 @@
+verification results:: 57 verified, 3 errors
+WARNING: (9271,5): 'or' cannot be used in patterns.
+WARNING: (9271,5): 'and' cannot be used in patterns.
+WARNING: (9271,5): 'if' cannot be used in patterns.
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:141:10
+    |
+139 | pub proof fn theorem_finalizer_drops_generated_internal_names(v:int,name:Seq<char>)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+140 |  requires !internal(name),
+141 |  ensures public_cells(seq![RawCell{name:seq!['_','_','r','n'],value:9},RawCell{name,value:v},RawCell{name:seq!['_','_','s','o','r','t','0'],value:4}])==seq![RawCell{name,value:v}],
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:143:1
+    |
+143 | pub proof fn theorem_internal_name_classifier_exact_generated_forms()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:144:10
+    |
+143 | pub proof fn theorem_internal_name_classifier_exact_generated_forms()
+    | --------------------------------------------------------------------- at the end of the function body
+144 |  ensures sort_name(seq!['_','_','s','o','r','t','1','2']),sort_name(seq!['_','_','s','o','r','t','1','2','_','n']),sort_name(seq!['...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:144:59
+    |
+143 | pub proof fn theorem_internal_name_classifier_exact_generated_forms()
+    | --------------------------------------------------------------------- at the end of the function body
+144 |  ensures sort_name(seq!['_','_','s','o','r','t','1','2']),sort_name(seq!['_','_','s','o','r','t','1','2','_','n']),sort_name(seq!['...
+    |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:167:10
+    |
+167 |  ensures key_order(rs,q).to_set()==keys(rs,q),key_order(rs,q).no_duplicates(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+168 |  decreases rs.len(),
+169 |  {if q.grouped&&rs.len()>0{let p=rs.drop_last();let r=rs.last();theorem_key_enumeration_complete_unique(p,q);let a=key_order(p,q);if selected(r,q)&&!a.contains(key(r,q)){lemma_key_push(a,key(r,q));assert(a.push(key(r,q)).no_duplicates());}}}
+    |   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: aborting due to 4 previous errors
+

@@ -1,0 +1,29 @@
+verification results:: 42 verified, 3 errors
+error: assertion failed
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:51:25
+   |
+51 |  assert forall|t:Token| tokens(vs.push(v)).contains(t)<==>tokens(vs).insert(token(v)).contains(t) by {
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:58:60
+   |
+58 |   pub proof fn lemma_fold(rs:Seq<Row>,q:Query,k:Key) ensures inv(fold(rs,q,k),rs,q,k) decreases rs.len(){
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+59 | /  if rs.len()>0{let p=rs.drop_last();let r=rs.last();lemma_fold(p,q,k);let raw=raw_values(p,q,k);let a=accepted(raw,q.distinct);
+60 | |  if selected(r,q)&&key(r,q)==k&&present(r.value){lemma_tokens_push(raw,r.value);lemma_seq_push(raw,r.value);if !q.distinct||!token...
+61 | |  assert(rs==p.push(r));
+62 | |  }
+   | |__- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/aggregate_results/aggregate_results.rs:115:10
+    |
+113 | pub proof fn theorem_null_count_star_differs(q:Query,k:Key,g:nat)
+    | ----------------------------------------------------------------- at the end of the function body
+114 |  requires q.graph==None,
+115 |  ensures ({let r=Row{graph:g,key:k,value:Val::Null,entity:None};let a=fold(seq![r],q,key(r,q));a.rows==1&&a.count==0&&a.items.len()==0&&a.total==0&&avg(a).is_none()}),{}
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

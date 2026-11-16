@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_tiny_readers"
+    ],
+    "find": "cut(scored+rank(missing(ns,scored)),limit)",
+    "name": "zeros-sorted-with-scored",
+    "replace": "cut(rank(scored+rank(missing(ns,scored))),limit)",
+    "why": "Fast completion appends zeros after ranked rows."
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_tiny_readers"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ppr_walk/model.json": "363374a479e029efb9b55f57a6966fa5d8e2fa44eae2ecf3fce6bc49a70e4552",
+    ".g5/Verus_verification/models/ppr_walk/ppr_walk.rs": "fc4d810bd6e92e5b57cb63c228a41b2f3ada7db3af9b32ddff58ef5f09b8fbcc"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/controls/zeros-sorted-with-scored/20261115T202526Z/models/ppr_walk/ppr_walk.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_tiny_readers": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202526Z-control-zeros-sorted-with-scored-lemma_tiny_readers.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/.cache/g5-verification/ivg-iter10-ppr-review-pt3g_evr/run/verus/ppr_walk/20261115T202526Z-control-zeros-sorted-with-scored.log",
+    "timed_out": false,
+    "verified": 99
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ppr_walk/20261115T202535Z-control-zeros-sorted-with-scored/logs/20261115T202526Z-control-zeros-sorted-with-scored-lemma_tiny_readers.log": "2ae81ad723005c226c3cc172a741b4138adaa9572d0af1d79197e48f96dddbfd",
+    ".g5/Verus_verification/results/ppr_walk/20261115T202535Z-control-zeros-sorted-with-scored/logs/20261115T202526Z-control-zeros-sorted-with-scored.log": "5d2a84503a775df2d64545f26fc133828475e2629f90c3aa892955efa884971f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

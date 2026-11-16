@@ -1,0 +1,704 @@
+"""Unit and e2e tests for temporal edge indexing."""
+import json
+import os
+import time
+import uuid
+import pytest
+from unittest.mock import MagicMock
+
+SKIP_IRIS_TESTS = os.environ.get("SKIP_IRIS_TESTS", "false").lower() == "true"
+
+
+class TestTemporalEdgeUnit:
+
+    def _make_engine(self):
+        from iris_vector_graph.engine import IRISGraphEngine
+        e = IRISGraphEngine.__new__(IRISGraphEngine)
+        e.conn = MagicMock()
+        e._schema_prefix = "Graph_KG"
+        iris_mock = MagicMock()
+        e._iris_obj = lambda: iris_mock
+        
+        store_mock = MagicMock()
+        store_result = MagicMock()
+        store_result.error = None
+        store_mock.write_temporal_edge.return_value = store_result
+        
+        bulk_result = MagicMock()
+        bulk_result.rows = [[3]]
+        bulk_result.error = None  # an IVGResult's: None when the store wrote it (a MagicMock's is truthy)
+        store_mock.bulk_write_temporal_edges.return_value = bulk_result
+        
+        window_result = MagicMock()
+        window_result.error = None
+        window_result.rows = []
+        store_mock.execute_temporal_window_query.return_value = window_result
+        
+        store_mock.get_edge_velocity.return_value = 42
+        store_mock.get_temporal_aggregate.return_value = 42
+        e._store = store_mock
+        
+        return e, iris_mock
+
+    def test_create_edge_temporal_calls_classmethod(self):
+        engine, mock = self._make_engine()
+        result = engine.create_edge_temporal("A", "REL", "B", 1712000000)
+        assert engine._store.write_temporal_edge.called
+        assert result is True
+
+    def test_bulk_create_calls_bulk_insert(self):
+        engine, mock = self._make_engine()
+        result = engine.bulk_create_edges_temporal([
+            {"s": "A", "p": "REL", "o": "B", "ts": 1712000000},
+            {"s": "A", "p": "REL", "o": "C", "ts": 1712000001},
+            {"s": "A", "p": "REL", "o": "D", "ts": 1712000002},
+        ])
+        assert result == 3
+
+    def test_timestamp_none_sends_empty_string(self):
+        engine, mock = self._make_engine()
+        engine.create_edge_temporal("A", "REL", "B", timestamp=None)
+        call_args = engine._store.write_temporal_edge.call_args[0]
+        assert "A" in call_args
+
+    def test_get_edges_in_window_returns_list(self):
+        engine, mock = self._make_engine()
+        result_obj = MagicMock()
+        result_obj.error = None
+        result_obj.rows = [{"s":"A","p":"REL","o":"B","ts":100,"w":1}]
+        engine._store.execute_temporal_window_query.return_value = result_obj
+        result = engine.get_edges_in_window("A", "REL", 0, 200)
+        assert isinstance(result, list)
+        assert len(result) == 1
+
+    def test_get_edges_in_window_empty_returns_empty_list(self):
+        engine, mock = self._make_engine()
+        result_obj = MagicMock()
+        result_obj.error = None
+        result_obj.rows = []
+        engine._store.execute_temporal_window_query.return_value = result_obj
+        result = engine.get_edges_in_window("A", "REL", 0, 200)
+        assert result == []
+
+    def test_get_edge_velocity_returns_int(self):
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = "42"
+        result = engine.get_edge_velocity("A", 300)
+        assert result == 42
+
+    def test_find_burst_nodes_returns_list(self):
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '[{"id":"A","velocity":100}]'
+        result = engine.find_burst_nodes("REL", 60, 50)
+        assert len(result) == 1
+        assert result[0]["id"] == "A"
+
+    def test_find_burst_nodes_empty(self):
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '[]'
+        result = engine.find_burst_nodes("REL", 60, 9999)
+        assert result == []
+
+    def test_create_edge_temporal_with_graph_param(self):
+        engine, mock = self._make_engine()
+        cursor = MagicMock()
+        engine.conn.cursor.return_value = cursor
+        result = engine.create_edge_temporal("A", "REL", "B", 1712000000, graph="my_graph")
+        assert result is True
+        assert cursor.execute.called
+
+    def test_create_edge_temporal_with_graph_cursor_exception(self):
+        engine, mock = self._make_engine()
+        cursor = MagicMock()
+        cursor.execute.side_effect = Exception("db error")
+        engine.conn.cursor.return_value = cursor
+        result = engine.create_edge_temporal("A", "REL", "B", 1712000000, graph="g1")
+        assert result is True  # errors are silently swallowed
+
+    def test_bulk_create_edges_temporal_with_graph_param(self):
+        engine, mock = self._make_engine()
+        cursor = MagicMock()
+        engine.conn.cursor.return_value = cursor
+        result = engine.bulk_create_edges_temporal([
+            {"s": "A", "p": "REL", "o": "B", "ts": 100},
+        ], graph="my_graph")
+        assert result == 3
+        assert cursor.execute.called
+
+    def test_get_edges_in_window_error_raises(self):
+        """Spec 255 FR-006: a failed read raises; it used to return [], which reads as an empty window."""
+        from iris_vector_graph.exceptions import TemporalWindowError
+
+        engine, mock = self._make_engine()
+        result_obj = MagicMock()
+        result_obj.error = "some error"
+        engine._store.execute_temporal_window_query.return_value = result_obj
+        with pytest.raises(TemporalWindowError, match="some error"):
+            engine.get_edges_in_window("X", "REL", 0, 100)
+
+    def test_get_edges_in_window_with_column_mapping(self):
+        engine, mock = self._make_engine()
+        result_obj = MagicMock()
+        result_obj.error = None
+        result_obj.columns = ["source", "predicate", "target", "timestamp", "weight"]
+        result_obj.rows = [["A", "REL", "B", 100, 1.0]]
+        engine._store.execute_temporal_window_query.return_value = result_obj
+        result = engine.get_edges_in_window("A", "REL", 0, 200)
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0]["s"] == "A"
+
+
+@pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+class TestTemporalEdgeE2E:
+
+    PREFIX = f"TE_{uuid.uuid4().hex[:6]}"
+
+    @pytest.fixture(autouse=True)
+    def setup(self, iris_connection):
+        self.conn = iris_connection
+        from iris_vector_graph.engine import IRISGraphEngine
+        self.engine = IRISGraphEngine(iris_connection)
+        yield
+        try:
+            self.engine._iris_obj().classMethodVoid("Graph.KG.TemporalIndex", "Purge")
+        except:
+            pass
+
+    def test_bulk_insert_and_count(self):
+        now = int(time.time())
+        edges = [{"s": f"{self.PREFIX}:A", "p": "SENDS", "o": f"{self.PREFIX}:B{i}", "ts": now + i} for i in range(100)]
+        count = self.engine.bulk_create_edges_temporal(edges)
+        assert count == 100
+
+    def test_window_query_returns_correct_edges(self):
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:W", "p": "LINK", "o": f"{self.PREFIX}:X", "ts": now - 100},
+            {"s": f"{self.PREFIX}:W", "p": "LINK", "o": f"{self.PREFIX}:Y", "ts": now - 50},
+            {"s": f"{self.PREFIX}:W", "p": "LINK", "o": f"{self.PREFIX}:Z", "ts": now + 1000},
+        ])
+        edges = self.engine.get_edges_in_window(f"{self.PREFIX}:W", "LINK", now - 200, now)
+        targets = {e["o"] for e in edges}
+        assert f"{self.PREFIX}:X" in targets
+        assert f"{self.PREFIX}:Y" in targets
+        assert f"{self.PREFIX}:Z" not in targets
+
+    def test_velocity_counts_bucket(self):
+        now = int(time.time())
+        edges = [{"s": f"{self.PREFIX}:V", "p": "HIT", "o": f"{self.PREFIX}:T{i}", "ts": now - i} for i in range(50)]
+        self.engine.bulk_create_edges_temporal(edges)
+        velocity = self.engine.get_edge_velocity(f"{self.PREFIX}:V", 300)
+        assert velocity >= 50
+
+    def test_burst_detection(self):
+        now = int(time.time())
+        edges = [{"s": f"{self.PREFIX}:BURST", "p": "SENDS", "o": f"{self.PREFIX}:D{i}", "ts": now - i} for i in range(100)]
+        self.engine.bulk_create_edges_temporal(edges)
+        bursts = self.engine.find_burst_nodes("SENDS", 300, 50)
+        burst_ids = {b["id"] for b in bursts}
+        assert f"{self.PREFIX}:BURST" in burst_ids
+
+    def test_backward_compat_kg_out_populated(self):
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:BC", "p": "COMPAT", "o": f"{self.PREFIX}:BC2", "ts": now},
+        ])
+        try:
+            import iris
+            irispy = iris.createIRIS(self.conn)
+            val = irispy.get("^KG", "out", 0, f"{self.PREFIX}:BC", "COMPAT", f"{self.PREFIX}:BC2")
+            assert val is not None
+        except ImportError:
+            pytest.skip("iris.createIRIS not available on this Python version")
+
+
+class TestTemporalPreAggUnit:
+    """Unit tests for pre-aggregation Python wrappers (mock IRIS, no container).
+    Tests written FIRST per TDD — will fail until engine.py wrappers are added.
+    """
+
+    def _make_engine(self):
+        from iris_vector_graph.engine import IRISGraphEngine
+        e = IRISGraphEngine.__new__(IRISGraphEngine)
+        e.conn = MagicMock()
+        e._schema_prefix = "Graph_KG"
+        iris_mock = MagicMock()
+        e._iris_obj = lambda: iris_mock
+        
+        store_mock = MagicMock()
+        agg_result = MagicMock()
+        agg_result.error = None
+        agg_result.value = 42
+        store_mock.get_temporal_aggregate.return_value = agg_result
+        e._store = store_mock
+        
+        return e, iris_mock
+
+    def test_get_temporal_aggregate_calls_classmethod(self):
+        """get_temporal_aggregate must call GetAggregate classmethod on TemporalIndex."""
+        engine, mock = self._make_engine()
+        engine._store.get_temporal_aggregate.return_value.rows = [[42]]
+        engine.get_temporal_aggregate("svc:auth", "CALLS_AT", "count", 0, 9999)
+        engine._store.get_temporal_aggregate.assert_called_once()
+
+    def test_get_temporal_aggregate_count_returns_int(self):
+        """count metric must return a Python int."""
+        engine, mock = self._make_engine()
+        engine._store.get_temporal_aggregate.return_value.rows = [[100]]
+        result = engine.get_temporal_aggregate("svc:auth", "CALLS_AT", "count", 0, 9999)
+        assert isinstance(result, int)
+        assert result == 100
+
+    def test_get_temporal_aggregate_avg_returns_float(self):
+        """avg metric must return a Python float."""
+        engine, mock = self._make_engine()
+        engine._store.get_temporal_aggregate.return_value.rows = [[42.7]]
+        result = engine.get_temporal_aggregate("svc:auth", "CALLS_AT", "avg", 0, 9999)
+        assert isinstance(result, float)
+        assert result == 42.7
+
+    def test_get_temporal_aggregate_empty_avg_returns_none(self):
+        """Empty result on avg should return None."""
+        engine, mock = self._make_engine()
+        engine._store.get_temporal_aggregate.return_value.rows = []
+        result = engine.get_temporal_aggregate("svc:auth", "CALLS_AT", "avg", 0, 9999)
+        assert result is None
+
+    def test_get_temporal_aggregate_empty_count_returns_zero(self):
+        """Empty result on count should return 0."""
+        engine, mock = self._make_engine()
+        engine._store.get_temporal_aggregate.return_value.rows = []
+        result = engine.get_temporal_aggregate("svc:auth", "CALLS_AT", "count", 0, 9999)
+        assert result == 0
+        assert isinstance(result, int)
+
+    def test_get_bucket_groups_returns_list(self):
+        """get_bucket_groups must parse JSON and return a list of dicts."""
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = (
+            '[{"source":"svc:auth","predicate":"CALLS_AT",'
+            '"count":10,"sum":100.0,"avg":10.0,"min":5.0,"max":20.0}]'
+        )
+        result = engine.get_bucket_groups("CALLS_AT", 0, 9999)
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0]["source"] == "svc:auth"
+        assert result[0]["count"] == 10
+
+    # ── ENH-1: sourcePrefix unit tests ──────────────────────────────
+    def test_get_bucket_groups_passes_source_prefix(self):
+        """source_prefix kwarg is forwarded as 4th positional arg."""
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '[]'
+        engine.get_bucket_groups("COST_ON", 0, 9999, source_prefix="QG:Acme:")
+        args = mock.classMethodValue.call_args[0]
+        assert args[-1] == "QG:Acme:"
+
+    def test_get_bucket_groups_default_prefix_is_empty(self):
+        """Omitting source_prefix passes empty string (backward compat)."""
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '[]'
+        engine.get_bucket_groups("COST_ON", 0, 9999)
+        args = mock.classMethodValue.call_args[0]
+        assert args[-1] == ""
+
+    # ── ENH-2: GetBucketGroupTargets unit tests ──────────────────────
+    def test_get_bucket_group_targets_returns_list(self):
+        """get_bucket_group_targets parses JSON array of strings."""
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '["QG:A:P:g1","QG:A:P:g2"]'
+        result = engine.get_bucket_group_targets("Rtn:A:P:proc", "CALLED_BY", 0, 9999)
+        assert isinstance(result, list)
+        assert set(result) == {"QG:A:P:g1", "QG:A:P:g2"}
+
+    def test_get_bucket_group_targets_empty(self):
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '[]'
+        result = engine.get_bucket_group_targets("Rtn:A:P:proc", "CALLED_BY", 0, 9999)
+        assert result == []
+
+    # ── get_window_sources unit tests ─────────────────────────────────
+    def test_get_window_sources_returns_list(self):
+        """get_window_sources parses JSON array of distinct source IDs."""
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '["QG:A:P:g1","QG:B:P:g2"]'
+        result = engine.get_window_sources("COST_ON", 0, 9999)
+        assert isinstance(result, list)
+        assert set(result) == {"QG:A:P:g1", "QG:B:P:g2"}
+
+    def test_get_window_sources_empty(self):
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '[]'
+        result = engine.get_window_sources("COST_ON", 0, 9999)
+        assert result == []
+
+    def test_get_window_sources_calls_correct_classmethod(self):
+        """Verifies dispatch to QueryWindowSources with (predicate, tsStart, tsEnd)."""
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = '[]'
+        engine.get_window_sources("COST_ON", 100, 200)
+        args = mock.classMethodValue.call_args[0]
+        assert args[0] == "Graph.KG.TemporalIndex"
+        assert args[1] == "QueryWindowSources"
+        assert args[2] == ""  # graphId: default graph
+        assert args[3] == "COST_ON"
+        assert args[4] == 100
+        assert args[5] == 200
+
+    # ── ENH-3: docstring test ────────────────────────────────────────
+    def test_get_bucket_groups_docstring(self):
+        """get_bucket_groups has a docstring documenting all return keys."""
+        from iris_vector_graph.engine import IRISGraphEngine
+        doc = IRISGraphEngine.get_bucket_groups.__doc__
+        assert doc is not None
+        for key in ("source", "predicate", "count", "sum", "avg", "min", "max"):
+            assert key in doc, f"missing key '{key}' in docstring"
+
+    def test_get_distinct_count_calls_classmethod_returns_int(self):
+        """get_distinct_count must call GetDistinctCount and return an int."""
+        engine, mock = self._make_engine()
+        mock.classMethodValue.return_value = "7"
+        result = engine.get_distinct_count("svc:auth", "CALLS_AT", 0, 9999)
+        mock.classMethodValue.assert_called_once()
+        call_args = mock.classMethodValue.call_args[0]
+        assert "GetDistinctCount" in call_args
+        assert call_args[2] == ""  # graphId
+        assert isinstance(result, int)
+        assert result == 7
+
+
+@pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+class TestTemporalPreAggE2E:
+
+    PREFIX = f"PA_{uuid.uuid4().hex[:6]}"
+
+    @pytest.fixture(autouse=True)
+    def setup(self, iris_connection):
+        self.conn = iris_connection
+        from iris_vector_graph.engine import IRISGraphEngine
+        self.engine = IRISGraphEngine(iris_connection)
+        yield
+        try:
+            self.engine._iris_obj().classMethodVoid("Graph.KG.TemporalIndex", "Purge")
+        except Exception:
+            pass
+
+    def test_aggregate_avg_correct(self):
+        now = int(time.time())
+        weights = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+        edges = [
+            {"s": f"{self.PREFIX}:src", "p": "CALLS_AT", "o": f"{self.PREFIX}:dst{i}",
+             "ts": now + i, "w": w}
+            for i, w in enumerate(weights)
+        ]
+        self.engine.bulk_create_edges_temporal(edges)
+        expected_avg = sum(weights) / len(weights)
+        result = self.engine.get_temporal_aggregate(
+            f"{self.PREFIX}:src", "CALLS_AT", "avg", now - 10, now + 100)
+        assert result is not None
+        assert abs(result - expected_avg) < 0.001
+
+    def test_aggregate_count_correct(self):
+        now = int(time.time())
+        edges = [
+            {"s": f"{self.PREFIX}:csrc", "p": "CALLS_AT",
+             "o": f"{self.PREFIX}:cdst{i}", "ts": now + i}
+            for i in range(10)
+        ]
+        self.engine.bulk_create_edges_temporal(edges)
+        count = self.engine.get_temporal_aggregate(
+            f"{self.PREFIX}:csrc", "CALLS_AT", "count", now - 10, now + 100)
+        assert count == 10
+        assert isinstance(count, int)
+
+    def test_bucket_groups_all_sources(self):
+        now = int(time.time())
+        for src in ["alpha", "beta", "gamma"]:
+            edges = [
+                {"s": f"{self.PREFIX}:{src}", "p": "SENDS",
+                 "o": f"{self.PREFIX}:dst{i}", "ts": now + i}
+                for i in range(5)
+            ]
+            self.engine.bulk_create_edges_temporal(edges)
+        groups = self.engine.get_bucket_groups("SENDS", now - 10, now + 100)
+        sources = {g["source"] for g in groups}
+        assert f"{self.PREFIX}:alpha" in sources
+        assert f"{self.PREFIX}:beta" in sources
+        assert f"{self.PREFIX}:gamma" in sources
+        for g in groups:
+            if g["source"].startswith(self.PREFIX):
+                assert g["count"] == 5
+
+    def test_multi_bucket_aggregate(self):
+        bucket_sec = 300
+        now = int(time.time())
+        t1 = now - (now % bucket_sec) - bucket_sec
+        t2 = t1 + bucket_sec
+        edges = (
+            [{"s": f"{self.PREFIX}:mb", "p": "HIT", "o": f"{self.PREFIX}:x{i}",
+              "ts": t1 + i, "w": 1.0} for i in range(5)] +
+            [{"s": f"{self.PREFIX}:mb", "p": "HIT", "o": f"{self.PREFIX}:y{i}",
+              "ts": t2 + i, "w": 3.0} for i in range(5)]
+        )
+        self.engine.bulk_create_edges_temporal(edges)
+        count = self.engine.get_temporal_aggregate(
+            f"{self.PREFIX}:mb", "HIT", "count", t1, t2 + 100)
+        assert count == 10
+        total_sum = self.engine.get_temporal_aggregate(
+            f"{self.PREFIX}:mb", "HIT", "sum", t1, t2 + 100)
+        assert abs(total_sum - 20.0) < 0.01
+
+    def test_distinct_count_nonzero(self):
+        now = int(time.time())
+        edges = [
+            {"s": f"{self.PREFIX}:dc", "p": "CALLS_AT",
+             "o": f"{self.PREFIX}:target{i}", "ts": now + i}
+            for i in range(20)
+        ]
+        self.engine.bulk_create_edges_temporal(edges)
+        estimate = self.engine.get_distinct_count(
+            f"{self.PREFIX}:dc", "CALLS_AT", now - 10, now + 100)
+        assert estimate > 0
+        assert isinstance(estimate, int)
+
+    def test_purge_clears_tagg(self):
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:pur", "p": "X", "o": f"{self.PREFIX}:y", "ts": now}
+        ])
+        before = self.engine.get_temporal_aggregate(
+            f"{self.PREFIX}:pur", "X", "count", now - 10, now + 10)
+        assert before > 0
+        self.engine._iris_obj().classMethodVoid("Graph.KG.TemporalIndex", "Purge")
+        after = self.engine.get_temporal_aggregate(
+            f"{self.PREFIX}:pur", "X", "count", now - 10, now + 10)
+        assert after == 0
+
+
+@pytest.mark.skipif(SKIP_IRIS_TESTS, reason="SKIP_IRIS_TESTS=true")
+class TestTemporalAPIGapsE2E:
+
+    PREFIX = f"GAP_{uuid.uuid4().hex[:6]}"
+
+    @pytest.fixture(autouse=True)
+    def setup(self, iris_connection):
+        self.conn = iris_connection
+        from iris_vector_graph.engine import IRISGraphEngine
+        self.engine = IRISGraphEngine(iris_connection)
+        yield
+        try:
+            self.engine._iris_obj().classMethodVoid("Graph.KG.TemporalIndex", "Purge")
+        except Exception:
+            pass
+
+    def test_get_edges_in_window_returns_long_key_aliases(self):
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:src", "p": "CALLS_AT",
+             "o": f"{self.PREFIX}:dst", "ts": now, "w": 42.0}
+        ])
+        edges = self.engine.get_edges_in_window(
+            f"{self.PREFIX}:src", "CALLS_AT", now - 10, now + 10)
+        assert len(edges) == 1
+        e = edges[0]
+        assert e["source"]    == f"{self.PREFIX}:src"
+        assert e["target"]    == f"{self.PREFIX}:dst"
+        assert e["predicate"] == "CALLS_AT"
+        assert e["timestamp"] == now
+        assert e["weight"]    == 42.0
+        assert e["s"] == e["source"]
+        assert e["o"] == e["target"]
+        assert e["p"] == e["predicate"]
+        assert e["ts"] == e["timestamp"]
+        assert e["w"] == e["weight"]
+
+    def test_get_edges_in_window_inbound_direction(self):
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:a", "p": "CALLS_AT",
+             "o": f"{self.PREFIX}:target", "ts": now, "w": 1.0},
+            {"s": f"{self.PREFIX}:b", "p": "CALLS_AT",
+             "o": f"{self.PREFIX}:target", "ts": now + 1, "w": 2.0},
+        ])
+        edges = self.engine.get_edges_in_window(
+            f"{self.PREFIX}:target", "CALLS_AT",
+            now - 10, now + 10, direction="in")
+        assert len(edges) == 2
+        sources = {e["source"] for e in edges}
+        assert f"{self.PREFIX}:a" in sources
+        assert f"{self.PREFIX}:b" in sources
+
+    def test_upsert_temporal_edge_updates_weight(self):
+        """upsert=True replaces weight in ^KG("tout"); bucket aggregate count still increments.
+
+        Known caveat (spec 221 FR-004): ^KG("tagg") aggregates are NOT corrected when
+        upsert overwrites an edge. Use get_edges_in_window() for exact per-edge stats.
+        """
+        now = int(time.time())
+        self.engine.create_edge_temporal(
+            f"{self.PREFIX}:src", "COST_ON", "Date:2026-03-18",
+            now, 27.7, upsert=True)
+        self.engine.create_edge_temporal(
+            f"{self.PREFIX}:src", "COST_ON", "Date:2026-03-18",
+            now, 99.9, upsert=True)
+        # Weight is updated to the latest value
+        edges = self.engine.get_edges_in_window(
+            f"{self.PREFIX}:src", "COST_ON", now - 10, now + 10)
+        ts_edges = [e for e in edges if e["ts"] == now]
+        assert len(ts_edges) == 1, f"Expected 1 edge at ts={now}, got {len(ts_edges)}"
+        assert abs(ts_edges[0]["w"] - 99.9) < 1e-6, f"Expected w=99.9, got {ts_edges[0]['w']}"
+
+    def test_upsert_false_counts_a_repeated_write_once(self):
+        """Spec 254 (FR-003): a second "insert" at the same coordinates is a collision.
+
+        This pinned count == 3: the aggregates counted three edges while the raw store held one.
+        """
+        now = int(time.time())
+        for _ in range(3):
+            self.engine.create_edge_temporal(
+                f"{self.PREFIX}:dup", "COST_ON", f"Date:2026-03-19",
+                now, 10.0, upsert=False)
+        count = self.engine.get_temporal_aggregate(
+            f"{self.PREFIX}:dup", "COST_ON", "count", now - 10, now + 10)
+        assert count == 1
+
+    # ── ENH-1: sourcePrefix filter on GetBucketGroups ──────────────────
+    def test_bucket_groups_source_prefix_filters(self):
+        """get_bucket_groups(source_prefix=...) returns only matching sources."""
+        now = int(time.time())
+        for tenant in ["AcmeCorp", "OtherCo"]:
+            edges = [
+                {"s": f"Routine:{tenant}:PROD:r{i}", "p": "CALLED_BY",
+                 "o": f"QueryGroup:{tenant}:PROD:g1", "ts": now + i, "w": 1.0}
+                for i in range(3)
+            ]
+            self.engine.bulk_create_edges_temporal(edges)
+        filtered = self.engine.get_bucket_groups(
+            "CALLED_BY", now - 10, now + 100, source_prefix="Routine:AcmeCorp:")
+        sources = {g["source"] for g in filtered}
+        assert all(s.startswith("Routine:AcmeCorp:") for s in sources), sources
+        assert not any(s.startswith("Routine:OtherCo:") for s in sources), sources
+
+    def test_bucket_groups_empty_prefix_returns_all(self):
+        """Empty source_prefix preserves backward-compat (all sources returned)."""
+        now = int(time.time())
+        for tenant in ["TenA", "TenB"]:
+            self.engine.bulk_create_edges_temporal([
+                {"s": f"Rtn:{tenant}:x", "p": "CALLED_BY",
+                 "o": f"QG:{tenant}:g", "ts": now, "w": 1.0}
+            ])
+        all_groups = self.engine.get_bucket_groups("CALLED_BY", now - 10, now + 10)
+        sources = {g["source"] for g in all_groups}
+        assert any("TenA" in s for s in sources)
+        assert any("TenB" in s for s in sources)
+
+    # ── ENH-2: GetBucketGroupTargets ──────────────────────────────────
+    def test_bucket_group_targets_returns_correct_targets(self):
+        """get_bucket_group_targets returns distinct targets for a source."""
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:ProcessHL7", "p": "CALLED_BY",
+             "o": f"{self.PREFIX}:G1", "ts": now, "w": 1.0},
+            {"s": f"{self.PREFIX}:ProcessHL7", "p": "CALLED_BY",
+             "o": f"{self.PREFIX}:G2", "ts": now + 1, "w": 2.0},
+            {"s": f"{self.PREFIX}:OtherRtn", "p": "CALLED_BY",
+             "o": f"{self.PREFIX}:G3", "ts": now + 2, "w": 1.0},
+        ])
+        targets = self.engine.get_bucket_group_targets(
+            f"{self.PREFIX}:ProcessHL7", "CALLED_BY", now - 10, now + 100)
+        assert isinstance(targets, list)
+        assert set(targets) == {f"{self.PREFIX}:G1", f"{self.PREFIX}:G2"}
+
+    def test_bucket_group_targets_deduplicates_across_buckets(self):
+        """Targets appearing in multiple buckets are returned only once."""
+        bucket_sec = 300
+        now = int(time.time())
+        t1 = now - (now % bucket_sec) - bucket_sec
+        t2 = t1 + bucket_sec
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:dup", "p": "CALLED_BY",
+             "o": f"{self.PREFIX}:same_target", "ts": t1, "w": 1.0},
+            {"s": f"{self.PREFIX}:dup", "p": "CALLED_BY",
+             "o": f"{self.PREFIX}:same_target", "ts": t2, "w": 2.0},
+        ])
+        targets = self.engine.get_bucket_group_targets(
+            f"{self.PREFIX}:dup", "CALLED_BY", t1 - 10, t2 + 100)
+        assert targets.count(f"{self.PREFIX}:same_target") == 1
+
+    def test_bucket_group_targets_empty_when_outside_window(self):
+        """No targets returned when edges are outside the time window."""
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:ow", "p": "CALLED_BY",
+             "o": f"{self.PREFIX}:t1", "ts": now + 10000, "w": 1.0},
+        ])
+        targets = self.engine.get_bucket_group_targets(
+            f"{self.PREFIX}:ow", "CALLED_BY", now - 100, now + 100)
+        assert targets == []
+
+    # ── get_window_sources ─────────────────────────────────────────────
+    def test_get_window_sources_returns_distinct_sources(self):
+        """get_window_sources returns each source once, filtered by predicate."""
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:src1", "p": "COST_ON",
+             "o": "Date:d1", "ts": now, "w": 1.0},
+            {"s": f"{self.PREFIX}:src1", "p": "COST_ON",
+             "o": "Date:d2", "ts": now + 1, "w": 2.0},
+            {"s": f"{self.PREFIX}:src2", "p": "COST_ON",
+             "o": "Date:d1", "ts": now + 2, "w": 1.0},
+            {"s": f"{self.PREFIX}:src3", "p": "OTHER_PRED",
+             "o": "Date:d1", "ts": now + 3, "w": 1.0},
+        ])
+        sources = self.engine.get_window_sources("COST_ON", now - 10, now + 100)
+        assert isinstance(sources, list)
+        assert set(sources) == {f"{self.PREFIX}:src1", f"{self.PREFIX}:src2"}
+        assert sources.count(f"{self.PREFIX}:src1") == 1
+
+    def test_get_window_sources_empty_predicate_matches_any(self):
+        """Empty predicate string matches sources regardless of edge type."""
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:anyp", "p": "SOME_PRED",
+             "o": "Date:d1", "ts": now, "w": 1.0},
+        ])
+        sources = self.engine.get_window_sources("", now - 10, now + 100)
+        assert f"{self.PREFIX}:anyp" in sources
+
+    def test_get_window_sources_empty_when_outside_window(self):
+        """No sources returned when all edges are outside the time window."""
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:ows", "p": "COST_ON",
+             "o": "Date:d1", "ts": now + 10000, "w": 1.0},
+        ])
+        sources = self.engine.get_window_sources("COST_ON", now - 100, now + 100)
+        assert sources == []
+
+    def test_get_window_sources_respects_predicate_filter(self):
+        """A source with only non-matching-predicate edges is excluded."""
+        now = int(time.time())
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:wrongpred", "p": "LATENCY_ON",
+             "o": "Date:d1", "ts": now, "w": 1.0},
+        ])
+        sources = self.engine.get_window_sources("COST_ON", now - 10, now + 100)
+        assert f"{self.PREFIX}:wrongpred" not in sources
+
+    def test_purge_before_removes_old_edges(self):
+        now = int(time.time())
+        old_ts = now - 7200
+        self.engine.bulk_create_edges_temporal([
+            {"s": f"{self.PREFIX}:pb", "p": "COST_ON",
+             "o": "Date:old", "ts": old_ts, "w": 1.0},
+            {"s": f"{self.PREFIX}:pb", "p": "COST_ON",
+             "o": "Date:new", "ts": now, "w": 2.0},
+        ])
+        self.engine.purge_before(now - 3600)
+        count = self.engine.get_temporal_aggregate(
+            f"{self.PREFIX}:pb", "COST_ON", "count", 0, now + 10)
+        assert count == 1
+        edges = self.engine.get_edges_in_window(
+            f"{self.PREFIX}:pb", "COST_ON", 0, now + 10)
+        assert edges[0]["target"] == "Date:new"
