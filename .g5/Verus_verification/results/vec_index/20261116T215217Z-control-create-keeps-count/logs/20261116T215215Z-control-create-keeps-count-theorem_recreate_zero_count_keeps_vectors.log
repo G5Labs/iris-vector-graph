@@ -1,0 +1,22 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/create-keeps-count/20261116T215215Z/models/vec_index/vec_index.rs:63:48
+   |
+63 |  requires ix.vecs.dom().len()==0,ix.vecs.dom().finite(),a!=b
+   |                                                ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/create-keeps-count/20261116T215215Z/models/vec_index/vec_index.rs:73:10
+   |
+71 | pub proof fn theorem_recreate_zero_count_keeps_vectors(ix:Ix,dim:nat,q:V)
+   | ------------------------------------------------------------------------- at the end of the function body
+72 |  requires ix.trees==0
+73 |  ensures create(ix,dim,0).count==0,create(ix,dim,0).vecs==ix.vecs,candidates(create(ix,dim,0),q)==ix.vecs.dom(),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 1 warning emitted
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: refuse a vector of another width (repair for F-0608)",
+    "expect_fail_in": [
+      "theorem_insert_overwrites_dim"
+    ],
+    "find": " let l=reach(ix.planes,v);\n Ix{vecs:ix.vecs.insert(id,v),count:ix.count+1,dim:v.len(),trees:ix.trees,planes:ix.planes,\n    leaves:if ix.trees==0 {ix.leaves} else {ix.leaves.insert(l,members(ix,l).insert(id))}}\n}",
+    "name": "refuse-other-width",
+    "replace": " let l=reach(ix.planes,v);\n if ix.dim>0 && v.len()!=ix.dim {ix} else {\n Ix{vecs:ix.vecs.insert(id,v),count:ix.count+1,dim:v.len(),trees:ix.trees,planes:ix.planes,\n    leaves:if ix.trees==0 {ix.leaves} else {ix.leaves.insert(l,members(ix,l).insert(id))}}}\n}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_insert_overwrites_dim"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/vec_index/model.json": "6be2c3ca5f2f9b8f33323e3d1ae3d998538174db8ee2491516d6f6f8a7ffab9e",
+    ".g5/Verus_verification/models/vec_index/vec_index.rs": "6378204d598ec49e116f5f65fc3aa299107989722c212acb8f2b2758ea60fcf9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215214Z/models/vec_index/vec_index.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_insert_overwrites_dim": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/20261116T215214Z-control-refuse-other-width-theorem_insert_overwrites_dim.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/20261116T215214Z-control-refuse-other-width.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/vec_index/20261116T215215Z-control-refuse-other-width/logs/20261116T215214Z-control-refuse-other-width-theorem_insert_overwrites_dim.log": "3cf3b424cb07b53d0cc7ac77c6a79a5bf4922ff691560c63293b67ca55c3283c",
+    ".g5/Verus_verification/results/vec_index/20261116T215215Z-control-refuse-other-width/logs/20261116T215214Z-control-refuse-other-width.log": "3c436a2d0b1379d400b38209c728b7e1f6f16d428876e6264b87ad93573e6a41"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

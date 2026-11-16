@@ -1,0 +1,57 @@
+{
+  "title": "vec index",
+  "question": "VecIndex Create/Insert/Build/Search/Info/Drop: inserts placed in existing trees, re-insert counted again (F-0608), re-create zeroes the count and keeps vectors (bug-srch-101), width overwritten by any insert, score per metric; ranking and metric arithmetic checked natively, multi-leaf search outside",
+  "ontology_ids": [
+    "search.vecindex"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 8}"
+    },
+    {
+      "label": "insert-not-into-trees",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_insert_found_by_identical_query\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "count-only-new-ids",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_reinsert_inflates_count\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "refuse-other-width",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_insert_overwrites_dim\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "create-keeps-count",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_recreate_zero_count_keeps_vectors\", \"theorem_distinct_inserts_count_vectors\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "build-keeps-old-planes",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_build_places_every_vector\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "dot-score-is-distance",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_score_mapping\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

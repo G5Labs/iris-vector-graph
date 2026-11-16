@@ -1,0 +1,22 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/create-keeps-count/20261116T215326Z/models/vec_index/vec_index.rs:63:48
+   |
+63 |  requires ix.vecs.dom().len()==0,ix.vecs.dom().finite(),a!=b
+   |                                                ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/create-keeps-count/20261116T215326Z/models/vec_index/vec_index.rs:64:10
+   |
+62 | pub proof fn theorem_distinct_inserts_count_vectors(ix:Ix,a:Id,b:Id,va:V,vb:V,dim:nat,trees:nat)
+   | ------------------------------------------------------------------------------------------------ at the end of the function body
+63 |  requires ix.vecs.dom().len()==0,ix.vecs.dom().finite(),a!=b
+64 |  ensures insert(insert(create(ix,dim,trees),a,va),b,vb).count==insert(insert(create(ix,dim,trees),a,va),b,vb).vecs.dom().len(),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 1 warning emitted
+

@@ -1,0 +1,20 @@
+verification results:: 7 verified, 1 errors
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/build-keeps-old-planes/20261116T215327Z/models/vec_index/vec_index.rs:63:48
+   |
+63 |  requires ix.vecs.dom().len()==0,ix.vecs.dom().finite(),a!=b
+   |                                                ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/build-keeps-old-planes/20261116T215327Z/models/vec_index/vec_index.rs:51:10
+   |
+49 | pub proof fn theorem_build_places_every_vector(ix:Ix,p:Planes,id:Id)
+   | -------------------------------------------------------------------- at the end of the function body
+50 |  requires ix.trees>0,ix.vecs.contains_key(id)
+51 |  ensures candidates(build(ix,p),ix.vecs[id]).contains(id),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 1 warning emitted
+

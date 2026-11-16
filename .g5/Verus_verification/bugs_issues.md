@@ -2722,6 +2722,23 @@ Interpretation needing confirmation (unchanged): the class may be meant as a low
 
 Repair proposal (not implemented, not checked): end each `%NOINDEX` public load in `rebuild_all_indices()` (as `load_networkx` does), or make `use_noindex` default to `False` for the per-phase methods; preserve `load_networkx`'s single rebuild. Distinguishing case: A1 against A2. Related: [bug-plt-011](#bug-plt-011).
 
+<a id="F-0608"></a>
+### Vector index stores do not check width or duplicates
+
+Severity: Medium · Decision: Open
+
+Run: Playbook completion audit (imported 2026-11-14)
+
+Found by: the playbook arm's audit (module 06), live on the IVF index (`p0608_ivf_insert_duplicates`: re-inserting `a` put it in two cells and raised `indexed` from 2 to 3); the VecIndex branch, which that audit did not run, in the retest's iteration 27 with predictions frozen first ([predictions](../uplift/consolidated/iteration-27/vecindex-PAIRS.md)); [vec_index](models/vec_index/NOTES.md) `theorem_reinsert_inflates_count`, `theorem_insert_overwrites_dim`.
+
+Reproduced by: **E2E reproduced** for VecIndex on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-27/vecindex-observed-20261116T215013Z.json), cases V9 and V11; [binding](results/vec_index/20261116T215331Z-binding/receipt.json), five metrics). Re-inserting a stored ID raises `vec_info.count` from 5 to 6 while the index still holds 5 vectors (the search returns the ID once, with its new vector). Inserting `[1, 0]` into a 3-wide index is accepted, `vec_info.dim` becomes 2, and the vector is ranked by the parts both vectors share (an l2 distance ignores the query's third component). Passing neighbor: distinct inserts into a new index count exactly the stored vectors. The IVF branch rests on the playbook's live result above, not rerun here.
+
+Expected: the playbook statement VEC-B11.14 ("an id lives in at most one cell; indexed counts distinct ids"); `plaid_build` already refuses a token of another width (R089), and `vec_create_index` takes a `dim`.
+
+Consequence: `vec_info` over-reports the index size after updates, and one wrong-width vector silently changes the recorded width and is ranked on partial data. Medium: wrong reported size and wrong rankings with a confirmed trigger; an administrator can rebuild the index.
+
+Repair proposal (checked in the model only): count only IDs not yet stored, and refuse a vector whose width differs from the index's (controls `count-only-new-ids` and `refuse-other-width` make the as-built theorems fail); preserve replacement of a stored ID's vector. Distinguishing cases: V9 and V11.
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -4049,6 +4066,40 @@ Consequence: a reader of the guide expects a rolled-back temporal edge to stay o
 
 Repair proposal (not implemented): name the calls that use `engine._iris_obj()` (purge, rebuild, policy, structural drop/backfill) instead of "the temporal edge stores". Governing statement: [structure.write](../ontology/features/graph-structure.g5.md#structure.write).
 
+<a id="bug-srch-101"></a>
+### Creating a VecIndex again under the same name reports a count of 0 while its vectors stay searchable
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-16 (retest, iteration 27)
+
+Found by: source reading after the W32 predictions were frozen, then observation ([predictions](../uplift/consolidated/iteration-27/vecindex-PAIRS.md), V10); [vec_index](models/vec_index/NOTES.md) `theorem_recreate_zero_count_keeps_vectors`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture ([observation](../uplift/consolidated/iteration-27/vecindex-observed-20261116T215013Z.json); [binding](results/vec_index/20261116T215331Z-binding/receipt.json)). After 5 inserts, `vec_create_index` on the same name returns normally; `vec_info.count` is 0 and `vec_search` still returns all 5 vectors. Passing neighbor: a first create reports 0 and searches return nothing.
+
+Expected: the API reference describes the call as "Create (or reset the settings of)" an index; it does not say what happens to the stored vectors, and no source promises a count that disagrees with the contents.
+
+Consequence: a caller who re-creates an index to start over keeps old vectors in its results, and the reported count hides them. Low: misleading report; the contents are as stored.
+
+Repair proposal (not implemented): either clear the vectors and trees on create, or keep `meta.count` equal to the stored vectors. Governing statement: [search.vecindex](../ontology/features/search.g5.md#search.vecindex).
+
+<a id="bug-srch-102"></a>
+### The API reference says a vector inserted into a VecIndex is searchable only after the next vec_build
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-16 (retest, iteration 27)
+
+Found by: the frozen W32 prediction V3, taken from the API reference, missed ([predictions](../uplift/consolidated/iteration-27/vecindex-PAIRS.md)); [vec_index](models/vec_index/NOTES.md) `theorem_insert_found_by_identical_query`, control `insert-not-into-trees`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture ([observation](../uplift/consolidated/iteration-27/vecindex-observed-20261116T215013Z.json), V3). After `vec_build`, `vec_insert` of a vector equal to the query makes it the first hit at once (score 1.0).
+
+Expected: the reference says "It is searchable through the trees only after the next `vec_build`" and "an index with no trees is searched by brute force"; `Insert` adds every vector to each existing tree, and `vec_create_index` sets four trees at once, so brute force runs only on an index created with no trees or after a drop.
+
+Consequence: callers may run needless builds; the description of which search runs is wrong. Low: documentation drift.
+
+Repair proposal (not implemented): say that inserts are placed in the existing trees and that `vec_build` re-places every vector with new planes.
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 
@@ -4175,8 +4226,6 @@ These anchors preserve older links. The corresponding claims and review disposit
 <span id="F-0601"></span> [F-0601: review record](audits/register-20261115/bugs-review.md#F-0601)
 
 <span id="F-0604"></span> [F-0604: review record](audits/register-20261115/bugs-review.md#F-0604)
-
-<span id="F-0608"></span> [F-0608: review record](audits/register-20261115/bugs-review.md#F-0608)
 
 <span id="F-0615"></span> [F-0615: review record](audits/register-20261115/bugs-review.md#F-0615)
 

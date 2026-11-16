@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: an insert waits for the next build (the API reference's description)",
+    "expect_fail_in": [
+      "theorem_insert_found_by_identical_query"
+    ],
+    "find": "    leaves:if ix.trees==0 {ix.leaves} else {ix.leaves.insert(l,members(ix,l).insert(id))}}",
+    "name": "insert-not-into-trees",
+    "replace": "    leaves:ix.leaves}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_insert_found_by_identical_query"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/vec_index/model.json": "6be2c3ca5f2f9b8f33323e3d1ae3d998538174db8ee2491516d6f6f8a7ffab9e",
+    ".g5/Verus_verification/models/vec_index/vec_index.rs": "43b30fbf91e2f5039f4e900a9281f56ac9ffe666b0e788585e1500cf6d04af03"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/insert-not-into-trees/20261116T215323Z/models/vec_index/vec_index.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_insert_found_by_identical_query": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/20261116T215323Z-control-insert-not-into-trees-theorem_insert_found_by_identical_query.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/20261116T215323Z-control-insert-not-into-trees.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/vec_index/20261116T215324Z-control-insert-not-into-trees/logs/20261116T215323Z-control-insert-not-into-trees-theorem_insert_found_by_identical_query.log": "245f8b20f6fc656604e286a65457f51d27bc2d11a60becc7c8a2fede475eb466",
+    ".g5/Verus_verification/results/vec_index/20261116T215324Z-control-insert-not-into-trees/logs/20261116T215323Z-control-insert-not-into-trees.log": "78e55d3bcb695ebaebfcf97eda76f45cc792c5fe78710b2243498abbe07e917d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -47,3 +47,13 @@ phase 1 commits per batch; the ordering (phase 1 committed, phase 2 not) is the 
 
 No prediction missed. Material prediction gained: an owner reader can now predict A1 and B1 from `install.bulk_load.loader`
 alone, and Verus distinguishes A1/A2, B1/B2 and C1 (`models/bulk_load`), bound to eight previously unbound loader members.
+
+## Correction (recorded in iteration 27)
+
+The "Owner prediction" column above was taken from the blocks' **metadata** entries only; the statement bodies were not
+read. The body of [install.bulk_load.rebuild](../../../ontology/concepts/install.g5.md#install.bulk_load.rebuild)
+already said that `load_nodes`/`load_edges` leave the rebuild to the caller, "so a caller who skips it leaves those rows
+invisible to index-based reads". A1 was therefore **predicted by the owner**, not an owner gap. The body of
+`install.bulk_load.loader` said a reload "changes nothing" and did not say an interrupted load stays incomplete; that B1
+detail was missing from the statement (present only as a metadata note) and is now in the statement. The behavioral
+bullets this iteration had added to the loader's metadata were moved into the statement or removed as duplicates.

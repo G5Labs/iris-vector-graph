@@ -1,0 +1,69 @@
+verification results:: 4 verified, 4 errors
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215325Z/models/vec_index/vec_index.rs:64:48
+   |
+64 |  requires ix.vecs.dom().len()==0,ix.vecs.dom().finite(),a!=b
+   |                                                ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215325Z/models/vec_index/vec_index.rs:47:10
+   |
+45 | pub proof fn theorem_insert_found_by_identical_query(ix:Ix,id:Id,v:V)
+   | --------------------------------------------------------------------- at the end of the function body
+46 |  requires ix.trees>0
+47 |  ensures candidates(insert(ix,id,v),v).contains(id),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215325Z/models/vec_index/vec_index.rs:60:53
+   |
+58 | pub proof fn theorem_reinsert_inflates_count(ix:Ix,id:Id,v:V)
+   | ------------------------------------------------------------- at the end of the function body
+59 |  requires ix.vecs.contains_key(id)
+60 |  ensures insert(ix,id,v).vecs.dom()=~=ix.vecs.dom(),insert(ix,id,v).count==ix.count+1,
+   |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215325Z/models/vec_index/vec_index.rs:69:9
+   |
+69 |  assert(r.vecs.dom()=~=set![a,b]);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215325Z/models/vec_index/vec_index.rs:77:1
+   |
+77 | pub proof fn theorem_insert_overwrites_dim(ix:Ix,id:Id,v:V)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215325Z/models/vec_index/vec_index.rs:79:10
+   |
+79 |  ensures insert(ix,id,v).vecs[id]==v,insert(ix,id,v).dim==v.len(),insert(ix,id,v).dim!=ix.dim,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215325Z/models/vec_index/vec_index.rs:79:10
+   |
+77 | pub proof fn theorem_insert_overwrites_dim(ix:Ix,id:Id,v:V)
+   | ----------------------------------------------------------- at the end of the function body
+78 |  requires v.len()!=ix.dim
+79 |  ensures insert(ix,id,v).vecs[id]==v,insert(ix,id,v).dim==v.len(),insert(ix,id,v).dim!=ix.dim,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/refuse-other-width/20261116T215325Z/models/vec_index/vec_index.rs:79:38
+   |
+77 | pub proof fn theorem_insert_overwrites_dim(ix:Ix,id:Id,v:V)
+   | ----------------------------------------------------------- at the end of the function body
+78 |  requires v.len()!=ix.dim
+79 |  ensures insert(ix,id,v).vecs[id]==v,insert(ix,id,v).dim==v.len(),insert(ix,id,v).dim!=ix.dim,
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 5 previous errors; 1 warning emitted
+

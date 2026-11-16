@@ -1,0 +1,22 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/insert-not-into-trees/20261116T215323Z/models/vec_index/vec_index.rs:63:48
+   |
+63 |  requires ix.vecs.dom().len()==0,ix.vecs.dom().finite(),a!=b
+   |                                                ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/vec_index/controls/insert-not-into-trees/20261116T215323Z/models/vec_index/vec_index.rs:46:10
+   |
+44 | pub proof fn theorem_insert_found_by_identical_query(ix:Ix,id:Id,v:V)
+   | --------------------------------------------------------------------- at the end of the function body
+45 |  requires ix.trees>0
+46 |  ensures candidates(insert(ix,id,v),v).contains(id),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 1 warning emitted
+

@@ -319,6 +319,7 @@ The `BulkLoader` class trades per-row checks for speed.
 
 - One loader writes one graph, and the default graph is written explicitly.
 - It drops duplicates within a load and skips rows already stored, so loading the same data again changes nothing.
+- Today it skips an input node as soon as its node row is stored, with that node's labels and properties. A load that failed after writing node rows therefore cannot be finished by loading again: those nodes keep no labels or properties.
 - It refuses a caller's open transaction and commits per batch.
 - It writes and rebuilds in the namespace's recorded IVG Schema, like every other IVG writer.
 - Before its unindexed edge load writes any edge, it adds each edge's two end nodes to the loader's graph, so every edge it writes has both endpoints.
@@ -805,12 +806,7 @@ Open questions: [Is BulkLoader meant to be the only writer, on single-edge graph
 - agent
 - user-facing-behavior, operations
 
-`BulkLoader.load_nodes` writes node rows, then labels, then properties, and commits each batch as it goes. A re-run skips every input node that already has a node row in the loader's graph and writes nothing for it.
-
-- After a completed load, running the same load again writes nothing, and the nodes keep their labels and properties.
-- After a load that failed while writing labels or properties, its nodes stay without them, and running the same load again does not add them. Observed divergence from the loader's own idempotency rule.
-- With the default `use_noindex=True`, `get_node`, Cypher and counts see none of the loaded rows until `rebuild_all_indices()` runs; `load_networkx` runs it before returning. With `use_noindex=False` the rows read back at once. Observed divergence from spec 252 FR-008.
-- One loader loads one graph. The same node ID in another graph does not stop the load, and other graphs are unchanged.
+Metadata note: the phase order and the re-run outcome after an interrupted load are in the statement; the default unindexed load's visibility is owned by [rebuild](#install.bulk_load.rebuild).
 
 Public case M23. A repeat is told from a refusal by the error text: SQLCODE -119 or the word "unique" in the message (`bulk_loader.py:105-106`), so a non-repeat refusal whose message happens to contain "unique" would be skipped as a repeat (code reading; not run). Observed divergence: the loader defaults to `Graph_KG`, and its index rebuild names the `Graph_KG` table classes whatever schema it was given.
 

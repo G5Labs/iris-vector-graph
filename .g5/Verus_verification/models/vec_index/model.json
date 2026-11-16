@@ -1,0 +1,64 @@
+{
+  "name": "vec_index",
+  "root": "vec_index.rs",
+  "expected_verified": 8,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "insert-not-into-trees",
+      "find": "    leaves:if ix.trees==0 {ix.leaves} else {ix.leaves.insert(l,members(ix,l).insert(id))}}",
+      "replace": "    leaves:ix.leaves}",
+      "expect_fail_in": [
+        "theorem_insert_found_by_identical_query"
+      ],
+      "classification": "effect: an insert waits for the next build (the API reference's description)"
+    },
+    {
+      "name": "count-only-new-ids",
+      "find": " Ix{vecs:ix.vecs.insert(id,v),count:ix.count+1,dim:v.len(),",
+      "replace": " Ix{vecs:ix.vecs.insert(id,v),count:if ix.vecs.contains_key(id) {ix.count} else {ix.count+1},dim:v.len(),",
+      "expect_fail_in": [
+        "theorem_reinsert_inflates_count"
+      ],
+      "classification": "decision: count only ids not yet stored (repair for F-0608)"
+    },
+    {
+      "name": "refuse-other-width",
+      "find": " let l=reach(ix.planes,v);\n Ix{vecs:ix.vecs.insert(id,v),count:ix.count+1,dim:v.len(),trees:ix.trees,planes:ix.planes,\n    leaves:if ix.trees==0 {ix.leaves} else {ix.leaves.insert(l,members(ix,l).insert(id))}}\n}",
+      "replace": " let l=reach(ix.planes,v);\n if ix.dim>0 && v.len()!=ix.dim {ix} else {\n Ix{vecs:ix.vecs.insert(id,v),count:ix.count+1,dim:v.len(),trees:ix.trees,planes:ix.planes,\n    leaves:if ix.trees==0 {ix.leaves} else {ix.leaves.insert(l,members(ix,l).insert(id))}}}\n}",
+      "expect_fail_in": [
+        "theorem_insert_overwrites_dim"
+      ],
+      "classification": "decision: refuse a vector of another width (repair for F-0608)"
+    },
+    {
+      "name": "create-keeps-count",
+      "find": " Ix{vecs:ix.vecs,count:0,dim:dim,trees:trees,planes:ix.planes,leaves:ix.leaves}",
+      "replace": " Ix{vecs:ix.vecs,count:ix.count,dim:dim,trees:trees,planes:ix.planes,leaves:ix.leaves}",
+      "expect_fail_in": [
+        "theorem_recreate_zero_count_keeps_vectors",
+        "theorem_distinct_inserts_count_vectors"
+      ],
+      "classification": "effect: Create leaves meta.count as it was"
+    },
+    {
+      "name": "build-keeps-old-planes",
+      "find": " Ix{vecs:ix.vecs,count:ix.count,dim:ix.dim,trees:ix.trees,planes:p,",
+      "replace": " Ix{vecs:ix.vecs,count:ix.count,dim:ix.dim,trees:ix.trees,planes:ix.planes,",
+      "expect_fail_in": [
+        "theorem_build_places_every_vector"
+      ],
+      "classification": "effect: search descends planes other than the ones the build placed vectors with"
+    },
+    {
+      "name": "dot-score-is-distance",
+      "find": "match m {Metric::Cosine=>1-d,Metric::Dot=>-d,_=>d}",
+      "replace": "match m {Metric::Cosine=>1-d,Metric::Dot=>d,_=>d}",
+      "expect_fail_in": [
+        "theorem_score_mapping"
+      ],
+      "classification": "reporting: dot score reported as the (negated) distance"
+    }
+  ]
+}

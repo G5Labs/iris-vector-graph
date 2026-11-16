@@ -451,3 +451,6 @@ probe is `iteration-26/autocommit_probe.py`. Worked lookup: `structure.write` â†
 `write_routing.rs::theorem_autocommit_off_temporal_edge_splits` â†’ `iris_src/src/Graph/KG/TemporalIndex.cls::WriteStores`
 (line 80, step order) and `iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.write_temporal_edge` (line 2655,
 direct call) in `crosswalk/decision-links.tsv`.
+
+Iteration 27 ([handoff](../uplift/consolidated/iteration-27/HANDOFF.md)) adds `models/vec_index` (8 verified, 6 controls)
+and its binding (`models/vec_index/binding.py`, fixture required, about 2 s; seed 20261116).

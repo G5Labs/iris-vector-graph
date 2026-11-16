@@ -68,3 +68,14 @@ the same with SQL `START TRANSACTION` → everything gone (T4/T5).
 Material predictions gained: an owner reader can now predict every cell of the 32-history matrix from `structure.write`;
 `write_routing` distinguishes the WriteTxn path, the direct-call step order and the engine's own connection. The
 first binding run's three disagreements are kept as the discovery record.
+
+## Correction (recorded in iteration 27)
+
+The predictions above were taken from the USER_GUIDE and the owners' **metadata** entries; the statement bodies were not
+read. [structure.write](../../../ontology/features/graph-structure.g5.md#structure.write) already stated that temporal
+purges, rebuilds and settings use the engine's own native connection and commit on their own under `from_connect`
+(T10), and that the bulk loader refuses a caller's open transaction (T8 as observed). [temporal.write](../../../ontology/features/temporal.g5.md#temporal.write)
+already stated that a direct temporal write joins a caller's transaction (T5 as observed). So T5, T8 and T10 were
+**predicted by the owners**; the misses were against the USER_GUIDE only. Not predicted by any owner: the autocommit-off
+split (T11, T12; bug-tmp-102) and the autocommit-off temporal setting. Those two facts are now in the statements; the
+four-bullet rule this iteration had added to `structure.write`'s metadata was removed as a duplicate of the statement.

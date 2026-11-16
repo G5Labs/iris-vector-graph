@@ -34,6 +34,7 @@ Each engine write is its own transaction when the caller has none, and a nested 
 
 - Calls that cannot be part of one transaction refuse a caller's open transaction and commit in steps: snapshot restore and the bulk loader.
 - Some calls use the engine's own native connection: erasing a graph or every graph, a rebuild, switching multigraph mode, named search-index writes (BM25 and vector indexes), temporal purges, rebuilds and settings, and FHIR graph calls. They join the caller's transaction only when the engine was made on the caller's own connection; with `from_connect` they commit on their own ([erasure](erasure.g5.md#erasure.atomic)). Whether this should depend on how the engine was opened is [open](../../Verus_verification/open_questions.md#structure.write.engine-connection).
+- Today, when the caller turned the driver's autocommit off and has written nothing yet, such a call can commit on its own even on the caller's connection; a temporal setting does.
 - Deleting nodes removes the reifier nodes of their edges in later transactions.
 - Temporal writes follow their own rule ([temporal writes](temporal.g5.md#temporal.write)).
 
@@ -367,13 +368,6 @@ A rebuild recreates the adjacency index from the rows and then the interned snap
 - Verus: [write_routing](../../Verus_verification/models/write_routing/NOTES.md) `theorem_writetxn_call_follows_caller_end`, `theorem_start_transaction_direct_call_follows_caller_end`, `theorem_autocommit_off_temporal_edge_splits`, `theorem_own_process_write_survives_rollback`, `theorem_routing`, `theorem_loader_refusal` (as built)
 - agent
 - architecture-decision, data-integrity
-
-When a caller has opened a transaction on the engine's connection, an engine write behaves as follows.
-
-- Node, edge and Cypher writes join it, whichever way the caller opened it (SQL `START TRANSACTION`, or the driver's autocommit off) and whichever way the engine was made: the caller's commit keeps them and its rollback removes them.
-- `create_edge_temporal` joins it after `START TRANSACTION` on either engine. With autocommit off and nothing written yet, a rollback keeps the temporal entry but removes its structural edge and endpoint nodes. Observed divergence from the user guide.
-- `purge_before` and `set_temporal_structural` on an engine made with `from_connect` run on the engine's own connection, so the caller's rollback does not undo them. On an engine made on the caller's connection they join, except that a policy change made with autocommit off and nothing written yet is kept.
-- The bulk loader and the other calls that refuse do so once `$TLEVEL` is above 0. `START TRANSACTION` makes that true at once, so they refuse before the caller writes anything; with autocommit off they refuse only after the caller's first write.
 
 Introduced in 4.6.4: before it, an engine write inside a caller's transaction committed or rolled back the caller's earlier work. The exceptions were added after the stage-A reconstruction check (its 2(b) item 14) and checked in the code. The separate native connection exists so that Native API calls never share a connection with cursor DDL; without the caller's credentials the engine uses the caller's own connection, and these calls then nest. Inside a caller's transaction, `bulk_create_nodes` and `bulk_create_edges` keep the indexes and nest instead of dropping them. Whether erasure should refuse an open caller transaction is the erasure page's open question.
 

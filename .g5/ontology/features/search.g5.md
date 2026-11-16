@@ -190,6 +190,20 @@ A named search index changes only through its own build, insert, delete and drop
 An IVF build reads vectors from the requested graph and model's route, never another pair's table. If the pair has no route, it raises an error before reading any vector table or starting the index build; a routed selection with no vectors also raises an error.
 - Request validation and required library loading may refuse the build before the route is read. Building an index does not establish that later graph writes keep it current; the caller owns [index upkeep](#search.scope.indexes.upkeep).
 
+## VecIndex search
+
+
+<a id="search.vecindex"></a>
+[I · search.vecindex]
+
+A VecIndex is a named vector index that a caller fills and searches by name; it records no graph. A search returns up to k stored IDs, nearest first.
+
+- For cosine the score is the cosine and the distance is 1 minus it. For dot the score is the dot product, largest first, and the distance is its negative. For l2, l1 and chebyshev both are the distance.
+- A vector inserted after a build can be found at once; a build places every stored vector again. A search ranks only the IDs in the tree leaves the query reaches, so it is approximate once the index holds more vectors than a leaf.
+- Inserting an ID again replaces its vector. Today the reported count still goes up by one, and creating the index again under the same name keeps the vectors but reports a count of 0.
+- Today a vector of another width is accepted and becomes the index's recorded width; distances to it use only the parts both vectors have.
+- Dropping the index removes everything; a search then returns nothing.
+
 ## Quarantine
 
 
@@ -625,6 +639,18 @@ Audit reproduction: [F-0607](../../Verus_verification/bugs_issues.md#F-0607) is 
 Findings: [The IVF index's 'cosine' metric is an unnormalised dot product](../../Verus_verification/bugs_issues.md#F-0607).
 
 State machines: [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
+
+### search.vecindex
+
+- Sources: [API reference, vec_*](../../../docs/API_REFERENCE.md#L1150-L1226), [Graph.KG.VecIndex](../../../iris_src/src/Graph/KG/VecIndex.cls), [engine wrappers](../../../iris_vector_graph/_engine/vector.py#L1548-L1650)
+- Verus: [vec_index](../../Verus_verification/models/vec_index/NOTES.md) `theorem_insert_found_by_identical_query`, `theorem_build_places_every_vector`, `theorem_reinsert_inflates_count`, `theorem_distinct_inserts_count_vectors`, `theorem_recreate_zero_count_keeps_vectors`, `theorem_insert_overwrites_dim`, `theorem_drop_empties_search`, `theorem_score_mapping` (as built)
+- Evidence: [frozen predictions and native observations](../../uplift/consolidated/iteration-27/vecindex-PAIRS.md)
+- agent
+- user-facing-behavior
+
+Findings: [Vector index stores do not check width or duplicates](../../Verus_verification/bugs_issues.md#F-0608); [Creating a VecIndex again under the same name reports a count of 0 while its vectors stay searchable](../../Verus_verification/bugs_issues.md#bug-srch-101); [The API reference says a vector inserted into a VecIndex is searchable only after the next vec_build](../../Verus_verification/bugs_issues.md#bug-srch-102)
+
+State machines: [vec index](../../Verus_verification/models/vec_index/manifest.json)
 
 ### search.quarantine
 
