@@ -1,0 +1,50 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/every-graph-gets-empty-row/20261116T220512Z/models/embedding_inventory/embedding_inventory.rs:30:9
+   |
+30 |  graphs.filter_lemma(|x:G| !routed(rs,x));
+   |         ^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/every-graph-gets-empty-row/20261116T220512Z/models/embedding_inventory/embedding_inventory.rs:44:9
+   |
+44 |  graphs.filter_lemma(|x:G| !routed(rs,x));
+   |         ^^^^^^^^^^^^
+
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/every-graph-gets-empty-row/20261116T220512Z/models/embedding_inventory/embedding_inventory.rs:39:1
+   |
+39 | pub proof fn theorem_routed_graph_has_no_empty_row(rs:Seq<Route>,graphs:Seq<G>,k:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/every-graph-gets-empty-row/20261116T220512Z/models/embedding_inventory/embedding_inventory.rs:41:10
+   |
+41 |  ensures report(rs,graphs)[k].table.is_some(),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+45 |  if k>=rs.len() {let j=k-rs.len(); assert(f.contains(f[j]));}
+   |  ------------------------------------------------------------ at the end of the function body
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/every-graph-gets-empty-row/20261116T220512Z/models/embedding_inventory/embedding_inventory.rs:45:43
+   |
+45 |  if k>=rs.len() {let j=k-rs.len(); assert(f.contains(f[j]));}
+   |                                           ^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/every-graph-gets-empty-row/20261116T220512Z/models/embedding_inventory/embedding_inventory.rs:45:54
+   |
+45 |  if k>=rs.len() {let j=k-rs.len(); assert(f.contains(f[j]));}
+   |                                                      ^^^^
+   |
+  --> seq.rs:980:12
+   |
+   = note: recommendation not met
+
+error: aborting due to 2 previous errors; 2 warnings emitted
+

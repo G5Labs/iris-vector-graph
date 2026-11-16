@@ -136,6 +136,15 @@ The first write for a graph and model creates the route at the width of the vect
 A routed table that exists without its registry row is an orphan. No read uses it, an erase empties the erased graph's rows from it but never drops it, and creating that route again reuses the table only if its column declares the width asked for.
 
 
+<a id="search.routes.inventory"></a>
+[I · search.routes.inventory]
+
+The embedding inventory reports one row per route and one row for each graph that has nodes but no route, and reading it creates nothing.
+
+- A route's row gives its width and type, its vector count inside its own graph, and whether IRIS holds an ANN index on its table.
+- A graph's no-route row names no table, counts 0 and shows no index; a graph with a route gets no such row.
+- `ivg embeddings inventory` prints the same rows, straight from IRIS, and counts as routed tables only the rows that name a table.
+
 <a id="search.knn"></a>
 [I · search.knn]
 
@@ -493,7 +502,7 @@ Open questions: [May two embed queue workers run at once?](../../Verus_verificat
 
 ### search.routes
 - Sources: [CHANGELOG v4.0.0 routed tables](../../../CHANGELOG.md#L4161-L4183), [EmbeddingRoute and resolve_route](../../../iris_vector_graph/_engine/embeddings.py#L35-L301), [route preference](../../../iris_vector_graph/_engine/embeddings.py#L107-L118), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), edge vectors: [store_edge_embedding](../../../iris_vector_graph/_engine/embeddings.py#L1117-L1205), [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L333-L398), [migration guide](../../../docs/migration/v4.0.0.md#L553-L598)
-- Children: [No fallback](#search.routes.no_fallback), [Create on write](#search.routes.create_on_write), [Orphan](#search.routes.orphan), [Route cache](#search.routes.cache)
+- Children: [No fallback](#search.routes.no_fallback), [Create on write](#search.routes.create_on_write), [Orphan](#search.routes.orphan), [Route cache](#search.routes.cache), [Inventory](#search.routes.inventory)
 - Observed divergence: the registry does not stop two tables answering one pair, so vectors written to a routed table before setup claims the original table can be stranded (F9). The upgrade puts named-graph edge vectors in `kg_EdgeEmbeddings` with no route row, where edge search for that graph does not look (F10). Both are in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings).
 - agent
 - architecture-decision, data-integrity
@@ -548,6 +557,17 @@ Findings: [Route creation commits the routed table before its registry row, and 
 - test-coverage
 
 Findings: [Route creation commits the routed table before its registry row, and an orphaned table makes every erase in the namespace fail](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-015)
+
+### search.routes.inventory
+
+- Sources: [API reference, embedding_inventory](../../../docs/API_REFERENCE.md#L148-L154), [ADMIN_GUIDE, route report](../../../docs/ADMIN_GUIDE.md#L1128-L1145), [ADMIN_API, CLI](../../../docs/ADMIN_API.md#L404), [report](../../../iris_vector_graph/_engine/schema.py#L1715-L1806), [CLI payload](../../../iris_vector_graph/cli.py#L77-L108)
+- Verus: [embedding_inventory](../../Verus_verification/models/embedding_inventory/NOTES.md) `theorem_unrouted_graph_reported`, `theorem_routed_graph_has_no_empty_row`, `theorem_rows_name_table_iff_route` (as built)
+- Evidence: [frozen predictions and native observations](../../uplift/consolidated/iteration-29/inventory-PAIRS.md)
+- Expands: [Routes](#search.routes)
+- agent
+- user-facing-behavior, operations
+
+State machines: [embedding inventory](../../Verus_verification/models/embedding_inventory/manifest.json)
 
 ### search.knn
 

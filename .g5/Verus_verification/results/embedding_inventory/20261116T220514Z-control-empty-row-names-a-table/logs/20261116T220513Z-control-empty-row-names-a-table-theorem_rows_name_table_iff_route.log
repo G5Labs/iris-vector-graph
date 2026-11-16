@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/empty-row-names-a-table/20261116T220513Z/models/embedding_inventory/embedding_inventory.rs:30:9
+   |
+30 |  graphs.filter_lemma(|x:G| !routed(rs,x));
+   |         ^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/empty-row-names-a-table/20261116T220513Z/models/embedding_inventory/embedding_inventory.rs:44:9
+   |
+44 |  graphs.filter_lemma(|x:G| !routed(rs,x));
+   |         ^^^^^^^^^^^^
+
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/empty-row-names-a-table/20261116T220513Z/models/embedding_inventory/embedding_inventory.rs:51:10
+   |
+49 | pub proof fn theorem_rows_name_table_iff_route(rs:Seq<Route>,graphs:Seq<G>,k:int)
+   | --------------------------------------------------------------------------------- at the end of the function body
+50 |  requires 0<=k<report(rs,graphs).len()
+51 |  ensures report(rs,graphs)[k].table.is_some()==(k<rs.len()),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 2 warnings emitted
+

@@ -1,0 +1,39 @@
+{
+  "title": "embedding inventory",
+  "question": "Embedding inventory: one row per route plus one no-route row per graph with nodes and no route; CLI routed-table count; reads only; registry/count/index reads are provider inputs",
+  "ontology_ids": [
+    "search.routes.inventory"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 3}"
+    },
+    {
+      "label": "omit-unrouted-graphs",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unrouted_graph_reported\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "every-graph-gets-empty-row",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_routed_graph_has_no_empty_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-row-names-a-table",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rows_name_table_iff_route\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+verification results:: 2 verified, 1 errors
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/omit-unrouted-graphs/20261116T220511Z/models/embedding_inventory/embedding_inventory.rs:30:9
+   |
+30 |  graphs.filter_lemma(|x:G| !routed(rs,x));
+   |         ^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `vstd::seq_lib::<impl vstd::seq::Seq<A>>::filter_lemma`: Use `broadcast use group_filter_ensures` instead
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/omit-unrouted-graphs/20261116T220511Z/models/embedding_inventory/embedding_inventory.rs:44:9
+   |
+44 |  graphs.filter_lemma(|x:G| !routed(rs,x));
+   |         ^^^^^^^^^^^^
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/omit-unrouted-graphs/20261116T220511Z/models/embedding_inventory/embedding_inventory.rs:24:1
+   |
+24 | pub proof fn theorem_unrouted_graph_reported(rs:Seq<Route>,graphs:Seq<G>,g:G)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/omit-unrouted-graphs/20261116T220511Z/models/embedding_inventory/embedding_inventory.rs:26:10
+   |
+24 | pub proof fn theorem_unrouted_graph_reported(rs:Seq<Route>,graphs:Seq<G>,g:G)
+   | ----------------------------------------------------------------------------- at the end of the function body
+25 |  requires graphs.contains(g),!routed(rs,g)
+26 |  ensures report(rs,graphs).contains(Row{graph:g,table:None,count:0,state:IndexState::Absent}),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/omit-unrouted-graphs/20261116T220511Z/models/embedding_inventory/embedding_inventory.rs:36:9
+   |
+36 |  assert(r[rs.len()+j]==m[j]);
+   |         ^^^^^^^^^^^^^
+   |
+  --> seq.rs:980:12
+   |
+   = note: recommendation not met
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/omit-unrouted-graphs/20261116T220511Z/models/embedding_inventory/embedding_inventory.rs:36:9
+   |
+36 |  assert(r[rs.len()+j]==m[j]);
+   |         ^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors; 2 warnings emitted
+

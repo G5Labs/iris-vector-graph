@@ -1,0 +1,17 @@
+{
+  "name": "embedding_inventory",
+  "root": "embedding_inventory.rs",
+  "expected_verified": 3,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {"name": "omit-unrouted-graphs", "find": " rs.map_values(|r:Route| route_row(r))+graphs.filter(|g:G| !routed(rs,g)).map_values(|g:G| Row{graph:g,table:None,count:0,state:IndexState::Absent})",
+     "replace": " rs.map_values(|r:Route| route_row(r))", "expect_fail_in": ["theorem_unrouted_graph_reported"],
+     "classification": "decision: a graph with nodes and no route is omitted (US4-3 reversed)"},
+    {"name": "every-graph-gets-empty-row", "find": "graphs.filter(|g:G| !routed(rs,g)).map_values(", "replace": "graphs.filter(|g:G| true).map_values(",
+     "expect_fail_in": ["theorem_routed_graph_has_no_empty_row"], "classification": "decision: a routed graph also listed with no table"},
+    {"name": "empty-row-names-a-table", "find": ".map_values(|g:G| Row{graph:g,table:None,count:0,state:IndexState::Absent})\n}",
+     "replace": ".map_values(|g:G| Row{graph:g,table:Some(0),count:0,state:IndexState::Absent})\n}", "expect_fail_in": ["theorem_rows_name_table_iff_route"],
+     "classification": "reporting: the no-route row counted as a routed table"}
+  ]
+}

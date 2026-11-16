@@ -458,3 +458,6 @@ and its binding (`models/vec_index/binding.py`, fixture required, about 2 s; see
 Iteration 28 ([handoff](../uplift/consolidated/iteration-28/HANDOFF.md)) adds `models/algo_options` (5 verified, 6 controls) and its
 binding (`models/algo_options/binding.py`, fixture required, about 2 s), which reuses the frozen matrix in
 `iteration-28/algo_options_probe.py`.
+
+Iteration 29 ([handoff](../uplift/consolidated/iteration-29/HANDOFF.md)) adds `models/embedding_inventory` (3 verified, 3
+controls) and its binding (fixture required; it runs the CLI as a subprocess with `IRIS_*` set to the fixture).

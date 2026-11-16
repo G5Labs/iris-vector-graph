@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: a graph with nodes and no route is omitted (US4-3 reversed)",
+    "expect_fail_in": [
+      "theorem_unrouted_graph_reported"
+    ],
+    "find": " rs.map_values(|r:Route| route_row(r))+graphs.filter(|g:G| !routed(rs,g)).map_values(|g:G| Row{graph:g,table:None,count:0,state:IndexState::Absent})",
+    "name": "omit-unrouted-graphs",
+    "replace": " rs.map_values(|r:Route| route_row(r))"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_unrouted_graph_reported"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/embedding_inventory/embedding_inventory.rs": "cf2fe49b9bff2e45cd2488cf18066fccfbb9770e594965d63bb5612a3140e55a",
+    ".g5/Verus_verification/models/embedding_inventory/model.json": "7b8fe09b254e9918f204f840dceb3f53e90dbeaaacdb2a123d6c136901311bb9"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/controls/omit-unrouted-graphs/20261116T220511Z/models/embedding_inventory/embedding_inventory.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_unrouted_graph_reported": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/20261116T220511Z-control-omit-unrouted-graphs-theorem_unrouted_graph_reported.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/embedding_inventory/20261116T220511Z-control-omit-unrouted-graphs.log",
+    "timed_out": false,
+    "verified": 2
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/embedding_inventory/20261116T220512Z-control-omit-unrouted-graphs/logs/20261116T220511Z-control-omit-unrouted-graphs-theorem_unrouted_graph_reported.log": "91dc92796f33f1a058f47f0289e32e1ec8de19ebd547534278840876bdb1b2e9",
+    ".g5/Verus_verification/results/embedding_inventory/20261116T220512Z-control-omit-unrouted-graphs/logs/20261116T220511Z-control-omit-unrouted-graphs.log": "830812a62d6a7383c145b2b5db84342c49a7ed35d5cc3990ae7754237510df44"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
