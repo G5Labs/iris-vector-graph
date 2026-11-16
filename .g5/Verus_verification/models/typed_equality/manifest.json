@@ -1,0 +1,78 @@
+{
+  "title": "typed equality",
+  "question": "Cypher WHERE equality and ordering of a stored node property or relationship qualifier against boolean/integer literals, versus the accepted node_read and rel_prop_text RETURN readers; SQL comparison, JSON_VALUE spelling, IRIS text-to-double cast and stored-double value are providers",
+  "ontology_ids": [
+    "query.values.equality",
+    "query.values.in_lists",
+    "query.values.ordering",
+    "query.values.string_predicates"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 43}"
+    },
+    {
+      "label": "legacy-one-not-true",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_node_true_exact\", \"theorem_node_where_return_disagree\", \"theorem_rel_integer_equals_true\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "node-number-by-text",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_node_integer_needs_stored_number\", \"theorem_node_where_return_disagree\", \"theorem_string_integer_kind_asymmetry\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "json-boolean-reads-as-word",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rel_bool_equals_integer\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stored-integer-not-a-spelling",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_node_true_exact\", \"theorem_node_where_return_disagree\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    },
+    {
+      "label": "twin-spelling-dropped",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rel_twin_spelling_equals_integer\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rel-ordering-typed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rel_text_orders_as_cast\", \"theorem_rel_bool_orders_as_number\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "node-ordering-cast",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_node_text_never_orders\", \"theorem_rel_text_orders_as_cast\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "string-predicate-typed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_node_number_matches_string_prefix\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "node-in-typed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_node_in_disagrees_with_equality\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

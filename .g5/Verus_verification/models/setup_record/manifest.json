@@ -1,0 +1,47 @@
+{
+  "title": "setup record",
+  "question": "initialize_schema's schema-record decision (new/existing/inferred/explicit/refused), dry-run and refusal no-write, record-last resume; objects abstracted",
+  "ontology_ids": [
+    "install.setup",
+    "install.setup.dry_run",
+    "install.setup.resume"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 7}"
+    },
+    {
+      "label": "dry-run-writes",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_dry_run_writes_nothing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "mismatch-adopts",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_mismatch_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unrecorded-tables-new",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_interrupted_setup_resumes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    },
+    {
+      "label": "unnamed-other-schema-recorded",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_schema_needs_a_name\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

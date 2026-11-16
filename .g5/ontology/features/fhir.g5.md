@@ -22,10 +22,14 @@ IVG can project an InterSystems IRIS FHIR repository into a graph and keep that 
 
 A registered FHIR repository is projected into its own named graph, never the default graph. The graph holds one node per live resource, keyed by its FHIR key and labelled with its resource type, and one edge per indexed reference to a live local resource. Codes and most properties stay in the repository and are read live.
 
+- Working assumption: the FHIR graph is an external writer of a rebuildable projection at the pin. verify() keeps reporting its rows (never silently 'equal'); strict mode is not a guarantee for FHIR namespaces until FHIR writes are either refused under strict or recorded.
+
+
 <a id="fhir.graph.install"></a>
 [D · fhir.graph.install]
 
 FHIR support is not a separate install. Its classes compile on every IRIS edition and stay idle where no FHIR server exists. Its tables are created by the first registration, and registration is refused where the namespace has no repository.
+
 
 <a id="fhir.graph.lifecycle"></a>
 [I · fhir.graph.lifecycle]
@@ -37,6 +41,7 @@ An operator registers a repository once, which names its graph, builds the graph
 - Status reports the graph's counts, pending changes, last sync and rebuild, last error and task.
 
 ## Keeping the graph in step
+
 
 <a id="fhir.graph.lifecycle.tasks"></a>
 [D · fhir.graph.lifecycle.tasks]
@@ -50,10 +55,16 @@ Scheduling derives ownership from the actual saved task before changing it.
 - The saved canonical GraphId determines the eligible task invocation target; busy succeeds as an invocation while error, thrown call or invalid reply fails. Scheduling proves neither background activation nor completed sync.
 
 
+
 <a id="fhir.sync"></a>
 [I · fhir.sync]
 
 A sync applies the repository's changes since the graph's watermarks, in batches of keys. Each batch's graph changes and its watermark advance commit together, so a failure rolls back both and the next sync repeats the batch.
+
+- Working assumption: Preserve the documented single-sync restriction and keep competing non-sync writers unestablished; choose serialization or conflict detection explicitly.
+- Working assumption: erase of a FHIR graph must be serialized with an active sync (take ^IVG.FHIRGraph(graph) and answer busy, or have RunBatch abort when the watermark moved backwards); until then the quiet-sync premise must be explicit for erase.
+- Working assumption: Failure without advancing the watermark is the documented contract (not a choice to revisit silently). Surface the offending key (already in last_error) and treat the missing recovery procedure (repair/delete the resource, or json_links=[]) as a documentation gap; do not assume silent skips.
+
 
 <a id="fhir.sync.idempotent"></a>
 [I · fhir.sync.idempotent]
@@ -63,49 +74,35 @@ Resyncing a key reads only the repository's current state, so repeating it gives
 - For a live key, resync makes sure the node and its label exist and recomputes its outgoing edges. It also turns unresolved references that point to the key into edges.
 - For a deleted or absent key, resync removes the key's edges, labels, properties, vectors and node, and records its incoming references as unresolved.
 
+
 <a id="fhir.sync.exclusive"></a>
 [I · fhir.sync.exclusive]
 
 Only one sync, rebuild or re-interpretation runs per FHIR graph at a time. A second caller is told the graph is busy and changes nothing.
+
 
 <a id="fhir.sync.behind"></a>
 [I · fhir.sync.behind]
 
 When the repository is behind the graph's watermarks, for example after a reset or a restore from an older backup, a sync rebuilds the graph instead and says so.
 
-<a id="fhir.sync.other_writers"></a>
-[Q · fhir.sync.other_writers]
-
-What should happen when other writers touch a FHIR graph? There is no provisional answer. Plausible answers: the FHIR graph belongs to the sync alone and other writes are refused, or other writes are allowed and must take the sync's lock.
-
-- Today erasing a FHIR graph, or writing to it from Python, does not wait for a running sync.
-- An edge a user adds from a FHIR key is deleted at that key's next resync.
-
-<a id="fhir.sync.recovery-policy"></a>
-[Q · fhir.sync.recovery-policy]
-
-Should one unreadable FHIR resource block its graph's sync?
-
-- Working assumption (agent, unratified): Keep the documented failed-batch retry without advancing the watermark; operator repair versus resource quarantine remains open.
 
 <a id="fhir.rebuild"></a>
 [I · fhir.rebuild]
 
 A rebuild reconciles the whole graph with the repository by comparing, not by erasing, so vectors on surviving nodes are kept. It then resets both watermarks to the highest values read before the scan. A rebuild is not one transaction; if it fails partway, the next sync replays the changes.
 
+
 <a id="fhir.erase"></a>
 [I · fhir.erase]
 
 Erasing a FHIR graph keeps its registration but resets its watermarks and interpretation version, so the next sync rebuilds its content from scratch.
 
+- Working assumption: Separate transient clear from decommissioning. Ordinary erase keeps registration and task (supported). For durable tenant removal require, as a stated premise, unschedule before erase and no manual sync afterwards, and verify the graph stays empty before redaction; at the pin there is no single-graph deregistration, so 'deregister' is a new command, not an available step.
+
+
 ## Interpretation
 
-<a id="fhir.erase.durable-removal-policy"></a>
-[Q · fhir.erase.durable-removal-policy]
-
-Should erasing a FHIR graph stop its sync task?
-
-- Working assumption (agent, unratified): Keep ordinary erase as a transient clear; durable removal also needs an explicit feed stop or deregistration policy.
 
 <a id="fhir.interpretation"></a>
 [D · fhir.interpretation]
@@ -116,20 +113,15 @@ A sync adds compartment edges from each resource to its patients, derived from t
 - Erasure, snapshot restore and graph verification (`verify_graph`) treat compartment edges as ordinary edges.
 - Personalized PageRank skips them by default, and status counts them apart from reference edges.
 
+
 <a id="fhir.interpretation.version"></a>
 [I · fhir.interpretation.version]
 
 A graph whose interpretation version is missing or older than the current rules is fully re-derived once, on its next sync or on request. An interrupted re-derivation leaves the old version, so the next sync starts it again.
 
-<a id="fhir.ledger"></a>
-[Q · fhir.ledger]
-
-Must FHIR sync writes be recorded in, or refused by, the revision ledger? There is no provisional answer.
-
-- Today they are neither recorded nor refused in strict mode, so verify would report them as unrecorded.
-- Plausible answers: FHIR graphs are exempt, like the bulk loader; verify adopts them; or the sync commits through the ledger.
 
 ## Mapped SQL tables
+
 
 <a id="fhir.sql_mapping"></a>
 [D · fhir.sql_mapping]
@@ -139,53 +131,48 @@ An existing SQL table can be mapped to a node label as a read-only view: Cypher 
 - A mapped label is read from its table only: Cypher no longer reads IVG's own nodes that carry the same label.
 - Removing a mapping also removes every relationship mapping from or to its label, and leaves the SQL table untouched.
 
+- Working assumption: Treat mapped SQL labels as namespace-global today; assigning every row to a graph needs mapping metadata and migration policy.
+
+
 <a id="fhir.sql_mapping.relationships"></a>
 [D · fhir.sql_mapping.relationships]
 
 A relationship between two mapped labels can be mapped to SQL, either as a foreign key on the source table or as a join table. Both labels must already be mapped.
+
 
 <a id="fhir.sql_mapping.adjacency"></a>
 [D · fhir.sql_mapping.adjacency]
 
 Mapped nodes and relationships are not in the adjacency index. Pattern and property queries in Cypher see them, but breadth-first walks, variable-length paths, centrality and the other graph algorithms do not. To use them in algorithms, write them as real nodes and edges instead.
 
+
 <a id="fhir.sql_mapping.embeddings"></a>
 [I · fhir.sql_mapping.embeddings]
 
 A mapped table's text columns can be embedded as vectors for the nodes `<label>:<id>` of one named or default graph. A row whose node does not exist in that graph is counted and skipped, not embedded.
 
-<a id="fhir.sql_mapping.graph_scope"></a>
-[Q · fhir.sql_mapping.graph_scope]
-
-Which graph do mapped rows belong to? There is no provisional answer.
-
-- Their tables carry no graph, so a query under `USE GRAPH` or across every graph reads the same rows.
-- Plausible answers: mapped rows belong to every graph, or a mapping is made per graph.
 
 ## FHIR events (deprecated)
+
 
 <a id="fhir.event"></a>
 [D · fhir.event]
 
 The `/fhir-event` route is deprecated and is removed in 5.0, because a registered FHIR graph reads the repository itself. Until then it records the resource as a node and adds a timestamped edge from its patient, optionally in a named graph.
 
+- Working assumption: Prefer idempotent repeated FHIR events, while preserving current event behavior as observation; event identity and replay retention need owner choice.
+
+
 <a id="fhir.event.access"></a>
 [I · fhir.event.access]
 
 The FHIR event route needs the API key when one is set. Read-only mode refuses it unless `IVG_ALLOW_FHIR_WRITES=true`.
 
-<a id="fhir.event.retry"></a>
-[Q · fhir.event.retry]
-
-Must a repeated FHIR event leave the graph unchanged? There is no provisional answer. Plausible answers: derive the time from the event so retries are harmless, or accept this until the route is removed in 5.0.
-
-- Today an event without a usable date gets the current time, so each retry adds another timestamped edge.
-- An updated resource keeps its first codes, and nothing removes a deleted resource.
-
 ## Metadata
 
 ### fhir.graph
 
+- uncertain
 - Sources: [FHIR_GRAPH.md](../../../docs/FHIR_GRAPH.md); [FHIRGraph.cls header](../../../iris_src/src/Graph/KG/FHIRGraph.cls); [_engine/fhir_graph.py](../../../iris_vector_graph/_engine/fhir_graph.py)
 - Children: [install](#fhir.graph.install), [lifecycle](#fhir.graph.lifecycle)
 - agent
@@ -193,6 +180,10 @@ Must a repeated FHIR event leave the graph unchanged? There is no provisional an
 - test-coverage
 
 The FHIR graph comes from specs 231 to 233, whose directories are not in the tree. The graph name has the form `fhir:<namespace>:<package>`. Live coverage needs an IRIS for Health namespace (`tests/e2e/test_231_fhir_graph_sync_e2e.py`, `tests/e2e/test_262_alt_schema_fhir.py`).
+
+Open questions: [Should a FHIR sync be governed by the ledger?](../../Verus_verification/open_questions.md#HD-1501)
+
+Assumption review evidence: Changed from decisions.md: no. Sources confirm the working answer; added that ledger-api.md's exhaustive list is silent on FHIR (not an explicit exemption) and that verify() reads every graph.
 
 ### fhir.graph.install
 
@@ -205,6 +196,8 @@ The FHIR graph comes from specs 231 to 233, whose directories are not in the tre
 Live coverage: `tests/e2e/test_235_lazy_fhir_tables_e2e.py`. Spec 235's status line still says "Draft", although it shipped in 4.1.0.
 
 ### fhir.graph.lifecycle
+
+- design-verified
 - Formal: [task ownership and lifecycle projection](../../Verus_verification/models/fhir_tasks/fhir_tasks.rs), [source roles and provider limits](../../Verus_verification/models/fhir_tasks/NOTES.md).
 
 - Sources: [FHIR_GRAPH.md](../../../docs/FHIR_GRAPH.md); [_engine/fhir_graph.py](../../../iris_vector_graph/_engine/fhir_graph.py); [ADMIN_GUIDE (restored task IDs)](../../../docs/ADMIN_GUIDE.md)
@@ -214,7 +207,11 @@ Live coverage: `tests/e2e/test_235_lazy_fhir_tables_e2e.py`. Spec 235's status l
 
 The task-ID refusal came in 4.7.0. No operation that unregisters a repository was found.
 
+State machines: [fhir tasks](../../Verus_verification/models/fhir_tasks/manifest.json)
+
 ### fhir.graph.lifecycle.tasks
+
+- design-verified
 - agent
 - user-facing-behavior
 - data-integrity
@@ -223,10 +220,13 @@ The task-ID refusal came in 4.7.0. No operation that unregisters a repository wa
 
 Evidence: [frozen pairs](../../uplift/consolidated/iteration-8/fhir-PAIRS.md), [native Task Manager and registry points](../../uplift/consolidated/iteration-8/fhir-native.json). Full Status needs real FHIR metadata/feed tables; its successful point projection remains conditional. Native wrong-namespace setup refused before the guard, and save/delete/SQL fault ordering is source/adapter evidence. Fault tags are pre-effect at the named operation, canonical loader and allocation are provider contracts, and unassigned task fields/background timing are outside the new proof. Existing F-C1501 and its intended remedy remain; no owner decision or new defect is inferred.
 
+State machines: [fhir tasks](../../Verus_verification/models/fhir_tasks/manifest.json)
+
 ### fhir.sync
 
+- uncertain
 - Sources: [FHIR_GRAPH.md: keeping the graph in step](../../../docs/FHIR_GRAPH.md); [FHIRGraph.cls SyncOnce, RunBatch](../../../iris_src/src/Graph/KG/FHIRGraph.cls)
-- Children: [idempotent](#fhir.sync.idempotent), [exclusive](#fhir.sync.exclusive), [behind](#fhir.sync.behind), [other writers](#fhir.sync.other_writers)
+- Children: [idempotent](#fhir.sync.idempotent), [exclusive](#fhir.sync.exclusive), [behind](#fhir.sync.behind), [What should happen when other writers, an erase included, touch a FHIR graph during a sync?](../../Verus_verification/open_questions.md#q-plt-017)
 - agent
 - data-integrity
 - test-coverage
@@ -234,6 +234,10 @@ Evidence: [frozen pairs](../../uplift/consolidated/iteration-8/fhir-PAIRS.md), [
 Live coverage: `tests/e2e/test_231_fhir_graph_sync_e2e.py::test_crash_before_commit_leaves_nothing`. Observed: sync writes the label index directly in a few places without moving the graph-version token; the reference edges go through the adjacency index's own writer.
 
 Findings: [Write FHIR graph labels through the adjacency writer that owns the label index](../../Verus_verification/design_simplification.md#simp-plt-003)
+
+Open questions: [What happens when an erase runs during a FHIR sync?](../../Verus_verification/open_questions.md#HD-1503), [Should one unreadable FHIR resource block its graph's sync?](../../Verus_verification/open_questions.md#HD-1504), [What should happen when other writers, an erase included, touch a FHIR graph during a sync?](../../Verus_verification/open_questions.md#q-plt-017)
+
+Assumption review evidence: Changed from decisions.md: no. Confirmed by source; added the documented convergence claim as the outcome anchor and the absolute-watermark write as the mechanism of the failure. Changed from decisions.md: yes. Status raised from assumption to supported for the failure semantics: FHIR_GRAPH.md:196-199 (maintainer commit 59286731) explicitly states that a walk limit fails the batch, and :255-257 that a failed batch repeats. Added that a rebuild fails too, and the json_links=[] recovery path.
 
 ### fhir.sync.idempotent
 
@@ -262,34 +266,6 @@ Live coverage: the busy case in `tests/e2e/test_231_fhir_graph_sync_e2e.py`.
 - agent
 - operations
 
-### fhir.sync.other_writers
-
-- Sources: [FHIRGraph.cls ResyncKey](../../../iris_src/src/Graph/KG/FHIRGraph.cls); [Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls); [Stage A notes, FHIR section](../../uplift/ivg-verus-initial/intent/platform.md)
-- Expands: [Sync](#fhir.sync)
-- agent
-- uncertain
-- data-integrity
-
-Findings: [What should happen when other writers, an erase included, touch a FHIR graph during a sync?](../../Verus_verification/open_questions.md#q-plt-017)
-
-Audit (q-plt-017): Open owner decision. Working assumption (agent, unratified): Preserve the documented single-sync restriction and keep competing non-sync writers unestablished; choose serialization or conflict detection explicitly. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-017).
-
-Audit (HD-1503): Open owner decision. Working assumption (agent, unratified): Keep decisions.md: erase of a FHIR graph must be serialized with an active sync (take ^IVG.FHIRGraph(graph) and answer busy, or have RunBatch abort when the watermark moved backwards); until then the quiet-sync premise must be explicit for erase. Changed from decisions.md: no. Confirmed by source; added the documented convergence claim as the outcome anchor and the absolute-watermark write as the mechanism of the failure. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1503).
-
-Findings: [What happens when an erase runs during a FHIR sync?](../../Verus_verification/open_questions.md#HD-1503).
-
-### fhir.sync.recovery-policy
-- Expands: [parent](#fhir.sync)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Should one unreadable FHIR resource block its graph's sync?](../../Verus_verification/open_questions.md#HD-1504).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1504).
-
-Audit (HD-1504): Open owner decision. Working assumption (agent, unratified): Failure without advancing the watermark is the documented contract (not a choice to revisit silently). Surface the offending key (already in last_error) and treat the missing recovery procedure (repair/delete the resource, or json_links=[]) as a documentation gap; do not assume silent skips. Changed from decisions.md: yes. Status raised from assumption to supported for the failure semantics: FHIR_GRAPH.md:196-199 (maintainer commit 59286731) explicitly states that a walk limit fails the batch, and :255-257 that a failed batch repeats. Added that a rebuild fails too, and the json_links=[] recovery path. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1504).
-
 ### fhir.rebuild
 
 - Sources: [FHIR_GRAPH.md](../../../docs/FHIR_GRAPH.md); [FHIRGraph.cls Rebuild](../../../iris_src/src/Graph/KG/FHIRGraph.cls)
@@ -298,6 +274,7 @@ Audit (HD-1504): Open owner decision. Working assumption (agent, unratified): Fa
 
 ### fhir.erase
 
+- uncertain
 - Sources: [FHIR_GRAPH.md: Upgrading a graph built by older rules](../../../docs/FHIR_GRAPH.md); [Eraser.cls](../../../iris_src/src/Graph/KG/Eraser.cls)
 - agent
 - data-integrity
@@ -305,17 +282,9 @@ Audit (HD-1504): Open owner decision. Working assumption (agent, unratified): Fa
 
 Live coverage: the erase case in `tests/e2e/test_231_fhir_graph_sync_e2e.py`.
 
-### fhir.erase.durable-removal-policy
-- Expands: [parent](#fhir.erase)
-- agent
-- uncertain
-- manual-check-review
+Open questions: [Should erasing a FHIR graph stop its sync task?](../../Verus_verification/open_questions.md#HD-1502)
 
-Findings: [Should erasing a FHIR graph stop its sync task?](../../Verus_verification/open_questions.md#HD-1502).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1502).
-
-Audit (HD-1502): Open owner decision. Working assumption (agent, unratified): Separate transient clear from decommissioning. Ordinary erase keeps registration and task (supported). For durable tenant removal require, as a stated premise, unschedule before erase and no manual sync afterwards, and verify the graph stays empty before redaction; at the pin there is no single-graph deregistration, so 'deregister' is a new command, not an available step. Changed from decisions.md: yes. Status raised to supported for the transient-clear half (ADR-0015:29 and the Eraser comment settle it). Refined the durable-removal half: decisions.md offered 'paused or deregistered', but no single-graph deregistration exists at the pin and an unscheduled graph still accepts manual syncs. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1502).
+Assumption review evidence: Changed from decisions.md: yes. Status raised to supported for the transient-clear half (ADR-0015:29 and the Eraser comment settle it). Refined the durable-removal half: decisions.md offered 'paused or deregistered', but no single-graph deregistration exists at the pin and an unscheduled graph still accepts manual syncs.
 
 ### fhir.interpretation
 
@@ -333,29 +302,17 @@ The spec's clarification answers carry no human attribution.
 - agent
 - data-integrity
 
-### fhir.ledger
-
-- Sources: [Ledger API contract: strict-mode guard](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md); [access.ledger_strict.undecided](../concepts/access.g5.md#access.ledger_strict.undecided); [Stage A notes F-B8](../../uplift/ivg-verus-initial/intent/platform.md)
-- agent
-- uncertain
-- data-integrity
-
-No source mentions FHIR together with the ledger. No test runs a FHIR sync with the ledger enabled.
-
-Findings: [Which write paths must strict mode govern beyond the engine's methods, and how is each classified?](../../Verus_verification/open_questions.md#q-plt-008)
-
-Audit (HD-1501): Open owner decision. Working assumption (agent, unratified): Keep decisions.md: the FHIR graph is an external writer of a rebuildable projection at the pin. verify() keeps reporting its rows (never silently 'equal'); strict mode is not a guarantee for FHIR namespaces until FHIR writes are either refused under strict or recorded. Changed from decisions.md: no. Sources confirm the working answer; added that ledger-api.md's exhaustive list is silent on FHIR (not an explicit exemption) and that verify() reads every graph. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1501).
-
-Findings: [Should a FHIR sync be governed by the ledger?](../../Verus_verification/open_questions.md#HD-1501).
-
 ### fhir.sql_mapping
 
+- uncertain
 - Sources: [API_REFERENCE: SQL table mappings](../../../docs/API_REFERENCE.md); [_engine/fhir.py map_sql_table](../../../iris_vector_graph/_engine/fhir.py); [cypher/translator.py](../../../iris_vector_graph/cypher/translator.py); [install.snapshot.scope](../concepts/install.g5.md#install.snapshot.scope)
-- Children: [relationships](#fhir.sql_mapping.relationships), [adjacency](#fhir.sql_mapping.adjacency), [embeddings](#fhir.sql_mapping.embeddings), [graph scope](#fhir.sql_mapping.graph_scope)
+- Children: [relationships](#fhir.sql_mapping.relationships), [adjacency](#fhir.sql_mapping.adjacency), [embeddings](#fhir.sql_mapping.embeddings), [Which graph do rows of a mapped FHIR SQL table belong to?](../../Verus_verification/open_questions.md#q-plt-018)
 - agent
 - user-facing-behavior, architecture-decision
 
 The code defines these calls in the same module as the FHIR bridges (`FhirMixin`), so they are kept on this page rather than on the install page. Since 4.7.0 they join the caller's transaction. The rule that a mapped label hides IVG's own nodes with that label is from the translator code only. No spec for the feature was found.
+
+Open questions: [Which graph do rows of a mapped FHIR SQL table belong to?](../../Verus_verification/open_questions.md#q-plt-018)
 
 ### fhir.sql_mapping.relationships
 
@@ -382,27 +339,17 @@ Stated in the method's documentation. Consistency checks of the adjacency index 
 
 Its documentation adds that a graph ID avoids collisions and is not an authorization boundary (see [access.graph_id](../concepts/access.g5.md#access.graph_id)).
 
-### fhir.sql_mapping.graph_scope
-
-- Sources: [cypher/translator.py](../../../iris_vector_graph/cypher/translator.py); [_engine/fhir.py](../../../iris_vector_graph/_engine/fhir.py)
-- Expands: [Mapped SQL tables](#fhir.sql_mapping)
-- agent
-- uncertain
-- data-integrity
-
-
-Findings: [Which graph do rows of a mapped FHIR SQL table belong to?](../../Verus_verification/open_questions.md#q-plt-018)
-
-Audit (q-plt-018): Open owner decision. Working assumption (agent, unratified): Treat mapped SQL labels as namespace-global today; assigning every row to a graph needs mapping metadata and migration policy. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-018).
-
 ### fhir.event
 
+- uncertain
 - Sources: [FHIR_GRAPH.md: Deprecated in 4.1.0, removed in 5.0](../../../docs/FHIR_GRAPH.md); [api/routers/fhir_event.py](../../../api/routers/fhir_event.py)
-- Children: [access](#fhir.event.access), [retry](#fhir.event.retry)
+- Children: [access](#fhir.event.access), [Must a repeated FHIR event leave the graph unchanged?](../../Verus_verification/open_questions.md#q-plt-016)
 - agent
 - user-facing-behavior
 
 The route comes from spec 195, whose directory is not in the tree; commit `22f3e509` remains. Each event's steps commit separately, so a failure after the node is written leaves the node.
+
+Open questions: [Must a repeated FHIR event leave the graph unchanged?](../../Verus_verification/open_questions.md#q-plt-016)
 
 ### fhir.event.access
 
@@ -410,17 +357,3 @@ The route comes from spec 195, whose directory is not in the tree; commit `22f3e
 - Expands: [FHIR events](#fhir.event)
 - agent
 - security
-
-### fhir.event.retry
-
-- Sources: [api/routers/fhir_event.py](../../../api/routers/fhir_event.py); [Stage A notes F-B9](../../uplift/ivg-verus-initial/intent/platform.md)
-- Expands: [FHIR events](#fhir.event)
-- agent
-- uncertain
-- data-integrity
-
-The live test `tests/integration/test_fhir_event_sidecar.py` checks only that a repeated event leaves at least one edge.
-
-Findings: [Must a repeated FHIR event leave the graph unchanged?](../../Verus_verification/open_questions.md#q-plt-016)
-
-Audit (q-plt-016): Open owner decision. Working assumption (agent, unratified): Prefer idempotent repeated FHIR events, while preserving current event behavior as observation; event identity and replay retention need owner choice. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-016).

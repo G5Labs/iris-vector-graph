@@ -19,10 +19,12 @@ How IVG is set up in an IRIS namespace, how the namespace keeps one IVG Schema, 
 
 The namespace, not the schema, is IVG's isolation unit: one namespace holds one IVG install. Two tenants that must not share an adjacency index or a ledger need two namespaces.
 
+
 <a id="install.schema"></a>
 [D · install.schema]
 
 Every SQL object IVG creates lives in the namespace's one IVG Schema, and IVG creates nothing in `SQLUser` or the `User` package. The ObjectScript classes IVG deploys use the same schema.
+
 
 <a id="install.schema.name"></a>
 [I · install.schema.name]
@@ -36,10 +38,12 @@ The engine's IVG Schema is the `schema_prefix` argument, else the `IVG_SCHEMA_PR
 - An invalid name raises an error naming the rule before any database call.
 - Names that differ only in letter case are the same schema.
 
+
 <a id="install.schema.record"></a>
 [I · install.schema.record]
 
 The first completed setup in a namespace records its IVG Schema, and the record does not change after that. Renaming a recorded schema is not supported. The documented manual route is to choose one schema, then move or drop the other schema's tables.
+
 
 <a id="install.schema.refusal"></a>
 [I · install.schema.refusal]
@@ -50,12 +54,8 @@ An engine or a class deploy that asks for a schema other than the recorded one i
 - Setup, status and legacy removal still run on a refusing namespace, because they are how an operator inspects or fixes it.
 - A login that cannot read the record gets a warning, and the check is skipped for that engine.
 
-<a id="install.schema.refusal.first-use-policy"></a>
-[Q · install.schema.refusal.first-use-policy]
+- Working assumption: Supported deployments can read the record (premise: the ADMIN_GUIDE role table grants %Native_GlobalAccess:U). Under that premise a mismatch is refused. The documented fail-open path is a separate 'unchecked' outcome that admits a mismatched engine. It is outside the binding guarantee and should be modelled that way, not treated as an accepted engine.
 
-Should an engine that cannot read the schema record be refused?
-
-- Working assumption (agent, unratified): Supported deployments can read the schema record; callers that cannot read it need an explicit refusal or compatibility policy.
 
 <a id="install.schema.not_ready"></a>
 [I · install.schema.not_ready]
@@ -65,6 +65,7 @@ An engine on a namespace with no schema record, or without the current release's
 - set up by an earlier release and not yet upgraded;
 - never set up for IVG;
 - a setup that stopped before finishing.
+
 
 <a id="install.schema.existing"></a>
 [I · install.schema.existing]
@@ -77,23 +78,20 @@ Setup on a namespace without a record decides what to record from where IVG's ta
 - Tables in several schemas and no name given: refuse, list each schema with its row counts, and record nothing.
 - Tables in several schemas and a name given: record the named schema and report the others, untouched.
 
+
 <a id="install.schema.concurrency"></a>
 [I · install.schema.concurrency]
 
 A namespace ends with one recorded IVG Schema even when two setups with different schemas run at the same time. Exactly one of them records its schema; the other is refused, with its engine still refused, before it writes rows or globals for its own schema.
 
-<a id="install.schema.concurrency.leftover"></a>
-[Q · install.schema.concurrency.leftover]
+- Working assumption: Prefer refusing a conflicting unfinished setup; accepting it needs an explicit plan for the old globals and rebuild markers.
 
-When a first setup of the current release stopped before recording its schema, what happens to the globals it filled when a later setup records another schema? There is no provisional answer.
-
-- Today an explicitly named schema is recorded ([divergence](#install.schema.existing)) while the adjacency index and other namespace globals still hold the first schema's data.
-- Plausible answers: refuse the named schema while another schema holds current objects, or record it and rebuild the namespace's globals from its own rows.
 
 <a id="install.schema.classes_follow"></a>
 [D · install.schema.classes_follow]
 
 The ObjectScript classes follow the IVG Schema because setup rewrites their sources for that schema before compiling them; no class reads the record at run time. This keeps the classes' embedded SQL within the [speed budget](#install.schema.speed).
+
 
 <a id="install.schema.speed"></a>
 [I · install.schema.speed]
@@ -101,6 +99,7 @@ The ObjectScript classes follow the IVG Schema because setup rewrites their sour
 Using any IVG Schema, the default one or another, must not make a write, erase or read path more than 5% slower than the last code state before spec 262. A benchmark gate checks it.
 
 ## Status reports
+
 
 <a id="install.status"></a>
 [I · install.status]
@@ -113,6 +112,7 @@ Status reports current row counts across every graph, while the ordinary count m
 
 ## Setup
 
+
 <a id="install.setup"></a>
 [I · install.setup]
 
@@ -121,25 +121,24 @@ Setup can be run again at any time, and a repeated run changes no row and duplic
 - A user without the privileges setup needs gets an error naming the missing privilege, not a partial install.
 - Setup refuses to start while the caller has uncommitted writes on the connection, because it commits as it goes and compiles classes.
 
+- Working assumption: Prefer no ready schema record after failed deployment; a partial-ready record would need explicit per-capability admission rules.
+- Working assumption: Treat a stored schema name as a namespace binding only. Represent readiness of each deployed capability (classes, adjacency index, ledger, erase) separately. An engine accepted by the record check has no claim on feature readiness. A feature call on a class-less namespace must give a named failure, not silently degrade.
+
+
 <a id="install.setup.dry_run"></a>
 [I · install.setup.dry_run]
 
 A dry run of setup writes nothing: no DDL, row, global or grant. It reports what a real run would create, compile, grant, copy and record.
+
 
 <a id="install.setup.resume"></a>
 [I · install.setup.resume]
 
 If setup stops partway, the next setup finishes the job and ends in the same state as one uninterrupted run. Setup writes the schema record as its last step, so a namespace with IVG objects and no record is an unfinished setup, and status says so.
 
-<a id="install.setup.failed_deploy"></a>
-[Q · install.setup.failed_deploy]
-
-Should setup still record the schema when some ObjectScript classes failed to compile? There is no provisional answer.
-
-- Today a failed compile is reported in setup's reply and the schema is recorded anyway.
-- Alternatives: withhold the record so the namespace counts as unfinished, or keep recording and rely on the reply.
 
 ## Deploying classes and IRIS editions
+
 
 <a id="install.deploy"></a>
 [I · install.deploy]
@@ -153,6 +152,7 @@ Setup compiles only the classes the server can run, and reports each skipped cla
 - Benchmark classes and the class that runs arbitrary code strings are not shipped.
 - The REST dispatcher and the FHIR sync task ship, and stay inert until a web application or task schedule names them.
 
+
 <a id="install.deploy.editions"></a>
 [D · install.deploy.editions]
 
@@ -164,6 +164,7 @@ IVG supports IRIS Community Edition and AI-enabled builds from the same package.
 
 ## Upgrading an existing namespace
 
+
 <a id="install.upgrade"></a>
 [I · install.upgrade]
 
@@ -171,6 +172,7 @@ Upgrading a namespace that a 4.5.x release set up must not break the application
 
 - Compiled Cypher plans built against the old names are discarded, so IVG never reuses one.
 - On an IVG Schema other than `Graph_KG`, the 4.5.x ledger revision and counter rows are copied once into the schema's own ledger tables, only while those are empty.
+
 
 <a id="install.upgrade.grants"></a>
 [I · install.upgrade.grants]
@@ -182,6 +184,7 @@ Upgrading copies every privilege granted on a legacy object to its replacement i
 - Every setup also grants the rest of the Cypher read path to any user or role that already holds part of it, so a user who could run Cypher before an upgrade can after it.
 - These grants are EXECUTE on routines only, never on a table.
 
+
 <a id="install.upgrade.arno_revoke"></a>
 [D · install.upgrade.arno_revoke]
 
@@ -189,15 +192,21 @@ As the one exception to keeping legacy objects working, upgrading revokes EXECUT
 
 ## Legacy objects
 
+
 <a id="install.legacy"></a>
 [I · install.legacy]
 
 Legacy objects are removed only when an operator asks. The default call lists the legacy objects present and changes nothing, and the removing call removes exactly those listed objects that are IVG's. The result reports truthfully, per object, whether it was removed, and running the call again lists what remains. The removing call refuses to run inside a caller's open transaction.
 
+- Working assumption: Inventory both install paths. The product contract (spec 262 schema, inventory test) covers initialize_schema only. scripts/deploy_production.py + sql/schema.sql + sql/operators_fixed.sql form a reachable legacy path that produces a non-conforming namespace (DDL-only before its class step, unqualified procedures). sql/fraud_sample_data.sql is maintained demo data. Files with no loader are historical material.
+- Working assumption: Classify sql/operators.sql as shipped historical/reference SQL with no deployment path. It is outside the executed product surface, but stays in the inventory as a shipped artifact whose definitions are not graph-scoped. Trace operators_fixed.sql (legacy deployer) and the schema.py procedures separately. If anyone runs the file by hand, it creates unqualified, graph-blind procedures (F-0820-like behaviour).
+
+
 <a id="install.legacy.manifest"></a>
 [D · install.legacy.manifest]
 
 The legacy manifest is a fixed list of names and classes generated from the released versions, never a name pattern. An application object whose name only looks like IVG's is never listed or removed.
+
 
 <a id="install.legacy.ownership"></a>
 [D · install.legacy.ownership]
@@ -206,19 +215,6 @@ An object under a manifest name counts as IVG's only when its text matches a tex
 
 ## Data migrations
 
-<a id="install.legacy.support-policy"></a>
-[Q · install.legacy.support-policy]
-
-Are the files under sql/ part of the product?
-
-- Working assumption (agent, unratified): Keep the class deployment path canonical and classify each legacy SQL consumer explicitly before declaring the shipped SQL unsupported.
-
-<a id="install.legacy.sql-operators-policy"></a>
-[Q · install.legacy.sql-operators-policy]
-
-Is `sql/operators.sql` product code?
-
-- Working assumption (agent, unratified): Treat the class path as canonical; support for shipped sql/operators.sql remains a separate owner decision.
 
 <a id="install.migration"></a>
 [I · install.migration]
@@ -230,30 +226,32 @@ Migrations that bring an older install's data into the current layout can be re-
 - A migration refuses to start while the caller has an open transaction.
 - If a step's commit fails, the step is rolled back and the migration raises an error naming itself.
 
+
 <a id="install.migration.steps"></a>
 [D · install.migration.steps]
 
 The 3.2.0 to 4.0.0 upgrade runs its steps in one fixed order, because each step reads what the one before it wrote. A step that would decide something again on a second run is skipped once its table is in the final shape, and a step that only repeats the same work runs again.
+
 
 <a id="install.migration.schema"></a>
 [I · install.migration.schema]
 
 A migration obeys the namespace's schema record like any engine: on a namespace that records another schema, it is refused before it reads or writes. Any exemption for migrations covers at most the case where no schema is recorded yet.
 
-<a id="install.migration.schema.unrecorded"></a>
-[Q · install.migration.schema.unrecorded]
+- Working assumption: Require an explicit schema choice before a migration with no namespace record; arbitrary fallback schemas are not an inferred supported policy.
 
-May a migration run on a namespace that has no schema record yet, and which schema should it use there? There is no provisional answer.
-
-- The current-release rule refuses an unrecorded namespace, but the migrations were written to run on older installs before any current setup.
-- Plausible answers: require setup first, or allow migrations on the engine's schema until a record exists.
 
 ## Snapshots
+
 
 <a id="install.snapshot"></a>
 [I · install.snapshot]
 
 A snapshot copies the namespace's graph content to a file and back. One server-side inventory of IVG's stores decides what is archived and what is derived. A snapshot is not a backup: it leaves out IVG's deploy record and compiled-plan state, its embedding queue, the quarantine table and the derived vector table.
+
+- Working assumption: Prefer refusal while a live ledger exists until replace/merge history semantics are specified; do not count the current overlay as a decided contract.
+- Working assumption: Claim a consistent snapshot only when writers are quiescent (an operator premise) or under a verified snapshot/epoch protocol; for the current exporter declare the quiet-writer premise.
+
 
 <a id="install.snapshot.scope"></a>
 [D · install.snapshot.scope]
@@ -264,23 +262,17 @@ Snapshots cover the whole namespace; there is no per-graph snapshot. `restore_sn
 - A restore is refused in ledger strict mode and while the caller has an open transaction.
 - A restore refuses, before erasing anything, an archive whose recorded storage layout differs from the namespace's. An archive with no layout stamp is accepted.
 
+
 <a id="install.snapshot.failure"></a>
 [D · install.snapshot.failure]
 
 Saving fails with no archive written if any table or global cannot be read. A restore is not atomic as a whole: a failed table commit raises an error naming the tables already committed. The erase that starts a replacing restore is one transaction.
 
+
 <a id="install.snapshot.derived"></a>
 [I · install.snapshot.derived]
 
 A restore never brings back derived caches, and it moves the graph-version token past both its value before the restore and the archive's value. A cached answer from before the restore can therefore never be served after it.
-
-<a id="install.snapshot.ledger"></a>
-[Q · install.snapshot.ledger]
-
-What should restore do when the namespace already has a live ledger? There is no provisional answer.
-
-- Today the archive's ledger entries are written over the live ones without removing the live revisions.
-- Plausible answers: refuse while a ledger is live, or replace the ledger wholesale.
 
 
 <a id="install.snapshot.routes"></a>
@@ -295,6 +287,7 @@ A snapshot saves each routed vector table and restores it at the width the archi
 - A failed registry index-state update is logged and clears this engine's route cache, but can leave the archive's old index claim. A route with invalid width metadata may remain registered without a table; its vector reader then raises rather than answering empty.
 - The generic node merge guard uses only the exported first column. A node with the same ID in another graph can therefore suppress the required parent, making its archived vector fail and its reader answer empty; this is a known merge defect, not the intended graph-key rule.
 
+
 <a id="install.snapshot.temporal"></a>
 [I · install.snapshot.temporal]
 
@@ -306,12 +299,6 @@ A temporal event saved in a snapshot answers a [window read](../features/tempora
 - The temporal subtrees saved are the events by time in both directions, the time buckets and their aggregates, the edge attributes, and the latest-event index.
 ## Bulk loading
 
-<a id="install.snapshot.consistency-policy"></a>
-[Q · install.snapshot.consistency-policy]
-
-Should a snapshot be a point-in-time view?
-
-- Working assumption (agent, unratified): Rely on a consistent archive only with quiescent writers until a point-in-time capture protocol is specified.
 
 <a id="install.bulk_load"></a>
 [D · install.bulk_load]
@@ -321,6 +308,9 @@ IVG has three ways to load many rows quickly, and they do not give the same guar
 - `bulk_create_nodes` and `bulk_create_edges` drop some SQL indexes around a large batch and rebuild them after.
 - `bulk_load_session` does the same around a session of batches.
 - `BulkLoader` inserts rows without index upkeep or key checks. Its `load_networkx` then rebuilds the namespace's indexes and adjacency index; its `load_nodes` and `load_edges` leave the rebuild to the caller.
+
+- Working assumption: Keep documented loader exemptions and chunking; preserve other graphs and multigraph data unless a narrower supported envelope is expressly adopted.
+
 
 <a id="install.bulk_load.loader"></a>
 [D · install.bulk_load.loader]
@@ -334,27 +324,27 @@ The `BulkLoader` class trades per-row checks for speed.
 - Before its unindexed edge load writes any edge, it adds each edge's two end nodes to the loader's graph, so every edge it writes has both endpoints.
 - A row that IRIS refuses for a reason other than a repeat stops the load with a bulk load error that says how many rows went in first. It is never reported as zero rows inserted.
 
+
 <a id="install.bulk_load.ledger"></a>
 [D · install.bulk_load.ledger]
 
 The engine's bulk paths are refused in ledger strict mode, but the `BulkLoader` class is not governed by it and its writes are not recorded. The [ledger page](../features/ledger.g5.md#ledger.strict) owns the list of governed calls.
+
 
 <a id="install.bulk_load.rebuild"></a>
 [I · install.bulk_load.rebuild]
 
 After any bulk load finishes, the adjacency index, the degree cache and the graph-version token must reflect the loaded rows before a read uses them. An SQL index that fails to come back is named in a warning, and reads that need it scan the table instead. Today `BulkLoader.load_nodes` and `load_edges` leave that rebuild to the caller, against the [bulk index rule](../features/graph-structure.g5.md#structure.adjacency.bulk), so a caller who skips it leaves those rows invisible to index-based reads.
 
-<a id="install.bulk_load.limits"></a>
-[Q · install.bulk_load.limits]
-
-Is the `BulkLoader` class meant to run as the only writer, on single-edge graphs only? There is no provisional answer. Today it empties every graph's adjacency index during its rebuild, gives a multigraph graph no parallel edges, and two loaders on one graph can insert duplicates under its skipped key checks.
 
 ## Imports and inference
+
 
 <a id="install.import"></a>
 [D · install.import]
 
 Imports write as they go. `load_networkx`, `import_graph_ndjson` and `load_obo` write one node or relationship at a time, and `import_rdf` commits one batch at a time, so a failure keeps what was already written. Every import, and materializing or retracting inference, is refused in ledger strict mode.
+
 
 <a id="install.import.ndjson"></a>
 [D · install.import.ndjson]
@@ -368,6 +358,7 @@ An NDJSON import ignores blank lines; logs and counts malformed JSON, non-object
 
 ## Ordinary graph exports
 
+
 <a id="install.export.ndjson"></a>
 [D · install.export.ndjson]
 
@@ -375,6 +366,7 @@ An NDJSON import ignores blank lines; logs and counts malformed JSON, non-object
 
 - A node record uses the public [node-read projection](../features/graph-structure.g5.md#structure.node.read), including its property aliases and value conversions. Its properties omit only the structural `id` and `labels` fields; this does not promise an inverse of stored property keys.
 - Named graphs and marked temporal rows are excluded. Import-format compatibility does not promise that a later import preserves physical edge IDs, multiplicity or every stored type; those depend on the import writers.
+
 
 <a id="install.export.rdf.scope"></a>
 [D · install.export.rdf.scope]
@@ -384,6 +376,7 @@ An NDJSON import ignores blank lines; logs and counts malformed JSON, non-object
 - Empty filter collections do not narrow the export. A label filter writes the matching labels, the selected source nodes' properties and their outgoing edges; it does not pull in a target's other rows.
 - A physical node without any selected label, property or outgoing edge contributes no RDF subject. Context-aware formats keep each generated triple in its row's graph.
 
+
 <a id="install.export.rdf.content"></a>
 [D · install.export.rdf.content]
 
@@ -392,6 +385,7 @@ A selected label becomes an `rdf:type` triple, a non-null property becomes a lit
 - Node IDs, labels and edge predicates use `base_uri` unless they already start with `http://`, `https://`, `urn:` or `ftp://`. Property keys pass through as IRIs for the first three prefixes; other keys use `urn:ivg:prop/`. Qualifier predicates use `urn:ivg:qualifier/`.
 - Property text tries a canonical integer spelling first, then a float as `xsd:decimal`, then a case-insensitive boolean, then plain text. The current qualifier path falls back to plain text when that literal is falsey, so zero and false qualifiers can differ from the same property value. This describes the current projection; the intended qualifier exception is not settled by the general literal description.
 - The envelope has statement subject, predicate and object triples, plus a reifier-to-statement `rdf:reifies` triple. All of these and the qualifier triples use the edge's context; equal unqualified triples can collapse while separate qualified rows retain separate envelopes.
+
 
 <a id="install.export.rdf.report"></a>
 [D · install.export.rdf.report]
@@ -446,6 +440,7 @@ Findings: [Two concurrent first setups can both record their IVG Schema, and the
 
 ### install.schema.refusal
 
+- uncertain
 - Sources: [Spec 262 FR-006, SC-006, US4](../../../specs/262-ivg-owned-sql-schema/spec.md); [schema_name.py](../../../iris_vector_graph/schema_name.py); [engine.py](../../../iris_vector_graph/engine.py); [ADMIN_GUIDE (Native global access)](../../../docs/ADMIN_GUIDE.md)
 - Expands: [IVG Schema](#install.schema)
 - human-verified
@@ -456,17 +451,7 @@ Live coverage: `tests/e2e/test_262_record.py`. The skipped check for a login wit
 
 Findings: [The migrations' schema-check waiver also releases the refusal of a mismatched schema](../../Verus_verification/bugs_issues.md#bug-plt-007); [The schema check is skipped silently for logins without global access and for non-IRIS connections](../../Verus_verification/bugs_issues.md#bug-plt-022)
 
-### install.schema.refusal.first-use-policy
-- Expands: [parent](#install.schema.refusal)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Should an engine that cannot read the schema record be refused?](../../Verus_verification/open_questions.md#HD-0101).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0101).
-
-Audit (HD-0101): Open owner decision. Working assumption (agent, unratified): Supported deployments can read the record (premise: the ADMIN_GUIDE role table grants %Native_GlobalAccess:U). Under that premise a mismatch is refused. The documented fail-open path is a separate 'unchecked' outcome that admits a mismatched engine. It is outside the binding guarantee and should be modelled that way, not treated as an accepted engine. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0101).
+Open questions: [Should an engine that cannot read the schema record be refused?](../../Verus_verification/open_questions.md#HD-0101)
 
 ### install.schema.not_ready
 
@@ -494,9 +479,10 @@ Findings: [Setup records an explicitly named schema while IVG's tables sit in on
 
 ### install.schema.concurrency
 
+- uncertain
 - Sources: [Spec 262 FR-005, FR-006, SC-006](../../../specs/262-ivg-owned-sql-schema/spec.md); [ADR-0016](../../../docs/adr/0016-one-ivg-schema-per-namespace.md); [_engine/schema.py _record_and_initialize](../../../iris_vector_graph/_engine/schema.py); [Stage A notes F-S1](../../uplift/ivg-verus-initial/intent/platform.md); [Review round 1, R1-4](../../uplift/ivg-verus-initial/review/round1-platform.md)
 - Expands: [IVG Schema](#install.schema)
-- Children: [leftover globals](#install.schema.concurrency.leftover)
+- Children: [Can an explicitly named schema be recorded over another schema's interrupted first setup?](../../Verus_verification/open_questions.md#q-plt-002)
 - agent
 - data-integrity
 
@@ -504,19 +490,7 @@ Concurrency changes how the rule is kept, not which outcome FR-005, FR-006 and A
 
 Findings: [Two concurrent first setups can both record their IVG Schema, and the loser keeps writing to its own tables](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-003)
 
-### install.schema.concurrency.leftover
-
-- Sources: [Spec 262 FR-009, US4](../../../specs/262-ivg-owned-sql-schema/spec.md); [KNOWN_ISSUES: After an interrupted setup](../../../docs/KNOWN_ISSUES.md); [_engine/schema.py](../../../iris_vector_graph/_engine/schema.py); [Stage A notes F-S3](../../uplift/ivg-verus-initial/intent/platform.md)
-- Expands: [Concurrent setups](#install.schema.concurrency)
-- agent
-- uncertain
-- data-integrity
-
-FR-009 allows an explicitly named schema only when IVG's tables are in several schemas; the code also records it when they are in one other schema ([Setup records an explicitly named schema while IVG's tables sit in one other schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-026)). FR-009 does not say what happens to the globals an unfinished current setup left behind. The case is a sequential interrupted setup; it sits under concurrency because its parent owns the one-record outcome.
-
-Findings: [Can an explicitly named schema be recorded over another schema's interrupted first setup?](../../Verus_verification/open_questions.md#q-plt-002)
-
-Audit (q-plt-002): Open owner decision. Working assumption (agent, unratified): Prefer refusing a conflicting unfinished setup; accepting it needs an explicit plan for the old globals and rebuild markers. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-002).
+Open questions: [Can an explicitly named schema be recorded over another schema's interrupted first setup?](../../Verus_verification/open_questions.md#q-plt-002)
 
 ### install.schema.classes_follow
 
@@ -547,15 +521,24 @@ The clarification is a recorded human answer; FR-020a names the baseline code st
 
 This owner recovers ordinary reporting intent from the primary docs and tests before the selected reporting implementation is modeled. Graph identity and the meaning of an omitted graph remain with [graph scope](graph-scope.g5.md#graph.default). Probe availability, native counters, readiness flags and other status fields are separate conditions; this count/report rule does not certify them or a transactionally consistent snapshot across separate reads. The selected producer-to-report relation has been independently replayed within the linked package's stated source and provider frame.
 
+State machines: [routine reporting](../../Verus_verification/models/routine_reporting/manifest.json)
+
 ### install.setup
 
+- design-verified
+
+- uncertain
 - Sources: [ADMIN_GUIDE: Running setup again](../../../docs/ADMIN_GUIDE.md); [_engine/schema.py initialize_schema](../../../iris_vector_graph/_engine/schema.py); [Spec 262 Edge Cases (Privileges)](../../../specs/262-ivg-owned-sql-schema/spec.md); [CHANGELOG v4.7.0](../../../CHANGELOG.md)
-- Children: [dry run](#install.setup.dry_run), [resume](#install.setup.resume), [failed deploy](#install.setup.failed_deploy)
+- Children: [dry run](#install.setup.dry_run), [resume](#install.setup.resume), [Should setup still record the schema when some classes failed to deploy?](../../Verus_verification/open_questions.md#q-plt-010)
 - Verus: [setup_record.rs](../../Verus_verification/models/setup_record/setup_record.rs) `theorem_fresh_namespace_is_new_and_recorded`, `theorem_second_run_existing_and_unchanged`, `theorem_mismatch_refused` and `theorem_other_schema_needs_a_name`; [scope and native lifecycle observations](../../Verus_verification/models/setup_record/NOTES.md)
 - agent
 - operations
 
 The caller-transaction refusal came in 4.7.0 (live: `tests/e2e/test_470_caller_txn_3b_e2e.py`). Observed divergence: when a missing privilege stops a later statement, the objects created before it stay and the error says so; a re-run once granted finishes.
+
+Open questions: [Should setup save the schema record when the class deploy failed or was turned off?](../../Verus_verification/open_questions.md#HD-0102), [Should setup still record the schema when some classes failed to deploy?](../../Verus_verification/open_questions.md#q-plt-010)
+
+State machines: [setup record](../../Verus_verification/models/setup_record/manifest.json)
 
 ### install.setup.dry_run
 
@@ -567,6 +550,8 @@ The caller-transaction refusal came in 4.7.0 (live: `tests/e2e/test_470_caller_t
 - operations
 - test-coverage
 
+State machines: [setup record](../../Verus_verification/models/setup_record/manifest.json)
+
 ### install.setup.resume
 
 - Sources: [Spec 262 Edge Cases (An interrupted upgrade)](../../../specs/262-ivg-owned-sql-schema/spec.md); [KNOWN_ISSUES: After an interrupted setup](../../../docs/KNOWN_ISSUES.md)
@@ -577,23 +562,7 @@ The caller-transaction refusal came in 4.7.0 (live: `tests/e2e/test_470_caller_t
 - operations, data-integrity
 - test-coverage
 
-### install.setup.failed_deploy
-
-- Sources: [_engine/schema.py](../../../iris_vector_graph/_engine/schema.py); [ADMIN_GUIDE: What setup replies](../../../docs/ADMIN_GUIDE.md)
-- Expands: [Setup](#install.setup)
-- agent
-- uncertain
-- operations
-
-The deploy is best-effort and the reply carries the failed classes. Since 4.6.3, edge writes in a namespace with uncompiled classes raise rather than silently skip the adjacency index.
-
-Findings: [Should setup still record the schema when some classes failed to deploy?](../../Verus_verification/open_questions.md#q-plt-010)
-
-Audit (q-plt-010): Open owner decision. Working assumption (agent, unratified): Prefer no ready schema record after failed deployment; a partial-ready record would need explicit per-capability admission rules. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-010).
-
-Audit (HD-0102): Open owner decision. Working assumption (agent, unratified): Treat a stored schema name as a namespace binding only. Represent readiness of each deployed capability (classes, adjacency index, ledger, erase) separately. An engine accepted by the record check has no claim on feature readiness. A feature call on a class-less namespace must give a named failure, not silently degrade. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0102).
-
-Findings: [Should setup save the schema record when the class deploy failed or was turned off?](../../Verus_verification/open_questions.md#HD-0102).
+State machines: [setup record](../../Verus_verification/models/setup_record/manifest.json)
 
 ### install.deploy
 
@@ -647,6 +616,7 @@ FR-010c records this as Tom's decision of 2026-11-04. A grant held through a sch
 
 ### install.legacy
 
+- uncertain
 - Sources: [Spec 262 FR-011, US2, SC-005](../../../specs/262-ivg-owned-sql-schema/spec.md); [ADR-0016 Consequences](../../../docs/adr/0016-one-ivg-schema-per-namespace.md); [_engine/legacy.py remove_legacy_objects](../../../iris_vector_graph/_engine/legacy.py); [Stage A notes F-S4](../../uplift/ivg-verus-initial/intent/platform.md)
 - Children: [manifest](#install.legacy.manifest), [ownership](#install.legacy.ownership)
 - agent
@@ -659,6 +629,8 @@ Findings: [remove_legacy_objects reports later procedures of a class as removed 
 
 
 The caller-transaction refusal is 4.7.0 ([admin.py](../../../iris_vector_graph/_engine/admin.py#L385-L393)); added by review round 3 R3-reader L11.
+
+Open questions: [Are the files under sql/ part of the product?](../../Verus_verification/open_questions.md#HD-0103), [Is `sql/operators.sql` product code?](../../Verus_verification/open_questions.md#HD-0803)
 
 ### install.legacy.manifest
 
@@ -676,30 +648,6 @@ The caller-transaction refusal is 4.7.0 ([admin.py](../../../iris_vector_graph/_
 - agent
 - data-integrity
 - test-coverage
-
-### install.legacy.support-policy
-- Expands: [parent](#install.legacy)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Are the files under sql/ part of the product?](../../Verus_verification/open_questions.md#HD-0103).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0103).
-
-Audit (HD-0103): Open owner decision. Working assumption (agent, unratified): Inventory both install paths. The product contract (spec 262 schema, inventory test) covers initialize_schema only. scripts/deploy_production.py + sql/schema.sql + sql/operators_fixed.sql form a reachable legacy path that produces a non-conforming namespace (DDL-only before its class step, unqualified procedures). sql/fraud_sample_data.sql is maintained demo data. Files with no loader are historical material. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0103).
-
-### install.legacy.sql-operators-policy
-- Expands: [parent](#install.legacy)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Is `sql/operators.sql` product code?](../../Verus_verification/open_questions.md#HD-0803).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0803).
-
-Audit (HD-0803): Open owner decision. Working assumption (agent, unratified): Classify sql/operators.sql as shipped historical/reference SQL with no deployment path. It is outside the executed product surface, but stays in the inventory as a shipped artifact whose definitions are not graph-scoped. Trace operators_fixed.sql (legacy deployer) and the schema.py procedures separately. If anyone runs the file by hand, it creates unqualified, graph-blind procedures (F-0820-like behaviour). See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0803).
 
 ### install.migration
 
@@ -726,9 +674,10 @@ Findings: [The 4.0.0 documents migration can drop the documents table after its 
 
 ### install.migration.schema
 
+- uncertain
 - Sources: [Spec 262 FR-006](../../../specs/262-ivg-owned-sql-schema/spec.md); [ADR-0016](../../../docs/adr/0016-one-ivg-schema-per-namespace.md); [engine.py _waive_schema_check](../../../iris_vector_graph/engine.py); [graph_scoped_embeddings.py](../../../iris_vector_graph/migrations/graph_scoped_embeddings.py); [temporal_structural_rows.py](../../../iris_vector_graph/migrations/temporal_structural_rows.py); [Review round 1, R1-5](../../uplift/ivg-verus-initial/review/round1-platform.md)
 - Expands: [Migrations](#install.migration)
-- Children: [unrecorded namespace](#install.migration.schema.unrecorded)
+- Children: [May a data migration run before any setup has recorded the namespace's IVG Schema, and on which schema?](../../Verus_verification/open_questions.md#q-plt-011)
 - human-verified
 - data-integrity
 
@@ -736,24 +685,13 @@ FR-006 has no exception for migrations, and the waiver's only stated reason (the
 
 Findings: [The migrations' schema-check waiver also releases the refusal of a mismatched schema](../../Verus_verification/bugs_issues.md#bug-plt-007)
 
-### install.migration.schema.unrecorded
-
-- Sources: [Spec 262 FR-006a](../../../specs/262-ivg-owned-sql-schema/spec.md); [migrations/upgrade.py](../../../iris_vector_graph/migrations/upgrade.py); [docs/migration/v4.0.0.md](../../../docs/migration/v4.0.0.md); [Stage A notes F-S2, F-S12](../../uplift/ivg-verus-initial/intent/platform.md)
-- Expands: [Migration schema](#install.migration.schema)
-- agent
-- uncertain
-- data-integrity
-
-Related: the 4.0.0 upgrade's embeddings and adjacency steps address the default schema and the namespace's real globals whatever `schema=` names, so on a namespace with IVG tables in two schemas a default-schema migration can rebuild the shared adjacency index from the wrong rows.
-
-Findings: [May a data migration run before any setup has recorded the namespace's IVG Schema, and on which schema?](../../Verus_verification/open_questions.md#q-plt-011)
-
-Audit (q-plt-011): Open owner decision. Working assumption (agent, unratified): Require an explicit schema choice before a migration with no namespace record; arbitrary fallback schemas are not an inferred supported policy. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-011).
+Open questions: [May a data migration run before any setup has recorded the namespace's IVG Schema, and on which schema?](../../Verus_verification/open_questions.md#q-plt-011)
 
 ### install.snapshot
 
+- uncertain
 - Sources: [USER_GUIDE §10](../../../docs/USER_GUIDE.md); [ADMIN_GUIDE: backups and snapshots](../../../docs/ADMIN_GUIDE.md); [_engine/snapshot.py STORE_PLAN](../../../iris_vector_graph/_engine/snapshot.py); [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md)
-- Children: [scope](#install.snapshot.scope), [failure](#install.snapshot.failure), [derived](#install.snapshot.derived), [ledger](#install.snapshot.ledger), [routed vectors](#install.snapshot.routes), [temporal events](#install.snapshot.temporal)
+- Children: [scope](#install.snapshot.scope), [failure](#install.snapshot.failure), [derived](#install.snapshot.derived), [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004), [routed vectors](#install.snapshot.routes), [temporal events](#install.snapshot.temporal)
 - agent
 - user-facing-behavior, operations
 - test-coverage
@@ -763,6 +701,10 @@ Live coverage of the inventory: `tests/integration/test_snapshot_inventory.py`. 
 Findings: [A merge restore keeps at most one row per graph in the core tables and reports every row restored](../../Verus_verification/bugs_issues.md#bug-plt-004)
 
 Audit reproduction: [bug-plt-004](../../Verus_verification/bugs_issues.md#bug-plt-004) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
+
+Open questions: [Should a snapshot be a point-in-time view?](../../Verus_verification/open_questions.md#HD-1802), [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004)
+
+Assumption review evidence: Changed from decisions.md: **no**.
 
 ### install.snapshot.scope
 
@@ -798,19 +740,6 @@ Findings: [A restore swallows a global line that fails to import](../../Verus_ve
 - data-integrity
 - test-coverage
 
-### install.snapshot.ledger
-
-- Sources: [Eraser.cls EraseAll](../../../iris_src/src/Graph/KG/Eraser.cls); [_engine/snapshot.py](../../../iris_vector_graph/_engine/snapshot.py); [Stage A notes F-B3](../../uplift/ivg-verus-initial/intent/platform.md); [ledger page](../features/ledger.g5.md)
-- Tests (live): the only ledger round trip, `tests/integration/test_ledger_snapshot.py`, purges the ledger first
-- Expands: [Snapshots](#install.snapshot)
-- agent
-- uncertain
-- data-integrity
-
-Findings: [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004)
-
-Audit (q-plt-004): Open owner decision. Working assumption (agent, unratified): Prefer refusal while a live ledger exists until replace/merge history semantics are specified; do not count the current overlay as a decided contract. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-004).
-
 ### install.snapshot.routes
 - Sources: [`iris_vector_graph/_engine/snapshot.py::routed_export_plan`](../../../iris_vector_graph/_engine/snapshot.py#L299-L344); [`iris_vector_graph/_engine/snapshot.py::SnapshotMixin.restore_snapshot`](../../../iris_vector_graph/_engine/snapshot.py#L1077-L1611) (routed tables at the archived width `:1372-1500`; node and routed vectors matched on graph and node `:1341-1350`, `:1473-1480`); live tests [test_snapshot_routed_embeddings.py](../../../tests/integration/test_snapshot_routed_embeddings.py#L152-L200), unit [test_snapshot_inventory.py](../../../tests/unit/test_snapshot_inventory.py)
 - Playbook: [SNP-B1.7](../../../experiment/playbook-completion/ontology/18-snapshot.md#L51), [SNP-B2.11](../../../experiment/playbook-completion/ontology/18-snapshot.md#L84), [SNP-B4.5](../../../experiment/playbook-completion/ontology/18-snapshot.md#L119)
@@ -829,6 +758,8 @@ Audit reproduction: [F-1802](../../Verus_verification/bugs_issues.md#F-1802) is 
 
 Findings: [A merge restore guards plain tables on their first column only, and counts skipped rows as restored](../../Verus_verification/bugs_issues.md#F-1802).
 
+State machines: [snapshot routes](../../Verus_verification/models/snapshot_routes/manifest.json)
+
 ### install.snapshot.temporal
 - Sources: [`iris_vector_graph/_engine/snapshot.py::snapshot_globals`](../../../iris_vector_graph/_engine/snapshot.py#L387-L408), [`::kg_export_subscripts`](../../../iris_vector_graph/_engine/snapshot.py#L425-L437), `STORE_PLAN` temporal entries [`snapshot.py`](../../../iris_vector_graph/_engine/snapshot.py#L136-L144); live tests [`test_the_restored_temporal_edge_answers_a_window_query`](../../../tests/integration/test_snapshot_inventory.py#L116-L130), unit `tests/unit/test_snapshot_inventory.py::test_the_globals_export_is_derived_from_the_plan`
 - Playbook: [SNP-I1.1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L40), [SNP-B1](../../../experiment/playbook-completion/ontology/18-snapshot.md#L42), [TMP-B6](../../../experiment/playbook-completion/ontology/05-temporal.md#L201)
@@ -843,22 +774,13 @@ Public case J02. A hand-kept second list of exported subtrees once dropped all f
 
 Audit reproduction: [F-1804](../../Verus_verification/bugs_issues.md#F-1804) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
-### install.snapshot.consistency-policy
-- Expands: [parent](#install.snapshot)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Should a snapshot be a point-in-time view?](../../Verus_verification/open_questions.md#HD-1802).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1802).
-
-Audit (HD-1802): Open owner decision. Working assumption (agent, unratified): Claim a consistent snapshot only when writers are quiescent (an operator premise) or under a verified snapshot/epoch protocol; for the current exporter declare the quiet-writer premise. Changed from decisions.md: **no**. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1802).
+State machines: [temporal restore](../../Verus_verification/models/temporal_restore/manifest.json)
 
 ### install.bulk_load
 
+- uncertain
 - Sources: [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md); [_engine/nodes_edges.py](../../../iris_vector_graph/_engine/nodes_edges.py); [bulk_loader.py](../../../iris_vector_graph/bulk_loader.py); [structure.adjacency.bulk](../features/graph-structure.g5.md#structure.adjacency.bulk)
-- Children: [loader](#install.bulk_load.loader), [ledger](#install.bulk_load.ledger), [rebuild](#install.bulk_load.rebuild), [limits](#install.bulk_load.limits)
+- Children: [loader](#install.bulk_load.loader), [ledger](#install.bulk_load.ledger), [rebuild](#install.bulk_load.rebuild), [Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?](../../Verus_verification/open_questions.md#q-plt-005)
 - agent
 - architecture-decision, data-integrity
 - test-coverage
@@ -866,6 +788,8 @@ Audit (HD-1802): Open owner decision. Working assumption (agent, unratified): Cl
 The engine paths drop indexes only for batches of 500 rows or more. Inside a caller's transaction, `bulk_load_session` keeps its indexes and leaves the adjacency to rebuild after the caller commits (4.7.0); that rule is owned by [structure.adjacency.bulk](../features/graph-structure.g5.md#structure.adjacency.bulk). Observed divergence (review round 3 R3-reader M6): spec 252 FR-008 and ADR-0008 require every `%NOINDEX` bulk path to rebuild before it returns, but `BulkLoader.load_nodes` and `load_edges` tell the caller to call `rebuild_all_indices()` ([bulk_loader.py](../../../iris_vector_graph/bulk_loader.py#L380-L395)). Live coverage: `tests/integration/test_bulk_loader_live.py`, `tests/integration/test_bulk_loader_endpoints.py`.
 
 Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-011)
+
+Open questions: [Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?](../../Verus_verification/open_questions.md#q-plt-005)
 
 ### install.bulk_load.loader
 
@@ -902,18 +826,6 @@ The warning for an index that was not rebuilt dates from 4.6.0 (R257). The `Bulk
 
 Findings: [Rebuild adjacency once after load_networkx](../../Verus_verification/design_simplification.md#simp-plt-004)
 
-### install.bulk_load.limits
-
-- Sources: [bulk_loader.py](../../../iris_vector_graph/bulk_loader.py); [Adjacency.cls RemoveAll](../../../iris_src/src/Graph/KG/Adjacency.cls); [Spec 234](../../../specs/234-multigraph-parallel-edges/spec.md); [Stage A notes F-B7](../../uplift/ivg-verus-initial/intent/platform.md)
-- Expands: [Bulk loading](#install.bulk_load)
-- agent
-- uncertain
-- data-integrity
-
-Findings: [Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?](../../Verus_verification/open_questions.md#q-plt-005)
-
-Audit (q-plt-005): Open owner decision. Working assumption (agent, unratified): Keep documented loader exemptions and chunking; preserve other graphs and multigraph data unless a narrower supported envelope is expressly adopted. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-005).
-
 ### install.import
 - Children: [NDJSON](#install.import.ndjson)
 
@@ -932,11 +844,15 @@ Added by review round 3 R3-reader M23 (the stage-A reconstruction check items 3,
 - test-coverage
 - Expands: [imports](#install.import)
 
+State machines: [ndjson export](../../Verus_verification/models/ndjson_export/manifest.json), [ndjson import](../../Verus_verification/models/ndjson_import/manifest.json)
+
 ### install.export.ndjson
+
+- design-verified
 
 - Sources: [User Guide export](../../../docs/USER_GUIDE.md#L1170-L1181), [API reference](../../../docs/API_REFERENCE.md#L2163-L2169), [NDJSON format](../../../docs/setup/DATA_FORMATS.md#3-ndjson), [`SnapshotMixin.export_graph_ndjson`](../../../iris_vector_graph/_engine/snapshot.py#L1857-L1908)
 - Tests (live): [R088 default/named/temporal export](../../../tests/e2e/test_460_export_graph_ndjson_e2e.py); existing [import unit tests](../../../tests/unit/test_edgeprop_ndjson.py)
-- Related: [node reads](../features/graph-structure.g5.md#structure.node.read), [reserved aliases](../features/graph-structure.g5.md#structure.node.read.aliases), [NDJSON admission](#install.import.ndjson)
+- Related: [node reads](../features/graph-structure.g5.md#structure.node.read), [How should flat node reads preserve colliding property aliases?](../../Verus_verification/open_questions.md#q-iter-001), [NDJSON admission](#install.import.ndjson)
 - Evidence: [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md), [sealed13 full-record survey](../../uplift/consolidated/iteration-13/next-records-survey.md)
 - Verus: [ndjson_export.rs](../../Verus_verification/models/ndjson_export/ndjson_export.rs) `theorem_complete_export_line_sequence_and_counts`, `theorem_default_census_derived`, `theorem_raw_node_event_content`, `theorem_edge_census_derived`, `theorem_edge_qualifier_zero_not_omitted` and `theorem_actual_generated_export_to_import_callbacks`, with final-file witnesses; [scope and provider limits](../../Verus_verification/models/ndjson_export/NOTES.md)
 - agent
@@ -945,14 +861,18 @@ Added by review round 3 R3-reader M23 (the stage-A reconstruction check items 3,
 Exporting writes only the default graph: first one node line for each node whose node row has the empty graph name, in node-ID order, then one edge line for each default-graph edge row, in edge-ID order. It returns `nodes` and `edges` equal to the lines of each kind it wrote.
 
 - A node line is written even when the node has no labels or properties. A node that exists only in a named graph gets no line, and its named-graph labels and properties do not enter a default node's line.
-- A node line carries every default-graph label and the properties as the node reader reports them, including the [reserved aliases](../features/graph-structure.g5.md#structure.node.read.aliases): a stored property named `id` appears as `p_id`. When both `id` and `p_id` are stored, only the value delivered last survives.
+- A node line carries every default-graph label and the properties as the node reader reports them, including the [How should flat node reads preserve colliding property aliases?](../../Verus_verification/open_questions.md#q-iter-001): a stored property named `id` appears as `p_id`. When both `id` and `p_id` are stored, only the value delivered last survives.
 - Every physical default-graph edge row is its own line, so two parallel rows with the same source, predicate and target give two lines. Temporal-marked rows (qualifiers starting `{"temporal"`) and named-graph rows are not written.
 - A non-empty qualifier object is copied, including `{"q": 0}`; an absent or empty qualifier is left out.
 - Reading the file with [NDJSON import](#install.import.ndjson) passes each line's labels, properties, graph and qualifiers to the create calls and counts the lines read. That is argument agreement, not a storage round trip: alias and value normalization mean a re-import need not restore the original rows.
 
 This recovers ordinary export behavior; it is not a new product requirement. The file claim assumes a stable SQL view, ordinary SQL ordering and successful JSON and file writes; failure, partial-file and concurrent-writer behavior are not covered.
 
+State machines: [ndjson export](../../Verus_verification/models/ndjson_export/manifest.json)
+
 ### install.export.rdf.scope
+
+- design-verified
 
 - Sources: [Semantic Layer selection](../../../docs/SEMANTIC_LAYER.md#L95-L115), [API reference](../../../docs/API_REFERENCE.md#L2253-L2274), [`_build_rdflib_graph`](../../../iris_vector_graph/_engine/_rdf_utils.py#L102-L294)
 - Tests (live): [R099 label filtering](../../../tests/e2e/test_460_rdf_export_label_filter_e2e.py), [R100 graph contexts](../../../tests/e2e/test_460_rdf_export_nquads_graphs_e2e.py), [graph scope unit tests](../../../tests/unit/test_230_rdf_export_scope.py)
@@ -970,7 +890,11 @@ RDF export selects rows by graph, node ID and label before building any triple.
 
 The label projection and own-graph membership are explicit source and regression behavior; no policy about exporting all labels of a selected node is inferred. SQL equality, nullable-graph normalization and a stable relational view are correspondence conditions.
 
+State machines: [rdf reporting](../../Verus_verification/models/rdf_reporting/manifest.json)
+
 ### install.export.rdf.content
+
+- design-verified
 
 - Sources: [Semantic Layer row/term/qualifier rules](../../../docs/SEMANTIC_LAYER.md#L39-L65), [`_mint_iri`, `graph_iri`, `_to_literal`, `_build_rdflib_graph`](../../../iris_vector_graph/_engine/_rdf_utils.py#L29-L294)
 - Tests (live): [literal/qualifier unit tests](../../../tests/unit/test_rdf_export.py), [R100 generated context contents](../../../tests/e2e/test_460_rdf_export_nquads_graphs_e2e.py), [R122 named-graph IRIs](../../../tests/e2e/test_460_rdf_graph_id_not_an_iri_e2e.py)
@@ -990,7 +914,11 @@ Each selected row becomes triples in its graph's context: the default graph, or 
 
 The public literal description does not settle the false/zero qualifier exception, so this as-built behavior is not intended-policy approval. Graph-IRI encoding, wider numeric and JSON text, and rdflib's term, blank-node and serializer behavior are named provider conditions.
 
+State machines: [rdf reporting](../../Verus_verification/models/rdf_reporting/manifest.json)
+
 ### install.export.rdf.report
+
+- design-verified
 
 - Sources: [Semantic Layer metrics and formats](../../../docs/SEMANTIC_LAYER.md#L67-L93), [`RdfExportMixin.export_rdf`](../../../iris_vector_graph/_engine/rdf_export.py#L96-L157), [format inference](../../../iris_vector_graph/_engine/_rdf_utils.py#L56-L69)
 - Evidence: [sealed13 ordinary union/quad contrast](../../uplift/consolidated/iteration-13/next-reporting-survey.md), [source-first root contrasts](../../uplift/consolidated/iteration-14/root-export-PAIRS.md)
@@ -1006,3 +934,5 @@ The returned counts read the generated triples merged across contexts, not the r
 - `edges` counts distinct triples whose object is an IRI and whose predicate is not `rdf:type`. This includes the IRI-valued envelope triples of qualified edges.
 
 This settles the docs' "counts what was written" wording as a union reader without promising equal serialized line counts. Namespace binding, third-party serialization and parsing, provider failures and cross-read consistency remain qualified; no whole-serializer or failed-file guarantee follows.
+
+State machines: [rdf reporting](../../Verus_verification/models/rdf_reporting/manifest.json)

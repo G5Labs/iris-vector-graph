@@ -26,6 +26,9 @@ This page covers how IVG stores node and edge vectors for each graph and model, 
 
 IVG records which model produced each embedding table's vectors and how wide they are, and checks every vector write against that record.
 
+- Working assumption: Keep width-compatible undeclared writes to the claimed default table as current compatibility; separate-route enforcement needs an explicit decision.
+
+
 <a id="search.embedding.registry"></a>
 [D · search.embedding.registry]
 
@@ -34,12 +37,14 @@ The record lives in the embedding registry, a table every installation has. It i
 - It can describe a table that holds no vectors yet.
 - It holds the current identity, not a history of changes.
 
+
 <a id="search.embedding.model_key"></a>
 [D · search.embedding.model_key]
 
 Two model keys match only if they are equal after trimming, lowercasing and collapsing runs of spaces. Nothing else is rewritten, because an operator can fix a false refusal, while a false match silently mixes two models.
 - The mechanism must come from a fixed list.
 - Two writers that name the same model with different mechanisms conflict.
+
 
 <a id="search.embedding.width"></a>
 [D · search.embedding.width]
@@ -51,10 +56,12 @@ A table's width is the width its vector column declares, and the registry copies
 - That refusal comes before any search statement runs, and it names both widths. The width compared is the route's, or the column's declared width when the route records none.
 - No check is made when there is nothing to compare: for a seed node ID, whose vector comes from the route itself; for a route and column with no declared width; or for a literal that cannot be parsed. IRIS then decides, and its refusal is raised, not turned into an empty answer.
 
+
 <a id="search.embedding.width.raw-helpers"></a>
 [D · search.embedding.width.raw-helpers]
 
 The low-level raw DB-API helper pads/truncates and coerces non-finite values as documented. Registry-aware engine writes keep their separate strict contract.
+
 
 <a id="search.embedding.check_on_write"></a>
 [I · search.embedding.check_on_write]
@@ -64,11 +71,13 @@ Every path that writes vectors checks the write against its table's recorded ide
 - An undeclared writer is checked on width and element type only.
 - A batch that mixes widths is refused whole.
 
+
 <a id="search.embedding.claim"></a>
 [D · search.embedding.claim]
 
 An upgrade records each existing table with its width and an unknown model. Setup by an engine that declares a model, or an explicit identity call, claims such a table; when two claim at once, exactly one wins. An ordinary vector write never claims a table: a write that names a model goes to that model's own route.
 - After that, an operator can replace the recorded model only with an explicit force. The override is logged as a warning, because every vector already stored becomes incomparable.
+
 
 <a id="search.embedding.other_model"></a>
 [D · search.embedding.other_model]
@@ -77,13 +86,6 @@ Vectors from two declared models never share a table. A write that names a model
 
 - Today setup by an engine configured for another model than a table records is refused, although that engine's writes would be routed. Whether setup should refuse or route is open.
 
-<a id="search.embedding.undeclared_default"></a>
-[Q · search.embedding.undeclared_default]
-
-May an undeclared writer add vectors to the default graph's original table after a declared model has claimed it?
-- Provisional answer (current behavior): yes, when the width matches.
-- Alternative: give undeclared default-graph writes their own route, as named graphs already have.
-- Alternative: refuse them once a model has claimed the table.
 
 <a id="search.embedding.queue"></a>
 [I · search.embedding.queue]
@@ -91,21 +93,12 @@ May an undeclared writer add vectors to the default graph's original table after
 Queued embedding work is checked before it is queued, against the identity of the table it will be written to. A worker fails each entry that asks for a model it does not produce, and the rest of the batch continues.
 - An entry whose text cannot be embedded, or whose vector cannot be stored, is marked as an error with the reason, never as done.
 
-<a id="search.embedding.queue.processing"></a>
-[Q · search.embedding.queue.processing]
+- Working assumption: A single active consumer per namespace is the contract (supported by 5bb149ed); model both workers as independently schedulable, treat single-worker as an unenforced premise, and prefer enforcement (refuse a second worker) or documentation; atomic claims with recovery remain the multi-worker alternative.
+- Working assumption: one worker at a time is assumed, so entries are not claimed. An entry is marked done before its vector is stored, and is changed to an error if storing then fails.
 
-May two workers process the queue at the same time, and must an entry be marked done only after its vector is committed?
-- Provisional answer (current behavior): one worker at a time is assumed, so entries are not claimed. An entry is marked done before its vector is stored, and is changed to an error if storing then fails.
-- Alternative: claim entries so two workers never process the same one, and mark an entry done only after its vector commits.
 
 ## Routes and graph scope
 
-<a id="search.embedding.queue.processing.consumers"></a>
-[Q · search.embedding.queue.processing.consumers]
-
-May two embed queue workers run at once?
-
-- Working assumption (agent, unratified): The documented design has one consumer; enforcement versus an operator-only rule is still undecided.
 
 <a id="search.routes"></a>
 [I · search.routes]
@@ -114,6 +107,7 @@ Each graph's vectors of one model and one kind live in one route. The registry i
 - One graph's vectors of one model are never split across two tables, so every read and write for that pair picks the same table.
 - Edge vectors are routed the same way, keyed by graph and edge. An edge vector belongs to the graph that asserts the edge.
 
+
 <a id="search.routes.no_fallback"></a>
 [I · search.routes.no_fallback]
 
@@ -121,11 +115,13 @@ A read for a graph and model that has no route answers nothing, never vectors fr
 - The route is looked up first, so a search of an unrouted pair is an empty answer even when its query vector has the wrong width: it is never a width error.
 - Reading one node's vector through an unrouted pair answers no vector.
 
+
 <a id="search.routes.cache"></a>
 [D · search.routes.cache]
 
 A route lookup may reuse a decoded registry row for up to 30 seconds by default, with a separate entry for each registry, graph, model and vector kind. A response with no row or an absent registry does not create a cache entry; a remembered row may hide a later registry change until it expires or is invalidated.
 - A row exactly at the time limit is still usable. Disabling cache lookup forces a fresh read without clearing stored entries.
+
 
 <a id="search.routes.create_on_write"></a>
 [D · search.routes.create_on_write]
@@ -133,10 +129,12 @@ A route lookup may reuse a decoded registry row for up to 30 seconds by default,
 The first write for a graph and model creates the route at the width of the vector being written: the table, an attempted vector index and a registry row, committed together. When two writers create one route at once, one table results and both use its recorded width.
 - A new route cannot be created inside a caller's open transaction.
 
+
 <a id="search.routes.orphan"></a>
 [D · search.routes.orphan]
 
 A routed table that exists without its registry row is an orphan. No read uses it, an erase empties the erased graph's rows from it but never drops it, and creating that route again reuses the table only if its column declares the width asked for.
+
 
 <a id="search.knn"></a>
 [I · search.knn]
@@ -146,6 +144,7 @@ A vector search returns up to k pairs of node ID and cosine similarity from one 
 - An optional label keeps only nodes that have the label in the same graph.
 - Each route gets an attempted approximate-nearest-neighbour (HNSW) index. A route whose index was refused is searched by a full scan.
 
+
 <a id="search.knn.threshold"></a>
 [I · search.knn.threshold]
 
@@ -153,6 +152,7 @@ The generic `vector_search` and graph-routed `edge_vector_search` apply an optio
 
 - Both bind the threshold in a WHERE predicate on the cosine expression, repeating the query-vector bind for that expression. The optional graph predicate combines with that filter; sorting follows it.
 - This rule concerns these two helpers, not every KNN, IVF, fusion or Cypher search surface.
+
 
 <a id="search.scope"></a>
 [I · search.scope]
@@ -163,6 +163,7 @@ Every vector read and write covers exactly one graph, and leaving out the graph 
 - A graph ID prevents collisions but is [not a security boundary](../concepts/graph-scope.g5.md#graph.tenants).
 - The SQL vector-search procedures read only the original tables. Asked about a named graph that has its own route, they raise an error that names the graph-aware calls to use instead.
 
+
 <a id="search.scope.indexes"></a>
 [I · search.scope.indexes]
 
@@ -170,6 +171,9 @@ A BM25 index covers exactly one graph, and building one without naming a graph m
 - A BM25 index records which graph it covers. One built before 4.0.0 covered every graph but reports the default graph, so it must be rebuilt; today the default graph's fusion reads it as its own.
 - A fusion leg uses the requested graph's own index first, then the server-side vector search scoped by the query.
 - An index whose graph is unknown is used only as a last resort, with a warning.
+
+- Working assumption: Unchanged: readers see a complete published index or a clear unavailable result, including after an interrupted rebuild; the existing partial-build behaviour is the modelled baseline.
+
 
 <a id="search.scope.indexes.upkeep"></a>
 [D · search.scope.indexes.upkeep]
@@ -179,6 +183,7 @@ A named search index changes only through its own build, insert, delete and drop
 
 ## Building an IVF index
 
+
 <a id="search.scope.indexes.ivf"></a>
 [I · search.scope.indexes.ivf]
 
@@ -187,12 +192,6 @@ An IVF build reads vectors from the requested graph and model's route, never ano
 
 ## Quarantine
 
-<a id="search.scope.indexes.publication-policy"></a>
-[Q · search.scope.indexes.publication-policy]
-
-May an index build be seen half-done, and may a stopped build leave a partial index?
-
-- Working assumption (agent, unratified): Prefer readers seeing a complete published index or an explicit unavailable result; staging and crash recovery add obligations.
 
 <a id="search.quarantine"></a>
 [I · search.quarantine]
@@ -203,20 +202,19 @@ An upgrade puts every existing vector either into exactly one graph or into quar
 - The upgrade can be run again after it stops. Placed plus quarantined vectors always equal the vectors it started with.
 - Documents and edge vectors that the same upgrade could not place go to quarantine tables of their own, and an operator places them by hand.
 
+- Working assumption: Keep quarantined data and explicitly report retention until an owner chooses a purge API and its unknown-graph semantics.
+- Working assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
+
+
 <a id="search.quarantine.placement"></a>
 [I · search.quarantine.placement]
 
 An operator places quarantined vectors one at a time, naming the graph and model. Placement never creates a route. It is refused, leaving the vector in quarantine, unless the route exists with the same width and element type and the node exists in that graph.
 - The vector is copied into the route and removed from quarantine in one transaction. If the route refuses the copy, for example because it already holds a vector for that node, the vector stays in quarantine.
 
-<a id="search.quarantine.retention"></a>
-[Q · search.quarantine.retention]
-
-Should quarantined vectors and documents survive erasure?
-- Provisional answer (current decision, [kept by every erase](erasure.g5.md#erasure.kept)): yes. They are evidence whose graph is unknown.
-- Alternative: offer a purge for deployments that must delete all data.
 
 ## BM25 text search
+
 
 <a id="search.bm25"></a>
 [I · search.bm25]
@@ -227,6 +225,12 @@ A BM25 index is a named lexical index over chosen text properties of one graph's
 - Removing a document that is not in the index changes nothing.
 - A search returns the top k documents by score, highest first.
 
+- Working assumption: Assume no cross-call consistency guarantee until a read/write protocol is chosen; partial-index results remain visible risk, not approved isolation.
+- Working assumption: Keep explicit BM25 selection distinct from plain text search; a default-index fallback requires a supported API/corpus decision.
+- Working assumption: Model kg_TXT as iFind-then-LIKE (documented as-built). Record FR-012/US5/SC-004 and tasks T034/T035 as a spec/doc conflict (S3, F-0708), not as a current obligation the pin fails. If the fallback returns, it applies only on the LIKE path, only to an index whose recorded graph equals the requested graph, never across graphs. Why changed: decisions.md called this Supported on spec 044 FR-012, SC-004 and PR #8. Those establish the 2026-04 feature, not that it is still wanted: the Draft spec is the only post-removal carrier, it was copied wholesale with the schema-2 amendment, and the maintainer's later kg_TXT redesign (v2.18.2, US7, docstring, generated API reference) excludes it. No source "supersedes" FR-012 explicitly either, so neither reading is supported; the assumption follows the newer, user-facing contract.
+- Working assumption: Reserve `__stop__`: public BM25 entry points (`bm25_build/insert/delete/drop/upgrade`, `BM25BuildInput`, index handles, `kg_BM25`/`ivg.bm25.search`) refuse it; the embedded registry walk skips it. Model the as-built acceptance as a defect against the documented stopword list (cross-index). Moving the list to its own global is the compatible alternative mechanism.
+
+
 <a id="search.bm25.scoring"></a>
 [I · search.bm25.scoring]
 
@@ -234,10 +238,12 @@ A document's score adds up, for each query term, `IDF × tf × (k1 + 1) / (tf + 
 - Documents and queries are tokenized the same way: lowercased, split at punctuation, with no stemming and a fixed list of 77 common English words left out.
 - A query term counts once for each time the query repeats it.
 
+
 <a id="search.bm25.query_time_idf"></a>
 [D · search.bm25.query_time_idf]
 
 IDF and average length are computed at search time from the current document count, document frequencies and total length. A score therefore never reflects an older index size. The scores of an index that had incremental inserts change when it is upgraded.
+
 
 <a id="search.bm25.counts"></a>
 [I · search.bm25.counts]
@@ -247,33 +253,33 @@ At every committed point, an index's stored counts agree with its stored posting
 - A document's token record lists exactly its distinct terms.
 - The document count, total length and number of distinct terms match the stored documents.
 
+
 <a id="search.bm25.incremental"></a>
 [I · search.bm25.incremental]
 
 Adding, replacing or removing one document costs in proportion to that document's distinct terms, never to the size of the index or its vocabulary.
 - Only a full build and an upgrade may walk a whole posting list or the whole vocabulary.
 
+
 <a id="search.bm25.write_lock"></a>
 [D · search.bm25.write_lock]
 
 Every write to an index runs under that index's write lock inside a transaction, so a failed write leaves the index as it was and two writers never interleave. Searches take no lock.
 - A failed write takes back only its own changes. It never commits or rolls back a transaction the caller has open, so the caller's earlier writes in that transaction survive.
-- Index writes go through the engine's own native connection, so they are part of the caller's transaction only when the engine was made on the caller's connection ([engine connection](graph-structure.g5.md#structure.write.engine-connection)).
+- Index writes go through the engine's own native connection, so they are part of the caller's transaction only when the engine was made on the caller's connection ([engine connection](../../Verus_verification/open_questions.md#structure.write.engine-connection)).
 - A writer waits for the lock up to a set time, 30 seconds by default, then fails without changing anything.
 - Counters are updated with plain writes, not atomic increments, because a rollback does not undo an atomic increment.
 
-<a id="search.bm25.write_lock.build-policy"></a>
-[Q · search.bm25.write_lock.build-policy]
+- Working assumption: Serialize Build, Drop, Insert, Delete and Upgrade per index and publish a complete generation or return unavailable, including after a crash; a Build that is refused or indexes nothing must not destroy the previous index. Model the as-built (unlocked Build/Drop, Kill-first) separately as the baseline. Same as decisions.md.
+- Working assumption: Treat transaction membership as dependent on the connection used by the engine.
 
-Must a BM25 Build (and Drop) exclude writers and be all-or-nothing?
-
-- Working assumption (agent, unratified): Serialize builds and mutations per index and publish a complete result; lock ordering and interrupted-build recovery still need a policy.
 
 <a id="search.bm25.schema"></a>
 [D · search.bm25.schema]
 
 Each index records its schema, and an index without one is schema 1. Searches work on both schemas. Inserts and deletes on schema 1 are refused with an error naming the upgrade, with no fallback to the slow method.
 - A full build and the first insert into a new index create schema 2.
+
 
 <a id="search.bm25.upgrade"></a>
 [I · search.bm25.upgrade]
@@ -282,6 +288,7 @@ An upgrade converts a schema-1 index to schema 2 in one pass while searches keep
 - Writers are refused while it runs.
 - A search never sees schema 2 before the document frequencies, token records and totals are complete.
 - An interrupted upgrade leaves the index flagged as upgrading, so writers stay refused until it runs again; running it again finishes the conversion. On a schema-2 index without that flag it does nothing.
+
 
 <a id="search.bm25.cutoff"></a>
 [I · search.bm25.cutoff]
@@ -293,28 +300,11 @@ A search can skip common terms. Given a fraction f above 0, query terms whose df
 - A schema-1 index ignores the cutoff and reports nothing skipped.
 - A fraction outside 0 to 1 is refused.
 
-<a id="search.bm25.read_isolation"></a>
-[Q · search.bm25.read_isolation]
+- Working assumption: Preserve token order in reporting skipped terms unless a different order is specified; membership is the existing scoring-relevant fact.
 
-May a search observe an index write that is still in progress?
-- Provisional answer (current behavior): yes. Searches take no lock, so they may mix counts from before and after a concurrent write, or see a write that later rolls back.
-- Alternative: give each search a consistent view, as is already promised during an upgrade.
-
-<a id="search.bm25.default_index"></a>
-[Q · search.bm25.default_index]
-
-Should plain text search switch to a BM25 index named "default" when one exists, as the BM25 specification requires?
-- Provisional answer (current behavior): no. Plain text search ranks documents by full-text term counts and never reads a BM25 index.
-- Alternative: implement the specified switch, or retire that requirement.
 
 ## Fusion
 
-<a id="search.bm25.name-policy"></a>
-[Q · search.bm25.name-policy]
-
-Is `__stop__` a reserved BM25 index name?
-
-- Working assumption (agent, unratified): Reserve __stop__ for stopwords; refusing that index name and moving the list to another global are alternative mechanisms.
 
 <a id="search.fusion"></a>
 [I · search.fusion]
@@ -323,11 +313,17 @@ Hybrid search fuses a vector ranking and a text ranking by reciprocal rank. A re
 - Entry points that offer a default use `c = 60`.
 - An empty text query skips the text leg.
 
+- Working assumption: Preserve each current text corpus and rank rule until one common corpus is chosen; common fusion arithmetic alone cannot settle text ranking.
+- Working assumption: Unchanged: the reviewed ranking contract is the best k of the scored candidate set with defined ties; the documented set-order truncation is the baseline (now confirmed live).
+- Working assumption: Preserve and test each surface's rule, including missing-rank handling and which text list it reads; document that the engine method and the SQL procedure of the same name differ. Introduce a single formula only with a versioned contract. Same as decisions.md.
+
+
 <a id="search.fusion.same_graph"></a>
 [I · search.fusion.same_graph]
 
 Every leg of a fusion answers the same graph, and the legs are matched on both graph and node ID.
 - On a namespace with several graphs, a Cypher fusion that names no graph is refused.
+
 
 <a id="search.fusion.failed_leg"></a>
 [I · search.fusion.failed_leg]
@@ -336,42 +332,20 @@ A leg that fails must be reported as a failure that names the leg, not treated a
 
 - Today `HybridSearchFusion.multi_modal_search` raises a text failure, but logs and drops a failed vector or graph leg. A successful empty leg stays in its `search_modes`; a failed leg is absent, so a returned ranking can be incomplete. This is the inherited F-0709 departure from the rule.
 
+
 <a id="search.fusion.python"></a>
 [D · search.fusion.python]
 
 The exported Python `RRFFusion.fuse_results` uses each entity's first position in each list, starting at one, and adds nothing for a missing entity. It ignores the providers' score magnitudes, returns each entity once in descending fused score, and promises no order between tied scores.
 
 - `HybridSearchFusion.multi_modal_search` fuses the legs that completed and returns at most k entities with their fused rank and each retained leg's first score and position. A successful graph expansion is another ranked leg.
-- These Python helpers' shipped behavior is settled; whether to keep them as supported public API is [open](#search.fusion.python.support).
+- These Python helpers' shipped behavior is settled; whether to keep them as supported public API is [open](../../Verus_verification/open_questions.md#HD-0705).
 
-<a id="search.fusion.python.support"></a>
-[Q · search.fusion.python.support]
+- Working assumption: Treat the three as compatibility surfaces and qualify each: RRFFusion is a pure standard-RRF helper (document that its rule differs from engine `kg_RRF_FUSE`, HD-0702); HybridSearchFusion is de facto public (migration guide) and graph-scoped; TextSearchEngine is exported but reads every graph and its document search cannot reach the IVG Schema, so it is not a supported reader of graph-scoped data. Prefer deprecation with migration advice (to `kg_TXT` / `bm25_search`) or a `graph=` argument; do not remove without a compatibility decision.
 
-Should these Python fusion helpers remain supported? Working answer: keep them and make their graph and failure behavior follow the shared fusion rules; the alternative is to deprecate them explicitly. No owner has ratified this choice.
-
-<a id="search.fusion.absent"></a>
-[Q · search.fusion.absent]
-
-What does a result that is missing from one leg get from that leg?
-- Provisional answer: nothing, as the documented formula says and three of the four fusion entry points do.
-- Alternative (the engine's fusion today): `1 / (2c + length of that leg)`, which can change the order of results.
-- A separate, documented rule for each entry point is another proposal. The two uplifts favored different defaults; no owner has chosen a shared rule or separate rules.
-
-<a id="search.fusion.text_leg"></a>
-[Q · search.fusion.text_leg]
-
-Should every fusion entry point use the same text ranking? There is no provisional answer.
-- Current behavior: the engine and Cypher fusions read a BM25 index, while the SQL fusion procedure ranks the documents table by full-text term counts.
-- Plausible answers: one shared contract for all entry points, or two contracts, each documented.
 
 ## What erasure removes from search stores
 
-<a id="search.fusion.vector-graph-policy"></a>
-[Q · search.fusion.vector-graph-policy]
-
-Should the vector-and-graph search keep its k best candidates?
-
-- Working assumption (agent, unratified): Prefer the best k of the scored candidate set; changing candidate admission and ranking still needs a specified domain.
 
 <a id="search.erasure"></a>
 [I · search.erasure]
@@ -383,37 +357,31 @@ Should the vector-and-graph search keep its k best candidates?
 - Erasing every graph also clears the whole registry, so no table keeps an identity for vectors that no longer exist.
 - Its content in named search indexes, as [the index rule](#search.erasure.indexes) describes.
 
+
 <a id="search.erasure.indexes"></a>
 [I · search.erasure.indexes]
 
 Erasing a graph also removes its content from every BM25 index recorded for that graph, postings and token records. After the erase, no such index answers with an erased node, even when a node with the same ID is created again.
 
-- VecIndex, PLAID and IVF indexes record no graph. Erasing every graph empties them; what a single-graph erase must do to them is [open](#search.erasure.indexes.graphless).
+- VecIndex, PLAID and IVF indexes record no graph. Erasing every graph empties them; what a single-graph erase must do to them is [open](../../Verus_verification/open_questions.md#search.erasure.indexes.graphless).
 - Erasing every graph empties every named index, so a restore that replaces the database starts from empty indexes before it loads the archive's.
 - Ordinary node deletes are different: the caller keeps indexes in step with those ([index upkeep](#search.scope.indexes.upkeep)).
 
-<a id="search.erasure.indexes.graphless"></a>
-[Q · search.erasure.indexes.graphless]
-
-What must erasing one graph do to a VecIndex, PLAID or IVF index, which records no graph? There is no provisional answer.
-
-- Plausible answers: record each entry's graph so the erase can find it, drop or mark stale every such index the erase touches, or treat them as derived stores the caller rebuilds.
-
-<a id="search.erasure.indexes.coverage-policy"></a>
-[Q · search.erasure.indexes.coverage-policy]
-
-Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promise?
-
-- Working assumption (agent, unratified): Name retained search-index contents in removal reports until an owner chooses a purge or complete-erasure policy.
+- Working assumption: Unchanged: model retained index contents as observable after erasure unless purged; graph-owned indexes require invalidation or deletion on erase; caller-fed indexes need an explicit owner/exposure statement. Refined with the graph-derived (IVF) vs caller-fed (VecIndex, PLAID) split.
+- Working assumption: Treat graphless indexes as derived data requiring a rebuild after erasure.
 
 ## Metadata
 
 ### search.embedding
+
+- uncertain
 - Sources: [ADR-0006](../../../docs/adr/0006-embedding-identity-lives-in-a-registry-not-the-ledger.md), [CHANGELOG v3.2.0](../../../CHANGELOG.md#L4371-L4440), [CONTEXT.md glossary](../../../CONTEXT.md#L154-L157), [stage-A notes](../../uplift/ivg-verus-initial/intent/search.md#capabilities), live tests [registry](../../../tests/integration/test_embedding_registry_e2e.py) and [refusal](../../../tests/integration/test_embedding_identity_refusal_e2e.py)
-- Children: [Registry](#search.embedding.registry), [Model key](#search.embedding.model_key), [Width](#search.embedding.width), [Check on write](#search.embedding.check_on_write), [Claim](#search.embedding.claim), [Other model](#search.embedding.other_model), [Undeclared writer](#search.embedding.undeclared_default), [Queue](#search.embedding.queue)
+- Children: [Registry](#search.embedding.registry), [Model key](#search.embedding.model_key), [Width](#search.embedding.width), [Check on write](#search.embedding.check_on_write), [Claim](#search.embedding.claim), [Other model](#search.embedding.other_model), [May an undeclared writer add vectors to the default graph's table after a model has claimed it?](../../Verus_verification/open_questions.md#q-srch-002), [Queue](#search.embedding.queue)
 - agent
 - data-integrity, user-facing-behavior
 - test-coverage
+
+Open questions: [May an undeclared writer add vectors to the default graph's table after a model has claimed it?](../../Verus_verification/open_questions.md#q-srch-002)
 
 ### search.embedding.registry
 - Sources: [ADR-0006 decision and context](../../../docs/adr/0006-embedding-identity-lives-in-a-registry-not-the-ledger.md#L7-L54), [registry DDL](../../../iris_vector_graph/_engine/schema.py#L143-L160), [test_embedding_registry_e2e.py](../../../tests/integration/test_embedding_registry_e2e.py)
@@ -439,6 +407,8 @@ Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promise?
 - agent
 - architecture-decision, data-integrity, operations
 - test-coverage
+
+State machines: [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
 
 ### search.embedding.width.raw-helpers
 - Expands: [parent](#search.embedding.width)
@@ -488,22 +458,14 @@ Findings: [Search documents are not reconciled with graph-scoped routing or with
 
 The setup-versus-routing case is stage-A open question Q2 ([intent notes](../../uplift/ivg-verus-initial/intent/search.md#L319)); setup refuses at [schema.py](../../../iris_vector_graph/_engine/schema.py#L1211-L1215). Added by review round 3 R3-reader M12.
 
-### search.embedding.undeclared_default
-- Sources: [default pair rule](../../../iris_vector_graph/_engine/embeddings.py#L743-L792), [offered unknown identity](../../../iris_vector_graph/embedding_identity.py#L79-L98), [CONTEXT.md glossary](../../../CONTEXT.md#L154-L157)
-- Expands: [Embedding identity](#search.embedding)
-- Note: the code's docstring, citing spec 226 FR-010, treats this as intended. The glossary text added on 2026-11-04, after routing, says a write for another model is refused, which strengthens the "refuse" alternative, and named graphs already isolate undeclared writes.
-- agent
-- uncertain
-- data-integrity
-
-Findings: [May an undeclared writer add vectors to the default graph's table after a model has claimed it?](../../Verus_verification/open_questions.md#q-srch-002)
-
-Audit (q-srch-002): Open owner decision. Working assumption (agent, unratified): Keep width-compatible undeclared writes to the claimed default table as current compatibility; separate-route enforcement needs an explicit decision. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-srch-002).
+State machines: [search](../../Verus_verification/models/search/manifest.json)
 
 ### search.embedding.queue
+
+- uncertain
 - Sources: [enqueue_for_embedding](../../../iris_vector_graph/_engine/embeddings.py#L1803-L1874), [process_embed_queue docstring and worker check](../../../iris_vector_graph/_engine/embeddings.py#L1898-L2016), [ClaimPendingBatch rationale](../../../iris_src/src/Graph/KG/EmbedQueue.cls#L105-L136), [IRIS worker: a failed write is an error, not done](../../../iris_src/src/Graph/KG/EmbedQueue.cls#L318-L333), [test_embed_queue_identity_e2e.py](../../../tests/integration/test_embed_queue_identity_e2e.py)
 - Expands: [Embedding identity](#search.embedding)
-- Children: [Processing](#search.embedding.queue.processing)
+- Children: [May two workers process the queue at the same time, and must an entry be marked done only after its vector is committed?](../../Verus_verification/open_questions.md#search.embedding.queue.processing)
 - Observed divergence: enqueueing checks the default graph's original table whatever the target graph, and the IRIS worker writes default-graph entries there whatever their model (F8 in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings)). The IRIS worker also marks an entry done when its embedding statement fails to prepare or returns no row ([ProcessBatch](../../../iris_src/src/Graph/KG/EmbedQueue.cls#L306-L330)).
 - agent
 - data-integrity, operations
@@ -511,27 +473,7 @@ Audit (q-srch-002): Open owner decision. Working assumption (agent, unratified):
 
 Findings: [The embedding queue checks identity against the wrong table, and its IRIS worker writes default-graph entries with no identity check](../../Verus_verification/bugs_issues.md#bug-srch-006)
 
-### search.embedding.queue.processing
-- Sources: [ClaimPendingBatch: single processor, no claim state](../../../iris_src/src/Graph/KG/EmbedQueue.cls#L105-L136), [Python worker sets done before storing](../../../iris_vector_graph/_engine/embeddings.py#L1955-L1985), [EmbedQueueTask](../../../iris_src/src/Graph/KG/EmbedQueueTask.cls)
-- Expands: [Queue](#search.embedding.queue)
-- Note: added from correction 19 of the [reconstruction check](../../uplift/ivg-verus-initial/reconstruction-check.md#3-corrections-proposed). A crash between marking done and storing leaves an entry done with no vector.
-- agent
-- uncertain
-- operations, data-integrity
-
-Findings: [The embedding queue marks entries done without a stored vector](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-014)
-
-### search.embedding.queue.processing.consumers
-- Expands: [parent](#search.embedding.queue.processing)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [May two embed queue workers run at once?](../../Verus_verification/open_questions.md#HD-0604).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0604).
-
-Audit (HD-0604): Open owner decision. Working assumption (agent, unratified): A single active consumer per namespace is the contract (supported by 5bb149ed); model both workers as independently schedulable, treat single-worker as an unenforced premise, and prefer enforcement (refuse a second worker) or documentation; atomic claims with recovery remain the multi-worker alternative. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0604).
+Open questions: [May two embed queue workers run at once?](../../Verus_verification/open_questions.md#HD-0604), [May two workers process the queue at the same time, and must an entry be marked done only after its vector is committed?](../../Verus_verification/open_questions.md#search.embedding.queue.processing)
 
 ### search.routes
 - Sources: [CHANGELOG v4.0.0 routed tables](../../../CHANGELOG.md#L4161-L4183), [EmbeddingRoute and resolve_route](../../../iris_vector_graph/_engine/embeddings.py#L35-L301), [route preference](../../../iris_vector_graph/_engine/embeddings.py#L107-L118), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), edge vectors: [store_edge_embedding](../../../iris_vector_graph/_engine/embeddings.py#L1117-L1205), [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L333-L398), [migration guide](../../../docs/migration/v4.0.0.md#L553-L598)
@@ -554,7 +496,11 @@ Findings: [Claiming the default embedding table for a model that already has a d
 - data-integrity, user-facing-behavior
 - test-coverage
 
+State machines: [search](../../Verus_verification/models/search/manifest.json), [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
+
 ### search.routes.cache
+
+- design-verified
 
 - Sources: [cache key and clock](../../../iris_vector_graph/_engine/embeddings.py#L307-L344), [invalidation](../../../iris_vector_graph/_engine/embeddings.py#L346-L375), [raw registry reader](../../../iris_vector_graph/_engine/embeddings.py#L377-L468), [source survey](../../uplift/consolidated/iteration-10/next-vector-survey-report.md), [actual native miss then another-engine creation](../../uplift/consolidated/iteration-11/root-vector-native.json)
 - Verus: [vector_admission](../../Verus_verification/models/vector_admission/NOTES.md) `key`, `cached`, `evict`, `resolve`, `invalidate` and `theorem_all_search_phases_keep_original_scope` derive cache key isolation, separate store/lookup timestamps, strict expiry, no negative insertion and read counts. V2 fixes registry/graph/model/node-kind/TTL from the original stable engine request across fallbacks; only provider replies and clock samples vary. Integer clock ticks preserve comparisons; arbitrary native float-clock refinement, concurrent DDL/writer correctness and universal invalidation are unproved. TTL0 bypasses lookup without clearing old entries.
@@ -563,6 +509,8 @@ Findings: [Claiming the default embedding table for a model that already has a d
 - user-facing-behavior
 
 The strict expiration comparison permits a hit at exactly the TTL, and a positive hit does not reread the current backend row or its errors. The source caches only decoded positive rows, including their timestamp; a miss and registry-absent response are not cached. Per-engine clocks, invalidation, typed TTL and raw registry-provider behavior remain distinct from concurrent route-writer correctness. The earlier cached-absence forecast was refuted and retained, not counted as a defect.
+
+State machines: [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
 
 ### search.routes.create_on_write
 - Sources: [_create_route and its 4.7.0 commit comment](../../../iris_vector_graph/_engine/embeddings.py#L470-L558), [per-route locks](../../../iris_vector_graph/_engine/embeddings.py#L67-L81), [_route_for_write](../../../iris_vector_graph/_engine/embeddings.py#L755-L792), [width per route test](../../../tests/e2e/test_227_two_models.py#L86-L112)
@@ -604,6 +552,8 @@ Audit reproduction: [F-C0602](../../Verus_verification/bugs_issues.md#F-C0602) i
 
 Findings: [SQL kg_KNN_VEC answers a node once per label, so a multi-label node takes several of the k places](../../Verus_verification/bugs_issues.md#F-C0602).
 
+State machines: [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
+
 ### search.knn.threshold
 
 - Sources: [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L333-L416), [vector_search](../../../iris_vector_graph/_engine/vector.py#L1169-L1288), [threshold tests](../../../tests/unit/test_vector_score_threshold.py), [live tests, inspected only](../../../tests/integration/test_vector_score_threshold_live.py)
@@ -612,6 +562,8 @@ Findings: [SQL kg_KNN_VEC answers a node once per label, so a multi-label node t
 - agent
 - user-facing-behavior
 - test-coverage
+
+State machines: [vector threshold](../../Verus_verification/models/vector_threshold/manifest.json)
 
 ### search.scope
 - Sources: [CHANGELOG v4.0.0 keyword graph](../../../CHANGELOG.md#L4184-L4198), [graph ID not an authorisation boundary](../../../CHANGELOG.md#L4366-L4370), [graph_scope_predicate](../../../iris_vector_graph/routing.py#L81-L100), [kg_KNN_VEC](../../../iris_vector_graph/_engine/vector.py#L504-L619), [test_230_scope_isolation.py](../../../tests/e2e/test_230_scope_isolation.py), SQL procedures: [KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L702-L714), [generated kg_KNN_VEC](../../../iris_vector_graph/schema.py#L2440-L2483), [test_460_r265_vector_procedures_route_e2e.py](../../../tests/e2e/test_460_r265_vector_procedures_route_e2e.py)
@@ -623,7 +575,11 @@ Findings: [SQL kg_KNN_VEC answers a node once per label, so a multi-label node t
 
 Findings: [TextSearchEngine.search_documents is public, ignores graphs and very likely always fails](../../Verus_verification/bugs_issues.md#bug-srch-013)
 
+State machines: [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
+
 ### search.scope.indexes
+
+- uncertain
 - Sources: [BM25 Build graph parameter](../../../iris_src/src/Graph/KG/BM25Index.cls#L93-L175), [index graph scopes and fusion leg choice](../../../iris_vector_graph/_engine/vector.py#L150-L225), [scoped legs test](../../../tests/e2e/test_230_retrieval_scope.py#L505-L548), [mocked leg-choice tests](../../../tests/unit/test_460_rrf_leg_prefers_graphs_own_index.py)
 - Expands: [Graph scope](#search.scope)
 - Children: [Upkeep](#search.scope.indexes.upkeep), [IVF build admission](#search.scope.indexes.ivf)
@@ -636,6 +592,8 @@ Findings: [Fusion chooses indexes from a snapshot taken when the engine started]
 
 
 The pre-4.0.0 index case is from [BM25Index.cls](../../../iris_src/src/Graph/KG/BM25Index.cls#L607-L611) ("a stale index is indistinguishable here; rebuild it") and the fusion's index choice in [vector.py](../../../iris_vector_graph/_engine/vector.py#L164-L206) (helper reading, review round 3 R3-reader M25; the fusion part was not re-checked).
+
+Open questions: [May an index build be seen half-done, and may a stopped build leave a partial index?](../../Verus_verification/open_questions.md#HD-0602)
 
 ### search.scope.indexes.upkeep
 - Sources: [USER_GUIDE: bm25_insert and bm25_delete keep an index current](../../../docs/USER_GUIDE.md#L893-L896), [index protocol, the only generic insert caller](../../../iris_vector_graph/index_protocol.py#L31-L60), [index wrappers](../../../iris_vector_graph/_engine/vector.py#L1548-L1879), [VecIndex usage](../../../iris_src/src/Graph/KG/VecIndex.cls#L1-L18)
@@ -659,25 +617,19 @@ Audit reproduction: [F-0607](../../Verus_verification/bugs_issues.md#F-0607) is 
 
 Findings: [The IVF index's 'cosine' metric is an unnormalised dot product](../../Verus_verification/bugs_issues.md#F-0607).
 
-### search.scope.indexes.publication-policy
-- Expands: [parent](#search.scope.indexes)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [May an index build be seen half-done, and may a stopped build leave a partial index?](../../Verus_verification/open_questions.md#HD-0602).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0602).
-
-Audit (HD-0602): Open owner decision. Working assumption (agent, unratified): Unchanged: readers see a complete published index or a clear unavailable result, including after an interrupted rebuild; the existing partial-build behaviour is the modelled baseline. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0602).
+State machines: [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
 
 ### search.quarantine
+
+- uncertain
 - Sources: [CHANGELOG v4.0.0 quarantine](../../../CHANGELOG.md#L4199-L4217), [migration guide](../../../docs/migration/v4.0.0.md#L303-L390), [migration rules](../../../iris_vector_graph/migrations/graph_scoped_embeddings.py#L1-L33), [_fate](../../../iris_vector_graph/migrations/graph_scoped_embeddings.py#L895-L920), [quarantine DDL](../../../iris_vector_graph/_engine/schema.py#L205-L227), [test_227_migration.py](../../../tests/e2e/test_227_migration.py), documents and edge vectors: [migration](../../../iris_vector_graph/migrations/docs_and_edge_vectors.py#L1-L44), [guide](../../../docs/migration/v4.0.0.md#L525-L598), [test_230_migration.py](../../../tests/e2e/test_230_migration.py)
-- Children: [Placement](#search.quarantine.placement), [Retention](#search.quarantine.retention)
+- Children: [Placement](#search.quarantine.placement), [Should quarantined vectors and documents survive erasure indefinitely?](../../Verus_verification/open_questions.md#q-srch-001)
 - Note: no API places quarantined documents or edge vectors; the guide gives hand-written SQL.
 - agent
 - data-integrity, operations
 - test-coverage
+
+Open questions: [Should erasure and redaction reach the store in REACH-2?](../../Verus_verification/open_questions.md#REACH-2), [Should erasure and redaction reach the store in REACH-3?](../../Verus_verification/open_questions.md#REACH-3), [Should quarantined vectors and documents survive erasure indefinitely?](../../Verus_verification/open_questions.md#q-srch-001)
 
 ### search.quarantine.placement
 - Sources: [place_quarantined](../../../iris_vector_graph/_engine/schema.py#L1972-L2070), [CHANGELOG v4.0.0](../../../CHANGELOG.md#L4199-L4217)
@@ -686,29 +638,11 @@ Audit (HD-0602): Open owner decision. Working assumption (agent, unratified): Un
 - agent
 - operations, data-integrity
 
-### search.quarantine.retention
-- Sources: [EraseGraph note](../../../iris_src/src/Graph/KG/Eraser.cls#L300-L302), [EraseAll note](../../../iris_src/src/Graph/KG/Eraser.cls#L754-L760), [ADR-0004 consequences](../../../docs/adr/0004-erasure-removes-content-not-history.md#L71-L82)
-- Expands: [Quarantine](#search.quarantine)
-- Note: the current answer comes from code comments citing spec 227, which is not in the repository.
-- agent
-- uncertain
-- security, data-integrity
-
-Findings: [Should quarantined vectors and documents survive erasure indefinitely?](../../Verus_verification/open_questions.md#q-srch-001)
-
-Audit (q-srch-001): Open owner decision. Working assumption (agent, unratified): Keep quarantined data and explicitly report retention until an owner chooses a purge API and its unknown-graph semantics. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-srch-001).
-
-Audit (REACH-2): Open owner decision. Working assumption (agent, unratified): Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#REACH-2).
-
-Findings: [Should erasure and redaction reach the store in REACH-2?](../../Verus_verification/open_questions.md#REACH-2).
-
-Audit (REACH-3): Open owner decision. Working assumption (agent, unratified): Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#REACH-3).
-
-Findings: [Should erasure and redaction reach the store in REACH-3?](../../Verus_verification/open_questions.md#REACH-3).
-
 ### search.bm25
+
+- uncertain
 - Sources: [CONTEXT.md glossary](../../../CONTEXT.md#L130-L153), [spec 044](../../../specs/044-bm25-index/spec.md), [spec 044 FR-020 and FR-021](../../../specs/044-bm25-index/spec.md#L166-L167), [BM25Index.cls](../../../iris_src/src/Graph/KG/BM25Index.cls#L1-L33), [test_044_bm25_incremental.py](../../../tests/integration/test_044_bm25_incremental.py)
-- Children: [Scoring](#search.bm25.scoring), [Query-time IDF](#search.bm25.query_time_idf), [Counts](#search.bm25.counts), [Incremental cost](#search.bm25.incremental), [Write lock](#search.bm25.write_lock), [Schema](#search.bm25.schema), [Upgrade](#search.bm25.upgrade), [Common-term cutoff](#search.bm25.cutoff), [Read isolation](#search.bm25.read_isolation), [Default index](#search.bm25.default_index)
+- Children: [Scoring](#search.bm25.scoring), [Query-time IDF](#search.bm25.query_time_idf), [Counts](#search.bm25.counts), [Incremental cost](#search.bm25.incremental), [Write lock](#search.bm25.write_lock), [Schema](#search.bm25.schema), [Upgrade](#search.bm25.upgrade), [Common-term cutoff](#search.bm25.cutoff), [May a BM25 search observe an index write that is still in progress?](../../Verus_verification/open_questions.md#q-srch-003), [Should plain text search use a BM25 index named "default" when one exists?](../../Verus_verification/open_questions.md#q-srch-004)
 - Note: spec 044 is still marked Draft. Its 2026-10-08 and 2026-10-09 clarifications record a request from the opsreview consumer, secondhand, with answers attributed to no named human.
 - agent
 - user-facing-behavior
@@ -717,6 +651,8 @@ Findings: [Should erasure and redaction reach the store in REACH-3?](../../Verus
 Audit reproduction: [F-C0715](../../Verus_verification/bugs_issues.md#F-C0715) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 Findings: [bm25_search rewrites document ids: its leading-dot patch runs over the whole answer, so an id holding ':.5', ',.7' or '[.9' comes back as ':0.5', ',0.7', '[0.9'](../../Verus_verification/bugs_issues.md#F-C0715).
+
+Open questions: [Is spec 044's kg_TXT-to-BM25 fallback still wanted?](../../Verus_verification/open_questions.md#HD-0703), [Is `__stop__` a reserved BM25 index name?](../../Verus_verification/open_questions.md#HD-0704), [May a BM25 search observe an index write that is still in progress?](../../Verus_verification/open_questions.md#q-srch-003), [Should plain text search use a BM25 index named "default" when one exists?](../../Verus_verification/open_questions.md#q-srch-004)
 
 ### search.bm25.scoring
 - Sources: [spec 044 FR-003 and FR-004](../../../specs/044-bm25-index/spec.md#L149-L150), [USER_GUIDE BM25 text search and the stopword list](../../../docs/USER_GUIDE.md#L854-L896), [InitStopwords](../../../iris_src/src/Graph/KG/BM25Index.cls#L41-L50), [bm25_build docstring](../../../iris_vector_graph/_engine/vector.py#L1749-L1785), [formula test](../../../tests/integration/test_044_bm25_incremental.py#L401-L413)
@@ -746,6 +682,8 @@ Findings: [bm25_search rewrites document ids: its leading-dot patch runs over th
 
 Findings: [Building or dropping a BM25 index while documents are inserted leaves its counters inconsistent](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-003)
 
+State machines: [bm25 counts](../../Verus_verification/models/bm25_counts/manifest.json)
+
 ### search.bm25.incremental
 - Sources: [spec 044 FR-015](../../../specs/044-bm25-index/spec.md#L161), [spec 044 clarification 2026-10-08](../../../specs/044-bm25-index/spec.md#L299-L312), [cost tests](../../../tests/integration/test_044_bm25_incremental.py#L204-L231)
 - Expands: [BM25 index](#search.bm25)
@@ -756,6 +694,8 @@ Findings: [Building or dropping a BM25 index while documents are inserted leaves
 Findings: [A BM25 delete issued while a Build runs is lost, and bug-srch-003's proposed repair does not prevent it](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-016)
 
 ### search.bm25.write_lock
+
+- uncertain
 - Sources: [ADR-0007](../../../docs/adr/0007-bm25-df-and-doc-record-schema-2.md), [spec 044 FR-019](../../../specs/044-bm25-index/spec.md#L165), [LockWrite and Insert](../../../iris_src/src/Graph/KG/BM25Index.cls#L380-L493), [lock and rollback tests](../../../tests/integration/test_044_bm25_incremental.py#L491-L535), caller transaction: 4.6.4 rule "an IVG write never commits or rolls back its caller's transaction" (commit `aad50087`, [_write_txn.py](../../../iris_vector_graph/_write_txn.py#L1-L30))
 - Expands: [BM25 index](#search.bm25)
 - Observed divergence: a full build and a drop take no lock (F2). The Catch of `Insert` and `Delete` runs a bare `TRollback`, which ends every transaction level: [a native probe](../../Verus_verification/receipts/native/search_bm25_caller_txn_rollback.json) saw a failed `bm25_insert` take the level from 1 to 0, and the node the caller had created earlier in that transaction was gone after its commit reported success (F3 in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings); review round 1, R1-2).
@@ -765,17 +705,7 @@ Findings: [A BM25 delete issued while a Build runs is lost, and bug-srch-003's p
 
 Findings: [A failed BM25 insert or delete rolls back the caller's whole transaction](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-002); [Building or dropping a BM25 index while documents are inserted leaves its counters inconsistent](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-003); [A BM25 delete issued while a Build runs is lost, and bug-srch-003's proposed repair does not prevent it](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-016)
 
-### search.bm25.write_lock.build-policy
-- Expands: [parent](#search.bm25.write_lock)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Must a BM25 Build (and Drop) exclude writers and be all-or-nothing?](../../Verus_verification/open_questions.md#HD-0701).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0701).
-
-Audit (HD-0701): Open owner decision. Working assumption (agent, unratified): Serialize Build, Drop, Insert, Delete and Upgrade per index and publish a complete generation or return unavailable, including after a crash; a Build that is refused or indexes nothing must not destroy the previous index. Model the as-built (unlocked Build/Drop, Kill-first) separately as the baseline. Same as decisions.md. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0701).
+Open questions: [Must a BM25 Build (and Drop) exclude writers and be all-or-nothing?](../../Verus_verification/open_questions.md#HD-0701), [Should whether a write joins the caller's transaction depend on how the engine was opened?](../../Verus_verification/open_questions.md#structure.write.engine-connection)
 
 ### search.bm25.schema
 - Sources: [spec 044 FR-022](../../../specs/044-bm25-index/spec.md#L168), [RequireWritable](../../../iris_src/src/Graph/KG/BM25Index.cls#L383-L394), [CHANGELOG v4.2.0 BM25 schema 2](../../../CHANGELOG.md#L3374-L3400), [schema tests](../../../tests/integration/test_044_bm25_incremental.py#L270-L293)
@@ -796,6 +726,8 @@ Audit (HD-0701): Open owner decision. Working assumption (agent, unratified): Se
 Findings: [A second or re-run BM25 upgrade rebuilds an index that is already upgraded, and searches answer nothing meanwhile](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-004)
 
 ### search.bm25.cutoff
+
+- uncertain
 - Sources: [spec 044 session 2026-10-09](../../../specs/044-bm25-index/spec.md#L314-L334), [CONTEXT.md](../../../CONTEXT.md#L142-L147), [cutoff code](../../../iris_src/src/Graph/KG/BM25Index.cls#L210-L293), [bm25_search](../../../iris_vector_graph/_engine/vector.py#L1786-L1839), [test_044_bm25_max_df.py](../../../tests/integration/test_044_bm25_max_df.py)
 - Expands: [BM25 index](#search.bm25)
 - agent
@@ -806,48 +738,13 @@ Findings: [In which order must the common-term cutoff list the terms it skipped?
 
 Audit (q-srch-005): Open owner decision. Working assumption (agent, unratified): Preserve token order in reporting skipped terms unless a different order is specified; membership is the existing scoring-relevant fact. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-srch-005).
 
-### search.bm25.read_isolation
-- Sources: [spec 044 FR-019 and FR-023](../../../specs/044-bm25-index/spec.md#L165-L169), [SearchCore](../../../iris_src/src/Graph/KG/BM25Index.cls#L236-L331)
-- Expands: [BM25 index](#search.bm25)
-- Note: the answer matters for any model of concurrent searches and writes.
-- agent
-- uncertain
-- data-integrity
-
-Findings: [May a BM25 search observe an index write that is still in progress?](../../Verus_verification/open_questions.md#q-srch-003)
-
-Audit (q-srch-003): Open owner decision. Working assumption (agent, unratified): Assume no cross-call consistency guarantee until a read/write protocol is chosen; partial-index results remain visible risk, not approved isolation. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-srch-003).
-
-### search.bm25.default_index
-- Sources: [spec 044 FR-012](../../../specs/044-bm25-index/spec.md#L158), [kg_TXT](../../../iris_vector_graph/_engine/vector.py#L917-L1054)
-- Expands: [BM25 index](#search.bm25)
-- agent
-- uncertain
-- user-facing-behavior
-
-Findings: [Should plain text search use a BM25 index named "default" when one exists?](../../Verus_verification/open_questions.md#q-srch-004)
-
-Audit (q-srch-004): Open owner decision. Working assumption (agent, unratified): Keep explicit BM25 selection distinct from plain text search; a default-index fallback requires a supported API/corpus decision. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-srch-004).
-
-Audit (HD-0703): Open owner decision. Working assumption (agent, unratified): Model kg_TXT as iFind-then-LIKE (documented as-built). Record FR-012/US5/SC-004 and tasks T034/T035 as a spec/doc conflict (S3, F-0708), not as a current obligation the pin fails. If the fallback returns, it applies only on the LIKE path, only to an index whose recorded graph equals the requested graph, never across graphs. Why changed: decisions.md called this Supported on spec 044 FR-012, SC-004 and PR #8. Those establish the 2026-04 feature, not that it is still wanted: the Draft spec is the only post-removal carrier, it was copied wholesale with the schema-2 amendment, and the maintainer's later kg_TXT redesign (v2.18.2, US7, docstring, generated API reference) excludes it. No source "supersedes" FR-012 explicitly either, so neither reading is supported; the assumption follows the newer, user-facing contract. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0703).
-
-Findings: [Is spec 044's kg_TXT-to-BM25 fallback still wanted?](../../Verus_verification/open_questions.md#HD-0703).
-
-### search.bm25.name-policy
-- Expands: [parent](#search.bm25)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Is `__stop__` a reserved BM25 index name?](../../Verus_verification/open_questions.md#HD-0704).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0704).
-
-Audit (HD-0704): Open owner decision. Working assumption (agent, unratified): Reserve `__stop__`: public BM25 entry points (`bm25_build/insert/delete/drop/upgrade`, `BM25BuildInput`, index handles, `kg_BM25`/`ivg.bm25.search`) refuse it; the embedded registry walk skips it. Model the as-built acceptance as a defect against the documented stopword list (cross-index). Moving the list to its own global is the compatible alternative mechanism. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0704).
+Open questions: [In which order must the common-term cutoff list the terms it skipped?](../../Verus_verification/open_questions.md#q-srch-005)
 
 ### search.fusion
+
+- uncertain
 - Sources: [engine kg_RRF_FUSE](../../../iris_vector_graph/_engine/vector.py#L1382-L1451), [API reference](../../../docs/API_REFERENCE.md#L985-L1000), [RRFFusion](../../../iris_vector_graph/fusion.py#L21-L64), [SQL kg_RRF_FUSE](../../../iris_vector_graph/schema.py#L2526-L2560), [Cypher ivg.retrieve](../../../iris_vector_graph/cypher/translator.py#L3239-L3360), [operators default c](../../../iris_vector_graph/operators.py#L37-L44), [test_rrf_fuse_e2e.py](../../../tests/unit/test_rrf_fuse_e2e.py)
-- Children: [Same graph](#search.fusion.same_graph), [Failed leg](#search.fusion.failed_leg), [Python fusion](#search.fusion.python), [Absent result](#search.fusion.absent), [Text leg](#search.fusion.text_leg)
+- Children: [Same graph](#search.fusion.same_graph), [Failed leg](#search.fusion.failed_leg), [Python fusion](#search.fusion.python), [Which reciprocal-rank-fusion rule is the product's?](../../Verus_verification/open_questions.md#HD-0702), [Should every fusion entry point use the same text ranking?](../../Verus_verification/open_questions.md#q-srch-006)
 - Note: the live test checks result shape only. The engine method and the SQL procedure take `c` with no default.
 - agent
 - user-facing-behavior
@@ -856,6 +753,8 @@ Audit (HD-0704): Open owner decision. Working assumption (agent, unratified): Re
 Findings: [The engine's fusion gives a result missing from one leg a non-zero, length-dependent score](../../Verus_verification/bugs_issues.md#bug-srch-005); [One fusion function with an explicit absent-rank rule and per-leg failure reporting](../../Verus_verification/design_simplification.md#simp-srch-001)
 
 Audit reproduction: [bug-srch-005](../../Verus_verification/bugs_issues.md#bug-srch-005) is partial reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/components.json). This is product observation, not executable-body verification.
+
+Open questions: [Should the vector-and-graph search keep its k best candidates?](../../Verus_verification/open_questions.md#HD-0603), [Which reciprocal-rank-fusion rule is the product's?](../../Verus_verification/open_questions.md#HD-0702), [Should every fusion entry point use the same text ranking?](../../Verus_verification/open_questions.md#q-srch-006)
 
 ### search.fusion.same_graph
 - Sources: [SQL kg_RRF_FUSE join](../../../iris_vector_graph/schema.py#L2526-L2560), [ivg.retrieve scope refusal](../../../iris_vector_graph/cypher/translator.py#L3255-L3261), [test_230_retrieval_scope.py](../../../tests/e2e/test_230_retrieval_scope.py#L590-L649)
@@ -867,6 +766,8 @@ Audit reproduction: [bug-srch-005](../../Verus_verification/bugs_issues.md#bug-s
 Findings: [Under USE GRAPH, fusion reads a BM25 index built for another graph as this graph's](../../Verus_verification/bugs_issues.md#bug-srch-008)
 
 ### search.fusion.failed_leg
+
+- design-verified
 - Sources: [KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L172-L181), [text leg re-raise rationale](../../../iris_vector_graph/fusion.py#L154-L170)
 - Expands: [Fusion](#search.fusion)
 - Verus: [fusion_ranking](../../Verus_verification/models/fusion_ranking/NOTES.md) as-built `theorem_vector_failure_dropped_text_failure_raises`, `theorem_empty_success_is_a_retained_leg`, `theorem_graph_failure_dropped`; provider outcomes are external inputs, and catch/mode admission is derived. This models the Python wrapper's departure, not compliance with the intended failure rule.
@@ -876,67 +777,26 @@ Findings: [Under USE GRAPH, fusion reads a BM25 index built for another graph as
 
 Findings: [A failed vector leg makes the engine's fusion answer an empty list instead of an error](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-010)
 
+State machines: [fusion ranking](../../Verus_verification/models/fusion_ranking/manifest.json)
+
 ### search.fusion.python
+
+- uncertain
 - Sources: [`RRFFusion.fuse_results`](../../../iris_vector_graph/fusion.py#L27-L64), [`HybridSearchFusion.multi_modal_search`](../../../iris_vector_graph/fusion.py#L113-L253), [migration guide](../../../docs/migration/v4.0.0.md#L427-L435)
 - Verus: [fusion_ranking](../../Verus_verification/models/fusion_ranking/NOTES.md), as-built `rank`, `score`, `theorem_rank_ignores_magnitude`, `theorem_first_occurrence_wins`, `theorem_second_leg_changes_winner`; exact real arithmetic for rank contributions and a strict pair winner. General sorting, floating point rounding and detail assembly are observed in Python, not proved.
 - Expands: [fusion](#search.fusion)
-- Children: [helper support policy](#search.fusion.python.support)
+- Children: [Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` supported public API?](../../Verus_verification/open_questions.md#HD-0705)
 - agent
 - user-facing-behavior
 - test-coverage
 
 No order is claimed between ties or at a tied k cutoff. This helper's zero absent contribution does not settle the shared rule for the other fusion entry points.
 
-### search.fusion.python.support
-- Sources: [top-level exports](../../../iris_vector_graph/__init__.py#L124-L125), [migration guide](../../../docs/migration/v4.0.0.md#L427-L435), [recovered intent HD-0705](../../../experiment/playbook-completion/intent/HD-0705.md)
-- Expands: [Python fusion](#search.fusion.python)
-- agent
-- uncertain
-- user-facing-behavior
+Open questions: [Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` supported public API?](../../Verus_verification/open_questions.md#HD-0705)
 
-Findings: [HD-0705](../../Verus_verification/open_questions.md#HD-0705). RRFFusion is exported at top level; HybridSearchFusion is available from its module. The inherited intent correction is preserved.
+State machines: [fusion ranking](../../Verus_verification/models/fusion_ranking/manifest.json)
 
-Audit (HD-0705): Open owner decision. Working assumption (agent, unratified): Treat the three as compatibility surfaces and qualify each: RRFFusion is a pure standard-RRF helper (document that its rule differs from engine `kg_RRF_FUSE`, HD-0702); HybridSearchFusion is de facto public (migration guide) and graph-scoped; TextSearchEngine is exported but reads every graph and its document search cannot reach the IVG Schema, so it is not a supported reader of graph-scoped data. Prefer deprecation with migration advice (to `kg_TXT` / `bm25_search`) or a `graph=` argument; do not remove without a compatibility decision. Same direction as decisions.md. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0705).
-
-### search.fusion.absent
-- Sources: [engine absent rank](../../../iris_vector_graph/_engine/vector.py#L1438-L1451), [SQL procedure](../../../iris_vector_graph/schema.py#L2526-L2560), [RRFFusion](../../../iris_vector_graph/fusion.py#L27-L64), [API reference](../../../docs/API_REFERENCE.md#L985-L1000)
-- Expands: [Fusion](#search.fusion)
-- Note: no recorded decision covers the engine's rule, and no test pins either formula (F5 in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings)).
-- agent
-- uncertain
-- user-facing-behavior
-
-Findings: [The engine's fusion gives a result missing from one leg a non-zero, length-dependent score](../../Verus_verification/bugs_issues.md#bug-srch-005); [One fusion function with an explicit absent-rank rule and per-leg failure reporting](../../Verus_verification/design_simplification.md#simp-srch-001)
-
-Audit (HD-0702): Open owner decision. Working assumption (agent, unratified): Preserve and test each surface's rule, including missing-rank handling and which text list it reads; document that the engine method and the SQL procedure of the same name differ. Introduce a single formula only with a versioned contract. Same as decisions.md. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0702).
-
-Findings: [Which reciprocal-rank-fusion rule is the product's?](../../Verus_verification/open_questions.md#HD-0702).
-
-Audit reproduction: [bug-srch-005](../../Verus_verification/bugs_issues.md#bug-srch-005) is partial reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/components.json). This is product observation, not executable-body verification.
-
-### search.fusion.text_leg
-- Sources: [generated kg_TXT and kg_RRF_FUSE](../../../iris_vector_graph/schema.py#L2484-L2560), [engine kg_RRF_FUSE](../../../iris_vector_graph/_engine/vector.py#L1382-L1451), [migration guide on documents](../../../docs/migration/v4.0.0.md#L742-L751)
-- Expands: [Fusion](#search.fusion)
-- Note: the migration guide calls the documents table the BM25 corpus, but a BM25 index is built from node properties.
-- agent
-- uncertain
-- architecture-decision
-
-Findings: [Should every fusion entry point use the same text ranking?](../../Verus_verification/open_questions.md#q-srch-006)
-
-Audit (q-srch-006): Open owner decision. Working assumption (agent, unratified): Preserve each current text corpus and rank rule until one common corpus is chosen; common fusion arithmetic alone cannot settle text ranking. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-srch-006).
-
-### search.fusion.vector-graph-policy
-- Expands: [parent](#search.fusion)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Should the vector-and-graph search keep its k best candidates?](../../Verus_verification/open_questions.md#HD-0603).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0603).
-
-Audit (HD-0603): Open owner decision. Working assumption (agent, unratified): Unchanged: the reviewed ranking contract is the best k of the scored candidate set with defined ties; the documented set-order truncation is the baseline (now confirmed live). See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0603).
+Assumption review evidence: Same direction as decisions.md.
 
 ### search.erasure
 - Sources: [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md#L8-L23), [EraseGraph](../../../iris_src/src/Graph/KG/Eraser.cls#L36-L313), [EraseAll registry delete](../../../iris_src/src/Graph/KG/Eraser.cls#L750-L760), [store inventory](../../../iris_src/src/Graph/KG/GraphStores.cls#L1-L60), [test_227_erase_isolation.py](../../../tests/e2e/test_227_erase_isolation.py)
@@ -949,9 +809,11 @@ Audit (HD-0603): Open owner decision. Working assumption (agent, unratified): Un
 Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001)
 
 ### search.erasure.indexes
+
+- uncertain
 - Sources: [CONTEXT.md Erasure](../../../CONTEXT.md#L198-L206), [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md#L8-L23), [ADR-0004: one store without the others is a bug](../../../docs/adr/0004-erasure-removes-content-not-history.md#L79-L80), [ADR-0013: together they cover everything IVG can reach](../../../docs/adr/0013-redaction-removes-content-from-history.md#L47), [BM25 records its graph](../../../iris_src/src/Graph/KG/BM25Index.cls#L165-L170), [Eraser rationale for documents](../../../iris_src/src/Graph/KG/Eraser.cls#L136-L147), [replacing restore calls erase_all](../../../iris_vector_graph/_engine/snapshot.py#L1139-L1152)
 - Expands: [Erasure](#search.erasure)
-- Children: [Graph-less indexes](#search.erasure.indexes.graphless)
+- Children: [What must erasing one graph do to a VecIndex, PLAID or IVF index, which records no graph?](../../Verus_verification/open_questions.md#search.erasure.indexes.graphless)
 - Observed divergence: no erase path touches `^BM25Idx`, `^IVF`, `^PLAID` or `^VecIdx`, and the store inventory lists none of them ([store inventory](../../../iris_src/src/Graph/KG/GraphStores.cls#L113-L130)). [A native probe](../../Verus_verification/receipts/native/search_bm25_erase.json) saw `bm25_search` still answer an erased node, and still score its erased text after the node was re-created with other text (F1 in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings)).
 - Observed divergence (suspected, from code reading only): because erasing everything leaves these indexes, a replacing restore keeps an index the archive lacks and overlays a same-named one with the archive's postings, which breaks [the count rule](#search.bm25.counts) ([snapshot globals](../../../iris_vector_graph/_engine/snapshot.py#L380-L400); review round 1, R1-6).
 - Note: changed from Q to I by review round 1 (R1-7): the governing texts above already decide erasure. Treating these indexes as derived stores that erasure skips and the caller rebuilds would be a proposal to change this decision. The ordinary node-delete case stays with [index upkeep](#search.scope.indexes.upkeep).
@@ -960,26 +822,4 @@ Findings: [Search indexes keep answering with content that was erased, and a re-
 
 Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001); [A replacing restore leaves the live search indexes in place and merges the archive's into them](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-024)
 
-### search.erasure.indexes.graphless
-
-- Sources: [VecIndex.cls](../../../iris_src/src/Graph/KG/VecIndex.cls#L7-L12), [PLAIDSearch.cls](../../../iris_src/src/Graph/KG/PLAIDSearch.cls), [vector.py IVF](../../../iris_vector_graph/_engine/vector.py#L150-L156), [store inventory](../../../iris_src/src/Graph/KG/GraphStores.cls#L113-L131), [stage-A notes](../../uplift/ivg-verus-initial/intent/search.md#L235)
-- Expands: [Erasure of search indexes](#search.erasure.indexes)
-- agent
-- uncertain
-- data-integrity, security
-
-Review round 3 R3-reader M8: ADR-0004 and CONTEXT.md require erasure from every store but do not say how a graph-less index is split; the stage-A note listed only BM25 and IVF as obligations.
-
-Findings: [Search indexes keep answering with content that was erased, and a re-created node inherits the erased text](../../Verus_verification/bugs_issues.md#bug-srch-001)
-
-### search.erasure.indexes.coverage-policy
-- Expands: [parent](#search.erasure.indexes)
-- agent
-- uncertain
-- manual-check-review
-
-Findings: [Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promise?](../../Verus_verification/open_questions.md#HD-0601).
-
-Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-0601).
-
-Audit (HD-0601): Open owner decision. Working assumption (agent, unratified): Unchanged: model retained index contents as observable after erasure unless purged; graph-owned indexes require invalidation or deletion on erase; caller-fed indexes need an explicit owner/exposure statement. Refined with the graph-derived (IVF) vs caller-fed (VecIndex, PLAID) split. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-0601).
+Open questions: [Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promise?](../../Verus_verification/open_questions.md#HD-0601), [What must erasing one graph do to a VecIndex, PLAID or IVF index, which records no graph?](../../Verus_verification/open_questions.md#search.erasure.indexes.graphless)

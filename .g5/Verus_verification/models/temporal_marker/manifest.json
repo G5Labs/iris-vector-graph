@@ -1,0 +1,58 @@
+{
+  "title": "temporal marker",
+  "question": "one default-graph triple row under AssertTemporalRow, create_edge adoption and bulk adoption; raw marker text decoded by the RDF recognizer; NDJSON line, RDF content/report and Cypher relationship-map readers; ObjectScript number spelling and CY_RETYPE_MAP are providers",
+  "ontology_ids": [
+    "temporal.structural.adopt",
+    "temporal.structural.mark.readers"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 81}"
+    },
+    {
+      "label": "temporal-overwrites-row",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_temporal_never_rewrites_a_row\", \"theorem_first_temporal_weight_wins\", \"theorem_explicit_first_stays_unmarked\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unit-weight-written",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_marker_decodes\", \"theorem_rdf_report_counts\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "adoption-ignores-marker",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_explicit_duplicate_keeps_unmarked\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bulk-keeps-marker",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_bulk_adopts_marked_to_null\", \"theorem_ndjson_omits_marked_includes_adopted\", \"theorem_cypher_reports_marker_key\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ndjson-writes-marked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ndjson_omits_marked_includes_adopted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cypher-hides-marker",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_cypher_reports_marker_key\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

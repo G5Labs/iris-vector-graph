@@ -18,6 +18,7 @@ Inside IRIS, IVG runs SQL through the embedded cursor, so a statement gives the 
 - A statement with more than 100 parameters, or with an empty-text parameter, is sent with its values written in. A bound empty text would reach IRIS as NULL, and many bound values overflow the call stack.
 - When IRIS refuses the prepared path as unsupported, the cursor tries the written-in path and then `%SQL.Statement`. If all three fail, one error names all three failures.
 
+
 <a id="adapters.embedded.no_data"></a>
 [I · adapters.embedded.no_data]
 
@@ -40,6 +41,8 @@ A no-row statement is an empty result with row count 0, not an error. Every othe
 
 New owner in the consolidated uplift: the guidance arm's ontology had no statement for `embedded.py`; the playbook arm had these rules in its operations module.
 
+State machines: [embedded no data](../../Verus_verification/models/embedded_no_data/manifest.json)
+
 ### adapters.embedded.no_data
 - Sources: [`iris_vector_graph/embedded.py::_is_no_data`](../../../iris_vector_graph/embedded.py#L193-L196), [`::_no_data_ok`](../../../iris_vector_graph/embedded.py#L199-L206), [`::_exec_inline`](../../../iris_vector_graph/embedded.py#L265-L277), [`::EmbeddedCursor.execute`](../../../iris_vector_graph/embedded.py#L312-L385) (fold `:360-366`; row count `:373`), [`::EmbeddedCursor.executemany`](../../../iris_vector_graph/embedded.py#L387-L413); unit tests [`test_a_statement_that_matches_no_row_is_an_empty_result`, `every_other_error`](../../../tests/unit/test_embedded_no_data_and_native.py)
 - Playbook: [OPS-T4.6.5](../../../experiment/playbook-completion/ontology/17-operations.md#L202), [OPS-B4.6.90](../../../experiment/playbook-completion/ontology/17-operations.md#L208)
@@ -54,3 +57,5 @@ Public case M17. The baseline scored the playbook arm's ontology 0 here although
 Findings: [A batch fallback in the embedded cursor reruns the rows that already ran](../../Verus_verification/bugs_issues.md#bug-adp-001)
 
 Audit reproduction: [bug-adp-001](../../Verus_verification/bugs_issues.md#bug-adp-001) is partial reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/components.json). This is product observation, not executable-body verification.
+
+State machines: [embedded no data](../../Verus_verification/models/embedded_no_data/manifest.json)

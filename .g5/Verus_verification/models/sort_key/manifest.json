@@ -1,0 +1,51 @@
+{
+  "title": "sort key",
+  "question": "ORDER BY sort-key type rank (SortKey.Key / CY_SORT_KEY) for ordinary scalar text, linked to typed_equality node ordering, and the SQL vs native executor argument for an empty string; $IsValidNum and transports are providers",
+  "ontology_ids": [
+    "query.values.sorting"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 52}"
+    },
+    {
+      "label": "untyped-number-as-string",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_untyped_numeric_text_sorts_as_number\", \"theorem_node_where_and_order_by_disagree\", \"theorem_bool_before_number\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "boolean-after-number",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_bool_before_number\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-string-as-null",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_string_sorts_as_string\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    },
+    {
+      "label": "null-first",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_null_sorts_last\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "native-empty-as-string",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_executors_disagree_on_empty_string\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

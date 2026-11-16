@@ -1,0 +1,45 @@
+{
+  "title": "bm25 counts",
+  "question": "BM25 incremental Insert/RemoveDoc/Delete preserve df = holders and N = documents; empty-text replacement removes; absent delete no-op; tokenization provider; vocab/totalLen/scoring outside",
+  "ontology_ids": [
+    "search.bm25.counts"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 7}"
+    },
+    {
+      "label": "remove-keeps-df",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_remove_consistent\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "insert-without-remove",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_insert_consistent\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-text-indexed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_replacement_removes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "absent-delete-decrements",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_absent_delete_is_noop\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

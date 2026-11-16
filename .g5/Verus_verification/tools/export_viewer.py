@@ -189,6 +189,13 @@ def build():
             if target.exists() and target != REPO_ROOT:
                 body.append(link(folder, target, label))
         (folder / "BINDINGS.md").write_text("\n\n".join(body) + "\n")
+    latest = {}
+    for row in rows:
+        key = (row["concern"], row["label"])
+        previous = latest.get(key)
+        if previous is None or row["run_id"] >= previous["run_id"]:
+            latest[key] = row
+    rows = list(latest.values())
     (VERIFICATION_DIR / "results/viewer-index.jsonl").write_text(
         "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows)
     )

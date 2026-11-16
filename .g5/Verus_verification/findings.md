@@ -8,7 +8,7 @@ Git `eceb147d37720658e34b07f279cc267870fd393c`, product `3eaa79cf`. This audit c
 | [Simplifications](design_simplification.md) | 55 | 54 unsupported reduction claims withdrawn; 1 previously retired proposal retained |
 | [Questions](open_questions.md) | 146 | 9 settled by existing authority; 121 owner decisions open; 2 historical reports; 14 qualified proof-debt records |
 
-The [audit handoff](audits/register-20261115/README.md) records actual commands, positive neighbors, substituted dependencies, bounded refutations, caller-unreachability checks, environment blocks and incomplete regressions. Every original ID remains in its live register or the [bug review record](audits/register-20261115/bugs-review.md); [crosswalks](crosswalk/) now carry an explicit canonical_path. No human protection status was present at the start. No new human approval was inferred.
+The [audit handoff](audits/register-20261115/README.md) records actual commands, positive neighbors, substituted dependencies, bounded refutations, caller-unreachability checks, environment blocks and incomplete regressions. Every original ID remains in its live register or the [bug review record](audits/register-20261115/bugs-review.md); [crosswalks](crosswalk) now carry an explicit canonical_path. No human protection status was present at the start. No new human approval was inferred.
 
 A passing audit regression means its recorded defect contrast and passing neighbor reproduced; it does not mean the product was repaired. A Verus repair/control pair is not a measured design simplification. Security entries remain explicitly outside active reproduction scope.
 
