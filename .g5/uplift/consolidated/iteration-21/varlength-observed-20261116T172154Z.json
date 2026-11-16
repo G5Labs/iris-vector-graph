@@ -1,0 +1,105 @@
+{
+ "run": "20261116T172154Z",
+ "fixture": "ivg-cloud-20261116-iris",
+ "nodes": {
+  "a": "vl20261116T172154Za",
+  "x": "vl20261116T172154Zx",
+  "y": "vl20261116T172154Zy",
+  "b": "vl20261116T172154Zb"
+ },
+ "queries": {
+  "1..2 rows": {
+   "query": "MATCH (s {id: 'vl20261116T172154Za'})-[:VLR20261116T172154Z*1..2]->(t) RETURN t.id",
+   "rows": [
+    [
+     "vl20261116T172154Zb"
+    ],
+    [
+     "vl20261116T172154Zb"
+    ],
+    [
+     "vl20261116T172154Zb"
+    ],
+    [
+     "vl20261116T172154Zx"
+    ],
+    [
+     "vl20261116T172154Zy"
+    ]
+   ],
+   "error": null
+  },
+  "1..2 count": {
+   "query": "MATCH (s {id: 'vl20261116T172154Za'})-[:VLR20261116T172154Z*1..2]->(t) RETURN count(*)",
+   "rows": [
+    [
+     5
+    ]
+   ],
+   "error": null
+  },
+  "1..2 distinct": {
+   "query": "MATCH (s {id: 'vl20261116T172154Za'})-[:VLR20261116T172154Z*1..2]->(t) RETURN DISTINCT t.id",
+   "rows": [
+    [
+     "vl20261116T172154Zb"
+    ],
+    [
+     "vl20261116T172154Zx"
+    ],
+    [
+     "vl20261116T172154Zy"
+    ]
+   ],
+   "error": null
+  },
+  "1..2 grouped": {
+   "query": "MATCH (s {id: 'vl20261116T172154Za'})-[:VLR20261116T172154Z*1..2]->(t) RETURN t.id, count(*)",
+   "rows": [
+    [
+     "vl20261116T172154Zb",
+     3
+    ],
+    [
+     "vl20261116T172154Zx",
+     1
+    ],
+    [
+     "vl20261116T172154Zy",
+     1
+    ]
+   ],
+   "error": null
+  },
+  "2..2 rows": {
+   "query": "MATCH (s {id: 'vl20261116T172154Za'})-[:VLR20261116T172154Z*2..2]->(t) RETURN t.id",
+   "rows": [
+    [
+     "vl20261116T172154Zb"
+    ],
+    [
+     "vl20261116T172154Zb"
+    ]
+   ],
+   "error": null
+  },
+  "0..1 rows": {
+   "query": "MATCH (s {id: 'vl20261116T172154Za'})-[:VLR20261116T172154Z*0..1]->(t) RETURN t.id",
+   "rows": [
+    [
+     "vl20261116T172154Za"
+    ],
+    [
+     "vl20261116T172154Zb"
+    ],
+    [
+     "vl20261116T172154Zx"
+    ],
+    [
+     "vl20261116T172154Zy"
+    ]
+   ],
+   "error": null
+  }
+ }
+}

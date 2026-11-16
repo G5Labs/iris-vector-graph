@@ -1,0 +1,105 @@
+{
+ "run": "20261116T172205Z",
+ "fixture": "ivg-cloud-20261116-iris",
+ "nodes": {
+  "a": "vld20261116T172205Za",
+  "x": "vld20261116T172205Zx",
+  "y": "vld20261116T172205Zy",
+  "b": "vld20261116T172205Zb"
+ },
+ "queries": {
+  "1..2 rows": {
+   "query": "MATCH (s {id: 'vld20261116T172205Za'})-[:VLDR20261116T172205Z*1..2]->(t) RETURN t.id",
+   "rows": [
+    [
+     "vld20261116T172205Zb"
+    ],
+    [
+     "vld20261116T172205Zb"
+    ],
+    [
+     "vld20261116T172205Zb"
+    ],
+    [
+     "vld20261116T172205Zx"
+    ],
+    [
+     "vld20261116T172205Zy"
+    ]
+   ],
+   "error": null
+  },
+  "1..2 count": {
+   "query": "MATCH (s {id: 'vld20261116T172205Za'})-[:VLDR20261116T172205Z*1..2]->(t) RETURN count(*)",
+   "rows": [
+    [
+     5
+    ]
+   ],
+   "error": null
+  },
+  "1..2 distinct": {
+   "query": "MATCH (s {id: 'vld20261116T172205Za'})-[:VLDR20261116T172205Z*1..2]->(t) RETURN DISTINCT t.id",
+   "rows": [
+    [
+     "vld20261116T172205Zb"
+    ],
+    [
+     "vld20261116T172205Zx"
+    ],
+    [
+     "vld20261116T172205Zy"
+    ]
+   ],
+   "error": null
+  },
+  "1..2 grouped": {
+   "query": "MATCH (s {id: 'vld20261116T172205Za'})-[:VLDR20261116T172205Z*1..2]->(t) RETURN t.id, count(*)",
+   "rows": [
+    [
+     "vld20261116T172205Zb",
+     3
+    ],
+    [
+     "vld20261116T172205Zx",
+     1
+    ],
+    [
+     "vld20261116T172205Zy",
+     1
+    ]
+   ],
+   "error": null
+  },
+  "2..2 rows": {
+   "query": "MATCH (s {id: 'vld20261116T172205Za'})-[:VLDR20261116T172205Z*2..2]->(t) RETURN t.id",
+   "rows": [
+    [
+     "vld20261116T172205Zb"
+    ],
+    [
+     "vld20261116T172205Zb"
+    ]
+   ],
+   "error": null
+  },
+  "0..1 rows": {
+   "query": "MATCH (s {id: 'vld20261116T172205Za'})-[:VLDR20261116T172205Z*0..1]->(t) RETURN t.id",
+   "rows": [
+    [
+     "vld20261116T172205Za"
+    ],
+    [
+     "vld20261116T172205Zb"
+    ],
+    [
+     "vld20261116T172205Zx"
+    ],
+    [
+     "vld20261116T172205Zy"
+    ]
+   ],
+   "error": null
+  }
+ }
+}

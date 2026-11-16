@@ -849,6 +849,7 @@ Live coverage: [declaring the index repairs a drifted install](../../../tests/e2
 ### structure.rebuild
 - Sources: [engine.sync](../../../iris_vector_graph/_engine/schema.py#L2859-L2912), [ADMIN_GUIDE, the adjacency indexes](../../../docs/ADMIN_GUIDE.md#L1032-L1062), [spec 252 FR-010](../../../specs/252-adjacency-functional-index/spec.md#L122), [BuildKG](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L30-L172)
 - Children: [failure](#structure.rebuild.failure)
+- Evidence: [native rebuild observation: default, named-graph and temporal-marked rows kept, an entry with no row removed](../../uplift/consolidated/iteration-21/varlength-PAIRS.md)
 - agent
 - operations
 

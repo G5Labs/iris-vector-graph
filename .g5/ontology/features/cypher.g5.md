@@ -28,6 +28,11 @@ IVG answers each Cypher query on one of two paths. The SQL path answers every qu
 
 ## AQL translation
 
+<a id="query.paths.varlength"></a>
+[I · query.paths.varlength]
+
+A variable-length pattern returns one row per path, as openCypher does, on both paths: from `a` over `a→x→b`, `a→y→b` and `a→b`, `-[:R*1..2]->(t)` returns `b` three times and `x` and `y` once each, `*2..2` returns `b` twice, and `*0..1` includes `a` itself. The ends-only walk the SQL functions use for low bounds keeps these counts.
+
 <a id="query.aql"></a>
 [I · query.aql]
 
@@ -441,6 +446,15 @@ A relationship property read in a Cypher result is decoded from its stored text.
 Sources: [CONTEXT.md, Query execution](../../../CONTEXT.md#L224-L232), [spec 253, decisions of 2026-10-20 and FR-001](../../../specs/253-native-cypher-executor/spec.md#L14-L18), [USER_GUIDE, Where a query runs](../../../docs/USER_GUIDE.md#L350-L368), [`_execute_parsed`](../../../iris_vector_graph/_engine/query.py#L2032-L2082). Note: USER_GUIDE says "the one known difference between the paths is listed in Known issues", and no such entry is named there.
 
 Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no decider, so under the uplift's authority rule ([sources](../../uplift/ivg-verus-initial/sources.md)) the block is `agent` (review round 3 R3-reader M16).
+
+### query.paths.varlength
+- Sources: [4.7.0 changelog: CY_VLP_ENDS reads ^KG](../../../CHANGELOG.md#L3057-L3060), [`Graph.KG.VarLength`](../../../iris_src/src/Graph/KG/VarLength.cls)
+- Evidence: [predictions and native observations on both engines](../../uplift/consolidated/iteration-21/varlength-PAIRS.md)
+- Expands: [Two query paths](#query.paths)
+- agent
+- user-facing-behavior
+
+As-built agreement with openCypher, observed natively; no formal contract.
 
 ### query.aql
 
