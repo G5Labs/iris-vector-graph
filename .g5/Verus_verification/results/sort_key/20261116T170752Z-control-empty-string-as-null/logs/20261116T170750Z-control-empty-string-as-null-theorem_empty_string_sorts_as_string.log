@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/sort_key/controls/empty-string-as-null/20261116T170750Z/models/sort_key/sort_key.rs:49:86
+   |
+49 | pub proof fn theorem_empty_string_sorts_as_string(t:Ty) requires t!=Ty::Null ensures rank(Some(Seq::<char>::empty()),t)=='l' {}
+   | -------------------------------------------------------                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+   | |
+   | at the end of the function body
+
+error: aborting due to 1 previous error
+

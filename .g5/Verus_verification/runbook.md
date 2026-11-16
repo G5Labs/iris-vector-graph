@@ -408,3 +408,6 @@ trace (`iteration-16/route_trace.py`, no database).
 
 Iteration 17 ([handoff](../uplift/consolidated/iteration-17/HANDOFF.md)) extends `models/typed_equality` to 41 verified and 7
 controls; its binding now covers ordering. Native-path routing evidence: `iteration-17/native_equality_probe.py`.
+
+Iteration 18 ([handoff](../uplift/consolidated/iteration-18/HANDOFF.md)) adds `models/sort_key` (50 verified, 5 controls); its
+binding calls `Graph_KG.CY_SORT_KEY` and `Graph.KG.Cypher.SortKey.Key` on the fixture.

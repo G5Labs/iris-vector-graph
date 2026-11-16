@@ -404,6 +404,13 @@ A `WHERE` ordering comparison (`<`, `>`, `<=`, `>=`) between a stored property a
 - So `r.p < 2` keeps a relationship whose `p` is `"x"`, while `RETURN r.p` reads `"x"`; the same node property is dropped.
 - Comparisons between two stored properties, and against a boolean, already use Cypher orderability on both kinds.
 
+<a id="query.values.sorting"></a>
+[I · query.values.sorting]
+
+`ORDER BY` sorts property values by a key whose first part is the value's kind: strings, then booleans, then numbers, then NaN, then null last (first with `DESC`).
+- A node property that is a string spelling a number (`"9"`) sorts among the numbers, although `RETURN` reads it as a string and a `WHERE` ordering drops it. This is the documented known issue that a property cannot tell a number from a string that spells it. Relationship text that spells a number reads back as a number, so its sort agrees with `RETURN`.
+- On the SQL path an empty-string property sorts first, as a string. On the native executor it sorts with the nulls, so the two paths order the same rows differently.
+
 <a id="query.values.relationship_text"></a>
 [I · query.values.relationship_text]
 
@@ -503,7 +510,7 @@ Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no
 
 Sources: [spec 253 FR-002, FR-012 (equality decided 2026-10-20), FR-013](../../../specs/253-native-cypher-executor/spec.md#L100-L137), [`native_shadow.compare`](../../../iris_vector_graph/cypher/native_shadow.py#L29-L69). Live: the family A and B end-to-end tests run in shadow mode ([`test_253_family_b_e2e.py`](../../../tests/e2e/test_253_family_b_e2e.py)). Model note: equality assumes the indexes are current ([index currency](#query.native.index-current)).
 
-Findings: [The native interpreter tells used relationships apart by CRC-32, so a hash collision drops a legitimate match](../../Verus_verification/bugs_issues.md#bug-cyp-002)
+Findings: [The native interpreter tells used relationships apart by CRC-32, so a hash collision drops a legitimate match](../../Verus_verification/bugs_issues.md#bug-cyp-002); [ORDER BY sorts an empty-string property with the nulls on the native executor and first on the SQL path](../../Verus_verification/bugs_issues.md#bug-cyp-104)
 
 Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no decider, so under the uplift's authority rule ([sources](../../uplift/ivg-verus-initial/sources.md)) the block is `agent` (review round 3 R3-reader M16).
 
@@ -914,7 +921,7 @@ Findings: [Cypher range() with a step of 0 known only at run time answers [] ins
 
 ### query.values
 - Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
-- Children: [relationship property text](#query.values.relationship_text), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering)
+- Children: [relationship property text](#query.values.relationship_text), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering), [sorting](#query.values.sorting)
 - Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md), as-built numeric writer, D/N tag selection, S escape and numeric/text read distinctions. The scalar node-property projection reaches the final result in `theorem_sql_scalar_read_reaches_result`; JSON/J tags, N fractional/exponent parsing, nonfinite values, mixed expressions and the remaining SQL finishing pipeline are open modeling gaps. Numeric spelling/parse identity in `CY_TYPED` is an inspected provider premise, not a proved IRIS function.
 - agent
 - user-facing-behavior
@@ -948,6 +955,18 @@ Findings: [A boolean equality also matches stored integers 1 and 0, beyond the l
 As-built SQL-path behavior on IRIS 2026.1 with `create_node`/`create_edge` values and integer literals. The product's own fixes (R307, R308, 4.7.0 row 24) treat a string read as 0 as a defect on every other comparison path.
 
 Findings: [A relationship property that is not a number orders as one against a number literal](../../Verus_verification/bugs_issues.md#bug-cyp-103)
+
+### query.values.sorting
+- Sources: [`Graph.KG.Cypher.SortKey.Key`](../../../iris_src/src/Graph/KG/Cypher/SortKey.cls#L8-L153), [native `Exec.SortKey`](../../../iris_src/src/Graph/KG/Cypher/Exec.cls#L967-L973), [translator `_sort_key`](../../../iris_vector_graph/cypher/translator.py#L7762-L7770); [known issue: a property cannot tell a number from a string that spells it](../../../docs/KNOWN_ISSUES.md#L183-L200)
+- Verus: [sort_key.rs](../../Verus_verification/models/sort_key/sort_key.rs) `theorem_rank_order`, `theorem_untyped_numeric_text_sorts_as_number`, `theorem_word_sorts_as_string`, `theorem_empty_string_sorts_as_string`, `theorem_null_sorts_last`, `theorem_node_where_and_order_by_disagree` and `theorem_executors_disagree_on_empty_string`; [scope](../../Verus_verification/models/sort_key/NOTES.md)
+- Evidence: [predictions and native observations](../../uplift/consolidated/iteration-18/order-by-PAIRS.md)
+- Expands: [Values in results](#query.values)
+- agent
+- user-facing-behavior, data-integrity
+
+As-built for ordinary scalar values on IRIS 2026.1; lists, maps, graph values, durations and temporal text follow further key branches not modeled here.
+
+Findings: [ORDER BY sorts an empty-string property with the nulls on the native executor and first on the SQL path](../../Verus_verification/bugs_issues.md#bug-cyp-104)
 
 ### query.values.relationship_text
 - Sources: [`iris_vector_graph/prop_values.py::parse_rel_prop_text`](../../../iris_vector_graph/prop_values.py#L141-L168), [`::parse_prop_text`](../../../iris_vector_graph/prop_values.py#L129-L138), [`::decode_json_list_map`](../../../iris_vector_graph/prop_values.py#L234-L248), the two patterns [`_CANONICAL_INT_RE`, `_CANONICAL_FLOAT_RE`](../../../iris_vector_graph/prop_values.py#L90-L91); [`iris_vector_graph/_engine/query.py::_decode_rel_prop_text_columns`](../../../iris_vector_graph/_engine/query.py#L1200-L1216) (arity guard `:1207`); [`iris_vector_graph/cypher/translator.py::_rel_prop_text_columns`](../../../iris_vector_graph/cypher/translator.py#L7517-L7556); unit tests [test_relationship_property_typing.py](../../../tests/unit/test_relationship_property_typing.py)

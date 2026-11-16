@@ -2625,6 +2625,25 @@ Consequence: range filters on relationship properties (`r.weight < 1`, `r.since 
 
 Repair proposal (not implemented, not checked): give relationship operands a typed reading like `_stored_number_value` (numeric only when the qualifier member is a JSON number or canonical numeric text, as `RETURN` decodes it), else NULL. Preserve: relationship numbers and Cypher-written numeric text still order; node and property-to-property paths unchanged. Distinguishing case: relationship `p = "x"` against `p < 2`.
 
+<a id="bug-cyp-104"></a>
+### ORDER BY sorts an empty-string property with the nulls on the native executor and first on the SQL path
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-16 (cloud continuation, iteration 18)
+
+Found by: the sort-key binding, where `Graph.KG.Cypher.SortKey.Key("")` over the Native API returned the null rank while `CY_SORT_KEY('')` over SQL returned the string rank; then an executor comparison with the prediction frozen first ([predictions](../uplift/consolidated/iteration-18/order-by-PAIRS.md)); [sort_key](models/sort_key/NOTES.md) `theorem_executors_disagree_on_empty_string`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-18/empty-string-order-observed-20261116T170714Z.json)). An anchor with six targets whose `p` is `""`, `"b"`, `2`, missing, `"a"` and `1`; `MATCH (x {id: <anchor>})-[:R]->(b) RETURN b.p ORDER BY b.p` returns `'', 'a', 'b', 1, 2, null` on the SQL path and `'a', 'b', 1, 2, '', null` on the native executor, which `execute_cypher` used. `DESC` differs the same way. Passing neighbor: without the empty string, both paths agree on the same values (the W19 node and relationship sorts).
+
+Expected: [query.native.equal-answers](../ontology/features/cypher.g5.md#query.native.equal-answers) requires the native answer to equal the SQL path's, in the same order where the query orders completely; these values are distinct. The as-built sort is [query.values.sorting](../ontology/features/cypher.g5.md#query.values.sorting).
+
+Cause: the SQL path binds the stored empty string to `CY_SORT_KEY` as `$Char(0)`, which `Key` ranks as a string; the native executor's `Exec.SortKey` passes it as ObjectScript `""`, which `Key` treats as null.
+
+Consequence: the order, and with `LIMIT` or `SKIP` the rows, depend on which executor answers, and the router can switch executors by timing. Shadow mode would raise a mismatch. Medium: visible wrong order with a confirmed trigger on ordinary data.
+
+Repair proposal (not implemented, not checked): have `Exec.SortKey` pass a stored empty string as `$Char(0)` (or have `Key` distinguish an empty stored value from a missing one on that path), preserving null-last for missing properties and the SQL path unchanged. Distinguishing case: the six-target query above.
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 

@@ -1,0 +1,60 @@
+{
+  "name": "sort_key",
+  "root": "sort_key.rs",
+  "expected_verified": 50,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [
+    "../typed_equality/typed_equality.rs",
+    "../node_read/node_read.rs",
+    "../rel_prop_text/rel_prop_text.rs"
+  ],
+  "controls": [
+    {
+      "name": "untyped-number-as-string",
+      "find": "(t==Ty::Num) || (t==Ty::X && is_valid_num(s))",
+      "replace": "(t==Ty::Num)",
+      "expect_fail_in": [
+        "theorem_untyped_numeric_text_sorts_as_number",
+        "theorem_node_where_and_order_by_disagree",
+        "theorem_bool_before_number"
+      ],
+      "classification": "decision: untyped numeric-looking text ranked as a string (openCypher, the alternative)"
+    },
+    {
+      "name": "boolean-after-number",
+      "find": "else if t==Ty::X && (s==tru() || s==fals()) {'m'}",
+      "replace": "else if t==Ty::X && (s==tru() || s==fals()) {'p'}",
+      "expect_fail_in": [
+        "theorem_bool_before_number"
+      ],
+      "classification": "decision: boolean rank after numbers"
+    },
+    {
+      "name": "empty-string-as-null",
+      "find": "else if s.len()==0 {'l'}",
+      "replace": "else if s.len()==0 {'z'}",
+      "expect_fail_in": [
+        "theorem_empty_string_sorts_as_string"
+      ],
+      "classification": "provider/decision: empty string treated as SQL NULL"
+    },
+    {
+      "name": "null-first",
+      "find": "None=>'z',",
+      "replace": "None=>'a',",
+      "expect_fail_in": [
+        "theorem_null_sorts_last"
+      ],
+      "classification": "decision: null sorted first ascending"
+    },
+    {
+      "name": "native-empty-as-string",
+      "find": "pub open spec fn native_arg(s:Text)->Option<Text> {if s.len()==0 {None} else {Some(s)}}",
+      "replace": "pub open spec fn native_arg(s:Text)->Option<Text> {Some(s)}",
+      "expect_fail_in": [
+        "theorem_executors_disagree_on_empty_string"
+      ],
+      "classification": "provider/repair: the native executor passing an empty string as a string (equal answers restored)"
+    }
+  ]
+}
