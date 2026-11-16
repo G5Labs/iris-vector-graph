@@ -1,7 +1,7 @@
 {
   "name": "typed_equality",
   "root": "typed_equality.rs",
-  "expected_verified": 37,
+  "expected_verified": 41,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [
     "../node_read/node_read.rs",
@@ -57,6 +57,26 @@
         "theorem_rel_twin_spelling_equals_integer"
       ],
       "classification": "decision: relationship integer equality without the float twin's spelling (the attempt-1 model miss)"
+    },
+    {
+      "name": "rel-ordering-typed",
+      "find": "pub open spec fn rel_where_ord(j:Json,o:Ord,m:int)->bool {holds(o,cast_double(json_value(j)),m as real)}",
+      "replace": "pub open spec fn rel_where_ord(j:Json,o:Ord,m:int)->bool {match j {Json::Num(n)=>holds(o,n as real,m as real),_=>false}}",
+      "expect_fail_in": [
+        "theorem_rel_text_orders_as_cast",
+        "theorem_rel_bool_orders_as_number"
+      ],
+      "classification": "decision: relationship ordering with the node's typed guard (the alternative the product applies to nodes)"
+    },
+    {
+      "name": "node-ordering-cast",
+      "find": "holds(o,if double {double_value(payload)} else {payload as real},m as real),_=>false}",
+      "replace": "holds(o,if double {double_value(payload)} else {payload as real},m as real),nr::Stored::Text(t)=>holds(o,cast_double(t),m as real),_=>false}",
+      "expect_fail_in": [
+        "theorem_node_text_never_orders",
+        "theorem_rel_text_orders_as_cast"
+      ],
+      "classification": "decision: node ordering by plain CAST (the pre-4.7.0 node rule)"
     }
   ]
 }

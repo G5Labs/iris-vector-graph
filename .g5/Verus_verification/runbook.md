@@ -406,3 +406,5 @@ Iteration 16 ([handoff](../uplift/consolidated/iteration-16/HANDOFF.md)) adds `m
 5 controls) and a native binding (`models/typed_equality/binding.py`, fixture required) plus a translation-only route
 trace (`iteration-16/route_trace.py`, no database).
 
+Iteration 17 ([handoff](../uplift/consolidated/iteration-17/HANDOFF.md)) extends `models/typed_equality` to 41 verified and 7
+controls; its binding now covers ordering. Native-path routing evidence: `iteration-17/native_equality_probe.py`.

@@ -395,6 +395,15 @@ A `WHERE` equality between a stored property and a boolean or integer literal fo
 - A whole JSON float on a relationship keeps its spelling (`1.0`), so it equals 1 but not `true`; the same value stored as a node double equals both.
 - The boolean legacy match is a documented known issue that typed storage is planned to remove in 4.8.0; openCypher equality matches only values of the same type.
 
+<a id="query.values.ordering"></a>
+[I · query.values.ordering]
+
+A `WHERE` ordering comparison (`<`, `>`, `<=`, `>=`) between a stored property and a number literal treats node and relationship properties differently.
+- A node property orders only when it holds a stored number; a string or boolean is null against a number, so the row is dropped, as openCypher requires.
+- A relationship property is cast from its qualifier text to a number: numeric text orders by its value, a JSON boolean orders as 1 or 0, text with a leading number orders by that number (`"12abc"` as 12), and any other text, including the empty string, orders as 0.
+- So `r.p < 2` keeps a relationship whose `p` is `"x"`, while `RETURN r.p` reads `"x"`; the same node property is dropped.
+- Comparisons between two stored properties, and against a boolean, already use Cypher orderability on both kinds.
+
 <a id="query.values.relationship_text"></a>
 [I · query.values.relationship_text]
 
@@ -905,7 +914,7 @@ Findings: [Cypher range() with a step of 0 known only at run time answers [] ins
 
 ### query.values
 - Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
-- Children: [relationship property text](#query.values.relationship_text), [equality in WHERE](#query.values.equality)
+- Children: [relationship property text](#query.values.relationship_text), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering)
 - Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md), as-built numeric writer, D/N tag selection, S escape and numeric/text read distinctions. The scalar node-property projection reaches the final result in `theorem_sql_scalar_read_reaches_result`; JSON/J tags, N fractional/exponent parsing, nonfinite values, mixed expressions and the remaining SQL finishing pipeline are open modeling gaps. Numeric spelling/parse identity in `CY_TYPED` is an inspected provider premise, not a proved IRIS function.
 - agent
 - user-facing-behavior
@@ -914,7 +923,7 @@ New owner in the consolidated uplift. Node values and the typed-value marks are 
 
 Audit reproduction: [F-0810](../../Verus_verification/bugs_issues.md#F-0810) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
-Findings: [SET n.p = null keeps the key](../../Verus_verification/bugs_issues.md#F-0810); [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102).
+Findings: [SET n.p = null keeps the key](../../Verus_verification/bugs_issues.md#F-0810); [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102); [A relationship property that is not a number orders as one against a number literal](../../Verus_verification/bugs_issues.md#bug-cyp-103).
 
 ### query.values.equality
 - Sources: [boolean spellings](../../../iris_vector_graph/prop_values.py#L87-L88), [`_stored_bool_in`, `_stored_bool_comparison`](../../../iris_vector_graph/cypher/translator.py#L17851-L17870), [`_stored_number_test`, `_number_texts`, `_node_number_eq_sql`, `_number_eq_sql`](../../../iris_vector_graph/cypher/translator.py#L16231-L16310); [known issue: a boolean in an equality also matches a stored '1' or 'True'](../../../docs/KNOWN_ISSUES.md#L597-L612); [4.1.0 changelog: boolean equality still matches legacy rows](../../../CHANGELOG.md#L3862-L3865)
@@ -924,9 +933,21 @@ Findings: [SET n.p = null keeps the key](../../Verus_verification/bugs_issues.md
 - agent
 - user-facing-behavior, data-integrity
 
-As-built SQL-path behavior on IRIS 2026.1 for values written by `create_node` and `create_edge`; the native executor, parameters, `IN` lists, `MERGE` patterns and Cypher-written values were not checked.
+As-built SQL-path behavior on IRIS 2026.1 for values written by `create_node` and `create_edge`. The native executor declines every non-string equality value ([`native_plan._value`](../../../iris_vector_graph/cypher/native_plan.py#L62-L74); [observation](../../uplift/consolidated/iteration-17/native-equality-PAIRS.md)), so these rules hold on both paths. Parameters, `IN` lists, `MERGE` patterns and Cypher-written values were not checked.
 
 Findings: [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102)
+
+### query.values.ordering
+- Sources: [`_translate_boolean_expression` ordering branch and `_as_number`](../../../iris_vector_graph/cypher/translator.py#L19003-L19040), [`_stored_number_value`](../../../iris_vector_graph/cypher/translator.py#L16244-L16249), [property-to-property orderability (R308)](../../../iris_vector_graph/cypher/translator.py#L18932-L18952), [boolean orderability (R307)](../../../iris_vector_graph/cypher/translator.py#L18973-L18980)
+- Verus: [typed_equality.rs](../../Verus_verification/models/typed_equality/typed_equality.rs) `theorem_node_text_never_orders`, `theorem_node_integer_orders_by_value`, `theorem_rel_text_orders_as_cast` and `theorem_rel_bool_orders_as_number`; [scope](../../Verus_verification/models/typed_equality/NOTES.md)
+- Evidence: [predictions and native observations](../../uplift/consolidated/iteration-17/ordering-PAIRS.md)
+- Expands: [Values in results](#query.values)
+- agent
+- user-facing-behavior, data-integrity
+
+As-built SQL-path behavior on IRIS 2026.1 with `create_node`/`create_edge` values and integer literals. The product's own fixes (R307, R308, 4.7.0 row 24) treat a string read as 0 as a defect on every other comparison path.
+
+Findings: [A relationship property that is not a number orders as one against a number literal](../../Verus_verification/bugs_issues.md#bug-cyp-103)
 
 ### query.values.relationship_text
 - Sources: [`iris_vector_graph/prop_values.py::parse_rel_prop_text`](../../../iris_vector_graph/prop_values.py#L141-L168), [`::parse_prop_text`](../../../iris_vector_graph/prop_values.py#L129-L138), [`::decode_json_list_map`](../../../iris_vector_graph/prop_values.py#L234-L248), the two patterns [`_CANONICAL_INT_RE`, `_CANONICAL_FLOAT_RE`](../../../iris_vector_graph/prop_values.py#L90-L91); [`iris_vector_graph/_engine/query.py::_decode_rel_prop_text_columns`](../../../iris_vector_graph/_engine/query.py#L1200-L1216) (arity guard `:1207`); [`iris_vector_graph/cypher/translator.py::_rel_prop_text_columns`](../../../iris_vector_graph/cypher/translator.py#L7517-L7556); unit tests [test_relationship_property_typing.py](../../../tests/unit/test_relationship_property_typing.py)

@@ -179,4 +179,45 @@ pub proof fn theorem_string_integer_kind_asymmetry()
  assert(seq!['1','2']!=rp::tru());assert(seq!['1','2']!=rp::fals());
  assert(seq!['1','2']!=nr::bool_text(true));assert(seq!['1','2']!=nr::bool_text(false));
 }
+
+// ---- ordering against an integer literal (`<`, `>`, `<=`, `>=`): _translate_boolean_expression's `_as_number` ----
+pub enum Ord {Lt,Gt,Le,Ge}
+pub open spec fn holds(o:Ord,a:real,b:real)->bool {match o {Ord::Lt=>a<b,Ord::Gt=>a>b,Ord::Le=>a<=b,Ord::Ge=>a>=b}}
+/// Provider: IRIS `CAST(<text> AS DOUBLE)`. Uninterpreted; the binding observes it (letter-initial text gives 0).
+pub uninterp spec fn cast_double(t:Text)->real;
+/// Provider: a stored double's numeric value.
+pub uninterp spec fn double_value(payload:int)->real;
+/// Node: `_stored_number_value` gives the value only for a stored number, else SQL NULL, so the comparison drops the row.
+pub open spec fn node_where_ord(s:nr::Stored,o:Ord,m:int)->bool {
+ match s {nr::Stored::Number{payload,double}=>holds(o,if double {double_value(payload)} else {payload as real},m as real),_=>false}
+}
+/// Relationship: `CAST(JSON_VALUE(qualifiers, '$.p') AS DOUBLE)` against the literal.
+pub open spec fn rel_where_ord(j:Json,o:Ord,m:int)->bool {holds(o,cast_double(json_value(j)),m as real)}
+
+/// A node text never orders against a number, whatever it spells.
+pub proof fn theorem_node_text_never_orders(t:Text,o:Ord,m:int)
+ ensures !node_where_ord(nr::Stored::Text(t),o,m),
+{}
+/// A stored node integer orders by its value.
+pub proof fn theorem_node_integer_orders_by_value(n:int,o:Ord,m:int)
+ ensures node_where_ord(nr::Stored::Number{payload:n,double:false},o,m)==holds(o,n as real,m as real),
+{}
+/// If IRIS casts a relationship text to 0, that text is below every positive integer, while RETURN reads it as the text.
+pub proof fn theorem_rel_text_orders_as_cast(t:Text,m:int)
+ requires cast_double(t)==0real,m>0,t.len()>0,'a'<=t[0]<='z',t!=rp::tru(),t!=rp::fals(),
+ ensures rel_where_ord(Json::Str(t),Ord::Lt,m),!node_where_ord(nr::Stored::Text(t),Ord::Lt,m),
+  rel_return(Json::Str(t))==rp::Val::Str(t),
+{
+ assert(!rp::shaped(t));
+ assert(t[0]!='-');assert(rp::unsigned(t)=~=t);
+ assert(!rp::int_text(t,true)) by {assert(rp::unsigned(t)[0]==t[0]);assert(!('1'<=t[0]<='9') && t[0]!='0');}
+ assert(!rp::py_match_int(t)) by {if t.len()>=2 && t.last()=='\n' {let u=t.drop_last();assert(u[0]==t[0]);assert(u[0]!='-');assert(rp::unsigned(u)=~=u);assert(rp::unsigned(u)[0]==t[0]);} if t.len()==1 && t.last()=='\n' {assert(t[0]=='\n');}}
+ assert(!rp::float_text(t,true)) by {assert(rp::unsigned(t)==t);if rp::float_text(t,true) {let k=choose|k:int| 0<k<rp::unsigned(t).len()-1 && #[trigger] rp::unsigned(t)[k]=='.' && rp::int_digits(rp::unsigned(t).subrange(0,k),true) && rp::digits(rp::unsigned(t).subrange(k+1,rp::unsigned(t).len() as int),true) && rp::unsigned(t).subrange(k+1,rp::unsigned(t).len() as int).len()>=1;assert(t.subrange(0,k)[0]==t[0]);}}
+ assert(!rp::py_match_float(t)) by {if t.len()>=1 && t.last()=='\n' {let u=t.drop_last();assert(rp::unsigned(u)==u);if rp::float_text(u,true) {let k=choose|k:int| 0<k<rp::unsigned(u).len()-1 && #[trigger] rp::unsigned(u)[k]=='.' && rp::int_digits(rp::unsigned(u).subrange(0,k),true) && rp::digits(rp::unsigned(u).subrange(k+1,rp::unsigned(u).len() as int),true) && rp::unsigned(u).subrange(k+1,rp::unsigned(u).len() as int).len()>=1;assert(u.subrange(0,k)[0]==t[0]);}}}
+}
+/// A relationship JSON boolean orders as 1 or 0 (JSON_VALUE's spelling), while a node boolean never orders.
+pub proof fn theorem_rel_bool_orders_as_number()
+ requires cast_double(seq!['1'])==1real,
+ ensures rel_where_ord(Json::Bool(true),Ord::Ge,1),!node_where_ord(nr::write(nr::Input::Bool(true)),Ord::Ge,1),
+{}
 }

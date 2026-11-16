@@ -1,0 +1,21 @@
+verification results:: 39 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/rel-ordering-typed/20261116T170139Z/models/typed_equality/typed_equality.rs:208:10
+    |
+208 |  ensures rel_where_ord(Json::Str(t),Ord::Lt,m),!node_where_ord(nr::Stored::Text(t),Ord::Lt,m),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+216 |  assert(!rp::py_match_float(t)) by {if t.len()>=1 && t.last()=='\n' {let u=t.drop_last();assert(rp::unsigned(u)==u);if rp::float_te...
+    |  ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/rel-ordering-typed/20261116T170139Z/models/typed_equality/typed_equality.rs:221:10
+    |
+219 | pub proof fn theorem_rel_bool_orders_as_number()
+    | ------------------------------------------------ at the end of the function body
+220 |  requires cast_double(seq!['1'])==1real,
+221 |  ensures rel_where_ord(Json::Bool(true),Ord::Ge,1),!node_where_ord(nr::write(nr::Input::Bool(true)),Ord::Ge,1),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

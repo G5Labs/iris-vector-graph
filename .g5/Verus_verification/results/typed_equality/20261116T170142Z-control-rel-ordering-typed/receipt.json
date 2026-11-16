@@ -1,0 +1,62 @@
+{
+  "control": {
+    "classification": "decision: relationship ordering with the node's typed guard (the alternative the product applies to nodes)",
+    "expect_fail_in": [
+      "theorem_rel_text_orders_as_cast",
+      "theorem_rel_bool_orders_as_number"
+    ],
+    "find": "pub open spec fn rel_where_ord(j:Json,o:Ord,m:int)->bool {holds(o,cast_double(json_value(j)),m as real)}",
+    "name": "rel-ordering-typed",
+    "replace": "pub open spec fn rel_where_ord(j:Json,o:Ord,m:int)->bool {match j {Json::Num(n)=>holds(o,n as real,m as real),_=>false}}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_rel_text_orders_as_cast",
+      "theorem_rel_bool_orders_as_number"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+    ".g5/Verus_verification/models/typed_equality/model.json": "63e8d89f54ae888b25faa80f5770cc32d9718059fd452881a024f4e75e09c207",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "1b13df9c379f45539e000e3846b9e6ef6bbbf06293096ee205e6f6d349fa2b25"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/rel-ordering-typed/20261116T170139Z/models/typed_equality/typed_equality.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_rel_bool_orders_as_number": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T170139Z-control-rel-ordering-typed-theorem_rel_bool_orders_as_number.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rel_text_orders_as_cast": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T170139Z-control-rel-ordering-typed-theorem_rel_text_orders_as_cast.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T170139Z-control-rel-ordering-typed.log",
+    "timed_out": false,
+    "verified": 39
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/typed_equality/20261116T170142Z-control-rel-ordering-typed/logs/20261116T170139Z-control-rel-ordering-typed-theorem_rel_bool_orders_as_number.log": "0190aed09eb8662591d3cec5affcd063d6ca812a1b77d6501cd7fb1a66be2fad",
+    ".g5/Verus_verification/results/typed_equality/20261116T170142Z-control-rel-ordering-typed/logs/20261116T170139Z-control-rel-ordering-typed-theorem_rel_text_orders_as_cast.log": "9aa0837cce3fd81fd4c5e99e666255026d5b8d4dc7eb63a564595450ad134b3b",
+    ".g5/Verus_verification/results/typed_equality/20261116T170142Z-control-rel-ordering-typed/logs/20261116T170139Z-control-rel-ordering-typed.log": "4583aa6b016723691fb0007b73aaee7b170db11398fa6b6f6925dc829521a15a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

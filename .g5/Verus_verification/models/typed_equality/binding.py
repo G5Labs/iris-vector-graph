@@ -1,7 +1,7 @@
 """typed_equality binding: actual Cypher WHERE equality and RETURN on the run-isolated IRIS fixture vs a port of the model.
 
 Each value is written once as a node property (create_node) and once as an edge qualifier (create_edge), on fresh
-nodes. Every (kind, value) world is read by `WHERE x.p = <literal> RETURN count(*)` for seven literals and by
+nodes. Every (kind, value) world is read by `WHERE x.p = <literal>` for seven literals, by `WHERE x.p <op> <integer>` for five orderings, and by
 `RETURN x.p`. The port mirrors typed_equality.rs; for stored doubles it uses the declared providers (IRIS canonical
 number text; numeric equality). Four port mutations mirror the model controls and must each disagree with at least one
 actual observation. Ordinary data on the identity-checked fixture only.
@@ -21,7 +21,8 @@ sys.path.insert(0, str(Path(os.environ.get("IVG_RUNTIME_DIR", str(REPO / ".g5/up
 import runtime  # noqa: E402
 
 RUN = os.environ.get("TE_RUN", time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()))
-VALUES = [0, 1, 2, -1, 12, True, False, "1", "0", "True", "False", "true", "false", "12", "01", "x", "1.0", "12.0", 1.0, 0.0, 0.95, 12.0]
+VALUES = [0, 1, 2, -1, 12, True, False, "1", "0", "True", "False", "true", "false", "12", "01", "x", "1.0", "12.0", 1.0, 0.0, 0.95, 12.0, ".95", "0.95", "12abc", ""]
+ORDERS = [("<", 2), (">", 0), (">=", 1), ("<", 1), ("<=", -1)]
 LITERALS = [("bool", True), ("bool", False), ("int", 0), ("int", 1), ("int", 2), ("int", 12), ("int", -1)]
 TRUE_SP, FALSE_SP = ("true", "1", "True"), ("false", "0", "False")
 INT_RE, FLOAT_RE = re.compile(r"^-?(0|[1-9]\d*)$"), re.compile(r"^-?(0|[1-9]\d*)\.\d+$")
@@ -122,9 +123,39 @@ def rel_return(v):
     return t
 
 
+CAST_RE = re.compile(r"^\s*[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?")
+
+
+def cast_double(t):
+    """Provider guess (IRIS CAST(text AS DOUBLE)): the leading number, else 0."""
+    m = CAST_RE.match(t)
+    return float(m.group(0)) if m else 0.0
+
+
+def holds(op, a, b):
+    return {"<": a < b, ">": a > b, "<=": a <= b, ">=": a >= b}[op]
+
+
+def node_ord(st, op, m, rules):
+    k, x = st
+    if k in ("int", "double"):
+        return holds(op, x, m)
+    if rules.get("node_ordering_cast") and k == "text":
+        return holds(op, cast_double(x), m)
+    return False
+
+
+def rel_ord(v, op, m, rules):
+    if rules.get("rel_ordering_typed"):
+        return isinstance(v, (int, float)) and not isinstance(v, bool) and holds(op, v, m)
+    return holds(op, cast_double(json_value(v, rules)), m)
+
+
 def predict(kind, v, rules=None):
     rules = rules or {}
     out = {}
+    for op, m in ORDERS:
+        out[f"{op} {m}"] = node_ord(node_stored(v), op, m, rules) if kind == "node" else rel_ord(v, op, m, rules)
     for lit in LITERALS:
         out[lit_text(*lit)] = node_where(node_stored(v), lit, rules) if kind == "node" else rel_where(v, lit, rules)
     out["return"] = node_return(node_stored(v)) if kind == "node" else rel_return(v)
@@ -155,6 +186,9 @@ def main():
             for lit in LITERALS:
                 rows = e.execute_cypher(f"{base} AND x.p = {lit_text(*lit)} RETURN count(*) AS n")["rows"]
                 obs[lit_text(*lit)] = bool(rows[0][0])
+            for op, m in ORDERS:
+                rows = e.execute_cypher(f"{base} AND x.p {op} {m} RETURN count(*) AS n")["rows"]
+                obs[f"{op} {m}"] = bool(rows[0][0])
             got = e.execute_cypher(f"{base} RETURN x.p AS p")["rows"]
             obs["return"] = got[0][0] if got else "NO ROW"
             want = predict(kind, v)
@@ -165,7 +199,7 @@ def main():
     c.close()
     mismatches = [w for w in worlds if not w["agrees"]]
     sens = {}
-    for rule in ["legacy_one_not_true", "node_number_by_text", "json_boolean_reads_as_word", "stored_integer_not_a_spelling", "twin_spelling_dropped"]:
+    for rule in ["legacy_one_not_true", "node_number_by_text", "json_boolean_reads_as_word", "stored_integer_not_a_spelling", "twin_spelling_dropped", "rel_ordering_typed", "node_ordering_cast"]:
         n = 0
         for w in worlds:
             v = w["value"][1]
@@ -176,7 +210,7 @@ def main():
     body = {
         "kind": "binding", "model": "typed_equality", "fixture": runtime.NAME, "port": runtime.PORT, "run": RUN,
         "product_baseline": runtime.PRODUCT, "verdict": "AGREES" if not mismatches else "DISAGREES",
-        "worlds": len(worlds), "comparisons": len(worlds) * (len(LITERALS) + 1), "mismatches": mismatches,
+        "worlds": len(worlds), "comparisons": len(worlds) * (len(LITERALS) + len(ORDERS) + 1), "mismatches": mismatches,
         "sensitivities_detected_worlds": sens, "all_sensitivities_detected": all(v > 0 for v in sens.values()),
         "elapsed_s": time.monotonic() - start,
         "inputs": {str(p.relative_to(REPO)): sha(p) for p in [HERE / "binding.py", HERE / "typed_equality.rs", HERE / "model.json"]},

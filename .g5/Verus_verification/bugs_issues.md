@@ -2606,6 +2606,25 @@ Consequence: a filter on a boolean flag also returns, updates or deletes rows wh
 
 Repair proposal (not implemented, not checked): until typed storage, restrict the numeric arm of the boolean test to stored text (exclude rows that `_stored_number_test` marks as numbers), and extend the known issue's symptom to stored integers. Preserve: legacy text rows `'1'`/`'True'` keep matching, booleans written since 4.1.0 match, integer equality is unchanged. Distinguishing case: node `p = 1` (number) against `p = true`.
 
+<a id="bug-cyp-103"></a>
+### A relationship property that is not a number orders as one against a number literal
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-16 (cloud continuation, iteration 17)
+
+Found by: the ordering neighbor of the iteration 16 equality workflow, with predictions frozen before observation ([predictions](../uplift/consolidated/iteration-17/ordering-PAIRS.md)); [typed_equality](models/typed_equality/NOTES.md) `theorem_rel_text_orders_as_cast` and `theorem_node_text_never_orders`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-17/ordering-observed-20261116T165915Z.json); [52-world binding](results/typed_equality/20261116T170150Z-binding/receipt.json)). `create_edge(a, "R", b, qualifiers={"p": "x"})`, then `MATCH (s)-[x:R]->(t) WHERE x.p < 2 RETURN count(*)` counts the edge, and `RETURN x.p` returns `"x"`. The empty string and `"x"` satisfy `< 1`; `"12abc"` satisfies `>= 1`; a JSON `true` satisfies `>= 1`. Passing neighbors: the same values as node properties are never kept, and relationship numbers order by value.
+
+Expected: openCypher gives null for a string compared with a number, so the row is dropped. The product treats the cast-to-0 reading as a defect elsewhere: R308 replaced it for property-to-property comparisons ("CAST(val AS DOUBLE) made every non-numeric string 0"), R307 for booleans, and 4.7.0 row 24 for node properties against numbers. The as-built rule is [query.values.ordering](../ontology/features/cypher.g5.md#query.values.ordering).
+
+Cause: in `_translate_boolean_expression`, `_as_number` applies the typed reading (`_stored_number_value`) only to node value columns; a relationship operand gets `CAST(JSON_VALUE(qualifiers, '$.p') AS DOUBLE)`, and IRIS casts non-numeric text to 0 and leading-number text to that number.
+
+Consequence: range filters on relationship properties (`r.weight < 1`, `r.since >= 2020`) keep relationships whose value is missing-as-empty, a word, or text starting with digits, and the result disagrees with `RETURN`. Medium: wrong filter results with a confirmed trigger; destructive when the filter feeds `DELETE` or `SET`.
+
+Repair proposal (not implemented, not checked): give relationship operands a typed reading like `_stored_number_value` (numeric only when the qualifier member is a JSON number or canonical numeric text, as `RETURN` decodes it), else NULL. Preserve: relationship numbers and Cypher-written numeric text still order; node and property-to-property paths unchanged. Distinguishing case: relationship `p = "x"` against `p < 2`.
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 

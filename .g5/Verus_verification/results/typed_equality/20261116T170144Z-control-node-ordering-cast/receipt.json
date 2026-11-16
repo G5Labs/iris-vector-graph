@@ -1,0 +1,62 @@
+{
+  "control": {
+    "classification": "decision: node ordering by plain CAST (the pre-4.7.0 node rule)",
+    "expect_fail_in": [
+      "theorem_node_text_never_orders",
+      "theorem_rel_text_orders_as_cast"
+    ],
+    "find": "holds(o,if double {double_value(payload)} else {payload as real},m as real),_=>false}",
+    "name": "node-ordering-cast",
+    "replace": "holds(o,if double {double_value(payload)} else {payload as real},m as real),nr::Stored::Text(t)=>holds(o,cast_double(t),m as real),_=>false}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_node_text_never_orders",
+      "theorem_rel_text_orders_as_cast"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe",
+    ".g5/Verus_verification/models/rel_prop_text/rel_prop_text.rs": "f45bbcb900699fb157ce6bc36583ece65c9b451ecf33f12fc8d6e34c3e0ffbbe",
+    ".g5/Verus_verification/models/typed_equality/model.json": "63e8d89f54ae888b25faa80f5770cc32d9718059fd452881a024f4e75e09c207",
+    ".g5/Verus_verification/models/typed_equality/typed_equality.rs": "1b13df9c379f45539e000e3846b9e6ef6bbbf06293096ee205e6f6d349fa2b25"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/controls/node-ordering-cast/20261116T170142Z/models/typed_equality/typed_equality.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_node_text_never_orders": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T170142Z-control-node-ordering-cast-theorem_node_text_never_orders.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rel_text_orders_as_cast": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T170142Z-control-node-ordering-cast-theorem_rel_text_orders_as_cast.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/typed_equality/20261116T170142Z-control-node-ordering-cast.log",
+    "timed_out": false,
+    "verified": 38
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/typed_equality/20261116T170144Z-control-node-ordering-cast/logs/20261116T170142Z-control-node-ordering-cast-theorem_node_text_never_orders.log": "e880f2e94292ecf3ad2ccc361fb05a713efe29c7beeaf64fcc123495f7d75299",
+    ".g5/Verus_verification/results/typed_equality/20261116T170144Z-control-node-ordering-cast/logs/20261116T170142Z-control-node-ordering-cast-theorem_rel_text_orders_as_cast.log": "921cb1103a950c2d55a210eeef9f4f797046ed27470ee59c46fca27052d308bf",
+    ".g5/Verus_verification/results/typed_equality/20261116T170144Z-control-node-ordering-cast/logs/20261116T170142Z-control-node-ordering-cast.log": "45e84c0eac213d8420b636fd9445f0025434c8a85c68bac5a766b6059e709615"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
