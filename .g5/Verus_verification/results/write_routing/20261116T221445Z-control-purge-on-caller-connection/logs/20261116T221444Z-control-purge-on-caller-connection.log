@@ -1,0 +1,12 @@
+verification results:: 7 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/purge-on-caller-connection/20261116T221444Z/models/write_routing/write_routing.rs:172:3
+    |
+170 | pub proof fn theorem_routing(e:Engine)
+    | -------------------------------------- at the end of the function body
+171 |  ensures route(e,Op::TemporalEdge)==Proc::Caller,route(e,Op::Ordinary)==Proc::Caller,
+172 |   route(Engine::FromConnect,Op::Purge)==Proc::Own,route(Engine::OnCallerConn,Op::Purge)==Proc::Caller,
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

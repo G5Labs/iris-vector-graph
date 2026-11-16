@@ -68,7 +68,7 @@ Writing a temporal edge stores it with its attributes, updates the statistics an
 - A batch write reports how many edges were written, how many collided and how many were skipped.
 - A single-edge write reports success even for a collision; a caller that must know writes a one-edge batch and reads its counts.
 - A write can leave out the inbound entry for edges never read by target; inbound reads then cannot see that edge.
-- Today a direct write opens no transaction of its own: alone it keeps what it wrote before a failure, and inside a caller's transaction it joins it, but a rollback leaves its statistics counted. When the caller turned the driver's autocommit off and has written nothing yet, its rollback removes the structural edge and its end nodes but keeps the temporal edge. Whether a failed write must leave nothing is [open](../../Verus_verification/open_questions.md#temporal.write.partial-failure).
+- Today a direct write opens no transaction of its own: alone it keeps what it wrote before a failure, and inside a caller's transaction it joins it, but a rollback leaves its statistics counted. When the caller turned the driver's autocommit off and has written nothing yet, its rollback undoes only the structural side: a temporal edge written alone or in a batch stays without its structural edge and end nodes, and a deleted temporal edge stays deleted while its structural edge comes back. Whether a failed write must leave nothing is [open](../../Verus_verification/open_questions.md#temporal.write.partial-failure).
 
 - Working assumption: Keep first-write-wins and exactness as requirements; concurrent provider behavior is unestablished, not an approved one-writer exemption.
 - Working assumption: the statistics keep describing the first write.

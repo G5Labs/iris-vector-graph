@@ -1,4 +1,4 @@
-**Current pointer (retest, 2026-11-16).** Running, iteration 30 sealed (subject `Seal iteration 30: F-0608 PLAID branch`). Material outcome: F-0608's PLAID branch reproduced (counts inflated; another width accepted and outranks; unlike IVF, old tokens do not answer); new owner `search.plaid`; model `plaid_index`; reach 357 → 364 of 4,130. Cost: builder wall clock about 4 h 10 min so far (tokens/currency unavailable). Next: step-5 convergence judgment. Retest log: [below](#retest-2026-11-16).
+**Current pointer (retest, 2026-11-16).** Running, iteration 31 sealed (subject `Seal iteration 31: BulkLoader schema and temporal variants`). Material outcome: bug-plt-012 e2e reproduced in a Kg2 namespace; bug-tmp-102 widened to the batch writer and the delete; reach 364 → 368 of 4,130. Cost: builder wall clock about 5 h 10 min so far (tokens/currency unavailable). Next: iteration 32 (HTTP readers), then the step-5 convergence judgment. Retest log: [below](#retest-2026-11-16).
 
 <a id="retest-2026-11-16"></a>
 ## Retest (2026-11-16, from `cloud-iris-retest-start-20261116`)
@@ -13,6 +13,7 @@ Guidance: run copy `$G5_HARNESS`, `Verus/uplift-iteration.md` sha256 `a7521d0e20
 | [28](iteration-28/HANDOFF.md) | W33 algorithm options, engine method vs Cypher `CALL ivg.*` | all agree (negative result); ranges stated in `algorithms.op`; model `algo_options`; 328 → 349 |
 | [29](iteration-29/HANDOFF.md) | W34 embedding inventory, engine report and `ivg embeddings inventory` | all agree (negative result); owner `search.routes.inventory`; model `embedding_inventory`; 349 → 357 |
 | [30](iteration-30/HANDOFF.md) | W35 F-0608's PLAID branch | reproduced, scoped difference from IVF; owner `search.plaid`; model `plaid_index`; 357 → 364 |
+| [31](iteration-31/HANDOFF.md) | W36 BulkLoader in a non-default IVG Schema; W37 bug-tmp-102's rule on batch and delete | bug-plt-012 reproduced; bug-tmp-102 widened; `bulk_load` and `write_routing` extended; 364 → 368 |
 
 Earlier pointer (superseded): **Current pointer (cloud continuation, 2026-11-16).** CONVERGED after iteration 24. Latest seal: the clean tip with subject `Record convergence of the cloud continuation` (its parent `0575c5de` is the last iteration seal). Session: iterations 14–24, seven new findings, reach 249 → 279 of 4,130 (30 new, 0 lost). Cost: builder wall clock about 1 h 50 min (tokens/currency unavailable). Convergence basis: [below](#convergence-cloud-continuation-2026-11-16).
 

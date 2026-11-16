@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/cut-one-short/20261116T221845Z/models/http_rows/http_rows.rs:17:1
+   |
+17 | pub proof fn theorem_answer_is_prefix(rows:Seq<R>,limit:nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/cut-one-short/20261116T221845Z/models/http_rows/http_rows.rs:18:10
+   |
+17 | pub proof fn theorem_answer_is_prefix(rows:Seq<R>,limit:nat)
+   | ------------------------------------------------------------ at the end of the function body
+18 |  ensures kept(rows,limit).len()<=limit || kept(rows,limit)==rows,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/cut-one-short/20261116T221845Z/models/http_rows/http_rows.rs:19:3
+   |
+17 | pub proof fn theorem_answer_is_prefix(rows:Seq<R>,limit:nat)
+   | ------------------------------------------------------------ at the end of the function body
+18 |  ensures kept(rows,limit).len()<=limit || kept(rows,limit)==rows,
+19 |   rows.len()<=limit ==> kept(rows,limit)==rows,
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

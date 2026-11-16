@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/api-counts-total/20261116T221844Z/models/http_rows/http_rows.rs:29:1
+   |
+29 | pub proof fn theorem_api_row_count_is_kept(rows:Seq<R>,limit:nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/api-counts-total/20261116T221844Z/models/http_rows/http_rows.rs:31:10
+   |
+29 | pub proof fn theorem_api_row_count_is_kept(rows:Seq<R>,limit:nat)
+   | ----------------------------------------------------------------- at the end of the function body
+30 |  requires rows.len()>limit
+31 |  ensures api(rows,limit).row_count==limit,api(rows,limit).row_count<rows.len(),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/api-counts-total/20261116T221844Z/models/http_rows/http_rows.rs:31:43
+   |
+29 | pub proof fn theorem_api_row_count_is_kept(rows:Seq<R>,limit:nat)
+   | ----------------------------------------------------------------- at the end of the function body
+30 |  requires rows.len()>limit
+31 |  ensures api(rows,limit).row_count==limit,api(rows,limit).row_count<rows.len(),
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

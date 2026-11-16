@@ -19,7 +19,7 @@ index read of the node row, then its indexed labels and properties.
 Domain: one batch per phase, distinct input ids, `skip_existing=True` (the default). The index behavior of IRIS
 (`%NOINDEX` rows invisible to index reads until `%BuildIndices`) is a provider premise, observed below, not derived.
 
-## Theorems (8, all new; no imports)
+## Theorems (10; 8 from iteration 25, 2 added in iteration 31; no imports)
 
 | Theorem | Claim |
 |---|---|
@@ -31,12 +31,14 @@ Domain: one batch per phase, distinct input ids, `skip_existing=True` (the defau
 | `witness_interrupted_rerun_strands` | the stranded node is readable but lacks its label, so it fails the owner's outcome |
 | `theorem_other_graphs_untouched` | a load changes no other graph's rows |
 | `theorem_same_id_other_graph_is_written` | an id that exists only in another graph is still loaded |
+| `theorem_loader_without_schema_writes_nothing` | iteration 31: a loader left at `Graph_KG` in a namespace with another IVG Schema writes nothing (bug-plt-012) |
+| `theorem_rebuild_in_other_schema_leaves_rows_unreadable` | iteration 31: there, a `%NOINDEX` load stays unreadable after the loader's rebuild (bug-plt-012) |
 
 No `assume`, `admit` or `external_body`; bundled vstd only.
 
 ## Controls
 
-Six, all EXPECTED_FAIL full and isolated ([receipts](../../results/bulk_load/)): `phase1-not-committed`,
+Eight (two added in iteration 31: `rebuild-follows-schema`, `default-schema-follows-namespace`), all EXPECTED_FAIL full and isolated ([receipts](../../results/bulk_load/)): `phase1-not-committed`,
 `rerun-completes-stranded` (the repair proposal), `skip-sees-indexed-only` (the scan without the `%NOINDEX` hint),
 `skip-across-graphs`, `reader-ignores-index`, `rebuild-skips-labels`. The first two runs of `phase1-not-committed` and
 `rerun-completes-stranded` were FAIL_ELSEWHERE because the witness called the theorem as a lemma (verified alone, it
@@ -49,7 +51,7 @@ run-isolated retest fixture over 72 histories: first call indexed or `%NOINDEX`;
 failed at the property insert (injected: the first `executemany` into that table raises); re-run none, indexed or
 `%NOINDEX`; rebuild or not; the first id already present in the default graph or not. It compares the readers'
 presence, labels and property keys for both nodes, the re-run's returned counts and the default graph's node with a
-port of the model: **AGREES, 360 comparisons**; every one of six port mutations mirroring the controls is detected
+port of the model: **AGREES, 360 comparisons** (iteration 25); iteration 31 adds three histories in namespace `W37` (IVG Schema `Kg2`): 75 histories, 369 comparisons, AGREES; every one of six port mutations mirroring the controls is detected
 (12-27 histories each). Command (fixture running, from the pin directory):
 `IVG_REPO=<repo> IVG_PIN_DIR=$RUN_DIR/pin $RUN_DIR/venv/bin/python -B <repo>/.g5/Verus_verification/models/bulk_load/binding.py`.
 
@@ -57,6 +59,6 @@ port of the model: **AGREES, 360 comparisons**; every one of six port mutations 
 
 Transcription with native agreement; no product body is verified. Not modeled: `load_edges` (dedupe, endpoint
 registration), `load_networkx` beyond the reader check in the PAIRS probe, `build_graph_globals`, the
-duplicate-or-refusal decision by error text, several batches per phase, `skip_existing=False`, concurrent loaders, and the
-schema handling of bug-plt-012. The interruption is injected; that a connection loss or killed process leaves exactly
+duplicate-or-refusal decision by error text, several batches per phase, `skip_existing=False` and concurrent loaders.
+The schema case is modeled by two boolean premises (the loader's tables exist; the namespace's schema is `Graph_KG`). The interruption is injected; that a connection loss or killed process leaves exactly
 this state follows from the per-batch commit, not from an observed outage.

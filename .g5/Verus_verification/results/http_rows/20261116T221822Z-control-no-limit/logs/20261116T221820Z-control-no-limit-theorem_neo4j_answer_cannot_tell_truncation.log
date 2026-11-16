@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/no-limit/20261116T221820Z/models/http_rows/http_rows.rs:26:10
+   |
+24 | pub proof fn theorem_neo4j_answer_cannot_tell_truncation(a:Seq<R>,b:Seq<R>)
+   | --------------------------------------------------------------------------- at the end of the function body
+25 |  requires a.len()==DEFAULT(),b.len()>DEFAULT(),b.subrange(0,DEFAULT() as int)=~=a
+26 |  ensures neo4j(a)=~=neo4j(b),a!=b,
+   |          ^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

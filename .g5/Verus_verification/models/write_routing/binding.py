@@ -18,10 +18,11 @@ def sha(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
 # ---- port of write_routing.rs ----
-STEPS = {"ordinary": "S", "temporal_edge": "GS", "purge": "SG", "policy": "G"}
+STEPS = {"ordinary": "S", "temporal_edge": "GS", "temporal_batch": "GS", "temporal_delete": "GS", "purge": "SG", "policy": "G"}
 def route(engine, op, m):
     native = "own" if engine == "from_connect" else "caller"
     if op == "temporal_edge": return native if m.get("temporal_on_own_connection") else "caller"
+    if op in ("temporal_batch", "temporal_delete"): return "caller"
     if op == "purge": return "caller" if m.get("purge_on_caller_connection") else native
     if op == "policy": return native
     return "caller"
@@ -29,6 +30,7 @@ def kept(engine, op, start, end, m):
     """Per step of the call: is its effect kept after the caller's end?"""
     steps = STEPS[op]
     if op == "temporal_edge" and m.get("temporal_sql_first"): steps = "SG"
+    if op == "temporal_delete" and m.get("delete_sql_first"): steps = "SG"
     if route(engine, op, m) == "own":
         return [end == "commit" if m.get("own_process_joins") else True for _ in steps]
     hold = start == "autocommit_off"
@@ -49,7 +51,7 @@ def refuses(start, wrote, m):
     if m.get("refuse_only_after_a_write"): return wrote
     return (start == "sql" or wrote)
 MUTS = ["commit_ends_all_levels", "temporal_on_own_connection", "purge_on_caller_connection", "undo_ends_all_levels",
-        "refuse_only_after_a_write", "own_process_joins", "temporal_sql_first", "no_implicit_level"]
+        "refuse_only_after_a_write", "own_process_joins", "temporal_sql_first", "no_implicit_level", "delete_sql_first"]
 
 
 def main():
@@ -78,11 +80,13 @@ def main():
             (eng.conn.commit if end == "commit" else eng.conn.rollback)(); eng.conn.setAutoCommit(True)
 
     cells, mism, sens = [], [], {m: 0 for m in MUTS}
-    for i, (ek, op, start, end) in enumerate(itertools.product(engines, ["ordinary", "temporal_edge", "purge", "policy"],
+    for i, (ek, op, start, end) in enumerate(itertools.product(engines, ["ordinary", "temporal_edge", "temporal_batch", "temporal_delete", "purge", "policy"],
                                                                 ["sql", "autocommit_off"], ["commit", "rollback"])):
         eng = engines[ek]; a, b, p = f"wr{TAG}h{i}a", f"wr{TAG}h{i}b", f"WR{TAG}H{i}"
         if op == "purge":
             O.create_edge_temporal(a, p, b, timestamp=1000 + i, weight=1.0)     # committed beforehand
+        if op == "temporal_delete":
+            O.create_edge_temporal(a, p, b, timestamp=2_000_000_000, weight=1.0)  # committed beforehand
         err = None
         open_txn(eng, start)
         try:
@@ -90,6 +94,10 @@ def main():
                 eng.create_node(a); eng.create_node(b); eng.create_edge(a, p, b)
             elif op == "temporal_edge":
                 eng.create_edge_temporal(a, p, b, timestamp=2_000_000_000, weight=2.0)
+            elif op == "temporal_batch":
+                eng.bulk_create_edges_temporal([{"source": a, "predicate": p, "target": b, "timestamp": 2_000_000_000, "weight": 2.0}])
+            elif op == "temporal_delete":
+                eng.delete_edge_temporal(a, p, b, 2_000_000_000)
             elif op == "purge":
                 eng.purge_before(1001 + i)
             else:
@@ -103,8 +111,10 @@ def main():
         window = len(O.get_edges_in_window(a, p, 0, 2 ** 31))
         if op == "ordinary":
             effect = [edges() == 1 and O.get_node(a) is not None]
-        elif op == "temporal_edge":                      # step G: temporal stores; step S: marked row and nodes
+        elif op in ("temporal_edge", "temporal_batch"):  # step G: temporal stores; step S: marked row and nodes
             effect = [window == 1, edges() == 1 and O.get_node(a) is not None]
+        elif op == "temporal_delete":                    # step G: stores killed; step S: marked row removed
+            effect = [window == 0, edges() == 0]
         elif op == "purge":                              # step S: endpoint nodes retired; step G: stores killed
             effect = [O.get_node(a) is None, window == 0]
         else:

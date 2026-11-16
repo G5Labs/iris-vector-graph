@@ -1,0 +1,45 @@
+verification results:: 0 verified, 3 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/no-limit/20261116T221820Z/models/http_rows/http_rows.rs:20:3
+   |
+17 | pub proof fn theorem_answer_is_prefix(rows:Seq<R>,limit:nat)
+   | ------------------------------------------------------------ at the end of the function body
+...
+20 |   rows.len()>limit ==> kept(rows,limit).len()==limit,
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/no-limit/20261116T221820Z/models/http_rows/http_rows.rs:26:10
+   |
+24 | pub proof fn theorem_neo4j_answer_cannot_tell_truncation(a:Seq<R>,b:Seq<R>)
+   | --------------------------------------------------------------------------- at the end of the function body
+25 |  requires a.len()==DEFAULT(),b.len()>DEFAULT(),b.subrange(0,DEFAULT() as int)=~=a
+26 |  ensures neo4j(a)=~=neo4j(b),a!=b,
+   |          ^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/no-limit/20261116T221820Z/models/http_rows/http_rows.rs:29:1
+   |
+29 | pub proof fn theorem_api_row_count_is_kept(rows:Seq<R>,limit:nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/no-limit/20261116T221820Z/models/http_rows/http_rows.rs:31:10
+   |
+29 | pub proof fn theorem_api_row_count_is_kept(rows:Seq<R>,limit:nat)
+   | ----------------------------------------------------------------- at the end of the function body
+30 |  requires rows.len()>limit
+31 |  ensures api(rows,limit).row_count==limit,api(rows,limit).row_count<rows.len(),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/http_rows/controls/no-limit/20261116T221820Z/models/http_rows/http_rows.rs:31:43
+   |
+29 | pub proof fn theorem_api_row_count_is_kept(rows:Seq<R>,limit:nat)
+   | ----------------------------------------------------------------- at the end of the function body
+30 |  requires rows.len()>limit
+31 |  ensures api(rows,limit).row_count==limit,api(rows,limit).row_count<rows.len(),
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

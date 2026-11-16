@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/temporal-on-own-connection/20261116T221443Z/models/write_routing/write_routing.rs:171:10
+    |
+170 | pub proof fn theorem_routing(e:Engine)
+    | -------------------------------------- at the end of the function body
+171 |  ensures route(e,Op::TemporalEdge)==Proc::Caller,route(e,Op::Ordinary)==Proc::Caller,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

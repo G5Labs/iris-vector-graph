@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: refusal decided by the caller's writes instead of $TLEVEL",
+    "expect_fail_in": [
+      "theorem_loader_refusal"
+    ],
+    "find": "pub open spec fn refuses(st:St)->bool {st.tlevel>0}",
+    "name": "refuse-only-after-a-write",
+    "replace": "pub open spec fn refuses(st:St)->bool {st.pending.len()>0}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_loader_refusal"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/write_routing/model.json": "e202e0bcfef6562cd9e84f748e1989224ba49170a768f4c52e05c8b731b91ad2",
+    ".g5/Verus_verification/models/write_routing/write_routing.rs": "5b68bb38793f9e1aecd0237fa094a9c101830414054993a06a2abe6c0e13d16b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/refuse-only-after-a-write/20261116T221446Z/models/write_routing/write_routing.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_loader_refusal": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/20261116T221446Z-control-refuse-only-after-a-write-theorem_loader_refusal.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/20261116T221446Z-control-refuse-only-after-a-write.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/write_routing/20261116T221448Z-control-refuse-only-after-a-write/logs/20261116T221446Z-control-refuse-only-after-a-write-theorem_loader_refusal.log": "ca875b634706e0ff7e79d866872c2a0aac7bfbeb5ffec118842e254492ba5ac7",
+    ".g5/Verus_verification/results/write_routing/20261116T221448Z-control-refuse-only-after-a-write/logs/20261116T221446Z-control-refuse-only-after-a-write.log": "1bee30a9e2d997d4156f2183ac0aa44467795d6a1fba423238a1249bf77bfffb"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

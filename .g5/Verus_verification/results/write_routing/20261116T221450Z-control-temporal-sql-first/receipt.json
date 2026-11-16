@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "order: InsertEdge's SQL before its global writes (the repair direction)",
+    "expect_fail_in": [
+      "theorem_autocommit_off_temporal_edge_splits"
+    ],
+    "find": "  Op::TemporalEdge=>seq![Step::G,Step::S],",
+    "name": "temporal-sql-first",
+    "replace": "  Op::TemporalEdge=>seq![Step::S,Step::G],"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_autocommit_off_temporal_edge_splits"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/write_routing/model.json": "e202e0bcfef6562cd9e84f748e1989224ba49170a768f4c52e05c8b731b91ad2",
+    ".g5/Verus_verification/models/write_routing/write_routing.rs": "5b68bb38793f9e1aecd0237fa094a9c101830414054993a06a2abe6c0e13d16b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/temporal-sql-first/20261116T221449Z/models/write_routing/write_routing.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_autocommit_off_temporal_edge_splits": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/20261116T221449Z-control-temporal-sql-first-theorem_autocommit_off_temporal_edge_splits.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/20261116T221449Z-control-temporal-sql-first.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/write_routing/20261116T221450Z-control-temporal-sql-first/logs/20261116T221449Z-control-temporal-sql-first-theorem_autocommit_off_temporal_edge_splits.log": "40802644e5a99028584d06f86d667e38e63d674380029458326d831c21a746e9",
+    ".g5/Verus_verification/results/write_routing/20261116T221450Z-control-temporal-sql-first/logs/20261116T221449Z-control-temporal-sql-first.log": "c3ade9fdb4425eb8c439465d3ae22d1fa330718629c36b375d70f0cecb149dd3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

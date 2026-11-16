@@ -1,0 +1,68 @@
+{
+ "run": "20261116T221059Z",
+ "fixture": "ivg-retest-20261116-iris",
+ "steps": {
+  "setup": {
+   "schema": "Kg2",
+   "objectscript_failed": {},
+   "warnings": []
+  },
+  "tables": [
+   [
+    "KG2",
+    18
+   ]
+  ],
+  "S1_load_default_schema": "RAISED [%msg: < Table 'GRAPH_KG.NODES' not found>]",
+  "S1_read": null,
+  "S2_load_kg2_indexed": {
+   "nodes": 1,
+   "labels": 1,
+   "props": 2,
+   "elapsed_s": 0.2
+  },
+  "S2_read": {
+   "labels": [
+    "W36"
+   ],
+   "p": 1
+  },
+  "S3_load_kg2_noindex": {
+   "nodes": 1,
+   "labels": 1,
+   "props": 2,
+   "elapsed_s": 0.0
+  },
+  "S3_read_before_rebuild": null,
+  "S3_rebuild": {
+   "Graph.KG.rdfedges": false,
+   "Graph.KG.rdflabels": false,
+   "Graph.KG.rdfprops": false,
+   "Graph.KG.nodes": false
+  },
+  "S3_read_after_rebuild": null,
+  "S3_cypher_count": [
+   [
+    1
+   ]
+  ],
+  "S4_user_load_noindex": {
+   "nodes": 1,
+   "labels": 1,
+   "props": 2,
+   "elapsed_s": 0.0
+  },
+  "S4_rebuild": {
+   "Graph.KG.rdfedges": true,
+   "Graph.KG.rdflabels": true,
+   "Graph.KG.rdfprops": true,
+   "Graph.KG.nodes": true
+  },
+  "S4_read": {
+   "labels": [
+    "W36"
+   ],
+   "p": 1
+  }
+ }
+}

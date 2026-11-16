@@ -76,6 +76,15 @@
         "theorem_autocommit_off_purge_follows"
       ],
       "classification": "provider premise: SQL at $TLEVEL 0 with autocommit off does not open a level"
+    },
+    {
+      "name": "delete-sql-first",
+      "find": "  Op::TemporalDelete=>seq![Step::G,Step::S],",
+      "replace": "  Op::TemporalDelete=>seq![Step::S,Step::G],",
+      "expect_fail_in": [
+        "theorem_autocommit_off_temporal_edge_splits"
+      ],
+      "classification": "order: the temporal delete's SQL before its store kills"
     }
   ]
 }

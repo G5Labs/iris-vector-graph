@@ -322,6 +322,7 @@ The `BulkLoader` class trades per-row checks for speed.
 - Today it skips an input node as soon as its node row is stored, with that node's labels and properties. A load that failed after writing node rows therefore cannot be finished by loading again: those nodes keep no labels or properties.
 - It refuses a caller's open transaction and commits per batch.
 - It writes and rebuilds in the namespace's recorded IVG Schema, like every other IVG writer.
+- Today it uses `Graph_KG` unless it is given the schema, and its index rebuild always names the `Graph_KG` classes. In a namespace with another IVG Schema, a load without the schema fails, and an unindexed load cannot be made readable by the loader's rebuild.
 - Before its unindexed edge load writes any edge, it adds each edge's two end nodes to the loader's graph, so every edge it writes has both endpoints.
 - A row that IRIS refuses for a reason other than a repeat stops the load with a bulk load error that says how many rows went in first. It is never reported as zero rows inserted.
 
@@ -502,7 +503,7 @@ Open questions: [Can an explicitly named schema be recorded over another schema'
 - agent
 - architecture-decision
 
-Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-012)
+Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/bugs_issues.md#bug-plt-012)
 
 ### install.schema.speed
 
@@ -801,7 +802,7 @@ Open questions: [Is BulkLoader meant to be the only writer, on single-edge graph
 
 - Sources: [bulk_loader.py](../../../iris_vector_graph/bulk_loader.py); [USER_GUIDE](../../../docs/USER_GUIDE.md); [ADR-0016](../../../docs/adr/0016-one-ivg-schema-per-namespace.md); endpoints: [`iris_vector_graph/bulk_loader.py::BulkLoader._register_endpoints`](../../../iris_vector_graph/bulk_loader.py#L201-L228) (indexed insert into the loader's graph); refusals: [`::BulkLoader._executemany_batched`](../../../iris_vector_graph/bulk_loader.py#L83-L154) (batch failure or short count goes row by row `:118-143`; `BulkLoadError` `:126`, `:142`); live tests [test_bulk_loader_endpoints.py](../../../tests/integration/test_bulk_loader_endpoints.py), unit `tests/unit/test_bulk_loader_unit.py::TestExecutemanyBatched::test_non_unique_error_raises`
 - Playbook: [WRT-B7.12](../../../experiment/playbook-completion/ontology/03-writes.md#L207), [WRT-B7.14](../../../experiment/playbook-completion/ontology/03-writes.md#L209)
-- Verus: [bulk_load](../../Verus_verification/models/bulk_load/NOTES.md) `theorem_complete_rerun_is_noop`, `theorem_interrupted_load_is_never_completed`, `theorem_noindex_invisible_until_rebuild`, `theorem_done_then_rebuild_reads_input`, `theorem_same_id_other_graph_is_written` (as-built, node loads). Endpoint registration and the duplicate-or-refusal decision have no formal contract; the playbook's `proofs-d1c` `bulk_l2` (reviewed design) models chunk checkpoints only.
+- Verus: [bulk_load](../../Verus_verification/models/bulk_load/NOTES.md) `theorem_complete_rerun_is_noop`, `theorem_interrupted_load_is_never_completed`, `theorem_noindex_invisible_until_rebuild`, `theorem_done_then_rebuild_reads_input`, `theorem_same_id_other_graph_is_written`, `theorem_loader_without_schema_writes_nothing`, `theorem_rebuild_in_other_schema_leaves_rows_unreadable` (as-built, node loads). Endpoint registration and the duplicate-or-refusal decision have no formal contract; the playbook's `proofs-d1c` `bulk_l2` (reviewed design) models chunk checkpoints only.
 - Expands: [Bulk loading](#install.bulk_load)
 - agent
 - user-facing-behavior, operations
@@ -810,7 +811,7 @@ Metadata note: the phase order and the re-run outcome after an interrupted load 
 
 Public case M23. A repeat is told from a refusal by the error text: SQLCODE -119 or the word "unique" in the message (`bulk_loader.py:105-106`), so a non-repeat refusal whose message happens to contain "unique" would be skipped as a repeat (code reading; not run). Observed divergence: the loader defaults to `Graph_KG`, and its index rebuild names the `Graph_KG` table classes whatever schema it was given.
 
-Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-012); [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011); [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/bugs_issues.md#bug-plt-027)
+Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/bugs_issues.md#bug-plt-012); [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011); [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/bugs_issues.md#bug-plt-027)
 
 State machines: [bulk load](../../Verus_verification/models/bulk_load/manifest.json)
 

@@ -7,6 +7,8 @@
 //   engine._iris_obj (engine.py :1894-1943) opens a Native API connection of its own when the engine knows its
 //   credentials (from_connect :487-511), used by purge_before (_engine/temporal.py :623-640) and
 //   set_temporal_structural (:722-746).
+//   Iteration 31: bulk_create_edges_temporal (store.bulk_write_temporal_edges -> BulkInsert) and delete_edge_temporal
+//   (store.delete_temporal_edge -> DeleteEdge) are direct calls of the same shape (stores first, then SQL).
 //   Direct ObjectScript calls (no WriteTxn): TemporalIndex.InsertEdge sets ^KG("tout"/"tin") (WriteStores) before
 //   its embedded SQL inserts the marked structural row and endpoint nodes; PurgeBefore runs RetireExpired (SQL) before
 //   its kills; TemporalPolicy.Apply sets globals only.
@@ -21,7 +23,7 @@ pub type W=int;
 /// The server process a call's writes run in.
 pub enum Proc {Caller,Own}
 pub enum Engine {OnCallerConn,FromConnect}
-pub enum Op {Ordinary,TemporalEdge,Purge,Policy}
+pub enum Op {Ordinary,TemporalEdge,TemporalBatch,TemporalDelete,Purge,Policy}
 pub enum Start {Sql,AutocommitOff}
 pub enum End {Commit,Rollback}
 /// engine._iris_obj(): its own Native API connection when it knows the credentials, else createIRIS(engine.conn).
@@ -30,6 +32,8 @@ pub open spec fn route(e:Engine,op:Op)->Proc {
  match op {
   Op::Ordinary=>Proc::Caller,
   Op::TemporalEdge=>Proc::Caller,
+  Op::TemporalBatch=>Proc::Caller,
+  Op::TemporalDelete=>Proc::Caller,
   Op::Purge=>native_proc(e),
   Op::Policy=>native_proc(e),
  }
@@ -70,6 +74,8 @@ pub open spec fn steps(op:Op)->Seq<Step> {
  match op {
   Op::Ordinary=>seq![Step::S],
   Op::TemporalEdge=>seq![Step::G,Step::S],
+  Op::TemporalBatch=>seq![Step::G,Step::S],
+  Op::TemporalDelete=>seq![Step::G,Step::S],
   Op::Purge=>seq![Step::S,Step::G],
   Op::Policy=>seq![Step::G],
  }
@@ -131,14 +137,16 @@ pub proof fn theorem_start_transaction_direct_call_follows_caller_end(e:Engine,o
  assert(c.durable=~=Set::<W>::empty());
  if end==End::Commit {assert(c.pending.to_set().contains(2*w+i)) by {assert(c.pending[i]==2*w+i);}}
 }
-/// T11, T12 (as built): with the driver's autocommit off and nothing written, the caller's rollback of a
-/// create_edge_temporal keeps its temporal stores (effect 0) and removes its structural row and nodes (effect 1).
-pub proof fn theorem_autocommit_off_temporal_edge_splits(e:Engine,w:W)
- ensures kept(Start::AutocommitOff,e,Op::TemporalEdge,w,End::Rollback,0),
-  !kept(Start::AutocommitOff,e,Op::TemporalEdge,w,End::Rollback,1),
-  kept(Start::AutocommitOff,e,Op::TemporalEdge,w,End::Commit,1),
+/// T11, T12, W37 (as built): with the driver's autocommit off and nothing written, the caller's rollback of a direct
+/// temporal call whose global writes come before its SQL (create_edge_temporal, bulk_create_edges_temporal,
+/// delete_edge_temporal) keeps its temporal-store change (effect 0) and undoes its structural change (effect 1).
+pub proof fn theorem_autocommit_off_temporal_edge_splits(e:Engine,op:Op,w:W)
+ requires (op==Op::TemporalEdge || op==Op::TemporalBatch || op==Op::TemporalDelete)
+ ensures kept(Start::AutocommitOff,e,op,w,End::Rollback,0),
+  !kept(Start::AutocommitOff,e,op,w,End::Rollback,1),
+  kept(Start::AutocommitOff,e,op,w,End::Commit,1),
 {
- let c=call(start(Start::AutocommitOff),e,Op::TemporalEdge,w);
+ let c=call(start(Start::AutocommitOff),e,op,w);
  assert(c.durable=~=set![2*w]);
  assert(c.pending=~=seq![2*w+1]);
  assert(c.pending.to_set().contains(2*w+1)) by {assert(c.pending[0]==2*w+1);}

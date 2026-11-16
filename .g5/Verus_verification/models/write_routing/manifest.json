@@ -1,6 +1,6 @@
 {
   "title": "write routing",
-  "question": "Whether an engine write joins the caller's transaction: WriteTxn nesting (Txn_Begin/End/Undo), routing of a call to the caller's or the engine's own server process (from_connect), direct ObjectScript calls' global-then-SQL order under driver autocommit off, the caller-transaction refusal; failed-write undo not natively exercised",
+  "question": "Whether an engine write joins the caller's transaction: WriteTxn nesting (Txn_Begin/End/Undo), routing of a call to the caller's or the engine's own server process (from_connect), direct ObjectScript calls' global-then-SQL order under driver autocommit off (temporal write, batch and delete, iteration 31), the caller-transaction refusal; failed-write undo not natively exercised",
   "ontology_ids": [
     "structure.write",
     "temporal.write"
@@ -65,6 +65,12 @@
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_autocommit_off_purge_follows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-sql-first",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_autocommit_off_temporal_edge_splits\"], \"verdict\": \"EXPECTED_FAIL\"}"
     }
   ]
 }

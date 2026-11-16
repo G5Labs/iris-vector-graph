@@ -25,7 +25,7 @@ directly as an ordered list of global (G) and SQL (S) writes: `InsertEdge` G the
 |---|---|---|
 | `theorem_writetxn_call_follows_caller_end` | a WriteTxn call is kept exactly when the caller commits, however it opened its transaction | T1-T3, binding |
 | `theorem_start_transaction_direct_call_follows_caller_end` | after `START TRANSACTION`, every effect of a direct call on the caller's process follows the caller | T4, T5, T9, binding |
-| `theorem_autocommit_off_temporal_edge_splits` | autocommit off, nothing written: a rolled-back `create_edge_temporal` keeps its temporal stores and loses its marked row and nodes (bug-tmp-102) | T11, T12, binding |
+| `theorem_autocommit_off_temporal_edge_splits` | autocommit off, nothing written: a rolled-back `create_edge_temporal`, `bulk_create_edges_temporal` or `delete_edge_temporal` keeps its temporal-store change and loses its structural change (bug-tmp-102; batch and delete added in iteration 31) | T11, T12, W37, binding |
 | `theorem_autocommit_off_purge_follows` | the same caller: a purge on the caller's process follows the caller (its SQL comes first) | binding |
 | `theorem_own_process_write_survives_rollback` | a call on the engine's own connection is durable whatever the caller does | T10, binding |
 | `theorem_routing` | the routing above, for both engines | T5, T10 |
@@ -36,7 +36,7 @@ No `assume`, `admit` or `external_body`; bundled vstd only.
 
 ## Controls
 
-Eight, all EXPECTED_FAIL full and isolated: `commit-ends-all-levels` (4.6.3's SQL COMMIT), `temporal-on-own-connection`
+Nine (`delete-sql-first` added in iteration 31), all EXPECTED_FAIL full and isolated: `commit-ends-all-levels` (4.6.3's SQL COMMIT), `temporal-on-own-connection`
 (the USER_GUIDE's description), `purge-on-caller-connection`, `undo-ends-all-levels`, `refuse-only-after-a-write`,
 `own-process-joins`, `temporal-sql-first` (the repair direction for bug-tmp-102), `no-implicit-level` (the provider
 premise). The first five-theorem version of this model and its six controls are kept in `results/write_routing/`.
@@ -46,7 +46,7 @@ premise). The first five-theorem version of this model and its six controls are 
 [binding.py](binding.py): actual engine calls on the run-isolated retest fixture over 32 histories (engine on the
 caller's connection or `from_connect` × ordinary node+edge, temporal edge, purge, policy × `START TRANSACTION` or
 autocommit off × commit or rollback) and 4 loader-refusal histories, each read afterwards on a separate observer
-connection (temporal window, Cypher count, `get_node`, `get_temporal_structural`). **AGREES** with the port; every
+connection (temporal window, Cypher count, `get_node`, `get_temporal_structural`); iteration 31 adds the batch writer and the delete (52 histories). **AGREES** with the port; every
 required mutation is detected (`undo_ends_all_levels` is not exercised). The **first run DISAGREED** in three
 autocommit-off rollback histories; the targeted probe (`iteration-26/autocommit_probe.py`) showed the split state, and
 the model gained the call shapes. That receipt is kept.
@@ -54,6 +54,6 @@ the model gained the call shapes. That receipt is kept.
 ## Limits
 
 Transcription with native agreement; no product body is verified. Not exercised: a write that fails inside the
-caller's transaction, `bulk_create_edges_temporal`, `delete_edge_temporal`, `rebuild_temporal_latest`, structural
+caller's transaction, `rebuild_temporal_latest`, structural
 drop/backfill, BM25, vector and ledger calls, embedded (in-process) connections, a namespace without the declared
 adjacency index (where `^KG` goes over a second connection, bug-str-015), and IRIS 2026.3 (F-C1705).

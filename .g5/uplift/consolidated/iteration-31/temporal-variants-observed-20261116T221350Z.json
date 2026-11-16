@@ -1,0 +1,72 @@
+{
+ "run": "20261116T221350Z",
+ "fixture": "ivg-retest-20261116-iris",
+ "bulk_signature": "(edges: 'list', upsert: 'bool' = False, suppress_reverse_index: 'bool' = False, graph: 'Optional[str]' = None, mode: 'str' = '') -> \"'TemporalWriteCount'\"",
+ "delete_signature": "(source: 'str', predicate: 'str', target: 'str', timestamp: 'int', graph: 'Optional[str]' = None) -> 'bool'",
+ "cases": {
+  "V1_bulk_off": {
+   "txn": {
+    "tlevel_before": 0,
+    "tlevel_after_call": 1,
+    "error": null
+   },
+   "read": {
+    "window": 1,
+    "cypher": 0,
+    "kg_out": false,
+    "node_a": false
+   }
+  },
+  "V2_delete_off": {
+   "before": {
+    "window": 1,
+    "cypher": 1,
+    "kg_out": true,
+    "node_a": true
+   },
+   "txn": {
+    "tlevel_before": 0,
+    "tlevel_after_call": 1,
+    "error": null
+   },
+   "read": {
+    "window": 0,
+    "cypher": 1,
+    "kg_out": true,
+    "node_a": true
+   }
+  },
+  "V1_bulk_sql": {
+   "txn": {
+    "tlevel_before": 1,
+    "tlevel_after_call": 1,
+    "error": null
+   },
+   "read": {
+    "window": 0,
+    "cypher": 0,
+    "kg_out": false,
+    "node_a": false
+   }
+  },
+  "V2_delete_sql": {
+   "before": {
+    "window": 1,
+    "cypher": 1,
+    "kg_out": true,
+    "node_a": true
+   },
+   "txn": {
+    "tlevel_before": 1,
+    "tlevel_after_call": 1,
+    "error": null
+   },
+   "read": {
+    "window": 1,
+    "cypher": 1,
+    "kg_out": true,
+    "node_a": true
+   }
+  }
+ }
+}

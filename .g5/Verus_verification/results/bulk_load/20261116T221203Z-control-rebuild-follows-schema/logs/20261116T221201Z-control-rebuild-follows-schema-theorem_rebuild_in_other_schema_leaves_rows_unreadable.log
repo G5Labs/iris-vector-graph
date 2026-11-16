@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/bulk_load/controls/rebuild-follows-schema/20261116T221201Z/models/bulk_load/bulk_load.rs:148:59
+    |
+146 | pub proof fn theorem_rebuild_in_other_schema_leaves_rows_unreadable(db:Db,c:Call,inp:Input,n:Node)
+    | -------------------------------------------------------------------------------------------------- at the end of the function body
+147 |  requires c.noindex,fresh(db,c.graph,inp),inp.contains_key(n)
+148 |  ensures load_in(db,c,inp,true).contains_key((c.graph,n)),!visible(rebuild_as_built(load_in(db,c,inp,true),false),c.graph,n),
+    |                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

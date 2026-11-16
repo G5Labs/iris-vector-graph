@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "order: the temporal delete's SQL before its store kills",
+    "expect_fail_in": [
+      "theorem_autocommit_off_temporal_edge_splits"
+    ],
+    "find": "  Op::TemporalDelete=>seq![Step::G,Step::S],",
+    "name": "delete-sql-first",
+    "replace": "  Op::TemporalDelete=>seq![Step::S,Step::G],"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_autocommit_off_temporal_edge_splits"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/write_routing/model.json": "e202e0bcfef6562cd9e84f748e1989224ba49170a768f4c52e05c8b731b91ad2",
+    ".g5/Verus_verification/models/write_routing/write_routing.rs": "5b68bb38793f9e1aecd0237fa094a9c101830414054993a06a2abe6c0e13d16b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/delete-sql-first/20261116T221451Z/models/write_routing/write_routing.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_autocommit_off_temporal_edge_splits": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/20261116T221451Z-control-delete-sql-first-theorem_autocommit_off_temporal_edge_splits.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/20261116T221451Z-control-delete-sql-first.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/write_routing/20261116T221452Z-control-delete-sql-first/logs/20261116T221451Z-control-delete-sql-first-theorem_autocommit_off_temporal_edge_splits.log": "7bbe06365fc9d138c1fa80c735cc44f7314eb8102ca97101191de3e22dfe102b",
+    ".g5/Verus_verification/results/write_routing/20261116T221452Z-control-delete-sql-first/logs/20261116T221451Z-control-delete-sql-first.log": "660c4555d47a9255c323dc73f39ae909eadbefd54bc05ea62b3ad75a0ba95908"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

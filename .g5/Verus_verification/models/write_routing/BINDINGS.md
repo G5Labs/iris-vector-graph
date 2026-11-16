@@ -1,6 +1,6 @@
 # write routing
 
-Whether an engine write joins the caller's transaction: WriteTxn nesting (Txn_Begin/End/Undo), routing of a call to the caller's or the engine's own server process (from_connect), direct ObjectScript calls' global-then-SQL order under driver autocommit off, the caller-transaction refusal; failed-write undo not natively exercised
+Whether an engine write joins the caller's transaction: WriteTxn nesting (Txn_Begin/End/Undo), routing of a call to the caller's or the engine's own server process (from_connect), direct ObjectScript calls' global-then-SQL order under driver autocommit off (temporal write, batch and delete, iteration 31), the caller-transaction refusal; failed-write undo not natively exercised
 
 Evidence status: active. Variant: as-built bounded transcription.
 

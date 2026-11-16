@@ -130,10 +130,35 @@ def main():
                    "rerun_stats": stm if rerun is not None else None,
                    "default_a": view(dbm, "", a, {r: True}) if seeded else None, "first_raised": stop != "done"}
             if alt != got: sens[r] += 1
+    # bug-plt-012 (iteration 31): namespace W37 whose IVG Schema is Kg2 (set up by iteration-31/schema_probe.py)
+    import iris.dbapi
+    from iris_vector_graph.engine import IRISGraphEngine
+    from tests import conftest as fx
+    w = iris.dbapi.connect(hostname="127.0.0.1", port=runtime.PORT, namespace="W37", username="_SYSTEM", password="SYS")
+    assert fx.container_hostname_matches(fx.probe_instance_hostname(w), fx.docker_container_hostname(runtime.NAME), fx.docker_container_id(runtime.NAME))
+    ew = IRISGraphEngine(w, embedding_dimension=768, schema_prefix="Kg2", native_cypher=False)
+    schema_cells = []
+    for label, schema, noindex in [("S1 default schema", None, False), ("S2 Kg2 indexed", "Kg2", False), ("S3 Kg2 noindex + rebuild", "Kg2", True)]:
+        n = f"bls{TAG}{label[:2]}"
+        L = BulkLoader(w) if schema is None else BulkLoader(w, schema=schema)
+        try:
+            L.load_nodes([(n, {"namespace": "BLS", "p": 1})], use_noindex=noindex); raised = False
+        except Exception:
+            raised = True
+        rb = L.rebuild_all_indices() if (noindex and not raised) else None
+        readable = ew.get_node(n) is not None
+        exp = {"S1 default schema": (True, False, None), "S2 Kg2 indexed": (False, True, None), "S3 Kg2 noindex + rebuild": (False, False, False)}[label]
+        got = (raised, readable, None if rb is None else any(rb.values()))
+        cell = {"history": label, "observed": {"raised": raised, "readable": readable, "rebuild_any_true": got[2]}, "expected": list(exp)}
+        schema_cells.append(cell); cells.append(cell)
+        if got != exp: mism.append(cell)
+        if label.startswith("S1") and not got[0] is False: sens["default_schema_follows_namespace"] = sens.get("default_schema_follows_namespace", 0) + 1
+        if label.startswith("S3") and not got[1]: sens["rebuild_follows_schema"] = sens.get("rebuild_follows_schema", 0) + 1
+    w.close()
     c.close()
     body = {"kind": "binding", "model": "bulk_load", "fixture": runtime.NAME, "port": runtime.PORT,
             "product_baseline": runtime.PRODUCT, "run": RUN, "graph": graph,
-            "verdict": "AGREES" if not mism else "DISAGREES", "histories": len(cells), "comparisons": 5 * len(cells),
+            "verdict": "AGREES" if not mism else "DISAGREES", "histories": len(cells), "comparisons": 5 * (len(cells) - 3) + 3 * 3,
             "mismatches": mism, "sensitivities_detected_histories": sens,
             "all_sensitivities_detected": all(v > 0 for v in sens.values()), "cells": cells,
             "elapsed_s": round(time.time() - t0, 1),
@@ -142,7 +167,7 @@ def main():
             "scope": "Actual BulkLoader.load_nodes, rebuild_all_indices and get_node on IRIS 2026.1 (pin 3eaa79cf), one batch per "
                      "phase, two fresh nodes per history, skip_existing=True. Interruptions injected at the first label or "
                      "property executemany. load_edges, endpoint registration, Cypher readers and duplicate-vs-refusal "
-                     "classification by error text are outside this binding."}
+                     "classification by error text are outside this binding. Three schema histories run in namespace W37 (IVG Schema Kg2)."}
     out = REPO / ".g5/Verus_verification/results/bulk_load" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     out.mkdir(parents=True); (out / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "histories", "comparisons", "all_sensitivities_detected",

@@ -1,6 +1,6 @@
 {
   "title": "bulk load",
-  "question": "BulkLoader.load_nodes skip scan, phase order, per-batch commit, %NOINDEX visibility and rebuild, graph scope; re-run after an interrupted load never completes it (bug-plt-011); default load invisible until rebuild (bug-plt-027); load_edges, endpoints, duplicate-vs-refusal and schema outside",
+  "question": "BulkLoader.load_nodes skip scan, phase order, per-batch commit, %NOINDEX visibility and rebuild, graph scope; re-run after an interrupted load never completes it (bug-plt-011); default load invisible until rebuild (bug-plt-027); schema ignored (bug-plt-012, iteration 31); load_edges, endpoints and duplicate-vs-refusal outside",
   "ontology_ids": [
     "install.bulk_load.loader",
     "install.bulk_load.rebuild"
@@ -10,7 +10,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 8}"
+      "expect": "{\"errors\": 0, \"verified\": 10}"
     },
     {
       "label": "phase1-not-committed",
@@ -53,6 +53,18 @@
       "kind": "binding",
       "variant": "as-built bounded transcription",
       "expect": null
+    },
+    {
+      "label": "rebuild-follows-schema",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rebuild_in_other_schema_leaves_rows_unreadable\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "default-schema-follows-namespace",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_loader_without_schema_writes_nothing\"], \"verdict\": \"EXPECTED_FAIL\"}"
     }
   ]
 }

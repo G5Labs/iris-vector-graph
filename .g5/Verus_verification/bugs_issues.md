@@ -1046,7 +1046,9 @@ Cause: `create_edge_temporal` calls `Graph.KG.TemporalIndex.InsertEdge` directly
 
 Consequence: a rolled-back temporal edge stays in window reads, aggregates and latest-event reads, while Cypher, traversal and the node readers never saw it; the two readers disagree permanently. High: wrong results after a rollback the caller relied on, with a confirmed trigger on a documented caller mode. `delete_edge_temporal` repairs one edge if the caller knows it.
 
-Repair proposal (checked in the model only): open the caller's level first, as `WriteTxn.begin` does with autocommit off (`Txn_Begin(1)`), around the direct temporal calls, or write the SQL part first (control `temporal-sql-first` makes the split theorem fail). Preserve: the call joins the caller's transaction after `START TRANSACTION` on both engines (T4, T5). Distinguishing case: T11 against T13. Not checked: `bulk_create_edges_temporal` and `delete_edge_temporal` under the same caller.
+The same rule holds for the batch writer and the delete (iteration 31, [observation](../uplift/consolidated/iteration-31/temporal-variants-observed-20261116T221350Z.json), [binding](results/write_routing/20261116T221455Z-binding/receipt.json)): a rolled-back `bulk_create_edges_temporal` keeps its temporal entries and loses its structural rows and nodes; a rolled-back `delete_edge_temporal` leaves the temporal edge deleted while its structural row and `^KG("out")` entry come back. Under `START TRANSACTION` both are fully undone.
+
+Repair proposal (checked in the model only): open the caller's level first, as `WriteTxn.begin` does with autocommit off (`Txn_Begin(1)`), around the direct temporal calls, or write the SQL part first (controls `temporal-sql-first`, `delete-sql-first` make the split theorem fail). Preserve: the calls join the caller's transaction after `START TRANSACTION` on both engines (T4, T5, W37). Distinguishing case: T11 against T13.
 
 <a id="bug-str-004"></a>
 ### verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity
@@ -2739,6 +2741,25 @@ Consequence: `vec_info` over-reports the index size after updates, and one wrong
 
 Repair proposal (checked in the model only): count only IDs not yet stored, and refuse a vector whose width differs from the index's (controls `count-only-new-ids` and `refuse-other-width` make the as-built theorems fail); preserve replacement of a stored ID's vector. Distinguishing cases: V9 and V11.
 
+<a id="bug-plt-012"></a>
+### BulkLoader ignores the namespace's IVG Schema
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-13
+
+Found by: A-platform F-B6 (sub-reader b), source reading; confirmed in the retest's iteration 31 with predictions frozen first ([predictions](../uplift/consolidated/iteration-31/schema-PAIRS.md)); [bulk_load](models/bulk_load/NOTES.md) `theorem_loader_without_schema_writes_nothing`, `theorem_rebuild_in_other_schema_leaves_rows_unreadable`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin, in a new namespace `W37` set up by `initialize_schema()` with `schema_prefix="Kg2"` ([observation](../uplift/consolidated/iteration-31/schema-observed-20261116T221059Z.json); [binding](results/bulk_load/20261116T221240Z-binding/receipt.json)). `BulkLoader(conn).load_nodes(...)` fails with "Table 'GRAPH_KG.NODES' not found" and writes nothing. With `schema="Kg2"` an indexed load is readable at once, but a default unindexed load followed by `rebuild_all_indices()` answers `false` for all four `Graph.KG.*` classes and the node stays unreadable through the Kg2 engine's `get_node`. Passing neighbor: the same unindexed load and rebuild in `USER` (`Graph_KG`) answers `true` four times and reads back.
+
+Expected: [install.bulk_load.loader](../ontology/concepts/install.g5.md#install.bulk_load.loader): "It writes and rebuilds in the namespace's recorded IVG Schema, like every other IVG writer"; ADR-0016.
+
+Cause: `BulkLoader` defaults to `schema="Graph_KG"` and `rebuild_all_indices` names the `Graph.KG.*` classes whatever schema it was given (`bulk_loader.py:41, 56-60, 495`).
+
+Consequence: in a namespace with another IVG Schema, the loader fails unless told the schema, and then its default unindexed loads never become readable through its own rebuild. The original entry rated this High before lowering it for an unconfirmed trigger; both failures are loud (an SQL error, or a rebuild that answers `false` with warnings), so Medium: visible misbehavior an administrator can repair.
+
+Repair proposal (checked in the model only): take the schema from the namespace's record, and rebuild the classes of that schema's package (controls `default-schema-follows-namespace` and `rebuild-follows-schema`). Preserve `Graph_KG` behavior. Distinguishing cases: S1 and S3 against S4.
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -4194,8 +4215,6 @@ These anchors preserve older links. The corresponding claims and review disposit
 <span id="bug-plt-008"></span> [bug-plt-008: review record](audits/register-20261115/bugs-review.md#bug-plt-008)
 
 <span id="bug-plt-010"></span> [bug-plt-010: review record](audits/register-20261115/bugs-review.md#bug-plt-010)
-
-<span id="bug-plt-012"></span> [bug-plt-012: review record](audits/register-20261115/bugs-review.md#bug-plt-012)
 
 <span id="bug-plt-024"></span> [bug-plt-024: review record](audits/register-20261115/bugs-review.md#bug-plt-024)
 

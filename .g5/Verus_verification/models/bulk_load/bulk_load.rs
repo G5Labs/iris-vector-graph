@@ -4,6 +4,8 @@
 //   commit :115-116; a failed phase rolls back its own batch :119-120 and raises), _executemany_batched :83-154,
 //   rebuild_all_indices :484-510 (%BuildIndices on the four classes). Reader: get_node -> get_nodes (index equality
 //   reads, graph-scoped), observed natively to return nothing for a %NOINDEX row until the rebuild.
+//   Schema (iteration 31): SCHEMA = "Graph_KG" :41 is the default, and rebuild_all_indices names Graph.KG.* classes :495
+//   whatever schema the loader was given.
 // Domain: one batch per phase (batch_size >= input), distinct input ids, skip_existing=True (the default). The SQL
 // engine's index behavior is a provider premise observed on the fixture, not derived here.
 use vstd::prelude::*;
@@ -129,5 +131,20 @@ pub proof fn theorem_other_graphs_untouched(db:Db,c:Call,inp:Input,k:(Graph,Node
 pub proof fn theorem_same_id_other_graph_is_written(db:Db,c:Call,inp:Input,n:Node,h:Graph)
  requires c.stop==Stop::Done,!c.noindex,h!=c.graph,db.contains_key((h,n)),fresh(db,c.graph,inp),inp.contains_key(n)
  ensures readable_as_input(load(db,c,inp),c.graph,inp,n),load(db,c,inp)[(h,n)]==db[(h,n)],
+{}
+
+/// bug-plt-012: a loader whose schema has no tables in the namespace fails at its first statement and writes nothing.
+pub open spec fn load_in(db0:Db,c:Call,inp:Input,tables_exist:bool)->Db {if tables_exist {load(db0,c,inp)} else {db0}}
+/// bug-plt-012: rebuild_all_indices names the Graph.KG classes; where the namespace's IVG Schema is another, they do not
+/// exist and nothing is rebuilt.
+pub open spec fn rebuild_as_built(db:Db,ns_is_graph_kg:bool)->Db {if ns_is_graph_kg {rebuild(db)} else {db}}
+/// S1: a loader left at the default schema in a namespace with another IVG Schema writes nothing.
+pub proof fn theorem_loader_without_schema_writes_nothing(db0:Db,c:Call,inp:Input)
+ ensures load_in(db0,c,inp,false)==db0,
+{}
+/// S3: given the right schema, a %NOINDEX load is written but stays unreadable after the loader's own rebuild.
+pub proof fn theorem_rebuild_in_other_schema_leaves_rows_unreadable(db:Db,c:Call,inp:Input,n:Node)
+ requires c.noindex,fresh(db,c.graph,inp),inp.contains_key(n)
+ ensures load_in(db,c,inp,true).contains_key((c.graph,n)),!visible(rebuild_as_built(load_in(db,c,inp,true),false),c.graph,n),
 {}
 }
