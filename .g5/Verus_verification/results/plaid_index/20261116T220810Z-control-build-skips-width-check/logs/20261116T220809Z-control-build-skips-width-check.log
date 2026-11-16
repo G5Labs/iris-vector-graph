@@ -1,0 +1,20 @@
+verification results:: 4 verified, 1 errors
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/build-skips-width-check/20261116T220809Z/models/plaid_index/plaid_index.rs:45:87
+   |
+45 |  requires !ix.tokens.contains_key(d),ix.n_docs==ix.tokens.dom().len(),ix.tokens.dom().finite()
+   |                                                                                       ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/build-skips-width-check/20261116T220809Z/models/plaid_index/plaid_index.rs:26:10
+   |
+24 | pub proof fn theorem_build_refuses_other_width(docs:Map<D,Seq<Tok>>,dim:nat,d:D,i:int)
+   | -------------------------------------------------------------------------------------- at the end of the function body
+25 |  requires docs.contains_key(d),0<=i<docs[d].len(),docs[d][i].len()!=dim
+26 |  ensures build(docs,dim).is_none(),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 1 warning emitted
+

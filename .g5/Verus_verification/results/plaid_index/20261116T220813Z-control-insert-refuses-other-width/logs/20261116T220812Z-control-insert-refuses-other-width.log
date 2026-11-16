@@ -1,0 +1,68 @@
+verification results:: 1 verified, 4 errors
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:45:87
+   |
+45 |  requires !ix.tokens.contains_key(d),ix.n_docs==ix.tokens.dom().len(),ix.tokens.dom().finite()
+   |                                                                                       ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:29:1
+   |
+29 | pub proof fn theorem_reinsert_inflates_counts(ix:Ix,d:D,ts:Seq<Tok>)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:31:57
+   |
+29 | pub proof fn theorem_reinsert_inflates_counts(ix:Ix,d:D,ts:Seq<Tok>)
+   | -------------------------------------------------------------------- at the end of the function body
+30 |  requires ix.tokens.contains_key(d)
+31 |  ensures insert(ix,d,ts).tokens.dom()=~=ix.tokens.dom(),insert(ix,d,ts).n_docs==ix.n_docs+1,
+   |                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:32:3
+   |
+29 | pub proof fn theorem_reinsert_inflates_counts(ix:Ix,d:D,ts:Seq<Tok>)
+   | -------------------------------------------------------------------- at the end of the function body
+...
+32 |   insert(ix,d,ts).total==ix.total+ts.len(),
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:36:10
+   |
+35 | pub proof fn theorem_reinsert_scored_on_new_tokens(ix:Ix,d:D,ts:Seq<Tok>,q:Seq<Tok>)
+   | ------------------------------------------------------------------------------------ at the end of the function body
+36 |  ensures score(insert(ix,d,ts),q,d)==maxsim(q,ts),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:41:10
+   |
+41 |  ensures insert(ix,d,ts).tokens[d]==ts,insert(ix,d,ts).dim==ix.dim,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:41:10
+   |
+39 | pub proof fn theorem_insert_accepts_other_width(ix:Ix,d:D,ts:Seq<Tok>)
+   | ---------------------------------------------------------------------- at the end of the function body
+40 |  requires ts.len()>0,ts[0].len()!=ix.dim
+41 |  ensures insert(ix,d,ts).tokens[d]==ts,insert(ix,d,ts).dim==ix.dim,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:47:9
+   |
+47 | {assert(insert(ix,d,ts).tokens.dom()=~=ix.tokens.dom().insert(d));}
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 5 previous errors; 1 warning emitted
+

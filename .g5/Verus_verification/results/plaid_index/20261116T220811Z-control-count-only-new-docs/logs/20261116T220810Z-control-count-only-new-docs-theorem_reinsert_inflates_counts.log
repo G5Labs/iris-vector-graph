@@ -1,0 +1,22 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/count-only-new-docs/20261116T220810Z/models/plaid_index/plaid_index.rs:45:87
+   |
+45 |  requires !ix.tokens.contains_key(d),ix.n_docs==ix.tokens.dom().len(),ix.tokens.dom().finite()
+   |                                                                                       ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/count-only-new-docs/20261116T220810Z/models/plaid_index/plaid_index.rs:31:57
+   |
+29 | pub proof fn theorem_reinsert_inflates_counts(ix:Ix,d:D,ts:Seq<Tok>)
+   | -------------------------------------------------------------------- at the end of the function body
+30 |  requires ix.tokens.contains_key(d)
+31 |  ensures insert(ix,d,ts).tokens.dom()=~=ix.tokens.dom(),insert(ix,d,ts).n_docs==ix.n_docs+1,
+   |                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 1 warning emitted
+

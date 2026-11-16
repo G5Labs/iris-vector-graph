@@ -1,0 +1,45 @@
+{
+  "title": "plaid index",
+  "question": "PLAID: build refuses another width; insert overwrites tokens but counts documents and tokens again (F-0608), accepts another width; scoring on stored tokens (MaxSim provider)",
+  "ontology_ids": [
+    "search.plaid"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 5}"
+    },
+    {
+      "label": "build-skips-width-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_build_refuses_other_width\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "count-only-new-docs",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_reinsert_inflates_counts\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "keep-old-tokens",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_reinsert_scored_on_new_tokens\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "insert-refuses-other-width",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_insert_accepts_other_width\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

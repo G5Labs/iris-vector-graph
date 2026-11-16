@@ -199,7 +199,7 @@ A named search index changes only through its own build, insert, delete and drop
 An IVF build reads vectors from the requested graph and model's route, never another pair's table. If the pair has no route, it raises an error before reading any vector table or starting the index build; a routed selection with no vectors also raises an error.
 - Request validation and required library loading may refuse the build before the route is read. Building an index does not establish that later graph writes keep it current; the caller owns [index upkeep](#search.scope.indexes.upkeep).
 
-## VecIndex search
+## VecIndex and PLAID search
 
 
 <a id="search.vecindex"></a>
@@ -212,6 +212,16 @@ A VecIndex is a named vector index that a caller fills and searches by name; it 
 - Inserting an ID again replaces its vector. Today the reported count still goes up by one, and creating the index again under the same name keeps the vectors but reports a count of 0.
 - Today a vector of another width is accepted and becomes the index's recorded width; distances to it use only the parts both vectors have.
 - Dropping the index removes everything; a search then returns nothing.
+
+
+<a id="search.plaid"></a>
+[I · search.plaid]
+
+A PLAID index holds several vectors per document and ranks documents by late interaction: for each query vector, the best dot product with any of the document's vectors, summed.
+
+- A build refuses a vector of another width before writing anything.
+- Inserting a document again replaces its vectors, so it is scored on the new ones. Today the reported document and vector counts still go up by the insert.
+- Today an insert of another width is accepted; it is scored on the parts both vectors have and can outrank correctly sized documents.
 
 ## Quarantine
 
@@ -671,6 +681,18 @@ State machines: [vector admission](../../Verus_verification/models/vector_admiss
 Findings: [Vector index stores do not check width or duplicates](../../Verus_verification/bugs_issues.md#F-0608); [Creating a VecIndex again under the same name reports a count of 0 while its vectors stay searchable](../../Verus_verification/bugs_issues.md#bug-srch-101); [The API reference says a vector inserted into a VecIndex is searchable only after the next vec_build](../../Verus_verification/bugs_issues.md#bug-srch-102)
 
 State machines: [vec index](../../Verus_verification/models/vec_index/manifest.json)
+
+### search.plaid
+
+- Sources: [API reference, plaid_*](../../../docs/API_REFERENCE.md#L1083-L1121), [Graph.KG.PLAIDSearch](../../../iris_src/src/Graph/KG/PLAIDSearch.cls), [engine wrappers](../../../iris_vector_graph/_engine/vector.py)
+- Verus: [plaid_index](../../Verus_verification/models/plaid_index/NOTES.md) `theorem_build_refuses_other_width`, `theorem_reinsert_inflates_counts`, `theorem_reinsert_scored_on_new_tokens`, `theorem_insert_accepts_other_width`, `theorem_new_doc_counted_once` (as built)
+- Evidence: [frozen predictions and native observations](../../uplift/consolidated/iteration-30/plaid-PAIRS.md)
+- agent
+- user-facing-behavior
+
+Findings: [Vector index stores do not check width or duplicates](../../Verus_verification/bugs_issues.md#F-0608)
+
+State machines: [plaid index](../../Verus_verification/models/plaid_index/manifest.json)
 
 ### search.quarantine
 

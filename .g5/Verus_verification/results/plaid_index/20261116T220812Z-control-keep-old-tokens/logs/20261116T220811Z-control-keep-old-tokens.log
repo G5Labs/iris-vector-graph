@@ -1,0 +1,28 @@
+verification results:: 3 verified, 2 errors
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/keep-old-tokens/20261116T220811Z/models/plaid_index/plaid_index.rs:45:87
+   |
+45 |  requires !ix.tokens.contains_key(d),ix.n_docs==ix.tokens.dom().len(),ix.tokens.dom().finite()
+   |                                                                                       ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/keep-old-tokens/20261116T220811Z/models/plaid_index/plaid_index.rs:36:10
+   |
+35 | pub proof fn theorem_reinsert_scored_on_new_tokens(ix:Ix,d:D,ts:Seq<Tok>,q:Seq<Tok>)
+   | ------------------------------------------------------------------------------------ at the end of the function body
+36 |  ensures score(insert(ix,d,ts),q,d)==maxsim(q,ts),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/keep-old-tokens/20261116T220811Z/models/plaid_index/plaid_index.rs:41:10
+   |
+39 | pub proof fn theorem_insert_accepts_other_width(ix:Ix,d:D,ts:Seq<Tok>)
+   | ---------------------------------------------------------------------- at the end of the function body
+40 |  requires ts.len()>0,ts[0].len()!=ix.dim
+41 |  ensures insert(ix,d,ts).tokens[d]==ts,insert(ix,d,ts).dim==ix.dim,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors; 1 warning emitted
+

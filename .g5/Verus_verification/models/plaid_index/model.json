@@ -1,0 +1,45 @@
+{
+  "name": "plaid_index",
+  "root": "plaid_index.rs",
+  "expected_verified": 5,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "build-skips-width-check",
+      "find": " if forall|d:D| #[trigger] docs.contains_key(d) ==> widths_ok(docs[d],dim) {Some(",
+      "replace": " if true {Some(",
+      "expect_fail_in": [
+        "theorem_build_refuses_other_width"
+      ],
+      "classification": "decision: plaid_build without R089's width check"
+    },
+    {
+      "name": "count-only-new-docs",
+      "find": "pub open spec fn insert(ix:Ix,d:D,ts:Seq<Tok>)->Ix {Ix{tokens:ix.tokens.insert(d,ts),n_docs:ix.n_docs+1,",
+      "replace": "pub open spec fn insert(ix:Ix,d:D,ts:Seq<Tok>)->Ix {Ix{tokens:ix.tokens.insert(d,ts),n_docs:if ix.tokens.contains_key(d) {ix.n_docs} else {ix.n_docs+1},",
+      "expect_fail_in": [
+        "theorem_reinsert_inflates_counts"
+      ],
+      "classification": "decision: count only new documents (repair for F-0608)"
+    },
+    {
+      "name": "keep-old-tokens",
+      "find": "Ix{tokens:ix.tokens.insert(d,ts),",
+      "replace": "Ix{tokens:if ix.tokens.contains_key(d) {ix.tokens.insert(d,ix.tokens[d]+ts)} else {ix.tokens.insert(d,ts)},",
+      "expect_fail_in": [
+        "theorem_reinsert_scored_on_new_tokens"
+      ],
+      "classification": "effect: old tokens kept and scored (the IVF behavior)"
+    },
+    {
+      "name": "insert-refuses-other-width",
+      "find": "pub open spec fn insert(ix:Ix,d:D,ts:Seq<Tok>)->Ix {Ix{tokens:ix.tokens.insert(d,ts),n_docs:ix.n_docs+1,total:ix.total+ts.len(),dim:ix.dim}}",
+      "replace": "pub open spec fn insert(ix:Ix,d:D,ts:Seq<Tok>)->Ix {if !widths_ok(ts,ix.dim) {ix} else {Ix{tokens:ix.tokens.insert(d,ts),n_docs:ix.n_docs+1,total:ix.total+ts.len(),dim:ix.dim}}}",
+      "expect_fail_in": [
+        "theorem_insert_accepts_other_width"
+      ],
+      "classification": "decision: insert refuses another width (repair for F-0608)"
+    }
+  ]
+}

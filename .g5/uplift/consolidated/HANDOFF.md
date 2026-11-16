@@ -1,4 +1,4 @@
-**Current pointer (retest, 2026-11-16).** Running, iteration 29 sealed (subject `Seal iteration 29: embedding inventory through engine and CLI`). Material outcome: no defect (all seven predictions held); new owner `search.routes.inventory`; model `embedding_inventory`; reach 349 → 357 of 4,130. Cost: builder wall clock about 3 h 40 min so far (tokens/currency unavailable). Next: PLAID branch of F-0608 (strongest remaining candidate), then the step-5 convergence judgment. Retest log: [below](#retest-2026-11-16).
+**Current pointer (retest, 2026-11-16).** Running, iteration 30 sealed (subject `Seal iteration 30: F-0608 PLAID branch`). Material outcome: F-0608's PLAID branch reproduced (counts inflated; another width accepted and outranks; unlike IVF, old tokens do not answer); new owner `search.plaid`; model `plaid_index`; reach 357 → 364 of 4,130. Cost: builder wall clock about 4 h 10 min so far (tokens/currency unavailable). Next: step-5 convergence judgment. Retest log: [below](#retest-2026-11-16).
 
 <a id="retest-2026-11-16"></a>
 ## Retest (2026-11-16, from `cloud-iris-retest-start-20261116`)
@@ -12,6 +12,7 @@ Guidance: run copy `$G5_HARNESS`, `Verus/uplift-iteration.md` sha256 `a7521d0e20
 | [27](iteration-27/HANDOFF.md) | W32 VecIndex lifecycle; correction of how owner predictions were read in 25-26 | owner `search.vecindex`; F-0608 VecIndex branch reproduced; Low bug-srch-101, bug-srch-102; model `vec_index`; 305 → 328 |
 | [28](iteration-28/HANDOFF.md) | W33 algorithm options, engine method vs Cypher `CALL ivg.*` | all agree (negative result); ranges stated in `algorithms.op`; model `algo_options`; 328 → 349 |
 | [29](iteration-29/HANDOFF.md) | W34 embedding inventory, engine report and `ivg embeddings inventory` | all agree (negative result); owner `search.routes.inventory`; model `embedding_inventory`; 349 → 357 |
+| [30](iteration-30/HANDOFF.md) | W35 F-0608's PLAID branch | reproduced, scoped difference from IVF; owner `search.plaid`; model `plaid_index`; 357 → 364 |
 
 Earlier pointer (superseded): **Current pointer (cloud continuation, 2026-11-16).** CONVERGED after iteration 24. Latest seal: the clean tip with subject `Record convergence of the cloud continuation` (its parent `0575c5de` is the last iteration seal). Session: iterations 14–24, seven new findings, reach 249 → 279 of 4,130 (30 new, 0 lost). Cost: builder wall clock about 1 h 50 min (tokens/currency unavailable). Convergence basis: [below](#convergence-cloud-continuation-2026-11-16).
 

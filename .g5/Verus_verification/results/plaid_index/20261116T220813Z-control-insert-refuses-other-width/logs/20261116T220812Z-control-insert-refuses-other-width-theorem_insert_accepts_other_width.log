@@ -1,0 +1,32 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+warning: use of deprecated method `vstd::set::Set::<A>::finite`: Every Set is always finite, so this is always true.
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:45:87
+   |
+45 |  requires !ix.tokens.contains_key(d),ix.n_docs==ix.tokens.dom().len(),ix.tokens.dom().finite()
+   |                                                                                       ^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+note: verifying root module (selected functions)
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:41:10
+   |
+41 |  ensures insert(ix,d,ts).tokens[d]==ts,insert(ix,d,ts).dim==ix.dim,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  --> map.rs:87:12
+   |
+   = note: recommendation not met
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/plaid_index/controls/insert-refuses-other-width/20261116T220812Z/models/plaid_index/plaid_index.rs:41:10
+   |
+39 | pub proof fn theorem_insert_accepts_other_width(ix:Ix,d:D,ts:Seq<Tok>)
+   | ---------------------------------------------------------------------- at the end of the function body
+40 |  requires ts.len()>0,ts[0].len()!=ix.dim
+41 |  ensures insert(ix,d,ts).tokens[d]==ts,insert(ix,d,ts).dim==ix.dim,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error; 1 warning emitted
+

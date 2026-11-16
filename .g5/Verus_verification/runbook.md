@@ -461,3 +461,6 @@ binding (`models/algo_options/binding.py`, fixture required, about 2 s), which r
 
 Iteration 29 ([handoff](../uplift/consolidated/iteration-29/HANDOFF.md)) adds `models/embedding_inventory` (3 verified, 3
 controls) and its binding (fixture required; it runs the CLI as a subprocess with `IRIS_*` set to the fixture).
+
+Iteration 30 ([handoff](../uplift/consolidated/iteration-30/HANDOFF.md)) adds `models/plaid_index` (5 verified, 4 controls) and its
+binding (fixture required; needs numpy and scikit-learn from the pinned venv).
