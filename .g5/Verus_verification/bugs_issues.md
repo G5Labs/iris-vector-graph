@@ -3956,6 +3956,23 @@ Consequence: a prefix or substring filter over a property that holds numbers on 
 
 Repair proposal (not implemented, not checked): apply the stored-number test (`_stored_number_test`) so a node number is null for string predicates, leaving strings unchanged. Distinguishing case: node `p = 12` against `STARTS WITH '1'`.
 
+<a id="bug-cyp-107"></a>
+### coalesce over a relationship property returns its stored text, and a boolean as '1'
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-16 (cloud continuation, iteration 24)
+
+Found by: the value-function probe at the API-writer / Cypher-reader boundary, with predictions frozen first ([predictions](../uplift/consolidated/iteration-24/patterns-params-PAIRS.md)). No formal model.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-24/value-functions-observed-20261116T173357Z.json)). `create_edge(a, "R", b, qualifiers={"p": 7})`, then `RETURN coalesce(x.p, 'z')` returns the string `'7'`; with `7.5` it returns `'7.5'`; with `true` it returns `'1'`. `RETURN x.p` returns 7, 7.5 and `True`. Passing neighbors: on nodes `coalesce` returns 7, 7.5 and `True` with their types.
+
+Expected: openCypher's `coalesce` returns its first non-null argument unchanged. [query.values.relationship_text](../ontology/features/cypher.g5.md#query.values.relationship_text) decodes only result columns the translator marks as relationship property reads; a `coalesce` column is not marked, so the raw `JSON_VALUE` text reaches the result, and `JSON_VALUE` spells a JSON boolean as `1`.
+
+Consequence: the common idiom `RETURN coalesce(r.weight, 0)` returns text for every stored weight, and a boolean flag returns `'1'`, which no reader can tell from the string `"1"`. Low: wrong result type, no data change.
+
+Repair proposal (not implemented, not checked): decode a relationship property argument of `coalesce` (and similar pass-through functions) as `RETURN r.p` does, or mark such columns for `_decode_rel_prop_text_columns`. Distinguishing case: relationship `p = true` read by `RETURN coalesce(x.p, 'z')`.
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 

@@ -444,6 +444,8 @@ A relationship property read in a Cypher result is decoded from its stored text.
 - So `01`, `+1`, `1.`, `.5`, `1e5` and text with spaces stay text. `True`, `1` and `0` are not booleans here; `1` and `0` become integers.
 - Only the columns the translator marks as relationship property reads are decoded, and only when the row has as many values as the result has columns.
 - Today a text with one trailing line break, or with non-ASCII digits after its first digit, is also read as a number: `"12\n"` and `"1٢"` both read back as 12.
+- A result column that is not itself a relationship property read is not decoded: `coalesce(r.p, 'z')` returns the stored text (`'7'` for the number 7, `'1'` for the boolean `true`), while `RETURN r.p` returns 7 and `true`.
+- In arithmetic a relationship boolean reads as 1 (`r.p + 1` is 2), while a node boolean is the text `true` and concatenates (`n.p + 1` is `'true1'`), the documented string-arithmetic behavior.
 
 ## Metadata
 
@@ -1036,12 +1038,13 @@ Findings: [IN lists compare a property's text with each value's spelling, so the
 - Playbook: no statement for this decoder in either arm; neighbor [CYP-B17.1](../../../experiment/playbook-completion/ontology/08-cypher-sql.md#L307) (finding F-0811: no 64-bit cap on this path)
 - Verus: see [rel_prop_text](../../Verus_verification/models/rel_prop_text/NOTES.md) (`theorem_decode_classes`, `theorem_noncanonical_stays_text`; reviewed design over ASCII text; control `leading-zero-canonical`). The as-built divergence is recorded as a finding and is observed at unit level on the real function.
 - Expands: [Values in results](#query.values)
+- Evidence (cloud iteration 24): [value-function observations](../../uplift/consolidated/iteration-24/patterns-params-PAIRS.md)
 - agent
 - user-facing-behavior, data-integrity
 - test-coverage
 
 Public case M18. The canonical rule is the decoder's own docstring and patterns; Python's `\d` also matches non-ASCII digits and `$` matches before a final line break, which is where the pin departs from it.
 
-Findings: [Relationship property text with a trailing line break or non-ASCII digits is read back as a number](../../Verus_verification/bugs_issues.md#bug-cyp-101)
+Findings: [Relationship property text with a trailing line break or non-ASCII digits is read back as a number](../../Verus_verification/bugs_issues.md#bug-cyp-101); [coalesce over a relationship property returns its stored text, and a boolean as '1'](../../Verus_verification/bugs_issues.md#bug-cyp-107)
 
 Audit reproduction: [bug-cyp-101](../../Verus_verification/bugs_issues.md#bug-cyp-101) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
