@@ -1,4 +1,4 @@
-# Questions — iteration 13 findings audit
+# Ontology clarification questions
 
 Every starting ID is accounted for in the [146-entry review](audits/register-20261115/question-review.md). 121 policy decisions remain open; nine inherited questions have existing authoritative answers for this pin; two old upstream reports and 14 qualified proof-debt entries are separate. No new human approval was inferred. Current public issue state and disabled Discussions are recorded in [upstream.json](audits/register-20261115/upstream.json).
 
@@ -9,8 +9,6 @@ Every starting ID is accounted for in the [146-entry review](audits/register-202
 ### Must erasure and redaction be serialised with each other and with ledger commits?
 
 [Q · erasure.concurrency]
-
-Severity: High · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -26,28 +24,27 @@ Audit: Working assumption (agent, unratified): Require committed erasure before 
 Canonical owner: [erasure.concurrency](#q-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "erasure.concurrency",
-  "status": "open",
-  "prompt": "Must erasure and redaction be serialised with each other and with ledger commits?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "callers must not redact while an erase is uncommitted (document it)",
-      "description": ""
-    },
-    {
-      "label": "redaction must refuse while any erase of the target is uncommitted (take the head lock in the eraser, or a shared target lock)",
-      "description": ""
-    },
-    {
-      "label": "erasure must never join a caller's transaction",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: erasure.concurrency
+status: open
+prompt: Must erasure and redaction be serialised with each other and with ledger commits?
+severity: high
+multi_select: false
+allow_free_text: true
+options:
+  - label: callers must not redact while an erase is uncommitted (document it)
+    description: ""
+  - label: redaction must refuse while any erase of the target is uncommitted (take the head lock in the eraser, or a shared target lock)
+    description: ""
+  - label: erasure must never join a caller's transaction
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Require committed erasure before redaction; treat caller transaction membership as unresolved rather than permitting dirty liveness reads.
 ```
 
 <a id="redaction.idempotency.other-tenant"></a><!-- question identity -->
@@ -55,8 +52,6 @@ Canonical owner: [erasure.concurrency](#q-004).
 ### Should another tenant's retry of a revision it shared with a redacted tenant be refused?
 
 [Q · redaction.idempotency.other-tenant]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -72,24 +67,25 @@ Audit: Working assumption (agent, unratified): Preserve refusal of the whole sha
 Canonical owner: [redaction.idempotency.other-tenant](#q-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "redaction.idempotency.other-tenant",
-  "status": "open",
-  "prompt": "Should another tenant's retry of a revision it shared with a redacted tenant be refused?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "intended — a key names the whole revision, and a refused retry is safer than a replay of a partly tombstoned revision",
-      "description": ""
-    },
-    {
-      "label": "unintended — only the target's retries should be refused; the other tenant should get a replay (its content is intact) or a distinct error telling it the revisi",
-      "description": "unintended — only the target's retries should be refused; the other tenant should get a replay (its content is intact) or a distinct error telling it the revision exists but was partly redacted"
-    }
-  ]
-}
+schema: 1
+id: redaction.idempotency.other-tenant
+status: open
+prompt: Should another tenant's retry of a revision it shared with a redacted tenant be refused?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: intended — a key names the whole revision, and a refused retry is safer than a replay of a partly tombstoned revision
+    description: ""
+  - label: unintended — only the target's retries should be refused; the other tenant should get a replay (its content is intact) or a distinct error telling it the revisi
+    description: unintended — only the target's retries should be refused; the other tenant should get a replay (its content is intact) or a distinct error telling it the revision exists but was partly redacted
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve refusal of the whole shared revision key and loss of its correlation lookup until the maintainer specifies a tenant-specific retry result.
 ```
 
 <a id="redaction.strict-mode"></a><!-- question identity -->
@@ -97,8 +93,6 @@ Canonical owner: [redaction.idempotency.other-tenant](#q-001).
 ### How should strict mode and the erase-then-redact path fit together?
 
 [Q · redaction.strict-mode]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -114,34 +108,31 @@ Audit: Working assumption (agent, unratified): Document the present strict-off e
 Canonical owner: [redaction.strict-mode](#q-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "redaction.strict-mode",
-  "status": "open",
-  "prompt": "How should strict mode and the erase-then-redact path fit together?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "strict-mode users turn strict off for the erase, then on again",
-      "description": ""
-    },
-    {
-      "label": "erasure is exempt from strict mode because it removes content, not history (ADR-0004)",
-      "description": ""
-    },
-    {
-      "label": "erasure should be recorded in the ledger in strict mode",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: redaction.strict-mode
+status: open
+prompt: How should strict mode and the erase-then-redact path fit together?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: strict-mode users turn strict off for the erase, then on again
+    description: ""
+  - label: erasure is exempt from strict mode because it removes content, not history (ADR-0004)
+    description: ""
+  - label: erasure should be recorded in the ledger in strict mode
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Document the present strict-off erasure sequence as an operational precondition; do not infer that disabling strict mode is the desired product interface.
 ```
 
 <a id="q-008"></a>
 ### Should erase-by-prefix and redact-by-prefix use the same prefix rule?
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -157,23 +148,25 @@ Audit: Working assumption (agent, unratified): Keep generic erase as literal sta
 Canonical owner: [erasure.prefix-match](../ontology/features/erasure.g5.md#erasure.prefix-match).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-008",
-  "status": "open",
-  "prompt": "Should erase-by-prefix and redact-by-prefix use the same prefix rule?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "intended — erase is a general id-prefix tool and the caller must add the separator; document it beside the recipe",
-      "description": ""
-    },
-    {
-      "label": "the tenant recipe should use one target notion for both steps (a separator-aware erase, or a combined erase-and-redact entry point)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-008
+status: open
+prompt: Should erase-by-prefix and redact-by-prefix use the same prefix rule?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: intended — erase is a general id-prefix tool and the caller must add the separator; document it beside the recipe
+    description: ""
+  - label: the tenant recipe should use one target notion for both steps (a separator-aware erase, or a combined erase-and-redact entry point)
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep generic erase as literal starts-with and use the separator explicitly in the tenant recipe; changing the generic API needs compatibility authority.
 ```
 
 <a id="redaction.after-erasure.temporal"></a><!-- question identity -->
@@ -181,8 +174,6 @@ Canonical owner: [erasure.prefix-match](../ontology/features/erasure.g5.md#erasu
 ### Should redaction count a target's temporal-only edges as live content?
 
 [Q · redaction.after-erasure.temporal]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -198,24 +189,25 @@ Audit: Working assumption (agent, unratified): Treat temporal entries as live co
 Canonical owner: [redaction.after-erasure.temporal](#q-009).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "redaction.after-erasure.temporal",
-  "status": "open",
-  "prompt": "Should redaction count a target's temporal-only edges as live content?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "ADR-0013's \"row\" governs: temporal entries are not replayed, so tombstoning their records keeps verify equal and is acceptable",
-      "description": ""
-    },
-    {
-      "label": "the glossary's \"content\" governs: redaction must refuse until the temporal entries are erased, or the history of a still-readable event is lost",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: redaction.after-erasure.temporal
+status: open
+prompt: Should redaction count a target's temporal-only edges as live content?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: "ADR-0013's \"row\" governs: temporal entries are not replayed, so tombstoning their records keeps verify equal and is acceptable"
+    description: ""
+  - label: "the glossary's \"content\" governs: redaction must refuse until the temporal entries are erased, or the history of a still-readable event is lost"
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat temporal entries as live content for the intended safety rule; the existing row-only check remains a documented behavior discrepancy pending scope confirmation.
 ```
 
 <a id="ledger.commit.post-commit.recorded"></a><!-- question identity -->
@@ -223,8 +215,6 @@ Canonical owner: [redaction.after-erasure.temporal](#q-009).
 ### Should post-commit properties be recorded, excluded from verify, or documented as unrecorded writes?
 
 [Q · ledger.commit.post-commit.recorded]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -240,24 +230,25 @@ Audit: Working assumption (agent, unratified): Treat post-commit properties as u
 Canonical owner: [ledger.commit.post-commit.recorded](#q-010).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.commit.post-commit.recorded",
-  "status": "open",
-  "prompt": "Should post-commit properties be recorded, excluded from verify, or documented as unrecorded writes?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "intended: the documented audit-trail pattern produces an unrecorded write and verify is right to report it (document it)",
-      "description": ""
-    },
-    {
-      "label": "post-commit properties should be recorded (a second record in the same revision) or excluded by verify",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: ledger.commit.post-commit.recorded
+status: open
+prompt: Should post-commit properties be recorded, excluded from verify, or documented as unrecorded writes?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: "intended: the documented audit-trail pattern produces an unrecorded write and verify is right to report it (document it)"
+    description: ""
+  - label: post-commit properties should be recorded (a second record in the same revision) or excluded by verify
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat post-commit properties as unrecorded writes today and keep verify divergence visible; skip-on-replay is a separate already documented idempotency obligation.
 ```
 
 <a id="graph.names.legacy"></a><!-- question identity -->
@@ -265,8 +256,6 @@ Canonical owner: [ledger.commit.post-commit.recorded](#q-010).
 ### How should an install that already holds a graph named "0", or one with a control character, find and migrate it?
 
 [Q · graph.names.legacy]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -282,28 +271,27 @@ Audit: Working assumption (agent, unratified): Preserve refusal of invalid new n
 Canonical owner: [graph.names.legacy](#q-str-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "graph.names.legacy",
-  "status": "open",
-  "prompt": "How should an install that already holds a graph named \"0\", or one with a control character, find and migrate it?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "an upgrade step renames them",
-      "description": ""
-    },
-    {
-      "label": "`verify_graph` reports them and an operator renames them",
-      "description": ""
-    },
-    {
-      "label": "they are left and every write to them fails",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: graph.names.legacy
+status: open
+prompt: How should an install that already holds a graph named "0", or one with a control character, find and migrate it?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: an upgrade step renames them
+    description: ""
+  - label: "`verify_graph` reports them and an operator renames them"
+    description: ""
+  - label: they are left and every write to them fails
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve refusal of invalid new names and the promised legacy report; require an operator-visible migration plan before claiming old invalid names are supported.
 ```
 
 <a id="temporal.write.concurrency"></a><!-- question identity -->
@@ -311,8 +299,6 @@ Canonical owner: [graph.names.legacy](#q-str-001).
 ### Must temporal writes stay exact when several writers touch the same coordinates or triple at once?
 
 [Q · temporal.write.concurrency]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -328,24 +314,25 @@ Audit: Working assumption (agent, unratified): Keep first-write-wins and exactne
 Canonical owner: [temporal.write.concurrency](#q-tmp-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.write.concurrency",
-  "status": "open",
-  "prompt": "Must temporal writes stay exact when several writers touch the same coordinates or triple at once?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "the rules hold for one writer per triple; concurrent writers are the caller's to serialise (document it)",
-      "description": ""
-    },
-    {
-      "label": "the rules are unconditional, so the writers need per-triple locking despite ADR-0010's deadlock concern",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: temporal.write.concurrency
+status: open
+prompt: Must temporal writes stay exact when several writers touch the same coordinates or triple at once?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: the rules hold for one writer per triple; concurrent writers are the caller's to serialise (document it)
+    description: ""
+  - label: the rules are unconditional, so the writers need per-triple locking despite ADR-0010's deadlock concern
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep first-write-wins and exactness as requirements; concurrent provider behavior is unestablished, not an approved one-writer exemption.
 ```
 
 <a id="search.quarantine.retention"></a><!-- question identity -->
@@ -353,8 +340,6 @@ Canonical owner: [temporal.write.concurrency](#q-tmp-001).
 ### Should quarantined vectors and documents survive erasure indefinitely?
 
 [Q · search.quarantine.retention]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -370,30 +355,29 @@ Audit: Working assumption (agent, unratified): Keep quarantined data and explici
 Canonical owner: [search.quarantine.retention](#q-srch-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.quarantine.retention",
-  "status": "open",
-  "prompt": "Should quarantined vectors and documents survive erasure indefinitely?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "keep them: they are the only copy of vectors whose graph is unknown",
-      "description": ""
-    },
-    {
-      "label": "a deployment that must delete data needs a purge path or an erase-all that includes them",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: search.quarantine.retention
+status: open
+prompt: Should quarantined vectors and documents survive erasure indefinitely?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: "keep them: they are the only copy of vectors whose graph is unknown"
+    description: ""
+  - label: a deployment that must delete data needs a purge path or an erase-all that includes them
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep quarantined data and explicitly report retention until an owner chooses a purge API and its unknown-graph semantics.
 ```
 
 <a id="q-plt-001"></a>
 ### Is strict mode promised from the moment set_strict returns, or within a few seconds for other engines?
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -409,23 +393,25 @@ Audit: Working assumption (agent, unratified): Record immediate enforcement in t
 Canonical owner: [ledger.strict](../ontology/features/ledger.g5.md#ledger.strict).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-plt-001",
-  "status": "open",
-  "prompt": "Is strict mode promised from the moment set_strict returns, or within a few seconds for other engines?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "strict is promised from the moment `set_strict` returns, so the window is a defect",
-      "description": ""
-    },
-    {
-      "label": "strict is enforced within 5 s per process, as the guard docstring implies, and needs documenting",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-plt-001
+status: open
+prompt: Is strict mode promised from the moment set_strict returns, or within a few seconds for other engines?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: strict is promised from the moment `set_strict` returns, so the window is a defect
+    description: ""
+  - label: strict is enforced within 5 s per process, as the guard docstring implies, and needs documenting
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Record immediate enforcement in the calling engine and a five-second cache elsewhere; the time promised to other engines still needs a decision.
 ```
 
 <a id="install.schema.concurrency.leftover"></a><!-- question identity -->
@@ -433,8 +419,6 @@ Canonical owner: [ledger.strict](../ontology/features/ledger.g5.md#ledger.strict
 ### Can an explicitly named schema be recorded over another schema's interrupted first setup?
 
 [Q · install.schema.concurrency.leftover]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -452,24 +436,25 @@ Audit: Working assumption (agent, unratified): Prefer refusing a conflicting unf
 Canonical owner: [install.schema.concurrency.leftover](#q-plt-002).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.schema.concurrency.leftover",
-  "status": "open",
-  "prompt": "Can an explicitly named schema be recorded over another schema's interrupted first setup?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "refuse the explicit path while another schema holds this release's marker (the premise the model's proof uses)",
-      "description": ""
-    },
-    {
-      "label": "accept it and clear or rebuild the namespace's globals",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: install.schema.concurrency.leftover
+status: open
+prompt: Can an explicitly named schema be recorded over another schema's interrupted first setup?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: refuse the explicit path while another schema holds this release's marker (the premise the model's proof uses)
+    description: ""
+  - label: accept it and clear or rebuild the namespace's globals
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer refusing a conflicting unfinished setup; accepting it needs an explicit plan for the old globals and rebuild markers.
 ```
 
 <a id="access.defaults.exposure"></a><!-- question identity -->
@@ -477,8 +462,6 @@ Canonical owner: [install.schema.concurrency.leftover](#q-plt-002).
 ### Should the server refuse to start on a reachable address with no key and a superuser login?
 
 [Q · access.defaults.exposure]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -494,28 +477,27 @@ Audit: Working assumption (agent, unratified): Treat the documented open bind an
 Canonical owner: [access.defaults.exposure](#q-plt-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.defaults.exposure",
-  "status": "open",
-  "prompt": "Should the server refuse to start on a reachable address with no key and a superuser login?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "refuse to start on a non-loopback host without a key (or with a superuser login)",
-      "description": ""
-    },
-    {
-      "label": "warn loudly and document",
-      "description": ""
-    },
-    {
-      "label": "keep as is, the operator guide being the control",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: access.defaults.exposure
+status: open
+prompt: Should the server refuse to start on a reachable address with no key and a superuser login?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: refuse to start on a non-loopback host without a key (or with a superuser login)
+    description: ""
+  - label: warn loudly and document
+    description: ""
+  - label: keep as is, the operator guide being the control
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat the documented open bind and credentials as current behavior only; safer defaults need a maintainer policy decision.
 ```
 
 <a id="install.snapshot.ledger"></a><!-- question identity -->
@@ -523,8 +505,6 @@ Canonical owner: [access.defaults.exposure](#q-plt-003).
 ### What should a restore do when the namespace already has a live ledger?
 
 [Q · install.snapshot.ledger]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -542,28 +522,27 @@ Audit: Working assumption (agent, unratified): Prefer refusal while a live ledge
 Canonical owner: [install.snapshot.ledger](#q-plt-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.snapshot.ledger",
-  "status": "open",
-  "prompt": "What should a restore do when the namespace already has a live ledger?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "refuse while a ledger is live",
-      "description": ""
-    },
-    {
-      "label": "replace the live ledger wholesale",
-      "description": ""
-    },
-    {
-      "label": "keep the live ledger and skip the archive's",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: install.snapshot.ledger
+status: open
+prompt: What should a restore do when the namespace already has a live ledger?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: refuse while a ledger is live
+    description: ""
+  - label: replace the live ledger wholesale
+    description: ""
+  - label: keep the live ledger and skip the archive's
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer refusal while a live ledger exists until replace/merge history semantics are specified; do not count the current overlay as a decided contract.
 ```
 
 <a id="install.bulk_load.limits"></a><!-- question identity -->
@@ -571,8 +550,6 @@ Canonical owner: [install.snapshot.ledger](#q-plt-004).
 ### Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?
 
 [Q · install.bulk_load.limits]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -588,28 +565,27 @@ Audit: Working assumption (agent, unratified): Keep documented loader exemptions
 Canonical owner: [install.bulk_load.limits](#q-plt-005).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.bulk_load.limits",
-  "status": "open",
-  "prompt": "Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "6, G7, G34)",
-      "description": ""
-    },
-    {
-      "label": "yes to all three, and the loader documents it",
-      "description": ""
-    },
-    {
-      "label": "the loader must preserve other graphs' adjacency and multigraph semantics",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: install.bulk_load.limits
+status: open
+prompt: Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: 6, G7, G34)
+    description: ""
+  - label: yes to all three, and the loader documents it
+    description: ""
+  - label: the loader must preserve other graphs' adjacency and multigraph semantics
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep documented loader exemptions and chunking; preserve other graphs and multigraph data unless a narrower supported envelope is expressly adopted.
 ```
 
 <a id="erasure.atomic.caller-transaction"></a><!-- question identity -->
@@ -617,8 +593,6 @@ Canonical owner: [install.bulk_load.limits](#q-plt-005).
 ### Should whether a write joins the caller's transaction depend on how the engine was opened?
 
 [Q · erasure.atomic.caller-transaction]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -634,32 +608,29 @@ Audit: Working assumption (agent, unratified): Record each transport-dependent t
 Canonical owner: [erasure.atomic.caller-transaction](#q-plt-006).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "erasure.atomic.caller-transaction",
-  "status": "open",
-  "prompt": "Should whether a write joins the caller's transaction depend on how the engine was opened?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "1)",
-      "description": ""
-    },
-    {
-      "label": "intended: these calls are independent of the caller's transaction, and the docs list them",
-      "description": ""
-    },
-    {
-      "label": "every write should run on the caller's connection and nest",
-      "description": ""
-    },
-    {
-      "label": "calls that cannot nest should refuse an open caller transaction",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: erasure.atomic.caller-transaction
+status: open
+prompt: Should whether a write joins the caller's transaction depend on how the engine was opened?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: 1)
+    description: ""
+  - label: "intended: these calls are independent of the caller's transaction, and the docs list them"
+    description: ""
+  - label: every write should run on the caller's connection and nest
+    description: ""
+  - label: calls that cannot nest should refuse an open caller transaction
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Record each transport-dependent transaction boundary; prefer an explicit consistent join-or-refuse contract before changing it.
 ```
 
 <a id="algorithms.routing.named_graphs"></a><!-- question identity -->
@@ -667,8 +638,6 @@ Canonical owner: [erasure.atomic.caller-transaction](#q-plt-006).
 ### Can a default-graph algorithm call use a native reader once a named graph holds edges?
 
 [Q · algorithms.routing.named_graphs]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -684,24 +653,25 @@ Audit: Working assumption (agent, unratified): Require a proven graph-specific r
 Canonical owner: [algorithms.routing.named_graphs](#q-plt-007).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.routing.named_graphs",
-  "status": "open",
-  "prompt": "Can a default-graph algorithm call use a native reader once a named graph holds edges?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "the readers read one graph and the route is safe",
-      "description": ""
-    },
-    {
-      "label": "they read the merged snapshot, so default-graph PageRank counts named-graph edges and needs the guard",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: algorithms.routing.named_graphs
+status: open
+prompt: Can a default-graph algorithm call use a native reader once a named graph holds edges?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: the readers read one graph and the route is safe
+    description: ""
+  - label: they read the merged snapshot, so default-graph PageRank counts named-graph edges and needs the guard
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Require a proven graph-specific reader before relying on native default-graph results; an unavailable Arno provider does not settle its behavior.
 ```
 
 <a id="access.ledger_strict.undecided"></a><!-- question identity -->
@@ -709,8 +679,6 @@ Canonical owner: [algorithms.routing.named_graphs](#q-plt-007).
 ### Which write paths must strict mode govern beyond the engine's methods, and how is each classified?
 
 [Q · access.ledger_strict.undecided]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -726,24 +694,25 @@ Audit: Working assumption (agent, unratified): Preserve explicit BulkLoader/raw-
 Canonical owner: [access.ledger_strict.undecided](#q-plt-008).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.ledger_strict.undecided",
-  "status": "open",
-  "prompt": "Which write paths must strict mode govern beyond the engine's methods, and how is each classified?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "exempt like BulkLoader and raw SQL, listed in the docs",
-      "description": ""
-    },
-    {
-      "label": "refused under strict mode",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: access.ledger_strict.undecided
+status: open
+prompt: Which write paths must strict mode govern beyond the engine's methods, and how is each classified?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: exempt like BulkLoader and raw SQL, listed in the docs
+    description: ""
+  - label: refused under strict mode
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve explicit BulkLoader/raw-SQL/vector exemptions and list undecided FHIR/server paths individually; do not infer exemption from a missing guard.
 ```
 
 <a id="query.graph-scope.bound-create"></a><!-- question identity -->
@@ -751,8 +720,6 @@ Canonical owner: [access.ledger_strict.undecided](#q-plt-008).
 ### When a write without USE GRAPH creates a relationship between nodes its MATCH bound in a named graph, which graph gets it?
 
 [Q · query.graph-scope.bound-create]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -768,28 +735,27 @@ Audit: Working assumption (agent, unratified): Prefer the bound endpoints graph,
 Canonical owner: [query.graph-scope.bound-create](#q-cyp-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.graph-scope.bound-create",
-  "status": "open",
-  "prompt": "When a write without USE GRAPH creates a relationship between nodes its MATCH bound in a named graph, which graph gets it?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "the decision is literal; the error is intended and should name the cause",
-      "description": ""
-    },
-    {
-      "label": "Cypher's binding wins and the relationship is created in the bound nodes' graph, as `SET`/`DELETE` already do",
-      "description": ""
-    },
-    {
-      "label": "Open statement: [query.graph-scope.bound-create](#q-cyp-001)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: query.graph-scope.bound-create
+status: open
+prompt: When a write without USE GRAPH creates a relationship between nodes its MATCH bound in a named graph, which graph gets it?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: the decision is literal; the error is intended and should name the cause
+    description: ""
+  - label: Cypher's binding wins and the relationship is created in the bound nodes' graph, as `SET`/`DELETE` already do
+    description: ""
+  - label: "Open statement: [query.graph-scope.bound-create](#q-cyp-001)"
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer the bound endpoints graph, with ambiguity refused; the actual default-write rule remains a behavior fact pending intent confirmation.
 ```
 
 <a id="ledger.commit.kind"></a><!-- question identity -->
@@ -797,8 +763,6 @@ Canonical owner: [query.graph-scope.bound-create](#q-cyp-001).
 ### Should callers be able to choose a commit's kind?
 
 [Q · ledger.commit.kind]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -814,28 +778,27 @@ Audit: Working assumption (agent, unratified): Treat kind as caller data today w
 Canonical owner: [ledger.commit.kind](#q-led-005).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.commit.kind",
-  "status": "open",
-  "prompt": "Should callers be able to choose a commit's kind?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "9, correction 9; review R1-core CV-6 and R1-6)",
-      "description": ""
-    },
-    {
-      "label": "make `kind` internal (only verify needs adoption)",
-      "description": ""
-    },
-    {
-      "label": "keep it public and document the skipped checks and the audit meaning of each kind",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: ledger.commit.kind
+status: open
+prompt: Should callers be able to choose a commit's kind?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: 9, correction 9; review R1-core CV-6 and R1-6)
+    description: ""
+  - label: make `kind` internal (only verify needs adoption)
+    description: ""
+  - label: keep it public and document the skipped checks and the audit meaning of each kind
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat kind as caller data today while reserving system meaning in analysis; any restricted vocabulary needs an explicit compatibility decision.
 ```
 
 <a id="access.retries"></a><!-- question identity -->
@@ -843,8 +806,6 @@ Canonical owner: [ledger.commit.kind](#q-led-005).
 ### May the server or the client retry a call that writes?
 
 [Q · access.retries]
-
-Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -860,28 +821,27 @@ Audit: Working assumption (agent, unratified): Keep ambiguous write outcomes dis
 Canonical owner: [access.retries](#q-plt-019).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.retries",
-  "status": "open",
-  "prompt": "May the server or the client retry a call that writes?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "retries are allowed only for reads and for idempotency-keyed commits",
-      "description": ""
-    },
-    {
-      "label": "retries stay, and writes must be made idempotent",
-      "description": ""
-    },
-    {
-      "label": "no automatic retries",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: access.retries
+status: open
+prompt: May the server or the client retry a call that writes?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: retries are allowed only for reads and for idempotency-keyed commits
+    description: ""
+  - label: retries stay, and writes must be made idempotent
+    description: ""
+  - label: no automatic retries
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep ambiguous write outcomes distinct from known pre-write failure; automatic resend of non-idempotent writes is not presumed safe.
 ```
 
 <a id="access.health.recovery-policy"></a><!-- question identity -->
@@ -889,8 +849,6 @@ Canonical owner: [access.retries](#q-plt-019).
 ### Should the sample API retry construction after a startup outage?
 
 [Q · access.health.recovery-policy]
-
-Severity: Medium · Decision: Open
 
 Run: Improvement iteration 7, 2026-11-15
 
@@ -904,15 +862,21 @@ Audit: Working assumption (agent, unratified): Keep current failure visibility a
 Canonical owner: [access.health.recovery-policy](#q-iter-006).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.health.recovery-policy",
-  "status": "open",
-  "prompt": "Should the sample API retry construction after a startup outage?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: access.health.recovery-policy
+status: open
+prompt: Should the sample API retry construction after a startup outage?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep current failure visibility after startup outage; retry/rebuild needs a lifecycle policy with bounded attempts and readiness semantics.
 ```
 
 <a id="query.system-procedures.alias-policy"></a><!-- question identity -->
@@ -920,8 +884,6 @@ Canonical owner: [access.health.recovery-policy](#q-iter-006).
 ### Should standalone handled metadata calls expose YIELD aliases as result columns?
 
 [Q · query.system-procedures.alias-policy]
-
-Severity: Medium · Decision: Open
 
 Run: Improvement iteration 7, 2026-11-15
 
@@ -935,15 +897,21 @@ Audit: Working assumption (agent, unratified): Prefer declared YIELD aliases at 
 Canonical owner: [query.system-procedures.alias-policy](#q-iter-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.system-procedures.alias-policy",
-  "status": "open",
-  "prompt": "Should standalone handled metadata calls expose YIELD aliases as result columns?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: query.system-procedures.alias-policy
+status: open
+prompt: Should standalone handled metadata calls expose YIELD aliases as result columns?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer declared YIELD aliases at the public reader, while documenting current handled-call names until the owner decides.
 ```
 
 <a id="query.system-procedures.empty-validation"></a><!-- question identity -->
@@ -951,8 +919,6 @@ Canonical owner: [query.system-procedures.alias-policy](#q-iter-004).
 ### Should handled WHERE validation happen when no rows exist?
 
 [Q · query.system-procedures.empty-validation]
-
-Severity: Medium · Decision: Open
 
 Run: Improvement iteration 7, 2026-11-15
 
@@ -966,15 +932,21 @@ Audit: Working assumption (agent, unratified): Prefer validating a requested WHE
 Canonical owner: [query.system-procedures.empty-validation](#q-iter-005).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.system-procedures.empty-validation",
-  "status": "open",
-  "prompt": "Should handled WHERE validation happen when no rows exist?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: query.system-procedures.empty-validation
+status: open
+prompt: Should handled WHERE validation happen when no rows exist?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer validating a requested WHERE independent of row count; current empty-provider acceptance does not settle intent.
 ```
 
 <a id="ledger.readers.history.text-policy"></a><!-- question identity -->
@@ -982,8 +954,6 @@ Canonical owner: [query.system-procedures.empty-validation](#q-iter-005).
 ### Should history text filters use binary identity or the current database comparison?
 
 [Q · ledger.readers.history.text-policy]
-
-Severity: Medium · Decision: Open
 
 Run: Improvement iteration 6, 2026-11-15
 
@@ -999,15 +969,21 @@ Audit: Working assumption (agent, unratified): Preserve current database compari
 Canonical owner: [ledger.readers.history.text-policy](#q-iter-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.readers.history.text-policy",
-  "status": "open",
-  "prompt": "Should history text filters use binary identity or the current database comparison?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: ledger.readers.history.text-policy
+status: open
+prompt: Should history text filters use binary identity or the current database comparison?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve current database comparison for compatibility and expose the difference from binary Python identity; a portable text rule needs owner choice.
 ```
 
 <a id="fhir.sql_mapping.graph_scope"></a><!-- question identity -->
@@ -1015,8 +991,6 @@ Canonical owner: [ledger.readers.history.text-policy](#q-iter-003).
 ### Which graph do rows of a mapped FHIR SQL table belong to?
 
 [Q · fhir.sql_mapping.graph_scope]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1032,24 +1006,25 @@ Audit: Working assumption (agent, unratified): Treat mapped SQL labels as namesp
 Canonical owner: [fhir.sql_mapping.graph_scope](#q-plt-018).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "fhir.sql_mapping.graph_scope",
-  "status": "open",
-  "prompt": "Which graph do rows of a mapped FHIR SQL table belong to?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "mapped rows belong to every graph (today's behaviour, documented)",
-      "description": ""
-    },
-    {
-      "label": "a mapping is made per graph and only that graph's queries read it",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: fhir.sql_mapping.graph_scope
+status: open
+prompt: Which graph do rows of a mapped FHIR SQL table belong to?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: mapped rows belong to every graph (today's behaviour, documented)
+    description: ""
+  - label: a mapping is made per graph and only that graph's queries read it
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat mapped SQL labels as namespace-global today; assigning every row to a graph needs mapping metadata and migration policy.
 ```
 
 <a id="search.fusion.text_leg"></a><!-- question identity -->
@@ -1057,8 +1032,6 @@ Canonical owner: [fhir.sql_mapping.graph_scope](#q-plt-018).
 ### Should every fusion entry point use the same text ranking?
 
 [Q · search.fusion.text_leg]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1074,30 +1047,29 @@ Audit: Working assumption (agent, unratified): Preserve each current text corpus
 Canonical owner: [search.fusion.text_leg](#q-srch-006).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.fusion.text_leg",
-  "status": "open",
-  "prompt": "Should every fusion entry point use the same text ranking?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "one shared contract for every entry point",
-      "description": ""
-    },
-    {
-      "label": "two contracts, each documented, with the migration guide corrected",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: search.fusion.text_leg
+status: open
+prompt: Should every fusion entry point use the same text ranking?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: one shared contract for every entry point
+    description: ""
+  - label: two contracts, each documented, with the migration guide corrected
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve each current text corpus and rank rule until one common corpus is chosen; common fusion arithmetic alone cannot settle text ranking.
 ```
 
 <a id="q-002"></a>
 ### Which ledger readers must refuse while a redaction is unfinished?
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1113,29 +1085,29 @@ Audit: Working assumption (agent, unratified): Keep the explicit redaction guard
 Canonical owner: [redaction.batches.readers](../ontology/features/redaction.g5.md#redaction.batches.readers).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-002",
-  "status": "open",
-  "prompt": "Which ledger readers must refuse while a redaction is unfinished?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "only replay-style readers need protection; metadata listings may show a half-done redaction",
-      "description": ""
-    },
-    {
-      "label": "every record or metadata reader should refuse or read one consistent snapshot",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-002
+status: open
+prompt: Which ledger readers must refuse while a redaction is unfinished?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: only replay-style readers need protection; metadata listings may show a half-done redaction
+    description: ""
+  - label: every record or metadata reader should refuse or read one consistent snapshot
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the explicit redaction guards and list unguarded readers; do not infer that partial-redaction answers are acceptable.
 ```
 
 <a id="q-005"></a>
 ### Is an unsalted SHA-256 of a tenant name and of each record acceptable in the redacted history?
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1151,23 +1123,25 @@ Audit: Working assumption (agent, unratified): Record the unsalted digest as bui
 Canonical owner: [redaction.tombstone.digest](../ontology/features/redaction.g5.md#redaction.tombstone.digest).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-005",
-  "status": "open",
-  "prompt": "Is an unsalted SHA-256 of a tenant name and of each record acceptable in the redacted history?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "acceptable — the digest is an audit device and the content is already low-sensitivity",
-      "description": ""
-    },
-    {
-      "label": "unacceptable for regulated erasure — use a keyed digest held outside the namespace",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-005
+status: open
+prompt: Is an unsalted SHA-256 of a tenant name and of each record acceptable in the redacted history?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: acceptable — the digest is an audit device and the content is already low-sensitivity
+    description: ""
+  - label: unacceptable for regulated erasure — use a keyed digest held outside the namespace
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Record the unsalted digest as built and keep its privacy adequacy open; no guessing or confirmability experiment is in scope.
 ```
 
 <a id="redaction.batches.abort"></a><!-- question identity -->
@@ -1175,8 +1149,6 @@ Canonical owner: [redaction.tombstone.digest](../ontology/features/redaction.g5.
 ### How does an operator end a redaction that cannot finish?
 
 [Q · redaction.batches.abort]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1192,30 +1164,29 @@ Audit: Working assumption (agent, unratified): Assume completion by rerun after 
 Canonical owner: [redaction.batches.abort](#q-006).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "redaction.batches.abort",
-  "status": "open",
-  "prompt": "How does an operator end a redaction that cannot finish?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "intended — the only safe exit is to finish",
-      "description": ""
-    },
-    {
-      "label": "an abort that restores nothing (tombstones stay) but releases the marker is wanted for a target that is legitimately back in use",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: redaction.batches.abort
+status: open
+prompt: How does an operator end a redaction that cannot finish?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: intended — the only safe exit is to finish
+    description: ""
+  - label: an abort that restores nothing (tombstones stay) but releases the marker is wanted for a target that is legitimately back in use
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Assume completion by rerun after fixing liveness; abandonment needs an owner-approved recovery meaning for partial tombstones.
 ```
 
 <a id="q-007"></a>
 ### What does erasure's returned count promise?
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1231,29 +1202,29 @@ Audit: Working assumption (agent, unratified): Treat the present count as a sum 
 Canonical owner: [erasure.count](../ontology/features/erasure.g5.md#erasure.count).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-007",
-  "status": "open",
-  "prompt": "What does erasure's returned count promise?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "the count means node and edge rows only, and the doc should say so",
-      "description": ""
-    },
-    {
-      "label": "0 must mean no store changed",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-007
+status: open
+prompt: What does erasure's returned count promise?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: the count means node and edge rows only, and the doc should say so
+    description: ""
+  - label: 0 must mean no store changed
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat the present count as a sum of store effects rather than a count of distinct entities; any stronger public count needs a defined unit.
 ```
 
 <a id="q-str-002"></a>
 ### Which control characters must a graph name refuse, and who owns the rule?
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1269,23 +1240,25 @@ Audit: Working assumption (agent, unratified): Prefer the server GraphKey rule f
 Canonical owner: [graph.names](../ontology/concepts/graph-scope.g5.md#graph.names).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-str-002",
-  "status": "open",
-  "prompt": "Which control characters must a graph name refuse, and who owns the rule?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "GraphKey owns the rule and Python asks it (or mirrors it exactly), so the refusal is a clean validation error",
-      "description": ""
-    },
-    {
-      "label": "keep both, accepting the opaque server error for C1 characters",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-str-002
+status: open
+prompt: Which control characters must a graph name refuse, and who owns the rule?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: GraphKey owns the rule and Python asks it (or mirrors it exactly), so the refusal is a clean validation error
+    description: ""
+  - label: keep both, accepting the opaque server error for C1 characters
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer the server GraphKey rule for all new names; control-character normalization versus refusal must be documented consistently.
 ```
 
 <a id="structure.multigraph.create_edge"></a><!-- question identity -->
@@ -1293,8 +1266,6 @@ Canonical owner: [graph.names](../ontology/concepts/graph-scope.g5.md#graph.name
 ### In a multigraph, must create_edge always add a new edge and offer a variant that returns its ID?
 
 [Q · structure.multigraph.create_edge]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1310,24 +1281,25 @@ Audit: Working assumption (agent, unratified): Keep direct create as deduplicati
 Canonical owner: [structure.multigraph.create_edge](#q-str-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.multigraph.create_edge",
-  "status": "open",
-  "prompt": "In a multigraph, must create_edge always add a new edge and offer a variant that returns its ID?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "FR-007 stands and this is unfinished work",
-      "description": ""
-    },
-    {
-      "label": "drop FR-007 and document Cypher as the way to add parallel edges",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: structure.multigraph.create_edge
+status: open
+prompt: In a multigraph, must create_edge always add a new edge and offer a variant that returns its ID?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: FR-007 stands and this is unfinished work
+    description: ""
+  - label: drop FR-007 and document Cypher as the way to add parallel edges
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep direct create as deduplicating at this pin; the specification planned keyed parallel creation, whose public ID-returning interface is unfinished.
 ```
 
 <a id="structure.multigraph.ledger"></a><!-- question identity -->
@@ -1335,8 +1307,6 @@ Canonical owner: [structure.multigraph.create_edge](#q-str-003).
 ### Until a ledger reference can name one parallel edge, should the ledger refuse relationship operations on a multigraph triple?
 
 [Q · structure.multigraph.ledger]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1352,24 +1322,25 @@ Audit: Working assumption (agent, unratified): Keep the spec requirement to refu
 Canonical owner: [structure.multigraph.ledger](#q-str-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.multigraph.ledger",
-  "status": "open",
-  "prompt": "Until a ledger reference can name one parallel edge, should the ledger refuse relationship operations on a multigraph triple?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "refuse with `ambiguous_tuple` until FR-013 lands",
-      "description": ""
-    },
-    {
-      "label": "apply to the first row, as today, once the adjacency defect is fixed",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: structure.multigraph.ledger
+status: open
+prompt: Until a ledger reference can name one parallel edge, should the ledger refuse relationship operations on a multigraph triple?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: refuse with `ambiguous_tuple` until FR-013 lands
+    description: ""
+  - label: apply to the first row, as today, once the adjacency defect is fixed
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the spec requirement to refuse ambiguous ledger references; do not accept first-row selection as intended parallel-edge semantics.
 ```
 
 <a id="temporal.stats.cut-bucket"></a><!-- question identity -->
@@ -1377,8 +1348,6 @@ Canonical owner: [structure.multigraph.ledger](#q-str-004).
 ### After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?
 
 [Q · temporal.stats.cut-bucket]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1394,24 +1363,25 @@ Audit: Working assumption (agent, unratified): Keep retained aggregate history d
 Canonical owner: [temporal.stats.cut-bucket](#q-tmp-002).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.stats.cut-bucket",
-  "status": "open",
-  "prompt": "After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "the purge rule wins: a cut bucket keeps its history",
-      "description": ""
-    },
-    {
-      "label": "the rebuild rule wins: statistics describe the survivors",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: temporal.stats.cut-bucket
+status: open
+prompt: After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: "the purge rule wins: a cut bucket keeps its history"
+    description: ""
+  - label: "the rebuild rule wins: statistics describe the survivors"
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep retained aggregate history distinct from surviving raw edges; recomputation after partial raw purge needs an explicit history-retention rule.
 ```
 
 <a id="temporal.window.concurrent-writes"></a><!-- question identity -->
@@ -1419,8 +1389,6 @@ Canonical owner: [temporal.stats.cut-bucket](#q-tmp-002).
 ### Must a paged temporal window read show one consistent moment while edges are written?
 
 [Q · temporal.window.concurrent-writes]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1436,24 +1404,25 @@ Audit: Working assumption (agent, unratified): Treat a paged read as multiple ob
 Canonical owner: [temporal.window.concurrent-writes](#q-tmp-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.window.concurrent-writes",
-  "status": "open",
-  "prompt": "Must a paged temporal window read show one consistent moment while edges are written?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "a live, non-snapshot read is acceptable (document it)",
-      "description": ""
-    },
-    {
-      "label": "a snapshot bound is wanted",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: temporal.window.concurrent-writes
+status: open
+prompt: Must a paged temporal window read show one consistent moment while edges are written?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: a live, non-snapshot read is acceptable (document it)
+    description: ""
+  - label: a snapshot bound is wanted
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat a paged read as multiple observations today; a point-in-time promise needs an explicit snapshot/version protocol.
 ```
 
 <a id="temporal.ledger.insert-collision"></a><!-- question identity -->
@@ -1461,8 +1430,6 @@ Canonical owner: [temporal.window.concurrent-writes](#q-tmp-003).
 ### What should an insert collision inside a changeset do?
 
 [Q · temporal.ledger.insert-collision]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1478,34 +1445,31 @@ Audit: Working assumption (agent, unratified): Keep insert collision as an effec
 Canonical owner: [temporal.ledger.insert-collision](#q-tmp-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.ledger.insert-collision",
-  "status": "open",
-  "prompt": "What should an insert collision inside a changeset do?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "refuse the changeset, as the docstring says",
-      "description": ""
-    },
-    {
-      "label": "commit and record nothing for the collided op",
-      "description": ""
-    },
-    {
-      "label": "keep the record and document that it may describe no change",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: temporal.ledger.insert-collision
+status: open
+prompt: What should an insert collision inside a changeset do?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: refuse the changeset, as the docstring says
+    description: ""
+  - label: commit and record nothing for the collided op
+    description: ""
+  - label: keep the record and document that it may describe no change
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep insert collision as an effect-free accepted temporal call today; ledger record/no-op policy still needs owner choice.
 ```
 
 <a id="q-tmp-005"></a>
 ### Should deleting the last timestamp of a temporal-only predicate keep its old structural row, as a purge does?
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1521,23 +1485,25 @@ Audit: Working assumption (agent, unratified): Keep temporal-only structural row
 Canonical owner: [temporal.optout.drop](../ontology/features/temporal.g5.md#temporal.optout.drop).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-tmp-005",
-  "status": "open",
-  "prompt": "Should deleting the last timestamp of a temporal-only predicate keep its old structural row, as a purge does?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "the asymmetry is acceptable",
-      "description": ""
-    },
-    {
-      "label": "delete should follow the purge's \"leave registered predicates' rows\" rule",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-tmp-005
+status: open
+prompt: Should deleting the last timestamp of a temporal-only predicate keep its old structural row, as a purge does?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: the asymmetry is acceptable
+    description: ""
+  - label: delete should follow the purge's "leave registered predicates' rows" rule
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep temporal-only structural row retention at the opt-out boundary and require drop before opt-in; define last-delete behavior separately.
 ```
 
 <a id="temporal.structural.explicit-delete"></a><!-- question identity -->
@@ -1545,8 +1511,6 @@ Canonical owner: [temporal.optout.drop](../ontology/features/temporal.g5.md#temp
 ### May an explicit delete_edge remove a marked structural row while its triple still has timestamps?
 
 [Q · temporal.structural.explicit-delete]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1562,28 +1526,27 @@ Audit: Working assumption (agent, unratified): Preserve the temporal implication
 Canonical owner: [temporal.structural.explicit-delete](#q-tmp-006).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.structural.explicit-delete",
-  "status": "open",
-  "prompt": "May an explicit delete_edge remove a marked structural row while its triple still has timestamps?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "an explicit delete wins and the triple stays without a row until its next temporal write",
-      "description": ""
-    },
-    {
-      "label": "the delete keeps (or re-asserts) the marked row while timestamps remain",
-      "description": ""
-    },
-    {
-      "label": "the delete is refused",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: temporal.structural.explicit-delete
+status: open
+prompt: May an explicit delete_edge remove a marked structural row while its triple still has timestamps?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: an explicit delete wins and the triple stays without a row until its next temporal write
+    description: ""
+  - label: the delete keeps (or re-asserts) the marked row while timestamps remain
+    description: ""
+  - label: the delete is refused
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve the temporal implication requirement and record the direct-delete exception; the maintainer must decide whether to refuse or repair it.
 ```
 
 <a id="search.embedding.undeclared_default"></a><!-- question identity -->
@@ -1591,8 +1554,6 @@ Canonical owner: [temporal.structural.explicit-delete](#q-tmp-006).
 ### May an undeclared writer add vectors to the default graph's table after a model has claimed it?
 
 [Q · search.embedding.undeclared_default]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1608,24 +1569,25 @@ Audit: Working assumption (agent, unratified): Keep width-compatible undeclared 
 Canonical owner: [search.embedding.undeclared_default](#q-srch-002).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.embedding.undeclared_default",
-  "status": "open",
-  "prompt": "May an undeclared writer add vectors to the default graph's table after a model has claimed it?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "allowed at the same width (as built)",
-      "description": ""
-    },
-    {
-      "label": "refused, as for a declared different model",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: search.embedding.undeclared_default
+status: open
+prompt: May an undeclared writer add vectors to the default graph's table after a model has claimed it?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: allowed at the same width (as built)
+    description: ""
+  - label: refused, as for a declared different model
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep width-compatible undeclared writes to the claimed default table as current compatibility; separate-route enforcement needs an explicit decision.
 ```
 
 <a id="search.bm25.read_isolation"></a><!-- question identity -->
@@ -1633,8 +1595,6 @@ Canonical owner: [search.embedding.undeclared_default](#q-srch-002).
 ### May a BM25 search observe an index write that is still in progress?
 
 [Q · search.bm25.read_isolation]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1650,24 +1610,25 @@ Audit: Working assumption (agent, unratified): Assume no cross-call consistency 
 Canonical owner: [search.bm25.read_isolation](#q-srch-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.bm25.read_isolation",
-  "status": "open",
-  "prompt": "May a BM25 search observe an index write that is still in progress?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "acceptable: scores are approximate during writes",
-      "description": ""
-    },
-    {
-      "label": "searches must see committed state only",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: search.bm25.read_isolation
+status: open
+prompt: May a BM25 search observe an index write that is still in progress?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: "acceptable: scores are approximate during writes"
+    description: ""
+  - label: searches must see committed state only
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Assume no cross-call consistency guarantee until a read/write protocol is chosen; partial-index results remain visible risk, not approved isolation.
 ```
 
 <a id="search.bm25.default_index"></a><!-- question identity -->
@@ -1675,8 +1636,6 @@ Canonical owner: [search.bm25.read_isolation](#q-srch-003).
 ### Should plain text search use a BM25 index named "default" when one exists?
 
 [Q · search.bm25.default_index]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1692,30 +1651,29 @@ Audit: Working assumption (agent, unratified): Keep explicit BM25 selection dist
 Canonical owner: [search.bm25.default_index](#q-srch-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.bm25.default_index",
-  "status": "open",
-  "prompt": "Should plain text search use a BM25 index named \"default\" when one exists?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "the requirement is superseded; mark the spec",
-      "description": ""
-    },
-    {
-      "label": "it is unfinished work",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: search.bm25.default_index
+status: open
+prompt: Should plain text search use a BM25 index named "default" when one exists?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: the requirement is superseded; mark the spec
+    description: ""
+  - label: it is unfinished work
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep explicit BM25 selection distinct from plain text search; a default-index fallback requires a supported API/corpus decision.
 ```
 
 <a id="q-srch-005"></a>
 ### In which order must the common-term cutoff list the terms it skipped?
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1731,23 +1689,25 @@ Audit: Working assumption (agent, unratified): Preserve token order in reporting
 Canonical owner: [search.bm25.cutoff](../ontology/features/search.g5.md#search.bm25.cutoff).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-srch-005",
-  "status": "open",
-  "prompt": "In which order must the common-term cutoff list the terms it skipped?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "collation order is what \"alphabetical\" means here (document it)",
-      "description": ""
-    },
-    {
-      "label": "plain string order",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-srch-005
+status: open
+prompt: In which order must the common-term cutoff list the terms it skipped?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: collation order is what "alphabetical" means here (document it)
+    description: ""
+  - label: plain string order
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve token order in reporting skipped terms unless a different order is specified; membership is the existing scoring-relevant fact.
 ```
 
 <a id="ledger.strict.fail-open"></a><!-- question identity -->
@@ -1755,8 +1715,6 @@ Canonical owner: [search.bm25.cutoff](../ontology/features/search.g5.md#search.b
 ### When the strict-mode guard cannot read the ledger's state, should it allow the write?
 
 [Q · ledger.strict.fail-open]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1772,24 +1730,25 @@ Audit: Working assumption (agent, unratified): Keep failures visible in analysis
 Canonical owner: [ledger.strict.fail-open](#q-plt-009).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.strict.fail-open",
-  "status": "open",
-  "prompt": "When the strict-mode guard cannot read the ledger's state, should it allow the write?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "fail open, as documented in the code",
-      "description": ""
-    },
-    {
-      "label": "refuse under uncertainty when strict may be on, and re-probe the class",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: ledger.strict.fail-open
+status: open
+prompt: When the strict-mode guard cannot read the ledger's state, should it allow the write?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: fail open, as documented in the code
+    description: ""
+  - label: refuse under uncertainty when strict may be on, and re-probe the class
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep failures visible in analysis and prefer fail-closed admission; the current fail-open compatibility behavior is not owner ratification.
 ```
 
 <a id="install.setup.failed_deploy"></a><!-- question identity -->
@@ -1797,8 +1756,6 @@ Canonical owner: [ledger.strict.fail-open](#q-plt-009).
 ### Should setup still record the schema when some classes failed to deploy?
 
 [Q · install.setup.failed_deploy]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1814,24 +1771,25 @@ Audit: Working assumption (agent, unratified): Prefer no ready schema record aft
 Canonical owner: [install.setup.failed_deploy](#q-plt-010).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.setup.failed_deploy",
-  "status": "open",
-  "prompt": "Should setup still record the schema when some classes failed to deploy?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "record anyway and report the failure",
-      "description": ""
-    },
-    {
-      "label": "withhold the record so the namespace counts as a stopped setup (FR-006a)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: install.setup.failed_deploy
+status: open
+prompt: Should setup still record the schema when some classes failed to deploy?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: record anyway and report the failure
+    description: ""
+  - label: withhold the record so the namespace counts as a stopped setup (FR-006a)
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer no ready schema record after failed deployment; a partial-ready record would need explicit per-capability admission rules.
 ```
 
 <a id="install.migration.schema.unrecorded"></a><!-- question identity -->
@@ -1839,8 +1797,6 @@ Canonical owner: [install.setup.failed_deploy](#q-plt-010).
 ### May a data migration run before any setup has recorded the namespace's IVG Schema, and on which schema?
 
 [Q · install.migration.schema.unrecorded]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1856,24 +1812,25 @@ Audit: Working assumption (agent, unratified): Require an explicit schema choice
 Canonical owner: [install.migration.schema.unrecorded](#q-plt-011).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.migration.schema.unrecorded",
-  "status": "open",
-  "prompt": "May a data migration run before any setup has recorded the namespace's IVG Schema, and on which schema?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "with no record, a migration may run on an explicitly given schema and must not record it",
-      "description": ""
-    },
-    {
-      "label": "a migration must refuse until a setup records the schema",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: install.migration.schema.unrecorded
+status: open
+prompt: May a data migration run before any setup has recorded the namespace's IVG Schema, and on which schema?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: with no record, a migration may run on an explicitly given schema and must not record it
+    description: ""
+  - label: a migration must refuse until a setup records the schema
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Require an explicit schema choice before a migration with no namespace record; arbitrary fallback schemas are not an inferred supported policy.
 ```
 
 <a id="access.read_only.scope"></a><!-- question identity -->
@@ -1881,8 +1838,6 @@ Canonical owner: [install.migration.schema.unrecorded](#q-plt-011).
 ### Does read-only mode govern the MCP tools, and should Bolt honour a driver's read access mode?
 
 [Q · access.read_only.scope]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1898,28 +1853,27 @@ Audit: Working assumption (agent, unratified): Keep engine read-only guarantees 
 Canonical owner: [access.read_only.scope](#q-plt-012).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.read_only.scope",
-  "status": "open",
-  "prompt": "Does read-only mode govern the MCP tools, and should Bolt honour a driver's read access mode?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "13)",
-      "description": ""
-    },
-    {
-      "label": "a read-only IRIS login is the real control and the docs say so",
-      "description": ""
-    },
-    {
-      "label": "`IVG_READ_ONLY` must cover MCP, and Bolt must refuse writes in a read session",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: access.read_only.scope
+status: open
+prompt: Does read-only mode govern the MCP tools, and should Bolt honour a driver's read access mode?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: 13)
+    description: ""
+  - label: a read-only IRIS login is the real control and the docs say so
+    description: ""
+  - label: "`IVG_READ_ONLY` must cover MCP, and Bolt must refuse writes in a read session"
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep engine read-only guarantees and explicitly list interfaces that ignore access hints; protocol hints and server enforcement need separate decisions.
 ```
 
 <a id="algorithms.proof.build"></a><!-- question identity -->
@@ -1927,8 +1881,6 @@ Canonical owner: [access.read_only.scope](#q-plt-012).
 ### Does a proven reader revision hold for every build and platform of the library?
 
 [Q · algorithms.proof.build]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1944,24 +1896,25 @@ Audit: Working assumption (agent, unratified): Bind proof evidence to exact libr
 Canonical owner: [algorithms.proof.build](#q-plt-013).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.proof.build",
-  "status": "open",
-  "prompt": "Does a proven reader revision hold for every build and platform of the library?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "the revision is the contract across builds",
-      "description": ""
-    },
-    {
-      "label": "routing must also match the proven build",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: algorithms.proof.build
+status: open
+prompt: Does a proven reader revision hold for every build and platform of the library?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: the revision is the contract across builds
+    description: ""
+  - label: routing must also match the proven build
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Bind proof evidence to exact library/platform builds until source or owner authority permits broader reuse.
 ```
 
 <a id="algorithms.proof.ungated"></a><!-- question identity -->
@@ -1969,8 +1922,6 @@ Canonical owner: [algorithms.proof.build](#q-plt-013).
 ### Must the evidence gate also cover the other algorithms the native library speeds up?
 
 [Q · algorithms.proof.ungated]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -1986,24 +1937,25 @@ Audit: Working assumption (agent, unratified): Do not infer proof coverage for a
 Canonical owner: [algorithms.proof.ungated](#q-plt-014).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.proof.ungated",
-  "status": "open",
-  "prompt": "Must the evidence gate also cover the other algorithms the native library speeds up?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "yes, gate them",
-      "description": ""
-    },
-    {
-      "label": "they are outside the gate by design (document it)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: algorithms.proof.ungated
+status: open
+prompt: Must the evidence gate also cover the other algorithms the native library speeds up?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: yes, gate them
+    description: ""
+  - label: they are outside the gate by design (document it)
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Do not infer proof coverage for accelerated algorithms absent from the gate; extending its inventory needs provider-specific evidence.
 ```
 
 <a id="algorithms.routing.namespace"></a><!-- question identity -->
@@ -2011,8 +1963,6 @@ Canonical owner: [algorithms.proof.ungated](#q-plt-014).
 ### Should native readers work in namespaces other than USER?
 
 [Q · algorithms.routing.namespace]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2028,24 +1978,25 @@ Audit: Working assumption (agent, unratified): Keep non-USER Owner routing as cu
 Canonical owner: [algorithms.routing.namespace](#q-plt-015).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.routing.namespace",
-  "status": "open",
-  "prompt": "Should native readers work in namespaces other than USER?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "USER only, documented",
-      "description": ""
-    },
-    {
-      "label": "the library must read the calling namespace",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: algorithms.routing.namespace
+status: open
+prompt: Should native readers work in namespaces other than USER?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: USER only, documented
+    description: ""
+  - label: the library must read the calling namespace
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep non-USER Owner routing as current availability; cross-namespace native support requires a provider deployment/proof contract.
 ```
 
 <a id="fhir.event.retry"></a><!-- question identity -->
@@ -2053,8 +2004,6 @@ Canonical owner: [algorithms.routing.namespace](#q-plt-015).
 ### Must a repeated FHIR event leave the graph unchanged?
 
 [Q · fhir.event.retry]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2070,24 +2019,25 @@ Audit: Working assumption (agent, unratified): Prefer idempotent repeated FHIR e
 Canonical owner: [fhir.event.retry](#q-plt-016).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "fhir.event.retry",
-  "status": "open",
-  "prompt": "Must a repeated FHIR event leave the graph unchanged?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "derive the time from the event so retries are harmless",
-      "description": ""
-    },
-    {
-      "label": "accept it until the route is removed",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: fhir.event.retry
+status: open
+prompt: Must a repeated FHIR event leave the graph unchanged?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: derive the time from the event so retries are harmless
+    description: ""
+  - label: accept it until the route is removed
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer idempotent repeated FHIR events, while preserving current event behavior as observation; event identity and replay retention need owner choice.
 ```
 
 <a id="fhir.sync.other_writers"></a><!-- question identity -->
@@ -2095,8 +2045,6 @@ Canonical owner: [fhir.event.retry](#q-plt-016).
 ### What should happen when other writers, an erase included, touch a FHIR graph during a sync?
 
 [Q · fhir.sync.other_writers]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2112,24 +2060,25 @@ Audit: Working assumption (agent, unratified): Preserve the documented single-sy
 Canonical owner: [fhir.sync.other_writers](#q-plt-017).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "fhir.sync.other_writers",
-  "status": "open",
-  "prompt": "What should happen when other writers, an erase included, touch a FHIR graph during a sync?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "the FHIR graph belongs to the sync alone and other writes are refused",
-      "description": ""
-    },
-    {
-      "label": "other writes, an erase included, take the sync's lock",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: fhir.sync.other_writers
+status: open
+prompt: What should happen when other writers, an erase included, touch a FHIR graph during a sync?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: the FHIR graph belongs to the sync alone and other writes are refused
+    description: ""
+  - label: other writes, an erase included, take the sync's lock
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve the documented single-sync restriction and keep competing non-sync writers unestablished; choose serialization or conflict detection explicitly.
 ```
 
 <a id="query.shadow.native-failure"></a><!-- question identity -->
@@ -2137,8 +2086,6 @@ Canonical owner: [fhir.sync.other_writers](#q-plt-017).
 ### In shadow mode, should a native failure be raised instead of answered by SQL?
 
 [Q · query.shadow.native-failure]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2154,24 +2101,25 @@ Audit: Working assumption (agent, unratified): Keep SQL fallback as the current 
 Canonical owner: [query.shadow.native-failure](#q-cyp-002).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.shadow.native-failure",
-  "status": "open",
-  "prompt": "In shadow mode, should a native failure be raised instead of answered by SQL?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "raise in shadow mode (stricter checks)",
-      "description": ""
-    },
-    {
-      "label": "keep the fallback, as specified",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: query.shadow.native-failure
+status: open
+prompt: In shadow mode, should a native failure be raised instead of answered by SQL?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: raise in shadow mode (stricter checks)
+    description: ""
+  - label: keep the fallback, as specified
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep SQL fallback as the current shadow behavior; fail-fast diagnostic mode remains an unratified alternative.
 ```
 
 <a id="query.native.index-current"></a><!-- question identity -->
@@ -2179,8 +2127,6 @@ Canonical owner: [query.shadow.native-failure](#q-cyp-002).
 ### Should a bulk load by another process close the native query path while indexes lag the rows?
 
 [Q · query.native.index-current]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2196,30 +2142,29 @@ Audit: Working assumption (agent, unratified): Prefer closing native admission d
 Canonical owner: [query.native.index-current](#q-cyp-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.native.index-current",
-  "status": "open",
-  "prompt": "Should a bulk load by another process close the native query path while indexes lag the rows?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "no: equal answers assume current indexes (document it)",
-      "description": ""
-    },
-    {
-      "label": "a load publishes a namespace-wide marker that `native_gate` checks",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: query.native.index-current
+status: open
+prompt: Should a bulk load by another process close the native query path while indexes lag the rows?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: "no: equal answers assume current indexes (document it)"
+    description: ""
+  - label: a load publishes a namespace-wide marker that `native_gate` checks
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer closing native admission during index-bypassing load; a cache/probe that misses that interval cannot justify current-index reliance.
 ```
 
 <a id="q-cyp-004"></a>
 ### Does a Cypher path value come back as JSON text or as a map, and may that depend on the driver or execution path?
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2235,23 +2180,25 @@ Audit: Working assumption (agent, unratified): Prefer a consistent structured pa
 Canonical owner: [query.conformance](../ontology/features/cypher.g5.md#query.conformance).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-cyp-004",
-  "status": "open",
-  "prompt": "Does a Cypher path value come back as JSON text or as a map, and may that depend on the driver or execution path?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "the representation changed (driver or execution path) and the tests are stale",
-      "description": ""
-    },
-    {
-      "label": "a path must always come back as JSON text, and the dict is a regression on this driver or path",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: q-cyp-004
+status: open
+prompt: Does a Cypher path value come back as JSON text or as a map, and may that depend on the driver or execution path?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: the representation changed (driver or execution path) and the tests are stale
+    description: ""
+  - label: a path must always come back as JSON text, and the dict is a regression on this driver or path
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer a consistent structured path value; driver/path-dependent text is current behavior requiring a compatibility decision.
 ```
 
 <a id="query.system-procedures.unknown"></a><!-- question identity -->
@@ -2259,8 +2206,6 @@ Canonical owner: [query.conformance](../ontology/features/cypher.g5.md#query.con
 ### Should a call to an unknown apoc, db or dbms procedure be refused?
 
 [Q · query.system-procedures.unknown]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2276,28 +2221,27 @@ Audit: Working assumption (agent, unratified): Prefer a clear unknown-procedure 
 Canonical owner: [query.system-procedures.unknown](#q-cyp-005).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.system-procedures.unknown",
-  "status": "open",
-  "prompt": "Should a call to an unknown apoc, db or dbms procedure be refused?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "4, correction 21)",
-      "description": ""
-    },
-    {
-      "label": "answer empty for Browser compatibility",
-      "description": ""
-    },
-    {
-      "label": "refuse, as for `ivg.*`",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: query.system-procedures.unknown
+status: open
+prompt: Should a call to an unknown apoc, db or dbms procedure be refused?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: 4, correction 21)
+    description: ""
+  - label: answer empty for Browser compatibility
+    description: ""
+  - label: refuse, as for `ivg.*`
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer a clear unknown-procedure refusal; preserve present empty results as observed compatibility until the owner decides.
 ```
 
 <a id="redaction.tombstone.digest-source"></a><!-- question identity -->
@@ -2305,8 +2249,6 @@ Canonical owner: [query.system-procedures.unknown](#q-cyp-005).
 ### Which copy of a record must an auditor keep to recompute its tombstone digest?
 
 [Q · redaction.tombstone.digest-source]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2322,24 +2264,25 @@ Audit: Working assumption (agent, unratified): Treat auditor-held original canon
 Canonical owner: [redaction.tombstone.digest-source](#q-led-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "redaction.tombstone.digest-source",
-  "status": "open",
-  "prompt": "Which copy of a record must an auditor keep to recompute its tombstone digest?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "the server's canonical record captured before the redaction is the only valid preimage (document it, and how to capture it)",
-      "description": ""
-    },
-    {
-      "label": "the public reader must reproduce the canonical form exactly",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: redaction.tombstone.digest-source
+status: open
+prompt: Which copy of a record must an auditor keep to recompute its tombstone digest?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: the server's canonical record captured before the redaction is the only valid preimage (document it, and how to capture it)
+    description: ""
+  - label: the public reader must reproduce the canonical form exactly
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat auditor-held original canonical records as required to recompute digests; the product does not promise a retained recoverable preimage.
 ```
 
 <a id="redaction.out-of-reach.other-copies"></a><!-- question identity -->
@@ -2347,8 +2290,6 @@ Canonical owner: [redaction.tombstone.digest-source](#q-led-001).
 ### Should the redaction receipt name IVG's own snapshot archives and the ledger rows an upgrade left behind?
 
 [Q · redaction.out-of-reach.other-copies]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2364,24 +2305,25 @@ Audit: Working assumption (agent, unratified): List snapshots and legacy ledger 
 Canonical owner: [redaction.out-of-reach.other-copies](#q-led-002).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "redaction.out-of-reach.other-copies",
-  "status": "open",
-  "prompt": "Should the redaction receipt name IVG's own snapshot archives and the ledger rows an upgrade left behind?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "name them in the receipt's out-of-reach list",
-      "description": ""
-    },
-    {
-      "label": "redaction must also reach them (refuse or rewrite archives it knows of; clear the legacy rows)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: redaction.out-of-reach.other-copies
+status: open
+prompt: Should the redaction receipt name IVG's own snapshot archives and the ledger rows an upgrade left behind?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: name them in the receipt's out-of-reach list
+    description: ""
+  - label: redaction must also reach them (refuse or rewrite archives it knows of; clear the legacy rows)
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: List snapshots and legacy ledger copies as outside redaction reach; archive-retention/removal policy remains an owner decision.
 ```
 
 <a id="ledger.lifecycle.disable-during-redaction"></a><!-- question identity -->
@@ -2389,8 +2331,6 @@ Canonical owner: [redaction.out-of-reach.other-copies](#q-led-002).
 ### What should disabling the ledger do while a redaction is unfinished?
 
 [Q · ledger.lifecycle.disable-during-redaction]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2406,24 +2346,25 @@ Audit: Working assumption (agent, unratified): Prefer refusal of disable during 
 Canonical owner: [ledger.lifecycle.disable-during-redaction](#q-led-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.lifecycle.disable-during-redaction",
-  "status": "open",
-  "prompt": "What should disabling the ledger do while a redaction is unfinished?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "refuse `disable` while a redaction is unfinished",
-      "description": ""
-    },
-    {
-      "label": "allow it, and define what the marker means while the ledger is disabled",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: ledger.lifecycle.disable-during-redaction
+status: open
+prompt: What should disabling the ledger do while a redaction is unfinished?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: refuse `disable` while a redaction is unfinished
+    description: ""
+  - label: allow it, and define what the marker means while the ledger is disabled
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer refusal of disable during unfinished redaction; resumption and blocked readers require a deliberate lifecycle rule.
 ```
 
 <a id="ledger.lifecycle.genesis.shared-ids"></a><!-- question identity -->
@@ -2431,8 +2372,6 @@ Canonical owner: [ledger.lifecycle.disable-during-redaction](#q-led-003).
 ### How should the ledger's genesis record a node ID that two graphs hold?
 
 [Q · ledger.lifecycle.genesis.shared-ids]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2448,28 +2387,27 @@ Audit: Working assumption (agent, unratified): Keep namespace-wide bare node IDs
 Canonical owner: [ledger.lifecycle.genesis.shared-ids](#q-led-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.lifecycle.genesis.shared-ids",
-  "status": "open",
-  "prompt": "How should the ledger's genesis record a node ID that two graphs hold?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "8, G8)",
-      "description": ""
-    },
-    {
-      "label": "acceptable: ledger nodes are graph-blind by design",
-      "description": ""
-    },
-    {
-      "label": "genesis should record one node per (graph, ID) or refuse",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: ledger.lifecycle.genesis.shared-ids
+status: open
+prompt: How should the ledger's genesis record a node ID that two graphs hold?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: 8, G8)
+    description: ""
+  - label: "acceptable: ledger nodes are graph-blind by design"
+    description: ""
+  - label: genesis should record one node per (graph, ID) or refuse
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep namespace-wide bare node IDs in current genesis behavior; graph-specific ledger identity would require a record/migration decision.
 ```
 
 <a id="ledger.verify.consistency"></a><!-- question identity -->
@@ -2477,8 +2415,6 @@ Canonical owner: [ledger.lifecycle.genesis.shared-ids](#q-led-004).
 ### Must verify compare one consistent moment of the ledger and the tables?
 
 [Q · ledger.verify.consistency]
-
-Severity: Low · Decision: Open
 
 Run: Uplift 2026-11-13
 
@@ -2494,28 +2430,27 @@ Audit: Working assumption (agent, unratified): Treat verify as requiring quiesce
 Canonical owner: [ledger.verify.consistency](#q-led-006).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.verify.consistency",
-  "status": "open",
-  "prompt": "Must verify compare one consistent moment of the ledger and the tables?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "2; review R1-core R1-6). The race with a redaction is registered as [bug-led-001](bugs_issues.md#bug-led-001); with ordinary commits running, a verify can repor",
-      "description": "2; review R1-core R1-6). The race with a redaction is registered as [bug-led-001](bugs_issues.md#bug-led-001); with ordinary commits running, a verify can report differences that existed at no single moment"
-    },
-    {
-      "label": "verify is best-effort; run it when writes are quiet (document it)",
-      "description": ""
-    },
-    {
-      "label": "verify reads under the head lock, or retries until the head did not move",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: ledger.verify.consistency
+status: open
+prompt: Must verify compare one consistent moment of the ledger and the tables?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: 2; review R1-core R1-6). The race with a redaction is registered as [bug-led-001](bugs_issues.md#bug-led-001); with ordinary commits running, a verify can repor
+    description: 2; review R1-core R1-6). The race with a redaction is registered as [bug-led-001](bugs_issues.md#bug-led-001); with ordinary commits running, a verify can report differences that existed at no single moment
+  - label: verify is best-effort; run it when writes are quiet (document it)
+    description: ""
+  - label: verify reads under the head lock, or retries until the head did not move
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat verify as requiring quiescent inputs for reliance until a consistent-view protocol is specified; unlocked multi-scan behavior is not a snapshot proof.
 ```
 
 <a id="structure.node.read.aliases"></a><!-- question identity -->
@@ -2523,8 +2458,6 @@ Canonical owner: [ledger.verify.consistency](#q-led-006).
 ### How should flat node reads preserve colliding property aliases?
 
 [Q · structure.node.read.aliases]
-
-Severity: Low · Decision: Open
 
 Run: Uplift improvement iteration 1, 2026-11-15
 
@@ -2538,21 +2471,25 @@ Audit: Working assumption (agent, unratified): Preserve both accepted property v
 Canonical owner: [structure.node.read.aliases](#q-iter-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.node.read.aliases",
-  "status": "open",
-  "prompt": "How should flat node reads preserve colliding property aliases?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: structure.node.read.aliases
+status: open
+prompt: How should flat node reads preserve colliding property aliases?
+severity: low
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve both accepted property values and structural identity; reserve aliases or introduce a property map only after a compatibility choice.
 ```
 
 <a id="q-con-001"></a>
 ### Must the streaming history reader bound its memory, or only its delivery?
-
-Severity: Low · Decision: Open
 
 Run: Consolidated uplift 2026-11-14
 
@@ -2570,14 +2507,21 @@ Audit: Working assumption (agent, unratified): Keep delivery streaming separate 
 Canonical owner: [ledger.readers.bound](../ontology/features/ledger.g5.md#ledger.readers.bound).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "q-con-001",
-  "status": "open",
-  "prompt": "Must the streaming history reader bound its memory, or only its delivery?",
-  "allow_free_text": true,
-  "options": []
-}
+schema: 1
+id: q-con-001
+status: open
+prompt: Must the streaming history reader bound its memory, or only its delivery?
+severity: low
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep delivery streaming separate from bounded-memory guarantees; full materialization is current behavior and a memory promise needs a separate bound.
 ```
 
 <a id="ledger.readers.bound.policy"></a><!-- question identity -->
@@ -2585,8 +2529,6 @@ Canonical owner: [ledger.readers.bound](../ontology/features/ledger.g5.md#ledger
 ### Must reconstruction's bound concern each intermediate graph or only the requested graph?
 
 [Q · ledger.readers.bound.policy]
-
-Severity: Low · Decision: Open
 
 Run: Uplift improvement iteration 2, 2026-11-15
 
@@ -2600,15 +2542,21 @@ Audit: Working assumption (agent, unratified): Prefer an explicit peak reconstru
 Canonical owner: [ledger.readers.bound.policy](#q-iter-002).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.readers.bound.policy",
-  "status": "open",
-  "prompt": "Must reconstruction's bound concern each intermediate graph or only the requested graph?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: ledger.readers.bound.policy
+status: open
+prompt: Must reconstruction's bound concern each intermediate graph or only the requested graph?
+severity: low
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Prefer an explicit peak reconstruction bound; current per-intermediate graph checks do not settle a final-graph-only policy.
 ```
 
 <a id="ledger.readers.diff.order"></a><!-- question identity -->
@@ -2616,8 +2564,6 @@ Canonical owner: [ledger.readers.bound.policy](#q-iter-002).
 ### Is a ledger diff an ordered script or an unordered set of net changes?
 
 [Q · ledger.readers.diff.order]
-
-Severity: Low · Decision: Open
 
 Run: Consolidated uplift 2026-11-14
 
@@ -2631,15 +2577,21 @@ Audit: Working assumption (agent, unratified): Treat lifecycle diff as an unorde
 Canonical owner: [ledger.readers.diff.order](#q-con-002).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.readers.diff.order",
-  "status": "open",
-  "prompt": "Is a ledger diff an ordered script or an unordered set of net changes?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: ledger.readers.diff.order
+status: open
+prompt: Is a ledger diff an ordered script or an unordered set of net changes?
+severity: low
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat lifecycle diff as an unordered net-change result until a stable script order is specified; consumers must not infer dependency order.
 ```
 
 <a id="algorithms.op.paths.weighted.parallel"></a><!-- question identity -->
@@ -2647,8 +2599,6 @@ Canonical owner: [ledger.readers.diff.order](#q-con-002).
 ### Should weighted shortest path consider every parallel edge or the lowest-key representative graph?
 
 [Q · algorithms.op.paths.weighted.parallel]
-
-Severity: Low · Decision: Open
 
 Run: Consolidated iteration9, 2026-11-15
 
@@ -2664,15 +2614,21 @@ Audit: Working assumption (agent, unratified): Keep the current lowest-key repre
 Canonical owner: [algorithms.op.paths.weighted.parallel](#q-iter-007).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.op.paths.weighted.parallel",
-  "status": "open",
-  "prompt": "Should weighted shortest path consider every parallel edge or the lowest-key representative graph?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: algorithms.op.paths.weighted.parallel
+status: open
+prompt: Should weighted shortest path consider every parallel edge or the lowest-key representative graph?
+severity: low
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the current lowest-key representative route distinct from all-parallel-edge shortest path; the optimization domain needs owner choice.
 ```
 
 <a id="algorithms.op.ppr.zero_ties"></a><!-- question identity -->
@@ -2680,8 +2636,6 @@ Canonical owner: [algorithms.op.paths.weighted.parallel](#q-iter-007).
 ### Should tiny positive PPR scores share the rounded zero tie or always precede true zeros?
 
 [Q · algorithms.op.ppr.zero_ties]
-
-Severity: Low · Decision: Open
 
 Run: Consolidated iteration10, 2026-11-15
 
@@ -2697,15 +2651,21 @@ Audit: Working assumption (agent, unratified): Preserve the rounded-score tie ru
 Canonical owner: [algorithms.op.ppr.zero_ties](#q-iter-008).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.op.ppr.zero_ties",
-  "status": "open",
-  "prompt": "Should tiny positive PPR scores share the rounded zero tie or always precede true zeros?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: algorithms.op.ppr.zero_ties
+status: open
+prompt: Should tiny positive PPR scores share the rounded zero tie or always precede true zeros?
+severity: low
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve the rounded-score tie rule today; giving every positive raw score priority over true zero would change top-k admission.
 ```
 
 <a id="install.schema.refusal.first-use-policy"></a><!-- question identity -->
@@ -2733,15 +2693,21 @@ Audit: Working assumption (agent, unratified): Supported deployments can read th
 Canonical owner: [install.schema.refusal.first-use-policy](#HD-0101).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.schema.refusal.first-use-policy",
-  "status": "open",
-  "prompt": "Should an engine that cannot read the schema record be refused?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: install.schema.refusal.first-use-policy
+status: open
+prompt: Should an engine that cannot read the schema record be refused?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Supported deployments can read the record (premise: the ADMIN_GUIDE role table grants %Native_GlobalAccess:U). Under that premise a mismatch is refused. The documented fail-open path is a separate 'unchecked' outcome that admits a mismatched engine. It is outside the binding guarantee and should be modelled that way, not treated as an accepted engine."
 ```
 
 <a id="HD-0102"></a>
@@ -2766,23 +2732,25 @@ Audit: Working assumption (agent, unratified): Treat a stored schema name as a n
 Canonical owner: [install.setup.failed_deploy](#q-plt-010).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-0102",
-  "status": "open",
-  "prompt": "Should setup save the schema record when the class deploy failed or was turned off?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "record only when objectscript_deployed and objectscript_failed is empty -",
-      "description": ""
-    },
-    {
-      "label": "record, but mark it incomplete so the first-access check names the missing classes",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-0102
+status: open
+prompt: Should setup save the schema record when the class deploy failed or was turned off?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: record only when objectscript_deployed and objectscript_failed is empty -
+    description: ""
+  - label: record, but mark it incomplete so the first-access check names the missing classes
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat a stored schema name as a namespace binding only. Represent readiness of each deployed capability (classes, adjacency index, ledger, erase) separately. An engine accepted by the record check has no claim on feature readiness. A feature call on a class-less namespace must give a named failure, not silently degrade.
 ```
 
 <a id="install.legacy.support-policy"></a><!-- question identity -->
@@ -2810,15 +2778,21 @@ Audit: Working assumption (agent, unratified): Inventory both install paths. The
 Canonical owner: [install.legacy.support-policy](#HD-0103).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.legacy.support-policy",
-  "status": "open",
-  "prompt": "Are the files under sql/ part of the product?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: install.legacy.support-policy
+status: open
+prompt: Are the files under sql/ part of the product?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Inventory both install paths. The product contract (spec 262 schema, inventory test) covers initialize_schema only. scripts/deploy_production.py + sql/schema.sql + sql/operators_fixed.sql form a reachable legacy path that produces a non-conforming namespace (DDL-only before its class step, unqualified procedures). sql/fraud_sample_data.sql is maintained demo data. Files with no loader are historical material.
 ```
 
 <a id="graph.default.python-read-policy"></a><!-- question identity -->
@@ -2848,15 +2822,21 @@ Canonical owner: [graph.default.python-read-policy](#HD-0201).
 Evidence (retest iteration 34, [observation](../uplift/consolidated/iteration-34/property-readers-observed-20261116T222559Z.json)): `get_node_ids_by_property(key, "7")` returned a named-graph node's ID that `get_nodes_by_property(key, "7")` with the same arguments left out, and `get_property_values`/`get_property_pairs` included the named graph's value; `get_nodes_by_property` and `get_nodes_by_label` read the default graph only.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "graph.default.python-read-policy",
-  "status": "open",
-  "prompt": "What does a Python read with no graph argument read?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: graph.default.python-read-policy
+status: open
+prompt: What does a Python read with no graph argument read?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: For graph-aware Python reads, omission selects the default graph. Keep the all-graph id helpers as separate discovery operations with their scope visible. Never hydrate ids from one scope with another scope's records. Model delete_node's 'holding graph or refuse' rule as its own documented operation.
 ```
 
 <a id="HD-0302"></a>
@@ -2881,31 +2861,29 @@ Audit: Working assumption (agent, unratified): For structural predicates, a trip
 Canonical owner: [temporal.structural.explicit-delete](#q-tmp-006).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-0302",
-  "status": "open",
-  "prompt": "May a direct edge delete remove an edge row that a temporal edge still implies?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "delete the row and leave the temporal events (as built; maintainer-tested) -",
-      "description": ""
-    },
-    {
-      "label": "refuse while the triple has temporal events and the row is marked -",
-      "description": ""
-    },
-    {
-      "label": "delete the row and the triple's temporal events together -",
-      "description": ""
-    },
-    {
-      "label": "leave a marked row alone and delete only an explicit one (an adopted row reverts to marked)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-0302
+status: open
+prompt: May a direct edge delete remove an edge row that a temporal edge still implies?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: delete the row and leave the temporal events (as built; maintainer-tested) -
+    description: ""
+  - label: refuse while the triple has temporal events and the row is marked -
+    description: ""
+  - label: delete the row and the triple's temporal events together -
+    description: ""
+  - label: leave a marked row alone and delete only an explicit one (an adopted row reverts to marked)
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: For structural predicates, a triple with surviving timestamps keeps a structural row. A direct delete may remove the explicit assertion, but the row must stay (or revert to marked) while timestamps remain. Model as-built option (a) as the baseline that violates the implication, and keep the ADR-0015 temporal-only opt-out separate (no row ever).
 ```
 
 <a id="structure.degree.cache.retirement-policy"></a><!-- question identity -->
@@ -2933,15 +2911,21 @@ Audit: Working assumption (agent, unratified): Unchanged from decisions.md: inva
 Canonical owner: [structure.degree.cache.retirement-policy](#HD-0401).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.degree.cache.retirement-policy",
-  "status": "open",
-  "prompt": "How should erase and rebuild retire a source generation?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: structure.degree.cache.retirement-policy
+status: open
+prompt: How should erase and rebuild retire a source generation?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Unchanged from decisions.md: invalidation can never make an old degree-cache value valid again; model a monotone generation or a fresh graph epoch across erase and rebuild; keep as-built A (kill) as the baseline with its narrow window."
 ```
 
 <a id="structure.adjacency.rebuild-concurrency"></a><!-- question identity -->
@@ -2969,15 +2953,21 @@ Audit: Working assumption (agent, unratified): Unchanged: at most one publishing
 Canonical owner: [structure.adjacency.rebuild-concurrency](#HD-0402).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.adjacency.rebuild-concurrency",
-  "status": "open",
-  "prompt": "May two adjacency rebuilds run at the same time?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: structure.adjacency.rebuild-concurrency
+status: open
+prompt: May two adjacency rebuilds run at the same time?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Unchanged: at most one publishing rebuild per adjacency structure; a second call waits or gets a documented busy result. Refined: ADMIN_GUIDE's sentence is literally about ^NKG and holds live; the ^KG half is unserialized."
 ```
 
 <a id="temporal.structural.ledger-nodes.policy"></a><!-- question identity -->
@@ -3005,15 +2995,21 @@ Audit: Working assumption (agent, unratified): Engine-path endpoints: derived, w
 Canonical owner: [temporal.structural.ledger-nodes.policy](#HD-0501).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.structural.ledger-nodes.policy",
-  "status": "open",
-  "prompt": "Are the end nodes a temporal write creates governed by the ledger?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: temporal.structural.ledger-nodes.policy
+status: open
+prompt: Are the end nodes a temporal write creates governed by the ledger?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Engine-path endpoints: derived, with identifiable provenance (e.g. the 'bare temporal endpoint' rule purge already uses) and excluded from genesis/verify; changeset temporal ops: follow the relationship endpoint rule (refuse a missing endpoint or record a stub). Keep their real effects in the environment model; treat ledger-api.md:92 as stale for the indexed path."
 ```
 
 <a id="temporal.ledger.scope-policy"></a><!-- question identity -->
@@ -3041,15 +3037,21 @@ Audit: Working assumption (agent, unratified): Unchanged reading: record the cha
 Canonical owner: [temporal.ledger.scope-policy](#HD-0502).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.ledger.scope-policy",
-  "status": "open",
-  "prompt": "Is the temporal index inside the ledger's guarantee?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: temporal.ledger.scope-policy
+status: open
+prompt: Is the temporal index inside the ledger's guarantee?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Unchanged reading: record the changeset temporal op in history (audit, redaction); treat temporal tiers, engine temporal writes, purges and temporal replay as outside the structural replay guarantee; model their real effects, including purges deleting endpoint nodes."
 ```
 
 <a id="search.erasure.indexes.coverage-policy"></a><!-- question identity -->
@@ -3077,15 +3079,21 @@ Audit: Working assumption (agent, unratified): Unchanged: model retained index c
 Canonical owner: [search.erasure.indexes.coverage-policy](#HD-0601).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.erasure.indexes.coverage-policy",
-  "status": "open",
-  "prompt": "Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promise?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.erasure.indexes.coverage-policy
+status: open
+prompt: Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promise?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Unchanged: model retained index contents as observable after erasure unless purged; graph-owned indexes require invalidation or deletion on erase; caller-fed indexes need an explicit owner/exposure statement. Refined with the graph-derived (IVF) vs caller-fed (VecIndex, PLAID) split."
 ```
 
 <a id="search.scope.indexes.publication-policy"></a><!-- question identity -->
@@ -3113,15 +3121,21 @@ Audit: Working assumption (agent, unratified): Unchanged: readers see a complete
 Canonical owner: [search.scope.indexes.publication-policy](#HD-0602).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.scope.indexes.publication-policy",
-  "status": "open",
-  "prompt": "May an index build be seen half-done, and may a stopped build leave a partial index?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.scope.indexes.publication-policy
+status: open
+prompt: May an index build be seen half-done, and may a stopped build leave a partial index?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Unchanged: readers see a complete published index or a clear unavailable result, including after an interrupted rebuild; the existing partial-build behaviour is the modelled baseline."
 ```
 
 <a id="search.fusion.vector-graph-policy"></a><!-- question identity -->
@@ -3149,15 +3163,21 @@ Audit: Working assumption (agent, unratified): Unchanged: the reviewed ranking c
 Canonical owner: [search.fusion.vector-graph-policy](#HD-0603).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.fusion.vector-graph-policy",
-  "status": "open",
-  "prompt": "Should the vector-and-graph search keep its k best candidates?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.fusion.vector-graph-policy
+status: open
+prompt: Should the vector-and-graph search keep its k best candidates?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Unchanged: the reviewed ranking contract is the best k of the scored candidate set with defined ties; the documented set-order truncation is the baseline (now confirmed live)."
 ```
 
 <a id="search.embedding.queue.processing.consumers"></a><!-- question identity -->
@@ -3185,15 +3205,21 @@ Audit: Working assumption (agent, unratified): A single active consumer per name
 Canonical owner: [search.embedding.queue.processing.consumers](#HD-0604).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.embedding.queue.processing.consumers",
-  "status": "open",
-  "prompt": "May two embed queue workers run at once?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.embedding.queue.processing.consumers
+status: open
+prompt: May two embed queue workers run at once?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: A single active consumer per namespace is the contract (supported by 5bb149ed); model both workers as independently schedulable, treat single-worker as an unenforced premise, and prefer enforcement (refuse a second worker) or documentation; atomic claims with recovery remain the multi-worker alternative.
 ```
 
 <a id="search.bm25.write_lock.build-policy"></a><!-- question identity -->
@@ -3221,15 +3247,21 @@ Audit: Working assumption (agent, unratified): Serialize Build, Drop, Insert, De
 Canonical owner: [search.bm25.write_lock.build-policy](#HD-0701).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.bm25.write_lock.build-policy",
-  "status": "open",
-  "prompt": "Must a BM25 Build (and Drop) exclude writers and be all-or-nothing?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.bm25.write_lock.build-policy
+status: open
+prompt: Must a BM25 Build (and Drop) exclude writers and be all-or-nothing?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Serialize Build, Drop, Insert, Delete and Upgrade per index and publish a complete generation or return unavailable, including after a crash; a Build that is refused or indexes nothing must not destroy the previous index. Model the as-built (unlocked Build/Drop, Kill-first) separately as the baseline. Same as decisions.md.
 ```
 
 <a id="search.fusion.absent"></a><!-- question identity -->
@@ -3259,15 +3291,21 @@ Audit: Working assumption (agent, unratified): Preserve and test each surface's 
 Canonical owner: [search.fusion.absent](#HD-0702).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.fusion.absent",
-  "status": "open",
-  "prompt": "Which reciprocal-rank-fusion rule is the product's?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.fusion.absent
+status: open
+prompt: Which reciprocal-rank-fusion rule is the product's?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Preserve and test each surface's rule, including missing-rank handling and which text list it reads; document that the engine method and the SQL procedure of the same name differ. Introduce a single formula only with a versioned contract. Same as decisions.md.
 ```
 
 <a id="HD-0703"></a>
@@ -3292,14 +3330,21 @@ Audit: Working assumption (agent, unratified): Model kg_TXT as iFind-then-LIKE (
 Canonical owner: [search.bm25.default_index](#q-srch-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-0703",
-  "status": "open",
-  "prompt": "Is spec 044's kg_TXT-to-BM25 fallback still wanted?",
-  "allow_free_text": true,
-  "options": []
-}
+schema: 1
+id: HD-0703
+status: open
+prompt: Is spec 044's kg_TXT-to-BM25 fallback still wanted?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Model kg_TXT as iFind-then-LIKE (documented as-built). Record FR-012/US5/SC-004 and tasks T034/T035 as a spec/doc conflict (S3, F-0708), not as a current obligation the pin fails. If the fallback returns, it applies only on the LIKE path, only to an index whose recorded graph equals the requested graph, never across graphs. Why changed: decisions.md called this Supported on spec 044 FR-012, SC-004 and PR #8. Those establish the 2026-04 feature, not that it is still wanted: the Draft spec is the only post-removal carrier, it was copied wholesale with the schema-2 amendment, and the maintainer's later kg_TXT redesign (v2.18.2, US7, docstring, generated API reference) excludes it. No source \"supersedes\" FR-012 explicitly either, so neither reading is supported; the assumption follows the newer, user-facing contract."
 ```
 
 <a id="search.bm25.name-policy"></a><!-- question identity -->
@@ -3327,15 +3372,21 @@ Audit: Working assumption (agent, unratified): Reserve `__stop__`: public BM25 e
 Canonical owner: [search.bm25.name-policy](#HD-0704).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.bm25.name-policy",
-  "status": "open",
-  "prompt": "Is `__stop__` a reserved BM25 index name?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.bm25.name-policy
+status: open
+prompt: Is `__stop__` a reserved BM25 index name?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Reserve `__stop__`: public BM25 entry points (`bm25_build/insert/delete/drop/upgrade`, `BM25BuildInput`, index handles, `kg_BM25`/`ivg.bm25.search`) refuse it; the embedded registry walk skips it. Model the as-built acceptance as a defect against the documented stopword list (cross-index). Moving the list to its own global is the compatible alternative mechanism."
 ```
 
 <a id="search.fusion.python.support"></a><!-- question identity -->
@@ -3365,15 +3416,21 @@ Audit: Working assumption (agent, unratified): Treat the three as compatibility 
 Canonical owner: [search.fusion.python.support](#HD-0705).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.fusion.python.support",
-  "status": "open",
-  "prompt": "Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` supported public API?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.fusion.python.support
+status: open
+prompt: Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` supported public API?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Treat the three as compatibility surfaces and qualify each: RRFFusion is a pure standard-RRF helper (document that its rule differs from engine `kg_RRF_FUSE`, HD-0702); HybridSearchFusion is de facto public (migration guide) and graph-scoped; TextSearchEngine is exported but reads every graph and its document search cannot reach the IVG Schema, so it is not a supported reader of graph-scoped data. Prefer deprecation with migration advice (to `kg_TXT` / `bm25_search`) or a `graph=` argument; do not remove without a compatibility decision. Same direction as decisions.md."
 ```
 
 <a id="HD-0801"></a>
@@ -3398,27 +3455,27 @@ Audit: Working assumption (agent, unratified): Take the contract text as intende
 Canonical owner: [ledger.strict](../ontology/features/ledger.g5.md#ledger.strict).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-0801",
-  "status": "open",
-  "prompt": "Where and how should ledger strict mode refuse a Cypher write?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "keep the client check; document the 5 s window and fail-open in ledger-api.md and USER_GUIDE -",
-      "description": ""
-    },
-    {
-      "label": "fail closed and re-read strict on every guarded write (one class call per write) -",
-      "description": ""
-    },
-    {
-      "label": "server-side enforcement (Txn_Begin check or table triggers), which also covers raw SQL/BulkLoader (new contract; see HD-1103)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-0801
+status: open
+prompt: Where and how should ledger strict mode refuse a Cypher write?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: keep the client check; document the 5 s window and fail-open in ledger-api.md and USER_GUIDE -
+    description: ""
+  - label: fail closed and re-read strict on every guarded write (one class call per write) -
+    description: ""
+  - label: server-side enforcement (Txn_Begin check or table triggers), which also covers raw SQL/BulkLoader (new contract; see HD-1103)
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Take the contract text as intended: strict refuses with no window. Record the 5 s cache window (reproduced live) and fail-open (tested) as product defects against ledger-api.md (F-0801), and keep their obligations open. Downstream modules (erasure, redaction, verify) may not assume that every graph-table change under strict mode has a ledger record. verify() detects bypass rows after the fact. Raw SQL and BulkLoader remain outside by the contract's own text (HD-0301/1103)."
 ```
 
 <a id="query.graph-scope.read.mapped-label-policy"></a><!-- question identity -->
@@ -3446,15 +3503,21 @@ Audit: Working assumption (agent, unratified): Treat a mapping registration as n
 Canonical owner: [query.graph-scope.read.mapped-label-policy](#HD-0802).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.graph-scope.read.mapped-label-policy",
-  "status": "open",
-  "prompt": "Does a mapped label belong to every graph?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: query.graph-scope.read.mapped-label-policy
+status: open
+prompt: Does a mapped label belong to every graph?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat a mapping registration as namespace-wide (the as-built baseline). Under a named USE GRAPH scope, require either graph-aware mapping provenance or an explicitly documented exception. Model the current global visibility as a known deviation from the glossary's isolation rule. It is not a security breach, because the namespace is the boundary (USER_GUIDE:467-468).
 ```
 
 <a id="install.legacy.sql-operators-policy"></a><!-- question identity -->
@@ -3482,15 +3545,21 @@ Audit: Working assumption (agent, unratified): Classify sql/operators.sql as shi
 Canonical owner: [install.legacy.sql-operators-policy](#HD-0803).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.legacy.sql-operators-policy",
-  "status": "open",
-  "prompt": "Is `sql/operators.sql` product code?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: install.legacy.sql-operators-policy
+status: open
+prompt: Is `sql/operators.sql` product code?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Classify sql/operators.sql as shipped historical/reference SQL with no deployment path. It is outside the executed product surface, but stays in the inventory as a shipped artifact whose definitions are not graph-scoped. Trace operators_fixed.sql (legacy deployer) and the schema.py procedures separately. If anyone runs the file by hand, it creates unqualified, graph-blind procedures (F-0820-like behaviour).
 ```
 
 <a id="query.browser-metadata.ddl-notice-policy"></a><!-- question identity -->
@@ -3518,15 +3587,21 @@ Audit: Working assumption (agent, unratified): Treat the accepted DDL as an ackn
 Canonical owner: [query.browser-metadata.ddl-notice-policy](#HD-0804).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.browser-metadata.ddl-notice-policy",
-  "status": "open",
-  "prompt": "Should `CREATE CONSTRAINT` / `CREATE INDEX` be refused rather than accepted as a no-op?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: query.browser-metadata.ddl-notice-policy
+status: open
+prompt: Should `CREATE CONSTRAINT` / `CREATE INDEX` be refused rather than accepted as a no-op?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Treat the accepted DDL as an acknowledged no-op that establishes no invariant (supported by f4a13d75 and pinned by tests). Model no uniqueness guarantee from it. As a proposed strengthening, not a decision: document it in USER_GUIDE beside the parse-error rule and add a metadata warning. Refusal (option c) would reverse a maintainer decision."
 ```
 
 <a id="query.native.privileges.recheck-policy"></a><!-- question identity -->
@@ -3554,15 +3629,21 @@ Audit: Working assumption (agent, unratified): Split the question. (1) A SQL REV
 Canonical owner: [query.native.privileges.recheck-policy](#HD-0901).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.native.privileges.recheck-policy",
-  "status": "open",
-  "prompt": "Should a running engine notice a revoked table right or a dropped adjacency index?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: query.native.privileges.recheck-policy
+status: open
+prompt: Should a running engine notice a revoked table right or a dropped adjacency index?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Split the question. (1) A SQL REVOKE is not guaranteed to reach running engines' native reads. To cut native access, revoke the database resource or %Native_ClassExecution, or start new engines. Treat FR-011's executor-side check as an unimplemented spec requirement (F-0908) whose amendment is the maintainer's call. (2) For the route capability, keep FR-003: native reads require the index to be declared at the time of the read. Model an out-of-band drop under running engines as a premise violation ('the index is not dropped while engines run'), not a supported transition, unless Run checks Indexed()."
 ```
 
 <a id="HD-0902"></a>
@@ -3587,27 +3668,27 @@ Audit: Working assumption (agent, unratified): Keep ordinary SQL fallback. In sh
 Canonical owner: [query.shadow.native-failure](#q-cyp-002).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-0902",
-  "status": "open",
-  "prompt": "Should shadow mode fail when the native path raises an error?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "keep the fallback in shadow mode (today) -",
-      "description": ""
-    },
-    {
-      "label": "raise in shadow mode only -",
-      "description": ""
-    },
-    {
-      "label": "count native failures and report them at the end of a shadow run without raising",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-0902
+status: open
+prompt: Should shadow mode fail when the native path raises an error?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: keep the fallback in shadow mode (today) -
+    description: ""
+  - label: raise in shadow mode only -
+    description: ""
+  - label: count native failures and report them at the end of a shadow run without raising
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Keep ordinary SQL fallback. In shadow validation, record a native exception as an unsuccessful comparison: raise in shadow mode, or count failures and report them at the end of the run. Require a clean comparison (not a fallback) before claiming parity. The FR-010 default flip and the 3896/3896 figure establish only that no compared answer differed."
 ```
 
 <a id="structure.write.reader-isolation-policy"></a><!-- question identity -->
@@ -3635,15 +3716,21 @@ Audit: Working assumption (agent, unratified): Allow the observed interleavings 
 Canonical owner: [structure.write.reader-isolation-policy](#HD-0903).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.write.reader-isolation-policy",
-  "status": "open",
-  "prompt": "What may a native read answer while another writer's transaction is open?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: structure.write.reader-isolation-policy
+status: open
+prompt: What may a native read answer while another writer's transaction is open?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Allow the observed interleavings on both paths: a native or SQL read may see a writer's uncommitted writes, including part of one transaction, and loses them on rollback. Grant snapshot or all-or-nothing visibility only to paths with an explicit synchronization contract and evidence (none for Cypher reads). The ADR-0012 degree cache is the one guarded structure."
 ```
 
 <a id="query.compiled.fallback.failure-policy"></a><!-- question identity -->
@@ -3671,15 +3758,21 @@ Audit: Working assumption (agent, unratified): Treat a run-time failure of a com
 Canonical owner: [query.compiled.fallback.failure-policy](#HD-0904).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.compiled.fallback.failure-policy",
-  "status": "open",
-  "prompt": "Should a compiled plan that fails while running be set aside?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: query.compiled.fallback.failure-policy
+status: open
+prompt: Should a compiled plan that fails while running be set aside?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Treat a run-time failure of a compiled entry as a fallback outcome: quarantine the entry for that plan generation (as a failed build already is), let the interpreter answer, and retry only after invalidation (a new stamp, DropAll or a deploy). SQL fallback for every later read (as built) is a correct-answer but degraded baseline that violates ADR-0014's 'answers exactly as the interpreter'."
 ```
 
 <a id="algorithms.op.neighbors.scope"></a>
@@ -3838,24 +3931,25 @@ Audit: Working assumption (agent, unratified): Walk the default graph's adjacenc
 Canonical owner: [algorithms.op.walks.result-policy](#HD-1001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.op.walks.result-policy",
-  "status": "open",
-  "prompt": "What should `random_walk` answer, and over which graph?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (",
-      "description": "). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (option"
-    },
-    {
-      "label": ") is a compatible extension. Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed O",
-      "description": ") is a compatible extension. Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed ObjectScript walk runs without the library (upstream test and live), and ADMIN_GUIDE says every algorithm has an ObjectScript answer. So a real default-graph answer is the better-supported reading. 'Unavailable' remains only for a route that cannot honour the scope. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-1001)"
-    }
-  ]
-}
+schema: 1
+id: algorithms.op.walks.result-policy
+status: open
+prompt: What should `random_walk` answer, and over which graph?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: ). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (
+    description: ). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (option
+  - label: ") is a compatible extension. Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed O"
+    description: ") is a compatible extension. Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed ObjectScript walk runs without the library (upstream test and live), and ADMIN_GUIDE says every algorithm has an ObjectScript answer. So a real default-graph answer is the better-supported reading. 'Unavailable' remains only for a route that cannot honour the scope. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-1001)"
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Walk the default graph's adjacency (graph key 0) in ObjectScript, library or not (option (a)). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (option (c)) is a compatible extension.
 ```
 
 <a id="algorithms.op.paths.direction"></a><!-- question identity -->
@@ -3883,15 +3977,21 @@ Audit: Working assumption (agent, unratified): Keep the public 'in' semantics, c
 Canonical owner: [algorithms.op.paths.direction](#HD-1003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.op.paths.direction",
-  "status": "open",
-  "prompt": "Should the shortest-path routines refuse a direction they do not walk?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: algorithms.op.paths.direction
+status: open
+prompt: Should the shortest-path routines refuse a direction they do not walk?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the public 'in' semantics, caller reversal included. Require ShortestPathJson and ShortestLength to refuse any direction outside {out, both}, or to implement 'in' by walking from the far end. Require IRISGraphStore.shortest_path_length to reverse 'in' as execute_shortest_path does. Record the live false positive as a defect against its docstring.
 ```
 
 <a id="ledger.node-scope.missing-default-policy"></a><!-- question identity -->
@@ -3919,15 +4019,21 @@ Audit: Working assumption (agent, unratified): Keep graph-blind existence. A nod
 Canonical owner: [ledger.node-scope.missing-default-policy](#HD-1101).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.node-scope.missing-default-policy",
-  "status": "open",
-  "prompt": "What should a node change do when only a named graph holds the id?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: ledger.node-scope.missing-default-policy
+status: open
+prompt: What should a node change do when only a named graph holds the id?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep graph-blind existence. A node change that needs the default-graph row (`set_prop`, `remove_prop`, `add_label`, `remove_label`, `delete_node`, `upsert_node` with labels or properties) refuses with nothing applied and no record when that row is absent, under a reason distinct from `node_not_found` (the maintainer's meaning of that code stays). Model edge endpoint lookup separately (`EnsureEndpoint`).
 ```
 
 <a id="ledger.lifecycle.settings-transaction-policy"></a><!-- question identity -->
@@ -3955,15 +4061,21 @@ Audit: Working assumption (agent, unratified): Refuse `disable()` and `set_stric
 Canonical owner: [ledger.lifecycle.settings-transaction-policy](#HD-1102).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.lifecycle.settings-transaction-policy",
-  "status": "open",
-  "prompt": "Should disable() and set_strict() refuse a caller's open transaction, as enable() does?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: ledger.lifecycle.settings-transaction-policy
+status: open
+prompt: Should disable() and set_strict() refuse a caller's open transaction, as enable() does?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Refuse `disable()` and `set_strict()` inside a caller transaction on every engine, as `enable()`/`redact()`.
 ```
 
 <a id="ledger.strict.server-policy"></a><!-- question identity -->
@@ -3991,15 +4103,21 @@ Audit: Working assumption (agent, unratified): Treat strict mode as a client-sid
 Canonical owner: [ledger.strict.server-policy](#HD-1103).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.strict.server-policy",
-  "status": "open",
-  "prompt": "Should strict mode be enforced by the server, or stay a Python-only check?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: ledger.strict.server-policy
+status: open
+prompt: Should strict mode be enforced by the server, or stay a Python-only check?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat strict mode as a client-side, cached (5 s), fail-open guard on the contract's listed calls at this pin; inventory uncovered Python paths, server writers (Eraser, TemporalIndex, FHIR sync, SQL procedures) and external writers as possible unrecorded writers.
 ```
 
 <a id="ledger.lifecycle.settings-policy"></a><!-- question identity -->
@@ -4027,15 +4145,21 @@ Audit: Working assumption (agent, unratified): Keep `max_ops` and `recon_bound` 
 Canonical owner: [ledger.lifecycle.settings-policy](#HD-1104).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "ledger.lifecycle.settings-policy",
-  "status": "open",
-  "prompt": "Should the ledger's settings be changeable after the genesis?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: ledger.lifecycle.settings-policy
+status: open
+prompt: Should the ledger's settings be changeable after the genesis?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep `max_ops` and `recon_bound` fixed at genesis. Model strict as set by `enable(strict=...)` on genesis and on every re-enable (default False) and by `set_strict`; record the reset on re-enable as an explicit transition and do not assume strict survives a disable/enable cycle.
 ```
 
 <a id="HD-1105"></a>
@@ -4060,23 +4184,25 @@ Audit: Working assumption (agent, unratified): Treat post-commit properties as a
 Canonical owner: [ledger.commit.post-commit.recorded](#q-010).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1105",
-  "status": "open",
-  "prompt": "Should post-commit properties be recorded by the ledger?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "Record them as `set_prop` records of the same revision (server substitutes the revision id). - Skip post-commit properties on `replayed=True` only (keeps Approa",
-      "description": "Record them as `set_prop` records of the same revision (server substitutes the revision id). - Skip post-commit properties on `replayed=True` only (keeps Approach A; closes F-1101). -"
-    },
-    {
-      "label": "Drop the feature",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-1105
+status: open
+prompt: Should post-commit properties be recorded by the ledger?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: Record them as `set_prop` records of the same revision (server substitutes the revision id). - Skip post-commit properties on `replayed=True` only (keeps Approa
+    description: Record them as `set_prop` records of the same revision (server substitutes the revision id). - Skip post-commit properties on `replayed=True` only (keeps Approach A; closes F-1101). -
+  - label: Drop the feature
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat post-commit properties as a separate direct write outside revision replay; `verify()` reports them until adopted. Require that a replayed commit not re-apply them (idempotency contract), recording the pin's re-application as a defect (F-1101).
 ```
 
 <a id="HD-1201"></a>
@@ -4101,31 +4227,29 @@ Audit: Working assumption (agent, unratified): Serialize erasure with ledger com
 Canonical owner: [erasure.concurrency](#q-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1201",
-  "status": "open",
-  "prompt": "Should a graph erasure take the ledger head lock?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "erasure holds the head lock for its whole transaction (with HD-1301's locked start) -",
-      "description": ""
-    },
-    {
-      "label": "document that erasure needs a quiet graph (no concurrent commit, redaction, or open caller transaction) and refuse erase_graph inside a caller transaction, as 4",
-      "description": "document that erasure needs a quiet graph (no concurrent commit, redaction, or open caller transaction) and refuse erase_graph inside a caller transaction, as 4.7.0 refuses redact() -"
-    },
-    {
-      "label": "a graph-scoped lock shared by erasure, commits touching that graph, and redaction of that graph -",
-      "description": ""
-    },
-    {
-      "label": "redaction's liveness checks read committed data only (covers the redaction half, not F-1201)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-1201
+status: open
+prompt: Should a graph erasure take the ledger head lock?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: erasure holds the head lock for its whole transaction (with HD-1301's locked start) -
+    description: ""
+  - label: document that erasure needs a quiet graph (no concurrent commit, redaction, or open caller transaction) and refuse erase_graph inside a caller transaction, as 4
+    description: document that erasure needs a quiet graph (no concurrent commit, redaction, or open caller transaction) and refuse erase_graph inside a caller transaction, as 4.7.0 refuses redact() -
+  - label: a graph-scoped lock shared by erasure, commits touching that graph, and redaction of that graph -
+    description: ""
+  - label: redaction's liveness checks read committed data only (covers the redaction half, not F-1201)
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Serialize erasure with ledger commits and redaction on the same lock: the erasure holds the head lock until its outermost transaction ends (an IRIS lock released inside a transaction is held to its end, P-0003), AND the redaction's opening liveness check and marker run under that lock (HD-1301). Neither alone closes the open-erasure case: with only the erasure lock the dirty opening check still passes and the batches tombstone a target the erasure later restores; with only the locked opening check the erasure holds nothing to wait on. A liveness check that reads committed data only is an alternative to the erasure lock for the redaction half, but not for the F-1201 statement half."
 ```
 
 <a id="HD-1303"></a>
@@ -4150,14 +4274,21 @@ Audit: Working assumption (agent, unratified): (a) No generic abandon: tombstone
 Canonical owner: [redaction.batches.abort](#q-006).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1303",
-  "status": "open",
-  "prompt": "Can an unfinished redaction be abandoned, and what may a default-graph target touch?",
-  "allow_free_text": true,
-  "options": []
-}
+schema: 1
+id: HD-1303
+status: open
+prompt: Can an unfinished redaction be abandoned, and what may a default-graph target touch?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "(a) No generic abandon: tombstones are irreversible, so 'abandon' could only remove the marker and accept a permanently divergent history; the recovery is re-erase and resume, and the docs should say that this also erases content re-created during the run. An explicit, audited cancel that records the partial redaction as a redaction revision is the alternative. (b) Apply the plan's graph-blind liveness check to every default-graph target, so redact(None) without a prefix is refused while any node of any graph is live."
 ```
 
 <a id="redaction.tenant.node-history-policy"></a><!-- question identity -->
@@ -4185,15 +4316,21 @@ Audit: Working assumption (agent, unratified): Require tenant id prefixes for le
 Canonical owner: [redaction.tenant.node-history-policy](#HD-1304).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "redaction.tenant.node-history-policy",
-  "status": "open",
-  "prompt": "How is a tenant's node history redacted when nodes live in the tenant's own graph?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: redaction.tenant.node-history-policy
+status: open
+prompt: How is a tenant's node history redacted when nodes live in the tenant's own graph?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Require tenant id prefixes for ledger-governed tenants and document it next to redact(); for a graph target whose erased nodes left graph-blind node records, return an explicit incomplete result (or refuse) instead of complete=true. Model graph-qualified node records for future history separately; a migration of existing history needs trustworthy provenance, which the genesis did not keep.
 ```
 
 <a id="HD-1401"></a>
@@ -4218,14 +4355,21 @@ Audit: Working assumption (agent, unratified): (a) Compare the identity the ledg
 Canonical owner: [ledger.lifecycle.genesis.shared-ids](#q-led-004).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1401",
-  "status": "open",
-  "prompt": "Verification and record readers: node identity and redaction checks",
-  "allow_free_text": true,
-  "options": []
-}
+schema: 1
+id: HD-1401
+status: open
+prompt: "Verification and record readers: node identity and redaction checks"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "(a) Compare the identity the ledger governs: default-graph node rows for node records (R290), with named-graph node rows either reported as outside node governance or recorded with their graph (linked to HD-1101/1304). (b) A reader takes a redaction epoch that every redaction start and finish advances, checks the marker, reads, and re-checks both; if either changed it refuses or retries. A post-read marker check alone is not sufficient (a whole redaction can complete inside one read); a shared lock or a genuine snapshot are alternatives. Verify additionally needs a coherent cut between its record read and its table read."
 ```
 
 <a id="fhir.ledger"></a><!-- question identity -->
@@ -4253,15 +4397,21 @@ Audit: Working assumption (agent, unratified): Keep decisions.md: the FHIR graph
 Canonical owner: [fhir.ledger](#HD-1501).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "fhir.ledger",
-  "status": "open",
-  "prompt": "Should a FHIR sync be governed by the ledger?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: fhir.ledger
+status: open
+prompt: Should a FHIR sync be governed by the ledger?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Keep decisions.md: the FHIR graph is an external writer of a rebuildable projection at the pin. verify() keeps reporting its rows (never silently 'equal'); strict mode is not a guarantee for FHIR namespaces until FHIR writes are either refused under strict or recorded."
 ```
 
 <a id="fhir.erase.durable-removal-policy"></a><!-- question identity -->
@@ -4289,15 +4439,21 @@ Audit: Working assumption (agent, unratified): Separate transient clear from dec
 Canonical owner: [fhir.erase.durable-removal-policy](#HD-1502).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "fhir.erase.durable-removal-policy",
-  "status": "open",
-  "prompt": "Should erasing a FHIR graph stop its sync task?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: fhir.erase.durable-removal-policy
+status: open
+prompt: Should erasing a FHIR graph stop its sync task?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Separate transient clear from decommissioning. Ordinary erase keeps registration and task (supported). For durable tenant removal require, as a stated premise, unschedule before erase and no manual sync afterwards, and verify the graph stays empty before redaction; at the pin there is no single-graph deregistration, so 'deregister' is a new command, not an available step.
 ```
 
 <a id="HD-1503"></a>
@@ -4322,27 +4478,27 @@ Audit: Working assumption (agent, unratified): Keep decisions.md: erase of a FHI
 Canonical owner: [fhir.sync.other_writers](#q-plt-017).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1503",
-  "status": "open",
-  "prompt": "What happens when an erase runs during a FHIR sync?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "erase takes the sync lock and refuses (or waits) while a sync holds it -",
-      "description": ""
-    },
-    {
-      "label": "RunBatch compare-and-sets the watermark (WHERE wm = expected) and stops when it went back -",
-      "description": ""
-    },
-    {
-      "label": "document that a FHIR graph must be unscheduled and idle before an erase",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-1503
+status: open
+prompt: What happens when an erase runs during a FHIR sync?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: erase takes the sync lock and refuses (or waits) while a sync holds it -
+    description: ""
+  - label: RunBatch compare-and-sets the watermark (WHERE wm = expected) and stops when it went back -
+    description: ""
+  - label: document that a FHIR graph must be unscheduled and idle before an erase
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Keep decisions.md: erase of a FHIR graph must be serialized with an active sync (take ^IVG.FHIRGraph(graph) and answer busy, or have RunBatch abort when the watermark moved backwards); until then the quiet-sync premise must be explicit for erase."
 ```
 
 <a id="fhir.sync.recovery-policy"></a><!-- question identity -->
@@ -4370,15 +4526,21 @@ Audit: Working assumption (agent, unratified): Failure without advancing the wat
 Canonical owner: [fhir.sync.recovery-policy](#HD-1504).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "fhir.sync.recovery-policy",
-  "status": "open",
-  "prompt": "Should one unreadable FHIR resource block its graph's sync?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: fhir.sync.recovery-policy
+status: open
+prompt: Should one unreadable FHIR resource block its graph's sync?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Failure without advancing the watermark is the documented contract (not a choice to revisit silently). Surface the offending key (already in last_error) and treat the missing recovery procedure (repair/delete the resource, or json_links=[]) as a documentation gap; do not assume silent skips.
 ```
 
 <a id="access.api_key.admin-policy"></a><!-- question identity -->
@@ -4406,15 +4568,21 @@ Audit: Working assumption (agent, unratified): Model the single key and the IRIS
 Canonical owner: [access.api_key.admin-policy](#HD-1602).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.api_key.admin-policy",
-  "status": "open",
-  "prompt": "Should admin work need a different key from reading?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: access.api_key.admin-policy
+status: open
+prompt: Should admin work need a different key from reading?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Model the single key and the IRIS user's privileges as the authorization surface. Treat an admin-only key or a kill route that is off by default as a proposed strengthening. Record IVG_READ_ONLY as the existing, coarse lever.
 ```
 
 <a id="HD-1603"></a>
@@ -4439,23 +4607,25 @@ Audit: Working assumption (agent, unratified): Retry a read, or a write known no
 Canonical owner: [access.retries](#q-plt-019).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1603",
-  "status": "open",
-  "prompt": "Should the Cypher HTTP server run a failed query a second time?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "retry every query once [as built] -",
-      "description": ""
-    },
-    {
-      "label": "never retry; return the error",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-1603
+status: open
+prompt: Should the Cypher HTTP server run a failed query a second time?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: retry every query once [as built] -
+    description: ""
+  - label: never retry; return the error
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Retry a read, or a write known not to have executed (a connection error raised before the statement was sent). Never re-run a write whose outcome is unknown; return an error that says the outcome is unknown. A write carrying a verified idempotency key may be retried.
 ```
 
 <a id="access.surfaces.rest-meta-policy"></a><!-- question identity -->
@@ -4483,15 +4653,21 @@ Audit: Working assumption (agent, unratified): Treat /metaPath as default-graph-
 Canonical owner: [access.surfaces.rest-meta-policy](#HD-1604).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.surfaces.rest-meta-policy",
-  "status": "open",
-  "prompt": "Should the REST dispatcher's `/metaPath` take a graph?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: access.surfaces.rest-meta-policy
+status: open
+prompt: Should the REST dispatcher's `/metaPath` take a graph?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat /metaPath as default-graph-only and include that in its contract. A body naming `graph` should be refused or honoured, not ignored; until decided, model the silent ignore as the baseline.
 ```
 
 <a id="access.webapp.generated-limits-policy"></a><!-- question identity -->
@@ -4519,32 +4695,34 @@ Audit: Working assumption (agent, unratified): Treat both apps as supported entr
 Canonical owner: [access.webapp.generated-limits-policy](#HD-1605).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.webapp.generated-limits-policy",
-  "status": "open",
-  "prompt": "Should the generated GraphQL server match the sample API's safety limits?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "a developer server and",
-      "description": ""
-    },
-    {
-      "label": "parity. The 4.6.0 releases already apply the shared HTTP gates (key, read-only) to create_app and fix its schema reading. That treats it as a deployable surface",
-      "description": "parity. The 4.6.0 releases already apply the shared HTTP gates (key, read-only) to create_app and fix its schema reading. That treats it as a deployable surface and makes"
-    },
-    {
-      "label": "the better-supported direction. No source requires the depth lim); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).\n- Owner: the maintai",
-      "description": "the better-supported direction. No source requires the depth lim); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).\n- Owner: the maintainer (a human decision; no human has decided it).\n- Not yet compared with the guidance arm's questions"
-    },
-    {
-      "label": "is now the working direction. decisions.md also used 'sample' for the app the maintainer calls the development app. Options/implications and settling evidence r",
-      "description": "is now the working direction. decisions.md also used 'sample' for the app the maintainer calls the development app. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-1605)"
-    }
-  ]
-}
+schema: 1
+id: access.webapp.generated-limits-policy
+status: open
+prompt: Should the generated GraphQL server match the sample API's safety limits?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: a developer server and
+    description: ""
+  - label: parity. The 4.6.0 releases already apply the shared HTTP gates (key, read-only) to create_app and fix its schema reading. That treats it as a deployable surface
+    description: parity. The 4.6.0 releases already apply the shared HTTP gates (key, read-only) to create_app and fix its schema reading. That treats it as a deployable surface and makes
+  - label: |-
+      the better-supported direction. No source requires the depth lim); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).
+      - Owner: the maintai
+    description: |-
+      the better-supported direction. No source requires the depth lim); decision text [16.md](../../experiment/playbook-uplift/decisions/16.md).
+      - Owner: the maintainer (a human decision; no human has decided it).
+      - Not yet compared with the guidance arm's questions
+  - label: is now the working direction. decisions.md also used 'sample' for the app the maintainer calls the development app. Options/implications and settling evidence r
+    description: is now the working direction. decisions.md also used 'sample' for the app the maintainer calls the development app. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-1605)
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Treat both apps as supported entry points subject to the shared HTTP safety constraints: key gate and read-only (already applied), a depth bound, and an honest health check. Record the generated app's missing depth limit and always-healthy /health as gaps against that parity, not as violations of a stated contract."
 ```
 
 <a id="HD-1701"></a>
@@ -4569,27 +4747,27 @@ Audit: Working assumption (agent, unratified): Keep decisions.md: read_only=True
 Canonical owner: [access.read_only.scope](#q-plt-012).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1701",
-  "status": "open",
-  "prompt": "Should the SQL adapter's pass-through refuse a write when called read-only?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "enforce: refuse a non-SELECT statement with a clear error before it runs -",
-      "description": ""
-    },
-    {
-      "label": "remove the parameter from the protocol and the adapter -",
-      "description": ""
-    },
-    {
-      "label": "keep as documentation only and say so",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-1701
+status: open
+prompt: Should the SQL adapter's pass-through refuse a write when called read-only?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: "enforce: refuse a non-SELECT statement with a clear error before it runs -"
+    description: ""
+  - label: remove the parameter from the protocol and the adapter -
+    description: ""
+  - label: keep as documentation only and say so
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Keep decisions.md: read_only=True is a requested guarantee; enforce it at a trusted boundary (refuse non-SELECT before it runs) or refuse/remove the unsupported flag in a versioned change. The engine's own use (reads only) makes enforcement compatible with internal callers."
 ```
 
 <a id="HD-1702"></a>
@@ -4614,27 +4792,27 @@ Audit: Working assumption (agent, unratified): Keep decisions.md: after an ambig
 Canonical owner: [access.retries](#q-plt-019).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1702",
-  "status": "open",
-  "prompt": "Should the HTTP client resend a write query after a server error?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "retry only reads (client cannot tell; the server could mark replies) -",
-      "description": ""
-    },
-    {
-      "label": "retry only connect errors raised before the request was sent; never 5xx or timeouts -",
-      "description": ""
-    },
-    {
-      "label": "keep retrying everything and document that writes must be idempotent (MERGE) or carry a ledger retry key",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-1702
+status: open
+prompt: Should the HTTP client resend a write query after a server error?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: retry only reads (client cannot tell; the server could mark replies) -
+    description: ""
+  - label: retry only connect errors raised before the request was sent; never 5xx or timeouts -
+    description: ""
+  - label: keep retrying everything and document that writes must be idempotent (MERGE) or carry a ledger retry key
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Keep decisions.md: after an ambiguous outcome resend only a known read or an explicitly idempotent operation; report an unknown outcome otherwise; treat client and server retries as one protocol. Note that this narrows a documented feature (compatibility decision)."
 ```
 
 <a id="algorithms.routing.capability-policy"></a><!-- question identity -->
@@ -4662,20 +4840,23 @@ Audit: Working assumption (agent, unratified): Keep decisions.md: code support a
 Canonical owner: [algorithms.routing.capability-policy](#HD-1703).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "algorithms.routing.capability-policy",
-  "status": "open",
-  "prompt": "Should the SQL adapter's capability list say what this namespace can run?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "is the existing design, missing only documentation. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/q",
-      "description": "is the existing design, missing only documentation. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-1703)"
-    }
-  ]
-}
+schema: 1
+id: algorithms.routing.capability-policy
+status: open
+prompt: Should the SQL adapter's capability list say what this namespace can run?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: is the existing design, missing only documentation. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/q
+    description: is the existing design, missing only documentation. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-1703)
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Keep decisions.md: code support and namespace availability are different facts; treat store.capabilities() as a static catalogue (document it as such) and do not read it as availability; routing that needs availability uses engine.capabilities/status() or an explicit fallback."
 ```
 
 <a id="HD-1705"></a>
@@ -4700,23 +4881,25 @@ Audit: Working assumption (agent, unratified): The product contract at the pin i
 Canonical owner: [access.defaults.exposure](#q-plt-003).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "HD-1705",
-  "status": "open",
-  "prompt": "Should server start refuse to listen on every address without an API key?",
-  "allow_free_text": true,
-  "options": [
-    {
-      "label": "implement the refusal: bind 127.0.0.1 or exit unless a key or an explicit flag -",
-      "description": ""
-    },
-    {
-      "label": "keep the open default and correct deploy/README.md (and compose.yml's unread IVG_AUTH_MODE)",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: HD-1705
+status: open
+prompt: Should server start refuse to listen on every address without an API key?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: "implement the refusal: bind 127.0.0.1 or exit unless a key or an explicit flag -"
+    description: ""
+  - label: keep the open default and correct deploy/README.md (and compose.yml's unread IVG_AUTH_MODE)
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: The product contract at the pin is ADMIN_GUIDE section 5's open default; F-1709 is a documentation defect against deploy/README.md:86 (registered as fail against that stated text). For the reviewed deployment, keep local-only binding or an explicit opt-in for unauthenticated external binding as a stated premise, not as the product's intent.
 ```
 
 <a id="install.snapshot.consistency-policy"></a><!-- question identity -->
@@ -4744,15 +4927,21 @@ Audit: Working assumption (agent, unratified): Claim a consistent snapshot only 
 Canonical owner: [install.snapshot.consistency-policy](#HD-1802).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "install.snapshot.consistency-policy",
-  "status": "open",
-  "prompt": "Should a snapshot be a point-in-time view?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: install.snapshot.consistency-policy
+status: open
+prompt: Should a snapshot be a point-in-time view?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Claim a consistent snapshot only when writers are quiescent (an operator premise) or under a verified snapshot/epoch protocol; for the current exporter declare the quiet-writer premise.
 ```
 
 <a id="erasure.scope.embedding-queue-policy"></a><!-- question identity -->
@@ -4777,15 +4966,21 @@ Audit: Working assumption (agent, unratified): Keep these retained copies visibl
 Canonical owner: [erasure.scope.embedding-queue-policy](#REACH-1).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "erasure.scope.embedding-queue-policy",
-  "status": "open",
-  "prompt": "Should erasure and redaction reach the store in REACH-1?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: erasure.scope.embedding-queue-policy
+status: open
+prompt: Should erasure and redaction reach the store in REACH-1?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 ```
 
 <a id="REACH-2"></a>
@@ -4807,14 +5002,21 @@ Audit: Working assumption (agent, unratified): Keep these retained copies visibl
 Canonical owner: [search.quarantine.retention](#q-srch-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "REACH-2",
-  "status": "open",
-  "prompt": "Should erasure and redaction reach the store in REACH-2?",
-  "allow_free_text": true,
-  "options": []
-}
+schema: 1
+id: REACH-2
+status: open
+prompt: Should erasure and redaction reach the store in REACH-2?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 ```
 
 <a id="REACH-3"></a>
@@ -4836,14 +5038,21 @@ Audit: Working assumption (agent, unratified): Keep these retained copies visibl
 Canonical owner: [search.quarantine.retention](#q-srch-001).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "REACH-3",
-  "status": "open",
-  "prompt": "Should erasure and redaction reach the store in REACH-3?",
-  "allow_free_text": true,
-  "options": []
-}
+schema: 1
+id: REACH-3
+status: open
+prompt: Should erasure and redaction reach the store in REACH-3?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 ```
 
 <a id="erasure.kept.snapshot-retention-policy"></a><!-- question identity -->
@@ -4868,15 +5077,21 @@ Audit: Working assumption (agent, unratified): Keep these retained copies visibl
 Canonical owner: [erasure.kept.snapshot-retention-policy](#REACH-4).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "erasure.kept.snapshot-retention-policy",
-  "status": "open",
-  "prompt": "Should erasure and redaction reach the store in REACH-4?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: erasure.kept.snapshot-retention-policy
+status: open
+prompt: Should erasure and redaction reach the store in REACH-4?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 ```
 
 <a id="erasure.scope.legacy-backup-policy"></a><!-- question identity -->
@@ -4904,15 +5119,21 @@ Canonical owner: [erasure.scope.legacy-backup-policy](#REACH-5).
 ## Settled by existing sources
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "erasure.scope.legacy-backup-policy",
-  "status": "open",
-  "prompt": "Should erasure and redaction reach the store in REACH-5?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: erasure.scope.legacy-backup-policy
+status: open
+prompt: Should erasure and redaction reach the store in REACH-5?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
 ```
 
 <a id="HD-0001"></a>
@@ -4935,6 +5156,24 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 Audit resolution: **settled by existing authority at the pin**, not new maintainer approval. Method definitions use the literal parent-chain/earlier-same-parent rule. This is a workflow question, not a product contract. [Sources and history](audits/register-20261115/question-review.md#HD-0001).
 
 Disposition: resolved with existing authority. See the linked source audit.
+
+```g5-question
+schema: 1
+id: HD-0001
+status: answered
+prompt: How to read "defined by its ancestors or an earlier same-level statement"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Method definitions use the literal parent-chain/earlier-same-parent rule. This is a workflow question, not a product contract.
+```
 
 <a id="HD-0202"></a>
 ### In a multigraph, does a direct edge delete remove one parallel edge or all of them?
@@ -4959,6 +5198,24 @@ Canonical owner: [structure.edge.delete](../ontology/features/graph-structure.g5
 
 Disposition: resolved with existing authority. See the linked source audit.
 
+```g5-question
+schema: 1
+id: HD-0202
+status: answered
+prompt: In a multigraph, does a direct edge delete remove one parallel edge or all of them?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Without an edge ID, direct delete_edge removes the whole triple. A per-edge ID argument is planned, absent at the pin.
+```
+
 <a id="HD-0301"></a>
 ### Does ledger strict mode cover the standalone bulk loader?
 
@@ -4981,6 +5238,24 @@ Audit resolution: **settled by existing authority at the pin**, not new maintain
 Canonical owner: [install.bulk_load.ledger](../ontology/concepts/install.g5.md#install.bulk_load.ledger).
 
 Disposition: resolved with existing authority. See the linked source audit.
+
+```g5-question
+schema: 1
+id: HD-0301
+status: answered
+prompt: Does ledger strict mode cover the standalone bulk loader?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: The standalone BulkLoader and raw SQL are expressly outside the client strict-mode guard. That exception does not exempt other engine writers.
+```
 
 <a id="HD-1002"></a>
 ### Should label propagation say when its labels did not settle?
@@ -5005,6 +5280,24 @@ Canonical owner: [algorithms.op.cdlp](../ontology/features/algorithms.g5.md#algo
 
 Disposition: resolved with existing authority. See the linked source audit.
 
+```g5-question
+schema: 1
+id: HD-1002
+status: answered
+prompt: Should label propagation say when its labels did not settle?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: CDLP returns its last fixed iteration without an in-band settledness flag; the documented diagnostic compares k with k+1.
+```
+
 <a id="HD-1004"></a>
 ### How many nodes should global PageRank list?
 
@@ -5027,6 +5320,24 @@ Audit resolution: **settled by existing authority at the pin**, not new maintain
 Canonical owner: [algorithms.op.pagerank](../ontology/features/algorithms.g5.md#algorithms.op.pagerank).
 
 Disposition: resolved with existing authority. See the linked source audit.
+
+```g5-question
+schema: 1
+id: HD-1004
+status: answered
+prompt: How many nodes should global PageRank list?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Global PageRank promises every default-graph node on every supported route; the hidden Owner output cap violates that documented contract.
+```
 
 <a id="HD-1302"></a>
 ### Which rule clears a revision's free text: any tombstone or every record?
@@ -5051,6 +5362,24 @@ Canonical owner: [redaction.metadata](../ontology/features/redaction.g5.md#redac
 
 Disposition: resolved with existing authority. See the linked source audit.
 
+```g5-question
+schema: 1
+id: HD-1302
+status: answered
+prompt: "Which rule clears a revision's free text: any tombstone or every record?"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Decision 2 clears the free text when any record in the revision is tombstoned. The older every-record wording is stale.
+```
+
 <a id="HD-1305"></a>
 ### Should a replayed commit apply its post-commit properties?
 
@@ -5074,6 +5403,24 @@ Canonical owner: [ledger.idempotency](../ontology/features/ledger.g5.md#ledger.i
 
 Disposition: resolved with existing authority. See the linked source audit.
 
+```g5-question
+schema: 1
+id: HD-1305
+status: answered
+prompt: Should a replayed commit apply its post-commit properties?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: A keyed replay returns the original outcome and applies no new effects. How to complete or skip post-commit work is an implementation question; recording those properties remains separately open.
+```
+
 <a id="HD-1601"></a>
 ### Should a server limit which graphs a caller may name?
 
@@ -5096,6 +5443,24 @@ Audit resolution: **settled by existing authority at the pin**, not new maintain
 Canonical owner: [access.graph_id](../ontology/concepts/access.g5.md#access.graph_id).
 
 Disposition: resolved with existing authority. See the linked source audit.
+
+```g5-question
+schema: 1
+id: HD-1601
+status: answered
+prompt: Should a server limit which graphs a caller may name?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: The namespace is the authorization boundary; graph IDs scope data operations and do not confer access rights.
+```
 
 <a id="HD-1704"></a>
 ### Should the low-level vector helper refuse a vector of the wrong width?
@@ -5123,6 +5488,24 @@ Canonical owner: [search.embedding.width.raw-helpers](../ontology/features/searc
 
 Disposition: resolved with existing authority. See the linked source audit.
 
+```g5-question
+schema: 1
+id: HD-1704
+status: answered
+prompt: Should the low-level vector helper refuse a vector of the wrong width?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: resolved with existing authority. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: The low-level raw DB-API helper pads/truncates and coerces non-finite values as documented. Registry-aware engine writes keep their separate strict contract.
+```
+
 <a id="hist-012"></a>
 ### Upstream #12: bulk-created nodes had no id property, so directed patterns from {id: ...} found nothing (4.4.2)
 
@@ -5135,6 +5518,24 @@ Audit: Historical/qualified record retained; see the [per-ID review](audits/regi
 
 Disposition: closed in this policy register; historical fixed-at-pin report. See the linked source audit.
 
+```g5-question
+schema: 1
+id: hist-012
+status: answered
+prompt: "Upstream #12: bulk-created nodes had no id property, so directed patterns from {id: ...} found nothing (4.4.2)"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; historical fixed-at-pin report. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="hist-013"></a>
 ### Upstream #13: count(DISTINCT) with ORDER BY and LIMIT failed on a from_connect() engine on IRIS 2026.1 (4.5.1)
 
@@ -5146,6 +5547,24 @@ Settled as built: `CHANGELOG.md:52-58` records the fix in 4.7.0: the `from_conne
 Audit: Historical/qualified record retained; see the [per-ID review](audits/register-20261115/question-review.md#hist-013).
 
 Disposition: closed in this policy register; historical fixed-at-pin report. See the linked source audit.
+
+```g5-question
+schema: 1
+id: hist-013
+status: answered
+prompt: "Upstream #13: count(DISTINCT) with ORDER BY and LIMIT failed on a from_connect() engine on IRIS 2026.1 (4.5.1)"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; historical fixed-at-pin report. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
 
 <a id="D-1"></a>
 ### Proof debt D-1: L1/L2 refinement proofs for every module with operations: **paid at model level** for 01-11 and 15-18 (`proofs-breadth`, `proofs-d1b`..`proofs-d1f`, 94+92+111+118+115+115 verified,
@@ -5161,6 +5580,24 @@ Audit: Historical/qualified record retained; see the [per-ID review](audits/regi
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
 
+```g5-question
+schema: 1
+id: D-1
+status: answered
+prompt: "Proof debt D-1: L1/L2 refinement proofs for every module with operations: **paid at model level** for 01-11 and 15-18 (`proofs-breadth`, `proofs-d1b`..`proofs-d1f`, 94+92+111+118+115+115 verified,"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="D-2"></a>
 ### Proof debt D-2: Statement lemmas: each IRIS SQL statement and ObjectScript global operation equals its model evaluation (§3.4)
 
@@ -5174,6 +5611,24 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 Audit: Historical/qualified record retained; see the [per-ID review](audits/register-20261115/question-review.md#D-2).
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+
+```g5-question
+schema: 1
+id: D-2
+status: answered
+prompt: "Proof debt D-2: Statement lemmas: each IRIS SQL statement and ObjectScript global operation equals its model evaluation (§3.4)"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
 
 <a id="D-3"></a>
 ### Proof debt D-3: Handler proofs: each Python/ObjectScript entry point performs its spec step (§3.5)
@@ -5189,6 +5644,24 @@ Audit: Historical/qualified record retained; see the [per-ID review](audits/regi
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
 
+```g5-question
+schema: 1
+id: D-3
+status: answered
+prompt: "Proof debt D-3: Handler proofs: each Python/ObjectScript entry point performs its spec step (§3.5)"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="D-4"></a>
 ### Proof debt D-4: Lock-plan obligations per handler (§3.5)
 
@@ -5202,6 +5675,24 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 Audit: Historical/qualified record retained; see the [per-ID review](audits/register-20261115/question-review.md#D-4).
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+
+```g5-question
+schema: 1
+id: D-4
+status: answered
+prompt: "Proof debt D-4: Lock-plan obligations per handler (§3.5)"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
 
 <a id="D-5"></a>
 ### Proof debt D-5: Composition: a committed IRIS transaction refines the serial step, chained over executions (§3.6)
@@ -5217,6 +5708,24 @@ Audit: Historical/qualified record retained; see the [per-ID review](audits/regi
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
 
+```g5-question
+schema: 1
+id: D-5
+status: answered
+prompt: "Proof debt D-5: Composition: a committed IRIS transaction refines the serial step, chained over executions (§3.6)"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="D-6"></a>
 ### Proof debt D-6: Frame, key, FK, capacity, row-permutation conditions (§3.6)
 
@@ -5230,6 +5739,24 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 Audit: Historical/qualified record retained; see the [per-ID review](audits/register-20261115/question-review.md#D-6).
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+
+```g5-question
+schema: 1
+id: D-6
+status: answered
+prompt: "Proof debt D-6: Frame, key, FK, capacity, row-permutation conditions (§3.6)"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
 
 <a id="D-7"></a>
 ### Proof debt D-7: The IRIS environment contract as a Verus specification linked to the participant contracts: **paid at model level for the contract's Verus subset** by `proofs-env` (305 verified, 0
@@ -5245,6 +5772,24 @@ Audit: Historical/qualified record retained; see the [per-ID review](audits/regi
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
 
+```g5-question
+schema: 1
+id: D-7
+status: answered
+prompt: "Proof debt D-7: The IRIS environment contract as a Verus specification linked to the participant contracts: **paid at model level for the contract's Verus subset** by `proofs-env` (305 verified, 0"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="D-8"></a>
 ### Proof debt D-8: Progress premises: fair scheduling of enabled steps, operator re-runs after a stop, ledger re-enabled, no write outside the ledger, a weakly fair queue worker (`proofs-mech` M07-L4
 
@@ -5258,6 +5803,24 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 Audit: Historical/qualified record retained; see the [per-ID review](audits/register-20261115/question-review.md#D-8).
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+
+```g5-question
+schema: 1
+id: D-8
+status: answered
+prompt: "Proof debt D-8: Progress premises: fair scheduling of enabled steps, operator re-runs after a stop, ledger re-enabled, no write outside the ledger, a weakly fair queue worker (`proofs-mech` M07-L4"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
 
 <a id="D-9"></a>
 ### Proof debt D-9: Reviewed protocol under the pin's real premises (bypass writers, three distinct target predicates, erasure rollback, readers, statement history, Decision 2, retry-key movement): **
@@ -5273,6 +5836,24 @@ Audit: Historical/qualified record retained; see the [per-ID review](audits/regi
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
 
+```g5-question
+schema: 1
+id: D-9
+status: answered
+prompt: "Proof debt D-9: Reviewed protocol under the pin's real premises (bypass writers, three distinct target predicates, erasure rollback, readers, statement history, Decision 2, retry-key movement): **"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="D-10"></a>
 ### Proof debt D-10: M1 targeting with 2 pre-enable writes and 2 commits: **paid (mc, exhaustive within bounds)** by `models/core-partition`: 43 pieces by pre-enable world whose union is checked to be 
 
@@ -5286,6 +5867,24 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 Audit: Historical/qualified record retained; see the [per-ID review](audits/register-20261115/question-review.md#D-10).
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+
+```g5-question
+schema: 1
+id: D-10
+status: answered
+prompt: "Proof debt D-10: M1 targeting with 2 pre-enable writes and 2 commits: **paid (mc, exhaustive within bounds)** by `models/core-partition`: 43 pieces by pre-enable world whose union is checked to be "
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
 
 <a id="D-11"></a>
 ### Proof debt D-11: Original proof `l2.rs` refinement covers the reviewed design only
@@ -5301,6 +5900,24 @@ Audit: Historical/qualified record retained; see the [per-ID review](audits/regi
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
 
+```g5-question
+schema: 1
+id: D-11
+status: answered
+prompt: "Proof debt D-11: Original proof `l2.rs` refinement covers the reviewed design only"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="D-12"></a>
 ### Proof debt D-12: Progress-only control for reviewed-design element D-2 (scan bound fixed at marking): **paid at model level**: `control_bound_follows_tail` (the pin's tail-following bound) fails on
 
@@ -5315,6 +5932,24 @@ Audit: Historical/qualified record retained; see the [per-ID review](audits/regi
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
 
+```g5-question
+schema: 1
+id: D-12
+status: answered
+prompt: "Proof debt D-12: Progress-only control for reviewed-design element D-2 (scan bound fixed at marking): **paid at model level**: `control_bound_follows_tail` (the pin's tail-following bound) fails on"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="D-13"></a>
 ### Proof debt D-13: The breadth proofs (modules 04 and 11) without premise P-A3: **paid at model level** by `proofs-pa3` (108 verified, 0 errors, `proofs-pa3-baseline`, recheck `proofs-pa3-recheck`): 
 
@@ -5328,6 +5963,24 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 Audit: Historical/qualified record retained; see the [per-ID review](audits/register-20261115/question-review.md#D-13).
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+
+```g5-question
+schema: 1
+id: D-13
+status: answered
+prompt: "Proof debt D-13: The breadth proofs (modules 04 and 11) without premise P-A3: **paid at model level** by `proofs-pa3` (108 verified, 0 errors, `proofs-pa3-baseline`, recheck `proofs-pa3-recheck`): "
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
 
 <a id="D-14"></a>
 ### Proof debt D-14: Shared mechanism laws proved once over a trait: **paid at model level** by `proofs-mech` (1,149 verified, 0 errors, `--no-cheating`, empty trust inventory; all 45 laws of 13 mechan
@@ -5346,6 +5999,24 @@ Public-report qualification: upstream issues #12 and #13 were still open when ch
 
 Disposition: closed in this policy register; inherited qualified proof debt. See the linked source audit.
 
+```g5-question
+schema: 1
+id: D-14
+status: answered
+prompt: "Proof debt D-14: Shared mechanism laws proved once over a trait: **paid at model level** by `proofs-mech` (1,149 verified, 0 errors, `--no-cheating`, empty trust inventory; all 45 laws of 13 mechan"
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
+  rationale: Existing source authority recorded in this register.
+  answered_by: null
+  answered_at: null
+default_assumption: Keep the existing recorded scope; no new verification or human decision is inferred.
+```
+
 <a id="access.transactions"></a>
 ### Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning?
 
@@ -5359,15 +6030,21 @@ Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning? There is no
 Disposition: open. Working assumption: Assume per-statement commits on Bolt until an explicit transaction contract is established.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "access.transactions",
-  "status": "open",
-  "prompt": "Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: access.transactions
+status: open
+prompt: Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: map explicit transactions onto one IVG transaction, or refuse explicit transactions and document per-statement commits.
 ```
 
 <a id="query.writes.delete-scope"></a>
@@ -5380,15 +6057,21 @@ Should a Cypher `DELETE` clean up everything the engine's own [node delete](../o
 Disposition: open. Working assumption: `DETACH DELETE` removes the node's labels, properties, default-route vector, incident edges and those edges' reifications, but not vectors in other routes or temporal entries. `DELETE r` removes only the relationship row and leaves its reification, the same open question as [edge delete reifications](graph-structure.g5.md#structure.edge.delete.reifications).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.writes.delete-scope",
-  "status": "open",
-  "prompt": "Should a Cypher `DELETE` clean up everything the engine's own [node delete](graph-structure.g5.md#structure.node.delete) and edge delete clean up?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: query.writes.delete-scope
+status: open
+prompt: Should a Cypher `DELETE` clean up everything the engine's own [node delete](graph-structure.g5.md#structure.node.delete) and edge delete clean up?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "`DETACH DELETE` removes the node's labels, properties, default-route vector, incident edges and those edges' reifications, but not vectors in other routes or temporal entries. `DELETE r` removes only the relationship row and leaves its reification, the same open question as [edge delete reifications](#structure.edge.delete.reifications)."
 ```
 
 <a id="query.routes"></a>
@@ -5401,15 +6084,21 @@ Should the second HTTP app's Cypher endpoints (`/api/cypher` and GraphQL `execut
 Disposition: open. Working assumption: yes; today they run the translated SQL themselves.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.routes",
-  "status": "open",
-  "prompt": "Should the second HTTP app's Cypher endpoints (`/api/cypher` and GraphQL `executeCypher`) answer through the engine, as the documented server and the Bolt listener do?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: query.routes
+status: open
+prompt: Should the second HTTP app's Cypher endpoints (`/api/cypher` and GraphQL `executeCypher`) answer through the engine, as the documented server and the Bolt listener do?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: yes; today they run the translated SQL themselves.
 ```
 
 <a id="structure.write.engine-connection"></a>
@@ -5427,15 +6116,21 @@ Disposition: open. Working assumption: Treat transaction membership as dependent
 Evidence (retest iteration 26, [observations](../uplift/consolidated/iteration-26/caller-txn-observed-20261116T213901Z.json), [model](models/write_routing/NOTES.md)): the difference is per call, not per engine. On a `from_connect` engine, `purge_before` and `set_temporal_structural` survive the caller's rollback (a purge also retires the endpoint nodes it leaves bare), while node, edge, Cypher and `create_edge_temporal` writes join. Separately, with the driver's autocommit off, direct ObjectScript calls can escape on either engine ([bug-tmp-102](bugs_issues.md#bug-tmp-102)). An answer here should cover both.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.write.engine-connection",
-  "status": "open",
-  "prompt": "Should whether a write joins the caller's transaction depend on how the engine was opened?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: structure.write.engine-connection
+status: open
+prompt: Should whether a write joins the caller's transaction depend on how the engine was opened?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat transaction membership as dependent on the connection used by the engine.
 ```
 
 <a id="structure.edge.delete.reifications"></a>
@@ -5448,15 +6143,21 @@ Should deleting an edge also remove its reifications and edge embeddings, as del
 Disposition: open. Working assumption: Treat edge deletion as removing only the rows its implementation explicitly cleans up.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.edge.delete.reifications",
-  "status": "open",
-  "prompt": "Should deleting an edge also remove its reifications and edge embeddings, as deleting a node, deleting a relationship through the ledger, and erasing edges do?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: structure.edge.delete.reifications
+status: open
+prompt: Should deleting an edge also remove its reifications and edge embeddings, as deleting a node, deleting a relationship through the ledger, and erasing edges do?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat edge deletion as removing only the rows its implementation explicitly cleans up.
 ```
 
 <a id="structure.rebuilt.rollback"></a>
@@ -5469,15 +6170,21 @@ When a computation sees a write that is not yet committed and that write later r
 Disposition: open. Working assumption: yes, because the degree cache and the rebuild already treat that case as unsafe. Today the cached result stays current until the next write (observed).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.rebuilt.rollback",
-  "status": "open",
-  "prompt": "When a computation sees a write that is not yet committed and that write later rolls back, must the cached result be thrown away?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: structure.rebuilt.rollback
+status: open
+prompt: When a computation sees a write that is not yet committed and that write later rolls back, must the cached result be thrown away?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: yes, because the degree cache and the rebuild already treat that case as unsafe. Today the cached result stays current until the next write (observed).
 ```
 
 <a id="structure.rebuild.failure"></a>
@@ -5490,15 +6197,21 @@ What may readers see when a rebuild fails partway? The provisional answer, from 
 Disposition: open. Working assumption: that an early failure leaves the previous adjacency, and a later one leaves a partial index whose degree cache is cleared, never wrong.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "structure.rebuild.failure",
-  "status": "open",
-  "prompt": "What may readers see when a rebuild fails partway?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: structure.rebuild.failure
+status: open
+prompt: What may readers see when a rebuild fails partway?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: that an early failure leaves the previous adjacency, and a later one leaves a partial index whose degree cache is cleared, never wrong.
 ```
 
 <a id="redaction.unattributed"></a>
@@ -5514,15 +6227,21 @@ What should happen to a record in the target graph when it cannot be determined 
 Disposition: open. Working assumption: Retain an unattributed record and disclose it in the receipt until prefix ownership is established.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "redaction.unattributed",
-  "status": "open",
-  "prompt": "What should happen to a record in the target graph when it cannot be determined whether the record belongs to a prefix target?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: redaction.unattributed
+status: open
+prompt: What should happen to a record in the target graph when it cannot be determined whether the record belongs to a prefix target?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Retain an unattributed record and disclose it in the receipt until prefix ownership is established.
 ```
 
 <a id="search.embedding.queue.processing"></a>
@@ -5539,20 +6258,23 @@ Disposition: open. Working assumption: one worker at a time is assumed, so entri
 Evidence (iteration 36, W42): the provisional answer describes the Python worker, observed to end every failure as an error. The IRIS worker's final DONE without a vector ([bug-srch-103](bugs_issues.md#bug-srch-103)) is a defect, not this question's intermediate state. Verus: [`embed_queue.rs`](models/embed_queue/embed_queue.rs) `theorem_interrupted_mark_breaks_rule` shows the owner's rule rejects the intermediate state; whether that state is acceptable is still this question. No second worker was run.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.embedding.queue.processing",
-  "status": "open",
-  "prompt": "May two workers process the queue at the same time, and must an entry be marked done only after its vector is committed?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "claim entries so two workers never process the same one, and mark an entry done only after its vector commits",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: search.embedding.queue.processing
+status: open
+prompt: May two workers process the queue at the same time, and must an entry be marked done only after its vector is committed?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: claim entries so two workers never process the same one, and mark an entry done only after its vector commits
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: one worker at a time is assumed, so entries are not claimed. An entry is marked done before its vector is stored, and is changed to an error if storing then fails.
 ```
 
 <a id="search.erasure.indexes.graphless"></a>
@@ -5567,15 +6289,21 @@ What must erasing one graph do to a VecIndex, PLAID or IVF index, which records 
 Disposition: open. Working assumption: Treat graphless indexes as derived data requiring a rebuild after erasure.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "search.erasure.indexes.graphless",
-  "status": "open",
-  "prompt": "What must erasing one graph do to a VecIndex, PLAID or IVF index, which records no graph?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": []
-}
+schema: 1
+id: search.erasure.indexes.graphless
+status: open
+prompt: What must erasing one graph do to a VecIndex, PLAID or IVF index, which records no graph?
+severity: medium
+multi_select: false
+allow_free_text: true
+options: []
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat graphless indexes as derived data requiring a rebuild after erasure.
 ```
 
 <a id="temporal.write.update-statistics"></a>
@@ -5591,20 +6319,25 @@ What should the statistics say after an update replaces an edge's weight?
 Disposition: open. Working assumption: the statistics keep describing the first write.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.write.update-statistics",
-  "status": "open",
-  "prompt": "What should the statistics say after an update replaces an edge's weight?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "they describe the edges as they are now, recomputed as after a delete.\n- Alternative: every write counts, so an update adds a second count and its new weight",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: temporal.write.update-statistics
+status: open
+prompt: What should the statistics say after an update replaces an edge's weight?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: |-
+      they describe the edges as they are now, recomputed as after a delete.
+      - Alternative: every write counts, so an update adds a second count and its new weight
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: the statistics keep describing the first write.
 ```
 
 <a id="temporal.write.partial-failure"></a>
@@ -5620,20 +6353,27 @@ When a temporal write fails part way, what may it leave behind, and must a retry
 Disposition: open. Working assumption: the parts written before the error stay, because a direct write runs no transaction.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.write.partial-failure",
-  "status": "open",
-  "prompt": "When a temporal write fails part way, what may it leave behind, and must a retry be able to finish it?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "a failed write leaves nothing, so a retry starts clean.\n- Open either way: a retry in insert mode now finds the edge, reports a collision and never writes the m",
-      "description": "a failed write leaves nothing, so a retry starts clean.\n- Open either way: a retry in insert mode now finds the edge, reports a collision and never writes the missing structural edge, statistics or attributes"
-    }
-  ]
-}
+schema: 1
+id: temporal.write.partial-failure
+status: open
+prompt: When a temporal write fails part way, what may it leave behind, and must a retry be able to finish it?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: |-
+      a failed write leaves nothing, so a retry starts clean.
+      - Open either way: a retry in insert mode now finds the edge, reports a collision and never writes the m
+    description: |-
+      a failed write leaves nothing, so a retry starts clean.
+      - Open either way: a retry in insert mode now finds the edge, reports a collision and never writes the missing structural edge, statistics or attributes
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: the parts written before the error stay, because a direct write runs no transaction.
 ```
 
 <a id="temporal.structural.mark.visibility"></a>
@@ -5649,20 +6389,23 @@ Should readers show the temporal mark as part of the edge's data?
 Disposition: open. Working assumption: no. The mark is bookkeeping (spec 252 planned it as a separate column), so Cypher maps and RDF qualifiers would leave it out while the edge and its weight stay visible.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.structural.mark.visibility",
-  "status": "open",
-  "prompt": "Should readers show the temporal mark as part of the edge's data?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "RDF export leaves marked edges out, as NDJSON export does, and the PROV-O export carries them",
-      "description": ""
-    }
-  ]
-}
+schema: 1
+id: temporal.structural.mark.visibility
+status: open
+prompt: Should readers show the temporal mark as part of the edge's data?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: RDF export leaves marked edges out, as NDJSON export does, and the PROV-O export carries them
+    description: ""
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: no. The mark is bookkeeping (spec 252 planned it as a separate column), so Cypher maps and RDF qualifiers would leave it out while the edge and its weight stay visible.
 ```
 
 <a id="temporal.structural.ledger-nodes"></a>
@@ -5678,20 +6421,27 @@ Are the endpoint nodes that a temporal write creates, or that a purge retires, g
 Disposition: open. Working assumption: Keep the existing ledger rules for node rows until a source extends the marked-edge exemption to endpoints.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.structural.ledger-nodes",
-  "status": "open",
-  "prompt": "Are the endpoint nodes that a temporal write creates, or that a purge retires, governed by the ledger?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "treat such nodes like marked edges and skip them in the starting snapshot and verification.\n- Alternative: govern them, so these node writes are refused or reco",
-      "description": "treat such nodes like marked edges and skip them in the starting snapshot and verification.\n- Alternative: govern them, so these node writes are refused or recorded while the ledger is on, and a purge never retires a node the ledger recorded"
-    }
-  ]
-}
+schema: 1
+id: temporal.structural.ledger-nodes
+status: open
+prompt: Are the endpoint nodes that a temporal write creates, or that a purge retires, governed by the ledger?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: |-
+      treat such nodes like marked edges and skip them in the starting snapshot and verification.
+      - Alternative: govern them, so these node writes are refused or reco
+    description: |-
+      treat such nodes like marked edges and skip them in the starting snapshot and verification.
+      - Alternative: govern them, so these node writes are refused or recorded while the ledger is on, and a purge never retires a node the ledger recorded
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: none is recorded; only marked edges were declared outside governance.
 ```
 
 <a id="temporal.optout.stranded"></a>
@@ -5708,18 +6458,26 @@ What should happen to the marked structural edges of a predicate whose timestamp
 Disposition: open. Working assumption: Treat previous temporal edges as retained until an explicit cleanup or reclassification is authorized.
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "temporal.optout.stranded",
-  "status": "open",
-  "prompt": "What should happen to the marked structural edges of a predicate whose timestamps were purged while it was temporal-only, if it is made structural again before the drop?",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "let a cleanup remove marked edges that no timestamp holds, whatever the registration says.\n- Alternative: refuse to make a predicate structural again while its ",
-      "description": "let a cleanup remove marked edges that no timestamp holds, whatever the registration says.\n- Alternative: refuse to make a predicate structural again while its old marked edges remain.\n- Related: should a single-edge delete leave such edges for the drop, as the purge does?"
-    }
-  ]
-}
+schema: 1
+id: temporal.optout.stranded
+status: open
+prompt: What should happen to the marked structural edges of a predicate whose timestamps were purged while it was temporal-only, if it is made structural again before the drop?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: |-
+      let a cleanup remove marked edges that no timestamp holds, whatever the registration says.
+      - Alternative: refuse to make a predicate structural again while its
+    description: |-
+      let a cleanup remove marked edges that no timestamp holds, whatever the registration says.
+      - Alternative: refuse to make a predicate structural again while its old marked edges remain.
+      - Related: should a single-edge delete leave such edges for the drop, as the purge does?
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Treat previous temporal edges as retained until an explicit cleanup or reclassification is authorized.
 ```
