@@ -1,0 +1,607 @@
+{
+ "run": "20261116T171004Z",
+ "fixture": "ivg-cloud-20261116-iris",
+ "queries": {
+  "out": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN b.id, b.p",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt0",
+      "s"
+     ],
+     [
+      "ns20261116T171004Zt1",
+      7
+     ],
+     [
+      "ns20261116T171004Zt2",
+      2.5
+     ],
+     [
+      "ns20261116T171004Zt3",
+      true
+     ],
+     [
+      "ns20261116T171004Zt4",
+      [
+       "x",
+       1
+      ]
+     ],
+     [
+      "ns20261116T171004Zt5",
+      null
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id",
+     "b.p"
+    ]
+   },
+   "equal": null
+  },
+  "in": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})<-[:NSR20261116T171004Z]-(b) RETURN b.id",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt3"
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id"
+    ]
+   },
+   "equal": null
+  },
+  "undirected": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]-(b) RETURN b.id",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt0"
+     ],
+     [
+      "ns20261116T171004Zt1"
+     ],
+     [
+      "ns20261116T171004Zt2"
+     ],
+     [
+      "ns20261116T171004Zt3"
+     ],
+     [
+      "ns20261116T171004Zt4"
+     ],
+     [
+      "ns20261116T171004Zt5"
+     ],
+     [
+      "ns20261116T171004Zt3"
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id"
+    ]
+   },
+   "equal": null
+  },
+  "rel_prop": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[r:NSR20261116T171004Z]->(b) RETURN b.id, r.w",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt0",
+      0.5
+     ],
+     [
+      "ns20261116T171004Zt1",
+      1.5
+     ],
+     [
+      "ns20261116T171004Zt2",
+      2.5
+     ],
+     [
+      "ns20261116T171004Zt3",
+      3.5
+     ],
+     [
+      "ns20261116T171004Zt4",
+      4.5
+     ],
+     [
+      "ns20261116T171004Zt5",
+      5.5
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id",
+     "r.w"
+    ]
+   },
+   "equal": null
+  },
+  "label": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b:NSL) RETURN b.id",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt0"
+     ],
+     [
+      "ns20261116T171004Zt2"
+     ],
+     [
+      "ns20261116T171004Zt4"
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id"
+    ]
+   },
+   "equal": null
+  },
+  "str_prop": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b {p: 's'}) RETURN b.id",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt0"
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id"
+    ]
+   },
+   "equal": null
+  },
+  "count": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN count(b), count(*)",
+   "native_routed": true,
+   "native_exception": null,
+   "native": {
+    "rows": [
+     [
+      6,
+      6
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "count(b)",
+     "count(*)"
+    ]
+   },
+   "sql": {
+    "rows": [
+     [
+      6,
+      6
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "count(b)",
+     "count(*)"
+    ]
+   },
+   "equal": true
+  },
+  "distinct": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN DISTINCT b.p",
+   "native_routed": true,
+   "native_exception": null,
+   "native": {
+    "rows": [
+     [
+      "s"
+     ],
+     [
+      7
+     ],
+     [
+      2.5
+     ],
+     [
+      true
+     ],
+     [
+      [
+       "x",
+       1
+      ]
+     ],
+     [
+      null
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.p"
+    ]
+   },
+   "sql": {
+    "rows": [
+     [
+      "s"
+     ],
+     [
+      7
+     ],
+     [
+      2.5
+     ],
+     [
+      true
+     ],
+     [
+      [
+       "x",
+       1
+      ]
+     ],
+     [
+      null
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.p"
+    ]
+   },
+   "equal": true
+  },
+  "two_hops": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b)-[:NSR20261116T171004Z]->(c) RETURN c.id",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt1"
+     ],
+     [
+      "ns20261116T171004ZA"
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "c.id"
+    ]
+   },
+   "equal": null
+  },
+  "order_limit": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN b.p ORDER BY b.p LIMIT 3",
+   "native_routed": true,
+   "native_exception": null,
+   "native": {
+    "rows": [
+     [
+      [
+       "x",
+       1
+      ]
+     ],
+     [
+      "s"
+     ],
+     [
+      true
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.p"
+    ]
+   },
+   "sql": {
+    "rows": [
+     [
+      [
+       "x",
+       1
+      ]
+     ],
+     [
+      "s"
+     ],
+     [
+      true
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.p"
+    ]
+   },
+   "equal": true
+  },
+  "order_skip": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN b.id ORDER BY b.id SKIP 2 LIMIT 2",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt2"
+     ],
+     [
+      "ns20261116T171004Zt3"
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id"
+    ]
+   },
+   "equal": null
+  },
+  "order_desc": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN b.p ORDER BY b.p DESC",
+   "native_routed": true,
+   "native_exception": null,
+   "native": {
+    "rows": [
+     [
+      null
+     ],
+     [
+      7
+     ],
+     [
+      2.5
+     ],
+     [
+      true
+     ],
+     [
+      "s"
+     ],
+     [
+      [
+       "x",
+       1
+      ]
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.p"
+    ]
+   },
+   "sql": {
+    "rows": [
+     [
+      null
+     ],
+     [
+      7
+     ],
+     [
+      2.5
+     ],
+     [
+      true
+     ],
+     [
+      "s"
+     ],
+     [
+      [
+       "x",
+       1
+      ]
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.p"
+    ]
+   },
+   "equal": true
+  },
+  "node_value": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN b",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt0",
+      "[\"NSL\"]",
+      "[\"{\\\"key\\\":\\\"p\\\",\\\"value\\\":\\\"s\\\"}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"ns20261116T171004Zt0\\\"}\"]"
+     ],
+     [
+      "ns20261116T171004Zt1",
+      "[\"NSM\"]",
+      "[\"{\\\"key\\\":\\\"p\\\",\\\"value\\\":7}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"ns20261116T171004Zt1\\\"}\"]"
+     ],
+     [
+      "ns20261116T171004Zt2",
+      "[\"NSL\"]",
+      "[\"{\\\"key\\\":\\\"p\\\",\\\"value\\\":2.5}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"ns20261116T171004Zt2\\\"}\"]"
+     ],
+     [
+      "ns20261116T171004Zt3",
+      "[\"NSM\"]",
+      "[\"{\\\"key\\\":\\\"p\\\",\\\"value\\\":true}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"ns20261116T171004Zt3\\\"}\"]"
+     ],
+     [
+      "ns20261116T171004Zt4",
+      "[\"NSL\"]",
+      "[\"{\\\"key\\\":\\\"p\\\",\\\"value\\\":[\\\"x\\\", 1]}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"ns20261116T171004Zt4\\\"}\"]"
+     ],
+     [
+      "ns20261116T171004Zt5",
+      "[\"NSM\"]",
+      "[\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"ns20261116T171004Zt5\\\"}\"]"
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b_id",
+     "b_labels",
+     "b_props"
+    ]
+   },
+   "equal": null
+  },
+  "labels": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN b.id, labels(b)",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt0",
+      [
+       "NSL"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt1",
+      [
+       "NSM"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt2",
+      [
+       "NSL"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt3",
+      [
+       "NSM"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt4",
+      [
+       "NSL"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt5",
+      [
+       "NSM"
+      ]
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id",
+     "labels(b)"
+    ]
+   },
+   "equal": null
+  },
+  "keys": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) RETURN b.id, keys(b)",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      "ns20261116T171004Zt0",
+      [
+       "p",
+       "id"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt1",
+      [
+       "p",
+       "id"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt2",
+      [
+       "p",
+       "id"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt3",
+      [
+       "p",
+       "id"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt4",
+      [
+       "p",
+       "id"
+      ]
+     ],
+     [
+      "ns20261116T171004Zt5",
+      [
+       "id"
+      ]
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.id",
+     "keys(b)"
+    ]
+   },
+   "equal": null
+  },
+  "where_id": {
+   "query": "MATCH (x {id: 'ns20261116T171004ZA'})-[:NSR20261116T171004Z]->(b) WHERE b.id = 'ns20261116T171004Zt2' RETURN b.p",
+   "native_routed": false,
+   "native_exception": null,
+   "native": null,
+   "sql": {
+    "rows": [
+     [
+      2.5
+     ]
+    ],
+    "error": null,
+    "columns": [
+     "b.p"
+    ]
+   },
+   "equal": null
+  }
+ }
+}

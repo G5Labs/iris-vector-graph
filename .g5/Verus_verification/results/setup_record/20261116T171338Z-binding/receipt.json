@@ -1,0 +1,162 @@
+{
+  "cells": [
+    {
+      "expected": [
+        "new",
+        null,
+        [],
+        true
+      ],
+      "file": "setup-lifecycle-observed-20261116T171148Z.json",
+      "observed": [
+        "new",
+        null,
+        [],
+        true
+      ],
+      "step": "1 dry run"
+    },
+    {
+      "expected": [
+        "new",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        false
+      ],
+      "file": "setup-lifecycle-observed-20261116T171148Z.json",
+      "observed": [
+        "new",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        false
+      ],
+      "step": "2 real run"
+    },
+    {
+      "expected": [
+        "existing",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        true
+      ],
+      "file": "setup-lifecycle-observed-20261116T171148Z.json",
+      "observed": [
+        "existing",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        true
+      ],
+      "step": "3 dry run again"
+    },
+    {
+      "expected": [
+        "existing",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        true
+      ],
+      "file": "setup-lifecycle-observed-20261116T171148Z.json",
+      "observed": [
+        "existing",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        true
+      ],
+      "step": "4 real run again"
+    },
+    {
+      "expected": [
+        "inferred",
+        null,
+        [
+          "Graph_KG"
+        ],
+        true
+      ],
+      "file": "setup-lifecycle-observed-20261116T171233Z.json",
+      "observed": [
+        "inferred",
+        null,
+        [
+          "Graph_KG"
+        ],
+        true
+      ],
+      "step": "5 dry run after removal"
+    },
+    {
+      "expected": [
+        "inferred",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        false
+      ],
+      "file": "setup-lifecycle-observed-20261116T171233Z.json",
+      "observed": [
+        "inferred",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        false
+      ],
+      "step": "6 real run after removal"
+    },
+    {
+      "expected": [
+        "Refused",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        true
+      ],
+      "file": "setup-lifecycle-observed-20261116T171233Z.json",
+      "observed": [
+        "Refused",
+        "Graph_KG",
+        [
+          "Graph_KG"
+        ],
+        true
+      ],
+      "step": "7 other schema engine"
+    }
+  ],
+  "comparisons": 28,
+  "elapsed_s": 0.001550445333123207,
+  "inputs": {
+    ".g5/Verus_verification/models/setup_record/binding.py": "e169a9b3ea3cfe7bca0ce94ac33600c6cff9bfd20d57c6d52b13eb0ac771138d",
+    ".g5/Verus_verification/models/setup_record/model.json": "d4b336c6fdfa0a71d72ba3b34b11aec075b56f6fb48785f04b8ea2eafa2870a1",
+    ".g5/Verus_verification/models/setup_record/setup_record.rs": "c953e9a0a0722c466e1b01a7ca4afa3b4de1119203c0e101d458ed0afd548b3e"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "setup_record",
+  "observation_files": {
+    "setup-lifecycle-observed-20261116T171148Z.json": "16bfe1d8f56a5636392b23fd0e480aba5021a9f33f88db973cb93828d5b2a477",
+    "setup-lifecycle-observed-20261116T171233Z.json": "8ccc5e08cffbff0cfe6e1f3191441c118e6a0f98d7476b78dce38126ce11d4e9"
+  },
+  "scope": "Recorded native lifecycle runs (fresh namespace W21, IRIS 2026.1): dry/real/dry/real, record removed then dry/real, and a mismatching engine. The explicit-name case with tables in another schema is modeled, not observed.",
+  "sensitivities_detected_cells": {
+    "dry_run_writes": 2,
+    "mismatch_adopts": 1,
+    "unnamed_other_schema_recorded": 0,
+    "unrecorded_tables_new": 2
+  },
+  "verdict": "AGREES"
+}

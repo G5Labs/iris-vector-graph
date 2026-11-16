@@ -1,0 +1,12 @@
+verification results:: 6 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/setup_record/controls/unnamed-other-schema-recorded/20261116T171337Z/models/setup_record/setup_record.rs:54:10
+   |
+52 | pub proof fn theorem_other_schema_needs_a_name(o:Schema,t:Schema)
+   | ----------------------------------------------------------------- at the end of the function body
+53 |  requires o!=t
+54 |  ensures decide(Ns{recorded:None,held:set![o]},t,false)==Outcome::Refused,
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

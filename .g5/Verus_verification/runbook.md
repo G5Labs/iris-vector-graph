@@ -411,3 +411,6 @@ controls; its binding now covers ordering. Native-path routing evidence: `iterat
 
 Iteration 18 ([handoff](../uplift/consolidated/iteration-18/HANDOFF.md)) adds `models/sort_key` (50 verified, 5 controls); its
 binding calls `Graph_KG.CY_SORT_KEY` and `Graph.KG.Cypher.SortKey.Key` on the fixture.
+
+Iteration 19 ([handoff](../uplift/consolidated/iteration-19/HANDOFF.md)) adds `models/setup_record` (7 verified, 4 controls); its native
+observations need a fresh namespace (`W21`) created in the fixture from `%SYS` as recorded in `iteration-19/inputs.json`.

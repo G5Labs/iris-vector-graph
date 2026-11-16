@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: an unrecorded install reported as new",
+    "expect_fail_in": [
+      "theorem_interrupted_setup_resumes"
+    ],
+    "find": "   else if others(ns,t).is_empty() {Outcome::Report(How::Inferred)}",
+    "name": "unrecorded-tables-new",
+    "replace": "   else if others(ns,t).is_empty() {Outcome::Report(How::New)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_interrupted_setup_resumes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/setup_record/model.json": "d4b336c6fdfa0a71d72ba3b34b11aec075b56f6fb48785f04b8ea2eafa2870a1",
+    ".g5/Verus_verification/models/setup_record/setup_record.rs": "c953e9a0a0722c466e1b01a7ca4afa3b4de1119203c0e101d458ed0afd548b3e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/setup_record/controls/unrecorded-tables-new/20261116T171336Z/models/setup_record/setup_record.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_interrupted_setup_resumes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/setup_record/20261116T171336Z-control-unrecorded-tables-new-theorem_interrupted_setup_resumes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/setup_record/20261116T171336Z-control-unrecorded-tables-new.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/setup_record/20261116T171337Z-control-unrecorded-tables-new/logs/20261116T171336Z-control-unrecorded-tables-new-theorem_interrupted_setup_resumes.log": "3129eebba5684d19ea3eaa2a4d9288d76a1bec69db3951a274cb00405fccc013",
+    ".g5/Verus_verification/results/setup_record/20261116T171337Z-control-unrecorded-tables-new/logs/20261116T171336Z-control-unrecorded-tables-new.log": "d7e5aee3f0fb6cacbe3114b79e9ff5570431137400dc9f5463ccf0da07a6861a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -551,6 +551,7 @@ This owner recovers ordinary reporting intent from the primary docs and tests be
 
 - Sources: [ADMIN_GUIDE: Running setup again](../../../docs/ADMIN_GUIDE.md); [_engine/schema.py initialize_schema](../../../iris_vector_graph/_engine/schema.py); [Spec 262 Edge Cases (Privileges)](../../../specs/262-ivg-owned-sql-schema/spec.md); [CHANGELOG v4.7.0](../../../CHANGELOG.md)
 - Children: [dry run](#install.setup.dry_run), [resume](#install.setup.resume), [failed deploy](#install.setup.failed_deploy)
+- Verus: [setup_record.rs](../../Verus_verification/models/setup_record/setup_record.rs) `theorem_fresh_namespace_is_new_and_recorded`, `theorem_second_run_existing_and_unchanged`, `theorem_mismatch_refused` and `theorem_other_schema_needs_a_name`; [scope and native lifecycle observations](../../Verus_verification/models/setup_record/NOTES.md)
 - agent
 - operations
 
@@ -560,6 +561,7 @@ The caller-transaction refusal came in 4.7.0 (live: `tests/e2e/test_470_caller_t
 
 - Sources: [Spec 262 FR-013, Edge Cases (Read-only and dry runs)](../../../specs/262-ivg-owned-sql-schema/spec.md)
 - Tests (live): whole-namespace before/after snapshots in `tests/e2e/test_262_record.py` and `tests/e2e/test_262_upgrade_451.py`
+- Verus: [setup_record.rs](../../Verus_verification/models/setup_record/setup_record.rs) `theorem_dry_run_writes_nothing` and `theorem_refusal_writes_nothing`; [scope and native lifecycle observations](../../Verus_verification/models/setup_record/NOTES.md)
 - Expands: [Setup](#install.setup)
 - agent
 - operations
@@ -569,6 +571,7 @@ The caller-transaction refusal came in 4.7.0 (live: `tests/e2e/test_470_caller_t
 
 - Sources: [Spec 262 Edge Cases (An interrupted upgrade)](../../../specs/262-ivg-owned-sql-schema/spec.md); [KNOWN_ISSUES: After an interrupted setup](../../../docs/KNOWN_ISSUES.md)
 - Tests (live): `tests/e2e/test_262_upgrade_451.py::test_an_interrupted_upgrade_resumes_to_the_same_end` covers only an interruption after the functions exist and before the record is written
+- Verus: [setup_record.rs](../../Verus_verification/models/setup_record/setup_record.rs) `theorem_interrupted_setup_resumes`; [scope and native lifecycle observations](../../Verus_verification/models/setup_record/NOTES.md)
 - Expands: [Setup](#install.setup)
 - agent
 - operations, data-integrity

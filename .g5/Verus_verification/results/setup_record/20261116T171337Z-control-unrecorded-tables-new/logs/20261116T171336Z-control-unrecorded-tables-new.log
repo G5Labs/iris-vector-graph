@@ -1,0 +1,11 @@
+verification results:: 6 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/setup_record/controls/unrecorded-tables-new/20261116T171336Z/models/setup_record/setup_record.rs:44:10
+   |
+43 | pub proof fn theorem_interrupted_setup_resumes(t:Schema)
+   | -------------------------------------------------------- at the end of the function body
+44 |  ensures decide(interrupted(fresh(),t),t,false)==Outcome::Report(How::Inferred),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

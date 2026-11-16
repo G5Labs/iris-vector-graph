@@ -1,0 +1,45 @@
+{
+  "name": "setup_record",
+  "root": "setup_record.rs",
+  "expected_verified": 7,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "dry-run-writes",
+      "find": " if dry || decide(ns,t,explicit)==Outcome::Refused {ns}",
+      "replace": " if decide(ns,t,explicit)==Outcome::Refused {ns}",
+      "expect_fail_in": [
+        "theorem_dry_run_writes_nothing"
+      ],
+      "classification": "decision: dry run performing the writes"
+    },
+    {
+      "name": "mismatch-adopts",
+      "find": "Some(s)=>if s!=t {Outcome::Refused} else {Outcome::Report(How::Existing)},",
+      "replace": "Some(s)=>Outcome::Report(How::Existing),",
+      "expect_fail_in": [
+        "theorem_mismatch_refused"
+      ],
+      "classification": "decision: a record naming another schema accepted"
+    },
+    {
+      "name": "unrecorded-tables-new",
+      "find": "   else if others(ns,t).is_empty() {Outcome::Report(How::Inferred)}",
+      "replace": "   else if others(ns,t).is_empty() {Outcome::Report(How::New)}",
+      "expect_fail_in": [
+        "theorem_interrupted_setup_resumes"
+      ],
+      "classification": "decision: an unrecorded install reported as new"
+    },
+    {
+      "name": "unnamed-other-schema-recorded",
+      "find": "   else if explicit {Outcome::Report(How::Explicit)} else {Outcome::Refused},",
+      "replace": "   else {Outcome::Report(How::Explicit)},",
+      "expect_fail_in": [
+        "theorem_other_schema_needs_a_name"
+      ],
+      "classification": "decision: tables in another schema recorded without a name"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: dry run performing the writes",
+    "expect_fail_in": [
+      "theorem_dry_run_writes_nothing"
+    ],
+    "find": " if dry || decide(ns,t,explicit)==Outcome::Refused {ns}",
+    "name": "dry-run-writes",
+    "replace": " if decide(ns,t,explicit)==Outcome::Refused {ns}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_dry_run_writes_nothing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/setup_record/model.json": "d4b336c6fdfa0a71d72ba3b34b11aec075b56f6fb48785f04b8ea2eafa2870a1",
+    ".g5/Verus_verification/models/setup_record/setup_record.rs": "c953e9a0a0722c466e1b01a7ca4afa3b4de1119203c0e101d458ed0afd548b3e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/setup_record/controls/dry-run-writes/20261116T171334Z/models/setup_record/setup_record.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_dry_run_writes_nothing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/setup_record/20261116T171334Z-control-dry-run-writes-theorem_dry_run_writes_nothing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/runs/ivg-cloud-20261116/verus/setup_record/20261116T171334Z-control-dry-run-writes.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/setup_record/20261116T171335Z-control-dry-run-writes/logs/20261116T171334Z-control-dry-run-writes-theorem_dry_run_writes_nothing.log": "8e7f04a2bcb934e87b18601674f2f83ba5ecc605199c5c008bb6ee65e4f73838",
+    ".g5/Verus_verification/results/setup_record/20261116T171335Z-control-dry-run-writes/logs/20261116T171334Z-control-dry-run-writes.log": "f1befc4e0aabce02deeffc2ac2fb82b26ad06b73ac97b112c39e485e6b857932"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
