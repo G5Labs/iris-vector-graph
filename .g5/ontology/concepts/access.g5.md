@@ -21,6 +21,8 @@ Who can reach IVG, through which entry points, what they are allowed to do, and 
 
 Applications reach IVG through the engine, or through optional servers built on it: the HTTP server, Bolt, GraphQL, the sample API, the IRIS-hosted MCP tools and an IRIS REST dispatcher. The servers are meant as a convenience layer: each server call should do what an engine method an application could call itself does.
 
+- Today the HTTP Cypher routes return at most 1,000 rows of an answer. `/api/cypher` documents this as `limitRows`, and its row count gives the rows kept; `/db/neo4j/tx/commit` and `/db/{db}/query/v2` cut without saying so.
+
 - Working assumption: Treat /metaPath as default-graph-only and include that in its contract. A body naming `graph` should be refused or honoured, not ignored; until decided, model the silent ignore as the baseline.
 
 
@@ -215,16 +217,20 @@ Strict mode applies to an engine whenever the ledger is strict, however long ago
 - uncertain
 - Sources: [ADMIN_API.md](../../../docs/ADMIN_API.md); [cypher_api.py](../../../iris_vector_graph/cypher_api.py); [api/main.py](../../../api/main.py); [bolt_server.py](../../../iris_vector_graph/bolt_server.py); [MCPTools.cls](../../../iris_src/src/Graph/KG/MCPTools.cls); [Service.cls](../../../iris_src/src/Graph/KG/Service.cls)
 - Children: [Bolt stream](#access.bolt), [IRIS boundary](#access.iris_boundary), [graph ID](#access.graph_id)
+- Verus: [http_rows](../../Verus_verification/models/http_rows/NOTES.md) `theorem_answer_is_prefix`, `theorem_neo4j_answer_cannot_tell_truncation`, `theorem_api_row_count_is_kept` (HTTP Cypher row cap, as built)
+- Evidence: [frozen predictions and native observations](../../uplift/consolidated/iteration-32/http-PAIRS.md)
 - agent
 - architecture-decision
 
 Observed divergence: the sample API's REST Cypher route, its GraphQL Cypher field and the example GraphQL mutations it mounts run SQL on their own cursor instead of calling the engine (see [strict-mode surfaces](#access.ledger_strict.surfaces)).
 
-Findings: [Bolt sessions never close the IRIS connection their engine opened](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-002); [The sample API's Cypher endpoints run translated SQL on a raw cursor, bypassing strict mode and the engine's statement protocol](../../Verus_verification/bugs_issues.md#bug-plt-005); [A GraphQL GET request can run a Cypher write](../../Verus_verification/bugs_issues.md#bug-plt-013)
+Findings: [Bolt sessions never close the IRIS connection their engine opened](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-002); [The sample API's Cypher endpoints run translated SQL on a raw cursor, bypassing strict mode and the engine's statement protocol](../../Verus_verification/bugs_issues.md#bug-plt-005); [A GraphQL GET request can run a Cypher write](../../Verus_verification/bugs_issues.md#bug-plt-013); [The Neo4j-compatible HTTP routes return at most 1,000 rows of an answer without saying so](../../Verus_verification/bugs_issues.md#bug-plt-108)
 
 Open questions: [Should the REST dispatcher's `/metaPath` take a graph?](../../Verus_verification/open_questions.md#HD-1604)
 
 Assumption review evidence: Changed from decisions.md: **no**. Same reading. Added: spec 230 is absent from the repository and the mirror, and a supplied graph key is ignored silently.
+
+State machines: [http rows](../../Verus_verification/models/http_rows/manifest.json)
 
 ### access.bolt
 

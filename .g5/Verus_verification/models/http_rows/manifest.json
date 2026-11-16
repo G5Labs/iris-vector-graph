@@ -1,0 +1,39 @@
+{
+  "title": "http rows",
+  "question": "HTTP Cypher readers: _run_cypher keeps at most the limit; /api/cypher limitRows and rowCount of rows kept; Neo4j tx/commit and query/v2 cut at 1000 silently (bug-plt-108); value encoding a premise",
+  "ontology_ids": [
+    "access.surfaces"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 3}"
+    },
+    {
+      "label": "no-limit",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_neo4j_answer_cannot_tell_truncation\", \"theorem_api_row_count_is_kept\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "api-counts-total",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_api_row_count_is_kept\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cut-one-short",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_answer_is_prefix\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

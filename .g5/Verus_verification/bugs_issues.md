@@ -2760,6 +2760,25 @@ Consequence: in a namespace with another IVG Schema, the loader fails unless tol
 
 Repair proposal (checked in the model only): take the schema from the namespace's record, and rebuild the classes of that schema's package (controls `default-schema-follows-namespace` and `rebuild-follows-schema`). Preserve `Graph_KG` behavior. Distinguishing cases: S1 and S3 against S4.
 
+<a id="bug-plt-108"></a>
+### The Neo4j-compatible HTTP routes return at most 1,000 rows of an answer without saying so
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-16 (retest, iteration 32)
+
+Found by: source reading after the W38 predictions were frozen (`_run_cypher` keeps at most `limit` rows), then observation ([predictions](../uplift/consolidated/iteration-32/http-PAIRS.md), H5); [http_rows](models/http_rows/NOTES.md) `theorem_neo4j_answer_cannot_tell_truncation`.
+
+Reproduced by: **E2E reproduced** in-process (FastAPI `TestClient`, no listener) against the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-32/http-observed-20261116T221726Z.json); [binding](results/http_rows/20261116T221848Z-binding/receipt.json)). `UNWIND range(1, 1200) AS i RETURN i`: `execute_cypher` returns 1,200 rows; `POST /db/neo4j/tx/commit` returns 1,000 rows in `results[0].data` with no error, and `POST /db/neo4j/query/v2` returns 1,000 in `data.values`, neither with any sign of the cut. Passing neighbors: 999 and 1,000 rows come back whole; `/api/cypher` documents its `limitRows` (default 1000) and honours `limitRows: 2000` (1,200 rows). Every value and type otherwise agreed across the engine and the three routes (H1-H4, H6).
+
+Expected: [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces): each server call should do what the engine method it stands for does; Neo4j's transaction and query APIs return the whole answer (paging is the client's choice), and nothing in IVG's docs mentions a cap on those routes.
+
+Cause: `neo4j_tx_commit` and `neo4j_query_v2` call `_run_cypher(statement, parameters)` with its default `limit=1000` (`cypher_api.py:239-265, 379-460`); only `/api/cypher` exposes the limit and returns `rowCount`, which counts the rows kept.
+
+Consequence: a Neo4j HTTP client gets a silently incomplete answer for any query with more than 1,000 rows; with the query API it cannot even tell from the response. Medium: wrong (incomplete) results with a confirmed trigger on a secondary protocol; Bolt and `/api/cypher` are the documented paths.
+
+Repair proposal (not implemented): return every row on the Neo4j routes (or honour a client limit and say when the answer was cut, as `/api/cypher` could with a total). Preserve `/api/cypher`'s documented `limitRows`. Distinguishing case: 1,000 against 1,001 rows on `/tx/commit`.
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 

@@ -467,3 +467,6 @@ binding (fixture required; needs numpy and scikit-learn from the pinned venv).
 
 Iteration 31 ([handoff](../uplift/consolidated/iteration-31/HANDOFF.md)) extends `bulk_load` (10 verified, 8 controls; the binding
 needs namespace `W37`, IVG Schema `Kg2`, created as recorded there) and `write_routing` (9 controls; batch and delete).
+
+Iteration 32 ([handoff](../uplift/consolidated/iteration-32/HANDOFF.md)) adds `models/http_rows` (3 verified, 3 controls) and an
+in-process binding (FastAPI `TestClient` with `IRIS_*` set to the fixture; no port is opened).

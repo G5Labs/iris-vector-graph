@@ -1,0 +1,37 @@
+{
+  "name": "http_rows",
+  "root": "http_rows.rs",
+  "expected_verified": 3,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "no-limit",
+      "find": "pub open spec fn kept(rows:Seq<R>,limit:nat)->Seq<R> {if rows.len()<=limit {rows} else {rows.subrange(0,limit as int)}}",
+      "replace": "pub open spec fn kept(rows:Seq<R>,limit:nat)->Seq<R> {rows}",
+      "expect_fail_in": [
+        "theorem_neo4j_answer_cannot_tell_truncation",
+        "theorem_api_row_count_is_kept"
+      ],
+      "classification": "decision: the routes return every row (the Neo4j contract)"
+    },
+    {
+      "name": "api-counts-total",
+      "find": "pub open spec fn api(rows:Seq<R>,limit_rows:nat)->ApiAnswer {let k=kept(rows,limit_rows); ApiAnswer{rows:k,row_count:k.len()}}",
+      "replace": "pub open spec fn api(rows:Seq<R>,limit_rows:nat)->ApiAnswer {let k=kept(rows,limit_rows); ApiAnswer{rows:k,row_count:rows.len()}}",
+      "expect_fail_in": [
+        "theorem_api_row_count_is_kept"
+      ],
+      "classification": "reporting: rowCount gives the query's total"
+    },
+    {
+      "name": "cut-one-short",
+      "find": "{if rows.len()<=limit {rows} else {rows.subrange(0,limit as int)}}",
+      "replace": "{if rows.len()<limit {rows} else {rows.subrange(0,(limit as int)-1)}}",
+      "expect_fail_in": [
+        "theorem_answer_is_prefix"
+      ],
+      "classification": "effect: an off-by-one cut"
+    }
+  ]
+}
