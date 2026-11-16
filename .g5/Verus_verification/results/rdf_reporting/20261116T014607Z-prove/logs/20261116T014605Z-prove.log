@@ -1,0 +1,36 @@
+verification results:: 36 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:298:10
+    |
+296 | pub proof fn theorem_unqualified_parallel_rows_collapse(e:Edge,rs:Rows,c:Config)
+    | -------------------------------------------------------------------------------- at the end of the function body
+297 |  requires edge_selected(e,rs,c),decode(e.qualifiers).len()==0
+298 |  ensures triples(emit_edge(e,rs,0,c)+emit_edge(e,rs,1,c)).len()==1
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:300:1
+    |
+300 | pub proof fn theorem_distinct_contexts_share_union_triple(x:Quad,g:Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:302:10
+    |
+300 | pub proof fn theorem_distinct_contexts_share_union_triple(x:Quad,g:Text)
+    | ------------------------------------------------------------------------ at the end of the function body
+301 |  requires x.graph!=g
+302 |  ensures seq![x,Quad{graph:g,triple:x.triple}].to_set().len()==2,triples(seq![x,Quad{graph:g,triple:x.triple}]).len()==1
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:302:66
+    |
+300 | pub proof fn theorem_distinct_contexts_share_union_triple(x:Quad,g:Text)
+    | ------------------------------------------------------------------------ at the end of the function body
+301 |  requires x.graph!=g
+302 |  ensures seq![x,Quad{graph:g,triple:x.triple}].to_set().len()==2,triples(seq![x,Quad{graph:g,triple:x.triple}]).len()==1
+    |                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

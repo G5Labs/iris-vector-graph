@@ -1,0 +1,15 @@
+verification results:: 36 verified, 2 errors
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:299:45
+    |
+299 | {let x=emit_edge(e,rs,0,c)[0].triple;assert(triples(emit_edge(e,rs,0,c)+emit_edge(e,rs,1,c)) =~= set![x]);}
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs:303:86
+    |
+303 | {let y=Quad{graph:g,triple:x.triple};assert(seq![x,y].to_set() =~= set![x,y]);assert(triples(seq![x,y]) =~= set![x.triple]);}
+    |                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

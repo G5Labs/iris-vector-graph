@@ -1,0 +1,29 @@
+verification results:: 47 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/summary-counts-quads/20261116T021949Z/models/rdf_reporting/rdf_reporting.rs:213:10
+    |
+213 |  ensures reported(rs,c).triples==triples(generated(rs,c)).len(),reported(rs,c).nodes==subjects(generated(rs,c)).len(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+228 |  assert(ts.filter(edge_fn()).to_set() =~= ts.to_set().filter(edge_fn())) by {
+    |  ------ at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/summary-counts-quads/20261116T021949Z/models/rdf_reporting/rdf_reporting.rs:270:10
+    |
+269 | pub proof fn theorem_summary_reads_union_not_rows(qs:Seq<Quad>)
+    | --------------------------------------------------------------- at the end of the function body
+270 |  ensures summary(qs).triples==triples(qs).len(),summary(qs).nodes==subjects(qs).len(),summary(qs).edges==qs.map_values(triple_fn())...
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/summary-counts-quads/20261116T021949Z/models/rdf_reporting/rdf_reporting.rs:314:10
+    |
+312 | pub proof fn theorem_summary_two_contexts_is_one_triple(x:Quad,g:Text)
+    | ---------------------------------------------------------------------- at the end of the function body
+313 |  requires x.graph!=g
+314 |  ensures summary(seq![x,Quad{graph:g,triple:x.triple}]).triples==1
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

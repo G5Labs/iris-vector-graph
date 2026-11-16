@@ -1,0 +1,61 @@
+verification results:: 141 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/structural-alias-lost/20261116T022144Z/models/ndjson_export/ndjson_export.rs:67:1
+   |
+67 | pub proof fn theorem_structural_alias_keys_protected(k:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/structural-alias-lost/20261116T022144Z/models/ndjson_export/ndjson_export.rs:69:10
+   |
+67 | pub proof fn theorem_structural_alias_keys_protected(k:int)
+   | ----------------------------------------------------------- at the end of the function body
+68 |  requires k>=0,
+69 |  ensures alias(k)!=0,alias(k)!=1,alias(k)==bc::alias(k),alias(k)==nr::alias(k),{}
+   |          ^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/structural-alias-lost/20261116T022144Z/models/ndjson_export/ndjson_export.rs:69:22
+   |
+67 | pub proof fn theorem_structural_alias_keys_protected(k:int)
+   | ----------------------------------------------------------- at the end of the function body
+68 |  requires k>=0,
+69 |  ensures alias(k)!=0,alias(k)!=1,alias(k)==bc::alias(k),alias(k)==nr::alias(k),{}
+   |                      ^^^^^^^^^^^ failed this postcondition
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/structural-alias-lost/20261116T022144Z/models/ndjson_export/ndjson_export.rs:113:68
+    |
+113 |  ensures bc::reader_order(int_props(ps),(g,id),prop_keys(ps,g,id)),hydrated(xs,ls,ps,g)[id].props.contains_key(alias(k)),hydrated(x...
+    |                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+note: recommendation not met
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/structural-alias-lost/20261116T022144Z/models/ndjson_export/ndjson_export.rs:113:122
+    |
+113 | ...drated(xs,ls,ps,g)[id].props.contains_key(alias(k)),hydrated(xs,ls,ps,g)[id].props[alias(k)]==nr::Value::Integer(bc::read_props(...
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> map.rs:87:12
+    |
+    = note: recommendation not met
+
+error: assertion failed
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/structural-alias-lost/20261116T022144Z/models/ndjson_export/ndjson_export.rs:116:120
+    |
+116 | ...aph==g&&ps[i].id==id&&ps[i].key==j;assert(alias(ps[i].key)==alias(k));}
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/structural-alias-lost/20261116T022144Z/models/ndjson_export/ndjson_export.rs:284:66
+    |
+284 | pub proof fn witness_id_property_reaches_alias_in_file() ensures ({let f=export(seq![Parent{graph:0,id:0}],seq![],seq![Prop{graph:0,id:0,key:0,stored:nr::Stored::Number{payload:10,double:false}}],seq![]);match f.lines[0]{Event::Node{id,labels:_,props}=>id==0&&props.contains_key(2)&&props[2]==nr::Value::Integer(10),_=>false}}), {...
+    | --------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 4 previous errors
+

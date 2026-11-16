@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_summary_two_contexts_is_one_triple"
+    ],
+    "find": "Report{triples:triples(qs).len()",
+    "name": "summary-counts-quads",
+    "replace": "Report{triples:qs.to_set().len()"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_summary_two_contexts_is_one_triple"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "70eb4f615b746ea00e6b944d61f57c1900467e5158f67353782ce8fee7906550"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/summary-counts-quads/20261116T021949Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_summary_two_contexts_is_one_triple": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T021949Z-control-summary-counts-quads-theorem_summary_two_contexts_is_one_triple.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T021949Z-control-summary-counts-quads.log",
+    "timed_out": false,
+    "verified": 47
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T021952Z-control-summary-counts-quads/logs/20261116T021949Z-control-summary-counts-quads-theorem_summary_two_contexts_is_one_triple.log": "295000e44b90ef54a08c3a134c2685919d183e678ae21dd35ab6ed19d932634e",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T021952Z-control-summary-counts-quads/logs/20261116T021949Z-control-summary-counts-quads.log": "c6fa9a6a1d789b9b7daf6e229aabdd26d400a30256d2ebc3d8b267fbe8acf927"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

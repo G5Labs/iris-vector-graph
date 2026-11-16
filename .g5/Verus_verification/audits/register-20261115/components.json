@@ -1,0 +1,145 @@
+[
+  {
+    "ids": [
+      "bug-adp-001"
+    ],
+    "level": "partial reproduced",
+    "scenario": "real EmbeddedCursor.executemany",
+    "evidence": "embedded-component.json",
+    "remaining_gate": "IRIS must raise the unsupported-path error after a successful batch prefix; scripted iris.sql does not establish this native trigger"
+  },
+  {
+    "ids": [
+      "bug-srch-005"
+    ],
+    "level": "partial reproduced",
+    "actual": [
+      [
+        "one",
+        0.024726775956284155,
+        1.0,
+        0.0
+      ]
+    ],
+    "expected": [
+      [
+        "one",
+        0.01639344262295082
+      ]
+    ],
+    "neighbor": "present-vector rank contributes 1/61; unused text leg still adds 1/120",
+    "remaining_gate": "a real pair of vector/BM25 providers and final reader ranking contrast remain; absent-rank policy is still Q search.fusion.absent"
+  },
+  {
+    "ids": [
+      "bug-plt-101"
+    ],
+    "level": "partial reproduced",
+    "actual": {
+      "transport": "ws",
+      "fragmented_hello": true,
+      "noop": false,
+      "coalesced": false,
+      "method_copy": "none",
+      "query_calls": [
+        [
+          "RETURN 1",
+          {}
+        ]
+      ],
+      "records": [],
+      "tags": [
+        112,
+        112
+      ],
+      "state": "STREAMING",
+      "closed": true,
+      "unread_frames": 0,
+      "remaining_hex": "012000016600017200016100016d00016900016e0001670000000db3108852455455524e2031a0a000000006b13fa1816eff00000002b0020000",
+      "ordinary_result_preserved": false
+    },
+    "neighbor": {
+      "transport": "ws",
+      "fragmented_hello": false,
+      "noop": false,
+      "coalesced": false,
+      "method_copy": "none",
+      "query_calls": [
+        [
+          "RETURN 1",
+          {}
+        ]
+      ],
+      "records": [
+        [
+          1
+        ]
+      ],
+      "tags": [
+        112,
+        112,
+        113,
+        112
+      ],
+      "state": "DEFUNCT",
+      "closed": true,
+      "unread_frames": 0,
+      "remaining_hex": "",
+      "ordinary_result_preserved": true
+    },
+    "remaining_gate": "actual WebSocket listener/socket and real database query provider; local transport and one-row engine adapter are substituted"
+  },
+  {
+    "ids": [
+      "bug-plt-102"
+    ],
+    "level": "partial reproduced",
+    "actual": {
+      "transport": "ws",
+      "fragmented_hello": false,
+      "noop": true,
+      "coalesced": false,
+      "method_copy": "none",
+      "query_calls": [],
+      "records": [],
+      "tags": [
+        112
+      ],
+      "state": "READY",
+      "closed": true,
+      "unread_frames": 3,
+      "remaining_hex": "",
+      "ordinary_result_preserved": false
+    },
+    "neighbor": {
+      "transport": "ws",
+      "fragmented_hello": false,
+      "noop": false,
+      "coalesced": false,
+      "method_copy": "none",
+      "query_calls": [
+        [
+          "RETURN 1",
+          {}
+        ]
+      ],
+      "records": [
+        [
+          1
+        ]
+      ],
+      "tags": [
+        112,
+        112,
+        113,
+        112
+      ],
+      "state": "DEFUNCT",
+      "closed": true,
+      "unread_frames": 0,
+      "remaining_hex": "",
+      "ordinary_result_preserved": true
+    },
+    "remaining_gate": "actual WebSocket listener/socket and real database query provider; local transport and one-row engine adapter are substituted"
+  }
+]

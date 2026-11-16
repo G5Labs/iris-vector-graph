@@ -1,0 +1,11 @@
+verification results:: 143 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/raw-marker-filter-omitted/20261116T022157Z/models/ndjson_export/ndjson_export.rs:296:56
+    |
+296 | pub proof fn witness_marked_edge_not_written() ensures export(seq![Parent{graph:0,id:0}],seq![],seq![],seq![EdgeRow{graph:0,serial:0,source:0,predicate:0,target:0,raw:Some(seq!['{','"','t','e','m','p','o','r','a','l','"',':','t','r','u','e','}'])}]).edges==0, {...
+    | ----------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 1 previous error
+

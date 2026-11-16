@@ -1,0 +1,20 @@
+verification results:: 142 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/labels-overwritten/20261116T022141Z/models/ndjson_export/ndjson_export.rs:39:122
+   |
+39 |  ensures label_fold(m,ls,g).dom()==m.dom(),label_fold(m,ls,g)[id].id==m[id].id,label_fold(m,ls,g)[id].props==m[id].props,label_fold(m,ls,g)[id].labels==m[id].labels+labels(ls,g,id),
+   |                                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+40 |  decreases ls.len(),
+41 |  {if ls.len()>0{let p=ls.drop_last();lemma_label_fold(m,p,g,id);let r=ls.last();if r.graph==g&&r.id==id{assert((m[id].labels+labels(p,g,id)).push(r.label)=~=m[id].labels+labels(p,g,id).push(r.label));}}else{assert(m[id].labels+Seq::empty()=~=m[id].labels);}}
+   |   --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/labels-overwritten/20261116T022141Z/models/ndjson_export/ndjson_export.rs:286:60
+    |
+286 | pub proof fn witness_two_label_rows_survive_file() ensures ({let f=export(seq![Parent{graph:0,id:0}],seq![Label{graph:0,id:0,label:1},Label{graph:0,id:0,label:2}],seq![],seq![]);match f.lines[0]{Event::Node{id:_,labels,props:_}=>labels==seq![1,2],_=>false}}), {...
+    | --------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 2 previous errors
+

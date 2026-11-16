@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/ids-ignored/20261116T020504Z/models/rdf_reporting/rdf_reporting.rs:271:1
+    |
+271 | pub proof fn theorem_outside_requested_ids_emits_nothing(l:Label,e:Edge,rs:Rows,c:Config)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/ids-ignored/20261116T020504Z/models/rdf_reporting/rdf_reporting.rs:273:10
+    |
+271 | pub proof fn theorem_outside_requested_ids_emits_nothing(l:Label,e:Edge,rs:Rows,c:Config)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+272 |  requires c.ids.len()>0,!c.ids.contains(l.s),!c.ids.contains(e.s)
+273 |  ensures emit_label(l,c).len()==0,emit_edge(e,rs,0,c).len()==0
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/ids-ignored/20261116T020504Z/models/rdf_reporting/rdf_reporting.rs:273:35
+    |
+271 | pub proof fn theorem_outside_requested_ids_emits_nothing(l:Label,e:Edge,rs:Rows,c:Config)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+272 |  requires c.ids.len()>0,!c.ids.contains(l.s),!c.ids.contains(e.s)
+273 |  ensures emit_label(l,c).len()==0,emit_edge(e,rs,0,c).len()==0
+    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

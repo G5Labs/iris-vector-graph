@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "codec",
+    "expect_fail_in": [
+      "theorem_raw_string_zero_object_is_decoded"
+    ],
+    "find": "if p.mode==9{p.entries}else{seq![]}",
+    "name": "json-decoded-object-dropped",
+    "replace": "seq![]"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_raw_string_zero_object_is_decoded"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "f76eabe9ab4f917402fb5af6a89da9845e5beddd30e32e9ebbe9bc0c670aa24b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/json-decoded-object-dropped/20261116T020049Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_raw_string_zero_object_is_decoded": {
+        "errors": null,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020049Z-control-json-decoded-object-dropped-theorem_raw_string_zero_object_is_decoded.log",
+        "timed_out": false,
+        "verified": null
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020049Z-control-json-decoded-object-dropped.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020050Z-control-json-decoded-object-dropped/logs/20261116T020049Z-control-json-decoded-object-dropped-theorem_raw_string_zero_object_is_decoded.log": "5fa2150f960f8ca13867d9477bd8f188f242f89fdf8c5ab3b1c0e9d3c3623a76",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020050Z-control-json-decoded-object-dropped/logs/20261116T020049Z-control-json-decoded-object-dropped.log": "ac02458ada2ff624ce9784eb5be86265c2d18e3c2087bd8140e65d39549066cd"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "FAIL_ELSEWHERE",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

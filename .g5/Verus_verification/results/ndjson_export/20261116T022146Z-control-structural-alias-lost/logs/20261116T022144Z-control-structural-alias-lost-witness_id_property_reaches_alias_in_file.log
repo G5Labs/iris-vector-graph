@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/structural-alias-lost/20261116T022144Z/models/ndjson_export/ndjson_export.rs:284:66
+    |
+284 | pub proof fn witness_id_property_reaches_alias_in_file() ensures ({let f=export(seq![Parent{graph:0,id:0}],seq![],seq![Prop{graph:0,id:0,key:0,stored:nr::Stored::Number{payload:10,double:false}}],seq![]);match f.lines[0]{Event::Node{id,labels:_,props}=>id==0&&props.contains_key(2)&&props[2]==nr::Value::Integer(10),_=>false}}), {...
+    | --------------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 1 previous error
+

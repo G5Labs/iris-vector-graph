@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "codec",
+    "expect_fail_in": [
+      "lemma_upsert_sets_current_value"
+    ],
+    "find": "else if es[0].key==key{seq![Entry{key,value}]+es.skip(1)}",
+    "name": "json-duplicate-keeps-old",
+    "replace": "else if es[0].key==key{es}"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_upsert_sets_current_value"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "4e7980fa674ca0693bc7651437575bd0a1bd32e8f9718f7d191a745cd75ac07d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/json-duplicate-keeps-old/20261116T020604Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_upsert_sets_current_value": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020604Z-control-json-duplicate-keeps-old-lemma_upsert_sets_current_value.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020604Z-control-json-duplicate-keeps-old.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020607Z-control-json-duplicate-keeps-old/logs/20261116T020604Z-control-json-duplicate-keeps-old-lemma_upsert_sets_current_value.log": "e7ed79922ceb27665d5324bb040eece58d90b767e9728567be3da68ae75c4d68",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020607Z-control-json-duplicate-keeps-old/logs/20261116T020604Z-control-json-duplicate-keeps-old.log": "f7d954d9c6e880088b95d6cc43470f855daec45548be2987b1196c128b9460d7"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

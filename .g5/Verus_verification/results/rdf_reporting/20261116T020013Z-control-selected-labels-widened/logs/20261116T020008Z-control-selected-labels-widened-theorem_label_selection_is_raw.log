@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/selected-labels-widened/20261116T020008Z/models/rdf_reporting/rdf_reporting.rs:230:10
+    |
+229 | pub proof fn theorem_label_selection_is_raw(l:Label,c:Config)
+    | ------------------------------------------------------------- at the end of the function body
+230 |  ensures emit_label(l,c).len()>0 <==> graph_selected(l.graph,c)&&id_selected(l.s,c)&&(c.labels.len()==0||c.labels.contains(l.label))
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

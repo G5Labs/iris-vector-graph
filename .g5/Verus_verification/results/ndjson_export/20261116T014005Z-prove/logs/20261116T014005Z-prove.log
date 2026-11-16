@@ -1,0 +1,38 @@
+verification results:: 64 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:56:1
+   |
+56 | pub proof fn theorem_hydration_map_domain(xs:Seq<Id>,ls:Seq<Label>,ps:Seq<Prop>,g:int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:57:10
+   |
+57 |  ensures hydrated(xs,ls,ps,g).dom()==ids(xs),
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+58 |  {if ids(xs).len()>0{let id=choose|id:Id|ids(xs).contains(id);theorem_raw_hydration_fields(xs,ls,ps,g,id);}else{lemma_empty_map_label_fold(ls,g);lemma_empty_map_prop_fold(ps,g);}}
+   |   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:58:42
+   |
+58 |  {if ids(xs).len()>0{let id=choose|id:Id|ids(xs).contains(id);theorem_raw_hydration_fields(xs,ls,ps,g,id);}else{lemma_empty_map_labe...
+   |                                          ^^^^^^^^^^^^^^^^^^^^
+
+error: precondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:58:63
+   |
+53 |  requires ids(xs).contains(id),
+   |           -------------------- failed precondition
+...
+58 |  {if ids(xs).len()>0{let id=choose|id:Id|ids(xs).contains(id);theorem_raw_hydration_fields(xs,ls,ps,g,id);}else{lemma_empty_map_labe...
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/ndjson_export.rs:72:10
+   |
+72 |  {assert(init(xs.push(id).push(id))=~=init(xs.push(id)));}
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

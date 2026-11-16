@@ -1,0 +1,57 @@
+source_arm	source_id	source_path	canonical_id	relation	trigger key	effect key	source disposition	source severity	mapped severity	evidence strength	owning block
+G	simp-001	.g5/Verus_verification/design_simplification.md	simp-001	same		Claim the redaction marker for one run, under the head lock, before the first batch	Open	High	High	model comparison	
+G	simp-002	.g5/Verus_verification/design_simplification.md	simp-002	same		Put a relationship's endpoints in every relationship record so redaction never has to look them up	Open	Medium	Medium	model comparison	
+G	simp-003	.g5/Verus_verification/design_simplification.md	simp-003	same		Derive redaction's liveness check from the eraser's store inventory	Open	Medium	Medium	model comparison	
+G	simp-cyp-001	.g5/Verus_verification/design_simplification.md	simp-cyp-001	same		Name each compiled Cypher class by its code's digest instead of the shape's CRC-32	Open	High	High	model comparison	query.compiled.integrity
+G	simp-cyp-002	.g5/Verus_verification/design_simplification.md	simp-cyp-002	same		Carry each node binding's graph through Cypher translation instead of correlating graphs by regex afterwards	Open	Medium	Medium	proposal	query.graph-scope.read
+G	simp-cyp-003	.g5/Verus_verification/design_simplification.md	simp-cyp-003	same		Mark a compiled entry failed when its walk raises, so the interpreter answers next time	Open	Low	Low	proposal	query.compiled.fallback
+G	simp-led-001	.g5/Verus_verification/design_simplification.md	simp-led-001	same		Spell record graphs in redaction through GraphKey instead of an inline translate	Open	Low	Low	proposal	redaction.target
+G	simp-plt-001	.g5/Verus_verification/design_simplification.md	simp-plt-001	same		Enforce strict ledger mode once, on the server, instead of in each Python engine	Open	Medium	Medium	model comparison	ledger.strict
+G	simp-plt-002	.g5/Verus_verification/design_simplification.md	simp-plt-002	same		Make the engine's Owner fallback uniform across algorithms	Open	Low	Low	proposal	algorithms.routing.fallback
+G	simp-plt-003	.g5/Verus_verification/design_simplification.md	simp-plt-003	same		Write FHIR graph labels through the adjacency writer that owns the label index	Open	Low	Low	proposal	fhir.sync
+G	simp-plt-004	.g5/Verus_verification/design_simplification.md	simp-plt-004	same		Rebuild adjacency once after load_networkx	Open	Low	Low	proposal	install.bulk_load.rebuild
+G	simp-plt-005	.g5/Verus_verification/design_simplification.md	simp-plt-005	same		Retire the leftover schema-state helpers that are process-global or probe retired classes	Open	Low	Low	proposal	install.deploy
+G	simp-srch-001	.g5/Verus_verification/design_simplification.md	simp-srch-001	same		One fusion function with an explicit absent-rank rule and per-leg failure reporting	Open	Medium	Medium	model comparison	search.fusion;search.fusion.absent
+G	simp-srch-002	.g5/Verus_verification/design_simplification.md	simp-srch-002	same		Check embedding identity against the registry row the route lookup already read	Open	Low	Low	model comparison	search.embedding.check_on_write
+G	simp-str-001	.g5/Verus_verification/design_simplification.md	simp-str-001	same		Delete a relationship through one Eraser path, whatever the caller	Open	Medium	Medium	proposal	erasure.entry-points.single-path
+G	simp-str-002	.g5/Verus_verification/design_simplification.md	simp-str-002	same		Give the inverse of a graph key one owner in GraphKey	Open	Low	Low	proposal	graph.key.owner
+G	simp-str-003	.g5/Verus_verification/design_simplification.md	simp-str-003	same		Bump the version token before ending a rebuild so the warm stamp survives it	Open	Low	Low	proposal	structure.degree.cache.warm
+G	simp-str-005	.g5/Verus_verification/design_simplification.md	simp-str-005	same		Drawing degree generations from the version token is not a repair	observation	Unranked	Unranked	model comparison	structure.degree.cache
+G	simp-tmp-001	.g5/Verus_verification/design_simplification.md	simp-tmp-001	same		Remove the unadopted spec-246 Python path for temporal structural rows	Open	Low	Low	proposal	temporal.structural
+P	RC-01	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-01	same		Graph scope is added by hand to each statement	root cause	S1	High	23 findings	
+P	RC-02	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-02	same		Stored facts whose key omits the graph	root cause	S1	High	8 findings	
+P	RC-03	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-03	same		Removal reach is not derived from a declared store inventory	root cause	S1	High	12 findings	
+P	RC-04	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-04	same		Erase, ledger commits and redaction start are not serialized on the ledger head lock	root cause	S1	High	10 findings	
+P	RC-05	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-05	same		Unlocked read-modify-write of shared facts outside the ledger	root cause	S2	Medium	10 findings	
+P	RC-06	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-06	same		Derived stores and caches have no reliable staleness signal	root cause	S2	Medium	11 findings	
+P	RC-07	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-07	same		Multi-call readers have no consistency protocol	root cause	S1	High	2 findings	
+P	RC-08	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-08	same		The ledger is not the single writer of governed content	root cause	S1	High	10 findings	
+P	RC-09	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-09	same		Retries re-execute effects the idempotency record does not cover	root cause	S1	High	5 findings	
+P	RC-10	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-10	same		A command's writes are not one validated, all-or-nothing unit	root cause	S2	Medium	12 findings	
+P	RC-11	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-11	same		IVG ObjectScript writers roll back their caller's transaction	root cause	S1	High	2 findings	
+P	RC-12	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-12	same		Environment premises are asserted, not validated	root cause	S2	Medium	12 findings	
+P	RC-13	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-13	same		The IVG Schema name is not resolved from one source	root cause	S2	Medium	7 findings	
+P	RC-14	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-14	same		Failures are swallowed into empty, default or success answers	root cause	S2	Medium	18 findings	
+P	RC-15	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-15	same		Refusals are not mapped to one typed error hierarchy at the boundary	root cause	S3	Low	8 findings	
+P	RC-16	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-16	same		The Cypher and AQL translators have no reference semantics	root cause	S1	High	13 findings	
+P	RC-17	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-17	same		Stored values carry no type	root cause	S2	Medium	7 findings	
+P	RC-18	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-18	same		Domain codes, units and metrics are untyped	root cause	S2	Medium	7 findings	
+P	RC-19	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-19	same		Query text is built by pasting values	root cause	S1	High	3 findings	
+P	RC-20	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-20	same		No server-side authorization or exposure boundary	root cause	S1	High	7 findings	
+P	RC-21	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-21	same		Edge identity for parallel edges is not one rule	root cause	S2	Medium	6 findings	
+P	RC-22	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-22	same		Derived-row marks are ordinary qualifier keys with no single predicate	root cause	S1	High	8 findings	
+P	RC-23	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-23	same		Results depend on storage order or join multiplicity	root cause	S2	Medium	11 findings	
+P	RC-24	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-24	same		Identity by a non-injective checksum	root cause	S2	Medium	3 findings	
+P	RC-25	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-25	same		Restore writes stores directly instead of through their owners	root cause	S1	High	5 findings	
+P	RC-26	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-26	same		Vector identity is enforced per seam and fails open	root cause	S2	Medium	7 findings	
+P	RC-27	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-27	same		Input validation is per entry point, not at the shared write boundary	root cause	S2	Medium	8 findings	
+P	RC-28	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-28	same		Resource bounds are not declared	root cause	S2	Medium	10 findings	
+P	RC-29	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-29	same		Parallel implementations of one operation diverge	root cause	S2	Medium	5 findings	
+P	RC-30	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-30	same		Progress is not designed for resumable or queued work	root cause	S2	Medium	2 findings	
+P	RC-31	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-31	same		Descriptions are written by hand and not checked against the code	root cause	S3	Low	16 findings	
+P	RC-32	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-32	same		Test, packaging and deploy tooling diverges from the product	root cause	S2	Medium	6 findings	
+P	RC-33	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-33	same		Stated refusals, options and protocol verbs are accepted and ignored	root cause	S2	Medium	18 findings	
+P	RC-34	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-34	same		Stores have no enforced single write owner	root cause	S3	Low	7 findings	
+P	RC-35	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-35	same		Bulk loads bypass the indexes and key checks every other path relies on	root cause	S1	High	4 findings	
+P	RC-36	experiment/playbook-completion/reflection/ROOT-CAUSES.md	RC-36	same		Server answers are hand-encoded text decoded by patterns	root cause	S2	Medium	4 findings	
+P	HD-1301	experiment/playbook-uplift/DECISIONS.md; experiment/playbook-completion/intent/HD-1301.md	simp-001	merged-into		Should the redaction's opening check and its marker be one locked step?	assumption. Outcome supported (ADR-0013:18, Ledger.cls:514 comment, FR-005/006, e4b5eef5): for the whole run, from the call, commits into the target are refused, a different target's run is refused, and a record whose content is live is never tombstoned. The specific mechanism (liveness check and marker in o…		High	reviewed proof (playbook-uplift/proofs)	

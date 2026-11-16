@@ -1,0 +1,11 @@
+verification results:: 143 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/zero-qualifier-keywords-lost/20261116T022206Z/models/ndjson_export/ndjson_export.rs:267:10
+    |
+266 | pub proof fn theorem_zero_qualifier_uses_keyword_call(source:Id,predicate:int,target:Id)
+    | ---------------------------------------------------------------------------------------- at the end of the function body
+267 |  ensures callback(Event::Edge{source,predicate,target,qual:Some(0)},None)==Some(Action::CreateEdge{source,predicate,target,qual:Some(0),graph:None,keywords:true}),{}
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

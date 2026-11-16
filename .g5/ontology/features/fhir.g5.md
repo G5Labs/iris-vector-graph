@@ -81,6 +81,13 @@ What should happen when other writers touch a FHIR graph? There is no provisiona
 - Today erasing a FHIR graph, or writing to it from Python, does not wait for a running sync.
 - An edge a user adds from a FHIR key is deleted at that key's next resync.
 
+<a id="fhir.sync.recovery-policy"></a>
+[Q · fhir.sync.recovery-policy]
+
+Should one unreadable FHIR resource block its graph's sync?
+
+- Working assumption (agent, unratified): Keep the documented failed-batch retry without advancing the watermark; operator repair versus resource quarantine remains open.
+
 <a id="fhir.rebuild"></a>
 [I · fhir.rebuild]
 
@@ -92,6 +99,13 @@ A rebuild reconciles the whole graph with the repository by comparing, not by er
 Erasing a FHIR graph keeps its registration but resets its watermarks and interpretation version, so the next sync rebuilds its content from scratch.
 
 ## Interpretation
+
+<a id="fhir.erase.durable-removal-policy"></a>
+[Q · fhir.erase.durable-removal-policy]
+
+Should erasing a FHIR graph stop its sync task?
+
+- Working assumption (agent, unratified): Keep ordinary erase as a transient clear; durable removal also needs an explicit feed stop or deregistration policy.
 
 <a id="fhir.interpretation"></a>
 [D · fhir.interpretation]
@@ -258,6 +272,24 @@ Live coverage: the busy case in `tests/e2e/test_231_fhir_graph_sync_e2e.py`.
 
 Findings: [What should happen when other writers, an erase included, touch a FHIR graph during a sync?](../../Verus_verification/open_questions.md#q-plt-017)
 
+Audit (q-plt-017): Open owner decision. Working assumption (agent, unratified): Preserve the documented single-sync restriction and keep competing non-sync writers unestablished; choose serialization or conflict detection explicitly. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-017).
+
+Audit (HD-1503): Open owner decision. Working assumption (agent, unratified): Keep decisions.md: erase of a FHIR graph must be serialized with an active sync (take ^IVG.FHIRGraph(graph) and answer busy, or have RunBatch abort when the watermark moved backwards); until then the quiet-sync premise must be explicit for erase. Changed from decisions.md: no. Confirmed by source; added the documented convergence claim as the outcome anchor and the absolute-watermark write as the mechanism of the failure. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1503).
+
+Findings: [What happens when an erase runs during a FHIR sync?](../../Verus_verification/open_questions.md#HD-1503).
+
+### fhir.sync.recovery-policy
+- Expands: [parent](#fhir.sync)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should one unreadable FHIR resource block its graph's sync?](../../Verus_verification/open_questions.md#HD-1504).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1504).
+
+Audit (HD-1504): Open owner decision. Working assumption (agent, unratified): Failure without advancing the watermark is the documented contract (not a choice to revisit silently). Surface the offending key (already in last_error) and treat the missing recovery procedure (repair/delete the resource, or json_links=[]) as a documentation gap; do not assume silent skips. Changed from decisions.md: yes. Status raised from assumption to supported for the failure semantics: FHIR_GRAPH.md:196-199 (maintainer commit 59286731) explicitly states that a walk limit fails the batch, and :255-257 that a failed batch repeats. Added that a rebuild fails too, and the json_links=[] recovery path. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1504).
+
 ### fhir.rebuild
 
 - Sources: [FHIR_GRAPH.md](../../../docs/FHIR_GRAPH.md); [FHIRGraph.cls Rebuild](../../../iris_src/src/Graph/KG/FHIRGraph.cls)
@@ -272,6 +304,18 @@ Findings: [What should happen when other writers, an erase included, touch a FHI
 - test-coverage
 
 Live coverage: the erase case in `tests/e2e/test_231_fhir_graph_sync_e2e.py`.
+
+### fhir.erase.durable-removal-policy
+- Expands: [parent](#fhir.erase)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should erasing a FHIR graph stop its sync task?](../../Verus_verification/open_questions.md#HD-1502).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1502).
+
+Audit (HD-1502): Open owner decision. Working assumption (agent, unratified): Separate transient clear from decommissioning. Ordinary erase keeps registration and task (supported). For durable tenant removal require, as a stated premise, unschedule before erase and no manual sync afterwards, and verify the graph stays empty before redaction; at the pin there is no single-graph deregistration, so 'deregister' is a new command, not an available step. Changed from decisions.md: yes. Status raised to supported for the transient-clear half (ADR-0015:29 and the Eraser comment settle it). Refined the durable-removal half: decisions.md offered 'paused or deregistered', but no single-graph deregistration exists at the pin and an unscheduled graph still accepts manual syncs. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1502).
 
 ### fhir.interpretation
 
@@ -299,6 +343,10 @@ The spec's clarification answers carry no human attribution.
 No source mentions FHIR together with the ledger. No test runs a FHIR sync with the ledger enabled.
 
 Findings: [Which write paths must strict mode govern beyond the engine's methods, and how is each classified?](../../Verus_verification/open_questions.md#q-plt-008)
+
+Audit (HD-1501): Open owner decision. Working assumption (agent, unratified): Keep decisions.md: the FHIR graph is an external writer of a rebuildable projection at the pin. verify() keeps reporting its rows (never silently 'equal'); strict mode is not a guarantee for FHIR namespaces until FHIR writes are either refused under strict or recorded. Changed from decisions.md: no. Sources confirm the working answer; added that ledger-api.md's exhaustive list is silent on FHIR (not an explicit exemption) and that verify() reads every graph. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1501).
+
+Findings: [Should a FHIR sync be governed by the ledger?](../../Verus_verification/open_questions.md#HD-1501).
 
 ### fhir.sql_mapping
 
@@ -344,6 +392,9 @@ Its documentation adds that a graph ID avoids collisions and is not an authoriza
 
 
 Findings: [Which graph do rows of a mapped FHIR SQL table belong to?](../../Verus_verification/open_questions.md#q-plt-018)
+
+Audit (q-plt-018): Open owner decision. Working assumption (agent, unratified): Treat mapped SQL labels as namespace-global today; assigning every row to a graph needs mapping metadata and migration policy. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-018).
+
 ### fhir.event
 
 - Sources: [FHIR_GRAPH.md: Deprecated in 4.1.0, removed in 5.0](../../../docs/FHIR_GRAPH.md); [api/routers/fhir_event.py](../../../api/routers/fhir_event.py)
@@ -371,3 +422,5 @@ The route comes from spec 195, whose directory is not in the tree; commit `22f3e
 The live test `tests/integration/test_fhir_event_sidecar.py` checks only that a repeated event leaves at least one edge.
 
 Findings: [Must a repeated FHIR event leave the graph unchanged?](../../Verus_verification/open_questions.md#q-plt-016)
+
+Audit (q-plt-016): Open owner decision. Working assumption (agent, unratified): Prefer idempotent repeated FHIR events, while preserving current event behavior as observation; event identity and replay retention need owner choice. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-016).

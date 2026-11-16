@@ -1,0 +1,34 @@
+verification results:: 48 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/falsey-fallback-removed/20261116T021945Z/models/rdf_reporting/rdf_reporting.rs:346:10
+    |
+345 | pub proof fn theorem_falsey_qualifier_fallback(s:Text)
+    | ------------------------------------------------------ at the end of the function body
+346 |  ensures !truth(literal(s)) ==> qualifier_literal(s)==Literal::Plain(s),truth(literal(s)) ==> qualifier_literal(s)==literal(s)
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/falsey-fallback-removed/20261116T021945Z/models/rdf_reporting/rdf_reporting.rs:352:1
+    |
+352 | pub proof fn theorem_false_and_zero_are_not_property_literals()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/falsey-fallback-removed/20261116T021945Z/models/rdf_reporting/rdf_reporting.rs:353:55
+    |
+352 | pub proof fn theorem_false_and_zero_are_not_property_literals()
+    | --------------------------------------------------------------- at the end of the function body
+353 |  ensures literal(t("false"))==Literal::Boolean(false),qualifier_literal(t("false"))==Literal::Plain(t("false")),
+    |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/falsey-fallback-removed/20261116T021945Z/models/rdf_reporting/rdf_reporting.rs:354:63
+    |
+352 | pub proof fn theorem_false_and_zero_are_not_property_literals()
+    | --------------------------------------------------------------- at the end of the function body
+353 |  ensures literal(t("false"))==Literal::Boolean(false),qualifier_literal(t("false"))==Literal::Plain(t("false")),
+354 |  literal(t("0"))==(Literal::Integer{value:0,spelling:t("0")}),qualifier_literal(t("0"))==Literal::Plain(t("0"))
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

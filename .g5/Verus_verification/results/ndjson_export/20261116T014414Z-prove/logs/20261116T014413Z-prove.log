@@ -1,0 +1,27 @@
+verification results:: 92 verified, 3 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/order.rs:11:80
+   |
+11 | ...es count(insert(s,x,k),y)==count(s,y)+if x==y{1nat}else{0nat},decreases s.len(){if s.len()>0{if k(x)<=k(s[0]){lemma_cons(x,s);}else{lemma_insert_count(s.drop_first(),x,y,k);lemma_cons(s[0],insert(s.drop_first(),x,k));}}}
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                   ------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+   |       |
+   |       failed this postcondition
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/order.rs:17:32
+   |
+17 |  requires ordered(s,k),ensures ordered(insert(s,x,k),k),decreases s.len(),
+   |                                ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+18 |  {if s.len()==0{lemma_cons(x,seq![]);}else if k...lemma_cons(s[0],insert(s.drop_first(),x,k));}}
+   |   ---------------------------------------------...--------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+  --> /Users/ziniuw/Desktop/projects/G5-benchmark/iris-vector-graph/.g5/Verus_verification/models/ndjson_export/order.rs:22:60
+   |
+22 | ...es count(s.push(x),y)==count(s,y)+if x==y{1nat}else{0nat},decreases s.len(){if s.len()>0{lemma_count_push(s.drop_first(),x,y);assert(s.push(x).drop_first()=~=s.drop_first().push(x));}}
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                   ----------------------------------------------------------------------------------------------------------- at the end of the function body
+   |       |
+   |       failed this postcondition
+
+error: aborting due to 3 previous errors
+

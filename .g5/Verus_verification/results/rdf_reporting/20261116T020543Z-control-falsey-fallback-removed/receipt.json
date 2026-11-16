@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_false_and_zero_are_not_property_literals"
+    ],
+    "find": "if truth(l){l}else{Literal::Plain(s)}",
+    "name": "falsey-fallback-removed",
+    "replace": "l"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_false_and_zero_are_not_property_literals"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "4e7980fa674ca0693bc7651437575bd0a1bd32e8f9718f7d191a745cd75ac07d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/falsey-fallback-removed/20261116T020539Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_false_and_zero_are_not_property_literals": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020539Z-control-falsey-fallback-removed-theorem_false_and_zero_are_not_property_literals.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020539Z-control-falsey-fallback-removed.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020543Z-control-falsey-fallback-removed/logs/20261116T020539Z-control-falsey-fallback-removed-theorem_false_and_zero_are_not_property_literals.log": "bd2fc139986cd9db182a145881df8555a46df19a9aa73e486386f298057831ef",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020543Z-control-falsey-fallback-removed/logs/20261116T020539Z-control-falsey-fallback-removed.log": "22e31c12ab82edccbbdc686453f890ea5136edc806c4d57bff5c9afa66282a7d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

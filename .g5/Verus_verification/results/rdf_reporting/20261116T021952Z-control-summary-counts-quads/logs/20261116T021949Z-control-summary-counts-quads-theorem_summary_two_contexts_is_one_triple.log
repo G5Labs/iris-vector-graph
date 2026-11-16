@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/summary-counts-quads/20261116T021949Z/models/rdf_reporting/rdf_reporting.rs:314:10
+    |
+312 | pub proof fn theorem_summary_two_contexts_is_one_triple(x:Quad,g:Text)
+    | ---------------------------------------------------------------------- at the end of the function body
+313 |  requires x.graph!=g
+314 |  ensures summary(seq![x,Quad{graph:g,triple:x.triple}]).triples==1
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

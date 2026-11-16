@@ -21,6 +21,13 @@ Who can reach IVG, through which entry points, what they are allowed to do, and 
 
 Applications reach IVG through the engine, or through optional servers built on it: the HTTP server, Bolt, GraphQL, the sample API, the IRIS-hosted MCP tools and an IRIS REST dispatcher. The servers are meant as a convenience layer: each server call should do what an engine method an application could call itself does.
 
+<a id="access.surfaces.rest-meta-policy"></a>
+[Q · access.surfaces.rest-meta-policy]
+
+Should the REST dispatcher's `/metaPath` take a graph?
+
+- Working assumption (agent, unratified): Treat /metaPath as default-graph-only today; a supplied graph must eventually be honored or clearly refused.
+
 <a id="access.bolt"></a>
 [I · access.bolt]
 
@@ -82,6 +89,13 @@ A client sends the key as `X-Api-Key` or as `Authorization: Bearer`, and the ser
 [I · access.api_key.bolt]
 
 A Bolt client sends the key as the credentials of its `HELLO` or `LOGON` message, and a session that has not presented it can run nothing. A refused key ends the session's authentication even after an earlier good one, and `RESET` does not restore it.
+
+<a id="access.api_key.admin-policy"></a>
+[Q · access.api_key.admin-policy]
+
+Should admin work need a different key from reading?
+
+- Working assumption (agent, unratified): Keep the documented single key and database privileges as the current boundary; a separate admin credential would be a policy change.
 
 <a id="access.defaults"></a>
 [D · access.defaults]
@@ -162,6 +176,13 @@ The IRIS REST dispatcher stays inert until an operator creates its web applicati
 
 ## Writes and the ledger
 
+<a id="access.webapp.generated-limits-policy"></a>
+[Q · access.webapp.generated-limits-policy]
+
+Should the generated GraphQL server match the sample API's safety limits?
+
+- Working assumption (agent, unratified): Treat the generated app as a supported surface while leaving the exact safety-limit parity with the sample app to the owner.
+
 <a id="access.ledger_strict"></a>
 [D · access.ledger_strict]
 
@@ -227,7 +248,19 @@ Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning? There is no
 
 Observed divergence: the sample API's REST Cypher route, its GraphQL Cypher field and the example GraphQL mutations it mounts run SQL on their own cursor instead of calling the engine (see [strict-mode surfaces](#access.ledger_strict.surfaces)).
 
-Findings: [Bolt sessions never close the IRIS connection their engine opened](../../Verus_verification/bugs_issues.md#bug-plt-002); [The sample API's Cypher endpoints run translated SQL on a raw cursor, bypassing strict mode and the engine's statement protocol](../../Verus_verification/bugs_issues.md#bug-plt-005); [A GraphQL GET request can run a Cypher write](../../Verus_verification/bugs_issues.md#bug-plt-013)
+Findings: [Bolt sessions never close the IRIS connection their engine opened](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-002); [The sample API's Cypher endpoints run translated SQL on a raw cursor, bypassing strict mode and the engine's statement protocol](../../Verus_verification/bugs_issues.md#bug-plt-005); [A GraphQL GET request can run a Cypher write](../../Verus_verification/bugs_issues.md#bug-plt-013)
+
+### access.surfaces.rest-meta-policy
+- Expands: [parent](#access.surfaces)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should the REST dispatcher's `/metaPath` take a graph?](../../Verus_verification/open_questions.md#HD-1604).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1604).
+
+Audit (HD-1604): Open owner decision. Working assumption (agent, unratified): Treat /metaPath as default-graph-only and include that in its contract. A body naming `graph` should be refused or honoured, not ignored; until decided, model the silent ignore as the baseline. Changed from decisions.md: **no**. Same reading. Added: spec 230 is absent from the repository and the mirror, and a supplied graph key is ignored silently. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1604).
 
 ### access.bolt
 - Sources: [Bolt protocol commitment](../../../iris_vector_graph/bolt_server.py#L1-L8), [ADMIN_API](../../../docs/ADMIN_API.md); [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/)
@@ -252,6 +285,10 @@ Observed at the pin: WebSocket consumption is computed by default re-encoding ea
 
 Findings: [WebSocket consumes the wrong byte count after small chunks](../../Verus_verification/bugs_issues.md#bug-plt-101); [WebSocket closes on a Bolt keep-alive chunk](../../Verus_verification/bugs_issues.md#bug-plt-102).
 
+Audit reproduction: [bug-plt-101](../../Verus_verification/bugs_issues.md#bug-plt-101) is partial reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/components.json). This is product observation, not executable-body verification.
+
+Audit reproduction: [bug-plt-102](../../Verus_verification/bugs_issues.md#bug-plt-102) is partial reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/components.json). This is product observation, not executable-body verification.
+
 ### access.bolt.results
 - Sources: [primary message specification: PULL](https://neo4j.com/docs/bolt/current/bolt/message/), [`_handle_run/_handle_pull/_handle_reset` and dispatch](../../../iris_vector_graph/bolt_server.py#L500-L669)
 - Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `theorem_raw_wire_run_then_pull_final_records`, `theorem_partial_pull_drops_suffix_and_reports_no_more`, `theorem_raw_error_string_decides_failure`, `theorem_commit_preserves_but_rollback_discards`, `theorem_reset_allows_next_result`; [scope](../../Verus_verification/models/bolt_stream/NOTES.md). Admitted scalar/list/map cells and fixed canonical request fragments, not general PackStream/graph objects or SQL/provider execution.
@@ -262,8 +299,7 @@ Findings: [WebSocket consumes the wrong byte count after small chunks](../../Ver
 
 Observed: positive n slices rows then clears the entire pending result and omits has_more (known F-1602); n=0 emits all rows but is only an as-built out-of-domain neighbor, not a compatible PULL request. RUN replaces pending rows. DISCARD, RESET and ROLLBACK clear pending rows; COMMIT leaves them despite returning READY. These as-built transitions do not establish that every sequence is allowed by the protocol. Scalar/list/map admitted codec values and final records are a narrower scope than all graph objects or arbitrary query providers.
 
-Findings: [PULL drops its unread suffix](../../Verus_verification/bugs_issues.md#F-1602); [Explicit transactions commit per RUN](../../Verus_verification/bugs_issues.md#F-1601).
-
+Findings: [PULL drops its unread suffix](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1602); [Explicit transactions commit per RUN](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1601).
 
 ### access.iris_boundary
 
@@ -285,6 +321,10 @@ Findings: [The sample environment file sets IRIS_USER, but the server reads IRIS
 - security
 
 CONTEXT.md calls graphs "isolation units"; that means data separation, not access control.
+
+Audit (HD-1601): Existing authority: The namespace is the authorization boundary; graph IDs scope data operations and do not confer access rights. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1601).
+
+Findings: [Should a server limit which graphs a caller may name?](../../Verus_verification/open_questions.md#HD-1601).
 
 ### access.api_key
 
@@ -323,6 +363,18 @@ Observed: when both headers are present, the request passes if either one matche
 
 Unit tests only (`tests/unit/test_r097_bolt_auth.py`, `tests/unit/test_r111_bolt_logon.py`).
 
+### access.api_key.admin-policy
+- Expands: [parent](#access.api_key)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should admin work need a different key from reading?](../../Verus_verification/open_questions.md#HD-1602).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1602).
+
+Audit (HD-1602): Open owner decision. Working assumption (agent, unratified): Model the single key and the IRIS user's privileges as the authorization surface. Treat an admin-only key or a kill route that is off by default as a proposed strengthening. Record IVG_READ_ONLY as the existing, coarse lever. Changed from decisions.md: **yes**. Status moves from assumption to supported. ADMIN_API and ADMIN_GUIDE (4.6.0) explicitly document one key on every route and the read-only lever. decisions.md did not cite IVG_READ_ONLY. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1602).
+
 ### access.defaults
 
 - Sources: [ADMIN_API.md: Starting the server](../../../docs/ADMIN_API.md); [ADMIN_GUIDE §5](../../../docs/ADMIN_GUIDE.md); [api/main.py](../../../api/main.py); [cli.py](../../../iris_vector_graph/cli.py)
@@ -343,6 +395,12 @@ Findings: [The sample environment file sets IRIS_USER, but the server reads IRIS
 - security
 
 Findings: [Should the server refuse to start on a reachable address with no key and a superuser login?](../../Verus_verification/open_questions.md#q-plt-003)
+
+Audit (q-plt-003): Open owner decision. Working assumption (agent, unratified): Treat the documented open bind and credentials as current behavior only; safer defaults need a maintainer policy decision. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-003).
+
+Audit (HD-1705): Open owner decision. Working assumption (agent, unratified): The product contract at the pin is ADMIN_GUIDE section 5's open default; F-1709 is a documentation defect against deploy/README.md:86 (registered as fail against that stated text). For the reviewed deployment, keep local-only binding or an explicit opt-in for unauthenticated external binding as a stated premise, not as the product's intent. Changed from decisions.md: yes. decisions.md kept both contradictory contracts open; commit 6df261d9/R032 makes ADMIN_GUIDE the single operator document and git history shows --force-no-auth was never implemented on any branch, so the open default is the current contract and the hardening is a deployment premise. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1705).
+
+Findings: [Should server start refuse to listen on every address without an API key?](../../Verus_verification/open_questions.md#HD-1705).
 
 ### access.health
 - Formal: [health/provider/lifecycle contract](../../Verus_verification/models/service_health/service_health.rs), [source roles and evidence limits](../../Verus_verification/models/service_health/NOTES.md).
@@ -369,6 +427,8 @@ Evidence: [84 actual Python/in-process ASGI checks and provider controls](../../
 - Expands: [Health lifecycle](#access.health.lifecycle).
 
 Evidence: [retained startup neighbors](../../uplift/consolidated/iteration-7/health-PAIRS.md). No auto-recovery requirement or owner approval was established. Question: [q-iter-006](../../Verus_verification/open_questions.md#q-iter-006).
+
+Audit (q-iter-006): Open owner decision. Working assumption (agent, unratified): Keep current failure visibility after startup outage; retry/rebuild needs a lifecycle policy with bounded attempts and readiness semantics. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-iter-006).
 
 ### access.read_only
 
@@ -400,6 +460,12 @@ The fix followed a privately reported bypass (R113, R115). Live coverage: `tests
 
 Findings: [Does read-only mode govern the MCP tools, and should Bolt honour a driver's read access mode?](../../Verus_verification/open_questions.md#q-plt-012)
 
+Audit (q-plt-012): Open owner decision. Working assumption (agent, unratified): Keep engine read-only guarantees and explicitly list interfaces that ignore access hints; protocol hints and server enforcement need separate decisions. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-012).
+
+Audit (HD-1701): Open owner decision. Working assumption (agent, unratified): Keep decisions.md: read_only=True is a requested guarantee; enforce it at a trusted boundary (refuse non-SELECT before it runs) or refuse/remove the unsupported flag in a versioned change. The engine's own use (reads only) makes enforcement compatible with internal callers. Changed from decisions.md: no. Live probe confirms the flag is ignored; added the protocol's raise-not-approximate rule as supporting evidence and the misreported-error observation. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1701).
+
+Findings: [Should the SQL adapter's pass-through refuse a write when called read-only?](../../Verus_verification/open_questions.md#HD-1701).
+
 ### access.read_only.caches
 
 - Sources: [ADMIN_GUIDE §3 (reading role)](../../../docs/ADMIN_GUIDE.md)
@@ -418,7 +484,7 @@ Live coverage for a read-only login: `tests/e2e/test_460_r050_reader_ppr_degree_
 
 The tool set's only policy is console auditing. The evidence-search tool is documented as taking natural-language text but binds its input as a node ID. Live coverage needs `%AI` (`tests/integration/test_mcp_tools.py`).
 
-Findings: [The MCP evidence search binds its natural-language input as a node ID](../../Verus_verification/bugs_issues.md#bug-plt-020)
+Findings: [The MCP evidence search binds its natural-language input as a node ID](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-020)
 
 ### access.webapp
 
@@ -427,6 +493,18 @@ Findings: [The MCP evidence search binds its natural-language input as a node ID
 - security
 
 Changed in 4.6.0 (R131, R147); earlier releases gave every authenticated user `%All`. Re-running the creator resets an application an earlier release made.
+
+### access.webapp.generated-limits-policy
+- Expands: [parent](#access.webapp)
+- agent
+- uncertain
+- manual-check-review
+
+Findings: [Should the generated GraphQL server match the sample API's safety limits?](../../Verus_verification/open_questions.md#HD-1605).
+
+Audit sources, current behavior, options, costs and settling evidence: [question review](../../Verus_verification/audits/register-20261115/question-review.md#HD-1605).
+
+Audit (HD-1605): Open owner decision. Working assumption (agent, unratified): Treat both apps as supported entry points subject to the shared HTTP safety constraints: key gate and read-only (already applied), a depth bound, and an honest health check. Record the generated app's missing depth limit and always-healthy /health as gaps against that parity, not as violations of a stated contract. Changed from decisions.md: **yes**. Partial change. decisions.md left the choice open between 'distinct entry points' and parity. R097, R107 and R079 show the maintainer already hardening create_app as a deployable app, so parity (b) is now the working direction. decisions.md also used 'sample' for the app the maintainer calls the development app. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1605).
 
 ### access.ledger_strict
 
@@ -480,6 +558,9 @@ Findings: [Which write paths must strict mode govern beyond the engine's methods
 
 
 Findings: [Post-commit properties bypass strict mode and the block on commits into a target being redacted](../../Verus_verification/bugs_issues.md#bug-led-009)
+
+Audit (q-plt-008): Open owner decision. Working assumption (agent, unratified): Preserve explicit BulkLoader/raw-SQL/vector exemptions and list undecided FHIR/server paths individually; do not infer exemption from a missing guard. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-008).
+
 ### access.retries
 
 - Sources: [cypher_api.py _run_cypher](../../../iris_vector_graph/cypher_api.py); [sdk.py _post](../../../iris_vector_graph/sdk.py); [ledger.idempotency](../features/ledger.g5.md#ledger.idempotency)
@@ -489,7 +570,17 @@ Findings: [Post-commit properties bypass strict mode and the block on commits in
 
 Recorded from the code only; no document states the retry policy, so review round 3 R3-reader M14 turned the former decision into a question. The server retries on any exception, so a write that had committed before the error was raised would run again. No test covers a repeated write.
 
-Findings: [The HTTP server and the SDK retry a failed Cypher write, so a write can apply twice](../../Verus_verification/bugs_issues.md#bug-plt-019), [May the server or the client retry a call that writes?](../../Verus_verification/open_questions.md#q-plt-019)
+Findings: [The HTTP server and the SDK retry a failed Cypher write, so a write can apply twice](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-019), [May the server or the client retry a call that writes?](../../Verus_verification/open_questions.md#q-plt-019)
+
+Audit (q-plt-019): Open owner decision. Working assumption (agent, unratified): Keep ambiguous write outcomes distinct from known pre-write failure; automatic resend of non-idempotent writes is not presumed safe. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-plt-019).
+
+Audit (HD-1603): Open owner decision. Working assumption (agent, unratified): Retry a read, or a write known not to have executed (a connection error raised before the statement was sent). Never re-run a write whose outcome is unknown; return an error that says the outcome is unknown. A write carrying a verified idempotency key may be retried. Changed from decisions.md: **no**. Same direction as decisions.md. New history evidence (9c683292 to 7d62dbf5) and a live duplicate write strengthen it. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1603).
+
+Findings: [Should the Cypher HTTP server run a failed query a second time?](../../Verus_verification/open_questions.md#HD-1603).
+
+Audit (HD-1702): Open owner decision. Working assumption (agent, unratified): Keep decisions.md: after an ambiguous outcome resend only a known read or an explicitly idempotent operation; report an unknown outcome otherwise; treat client and server retries as one protocol. Note that this narrows a documented feature (compatibility decision). Changed from decisions.md: no. Probe confirms; added that the retry itself is a documented maintainer feature (so the working answer is a narrowing, not a bug fix) and that statement failures are 400 and not retried. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#HD-1702).
+
+Findings: [Should the HTTP client resend a write query after a server error?](../../Verus_verification/open_questions.md#HD-1702).
 
 ### access.transactions
 
@@ -500,4 +591,4 @@ Findings: [The HTTP server and the SDK retry a failed Cypher write, so a write c
 
 No document states either behavior, and no test covers it.
 
-Findings: [Neo4j-compatible transactions are not transactions: Bolt ROLLBACK keeps the writes and the HTTP transaction endpoint commits statement by statement](../../Verus_verification/bugs_issues.md#bug-plt-008)
+Findings: [Neo4j-compatible transactions are not transactions: Bolt ROLLBACK keeps the writes and the HTTP transaction endpoint commits statement by statement](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-008)

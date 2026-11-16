@@ -1,0 +1,21 @@
+{
+  "setup": "docker run -d --name ivg-register-audit-20261115 --hostname ivg-register-audit --publish 127.0.0.1:35976:1972 --shm-size 1g sha256:546fe52b9e68ed810ac848faec1ffe230b84ba4e66ac15fb8e76dfa0f3a24fdf --check-caps false",
+  "bootstrap": "Dedicated new container only: Security.Users.Modify(\"_SYSTEM\", Password=\"SYS\", ChangePassword=0), then pinned Python -B -I runtime.py. No application security scenario or privilege test ran.",
+  "native_final": "PYTHONDONTWRITEBYTECODE=1 /Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/audits/register-20261115/regressions.py",
+  "native_result": "41/41 recorded defect contrasts with passing neighbors, covering 42 starting IDs; no substituted relevant providers",
+  "components": "PYTHONDONTWRITEBYTECODE=1 /Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/audits/register-20261115/components.py",
+  "component_result": "4 partial witnesses; 64000 embedded comparisons, zero mismatches, three detection controls; explicit provider/gate qualifications",
+  "upstream_unit_cwd": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin",
+  "upstream_unit": "PYTHONDONTWRITEBYTECODE=1 /Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -m pytest -q -o addopts= -p no:cacheprovider tests/unit/test_dbapi_utils_unit.py tests/unit/test_query_unit.py",
+  "upstream_result": "60 passed in 5.79s",
+  "source_review": "python3 .g5/Verus_verification/audits/register-20261115/source_review.py (before reconciliation; source files/last pin commits and linked evidence catalogued)",
+  "literal_test_search": "Exact per-ID rg -l -F argument arrays and results are in test-search.json; discovery is not reproduction",
+  "ontology": "python3 /Users/ziniuw/Desktop/research/G5-Lean-V2/.agents/guidance/scripts/check_ontology.py .g5/ontology",
+  "findings": "python3 /Users/ziniuw/Desktop/research/G5-Lean-V2/.agents/guidance/scripts/check_findings.py .g5/Verus_verification .g5/ontology --previous .g5/Verus_verification/audits/register-20261115/start",
+  "audit_validation": "python3 .g5/Verus_verification/audits/register-20261115/verify.py",
+  "git_whitespace": "git diff --check",
+  "execution_scope": "Only ordinary inputs in the dedicated new test instance. No security repros, stopped builder restart, shared iteration14 data, frozen receipt edits or benchmark HTML changes.",
+  "bootstrap_command": "docker exec -i --user irisowner ivg-register-audit-20261115 iris session iris -U %SYS",
+  "bootstrap_stdin": "set p(\"Password\")=\"SYS\",p(\"ChangePassword\")=0\nwrite ##class(Security.Users).Modify(\"_SYSTEM\",.p),!\nhalt\n",
+  "runtime_setup": "PYTHONDONTWRITEBYTECODE=1 /Users/ziniuw/runs/ivg-consolidated-20261114/venv/bin/python -B -I .g5/Verus_verification/audits/register-20261115/runtime.py"
+}

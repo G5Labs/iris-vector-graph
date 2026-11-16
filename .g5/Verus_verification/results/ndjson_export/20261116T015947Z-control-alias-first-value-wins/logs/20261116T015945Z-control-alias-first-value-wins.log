@@ -1,0 +1,20 @@
+verification results:: 141 verified, 2 errors
+error: postcondition not satisfied
+  --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/alias-first-value-wins/20261116T015945Z/models/ndjson_export/ndjson_export.rs:51:121
+   |
+51 |  ensures prop_fold(m,ps,g).dom()==m.dom(),prop_fold(m,ps,g)[id].id==m[id].id,prop_fold(m,ps,g)[id].labels==m[id].labels,prop_fold(m,ps,g)[id].props==expected_props(ps,g,id),
+   |                                                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+52 |  decreases ps.len(),
+53 |  {if ps.len()>0{let p=ps.drop_last();let r=ps.last();lemma_prop_fold(m,p,g,id);lemma_expected_props_step(p,r,g,id);assert(ps==p.push(r));}else{assert(expected_props(ps,g,id)=~=Map::empty());}}
+   |   --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/runs/ivg-iteration14-ndjson-20261116/verus/ndjson_export/controls/alias-first-value-wins/20261116T015945Z/models/ndjson_export/ndjson_export.rs:288:60
+    |
+288 | pub proof fn witness_last_alias_row_wins_in_file() ensures ({let f=export(seq![Parent{graph:0,id:0}],se...props[2]==nr::Value::Integer(20),_=>false}}), {...
+    | --------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+    | |
+    | at the end of the function body
+
+error: aborting due to 2 previous errors
+

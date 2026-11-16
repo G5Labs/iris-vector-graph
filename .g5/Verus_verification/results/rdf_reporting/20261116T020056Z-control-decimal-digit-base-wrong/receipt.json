@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "codec",
+    "expect_fail_in": [
+      "theorem_two_raw_digits_determine_value"
+    ],
+    "find": "n*10+(s[0] as nat-48)",
+    "name": "decimal-digit-base-wrong",
+    "replace": "n*1+(s[0] as nat-48)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_two_raw_digits_determine_value"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "f76eabe9ab4f917402fb5af6a89da9845e5beddd30e32e9ebbe9bc0c670aa24b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/decimal-digit-base-wrong/20261116T020053Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_two_raw_digits_determine_value": {
+        "errors": null,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020053Z-control-decimal-digit-base-wrong-theorem_two_raw_digits_determine_value.log",
+        "timed_out": false,
+        "verified": null
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T020053Z-control-decimal-digit-base-wrong.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020056Z-control-decimal-digit-base-wrong/logs/20261116T020053Z-control-decimal-digit-base-wrong-theorem_two_raw_digits_determine_value.log": "fb390f6b0e29e6f6c2be7d44103bae36ba30eeac1109c9ccbaa69e82176c2173",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T020056Z-control-decimal-digit-base-wrong/logs/20261116T020053Z-control-decimal-digit-base-wrong.log": "86eede078a957e252727bf26a5ce725f21da082c9990c0e36b9abc32068a5edc"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "FAIL_ELSEWHERE",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "theorem_label_selection_is_raw"
+    ],
+    "find": "pub open spec fn label_selected(l:Label,c:Config)->bool {graph_selected(l.graph,c)&&id_selected(l.s,c)&&(c.labels.len()==0||c.labels.contains(l.label))}",
+    "name": "selected-labels-widened",
+    "replace": "pub open spec fn label_selected(l:Label,c:Config)->bool {graph_selected(l.graph,c)&&id_selected(l.s,c)}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_label_selection_is_raw"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "70eb4f615b746ea00e6b944d61f57c1900467e5158f67353782ce8fee7906550"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/selected-labels-widened/20261116T021931Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_label_selection_is_raw": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T021931Z-control-selected-labels-widened-theorem_label_selection_is_raw.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T021931Z-control-selected-labels-widened.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T021934Z-control-selected-labels-widened/logs/20261116T021931Z-control-selected-labels-widened-theorem_label_selection_is_raw.log": "bb718c2deed5ede9f82e439723a2b9192b582dc62b9301857fd38d11e00580f3",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T021934Z-control-selected-labels-widened/logs/20261116T021931Z-control-selected-labels-widened.log": "2c3948fdb96f96a25eb7890ef58b8a1afe750dd1aa7e6bc3632ec6eb10d0fcf3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

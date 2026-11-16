@@ -555,4 +555,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if (V / "audits/register-20261115/APPLIED.json").exists():
+        raise SystemExit("Registers were reconciled by the iteration 13 findings audit. Historical regeneration would restore withdrawn claims; read audits/register-20261115/README.md and preserve its canonical destinations and decisions.")
     main()

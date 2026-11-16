@@ -1,0 +1,51 @@
+{
+  "control": {
+    "class": "source",
+    "expect_fail_in": [
+      "lemma_inferred_quals_empty"
+    ],
+    "find": "if es[0].key==t(\"inferred\"){seq![]}else",
+    "name": "inferred-key-emitted",
+    "replace": "if false{seq![]}else"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_inferred_quals_empty"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_reporting/model.json": "877c508ba01ef88d0831f608b553b6adf471019d320c9808f76098b7d0b215e1",
+    ".g5/Verus_verification/models/rdf_reporting/rdf_reporting.rs": "70eb4f615b746ea00e6b944d61f57c1900467e5158f67353782ce8fee7906550"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/controls/inferred-key-emitted/20261116T021941Z/models/rdf_reporting/rdf_reporting.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_inferred_quals_empty": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T021941Z-control-inferred-key-emitted-lemma_inferred_quals_empty.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/runs/ivg-iteration14-rdf-20261115/verus/rdf_reporting/20261116T021941Z-control-inferred-key-emitted.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_reporting/20261116T021945Z-control-inferred-key-emitted/logs/20261116T021941Z-control-inferred-key-emitted-lemma_inferred_quals_empty.log": "9970ce60692299a52519109c59ff049645d4c29bc5ebc7bbbce9c315f1b2f4db",
+    ".g5/Verus_verification/results/rdf_reporting/20261116T021945Z-control-inferred-key-emitted/logs/20261116T021941Z-control-inferred-key-emitted.log": "05f350b2bdeaf5d1537f580ddf8a0c7a89f69fc6461554c77b9ea14ad95c112c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
