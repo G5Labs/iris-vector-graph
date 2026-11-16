@@ -1,0 +1,194 @@
+{
+ "run": "20261116T213901Z",
+ "fixture": "ivg-retest-20261116-iris",
+ "port": 36216,
+ "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "cases": {
+  "T1_C_ordinary_rollback": {
+   "txn": {
+    "body": true,
+    "tlevel_before_end": 1
+   },
+   "read": {
+    "get_node_a": false,
+    "get_node_b": false,
+    "cypher_edge": [],
+    "kg_out": false
+   }
+  },
+  "T2_C_ordinary_commit": {
+   "txn": {
+    "body": true,
+    "tlevel_before_end": 1
+   },
+   "read": {
+    "get_node_a": true,
+    "get_node_b": true,
+    "cypher_edge": [
+     [
+      "w3116213901t2b"
+     ]
+    ],
+    "kg_out": true
+   }
+  },
+  "T3_F_ordinary_rollback": {
+   "txn": {
+    "body": true,
+    "tlevel_before_end": 1
+   },
+   "read": {
+    "get_node_a": false,
+    "get_node_b": false,
+    "cypher_edge": [],
+    "kg_out": false
+   }
+  },
+  "T3n_F_ordinary_commit": {
+   "txn": {
+    "body": true,
+    "tlevel_before_end": 1
+   },
+   "read": {
+    "get_node_a": true,
+    "get_node_b": true,
+    "cypher_edge": [
+     [
+      "w3116213901t3nb"
+     ]
+    ],
+    "kg_out": true
+   }
+  },
+  "T4_C_temporal_rollback": {
+   "txn": {
+    "body": true,
+    "tlevel_before_end": 1
+   },
+   "read": {
+    "get_node_a": false,
+    "get_node_b": false,
+    "cypher_edge": [],
+    "kg_out": false,
+    "window": []
+   }
+  },
+  "T5_F_temporal_rollback": {
+   "txn": {
+    "body": true,
+    "tlevel_before_end": 1
+   },
+   "read": {
+    "get_node_a": false,
+    "get_node_b": false,
+    "cypher_edge": [],
+    "kg_out": false,
+    "window": []
+   }
+  },
+  "T6_F_temporal_commit": {
+   "txn": {
+    "body": true,
+    "tlevel_before_end": 1
+   },
+   "read": {
+    "get_node_a": true,
+    "get_node_b": true,
+    "cypher_edge": [
+     [
+      null
+     ]
+    ],
+    "kg_out": true,
+    "window": [
+     [
+      "w3116213901t6b",
+      2000000000
+     ]
+    ]
+   }
+  },
+  "T7_C_loader_after_write": {
+   "txn": {
+    "body": "CallerTransactionOpenError: BulkLoader.load_nodes() cannot run inside the caller's open transaction ($TLEVEL 1): the bulk loader commits per batch, loads %NOINDEX %NOCHECK and rebuilds the indices and ^KG after. Nothing was done",
+    "tlevel_before_end": 1
+   },
+   "x": false,
+   "y": false
+  },
+  "T8_C_loader_nothing_written": {
+   "txn": {
+    "raised": "CallerTransactionOpenError: BulkLoader.load_nodes() cannot run inside the caller's open transaction ($TLEVEL 1): the bulk loader commits per batch, loads %NOINDEX %NOCHECK and rebuilds the indices and ^KG after. Nothing was done",
+    "tlevel_before_end": 1
+   },
+   "y": false
+  },
+  "T9_C_purge_rollback": {
+   "before": {
+    "get_node_a": true,
+    "get_node_b": true,
+    "cypher_edge": [
+     [
+      null
+     ]
+    ],
+    "kg_out": true,
+    "window": [
+     [
+      "w3116213901t9b",
+      1000
+     ]
+    ]
+   },
+   "txn": {
+    "body": 2,
+    "tlevel_before_end": 1
+   },
+   "after": {
+    "get_node_a": true,
+    "get_node_b": true,
+    "cypher_edge": [
+     [
+      null
+     ]
+    ],
+    "kg_out": true,
+    "window": [
+     [
+      "w3116213901t9b",
+      1000
+     ]
+    ]
+   }
+  },
+  "T10_F_purge_rollback": {
+   "before": {
+    "get_node_a": true,
+    "get_node_b": true,
+    "cypher_edge": [
+     [
+      null
+     ]
+    ],
+    "kg_out": true,
+    "window": [
+     [
+      "w3116213901t10b",
+      1000
+     ]
+    ]
+   },
+   "txn": {
+    "body": 4,
+    "tlevel_before_end": 1
+   },
+   "after": {
+    "get_node_a": false,
+    "get_node_b": false,
+    "cypher_edge": [],
+    "kg_out": false,
+    "window": []
+   }
+  }
+ }
+}

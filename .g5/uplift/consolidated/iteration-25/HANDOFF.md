@@ -57,3 +57,10 @@ agreement).
 Second candidate from the same inventory: writes inside a caller's transaction (`_write_txn.py` 20/20 unbound;
 `structure.write`, open question `structure.write.engine-connection`), then a large unfamiliar ObjectScript module
 (`VecIndex.cls` or `TraversalBuild.cls`).
+
+## Correction after the seal (recorded in iteration 26)
+
+bug-plt-106 duplicated the inherited entry bug-plt-027 ("BulkLoader's node and edge loads write without indexes and
+return before rebuilding them", review round 3 R3-reader M6), which `structure.adjacency.bulk` already linked. The
+evidence above now sits on bug-plt-027 (live, E2E reproduced, Medium); `bug-plt-106` remains as an alias anchor and a
+crosswalk row marked duplicate. The A1 result is therefore a **repair of a known suspicion**, not a new discovery.

@@ -444,7 +444,9 @@ Findings: [Temporal documentation contradicts the code in several places](../../
 
 As built (verified [temporal.py](../../../iris_vector_graph/_engine/temporal.py#L289-L332)): a direct write is one server call with no transaction. With the adjacency index declared, the marked structural edge is written inside that call, after the time-index entry and event counter and before the other statistics. Only without the declared index (a named graph) or with the undocumented alternative flag does the engine write the structural edge afterwards as a separate statement. The one-edge-batch advice comes from the [spec 254 plan](../../../specs/254-temporal-purge-collisions-rebuild/plan.md#L52-L62); the missing-timestamp divergence belongs to [Temporal edge](#temporal.edge).
 
-Findings: [A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written](../../Verus_verification/bugs_issues.md#bug-tmp-001)
+Inside a caller's transaction the write joins it, except that with the driver's autocommit off and nothing written yet the caller's rollback keeps the time-index entry and removes the marked structural edge; [structure.write](../features/graph-structure.g5.md#structure.write) owns the rule.
+
+Findings: [A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written](../../Verus_verification/bugs_issues.md#bug-tmp-001); [With the driver's autocommit off, rolling back a create_edge_temporal keeps the temporal edge but removes its structural edge and nodes](../../Verus_verification/bugs_issues.md#bug-tmp-102)
 
 Audit reproduction: [bug-tmp-001](../../Verus_verification/bugs_issues.md#bug-tmp-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 

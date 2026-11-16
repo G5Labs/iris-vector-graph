@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "routing: create_edge_temporal on the engine's own connection (the USER_GUIDE's description)",
+    "expect_fail_in": [
+      "theorem_routing"
+    ],
+    "find": "  Op::TemporalEdge=>Proc::Caller,",
+    "name": "temporal-on-own-connection",
+    "replace": "  Op::TemporalEdge=>native_proc(e),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_routing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/write_routing/model.json": "dd3bbdb91367cc8a8e654c8d2d04a1064b5200e0ecb5f6f1f3a635d5b8f03a73",
+    ".g5/Verus_verification/models/write_routing/write_routing.rs": "349aa9bbcc7065b4dc8521d7ceec9302b4c2684224d4459259d8d391dfa5a3e0"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/temporal-on-own-connection/20261116T214058Z/models/write_routing/write_routing.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_routing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/20261116T214058Z-control-temporal-on-own-connection-theorem_routing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/20261116T214058Z-control-temporal-on-own-connection.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/write_routing/20261116T214059Z-control-temporal-on-own-connection/logs/20261116T214058Z-control-temporal-on-own-connection-theorem_routing.log": "981eadf2962e39d7d7d7200123119441c5c01ca4375f91270d9e1b033f06efd2",
+    ".g5/Verus_verification/results/write_routing/20261116T214059Z-control-temporal-on-own-connection/logs/20261116T214058Z-control-temporal-on-own-connection.log": "9bc11a0ea529e47840b2d18423b457f3c0db94366169c8855d06bf33e5acbb32"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

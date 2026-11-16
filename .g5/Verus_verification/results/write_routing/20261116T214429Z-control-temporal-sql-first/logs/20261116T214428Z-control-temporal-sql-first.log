@@ -1,0 +1,21 @@
+verification results:: 7 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/temporal-sql-first/20261116T214428Z/models/write_routing/write_routing.rs:135:1
+    |
+135 | pub proof fn theorem_autocommit_off_temporal_edge_splits(e:Engine,w:W)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/temporal-sql-first/20261116T214428Z/models/write_routing/write_routing.rs:141:9
+    |
+141 |  assert(c.durable=~=set![2*w]);
+    |         ^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/temporal-sql-first/20261116T214428Z/models/write_routing/write_routing.rs:142:9
+    |
+142 |  assert(c.pending=~=seq![2*w+1]);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

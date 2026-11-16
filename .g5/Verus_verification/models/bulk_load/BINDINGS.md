@@ -1,6 +1,6 @@
 # bulk load
 
-BulkLoader.load_nodes skip scan, phase order, per-batch commit, %NOINDEX visibility and rebuild, graph scope; re-run after an interrupted load never completes it (bug-plt-011); default load invisible until rebuild (bug-plt-106); load_edges, endpoints, duplicate-vs-refusal and schema outside
+BulkLoader.load_nodes skip scan, phase order, per-batch commit, %NOINDEX visibility and rebuild, graph scope; re-run after an interrupted load never completes it (bug-plt-011); default load invisible until rebuild (bug-plt-027); load_edges, endpoints, duplicate-vs-refusal and schema outside
 
 Evidence status: active. Variant: as-built bounded transcription.
 

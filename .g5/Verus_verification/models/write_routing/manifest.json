@@ -1,0 +1,70 @@
+{
+  "title": "write routing",
+  "question": "Whether an engine write joins the caller's transaction: WriteTxn nesting (Txn_Begin/End/Undo), routing of a call to the caller's or the engine's own server process (from_connect), direct ObjectScript calls' global-then-SQL order under driver autocommit off, the caller-transaction refusal; failed-write undo not natively exercised",
+  "ontology_ids": [
+    "structure.write",
+    "temporal.write"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 8}"
+    },
+    {
+      "label": "commit-ends-all-levels",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_writetxn_call_follows_caller_end\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "temporal-on-own-connection",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_routing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "purge-on-caller-connection",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_routing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "undo-ends-all-levels",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_write_keeps_caller_work\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "refuse-only-after-a-write",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_loader_refusal\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "own-process-joins",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_own_process_write_survives_rollback\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    },
+    {
+      "label": "temporal-sql-first",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_autocommit_off_temporal_edge_splits\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-implicit-level",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_autocommit_off_purge_follows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

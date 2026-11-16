@@ -1,4 +1,4 @@
-**Current pointer (retest, 2026-11-16).** Running, iteration 25 sealed (subject `Seal iteration 25: BulkLoader re-runs and index visibility`). Material outcome: bug-plt-011 e2e reproduced and bug-plt-106 recorded; new model `bulk_load`; reach 279 → 287 of 4,130. Cost: builder wall clock about 1 h so far (tokens/currency unavailable). Next missing role: writes inside a caller's transaction (`_write_txn.py`). Retest log: [below](#retest-2026-11-16).
+**Current pointer (retest, 2026-11-16).** Running, iteration 26 sealed (subject `Seal iteration 26: writes inside a caller's transaction`). Material outcome: new High bug-tmp-102 (autocommit-off rollback splits a temporal edge) and Low bug-plt-107; model `write_routing`; bug-plt-106 merged into inherited bug-plt-027; reach 287 → 305 of 4,130. Cost: builder wall clock about 1 h 35 min so far (tokens/currency unavailable). Next: a large unfamiliar ObjectScript module (VecIndex or TraversalBuild). Retest log: [below](#retest-2026-11-16).
 
 <a id="retest-2026-11-16"></a>
 ## Retest (2026-11-16, from `cloud-iris-retest-start-20261116`)
@@ -7,7 +7,8 @@ Guidance: run copy `$G5_HARNESS`, `Verus/uplift-iteration.md` sha256 `a7521d0e20
 
 | Iteration | Workflow (predictions frozen first) | Material outcome |
 |---|---|---|
-| [25](iteration-25/HANDOFF.md) | start reconciliation; W30 standalone BulkLoader through `get_node`/Cypher | bug-plt-011 e2e reproduced; bug-plt-106; model `bulk_load`; 279 → 287 |
+| [25](iteration-25/HANDOFF.md) | start reconciliation; W30 standalone BulkLoader through `get_node`/Cypher | bug-plt-011 and bug-plt-027 e2e reproduced; model `bulk_load`; 279 → 287 |
+| [26](iteration-26/HANDOFF.md) | W31 engine writes inside a caller's transaction, by engine kind and caller mode | High bug-tmp-102 (new), Low bug-plt-107; model `write_routing`; 287 → 305 |
 
 Earlier pointer (superseded): **Current pointer (cloud continuation, 2026-11-16).** CONVERGED after iteration 24. Latest seal: the clean tip with subject `Record convergence of the cloud continuation` (its parent `0575c5de` is the last iteration seal). Session: iterations 14–24, seven new findings, reach 249 → 279 of 4,130 (30 new, 0 lost). Cost: builder wall clock about 1 h 50 min (tokens/currency unavailable). Convergence basis: [below](#convergence-cloud-continuation-2026-11-16).
 

@@ -25,7 +25,7 @@ Domain: one batch per phase, distinct input ids, `skip_existing=True` (the defau
 |---|---|
 | `theorem_done_then_rebuild_reads_input` | a completed load followed by a rebuild reads back as its input |
 | `theorem_indexed_load_reads_now` | an indexed load reads back as soon as it returns |
-| `theorem_noindex_invisible_until_rebuild` | a `%NOINDEX` load has written its node rows, but the reader sees none of them (bug-plt-106) |
+| `theorem_noindex_invisible_until_rebuild` | a `%NOINDEX` load has written its node rows, but the reader sees none of them (bug-plt-027) |
 | `theorem_complete_rerun_is_noop` | the same load after a completed one changes nothing, in either index mode |
 | `theorem_interrupted_load_is_never_completed` | after a phase-2 failure, no completed re-run, even with a rebuild, gives a node its labels or properties (bug-plt-011) |
 | `witness_interrupted_rerun_strands` | the stranded node is readable but lacks its label, so it fails the owner's outcome |

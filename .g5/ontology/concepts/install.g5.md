@@ -792,7 +792,7 @@ State machines: [temporal restore](../../Verus_verification/models/temporal_rest
 
 The engine paths drop indexes only for batches of 500 rows or more. Inside a caller's transaction, `bulk_load_session` keeps its indexes and leaves the adjacency to rebuild after the caller commits (4.7.0); that rule is owned by [structure.adjacency.bulk](../features/graph-structure.g5.md#structure.adjacency.bulk). Observed divergence (review round 3 R3-reader M6): spec 252 FR-008 and ADR-0008 require every `%NOINDEX` bulk path to rebuild before it returns, but `BulkLoader.load_nodes` and `load_edges` tell the caller to call `rebuild_all_indices()` ([bulk_loader.py](../../../iris_vector_graph/bulk_loader.py#L380-L395)). Live coverage: `tests/integration/test_bulk_loader_live.py`, `tests/integration/test_bulk_loader_endpoints.py`.
 
-Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011); [A default BulkLoader load returns before its rows can be read: get_node, Cypher and counts see nothing until rebuild_all_indices](../../Verus_verification/bugs_issues.md#bug-plt-106)
+Findings: [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011); [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/bugs_issues.md#bug-plt-027)
 
 Open questions: [Is BulkLoader meant to be the only writer, on single-edge graphs, outside the ledger?](../../Verus_verification/open_questions.md#q-plt-005)
 
@@ -814,7 +814,7 @@ Open questions: [Is BulkLoader meant to be the only writer, on single-edge graph
 
 Public case M23. A repeat is told from a refusal by the error text: SQLCODE -119 or the word "unique" in the message (`bulk_loader.py:105-106`), so a non-repeat refusal whose message happens to contain "unique" would be skipped as a repeat (code reading; not run). Observed divergence: the loader defaults to `Graph_KG`, and its index rebuild names the `Graph_KG` table classes whatever schema it was given.
 
-Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-012); [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011); [A default BulkLoader load returns before its rows can be read: get_node, Cypher and counts see nothing until rebuild_all_indices](../../Verus_verification/bugs_issues.md#bug-plt-106)
+Findings: [BulkLoader ignores the namespace's IVG Schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-012); [An interrupted BulkLoader node load cannot be resumed: re-loading skips the labels and properties of nodes already written](../../Verus_verification/bugs_issues.md#bug-plt-011); [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/bugs_issues.md#bug-plt-027)
 
 State machines: [bulk load](../../Verus_verification/models/bulk_load/manifest.json)
 

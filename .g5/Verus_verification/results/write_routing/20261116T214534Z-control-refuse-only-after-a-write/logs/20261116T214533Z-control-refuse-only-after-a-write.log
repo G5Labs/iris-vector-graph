@@ -1,0 +1,11 @@
+verification results:: 7 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/refuse-only-after-a-write/20261116T214533Z/models/write_routing/write_routing.rs:184:10
+    |
+183 | pub proof fn theorem_loader_refusal(w:W)
+    | ---------------------------------------- at the end of the function body
+184 |  ensures refuses(start(Start::Sql)),refuses(caller_write(start(Start::Sql),w)),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

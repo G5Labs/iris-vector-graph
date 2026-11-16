@@ -36,7 +36,7 @@ phase 1 commits per batch; the ordering (phase 1 committed, phase 2 not) is the 
 
 | Case | Outcome |
 |---|---|
-| A1 | held (loader-comment prediction): `get_node` None, Cypher edge 0 rows, label count 0, although the load returned 2 nodes / 2 labels / 4 props / 1 edge. The owner did not state this: an **owner gap**, now written; finding bug-plt-106 |
+| A1 | held (loader-comment prediction): `get_node` None, Cypher edge 0 rows, label count 0, although the load returned 2 nodes / 2 labels / 4 props / 1 edge. The owner did not state this: an **owner gap**, now written; finding bug-plt-027 (first filed as bug-plt-106, merged as a duplicate in iteration 26) |
 | A2 | held: readable at once |
 | A3 | held: readable after `rebuild_all_indices`; A1's rows also became readable (the rebuild is global) |
 | A4–A6 | held (A4 0 rows, A5 1 row, A6 count 0) |

@@ -1,0 +1,81 @@
+{
+  "name": "write_routing",
+  "root": "write_routing.rs",
+  "expected_verified": 8,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "commit-ends-all-levels",
+      "find": " if level<=1 {St{tlevel:0,hold:st.hold,pending:Seq::empty(),durable:st.durable+st.pending.to_set()}}",
+      "replace": " if true {St{tlevel:0,hold:st.hold,pending:Seq::empty(),durable:st.durable+st.pending.to_set()}}",
+      "expect_fail_in": [
+        "theorem_writetxn_call_follows_caller_end"
+      ],
+      "classification": "effect: IVG's commit ends every level (4.6.3's SQL COMMIT), committing the caller's work"
+    },
+    {
+      "name": "temporal-on-own-connection",
+      "find": "  Op::TemporalEdge=>Proc::Caller,",
+      "replace": "  Op::TemporalEdge=>native_proc(e),",
+      "expect_fail_in": [
+        "theorem_routing"
+      ],
+      "classification": "routing: create_edge_temporal on the engine's own connection (the USER_GUIDE's description)"
+    },
+    {
+      "name": "purge-on-caller-connection",
+      "find": "  Op::Purge=>native_proc(e),",
+      "replace": "  Op::Purge=>Proc::Caller,",
+      "expect_fail_in": [
+        "theorem_routing"
+      ],
+      "classification": "routing: purge_before on the engine's SQL connection"
+    },
+    {
+      "name": "undo-ends-all-levels",
+      "find": " St{tlevel:(level-1) as nat,hold:st.hold,pending:st.pending.subrange(0,mark as int),durable:st.durable}",
+      "replace": " St{tlevel:0,hold:st.hold,pending:Seq::empty(),durable:st.durable}",
+      "expect_fail_in": [
+        "theorem_failed_write_keeps_caller_work"
+      ],
+      "classification": "effect: a failed write's undo rolls back the caller's earlier work (SQL ROLLBACK)"
+    },
+    {
+      "name": "refuse-only-after-a-write",
+      "find": "pub open spec fn refuses(st:St)->bool {st.tlevel>0}",
+      "replace": "pub open spec fn refuses(st:St)->bool {st.pending.len()>0}",
+      "expect_fail_in": [
+        "theorem_loader_refusal"
+      ],
+      "classification": "decision: refusal decided by the caller's writes instead of $TLEVEL"
+    },
+    {
+      "name": "own-process-joins",
+      "find": "                durable:if steps(op).len()==1 {st.durable.insert(2*w)} else {st.durable.insert(2*w).insert(2*w+1)}},",
+      "replace": "                durable:st.durable},",
+      "expect_fail_in": [
+        "theorem_own_process_write_survives_rollback"
+      ],
+      "classification": "effect: a call on a second process left uncommitted (as if it joined the caller's transaction)"
+    },
+    {
+      "name": "temporal-sql-first",
+      "find": "  Op::TemporalEdge=>seq![Step::G,Step::S],",
+      "replace": "  Op::TemporalEdge=>seq![Step::S,Step::G],",
+      "expect_fail_in": [
+        "theorem_autocommit_off_temporal_edge_splits"
+      ],
+      "classification": "order: InsertEdge's SQL before its global writes (the repair direction)"
+    },
+    {
+      "name": "no-implicit-level",
+      "find": "   Step::S=>if st.hold {St{tlevel:1,hold:st.hold,pending:st.pending.push(x),durable:st.durable}}",
+      "replace": "   Step::S=>if false {St{tlevel:1,hold:st.hold,pending:st.pending.push(x),durable:st.durable}}",
+      "expect_fail_in": [
+        "theorem_autocommit_off_purge_follows"
+      ],
+      "classification": "provider premise: SQL at $TLEVEL 0 with autocommit off does not open a level"
+    }
+  ]
+}

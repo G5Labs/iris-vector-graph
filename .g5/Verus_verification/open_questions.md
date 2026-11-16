@@ -5291,6 +5291,8 @@ Should whether a write joins the caller's transaction depend on how the engine w
 
 Disposition: open. Working assumption: Treat transaction membership as dependent on the connection used by the engine.
 
+Evidence (retest iteration 26, [observations](../uplift/consolidated/iteration-26/caller-txn-observed-20261116T213901Z.json), [model](models/write_routing/NOTES.md)): the difference is per call, not per engine. On a `from_connect` engine, `purge_before` and `set_temporal_structural` survive the caller's rollback (a purge also retires the endpoint nodes it leaves bare), while node, edge, Cypher and `create_edge_temporal` writes join. Separately, with the driver's autocommit off, direct ObjectScript calls can escape on either engine ([bug-tmp-102](bugs_issues.md#bug-tmp-102)). An answer here should cover both.
+
 ```g5-question
 {
   "schema": 1,

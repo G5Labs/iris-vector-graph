@@ -1,0 +1,17 @@
+verification results:: 6 verified, 2 errors
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/temporal-on-own-connection/20261116T214529Z/models/write_routing/write_routing.rs:142:9
+    |
+142 |  assert(c.durable=~=set![2*w]);
+    |         ^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/temporal-on-own-connection/20261116T214529Z/models/write_routing/write_routing.rs:163:10
+    |
+162 | pub proof fn theorem_routing(e:Engine)
+    | -------------------------------------- at the end of the function body
+163 |  ensures route(e,Op::TemporalEdge)==Proc::Caller,route(e,Op::Ordinary)==Proc::Caller,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

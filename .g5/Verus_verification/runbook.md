@@ -444,3 +444,10 @@ python3 .g5/Verus_verification/tools/check_consolidated.py                      
 Worked lookup: `install.bulk_load.loader` → `bulk_load.rs::theorem_interrupted_load_is_never_completed` → rows for
 `iris_vector_graph/bulk_loader.py::BulkLoader.load_nodes` (line 252, decision) and `::_executemany_batched` (line 83,
 effect) in `crosswalk/decision-links.tsv`; in reverse, `bindings.json` under that key lists the claim and its role.
+
+Iteration 26 ([handoff](../uplift/consolidated/iteration-26/HANDOFF.md)) adds `models/write_routing` (8 verified, 8
+controls) and its binding (`models/write_routing/binding.py`, fixture required, about 1 s); the targeted split-state
+probe is `iteration-26/autocommit_probe.py`. Worked lookup: `structure.write` →
+`write_routing.rs::theorem_autocommit_off_temporal_edge_splits` → `iris_src/src/Graph/KG/TemporalIndex.cls::WriteStores`
+(line 80, step order) and `iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.write_temporal_edge` (line 2655,
+direct call) in `crosswalk/decision-links.tsv`.

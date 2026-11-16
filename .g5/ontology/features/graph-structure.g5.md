@@ -364,14 +364,24 @@ A rebuild recreates the adjacency index from the rows and then the interned snap
 - uncertain
 - Sources: [WriteTxn](../../../iris_vector_graph/_write_txn.py#L1-L28), [Graph.KG.Txn](../../../iris_src/src/Graph/KG/Txn.cls), [the engine's own native connection](../../../iris_vector_graph/engine.py#L1894-L1943), [erase_graph uses it](../../../iris_vector_graph/_engine/nodes_edges.py#L1513-L1517), [set_multigraph uses it](../../../iris_vector_graph/_engine/admin.py#L893-L915), [restore refuses a caller transaction](../../../iris_vector_graph/_engine/snapshot.py#L1095-L1102), [bulk loader refuses one](../../../iris_vector_graph/bulk_loader.py#L156-L163), [reifiers deleted afterwards](../../../iris_vector_graph/_engine/nodes_edges.py#L2176-L2200)
 - Children: [Should whether a write joins the caller's transaction depend on how the engine was opened?](../../Verus_verification/open_questions.md#structure.write.engine-connection)
+- Verus: [write_routing](../../Verus_verification/models/write_routing/NOTES.md) `theorem_writetxn_call_follows_caller_end`, `theorem_start_transaction_direct_call_follows_caller_end`, `theorem_autocommit_off_temporal_edge_splits`, `theorem_own_process_write_survives_rollback`, `theorem_routing`, `theorem_loader_refusal` (as built)
 - agent
 - architecture-decision, data-integrity
 
+When a caller has opened a transaction on the engine's connection, an engine write behaves as follows.
+
+- Node, edge and Cypher writes join it, whichever way the caller opened it (SQL `START TRANSACTION`, or the driver's autocommit off) and whichever way the engine was made: the caller's commit keeps them and its rollback removes them.
+- `create_edge_temporal` joins it after `START TRANSACTION` on either engine. With autocommit off and nothing written yet, a rollback keeps the temporal entry but removes its structural edge and endpoint nodes. Observed divergence from the user guide.
+- `purge_before` and `set_temporal_structural` on an engine made with `from_connect` run on the engine's own connection, so the caller's rollback does not undo them. On an engine made on the caller's connection they join, except that a policy change made with autocommit off and nothing written yet is kept.
+- The bulk loader and the other calls that refuse do so once `$TLEVEL` is above 0. `START TRANSACTION` makes that true at once, so they refuse before the caller writes anything; with autocommit off they refuse only after the caller's first write.
+
 Introduced in 4.6.4: before it, an engine write inside a caller's transaction committed or rolled back the caller's earlier work. The exceptions were added after the stage-A reconstruction check (its 2(b) item 14) and checked in the code. The separate native connection exists so that Native API calls never share a connection with cursor DDL; without the caller's credentials the engine uses the caller's own connection, and these calls then nest. Inside a caller's transaction, `bulk_create_nodes` and `bulk_create_edges` keep the indexes and nest instead of dropping them. Whether erasure should refuse an open caller transaction is the erasure page's open question.
 
-Findings: [A failed BM25 insert or delete rolls back the caller's whole transaction](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-002); [The Txn_End and Txn_Undo SQL procedures end every transaction level, the caller's included](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-021)
+Findings: [A failed BM25 insert or delete rolls back the caller's whole transaction](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-srch-002); [The Txn_End and Txn_Undo SQL procedures end every transaction level, the caller's included](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-021); [With the driver's autocommit off, rolling back a create_edge_temporal keeps the temporal edge but removes its structural edge and nodes](../../Verus_verification/bugs_issues.md#bug-tmp-102); [The user guide says a from_connect engine's temporal edge writes run outside the caller's transaction; create_edge_temporal joins it](../../Verus_verification/bugs_issues.md#bug-plt-107)
 
 Open questions: [What may a native read answer while another writer's transaction is open?](../../Verus_verification/open_questions.md#HD-0903), [Should whether a write joins the caller's transaction depend on how the engine was opened?](../../Verus_verification/open_questions.md#structure.write.engine-connection)
+
+State machines: [write routing](../../Verus_verification/models/write_routing/manifest.json)
 
 ### structure.node
 - Sources: [create_node](../../../iris_vector_graph/_engine/nodes_edges.py#L968-L1104), [a concurrent duplicate reports False](../../../iris_vector_graph/_engine/nodes_edges.py#L1095-L1104), [ledger reserved names](../../../iris_src/src/Graph/KG/LedgerApply.cls#L68-L71), [API reference](../../../docs/API_REFERENCE.md)
@@ -646,7 +656,7 @@ Coverage is a source scan of the ObjectScript classes: [single-writer guard](../
 
 Rewritten after the stage-A reconstruction check (gap G7, G34 and section 3 item 16). FR-008 covers every bulk path that writes `%NOINDEX`, the bulk loader included, so the reviewer's proposal to limit it to the engine's paths was not applied. "No duplicate rows" means none within the load and none against rows already present, because a `%NOINDEX` insert also skips the unique key (ADR-0008 consequences). Observed divergence: the engine paths rebuild in a `finally`, but an index that does not come back is only logged; the bulk loader uses `%NOCHECK`, commits per batch, and rebuilds only after both its node and edge phases succeed, so a failed phase leaves committed rows unindexed until a manual rebuild.
 
-Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leaves a partial adjacency index](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-009), [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-027)
+Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leaves a partial adjacency index](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-009), [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/bugs_issues.md#bug-plt-027)
 
 ### structure.adjacency.declare
 

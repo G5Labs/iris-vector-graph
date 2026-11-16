@@ -1,0 +1,12 @@
+verification results:: 7 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/write_routing/controls/own-process-joins/20261116T214427Z/models/write_routing/write_routing.rs:158:10
+    |
+156 | pub proof fn theorem_own_process_write_survives_rollback(s:Start,e:Engine,op:Op,w:W,end:End)
+    | -------------------------------------------------------------------------------------------- at the end of the function body
+157 |  requires route(e,op)==Proc::Own
+158 |  ensures kept(s,e,op,w,end,0),
+    |          ^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

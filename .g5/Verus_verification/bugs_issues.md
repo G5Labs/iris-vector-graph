@@ -1029,6 +1029,25 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
 
+<a id="bug-tmp-102"></a>
+### With the driver's autocommit off, rolling back a create_edge_temporal keeps the temporal edge but removes its structural edge and nodes
+
+Severity: High · Decision: Open
+
+Run: Uplift 2026-11-16 (retest, iteration 26)
+
+Found by: the first `write_routing` native binding run, which disagreed with the model in three autocommit-off histories ([receipt](results/write_routing/20261116T214148Z-binding/receipt.json)); then a targeted probe with the source-based expectation frozen first ([predictions](../uplift/consolidated/iteration-26/caller-txn-PAIRS.md)); [write_routing](models/write_routing/NOTES.md) `theorem_autocommit_off_temporal_edge_splits`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-26/autocommit-observed-20261116T214248Z.json); [binding](results/write_routing/20261116T214623Z-binding/receipt.json)). Caller: `conn.setAutoCommit(False)`, nothing written (`$TLEVEL` 0), `create_edge_temporal(a, R, b, timestamp=…)` (`$TLEVEL` 1 afterwards), `conn.rollback()`. Then, on another connection: `get_edges_in_window(a, R, …)` returns the edge and `^KG("tout")` holds it, while `MATCH ()-[r:R]->()` counts 0, `^KG("out")` has no entry and `get_node` finds neither endpoint. Same result on an engine made with `from_connect`. Passing neighbors: the same call after SQL `START TRANSACTION` leaves nothing after the rollback (T13), and with `commit()` every reader sees the edge (T11n).
+
+Expected: USER_GUIDE "Writes inside your transaction": with autocommit off a transaction is open, and "your rollback removes the rows the write made and its adjacency entries". ADR-0009: a temporal edge owns its marked structural row. The owner is [structure.write](../ontology/features/graph-structure.g5.md#structure.write).
+
+Cause: `create_edge_temporal` calls `Graph.KG.TemporalIndex.InsertEdge` directly (`IRISGraphStore.write_temporal_edge`), not through `WriteTxn`, so nothing opens the caller's level first. `InsertEdge` sets `^KG("tout")`/`("tin")` at `$TLEVEL` 0, where a global set is durable at once, and only then inserts the marked row and endpoint nodes with embedded SQL, which opens the caller's transaction implicitly and is rolled back with it.
+
+Consequence: a rolled-back temporal edge stays in window reads, aggregates and latest-event reads, while Cypher, traversal and the node readers never saw it; the two readers disagree permanently. High: wrong results after a rollback the caller relied on, with a confirmed trigger on a documented caller mode. `delete_edge_temporal` repairs one edge if the caller knows it.
+
+Repair proposal (checked in the model only): open the caller's level first, as `WriteTxn.begin` does with autocommit off (`Txn_Begin(1)`), around the direct temporal calls, or write the SQL part first (control `temporal-sql-first` makes the split theorem fail). Preserve: the call joins the caller's transaction after `START TRANSACTION` on both engines (T4, T5). Distinguishing case: T11 against T13. Not checked: `bulk_create_edges_temporal` and `delete_edge_temporal` under the same caller.
+
 <a id="bug-str-004"></a>
 ### verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity
 
@@ -2682,24 +2701,26 @@ Consequence: after any failure in phase 2 or 3, the loaded nodes stay without th
 
 Repair proposal (checked in the model only): let the re-run also process nodes of its input that have neither labels nor properties (control `rerun-completes-stranded` makes the stranding theorems fail), preserving the documented rule that an existing node keeps the property values it has. Distinguishing case: B1 against B2 above.
 
-<a id="bug-plt-106"></a>
-### A default BulkLoader load returns before its rows can be read: get_node, Cypher and counts see nothing until rebuild_all_indices
+<a id="bug-plt-027"></a>
+### BulkLoader's node and edge loads write without indexes and return before rebuilding them
 
 Severity: Medium · Decision: Open
 
-Run: Uplift 2026-11-16 (retest, iteration 25)
+Run: Uplift 2026-11-13
 
-Found by: the owner's recorded divergence from spec 252 FR-008, observed at the readers with predictions frozen first ([predictions](../uplift/consolidated/iteration-25/bulk-loader-PAIRS.md), cases A1-A7); [bulk_load](models/bulk_load/NOTES.md) `theorem_noindex_invisible_until_rebuild`, `theorem_indexed_load_reads_now`.
+Found by: review round 3 R3-reader M6 (code reading); observed at the readers in the retest's iteration 25 with predictions frozen first ([predictions](../uplift/consolidated/iteration-25/bulk-loader-PAIRS.md), cases A1-A7); [bulk_load](models/bulk_load/NOTES.md) `theorem_noindex_invisible_until_rebuild`, `theorem_indexed_load_reads_now`. Iteration 25 first filed this as bug-plt-106; that ID is kept as an alias of this entry.
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-25/bulk-loader-observed-20261116T212413Z.json); [binding](results/bulk_load/20261116T213301Z-binding/receipt.json)). `load_nodes` and `load_edges` with their default `use_noindex=True` return counts of 2 nodes, 2 labels, 4 properties and 1 edge; then `get_node` returns `None`, `MATCH (a {id: …})-[r]->(b)` returns no row and `MATCH (n:L) RETURN count(n)` returns 0. Passing neighbors: the same load with `use_noindex=False` reads back at once (A2); after `rebuild_all_indices()` the default load reads back (A3), and so does the earlier unrebuilt load (A1 re-read); `load_networkx`, which rebuilds, reads back (A7).
 
-Expected: spec 252 FR-008: "Bulk paths that write `%NOINDEX` MUST dedupe and MUST end in `%BuildIndices` before returning, success or failure." `load_nodes`' docstring does not mention a rebuild; `load_edges`' says to call `rebuild_all_indices()`.
+Expected: spec 252 FR-008: "Bulk paths that write `%NOINDEX` MUST dedupe and MUST end in `%BuildIndices` before returning, success or failure"; ADR-0008: "No `%NOINDEX` writer returns before its `%BuildIndices`." The owner [structure.adjacency.bulk](../ontology/features/graph-structure.g5.md#structure.adjacency.bulk) applies FR-008 to the bulk loader.
 
-Cause: `INSERT %NOINDEX %NOCHECK` leaves the rows out of the indexes, and the readers use index lookups; only `load_networkx` calls `rebuild_all_indices` before returning.
+Observed: `BulkLoader.load_nodes` and `load_edges` write with `%NOINDEX %NOCHECK` by default and leave the rebuild to the caller; `load_edges`' docstring says to call `rebuild_all_indices()`, `load_nodes`' does not. Only `load_networkx` rebuilds before returning.
 
-Consequence: a caller who uses `load_nodes`/`load_edges` directly sees an apparently empty graph until it rebuilds, and other writers' dedupe and delete paths that use the index cannot see these rows either (related inherited entries F-C1250, F-C1351). Medium: visible misbehavior an administrator can repair with one call.
+Consequence: a caller who uses `load_nodes`/`load_edges` directly sees an apparently empty graph until it rebuilds; traversal, indexed lookups and other writers' index-based dedupe and delete paths miss the loaded rows (related inherited entries F-C1250, F-C1351). Medium: visible misbehavior with a confirmed trigger, which an administrator can repair with one call. The Low of the original entry reflected a code-reading-only suspicion.
 
-Repair proposal (not implemented, not checked): end each `%NOINDEX` public load in `rebuild_all_indices()` (as `load_networkx` does), or default `use_noindex` to `False` for the per-phase methods; preserve `load_networkx`'s single rebuild. Distinguishing case: A1 against A2.
+Interpretation needing confirmation (unchanged): the class may be meant as a low-level tool outside FR-008, with `bulk_load_session` as the governed path; the owner currently applies FR-008 to it.
+
+Repair proposal (not implemented, not checked): end each `%NOINDEX` public load in `rebuild_all_indices()` (as `load_networkx` does), or make `use_noindex` default to `False` for the per-phase methods; preserve `load_networkx`'s single rebuild. Distinguishing case: A1 against A2. Related: [bug-plt-011](#bug-plt-011).
 
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
@@ -4011,6 +4032,23 @@ Consequence: the common idiom `RETURN coalesce(r.weight, 0)` returns text for ev
 
 Repair proposal (not implemented, not checked): decode a relationship property argument of `coalesce` (and similar pass-through functions) as `RETURN r.p` does, or mark such columns for `_decode_rel_prop_text_columns`. Distinguishing case: relationship `p = true` read by `RETURN coalesce(x.p, 'z')`.
 
+<a id="bug-plt-107"></a>
+### The user guide says a from_connect engine's temporal edge writes run outside the caller's transaction; create_edge_temporal joins it
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-16 (retest, iteration 26)
+
+Found by: the frozen W31 prediction T5, taken from the USER_GUIDE, missed ([predictions](../uplift/consolidated/iteration-26/caller-txn-PAIRS.md)); [write_routing](models/write_routing/NOTES.md) `theorem_routing`, control `temporal-on-own-connection`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 retest fixture ([observation](../uplift/consolidated/iteration-26/caller-txn-observed-20261116T213901Z.json), T5 and T10). On an engine made with `from_connect`, `START TRANSACTION` on its connection, `create_edge_temporal`, `ROLLBACK`: the window read returns nothing (the write joined). Neighbor: on the same engine and history, `purge_before` is not undone by the rollback (T10), which is what the guide describes.
+
+Expected: the guide should say which calls run on the engine's own connection. It says: "A write that IVG sends over a Native API connection of its own (an engine made with `from_connect`: the temporal edge stores, `^KG` on a namespace without the adjacency index) runs in another IRIS process, outside your transaction."
+
+Consequence: a reader of the guide expects a rolled-back temporal edge to stay on a `from_connect` engine and has no warning that `purge_before`, `rebuild_temporal_latest`, `set_temporal_structural` and the structural drop/backfill do. Low: misleading documentation.
+
+Repair proposal (not implemented): name the calls that use `engine._iris_obj()` (purge, rebuild, policy, structural drop/backfill) instead of "the temporal edge stores". Governing statement: [structure.write](../ontology/features/graph-structure.g5.md#structure.write).
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 
@@ -4065,6 +4103,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ## Archived ID navigation
 
 These anchors preserve older links. The corresponding claims and review dispositions are outside this active register.
+
+<span id="bug-plt-106"></span> [bug-plt-106: filed in iteration 25, merged into bug-plt-027](#bug-plt-027)
 
 <span id="bug-str-002"></span> [bug-str-002: review record](audits/register-20261115/bugs-review.md#bug-str-002)
 
@@ -4267,8 +4307,6 @@ These anchors preserve older links. The corresponding claims and review disposit
 <span id="bug-plt-026"></span> [bug-plt-026: review record](audits/register-20261115/bugs-review.md#bug-plt-026)
 
 <span id="bug-led-011"></span> [bug-led-011: review record](audits/register-20261115/bugs-review.md#bug-led-011)
-
-<span id="bug-plt-027"></span> [bug-plt-027: review record](audits/register-20261115/bugs-review.md#bug-plt-027)
 
 <span id="bug-str-017"></span> [bug-str-017: review record](audits/register-20261115/bugs-review.md#bug-str-017)
 
