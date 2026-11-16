@@ -1,0 +1,57 @@
+{
+  "title": "reconstruction",
+  "question": "named revision structural count/content projection, raw meta normalization, per-prefix bound and stream/export fold; full content/diff unproved",
+  "ontology_ids": [
+    "ledger.readers.bound"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 11}"
+    },
+    {
+      "label": "at-bound-refused",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_at_bound_succeeds\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "final-size-only",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_transient_oversize_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stream-bound-enforced",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_transient_oversize_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ignore-requested-revision",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_named_revision_ignores_later\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "zero-is-zero",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_zero_uses_default\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "tombstone-applied",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_tombstone_and_audit_ignore\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

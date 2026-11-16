@@ -1,0 +1,232 @@
+{
+  "title": "search",
+  "question": "BM25 counters, the embed queue, routes and widths, model identity per route",
+  "ontology_ids": [
+    "search.embedding.other_model",
+    "search.routes.no_fallback"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"errors\": 0, \"verified\": 56}"
+    },
+    {
+      "label": "removedoc-keeps-df",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_remove_doc_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "insert-without-removedoc",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_insert_preserves_counters\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "vocab-not-counted",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_add_doc_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-insert-ignores-build",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_locked_build_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "as-built-build-locked",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_build_insert_breaks_n\", \"witness_build_insert_double_df\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cutoff-ties-to-last",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_cut_scan\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cutoff-no-fallback",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_cutoff_contract\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cutoff-counts-unknown-terms",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_cut_scan\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "upgrade-no-flag",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_upgrade_step_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "upgrade-flip-before-count",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_upgrade_step_preserves\", \"theorem_repaired_upgrade_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "upgrade-rebuild-wrong-df",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_rebuild_count_cons\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-recheck-off",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repaired_upgrade_preserves\", \"witness_repair_rerun_keeps_index\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "as-built-upgrade-serial",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_concurrent_upgrades\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "identity-no-width",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_store_routes_and_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "route-created-without-lookup",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_store_routes_and_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-fail-closed-off",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_identity_fail_open\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "queue-routes-default-graph",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_queue_default_graph_misroutes\", \"witness_queue_writes_into_claimed_table\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-erase-keeps-bm25",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repaired_erase_removes_answers\", \"witness_erase_leaves_bm25\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-erase-drops-every-index",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repaired_erase_removes_answers\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "upgrade-writer-ignores-flag",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_writers_refused_while_upgrading\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "identity-reads-ledger",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_identity_check_ignores_ledger\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "upgrade-keeps-idf",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_upgrade_completes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "as-built-no-drop",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_drop_inside_insert\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-drop-ignores-writer",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_locked_build_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-build-ignores-writer",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_locked_build_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-delete-checks-n-first",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repair_delete_takes_effect\", \"witness_repair_delete_after_build\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "as-built-delete-without-early-return",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_delete_during_build_lost\", \"witness_round1_repair_loses_delete\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "search_bm25_build_insert_race",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "search_bm25_caller_txn_lock",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "search_bm25_caller_txn_rollback",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"insert_raises\": true, \"node_persisted_after_commit\": 1, \"tlevel_after\": 1}"
+    },
+    {
+      "label": "search_bm25_cutoff",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "search_bm25_delete_during_build",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "search_bm25_erase",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "search_bm25_upgrade_concurrent",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "search_queue_default_graph",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "search_route_split",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    }
+  ]
+}

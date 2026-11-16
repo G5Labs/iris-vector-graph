@@ -1,0 +1,73 @@
+{
+  "title": "playbook proofs d1c",
+  "question": "modules 03 (edge_l2, stmt_l2, bulk_l2) and 05 (tagg_l2)",
+  "ontology_ids": [],
+  "runs": [
+    {
+      "label": "baseline",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [], \"recorded_errors\": 0, \"recorded_verified\": 111}"
+    },
+    {
+      "label": "control_f0304_store_no_adopt",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/edge_l2.rs:304\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    },
+    {
+      "label": "control_f0505_marker_predicate",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/edge_l2.rs:361\", \"src/edge_l2.rs:381\", \"src/edge_l2.rs:403\"], \"recorded_errors\": 3, \"recorded_verified\": 108}"
+    },
+    {
+      "label": "control_f0507_purge_keeps_rows",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/edge_l2.rs:400\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    },
+    {
+      "label": "control_fc0501_refused_write_partial",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/edge_l2.rs:350\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    },
+    {
+      "label": "control_hd0302_delete_removes_row",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/edge_l2.rs:318\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    },
+    {
+      "label": "control_fc1203_prefix_from_node_rows",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/edge_l2.rs:426\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    },
+    {
+      "label": "control_fc0301_adopt_after_commit",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/edge_l2.rs:275\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    },
+    {
+      "label": "control_f0303_direct_delete_keeps_stmt",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/stmt_l2.rs:267\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    },
+    {
+      "label": "control_f0305_chunks_commit_alone",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/bulk_l2.rs:123\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    },
+    {
+      "label": "control_f0501_update_counted_again",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/tagg_l2.rs:100\"], \"recorded_errors\": 1, \"recorded_verified\": 110}"
+    }
+  ]
+}

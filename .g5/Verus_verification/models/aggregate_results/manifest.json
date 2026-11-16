@@ -1,0 +1,93 @@
+{
+  "title": "aggregate results",
+  "question": "raw selected rows/RETURN AST to unique groups/null/distinct/half-unit SUM/AVG/typed scalar/collection/full output/page/raw-name projection; SQL/codec/IEEE/provider limits; native count slice inspected only; OPTIONAL partial bug-agg-001",
+  "ontology_ids": [
+    "query.aggregation"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 75}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    },
+    {
+      "label": "foreign-graph-admitted",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_foreign_graph_row_skipped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-enters-count-and-collect",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_null_count_star_differs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "distinct-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_float_presence_uses_all_inputs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "count-overwritten",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_scalar_duplicate_rows_count_twice\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sum-overwritten",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_scalar_duplicate_rows_count_twice\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "float-from-dedup-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_float_presence_uses_all_inputs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "avg-denominator-not-contributors",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_mean_is_not_sum\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "entity-graph-erased",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_entity_same_id_two_graphs_both_count\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "global-empty-row-omitted",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_full_report_one_row_global_empty_and_none_grouped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "duplicate-group-emission",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_key_enumeration_complete_unique\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "grouped-empty-row-fabricated",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_full_report_one_row_global_empty_and_none_grouped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sort-single-digit-not-recognized",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_finalizer_drops_generated_internal_names\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

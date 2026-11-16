@@ -1,0 +1,67 @@
+{
+  "title": "playbook proofs pa3",
+  "question": "modules 11 and 04 without premise P-A3: ledger commit, abort, head lock, idempotency binding; adjacency generations",
+  "ontology_ids": [],
+  "runs": [
+    {
+      "label": "baseline",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [], \"recorded_errors\": 0, \"recorded_verified\": 108}"
+    },
+    {
+      "label": "control_f0801_ttl_cache",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/ledger_l2.rs:1000\"], \"recorded_errors\": 1, \"recorded_verified\": 107}"
+    },
+    {
+      "label": "control_f0801_fail_open",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/ledger_l2.rs:1000\"], \"recorded_errors\": 1, \"recorded_verified\": 107}"
+    },
+    {
+      "label": "control_f1108_unguarded_bulk_delete",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/ledger_l2.rs:1000\"], \"recorded_errors\": 1, \"recorded_verified\": 107}"
+    },
+    {
+      "label": "control_fc1101_stats_whole_row",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/ledger_l2.rs:1190\", \"src/ledger_l2.rs:1224\"], \"recorded_errors\": 2, \"recorded_verified\": 106}"
+    },
+    {
+      "label": "control_fc0401_write_before_gen",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/adj_l2.rs:811\", \"src/adj_l2.rs:822\"], \"recorded_errors\": 1, \"recorded_verified\": 108}"
+    },
+    {
+      "label": "control_hd0401_erase_kills_gen",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/adj_l2.rs:1604\", \"src/adj_l2.rs:1612\", \"src/adj_l2.rs:1619\", \"src/adj_l2.rs:1622\", \"src/adj_l2.rs:1863\", \"src/adj_l2.rs:1866\"], \"recorded_errors\": 3, \"recorded_verified\": 106}"
+    },
+    {
+      "label": "control_hd0401_rebuild_kills_gen",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/adj_l2.rs:2035\", \"src/adj_l2.rs:2038\", \"src/adj_l2.rs:2097\"], \"recorded_errors\": 2, \"recorded_verified\": 107}"
+    },
+    {
+      "label": "control_f1201_erase_no_head_lock",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/ledger_l2.rs:1070\"], \"recorded_errors\": 1, \"recorded_verified\": 107}"
+    },
+    {
+      "label": "control_fc1202_erase_unguarded",
+      "kind": "playbook-crate-rerun",
+      "variant": "reviewed",
+      "expect": "{\"counts_match\": true, \"locations_match\": true, \"recorded_error_locations\": [\"src/adj_l2.rs:572\"], \"recorded_errors\": 1, \"recorded_verified\": 108}"
+    }
+  ]
+}

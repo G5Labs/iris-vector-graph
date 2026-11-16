@@ -1,0 +1,96 @@
+{
+  "title": "communities",
+  "question": "raw default WCC/CDLP dynamics, live raw census/cursor and selected cached-core composition",
+  "ontology_ids": [
+    "algorithms.cache",
+    "algorithms.cache.token",
+    "algorithms.op.cdlp",
+    "algorithms.op.wcc"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"errors\": 0, \"verified\": 73}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built typed raw workflow",
+      "expect": null
+    },
+    {
+      "label": "foreign-graph-admitted",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"theorem_foreign_graph_coordinates_do_not_enter_default_core\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "wcc-out-only",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"lemma_min_fold\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "wcc-budget-off-by-one",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"theorem_already_correct_pair_still_needs_confirmation\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "wcc-unconfirmed-return",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"theorem_already_correct_pair_still_needs_confirmation\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cdlp-count-overwrite",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"lemma_raw_coordinate_count_at\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cdlp-self-vote",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"theorem_self_loop_is_no_vote\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cdlp-tie-largest",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"lemma_best_fold\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cdlp-wrong-old-map",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"lemma_pair_cdlp_swaps_old_labels\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "live-completion-omitted",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"theorem_complete_preserves_core_and_adds_only_absent\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sql-failure-silenced",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"theorem_census_success_empty_and_failure_are_distinct\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "full-page-no-confirming-read",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"theorem_full_final_page_requires_empty_page\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cursor-overadvanced",
+      "kind": "control",
+      "variant": "as-built typed raw workflow",
+      "expect": "{\"fail_in\": [\"lemma_cursor_tail_equivalence\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

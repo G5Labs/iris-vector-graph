@@ -1,0 +1,137 @@
+{
+  "title": "bolt stream",
+  "question": "raw chunk headers/body/actual versus reencoded cut/queue, initialized raw RUN/PULL fragment through pending metadata and final records; generic codec/transport/providers excluded",
+  "ontology_ids": [
+    "access.bolt",
+    "access.bolt.framing",
+    "access.bolt.results"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 43}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "header-high-byte-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_header\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "incomplete-payload-emitted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_incomplete_header_or_payload\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "chunk-accumulator-overwritten",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_scan_chunk\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reencoded-cut-corrected",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_small_chunk_reencoding_leaves_terminator\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "decoded-queue-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_buffer_and_queue_come_from_raw\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "queue-waits-for-new-frame",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_queue_precedes_receive\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-message-keeps-ws-open",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_chunk_is_emitted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "run-rows-not-persisted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_run_produces_pending_and_type_metadata\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "error-enters-ready",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_error_produces_failure_and_failed_gate\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "positive-pull-slice-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_positive_pull_is_prefix\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "pull-retains-suffix",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_pull_reads_input_rows_then_clears\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "pull-reports-more",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_partial_pull_drops_suffix_and_reports_no_more\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "commit-clears-pending",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_commit_preserves_but_rollback_discards\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rollback-preserves-pending",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_commit_preserves_but_rollback_discards\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "discard-clears-type-metadata",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_discard_keeps_types_reset_clears\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reset-keeps-pending",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_discard_keeps_types_reset_clears\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failed-gate-removed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_run_does_not_consult_engine\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "tiny-pull-unsigned",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_tiny_signed_pull_count\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-error-is-failure",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_raw_error_string_decides_failure\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

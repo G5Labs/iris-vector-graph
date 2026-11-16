@@ -1,0 +1,57 @@
+{
+  "title": "pagerank admission",
+  "question": "COUNT:MAX node key, lazy hit/miss census and raw self-loop/isolate producer; numerics and concurrency unproved",
+  "ontology_ids": [
+    "algorithms.cache.pagerank"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 9}"
+    },
+    {
+      "label": "omit-node-token",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_insert_moves_key\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "eager-census",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_repeat_reads_no_loners\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ignore-adjacency",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_adjacency_change_recomputes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failed-token-known-empty",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_count_max_producer\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "native-with-loners",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_added_isolate_recomputes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "self-loop-counts-as-isolate",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_self_loop_and_isolate_differ\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "title": "aql frontend",
+  "question": "numeric suffix lexer, typed depth AST/hops and literal null/text-null operators; query execution unproved",
+  "ontology_ids": [
+    "query.aql"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 6}"
+    },
+    {
+      "label": "range-token-is-float",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_range_preserves_both_bounds\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "max-depth-discarded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_range_preserves_both_bounds\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-ne-becomes-eq",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_null_operators\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "text-null-treated-null",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_string_null_is_value\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

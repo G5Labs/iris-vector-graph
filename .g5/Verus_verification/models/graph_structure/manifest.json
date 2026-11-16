@@ -1,0 +1,173 @@
+{
+  "title": "graph structure",
+  "question": "graph keys, the degree cache, keyed adjacency writers, the algorithm-cache token",
+  "ontology_ids": [
+    "algorithms.cache",
+    "algorithms.cache.token",
+    "structure.degree.cache.uncommitted"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"errors\": 0, \"verified\": 67}"
+    },
+    {
+      "label": "key-no-zero-refusal",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_index_key_injective\", \"theorem_cross_store_key_reads_nothing_foreign\", \"theorem_refusals\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "key-no-control-refusal",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_ledger_key_injective\", \"theorem_refusals\", \"theorem_cross_store_key_reads_nothing_foreign\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "key-no-nul-strip",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_nul_is_stripped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ledger-key-skips-canonical",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_key_is_function_of_graph\", \"theorem_nul_is_stripped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "degree-no-probe",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_probe\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "degree-no-nolock-check",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_check\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "writer-no-gen-bump",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_write\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "as-built-without-quiet-premise",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_killcommitted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-epoch-off",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repaired_cache_sound\", \"witness_repair_refuses_the_aba_store\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-kill-keeps-epoch",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_killcommitted\", \"witness_repair_refuses_the_aba_store\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "row-remove-ignores-mode",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_row_remove_keeps_layout\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "remove-keyed-no-collapse",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_row_remove_keeps_layout\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "put-keyed-ignores-other-rows",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_row_put_keeps_layout\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repaired-delete-rel-keeps-line-689",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repaired_delete_rel_keeps_layout\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "as-built-delete-rel-without-line-689",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_ledger_delete_rel_drops_survivor_indexed\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "algo-repair-off",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repaired_algo_cache_sound\", \"witness_bump_after_rollback_refuses_the_poison\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "algo-write-no-token-bump",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repaired_algo_cache_sound\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "canonical-strips-controls",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_canonical_is_nul_free\", \"theorem_control_names_never_merge\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repaired-binding-is-raw",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_repaired_binding_one_graph_in_every_store\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-kill-bumps-off",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_kill_bump_cache_sound\", \"witness_kill_bump_refuses_the_aba_store\", \"witness_gen0_kill_bump_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "kill-bump-restarts-gen",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_killcommitted\", \"witness_gen0_kill_bump_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "undeclared-index-treated-as-declared",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_undeclared_index_sql_delete_leaves_entry\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "graph_structure_algo_cache_rollback",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "graph_structure_degree_aba",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "graph_structure_keys",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "graph_structure_parallel_delete_rel",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    }
+  ]
+}

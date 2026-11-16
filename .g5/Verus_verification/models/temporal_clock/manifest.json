@@ -1,0 +1,117 @@
+{
+  "title": "temporal clock",
+  "question": "raw caller timestamp and alternate normal/fallback clock resolution to temporal writer/window",
+  "ontology_ids": [
+    "temporal.edge.clock"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 56}"
+    },
+    {
+      "label": "none-carrier-becomes-one",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_single_omission_and_epoch_share_carrier\", \"theorem_raw_omission_misses_recent_window\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "single-admits-negative",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_single_validation\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bulk-missing-becomes-zero",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_bulk_missing_null_empty_refuse\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "alias-presence-replaces-truthiness",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_alias_truthiness_changes_coordinate\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-alias-treated-as-missing",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_present_null_is_not_missing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bulk-adds-negative-validation",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_bulk_keeps_negative\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "single-zero-becomes-clock",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_server_empty_and_zero_differ\", \"theorem_bulk_zero_fallback_differs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bulk-preserves-zero",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_server_empty_and_zero_differ\", \"theorem_bulk_clock_and_fallback_final_windows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bulk-clock-hard-coded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_per_item_clock_is_not_batch_constant\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "fallback-routes-to-counts",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_bulk_zero_fallback_differs\", \"theorem_bulk_clock_and_fallback_final_windows\", \"theorem_raw_bulk_to_reader\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "provider-refusal-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_refusal_no_effect\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "writer-loses-resolved-time",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_actual_coordinate_reaches_window\", \"theorem_raw_single_to_reader\", \"theorem_raw_bulk_to_reader\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "fallback-counts-collisions",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_duplicate_counts_differ\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reader-uses-raw-identity-time",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_actual_coordinate_reaches_window\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "batch-validation-bypassed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_batch_validation_precedes_any_write\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-batch-provider-dependent",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_batch_no_provider_dependency\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "title": "vector threshold",
+  "question": "optional inclusive cosine predicate and binds before row limit; adapted SQLite provider, no IRIS claim",
+  "ontology_ids": [
+    "search.knn.threshold"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 6}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "equal-excluded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_boundary_included\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "threshold-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_threshold_decides\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "second-vector-omitted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_threshold_decides\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "title": "ledger apply",
+  "question": "raw admitted changeset operations produce prior/new records, stop at first failure and roll back before revision publication; one graph",
+  "ontology_ids": [
+    "ledger.commit"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 9}"
+    },
+    {
+      "label": "discard-prior",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_two_writes_produce_priors\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "prefix-leaks",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_mid_failure_rolls_back_prefix\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "endpoint-guard-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_real_endpoint_decides\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "same-value-recorded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_same_value_records_nothing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "first-error-index-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_mid_failure_rolls_back_prefix\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

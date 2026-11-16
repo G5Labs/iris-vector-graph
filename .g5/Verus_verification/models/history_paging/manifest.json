@@ -1,0 +1,99 @@
+{
+  "title": "history paging",
+  "question": "raw cursor/filter/order/limit producer, native text comparison fragment, exact-full-page cursor and RevisionInfo projection",
+  "ontology_ids": [
+    "ledger.readers.history"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 20}"
+    },
+    {
+      "label": "cursor-inclusive",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_direction_and_exclusive_cursor\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "descending-cursor-reversed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_direction_and_exclusive_cursor\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "descending-order-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_order_is_derived\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-filter-disabled",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_filter_is_not_omitted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "full-page-hides-cursor",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_full_page_supplies_cursor\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "time-equality-excluded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_time_boundaries_are_inclusive\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "missing-count-is-one",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_decode_normalizes_fields\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "negative-top-is-empty",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_zero_and_negative_limits\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "limit-before-filter",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_filter_happens_before_limit\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "query-failure-is-empty",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_reader_never_becomes_empty\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sqlupper-is-binary",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_sqlupper_ascii_neighbor\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "trailing-whitespace-is-significant",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_trailing_space_tab_neighbor\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "converted-cursor-truthiness",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_raw_cursor_truthiness_precedes_conversion\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

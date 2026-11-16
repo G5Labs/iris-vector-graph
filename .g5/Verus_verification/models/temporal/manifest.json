@@ -1,0 +1,235 @@
+{
+  "title": "temporal",
+  "question": "temporal writes and collisions, buckets and aggregates, marked rows, purge, erase hooks",
+  "ontology_ids": [],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"errors\": 0, \"verified\": 113}"
+    },
+    {
+      "label": "no-collision-guard",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_collision_changes_nothing\", \"lemma_write_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "refuse-all-writes",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_same_batch_collision_first_write_wins\", \"witness_assert_first_repairs_the_retry\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-bucket-decrement",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_remove_raw_shape\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-rebuild",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_delete_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "purge-forgets-cut",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_kill_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rollback-keeps-bucket-anyway",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_step_stats\", \"witness_counters_undone_keep_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "assert-first-writes-raw-first",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_write_exact\", \"witness_assert_first_repairs_the_retry\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "update-rebuild-ignored-in-tagg",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_write_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repaired-without-assert-first",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_stats_repaired_total\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repaired-without-incr-undone",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_stats_repaired_total\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repaired-without-update-rebuild",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_stats_repaired_total\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "batch-level-side-effect",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_batch_split\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "retract-ignores-marker",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_temporal_ops_keep_explicit_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-retracts-while-timestamps-remain",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_marked_row_goes_with_last_timestamp\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-never-retracts",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_delete_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "purge-skips-survivor-walk",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_marked_row_goes_with_last_timestamp\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "purge-ignores-registry",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_purge_leaves_registered_rows\", \"witness_optin_strands_marked_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "write-ignores-registry",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_write_shape\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "assert-row-marks-existing-row",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_write_shape\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "create-edge-keeps-marker",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_explicit_create_clears_marker\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "raw-first-purge",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_purge_rows\", \"lemma_purge_rerun_finishes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "optin-guard-off",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_step_rows\", \"witness_optin_guard_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "optin-always-refused",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_optin_guard_allows_clean_optin\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "verify-reads-marked-rows",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_temporal_write_keeps_verify\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rollback-keeps-raw-edges",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_refused_commit_restores_journaled\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "write-skips-assert-row",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_write_fwd\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "retract-ignores-marker-at-effect",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_temporal_ops_keep_explicit_rows\", \"witness_adoption_between_decide_and_retract_survives\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-decide-always-dooms",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_phased_delete_serial\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rebuild-not-journaled",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_remove_temporal_row_shape\", \"witness_rolled_back_delete_undercounts\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "zero-counter-kept",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_delete_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "decide-rows-only",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_doomed_set_iff\", \"witness_purge_write_race_rowless_route\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "retract-no-recheck",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_recheck_closes_race_row_at_decide\", \"witness_recheck_closes_race_rowless_route\", \"witness_recheck_closes_delete_race\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "kill-no-reretract",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_recheck_closes_kill_window\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "temporal_endpoint_nodes_verify",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "temporal_marked_row_lifecycle",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "temporal_rollback_counters",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "temporal_write_modes",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "title": "ndjson import",
+  "question": "raw kind selection, node admission, width refusal, duplicate counts and prefix state; node projection only",
+  "ontology_ids": [
+    "install.import.ndjson"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 9}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "type-overrides-kind",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_raw_kind_precedence\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "count-created-rows",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_duplicate_count_not_upsert\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "duplicate-is-upsert",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_new_vs_duplicate\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ignore-width-refusal",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_wide_writer_refusal_preserves_prefix\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

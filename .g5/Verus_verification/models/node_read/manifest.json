@@ -1,0 +1,58 @@
+{
+  "title": "node read",
+  "question": "numeric Python writer, CY_TYPED tag/escape and batched node inclusion/aliases; scalar subset",
+  "ontology_ids": [
+    "query.values",
+    "structure.node.read"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 13}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "discard-bare-node",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_bare_node_vs_absent\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "double-tag-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_numeric_writer_and_reader\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "numeric-writer-as-text",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_numeric_writer_and_reader\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "skip-structural-alias",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_structural_keys_kept\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "omit-final-column-decode",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_scalar_read_reaches_result\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "decode-unselected-literal",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_unselected_scalar_not_decoded\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

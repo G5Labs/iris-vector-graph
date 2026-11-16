@@ -1,0 +1,153 @@
+{
+  "title": "ledger content",
+  "question": "full typed field fold, closed default/no-marker producer history, named bounds/endpoints/export and typed alternate projections",
+  "ontology_ids": [
+    "ledger.changeset",
+    "ledger.commit",
+    "ledger.lifecycle",
+    "ledger.lifecycle.genesis",
+    "ledger.readers",
+    "ledger.readers.bound",
+    "ledger.readers.diff"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"errors\": 0, \"verified\": 108}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": null
+    },
+    {
+      "label": "label-reader-drops-content",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_primitive_records_replay_full_content\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "property-reader-drops-content",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_primitive_records_replay_full_content\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "qual-reader-drops-content",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_primitive_records_replay_full_content\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "prior-is-not-current",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_current_prior_is_derived\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-snapshot-loses-content",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_simple_snapshot_is_complete\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "existing-upsert-resets",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_labels_and_quals_are_not_reset_by_existing_upsert\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "duplicate-label-emits",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_same_value_and_label_are_noop\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "same-property-emits",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_same_value_and_label_are_noop\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "transaction-prefix-leaks",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_transaction_records_replay_full_content\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "deletion-context-ignored",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_deleted_context_precedes_reserved\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "named-cutoff-ignored",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_later_records_cannot_change_full_content\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "at-bound-refuses",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_named_bound_result_projects\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stream-obeys-bound",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_full_stream_and_export_fold\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-becomes-text",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_reader_null_empty_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nul-graph-not-normalized",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_raw_graph_tuple_normalization\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "tuple-delete-keeps-other-owner",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_duplicate_tuple_views_remain_distinct\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "last-prior-wins",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"lemma_attribute_alignment_step\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "net-zero-delta-retained",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_continuous_full_content_endpoint_diff\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "allocator-does-not-advance",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_raw_new_rel_uses_own_fresh_counter\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "batch-carrier-fault-suppressed",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_batch_empty_key_carrier_fault\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "export-omits-properties",
+      "kind": "control",
+      "variant": "as-built typed full content; bounded source profile",
+      "expect": "{\"fail_in\": [\"theorem_export_preserves_complete_fields\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

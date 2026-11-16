@@ -429,7 +429,10 @@ Proposal: one function, called by the engine, the operators and `fusion.py`, wit
 
 Behavior to preserve: per-graph scoping of each leg; the empty-text skip; the default `c`.
 
-Distinguishing case: A at vector rank 1 only and B at rank 50 in both legs of 200 (c=60): B must rank first on every entry point. Open part: [search.fusion.absent](../ontology/features/search.g5.md#search.fusion.absent). Governing statement: [search.fusion](../ontology/features/search.g5.md#search.fusion).
+Distinguishing case: A at vector rank 1 only and B at rank 50 in both legs of 200 (c=60): B must rank first on every entry point. Open part: [search.fusion.absent](open_questions.md#HD-0702). Governing statement: [search.fusion](../ontology/features/search.g5.md#search.fusion).
+
+
+Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: per-graph scoping of each leg; the empty-text skip; the default `c`. Decision/cost: A common fusion API needs leg-failure and absent-rank policy, corpus choice, weights, duplicate/tie semantics and compatibility adapters; no replacement is modeled. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-srch-001).
 
 
 Audit disposition: simplification claim withdrawn; engineering candidate retained for review. Preserve: per-graph scoping of each leg; the empty-text skip; the default `c`. Decision/cost: A common fusion API needs leg-failure and absent-rank policy, corpus choice, weights, duplicate/tie semantics and compatibility adapters; no replacement is modeled. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-srch-001).

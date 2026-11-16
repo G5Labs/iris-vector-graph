@@ -1,0 +1,58 @@
+{
+  "title": "embedded no data",
+  "question": "the embedded cursor's no-row rule and row counts over its three execution paths and the batch call",
+  "ontology_ids": [
+    "adapters.embedded",
+    "adapters.embedded.no_data"
+  ],
+  "runs": [
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 13}"
+    },
+    {
+      "label": "fold-every-error",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_error_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ignore-cause",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_no_data_on_every_path\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "inline-none-not-folded",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_no_data_is_empty\", \"theorem_no_data_on_every_path\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "batch-raises-on-no-data",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"witness_batch_no_data_row_counts\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-data-rowcount-unknown",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_no_data_is_empty\", \"theorem_no_data_on_every_path\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-fallback-resumes",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"witness_ddtab_mid_batch_reruns_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

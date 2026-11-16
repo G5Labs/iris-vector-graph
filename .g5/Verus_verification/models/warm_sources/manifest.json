@@ -1,0 +1,39 @@
+{
+  "title": "warm sources",
+  "question": "WarmFill guard, globals source census/count and whole-graph stamp; ObjectScript inspected only",
+  "ontology_ids": [
+    "structure.degree.cache.warm"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 7}"
+    },
+    {
+      "label": "count-cache-entries",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_count_sources_not_entries\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ignore-failed-probe",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_probe_leaves_no_stamp\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ignore-version-motion",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_version_moves_invalidates\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "skip-generation-recheck",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_generation_moves_discard_fill\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

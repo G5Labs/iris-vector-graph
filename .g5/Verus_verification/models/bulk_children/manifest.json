@@ -1,0 +1,87 @@
+{
+  "title": "bulk children",
+  "question": "graph-key/parent census, orphan properties, missing-key merge, label union, repeat order and complete typed reader projection; native finite witnesses",
+  "ontology_ids": [
+    "structure.node.bulk"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 30}"
+    },
+    {
+      "label": "orphan-cleanup-omitted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_orphan_value_replaced\", \"theorem_orphan_unoffered_value_removed\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cleanup-deletes-existing",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_existing_value_wins\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "existing-values-overwritten",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_existing_value_wins\", \"theorem_repeated_id_first_property_wins\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "old-labels-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_existing_and_incoming_labels_union\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "graph-collapsed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_graph_frame\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "missing-rows-accepted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_missing_attempted_property_rolls_back\", \"theorem_missing_attempted_label_rolls_back\", \"theorem_missing_parent_rolls_back\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-property-written",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_null_omitted_and_default_id\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "duplicate-return-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_repeated_id_first_property_wins\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reader-alias-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_reader_uses_own_graph\", \"witness_alias_row_order_can_change_result\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reader-graph-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_reader_uses_own_graph\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "node-graph-key-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_node_graph_key_wins\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

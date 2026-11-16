@@ -1,0 +1,136 @@
+{
+  "title": "fhir tasks",
+  "question": "raw registry/task settings ownership, caller intervals, task/registry effects and eligible task/final status projection",
+  "ontology_ids": [
+    "fhir.graph.lifecycle",
+    "fhir.graph.lifecycle.tasks"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 27}"
+    },
+    {
+      "label": "first-GraphId-wins",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_settings_last_key_wins\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "odd-GraphId-key-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_odd_or_missing_graph_key\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "class-guard-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_wrong_field_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "namespace-guard-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_wrong_field_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "graph-setting-guard-ignored",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_wrong_field_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "caller-explicit-zero-accepted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_caller_none_and_explicit_zero\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "minute-ceiling-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_rounding_bounds\", \"theorem_effective_interval\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "own-id-replaced",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_existing_own_reuses_id\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stale-id-looks-existing",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_stale_id_creates_and_status_reads\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "task-save-rolled-back-on-sql-error",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_failure_preserves_saved_orphan\", \"theorem_orphan_survives_unschedule_and_can_tick\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "save-error-continues-to-sql",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_assign_or_save_failure_precedes_sql\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-error-continues-to-sql",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_delete_failure_precedes_sql\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "task-delete-rolled-back-on-sql-error",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_failure_keeps_deleted_task_and_stale_id\", \"theorem_delete_sql_failure_retry_is_stale\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unschedule-reply-clears-old-id",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_unschedule_own_deletes_and_reports_old_id\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "status-joins-task-existence",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_final_status_does_not_validate_task\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "status-downgrades-future-version",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_future_version_status_refuses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "busy-task-reported-failed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_busy_is_success_error_and_parse_failures_fail\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "tick-loses-saved-GraphId",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_successful_schedule_derives_tick_target\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "registered-interval-not-checked",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_invalid_caller_or_effective_interval_stutters\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

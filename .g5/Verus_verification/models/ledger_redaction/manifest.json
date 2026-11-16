@@ -1,0 +1,140 @@
+{
+  "title": "ledger redaction",
+  "question": "commit admission, erasure scope, the redaction lifecycle, replay and verify",
+  "ontology_ids": [
+    "erasure.prefix-match",
+    "ledger.commit.admission",
+    "ledger.commit.serial",
+    "ledger.idempotency",
+    "redaction.batches",
+    "redaction.batches.resume"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"errors\": 0, \"verified\": 41}"
+    },
+    {
+      "label": "no-separator",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_acme_does_not_select_acme_health\", \"lemma_match_string_has_separator_boundary\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-marker",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_step_preserves_inv\", \"witness_erase_then_redact_completes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-blockscommit",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_step_preserves_inv\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-final-liveness",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_completion\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "key-not-moved",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_step_preserves_inv\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "tomb-keeps-record",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_tomb_never_matches\", \"theorem_replay_skips_target\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "replay-reads-tombstones",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_replay_skips_target\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "repair-off",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_repair_refuses_the_interleaving\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "independence-broken",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_keep_iff_entity_not_target\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "redacted-key-after-head",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_redacted_key_refused_before_apply\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "commit-ignores-marker",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"theorem_commit_writes_only_when_admitted\", \"lemma_commit_admits_matches_outcome\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "start-ignores-other-marker",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_step_preserves_inv\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "blockscommit-first-record-only",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_commit_preserves\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "twin-build",
+      "kind": "twin-build",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"errors\": 0, \"verified\": 51}"
+    },
+    {
+      "label": "prefix-erase-reaches-temporal",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_prefix_erase_leaves_temporal_only_content\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "prefix-erase-takes-orphan-props",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"witness_orphan_prop_row_blocks_prefix_redaction\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "graph-blind-erase",
+      "kind": "control",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": "{\"fail_in\": [\"lemma_erase_stays_in_target_graph\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "redaction_binding",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "redaction_interrupt_resume",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    },
+    {
+      "label": "redaction_prefix_resume",
+      "kind": "native",
+      "variant": "as-built (with repaired variants and witnesses)",
+      "expect": null
+    }
+  ]
+}

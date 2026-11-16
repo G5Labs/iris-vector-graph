@@ -1,0 +1,82 @@
+{
+  "title": "procedure results",
+  "question": "persisted labels to handled CALL aliases/filter/structural tail/projection/result columns, empty validation and cuts",
+  "ontology_ids": [
+    "query.system-procedures",
+    "query.system-procedures.results"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 19}"
+    },
+    {
+      "label": "where-removed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_final_filter_sound\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "return-alias-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_alias_return\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bare-alias-projected",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_bare_alias_keeps_physical\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-validates-expression",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_skips_expression_validation\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unsupported-clause-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_unsupported_clause_always_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "order-alias-guessed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_order_requires_result_column\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "limit-before-where",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_filter_before_limit\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "labels-scoped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_graph_is_ignored\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "distinct-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_distinct_provider\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    },
+    {
+      "label": "physical-return-validates-source",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_physical_return_bypasses_source_check\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}
