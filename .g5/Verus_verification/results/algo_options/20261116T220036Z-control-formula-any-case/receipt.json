@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "enumeration: formula accepted in any spelling",
+    "expect_fail_in": [
+      "theorem_enumerations_exact"
+    ],
+    "find": "  Opt::Formula=>v==Val::Text(Word::Harmonic)||v==Val::Text(Word::Classical),",
+    "name": "formula-any-case",
+    "replace": "  Opt::Formula=>v!=Val::Unparsed,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_enumerations_exact"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/algo_options/algo_options.rs": "f95080b4a99a779c4f49556679c56126876ebf867c83351fced08d6e9202adbe",
+    ".g5/Verus_verification/models/algo_options/model.json": "597f13e9923da7d6c6ad8757fe43e29c302b702946ec6a1a057d9cfcbbfd1baa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/controls/formula-any-case/20261116T220035Z/models/algo_options/algo_options.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_enumerations_exact": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/20261116T220035Z-control-formula-any-case-theorem_enumerations_exact.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/20261116T220035Z-control-formula-any-case.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/algo_options/20261116T220036Z-control-formula-any-case/logs/20261116T220035Z-control-formula-any-case-theorem_enumerations_exact.log": "06eb21e7ab4b0ba118c7a198c0e997910188b286ee250f39ec890a864c9a3af5",
+    ".g5/Verus_verification/results/algo_options/20261116T220036Z-control-formula-any-case/logs/20261116T220035Z-control-formula-any-case.log": "55c03d36b671eef499df1e85d28b75dcb8cd6225357fb751b32b1d45e331e413"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

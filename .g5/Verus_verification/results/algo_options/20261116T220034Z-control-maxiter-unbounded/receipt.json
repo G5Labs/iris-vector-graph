@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "range: no upper bound on maxIter",
+    "expect_fail_in": [
+      "theorem_ranges"
+    ],
+    "find": "  Opt::MaxIter=>1<=n<=1000,",
+    "name": "maxiter-unbounded",
+    "replace": "  Opt::MaxIter=>1<=n,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_ranges"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/algo_options/algo_options.rs": "f95080b4a99a779c4f49556679c56126876ebf867c83351fced08d6e9202adbe",
+    ".g5/Verus_verification/models/algo_options/model.json": "597f13e9923da7d6c6ad8757fe43e29c302b702946ec6a1a057d9cfcbbfd1baa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/controls/maxiter-unbounded/20261116T220033Z/models/algo_options/algo_options.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_ranges": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/20261116T220033Z-control-maxiter-unbounded-theorem_ranges.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/20261116T220033Z-control-maxiter-unbounded.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/algo_options/20261116T220034Z-control-maxiter-unbounded/logs/20261116T220033Z-control-maxiter-unbounded-theorem_ranges.log": "3dd7f1ba413b7ceff9ee38360df220a67011a110d54be99a9e951fe3ef41d7af",
+    ".g5/Verus_verification/results/algo_options/20261116T220034Z-control-maxiter-unbounded/logs/20261116T220033Z-control-maxiter-unbounded.log": "ce418b52401bb45e71ddc3ca23417360a388c99fa311389ee6e7d4650b451838"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

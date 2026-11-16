@@ -1,0 +1,57 @@
+{
+  "title": "algo options",
+  "question": "Centrality and community options: the engine method and Cypher CALL ivg.* decide by the same model (ranges, exact enumerations, unknown keys refused); pydantic coercion a shared provider; float options natively only; gds shims and ivg.ppr outside",
+  "ontology_ids": [
+    "algorithms.op"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 5}"
+    },
+    {
+      "label": "cypher-skips-model",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_same_decision\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "keyword-differs",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_same_decision\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "topk-from-one",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ranges\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "maxiter-unbounded",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ranges\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "uncoercible-accepted",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_uncoercible_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "formula-any-case",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_enumerations_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

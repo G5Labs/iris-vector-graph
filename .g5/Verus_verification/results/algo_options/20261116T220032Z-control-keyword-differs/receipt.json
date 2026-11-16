@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "correspondence: the procedure lists an option the method does not take",
+    "expect_fail_in": [
+      "theorem_same_decision"
+    ],
+    "find": "pub open spec fn keyword(p:Proc,o:Opt)->bool {listed(p,o)}",
+    "name": "keyword-differs",
+    "replace": "pub open spec fn keyword(p:Proc,o:Opt)->bool {listed(p,o) && o!=Opt::MemBudget}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_same_decision"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/algo_options/algo_options.rs": "f95080b4a99a779c4f49556679c56126876ebf867c83351fced08d6e9202adbe",
+    ".g5/Verus_verification/models/algo_options/model.json": "597f13e9923da7d6c6ad8757fe43e29c302b702946ec6a1a057d9cfcbbfd1baa"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/controls/keyword-differs/20261116T220031Z/models/algo_options/algo_options.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_same_decision": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/20261116T220031Z-control-keyword-differs-theorem_same_decision.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/20261116T220031Z-control-keyword-differs.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/algo_options/20261116T220032Z-control-keyword-differs/logs/20261116T220031Z-control-keyword-differs-theorem_same_decision.log": "4d2a4686bb5ce12b393a1f3bbab67318b7e26231793cf37c12497c4cbf999ee4",
+    ".g5/Verus_verification/results/algo_options/20261116T220032Z-control-keyword-differs/logs/20261116T220031Z-control-keyword-differs.log": "04f92d1249b6e0aec9401ca09ccb21125ba1c28ac1bdfc0fbf006b00953c16d0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

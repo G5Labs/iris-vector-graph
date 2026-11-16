@@ -1,0 +1,25 @@
+{
+  "name": "algo_options",
+  "root": "algo_options.rs",
+  "expected_verified": 5,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {"name": "cypher-skips-model", "find": "pub open spec fn cypher_accepts(p:Proc,o:Opt,v:Val)->bool {listed(p,o) && cypher_direction_ok(o,v) && model_ok(o,v)}",
+     "replace": "pub open spec fn cypher_accepts(p:Proc,o:Opt,v:Val)->bool {listed(p,o) && cypher_direction_ok(o,v)}",
+     "expect_fail_in": ["theorem_same_decision"], "classification": "decision: the Cypher map read without the method's model (before 4.6.5)"},
+    {"name": "keyword-differs", "find": "pub open spec fn keyword(p:Proc,o:Opt)->bool {listed(p,o)}",
+     "replace": "pub open spec fn keyword(p:Proc,o:Opt)->bool {listed(p,o) && o!=Opt::MemBudget}",
+     "expect_fail_in": ["theorem_same_decision"], "classification": "correspondence: the procedure lists an option the method does not take"},
+    {"name": "topk-from-one", "find": "  Opt::TopK=>0<=n<=1_000_000,", "replace": "  Opt::TopK=>1<=n<=1_000_000,",
+     "expect_fail_in": ["theorem_ranges"], "classification": "range: topK 0 refused"},
+    {"name": "maxiter-unbounded", "find": "  Opt::MaxIter=>1<=n<=1000,", "replace": "  Opt::MaxIter=>1<=n,",
+     "expect_fail_in": ["theorem_ranges"], "classification": "range: no upper bound on maxIter"},
+    {"name": "uncoercible-accepted", "find": "  _=>match coerce(v) {Some(n)=>in_range(o,n),None=>false},",
+     "replace": "  _=>match coerce(v) {Some(n)=>in_range(o,n),None=>true},",
+     "expect_fail_in": ["theorem_uncoercible_refused"], "classification": "coercion: a fractional value accepted"},
+    {"name": "formula-any-case", "find": "  Opt::Formula=>v==Val::Text(Word::Harmonic)||v==Val::Text(Word::Classical),",
+     "replace": "  Opt::Formula=>v!=Val::Unparsed,",
+     "expect_fail_in": ["theorem_enumerations_exact"], "classification": "enumeration: formula accepted in any spelling"}
+  ]
+}

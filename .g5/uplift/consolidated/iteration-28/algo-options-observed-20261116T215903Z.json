@@ -1,0 +1,562 @@
+{
+ "run": "20261116T215903Z",
+ "fixture": "ivg-retest-20261116-iris",
+ "cells": [
+  {
+   "procedure": "ivg.closeness",
+   "option": "formula",
+   "value": "bogus",
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for ClosenessInput\nformula\n  Input should be 'harmonic' or 'classical' [type=literal_error, input_value='bogus', input_type=str]\n    For further information visit https://errors.pyd"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.closeness: option formula: Input should be 'harmonic' or 'classical' (got 'bogus')"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.closeness",
+   "option": "formula",
+   "value": "Classical",
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for ClosenessInput\nformula\n  Input should be 'harmonic' or 'classical' [type=literal_error, input_value='Classical', input_type=str]\n    For further information visit https://errors"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.closeness: option formula: Input should be 'harmonic' or 'classical' (got 'Classical')"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.closeness",
+   "option": "formula",
+   "value": "classical",
+   "python": [
+    "ok",
+    184
+   ],
+   "cypher": [
+    "ok",
+    184
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.eigenvector",
+   "option": "maxIter",
+   "value": 0,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for EigenvectorInput\nmax_iter\n  Input should be greater than or equal to 1 [type=greater_than_equal, input_value=0, input_type=int]\n    For further information visit https://errors."
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.eigenvector: option maxIter: Input should be greater than or equal to 1 (got 0)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.eigenvector",
+   "option": "maxIter",
+   "value": 1001,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for EigenvectorInput\nmax_iter\n  Input should be less than or equal to 1000 [type=less_than_equal, input_value=1001, input_type=int]\n    For further information visit https://errors."
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.eigenvector: option maxIter: Input should be less than or equal to 1000 (got 1001)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.eigenvector",
+   "option": "maxIter",
+   "value": 1000,
+   "python": [
+    "ok",
+    184
+   ],
+   "cypher": [
+    "ok",
+    184
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.eigenvector",
+   "option": "tol",
+   "value": 0,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for EigenvectorInput\ntol\n  Input should be greater than 0 [type=greater_than, input_value=0, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/gre"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.eigenvector: option tol: Input should be greater than 0 (got 0)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "direction",
+   "value": "sideways",
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for DegreeCentralityInput\ndirection\n  Input should be 'out', 'in' or 'both' [type=literal_error, input_value='sideways', input_type=str]\n    For further information visit https://er"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.degreeCentrality: direction must be 'out', 'in' or 'both', not 'sideways'"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "direction",
+   "value": "OUT",
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for DegreeCentralityInput\ndirection\n  Input should be 'out', 'in' or 'both' [type=literal_error, input_value='OUT', input_type=str]\n    For further information visit https://errors."
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.degreeCentrality: direction must be 'out', 'in' or 'both', not 'OUT'"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.betweenness",
+   "option": "direction",
+   "value": "sideways",
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for BetweennessInput\ndirection\n  Input should be 'out', 'in' or 'both' [type=literal_error, input_value='sideways', input_type=str]\n    For further information visit https://errors."
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.betweenness: direction must be 'out', 'in' or 'both', not 'sideways'"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.closeness",
+   "option": "direction",
+   "value": "sideways",
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for ClosenessInput\ndirection\n  Input should be 'out', 'in' or 'both' [type=literal_error, input_value='sideways', input_type=str]\n    For further information visit https://errors.py"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.closeness: direction must be 'out', 'in' or 'both', not 'sideways'"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "foo",
+   "value": 1,
+   "python": [
+    "raised",
+    "TypeError",
+    "AlgorithmsMixin.degree_centrality() got an unexpected keyword argument 'foo'"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "Unknown parameters for ivg.degreeCentrality: ['foo']. Allowed: ['direction', 'predicate', 'topK']"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.closeness",
+   "option": "foo",
+   "value": 1,
+   "python": [
+    "raised",
+    "TypeError",
+    "AlgorithmsMixin.closeness_centrality() got an unexpected keyword argument 'foo'"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "Unknown parameters for ivg.closeness: ['foo']. Allowed: ['direction', 'formula', 'maxHops', 'topK']"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "topK",
+   "value": 0,
+   "python": [
+    "ok",
+    184
+   ],
+   "cypher": [
+    "ok",
+    184
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "topK",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for DegreeCentralityInput\ntop_k\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://erro"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.degreeCentrality: option topK: Input should be greater than or equal to 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "topK",
+   "value": "2",
+   "python": [
+    "ok",
+    2
+   ],
+   "cypher": [
+    "ok",
+    2
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "topK",
+   "value": 2.0,
+   "python": [
+    "ok",
+    2
+   ],
+   "cypher": [
+    "ok",
+    2
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "topK",
+   "value": 2.5,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for DegreeCentralityInput\ntop_k\n  Input should be a valid integer, got a number with a fractional part [type=int_from_float, input_value=2.5, input_type=float]\n    For further infor"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.degreeCentrality: option topK: Input should be a valid integer, got a number with a fractional part (got 2.5)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "topK",
+   "value": true,
+   "python": [
+    "ok",
+    1
+   ],
+   "cypher": [
+    "ok",
+    1
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.degreeCentrality",
+   "option": "topK",
+   "value": 2,
+   "python": [
+    "ok",
+    2
+   ],
+   "cypher": [
+    "ok",
+    2
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.betweenness",
+   "option": "sampleSize",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for BetweennessInput\nsample_size\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://err"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.betweenness: option sampleSize: Input should be greater than or equal to 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.betweenness",
+   "option": "sampleSize",
+   "value": 2.7,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for BetweennessInput\nsample_size\n  Input should be a valid integer, got a number with a fractional part [type=int_from_float, input_value=2.7, input_type=float]\n    For further info"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.betweenness: option sampleSize: Input should be a valid integer, got a number with a fractional part (got 2.7)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.betweenness",
+   "option": "maxHops",
+   "value": 0,
+   "python": [
+    "ok",
+    3
+   ],
+   "cypher": [
+    "ok",
+    3
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.betweenness",
+   "option": "maxHops",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for BetweennessInput\nmax_hops\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://errors"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.betweenness: option maxHops: Input should be greater than or equal to 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.betweenness",
+   "option": "maxHops",
+   "value": 1001,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for BetweennessInput\nmax_hops\n  Input should be less than or equal to 1000 [type=less_than_equal, input_value=1001, input_type=int]\n    For further information visit https://errors."
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.betweenness: option maxHops: Input should be less than or equal to 1000 (got 1001)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.betweenness",
+   "option": "memBudgetMB",
+   "value": 8,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for BetweennessInput\nmem_budget_mb\n  Input should be greater than or equal to 16 [type=greater_than_equal, input_value=8, input_type=int]\n    For further information visit https://e"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.betweenness: option memBudgetMB: Input should be greater than or equal to 16 (got 8)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.closeness",
+   "option": "maxHops",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for ClosenessInput\nmax_hops\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://errors.p"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.closeness: option maxHops: Input should be greater than or equal to 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.leiden",
+   "option": "gamma",
+   "value": 0,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for LeidenInput\ngamma\n  Input should be greater than 0 [type=greater_than, input_value=0, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/greate"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.leiden: option gamma: Input should be greater than 0 (got 0)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.leiden",
+   "option": "gamma",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for LeidenInput\ngamma\n  Input should be greater than 0 [type=greater_than, input_value=-1, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/great"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.leiden: option gamma: Input should be greater than 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.leiden",
+   "option": "maxLevels",
+   "value": 0,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for LeidenInput\nmax_levels\n  Input should be greater than or equal to 1 [type=greater_than_equal, input_value=0, input_type=int]\n    For further information visit https://errors.pyd"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.leiden: option maxLevels: Input should be greater than or equal to 1 (got 0)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.leiden",
+   "option": "randomSeed",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for LeidenInput\nrandom_seed\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://errors.p"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.leiden: option randomSeed: Input should be greater than or equal to 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.leiden",
+   "option": "topK",
+   "value": 2,
+   "python": [
+    "ok",
+    2
+   ],
+   "cypher": [
+    "ok",
+    2
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.triangleCount",
+   "option": "topK",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for TriangleCountInput\ntop_k\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://errors."
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.triangleCount: option topK: Input should be greater than or equal to 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.scc",
+   "option": "topK",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for SCCInput\ntop_k\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://errors.pydantic.d"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.scc: option topK: Input should be greater than or equal to 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.kcore",
+   "option": "topK",
+   "value": -1,
+   "python": [
+    "raised",
+    "ValidationError",
+    "1 validation error for KCoreInput\ntop_k\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-1, input_type=int]\n    For further information visit https://errors.pydantic"
+   ],
+   "cypher": [
+    "raised",
+    "ValueError",
+    "ivg.kcore: option topK: Input should be greater than or equal to 0 (got -1)"
+   ],
+   "same_decision": true
+  },
+  {
+   "procedure": "ivg.kcore",
+   "option": "topK",
+   "value": 2,
+   "python": [
+    "ok",
+    2
+   ],
+   "cypher": [
+    "ok",
+    2
+   ],
+   "same_decision": true
+  }
+ ]
+}

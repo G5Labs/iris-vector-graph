@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/controls/topk-from-one/20261116T220032Z/models/algo_options/algo_options.rs:66:10
+   |
+64 | pub proof fn theorem_ranges(p:Proc,v:Val,w:Val,x:Val,y:Val)
+   | ----------------------------------------------------------- at the end of the function body
+65 |  requires coerce(v)==Some(0int),coerce(w)==Some(-1int),coerce(x)==Some(1000int),coerce(y)==Some(1001int)
+66 |  ensures model_ok(Opt::TopK,v),!model_ok(Opt::TopK,w),model_ok(Opt::MaxIter,x),!model_ok(Opt::MaxIter,y),
+   |          ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -104,6 +104,7 @@ Every algorithm answer includes every node of the graph, nodes with no edge too,
 - A direction is `out` (along edges), `in` (against them) or `both` (the graph read as undirected).
 - PageRank and PPR reject a damping factor outside (0, 1) or an iteration count below 1 with `ValueError` before reading data.
 - Operations with a direction reject an unknown direction with `ValueError` before reading data.
+- The centrality and community methods and their Cypher procedures (`CALL ivg.*`) accept the same option values and refuse the same ones with `ValueError` before reading data: `topK` 0 to 1,000,000 (0 keeps every row), `maxHops` 0 to 1000, `sampleSize` 0 or more, `maxIter` 1 to 1000, `memBudgetMB` 16 to 8192, `gamma` above 0 up to 100, and `formula` and `direction` spelled exactly. A whole-number string or float is taken as that number; a procedure refuses an option it does not list, naming the ones it does.
 - The exceptions to "every node" are betweenness, which lists only nodes that score above 0, and walks and subgraphs, which list what they reach.
 
 
@@ -414,10 +415,14 @@ Changed in 4.6.0. Before that, procedures and methods disagreed: some answered e
 
 - Sources: [USER_GUIDE §6 Graph algorithms](../../../docs/USER_GUIDE.md); [API_REFERENCE: Graph algorithms](../../../docs/API_REFERENCE.md); [_engine/algorithms.py](../../../iris_vector_graph/_engine/algorithms.py)
 - Children: [PageRank](#algorithms.op.pagerank), [PPR](#algorithms.op.ppr), [WCC](#algorithms.op.wcc), [CDLP](#algorithms.op.cdlp), [subgraph](#algorithms.op.subgraph), [degree](#algorithms.op.degree), [betweenness](#algorithms.op.betweenness), [closeness](#algorithms.op.closeness), [eigenvector](#algorithms.op.eigenvector), [Leiden](#algorithms.op.leiden), [triangles](#algorithms.op.triangles), [SCC](#algorithms.op.scc), [k-core](#algorithms.op.kcore), [k-hop](#algorithms.op.khop), [walks](#algorithms.op.walks), [paths](#algorithms.op.paths)
+- Verus: [algo_options](../../Verus_verification/models/algo_options/NOTES.md) `theorem_same_decision`, `theorem_ranges`, `theorem_unlisted_refused`, `theorem_uncoercible_refused`, `theorem_enumerations_exact` (option checks of the centrality and community methods and procedures, as built)
+- Evidence: [frozen predictions and native observations](../../uplift/consolidated/iteration-28/algo-options-PAIRS.md)
 - agent
 - user-facing-behavior
 
 Edgeless nodes joined every answer in 4.6.0 (R306), and unreached PPR nodes got a 0.0 row in 4.7.0. PageRank and PPR argument checks for damping and iterations came in 4.7.0 ([USER_GUIDE](../../../docs/USER_GUIDE.md#L598-L600), [CHANGELOG](../../../CHANGELOG.md#L41)). The Cypher procedures' graph scope is in [graph scope](#algorithms.graph_scope).
+
+State machines: [algo options](../../Verus_verification/models/algo_options/manifest.json)
 
 ### algorithms.op.pagerank
 

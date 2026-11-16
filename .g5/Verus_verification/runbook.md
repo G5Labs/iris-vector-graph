@@ -454,3 +454,7 @@ direct call) in `crosswalk/decision-links.tsv`.
 
 Iteration 27 ([handoff](../uplift/consolidated/iteration-27/HANDOFF.md)) adds `models/vec_index` (8 verified, 6 controls)
 and its binding (`models/vec_index/binding.py`, fixture required, about 2 s; seed 20261116).
+
+Iteration 28 ([handoff](../uplift/consolidated/iteration-28/HANDOFF.md)) adds `models/algo_options` (5 verified, 6 controls) and its
+binding (`models/algo_options/binding.py`, fixture required, about 2 s), which reuses the frozen matrix in
+`iteration-28/algo_options_probe.py`.

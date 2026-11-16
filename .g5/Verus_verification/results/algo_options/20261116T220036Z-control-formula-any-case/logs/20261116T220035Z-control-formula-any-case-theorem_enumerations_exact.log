@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-retest-20261116/runs/ivg-retest-20261116/verus/algo_options/controls/formula-any-case/20261116T220035Z/models/algo_options/algo_options.rs:76:58
+   |
+75 | pub proof fn theorem_enumerations_exact()
+   | ----------------------------------------- at the end of the function body
+76 |  ensures !model_ok(Opt::Direction,Val::Text(Word::Else)),!model_ok(Opt::Formula,Val::Text(Word::Else)),
+   |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
