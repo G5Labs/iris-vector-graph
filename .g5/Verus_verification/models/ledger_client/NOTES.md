@@ -4,9 +4,31 @@ Product: `3eaa79cf77d3e0a879b2cced634cf2729d81499e`. Owners: `ledger.changeset`,
 `ledger.commit.expected-head`, `ledger.commit.size`, `ledger.commit.caller-transaction`, `ledger.idempotency`,
 `ledger.lifecycle`, `ledger.readers`, `ledger.immutability`, `ledger.observability`. Added in iteration 60 from the
 test-obligation map (`../../../uplift/consolidated/iteration-60/test-obligations.md`).
-As-built transcription, **30 verified / 28 controls** after the iteration-60 repair (`run_verus.py prove|controls` on
-this directory; final receipts `results/ledger_client/20261117T212536Z-prove` and `20261117T2125*/2126*-control-*`;
-the iteration-60 receipts `20261117T195357Z-prove` and its controls are kept as history).
+As-built transcription, **34 verified / 33 controls** after repair 2 (`run_verus.py prove|controls` on this directory;
+final receipts `results/ledger_client/20261117T221544Z-prove` and `20261117T2215*/2216*-control-*`; the first repair's
+`20261117T212536Z-prove` (30 / 28) and the iteration-60 `20261117T195357Z-prove` with their controls are kept as history).
+
+## What repair 2 changed (round-1 validation, case V3)
+
+- **A refused nested commit is never counted (model correction).** `txn_commit` counted a nested refusal until the
+  caller's transaction ended. Natively the count is +0 at once: when `_commit` raises, the client's `write_txn` takes
+  back IVG's level (`WriteTxn.__exit__` -> `rollback` -> `Txn_Undo`), and that level holds the Bump. The row lock the
+  Bump took stays. `txn_commit` now restores `cnt` when the nested commit raises and decides `took_row` before that undo.
+  **Withdrawn:** the repair's definition (a nested refusal's count kept until the caller's transaction ends); no proved
+  claim relied on it. **New:** `theorem_nested_refusal_is_never_counted` (control `nested-refusal-counted`).
+- **The counter row held without the head (bug-led-017).** `theorem_nested_lock_timeout_keeps_the_counter_row`: X holds
+  the head with a plain lock; caller p's nested commit times out, is not counted, and keeps the counter row; once X lets
+  go, q's valid commit is refused `inconsistent` with nothing written; after p's rollback it commits; the same refusal
+  with no caller transaction is counted and holds nothing (controls `nested-refusal-counted`, `nested-refusal-frees-row`,
+  `held-row-not-checked`). `theorem_held_counter_row_refuses_a_valid_commit` states the refusal whoever holds the row,
+  with the free-row neighbour (control `held-row-not-checked`, which also fails `theorem_uncounted_outcomes`).
+- **In-process counter-row saves.** `Via::{CallerConn, OwnConn}` (write_routing's `native_proc`) and
+  `row_save(s, p, via, level, count)`: the strict guard's `Ledger.Count` and verify's `RecordVerify` reach the counter
+  row through `engine._iris_obj()`, which is the caller's own process for an engine built on the caller's connection.
+  `theorem_in_transaction_row_save_blocks_other_writers`: at level above 0 the save holds the row, q's valid commit is
+  refused, the caller's rollback takes the strict count back and frees the row; at level 0 or on the engine's own
+  connection the save commits at once and q commits (controls `in-transaction-save-commits-at-once`,
+  `save-held-at-level-0`, `held-row-not-checked`).
 
 ## What the repair changed (review 60 FE-3, FE-4, FE-5, FE-6)
 
@@ -72,6 +94,10 @@ do with an unknown ID. `ledger_client` derives those outcomes from the ledger's 
 | A text `source` is dropped; an object source matches only its exact stored JSON | `witness_text_source_is_dropped` | `text-source-kept` |
 | Revision rows: no delete, no object re-save, update only as the four-field redaction exception | `theorem_revision_rows_immutable` | `update-without-emptying` |
 | Staged changesets and answers split into chunks of at most 1,000,000 and join back exactly | `lemma_join_chunks`, `theorem_chunked_transport_roundtrip` | `chunk-off-by-one` |
+| A nested commit that raises is never counted (write_txn undoes IVG's level) | `theorem_nested_refusal_is_never_counted` | `nested-refusal-counted` |
+| A nested lock-timeout refusal keeps the counter row without the head; another process's valid commit is then refused `inconsistent`, nothing written; after the rollback it commits; with no caller transaction the refusal is counted and the commit goes through | `theorem_nested_lock_timeout_keeps_the_counter_row` | `nested-refusal-counted`, `nested-refusal-frees-row`, `held-row-not-checked` |
+| A counter row held by another process's transaction refuses a valid commit once the head is free (bug-led-017); with the row free it writes and counts | `theorem_held_counter_row_refuses_a_valid_commit` | `held-row-not-checked` |
+| A strict count or verify record made on the caller's own process inside its open transaction (level above 0) holds the row and refuses other writers until the rollback, which takes the count back; level 0 or the engine's own connection does not | `theorem_in_transaction_row_save_blocks_other_writers` | `in-transaction-save-commits-at-once`, `save-held-at-level-0`, `held-row-not-checked` |
 
 ## Source bindings and evidence
 
@@ -81,10 +107,18 @@ fingerprint,canonical_json,to_wire}`, `canonical_dumps`; `errors.from_commit_err
 reconstruct,export_reconstruction,enable,_refuse_in_caller_transaction,disable,set_strict,stats}`, `CommitResult`,
 `_CommitWireResult`, `RevisionInfo`, `Revision`, `LedgerCounters`; `Ledger.cls::{Commit,CommitInTxn,WriteRevision,Err,
 ErrLimit,RevisionResponse,Head,SeqOf,State,Enable,Disable,SetStrict,StageChunk,LargeOut,ReadLargeOutChunk,NewId}`;
-`LedgerStats.cls::{Bump,PropertyFor,Ensure}`; `LedgerRevision.cls::{RejectUpdate,RejectDelete,%OnBeforeSave,%OnDelete}`.
+`LedgerStats.cls::{Bump,PropertyFor,Ensure}`; `LedgerRevision.cls::{RejectUpdate,RejectDelete,%OnBeforeSave,%OnDelete}`. Repair 2 adds `_write_txn.py` `caller_transaction_level`, `WriteTxn.{rollback,__exit__}`, `Txn.cls::Undo`, `Ledger.cls::{RecordVerify,Count}`, `guard.py` `LedgerGuard.{check_structural_write,count_rejection}`, `engine.py` `IRISGraphEngine._iris_obj` and `replay.py` `verify` (the in-process counter-row paths and the nested-level undo).
 
 `binding.py` (run with `.g5/uplift/consolidated/local-runtime/run_binding.py`) drives the actual product on the local
-fixture `ivg-uplift-next-20261115`. **Repair run** ([receipt](../../results/ledger_client/20261117T212518Z-binding/receipt.json),
+fixture `ivg-uplift-next-20261115`. **Repair-2 run** ([receipt](../../results/ledger_client/20261117T225756Z-binding/receipt.json),
+namespaces `I60SB` (with the application table `SQLUser.i60s_app`), `I60SC` with `max_ops=2`, `I60SE` never enabled;
+log `iteration-60/repair2/probes/ledger_client-binding-run1.log`): **58 native cases AGREE**, 32 of 33
+control-equivalent mutations detected (`update-without-emptying` not natively exercisable, as before), a changed
+observation caught. New cases: B21 (X's Native API lock on the head; A's nested commit times out after 30.1 s, +0; B's
+valid commit `inconsistent` after 10.1 s, nothing written; after A's rollback B commits with the prior head as parent),
+B21n (no caller transaction: +1, B commits at once), B22/B22z (strict refusal after / before the caller's first write:
+B refused after 10.1 s and the strict count taken back by the rollback / B commits at once and the count is kept),
+B23/B23z (the same for `verify()`). **Repair run** ([receipt](../../results/ledger_client/20261117T212518Z-binding/receipt.json),
 namespaces `I60RA`, `I60RC` with `max_ops=2`, `I60RE` never enabled): **52 native cases AGREE**, 27 of 28
 control-equivalent mutations detected, a changed observation caught. New cases: B8 now records the counter deltas read
 from a third connection (lock +0 while the caller is open and after its rollback; the competing commit waited 40.0 s),
@@ -111,10 +145,16 @@ is kept). The prediction probe (`iteration-60/probes/`) adds the native observat
 - SHA-256 collision freedom only where `collision_free()` is required; `NewId` GUID freshness (`fresh` not yet a revision).
 - The server compares the idempotency binding with the fingerprint the caller puts in `Commit`'s meta JSON (`CommitInTxn` reads `meta.fingerprint`); the model uses `fingerprint(c)` of the applied changeset. That holds for every commit sent by `GraphLedger._send_changeset` (it computes both from the same object); a direct caller of `Graph.KG.Ledger.Commit` can send any value, so its replay/conflict outcome is outside these claims (candidate simplification in the iteration-60 handoff: compute the fingerprint on the server).
 - Caller rollback undoes every journaled write of its transaction, its counter changes included (back to `stats_base`,
-  the counters when it took the row). The stall-and-lose behaviour of another process's counter save is inferred from
-  source (`LedgerStats.Bump`, `WriteRevision`) and observed for `Bump` and `Count`; a successful commit whose counter
-  row another transaction holds while the head is free (`server`'s `!stats_free` branch, `inconsistent`) is
-  source-derived only (it needs a caller transaction that itself timed out on the head).
+  the counters when it took the row). `txn_rollback` restores the ledger fields to the before-image: it applies only
+  while the caller holds the head or the counter row, so no other process could have written meanwhile (a caller
+  holding neither has no ledger effect to take back). The stall-and-lose behaviour of another process's counter save is
+  observed for `Bump` and `Count` and inferred for `RecordVerify`; a commit whose counter row another transaction holds
+  while the head is free (`server`'s `!stats_free` branch, `inconsistent`) is observed in repair 2 (B21, B22, B23).
+- The caller's `$TLEVEL` is an input to `row_save` (`level`), taken from write_routing's provider premise: 0 with the
+  driver's autocommit off until the caller's first write (observed: B22z, B23z). `Via` is decided by
+  `engine._iris_obj()` (an engine with connection parameters, `from_connect`, uses its own connection; not run here).
+  `disable()` and `set_strict()` also save the counter row on the caller's process and are not refused inside a
+  caller's transaction; not modelled or observed.
 - Not modelled: whether a commit's records touch a redaction target (`Apply.blocked`, decided in ledger_redaction;
   `IdempotencyRedactedError` is mapped but not observed natively),
   the strict-mode guard (model `platform`), post-commit properties (`ledger_apply`/`ledger_content` scope and

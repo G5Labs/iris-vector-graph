@@ -1,6 +1,6 @@
 {
   "title": "ledger client",
-  "question": "changeset scope and client validation, admission derived from the ledger's own state, the Python error classes and counters a commit outcome produces, caller-transaction lock and rollback, revision-ID readers, lifecycle settings, revision-row immutability and chunked transport; which outcomes are counted (none while another caller's transaction holds the counter row; redaction-blocked, field-limit and not-enabled refusals never)",
+  "question": "changeset scope and client validation, admission derived from the ledger's own state, the Python error classes and counters a commit outcome produces, caller-transaction lock and rollback, revision-ID readers, lifecycle settings, revision-row immutability and chunked transport; which outcomes are counted (none while another caller's transaction holds the counter row; redaction-blocked, field-limit and not-enabled refusals never); a refused nested commit is never counted yet keeps the counter row, and a counter row held without the head (also by the strict count or verify record made on the caller's own process) refuses other connections' valid commits as inconsistent",
   "ontology_ids": [
     "ledger.changeset",
     "ledger.commit",
@@ -19,7 +19,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built transcription",
-      "expect": "{\"errors\": 0, \"verified\": 30}"
+      "expect": "{\"errors\": 0, \"verified\": 34}"
     },
     {
       "label": "message-fingerprinted",
@@ -188,6 +188,36 @@
       "kind": "control",
       "variant": "as-built transcription",
       "expect": "{\"fail_in\": [\"theorem_revision_readers_resolve_ids\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nested-refusal-counted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_nested_refusal_is_never_counted\", \"theorem_nested_lock_timeout_keeps_the_counter_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nested-refusal-frees-row",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_nested_lock_timeout_keeps_the_counter_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "held-row-not-checked",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_held_counter_row_refuses_a_valid_commit\", \"theorem_nested_lock_timeout_keeps_the_counter_row\", \"theorem_in_transaction_row_save_blocks_other_writers\", \"theorem_uncounted_outcomes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "in-transaction-save-commits-at-once",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_in_transaction_row_save_blocks_other_writers\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "save-held-at-level-0",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_in_transaction_row_save_blocks_other_writers\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

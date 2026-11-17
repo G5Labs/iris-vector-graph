@@ -121,7 +121,10 @@ For a changeset commit, an empty changeset is refused with `EmptyChangesetError`
 A commit made inside the caller's open transaction is part of that transaction. The caller's rollback removes the revision and its changes without leaving a gap in the numbering, and frees the changeset's idempotency key. The head stays locked until the caller's transaction ends, so another connection's commit waits for the lock timeout and fails with `LedgerLockTimeoutError`, changing nothing.
 
 - Enabling the ledger and redaction refuse to run inside a caller's transaction.
-- A counted commit inside the caller's transaction (written, replayed or a counted refusal) also keeps the ledger's counter row locked until that transaction ends. Meanwhile another connection's refused commit fails after about 40 seconds, not 30, and is not counted, and any other counter change made elsewhere, such as a strict-mode refusal count, is lost ([finding](../../Verus_verification/bugs_issues.md#bug-led-014)). A commit refused without a count (for example `inconsistent`) holds only the head, so the other connection's refusal comes after 30 seconds and is counted.
+- A refused commit inside the caller's transaction is never counted: IVG takes back its own part of the transaction, and the count goes with it.
+- A commit inside the caller's transaction that touched the ledger's counter row keeps that row locked until the transaction ends. That is a written or replayed commit, or a refusal of a kind that is normally counted. Meanwhile another connection's refused commit fails after about 40 seconds, not 30, and is not counted, and any other counter change made elsewhere, such as a strict-mode refusal count, is lost ([finding](../../Verus_verification/bugs_issues.md#bug-led-014)). A commit refused without a count (for example `inconsistent`) holds only the head, so the other connection's refusal comes after 30 seconds and is counted.
+- Today the caller's transaction can hold the counter row without the head. This happens when the caller's own commit timed out waiting for the head. It also happens, once the caller has written in the transaction, after a strict-mode refusal or a `verify()` made through an engine built on the caller's connection. Until that transaction ends, every other connection's valid commit waits about 10 seconds and fails with `LedgerInconsistencyError` ("stats save failed"), writing nothing ([finding](../../Verus_verification/bugs_issues.md#bug-led-017)).
+- Intended: counting is bookkeeping, done "in its own small transaction", and `LedgerInconsistencyError` means the ledger's own structures disagree. So a valid commit should not fail because another transaction holds the counter row.
 - The caller's rollback also takes back that caller's own counter changes.
 
 
@@ -164,7 +167,8 @@ Each commit that reaches the ledger's server reports its outcome once: a log lin
 
 - The counters keep the commits written (the genesis included), the replays, and these refusals: a stale or unknown expected head, an idempotency conflict (a key whose revision was redacted included), a failed operation, too many operations, a disabled ledger and a lock timeout. Strict-mode refusals are counted too.
 - These outcomes reach a hook but no counter: a refusal before the first enable, a commit refused because it writes into an unfinished redaction's target, and an `inconsistent` refusal, such as a revision field longer than its column ([size](#ledger.commit.size)).
-- While another caller's open transaction holds the counter row, no other connection's outcome is counted ([caller's transaction](#ledger.commit.caller-transaction)).
+- A refused commit made inside the caller's own transaction is never counted. A strict-mode refusal count or a verify record made on the caller's connection inside its transaction is kept or taken back with that transaction ([caller's transaction](#ledger.commit.caller-transaction)).
+- While another caller's open transaction holds the counter row, no other connection's outcome is counted. Today, when that transaction does not also hold the head, another connection's valid commit is refused as `inconsistent` instead of being written ([caller's transaction](#ledger.commit.caller-transaction)). Intended: counting never changes a commit's outcome.
 - A refusal the client makes before sending (an empty changeset or a bad operation reference) is neither counted nor reported to a hook ([finding](../../Verus_verification/bugs_issues.md#bug-doc-013)).
 - A hook that raises is logged, and the commit's result does not change.
 
@@ -462,8 +466,8 @@ State machines: [ledger client](../../Verus_verification/models/ledger_client/ma
 
 ### ledger.commit.caller-transaction
 
-- Sources: [Ledger.cls Commit](../../../iris_src/src/Graph/KG/Ledger.cls#L385-L415), [CHANGELOG 4.7.0](../../../CHANGELOG.md#L76-L86), [USER_GUIDE writes inside your transaction](../../../docs/USER_GUIDE.md#L285-L310), [client.py commit](../../../iris_vector_graph/ledger/client.py#L381-L401)
-- Verus (iteration 60, corrected in the repair): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) `theorem_caller_transaction_holds_the_head` (another commit times out, changes nothing and is not counted; after rollback it takes the next seq with the kept parent), `theorem_uncounted_nested_refusal_leaves_the_counter_row`, `theorem_rollback_frees_key_and_seq`; native binding observed the 40 s uncounted refusal, the 30 s counted one, and the reused seq and key.
+- Sources: [Ledger.cls Commit](../../../iris_src/src/Graph/KG/Ledger.cls#L385-L415), [CHANGELOG 4.7.0](../../../CHANGELOG.md#L76-L86), [USER_GUIDE writes inside your transaction](../../../docs/USER_GUIDE.md#L285-L310), [client.py commit](../../../iris_vector_graph/ledger/client.py#L381-L401), [LedgerStats.cls Bump "in its own small transaction"](../../../iris_src/src/Graph/KG/LedgerStats.cls#L63-L88), [errors.py LedgerInconsistencyError](../../../iris_vector_graph/ledger/errors.py#L87-L88)
+- Verus (iteration 60, corrected in the repair and in repair 2): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) `theorem_caller_transaction_holds_the_head` (another commit times out, changes nothing and is not counted; after rollback it takes the next seq with the kept parent), `theorem_uncounted_nested_refusal_leaves_the_counter_row`, `theorem_rollback_frees_key_and_seq`; repair 2: `theorem_nested_refusal_is_never_counted`, `theorem_nested_lock_timeout_keeps_the_counter_row`, `theorem_held_counter_row_refuses_a_valid_commit`, `theorem_in_transaction_row_save_blocks_other_writers`; native binding observed the 40 s uncounted refusal, the 30 s counted one, the reused seq and key, and (repair 2) the 10 s `inconsistent` refusal behind a held counter row.
 - Expands: [Commit](#ledger.commit)
 - agent
 - architecture-decision, data-integrity
@@ -474,6 +478,8 @@ This supersedes spec 213 FR-047, under which a commit refused an open transactio
 Findings: [The ledger API contract still lists the pre-4.7.0 transaction errors and omits the history filters and wire fields the product uses](../../Verus_verification/bugs_issues.md#bug-doc-014)
 
 Findings: [A commit refused while another caller's transaction holds the ledger head is not counted, and other counter changes made meanwhile are lost](../../Verus_verification/bugs_issues.md#bug-led-014)
+
+Findings: [While a caller's transaction holds the ledger's counter row but not its head, every other connection's valid commit fails as LedgerInconsistencyError](../../Verus_verification/bugs_issues.md#bug-led-017)
 
 State machines: [ledger client](../../Verus_verification/models/ledger_client/manifest.json)
 
@@ -531,7 +537,7 @@ Findings: [The user guide says a repeated commit replays, which holds only with 
 ### ledger.observability
 
 - Sources: [ledger-prometheus-hook.md](../../../docs/ledger-prometheus-hook.md), [ledger API contract stats and hook](../../../specs/213-graph-revision-ledger/contracts/ledger-api.md#L31-L33), [client.py _emit and stats](../../../iris_vector_graph/ledger/client.py#L505-L575), [LedgerStats.cls](../../../iris_src/src/Graph/KG/LedgerStats.cls)
-- Verus (iteration 60, repaired after review 60): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) `theorem_one_event_per_server_call`, `theorem_uncounted_outcomes` (which outcomes are uncounted, and that nothing is counted while another transaction holds the counter row) and the counter conclusions of `theorem_retry_with_new_metadata_replays`, `theorem_expected_head_outcomes`, `theorem_disabled_and_never_enabled`, `theorem_size_limit_boundary`, `theorem_failed_operation_reported`, `theorem_caller_transaction_holds_the_head`, `theorem_uncounted_nested_refusal_leaves_the_counter_row`; strict-mode refusal counting is [platform](../../Verus_verification/models/platform/NOTES.md) `theorem_strict_paths`.
+- Verus (iteration 60, repaired after review 60): [ledger_client](../../Verus_verification/models/ledger_client/NOTES.md) `theorem_one_event_per_server_call`, `theorem_uncounted_outcomes` (which outcomes are uncounted, and that nothing is counted while another transaction holds the counter row) and the counter conclusions of `theorem_retry_with_new_metadata_replays`, `theorem_expected_head_outcomes`, `theorem_disabled_and_never_enabled`, `theorem_size_limit_boundary`, `theorem_failed_operation_reported`, `theorem_caller_transaction_holds_the_head`, `theorem_uncounted_nested_refusal_leaves_the_counter_row`; repair 2: `theorem_nested_refusal_is_never_counted`, `theorem_held_counter_row_refuses_a_valid_commit`, `theorem_in_transaction_row_save_blocks_other_writers` (the strict count and verify's record made on the caller's connection); strict-mode refusal counting is [platform](../../Verus_verification/models/platform/NOTES.md) `theorem_strict_paths`.
 - Expands: [Commit](#ledger.commit)
 - agent
 - operations
@@ -541,7 +547,7 @@ Added in iteration 60 from the test-obligation map ([obligations](../../uplift/c
 
 Findings: [The metrics hook is not called for a commit the client refuses before sending, though its document says every commit call reports once](../../Verus_verification/bugs_issues.md#bug-doc-013)
 
-Findings: [A commit refused while another caller's transaction holds the ledger head is not counted, and other counter changes made meanwhile are lost](../../Verus_verification/bugs_issues.md#bug-led-014), [A revision field longer than its column is refused as LedgerInconsistencyError after the changeset was applied, and is not counted](../../Verus_verification/bugs_issues.md#bug-led-015)
+Findings: [A commit refused while another caller's transaction holds the ledger head is not counted, and other counter changes made meanwhile are lost](../../Verus_verification/bugs_issues.md#bug-led-014), [A revision field longer than its column is refused as LedgerInconsistencyError after the changeset was applied, and is not counted](../../Verus_verification/bugs_issues.md#bug-led-015), [While a caller's transaction holds the ledger's counter row but not its head, every other connection's valid commit fails as LedgerInconsistencyError](../../Verus_verification/bugs_issues.md#bug-led-017)
 
 State machines: [ledger client](../../Verus_verification/models/ledger_client/manifest.json)
 
