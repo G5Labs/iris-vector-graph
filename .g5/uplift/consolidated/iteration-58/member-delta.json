@@ -1,0 +1,183 @@
+{
+  "before": {
+    "revision": "2ae9e1d5 (start of iteration 58; freeze 2429a0a3 changed only iteration-58 files)",
+    "active": 696,
+    "union": 907
+  },
+  "after": {
+    "revision": "working tree at the iteration-58 seal",
+    "active": 706,
+    "union": 914
+  },
+  "denominator": 4130,
+  "newly_bound": [
+    {
+      "member": "iris_vector_graph/_engine/query.py::_bool_expr_value",
+      "existing_locator": false,
+      "roles": [
+        "models result_decoders.rs::dec_bool_expr: reader: 1/0 to booleans, null kept",
+        "proves result_decoders.rs::theorem_compare_is_boolean_or_null: reader: a comparison column is a boolean or null"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/query.py::_decode_bool_text_columns",
+      "existing_locator": false,
+      "roles": [
+        "models result_decoders.rs::decode: reader: prop_text_expr_columns and bool_expr_columns decoders"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_is_node_value_var",
+      "existing_locator": false,
+      "roles": [
+        "models result_decoders.rs::reads_node_value: decision: a WITH variable is a node value only when bound to a bare property (prop_text_vars)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_json_text_list_agg",
+      "existing_locator": true,
+      "roles": [
+        "proves clause_combos.rs::theorem_after_match_follows_rule: decision: collect over no value answers []"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_null_row_aggregate",
+      "existing_locator": true,
+      "roles": [
+        "models clause_combos.rs::null_row_aggregate: decision: synthetic null row of a leading grouped OPTIONAL MATCH: count(*) 1, count(x) 0, collect [], others NULL (sum null: bug-agg-001)",
+        "witnesses clause_combos.rs::theorem_leading_grouped_sum_is_null: decision: leading grouped OPTIONAL MATCH with no match answers sum null (bug-agg-001)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_unwind_bool_flag",
+      "existing_locator": false,
+      "roles": [
+        "models clause_combos.rs::route: decision: flag column of an UNWIND list mixing booleans with other kinds"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_unwind_json_text",
+      "existing_locator": false,
+      "roles": [
+        "proves clause_combos.rs::theorem_distinct_json_route_follows_rule: decision: CY_LIST_KINDS JSON column of a run-time list row selected as itself"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_zero_if_null",
+      "existing_locator": true,
+      "roles": [
+        "proves clause_combos.rs::theorem_after_match_follows_rule: decision: SUM over no value answers 0 (CASE WHEN SUM IS NULL)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::labels_subquery",
+      "existing_locator": false,
+      "roles": [
+        "models result_decoders.rs::labels_col: encoding: node triplet labels COALESCE(JSON_ARRAYAGG(label), '[]')",
+        "witnesses result_decoders.rs::theorem_optional_node_labels: encoding: an unbound OPTIONAL node answers labels '[]' at Python/API/TX, null at Bolt (bug-plt-135)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/prop_values.py::read_prop_value",
+      "existing_locator": false,
+      "roles": [
+        "models result_decoders.rs::dec_typed: reader: CY_TYPED mark, then JSON list/map"
+      ]
+    }
+  ],
+  "newly_reached": [
+    "iris_vector_graph/_engine/query.py::_bool_expr_value",
+    "iris_vector_graph/_engine/query.py::_decode_bool_text_columns",
+    "iris_vector_graph/cypher/translator.py::_is_node_value_var",
+    "iris_vector_graph/cypher/translator.py::_unwind_bool_flag",
+    "iris_vector_graph/cypher/translator.py::_unwind_json_text",
+    "iris_vector_graph/cypher/translator.py::labels_subquery",
+    "iris_vector_graph/prop_values.py::read_prop_value"
+  ],
+  "existing_locator_gaining_binding": [
+    "iris_vector_graph/cypher/translator.py::_json_text_list_agg",
+    "iris_vector_graph/cypher/translator.py::_null_row_aggregate",
+    "iris_vector_graph/cypher/translator.py::_zero_if_null"
+  ],
+  "strengthened": [
+    {
+      "member": "iris_vector_graph/_engine/query.py::_decode_typed_value_columns",
+      "by": [
+        "result_decoders.rs::dec_typed: reader: typed columns through read_prop_value",
+        "result_decoders.rs::theorem_typed_roundtrip: reader: every typed shape round-trips every written kind under both drivers"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/query.py::_finish_sql_result",
+      "by": [
+        "result_decoders.rs::decode: pipeline: decoder order for every translated statement"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_expr_aggregation",
+      "by": [
+        "clause_combos.rs::as_built_sql: decision: count(b) counts non-null joined rows, count(*) the rows (one null row when nothing matched)",
+        "clause_combos.rs::theorem_null_row_counts: decision: count(b) 0 / count(*) 1 / sum 0 / avg null / collect [] for an unmatched anchor after a MATCH",
+        "clause_combos.rs::group_key: decision: count(DISTINCT) over the plain argument (bug-cyp-149)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_is_typed_coalesce",
+      "by": [
+        "result_decoders.rs::reads_node_value: decision: coalesce typed only as a RETURN item of node properties and scalars"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_reads_node_value",
+      "by": [
+        "result_decoders.rs::reads_node_value: decision: a RETURN item is a typed node-value read (property, WITH of a bare property, RETURN coalesce, abs, arithmetic); no CASE arm",
+        "result_decoders.rs::theorem_case_number_by_driver: decision: a CASE column is not typed (stored boolean/list/map text; number text under driver 5.4.1; bug-cyp-156)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_scalar_coalesce",
+      "by": [
+        "result_decoders.rs::sql_form: encoding: coalesce's first argument CAST to VARCHAR in a WITH stage",
+        "result_decoders.rs::theorem_with_coalesce_number_is_text: encoding: a WITH coalesce column answers a stored number as text (bug-cyp-155)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::translate_return_clause",
+      "by": [
+        "clause_combos.rs::theorem_leading_pure_follows_rule: decision: leading pure-aggregate OPTIONAL MATCH count(*) patched 0 -> 1 (R298)",
+        "clause_combos.rs::as_built_answer: decision: the null row's items are taken from _null_row_aggregate",
+        "clause_combos.rs::theorem_group_iff_bound_text: decision: GROUP BY an UNWIND row by its plain bound value, not its kind column (bug-cyp-149)",
+        "clause_combos.rs::theorem_group_merges_kinds: decision: 1/true and a list/its spelling merge under GROUP BY and count(DISTINCT) (bug-cyp-149)",
+        "clause_combos.rs::theorem_distinct_flag_route_keeps_bool_apart: decision: RETURN DISTINCT of an UNWIND row of booleans mixed with other kinds compares the flag CASE item",
+        "result_decoders.rs::sql_form: emission: CY_TYPED(sql) + typed_value_aliases for a typed item, else `sql AS alias`; bool_expr_aliases for a boolean item"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::translate_where_clause",
+      "by": [
+        "clause_combos.rs::placed_in_on: decision: a WHERE inside OPTIONAL MATCH placed in the outer join's ON",
+        "clause_combos.rs::theorem_new_alias_only_keeps_row: decision: every condition over the new alias only runs and keeps the row"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/prop_values.py::decode_json_list_map",
+      "by": [
+        "result_decoders.rs::dec_typed: reader: '[]'/'{}' text to list/map"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/prop_values.py::decode_typed_text",
+      "by": [
+        "result_decoders.rs::dec_typed: reader: CY_TYPED mark N/D to int/float"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/prop_values.py::parse_prop_text",
+      "by": [
+        "result_decoders.rs::dec_prop_text: reader: 'true'/'false' to booleans"
+      ]
+    }
+  ],
+  "lost_active": [],
+  "lost_union": []
+}
