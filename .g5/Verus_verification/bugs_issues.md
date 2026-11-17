@@ -1,8 +1,6 @@
-# Bugs and issues — iteration 13 findings audit
+# Bugs and issues
 
-Git `eceb147d37720658e34b07f279cc267870fd393c`; product `3eaa79cf`. This is a fresh audit, with no product repair or uplift iteration. There are 46 ordinary entries with executable evidence: 42 e2e reproduced and 4 partial reproduced. Another 107 security-related entries are explicitly **outside active reproduction scope** and received defensive source/existing-evidence review only. Entries are ordered by severity; each declares its evidence scope.
-
-All 434 starting IDs are reconciled. The 281 removed entries retain stable IDs and historical evidence in the [review record](audits/register-20261115/bugs-review.md). Lack of reproduction is not proof of correctness. [Counts, commands and limitations](audits/register-20261115/README.md).
+Each entry explains a recorded problem, its impact and the evidence. Findings that still need confirmation are marked in their entries.
 
 ## Findings by severity and evidence scope
 
