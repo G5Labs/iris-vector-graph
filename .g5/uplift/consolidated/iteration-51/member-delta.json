@@ -1,0 +1,188 @@
+{
+ "before": {
+  "revision": "7539e169^ = 0532ac86 (iteration-50 seal plus master inventory)",
+  "active": 505
+ },
+ "after": {
+  "revision": "working tree (iteration 51 seal)",
+  "active": 537
+ },
+ "denominator": 4130,
+ "newly_reached_and_bound": [
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::BucketGroupsEvents",
+   "reason": "reader: the cut part of a group read, edge by edge (row_part)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::FindBursts",
+   "reason": "decision: predicate argument unread (F-0508); listed when total >= threshold (burst_listed); decision (same lines): the answer does not depend on the predicate (theorem_bursts_ignore_predicate); decision: threshold inclusive (theorem_burst_threshold_inclusive)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::GetAggregate",
+   "reason": "decision: whole bucket from tagg, cut bucket from tout (bucket_part); decision (same lines): a cut bucket reads exactly the window (theorem_cut_bucket_is_exact); decision (same lines): a whole bucket reads its statistics (theorem_one_whole_bucket_reads_statistics); reader: metric answer, \"\" for missing min/max/avg and unknown metric (server_answer)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::GetBucketGroupTargets",
+   "reason": "reader: distinct targets of the raw edges in exactly the window (is_target); reader (same lines): follows the raw edges through both purges (theorem_targets_follow_raw)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::GetBucketGroups",
+   "reason": "reader: one row per (source, predicate) with something in the window (group_row); reader (same lines): the rolled-back first write row (1, w, null, null) (theorem_rolled_back_group_row)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::GetDistinctCount",
+   "reason": "reader: merge sketches over every bucket the window touches (merged); decision: raw estimator, 0 only for an all-zero sketch (bug-tmp-103) (estimate); decision (same lines): any set register answers >= 11 (theorem_distinct_nonempty_at_least_eleven); decision (same lines): one target answers 11 for every hash (theorem_distinct_one_target_is_eleven); decision: the all-zero guard (theorem_distinct_empty_is_zero); decision: window rounded out to touched buckets (theorem_distinct_window_rounded_out)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::GetVelocity",
+   "reason": "decision: buckets (now - window) \\ div to now \\ div; now = nowTs or the seconds clock (velocity); decision (same lines): a fresh event counts iff its bucket is touched (theorem_velocity_counts_touched_buckets)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::HLLAdd",
+   "reason": "effect: register index and rank from SHA-1 bytes 1 and 2; registers only rise (hll_add); effect (same lines): adding a target twice changes nothing (theorem_same_target_twice)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::HLLEmpty",
+   "reason": "effect: the all-zero 16-register sketch (hll_empty)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::InternLabelSet",
+   "reason": "effect: canonical text with sorted keys and unescaped string values (bug-tmp-104) (canon); effect (same lines): distinct sets share a text (theorem_label_sets_collide)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::PurgeBucketRange",
+   "reason": "effect: Kill tagg and bucket of each bucket in range that holds tagg; return their number (purge_buckets); decision (same lines): whole read zero, cut read keeps raw (theorem_bucket_purge_whole_vs_cut); decision: reversed range returns 0 (theorem_bucket_purge_reversed_range)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::PurgeRawBefore",
+   "reason": "effect: raw edges in [start, end) only; statistics stay (purge_raw_before); effect (same lines): statistics frame (theorem_raw_purge_keeps_statistics)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::RebuildBucketAggregate",
+   "reason": "decision: recompute count/sum/min/max/sketch from survivors, Kill when none (rebuild); decision (same lines): statistics after a delete equal the survivors (theorem_delete_rebuilds_from_survivors); decision (same lines): rebuild runs even when a bucket-range purge removed the statistics (theorem_delete_after_bucket_purge_recreates)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::RemoveTemporalRow",
+   "reason": "effect: remove raw, bucket counter -1 (Kill at <= 0), rebuild (delete_at)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::ResolveLabelSet",
+   "reason": "reader: the stored canonical text, or empty (canon)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::UpdateHLL",
+   "reason": "effect: Set the sketch only when it changed (stores_written)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndexMS.cls::GetBucketCount",
+   "reason": "reader: one bucket counter (millisecond class) (bucket_count)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.find_burst_nodes",
+   "reason": "final reader: passes the predicate to FindBursts, JSON rows (burst_listed)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.get_bucket_group_targets",
+   "reason": "final reader: JSON list of GetBucketGroupTargets (is_target)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.get_bucket_groups",
+   "reason": "final reader: JSON rows of GetBucketGroups (group_row)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.get_distinct_count",
+   "reason": "final reader: int of GetDistinctCount (distinct)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.get_edge_velocity",
+   "reason": "final reader: window alias, int of GetVelocity (velocity)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.get_temporal_aggregate",
+   "reason": "final reader: int for count, float otherwise (store row) (get_temporal_aggregate)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.intern_label_set",
+   "reason": "producer: json.dumps of the dict (escaped) to InternLabelSet, which decodes it (canon)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.purge_bucket_range",
+   "reason": "caller: bucket range to PurgeBucketRange via the store (purged_count)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.purge_raw_before",
+   "reason": "caller: raw purge via the store (statistics frame) (purge_raw_before)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.resolve_label_set",
+   "reason": "final reader: resolve via the store (canon)"
+  },
+  {
+   "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.get_temporal_aggregate",
+   "reason": "decision: float(str(v)) if str(v) else 0.0 -- the driver None becomes text None and raises (bug-tmp-009) (py_value); decision (same lines): every empty answer raises (theorem_empty_answer_raises)"
+  },
+  {
+   "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.intern_label_set",
+   "reason": "caller: str of InternLabelSet (canon)"
+  },
+  {
+   "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.purge_bucket_range",
+   "reason": "caller: int of PurgeBucketRange (purged_count)"
+  },
+  {
+   "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.purge_raw_before",
+   "reason": "caller: PurgeRawBefore with the range; parse deleted:skipped:retired (purge_raw_before)"
+  },
+  {
+   "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.resolve_label_set",
+   "reason": "caller: str of ResolveLabelSet or empty (canon)"
+  }
+ ],
+ "lost": [],
+ "strengthened": [
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::BulkInsertCounts",
+   "reason": "caller: batch resolves mode once and calls WriteStores per item (delegate, same decision) (write)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::DeleteTemporalEdge",
+   "reason": "caller: occupied check, RemoveTemporalRow (delegate for the statistics) (delete_at)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::InsertEdge",
+   "reason": "caller: single write resolves mode and calls WriteStores (delegate, same decision) (write)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/TemporalIndex.cls::WriteStores",
+   "reason": "decision: collision/skip guard; update has no early return (bug-tmp-002) (write); decision (same lines): update counts the edge again (theorem_update_counts_twice); effects: bucket $Increment, tagg count/sum $Increment, min/max Set, sketch (stores_written); decision: an insert at occupied coordinates changes no store (theorem_collision_changes_nothing)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.bulk_create_edges_temporal",
+   "reason": "writer entry: batch write into the statistics (write)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.create_edge_temporal",
+   "reason": "writer entry: single write with mode (update path decides bug-tmp-002 on the reader) (theorem_update_whole_vs_cut)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/temporal.py::TemporalMixin.delete_edge_temporal",
+   "reason": "writer entry: delete into the statistics rebuild (delete_at)"
+  }
+ ],
+ "delegates_justified": [
+  "InsertEdge, BulkInsertCounts, DeleteTemporalEdge, the engine writer entries and the store purge/label-set callers pass their arguments to the bound ObjectScript member without changing the decision; each row names the shared formal item"
+ ],
+ "excluded_or_unassessed": {
+  "TemporalIndex.cls::BulkInsert": "wrapper returning the first count of BulkInsertCounts; not exercised by any Python path, left unbound",
+  "NoteLatest/Relatest/RelatestRange/RebuildLatest, TemporalWindow.Latest, get_latest_edges, rebuild_temporal_latest": "probe-observed (L1-L8 held), no Verus claim yet; residual",
+  "GetEdgeAttrs/get_edge_attrs, QueryWindowSources/get_window_sources, RetireExpired, EraseNodes/EraseGraph/EraseAll, Migrate*, RebuildBucket, Purge, Backfill*": "not in this batch; unassessed here"
+ },
+ "counts": {
+  "newly_reached_and_bound": 32,
+  "strengthened": 7,
+  "overlap": 0,
+  "distinct_additions": 39,
+  "lost": 0
+ },
+ "command": "python3 .g5/Verus_verification/tools/member_reach.py --out <before> (at 0532ac86 working tree before edits); python3 .g5/Verus_verification/tools/member_reach.py --out <after>"
+}

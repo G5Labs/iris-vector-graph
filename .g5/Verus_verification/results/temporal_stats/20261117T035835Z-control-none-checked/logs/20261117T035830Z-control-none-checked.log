@@ -1,0 +1,59 @@
+verification results:: 48 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T035830Z/models/temporal_stats/temporal_stats.rs:464:13
+    |
+459 |   pub proof fn theorem_rolled_back_first_write(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    |   ------------------------------------------------------------------------------------------- at the end of the function body
+...
+464 |       ensures ({
+    |  _____________^
+465 | |         let st2 = rolled_back(st, write(st, 300, hf, Mode::Insert, e));
+466 | |         let b = bucket_of(e.ts, 300);
+467 | |         &&& st2.raw == st.raw
+...   |
+473 | |         &&& !st2.hll.contains_key(k4(e, 300))
+474 | |     }),
+    | |______^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T035830Z/models/temporal_stats/temporal_stats.rs:522:1
+    |
+522 | pub proof fn theorem_empty_answer_raises(a: Agg, m: Metric)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T035830Z/models/temporal_stats/temporal_stats.rs:524:9
+    |
+522 | pub proof fn theorem_empty_answer_raises(a: Agg, m: Metric)
+    | ----------------------------------------------------------- at the end of the function body
+523 |     ensures
+524 |         server_answer(a, m) == SAns::Empty ==> py_value(server_answer(a, m), m) == Py::Raises && documented_py(a, m) == Py::Float(0),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T035830Z/models/temporal_stats/temporal_stats.rs:525:9
+    |
+522 | pub proof fn theorem_empty_answer_raises(a: Agg, m: Metric)
+    | ----------------------------------------------------------- at the end of the function body
+...
+525 |         a.count == 0 && a.min.is_none() ==> py_value(server_answer(a, Metric::Min), Metric::Min) == Py::Raises,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T035830Z/models/temporal_stats/temporal_stats.rs:582:13
+    |
+580 |   pub proof fn theorem_bucket_purge_whole_vs_cut(st: St, g: int, s: int, p: int, b: int, x: int)
+    |   ---------------------------------------------------------------------------------------------- at the end of the function body
+581 |       requires b_lo(b, 300) < x <= b_hi(b, 300), st.cnt.contains_key((g, b, s, p)),
+582 |       ensures ({
+    |  _____________^
+583 | |         let st2 = purge_buckets(st, g, b, b);
+584 | |         &&& st2.raw == st.raw
+585 | |         &&& get_aggregate(st2, 300, g, s, p, b_lo(b, 300), b_hi(b, 300)) == zero()
+...   |
+589 | |         &&& purged_count(st, g, b, b) == 1
+590 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

@@ -1362,6 +1362,8 @@ Audit: Working assumption (agent, unratified): Keep retained aggregate history d
 
 Canonical owner: [temporal.stats.cut-bucket](#q-tmp-002).
 
+Iteration 51 evidence (additive): the same rebuild also undoes a bucket-range purge. After `purge_bucket_range(b, b)`, deleting one edge of b recreates b's aggregates from its surviving edges (whole-bucket count 2, sum 13) while its event counter stays removed (velocity 0), so aggregates and velocity disagree about b ([temporal_stats](models/temporal_stats/NOTES.md) `theorem_delete_after_bucket_purge_recreates`, control `delete-skips-missing-statistics`; [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `agg_qb_*`, `vel_qb_299`). After a raw purge, a rewrite then delete in the cut bucket drops the purged history from the aggregates (count 0) while the counter keeps it (velocity 3) (`agg_pb_*`, `vel_pb_299`). Either answer to this question should also say what a delete does after a bucket-range purge. Owner: [temporal.stats.after-purge](../ontology/features/temporal.g5.md#temporal.stats.after-purge).
+
 ```g5-question
 schema: 1
 id: temporal.stats.cut-bucket

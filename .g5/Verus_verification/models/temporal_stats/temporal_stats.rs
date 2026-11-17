@@ -279,6 +279,8 @@ pub open spec fn is_target(st: St, g: int, s: int, p: int, lo: int, hi: int, o: 
 /// GetVelocity (757-770): the bucket counters of s from (now - window) \ div to now \ div. now: nowTs when > 0,
 /// else the wall clock in seconds (also in TemporalIndexMS).
 pub open spec fn now_of(now_ts: int, clock_s: int) -> int { if now_ts > 0 { now_ts } else { clock_s } }
+/// TemporalIndexMS.GetBucketCount: one bucket counter (0 when absent).
+pub open spec fn bucket_count(st: St, g: int, b: int, s: int) -> int { get0(st.bkt, (g, b, s)) }
 pub open spec fn bkt_sum(st: St, g: int, s: int, b: int, eb: int) -> int decreases eb + 1 - b {
     if b > eb { 0 } else { get0(st.bkt, (g, b, s)) + bkt_sum(st, g, s, b + 1, eb) }
 }
@@ -672,6 +674,9 @@ pub proof fn theorem_targets_follow_raw(st: St, g: int, s: int, p: int, lo: int,
         is_target(purge_buckets(st, g, bs, be), g, s, p, lo, hi, o) == is_target(st, g, s, p, lo, hi, o),
         !is_target(purge_raw_before(st, g, lo, hi + 1), g, s, p, lo, hi, o),
 {
+    let st2 = purge_buckets(st, g, bs, be);
+    assert(st2.raw == st.raw);
+    assert(is_target(st2, g, s, p, lo, hi, o) == is_target(st, g, s, p, lo, hi, o));
     lemma_purge_targets(st.raw, g, lo, hi, s, p);
 }
 

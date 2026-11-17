@@ -1,0 +1,51 @@
+verification results:: 48 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/update-keeps-statistics/20261117T035910Z/models/temporal_stats/temporal_stats.rs:404:13
+    |
+402 |   pub proof fn theorem_update_counts_twice(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    |   --------------------------------------------------------------------------------------- at the end of the function body
+403 |       requires occupied(st.raw, e),
+404 |       ensures ({
+    |  _____________^
+405 | |         let st2 = write(st, 300, hf, Mode::Update, e);
+406 | |         let k = k4(e, 300);
+407 | |         &&& get0(st2.cnt, k) == get0(st.cnt, k) + 1
+...   |
+410 | |             == raw_agg(st.raw, e.g, e.s, e.p, b_lo(k.1, 300), b_hi(k.1, 300)).count
+411 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/update-keeps-statistics/20261117T035910Z/models/temporal_stats/temporal_stats.rs:427:13
+    |
+425 |   pub proof fn theorem_update_whole_vs_cut(hf: spec_fn(int) -> (int, int), e0: Ev, w1: int, lo: int)
+    |   -------------------------------------------------------------------------------------------------- at the end of the function body
+426 |       requires 0 <= e0.ts, b_lo(bucket_of(e0.ts, 300), 300) < lo <= e0.ts,
+427 |       ensures ({
+    |  _____________^
+428 | |         let e1 = Ev { w: w1, ..e0 };
+429 | |         let b = bucket_of(e0.ts, 300);
+430 | |         let st2 = write(write(empty_st(), 300, hf, Mode::Insert, e0), 300, hf, Mode::Update, e1);
+...   |
+433 | |         &&& get_aggregate(st2, 300, e0.g, e0.s, e0.p, lo, b_hi(b, 300)) == one(w1)
+434 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/update-keeps-statistics/20261117T035910Z/models/temporal_stats/temporal_stats.rs:771:13
+    |
+769 |   pub proof fn theorem_update_then_delete_leaves_velocity(hf: spec_fn(int) -> (int, int), e0: Ev, w1: int)
+    |   -------------------------------------------------------------------------------------------------------- at the end of the function body
+770 |       requires 0 <= e0.ts,
+771 |       ensures ({
+    |  _____________^
+772 | |         let e1 = Ev { w: w1, ..e0 };
+773 | |         let st2 = write(write(empty_st(), 300, hf, Mode::Insert, e0), 300, hf, Mode::Update, e1);
+774 | |         let st3 = delete_at(st2, 300, hf, 0);
+...   |
+777 | |         &&& !st3.cnt.contains_key(k4(e0, 300))
+778 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

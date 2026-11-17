@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/update-keeps-statistics/20261117T035910Z/models/temporal_stats/temporal_stats.rs:404:13
+    |
+402 |   pub proof fn theorem_update_counts_twice(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    |   --------------------------------------------------------------------------------------- at the end of the function body
+403 |       requires occupied(st.raw, e),
+404 |       ensures ({
+    |  _____________^
+405 | |         let st2 = write(st, 300, hf, Mode::Update, e);
+406 | |         let k = k4(e, 300);
+407 | |         &&& get0(st2.cnt, k) == get0(st.cnt, k) + 1
+...   |
+410 | |             == raw_agg(st.raw, e.g, e.s, e.p, b_lo(k.1, 300), b_hi(k.1, 300)).count
+411 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

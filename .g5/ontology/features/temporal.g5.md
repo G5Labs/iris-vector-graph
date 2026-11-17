@@ -17,6 +17,8 @@ Temporal edges record when events happened between nodes. IVG keeps them in a ti
 - **Raw purge**: removal of temporal edges in a time range for retention.
 - **Bare node**: a node with no edge, label, property, document or embedding in its graph.
 - **Changeset**: a group of operations committed to the ledger as one revision.
+- **Event counter**: for each bucket and source, the number of events the statistics hold; velocity and burst reads add these up.
+- **Label set**: a set of attribute keys and values interned once under a hash, for long-term retention.
 
 ## Temporal edges and writes
 
@@ -112,6 +114,7 @@ The statistics summarize the temporal edges written to each bucket, so windowed 
 - The distinct-target count is an estimate with an error of about a quarter.
 - A velocity read counts one source's events, over every predicate, in the whole buckets that a recent window touches.
 - A burst read lists every source whose velocity over such a window reaches a threshold.
+- The children say how each read is answered and how each kind of write changes the statistics.
 
 - Working assumption: Keep retained aggregate history distinct from surviving raw edges; recomputation after partial raw purge needs an explicit history-retention rule.
 
@@ -122,6 +125,53 @@ The statistics summarize the temporal edges written to each bucket, so windowed 
 A raw purge keeps the statistics, so they go on describing the past after the edges they summarize are gone.
 - Statistics are removed separately, by bucket range, and that never touches temporal edges.
 - An aggregate read over a bucket cut by both the window and a purge counts none of the purged part.
+- A bucket-range purge returns how many buckets in the range held statistics; a range whose start is after its end removes nothing and returns 0.
+- After a bucket-range purge, a read that holds the bucket whole answers nothing for it even while its edges remain, and a read that cuts the bucket still counts those edges.
+- A later delete in a range-purged bucket rebuilds the bucket's aggregates from its surviving edges but not its event counters, so aggregates and velocity then disagree about that bucket. Which rule should win is [open](../../Verus_verification/open_questions.md#q-tmp-002).
+
+
+<a id="temporal.stats.window"></a>
+[I · temporal.stats.window]
+
+Aggregate, group and target reads answer exactly the requested window, both ends included.
+- A bucket the window holds whole is answered from its statistics; a bucket the window cuts is read edge by edge.
+- The metrics are count, sum, minimum, maximum and average; the average is rounded to six decimal places.
+- An empty window, a missing minimum or maximum, or an unknown metric must answer 0 or 0.0. Today the Python reader raises `ValueError` for minimum, maximum, average and unknown metrics in those cases.
+- A group read returns one row per source and predicate that has something in the window, and no row for one that has nothing. A row carries no target.
+- A target read lists the distinct targets of one source's edges in exactly the window, read from the edges themselves, so a raw purge empties it and a bucket-range purge does not.
+- Each read sees only its own graph.
+
+
+<a id="temporal.stats.writers"></a>
+[I · temporal.stats.writers]
+
+Each kind of write changes the statistics of the edge's bucket in a fixed way.
+- An insert at free coordinates counts the edge once: count, sum, minimum, maximum, the distinct-target sketch and the source's event counter.
+- An insert or skip at occupied coordinates changes nothing.
+- An update at occupied coordinates counts the edge again in count, sum, extremes and event counter, although one edge remains. The docs say the statistics keep the original value; what they should hold is [open](../../Verus_verification/open_questions.md#temporal.write.update-statistics).
+- A delete rebuilds the bucket's count, sum, extremes and sketch from its surviving edges and lowers the event counter by one, removing it at zero.
+- A write rolled back by its caller leaves its count, sum and event counter, while its edge, extremes and sketch are undone. A whole-bucket read can then report a count with no minimum or maximum.
+
+
+<a id="temporal.stats.velocity"></a>
+[I · temporal.stats.velocity]
+
+Velocity and burst reads count events from the per-source event counters of every bucket from the one holding now minus the window to the one holding now.
+- The bucket holding now counts whole, so an event later than now in that bucket counts too; so does an event up to a bucket before the window's start.
+- A source's events over every predicate count. The burst read accepts a predicate and does not use it, although its parameter documentation says it filters.
+- A burst read lists a source when its total reaches the threshold, the threshold itself included, and only sources holding a counter in those buckets.
+- Now is the caller's timestamp when one is given, otherwise the wall clock in seconds.
+- In the millisecond entry point the default now is still in seconds, so an event stored in milliseconds is never counted unless the caller passes now.
+
+
+<a id="temporal.stats.distinct"></a>
+[I · temporal.stats.distinct]
+
+A distinct-target read estimates how many distinct targets one source's edges of one predicate reach, or every source's when no source is named.
+- It merges the sketches of every bucket the window touches, so a target outside the window in a touched bucket counts.
+- An empty window answers 0, and the estimate must stay within about a quarter of the true number.
+- Today any window that holds at least one target answers at least 11, so one target answers 11 and the error is large below about 40 targets.
+- A delete rebuilds the sketch from the surviving edges; a raw purge keeps it; a bucket-range purge removes it.
 
 
 <a id="temporal.latest"></a>
@@ -329,6 +379,19 @@ The server handle of a paged read is freed exactly once, by whichever comes firs
 - Today's server never sends an empty page that is not marked done: a page stops only at its row count, its size limit or the end of the window, and each of the first two holds at least one row.
 
 
+## Label sets
+
+
+<a id="temporal.labelset"></a>
+[I · temporal.labelset]
+
+Interning a set of attributes stores its canonical JSON text once and returns the SHA-1 hash of that text, so equal sets share one hash and different sets get different hashes.
+- Keys are sorted; numbers stay numbers, booleans booleans and null null, and key order does not change the hash.
+- Resolving a known hash returns the canonical text, and an unknown hash returns an empty string.
+- Interned sets are append-only: no purge removes them.
+- Today string values are written without JSON escaping and a fraction below one is written as `.5`. A value holding a quote can therefore produce the same text and hash as a different set, and some resolved texts are not JSON.
+
+
 ## Retention and erasure
 
 
@@ -483,7 +546,7 @@ State machines: [retry replay](../../Verus_verification/models/retry_replay/mani
 
 - uncertain
 - Sources: [GetAggregate](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1442-L1491), [exact window](../../../CHANGELOG.md#L1221-L1224), [distinct count](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L627-L686); live tests: [exact window](../../../tests/e2e/test_460_r217_temporal_aggregate_window_e2e.py)
-- Children: [after purge](#temporal.stats.after-purge), [After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?](../../Verus_verification/open_questions.md#q-tmp-002)
+- Children: [after purge](#temporal.stats.after-purge), [window reads](#temporal.stats.window), [writers](#temporal.stats.writers), [velocity and bursts](#temporal.stats.velocity), [distinct targets](#temporal.stats.distinct), [After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?](../../Verus_verification/open_questions.md#q-tmp-002)
 - agent
 - user-facing-behavior
 - test-coverage
@@ -504,12 +567,73 @@ Findings: [find_burst_nodes accepts a predicate and ignores it](../../Verus_veri
 
 Open questions: [After a raw purge cuts a bucket, should a later delete in that bucket keep the purged history in its statistics?](../../Verus_verification/open_questions.md#q-tmp-002)
 
+Formal (iteration 51): [write history to statistics to reader](../../Verus_verification/models/temporal_stats/temporal_stats.rs), [claims, roles and premises](../../Verus_verification/models/temporal_stats/NOTES.md). Evidence: [frozen predictions](../../uplift/consolidated/iteration-51/stats-PAIRS.md).
+
+State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
+
 ### temporal.stats.after-purge
 - Sources: [spec 204 US1](../../../specs/204-temporal-index-gaps/spec.md#L20-L48), [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L31-L49), [PurgeBucketRange](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1048-L1066); live tests: [ledger coexistence](../../../tests/integration/test_ledger_us11_temporal_coexist.py)
 - Expands: [Statistics](#temporal.stats)
 - agent
 - operations, data-integrity
-- test-coverage
+- uncertain
+- design-verified
+- Formal: [`theorem_raw_purge_keeps_statistics`, `theorem_raw_purge_whole_vs_cut`, `theorem_bucket_purge_whole_vs_cut`, `theorem_bucket_purge_reversed_range`, `theorem_delete_after_bucket_purge_recreates`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+- Open question: [q-tmp-002](../../Verus_verification/open_questions.md#q-tmp-002)
+
+Iteration 51: the bucket-range return value, the whole-versus-cut reads after each purge and the delete after a bucket-range purge are observed on the fixture and bound ([binding receipt](../../Verus_verification/results/temporal_stats/), cases `agg_p_*`, `agg_q_*`, `agg_qb_*`, `vel_qb_299`). The previous tag `test-coverage` remains true of the purge tests.
+
+State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
+
+### temporal.stats.window
+- Sources: [GetAggregate, GetBucketGroups, BucketGroupsEvents, GetBucketGroupTargets](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1442-L1633), [store conversion](../../../iris_vector_graph/stores/iris_sql_store.py#L2971-L2987), [docstrings](../../../iris_vector_graph/_engine/temporal.py#L934-L1047), [USER_GUIDE aggregates](../../../docs/USER_GUIDE.md#L1011-L1027), [CHANGELOG R217/R249](../../../CHANGELOG.md#L1221-L1224); live tests: [exact window](../../../tests/e2e/test_460_r217_temporal_aggregate_window_e2e.py), [groups](../../../tests/e2e/test_460_r249_counters_default_graph_e2e.py)
+- Expands: [Statistics](#temporal.stats)
+- agent
+- user-facing-behavior
+- design-verified
+- Formal: [`theorem_cut_bucket_is_exact`, `theorem_one_whole_bucket_reads_statistics`, `theorem_empty_answer_raises`, `theorem_group_row_absent`, `theorem_targets_follow_raw`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+
+Findings: [bug-tmp-009](../../Verus_verification/bugs_issues.md#bug-tmp-009) (strengthened in iteration 51: an unknown metric, and a whole bucket left with a count but no extremes, raise too).
+
+State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
+
+### temporal.stats.writers
+- Sources: [WriteStores, RemoveTemporalRow, RebuildBucketAggregate](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L67-L133), [delete docstring](../../../iris_vector_graph/_engine/temporal.py#L334-L389), [create_edge_temporal docstring](../../../iris_vector_graph/_engine/temporal.py#L246-L333), [USER_GUIDE transactions](../../../docs/USER_GUIDE.md#L236-L275)
+- Expands: [Statistics](#temporal.stats)
+- agent
+- data-integrity
+- uncertain
+- design-verified
+- Formal: [`theorem_update_counts_twice`, `theorem_collision_changes_nothing`, `theorem_update_whole_vs_cut`, `theorem_rolled_back_first_write`, `theorem_rolled_back_group_row`, `theorem_committed_first_write`, `theorem_delete_rebuilds_from_survivors`, `theorem_update_then_delete_leaves_velocity`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+- Open question: [temporal.write.update-statistics](../../Verus_verification/open_questions.md#temporal.write.update-statistics)
+
+Findings: [bug-tmp-002](../../Verus_verification/bugs_issues.md#bug-tmp-002), [bug-tmp-003](../../Verus_verification/bugs_issues.md#bug-tmp-003) (both strengthened in iteration 51). The rollback rule rests on the observed premise that IRIS does not undo `$Increment` (P-INCR).
+
+State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
+
+### temporal.stats.velocity
+- Sources: [GetVelocity and FindBursts](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L757-L806), [TemporalIndexMS](../../../iris_src/src/Graph/KG/TemporalIndexMS.cls), [docstrings](../../../iris_vector_graph/_engine/temporal.py#L852-L909), [API reference](../../../docs/API_REFERENCE.md#L1910-L1995)
+- Expands: [Statistics](#temporal.stats)
+- agent
+- user-facing-behavior
+- design-verified
+- Formal: [`theorem_velocity_counts_touched_buckets`, `theorem_velocity_boundaries`, `theorem_bursts_ignore_predicate`, `theorem_burst_threshold_inclusive`, `theorem_ms_default_now_misses`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+
+Findings: [F-0508](../../Verus_verification/bugs_issues.md#F-0508) (the ignored predicate; now formal). The millisecond default is a recorded divergence, not a separate finding.
+
+State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
+
+### temporal.stats.distinct
+- Sources: [GetDistinctCount, HLLAdd, HLLEmpty, UpdateHLL](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L185-L224), [estimator](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L628-L682), [docstring](../../../iris_vector_graph/_engine/temporal.py#L1088-L1111)
+- Expands: [Statistics](#temporal.stats)
+- agent
+- user-facing-behavior
+- design-verified
+- Formal: [`theorem_distinct_empty_is_zero`, `theorem_distinct_nonempty_at_least_eleven`, `theorem_distinct_one_target_is_eleven`, `theorem_same_target_twice`, `theorem_distinct_window_rounded_out`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+
+Findings: [bug-tmp-103](../../Verus_verification/bugs_issues.md#bug-tmp-103) (new in iteration 51). The register choice comes from SHA-1 (a provider computed the same way in the binding).
+
+State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
 ### temporal.latest
 - Sources: [spec 255 Decisions](../../../specs/255-temporal-window-reader/spec.md#L162-L168), [US3 and FR-007](../../../specs/255-temporal-window-reader/spec.md#L88-L134), [spec 255 plan](../../../specs/255-temporal-window-reader/plan.md#L41-L52), [Latest](../../../iris_src/src/Graph/KG/TemporalWindow.cls#L291-L443); live tests: [latest per source](../../../tests/e2e/test_255_window_reader_us3_e2e.py)
@@ -748,6 +872,17 @@ State machines: [temporal window reader](../../Verus_verification/models/tempora
 Public cases M07 and M08. The client half is bound to the real `TemporalWindowCursor` by an enumerated comparison with a scripted server (the server substituted); the server's free-inside-Open and free-at-done are inspected at the pin, not observed here.
 
 State machines: [temporal window reader](../../Verus_verification/models/temporal_window_reader/manifest.json)
+
+### temporal.labelset
+- Sources: [InternLabelSet and ResolveLabelSet](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L1336-L1397), [docstrings](../../../iris_vector_graph/_engine/temporal.py#L835-L850), [spec 204 FR-012](../../../specs/204-temporal-index-gaps/spec.md)
+- agent
+- data-integrity
+- design-verified
+- Formal: [`theorem_label_sets_collide`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+
+Findings: [bug-tmp-104](../../Verus_verification/bugs_issues.md#bug-tmp-104) (new in iteration 51), [F-0509](../../Verus_verification/bugs_issues.md#F-0509) (strengthened: a fraction below one also gives non-JSON text). The number text `.5` is an IRIS provider rule, observed and not modeled.
+
+State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 
 ### temporal.purge
 - Sources: [spec 254 US1 and Decisions](../../../specs/254-temporal-purge-collisions-rebuild/spec.md#L38-L149), [ADR-0009 amendment](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L31-L49), [PurgeRawBefore and RetireExpired](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L856-L1046), [PurgeBefore](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L813-L854); live tests: [purge](../../../tests/e2e/test_254_purge_e2e.py)

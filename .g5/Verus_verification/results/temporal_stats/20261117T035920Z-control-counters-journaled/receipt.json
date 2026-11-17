@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: a rollback also undoes count, sum and bucket (the bug-tmp-003 repair: journaled Sets instead of $Increment)",
+    "expect_fail_in": [
+      "theorem_rolled_back_first_write",
+      "theorem_rolled_back_group_row"
+    ],
+    "find": "cnt: after.cnt, sum: after.sum, bkt: after.bkt }",
+    "name": "counters-journaled",
+    "replace": "cnt: before.cnt, sum: before.sum, bkt: before.bkt }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_rolled_back_first_write",
+      "theorem_rolled_back_group_row"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "c4cca8905fda85c41d69e50a2807ae878d73623598a187f2bb0e409f11b107a3",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "d662b9cc4b52dc5d4a93d2fc478c6b0b8ea9220cc9c95ce4ee1b3f0bd86f9ad1"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/counters-journaled/20261117T035917Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_rolled_back_first_write": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035917Z-control-counters-journaled-theorem_rolled_back_first_write.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rolled_back_group_row": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035917Z-control-counters-journaled-theorem_rolled_back_group_row.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035917Z-control-counters-journaled.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T035920Z-control-counters-journaled/logs/20261117T035917Z-control-counters-journaled-theorem_rolled_back_first_write.log": "f3aedcf9cd6c301f020094f86a03ac4c717a3eca0677ba66f625ca07b4146643",
+    ".g5/Verus_verification/results/temporal_stats/20261117T035920Z-control-counters-journaled/logs/20261117T035917Z-control-counters-journaled-theorem_rolled_back_group_row.log": "69ae4b8e2234b64cf900bab7234db6a299a2cbedf93351c55e6d1424c4393511",
+    ".g5/Verus_verification/results/temporal_stats/20261117T035920Z-control-counters-journaled/logs/20261117T035917Z-control-counters-journaled.log": "59858ee4eff9d62321da42eabd3e42e8104062b0093d0ac368a70b6705d9d492"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

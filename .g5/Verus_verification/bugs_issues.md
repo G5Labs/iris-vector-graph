@@ -89,6 +89,9 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Canonical owner and evidence: [temporal.write.update-statistics](open_questions.md#temporal.write.update-statistics), [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats).
 
+
+Iteration 51 (strengthened, not new): [temporal_stats](models/temporal_stats/NOTES.md) `theorem_update_counts_twice` proves for every state and occupied coordinate that an update adds one to count and event counter while the raw count stays; at the reader, insert 2 then update 9 answers whole-bucket count 2, sum 11, min 2, max 9, avg 5.5 and cut-window count 1, sum 9; deleting it leaves velocity 1 with no edge (`theorem_update_then_delete_leaves_velocity`). E2E on the continuation fixture: [probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `A3_upd_*`, [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `agg_a_upd_*`, `agg_a_ud_*`, `vel_a_ud`; neighbor `col` (insert collision) stays 1/2.0. Owner: [temporal.stats.writers](../ontology/features/temporal.g5.md#temporal.stats.writers).
+
 <a id="bug-tmp-003"></a>
 ### A rolled-back temporal write leaves its statistics counted, so a retry counts the edge twice
 
@@ -114,6 +117,9 @@ Repair proposal (not implemented): replace the statistics `$Increment`s with jou
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
 Canonical owner and evidence: [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats), [temporal.ledger.atomic](../ontology/features/temporal.g5.md#temporal.ledger.atomic).
+
+
+Iteration 51 (strengthened, not new): the rollback undoes the min, max and sketch Sets but not the `$Increment`s, so a rolled-back first write leaves count 1 and sum 3 with no min or max: whole-bucket `min`/`max` raise `ValueError`, `get_bucket_groups` returns the row `(1, 3, null, null)`, the distinct count is 0, velocity is 1 and the latest read omits the source ([temporal_stats](models/temporal_stats/NOTES.md) `theorem_rolled_back_first_write`, `theorem_rolled_back_group_row`; control `counters-journaled`). E2E: [probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `A4_rb_*`, [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `agg_a_rb_*`, `groups_a_rb`; neighbor `rbc` (committed) answers 1/3.0/3.0. Owner: [temporal.stats.writers](../ontology/features/temporal.g5.md#temporal.stats.writers).
 
 <a id="bug-tmp-010"></a>
 ### A rolled-back temporal delete or node erase leaves the bucket's event counter decremented
@@ -1088,6 +1094,44 @@ Consequence: whenever the walk reaches at least `ppr_top_k` nodes (with the defa
 
 Repair proposal (not implemented): keep the cap; admit seeds and top nodes only up to the cap (best PPR score first), then list every edge whose two ends are answered (the same repair as bug-plt-114's). Preserve: the cap `min(max_nodes, ppr_top_k)`, the PPR ranking and `ppr_top_k`, argument checks before any read, `k_hops`, and the uncapped answer (all seven edges when the cap exceeds the reachable nodes). Writers and readers: `SubgraphJson` (seed loop, frontier loop, edge list), `kg_SUBGRAPH` and `kg_PPR_GUIDED_SUBGRAPH` (reshape), `IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH`; the Arno reader must give the same answer. Distinguishing cases: [s] with `ppr_top_k=3` lists s → a1 and s → a2; seeds s, a3, a4 with `ppr_top_k=1` answer one node. Checked in the model only (controls `edges-among-answered` and `seeds-capped` make the departures fail while the uncapped neighbor verifies); not run on the product. Governing statement: [algorithms.op.subgraph.guided](../ontology/features/algorithms.g5.md#algorithms.op.subgraph.guided).
 
+<a id="bug-tmp-103"></a>
+### A distinct-target count answers at least 11 for any window that holds a target, so one target reads as 11
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 51)
+
+Found by: iteration 51 W57 frozen prediction D1 (missed; [pairs](../uplift/consolidated/iteration-51/stats-PAIRS.md)) and the source read after the freeze; [temporal_stats](models/temporal_stats/NOTES.md) `theorem_distinct_nonempty_at_least_eleven`, `theorem_distinct_one_target_is_eleven`; controls `small-range-correction`, `no-empty-guard`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `D_d1`, `D_d3`, `D_dbig`, `A4_rbc_distinct`; [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `distinct_d_*`, `distinct_a_*`). Three edges to one target answer 11; three distinct targets answer 11, 12 or 13 depending on their names; 100 distinct targets answered 69, 91, 88 and 69 in four runs with different names; a committed single edge answers 11. Passing neighbors: a window with nothing answers 0, and a delete rebuilds the sketch (12 to 11 after deleting one of two targets).
+
+Expected: "An approximate count from the HyperLogLog sketches ... (about 26% error)" (`_engine/temporal.py:1088-1093`, `TemporalIndex.cls:628-631`, `docs/API_REFERENCE.md` `get_distinct_count`).
+
+Observed: `GetDistinctCount` answers `$Number(0.673 * 16 * 16 / Z, 0)` with Z the sum of 2^-register over 16 registers, and 0 only when every register is zero (`TemporalIndex.cls:671-681`). With one register set Z is at most 15.5, so the answer is at least 11 (11.1 rounded); there is no small-range (linear counting) correction. The model proves the bound for every sketch.
+
+Consequence: a dashboard asking how many distinct peers a source reached reads 11 for one peer and cannot tell 1 from 10; below about 40 targets the error is far above a quarter. With 16 registers the error is also about 26% at one standard deviation for large counts, so single answers near 100 can be 30% off.
+
+Repair proposal (not implemented): apply HyperLogLog's small-range correction (when the estimate is below 2.5 × 16 and some register is zero, answer 16 × ln(16 / zero registers)), or count exactly below a threshold. Preserve: 0 for an empty window, the merge over touched buckets, the rebuild on delete. Distinguishing case: one target answers 1 (control `small-range-correction` checks the model's direction only; the proposal itself was not run on the product). Governing statement: [temporal.stats.distinct](../ontology/features/temporal.g5.md#temporal.stats.distinct).
+
+<a id="bug-tmp-104"></a>
+### Two different attribute sets can intern to the same label-set hash, and resolving it returns the other set
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 51)
+
+Found by: iteration 51 W57 case S3 (added after reading `InternLabelSet`; not a frozen prediction); [temporal_stats](models/temporal_stats/NOTES.md) `theorem_label_sets_collide` (for all keys and values); control `escape-values`. Related: [F-0509](#F-0509) (the same missing escaping makes some canonical texts non-JSON).
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `S3_quote`, `S4_fraction`; [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `labels`). `intern_label_set({"a": 'x","b":"y'})` and `intern_label_set({"a": "x", "b": "y"})` both return `7725e82f…`, and resolving it answers `{"a":"x","b":"y"}`. `{"x": 0.5}` resolves to `{"x":.5}`, which `json.loads` refuses. Passing neighbors: the same keys in another order give one hash; an unknown hash resolves to `''`; a purge leaves interned sets.
+
+Expected: "Canonicalize, hash, and intern an attribute dict" (`_engine/temporal.py:835-846`); spec 204 FR-012 (the canonical form is JSON). A canonical form identifies its set: different sets must not share it.
+
+Observed: `InternLabelSet` writes each string value as `"` + value + `"` and each key as `"` + key + `"` without escaping (`TemporalIndex.cls:1365-1376`), so a quote inside a value can close the string and add keys; numbers are written in IRIS's canonical text.
+
+Consequence: two distinct attribute sets stored for retention share one hash, and the first one interned decides the resolved text; a caller that resolves the hash of the injected set gets the other set's attributes. Attribute values from users or upstream systems can trigger it.
+
+Repair proposal (not implemented): build the canonical text with JSON escaping and JSON number text (for example from the `%DynamicObject` with sorted keys), keeping existing hashes for texts that need no escaping. Preserve: key-order independence, type fidelity, append-only storage. Distinguishing case: the two sets above get different hashes. Governing statement: [temporal.labelset](../ontology/features/temporal.g5.md#temporal.labelset).
+
 <a id="bug-str-004"></a>
 ### verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity
 
@@ -1139,6 +1183,9 @@ Repair proposal (not implemented): test the server value for None before convert
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
 Canonical owner and evidence: [temporal.stats](../ontology/features/temporal.g5.md#temporal.stats).
+
+
+Iteration 51 (strengthened, not new): the same conversion also raises for an unknown metric (documented to answer 0.0), for a whole bucket that still holds raw edges after `purge_bucket_range`, and for a count without extremes after a rollback. [temporal_stats](models/temporal_stats/NOTES.md) `theorem_empty_answer_raises` is general over every aggregate and metric (control `none-checked`). E2E: [probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `A2_*`, `A6_whole_0_299`; [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `agg_a_ann_unknown`, `agg_a_ann_301_649_*`, `agg_q_0_299_min`. Owner: [temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window).
 
 <a id="bug-srch-005"></a>
 ### The engine's fusion gives a result missing from one leg a non-zero, length-dependent score

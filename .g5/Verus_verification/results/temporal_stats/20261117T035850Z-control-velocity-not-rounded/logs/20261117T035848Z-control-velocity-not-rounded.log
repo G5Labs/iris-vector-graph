@@ -1,0 +1,27 @@
+verification results:: 49 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/velocity-not-rounded/20261117T035848Z/models/temporal_stats/temporal_stats.rs:674:9
+    |
+672 | pub proof fn theorem_targets_follow_raw(st: St, g: int, s: int, p: int, lo: int, hi: int, bs: int, be: int, o: int)
+    | ------------------------------------------------------------------------------------------------------------------- at the end of the function body
+673 |     ensures
+674 |         is_target(purge_buckets(st, g, bs, be), g, s, p, lo, hi, o) == is_target(st, g, s, p, lo, hi, o),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/velocity-not-rounded/20261117T035848Z/models/temporal_stats/temporal_stats.rs:712:13
+    |
+710 |   pub proof fn theorem_velocity_counts_touched_buckets(st: St, hf: spec_fn(int) -> (int, int), e: Ev, window: int, now_ts: int, clock_s: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+711 |       requires !occupied(st.raw, e),
+712 |       ensures ({
+    |  _____________^
+713 | |         let now = now_of(now_ts, clock_s);
+714 | |         let inb = (now - window) / 300 <= bucket_of(e.ts, 300) <= now / 300;
+715 | |         velocity(write(st, 300, hf, Mode::Insert, e), 300, e.g, e.s, window, now_ts, clock_s)
+716 | |             == velocity(st, 300, e.g, e.s, window, now_ts, clock_s) + (if inb { 1int } else { 0int })
+717 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

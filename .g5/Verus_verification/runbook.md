@@ -555,3 +555,21 @@ claims. The distinguishing control is `null-index-is-null`; the product observat
 `index_property_row_null` (`["at", 0]`) beside `index_with_literal_row_-1` (`["at", 2, "typed"]`).
 Iteration 50 withdrew the control `guided-cap-max-nodes` (it encoded a repair that contradicts the documented cap); the
 bug-plt-113 lookup now ends at `edges-among-answered` and `seeds-capped`.
+
+Iteration 51 (W57, temporal statistics readers; [handoff](../uplift/consolidated/iteration-51/HANDOFF.md)), same environment:
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/temporal_stats       # PASS 51
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/temporal_stats    # 16 EXPECTED_FAIL
+CONTROL=small-range-correction python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/temporal_stats
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/temporal_stats/binding.py)  # AGREES 139
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-51/stats_probe.py)       # raw probe, fresh prefix
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after51                 # 537/4130
+```
+
+Worked lookup (iteration 51): `temporal.stats.distinct` → `temporal_stats.rs::theorem_distinct_one_target_is_eleven`
+→ the rows for `iris_src/src/Graph/KG/TemporalIndex.cls::GetDistinctCount` (lines 671-681, decision: the raw estimator,
+0 only for an all-zero sketch) and `::HLLAdd` (210-224, the provider's register choice) in
+`crosswalk/decision-links.tsv`; in reverse, those keys in the recount's `bindings.json` list the claims. The
+distinguishing control is `small-range-correction`; the product observation is the binding's `distinct_d_d1_0_299`
+(11 for three edges to one target) beside `distinct_d_nobody_0_299` (0).

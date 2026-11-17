@@ -1,0 +1,123 @@
+{
+  "title": "temporal stats",
+  "question": "Temporal statistics readers (W57): how insert, update, collision, delete, a rolled-back write, a raw purge and a bucket-range purge change the bucket statistics, and what get_temporal_aggregate, get_bucket_groups, get_bucket_group_targets, get_edge_velocity, find_burst_nodes, get_distinct_count and the label-set interner answer from them (bug-tmp-002, -003, -009, -103, -104; F-0508, F-0509; q-tmp-002)",
+  "ontology_ids": [
+    "temporal.stats",
+    "temporal.stats.after-purge",
+    "temporal.stats.window",
+    "temporal.stats.writers",
+    "temporal.stats.velocity",
+    "temporal.stats.distinct",
+    "temporal.labelset"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 51}"
+    },
+    {
+      "label": "update-keeps-statistics",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_update_counts_twice\", \"theorem_update_whole_vs_cut\", \"theorem_update_then_delete_leaves_velocity\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "insert-overwrites",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_collision_changes_nothing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "counters-journaled",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rolled_back_first_write\", \"theorem_rolled_back_group_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "whole-reads-raw",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_one_whole_bucket_reads_statistics\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cut-reads-tagg",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_cut_bucket_is_exact\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "none-checked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_answer_raises\", \"theorem_rolled_back_first_write\", \"theorem_bucket_purge_whole_vs_cut\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "raw-purge-drops-statistics",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_raw_purge_keeps_statistics\", \"theorem_raw_purge_whole_vs_cut\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-skips-missing-statistics",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_delete_after_bucket_purge_recreates\", \"theorem_delete_rebuilds_from_survivors\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bursts-filter-predicate",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_bursts_ignore_predicate\", \"theorem_burst_threshold_inclusive\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "burst-threshold-strict",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_burst_threshold_inclusive\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "velocity-not-rounded",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_velocity_counts_touched_buckets\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ms-now-in-ms",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ms_default_now_misses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "small-range-correction",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_distinct_nonempty_at_least_eleven\", \"theorem_distinct_one_target_is_eleven\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-empty-guard",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_distinct_empty_is_zero\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "distinct-whole-buckets-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_distinct_window_rounded_out\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "escape-values",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_label_sets_collide\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

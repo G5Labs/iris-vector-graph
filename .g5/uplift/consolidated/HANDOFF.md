@@ -22,13 +22,14 @@ Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bb
 | [48](iteration-48/HANDOFF.md) | W55 Cypher expressions over run-time values: string functions, slices, `CASE`/`coalesce`, aggregation, `CREATE`/`SET` values, `Prop_Set` (16 held, 4 partial, 2 missed of 22) | High bug-cyp-120, Medium bug-cyp-117, -118, -119, Low bug-cyp-121..-124, Low potential bug-cyp-125 (new); bug-cyp-114's refusal traced; simp-cyp-101, -102; 6 owner blocks; model `cypher_exprs`; 463 → 480 |
 | [49](iteration-49/HANDOFF.md) | W56 composed retrieval: engine/SQL/`PyOps`/operator fusion, IVF leg choice, `kg_VECTOR_GRAPH_SEARCH`, `kg_PPR_GUIDED_SUBGRAPH`/`kg_SUBGRAPH`, `kg_RERANK`, `multi_vector_search` (18 held, 4 partial, 3 missed of 25) | High bug-plt-113, Medium bug-srch-110, bug-plt-114, Low bug-srch-111, -112 (new); bug-srch-005 now E2E reproduced; HD-0603 observed; 6 owner blocks; model `retrieval_compose`; 480 → 503 |
 | [50](iteration-50/HANDOFF.md) | Repair round for independent review 47-49 ([review](iteration-50/REVIEW-47-49.md), [dispositions](iteration-50/DISPOSITIONS.md)): 7 material items and 11 minor, each reproduced afresh | bug-plt-113 corrected (the cap is intended; edges among answered nodes missing, seeds over the cap; wrong repair control withdrawn); bug-cyp-111 narrowed, -112 and -120 widened; Medium bug-cyp-126, -127, -128, Low bug-cyp-129..-132 (new); premise-constant bindings reclassified or modeled; models `cypher_fns`, `cypher_exprs`, `retrieval_compose`, `ivf_entries` extended; 503 → 505 (gained 3, lost 1 by reclassification, strengthened 12) |
+| [51](iteration-51/HANDOFF.md) | W57 temporal statistics readers: aggregates whole vs cut, update/rollback/delete/purge effects, groups and targets, velocity and bursts, distinct-target estimate, latest reads, label sets (30 held, 1 partial, 4 missed of 35) | Medium bug-tmp-103 (distinct count ≥ 11 for any target), Medium bug-tmp-104 (label sets collide) (new); bug-tmp-002, -003, -009 strengthened, F-0508 formal, q-tmp-002 mirror; owners `temporal.stats.window`, `.writers`, `.velocity`, `.distinct`, `temporal.labelset`; model `temporal_stats`; 505 → 537 |
 
 
 ### Residual queue and interim judgment (kept current)
 
 Not converged. Every iteration of this continuation opened an area the earlier stops had not assessed, and eleven of
 thirteen produced new findings (28 new through iteration 47, plus one inherited divergence registered; iteration 42
-was the only clean one; iteration 48 added nine, one of them a driver-conditional potential problem; iteration 49 added five, one High, in retrieval composition).
+was the only clean one; iteration 48 added nine, one of them a driver-conditional potential problem; iteration 49 added five, one High, in retrieval composition; iteration 51 added two Medium in temporal statistics, both from source read after the freeze, one of them a frozen docs prediction that missed).
 The frozen predictions taken from the docs mostly held; most findings came from reading the source after the freeze.
 Iteration 47 is the exception: four of twelve frozen openCypher predictions missed outright, all where a function's
 argument is known only at run time, which suggests the remaining Cypher expression surface (translator 962 members,
@@ -53,8 +54,10 @@ Next candidates, ranked by consequence and tractability (each still unowned or u
    [iteration-47 residual list](iteration-47/HANDOFF.md#residual-list)).
 3. `load_networkx` and `load_obo` imports (a variant of the W47 import rules; expected to repeat bug-str-109's class).
 4. Operator reports: `status()`, `capabilities`, `get_schema_visualization`, `snapshot_info` (counts that guide action).
-5. Temporal analytics readers (`get_edge_velocity`, `find_burst_nodes`, `get_bucket_groups`, `get_distinct_count`):
-   owned (`temporal.stats`) with known divergences; no model.
+5. Temporal analytics residue after iteration 51 (first missing steps in the [iteration-51 residual list](iteration-51/HANDOFF.md#residual-list-first-missing-step-for-each)):
+   tlast exactness in Verus (latest reads held natively, unmodeled), `get_distinct_count(source, "")`, bursts ordering,
+   `get_edge_attrs`/`get_window_sources`, legacy `PurgeBefore`'s statistics kill. Iteration 51 modeled and bound the
+   aggregate, group, target, velocity, burst, distinct and label-set readers and their writers.
 6. Embedding identity maintenance (`reconcile_recorded_dimensions`, `adopt_embedding_identities`, `list_quarantine`,
    `place_quarantined`, `measure_route_recall`).
 7. Retrieval composition residue after iteration 49 (first missing steps in the [iteration-49 residual list](iteration-49/HANDOFF.md#residual-list-first-missing-step-for-each)): the REST routes over HTTP (bug-srch-111/-112 partial), `PyOps` privilege reporting, `/metaPath`, `bfs_vector_rerank`, `search_nodes_by_vector`, duplicate IVF entries in the engine fusion (last occurrence wins). Iteration 49 covered the fusion surfaces, the IVF leg choice, `kg_VECTOR_GRAPH_SEARCH`, the PPR-guided subgraph, `kg_RERANK` and `multi_vector_search`.
