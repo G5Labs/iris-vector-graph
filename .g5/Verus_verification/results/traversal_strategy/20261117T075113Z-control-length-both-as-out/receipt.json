@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: ShortestLength's tBoth",
+    "expect_fail_in": [
+      "theorem_lengths_agree_out_both"
+    ],
+    "find": "pub open spec fn spl_dir(d: Dir) -> Dir { if d is Both { Dir::Both } else { Dir::Out } }",
+    "name": "length-both-as-out",
+    "replace": "pub open spec fn spl_dir(d: Dir) -> Dir { Dir::Out }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_lengths_agree_out_both"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "0d4ea0b7ede4c375fc81a31242d455c4c1a3a67c8616a4e4225ee3f167bd676e",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "977296ab0061265196fd0c92d748b06a25b0871bf67f104e4452943551d08f2d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/length-both-as-out/20261117T075112Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_lengths_agree_out_both": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T075112Z-control-length-both-as-out-theorem_lengths_agree_out_both.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T075112Z-control-length-both-as-out.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T075113Z-control-length-both-as-out/logs/20261117T075112Z-control-length-both-as-out-theorem_lengths_agree_out_both.log": "709ca3b29681312b91fd23e31e0d0a009f2b91fa4792ff2c04419ac3089c72c8",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T075113Z-control-length-both-as-out/logs/20261117T075112Z-control-length-both-as-out.log": "655a0e119305cbf2f8501df5d564999756abb92abcd095a4ad174aee5d995f7d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

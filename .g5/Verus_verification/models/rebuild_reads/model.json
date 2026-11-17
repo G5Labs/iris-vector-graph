@@ -1,0 +1,37 @@
+{
+  "name": "rebuild_reads",
+  "root": "rebuild_reads.rs",
+  "expected_verified": 5,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "rebuild-swaps",
+      "find": "pub open spec fn swaps() -> bool { false }",
+      "replace": "pub open spec fn swaps() -> bool { true }",
+      "expect_fail_in": ["theorem_reader_sees_seed_alone"],
+      "classification": "decision: BuildKG builds the index aside and swaps it in once (the repair); no reader sees the purged index"
+    },
+    {
+      "name": "refill-keeps-old",
+      "find": "    if swaps() { if k < rows.len() { old } else { rows } } else { rows.subrange(0, k) }",
+      "replace": "    if swaps() { if k < rows.len() { old } else { rows } } else { if k == 0 { old } else { rows.subrange(0, k) } }",
+      "expect_fail_in": ["theorem_reader_sees_seed_alone"],
+      "classification": "effect: the purge is not visible before the first refill step (the index is emptied only together with its first new entry)"
+    },
+    {
+      "name": "refill-invents",
+      "find": "    if swaps() { if k < rows.len() { old } else { rows } } else { rows.subrange(0, k) }",
+      "replace": "    if swaps() { if k < rows.len() { old } else { rows } } else { old + rows.subrange(0, k) }",
+      "expect_fail_in": ["theorem_visible_edges_are_rows", "theorem_end_is_rows"],
+      "classification": "effect: the purge is skipped, so entries with no row behind them stay visible during and after the rebuild"
+    },
+    {
+      "name": "swap-exposes-prefix",
+      "find": "pub open spec fn visible_swap(old: Seq<Edge>, rows: Seq<Edge>, k: int) -> Seq<Edge> { if k < rows.len() { old } else { rows } }",
+      "replace": "pub open spec fn visible_swap(old: Seq<Edge>, rows: Seq<Edge>, k: int) -> Seq<Edge> { rows.subrange(0, k) }",
+      "expect_fail_in": ["theorem_swap_shows_old_or_rows"],
+      "classification": "repair weakened: the swapping rebuild exposes its partial build"
+    }
+  ]
+}

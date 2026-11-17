@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "repair: ShortestLength walks 'in' (the source's in entries) as execute_shortest_path's reversal does",
+    "expect_fail_in": [
+      "theorem_in_length_differs"
+    ],
+    "find": "pub open spec fn spl_dir(d: Dir) -> Dir { if d is Both { Dir::Both } else { Dir::Out } }",
+    "name": "length-in-reversed",
+    "replace": "pub open spec fn spl_dir(d: Dir) -> Dir { d }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_in_length_differs"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "0d4ea0b7ede4c375fc81a31242d455c4c1a3a67c8616a4e4225ee3f167bd676e",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "977296ab0061265196fd0c92d748b06a25b0871bf67f104e4452943551d08f2d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/length-in-reversed/20261117T075026Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_in_length_differs": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T075026Z-control-length-in-reversed-theorem_in_length_differs.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T075026Z-control-length-in-reversed.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T075027Z-control-length-in-reversed/logs/20261117T075026Z-control-length-in-reversed-theorem_in_length_differs.log": "ddfcbcc1ed789f36d47e397c13c199b0bcfea44b5d4aeb84f23c5fee8df8a133",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T075027Z-control-length-in-reversed/logs/20261117T075026Z-control-length-in-reversed.log": "2ce694858d7aa933fca6866cf99814cf8baafdcb19bfbd1b634cd0e5af3f9a39"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

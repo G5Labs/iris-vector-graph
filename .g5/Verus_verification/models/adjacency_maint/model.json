@@ -1,0 +1,143 @@
+{
+  "name": "adjacency_maint",
+  "root": "adjacency_maint.rs",
+  "expected_verified": 35,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "remove-keyed-takes-triple",
+      "find": "    if multi { remove_keyed(e, others, k) } else { None }",
+      "replace": "    if multi { None } else { None }",
+      "expect_fail_in": [
+        "theorem_delete_one_parallel_keeps_other",
+        "lemma_delrow"
+      ],
+      "classification": "decision: a multigraph row delete (Cypher DELETE r) takes the whole triple instead of RemoveKeyed"
+    },
+    {
+      "name": "plain-remove-keeps",
+      "find": "    if multi { remove_keyed(e, others, k) } else { None }",
+      "replace": "    if multi { remove_keyed(e, others, k) } else { e }",
+      "expect_fail_in": [
+        "lemma_delrow",
+        "theorem_plain_delete_takes_triple"
+      ],
+      "classification": "decision: Remove leaves the entry of a deleted plain row"
+    },
+    {
+      "name": "put-keyed-drops-others",
+      "find": "if single(others) { Map::new(others.dom(), |x: int| en.leaf) } else { others }",
+      "replace": "Map::<int, int>::empty()",
+      "expect_fail_in": [
+        "lemma_create",
+        "lemma_second"
+      ],
+      "classification": "decision: PutKeyed's two-edge transition forgets the rows already there (OtherEdgeKeys)"
+    },
+    {
+      "name": "transition-weight-not-old-leaf",
+      "find": "Map::new(others.dom(), |x: int| en.leaf)",
+      "replace": "Map::new(others.dom(), |x: int| w)",
+      "expect_fail_in": [
+        "lemma_create",
+        "lemma_second"
+      ],
+      "classification": "decision: at the transition the earlier edge's child takes the new weight, not the leaf's (Set:tOthers=1 tKW = tOldW)"
+    },
+    {
+      "name": "create-ignores-mode",
+      "find": "    if multi { put_keyed(e, others, k, w) } else { put(w) }",
+      "replace": "    put(w)",
+      "expect_fail_in": [
+        "lemma_create",
+        "lemma_rebuild_prefix"
+      ],
+      "classification": "decision: RowPut ignores ^IVG.GraphMode (always Put)"
+    },
+    {
+      "name": "canon-leaf-not-lowest",
+      "find": "    else if multi && !single(rows) { Some(Entry { leaf: lowest_w(rows), kids: rows }) }",
+      "replace": "    else if multi && !single(rows) { Some(Entry { leaf: the_w(rows), kids: rows }) }",
+      "expect_fail_in": [
+        "lemma_create",
+        "lemma_delrow",
+        "lemma_update",
+        "lemma_rebuild"
+      ],
+      "classification": "decision: the rebuild's leaf is not the lowest ekey's weight (FillTriple / SetLeafFromLowest disagree)"
+    },
+    {
+      "name": "update-ignored",
+      "find": "        } else { Some(Entry { leaf: w, kids: en.kids }) },",
+      "replace": "        } else { e },",
+      "expect_fail_in": [
+        "lemma_update"
+      ],
+      "classification": "decision: RowUpdate's Reweight does not refresh the leaf (set_edge_weight then sync would drift)"
+    },
+    {
+      "name": "erase-ignores-graph",
+      "find": "        Op::EraseNodes { g, ids } => t.g == g && (ids.contains(t.s) || ids.contains(t.o)),",
+      "replace": "        Op::EraseNodes { g, ids } => (ids.contains(t.s) || ids.contains(t.o)),",
+      "expect_fail_in": [
+        "theorem_other_graph_untouched"
+      ],
+      "classification": "decision: the Eraser's node scope ignores the graph (COALESCE(graph_id,'') = pName)"
+    },
+    {
+      "name": "held-elsewhere-ignored",
+      "find": "    if had && built && !held_elsewhere { false } else { before }",
+      "replace": "    if had && built { false } else { before }",
+      "expect_fail_in": [
+        "theorem_nkg_held_elsewhere"
+      ],
+      "classification": "decision: Remove drops the merged ^NKG edge although another graph holds the triple"
+    },
+    {
+      "name": "mark-gone-default-graph",
+      "find": "    g != 0 && !g_has_out_left && built && an_end_interned",
+      "replace": "    !g_has_out_left && built && an_end_interned",
+      "expect_fail_in": [
+        "theorem_mark_graph_gone"
+      ],
+      "classification": "decision: MarkGraphGone also marks for the default graph (Quit:pGraph=0 dropped)"
+    },
+    {
+      "name": "label-erase-by-label",
+      "find": "pub open spec fn label_kept(x: Lab, g: int, ids: Set<int>) -> bool { !(x.g == g && ids.contains(x.n)) }",
+      "replace": "pub open spec fn label_kept(x: Lab, g: int, ids: Set<int>) -> bool { !(x.g == g) }",
+      "expect_fail_in": [
+        "theorem_label_delete_scoped"
+      ],
+      "classification": "decision: the label delete is not keyed by the erased node"
+    },
+    {
+      "name": "fresh-ignores-stamp",
+      "find": "pub open spec fn fast_answer(fresh: bool, sum: int, walk: int) -> int { if fresh && sum > 0 { sum } else { walk } }",
+      "replace": "pub open spec fn fast_answer(fresh: bool, sum: int, walk: int) -> int { if sum > 0 { sum } else { walk } }",
+      "expect_fail_in": [
+        "theorem_two_hop"
+      ],
+      "classification": "decision: KHop2CountFast reads ^KG(\"deg2p\") without the Fresh stamp check (R284)"
+    },
+    {
+      "name": "stamp-not-equality",
+      "find": "pub open spec fn fresh(built_at: int, version: int) -> bool { built_at == version }",
+      "replace": "pub open spec fn fresh(built_at: int, version: int) -> bool { built_at <= version }",
+      "expect_fail_in": [
+        "theorem_write_makes_stale"
+      ],
+      "classification": "decision: Fresh accepts a stamp older than ^KG(\"__version\")"
+    },
+    {
+      "name": "walk-counts-source-and-first-hop",
+      "find": "pub open spec fn walk_count(ts: Seq<Set<int>>, x: Set<int>) -> int { uni(ts).difference(x).len() as int }",
+      "replace": "pub open spec fn walk_count(ts: Seq<Set<int>>, x: Set<int>) -> int { uni(ts).len() as int }",
+      "expect_fail_in": [
+        "witness_fast_overcounts"
+      ],
+      "classification": "decision: the exact count / walk does not exclude the source and first-hop nodes"
+    }
+  ]
+}

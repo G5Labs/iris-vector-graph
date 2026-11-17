@@ -1,0 +1,139 @@
+{
+  "title": "traversal strategy",
+  "question": "Traversal answers by strategy (ObjectScript BFS, SQL fallback, variable-length ends, shortest length vs path, khop, knn) derived from one modeled edge state, the strategy selection, and where the strategies agree or differ (bug-str-113, bug-str-114)",
+  "ontology_ids": [
+    "algorithms.op.khop",
+    "algorithms.op.paths",
+    "query.paths.varlength",
+    "structure.adjacency",
+    "search.knn"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 30}"
+    },
+    {
+      "label": "bfs-lists-source",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_bfs_never_lists_source\", \"theorem_os_rows_eq_sql_rows\", \"theorem_vl_ends_list_source_bfs_does_not\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bfs-every-depth",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_os_rows_eq_sql_rows\", \"theorem_one_row_per_node\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sql-revisits",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_front_eq_new\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "graph-unscoped",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_graph_edges_invisible\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cap-zero-cuts-all",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_cap_keeps_nearest_prefix\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cap-passed-to-adapter",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_adapter_walks_uncapped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "arno-named-graph",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_arno_only_default_outbound\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "arno-any-direction",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_arno_only_default_outbound\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "arno-ignores-other-graphs",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_arno_only_default_outbound\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-fallback-on-empty",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fixture_path\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "length-in-reversed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_in_length_differs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "trail-repeats-edges",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_vl_both_no_backtrack\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "khop-walks-both",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_khop_is_default_out_bfs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "knn-unrouted-legacy",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_knn_no_route_no_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sql-unknown-dir-as-out",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unknown_direction_walks_both\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "types-ignore-case",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unknown_direction_walks_both\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bfsfast-case-insensitive",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unknown_direction_walks_both\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "esp-no-reversal",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_in_length_differs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "length-both-as-out",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_lengths_agree_out_both\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

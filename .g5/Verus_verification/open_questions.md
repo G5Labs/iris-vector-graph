@@ -3982,6 +3982,8 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: Working assumption (agent, unratified): Keep the public 'in' semantics, caller reversal included. Require ShortestPathJson and ShortestLength to refuse any direction outside {out, both}, or to implement 'in' by walking from the far end. Require IRISGraphStore.shortest_path_length to reverse 'in' as execute_shortest_path does. Record the live false positive as a defect against its docstring. Changed from decisions.md: **yes**. Status moves from assumption to supported: maintainer commit 99b00ce9 states the refuse-outside-set policy for ObjectScript entry points. New live evidence shows a wrong positive answer, not just a missing one, on a public store method. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-1003).
 
+Iteration 57 (continuation; evidence only, no card field changed): the store's `shortest_path_length(…, 'in')` passes `in` to `ShortestLength`, which walks it as `out` ([bug-str-113](bugs_issues.md#bug-str-113)), while `execute_shortest_path` reverses it; and `execute_bfs` neither refuses nor normalizes a direction outside out/in/both ([bug-str-114](bugs_issues.md#bug-str-114)). Both are modeled in [traversal_strategy](models/traversal_strategy/NOTES.md); the working assumption (refuse or reverse) rejects both observed outcomes.
+
 Canonical owner: [algorithms.op.paths.direction](#HD-1003).
 
 ```g5-question
@@ -6204,6 +6206,8 @@ default_assumption: yes, because the degree cache and the rebuild already treat 
 [Q · structure.rebuild.failure]
 
 What may readers see when a rebuild fails partway? The provisional answer, from the degree-cache design, is that an early failure leaves the previous adjacency, and a later one leaves a partial index whose degree cache is cleared, never wrong.
+
+Iteration 57 (continuation; evidence only, no card field changed): a rebuild that succeeds already exposes what this question asks about. With a declared index, `BuildKG` purges `^KG("out"/"in")` and refills it row by row under a lock readers never take; during another session's `sync()` about 6-8% of reads on the fixture answered from the purged index (khop the seed alone, a path length -1, BFS types blank): [bug-str-115](bugs_issues.md#bug-str-115), [rebuild_reads](models/rebuild_reads/NOTES.md). Under either answer to this question, today's mid-rebuild exposure departs from "never wrong" for readers other than the degree cache.
 
 Disposition: open. Working assumption: that an early failure leaves the previous adjacency, and a later one leaves a partial index whose degree cache is cleared, never wrong.
 

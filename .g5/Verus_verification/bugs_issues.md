@@ -1185,6 +1185,8 @@ Repair proposal (not implemented): compare `^NKG`'s count with `SELECT COUNT(DIS
 
 Writers and readers: `create_edge`, the bulk paths, `sync()`, `BuildNKG`, `Adjacency.Put`, then `verify_sync` and `SyncReport.__bool__`. Distinguishing case: a shared triple after `sync()` → in sync. Controls `verify-counts-distinct-rows` and `heal-rereads` check the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.verify_sync](../ontology/concepts/install.g5.md#install.status.verify_sync).
 
+Continuation iteration 57 (strengthened): the shared-triple mechanism is modeled in [adjacency_maint](models/adjacency_maint/NOTES.md) `theorem_nkg_held_elsewhere`: `Adjacency.Remove` keeps the merged `^NKG` edge while another graph holds the triple and removes it otherwise ([binding](results/adjacency_maint/20261117T075252Z-binding/receipt.json) `nkg_n1n2_after_ga` true, `nkg_xa_after` false).
+
 <a id="bug-plt-119"></a>
 ### A status count that fails reads as zero on /server, /metrics and the readiness flags; only the text report says "unknown"
 
@@ -3726,6 +3728,65 @@ Repair proposal (not implemented, not checked): canonicalize the engine's schema
 
 Governing statements: [install.schema.name](../ontology/concepts/install.g5.md#install.schema.name), [search.embedding.width](../ontology/features/search.g5.md#search.embedding.width).
 
+<a id="bug-str-115"></a>
+### While sync() rebuilds the adjacency index, traversal reads in other sessions see it purged: khop answers the seed alone, a path length answers no path, and BFS answers with blank types
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 57)
+
+Found by: accident, then on purpose: the builder's re-run of the `traversal_strategy` binding overlapped worker W2's binding, which ran `sync()` ([DISAGREES receipt](results/traversal_strategy/20261117T075247Z-binding/receipt.json), 12 cases answered by the SQL fallback with blank types); W61 workflow 3 asked about a rebuild during other work, but no frozen prediction covered reads during a rebuild. Formal: [rebuild_reads](models/rebuild_reads/NOTES.md) `theorem_reader_sees_seed_alone` (general), neighbor `theorem_quiet_reader_sees_rows`; controls `rebuild-swaps` (the repair), `refill-keeps-old`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin: [race probe](../uplift/consolidated/iteration-57/rebuild_race/race_probe.py) ([observation](../uplift/consolidated/iteration-57/rebuild_race/race-observed-20261117T075352Z.json): 897 of 15,944 reads during four `sync()` calls departed) and the [binding](results/rebuild_reads/20261117T075627Z-binding/receipt.json) (AGREES with the as-built model: 4,481 of 58,520 reads during `sync()` saw the seed alone). Default graph `s-R->a, a-Q->b, s-R->c`, declared (functional) index: quiet, `khop(s, 2)` answers s, a, b, c and `shortest_path_length(s, b)` answers 2 (every quiet read); during another process's `sync()`, `khop` answers `[s]`, the length answers -1, and `execute_bfs(s)` answers the right nodes with every type blank (its ObjectScript walk found no edge, the SQL fallback answered the nodes from the rows, and `ReachTypes` read the purged index).
+
+Expected: [structure.rebuild](../ontology/features/graph-structure.g5.md#structure.rebuild) "running it again is safe", and with a declared index "the adjacency never needs it"; [structure.drift](../ontology/features/graph-structure.g5.md#structure.drift); [algorithms.op.khop](../ontology/features/algorithms.g5.md#algorithms.op.khop) "A walk that fails raises an error rather than answer empty". BuildKG's own comment: "destroyed adjacency looks to every reader like a graph with no edges". The live `^NKG` rewrite is held to "no reader sees an empty or invented ^NKG during the rebuild" (`tests/e2e/test_nkg_live_rewrite_e2e.py`).
+
+Observed: `TraversalBuild.BuildKG` (lines 30-140) takes the writers' lock `^IVG.AdjW` shared (`Adjacency.BeginRebuild`, 814-822), which readers never take, and with a declared index runs `rdfedges.%BuildIndices($lb("idxedgesadj"), 1, …)` after its transaction: the purge empties `^KG("out"/"in")` and the callbacks refill it row by row (up to 8 jobs). `BFSFast` and `TraversalPaths.ShortestLength` read `^KG` directly.
+
+Consequence: a silent wrong answer, not an error, for every adjacency reader in every other session for the length of a rebuild (about three seconds per `sync()` on this small fixture; proportional to the edge count): k-hop, BFS types, unweighted path lengths, and by the same mechanism degree, PPR and the native Cypher reads over `^KG` (not exercised). `sync()` is the documented step after bulk loads and erasures, and it rebuilds a declared index that needs no rebuild. Medium: silent and reachable in ordinary operation, but transient and repaired when the rebuild ends.
+
+Repair proposal (not implemented): with a declared index skip the edge-index rebuild in `sync()` (structure.rebuild already says it is not needed), or build into a shadow tree and swap once, as `RewriteNKG` does for `^NKG`. Preserve: the end state equals the rows (`theorem_end_is_rows`, `adjacency_maint::theorem_incremental_equals_rebuild`). Distinguishing case: no seed-alone read during `sync()` (control `rebuild-swaps`; proved for the repair: `theorem_swap_shows_old_or_rows`). Governing statement: [structure.rebuild](../ontology/features/graph-structure.g5.md#structure.rebuild).
+
+<a id="bug-str-117"></a>
+### khop2_count_fast answers the sum of the middle nodes' out-degrees right after sync(), counting the source and repeated targets, and the walked count after any unrelated write
+
+Severity: Medium · Decision: Open
+
+Severity reasoning: read-only, no data changed; but the documented meaning ("How many nodes are first reached at the
+second outbound hop from `node_id`", API_REFERENCE; docstring: "neither `node_id` nor a direct neighbour is counted")
+holds only while the stats are stale, and the same call on the same data answers differently depending on whether any
+write anywhere in the namespace happened since the last sync(); a caller cannot tell which answer it got.
+
+Run: Uplift 2026-11-17 (continuation, iteration 57)
+
+Found by: iteration 57 W61 R2 (frozen prediction expected the upper bound from test_460_r284; the departure is against
+the method's own documentation); [adjacency_maint](models/adjacency_maint/NOTES.md) `witness_fast_overcounts` (diamond 2 vs 1; back edge 1 vs 0),
+`theorem_two_hop`; controls `fresh-ignores-stamp`, `walk-counts-source-and-first-hop`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin
+([binding](results/adjacency_maint/20261117T075252Z-binding/receipt.json) and the builder's [re-run](results/adjacency_maint/20261117T075646Z-binding/receipt.json),
+cases `two_hop_after_sync`, `two_hop_after_write`). Default graph, edges on Q57: s2→m1, s2→m2, m1→y, m1→s2, m2→y. Right
+after sync() (stamps `^IVG.BuiltFrom("deg2p"/"deg2p_exact")` = `^KG("__version")`): `khop2_count_fast(s2,"Q57")` = 3,
+`khop2_count_exact` = 1. After `create_edge(z1, R57, z2)` (unrelated): both 1.
+
+Expected: fast answers the number first reached at hop 2 (1), like exact, fresh or stale; or its documentation says
+"an upper bound while the stats are current".
+
+Observed: `KHop2CountFast` (TraversalKHop.cls:214-225) returns `^KG("deg2p",0,src,pred)` while `Fresh("deg2p")`;
+`Build2HopStats` (TraversalBuild.cls:939-994) stores the sum over middle nodes of their out-degree on the predicate
+("an upper bound"), counting the source reached back, first-hop nodes and a target once per middle node. Stale, it
+walks (`KHop2Count`, 67-133), excluding source and first hop, each target once.
+
+Consequence: callers reading the fast count as a count over-count right after a sync and get a different value after
+any write.
+
+Repair proposal (not implemented): document fast as an upper bound while current, or have it read `deg2p_exact`
+(BuildNKG already builds it) when fresh. Preserve: stale stats never read (R284). Distinguishing case:
+`two_hop_after_sync` [3, 1] becomes [1, 1] (or the doc names 3). Governing statement: structure.rebuilt (two-hop
+statistics are a rebuilt store); docs/API_REFERENCE.md §khop2_count_fast.
+
+Affected owner: [structure.rebuilt.stamp](../ontology/features/graph-structure.g5.md#structure.rebuilt.stamp) (the reader rule holds; the value it gates departs), algorithms.op.khop.
+
 <a id="bug-srch-116"></a>
 ### No quarantined vector can be placed through the IRIS DB-API driver
 
@@ -4057,6 +4118,45 @@ Observed: an SQL `''` reaches the procedure body as `$Char(0)`; `DijkstraJson` (
 Consequence: a SQL caller that passes empty parameters gets a path of length 0 and cost 0 with a node id no graph holds, instead of no path.
 
 Repair proposal (not implemented): translate `$Char(0)` to "" for both endpoints at the top of `DijkstraJson` (or in `DijkstraPath`), as `MatchEdges` does. Preserve: equal non-empty endpoints answer the empty path. Distinguishing case: the call above answers `{}` (control `nul-read-as-empty`). Governing statement: [algorithms.op.paths.weighted](../ontology/features/algorithms.g5.md#algorithms.op.paths.weighted).
+
+<a id="bug-str-113"></a>
+### shortest_path_length(a, b, ..., 'in') answers the outgoing length from a to b, not execute_shortest_path's incoming one
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 57)
+
+Found by: iteration 57 W61 frozen prediction S2 (held: the owner working assumption of
+[algorithms.op.paths.direction](open_questions.md#HD-1003) names the gap); [traversal_strategy](models/traversal_strategy/NOTES.md) `theorem_in_length_differs`, neighbor `theorem_lengths_agree_out_both`; controls `length-in-reversed` (the repair), `esp-no-reversal`, `length-both-as-out`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([binding](results/traversal_strategy/20261117T074632Z-binding/receipt.json) `sp_in_p3_p1`, `sp_in_p1_p3`; neighbors `sp_out_p1_p3`, `sp_both_p3_p1`). On the default-graph chain p1-R->p2-R->p3: `execute_shortest_path(p3, p1, [], 5, 'in')` answers length 2 and `shortest_path_length(p3, p1, [], 5, 'in')` answers -1; the reverse pair `(p1, p3, 'in')` answers -1 and **2**. Neighbors: 'out' and 'both' answer the same length on both readers.
+
+Expected: `IRISGraphStore.shortest_path_length`'s docstring: "what execute_shortest_path's paths' length is, without them"; [algorithms.op.paths](../ontology/features/algorithms.g5.md#algorithms.op.paths) "The search can follow the edges, go against them, or do both"; the working assumption "Require IRISGraphStore.shortest_path_length to reverse 'in' as execute_shortest_path does".
+
+Observed: `shortest_path_length` (`iris_sql_store.py:2162-2181`) passes the direction unchanged to `TraversalPaths.ShortestLength` (`TraversalPaths.cls:117-175`), which sets `tBoth = (direction = "both")` and otherwise searches the source's out entries and the target's in entries, i.e. 'in' is walked as 'out'. `execute_shortest_path` (`:2197-2207`) reverses 'in' itself.
+
+Consequence: a direct store caller asking the incoming distance gets the outgoing one: a false "no path" where an incoming path exists, and a positive length where only an outgoing path exists. Cypher is not affected: its length-only route (`query.py:3620-3626`) is taken only for 'out' and 'both'. Severity Low because the only affected entry point is the public store method (no Cypher, SQL or HTTP caller reaches it with 'in'), though the wrong answer is silent and can be positive.
+
+Repair proposal (not implemented): in `shortest_path_length`, for 'in' call `ShortestLength(target, source, ..., 'out', graph)` as `execute_shortest_path` reverses; and make `ShortestLength` refuse any direction outside {out, both} (`CheckDirection`). Preserve: 'out'/'both' lengths unchanged (`theorem_lengths_agree_out_both`). Distinguishing case: `sp_in_p1_p3` answers -1 after the repair (control `length-in-reversed`). Governing statement: [algorithms.op.paths](../ontology/features/algorithms.g5.md#algorithms.op.paths).
+
+<a id="bug-str-114"></a>
+### execute_bfs with a direction other than exactly "out", "in" or "both" answers an undirected walk from the edge table ("OUT", "sideways") or a walk of the edge table instead of the adjacency index ("outbound", "inbound")
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 57)
+
+Found by: iteration 57 W1 source read after the W61 freeze (not a frozen prediction; B5 covered the three exact directions); [traversal_strategy](models/traversal_strategy/NOTES.md) `theorem_unknown_direction_walks_both`; controls `sql-unknown-dir-as-out`, `types-ignore-case`, `bfsfast-case-insensitive`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([binding](results/traversal_strategy/20261117T074632Z-binding/receipt.json) `os_dirtext_OUT`, `os_dirtext_sideways`, `os_dirtext_outbound`, `os_dirtext_inbound`; neighbors `os_out_any_2`, `os_both_any_2`). From `s` on the mix graph, hops 2: `execute_bfs(s, [], 2, "OUT", 0)` answers `a 1 R, b 1 Q, c 1 "", d 2 Q, x 2 R` — the undirected rows (`os_both_any_2`) with an empty type for `c`, reached only against an edge; `"sideways"` answers the undirected rows with no error; `"outbound"` / `"inbound"` answer the out / in rows. Each of the four calls the SQL fallback (`fallback_calls` 1); the three exact directions do not.
+
+Expected: `execute_bfs`'s docstring: the rows "walked in `direction`"; the path routines' policy for directions ([algorithms.op.paths.direction](open_questions.md#HD-1003): refuse a direction outside {out, in, both}, as `DijkstraJson`'s `CheckDirection` does). `_select_bfs_strategy` already reads `"outbound"` and case-insensitively.
+
+Observed: `BFSFast` (`TraversalBFS.cls:107-208`) compares `direction = "out"` / `"in"` / `"both"` exactly, so any other text walks no edge and `BFSFastJsonSorted` answers `SORTED:0`; `_run_objectscript_bfs` (`iris_sql_store.py:2059-2065`) then calls `_sql_bfs_fallback`, whose else branch (`:2132-2149`) reads both columns for every text but out/outbound/in/inbound; `_bfs_rows` (`:1897-1898`) lowercases the text for `ReachTypes`, so "OUT"'s types are read as outgoing while its depths are undirected.
+
+Consequence: a caller (or a protocol client passing a user-supplied direction) gets plausible rows for a direction the store does not know: an undirected neighbourhood for "OUT", with blank types; and "outbound"/"inbound" are answered from `rdf_edges` rather than `^KG`, so they can differ from "out"/"in" wherever the two disagree (an undeclared index, W2's domain). Low: the in-tree Cypher caller passes only out/in/both.
+
+Repair proposal (not implemented): normalise once at `execute_bfs` (lowercase; outbound -> out, inbound -> in) and refuse anything else with `ValueError`, before choosing a strategy. Preserve: the three exact directions' rows (`theorem_os_rows_eq_sql_rows`). Distinguishing case: `os_dirtext_OUT` answers the `os_out_any_2` rows (control `sql-unknown-dir-as-out` shows the model decision). Governing statement: `execute_bfs` docstring; [query.paths.varlength](../ontology/features/cypher.g5.md#query.paths.varlength).
 
 <a id="bug-plt-117"></a>
 ### engine.capabilities says ^KG and ^NKG are not built on a namespace set up before it held edges, whatever sync() does, until setup runs again
@@ -5328,6 +5428,8 @@ Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 Found by: playbook arm, [10.json](../../experiment/playbook-completion/findings/audit/10.json) (live `b-10-live-scope`; mc `m10-walk-as-built-khop`; mc `m10-walk-reviewed`; inspected `iris_vector_graph/_engine/algorithms.py:600-626`)
 
 Reproduced by: **outside active reproduction scope** — defensive source and existing-evidence review only. No new security reproduction was constructed or executed. Historical runtime claims below are not fresh e2e observations.
+
+Continuation iteration 57: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([traversal_strategy binding](results/traversal_strategy/20261117T074632Z-binding/receipt.json) `khop_named_only_g1`: a seed with its only edge in a named graph answers `[seed]` and no edges); [traversal_strategy](models/traversal_strategy/NOTES.md) `theorem_khop_ignores_named_graphs` proves khop walks the default graph whatever named graphs hold, while `_khop_seed_exists` reads every graph.
 
 Historical reproduction record: playbook arm, live on its IRIS (x86_64 VM): `b-10-live-scope`
 

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: _bfs_rows' least-depth fold dropped (a node at every depth BFSFast walked it, the pre-4.6.0 ObjectScript rows)",
+    "expect_fail_in": [
+      "theorem_os_rows_eq_sql_rows",
+      "theorem_one_row_per_node"
+    ],
+    "find": "        && forall|j: nat| 1 <= j < d ==> !#[trigger] os_walked(es, q, src, j, v)\n",
+    "name": "bfs-every-depth",
+    "replace": "\n"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_os_rows_eq_sql_rows",
+      "theorem_one_row_per_node"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "0d4ea0b7ede4c375fc81a31242d455c4c1a3a67c8616a4e4225ee3f167bd676e",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "977296ab0061265196fd0c92d748b06a25b0871bf67f104e4452943551d08f2d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-every-depth/20261117T074637Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_one_row_per_node": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T074637Z-control-bfs-every-depth-theorem_one_row_per_node.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_os_rows_eq_sql_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T074637Z-control-bfs-every-depth-theorem_os_rows_eq_sql_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T074637Z-control-bfs-every-depth.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T074639Z-control-bfs-every-depth/logs/20261117T074637Z-control-bfs-every-depth-theorem_one_row_per_node.log": "ad10551fb53b050a83db1b8246c4d3361019a50fb7c4eb54df9187d7c62001e2",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T074639Z-control-bfs-every-depth/logs/20261117T074637Z-control-bfs-every-depth-theorem_os_rows_eq_sql_rows.log": "b13acd70face990a54a843bacdb208b968d62b6e913eacace870bd26202c004e",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T074639Z-control-bfs-every-depth/logs/20261117T074637Z-control-bfs-every-depth.log": "8aefeab0fa953b39114162346a5489467af69ba188bd46f0d8cccb22b28a4fd8"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

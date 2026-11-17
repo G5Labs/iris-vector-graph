@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: RowUpdate's Reweight does not refresh the leaf (set_edge_weight then sync would drift)",
+    "expect_fail_in": [
+      "lemma_update"
+    ],
+    "find": "        } else { Some(Entry { leaf: w, kids: en.kids }) },",
+    "name": "update-ignored",
+    "replace": "        } else { e },"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_update"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "08d83127c2be3fdbe9d3069898b3fd9e00ec26cb20c9a531b709597678a9376a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/update-ignored/20261117T075724Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_update": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075724Z-control-update-ignored-lemma_update.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075724Z-control-update-ignored.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075726Z-control-update-ignored/logs/20261117T075724Z-control-update-ignored-lemma_update.log": "e7cada5342946cb83f2e3ebedc3b67add926033fb98d16e8efe3e8125a9b855c",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075726Z-control-update-ignored/logs/20261117T075724Z-control-update-ignored.log": "9c7dc2787acfeac34b6677f15bc0ca3c75ebd123e865b4665fcf37ef390a6525"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

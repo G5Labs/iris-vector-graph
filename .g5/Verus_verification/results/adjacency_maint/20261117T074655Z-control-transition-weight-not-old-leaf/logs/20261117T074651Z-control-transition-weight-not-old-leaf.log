@@ -1,0 +1,27 @@
+verification results:: 33 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/transition-weight-not-old-leaf/20261117T074651Z/models/adjacency_maint/adjacency_maint.rs:274:13
+    |
+274 |       ensures inv(multi, rows.insert(k, w), row_put(multi, e, rows, k, w)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+278 | /     if empty_m(rows) {
+279 | |         assert forall|x: int| #[trigger] r2.dom().contains(x) implies x == k by { lemma_empty_elim(rows, x); }
+280 | |         lemma_single_intro(r2, k);
+281 | |     } else if single(rows) {
+...   |
+289 | |         lemma_two_not_single(r2, a, b);
+290 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/transition-weight-not-old-leaf/20261117T074651Z/models/adjacency_maint/adjacency_maint.rs:361:13
+    |
+359 | pub proof fn lemma_second(rows: Map<int, int>, j: int, k: int)
+    | -------------------------------------------------------------- at the end of the function body
+360 |     requires rows.dom().contains(j), rows.dom().contains(k), j != k,
+361 |     ensures put_keyed(put(rows[j]), rows.remove(k), k, rows[k]) == Some(Entry { leaf: lowest_w(rows), kids: rows }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,36 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/controls/refill-invents/20261117T075515Z/models/rebuild_reads/rebuild_reads.rs:36:1
+   |
+36 | pub proof fn theorem_visible_edges_are_rows(old: Seq<Edge>, rows: Seq<Edge>, k: int, i: int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/controls/refill-invents/20261117T075515Z/models/rebuild_reads/rebuild_reads.rs:38:13
+   |
+36 | pub proof fn theorem_visible_edges_are_rows(old: Seq<Edge>, rows: Seq<Edge>, k: int, i: int)
+   | -------------------------------------------------------------------------------------------- at the end of the function body
+37 |     requires 0 <= k <= rows.len(), 0 <= i < visible(old, rows, k).len(), !swaps(),
+38 |     ensures in_seq(visible(old, rows, k)[i], rows),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/controls/refill-invents/20261117T075515Z/models/rebuild_reads/rebuild_reads.rs:40:12
+   |
+40 |     assert(visible(old, rows, k)[i] == rows[i]);
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/controls/refill-invents/20261117T075515Z/models/rebuild_reads/rebuild_reads.rs:40:40
+   |
+40 |     assert(visible(old, rows, k)[i] == rows[i]);
+   |                                        ^^^^^^^
+   |
+  --> seq.rs:980:12
+   |
+   = note: recommendation not met
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: VarLength's edge-distinct check (tPE[','_tE_','] / SecondHop's pFirst) dropped",
+    "expect_fail_in": [
+      "theorem_vl_both_no_backtrack"
+    ],
+    "find": "    distinct(path) && chain(es, q, src, path, nodes, v)",
+    "name": "trail-repeats-edges",
+    "replace": "    chain(es, q, src, path, nodes, v)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_vl_both_no_backtrack"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "a9adfe76506552d3dce555f045bd32907a92902ad5868976627ebc161669cdb1",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "0ae9a13e99156ac31e62453e04eabaa7e6c7022f2d277fe0ae4768e4d45d63e5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/trail-repeats-edges/20261117T073832Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_vl_both_no_backtrack": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073832Z-control-trail-repeats-edges-theorem_vl_both_no_backtrack.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073832Z-control-trail-repeats-edges.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073833Z-control-trail-repeats-edges/logs/20261117T073832Z-control-trail-repeats-edges-theorem_vl_both_no_backtrack.log": "f3aa20b708947993f37c9767e2e4d922009ae4c34f55fe7d838bd7971008cd99",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073833Z-control-trail-repeats-edges/logs/20261117T073832Z-control-trail-repeats-edges.log": "7cc1bbff660c007094cc616708c9f652e2bd960155e648116c6f16f2f1ab55a2"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: the purge is skipped, so entries with no row behind them stay visible during and after the rebuild",
+    "expect_fail_in": [
+      "theorem_visible_edges_are_rows",
+      "theorem_end_is_rows"
+    ],
+    "find": "    if swaps() { if k < rows.len() { old } else { rows } } else { rows.subrange(0, k) }",
+    "name": "refill-invents",
+    "replace": "    if swaps() { if k < rows.len() { old } else { rows } } else { old + rows.subrange(0, k) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_visible_edges_are_rows",
+      "theorem_end_is_rows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rebuild_reads/model.json": "eee6662282789aa57204ea9f48669e7c70c01963be9f7f8007dabef830d8bd14",
+    ".g5/Verus_verification/models/rebuild_reads/rebuild_reads.rs": "ada3300ebb7a9948c29d7efbe9bbb4c32735de07081f5d5fab9252216be5b3d5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/controls/refill-invents/20261117T075515Z/models/rebuild_reads/rebuild_reads.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_end_is_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/20261117T075515Z-control-refill-invents-theorem_end_is_rows.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_visible_edges_are_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/20261117T075515Z-control-refill-invents-theorem_visible_edges_are_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/20261117T075515Z-control-refill-invents.log",
+    "timed_out": false,
+    "verified": 1
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rebuild_reads/20261117T075516Z-control-refill-invents/logs/20261117T075515Z-control-refill-invents-theorem_end_is_rows.log": "e5194393257d301beb32597943f006c724b345225fdd363769bf39982e2886c4",
+    ".g5/Verus_verification/results/rebuild_reads/20261117T075516Z-control-refill-invents/logs/20261117T075515Z-control-refill-invents-theorem_visible_edges_are_rows.log": "9aefa38409602338ef99040a18b877a192198b33f46f6c00cb5bf930f2803fb8",
+    ".g5/Verus_verification/results/rebuild_reads/20261117T075516Z-control-refill-invents/logs/20261117T075515Z-control-refill-invents.log": "571405ef0719dbc81f2744b5801edab3b87377231c0ae58b53328c01a21d142e"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

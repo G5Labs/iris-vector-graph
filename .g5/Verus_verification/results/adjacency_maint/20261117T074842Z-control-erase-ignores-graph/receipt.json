@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the Eraser's node scope ignores the graph (COALESCE(graph_id,'') = pName)",
+    "expect_fail_in": [
+      "theorem_other_graph_untouched"
+    ],
+    "find": "        Op::EraseNodes { g, ids } => t.g == g && (ids.contains(t.s) || ids.contains(t.o)),",
+    "name": "erase-ignores-graph",
+    "replace": "        Op::EraseNodes { g, ids } => (ids.contains(t.s) || ids.contains(t.o)),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_other_graph_untouched"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "08d83127c2be3fdbe9d3069898b3fd9e00ec26cb20c9a531b709597678a9376a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/erase-ignores-graph/20261117T074839Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_other_graph_untouched": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T074839Z-control-erase-ignores-graph-theorem_other_graph_untouched.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T074839Z-control-erase-ignores-graph.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T074842Z-control-erase-ignores-graph/logs/20261117T074839Z-control-erase-ignores-graph-theorem_other_graph_untouched.log": "22d9ea716ae8f7d34034114185c8855d5455f2f9d1764cfd4968ea8042736ae5",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T074842Z-control-erase-ignores-graph/logs/20261117T074839Z-control-erase-ignores-graph.log": "d0132453971852f7441afcad5bbb2cc5a3c5f14f8ee606977c0a0a9c53bb4229"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

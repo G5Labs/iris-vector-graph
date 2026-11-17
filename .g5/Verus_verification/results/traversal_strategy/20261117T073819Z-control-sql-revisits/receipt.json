@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the SQL fallback's `if nbr not in visited` dropped",
+    "expect_fail_in": [
+      "lemma_front_eq_new"
+    ],
+    "find": "    else { (exists|u: int| sql_new(es, q, src, (h - 1) as nat, u) && step(es, q, u, v)) && !sql_visited(es, q, src, (h - 1) as nat, v) }",
+    "name": "sql-revisits",
+    "replace": "    else { (exists|u: int| sql_new(es, q, src, (h - 1) as nat, u) && step(es, q, u, v)) }"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_front_eq_new"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "a9adfe76506552d3dce555f045bd32907a92902ad5868976627ebc161669cdb1",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "0ae9a13e99156ac31e62453e04eabaa7e6c7022f2d277fe0ae4768e4d45d63e5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/sql-revisits/20261117T073817Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_front_eq_new": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073817Z-control-sql-revisits-lemma_front_eq_new.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073817Z-control-sql-revisits.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073819Z-control-sql-revisits/logs/20261117T073817Z-control-sql-revisits-lemma_front_eq_new.log": "d6b1f64ba79cb280b5a00dfdb7ed7212a3401c73b7653c96dd97b21371f09080",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073819Z-control-sql-revisits/logs/20261117T073817Z-control-sql-revisits.log": "223c19ffcb0e03c830c47f4ecbedc4793c2cf091efb58275c8098a99af2facde"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

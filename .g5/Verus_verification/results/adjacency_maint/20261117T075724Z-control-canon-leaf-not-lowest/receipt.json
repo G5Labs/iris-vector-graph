@@ -1,0 +1,78 @@
+{
+  "control": {
+    "classification": "decision: the rebuild's leaf is not the lowest ekey's weight (FillTriple / SetLeafFromLowest disagree)",
+    "expect_fail_in": [
+      "lemma_create",
+      "lemma_delrow",
+      "lemma_update",
+      "lemma_rebuild"
+    ],
+    "find": "    else if multi && !single(rows) { Some(Entry { leaf: lowest_w(rows), kids: rows }) }",
+    "name": "canon-leaf-not-lowest",
+    "replace": "    else if multi && !single(rows) { Some(Entry { leaf: the_w(rows), kids: rows }) }"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_create",
+      "lemma_delrow",
+      "lemma_update",
+      "lemma_rebuild"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "08d83127c2be3fdbe9d3069898b3fd9e00ec26cb20c9a531b709597678a9376a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/canon-leaf-not-lowest/20261117T075714Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_create": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075714Z-control-canon-leaf-not-lowest-lemma_create.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_delrow": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075714Z-control-canon-leaf-not-lowest-lemma_delrow.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_rebuild": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075714Z-control-canon-leaf-not-lowest-lemma_rebuild.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_update": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075714Z-control-canon-leaf-not-lowest-lemma_update.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075714Z-control-canon-leaf-not-lowest.log",
+    "timed_out": false,
+    "verified": 31
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075724Z-control-canon-leaf-not-lowest/logs/20261117T075714Z-control-canon-leaf-not-lowest-lemma_create.log": "adce54256f542d58a610cd29364656f167c03a5068b5ddff4b465091cba70ca9",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075724Z-control-canon-leaf-not-lowest/logs/20261117T075714Z-control-canon-leaf-not-lowest-lemma_delrow.log": "f21f8e2a5c651a79684ac56c8597b741ec381fd269d1f5df628fa91c5122b33f",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075724Z-control-canon-leaf-not-lowest/logs/20261117T075714Z-control-canon-leaf-not-lowest-lemma_rebuild.log": "55a9c5dd820eb3bce8c565f69a5a16374013e70e26de620c96550313afa53901",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075724Z-control-canon-leaf-not-lowest/logs/20261117T075714Z-control-canon-leaf-not-lowest-lemma_update.log": "b6ddc188fbb8f8b47d129dd93613bf368e6185a79150a0e196b4b42bc36f2128",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075724Z-control-canon-leaf-not-lowest/logs/20261117T075714Z-control-canon-leaf-not-lowest.log": "e8bc4d6c346e72270f3266b0dcef5712267c22d249f6b4917d14d456b9303c77"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

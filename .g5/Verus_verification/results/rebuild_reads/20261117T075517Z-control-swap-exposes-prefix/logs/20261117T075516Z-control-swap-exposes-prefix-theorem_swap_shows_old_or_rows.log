@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rebuild_reads/controls/swap-exposes-prefix/20261117T075516Z/models/rebuild_reads/rebuild_reads.rs:75:13
+   |
+73 | pub proof fn theorem_swap_shows_old_or_rows(old: Seq<Edge>, rows: Seq<Edge>, k: int)
+   | ------------------------------------------------------------------------------------ at the end of the function body
+74 |     requires 0 <= k <= rows.len(),
+75 |     ensures visible_swap(old, rows, k) == old || visible_swap(old, rows, k) == rows,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

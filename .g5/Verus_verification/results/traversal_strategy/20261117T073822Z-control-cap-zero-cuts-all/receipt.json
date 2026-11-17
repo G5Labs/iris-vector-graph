@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: `rows[:max_results] if max_results else rows` read without its 0 = all guard",
+    "expect_fail_in": [
+      "theorem_cap_keeps_nearest_prefix"
+    ],
+    "find": "    if max_results > 0 && max_results < rows.len() { rows.take(max_results as int) } else { rows }",
+    "name": "cap-zero-cuts-all",
+    "replace": "    if max_results < rows.len() { rows.take(max_results as int) } else { rows }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cap_keeps_nearest_prefix"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "a9adfe76506552d3dce555f045bd32907a92902ad5868976627ebc161669cdb1",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "0ae9a13e99156ac31e62453e04eabaa7e6c7022f2d277fe0ae4768e4d45d63e5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/cap-zero-cuts-all/20261117T073821Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cap_keeps_nearest_prefix": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073821Z-control-cap-zero-cuts-all-theorem_cap_keeps_nearest_prefix.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073821Z-control-cap-zero-cuts-all.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073822Z-control-cap-zero-cuts-all/logs/20261117T073821Z-control-cap-zero-cuts-all-theorem_cap_keeps_nearest_prefix.log": "40fd2dfda605b7f7ddbb09b1b9503c7566de1ae2548a0a1a02299eb6f5565c7b",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073822Z-control-cap-zero-cuts-all/logs/20261117T073821Z-control-cap-zero-cuts-all.log": "7b3f1890223d64f7613cfb551e8d60612b004fa7006fe2cbbe5c8bbb72f0c121"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,12 @@
+verification results:: 29 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/esp-no-reversal/20261117T074704Z/models/traversal_strategy/traversal_strategy.rs:501:13
+    |
+499 | pub proof fn theorem_in_length_differs(maxh: nat)
+    | ------------------------------------------------- at the end of the function body
+500 |     requires maxh >= 1,
+501 |     ensures esp_len(seq![e(0, 2, 7, 1, 0)], with_dir(q_out(), Dir::In), 1, 2, 1),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

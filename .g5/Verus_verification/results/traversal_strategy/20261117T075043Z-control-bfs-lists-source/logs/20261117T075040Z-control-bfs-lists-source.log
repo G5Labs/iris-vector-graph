@@ -1,0 +1,26 @@
+verification results:: 27 verified, 3 errors
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-lists-source/20261117T075040Z/models/traversal_strategy/traversal_strategy.rs:167:20
+    |
+167 |             assert(j >= 1);
+    |                    ^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-lists-source/20261117T075040Z/models/traversal_strategy/traversal_strategy.rs:191:13
+    |
+190 | pub proof fn theorem_bfs_never_lists_source(es: Seq<Edge>, q: Q, src: int, hops: nat, d: nat)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+191 |     ensures !os_row(es, q, src, hops, src, d),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-lists-source/20261117T075040Z/models/traversal_strategy/traversal_strategy.rs:401:9
+    |
+401 |         forall|d: nat| !os_row(seq![e(0, 1, 7, 2, 0), e(0, 2, 7, 1, 0)], q_out(), 1, 2, 1, d),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+412 |     assert forall|j: nat| 1 <= j < 2 implies !#[trigger] trail_len(es, q, 1, j, 1) by {
+    |     ------ at the end of the function body
+
+error: aborting due to 3 previous errors
+

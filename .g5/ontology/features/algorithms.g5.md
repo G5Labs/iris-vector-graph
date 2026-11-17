@@ -244,7 +244,8 @@ A k-hop read walks outbound, breadth first, from a seed for up to `hops` (2) hop
 
 - A seed with no out-edge returns itself and no edges; a missing seed returns nothing.
 - A walk that fails raises an error rather than answer empty.
-
+- It has no graph argument and walks the default graph: its nodes after the seed are the breadth-first route's outbound nodes there. Today a seed held only by a named graph answers itself and no edges ([finding](../../Verus_verification/bugs_issues.md#F-1009)).
+- Today a read during another session's `sync()` can answer the seed alone instead of raising ([finding](../../Verus_verification/bugs_issues.md#bug-str-115)).
 
 <a id="algorithms.op.walks"></a>
 [I · algorithms.op.walks]
@@ -276,7 +277,8 @@ Path search finds a shortest path between two nodes inside one graph. A path fro
 - The unweighted path routines answer no path for a direction they do not walk, instead of refusing it ([open question](../../Verus_verification/open_questions.md#HD-1003)).
 
 - Working assumption: Keep the public 'in' semantics, caller reversal included. Require ShortestPathJson and ShortestLength to refuse any direction outside {out, both}, or to implement 'in' by walking from the far end. Require IRISGraphStore.shortest_path_length to reverse 'in' as execute_shortest_path does. Record the live false positive as a defect against its docstring.
-
+- `shortest_path_length` answers the length of `execute_shortest_path`'s path for `out` and `both`; parallel edges and another graph's edges change neither.
+- Today `shortest_path_length` walks `in` as `out`, so it can answer no path where an incoming path exists and a length where none does ([finding](../../Verus_verification/bugs_issues.md#bug-str-113)). Cypher's length-only route uses only `out` and `both`.
 
 <a id="algorithms.op.paths.weighted"></a>
 [I · algorithms.op.paths.weighted]
@@ -638,6 +640,8 @@ The ObjectScript Louvain does not guarantee connected communities and ignores `r
 - Expands: [Operations](#algorithms.op)
 - agent
 - user-facing-behavior
+- Verus: [traversal_strategy](../../Verus_verification/models/traversal_strategy/NOTES.md) `theorem_khop_is_default_out_bfs`, `theorem_khop_ignores_named_graphs` (as built, iteration 57)
+- Verus (iteration 57): [rebuild_reads](../../Verus_verification/models/rebuild_reads/NOTES.md) `theorem_reader_sees_seed_alone`; findings: [bug-str-115](../../Verus_verification/bugs_issues.md#bug-str-115), [bug-str-117](../../Verus_verification/bugs_issues.md#bug-str-117)
 
 The Owner answers with or without Arno, so the result has one shape (4.6.0). A failed walk raised instead of answering empty from 4.6.0.
 
@@ -680,7 +684,7 @@ Open questions: [Which graph should the unscoped retrieval operators read?](../.
 - uncertain
 - Sources: [CHANGELOG 4.6.0 paths](../../../CHANGELOG.md#L525-L535); [`iris_src/src/Graph/KG/TraversalPaths.cls::ShortestPathJson`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L5-L116), [`::ShortestLength`](../../../iris_src/src/Graph/KG/TraversalPaths.cls#L117-L175)
 - Playbook: [ALG-B10](../../../experiment/playbook-completion/ontology/10-algorithms.md#L219), [ALG-B10.2](../../../experiment/playbook-completion/ontology/10-algorithms.md#L221)
-- Verus: the playbook's `proofs-d1e` `atrav_l2` (reviewed design) proves the direction contract; its control `control_hd1003_direction_unchecked` reintroduces the pin's behavior (finding HD-1003). No as-built model.
+- Verus: the playbook's `proofs-d1e` `atrav_l2` (reviewed design) proves the direction contract; its control `control_hd1003_direction_unchecked` reintroduces the pin's behavior (finding HD-1003). As built: [traversal_strategy](../../Verus_verification/models/traversal_strategy/NOTES.md) `theorem_lengths_agree_out_both`, `theorem_in_length_differs`, `theorem_parallel_edge_invisible`, `theorem_other_graph_edges_invisible` (iteration 57).
 - Expands: [Operations](#algorithms.op)
 - Children: [weighted](#algorithms.op.paths.weighted), [Should the shortest-path routines refuse a direction they do not walk?](../../Verus_verification/open_questions.md#HD-1003)
 - agent

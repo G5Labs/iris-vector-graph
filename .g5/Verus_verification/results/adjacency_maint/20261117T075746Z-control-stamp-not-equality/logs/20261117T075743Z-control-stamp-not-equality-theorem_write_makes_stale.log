@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/stamp-not-equality/20261117T075743Z/models/adjacency_maint/adjacency_maint.rs:610:13
+    |
+609 | pub proof fn theorem_write_makes_stale(built_at: int)
+    | ----------------------------------------------------- at the end of the function body
+610 |     ensures !fresh(built_at, built_at + 1),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,183 @@
+{
+  "name": "traversal_strategy",
+  "root": "traversal_strategy.rs",
+  "expected_verified": 30,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "bfs-lists-source",
+      "find": "pub open spec fn excl_source(v: int, src: int) -> bool { v != src }",
+      "replace": "pub open spec fn excl_source(v: int, src: int) -> bool { true }",
+      "expect_fail_in": [
+        "theorem_bfs_never_lists_source",
+        "theorem_os_rows_eq_sql_rows",
+        "theorem_vl_ends_list_source_bfs_does_not"
+      ],
+      "classification": "decision: _bfs_rows' `node != source_id` dropped (a cycle back to the source becomes a row)"
+    },
+    {
+      "name": "bfs-every-depth",
+      "find": "        && forall|j: nat| 1 <= j < d ==> !#[trigger] os_walked(es, q, src, j, v)\n",
+      "replace": "\n",
+      "expect_fail_in": [
+        "theorem_os_rows_eq_sql_rows",
+        "theorem_one_row_per_node"
+      ],
+      "classification": "decision: _bfs_rows' least-depth fold dropped (a node at every depth BFSFast walked it, the pre-4.6.0 ObjectScript rows)"
+    },
+    {
+      "name": "sql-revisits",
+      "find": "    else { (exists|u: int| sql_new(es, q, src, (h - 1) as nat, u) && step(es, q, u, v)) && !sql_visited(es, q, src, (h - 1) as nat, v) }",
+      "replace": "    else { (exists|u: int| sql_new(es, q, src, (h - 1) as nat, u) && step(es, q, u, v)) }",
+      "expect_fail_in": [
+        "lemma_front_eq_new"
+      ],
+      "classification": "decision: the SQL fallback's `if nbr not in visited` dropped"
+    },
+    {
+      "name": "graph-unscoped",
+      "find": "    e.g == q.g && type_ok(q, e.p) && match q.dir {",
+      "replace": "    type_ok(q, e.p) && match q.dir {",
+      "expect_fail_in": [
+        "theorem_other_graph_edges_invisible"
+      ],
+      "classification": "decision: the graph predicate on every hop (^KG graph key / COALESCE(graph_id,'') = ?) dropped"
+    },
+    {
+      "name": "cap-zero-cuts-all",
+      "find": "    if max_results > 0 && max_results < rows.len() { rows.take(max_results as int) } else { rows }",
+      "replace": "    if max_results < rows.len() { rows.take(max_results as int) } else { rows }",
+      "expect_fail_in": [
+        "theorem_cap_keeps_nearest_prefix"
+      ],
+      "classification": "decision: `rows[:max_results] if max_results else rows` read without its 0 = all guard"
+    },
+    {
+      "name": "cap-passed-to-adapter",
+      "find": "pub open spec fn adapter_cap(max_results: nat) -> nat { 0 }",
+      "replace": "pub open spec fn adapter_cap(max_results: nat) -> nat { max_results }",
+      "expect_fail_in": [
+        "theorem_adapter_walks_uncapped"
+      ],
+      "classification": "decision: execute_bfs hands max_results to the adapter instead of 0"
+    },
+    {
+      "name": "arno-named-graph",
+      "find": "    else if !env.named_graph && env.arno && env.arno_bfs && only_default_graph(env) { Strategy::Arno }",
+      "replace": "    else if env.arno && env.arno_bfs && only_default_graph(env) { Strategy::Arno }",
+      "expect_fail_in": [
+        "theorem_arno_only_default_outbound"
+      ],
+      "classification": "decision: `not graph` dropped from _select_bfs_strategy"
+    },
+    {
+      "name": "arno-any-direction",
+      "find": "    if !(env.dir is Out) { Strategy::ObjectScript }",
+      "replace": "    if false { Strategy::ObjectScript }",
+      "expect_fail_in": [
+        "theorem_arno_only_default_outbound"
+      ],
+      "classification": "decision: the direction guard dropped (Arno walks ^NKG outbound only)"
+    },
+    {
+      "name": "arno-ignores-other-graphs",
+      "find": "pub open spec fn only_default_graph(env: Env) -> bool { env.kg_readable && !env.other_graphs_have_edges }",
+      "replace": "pub open spec fn only_default_graph(env: Env) -> bool { true }",
+      "expect_fail_in": [
+        "theorem_arno_only_default_outbound"
+      ],
+      "classification": "decision: _only_default_graph dropped"
+    },
+    {
+      "name": "no-fallback-on-empty",
+      "find": "pub open spec fn falls_back(os_raised: bool, os_edges_walked: nat) -> bool { os_raised || os_edges_walked == 0 }",
+      "replace": "pub open spec fn falls_back(os_raised: bool, os_edges_walked: nat) -> bool { os_raised }",
+      "expect_fail_in": [
+        "theorem_fixture_path"
+      ],
+      "classification": "decision: SORTED:0 no longer falls through to the SQL walk"
+    },
+    {
+      "name": "length-in-reversed",
+      "find": "pub open spec fn spl_dir(d: Dir) -> Dir { if d is Both { Dir::Both } else { Dir::Out } }",
+      "replace": "pub open spec fn spl_dir(d: Dir) -> Dir { d }",
+      "expect_fail_in": [
+        "theorem_in_length_differs"
+      ],
+      "classification": "repair: ShortestLength walks 'in' (the source's in entries) as execute_shortest_path's reversal does"
+    },
+    {
+      "name": "trail-repeats-edges",
+      "find": "    distinct(path) && chain(es, q, src, path, nodes, v)",
+      "replace": "    chain(es, q, src, path, nodes, v)",
+      "expect_fail_in": [
+        "theorem_vl_both_no_backtrack"
+      ],
+      "classification": "decision: VarLength's edge-distinct check (tPE[','_tE_','] / SecondHop's pFirst) dropped"
+    },
+    {
+      "name": "khop-walks-both",
+      "find": "pub open spec fn khop_q() -> Q { Q { g: 0, typed: false, preds: Set::empty(), dir: Dir::Out } }",
+      "replace": "pub open spec fn khop_q() -> Q { Q { g: 0, typed: false, preds: Set::empty(), dir: Dir::Both } }",
+      "expect_fail_in": [
+        "theorem_khop_is_default_out_bfs"
+      ],
+      "classification": "decision: khop's BFSFastJson direction 'out'"
+    },
+    {
+      "name": "knn-unrouted-legacy",
+      "find": "pub open spec fn knn_rows(routed: bool, nearest: nat) -> nat { if routed { nearest } else { 0 } }",
+      "replace": "pub open spec fn knn_rows(routed: bool, nearest: nat) -> nat { nearest }",
+      "expect_fail_in": [
+        "theorem_knn_no_route_no_rows"
+      ],
+      "classification": "decision: execute_knn_vec's `table is None` early return dropped"
+    },
+    {
+      "name": "sql-unknown-dir-as-out",
+      "find": "    if t is Out || t is Outbound { Dir::Out } else if t is In || t is Inbound { Dir::In } else { Dir::Both }\n}\n\n/// _bfs_rows",
+      "replace": "    if t is Out || t is Outbound || t is OutUpper || t is Other { Dir::Out } else if t is In || t is Inbound { Dir::In } else { Dir::Both }\n}\n\n/// _bfs_rows",
+      "expect_fail_in": [
+        "theorem_unknown_direction_walks_both"
+      ],
+      "classification": "decision: the SQL fallback's else branch (every other direction text read as both)"
+    },
+    {
+      "name": "types-ignore-case",
+      "find": "    if t is Out || t is OutUpper || t is Outbound { Dir::Out } else if t is In || t is Inbound { Dir::In } else { Dir::Both }",
+      "replace": "    if t is Out || t is Outbound { Dir::Out } else if t is In || t is Inbound { Dir::In } else { Dir::Both }",
+      "expect_fail_in": [
+        "theorem_unknown_direction_walks_both"
+      ],
+      "classification": "decision: _bfs_rows' str(direction).lower() for ReachTypes dropped"
+    },
+    {
+      "name": "bfsfast-case-insensitive",
+      "find": "pub open spec fn os_walks_text(t: DirText) -> bool { t is Out || t is In || t is Both }",
+      "replace": "pub open spec fn os_walks_text(t: DirText) -> bool { t is Out || t is OutUpper || t is In || t is Both }",
+      "expect_fail_in": [
+        "theorem_unknown_direction_walks_both"
+      ],
+      "classification": "decision: BFSFast's exact direction compare"
+    },
+    {
+      "name": "esp-no-reversal",
+      "find": "    if q.dir is In { has_len(es, with_dir(q, Dir::Out), dst, src, n) } else { has_len(es, q, src, dst, n) }",
+      "replace": "    has_len(es, q, src, dst, n)",
+      "expect_fail_in": [
+        "theorem_in_length_differs"
+      ],
+      "classification": "decision: execute_shortest_path's 'in' reversal dropped (ShortestPathJson walks out/both only)"
+    },
+    {
+      "name": "length-both-as-out",
+      "find": "pub open spec fn spl_dir(d: Dir) -> Dir { if d is Both { Dir::Both } else { Dir::Out } }",
+      "replace": "pub open spec fn spl_dir(d: Dir) -> Dir { Dir::Out }",
+      "expect_fail_in": [
+        "theorem_lengths_agree_out_both"
+      ],
+      "classification": "decision: ShortestLength's tBoth"
+    }
+  ]
+}

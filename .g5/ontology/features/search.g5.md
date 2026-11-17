@@ -163,7 +163,7 @@ A vector search returns up to k pairs of node ID and cosine similarity from one 
 - The query is a vector, or a node ID whose stored vector in the same graph is used. That node is left out of the answer.
 - An optional label keeps only nodes that have the label in the same graph.
 - Each route gets an attempted approximate-nearest-neighbour (HNSW) index. A route whose index was refused is searched by a full scan.
-
+- With no route for the graph and model, the store's `execute_knn_vec` answers no neighbours rather than an error.
 
 <a id="search.knn.threshold"></a>
 [I · search.knn.threshold]
@@ -686,6 +686,7 @@ State machines: [embedding inventory](../../Verus_verification/models/embedding_
 - Note: added for gap G18 of the [reconstruction check](../../uplift/ivg-verus-initial/reconstruction-check.md#1b-gaps-a-builder-would-hit). The order of equal scores is not specified, and recall of the approximate index is recorded per route only when measured.
 - agent
 - user-facing-behavior
+- Verus (iteration 57): [traversal_strategy](../../Verus_verification/models/traversal_strategy/NOTES.md) `theorem_knn_no_route_no_rows` (the store reader's no-route branch only)
 
 Findings: [ADR-0005 forbids the three-argument TO_VECTOR for query vectors, which four call sites use](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-doc-011)
 

@@ -1,0 +1,11 @@
+verification results:: 29 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/knn-unrouted-legacy/20261117T074657Z/models/traversal_strategy/traversal_strategy.rs:564:13
+    |
+563 | pub proof fn theorem_knn_no_route_no_rows(nearest: nat)
+    | ------------------------------------------------------- at the end of the function body
+564 |     ensures knn_rows(false, nearest) == 0, knn_rows(true, nearest) == nearest,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

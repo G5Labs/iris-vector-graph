@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/canon-leaf-not-lowest/20261117T074826Z/models/adjacency_maint/adjacency_maint.rs:318:13
+    |
+318 |       ensures inv(multi, rows.insert(k, w), row_update(e, k, w)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+323 | /     if single(rows) {
+324 | |         let j = lemma_single_elim(rows);
+325 | |         assert forall|x: int| #[trigger] r2.dom().contains(x) implies x == k by {}
+326 | |         lemma_single_intro(r2, k);
+...   |
+330 | |         assert(multi);
+331 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

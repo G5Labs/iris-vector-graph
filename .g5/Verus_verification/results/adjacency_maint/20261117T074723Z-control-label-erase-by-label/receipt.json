@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the label delete is not keyed by the erased node",
+    "expect_fail_in": [
+      "theorem_label_delete_scoped"
+    ],
+    "find": "pub open spec fn label_kept(x: Lab, g: int, ids: Set<int>) -> bool { !(x.g == g && ids.contains(x.n)) }",
+    "name": "label-erase-by-label",
+    "replace": "pub open spec fn label_kept(x: Lab, g: int, ids: Set<int>) -> bool { !(x.g == g) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_label_delete_scoped"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "e5896ef2c92bf38791b70c603f446c43928892eb9414e3c6280019144a1d7f2e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/label-erase-by-label/20261117T074720Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_label_delete_scoped": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T074720Z-control-label-erase-by-label-theorem_label_delete_scoped.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T074720Z-control-label-erase-by-label.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T074723Z-control-label-erase-by-label/logs/20261117T074720Z-control-label-erase-by-label-theorem_label_delete_scoped.log": "d91cfce4a4483b1a8586e5b1a19e0883d8365e6f31ae074c99c8d36a0af7e7e6",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T074723Z-control-label-erase-by-label/logs/20261117T074720Z-control-label-erase-by-label.log": "4174e32fe095d9d705155e634d721f446570dde85774117839ccc13757939559"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

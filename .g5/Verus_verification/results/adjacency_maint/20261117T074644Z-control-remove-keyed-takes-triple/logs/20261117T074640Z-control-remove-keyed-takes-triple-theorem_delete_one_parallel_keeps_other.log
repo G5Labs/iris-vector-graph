@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/remove-keyed-takes-triple/20261117T074640Z/models/adjacency_maint/adjacency_maint.rs:498:13
+    |
+496 |   pub proof fn theorem_delete_one_parallel_keeps_other(k1: int, k2: int, w1: int, w2: int)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+497 |       requires k1 != k2,
+498 |       ensures ({
+    |  _____________^
+499 | |         let rows = Map::<int, int>::empty().insert(k1, w1).insert(k2, w2);
+500 | |         let e = canon(true, rows);
+501 | |         let e2 = row_remove(true, e, rows.remove(k1), k1);
+...   |
+505 | |         &&& e2 == canon(true, rows.remove(k1))
+506 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

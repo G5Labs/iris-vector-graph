@@ -1,0 +1,116 @@
+{
+  "title": "adjacency maintenance",
+  "question": "Is the adjacency (^KG out/in, multigraph children and counts, labels, degree, the merged ^NKG edge, two-hop stats) derived from a history of writes and deletes the same as a rebuild from the rows, and what does each writer and delete path leave?",
+  "ontology_ids": [
+    "structure.adjacency",
+    "structure.adjacency.declared",
+    "structure.multigraph.layout",
+    "structure.multigraph.count",
+    "structure.degree",
+    "structure.edge.delete",
+    "structure.edge.weight",
+    "structure.edge.weight.set",
+    "structure.node.delete",
+    "structure.drift",
+    "structure.rebuild",
+    "structure.rebuilt.stamp"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"errors\": 0, \"verified\": 35}"
+    },
+    {
+      "label": "remove-keyed-takes-triple",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"theorem_delete_one_parallel_keeps_other\", \"lemma_delrow\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "plain-remove-keeps",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"lemma_delrow\", \"theorem_plain_delete_takes_triple\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "put-keyed-drops-others",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"lemma_create\", \"lemma_second\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "transition-weight-not-old-leaf",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"lemma_create\", \"lemma_second\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "create-ignores-mode",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"lemma_create\", \"lemma_rebuild_prefix\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "canon-leaf-not-lowest",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"lemma_create\", \"lemma_delrow\", \"lemma_update\", \"lemma_rebuild\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "update-ignored",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"lemma_update\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "erase-ignores-graph",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"theorem_other_graph_untouched\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "held-elsewhere-ignored",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"theorem_nkg_held_elsewhere\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "mark-gone-default-graph",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"theorem_mark_graph_gone\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "label-erase-by-label",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"theorem_label_delete_scoped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "fresh-ignores-stamp",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"theorem_two_hop\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stamp-not-equality",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"theorem_write_makes_stale\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "walk-counts-source-and-first-hop",
+      "kind": "control",
+      "variant": "as-built transcription (declared index)",
+      "expect": "{\"fail_in\": [\"witness_fast_overcounts\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription (declared index)",
+      "expect": null
+    }
+  ]
+}

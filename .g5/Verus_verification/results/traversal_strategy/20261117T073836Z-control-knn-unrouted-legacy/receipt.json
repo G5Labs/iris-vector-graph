@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: execute_knn_vec's `table is None` early return dropped",
+    "expect_fail_in": [
+      "theorem_knn_no_route_no_rows"
+    ],
+    "find": "pub open spec fn knn_rows(routed: bool, nearest: nat) -> nat { if routed { nearest } else { 0 } }",
+    "name": "knn-unrouted-legacy",
+    "replace": "pub open spec fn knn_rows(routed: bool, nearest: nat) -> nat { nearest }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_knn_no_route_no_rows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "a9adfe76506552d3dce555f045bd32907a92902ad5868976627ebc161669cdb1",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "0ae9a13e99156ac31e62453e04eabaa7e6c7022f2d277fe0ae4768e4d45d63e5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/knn-unrouted-legacy/20261117T073835Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_knn_no_route_no_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073835Z-control-knn-unrouted-legacy-theorem_knn_no_route_no_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073835Z-control-knn-unrouted-legacy.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073836Z-control-knn-unrouted-legacy/logs/20261117T073835Z-control-knn-unrouted-legacy-theorem_knn_no_route_no_rows.log": "266eeb09e8b45e4b3ec7510915c9f6420ff2c44617452dadea9e5c72b38436ae",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073836Z-control-knn-unrouted-legacy/logs/20261117T073835Z-control-knn-unrouted-legacy.log": "6c3961f7573075cf4bb082622dcdd50b189c5ffcb490b083693070a91e643bad"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

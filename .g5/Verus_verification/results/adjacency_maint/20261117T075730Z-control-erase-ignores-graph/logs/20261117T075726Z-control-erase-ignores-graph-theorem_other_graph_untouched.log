@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/erase-ignores-graph/20261117T075726Z/models/adjacency_maint/adjacency_maint.rs:469:1
+    |
+469 | pub proof fn theorem_other_graph_untouched(mm: Set<int>, op: Op, t: Tr, rows: Map<int, int>, e: Option<Entry>, g: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/erase-ignores-graph/20261117T075726Z/models/adjacency_maint/adjacency_maint.rs:478:13
+    |
+469 | pub proof fn theorem_other_graph_untouched(mm: Set<int>, op: Op, t: Tr, rows: Map<int, int>, e: Option<Entry>, g: int)
+    | ---------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+478 |     ensures rows_step(op, t, rows) == rows, adj_step(mm, op, t, rows, e) == e,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/erase-ignores-graph/20261117T075726Z/models/adjacency_maint/adjacency_maint.rs:478:45
+    |
+469 | pub proof fn theorem_other_graph_untouched(mm: Set<int>, op: Op, t: Tr, rows: Map<int, int>, e: Option<Entry>, g: int)
+    | ---------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+478 |     ensures rows_step(op, t, rows) == rows, adj_step(mm, op, t, rows, e) == e,
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

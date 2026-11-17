@@ -33,7 +33,10 @@ IVG answers each Cypher query on one of two paths. The SQL path answers every qu
 [I · query.paths.varlength]
 
 A variable-length pattern returns one row per path, as openCypher does, on both paths: from `a` over `a→x→b`, `a→y→b` and `a→b`, `-[:R*1..2]->(t)` returns `b` three times and `x` and `y` once each, `*2..2` returns `b` twice, and `*0..1` includes `a` itself. The ends-only walk the SQL functions use for low bounds keeps these counts.
-
+- The breadth-first route the variable-length fallback reads (`execute_bfs`) lists each node other than the start once, at its least depth, ordered by depth and then ID; a cap keeps the first rows. Its ObjectScript walk and its SQL fallback answer the same rows, and another graph's edges change neither.
+- The accelerator walk is chosen only for an outbound walk of the default graph while no other graph holds edges. Otherwise the ObjectScript walk answers, and the SQL walk answers when it walks no edge.
+- The ends-only walk uses no relationship twice, so it can end at the start over a cycle; the breadth-first route never lists the start.
+- Today a direction other than exactly `out`, `in` or `both` is not refused: `OUT` and unknown text are walked both ways, and `outbound` or `inbound` from the edge rows ([finding](../../Verus_verification/bugs_issues.md#bug-str-114)). Working assumption: refuse it, as for the path routines ([open question](../../Verus_verification/open_questions.md#HD-1003)).
 
 <a id="query.aql"></a>
 [I · query.aql]
@@ -650,13 +653,17 @@ Sources: [CONTEXT.md, Query execution](../../../CONTEXT.md#L224-L232), [spec 253
 Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no decider, so under the uplift's authority rule ([sources](../../uplift/ivg-verus-initial/sources.md)) the block is `agent` (review round 3 R3-reader M16).
 
 ### query.paths.varlength
+- uncertain
 - Sources: [4.7.0 changelog: CY_VLP_ENDS reads ^KG](../../../CHANGELOG.md#L3057-L3060), [`Graph.KG.VarLength`](../../../iris_src/src/Graph/KG/VarLength.cls)
 - Evidence: [predictions and native observations on both engines](../../uplift/consolidated/iteration-21/varlength-PAIRS.md)
 - Expands: [Two query paths](#query.paths)
 - agent
 - user-facing-behavior
+- Verus: [traversal_strategy](../../Verus_verification/models/traversal_strategy/NOTES.md) `theorem_os_rows_eq_sql_rows`, `theorem_bfs_never_lists_source`, `theorem_one_row_per_node`, `theorem_cap_keeps_nearest_prefix`, `theorem_arno_only_default_outbound`, `theorem_fixture_path`, `theorem_vl_ends_list_source_bfs_does_not`, `theorem_vl_both_no_backtrack`, `theorem_unknown_direction_walks_both` (as built, iteration 57)
+- Evidence: [iteration-57 frozen predictions B1-B7](../../uplift/consolidated/iteration-57/w61-PAIRS.md), [observations](../../uplift/consolidated/iteration-57/strategy/OBSERVED.md)
+- Findings: [bug-str-114](../../Verus_verification/bugs_issues.md#bug-str-114)
 
-As-built agreement with openCypher, observed natively; no formal contract.
+As-built agreement with openCypher, observed natively. From iteration 57 the breadth-first and ends-only routes have an as-built formal contract (`traversal_strategy`); the Cypher row projection over them does not.
 
 ### query.aql
 

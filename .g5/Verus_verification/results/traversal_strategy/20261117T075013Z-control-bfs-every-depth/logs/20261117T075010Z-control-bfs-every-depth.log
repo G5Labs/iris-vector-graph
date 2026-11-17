@@ -1,0 +1,27 @@
+verification results:: 28 verified, 2 errors
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-every-depth/20261117T075010Z/models/traversal_strategy/traversal_strategy.rs:172:20
+    |
+172 |             assert(false);
+    |                    ^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-every-depth/20261117T075010Z/models/traversal_strategy/traversal_strategy.rs:195:1
+    |
+195 | pub proof fn theorem_one_row_per_node(es: Seq<Edge>, q: Q, src: int, hops: nat, v: int, d1: nat, d2: nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-every-depth/20261117T075010Z/models/traversal_strategy/traversal_strategy.rs:199:25
+    |
+199 |     if d1 < d2 { assert(!os_walked(es, q, src, d1, v)); }
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-every-depth/20261117T075010Z/models/traversal_strategy/traversal_strategy.rs:200:25
+    |
+200 |     if d2 < d1 { assert(!os_walked(es, q, src, d2, v)); }
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

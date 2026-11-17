@@ -1,0 +1,12 @@
+verification results:: 34 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/label-erase-by-label/20261117T075736Z/models/adjacency_maint/adjacency_maint.rs:559:51
+    |
+557 | pub proof fn theorem_label_delete_scoped(g: int, ids: Set<int>, l: int, n: int, m: int, h: int)
+    | ----------------------------------------------------------------------------------------------- at the end of the function body
+558 |     requires ids.contains(n), !ids.contains(m), h != g,
+559 |     ensures !label_kept(Lab { g, l, n }, g, ids), label_kept(Lab { g, l, n: m }, g, ids), label_kept(Lab { g: h, l, n }, g, ids),
+    |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

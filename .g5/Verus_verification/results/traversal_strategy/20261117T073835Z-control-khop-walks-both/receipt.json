@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: khop's BFSFastJson direction 'out'",
+    "expect_fail_in": [
+      "theorem_khop_is_default_out_bfs"
+    ],
+    "find": "pub open spec fn khop_q() -> Q { Q { g: 0, typed: false, preds: Set::empty(), dir: Dir::Out } }",
+    "name": "khop-walks-both",
+    "replace": "pub open spec fn khop_q() -> Q { Q { g: 0, typed: false, preds: Set::empty(), dir: Dir::Both } }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_khop_is_default_out_bfs"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "a9adfe76506552d3dce555f045bd32907a92902ad5868976627ebc161669cdb1",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "0ae9a13e99156ac31e62453e04eabaa7e6c7022f2d277fe0ae4768e4d45d63e5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/khop-walks-both/20261117T073833Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_khop_is_default_out_bfs": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073833Z-control-khop-walks-both-theorem_khop_is_default_out_bfs.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073833Z-control-khop-walks-both.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073835Z-control-khop-walks-both/logs/20261117T073833Z-control-khop-walks-both-theorem_khop_is_default_out_bfs.log": "0b92d2d88910c6efcf5b2954a2f8a9ce0a175791d736a607e92d9b75fded8557",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073835Z-control-khop-walks-both/logs/20261117T073833Z-control-khop-walks-both.log": "67df735701e53a22863ce990fdc356cf4d3609bec0bfecb736fd8868ebf44b7f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

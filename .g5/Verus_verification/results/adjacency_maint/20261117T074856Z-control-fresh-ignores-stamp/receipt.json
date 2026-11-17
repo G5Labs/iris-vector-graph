@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: KHop2CountFast reads ^KG(\"deg2p\") without the Fresh stamp check (R284)",
+    "expect_fail_in": [
+      "theorem_two_hop"
+    ],
+    "find": "pub open spec fn fast_answer(fresh: bool, sum: int, walk: int) -> int { if fresh && sum > 0 { sum } else { walk } }",
+    "name": "fresh-ignores-stamp",
+    "replace": "pub open spec fn fast_answer(fresh: bool, sum: int, walk: int) -> int { if sum > 0 { sum } else { walk } }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_two_hop"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "08d83127c2be3fdbe9d3069898b3fd9e00ec26cb20c9a531b709597678a9376a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/fresh-ignores-stamp/20261117T074852Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_two_hop": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T074852Z-control-fresh-ignores-stamp-theorem_two_hop.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T074852Z-control-fresh-ignores-stamp.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T074856Z-control-fresh-ignores-stamp/logs/20261117T074852Z-control-fresh-ignores-stamp-theorem_two_hop.log": "e1404083686b122e47fa182c24e9b8554d06b299a996338494ccc9c4fcc08609",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T074856Z-control-fresh-ignores-stamp/logs/20261117T074852Z-control-fresh-ignores-stamp.log": "5b7b724aa9222a4bc9a9744c0d58e0e73b07317515c8e8f380d9bea6f81d0417"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

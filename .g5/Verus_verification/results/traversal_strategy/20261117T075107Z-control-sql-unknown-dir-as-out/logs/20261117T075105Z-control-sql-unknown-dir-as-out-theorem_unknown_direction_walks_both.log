@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/sql-unknown-dir-as-out/20261117T075105Z/models/traversal_strategy/traversal_strategy.rs:361:1
+    |
+361 | pub proof fn theorem_unknown_direction_walks_both()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/sql-unknown-dir-as-out/20261117T075105Z/models/traversal_strategy/traversal_strategy.rs:363:9
+    |
+361 | pub proof fn theorem_unknown_direction_walks_both()
+    | --------------------------------------------------- at the end of the function body
+362 |     ensures !os_walks_text(DirText::OutUpper), !os_walks_text(DirText::Other), !os_walks_text(DirText::Outbound),
+363 |         sql_dir_text(DirText::OutUpper) is Both, sql_dir_text(DirText::Other) is Both,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/sql-unknown-dir-as-out/20261117T075105Z/models/traversal_strategy/traversal_strategy.rs:363:50
+    |
+361 | pub proof fn theorem_unknown_direction_walks_both()
+    | --------------------------------------------------- at the end of the function body
+362 |     ensures !os_walks_text(DirText::OutUpper), !os_walks_text(DirText::Other), !os_walks_text(DirText::Outbound),
+363 |         sql_dir_text(DirText::OutUpper) is Both, sql_dir_text(DirText::Other) is Both,
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

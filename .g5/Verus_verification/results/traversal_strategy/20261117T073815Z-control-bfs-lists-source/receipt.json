@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "decision: _bfs_rows' `node != source_id` dropped (a cycle back to the source becomes a row)",
+    "expect_fail_in": [
+      "theorem_bfs_never_lists_source",
+      "theorem_os_rows_eq_sql_rows",
+      "theorem_vl_ends_list_source_bfs_does_not"
+    ],
+    "find": "pub open spec fn excl_source(v: int, src: int) -> bool { v != src }",
+    "name": "bfs-lists-source",
+    "replace": "pub open spec fn excl_source(v: int, src: int) -> bool { true }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bfs_never_lists_source",
+      "theorem_os_rows_eq_sql_rows",
+      "theorem_vl_ends_list_source_bfs_does_not"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/traversal_strategy/model.json": "a9adfe76506552d3dce555f045bd32907a92902ad5868976627ebc161669cdb1",
+    ".g5/Verus_verification/models/traversal_strategy/traversal_strategy.rs": "0ae9a13e99156ac31e62453e04eabaa7e6c7022f2d277fe0ae4768e4d45d63e5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/controls/bfs-lists-source/20261117T073812Z/models/traversal_strategy/traversal_strategy.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bfs_never_lists_source": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073812Z-control-bfs-lists-source-theorem_bfs_never_lists_source.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_os_rows_eq_sql_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073812Z-control-bfs-lists-source-theorem_os_rows_eq_sql_rows.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_vl_ends_list_source_bfs_does_not": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073812Z-control-bfs-lists-source-theorem_vl_ends_list_source_bfs_does_not.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/traversal_strategy/20261117T073812Z-control-bfs-lists-source.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073815Z-control-bfs-lists-source/logs/20261117T073812Z-control-bfs-lists-source-theorem_bfs_never_lists_source.log": "a095c9101bb69714b9fae27145ff067b73346a6ece16ada2108df077567fe06f",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073815Z-control-bfs-lists-source/logs/20261117T073812Z-control-bfs-lists-source-theorem_os_rows_eq_sql_rows.log": "00707ae946fc1bc996e013de284e74b421de94913a6bc6d961ed181ade07d5f8",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073815Z-control-bfs-lists-source/logs/20261117T073812Z-control-bfs-lists-source-theorem_vl_ends_list_source_bfs_does_not.log": "78727bc34f9bf89a10d9372014a5e6be79104b9a30c6556bdcb867cf260c7e33",
+    ".g5/Verus_verification/results/traversal_strategy/20261117T073815Z-control-bfs-lists-source/logs/20261117T073812Z-control-bfs-lists-source.log": "d42cb33b6f739455581225bf49b39166e359dc4ced3036975b77760b468e8dc5"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

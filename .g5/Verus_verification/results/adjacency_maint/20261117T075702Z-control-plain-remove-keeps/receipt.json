@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: Remove leaves the entry of a deleted plain row",
+    "expect_fail_in": [
+      "lemma_delrow",
+      "theorem_plain_delete_takes_triple"
+    ],
+    "find": "    if multi { remove_keyed(e, others, k) } else { None }",
+    "name": "plain-remove-keeps",
+    "replace": "    if multi { remove_keyed(e, others, k) } else { e }"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_delrow",
+      "theorem_plain_delete_takes_triple"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "08d83127c2be3fdbe9d3069898b3fd9e00ec26cb20c9a531b709597678a9376a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/plain-remove-keeps/20261117T075658Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_delrow": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075658Z-control-plain-remove-keeps-lemma_delrow.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_plain_delete_takes_triple": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075658Z-control-plain-remove-keeps-theorem_plain_delete_takes_triple.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/20261117T075658Z-control-plain-remove-keeps.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075702Z-control-plain-remove-keeps/logs/20261117T075658Z-control-plain-remove-keeps-lemma_delrow.log": "3574008456d34797d5d7de6e4e014e2bc5e92222c654eb8e2c128374e30e3c03",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075702Z-control-plain-remove-keeps/logs/20261117T075658Z-control-plain-remove-keeps-theorem_plain_delete_takes_triple.log": "dc6866fca6bacdef96928f83b5a516ba0ead4f609e7bcb255c0b98e4daa89259",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T075702Z-control-plain-remove-keeps/logs/20261117T075658Z-control-plain-remove-keeps.log": "de7044e9487b5a173ccd5374452ae7d4a07d11ae8cc9bdcd697329bafcb7bd73"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

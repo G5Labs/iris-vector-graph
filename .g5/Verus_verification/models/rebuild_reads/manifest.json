@@ -1,0 +1,47 @@
+{
+  "title": "rebuild reads",
+  "question": "What a traversal reader sees while engine.sync() rebuilds ^KG: the purged and partly refilled index (khop answers the seed alone, a path length answers no path; bug-str-115), never an edge with no row; a build-aside-and-swap rebuild would show only the old or the new index",
+  "ontology_ids": [
+    "structure.rebuild",
+    "algorithms.op.khop",
+    "algorithms.op.paths"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 5}"
+    },
+    {
+      "label": "rebuild-swaps",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_reader_sees_seed_alone\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "refill-keeps-old",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_reader_sees_seed_alone\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "refill-invents",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_visible_edges_are_rows\", \"theorem_end_is_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "swap-exposes-prefix",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_swap_shows_old_or_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

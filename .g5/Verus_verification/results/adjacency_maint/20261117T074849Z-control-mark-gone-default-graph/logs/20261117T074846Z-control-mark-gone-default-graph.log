@@ -1,0 +1,11 @@
+verification results:: 34 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/adjacency_maint/controls/mark-gone-default-graph/20261117T074846Z/models/adjacency_maint/adjacency_maint.rs:546:13
+    |
+545 | pub proof fn theorem_mark_graph_gone(g: int, interned: bool)
+    | ------------------------------------------------------------ at the end of the function body
+546 |     ensures !marks_stale(0, false, true, true), (g != 0 && interned) ==> marks_stale(g, false, true, interned),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
