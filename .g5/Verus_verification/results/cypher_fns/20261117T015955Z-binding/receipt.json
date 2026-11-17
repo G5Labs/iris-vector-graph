@@ -1,0 +1,124 @@
+{
+  "all_sensitivities_detected": true,
+  "cases": 43,
+  "elapsed_s": 0.8,
+  "fixture": "ivg-cont-20261117-iris",
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_fns/binding.py": "0733b9770be82f9e487c259479e500ce81e42188c64d80a55b8f0a95c2738743",
+    ".g5/Verus_verification/models/cypher_fns/cypher_fns.rs": "2bf4b1569ff39f9b8f70943e28da231dee645b4b799d3c7f0cc42f865e810371",
+    ".g5/Verus_verification/models/cypher_fns/model.json": "0ac222a33ad9934861e62c9684b55f06e16c11a69d48300e18ebe13b45b0191b",
+    "iris_src/src/Graph/KG/CypherFn.cls": "59f1bc78b9244e07fe42721f876e9fbd47ca9da33a0018dc555f7a67a564a690",
+    "iris_src/src/Graph/KG/SqlProcs.cls": "5007cdedd0486a38623da0c8ce33a1ce7e73b5a470ab26d36c3e7fe6386da427",
+    "iris_vector_graph/cypher/translator.py": "0a37bc8fb5c00a26a3b672eb524de6cbc8e5c8092f4415fb5c83a96c7fe8d78c",
+    "iris_vector_graph/schema.py": "711bc93c5fc6d485dace4ebdd1815b278bb52ed696e03cd483f978e65958a0b7"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "cypher_fns",
+  "native_declined": 24,
+  "native_declined_queries": [
+    "MATCH (n:CF015954 {id: 'cf015954_c'}) UNWIND [-4] AS i RETURN n.l[i]",
+    "MATCH (n:CF015954 {id: 'cf015954_c'}) RETURN n.l[-4]",
+    "MATCH (n:CF015954 {id: 'cf015954_c'}) UNWIND [-3] AS i RETURN n.l[i]",
+    "MATCH (n:CF015954 {id: 'cf015954_c'}) RETURN n.l[-3]",
+    "MATCH (n:CF015954 {id: 'cf015954_c'}) UNWIND [-1] AS i RETURN n.l[i]",
+    "MATCH (n:CF015954 {id: 'cf015954_c'}) RETURN n.l[-1]"
+  ],
+  "observation_tamper_detected": true,
+  "observed": {
+    "literal_index_-1": [
+      "at",
+      2
+    ],
+    "literal_index_-3": [
+      "at",
+      0
+    ],
+    "literal_index_-4": "null",
+    "literal_index_0": [
+      "at",
+      0
+    ],
+    "literal_index_2": [
+      "at",
+      2
+    ],
+    "literal_index_3": "null",
+    "node_param_key": "value",
+    "node_row_key": "name",
+    "rand_distinct_over_5": 1,
+    "range_row_1_1_3": 1,
+    "range_row_1_3_0": 0,
+    "range_row_1_5_-1": 0,
+    "range_row_1_5_2": 3,
+    "range_row_5_1_-2": 3,
+    "range_row_5_1_1": 0,
+    "reverse_literal_list": "list",
+    "reverse_property_list": "text",
+    "reverse_property_string": "text",
+    "row_index_-1": "fails",
+    "row_index_-3": "fails",
+    "row_index_-4": "fails",
+    "row_index_0": [
+      "at",
+      0
+    ],
+    "row_index_2": [
+      "at",
+      2
+    ],
+    "row_index_3": "null",
+    "sql_ivglistget_-1": [
+      "at",
+      2
+    ],
+    "sql_ivglistget_-3": [
+      "at",
+      0
+    ],
+    "sql_ivglistget_-4": "null",
+    "sql_ivglistget_0": [
+      "at",
+      0
+    ],
+    "sql_ivglistget_2": [
+      "at",
+      2
+    ],
+    "sql_ivglistget_3": "null",
+    "sql_ivgrange_1_1_3": 1,
+    "sql_ivgrange_1_3_0": 0,
+    "sql_ivgrange_1_5_-1": 0,
+    "sql_ivgrange_1_5_2": 3,
+    "sql_ivgrange_5_1_-2": 3,
+    "sql_ivgrange_5_1_1": 0,
+    "sql_json_arrayget_-1": "fails",
+    "sql_json_arrayget_-3": "fails",
+    "sql_json_arrayget_-4": "fails",
+    "sql_json_arrayget_0": [
+      "at",
+      0
+    ],
+    "sql_json_arrayget_2": [
+      "at",
+      2
+    ],
+    "sql_json_arrayget_3": "null",
+    "uuid_distinct_over_5": 1
+  },
+  "port": 36317,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "run": "20261117T015954Z",
+  "scope": "Actual execute_cypher SQL path and SQL-callable helpers on IRIS 2026.1 (pin 3eaa79cf); one Cypher-written node; indexes -4..3 over [1,2,3]; six run-time ranges; five rows for randomUUID()/rand(). The native executor declined every function shape here (counted in native_declined).",
+  "sensitivities_detected_cases": {
+    "ivglistget_no_wrap": 2,
+    "literal_negative_unwrapped": 3,
+    "per_row_evaluation": 2,
+    "property_to_cy_reverse": 1,
+    "range_ignores_direction": 2,
+    "range_zero_raises": 2,
+    "row_index_through_ivglistget": 3,
+    "row_key_by_value": 1
+  },
+  "verdict": "AGREES"
+}

@@ -2984,6 +2984,116 @@ Consequence: with stored vectors that are not unit length (`store_embedding` acc
 
 Repair proposal (not implemented): normalize vectors and centroids at build and insert time for metric "cosine" (or divide by the stored length at search time). Preserve: "dot" and "l2"/"euclidean" scores unchanged; equal-length vectors keep their order. Writers: `ivf_build`, `AddBatch`, `Insert`; readers: `Search` (via `ivf_search`, `kg_IVF`, `ivg.ivf.search`, `vector_search`'s fallback, `kg_RRF_FUSE`). The control `cosine-normalized` checks the repaired order in the model only; the repair was not run on the product. Governing statement: [search.ivf.metric](../ontology/features/search.g5.md#search.ivf.metric).
 
+<a id="bug-cyp-111"></a>
+### A list index known only at run time fails the whole query when it is negative, and answers the element as text
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 47)
+
+Found by: the frozen W54 prediction L2 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_row_negative_index_fails` with neighbors `theorem_literal_index_follows_rule`, `theorem_row_nonnegative_index_follows_rule` and `theorem_ivglistget_is_rule`; controls `row-index-through-ivglistget`, `literal-negative-unwrapped`, `ivglistget-no-wrap`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `I_row_*`, `I_param_neg`, `I_with_list_neg`; [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `row_index_*`, `literal_index_*`, `sql_ivglistget_*`). Over a stored `n.l = [1, 2, 3]`, `UNWIND [-1] AS i RETURN n.l[i]` (and -3, -4) fails with `-149 ... JSON_ARRAYGET ... <RANGE>`, so no row is returned; `n.l[$i]` with `$i = -1` fails "Incorrect number of parameters"; `WITH n.l AS l UNWIND [-1] AS i RETURN l[i]` fails `<RANGE>` in `JSON_VALUE`. Passing neighbors: the literal `n.l[-1]` answers 3 and `n.l[-4]` null; a run-time 0 or 2 answers the element and 3 answers null; the SQL function `CypherFn_IVGLISTGET('[1,2,3]', '-1')` answers 3. A run-time index also answers the element as text: `UNWIND [0] AS i RETURN n.l[i]` answers `'1'` where `n.l[0]` answers 1.
+
+Expected: openCypher (TCK `List1`): a negative index counts from the end, an index past either end is null. The translator already wraps a literal negative index (4.6.0 R267).
+
+Observed: for an index that is not a literal integer, `_expr_subscript` emits `JSON_ARRAYGET(l, CAST(i AS INTEGER))` (`translator.py:23656`); `Graph_KG.JSON_ARRAYGET` is `%DynamicArray.%Get(i)` (`schema.py:2179`), which raises `<RANGE>` for a negative position. The product's `CypherFn.IVGLISTGET`, which wraps negatives, is not emitted for this shape.
+
+Consequence: a query that indexes a list with a computed or unwound negative index returns nothing and an error; with a non-negative index the value comes back as a string. Medium.
+
+Repair proposal (not implemented): emit the typed element function with the wrap (`CY_LIST_ELEM` or `CypherFn_IVGLISTGET`) for a run-time index. Preserve: literal indexes and null past either end. The control `row-index-through-ivglistget` checks the repaired rule in the model only. Governing statement: [query.functions.list_index](../ontology/features/cypher.g5.md#query.functions.list_index).
+
+<a id="bug-cyp-112"></a>
+### reverse() of a list held in a stored property reverses its JSON text instead of the list
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 47)
+
+Found by: the frozen W54 prediction L1 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_stored_list_reversed_as_text`, neighbor `theorem_reverse_neighbors`, control `property-to-cy-reverse`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed-20261117T015433Z.json) `L1_list`, `L1_empty`; [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `reverse_property_list`). For a Cypher-written `n.l = [1, 2, 3]`, `RETURN reverse(n.l)` answers the string `']3 ,2 ,1['`, and for `n.e = []` the string `']['`. Passing neighbors: `reverse([1, 2, 3])` and `reverse(tail(n.l))` answer lists; `reverse(n.str)` of `'abc'` answers `'cba'`. Through a `WITH` (`WITH n.l AS l RETURN reverse(l)`) the answer is the text `'[3,2,1]'`, not a list.
+
+Expected: openCypher: `reverse()` of a list is the list in reverse order; of a string, the reversed string.
+
+Observed: `_scalar_string` sends only list literals, comprehensions, list-valued functions, variables and `CASE` to `CY_REVERSE`; a property read goes to SQL `REVERSE()`, which reverses the stored JSON text (`translator.py:24495-24513`).
+
+Consequence: wrong values for a common list operation on stored data. Medium.
+
+Repair proposal (not implemented): send every non-literal argument to `CY_REVERSE`, which already reverses a JSON array or a string by its run-time value, and type the column as a list. A stored string that spells a list would then reverse as the list (the documented known issue). Governing statement: [query.functions.reverse](../ontology/features/cypher.g5.md#query.functions.reverse).
+
+<a id="bug-cyp-113"></a>
+### n[k] with a key from UNWIND reads the property named "k", so keys(n) then n[k] answers null for every key
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 47)
+
+Found by: the frozen W54 prediction L7 missed, then source reading ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_row_key_reads_variable_name`, neighbor `theorem_param_key_follows_rule`, control `row-key-by-value`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `N_row_key`, `N_with_key`; [idiom](../uplift/consolidated/iteration-47/cypherfn-observed3-20261117T020020Z.json) `keys_idiom`; [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `node_row_key`). A node with `k: 'gotcha'`, `num: 5`: `UNWIND ['num', 'str', 'zz'] AS k RETURN k, n[k]` answers `'gotcha'` on every row; `MATCH (n) UNWIND keys(n) AS k RETURN k, n[k]` answers null for every key; `WITH n, 'str' AS k RETURN n[k]` raises "Non-integer index type for list subscript". Passing neighbor: `n[$k]` with `$k = 'num'` answers 5.
+
+Expected: openCypher: `n[k]` is the property whose name is `k`'s value.
+
+Observed: for a `Variable` index on a node, `_expr_subscript` binds `context.input_params.get(idx.name, idx.name)`, so a variable that is not a parameter becomes its own name as the key of the `rdf_props` join (`translator.py:23533-23541`).
+
+Consequence: dynamic property reads silently answer another property or null. Medium: wrong values with no error.
+
+Repair proposal (not implemented): translate the index expression for a variable that is not a parameter, as for other expressions. Governing statement: [query.functions.dynamic_access](../ontology/features/cypher.g5.md#query.functions.dynamic_access).
+
+<a id="bug-cyp-114"></a>
+### randomUUID() and rand() give one value for every row of a query, and a CREATE that uses one is refused
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 47)
+
+Found by: the frozen W54 prediction L12 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_rows_share_one_value` (conditional on the observed IRIS premise), control `per-row-evaluation`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `R_return`, `R_collect`, `R_create_*`; [CREATE neighbors](../uplift/consolidated/iteration-47/cypherfn-observed3-20261117T020020Z.json); [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `uuid_distinct_over_5`, `rand_distinct_over_5`). `UNWIND [1, 2, 3] AS i RETURN randomUUID(), rand()` answers the same UUID and the same float on all three rows; `UNWIND range(1, 50) AS i WITH randomUUID() AS u RETURN count(DISTINCT u)` answers 1. `CREATE (:X {u: randomUUID()})`, with or without `UNWIND`, fails "nothing written: <LIST ERROR> Cannot write argument in list"; the same `UNWIND ... CREATE` with `u: 'x'` writes three nodes. Other functions inside a `CREATE` map were not checked.
+
+Expected: openCypher: each call of `randomUUID()` returns a new UUID and `rand()` a new number.
+
+Observed: the translator emits `Graph_KG.NEWID()` and `Graph_KG.RAND()`, calls without a row argument (`translator.py:26919-26924`; `schema.py:2321, 2324`); IRIS 2026.1 evaluates each once per statement. The write refusal was not traced to its source.
+
+Consequence: generated identifiers repeat across rows of a read, and cannot be generated in a `CREATE` at all. Medium.
+
+Repair proposal (not implemented): pass a row-dependent argument (or declare the functions non-deterministic) so IRIS evaluates them per row, and accept a function value in a `CREATE` map. Governing statement: [query.functions.random](../ontology/features/cypher.g5.md#query.functions.random).
+
+<a id="bug-cyp-115"></a>
+### A map value read by a key answers numbers and booleans as text
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 47)
+
+Found by: the frozen W54 prediction L7 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)). No formal contract: probe only, open in Verus.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `M_rows_types`, `M_literal_key`). `WITH {a: 1, b: 2.5, c: true, d: [1]} AS m UNWIND ['a', 'b', 'c', 'd'] AS k RETURN k, m[k]` answers `'1'`, `'2.5'`, `'1'`, `'[1]'`; `m['a']` answers `'1'` and `m.c` answers 1 for `true`. A missing key answers null, as expected. `WITH $m AS m RETURN m[$k]` fails "Incorrect number of parameters".
+
+Expected: openCypher: the map's value with its type.
+
+Observed: a string or variable key becomes `JSON_VALUE(m, '$.' || key)`, which answers text (`translator.py:23565-23575, 23638-23639`). Related documented issue: a property of a map in a parameter list reads a boolean as 1 (KNOWN_ISSUES).
+
+Consequence: comparisons and arithmetic on such values see strings. Low. Governing statement: [query.functions.dynamic_access](../ontology/features/cypher.g5.md#query.functions.dynamic_access).
+
+<a id="bug-cyp-116"></a>
+### head() of a number fails with an error that does not name TypeError
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 47)
+
+Found by: the frozen W54 prediction L11 partly missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)). No formal contract: probe only.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `T_head_number_msg`, `T_head_number_literal`). `head(n.num)` of a stored 5, `n.num[0]` and `head(n.str)` fail with `CY_LIST_ELEM failed ... %msg=` (empty); `RETURN head(5)` with `JSON_ARRAYGET failed ... %msg=`.
+
+Expected: the 4.6.0 CHANGELOG: a type error on a row fails with IRIS's error text "which contains the openCypher name" (`TypeError`), so a caller can test for it with `in`.
+
+Observed: the list element functions raise without a message (`schema.py:2300`, `2179`).
+
+Consequence: callers cannot tell a type error from another failure. Low. Governing statement: [query.functions](../ontology/features/cypher.g5.md#query.functions).
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -3375,7 +3485,7 @@ Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-structural.json](../../experiment/playbook-completion/findings/audit/zz-structural.json) (live `st-live-susp-range-step`; inspected `iris_src/src/Graph/KG/CypherFn.cls:255-257`; inspected `iris_vector_graph/cypher/translator.py:29055-29122`)
 
-Reproduced by: **e2e reproduced** — [fresh pinned-product regressions](audits/register-20261115/regressions.py), cases `runtime_range_zero`; [actual results and passing neighbors](audits/register-20261115/regressions.json). No provider substitution in these cases.
+Reproduced by: **e2e reproduced** — [fresh pinned-product regressions](audits/register-20261115/regressions.py), cases `runtime_range_zero`; [actual results and passing neighbors](audits/register-20261115/regressions.json). No provider substitution in these cases. Reproduced again in iteration 47 on the run-isolated continuation fixture ([observation](../uplift/consolidated/iteration-47/cypherfn-observed-20261117T015433Z.json) `L4_range_zero_rows`; [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `range_row_1_3_0`, `sql_ivgrange_1_3_0`), now with a formal claim: [cypher_fns](models/cypher_fns/NOTES.md) `theorem_runtime_zero_step_empty`, neighbor `theorem_nonzero_step_follows_rule`, controls `range-zero-raises`, `range-ignores-direction`.
 
 Historical reproduction record: playbook arm, live on its IRIS (x86_64 VM): `st-live-susp-range-step`
 

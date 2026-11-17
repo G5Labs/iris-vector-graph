@@ -1,0 +1,81 @@
+{
+  "name": "cypher_fns",
+  "root": "cypher_fns.rs",
+  "expected_verified": 11,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "row-index-through-ivglistget",
+      "find": "        IdxKind::RowValue => json_arrayget(len, i),",
+      "replace": "        IdxKind::RowValue => ivglistget(len, i),",
+      "expect_fail_in": [
+        "theorem_row_negative_index_fails"
+      ],
+      "classification": "decision: a run-time index goes through CypherFn_IVGLISTGET (the repair); the non-negative neighbor must still verify"
+    },
+    {
+      "name": "ivglistget-no-wrap",
+      "find": "    let j = if i < 0 { len + i } else { i };",
+      "replace": "    let j = i;",
+      "expect_fail_in": [
+        "theorem_ivglistget_is_rule"
+      ],
+      "classification": "effect: IVGLISTGET without its negative wrap"
+    },
+    {
+      "name": "literal-negative-unwrapped",
+      "find": "        IdxKind::LiteralInt => if i < 0 { if len >= -i { json_arrayget(len, len + i) } else { Elem::Null } } else { json_arrayget(len, i) },",
+      "replace": "        IdxKind::LiteralInt => json_arrayget(len, i),",
+      "expect_fail_in": [
+        "theorem_literal_index_follows_rule"
+      ],
+      "classification": "decision: the 4.6.0 R267 CASE for a literal negative index removed"
+    },
+    {
+      "name": "property-to-cy-reverse",
+      "find": "    match k { ArgKind::PropertyRead => false, _ => true }",
+      "replace": "    match k { _ => true }",
+      "expect_fail_in": [
+        "theorem_stored_list_reversed_as_text"
+      ],
+      "classification": "decision: a property read also goes to CY_REVERSE (the repair); the string neighbor must still verify"
+    },
+    {
+      "name": "row-key-by-value",
+      "find": "    match k { KeyArg::RowVar { name, value } => name, KeyArg::Param { value } => value }",
+      "replace": "    match k { KeyArg::RowVar { name, value } => value, KeyArg::Param { value } => value }",
+      "expect_fail_in": [
+        "theorem_row_key_reads_variable_name"
+      ],
+      "classification": "decision: n[k] reads the property named by k's value (the repair)"
+    },
+    {
+      "name": "range-zero-raises",
+      "find": "    if step == 0 { Range::Elems(0) } else { Range::Elems(ivg_count(start, end, step)) }",
+      "replace": "    if step == 0 { Range::ArgumentError } else { Range::Elems(ivg_count(start, end, step)) }",
+      "expect_fail_in": [
+        "theorem_runtime_zero_step_empty"
+      ],
+      "classification": "decision: IVGRANGE raises for a step of 0 (F-C0841's repair)"
+    },
+    {
+      "name": "range-ignores-direction",
+      "find": "    else if step < 0 { if start >= end { ((start - end) / (-step) + 1) as nat } else { 0 } }",
+      "replace": "    else if step < 0 { 0 }",
+      "expect_fail_in": [
+        "theorem_nonzero_step_follows_rule"
+      ],
+      "classification": "effect: IVGRANGE's negative-step loop yields nothing (the rule, written separately, keeps its count)"
+    },
+    {
+      "name": "per-row-evaluation",
+      "find": "pub open spec fn evaluated_per_row() -> bool { false }",
+      "replace": "pub open spec fn evaluated_per_row() -> bool { true }",
+      "expect_fail_in": [
+        "theorem_rows_share_one_value"
+      ],
+      "classification": "provider/decision: each row draws its own value (the repair, e.g. a row argument or a non-deterministic function)"
+    }
+  ]
+}

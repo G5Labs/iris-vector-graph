@@ -34,3 +34,29 @@ Not predicted with confidence: `split(s, '')` (openCypher leaves the empty delim
 order of `keys()`, and percentileDisc's rounding rule (openCypher says "nearest", the TCK only pins 3 rows; Neo4j
 returns 20 for 0.5 over four values). A stored string that spells a list (`'[1, 2]'`) reads as the list
 (KNOWN_ISSUES "A stored string that spells ... a list"); that documented deviation is not re-tested here.
+
+## Result (iteration 47; [observation](cypherfn-observed-20261117T015433Z.json), follow-ups after the source reading [2](cypherfn-observed2-20261117T015618Z.json) and [3](cypherfn-observed3-20261117T020020Z.json))
+
+Reader: the SQL Cypher path. The native executor declined every function shape probed (`_try_native` answered None),
+so "both executors" reduces to one here.
+
+| ID | Held? | Observed |
+|---|---|---|
+| L1 | **missed** (reverse) | `head`, `last`, `tail` held for both lists; `reverse(n.l)` answered the string `']3 ,2 ,1['`, `reverse(n.e)` `']['` → [bug-cyp-112](../../../Verus_verification/bugs_issues.md#bug-cyp-112) |
+| L2 | **missed** | a run-time -1, -3 or -4 fails the query (`JSON_ARRAYGET <RANGE>`), 3 answers null; a run-time 0 answers `'1'` (text); literal indexes held → [bug-cyp-111](../../../Verus_verification/bugs_issues.md#bug-cyp-111) |
+| L3 | held | `1` and `True` for both writers; `n.t[1]` `'a'`, `n.t[2]` 2.5 |
+| L4 | held | `[1,3,5]`, `[]`, `[5,3,1]` (row and parameter); the run-time step 0 answers `[]` (inherited F-C0841, reproduced) |
+| L5 | held | `['a','b','','c']`, `['']`, null; `split('abc', '')` `['a','b','c']` |
+| L6 | partial | relationship `['x']` and map `['a','b']` held; `keys(n)` of a `create_node` node is `['a','b','id']` (the `id` entry not assessed) |
+| L7 | **missed** | `m[k]` answers `'1'` for 1 → [bug-cyp-115](../../../Verus_verification/bugs_issues.md#bug-cyp-115); `n[k]` with `k` from `UNWIND` answers `n.k` (null, or `'gotcha'` when such a property exists) → [bug-cyp-113](../../../Verus_verification/bugs_issues.md#bug-cyp-113); `WITH $m AS m RETURN m[$k]` fails "Incorrect number of parameters" |
+| L8 | held | `true`, `false`, null; parameters and rows agree; `'' =~ '.*'` true |
+| L9 | held | Disc 20.0, Cont 25.0; empty null, null; with a null 10.0, 20.0; quartiles 10, 30, 17.5 |
+| L10 | held | `ArgumentError: NumberOutOfRange` for 1.5 and -1; 20.0 for 0.5 |
+| L11 | partial | `head(n.num)` fails, but the error text is empty (no `TypeError`) → [bug-cyp-116](../../../Verus_verification/bugs_issues.md#bug-cyp-116) |
+| L12 | **missed** | one UUID and one `rand()` value on every row; `count(DISTINCT randomUUID())` over 50 rows is 1; a `CREATE` with `randomUUID()` is refused → [bug-cyp-114](../../../Verus_verification/bugs_issues.md#bug-cyp-114) |
+
+Score: 6 held, 2 partial, 4 missed. The misses of L1, L2 and L12 came from values known only at run time, and the
+literal neighbors of L1 and L2 held; L7's map case also loses the type with a literal key (`m['a']` is `'1'`), and
+L11's literal `head(5)` fails without a `TypeError` name as well.
+Source reading after the freeze also showed that Cypher reaches only 4 of the 17 `CypherFn` bodies
+([query.functions.sql_helpers](../../../ontology/features/cypher.g5.md#query.functions.sql_helpers)).

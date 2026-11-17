@@ -1,0 +1,11 @@
+verification results:: 10 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/row-index-through-ivglistget/20261117T015849Z/models/cypher_fns/cypher_fns.rs:43:13
+   |
+42 | pub proof fn theorem_row_negative_index_fails()
+   | ----------------------------------------------- at the end of the function body
+43 |     ensures translated_index(IdxKind::RowValue, 3, -1) == Elem::Fails, rule_index(3, -1) == Elem::At(2),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,65 @@
+{
+  "start": 448,
+  "after": 463,
+  "newly_reached_and_bound": [
+    "iris_src/src/Graph/KG/CypherFn.cls::IVGLISTGET",
+    "iris_src/src/Graph/KG/CypherFn.cls::IVGRANGE",
+    "iris_src/src/Graph/KG/IVFIndex.cls::AddBatch",
+    "iris_src/src/Graph/KG/IVFIndex.cls::Build",
+    "iris_src/src/Graph/KG/SqlProcs.cls::CypherFnIVGLISTGET",
+    "iris_src/src/Graph/KG/SqlProcs.cls::CypherFnIVGRANGE",
+    "iris_src/src/Graph/KG/SqlProcs.cls::TxnBegin",
+    "iris_src/src/Graph/KG/SqlProcs.cls::TxnEnd",
+    "iris_src/src/Graph/KG/SqlProcs.cls::TxnUndo",
+    "iris_src/src/Graph/KG/SqlProcs.cls::kgIVF",
+    "iris_vector_graph/_engine/query.py::QueryMixin._execute_parsed_sql",
+    "iris_vector_graph/cypher/translator.py::_expr_fn_list_ops",
+    "iris_vector_graph/cypher/translator.py::_expr_subscript",
+    "iris_vector_graph/cypher/translator.py::_scalar_numeric_and_datetime",
+    "iris_vector_graph/cypher/translator.py::_scalar_string"
+  ],
+  "strengthened": [
+    "iris_src/src/Graph/KG/IVFIndex.cls::Search",
+    "iris_vector_graph/_engine/vector.py::VectorMixin.ivf_build",
+    "iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list"
+  ],
+  "lost": [],
+  "overlap": 0,
+  "distinct_additions": 18,
+  "locator_only_added": [
+    "iris_src/src/Graph/KG/IVFIndex.cls::SearchProc"
+  ],
+  "not_bound_with_reason": {
+    "iris_src/src/Graph/KG/SqlProcs.cls::kgBM25": "no formal model of BM25 search scoring/order; S2 observed only",
+    "iris_src/src/Graph/KG/CypherFn.cls (13 of 17 bodies)": "not reached from Cypher; SQL-only surface not probed (IVGLISTGET and IVGRANGE bound)",
+    "iris_src/src/Graph/KG/CypherFn.cls::IVGTYPEERROR": "reached (WITH n, 'str' AS k RETURN n[k]) but its raise is not in the model",
+    "iris_src/src/Graph/KG/SqlProcs.cls::PercentilePDISC/PercentilePCONT": "observed (L9, L10 held), no formal contract"
+  },
+  "counting_rule": "member_reach.py at this commit: relation in models/proves/witnesses with a resolvable formal item and member",
+  "by_part": {
+    "A (IVF metric, kg_IVF)": [
+      "iris_src/src/Graph/KG/IVFIndex.cls::AddBatch",
+      "iris_src/src/Graph/KG/IVFIndex.cls::Build",
+      "iris_src/src/Graph/KG/SqlProcs.cls::kgIVF",
+      "iris_src/src/Graph/KG/IVFIndex.cls::Search",
+      "iris_vector_graph/_engine/vector.py::VectorMixin.ivf_build"
+    ],
+    "B (Cypher functions)": [
+      "iris_src/src/Graph/KG/CypherFn.cls::IVGLISTGET",
+      "iris_src/src/Graph/KG/CypherFn.cls::IVGRANGE",
+      "iris_src/src/Graph/KG/SqlProcs.cls::CypherFnIVGLISTGET",
+      "iris_src/src/Graph/KG/SqlProcs.cls::CypherFnIVGRANGE",
+      "iris_vector_graph/_engine/query.py::QueryMixin._execute_parsed_sql",
+      "iris_vector_graph/cypher/translator.py::_expr_fn_list_ops",
+      "iris_vector_graph/cypher/translator.py::_expr_subscript",
+      "iris_vector_graph/cypher/translator.py::_scalar_numeric_and_datetime",
+      "iris_vector_graph/cypher/translator.py::_scalar_string",
+      "iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list"
+    ],
+    "C (Txn SQL entry points)": [
+      "iris_src/src/Graph/KG/SqlProcs.cls::TxnBegin",
+      "iris_src/src/Graph/KG/SqlProcs.cls::TxnEnd",
+      "iris_src/src/Graph/KG/SqlProcs.cls::TxnUndo"
+    ]
+  }
+}

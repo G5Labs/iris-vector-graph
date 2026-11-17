@@ -1,0 +1,60 @@
+{
+  "run": "20261117T020020Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "cases": {
+    "keys_idiom": {
+      "query": "MATCH (n:I47H020020) UNWIND keys(n) AS k RETURN k, n[k] ORDER BY k",
+      "rows": [
+        [
+          "a",
+          null
+        ],
+        [
+          "b",
+          null
+        ],
+        [
+          "id",
+          null
+        ]
+      ],
+      "error": null
+    },
+    "create_plain": {
+      "query": "UNWIND [1, 2, 3] AS i CREATE (:I47H020020P {i: i, u: 'x'})",
+      "rows": [],
+      "error": null
+    },
+    "create_plain_read": {
+      "query": "MATCH (x:I47H020020P) RETURN count(x)",
+      "rows": [
+        [
+          3
+        ]
+      ],
+      "error": null
+    },
+    "create_uuid_single": {
+      "query": "CREATE (:I47H020020S {u: randomUUID()})",
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "create_uuid_single_read": {
+      "query": "MATCH (x:I47H020020S) RETURN x.u",
+      "rows": [],
+      "error": null
+    },
+    "create_uuid_unwind": {
+      "query": "UNWIND [1, 2, 3] AS i CREATE (:I47H020020V {i: i, u: randomUUID()})",
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "create_uuid_unwind_read": {
+      "query": "MATCH (x:I47H020020V) RETURN count(x)",
+      "rows": [
+        [
+          0
+        ]
+      ],
+      "error": null
+    }
+  }
+}

@@ -475,3 +475,31 @@ Iteration 33 ([handoff](../uplift/consolidated/iteration-33/HANDOFF.md)) adds `m
 
 Iteration 35 ([handoff](../uplift/consolidated/iteration-35/HANDOFF.md)): W41 is probe-only. The retest converged after iteration 35
 ([basis](../uplift/consolidated/HANDOFF.md#retest-convergence-2026-11-16)). Native replays need `docker start ivg-retest-20261116-iris` first.
+
+## Continuation on Linux (2026-11-17): iteration 36 and later
+
+Run identity and the dedicated fixture `ivg-cont-20261117-iris` (127.0.0.1:36317): [continuation-run.json](../uplift/consolidated/iteration-36/continuation-run.json);
+the fixture runtime is `iteration-36/runtime.py`. Per-iteration handoffs are linked from the
+[continuation table](../uplift/consolidated/HANDOFF.md#continuation-2026-11-17). Iteration 47 from the repository root:
+
+```sh
+export RUN_DIR=$HOME/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117
+export VERUS_BIN=$HOME/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus
+export PATH=$HOME/.cargo/bin:$PATH PYTHONDONTWRITEBYTECODE=1 G5_GUIDE=$G5_HARNESS/guidance
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/cypher_fns        # PASS 11
+CONTROL=row-index-through-ivglistget python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/cypher_fns
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/ivf_entries       # PASS 9
+CONTROL=cosine-normalized python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/ivf_entries
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/cypher_fns/binding.py)   # AGREES 43
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/ivf_entries/binding.py)  # AGREES 6
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD IVG_RUNTIME_DIR=$OLDPWD/.g5/uplift/consolidated/iteration-36 \
+  $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/write_routing/binding.py)                                    # AGREES 52
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after47                 # 463/4130
+python3 .g5/Verus_verification/tools/check_consolidated.py                                      # PASS
+```
+
+Worked lookup: `query.functions.list_index` → `cypher_fns.rs::theorem_row_negative_index_fails` → the row for
+`iris_vector_graph/cypher/translator.py::_expr_subscript` (line 23509, decision) and
+`iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list` (the `JSON_ARRAYGET` body, line 2179) in
+`crosswalk/decision-links.tsv`; in reverse, that key in `bindings.json` lists the claims and roles. The distinguishing
+control is `row-index-through-ivglistget`; the product observation is the binding's `row_index_-1` (`fails`).

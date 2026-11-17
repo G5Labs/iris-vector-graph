@@ -1,0 +1,624 @@
+{
+  "run": "20261117T015433Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "prefix": "i47_015433_",
+  "label": "I47F015433",
+  "cases": {
+    "L1_list": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN head(n.l), last(n.l), tail(n.l), reverse(n.l)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1,
+            3,
+            [
+              2,
+              3
+            ],
+            "]3 ,2 ,1["
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L1_empty": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN head(n.e), last(n.e), tail(n.e), reverse(n.e)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            null,
+            null,
+            [],
+            "]["
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L1_literal_neighbor": {
+      "query": "WITH [1, 2, 3] AS l, [] AS e RETURN head(l), last(l), tail(l), reverse(l), head(e), last(e), tail(e), reverse(e)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1,
+            3,
+            [
+              2,
+              3
+            ],
+            [
+              3,
+              2,
+              1
+            ],
+            null,
+            null,
+            [],
+            []
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L2_index_rows": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) UNWIND [0, -1, 2, 3, -4] AS i RETURN i, n.l[i]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONARRAYGET+1^Graph.KG.funcJSONARRAYGET.1>]"
+      }
+    },
+    "L2_index_const": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN n.l[0], n.l[-1], n.l[3], n.l[-4]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1,
+            3,
+            null,
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L2_python_list": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_py'}) UNWIND [0, -1, 3, -4] AS i RETURN i, n.l[i]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONARRAYGET+1^Graph.KG.funcJSONARRAYGET.1>]"
+      }
+    },
+    "L3_cypher_written": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN head(n.t), last(n.t), n.t[1], n.t[2]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1,
+            true,
+            "a",
+            2.5
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L3_python_written": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_py'}) RETURN head(n.t), last(n.t), n.t[1], n.t[2]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1,
+            true,
+            "a",
+            2.5
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L4_range_rows": {
+      "query": "UNWIND [2, -1] AS s RETURN s, range(1, 5, s)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            2,
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          [
+            -1,
+            []
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L4_range_down": {
+      "query": "UNWIND [-2] AS s RETURN range(5, 1, s)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              5,
+              3,
+              1
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L4_range_param": {
+      "query": "RETURN range(1, 5, $s), range(5, 1, $d)",
+      "params": {
+        "s": 2,
+        "d": -2
+      },
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              1,
+              3,
+              5
+            ],
+            [
+              5,
+              3,
+              1
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L4_range_zero_rows": {
+      "query": "UNWIND [0] AS s RETURN range(1, 3, s)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            []
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L5_split": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN split(n.s, ','), split(n.z, ','), split(n.missing, ',')",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              "a",
+              "b",
+              "",
+              "c"
+            ],
+            [
+              ""
+            ],
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L5_split_literal": {
+      "query": "RETURN split('a,b,,c', ','), split('', ',')",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              "a",
+              "b",
+              "",
+              "c"
+            ],
+            [
+              ""
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L5_split_empty_delim": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN split(n.str, '')",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              "a",
+              "b",
+              "c"
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L6_keys_node": {
+      "query": "MATCH (n:I47F015433K {id: 'i47_015433_k'}) RETURN keys(n)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              "a",
+              "b",
+              "id"
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L6_keys_rel": {
+      "query": "MATCH (a {id: 'i47_015433_k'})-[r:R015433]->(b) RETURN keys(r)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              "x"
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L6_keys_map": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) WITH {a: 1, b: n.missing} AS m RETURN keys(m)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              "a",
+              "b"
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L6_keys_map_literal": {
+      "query": "RETURN keys({a: 1, b: null})",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              "a",
+              "b"
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L7_map_get_rows": {
+      "query": "WITH {a: 1, b: 'x'} AS m UNWIND ['a', 'b', 'zz'] AS k RETURN k, m[k]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "a",
+            "1"
+          ],
+          [
+            "b",
+            "x"
+          ],
+          [
+            "zz",
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L7_map_get_param": {
+      "query": "WITH $m AS m RETURN m[$k], m[$z]",
+      "params": {
+        "m": {
+          "a": 1,
+          "b": "x"
+        },
+        "k": "b",
+        "z": "zz"
+      },
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<ARGUMENT ERROR> Bad argument given; Details: Incorrect number of parameters"
+      }
+    },
+    "L7_node_get_rows": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) UNWIND ['num', 'str', 'zz'] AS k RETURN k, n[k]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "num",
+            null
+          ],
+          [
+            "str",
+            null
+          ],
+          [
+            "zz",
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L8_regex": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN n.str =~ 'a.c', n.str =~ 'b', n.missing =~ 'a'",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            true,
+            false,
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L8_regex_param": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN n.str =~ $p1, n.str =~ $p2",
+      "params": {
+        "p1": "a.c",
+        "p2": "b"
+      },
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            true,
+            false
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L8_regex_rows": {
+      "query": "UNWIND ['abc', 'b', ''] AS s RETURN s, s =~ 'b', s =~ '.*'",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "abc",
+            false,
+            true
+          ],
+          [
+            "b",
+            true,
+            true
+          ],
+          [
+            "",
+            false,
+            true
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L9_pct4": {
+      "query": "MATCH (n:I47F015433P) RETURN percentileDisc(n.v, 0.5), percentileCont(n.v, 0.5)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            20.0,
+            25.0
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L9_pct_empty": {
+      "query": "MATCH (n:I47F015433None) RETURN percentileDisc(n.v, 0.5), percentileCont(n.v, 0.5)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            null,
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L9_pct_nulls": {
+      "query": "MATCH (n:I47F015433Q) RETURN percentileDisc(n.v, 0.5), percentileCont(n.v, 0.5)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            10.0,
+            20.0
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L9_pct_quartiles": {
+      "query": "MATCH (n:I47F015433P) RETURN percentileDisc(n.v, 0.25), percentileDisc(n.v, 0.75), percentileCont(n.v, 0.25)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            10.0,
+            30.0,
+            17.5
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L9_pct_unwind": {
+      "query": "UNWIND [10, 20, 30, 40] AS x RETURN percentileDisc(x, 0.5), percentileCont(x, 0.5)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            20.0,
+            25.0
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L10_pct_bad_param": {
+      "query": "MATCH (n:I47F015433Q) RETURN percentileCont(n.v, $p)",
+      "params": {
+        "p": 1.5
+      },
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.PERCENTILE_PCONT failed with error:  SQLCODE=-400,%msg=ArgumentError: NumberOutOfRange: percentile must be between 0.0 and 1.0>]"
+      }
+    },
+    "L10_pct_good_param": {
+      "query": "MATCH (n:I47F015433Q) RETURN percentileCont(n.v, $p)",
+      "params": {
+        "p": 0.5
+      },
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            20.0
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L10_pct_bad_disc": {
+      "query": "MATCH (n:I47F015433Q) RETURN percentileDisc(n.v, $p)",
+      "params": {
+        "p": -1
+      },
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.PERCENTILE_PDISC failed with error:  SQLCODE=-400,%msg=ArgumentError: NumberOutOfRange: percentile must be between 0.0 and 1.0>]"
+      }
+    },
+    "L11_head_number": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN head(n.num)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_LIST_ELEM failed with error:  SQLCODE=-400,%msg=>]"
+      }
+    },
+    "L11_index_number": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN n.num[0]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_LIST_ELEM failed with error:  SQLCODE=-400,%msg=>]"
+      }
+    },
+    "L11_head_list": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN head(n.l)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L11_head_string": {
+      "query": "MATCH (n:I47F015433 {id: 'i47_015433_c'}) RETURN head(n.str)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_LIST_ELEM failed with error:  SQLCODE=-400,%msg=>]"
+      }
+    },
+    "L12_ids": {
+      "query": "UNWIND [1, 2, 3] AS i RETURN randomUUID(), rand()",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "D76006EE-E229-11F1-8929-726DDB04F98E",
+            0.254251
+          ],
+          [
+            "D76006EE-E229-11F1-8929-726DDB04F98E",
+            0.254251
+          ],
+          [
+            "D76006EE-E229-11F1-8929-726DDB04F98E",
+            0.254251
+          ]
+        ],
+        "error": null
+      }
+    }
+  }
+}

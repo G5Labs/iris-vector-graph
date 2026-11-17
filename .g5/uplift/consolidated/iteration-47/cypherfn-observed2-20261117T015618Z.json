@@ -1,0 +1,271 @@
+{
+  "run": "20261117T015618Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "prefix": "i47b_015618_",
+  "cases": {
+    "I_row_0": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) UNWIND [0] AS i RETURN n.l[i]",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          "1"
+        ]
+      ],
+      "error": null
+    },
+    "I_row_2": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) UNWIND [2] AS i RETURN n.l[i]",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          "3"
+        ]
+      ],
+      "error": null
+    },
+    "I_row_3": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) UNWIND [3] AS i RETURN n.l[i]",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          null
+        ]
+      ],
+      "error": null
+    },
+    "I_row_-1": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) UNWIND [-1] AS i RETURN n.l[i]",
+      "params": {},
+      "native_routed": false,
+      "rows": [],
+      "error": "QLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONARRAYGET+1^Graph.KG.funcJSONARRAYGET.1>]"
+    },
+    "I_row_-3": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) UNWIND [-3] AS i RETURN n.l[i]",
+      "params": {},
+      "native_routed": false,
+      "rows": [],
+      "error": "QLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONARRAYGET+1^Graph.KG.funcJSONARRAYGET.1>]"
+    },
+    "I_row_-4": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) UNWIND [-4] AS i RETURN n.l[i]",
+      "params": {},
+      "native_routed": false,
+      "rows": [],
+      "error": "QLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONARRAYGET+1^Graph.KG.funcJSONARRAYGET.1>]"
+    },
+    "I_param_neg": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) RETURN n.l[$i]",
+      "params": {
+        "i": -1
+      },
+      "native_routed": false,
+      "rows": [],
+      "error": "<ARGUMENT ERROR> Bad argument given; Details: Incorrect number of parameters"
+    },
+    "I_with_list_neg": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) WITH n.l AS l UNWIND [-1] AS i RETURN l[i]",
+      "params": {},
+      "native_routed": false,
+      "rows": [],
+      "error": "tails: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_VALUE failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONVALUE+1^Graph.KG.funcJSONVALUE.1>]"
+    },
+    "N_row_key": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) UNWIND ['num', 'str', 'zz'] AS k RETURN k, n[k]",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          "num",
+          "gotcha"
+        ],
+        [
+          "str",
+          "gotcha"
+        ],
+        [
+          "zz",
+          "gotcha"
+        ]
+      ],
+      "error": null
+    },
+    "N_param_key": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) RETURN n[$k]",
+      "params": {
+        "k": "num"
+      },
+      "native_routed": false,
+      "rows": [
+        [
+          5
+        ]
+      ],
+      "error": null
+    },
+    "N_with_key": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) WITH n, 'str' AS k RETURN n[k]",
+      "params": {},
+      "native_routed": false,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Open()>]\r\n[%msg: <SQL Function GRAPH_KG.CYPHERFN_IVGTYPEERROR failed with error:  SQLCODE=-400,%msg=Non-integer index type for list subscript>]"
+    },
+    "R_return": {
+      "query": "UNWIND [1, 2, 3] AS i RETURN i, randomUUID() AS u, rand() AS r",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          1,
+          "14993326-E22A-11F1-8929-726DDB04F98E",
+          0.680038
+        ],
+        [
+          2,
+          "14993326-E22A-11F1-8929-726DDB04F98E",
+          0.680038
+        ],
+        [
+          3,
+          "14993326-E22A-11F1-8929-726DDB04F98E",
+          0.680038
+        ]
+      ],
+      "error": null
+    },
+    "R_create_both": {
+      "query": "UNWIND [1, 2, 3] AS i CREATE (:I47G015618U {i: i, u: randomUUID(), r: rand()})",
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "R_create_uuid": {
+      "query": "UNWIND [1, 2, 3] AS i CREATE (:I47G015618V {i: i, u: randomUUID()})",
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "R_create_rand": {
+      "query": "UNWIND [1, 2, 3] AS i CREATE (:I47G015618W {i: i, r: rand()})",
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "R_created_uuid": {
+      "query": "MATCH (x:I47G015618V) RETURN x.i, x.u ORDER BY x.i",
+      "params": {},
+      "native_routed": true,
+      "rows": [],
+      "error": null
+    },
+    "R_created_rand": {
+      "query": "MATCH (x:I47G015618W) RETURN x.i, x.r ORDER BY x.i",
+      "params": {},
+      "native_routed": true,
+      "rows": [],
+      "error": null
+    },
+    "R_created": {
+      "query": "MATCH (x:I47G015618U) RETURN x.i, x.u, x.r ORDER BY x.i",
+      "params": {},
+      "native_routed": true,
+      "rows": [],
+      "error": null
+    },
+    "R_collect": {
+      "query": "UNWIND range(1, 50) AS i WITH randomUUID() AS u RETURN count(DISTINCT u)",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          1
+        ]
+      ],
+      "error": null
+    },
+    "V_reverse_with": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) WITH n.l AS l RETURN reverse(l)",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          "[3,2,1]"
+        ]
+      ],
+      "error": null
+    },
+    "V_reverse_str": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) RETURN reverse(n.str)",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          "cba"
+        ]
+      ],
+      "error": null
+    },
+    "V_reverse_tail": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) RETURN reverse(tail(n.l))",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          [
+            3,
+            2
+          ]
+        ]
+      ],
+      "error": null
+    },
+    "M_rows_types": {
+      "query": "WITH {a: 1, b: 2.5, c: true, d: [1]} AS m UNWIND ['a', 'b', 'c', 'd'] AS k RETURN k, m[k]",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          "a",
+          "1"
+        ],
+        [
+          "b",
+          "2.5"
+        ],
+        [
+          "c",
+          "1"
+        ],
+        [
+          "d",
+          "[1]"
+        ]
+      ],
+      "error": null
+    },
+    "M_literal_key": {
+      "query": "WITH {a: 1, c: true} AS m RETURN m['a'], m.c",
+      "params": {},
+      "native_routed": false,
+      "rows": [
+        [
+          "1",
+          1
+        ]
+      ],
+      "error": null
+    },
+    "T_head_number_msg": {
+      "query": "MATCH (n:I47G015618 {id: 'i47b_015618_c'}) RETURN head(n.num)",
+      "params": {},
+      "native_routed": false,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_LIST_ELEM failed with error:  SQLCODE=-400,%msg=>]"
+    },
+    "T_head_number_literal": {
+      "query": "RETURN head(5)",
+      "params": {},
+      "native_routed": false,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Open()>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=>]"
+    }
+  },
+  "native_gate": "None"
+}

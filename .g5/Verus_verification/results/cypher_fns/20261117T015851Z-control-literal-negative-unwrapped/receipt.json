@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the 4.6.0 R267 CASE for a literal negative index removed",
+    "expect_fail_in": [
+      "theorem_literal_index_follows_rule"
+    ],
+    "find": "        IdxKind::LiteralInt => if i < 0 { if len >= -i { json_arrayget(len, len + i) } else { Elem::Null } } else { json_arrayget(len, i) },",
+    "name": "literal-negative-unwrapped",
+    "replace": "        IdxKind::LiteralInt => json_arrayget(len, i),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_literal_index_follows_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_fns/cypher_fns.rs": "2bf4b1569ff39f9b8f70943e28da231dee645b4b799d3c7f0cc42f865e810371",
+    ".g5/Verus_verification/models/cypher_fns/model.json": "0ac222a33ad9934861e62c9684b55f06e16c11a69d48300e18ebe13b45b0191b"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/literal-negative-unwrapped/20261117T015851Z/models/cypher_fns/cypher_fns.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_literal_index_follows_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T015851Z-control-literal-negative-unwrapped-theorem_literal_index_follows_rule.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T015851Z-control-literal-negative-unwrapped.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_fns/20261117T015851Z-control-literal-negative-unwrapped/logs/20261117T015851Z-control-literal-negative-unwrapped-theorem_literal_index_follows_rule.log": "020740f76aa331595ea9058af83bb47ffe1f620dbca1056bc3197f8a8c112554",
+    ".g5/Verus_verification/results/cypher_fns/20261117T015851Z-control-literal-negative-unwrapped/logs/20261117T015851Z-control-literal-negative-unwrapped.log": "228c11bf8f1b28dd3afb10a9f23a294b2e96eb9a62e85f7d756d16b163e878d7"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

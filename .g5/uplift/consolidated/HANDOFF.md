@@ -1,9 +1,9 @@
-**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 46 (W52, IVF index). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
+**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 47 (W53 IVF cosine and `kg_IVF`; W54 Cypher built-in functions at run time). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`, and from iteration 47 under `7c5f718a`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
 
 <a id="continuation-2026-11-17"></a>
 ## Continuation (2026-11-17, from `cloud-iris-continuation-start-20261117`)
 
-Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bbcae14699c6a37cef392ace2aeb0c0a74f2be5e2129f1ff1fecfa16` (changed from `a7521d0e`: steps 4-5 now return every finished family to the product-wide inventory, require a formal claim that rejects a probe-confirmed wrong outcome, and require a representative public workflow in each area that could still hold a consequential decision before convergence), `Verus/uplift-scoring.md` `7e250023ffaa55fc6c891f137ac54b8cecbc424f69add756a3e5e9d91736e233` ([continuation-run.json](iteration-36/continuation-run.json)). Product `3eaa79cf` unchanged; run-isolated fixture `ivg-cont-20261117-iris`.
+Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bbcae14699c6a37cef392ace2aeb0c0a74f2be5e2129f1ff1fecfa16` (changed from `a7521d0e`: steps 4-5 now return every finished family to the product-wide inventory, require a formal claim that rejects a probe-confirmed wrong outcome, and require a representative public workflow in each area that could still hold a consequential decision before convergence), `Verus/uplift-scoring.md` `7e250023ffaa55fc6c891f137ac54b8cecbc424f69add756a3e5e9d91736e233` ([continuation-run.json](iteration-36/continuation-run.json)). From iteration 47: `Verus/uplift-iteration.md` `7c5f718a88badf0202d91cd1d557ff2dd2f2bab8bc25178dccf852143e913b12` (changed from `d31f5890`). Product `3eaa79cf` unchanged; run-isolated fixture `ivg-cont-20261117-iris`.
 
 | Iteration | Workflow (predictions frozen first) | Material outcome |
 |---|---|---|
@@ -18,27 +18,36 @@ Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bb
 | [44](iteration-44/HANDOFF.md) | W50 PROV-O export | Medium bug-plt-110, Low bug-plt-109 (new), owner `install.export.prov`; model `prov_window`; 433 → 439 |
 | [45](iteration-45/HANDOFF.md) | W51 RDF export from Cypher, namespace prefixes | Medium bug-plt-111, Low bug-plt-112 (new), owner `install.export.rdf.cypher`; model `cypher_export`; 439 → 441 |
 | [46](iteration-46/HANDOFF.md) | W52 IVF index after its build | Medium bug-srch-107, Low bug-srch-108 (new), owner `search.ivf`; model `ivf_entries`; 441 → 448 |
+| [47](iteration-47/HANDOFF.md) | W53 SQL readers `kg_IVF`/`kg_BM25` (stopped draft, finished); W54 Cypher built-in functions at run time; `Txn_*` SQL entry points | Medium bug-srch-109, bug-cyp-111, -112, -113, -114, Low bug-cyp-115, -116 (new); F-C0841 modeled; owners `search.ivf.metric`, `query.functions` (8 blocks); model `cypher_fns`, `ivf_entries` extended; 448 → 463 |
 
 
 ### Residual queue and interim judgment (kept current)
 
-Not converged. Every iteration of this continuation opened an area the earlier stops had not assessed, and nine of
-eleven produced new findings (21 new, plus one inherited divergence registered; iteration 42 was the only clean one).
+Not converged. Every iteration of this continuation opened an area the earlier stops had not assessed, and ten of
+twelve produced new findings (28 new, plus one inherited divergence registered; iteration 42 was the only clean one).
 The frozen predictions taken from the docs mostly held; most findings came from reading the source after the freeze.
+Iteration 47 is the exception: four of twelve frozen openCypher predictions missed outright, all where a function's
+argument is known only at run time, which suggests the remaining Cypher expression surface (translator 962 members,
+mostly unbound) still holds literal/run-time splits of the same kind.
 The diminishing-returns claim of the retest therefore held only for the families it examined.
 
 Next candidates, ranked by consequence and tractability (each still unowned or unbound at the pin):
 
-1. SQL procedures in `Graph.KG.SqlProcs` (36 members, 0 bound): `MatchEdges`, `DijkstraPath`, `kg_BM25`, `kg_IVF`,
-   `Txn_Begin/End/Undo`, `Prop_Set` (SQL-callable surface; ledger records excluded).
-2. `load_networkx` and `load_obo` imports (a variant of the W47 import rules; expected to repeat bug-str-109's class).
-3. Operator reports: `status()`, `capabilities`, `get_schema_visualization`, `snapshot_info` (counts that guide action).
-4. Temporal analytics readers (`get_edge_velocity`, `find_burst_nodes`, `get_bucket_groups`, `get_distinct_count`):
+1. Other Cypher expressions with a literal/run-time split (iteration 47's pattern): string functions (`substring`,
+   `left`, `right`, `replace`, `toUpper`) and type conversions over stored values, list comprehensions and slices with
+   run-time bounds, `size()`/`isEmpty()` of stored values, functions inside `CREATE`/`SET` maps (bug-cyp-114's refusal).
+2. SQL procedures in `Graph.KG.SqlProcs` still unbound after iteration 47: `MatchEdges`, `MatchEdgesAllGraphs`,
+   `DijkstraPath`, `Prop_Set`, `backfill_temporal_rows`, `rebuild_edge_indices`, `kg_BM25` (needs a BM25 scoring
+   model), the percentile functions, and 12 SQL-only `CypherFn_IVG*` forwarders (first missing steps in the
+   [iteration-47 residual list](iteration-47/HANDOFF.md#residual-list)).
+3. `load_networkx` and `load_obo` imports (a variant of the W47 import rules; expected to repeat bug-str-109's class).
+4. Operator reports: `status()`, `capabilities`, `get_schema_visualization`, `snapshot_info` (counts that guide action).
+5. Temporal analytics readers (`get_edge_velocity`, `find_burst_nodes`, `get_bucket_groups`, `get_distinct_count`):
    owned (`temporal.stats`) with known divergences; no model.
-5. Embedding identity maintenance (`reconcile_recorded_dimensions`, `adopt_embedding_identities`, `list_quarantine`,
+6. Embedding identity maintenance (`reconcile_recorded_dimensions`, `adopt_embedding_identities`, `list_quarantine`,
    `place_quarantined`, `measure_route_recall`).
-6. `kg_PPR_GUIDED_SUBGRAPH`, `kg_RERANK`, `kg_VECTOR_GRAPH_SEARCH`, `multi_vector_search` (retrieval composition).
-7. The `ivg` CLI (32 members, 4 bound) and the HTTP admin routes beyond `/api/cypher`.
+7. `kg_PPR_GUIDED_SUBGRAPH`, `kg_RERANK`, `kg_VECTOR_GRAPH_SEARCH`, `multi_vector_search` (retrieval composition).
+8. The `ivg` CLI (32 members, 4 bound) and the HTTP admin routes beyond `/api/cypher`.
 
 Still excluded or blocked as before: erasure, redaction and tenant removal (security-related); FHIR (external provider);
 Cypher `MERGE` (quarantined subject); Arno/NKG (library absent); embedded in-IRIS execution and `IVG.CypherEngine`

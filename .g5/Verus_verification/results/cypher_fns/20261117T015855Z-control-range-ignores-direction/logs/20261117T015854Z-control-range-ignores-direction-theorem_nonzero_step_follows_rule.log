@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/range-ignores-direction/20261117T015854Z/models/cypher_fns/cypher_fns.rs:136:13
+    |
+134 | pub proof fn theorem_nonzero_step_follows_rule(start: int, end: int, step: int)
+    | ------------------------------------------------------------------------------- at the end of the function body
+135 |     requires step != 0,
+136 |     ensures ivgrange(start, end, step) == rule_range(start, end, step),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
