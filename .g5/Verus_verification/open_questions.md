@@ -32,6 +32,8 @@ severity: high
 multi_select: false
 allow_free_text: true
 options:
+  - label: Require committed erasure before redaction; treat caller transaction membership as unresolved rather than permitting dirty liveness reads.
+    description: Default assumption.
   - label: callers must not redact while an erase is uncommitted (document it)
     description: ""
   - label: redaction must refuse while any erase of the target is uncommitted (take the head lock in the eraser, or a shared target lock)
@@ -75,6 +77,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Preserve refusal of the whole shared revision key and loss of its correlation lookup until the maintainer specifies a tenant-specific retry result.
+    description: Default assumption.
   - label: intended — a key names the whole revision, and a refused retry is safer than a replay of a partly tombstoned revision
     description: ""
   - label: unintended — only the target's retries should be refused; the other tenant should get a replay (its content is intact) or a distinct error telling it the revisi
@@ -116,6 +120,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Document the present strict-off erasure sequence as an operational precondition; do not infer that disabling strict mode is the desired product interface.
+    description: Default assumption.
   - label: strict-mode users turn strict off for the erase, then on again
     description: ""
   - label: erasure is exempt from strict mode because it removes content, not history (ADR-0004)
@@ -156,6 +162,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep generic erase as literal starts-with and use the separator explicitly in the tenant recipe; changing the generic API needs compatibility authority.
+    description: Default assumption.
   - label: intended — erase is a general id-prefix tool and the caller must add the separator; document it beside the recipe
     description: ""
   - label: the tenant recipe should use one target notion for both steps (a separator-aware erase, or a combined erase-and-redact entry point)
@@ -197,6 +205,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat temporal entries as live content for the intended safety rule; the existing row-only check remains a documented behavior discrepancy pending scope confirmation.
+    description: Default assumption.
   - label: "ADR-0013's \"row\" governs: temporal entries are not replayed, so tombstoning their records keeps verify equal and is acceptable"
     description: ""
   - label: "the glossary's \"content\" governs: redaction must refuse until the temporal entries are erased, or the history of a still-readable event is lost"
@@ -238,6 +248,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat post-commit properties as unrecorded writes today and keep verify divergence visible; skip-on-replay is a separate already documented idempotency obligation.
+    description: Default assumption.
   - label: "intended: the documented audit-trail pattern produces an unrecorded write and verify is right to report it (document it)"
     description: ""
   - label: post-commit properties should be recorded (a second record in the same revision) or excluded by verify
@@ -279,6 +291,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Preserve refusal of invalid new names and the promised legacy report; require an operator-visible migration plan before claiming old invalid names are supported.
+    description: Default assumption.
   - label: an upgrade step renames them
     description: ""
   - label: "`verify_graph` reports them and an operator renames them"
@@ -322,6 +336,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep first-write-wins and exactness as requirements; concurrent provider behavior is unestablished, not an approved one-writer exemption.
+    description: Default assumption.
   - label: the rules hold for one writer per triple; concurrent writers are the caller's to serialise (document it)
     description: ""
   - label: the rules are unconditional, so the writers need per-triple locking despite ADR-0010's deadlock concern
@@ -363,6 +379,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep quarantined data and explicitly report retention until an owner chooses a purge API and its unknown-graph semantics.
+    description: Default assumption.
   - label: "keep them: they are the only copy of vectors whose graph is unknown"
     description: ""
   - label: a deployment that must delete data needs a purge path or an erase-all that includes them
@@ -401,6 +419,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Record immediate enforcement in the calling engine and a five-second cache elsewhere; the time promised to other engines still needs a decision.
+    description: Default assumption.
   - label: strict is promised from the moment `set_strict` returns, so the window is a defect
     description: ""
   - label: strict is enforced within 5 s per process, as the guard docstring implies, and needs documenting
@@ -446,6 +466,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer refusing a conflicting unfinished setup; accepting it needs an explicit plan for the old globals and rebuild markers.
+    description: Default assumption.
   - label: refuse the explicit path while another schema holds this release's marker (the premise the model's proof uses)
     description: ""
   - label: accept it and clear or rebuild the namespace's globals
@@ -487,6 +509,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat the documented open bind and credentials as current behavior only; safer defaults need a maintainer policy decision.
+    description: Default assumption.
   - label: refuse to start on a non-loopback host without a key (or with a superuser login)
     description: ""
   - label: warn loudly and document
@@ -532,6 +556,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer refusal while a live ledger exists until replace/merge history semantics are specified; do not count the current overlay as a decided contract.
+    description: Default assumption.
   - label: refuse while a ledger is live
     description: ""
   - label: replace the live ledger wholesale
@@ -575,6 +601,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep documented loader exemptions and chunking; preserve other graphs and multigraph data unless a narrower supported envelope is expressly adopted.
+    description: Default assumption.
   - label: 6, G7, G34)
     description: ""
   - label: yes to all three, and the loader documents it
@@ -618,6 +646,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Record each transport-dependent transaction boundary; prefer an explicit consistent join-or-refuse contract before changing it.
+    description: Default assumption.
   - label: 1)
     description: ""
   - label: "intended: these calls are independent of the caller's transaction, and the docs list them"
@@ -663,6 +693,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Require a proven graph-specific reader before relying on native default-graph results; an unavailable Arno provider does not settle its behavior.
+    description: Default assumption.
   - label: the readers read one graph and the route is safe
     description: ""
   - label: they read the merged snapshot, so default-graph PageRank counts named-graph edges and needs the guard
@@ -704,6 +736,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Preserve explicit BulkLoader/raw-SQL/vector exemptions and list undecided FHIR/server paths individually; do not infer exemption from a missing guard.
+    description: Default assumption.
   - label: exempt like BulkLoader and raw SQL, listed in the docs
     description: ""
   - label: refused under strict mode
@@ -745,6 +779,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer the bound endpoints graph, with ambiguity refused; the actual default-write rule remains a behavior fact pending intent confirmation.
+    description: Default assumption.
   - label: the decision is literal; the error is intended and should name the cause
     description: ""
   - label: Cypher's binding wins and the relationship is created in the bound nodes' graph, as `SET`/`DELETE` already do
@@ -788,6 +824,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat kind as caller data today while reserving system meaning in analysis; any restricted vocabulary needs an explicit compatibility decision.
+    description: Default assumption.
   - label: 9, correction 9; review R1-core CV-6 and R1-6)
     description: ""
   - label: make `kind` internal (only verify needs adoption)
@@ -831,6 +869,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep ambiguous write outcomes distinct from known pre-write failure; automatic resend of non-idempotent writes is not presumed safe.
+    description: Default assumption.
   - label: retries are allowed only for reads and for idempotency-keyed commits
     description: ""
   - label: retries stay, and writes must be made idempotent
@@ -871,7 +911,9 @@ prompt: Should the sample API retry construction after a startup outage?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep current failure visibility after startup outage; retry/rebuild needs a lifecycle policy with bounded attempts and readiness semantics.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -906,7 +948,9 @@ prompt: Should standalone handled metadata calls expose YIELD aliases as result 
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Prefer declared YIELD aliases at the public reader, while documenting current handled-call names until the owner decides.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -941,7 +985,9 @@ prompt: Should handled WHERE validation happen when no rows exist?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Prefer validating a requested WHERE independent of row count; current empty-provider acceptance does not settle intent.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -978,7 +1024,9 @@ prompt: Should history text filters use binary identity or the current database 
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Preserve current database comparison for compatibility and expose the difference from binary Python identity; a portable text rule needs owner choice.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -1016,6 +1064,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat mapped SQL labels as namespace-global today; assigning every row to a graph needs mapping metadata and migration policy.
+    description: Default assumption.
   - label: mapped rows belong to every graph (today's behaviour, documented)
     description: ""
   - label: a mapping is made per graph and only that graph's queries read it
@@ -1057,6 +1107,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Preserve each current text corpus and rank rule until one common corpus is chosen; common fusion arithmetic alone cannot settle text ranking.
+    description: Default assumption.
   - label: one shared contract for every entry point
     description: ""
   - label: two contracts, each documented, with the migration guide corrected
@@ -1095,6 +1147,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep the explicit redaction guards and list unguarded readers; do not infer that partial-redaction answers are acceptable.
+    description: Default assumption.
   - label: only replay-style readers need protection; metadata listings may show a half-done redaction
     description: ""
   - label: every record or metadata reader should refuse or read one consistent snapshot
@@ -1133,6 +1187,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Record the unsalted digest as built and keep its privacy adequacy open; no guessing or confirmability experiment is in scope.
+    description: Default assumption.
   - label: acceptable — the digest is an audit device and the content is already low-sensitivity
     description: ""
   - label: unacceptable for regulated erasure — use a keyed digest held outside the namespace
@@ -1174,6 +1230,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Assume completion by rerun after fixing liveness; abandonment needs an owner-approved recovery meaning for partial tombstones.
+    description: Default assumption.
   - label: intended — the only safe exit is to finish
     description: ""
   - label: an abort that restores nothing (tombstones stay) but releases the marker is wanted for a target that is legitimately back in use
@@ -1212,6 +1270,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat the present count as a sum of store effects rather than a count of distinct entities; any stronger public count needs a defined unit.
+    description: Default assumption.
   - label: the count means node and edge rows only, and the doc should say so
     description: ""
   - label: 0 must mean no store changed
@@ -1250,6 +1310,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer the server GraphKey rule for all new names; control-character normalization versus refusal must be documented consistently.
+    description: Default assumption.
   - label: GraphKey owns the rule and Python asks it (or mirrors it exactly), so the refusal is a clean validation error
     description: ""
   - label: keep both, accepting the opaque server error for C1 characters
@@ -1291,6 +1353,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep direct create as deduplicating at this pin; the specification planned keyed parallel creation, whose public ID-returning interface is unfinished.
+    description: Default assumption.
   - label: FR-007 stands and this is unfinished work
     description: ""
   - label: drop FR-007 and document Cypher as the way to add parallel edges
@@ -1332,6 +1396,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep the spec requirement to refuse ambiguous ledger references; do not accept first-row selection as intended parallel-edge semantics.
+    description: Default assumption.
   - label: refuse with `ambiguous_tuple` until FR-013 lands
     description: ""
   - label: apply to the first row, as today, once the adjacency defect is fixed
@@ -1375,6 +1441,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep retained aggregate history distinct from surviving raw edges; recomputation after partial raw purge needs an explicit history-retention rule.
+    description: Default assumption.
   - label: "the purge rule wins: a cut bucket keeps its history"
     description: ""
   - label: "the rebuild rule wins: statistics describe the survivors"
@@ -1416,6 +1484,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat a paged read as multiple observations today; a point-in-time promise needs an explicit snapshot/version protocol.
+    description: Default assumption.
   - label: a live, non-snapshot read is acceptable (document it)
     description: ""
   - label: a snapshot bound is wanted
@@ -1457,6 +1527,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep insert collision as an effect-free accepted temporal call today; ledger record/no-op policy still needs owner choice.
+    description: Default assumption.
   - label: refuse the changeset, as the docstring says
     description: ""
   - label: commit and record nothing for the collided op
@@ -1497,6 +1569,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep temporal-only structural row retention at the opt-out boundary and require drop before opt-in; define last-delete behavior separately.
+    description: Default assumption.
   - label: the asymmetry is acceptable
     description: ""
   - label: delete should follow the purge's "leave registered predicates' rows" rule
@@ -1538,6 +1612,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Preserve the temporal implication requirement and record the direct-delete exception; the maintainer must decide whether to refuse or repair it.
+    description: Default assumption.
   - label: an explicit delete wins and the triple stays without a row until its next temporal write
     description: ""
   - label: the delete keeps (or re-asserts) the marked row while timestamps remain
@@ -1581,6 +1657,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep width-compatible undeclared writes to the claimed default table as current compatibility; separate-route enforcement needs an explicit decision.
+    description: Default assumption.
   - label: allowed at the same width (as built)
     description: ""
   - label: refused, as for a declared different model
@@ -1622,6 +1700,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Assume no cross-call consistency guarantee until a read/write protocol is chosen; partial-index results remain visible risk, not approved isolation.
+    description: Default assumption.
   - label: "acceptable: scores are approximate during writes"
     description: ""
   - label: searches must see committed state only
@@ -1663,6 +1743,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep explicit BM25 selection distinct from plain text search; a default-index fallback requires a supported API/corpus decision.
+    description: Default assumption.
   - label: the requirement is superseded; mark the spec
     description: ""
   - label: it is unfinished work
@@ -1701,6 +1783,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Preserve token order in reporting skipped terms unless a different order is specified; membership is the existing scoring-relevant fact.
+    description: Default assumption.
   - label: collation order is what "alphabetical" means here (document it)
     description: ""
   - label: plain string order
@@ -1742,6 +1826,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep failures visible in analysis and prefer fail-closed admission; the current fail-open compatibility behavior is not owner ratification.
+    description: Default assumption.
   - label: fail open, as documented in the code
     description: ""
   - label: refuse under uncertainty when strict may be on, and re-probe the class
@@ -1783,6 +1869,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer no ready schema record after failed deployment; a partial-ready record would need explicit per-capability admission rules.
+    description: Default assumption.
   - label: record anyway and report the failure
     description: ""
   - label: withhold the record so the namespace counts as a stopped setup (FR-006a)
@@ -1824,6 +1912,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Require an explicit schema choice before a migration with no namespace record; arbitrary fallback schemas are not an inferred supported policy.
+    description: Default assumption.
   - label: with no record, a migration may run on an explicitly given schema and must not record it
     description: ""
   - label: a migration must refuse until a setup records the schema
@@ -1865,6 +1955,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep engine read-only guarantees and explicitly list interfaces that ignore access hints; protocol hints and server enforcement need separate decisions.
+    description: Default assumption.
   - label: 13)
     description: ""
   - label: a read-only IRIS login is the real control and the docs say so
@@ -1908,6 +2000,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Bind proof evidence to exact library/platform builds until source or owner authority permits broader reuse.
+    description: Default assumption.
   - label: the revision is the contract across builds
     description: ""
   - label: routing must also match the proven build
@@ -1949,6 +2043,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Do not infer proof coverage for accelerated algorithms absent from the gate; extending its inventory needs provider-specific evidence.
+    description: Default assumption.
   - label: yes, gate them
     description: ""
   - label: they are outside the gate by design (document it)
@@ -1990,6 +2086,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep non-USER Owner routing as current availability; cross-namespace native support requires a provider deployment/proof contract.
+    description: Default assumption.
   - label: USER only, documented
     description: ""
   - label: the library must read the calling namespace
@@ -2031,6 +2129,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer idempotent repeated FHIR events, while preserving current event behavior as observation; event identity and replay retention need owner choice.
+    description: Default assumption.
   - label: derive the time from the event so retries are harmless
     description: ""
   - label: accept it until the route is removed
@@ -2072,6 +2172,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Preserve the documented single-sync restriction and keep competing non-sync writers unestablished; choose serialization or conflict detection explicitly.
+    description: Default assumption.
   - label: the FHIR graph belongs to the sync alone and other writes are refused
     description: ""
   - label: other writes, an erase included, take the sync's lock
@@ -2113,6 +2215,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep SQL fallback as the current shadow behavior; fail-fast diagnostic mode remains an unratified alternative.
+    description: Default assumption.
   - label: raise in shadow mode (stricter checks)
     description: ""
   - label: keep the fallback, as specified
@@ -2154,6 +2258,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer closing native admission during index-bypassing load; a cache/probe that misses that interval cannot justify current-index reliance.
+    description: Default assumption.
   - label: "no: equal answers assume current indexes (document it)"
     description: ""
   - label: a load publishes a namespace-wide marker that `native_gate` checks
@@ -2192,6 +2298,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer a consistent structured path value; driver/path-dependent text is current behavior requiring a compatibility decision.
+    description: Default assumption.
   - label: the representation changed (driver or execution path) and the tests are stale
     description: ""
   - label: a path must always come back as JSON text, and the dict is a regression on this driver or path
@@ -2233,6 +2341,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer a clear unknown-procedure refusal; preserve present empty results as observed compatibility until the owner decides.
+    description: Default assumption.
   - label: 4, correction 21)
     description: ""
   - label: answer empty for Browser compatibility
@@ -2276,6 +2386,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat auditor-held original canonical records as required to recompute digests; the product does not promise a retained recoverable preimage.
+    description: Default assumption.
   - label: the server's canonical record captured before the redaction is the only valid preimage (document it, and how to capture it)
     description: ""
   - label: the public reader must reproduce the canonical form exactly
@@ -2317,6 +2429,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: List snapshots and legacy ledger copies as outside redaction reach; archive-retention/removal policy remains an owner decision.
+    description: Default assumption.
   - label: name them in the receipt's out-of-reach list
     description: ""
   - label: redaction must also reach them (refuse or rewrite archives it knows of; clear the legacy rows)
@@ -2358,6 +2472,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Prefer refusal of disable during unfinished redaction; resumption and blocked readers require a deliberate lifecycle rule.
+    description: Default assumption.
   - label: refuse `disable` while a redaction is unfinished
     description: ""
   - label: allow it, and define what the marker means while the ledger is disabled
@@ -2399,6 +2515,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Keep namespace-wide bare node IDs in current genesis behavior; graph-specific ledger identity would require a record/migration decision.
+    description: Default assumption.
   - label: 8, G8)
     description: ""
   - label: "acceptable: ledger nodes are graph-blind by design"
@@ -2442,6 +2560,8 @@ severity: low
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat verify as requiring quiescent inputs for reliance until a consistent-view protocol is specified; unlocked multi-scan behavior is not a snapshot proof.
+    description: Default assumption.
   - label: 2; review R1-core R1-6). The race with a redaction is registered as [bug-led-001](bugs_issues.md#bug-led-001); with ordinary commits running, a verify can repor
     description: 2; review R1-core R1-6). The race with a redaction is registered as [bug-led-001](bugs_issues.md#bug-led-001); with ordinary commits running, a verify can report differences that existed at no single moment
   - label: verify is best-effort; run it when writes are quiet (document it)
@@ -2482,7 +2602,9 @@ prompt: How should flat node reads preserve colliding property aliases?
 severity: low
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Preserve both accepted property values and structural identity; reserve aliases or introduce a property map only after a compatibility choice.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2518,7 +2640,9 @@ prompt: Must the streaming history reader bound its memory, or only its delivery
 severity: low
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep delivery streaming separate from bounded-memory guarantees; full materialization is current behavior and a memory promise needs a separate bound.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2553,7 +2677,9 @@ prompt: Must reconstruction's bound concern each intermediate graph or only the 
 severity: low
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Prefer an explicit peak reconstruction bound; current per-intermediate graph checks do not settle a final-graph-only policy.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2588,7 +2714,9 @@ prompt: Is a ledger diff an ordered script or an unordered set of net changes?
 severity: low
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Treat lifecycle diff as an unordered net-change result until a stable script order is specified; consumers must not infer dependency order.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2625,7 +2753,9 @@ prompt: Should weighted shortest path consider every parallel edge or the lowest
 severity: low
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the current lowest-key representative route distinct from all-parallel-edge shortest path; the optimization domain needs owner choice.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2662,7 +2792,9 @@ prompt: Should tiny positive PPR scores share the rounded zero tie or always pre
 severity: low
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Preserve the rounded-score tie rule today; giving every positive raw score priority over true zero would change top-k admission.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2704,7 +2836,9 @@ prompt: Should an engine that cannot read the schema record be refused?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Supported deployments can read the record (premise: the ADMIN_GUIDE role table grants %Native_GlobalAccess:U). Under that premise a mismatch is refused. The documented fail-open path is a separate 'unchecked' outcome that admits a mismatched engine. It is outside the binding guarantee and should be modelled that way, not treated as an accepted engine."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2744,6 +2878,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat a stored schema name as a namespace binding only. Represent readiness of each deployed capability (classes, adjacency index, ledger, erase) separately. An engine accepted by the record check has no claim on feature readiness. A feature call on a class-less namespace must give a named failure, not silently degrade.
+    description: Default assumption.
   - label: record only when objectscript_deployed and objectscript_failed is empty -
     description: ""
   - label: record, but mark it incomplete so the first-access check names the missing classes
@@ -2789,7 +2925,9 @@ prompt: Are the files under sql/ part of the product?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Inventory both install paths. The product contract (spec 262 schema, inventory test) covers initialize_schema only. scripts/deploy_production.py + sql/schema.sql + sql/operators_fixed.sql form a reachable legacy path that produces a non-conforming namespace (DDL-only before its class step, unqualified procedures). sql/fraud_sample_data.sql is maintained demo data. Files with no loader are historical material.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2833,7 +2971,9 @@ prompt: What does a Python read with no graph argument read?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: For graph-aware Python reads, omission selects the default graph. Keep the all-graph id helpers as separate discovery operations with their scope visible. Never hydrate ids from one scope with another scope's records. Model delete_node's 'holding graph or refuse' rule as its own documented operation.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2873,6 +3013,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: For structural predicates, a triple with surviving timestamps keeps a structural row. A direct delete may remove the explicit assertion, but the row must stay (or revert to marked) while timestamps remain. Model as-built option (a) as the baseline that violates the implication, and keep the ADR-0015 temporal-only opt-out separate (no row ever).
+    description: Default assumption.
   - label: delete the row and leave the temporal events (as built; maintainer-tested) -
     description: ""
   - label: refuse while the triple has temporal events and the row is marked -
@@ -2922,7 +3064,9 @@ prompt: How should erase and rebuild retire a source generation?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Unchanged from decisions.md: invalidation can never make an old degree-cache value valid again; model a monotone generation or a fresh graph epoch across erase and rebuild; keep as-built A (kill) as the baseline with its narrow window."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -2964,7 +3108,9 @@ prompt: May two adjacency rebuilds run at the same time?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Unchanged: at most one publishing rebuild per adjacency structure; a second call waits or gets a documented busy result. Refined: ADMIN_GUIDE's sentence is literally about ^NKG and holds live; the ^KG half is unserialized."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3006,7 +3152,9 @@ prompt: Are the end nodes a temporal write creates governed by the ledger?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Engine-path endpoints: derived, with identifiable provenance (e.g. the 'bare temporal endpoint' rule purge already uses) and excluded from genesis/verify; changeset temporal ops: follow the relationship endpoint rule (refuse a missing endpoint or record a stub). Keep their real effects in the environment model; treat ledger-api.md:92 as stale for the indexed path."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3048,7 +3196,9 @@ prompt: Is the temporal index inside the ledger's guarantee?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Unchanged reading: record the changeset temporal op in history (audit, redaction); treat temporal tiers, engine temporal writes, purges and temporal replay as outside the structural replay guarantee; model their real effects, including purges deleting endpoint nodes."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3090,7 +3240,9 @@ prompt: Are the IVF, tree (VecIndex) and PLAID indexes inside the erasure promis
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Unchanged: model retained index contents as observable after erasure unless purged; graph-owned indexes require invalidation or deletion on erase; caller-fed indexes need an explicit owner/exposure statement. Refined with the graph-derived (IVF) vs caller-fed (VecIndex, PLAID) split."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3132,7 +3284,9 @@ prompt: May an index build be seen half-done, and may a stopped build leave a pa
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Unchanged: readers see a complete published index or a clear unavailable result, including after an interrupted rebuild; the existing partial-build behaviour is the modelled baseline."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3176,7 +3330,9 @@ prompt: Should the vector-and-graph search keep its k best candidates?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Unchanged: the reviewed ranking contract is the best k of the scored candidate set with defined ties; the documented set-order truncation is the baseline (now confirmed live)."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3218,7 +3374,9 @@ prompt: May two embed queue workers run at once?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: A single active consumer per namespace is the contract (supported by 5bb149ed); model both workers as independently schedulable, treat single-worker as an unenforced premise, and prefer enforcement (refuse a second worker) or documentation; atomic claims with recovery remain the multi-worker alternative.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3260,7 +3418,9 @@ prompt: Must a BM25 Build (and Drop) exclude writers and be all-or-nothing?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Serialize Build, Drop, Insert, Delete and Upgrade per index and publish a complete generation or return unavailable, including after a crash; a Build that is refused or indexes nothing must not destroy the previous index. Model the as-built (unlocked Build/Drop, Kill-first) separately as the baseline. Same as decisions.md.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3306,7 +3466,9 @@ prompt: Which reciprocal-rank-fusion rule is the product's?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Preserve and test each surface's rule, including missing-rank handling and which text list it reads; document that the engine method and the SQL procedure of the same name differ. Introduce a single formula only with a versioned contract. Same as decisions.md.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3345,7 +3507,9 @@ prompt: Is spec 044's kg_TXT-to-BM25 fallback still wanted?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Model kg_TXT as iFind-then-LIKE (documented as-built). Record FR-012/US5/SC-004 and tasks T034/T035 as a spec/doc conflict (S3, F-0708), not as a current obligation the pin fails. If the fallback returns, it applies only on the LIKE path, only to an index whose recorded graph equals the requested graph, never across graphs. Why changed: decisions.md called this Supported on spec 044 FR-012, SC-004 and PR #8. Those establish the 2026-04 feature, not that it is still wanted: the Draft spec is the only post-removal carrier, it was copied wholesale with the schema-2 amendment, and the maintainer's later kg_TXT redesign (v2.18.2, US7, docstring, generated API reference) excludes it. No source \"supersedes\" FR-012 explicitly either, so neither reading is supported; the assumption follows the newer, user-facing contract."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3387,7 +3551,9 @@ prompt: Is `__stop__` a reserved BM25 index name?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Reserve `__stop__`: public BM25 entry points (`bm25_build/insert/delete/drop/upgrade`, `BM25BuildInput`, index handles, `kg_BM25`/`ivg.bm25.search`) refuse it; the embedded registry walk skips it. Model the as-built acceptance as a defect against the documented stopword list (cross-index). Moving the list to its own global is the compatible alternative mechanism."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3431,7 +3597,9 @@ prompt: Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` supported p
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Treat the three as compatibility surfaces and qualify each: RRFFusion is a pure standard-RRF helper (document that its rule differs from engine `kg_RRF_FUSE`, HD-0702); HybridSearchFusion is de facto public (migration guide) and graph-scoped; TextSearchEngine is exported but reads every graph and its document search cannot reach the IVG Schema, so it is not a supported reader of graph-scoped data. Prefer deprecation with migration advice (to `kg_TXT` / `bm25_search`) or a `graph=` argument; do not remove without a compatibility decision. Same direction as decisions.md."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3471,6 +3639,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: "Take the contract text as intended: strict refuses with no window. Record the 5 s cache window (reproduced live) and fail-open (tested) as product defects against ledger-api.md (F-0801), and keep their obligations open. Downstream modules (erasure, redaction, verify) may not assume that every graph-table change under strict mode has a ledger record. verify() detects bypass rows after the fact. Raw SQL and BulkLoader remain outside by the contract's own text (HD-0301/1103)."
+    description: Default assumption.
   - label: keep the client check; document the 5 s window and fail-open in ledger-api.md and USER_GUIDE -
     description: ""
   - label: fail closed and re-read strict on every guarded write (one class call per write) -
@@ -3518,7 +3688,9 @@ prompt: Does a mapped label belong to every graph?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Treat a mapping registration as namespace-wide (the as-built baseline). Under a named USE GRAPH scope, require either graph-aware mapping provenance or an explicitly documented exception. Model the current global visibility as a known deviation from the glossary's isolation rule. It is not a security breach, because the namespace is the boundary (USER_GUIDE:467-468).
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3560,7 +3732,9 @@ prompt: Is `sql/operators.sql` product code?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Classify sql/operators.sql as shipped historical/reference SQL with no deployment path. It is outside the executed product surface, but stays in the inventory as a shipped artifact whose definitions are not graph-scoped. Trace operators_fixed.sql (legacy deployer) and the schema.py procedures separately. If anyone runs the file by hand, it creates unqualified, graph-blind procedures (F-0820-like behaviour).
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3602,7 +3776,9 @@ prompt: Should `CREATE CONSTRAINT` / `CREATE INDEX` be refused rather than accep
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Treat the accepted DDL as an acknowledged no-op that establishes no invariant (supported by f4a13d75 and pinned by tests). Model no uniqueness guarantee from it. As a proposed strengthening, not a decision: document it in USER_GUIDE beside the parse-error rule and add a metadata warning. Refusal (option c) would reverse a maintainer decision."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3644,7 +3820,9 @@ prompt: Should a running engine notice a revoked table right or a dropped adjace
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Split the question. (1) A SQL REVOKE is not guaranteed to reach running engines' native reads. To cut native access, revoke the database resource or %Native_ClassExecution, or start new engines. Treat FR-011's executor-side check as an unimplemented spec requirement (F-0908) whose amendment is the maintainer's call. (2) For the route capability, keep FR-003: native reads require the index to be declared at the time of the read. Model an out-of-band drop under running engines as a premise violation ('the index is not dropped while engines run'), not a supported transition, unless Run checks Indexed()."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3684,6 +3862,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: "Keep ordinary SQL fallback. In shadow validation, record a native exception as an unsuccessful comparison: raise in shadow mode, or count failures and report them at the end of the run. Require a clean comparison (not a fallback) before claiming parity. The FR-010 default flip and the 3896/3896 figure establish only that no compared answer differed."
+    description: Default assumption.
   - label: keep the fallback in shadow mode (today) -
     description: ""
   - label: raise in shadow mode only -
@@ -3731,7 +3911,9 @@ prompt: What may a native read answer while another writer's transaction is open
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Allow the observed interleavings on both paths: a native or SQL read may see a writer's uncommitted writes, including part of one transaction, and loses them on rollback. Grant snapshot or all-or-nothing visibility only to paths with an explicit synchronization contract and evidence (none for Cypher reads). The ADR-0012 degree cache is the one guarded structure."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3773,7 +3955,9 @@ prompt: Should a compiled plan that fails while running be set aside?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Treat a run-time failure of a compiled entry as a fallback outcome: quarantine the entry for that plan generation (as a failed build already is), let the interpreter answer, and retry only after invalidation (a new stamp, DropAll or a deploy). SQL fallback for every later read (as built) is a correct-answer but degraded baseline that violates ADR-0014's 'answers exactly as the interpreter'."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -3947,6 +4131,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Walk the default graph's adjacency (graph key 0) in ObjectScript, library or not (option (a)). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (option (c)) is a compatible extension.
+    description: Default assumption.
   - label: ). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (
     description: ). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (option
   - label: ") is a compatible extension. Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed O"
@@ -3994,7 +4180,9 @@ prompt: Should the shortest-path routines refuse a direction they do not walk?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the public 'in' semantics, caller reversal included. Require ShortestPathJson and ShortestLength to refuse any direction outside {out, both}, or to implement 'in' by walking from the far end. Require IRISGraphStore.shortest_path_length to reverse 'in' as execute_shortest_path does. Record the live false positive as a defect against its docstring.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4036,7 +4224,9 @@ prompt: What should a node change do when only a named graph holds the id?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep graph-blind existence. A node change that needs the default-graph row (`set_prop`, `remove_prop`, `add_label`, `remove_label`, `delete_node`, `upsert_node` with labels or properties) refuses with nothing applied and no record when that row is absent, under a reason distinct from `node_not_found` (the maintainer's meaning of that code stays). Model edge endpoint lookup separately (`EnsureEndpoint`).
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4078,7 +4268,9 @@ prompt: Should disable() and set_strict() refuse a caller's open transaction, as
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Refuse `disable()` and `set_strict()` inside a caller transaction on every engine, as `enable()`/`redact()`.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4120,7 +4312,9 @@ prompt: Should strict mode be enforced by the server, or stay a Python-only chec
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Treat strict mode as a client-side, cached (5 s), fail-open guard on the contract's listed calls at this pin; inventory uncovered Python paths, server writers (Eraser, TemporalIndex, FHIR sync, SQL procedures) and external writers as possible unrecorded writers.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4162,7 +4356,9 @@ prompt: Should the ledger's settings be changeable after the genesis?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep `max_ops` and `recon_bound` fixed at genesis. Model strict as set by `enable(strict=...)` on genesis and on every re-enable (default False) and by `set_strict`; record the reset on re-enable as an explicit transition and do not assume strict survives a disable/enable cycle.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4202,6 +4398,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat post-commit properties as a separate direct write outside revision replay; `verify()` reports them until adopted. Require that a replayed commit not re-apply them (idempotency contract), recording the pin's re-application as a defect (F-1101).
+    description: Default assumption.
   - label: Record them as `set_prop` records of the same revision (server substitutes the revision id). - Skip post-commit properties on `replayed=True` only (keeps Approa
     description: Record them as `set_prop` records of the same revision (server substitutes the revision id). - Skip post-commit properties on `replayed=True` only (keeps Approach A; closes F-1101). -
   - label: Drop the feature
@@ -4245,6 +4443,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: "Serialize erasure with ledger commits and redaction on the same lock: the erasure holds the head lock until its outermost transaction ends (an IRIS lock released inside a transaction is held to its end, P-0003), AND the redaction's opening liveness check and marker run under that lock (HD-1301). Neither alone closes the open-erasure case: with only the erasure lock the dirty opening check still passes and the batches tombstone a target the erasure later restores; with only the locked opening check the erasure holds nothing to wait on. A liveness check that reads committed data only is an alternative to the erasure lock for the redaction half, but not for the F-1201 statement half."
+    description: Default assumption.
   - label: erasure holds the head lock for its whole transaction (with HD-1301's locked start) -
     description: ""
   - label: document that erasure needs a quiet graph (no concurrent commit, redaction, or open caller transaction) and refuse erase_graph inside a caller transaction, as 4
@@ -4291,7 +4491,9 @@ prompt: Can an unfinished redaction be abandoned, and what may a default-graph t
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "(a) No generic abandon: tombstones are irreversible, so 'abandon' could only remove the marker and accept a permanently divergent history; the recovery is re-erase and resume, and the docs should say that this also erases content re-created during the run. An explicit, audited cancel that records the partial redaction as a redaction revision is the alternative. (b) Apply the plan's graph-blind liveness check to every default-graph target, so redact(None) without a prefix is refused while any node of any graph is live."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4333,7 +4535,9 @@ prompt: How is a tenant's node history redacted when nodes live in the tenant's 
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Require tenant id prefixes for ledger-governed tenants and document it next to redact(); for a graph target whose erased nodes left graph-blind node records, return an explicit incomplete result (or refuse) instead of complete=true. Model graph-qualified node records for future history separately; a migration of existing history needs trustworthy provenance, which the genesis did not keep.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4372,7 +4576,9 @@ prompt: "Verification and record readers: node identity and redaction checks"
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "(a) Compare the identity the ledger governs: default-graph node rows for node records (R290), with named-graph node rows either reported as outside node governance or recorded with their graph (linked to HD-1101/1304). (b) A reader takes a redaction epoch that every redaction start and finish advances, checks the marker, reads, and re-checks both; if either changed it refuses or retries. A post-read marker check alone is not sufficient (a whole redaction can complete inside one read); a shared lock or a genuine snapshot are alternatives. Verify additionally needs a coherent cut between its record read and its table read."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4414,7 +4620,9 @@ prompt: Should a FHIR sync be governed by the ledger?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "Keep decisions.md: the FHIR graph is an external writer of a rebuildable projection at the pin. verify() keeps reporting its rows (never silently 'equal'); strict mode is not a guarantee for FHIR namespaces until FHIR writes are either refused under strict or recorded."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4456,7 +4664,9 @@ prompt: Should erasing a FHIR graph stop its sync task?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Separate transient clear from decommissioning. Ordinary erase keeps registration and task (supported). For durable tenant removal require, as a stated premise, unschedule before erase and no manual sync afterwards, and verify the graph stays empty before redaction; at the pin there is no single-graph deregistration, so 'deregister' is a new command, not an available step.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4496,6 +4706,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: "Keep decisions.md: erase of a FHIR graph must be serialized with an active sync (take ^IVG.FHIRGraph(graph) and answer busy, or have RunBatch abort when the watermark moved backwards); until then the quiet-sync premise must be explicit for erase."
+    description: Default assumption.
   - label: erase takes the sync lock and refuses (or waits) while a sync holds it -
     description: ""
   - label: RunBatch compare-and-sets the watermark (WHERE wm = expected) and stops when it went back -
@@ -4543,7 +4755,9 @@ prompt: Should one unreadable FHIR resource block its graph's sync?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Failure without advancing the watermark is the documented contract (not a choice to revisit silently). Surface the offending key (already in last_error) and treat the missing recovery procedure (repair/delete the resource, or json_links=[]) as a documentation gap; do not assume silent skips.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4585,7 +4799,9 @@ prompt: Should admin work need a different key from reading?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Model the single key and the IRIS user's privileges as the authorization surface. Treat an admin-only key or a kill route that is off by default as a proposed strengthening. Record IVG_READ_ONLY as the existing, coarse lever.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4625,6 +4841,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Retry a read, or a write known not to have executed (a connection error raised before the statement was sent). Never re-run a write whose outcome is unknown; return an error that says the outcome is unknown. A write carrying a verified idempotency key may be retried.
+    description: Default assumption.
   - label: retry every query once [as built] -
     description: ""
   - label: never retry; return the error
@@ -4670,7 +4888,9 @@ prompt: Should the REST dispatcher's `/metaPath` take a graph?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Treat /metaPath as default-graph-only and include that in its contract. A body naming `graph` should be refused or honoured, not ignored; until decided, model the silent ignore as the baseline.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4713,6 +4933,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: "Treat both apps as supported entry points subject to the shared HTTP safety constraints: key gate and read-only (already applied), a depth bound, and an honest health check. Record the generated app's missing depth limit and always-healthy /health as gaps against that parity, not as violations of a stated contract."
+    description: Default assumption.
   - label: a developer server and
     description: ""
   - label: parity. The 4.6.0 releases already apply the shared HTTP gates (key, read-only) to create_app and fix its schema reading. That treats it as a deployable surface
@@ -4765,6 +4987,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: "Keep decisions.md: read_only=True is a requested guarantee; enforce it at a trusted boundary (refuse non-SELECT before it runs) or refuse/remove the unsupported flag in a versioned change. The engine's own use (reads only) makes enforcement compatible with internal callers."
+    description: Default assumption.
   - label: "enforce: refuse a non-SELECT statement with a clear error before it runs -"
     description: ""
   - label: remove the parameter from the protocol and the adapter -
@@ -4810,6 +5034,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: "Keep decisions.md: after an ambiguous outcome resend only a known read or an explicitly idempotent operation; report an unknown outcome otherwise; treat client and server retries as one protocol. Note that this narrows a documented feature (compatibility decision)."
+    description: Default assumption.
   - label: retry only reads (client cannot tell; the server could mark replies) -
     description: ""
   - label: retry only connect errors raised before the request was sent; never 5xx or timeouts -
@@ -4860,6 +5086,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: "Keep decisions.md: code support and namespace availability are different facts; treat store.capabilities() as a static catalogue (document it as such) and do not read it as availability; routing that needs availability uses engine.capabilities/status() or an explicit fallback."
+    description: Default assumption.
   - label: is the existing design, missing only documentation. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/q
     description: is the existing design, missing only documentation. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-1703)
 answer:
@@ -4901,6 +5129,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: The product contract at the pin is ADMIN_GUIDE section 5's open default; F-1709 is a documentation defect against deploy/README.md:86 (registered as fail against that stated text). For the reviewed deployment, keep local-only binding or an explicit opt-in for unauthenticated external binding as a stated premise, not as the product's intent.
+    description: Default assumption.
   - label: "implement the refusal: bind 127.0.0.1 or exit unless a key or an explicit flag -"
     description: ""
   - label: keep the open default and correct deploy/README.md (and compose.yml's unread IVG_AUTH_MODE)
@@ -4946,7 +5176,9 @@ prompt: Should a snapshot be a point-in-time view?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Claim a consistent snapshot only when writers are quiescent (an operator premise) or under a verified snapshot/epoch protocol; for the current exporter declare the quiet-writer premise.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -4985,7 +5217,9 @@ prompt: Should erasure and redaction reach the store in REACH-1?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -5021,7 +5255,9 @@ prompt: Should erasure and redaction reach the store in REACH-2?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -5057,7 +5293,9 @@ prompt: Should erasure and redaction reach the store in REACH-3?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -5096,7 +5334,9 @@ prompt: Should erasure and redaction reach the store in REACH-4?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -5138,7 +5378,9 @@ prompt: Should erasure and redaction reach the store in REACH-5?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep these retained copies visible in removal receipts; do not infer a new purge promise from erasure of the live graph.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -5177,7 +5419,9 @@ prompt: How to read "defined by its ancestors or an earlier same-level statement
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Method definitions use the literal parent-chain/earlier-same-parent rule. This is a workflow question, not a product contract.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5218,7 +5462,9 @@ prompt: In a multigraph, does a direct edge delete remove one parallel edge or a
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Without an edge ID, direct delete_edge removes the whole triple. A per-edge ID argument is planned, absent at the pin.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5259,7 +5505,9 @@ prompt: Does ledger strict mode cover the standalone bulk loader?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: The standalone BulkLoader and raw SQL are expressly outside the client strict-mode guard. That exception does not exempt other engine writers.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5300,7 +5548,9 @@ prompt: Should label propagation say when its labels did not settle?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: CDLP returns its last fixed iteration without an in-band settledness flag; the documented diagnostic compares k with k+1.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5341,7 +5591,9 @@ prompt: How many nodes should global PageRank list?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Global PageRank promises every default-graph node on every supported route; the hidden Owner output cap violates that documented contract.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5382,7 +5634,9 @@ prompt: "Which rule clears a revision's free text: any tombstone or every record
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Decision 2 clears the free text when any record in the revision is tombstoned. The older every-record wording is stale.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5423,7 +5677,9 @@ prompt: Should a replayed commit apply its post-commit properties?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: A keyed replay returns the original outcome and applies no new effects. How to complete or skip post-commit work is an implementation question; recording those properties remains separately open.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5464,7 +5720,9 @@ prompt: Should a server limit which graphs a caller may name?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: The namespace is the authorization boundary; graph IDs scope data operations and do not confer access rights.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5508,7 +5766,9 @@ prompt: Should the low-level vector helper refuse a vector of the wrong width?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: The low-level raw DB-API helper pads/truncates and coerces non-finite values as documented. Registry-aware engine writes keep their separate strict contract.
+    description: Default assumption.
 answer:
   selected: []
   text: resolved with existing authority. See the linked source audit.
@@ -5538,7 +5798,9 @@ prompt: "Upstream #12: bulk-created nodes had no id property, so directed patter
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; historical fixed-at-pin report. See the linked source audit.
@@ -5568,7 +5830,9 @@ prompt: "Upstream #13: count(DISTINCT) with ORDER BY and LIMIT failed on a from_
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; historical fixed-at-pin report. See the linked source audit.
@@ -5600,7 +5864,9 @@ prompt: "Proof debt D-1: L1/L2 refinement proofs for every module with operation
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5632,7 +5898,9 @@ prompt: "Proof debt D-2: Statement lemmas: each IRIS SQL statement and ObjectScr
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5664,7 +5932,9 @@ prompt: "Proof debt D-3: Handler proofs: each Python/ObjectScript entry point pe
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5696,7 +5966,9 @@ prompt: "Proof debt D-4: Lock-plan obligations per handler (§3.5)"
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5728,7 +6000,9 @@ prompt: "Proof debt D-5: Composition: a committed IRIS transaction refines the s
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5760,7 +6034,9 @@ prompt: "Proof debt D-6: Frame, key, FK, capacity, row-permutation conditions (�
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5792,7 +6068,9 @@ prompt: "Proof debt D-7: The IRIS environment contract as a Verus specification 
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5824,7 +6102,9 @@ prompt: "Proof debt D-8: Progress premises: fair scheduling of enabled steps, op
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5856,7 +6136,9 @@ prompt: "Proof debt D-9: Reviewed protocol under the pin's real premises (bypass
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5888,7 +6170,9 @@ prompt: "Proof debt D-10: M1 targeting with 2 pre-enable writes and 2 commits: *
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5920,7 +6204,9 @@ prompt: "Proof debt D-11: Original proof `l2.rs` refinement covers the reviewed 
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5952,7 +6238,9 @@ prompt: "Proof debt D-12: Progress-only control for reviewed-design element D-2 
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -5984,7 +6272,9 @@ prompt: "Proof debt D-13: The breadth proofs (modules 04 and 11) without premise
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -6019,7 +6309,9 @@ prompt: "Proof debt D-14: Shared mechanism laws proved once over a trait: **paid
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Keep the existing recorded scope; no new verification or human decision is inferred.
+    description: Default assumption.
 answer:
   selected: []
   text: closed in this policy register; inherited qualified proof debt. See the linked source audit.
@@ -6052,7 +6344,9 @@ prompt: Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: map explicit transactions onto one IVG transaction, or refuse explicit transactions and document per-statement commits.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6079,7 +6373,9 @@ prompt: Should a Cypher `DELETE` clean up everything the engine's own [node dele
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: "`DETACH DELETE` removes the node's labels, properties, default-route vector, incident edges and those edges' reifications, but not vectors in other routes or temporal entries. `DELETE r` removes only the relationship row and leaves its reification, the same open question as [edge delete reifications](#structure.edge.delete.reifications)."
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6106,7 +6402,9 @@ prompt: Should the second HTTP app's Cypher endpoints (`/api/cypher` and GraphQL
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: yes; today they run the translated SQL themselves.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6138,7 +6436,9 @@ prompt: Should whether a write joins the caller's transaction depend on how the 
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Treat transaction membership as dependent on the connection used by the engine.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6165,7 +6465,9 @@ prompt: Should deleting an edge also remove its reifications and edge embeddings
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Treat edge deletion as removing only the rows its implementation explicitly cleans up.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6192,7 +6494,9 @@ prompt: When a computation sees a write that is not yet committed and that write
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: yes, because the degree cache and the rebuild already treat that case as unsafe. Today the cached result stays current until the next write (observed).
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6221,7 +6525,9 @@ prompt: What may readers see when a rebuild fails partway?
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: that an early failure leaves the previous adjacency, and a later one leaves a partial index whose degree cache is cleared, never wrong.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6251,7 +6557,9 @@ prompt: What should happen to a record in the target graph when it cannot be det
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Retain an unattributed record and disclose it in the receipt until prefix ownership is established.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6283,6 +6591,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: one worker at a time is assumed, so entries are not claimed. An entry is marked done before its vector is stored, and is changed to an error if storing then fails.
+    description: Default assumption.
   - label: claim entries so two workers never process the same one, and mark an entry done only after its vector commits
     description: ""
 answer:
@@ -6313,7 +6623,9 @@ prompt: What must erasing one graph do to a VecIndex, PLAID or IVF index, which 
 severity: medium
 multi_select: false
 allow_free_text: true
-options: []
+options:
+  - label: Treat graphless indexes as derived data requiring a rebuild after erasure.
+    description: Default assumption.
 answer:
   selected: []
   text: ""
@@ -6344,6 +6656,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: the statistics keep describing the first write.
+    description: Default assumption.
   - label: |-
       they describe the edges as they are now, recomputed as after a delete.
       - Alternative: every write counts, so an update adds a second count and its new weight
@@ -6378,6 +6692,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: the parts written before the error stay, because a direct write runs no transaction.
+    description: Default assumption.
   - label: |-
       a failed write leaves nothing, so a retry starts clean.
       - Open either way: a retry in insert mode now finds the edge, reports a collision and never writes the m
@@ -6414,6 +6730,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: no. The mark is bookkeeping (spec 252 planned it as a separate column), so Cypher maps and RDF qualifiers would leave it out while the edge and its weight stay visible.
+    description: Default assumption.
   - label: RDF export leaves marked edges out, as NDJSON export does, and the PROV-O export carries them
     description: ""
 answer:
@@ -6446,6 +6764,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: none is recorded; only marked edges were declared outside governance.
+    description: Default assumption.
   - label: |-
       treat such nodes like marked edges and skip them in the starting snapshot and verification.
       - Alternative: govern them, so these node writes are refused or reco
@@ -6483,6 +6803,8 @@ severity: medium
 multi_select: false
 allow_free_text: true
 options:
+  - label: Treat previous temporal edges as retained until an explicit cleanup or reclassification is authorized.
+    description: Default assumption.
   - label: |-
       let a cleanup remove marked edges that no timestamp holds, whatever the registration says.
       - Alternative: refuse to make a predicate structural again while its
@@ -6514,26 +6836,27 @@ Should a grouping key, `DISTINCT` and `count(DISTINCT)` treat the integer 1 and 
 Disposition: open. Working assumption: two values. Evidence: [W59](../uplift/consolidated/iteration-54/clauses-PAIRS.md), [cypher_clauses](models/cypher_clauses/NOTES.md). Owner: [query.aggregation.keys](../ontology/features/cypher.g5.md#query.aggregation.keys).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.aggregation.keys.numbers",
-  "status": "open",
-  "prompt": "Should a grouping key, DISTINCT and count(DISTINCT) treat the integer 1 and the float 1.0 as one value?",
-  "severity": "low",
-  "default_assumption": "Two values, as the native executor answers today.",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "Two values: a number keeps its type in grouping",
-      "description": "The native executor's answer today."
-    },
-    {
-      "label": "One value: numbers of equal value are equivalent (openCypher CIP2016-06-14)",
-      "description": "Both paths would need to compare numbers by value."
-    }
-  ]
-}
+schema: 1
+id: query.aggregation.keys.numbers
+status: open
+prompt: Should a grouping key, DISTINCT and count(DISTINCT) treat the integer 1 and the float 1.0 as one value?
+severity: low
+multi_select: false
+allow_free_text: true
+options:
+  - label: Two values, as the native executor answers today.
+    description: Default assumption.
+  - label: "Two values: a number keeps its type in grouping"
+    description: The native executor's answer today.
+  - label: "One value: numbers of equal value are equivalent (openCypher CIP2016-06-14)"
+    description: Both paths would need to compare numbers by value.
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: Two values, as the native executor answers today.
 ```
 
 <a id="query.parameters.drivers"></a>
@@ -6551,24 +6874,25 @@ Must `UNWIND $list`, a list parameter indexed or sliced by parameters, and the o
 Disposition: open. Working assumption: 5.3.x is supported. Evidence: [W60](../uplift/consolidated/iteration-55/pipeline-PAIRS.md), [bolt_answers](models/bolt_answers/NOTES.md) (provider premise P-DRV-JT). Owner: [query.parameters](../ontology/features/cypher.g5.md#query.parameters).
 
 ```g5-question
-{
-  "schema": 1,
-  "id": "query.parameters.drivers",
-  "status": "open",
-  "prompt": "Must Cypher list parameters (UNWIND $list, $l[$i], $l[$s..$e]) work with intersystems-irispython 5.3.x, the version uv.lock pins?",
-  "severity": "medium",
-  "default_assumption": "Yes: the locked driver is supported until the project states a lower bound.",
-  "allow_free_text": true,
-  "multi_select": false,
-  "options": [
-    {
-      "label": "Yes: 5.3.x is supported",
-      "description": "A read that fails only on 5.3.x is a product defect (bug-cyp-125)."
-    },
-    {
-      "label": "No: require intersystems-irispython 5.4 or later",
-      "description": "State the lower bound in pyproject.toml and refresh uv.lock; bug-cyp-125 becomes a packaging fix."
-    }
-  ]
-}
+schema: 1
+id: query.parameters.drivers
+status: open
+prompt: Must Cypher list parameters (UNWIND $list, $l[$i], $l[$s..$e]) work with intersystems-irispython 5.3.x, the version uv.lock pins?
+severity: medium
+multi_select: false
+allow_free_text: true
+options:
+  - label: "Yes: the locked driver is supported until the project states a lower bound."
+    description: Default assumption.
+  - label: "Yes: 5.3.x is supported"
+    description: A read that fails only on 5.3.x is a product defect (bug-cyp-125).
+  - label: "No: require intersystems-irispython 5.4 or later"
+    description: State the lower bound in pyproject.toml and refresh uv.lock; bug-cyp-125 becomes a packaging fix.
+answer:
+  selected: []
+  text: ""
+  rationale: ""
+  answered_by: null
+  answered_at: null
+default_assumption: "Yes: the locked driver is supported until the project states a lower bound."
 ```
