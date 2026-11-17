@@ -247,6 +247,14 @@ The walk operations follow outbound edges from one start node.
 - Working assumption: Walk the default graph's adjacency (graph key 0) in ObjectScript, library or not (option (a)). Where only a merged ^NKG route is available and a named graph has edges, refuse visibly rather than answer [] or a merged walk. An explicit graph= argument (option (c)) is a compatible extension.
 
 
+<a id="algorithms.op.neighbors"></a>
+[I · algorithms.op.neighbors]
+
+The one-hop retrieval steps return what is one edge away from a list of seed nodes.
+- `kg_NEIGHBORS` follows out-edges, in-edges or both, of one type or any, and lists each neighbor once unless asked to keep repeats, however the seeds are split into chunks. `kg_MENTIONS` is the same along `MENTIONS` edges.
+- `kg_NEIGHBORS` reads every graph: a seed's edges in a named graph count, and a seed ID used in two graphs gives the neighbors of both ([open question](../../Verus_verification/open_questions.md#algorithms.op.neighbors.scope)).
+- `kg_NEIGHBORHOOD_EXPANSION` reads one graph, the default unless one is named, and keeps an edge only when its `confidence` qualifier is at least the threshold, highest first. An edge without that qualifier is left out.
+
 <a id="algorithms.op.paths"></a>
 [I · algorithms.op.paths]
 
@@ -416,7 +424,7 @@ Changed in 4.6.0. Before that, procedures and methods disagreed: some answered e
 ### algorithms.op
 
 - Sources: [USER_GUIDE §6 Graph algorithms](../../../docs/USER_GUIDE.md); [API_REFERENCE: Graph algorithms](../../../docs/API_REFERENCE.md); [_engine/algorithms.py](../../../iris_vector_graph/_engine/algorithms.py)
-- Children: [PageRank](#algorithms.op.pagerank), [PPR](#algorithms.op.ppr), [WCC](#algorithms.op.wcc), [CDLP](#algorithms.op.cdlp), [subgraph](#algorithms.op.subgraph), [degree](#algorithms.op.degree), [betweenness](#algorithms.op.betweenness), [closeness](#algorithms.op.closeness), [eigenvector](#algorithms.op.eigenvector), [Leiden](#algorithms.op.leiden), [triangles](#algorithms.op.triangles), [SCC](#algorithms.op.scc), [k-core](#algorithms.op.kcore), [k-hop](#algorithms.op.khop), [walks](#algorithms.op.walks), [paths](#algorithms.op.paths)
+- Children: [PageRank](#algorithms.op.pagerank), [PPR](#algorithms.op.ppr), [WCC](#algorithms.op.wcc), [CDLP](#algorithms.op.cdlp), [subgraph](#algorithms.op.subgraph), [degree](#algorithms.op.degree), [betweenness](#algorithms.op.betweenness), [closeness](#algorithms.op.closeness), [eigenvector](#algorithms.op.eigenvector), [Leiden](#algorithms.op.leiden), [triangles](#algorithms.op.triangles), [SCC](#algorithms.op.scc), [k-core](#algorithms.op.kcore), [k-hop](#algorithms.op.khop), [walks](#algorithms.op.walks), [neighbors](#algorithms.op.neighbors), [paths](#algorithms.op.paths)
 - Verus: [algo_options](../../Verus_verification/models/algo_options/NOTES.md) `theorem_same_decision`, `theorem_ranges`, `theorem_unlisted_refused`, `theorem_uncoercible_refused`, `theorem_enumerations_exact` (option checks of the centrality and community methods and procedures, as built)
 - Evidence: [frozen predictions and native observations](../../uplift/consolidated/iteration-28/algo-options-PAIRS.md)
 - agent
@@ -619,6 +627,18 @@ Findings: [kg_GRAPH_WALK keeps one row per hop and node](../../Verus_verificatio
 Open questions: [What should `random_walk` answer, and over which graph?](../../Verus_verification/open_questions.md#HD-1001), [Should a graph walk list every edge it walks, or one row per node reached?](../../Verus_verification/open_questions.md#algorithms.op.walks.rows)
 
 Assumption review evidence: Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed ObjectScript walk runs without the library (upstream test and live), and ADMIN_GUIDE says every algorithm has an ObjectScript answer. So a real default-graph answer is the better-supported reading. 'Unavailable' remains only for a route that cannot honour the scope.
+
+### algorithms.op.neighbors
+
+- Sources: [API_REFERENCE kg_NEIGHBORS, kg_MENTIONS, kg_NEIGHBORHOOD_EXPANSION](../../../docs/API_REFERENCE.md); [`AlgorithmsMixin.kg_NEIGHBORS`](../../../iris_vector_graph/_engine/algorithms.py#L986-L1023), [`VectorMixin.kg_NEIGHBORHOOD_EXPANSION`](../../../iris_vector_graph/_engine/vector.py#L1055-L1121), [graph scope of Cypher without USE GRAPH](../concepts/graph-scope.g5.md)
+- Expands: [Operations](#algorithms.op)
+- Verus: active: [`retrieval_scope.rs`](../../Verus_verification/models/retrieval_scope/NOTES.md) `theorem_scopes_differ`, `theorem_confidence_filter`, `theorem_distinct_across_chunks`.
+- agent
+- user-facing-behavior
+
+Recovered in iteration 42 from the API reference and observation ([W48](../../uplift/consolidated/iteration-42/neighbors-PAIRS.md)): every frozen case held except the assumed default-graph scope of `kg_NEIGHBORS`.
+
+Open questions: [Which graph should the unscoped retrieval operators read?](../../Verus_verification/open_questions.md#algorithms.op.neighbors.scope)
 
 ### algorithms.op.paths
 

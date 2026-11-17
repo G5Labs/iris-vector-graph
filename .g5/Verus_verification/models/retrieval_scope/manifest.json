@@ -1,0 +1,45 @@
+{
+  "title": "retrieval scope",
+  "question": "One-hop retrieval: kg_NEIGHBORS reads every graph and dedupes across chunks; kg_NEIGHBORHOOD_EXPANSION reads one graph with a confidence threshold",
+  "ontology_ids": [
+    "algorithms.op.neighbors"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 3}"
+    },
+    {
+      "label": "neighbors-default-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_scopes_differ\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "missing-confidence-kept",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_confidence_filter\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "strict-threshold",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_confidence_filter\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "dedupe-per-chunk",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_distinct_across_chunks\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

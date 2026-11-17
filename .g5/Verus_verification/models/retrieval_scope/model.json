@@ -1,0 +1,45 @@
+{
+  "name": "retrieval_scope",
+  "root": "retrieval_scope.rs",
+  "expected_verified": 3,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "neighbors-default-only",
+      "find": "pub open spec fn neighbors_reads(g: G) -> bool { true }",
+      "replace": "pub open spec fn neighbors_reads(g: G) -> bool { g == DEFAULT() }",
+      "expect_fail_in": [
+        "theorem_scopes_differ"
+      ],
+      "classification": "decision: kg_NEIGHBORS reads the default graph only"
+    },
+    {
+      "name": "missing-confidence-kept",
+      "find": "match conf { Some(c) => c >= threshold, None => false }",
+      "replace": "match conf { Some(c) => c >= threshold, None => true }",
+      "expect_fail_in": [
+        "theorem_confidence_filter"
+      ],
+      "classification": "decision: an edge without confidence is kept"
+    },
+    {
+      "name": "strict-threshold",
+      "find": "Some(c) => c >= threshold,",
+      "replace": "Some(c) => c > threshold,",
+      "expect_fail_in": [
+        "theorem_confidence_filter"
+      ],
+      "classification": "decision: the threshold itself is excluded"
+    },
+    {
+      "name": "dedupe-per-chunk",
+      "find": "pub open spec fn appended(distinct: bool, seen_before: bool) -> bool { !distinct || !seen_before }",
+      "replace": "pub open spec fn appended(distinct: bool, seen_before: bool) -> bool { true }",
+      "expect_fail_in": [
+        "theorem_distinct_across_chunks"
+      ],
+      "classification": "effect: duplicates across chunks are appended"
+    }
+  ]
+}

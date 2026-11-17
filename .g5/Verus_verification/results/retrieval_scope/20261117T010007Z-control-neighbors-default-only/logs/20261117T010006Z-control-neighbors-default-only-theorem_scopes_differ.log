@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_scope/controls/neighbors-default-only/20261117T010006Z/models/retrieval_scope/retrieval_scope.rs:26:13
+   |
+24 | pub proof fn theorem_scopes_differ(g: G)
+   | ---------------------------------------- at the end of the function body
+25 |     requires g != DEFAULT(),
+26 |     ensures neighbors_reads(g), !expansion_reads(g, None), expansion_reads(g, Some(g)),
+   |             ^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

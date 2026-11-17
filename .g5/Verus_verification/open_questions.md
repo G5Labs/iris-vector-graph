@@ -3682,6 +3682,38 @@ Canonical owner: [query.compiled.fallback.failure-policy](#HD-0904).
 }
 ```
 
+<a id="algorithms.op.neighbors.scope"></a>
+### Which graph should the unscoped retrieval operators read?
+
+[Q · algorithms.op.neighbors.scope]
+
+Which graph should the unscoped retrieval operators read?
+- Provisional answer (agent, unratified): the default graph, with a `graph=` argument, as `kg_NEIGHBORHOOD_EXPANSION`, `kg_PPR` and the walks do; a pipeline that chains them then reads one graph throughout.
+- Alternative, as built for `kg_NEIGHBORS` and `kg_MENTIONS`: every graph, as a Cypher query without `USE GRAPH` does ([graph scope](../ontology/concepts/graph-scope.g5.md)).
+
+Disposition: open. Working assumption: keep today's answers; document that `kg_NEIGHBORS` reads every graph. Evidence: [W48](../uplift/consolidated/iteration-42/neighbors-PAIRS.md), [retrieval_scope](models/retrieval_scope/NOTES.md).
+
+```g5-question
+{
+  "schema": 1,
+  "id": "algorithms.op.neighbors.scope",
+  "status": "open",
+  "prompt": "Which graph should the unscoped retrieval operators read?",
+  "allow_free_text": true,
+  "multi_select": false,
+  "options": [
+    {
+      "label": "The default graph, with a graph= argument, like the other retrieval operators",
+      "description": ""
+    },
+    {
+      "label": "Every graph, as Cypher without USE GRAPH does",
+      "description": ""
+    }
+  ]
+}
+```
+
 <a id="fhir.sql_mapping.cache"></a>
 ### Should a table mapping made by one engine reach engines that are already running?
 

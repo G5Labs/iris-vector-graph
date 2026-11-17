@@ -1,0 +1,11 @@
+verification results:: 2 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_scope/controls/strict-threshold/20261117T010008Z/models/retrieval_scope/retrieval_scope.rs:31:13
+   |
+30 | pub proof fn theorem_confidence_filter(t: int)
+   | ---------------------------------------------- at the end of the function body
+31 |     ensures expansion_keeps(Some(t), t), !expansion_keeps(Some(t - 1), t), !expansion_keeps(None, t),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
