@@ -1,0 +1,383 @@
+{
+  "run": "20261117T003415Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "multigraph_default": false,
+  "cases": {
+    "I1_materialize": {
+      "answer": {
+        "inferred": 3
+      },
+      "rows": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "A",
+          "subClassOf",
+          "C",
+          "inferred"
+        ],
+        [
+          "B",
+          "subClassOf",
+          "C",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "B",
+          "inferred"
+        ],
+        [
+          "x",
+          "type",
+          "C",
+          "inferred"
+        ]
+      ]
+    },
+    "I2_second_run": {
+      "answer": {
+        "inferred": 0
+      },
+      "rows": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "A",
+          "subClassOf",
+          "C",
+          "inferred"
+        ],
+        [
+          "B",
+          "subClassOf",
+          "C",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "B",
+          "inferred"
+        ],
+        [
+          "x",
+          "type",
+          "C",
+          "inferred"
+        ]
+      ]
+    },
+    "I1_cypher_types_of_x": [
+      "i003415a_A",
+      "i003415a_B",
+      "i003415a_C"
+    ],
+    "I3_materialize": {
+      "answer": {
+        "inferred": 0
+      },
+      "rows": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "B",
+          "asserted"
+        ]
+      ]
+    },
+    "I4_materialize_then_assert": {
+      "answer": {
+        "inferred": 1
+      },
+      "create_edge_returned": false,
+      "rows": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "B",
+          "inferred"
+        ]
+      ]
+    },
+    "I7_I8_I10_materialize": {
+      "answer": {
+        "inferred": 2
+      },
+      "rows": [
+        [
+          "D",
+          "subClassOf",
+          "E",
+          "asserted"
+        ],
+        [
+          "p",
+          "domain",
+          "D",
+          "asserted"
+        ],
+        [
+          "p",
+          "range",
+          "R",
+          "asserted"
+        ],
+        [
+          "p",
+          "subPropertyOf",
+          "q",
+          "asserted"
+        ],
+        [
+          "x",
+          "p",
+          "y",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "D",
+          "inferred"
+        ],
+        [
+          "y",
+          "type",
+          "R",
+          "inferred"
+        ]
+      ]
+    },
+    "I5_materialize_named": {
+      "answer": {
+        "inferred": 1
+      },
+      "named": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "B",
+          "inferred"
+        ]
+      ],
+      "default": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ]
+      ]
+    },
+    "I9_retract_default": {
+      "answer": 6,
+      "I1": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "B",
+          "subClassOf",
+          "C",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ]
+      ],
+      "I3": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "B",
+          "asserted"
+        ]
+      ],
+      "I4": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ]
+      ],
+      "I7": [
+        [
+          "D",
+          "subClassOf",
+          "E",
+          "asserted"
+        ],
+        [
+          "p",
+          "domain",
+          "D",
+          "asserted"
+        ],
+        [
+          "p",
+          "range",
+          "R",
+          "asserted"
+        ],
+        [
+          "p",
+          "subPropertyOf",
+          "q",
+          "asserted"
+        ],
+        [
+          "x",
+          "p",
+          "y",
+          "asserted"
+        ]
+      ],
+      "I5_named": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "B",
+          "inferred"
+        ]
+      ],
+      "kg": {
+        "I1 x type B": false,
+        "I3 x type B": true,
+        "I4 x type B": false,
+        "I1 x type A": true
+      }
+    },
+    "I6_retract_named": {
+      "answer": 1,
+      "named": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ]
+      ],
+      "default": [
+        [
+          "A",
+          "subClassOf",
+          "B",
+          "asserted"
+        ],
+        [
+          "x",
+          "type",
+          "A",
+          "asserted"
+        ]
+      ]
+    }
+  }
+}

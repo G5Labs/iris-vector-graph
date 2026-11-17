@@ -1,0 +1,29 @@
+error[E0308]: mismatched types
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/inference_rows/inference_rows.rs:41:14
+   |
+41 |     Map::new(|t: T| e.contains_key(t) || derives(e, t), |t: T| if e.contains_key(t) { e[t] } else { true })
+   |     -------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<(int, int, int)>`, found `FnSpec<((int, int, int),), bool>`
+   |     |
+   |     arguments to this function are incorrect
+   |
+   = note: expected struct `vstd::set::Set<(vstd::prelude::int, vstd::prelude::int, vstd::prelude::int)>`
+              found struct `vstd::prelude::FnSpec<((vstd::prelude::int, vstd::prelude::int, vstd::prelude::int),), bool>`
+note: associated function defined here
+  --> map.rs:67:25
+
+error[E0308]: mismatched types
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/inference_rows/inference_rows.rs:44:54
+   |
+44 | pub open spec fn retract(e: Rows) -> Rows { Map::new(|t: T| e.contains_key(t) && !e[t], |t: T| false) }
+   |                                             -------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<(int, int, int)>`, found `FnSpec<((int, int, int),), bool>`
+   |                                             |
+   |                                             arguments to this function are incorrect
+   |
+   = note: expected struct `vstd::set::Set<(vstd::prelude::int, vstd::prelude::int, vstd::prelude::int)>`
+              found struct `vstd::prelude::FnSpec<((vstd::prelude::int, vstd::prelude::int, vstd::prelude::int),), bool>`
+note: associated function defined here
+  --> map.rs:67:25
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

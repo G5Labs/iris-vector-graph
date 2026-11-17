@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: a create of an existing inferred triple makes it asserted (the repair)",
+    "expect_fail_in": [
+      "theorem_asserted_after_is_retracted"
+    ],
+    "find": "    Rows { f: |u: T| if u == t && !present(e, t) { Some(false) } else { (e.f)(u) } }",
+    "name": "create-marks-asserted",
+    "replace": "    Rows { f: |u: T| if u == t { Some(false) } else { (e.f)(u) } }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_asserted_after_is_retracted"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/inference_rows/inference_rows.rs": "b72b84cf185c65f99bc42fb4d34c59bebd51e38f471b4b8cfc40feeb546c06ff",
+    ".g5/Verus_verification/models/inference_rows/model.json": "68a9e8d7c9107d4f7ee80191df4984f1b6d31028ecc0efc149cd7fc56b6263db"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/create-marks-asserted/20261117T003757Z/models/inference_rows/inference_rows.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_asserted_after_is_retracted": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/20261117T003757Z-control-create-marks-asserted-theorem_asserted_after_is_retracted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/20261117T003757Z-control-create-marks-asserted.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/inference_rows/20261117T003758Z-control-create-marks-asserted/logs/20261117T003757Z-control-create-marks-asserted-theorem_asserted_after_is_retracted.log": "4eb1737c33eedfaa977e6faffc6b0dcc8c16f99f9363a5ced96b0557a3b34cb7",
+    ".g5/Verus_verification/results/inference_rows/20261117T003758Z-control-create-marks-asserted/logs/20261117T003757Z-control-create-marks-asserted.log": "df808d269bc1802782c157c232f9eff59b221138329cc32e593ebbdeea69ba78"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

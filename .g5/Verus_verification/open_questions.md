@@ -3682,6 +3682,39 @@ Canonical owner: [query.compiled.fallback.failure-policy](#HD-0904).
 }
 ```
 
+<a id="install.inference.assert_after"></a>
+### Should creating an edge that inference already wrote make it an asserted edge?
+
+[Q · install.inference.assert_after]
+
+Should creating an edge that inference already wrote make it an asserted edge?
+- Provisional answer (agent, unratified): yes. A create states the fact, so retracting inference should keep it, as it keeps an edge created before materializing.
+- Alternative: refuse the create, naming the inferred edge, so the caller knows retract will remove it.
+- As built: the create answers False and the edge stays marked inferred, so retract deletes it ([bug-str-105](bugs_issues.md#bug-str-105)).
+
+Disposition: open. Working assumption: yes, a create asserts. Evidence: [W44](../uplift/consolidated/iteration-38/inference-PAIRS.md), [inference_rows](models/inference_rows/NOTES.md).
+
+```g5-question
+{
+  "schema": 1,
+  "id": "install.inference.assert_after",
+  "status": "open",
+  "prompt": "Should creating an edge that inference already wrote make it an asserted edge?",
+  "allow_free_text": true,
+  "multi_select": false,
+  "options": [
+    {
+      "label": "Yes: the create clears the inferred marker, so retract keeps the edge",
+      "description": ""
+    },
+    {
+      "label": "Refuse the create, naming the inferred edge",
+      "description": ""
+    }
+  ]
+}
+```
+
 <a id="algorithms.op.walks.rows"></a>
 ### Should a graph walk list every edge it walks, or one row per node reached?
 

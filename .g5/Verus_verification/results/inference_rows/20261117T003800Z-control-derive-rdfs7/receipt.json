@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "rule: rdfs7 propagates an edge along a subproperty",
+    "expect_fail_in": [
+      "lemma_derived_predicates",
+      "lemma_same_asserted"
+    ],
+    "find": "    || (t.1 == TYPE() && exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)))\n}",
+    "name": "derive-rdfs7",
+    "replace": "    || (t.1 == TYPE() && exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)))\n    || (!reserved(t.1) && exists|p: int| arow(e, (p, SUBP(), t.1)) && arow(e, (t.0, p, t.2)))\n}"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_derived_predicates",
+      "lemma_same_asserted"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/inference_rows/inference_rows.rs": "b72b84cf185c65f99bc42fb4d34c59bebd51e38f471b4b8cfc40feeb546c06ff",
+    ".g5/Verus_verification/models/inference_rows/model.json": "68a9e8d7c9107d4f7ee80191df4984f1b6d31028ecc0efc149cd7fc56b6263db"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/derive-rdfs7/20261117T003758Z/models/inference_rows/inference_rows.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_derived_predicates": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/20261117T003758Z-control-derive-rdfs7-lemma_derived_predicates.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_same_asserted": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/20261117T003758Z-control-derive-rdfs7-lemma_same_asserted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/20261117T003758Z-control-derive-rdfs7.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/inference_rows/20261117T003800Z-control-derive-rdfs7/logs/20261117T003758Z-control-derive-rdfs7-lemma_derived_predicates.log": "acdda09ce5ff65add8e3d4e595048693b70bb4657fa73ee18904a4d316315a2a",
+    ".g5/Verus_verification/results/inference_rows/20261117T003800Z-control-derive-rdfs7/logs/20261117T003758Z-control-derive-rdfs7-lemma_same_asserted.log": "354caa47570d010b55d70dc5a28e66c6a1b73dd94601dd12b5e5b2b6083a6948",
+    ".g5/Verus_verification/results/inference_rows/20261117T003800Z-control-derive-rdfs7/logs/20261117T003758Z-control-derive-rdfs7.log": "e9494b03171d14ce10861e323da48f966222e6d2d8627734da0ff5e30711ab90"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

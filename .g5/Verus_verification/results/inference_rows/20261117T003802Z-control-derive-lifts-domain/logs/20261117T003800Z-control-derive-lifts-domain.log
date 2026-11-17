@@ -1,0 +1,24 @@
+verification results:: 6 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/derive-lifts-domain/20261117T003800Z/models/inference_rows/inference_rows.rs:60:13
+   |
+60 |       ensures derives(m, t) == derives(e, t),
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+95 | /     if exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)) {
+96 | |         let (p, s) = choose|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0));
+97 | |         assert(arow(m, (p, RNG(), t.2)) && arow(m, (s, p, t.0)));
+98 | |     }
+   | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/derive-lifts-domain/20261117T003800Z/models/inference_rows/inference_rows.rs:153:9
+    |
+150 | pub proof fn theorem_domain_type_not_lifted(p: int, d: int, f: int, x: int, y: int)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+...
+153 |         !derives(rows3((p, DOM(), d), (d, SUB(), f), (x, p, y)), (x, TYPE(), f)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

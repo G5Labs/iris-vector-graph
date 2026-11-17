@@ -1,0 +1,20 @@
+verification results:: 6 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/retract-everything/20261117T003802Z/models/inference_rows/inference_rows.rs:53:13
+   |
+52 | pub proof fn theorem_retract_keeps_asserted(e: Rows, t: T)
+   | ---------------------------------------------------------- at the end of the function body
+53 |     ensures present(retract(e), t) == arow(e, t),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/retract-everything/20261117T003802Z/models/inference_rows/inference_rows.rs:112:13
+    |
+110 | pub proof fn theorem_asserted_first_survives(x: int, a: int, b: int)
+    | -------------------------------------------------------------------- at the end of the function body
+111 |     requires !reserved(x), !reserved(a), !reserved(b), a != b,
+112 |     ensures present(retract(materialize(create_edge(rows2((a, SUB(), b), (x, TYPE(), a)), (x, TYPE(), b)))), (x, TYPE(), b)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

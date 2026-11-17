@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/create-marks-asserted/20261117T003757Z/models/inference_rows/inference_rows.rs:119:13
+    |
+117 |   pub proof fn theorem_asserted_after_is_retracted(x: int, a: int, b: int)
+    |   ------------------------------------------------------------------------ at the end of the function body
+118 |       requires !reserved(x), !reserved(a), !reserved(b), a != b, x != a, x != b,
+119 |       ensures ({
+    |  _____________^
+120 | |         let e1 = materialize(rows2((a, SUB(), b), (x, TYPE(), a)));
+121 | |         let t = (x, TYPE(), b);
+122 | |         (e1.f)(t) == Some(true) && present(e1, t) && !present(retract(create_edge(e1, t)), t)
+123 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

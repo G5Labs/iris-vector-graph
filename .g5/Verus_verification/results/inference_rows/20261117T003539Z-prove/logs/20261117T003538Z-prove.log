@@ -1,0 +1,95 @@
+error[E0308]: mismatched types
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/inference_rows/inference_rows.rs:22:48
+   |
+22 | pub open spec fn asserted(e: Rows) -> Set<T> { Set::new(|t: T| e.contains_key(t) && !e[t]) }
+   |                                       ------   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<(int, int, int)>`, found `Option<Set<(int, int, int)>>`
+   |                                       |
+   |                                       expected `vstd::set::Set<(vstd::prelude::int, vstd::prelude::int, vstd::prelude::int)>` because of return type
+   |
+   = note: expected struct `vstd::set::Set<_>`
+                found enum `std::option::Option<vstd::set::Set<_>>`
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<(vstd::prelude::int, vstd::prelude::int, vstd::prelude::int)>>` value, panicking if the value is an `Option::None`
+   |
+22 | pub open spec fn asserted(e: Rows) -> Set<T> { Set::new(|t: T| e.contains_key(t) && !e[t]).expect("REASON") }
+   |                                                                                           +++++++++++++++++
+
+error[E0308]: mismatched types
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/inference_rows/inference_rows.rs:24:62
+   |
+24 | pub open spec fn rel(a: Set<T>, p: int) -> Set<(int, int)> { Set::new(|x: (int, int)| a.contains((x.0, p, x.1))) }
+   |                                            ---------------   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<(int, int)>`, found `Option<Set<(int, int)>>`
+   |                                            |
+   |                                            expected `vstd::set::Set<(vstd::prelude::int, vstd::prelude::int)>` because of return type
+   |
+   = note: expected struct `vstd::set::Set<_>`
+                found enum `std::option::Option<vstd::set::Set<_>>`
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<(vstd::prelude::int, vstd::prelude::int)>>` value, panicking if the value is an `Option::None`
+   |
+24 | pub open spec fn rel(a: Set<T>, p: int) -> Set<(int, int)> { Set::new(|x: (int, int)| a.contains((x.0, p, x.1))).expect("REASON") }
+   |                                                                                                                 +++++++++++++++++
+
+error[E0308]: mismatched types
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/inference_rows/inference_rows.rs:26:5
+   |
+25 | pub open spec fn tc(r: Set<(int, int)>) -> Set<(int, int)> {
+   |                                            --------------- expected `vstd::set::Set<(vstd::prelude::int, vstd::prelude::int)>` because of return type
+26 |     Set::new(|x: (int, int)| r.contains(x) || exists|b: int| r.contains((x.0, b)) && r.contains((b, x.1)) && x.0 != x.1)
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<(int, int)>`, found `Option<Set<(int, int)>>`
+   |
+   = note: expected struct `vstd::set::Set<_>`
+                found enum `std::option::Option<vstd::set::Set<_>>`
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<(vstd::prelude::int, vstd::prelude::int)>>` value, panicking if the value is an `Option::None`
+   |
+26 |     Set::new(|x: (int, int)| r.contains(x) || exists|b: int| r.contains((x.0, b)) && r.contains((b, x.1)) && x.0 != x.1).expect("REASON")
+   |                                                                                                                         +++++++++++++++++
+
+error[E0308]: mismatched types
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/inference_rows/inference_rows.rs:33:5
+   |
+32 |   pub open spec fn derive(a: Set<T>) -> Set<T> {
+   |                                         ------ expected `vstd::set::Set<(vstd::prelude::int, vstd::prelude::int, vstd::prelude::int)>` because of return type
+33 | /     Set::new(|t: T|
+34 | |         (t.1 == SUB() && tc(rel(a, SUB())).contains((t.0, t.2)))
+35 | |         || (t.1 == SUBP() && tc(rel(a, SUBP())).contains((t.0, t.2)))
+36 | |         || (t.1 == TYPE() && exists|c: int| a.contains((t.0, TYPE(), c)) && tc(rel(a, SUB())).contains((c, t.2)))
+37 | |         || (t.1 == TYPE() && exists|p: int, o: int| !reserved(p) && a.contains((p, DOM(), t.2)) && a.contains((t.0, p, o)))
+38 | |         || (t.1 == TYPE() && exists|p: int, s: int| !reserved(p) && a.contains((p, RNG(), t.2)) && a.contains((s, p, t.0)))
+39 | |     )
+   | |_____^ expected `Set<(int, int, int)>`, found `Option<Set<(int, int, int)>>`
+   |
+   = note: expected struct `vstd::set::Set<_>`
+                found enum `std::option::Option<vstd::set::Set<_>>`
+help: consider using `Option::expect` to unwrap the `std::option::Option<vstd::set::Set<(vstd::prelude::int, vstd::prelude::int, vstd::prelude::int)>>` value, panicking if the value is an `Option::None`
+   |
+39 |     ).expect("REASON")
+   |      +++++++++++++++++
+
+error[E0308]: mismatched types
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/inference_rows/inference_rows.rs:43:14
+   |
+43 |     Map::new(|t: T| e.contains_key(t) || derive(asserted(e)).contains(t),
+   |     -------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<(int, int, int)>`, found `FnSpec<((int, int, int),), bool>`
+   |     |
+   |     arguments to this function are incorrect
+   |
+   = note: expected struct `vstd::set::Set<(vstd::prelude::int, vstd::prelude::int, vstd::prelude::int)>`
+              found struct `vstd::prelude::FnSpec<((vstd::prelude::int, vstd::prelude::int, vstd::prelude::int),), bool>`
+note: associated function defined here
+  --> map.rs:67:25
+
+error[E0308]: mismatched types
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/inference_rows/inference_rows.rs:47:54
+   |
+47 | pub open spec fn retract(e: Rows) -> Rows { Map::new(|t: T| e.contains_key(t) && !e[t], |t: T| false) }
+   |                                             -------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Set<(int, int, int)>`, found `FnSpec<((int, int, int),), bool>`
+   |                                             |
+   |                                             arguments to this function are incorrect
+   |
+   = note: expected struct `vstd::set::Set<(vstd::prelude::int, vstd::prelude::int, vstd::prelude::int)>`
+              found struct `vstd::prelude::FnSpec<((vstd::prelude::int, vstd::prelude::int, vstd::prelude::int),), bool>`
+note: associated function defined here
+  --> map.rs:67:25
+
+error: aborting due to 6 previous errors
+
+For more information about this error, try `rustc --explain E0308`.

@@ -1,0 +1,51 @@
+{
+  "title": "inference rows",
+  "question": "RDFS inference rows: asserted versus inferred markers through materialize, create_edge and retract; a create after materializing is retracted (bug-str-105); no rdfs7 and no lifting of domain/range types (bug-str-106)",
+  "ontology_ids": [
+    "install.inference"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 8}"
+    },
+    {
+      "label": "create-marks-asserted",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_asserted_after_is_retracted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "derive-rdfs7",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_derived_predicates\", \"lemma_same_asserted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "derive-lifts-domain",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_domain_type_not_lifted\", \"lemma_same_asserted\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "retract-everything",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_retract_keeps_asserted\", \"theorem_asserted_first_survives\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "materialize-overwrites",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_asserted_first_survives\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

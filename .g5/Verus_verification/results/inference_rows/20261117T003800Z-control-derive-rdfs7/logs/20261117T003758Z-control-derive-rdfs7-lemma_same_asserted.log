@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/derive-rdfs7/20261117T003758Z/models/inference_rows/inference_rows.rs:60:13
+   |
+60 |       ensures derives(m, t) == derives(e, t),
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+95 | /     if exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)) {
+96 | |         let (p, s) = choose|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0));
+97 | |         assert(arow(m, (p, RNG(), t.2)) && arow(m, (s, p, t.0)));
+98 | |     }
+   | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

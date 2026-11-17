@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/derive-lifts-domain/20261117T003800Z/models/inference_rows/inference_rows.rs:153:9
+    |
+150 | pub proof fn theorem_domain_type_not_lifted(p: int, d: int, f: int, x: int, y: int)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+...
+153 |         !derives(rows3((p, DOM(), d), (d, SUB(), f), (x, p, y)), (x, TYPE(), f)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

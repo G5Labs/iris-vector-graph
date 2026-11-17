@@ -358,6 +358,15 @@ An NDJSON import ignores blank lines; logs and counts malformed JSON, non-object
 - Node lines use the caller's graph (default if omitted). Edge lines use the caller's graph if supplied, otherwise the line's graph; an explicitly empty caller graph overrides a named line graph. Temporal batches and any endpoints they create use the default graph even when the caller supplies a graph.
 - Temporal lines buffer until `batch_size` or end of file. Their counter advances by the flushed batch length, independently of the writer's return count; an exception prevents that increment and prevents the final pending flush. These counters do not establish rows created or atomicity of a failed temporal batch.
 
+<a id="install.inference"></a>
+[D · install.inference]
+
+Materializing inference in one graph adds the RDFS consequences of that graph's asserted edges as new edges marked inferred. Retracting inference removes that graph's inferred edges and their adjacency entries. Neither call touches another graph.
+- It derives subclass and subproperty chains, the types an asserted type implies through its superclasses, and the types a property's domain and range give its subjects and objects.
+- It does not copy an edge to a property's superproperty, and it does not lift a type that came from a domain or range to that class's superclasses ([finding](../../Verus_verification/bugs_issues.md#bug-str-106)).
+- It reads only asserted edges, so a second run adds nothing. A triple that already has an edge is not written again, so an edge asserted first stays asserted and survives retracting.
+- Creating an edge whose triple was already inferred answers False and leaves it marked inferred, so retracting deletes it ([open question](../../Verus_verification/open_questions.md#install.inference.assert_after)).
+
 ## Ordinary graph exports
 
 
@@ -841,7 +850,7 @@ Findings: [Rebuild adjacency once after load_networkx](../../Verus_verification/
 State machines: [bulk load](../../Verus_verification/models/bulk_load/manifest.json)
 
 ### install.import
-- Children: [NDJSON](#install.import.ndjson)
+- Children: [NDJSON](#install.import.ndjson), [inference](#install.inference)
 
 - Sources: [snapshot.py load_networkx](../../../iris_vector_graph/_engine/snapshot.py#L446-L556), [import_rdf](../../../iris_vector_graph/_engine/snapshot.py#L557-L720), [import_graph_ndjson](../../../iris_vector_graph/_engine/snapshot.py#L1727-L1856), [load_obo](../../../iris_vector_graph/_engine/snapshot.py#L1694-L1726), [materialize_inference](../../../iris_vector_graph/_engine/schema.py#L2966), [ledger strict list](../features/ledger.g5.md#ledger.strict), [operations inventory G7](../../uplift/ivg-verus-initial/intent/operations.md#L150-L158)
 - agent
@@ -860,6 +869,20 @@ Added by review round 3 R3-reader M23 (the stage-A reconstruction check items 3,
 - Expands: [imports](#install.import)
 
 State machines: [ndjson export](../../Verus_verification/models/ndjson_export/manifest.json), [ndjson import](../../Verus_verification/models/ndjson_import/manifest.json)
+
+### install.inference
+
+- Sources: [API_REFERENCE materialize_inference, retract_inference](../../../docs/API_REFERENCE.md); [FHIR_GRAPH.md](../../../docs/FHIR_GRAPH.md); [`SchemaMixin.materialize_inference`](../../../iris_vector_graph/_engine/schema.py#L2966-L3183), [`SchemaMixin.retract_inference`](../../../iris_vector_graph/_engine/schema.py#L3186-L3260), [`NodesEdgesMixin.create_edge`](../../../iris_vector_graph/_engine/nodes_edges.py#L1151)
+- Expands: [imports](#install.import)
+- Verus: active: [`inference_rows.rs`](../../Verus_verification/models/inference_rows/NOTES.md) `theorem_retract_keeps_asserted`, `theorem_rerun_adds_nothing`, `theorem_asserted_first_survives`; as-built departures `theorem_asserted_after_is_retracted`, `theorem_no_subproperty_propagation`, `theorem_domain_type_not_lifted`.
+- agent
+- data-integrity, user-facing-behavior
+
+Recovered in iteration 38 from the API reference and observation ([W44](../../uplift/consolidated/iteration-38/inference-PAIRS.md)); no owner statement existed. OWL rules (`rules="owl"`), multigraph mode and the ledger-related retraction case F-C0151 were not exercised.
+
+Findings: [retract_inference deletes an edge the user created after the same triple was inferred](../../Verus_verification/bugs_issues.md#bug-str-105); [materialize_inference derives less than the RDFS entailments the API reference promises](../../Verus_verification/bugs_issues.md#bug-str-106)
+
+Open questions: [Should creating an edge that inference already wrote make it an asserted edge?](../../Verus_verification/open_questions.md#install.inference.assert_after)
 
 ### install.export.ndjson
 

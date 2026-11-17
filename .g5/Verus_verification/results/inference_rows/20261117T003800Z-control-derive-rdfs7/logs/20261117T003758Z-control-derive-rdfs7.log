@@ -1,0 +1,24 @@
+verification results:: 6 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/derive-rdfs7/20261117T003758Z/models/inference_rows/inference_rows.rs:60:13
+   |
+60 |       ensures derives(m, t) == derives(e, t),
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+95 | /     if exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)) {
+96 | |         let (p, s) = choose|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0));
+97 | |         assert(arow(m, (p, RNG(), t.2)) && arow(m, (s, p, t.0)));
+98 | |     }
+   | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/derive-rdfs7/20261117T003758Z/models/inference_rows/inference_rows.rs:138:13
+    |
+136 | pub proof fn lemma_derived_predicates(e: Rows, t: T)
+    | ---------------------------------------------------- at the end of the function body
+137 |     requires derives(e, t),
+138 |     ensures t.1 == SUB() || t.1 == SUBP() || t.1 == TYPE(),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

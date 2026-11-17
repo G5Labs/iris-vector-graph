@@ -2819,6 +2819,25 @@ Consequence: on a fresh 4.7.0 install the IRIS worker stores no default-graph ve
 
 Repair proposal (not implemented; checked in Verus only): bind the default graph as the SQL empty string, which is what the Python store writes (observed: `graph_id` length 0, not NULL; the column is NOT NULL). Same receipt as bug-srch-103. Governing statement: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue).
 
+<a id="bug-str-105"></a>
+### retract_inference deletes an edge the user created after the same triple was inferred
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 38)
+
+Found by: the frozen W44 prediction I4 missed ([predictions](../uplift/consolidated/iteration-38/inference-PAIRS.md)); [inference_rows](models/inference_rows/NOTES.md) `theorem_asserted_after_is_retracted`, control `create-marks-asserted`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, multigraph off ([observation](../uplift/consolidated/iteration-38/inference-observed-20261117T003415Z.json) I4 and I9; [binding](results/inference_rows/20261117T003857Z-binding/receipt.json)). With `A subClassOf B` and `x type A`, `materialize_inference()` writes `x type B` marked inferred; `create_edge(x, type, B)` then answers False and leaves the row marked inferred; `retract_inference()` deletes it and its `^KG` entry. Passing neighbor (I3): when `x type B` is created before materializing, the same visible graph keeps it through retract.
+
+Expected: the API reference says retract deletes "the edges `materialize_inference` wrote" and the docstring that "an asserted edge for the same triple keeps its adjacency entry"; a caller who created the edge has asserted it. Whether a create of an inferred triple should make it asserted is the owner question [install.inference.assert_after](open_questions.md#install.inference.assert_after).
+
+Observed: `create_edge` skips a triple that already has a row (multigraph off) and does not touch its qualifiers; `retract_inference` deletes every row whose qualifiers contain `"inferred":` (`schema.py:3215-3227`).
+
+Consequence: two histories with the same edges before retract end differently, and a fact the user stated is silently removed. Medium: loss of user data on an ordinary sequence (materialize, add facts, retract to re-run).
+
+Repair proposal (not implemented; checked in Verus only): have `create_edge` clear the inferred marker on an existing inferred row (control `create-marks-asserted` is the repaired rule), or refuse with a message. Governing statement: [install.inference](../ontology/concepts/install.g5.md#install.inference).
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -4234,6 +4253,23 @@ Observed: `kg_GRAPH_WALK` calls `BFSFastJsonSorted` with `_call_classmethod` and
 Consequence: a large walk fails visibly, and each failed call leaves its rows in a persistent global that nothing clears. Low: needs `max_results` above roughly 35,000 rows (the default is 100).
 
 Repair proposal (not implemented): read the stage through the `SORTED:` decoder (which has the stream fallback) or add `ReadBFSResults` → `ReadBFSResultsStream` to the fallbacks. Governing statement: [algorithms.op.walks](../ontology/features/algorithms.g5.md#algorithms.op.walks).
+
+<a id="bug-str-106"></a>
+### materialize_inference derives less than the RDFS entailments the API reference promises
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 38)
+
+Found by: the frozen W44 prediction I7 missed ([predictions](../uplift/consolidated/iteration-38/inference-PAIRS.md)); source reading added I10; [inference_rows](models/inference_rows/NOTES.md) `theorem_no_subproperty_propagation`, `theorem_domain_type_not_lifted`, controls `derive-rdfs7`, `derive-lifts-domain`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-38/inference-observed-20261117T003415Z.json) I7_I8_I10; [binding](results/inference_rows/20261117T003857Z-binding/receipt.json)). With `p subPropertyOf q`, `x p y`, `p domain D`, `p range R` and `D subClassOf E`, materializing writes `x type D` and `y type R` only: no `x q y` and no `x type E`. Rerunning adds nothing, because inference reads only asserted edges. Passing neighbors: subclass chains, types from asserted types, domain and range (I1, I8).
+
+Expected: the API reference: "Derive RDFS (`rules="owl"`: also OWL) entailments in one graph". RDFS entailment includes the subproperty rule (rdfs7) and applies the subclass rule to every derived type (rdfs9). The docstring lists exactly the rules implemented, so the source and the reference disagree.
+
+Consequence: a reader of the reference expects a superproperty query or a superclass of a domain to find these nodes, and it does not. Low: missing derived rows; asserted data unchanged.
+
+Repair proposal (not implemented): either derive to a fixpoint with rdfs7 and lift derived types, or state the rule list in the reference. Governing statement: [install.inference](../ontology/concepts/install.g5.md#install.inference).
 
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections

@@ -1,0 +1,57 @@
+{
+  "name": "inference_rows",
+  "root": "inference_rows.rs",
+  "expected_verified": 8,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "create-marks-asserted",
+      "find": "    Rows { f: |u: T| if u == t && !present(e, t) { Some(false) } else { (e.f)(u) } }",
+      "replace": "    Rows { f: |u: T| if u == t { Some(false) } else { (e.f)(u) } }",
+      "expect_fail_in": [
+        "theorem_asserted_after_is_retracted"
+      ],
+      "classification": "decision: a create of an existing inferred triple makes it asserted (the repair)"
+    },
+    {
+      "name": "derive-rdfs7",
+      "find": "    || (t.1 == TYPE() && exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)))\n}",
+      "replace": "    || (t.1 == TYPE() && exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)))\n    || (!reserved(t.1) && exists|p: int| arow(e, (p, SUBP(), t.1)) && arow(e, (t.0, p, t.2)))\n}",
+      "expect_fail_in": [
+        "lemma_derived_predicates",
+        "lemma_same_asserted"
+      ],
+      "classification": "rule: rdfs7 propagates an edge along a subproperty"
+    },
+    {
+      "name": "derive-lifts-domain",
+      "find": "    || (t.1 == TYPE() && exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)))\n}",
+      "replace": "    || (t.1 == TYPE() && exists|p: int, s: int| !reserved(p) && arow(e, (p, RNG(), t.2)) && arow(e, (s, p, t.0)))\n    || (t.1 == TYPE() && exists|p: int, o: int, d: int| !reserved(p) && arow(e, (p, DOM(), d)) && arow(e, (t.0, p, o)) && tc(e, SUB(), d, t.2))\n}",
+      "expect_fail_in": [
+        "theorem_domain_type_not_lifted",
+        "lemma_same_asserted"
+      ],
+      "classification": "rule: a domain type is lifted along the subclass closure"
+    },
+    {
+      "name": "retract-everything",
+      "find": "pub open spec fn retract(e: Rows) -> Rows { Rows { f: |t: T| if arow(e, t) { Some(false) } else { None } } }",
+      "replace": "pub open spec fn retract(e: Rows) -> Rows { Rows { f: |t: T| None } }",
+      "expect_fail_in": [
+        "theorem_retract_keeps_asserted",
+        "theorem_asserted_first_survives"
+      ],
+      "classification": "effect: retract deletes asserted rows too"
+    },
+    {
+      "name": "materialize-overwrites",
+      "find": "    Rows { f: |t: T| if present(e, t) { (e.f)(t) } else if derives(e, t) { Some(true) } else { None } }",
+      "replace": "    Rows { f: |t: T| if derives(e, t) { Some(true) } else if present(e, t) { (e.f)(t) } else { None } }",
+      "expect_fail_in": [
+        "theorem_asserted_first_survives"
+      ],
+      "classification": "effect: materialize marks an asserted triple inferred"
+    }
+  ]
+}

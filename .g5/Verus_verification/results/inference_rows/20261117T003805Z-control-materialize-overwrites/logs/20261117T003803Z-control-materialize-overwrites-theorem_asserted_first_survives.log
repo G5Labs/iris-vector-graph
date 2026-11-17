@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/inference_rows/controls/materialize-overwrites/20261117T003803Z/models/inference_rows/inference_rows.rs:112:13
+    |
+110 | pub proof fn theorem_asserted_first_survives(x: int, a: int, b: int)
+    | -------------------------------------------------------------------- at the end of the function body
+111 |     requires !reserved(x), !reserved(a), !reserved(b), a != b,
+112 |     ensures present(retract(materialize(create_edge(rows2((a, SUB(), b), (x, TYPE(), a)), (x, TYPE(), b)))), (x, TYPE(), b)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+
