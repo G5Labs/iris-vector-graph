@@ -1,0 +1,11 @@
+verification results:: 15 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/literal-negative-unwrapped/20261117T032030Z/models/cypher_fns/cypher_fns.rs:116:13
+    |
+115 | pub proof fn theorem_literal_index_follows_rule(src: Src, len: nat, i: int)
+    | --------------------------------------------------------------------------- at the end of the function body
+116 |     ensures translated_index(src, IdxKind::LiteralInt, len, Some(i)) == rule_index(len, i),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

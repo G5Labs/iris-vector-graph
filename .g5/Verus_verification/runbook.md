@@ -534,3 +534,24 @@ Worked lookup: `query.functions.list_index` → `cypher_fns.rs::theorem_row_nega
 `iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list` (the `JSON_ARRAYGET` body, line 2179) in
 `crosswalk/decision-links.tsv`; in reverse, that key in `bindings.json` lists the claims and roles. The distinguishing
 control is `row-index-through-ivglistget`; the product observation is the binding's `row_index_-1` (`fails`).
+
+Iteration 50 (repairs from independent review 47-49; [handoff](../uplift/consolidated/iteration-50/HANDOFF.md),
+[dispositions](../uplift/consolidated/iteration-50/DISPOSITIONS.md)), same environment:
+
+```sh
+for m in cypher_fns cypher_exprs retrieval_compose ivf_entries; do
+  python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/$m      # PASS 16 / 22 / 35 / 19
+  python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/$m   # 13 / 22 / 15 / 7 EXPECTED_FAIL
+  (cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/$m/binding.py)  # AGREES 103 / 233 / 45 / 9
+done
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-50/review_repro.py)   # the review's cases, fresh prefix
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after50                 # 505/4130
+```
+
+Worked lookup (iteration 50): `query.functions.list_index` → `cypher_fns.rs::theorem_null_index_reads_first_element` →
+the rows for `iris_vector_graph/cypher/translator.py::_expr_subscript` (line 23620, decision) and `::_is_row_list_elem`
+(line 7681, the WITH-literal path) in `crosswalk/decision-links.tsv`; in reverse, those keys in `bindings.json` list the
+claims. The distinguishing control is `null-index-is-null`; the product observation is the binding's
+`index_property_row_null` (`["at", 0]`) beside `index_with_literal_row_-1` (`["at", 2, "typed"]`).
+Iteration 50 withdrew the control `guided-cap-max-nodes` (it encoded a repair that contradicts the documented cap); the
+bug-plt-113 lookup now ends at `edges-among-answered` and `seeds-capped`.

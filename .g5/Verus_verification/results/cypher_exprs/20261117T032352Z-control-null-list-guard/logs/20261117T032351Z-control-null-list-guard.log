@@ -1,0 +1,11 @@
+verification results:: 21 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/null-list-guard/20261117T032351Z/models/cypher_exprs/cypher_exprs.rs:62:13
+   |
+61 | pub proof fn theorem_null_list_slice_is_empty(syn: Syntax, s: int, e: int)
+   | -------------------------------------------------------------------------- at the end of the function body
+62 |     ensures as_built_slice_of(syn, ListIn::Null, s, e) == SliceOut::Elems(Slice { from: 0, to: 0 }),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

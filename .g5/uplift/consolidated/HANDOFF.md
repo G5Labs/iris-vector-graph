@@ -1,4 +1,4 @@
-**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 49 (W56 composed retrieval: fusion surfaces, IVF leg choice, vector-and-graph search, PPR-guided subgraph). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`, and from iteration 47 under `7c5f718a`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
+**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 50 (repairs from independent review 47-49; [dispositions](iteration-50/DISPOSITIONS.md)). Previous: iteration 49 (W56 composed retrieval). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`, and from iteration 47 under `7c5f718a`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
 
 <a id="continuation-2026-11-17"></a>
 ## Continuation (2026-11-17, from `cloud-iris-continuation-start-20261117`)
@@ -21,6 +21,7 @@ Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bb
 | [47](iteration-47/HANDOFF.md) | W53 SQL readers `kg_IVF`/`kg_BM25` (stopped draft, finished); W54 Cypher built-in functions at run time; `Txn_*` SQL entry points | Medium bug-srch-109, bug-cyp-111, -112, -113, -114, Low bug-cyp-115, -116 (new); F-C0841 modeled; owners `search.ivf.metric`, `query.functions` (8 blocks); model `cypher_fns`, `ivf_entries` extended; 448 → 463 |
 | [48](iteration-48/HANDOFF.md) | W55 Cypher expressions over run-time values: string functions, slices, `CASE`/`coalesce`, aggregation, `CREATE`/`SET` values, `Prop_Set` (16 held, 4 partial, 2 missed of 22) | High bug-cyp-120, Medium bug-cyp-117, -118, -119, Low bug-cyp-121..-124, Low potential bug-cyp-125 (new); bug-cyp-114's refusal traced; simp-cyp-101, -102; 6 owner blocks; model `cypher_exprs`; 463 → 480 |
 | [49](iteration-49/HANDOFF.md) | W56 composed retrieval: engine/SQL/`PyOps`/operator fusion, IVF leg choice, `kg_VECTOR_GRAPH_SEARCH`, `kg_PPR_GUIDED_SUBGRAPH`/`kg_SUBGRAPH`, `kg_RERANK`, `multi_vector_search` (18 held, 4 partial, 3 missed of 25) | High bug-plt-113, Medium bug-srch-110, bug-plt-114, Low bug-srch-111, -112 (new); bug-srch-005 now E2E reproduced; HD-0603 observed; 6 owner blocks; model `retrieval_compose`; 480 → 503 |
+| [50](iteration-50/HANDOFF.md) | Repair round for independent review 47-49 ([review](iteration-50/REVIEW-47-49.md), [dispositions](iteration-50/DISPOSITIONS.md)): 7 material items and 11 minor, each reproduced afresh | bug-plt-113 corrected (the cap is intended; edges among answered nodes missing, seeds over the cap; wrong repair control withdrawn); bug-cyp-111 narrowed, -112 and -120 widened; Medium bug-cyp-126, -127, -128, Low bug-cyp-129..-132 (new); premise-constant bindings reclassified or modeled; models `cypher_fns`, `cypher_exprs`, `retrieval_compose`, `ivf_entries` extended; 503 → 505 (gained 3, lost 1 by reclassification, strengthened 12) |
 
 
 ### Residual queue and interim judgment (kept current)
@@ -37,12 +38,15 @@ the clause or function decided four more, including a silent loss of computed re
 The translator still decides by argument syntax in places not yet probed (residual list of iteration 48).
 The diminishing-returns claim of the retest therefore held only for the families it examined.
 
+Independent review: round 1 of this run (review-47-49, fresh read-only session `e431ba47` on `c648d226`), dispositions in [iteration 50](iteration-50/DISPOSITIONS.md). All seven material items repaired at their owners, models, bindings and registers (item 4 partly: three provider premises kept active beside modeled emitter choices, with reasons); the review also found three new Medium product defects (bug-cyp-126, -127, -128) where the builders' frozen predictions had not looked. The repairs are not yet re-reviewed; rounds used: 1 of 3.
+
 Next candidates, ranked by consequence and tractability (each still unowned or unbound at the pin):
 
 1. Cypher write values beyond iteration 48: `CREATE` naming an earlier node (`_create_node_from_alias`), multigraph
-   relationship values (`_create_values_edge_keyed`), nested functions in `CREATE` maps, `SET n += {…}` with unfolded
-   functions; and bug-cyp-125 on driver 5.4.x (decides whether `UNWIND $list` is a product defect). Iteration 48 covered
-   string functions, slices, list comprehension, `CASE`/`coalesce`, stored-value aggregation and `Prop_Set`.
+   relationship values (`_create_values_edge_keyed`, now also with a parameter), nested functions in `CREATE` maps, `SET n += {…}` with unfolded
+   functions, list literals with property elements (bug-cyp-128, probe only); and bug-cyp-125 on driver 5.4.x (decides whether `UNWIND $list` and `$l[$s..$e]` are product defects; the slice's null-guard marker order is a driver-independent fault to confirm). Iteration 48 covered
+   string functions, slices, list comprehension, `CASE`/`coalesce`, stored-value aggregation and `Prop_Set`; iteration 50 added the relationship parameter, simple CASE kinds, null indexes and list sources.
+   Review 47-49 residue (first missing steps in the [iteration-50 residual list](iteration-50/HANDOFF.md#residual-list-first-missing-step-for-each)): Verus claims for the probe-only bug-cyp-128, -130, -131, -132; the Arno reader for bug-plt-113/-114.
 2. SQL procedures in `Graph.KG.SqlProcs` still unbound after iteration 48: `MatchEdges`, `MatchEdgesAllGraphs`,
    `DijkstraPath`, `backfill_temporal_rows`, `rebuild_edge_indices`, `kg_BM25` (needs a BM25 scoring
    model), the percentile functions, and 12 SQL-only `CypherFn_IVG*` forwarders (first missing steps in the

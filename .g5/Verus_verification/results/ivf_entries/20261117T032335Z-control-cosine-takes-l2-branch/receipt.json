@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the cosine branch is not the dot branch (Search's first If chooses another scorer)",
+    "expect_fail_in": [
+      "theorem_cosine_ranks_as_dot"
+    ],
+    "find": "    match m { Metric::Cosine => dot(q, v), Metric::Dot => dot(q, v), Metric::L2 => -sqdist(q, v) }",
+    "name": "cosine-takes-l2-branch",
+    "replace": "    match m { Metric::Cosine => -sqdist(q, v), Metric::Dot => dot(q, v), Metric::L2 => -sqdist(q, v) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cosine_ranks_as_dot"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ivf_entries/ivf_entries.rs": "28ff9f81ecf900d3a4154fe6cc15ec6f8a0948b34428b02b6ffe031454436a99",
+    ".g5/Verus_verification/models/ivf_entries/model.json": "e60eeeed7b148c6c2335fb0b049cea0d7d0889cae70d4091de62e2fe5fa59941"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/cosine-takes-l2-branch/20261117T032333Z/models/ivf_entries/ivf_entries.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cosine_ranks_as_dot": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/20261117T032333Z-control-cosine-takes-l2-branch-theorem_cosine_ranks_as_dot.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/20261117T032333Z-control-cosine-takes-l2-branch.log",
+    "timed_out": false,
+    "verified": 16
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ivf_entries/20261117T032335Z-control-cosine-takes-l2-branch/logs/20261117T032333Z-control-cosine-takes-l2-branch-theorem_cosine_ranks_as_dot.log": "628832081eba11fe39ea41a958aa2a25f50cf160cf0e1a990efc0c98b86e4a0f",
+    ".g5/Verus_verification/results/ivf_entries/20261117T032335Z-control-cosine-takes-l2-branch/logs/20261117T032333Z-control-cosine-takes-l2-branch.log": "84a589bd983f9cde189b92b8f186bcbdbd561d13760e90007badec97977aa002"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -15,7 +15,8 @@ MUTS = ["row_slice_wrapped", "literal_slice_unwrapped", "row_condition_compared"
         "iris_accepts_scalar_condition", "create_value_translated", "toupper_not_folded", "rel_value_kept",
         "rel_literal_dropped", "coalesce_always_typed", "coalesce_needs_two_props", "identifier_lookahead",
         "substring_checks_start", "substring_zero_based", "setval_skips_retype", "prop_set_not_emitted",
-        "filer_writes_same_text"]
+        "filer_writes_same_text", "null_list_guard", "rel_param_kept", "case_kinds_compared", "case_literal_kinds_unchecked",
+        "unreadable_taken_as_absent"]
 LIST = [10, 20, 30, 40, 50]
 BOUNDS = [-7, -3, -1, 0, 2, 5, 8]
 FNS = {"ToUpper": "toUpper('ab')", "ToLower": "toLower('AB')", "Trim": "trim(' a ')", "Coalesce": "coalesce(null, 'x')",
@@ -29,6 +30,27 @@ SUBS = [(s, l) for s in (-3, -1, 0, 1, 4) for l in (1, 2, 4, 7)]
 COAL = [("RowVar", "ScalarLiteral"), ("ScalarLiteral", "ScalarLiteral"), ("ScalarParam", "ScalarLiteral"),
         ("NodeProp", "ScalarLiteral"), ("ScalarLiteral", "NodeProp"), ("NodeProp", "ScalarParam"),
         ("NodeProp", "RowVar"), ("NodeProp", "ListLiteral")]
+
+
+# simple CASE cases: test syntax, test (kind, text), WHEN syntax, WHEN (kind, text); text "1" = 1, "2" = 2
+CASE_SPEC = {"prop_str_when_num": ("PropertyRead", ("Str", 1), "Literal", ("Num", 1)),
+             "row_str_when_num": ("RowVar", ("Str", 1), "Literal", ("Num", 1)),
+             "prop_num_when_str": ("PropertyRead", ("Num", 1), "Literal", ("Str", 1)),
+             "row_num_when_str": ("RowVar", ("Num", 1), "Literal", ("Str", 1)),
+             "literal_str_when_num": ("Literal", ("Str", 1), "Literal", ("Num", 1)),
+             "literal_num_when_num": ("Literal", ("Num", 1), "Literal", ("Num", 1)),
+             "prop_num_when_num": ("PropertyRead", ("Num", 1), "Literal", ("Num", 1)),
+             "prop_str_when_str": ("PropertyRead", ("Str", 1), "Literal", ("Str", 1)),
+             "row_str2_when_num": ("RowVar", ("Str", 2), "Literal", ("Num", 1))}
+
+
+def CASES(C):
+    w = lambda test, when: f"RETURN CASE {test} WHEN {when} THEN 'y' ELSE 'n' END"
+    return {"prop_str_when_num": f"{C} " + w("n.s1", "1"), "row_str_when_num": "UNWIND ['1'] AS s " + w("s", "1"),
+            "prop_num_when_str": f"{C} " + w("n.i1", "'1'"), "row_num_when_str": "UNWIND [1] AS s " + w("s", "'1'"),
+            "literal_str_when_num": w("'1'", "1"), "literal_num_when_num": w("1", "1"),
+            "prop_num_when_num": f"{C} " + w("n.i1", "1"), "prop_str_when_str": f"{C} " + w("n.s1", "'1'"),
+            "row_str2_when_num": "UNWIND ['2'] AS s " + w("s", "1")}
 
 
 def sha(p):
@@ -87,7 +109,34 @@ def create_rel_value(kind, f, m):
         return "written_without_property" if m.get("rel_literal_dropped") else "written"
     if kind == "ForeachVar":
         return "written"
+    if kind == "Param":
+        return "written" if m.get("rel_param_kept") else "written_without_property"
     return create_node_value(f, m) if m.get("rel_value_kept") else "written_without_property"
+
+
+def create_rel_matched_value(kind, m):
+    return "refused_nothing_written" if kind == "Call" else "written"
+
+
+def simple_case_takes(ts, t, ws, w, m):
+    known = lambda syn: syn == "Literal"
+    if m.get("case_kinds_compared"):
+        drop = t[0] != w[0]
+    elif m.get("case_literal_kinds_unchecked"):
+        drop = False
+    else:
+        drop = known(ts) and known(ws) and t[0] != w[0]
+    return False if drop else t[1] == w[1]
+
+
+def as_built_slice_of_null(m):
+    return "null" if m.get("null_list_guard") else "empty"
+
+
+def prop_set_deployed(cached, check, m):
+    if cached is not None:
+        return cached
+    return {"Found": True, "Absent": False, "Unreadable": not m.get("unreadable_taken_as_absent")}[check]
 
 
 def coalesce_number(a, b, m):
@@ -99,8 +148,16 @@ def coalesce_number(a, b, m):
     return "int" if typed else "text"
 
 
-def parses(lo, m):
-    return m.get("identifier_lookahead", False) if lo == "Identifier" else True
+TOKENS_AFTER_LOWER = {"Int": ("Dot", "FloatLit"), "Ident": ("Dot", "Dot"), "Close": ("Dot", "Dot")}
+
+
+def parses(lo, u, m):
+    if lo != "Identifier":
+        return True
+    nxt, after = TOKENS_AFTER_LOWER[u]
+    if nxt != "Dot":
+        return True
+    return after in (("Ident", "Dot", "FloatLit") if m.get("identifier_lookahead") else ("Ident",))
 
 
 def iris_substring(n, p, l):
@@ -138,7 +195,7 @@ def main():
     from iris_vector_graph.cypher.parser import parse_query
     e = IRISGraphEngine(c, embedding_dimension=768)
     p, L = f"ce{TAG}_", f"CE{TAG}"
-    e.execute_cypher(f"CREATE (n:{L} {{id: '{p}c', l: {LIST}, s: '{STR}', i: 7, t: true, f: false}})")
+    e.execute_cypher(f"CREATE (n:{L} {{id: '{p}c', l: {LIST}, s: '{STR}', i: 7, t: true, f: false, s1: '1', i1: 1}})")
     C = f"MATCH (n:{L} {{id: '{p}c'}})"
     declined = []
 
@@ -233,6 +290,8 @@ def main():
 
     # parser: a slice's lower bound
     for lo, text, params in (("Identifier", "WITH [1, 2, 3] AS l, 1 AS a RETURN l[a..3]", {}),
+                             ("Identifier_Ident", "WITH [1, 2, 3] AS l, 1 AS a, 3 AS b RETURN l[a..b]", {}),
+                             ("Identifier_Close", "WITH [1, 2, 3] AS l, 1 AS a RETURN l[a..]", {}),
                              ("IntLiteral", "WITH [1, 2, 3] AS l RETURN l[1..3]", {}),
                              ("Subscript", "WITH [1, 2, 3] AS l, [1] AS a RETURN l[a[0]..3]", {}),
                              ("Param", "WITH [1, 2, 3] AS l RETURN l[$a..3]", {"a": 1})):
@@ -252,6 +311,42 @@ def main():
     for s, l in SUBS:
         got[f"substring_literal_{s}_{l}"] = sub_of(*run(f"{C} RETURN substring(n.s, {s}, {l})"))
         got[f"substring_row_{s}_{l}"] = sub_of(*run(f"{C} UNWIND [[{s}, {l}]] AS a RETURN substring(n.s, a[0], a[1])"))
+
+    # iteration 50: a parameter on a relationship CREATE between new nodes, and the neighbors
+    got["create_rel_Param"] = rel_case("rp", f"CREATE (:{L}R {{id: '{p}rpa'}})-[:T{TAG} {{v: $k}}]->(:{L}R {{id: '{p}rpb'}})", {"k": "ab"})
+    rows, err = run(f"CREATE (:{L}N {{id: '{p}np', v: $k}})", {"k": "ab"})
+    r2, _ = run(f"MATCH (x:{L}N {{id: '{p}np'}}) RETURN x.v")
+    got["create_node_Param"] = "written" if (err is None and r2 and r2[0][0] == "ab") else f"other:{err!r}:{r2!r}"
+    e.execute_cypher(f"CREATE (:{L}M {{id: '{p}ma'}}), (:{L}M {{id: '{p}mb'}})")
+    for k, v in (("Lit", "'ab'"), ("Param", "$k"), ("Call_ToUpper", "toUpper('ab')"), ("Call_Size", "size('ab')")):
+        rows, err = run(f"MATCH (a:{L}M {{id: '{p}ma'}}), (b:{L}M {{id: '{p}mb'}}) CREATE (a)-[:Q{k}{TAG} {{v: {v}}}]->(b)", {"k": "ab"})
+        r2, _ = run(f"MATCH (a:{L}M {{id: '{p}ma'}})-[r:Q{k}{TAG}]->(b) RETURN r.v")
+        if err is None and r2 and r2[0][0] is not None:
+            got[f"create_rel_matched_{k}"] = "written"
+        elif err and "nothing written" in err and not r2:
+            got[f"create_rel_matched_{k}"] = "refused_nothing_written"
+        else:
+            got[f"create_rel_matched_{k}"] = f"other:{err!r}:{r2!r}"
+    # iteration 50: simple CASE across value kinds (test syntax, test (kind, text), WHEN (kind, text))
+    for key, text in CASES(C).items():
+        rows, err = run(text)
+        got[f"simple_case_{key}"] = (rows[0][-1] == "y") if rows and not err else f"error:{err}"
+    # iteration 50: slicing a null list
+    for syn, text, params in (("Literal", f"{C} RETURN n.missing[0..2]", None),
+                              ("RowVar", f"{C} UNWIND [[0, 2]] AS ab RETURN n.missing[ab[0]..ab[1]]", None),
+                              ("Param", f"{C} RETURN n.missing[$a..$b]", {"a": 0, "b": 2})):
+        rows, err = run(text, params)
+        v = rows[0][-1] if rows and not err else f"error:{err}"
+        got[f"null_list_slice_{syn}"] = "null" if v is None else ("empty" if v == [] else f"other:{v!r}")
+    # iteration 50: engine._prop_set_deployed's own branches (no cache override): found, absent, unreadable
+    from iris_vector_graph.engine import IRISGraphEngine as _E
+    got["prop_set_switch_Found"] = bool(_E(c, embedding_dimension=768)._prop_set_deployed)
+    e_abs = _E(c, embedding_dimension=768); e_abs._schema_prefix = f"I50NoSuch{TAG}"
+    got["prop_set_switch_Absent"] = bool(e_abs._prop_set_deployed)
+    c2 = runtime.connect(); e_unr = _E(c2, embedding_dimension=768); c2.close()
+    got["prop_set_switch_Unreadable"] = bool(e_unr._prop_set_deployed)
+    e_cached = _E(c, embedding_dimension=768); e_cached.__dict__["_prop_set_ok"] = False
+    got["prop_set_switch_cached_false"] = bool(e_cached._prop_set_deployed)
 
     # Prop_Set: deployed (the fixture) and the product's path for a namespace without it
     deployed_seen = bool(e._prop_set_deployed)
@@ -296,13 +391,27 @@ def main():
         for a, b in COAL:
             out[f"coalesce_{a}_{b}"] = coalesce_number(a, b, m)
         for lo in ("Identifier", "IntLiteral", "Subscript", "Param"):
-            out[f"parse_{lo}"] = parses(lo, m)
+            out[f"parse_{lo}"] = parses(lo, "Int", m)
+        out["parse_Identifier_Ident"] = parses("Identifier", "Ident", m)
+        out["parse_Identifier_Close"] = parses("Identifier", "Close", m)
         for s, l in SUBS:
             out[f"substring_literal_{s}_{l}"] = as_built_substring(len(STR), s, l, m)
             out[f"substring_row_{s}_{l}"] = as_built_substring(len(STR), s, l, m)
         for deployed in (True, False):
             for k, old, new in PROPSET:
                 out[f"propset_{int(deployed)}_{k}"] = list(node_update(deployed, old, new, m))
+        out["create_rel_Param"] = create_rel_value("Param", None, m)
+        out["create_node_Param"] = "written"
+        for k in ("Lit", "Param", "Call_ToUpper", "Call_Size"):
+            out[f"create_rel_matched_{k}"] = create_rel_matched_value(k.split("_")[0], m)
+        for key, (ts, t, ws, w) in CASE_SPEC.items():
+            out[f"simple_case_{key}"] = simple_case_takes(ts, t, ws, w, m)
+        for syn in ("Literal", "RowVar", "Param"):
+            out[f"null_list_slice_{syn}"] = as_built_slice_of_null(m)
+        out["prop_set_switch_Found"] = prop_set_deployed(None, "Found", m)
+        out["prop_set_switch_Absent"] = prop_set_deployed(None, "Absent", m)
+        out["prop_set_switch_Unreadable"] = prop_set_deployed(None, "Unreadable", m)
+        out["prop_set_switch_cached_false"] = prop_set_deployed(False, "Found", m)
         return out
 
     norm = lambda d: json.loads(json.dumps(d))
@@ -325,7 +434,10 @@ def main():
                      "(row and literal) and 4 parameter pairs; CASE WHEN / WHERE over row, parameter, stored, literal and compared "
                      "booleans; 15 functions in a node CREATE map and in SET; 6 relationship CREATE values; 8 coalesce argument "
                      "shapes; 4 slice lower-bound syntaxes; 20 substring (start, length) pairs with length >= 1, literal and row; "
-                     "3 Prop_Set retypes with Prop_Set and through the product's path for a namespace without it."}
+                     "3 Prop_Set retypes with Prop_Set and through the product's path for a namespace without it. Iteration 50: a "
+                     "parameter on a relationship CREATE between new nodes and the node / matched neighbors; 9 simple CASE kind "
+                     "pairs; a null list sliced by literal, row and parameter bounds; _prop_set_deployed's found, absent "
+                     "(missing schema), unreadable (closed connection) and cached branches; 3 identifier lower-bound forms."}
     d = REPO / ".g5/Verus_verification/results/cypher_exprs" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "native_declined", "prop_set_deployed_on_fixture", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s")}))

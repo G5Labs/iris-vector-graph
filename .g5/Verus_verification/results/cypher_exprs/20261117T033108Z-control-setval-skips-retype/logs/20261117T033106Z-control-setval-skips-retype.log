@@ -1,0 +1,35 @@
+verification results:: 20 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/setval-skips-retype/20261117T033106Z/models/cypher_exprs/cypher_exprs.rs:363:13
+    |
+362 | pub proof fn theorem_prop_set_retypes(old: Stored, new: Stored)
+    | --------------------------------------------------------------- at the end of the function body
+363 |     ensures node_update(true, old, new) == new,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/setval-skips-retype/20261117T033106Z/models/cypher_exprs/cypher_exprs.rs:368:1
+    |
+368 | pub proof fn theorem_prop_set_switch_decides_retype(old: Stored, new: Stored)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/setval-skips-retype/20261117T033106Z/models/cypher_exprs/cypher_exprs.rs:371:9
+    |
+368 | pub proof fn theorem_prop_set_switch_decides_retype(old: Stored, new: Stored)
+    | ----------------------------------------------------------------------------- at the end of the function body
+...
+371 |         node_update(prop_set_deployed(None, DictCheck::Found), old, new) == new,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/setval-skips-retype/20261117T033106Z/models/cypher_exprs/cypher_exprs.rs:372:9
+    |
+368 | pub proof fn theorem_prop_set_switch_decides_retype(old: Stored, new: Stored)
+    | ----------------------------------------------------------------------------- at the end of the function body
+...
+372 |         node_update(prop_set_deployed(None, DictCheck::Unreadable), old, new) == new,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

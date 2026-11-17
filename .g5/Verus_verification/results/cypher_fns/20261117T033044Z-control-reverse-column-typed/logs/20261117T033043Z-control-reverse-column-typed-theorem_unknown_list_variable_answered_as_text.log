@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/reverse-column-typed/20261117T033043Z/models/cypher_fns/cypher_fns.rs:181:1
+    |
+181 | pub proof fn theorem_unknown_list_variable_answered_as_text()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/reverse-column-typed/20261117T033043Z/models/cypher_fns/cypher_fns.rs:182:13
+    |
+181 | pub proof fn theorem_unknown_list_variable_answered_as_text()
+    | ------------------------------------------------------------- at the end of the function body
+182 |     ensures reverse_result(ArgKind::Variable, Val::List, false) == Rev::ListAsJsonText,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/reverse-column-typed/20261117T033043Z/models/cypher_fns/cypher_fns.rs:183:13
+    |
+181 | pub proof fn theorem_unknown_list_variable_answered_as_text()
+    | ------------------------------------------------------------- at the end of the function body
+182 |     ensures reverse_result(ArgKind::Variable, Val::List, false) == Rev::ListAsJsonText,
+183 |             reverse_result(ArgKind::Variable, Val::List, false) != rule_reverse(Val::List),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

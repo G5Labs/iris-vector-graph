@@ -1,0 +1,57 @@
+verification results:: 33 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:348:1
+    |
+348 | pub proof fn theorem_admitted_seeds_ignore_cap(seeds: Seq<int>, has_edge: spec_fn(int) -> bool, st: St, cap: nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:350:13
+    |
+350 |       ensures admit(seeds, has_edge, st, cap).count == st.count + seeds.len(),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+354 | /     if seeds.len() > 0 {
+355 | |         let s = seeds[0];
+356 | |         let st1 = St { seen: st.seen.insert(s), count: st.count + 1, ..st };
+357 | |         assert forall|j: int| 0 <= j < seeds.drop_first().len() implies has_edge(seeds.drop_first()[j]) && !st1.seen.contains(see...
+...   |
+361 | |         theorem_admitted_seeds_ignore_cap(seeds.drop_first(), has_edge, st1, cap);
+362 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:351:13
+    |
+351 |               st.count + seeds.len() > cap ==> !rule_within_cap(admit(seeds, has_edge, st, cap), cap),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+354 | /     if seeds.len() > 0 {
+355 | |         let s = seeds[0];
+356 | |         let st1 = St { seen: st.seen.insert(s), count: st.count + 1, ..st };
+357 | |         assert forall|j: int| 0 <= j < seeds.drop_first().len() implies has_edge(seeds.drop_first()[j]) && !st1.seen.contains(see...
+...   |
+361 | |         theorem_admitted_seeds_ignore_cap(seeds.drop_first(), has_edge, st1, cap);
+362 | |     }
+    | |_____- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:412:1
+    |
+412 | pub proof fn theorem_guided_seeds_exceed_cap()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:427:12
+    |
+427 |     assert(st.seen =~= set![9int, 3, 4]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:428:12
+    |
+428 |     assert(st.count == 3);
+    |            ^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 4 previous errors
+

@@ -1,0 +1,46 @@
+verification results:: 16 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/cosine-takes-l2-branch/20261117T032333Z/models/ivf_entries/ivf_entries.rs:80:1
+   |
+80 | pub proof fn theorem_cosine_ranks_as_dot(q: Seq<int>, v1: Seq<int>, v2: Seq<int>)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/cosine-takes-l2-branch/20261117T032333Z/models/ivf_entries/ivf_entries.rs:81:13
+   |
+80 | pub proof fn theorem_cosine_ranks_as_dot(q: Seq<int>, v1: Seq<int>, v2: Seq<int>)
+   | --------------------------------------------------------------------------------- at the end of the function body
+81 |     ensures entry_score(Metric::Cosine, q, v1) == entry_score(Metric::Dot, q, v1),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/cosine-takes-l2-branch/20261117T032333Z/models/ivf_entries/ivf_entries.rs:82:13
+   |
+80 | pub proof fn theorem_cosine_ranks_as_dot(q: Seq<int>, v1: Seq<int>, v2: Seq<int>)
+   | --------------------------------------------------------------------------------- at the end of the function body
+81 |     ensures entry_score(Metric::Cosine, q, v1) == entry_score(Metric::Dot, q, v1),
+82 |             ivf_above(Metric::Cosine, q, v1, v2) == ivf_above(Metric::Dot, q, v1, v2),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/cosine-takes-l2-branch/20261117T032333Z/models/ivf_entries/ivf_entries.rs:88:13
+   |
+87 |   pub proof fn theorem_cosine_metric_misranks()
+   |   --------------------------------------------- at the end of the function body
+88 |       ensures ({ let q = seq![3int, 4int]; let v1 = seq![10int, 0int]; let v2 = seq![3int, 4int];
+   |  _____________^
+89 | |                ivf_above(Metric::Cosine, q, v1, v2) && cosine_above(q, v2, v1) }),
+   | |_________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/cosine-takes-l2-branch/20261117T032333Z/models/ivf_entries/ivf_entries.rs:126:13
+    |
+125 |   pub proof fn theorem_equal_lengths_witness()
+    |   -------------------------------------------- at the end of the function body
+126 |       ensures ({ let q = seq![3int, 4int]; let v1 = seq![3int, 4int]; let v2 = seq![5int, 0int];
+    |  _____________^
+127 | |                ivf_above(Metric::Cosine, q, v1, v2) && cosine_above(q, v1, v2) }),
+    | |_________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

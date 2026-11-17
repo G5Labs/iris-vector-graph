@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/cosine-takes-l2-branch/20261117T032414Z/models/ivf_entries/ivf_entries.rs:88:13
+   |
+87 |   pub proof fn theorem_cosine_metric_misranks()
+   |   --------------------------------------------- at the end of the function body
+88 |       ensures ({ let q = seq![3int, 4int]; let v1 = seq![10int, 0int]; let v2 = seq![3int, 4int];
+   |  _____________^
+89 | |                ivf_above(Metric::Cosine, q, v1, v2) && cosine_above(q, v2, v1) }),
+   | |_________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

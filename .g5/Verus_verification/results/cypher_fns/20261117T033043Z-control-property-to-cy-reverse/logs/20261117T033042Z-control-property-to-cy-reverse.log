@@ -1,0 +1,27 @@
+verification results:: 15 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/property-to-cy-reverse/20261117T033042Z/models/cypher_fns/cypher_fns.rs:171:1
+    |
+171 | pub proof fn theorem_stored_list_reversed_as_text(known_list: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/property-to-cy-reverse/20261117T033042Z/models/cypher_fns/cypher_fns.rs:173:9
+    |
+171 | pub proof fn theorem_stored_list_reversed_as_text(known_list: bool)
+    | ------------------------------------------------------------------- at the end of the function body
+172 |     ensures
+173 |         reverse_result(ArgKind::PropertyRead, Val::List, known_list) == Rev::ReversedText,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/property-to-cy-reverse/20261117T033042Z/models/cypher_fns/cypher_fns.rs:174:9
+    |
+171 | pub proof fn theorem_stored_list_reversed_as_text(known_list: bool)
+    | ------------------------------------------------------------------- at the end of the function body
+...
+174 |         reverse_result(ArgKind::Slice, Val::List, known_list) == Rev::ReversedText,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

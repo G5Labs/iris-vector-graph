@@ -1,0 +1,12 @@
+verification results:: 21 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/substring-checks-start/20261117T032345Z/models/cypher_exprs/cypher_exprs.rs:322:13
+    |
+320 | pub proof fn theorem_negative_start_answers_prefix(n: int, k: int, l: int)
+    | -------------------------------------------------------------------------- at the end of the function body
+321 |     requires 0 < k, k < l, l - k <= n,
+322 |     ensures as_built_substring(n, -k, l) == SubOut::Chars(0, l - k), rule_substring(n, -k, l) == SubOut::Error,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

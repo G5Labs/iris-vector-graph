@@ -1,0 +1,103 @@
+{
+ "before": {
+  "revision": "c648d226 (HEAD; iteration-49 seal plus the master inventory)",
+  "active": 503
+ },
+ "after": {
+  "revision": "working tree (iteration 50 seal)",
+  "active": 505
+ },
+ "denominator": 4130,
+ "newly_reached_and_bound": [
+  {
+   "member": "iris_vector_graph/cypher/translator.py::_container_kind",
+   "reason": "decision: whether reverse()'s argument is known to be a list, which picks CY_REVERSE and the column's decoding (theorem_unknown_list_variable_answered_as_text, item 3)"
+  },
+  {
+   "member": "iris_vector_graph/cypher/translator.py::_is_row_list_elem",
+   "reason": "decision: a row index into a WITH-held literal list reads CY_LIST_ELEM (typed, wraps); the list source review item 2 asked for (theorem_with_literal_row_index_follows_rule)"
+  },
+  {
+   "member": "iris_vector_graph/cypher/translator.py::_static_value_kind",
+   "reason": "decision helper: a simple CASE's static kind (literals only), which decides whether a cross-type WHEN is dropped (kind_known, item 7)"
+  }
+ ],
+ "lost": [
+  {
+   "member": "iris_vector_graph/cypher/translator.py::_scalar_numeric_and_datetime",
+   "reason": "reclassified locator-only (relation cites) per review 47-49 item 4: the per-row result is the observed IRIS premise evaluated_per_row(), not a modeled decision of this 311-line member; correct accounting, not a regression"
+  }
+ ],
+ "strengthened": [
+  {
+   "member": "iris_src/src/Graph/KG/IVFIndex.cls::AddBatch",
+   "reason": "stores each vector in its k-means cell (build_cell; m8)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/IVFIndex.cls::Build",
+   "reason": "now constrains the modeled cell reader (theorem_cosine_reinsert_changes_cell) instead of naming entry_score (item 4 / m8)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/IVFIndex.cls::Insert",
+   "reason": "cell choice by the metric branch (theorem_cosine_reinsert_changes_cell, theorem_l2_insert_matches_build; m8)"
+  },
+  {
+   "member": "iris_src/src/Graph/KG/Subgraph.cls::SubgraphJson",
+   "reason": "seed admission without the cap and the filled-cap stop (theorem_admitted_seeds_ignore_cap, theorem_filled_cap_expands_only_first_node; item 1)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_PPR_GUIDED_SUBGRAPH",
+   "reason": "seeds over the cap witness; the cap restated as intent (item 1)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_SUBGRAPH",
+   "reason": "reader rule: the answer is the recorded edge list (lists_edge; item 1)"
+  },
+  {
+   "member": "iris_vector_graph/_engine/vector.py::VectorMixin.ivf_build",
+   "reason": "Euclidean k-means whatever the metric (build_cell; m8)"
+  },
+  {
+   "member": "iris_vector_graph/cypher/translator.py::_create_clause_relationship_entry",
+   "reason": "the parameter drop (theorem_inline_rel_param_dropped) and the matched-node neighbor (create_rel_matched_value; item 5)"
+  },
+  {
+   "member": "iris_vector_graph/cypher/translator.py::_expr_case",
+   "reason": "simple CASE across kinds (theorem_simple_case_coerces_across_kinds; item 7)"
+  },
+  {
+   "member": "iris_vector_graph/cypher/translator.py::_expr_subscript",
+   "reason": "the null index (theorem_null_index_reads_first_element; item 6); its existing row now models the list source (item 2)"
+  },
+  {
+   "member": "iris_vector_graph/cypher/translator.py::_slice_sql",
+   "reason": "a null list slices to [] (theorem_null_list_slice_is_empty; m1)"
+  },
+  {
+   "member": "iris_vector_graph/engine.py::IRISGraphEngine._prop_set_deployed",
+   "reason": "its own logic modeled (prop_set_deployed; theorem_prop_set_switch_decides_retype) instead of an input the binding overrode (item 4)"
+  }
+ ],
+ "formal_item_changed_same_member_count": {
+  "iris_vector_graph/cypher/parser.py::Parser.parse_primary_expression": "theorem_identifier_lower_bound_refused now derives the refusal from the tokens; the premise constant identifier_branch_looks_ahead removed (item 4)",
+  "iris_vector_graph/_engine/vector.py::VectorMixin.kg_VECTOR_GRAPH_SEARCH": "truncate_first() constant replaced by a transcription of the truncate-before-sort step (item 4); same row"
+ },
+ "new_locator_only_rows": [
+  "iris_src/src/Graph/KG/ArnoAccel.cls::SubgraphNativeJson (alternate reader, unchecked; item 1 scope)",
+  "iris_vector_graph/cypher/translator.py::_translate_set_value (bug-cyp-128, probe only)",
+  "iris_vector_graph/cypher/translator.py::_scalar_string trim row (bug-cyp-130, probe only; the member stays active through its reverse and substring rows)"
+ ],
+ "kept_active_with_named_premise": {
+  "driver_accepts_ast": "_create_resolve_prop_value, _fold_constant, _fold_or_raise, _create_node_literal, _create_node_per_row: the emitter's choice folds(f) is modeled from the function kind; the driver's refusal is the observed premise",
+  "iris_accepts_scalar_condition": "_translate_boolean_expression, translate_boolean_expression, _expr_case, _stored_bool_in: condition_sql(syn) is modeled from the syntax; IRIS Prepare's refusal is the premise",
+  "filer_writes_same_text": "PropWrite.SetVal, _prop_set, SqlProcs.PropSet: setval and node_update modeled; IRIS's filer is the premise",
+  "getDefaultDimension": "a constant body (768) the model reads at the reader (pyops_expected)"
+ },
+ "counts": {
+  "gained": 3,
+  "lost": 1,
+  "strengthened": 12,
+  "net": 2
+ },
+ "command": "python3 .g5/Verus_verification/tools/member_reach.py --revision HEAD --out <before>; python3 .g5/Verus_verification/tools/member_reach.py --out <after>"
+}

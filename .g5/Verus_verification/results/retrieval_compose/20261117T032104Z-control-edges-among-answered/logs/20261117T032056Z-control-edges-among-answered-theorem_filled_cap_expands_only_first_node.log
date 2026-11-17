@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:341:78
+    |
+341 |     assert forall|e: (int, int)| #[trigger] lists_edge(r1.0, adj, e) implies e.0 == frontier[0] by {
+    |                                                                              ^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:342:32
+    |
+342 |         let i = choose|i: int| 0 <= i < r1.0.edges.len() && r1.0.edges[i] == e;
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 1 previous error
+

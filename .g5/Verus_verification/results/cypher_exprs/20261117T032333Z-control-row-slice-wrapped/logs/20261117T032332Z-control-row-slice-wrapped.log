@@ -1,0 +1,27 @@
+verification results:: 21 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/row-slice-wrapped/20261117T032332Z/models/cypher_exprs/cypher_exprs.rs:79:1
+   |
+79 | pub proof fn theorem_row_negative_slice_departs(len: int, k: int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/row-slice-wrapped/20261117T032332Z/models/cypher_exprs/cypher_exprs.rs:82:9
+   |
+79 | pub proof fn theorem_row_negative_slice_departs(len: int, k: int)
+   | ----------------------------------------------------------------- at the end of the function body
+...
+82 |         as_built_slice(Syntax::RowVar, len, -k, len) == (Slice { from: 0, to: len }),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/row-slice-wrapped/20261117T032332Z/models/cypher_exprs/cypher_exprs.rs:84:9
+   |
+79 | pub proof fn theorem_row_negative_slice_departs(len: int, k: int)
+   | ----------------------------------------------------------------- at the end of the function body
+...
+84 |         !same_elements(as_built_slice(Syntax::RowVar, len, -k, len), rule_slice(len, -k, len)),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

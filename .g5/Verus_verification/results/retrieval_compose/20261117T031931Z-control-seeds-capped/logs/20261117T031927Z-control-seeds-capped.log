@@ -1,0 +1,36 @@
+verification results:: 34 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T031927Z/models/retrieval_compose/retrieval_compose.rs:347:13
+    |
+347 |       ensures admit(seeds, has_edge, st, cap).count == st.count + seeds.len(),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+350 | /     if seeds.len() > 0 {
+351 | |         let s = seeds[0];
+352 | |         let st1 = St { seen: st.seen.insert(s), count: st.count + 1, ..st };
+353 | |         assert forall|j: int| 0 <= j < seeds.drop_first().len() implies has_edge(seeds.drop_first()[j]) && !st1.seen.contains(see...
+...   |
+357 | |         lemma_admit_counts_all(seeds.drop_first(), has_edge, st1, cap);
+358 | |     }
+    | |_____- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T031927Z/models/retrieval_compose/retrieval_compose.rs:417:1
+    |
+417 | pub proof fn theorem_guided_seeds_exceed_cap()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T031927Z/models/retrieval_compose/retrieval_compose.rs:432:12
+    |
+432 |     assert(st.seen =~= set![9int, 3, 4]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T031927Z/models/retrieval_compose/retrieval_compose.rs:433:12
+    |
+433 |     assert(st.count == 3);
+    |            ^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

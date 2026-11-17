@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:413:13
+    |
+412 |   pub proof fn theorem_guided_seeds_exceed_cap()
+    |   ---------------------------------------------- at the end of the function body
+413 |       ensures ({
+    |  _____________^
+414 | |         let st = admit(seq![9int, 3, 4], |n: int| star_has_edge(n), empty_st(), guided_cap(5000, 1));
+415 | |         let r = expand_frontier(seq![3int, 4, 9], |n: int| star(n), st, guided_cap(5000, 1));
+416 | |         r.count == 3 && !rule_within_cap(r, guided_cap(5000, 1)) && r.edges.len() == 0
+417 | |             && !lists_edge(r, |n: int| star(n), (9int, 3int)) && rule_lists_edge(r, |n: int| star(n), (9int, 3int))
+418 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

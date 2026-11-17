@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/literal-slice-unwrapped/20261117T032333Z/models/cypher_exprs/cypher_exprs.rs:69:13
+   |
+67 | pub proof fn theorem_literal_slice_follows_rule(len: int, s: int, e: int)
+   | ------------------------------------------------------------------------- at the end of the function body
+68 |     requires len >= 0,
+69 |     ensures same_elements(as_built_slice(Syntax::Literal, len, s, e), rule_slice(len, s, e)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

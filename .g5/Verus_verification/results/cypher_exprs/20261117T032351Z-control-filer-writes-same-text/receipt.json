@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "provider: a filer that writes same-text values would make Prop_Set unnecessary (the neighbor is conditional on this premise)",
+    "expect_fail_in": [
+      "theorem_without_prop_set_same_text_keeps_old"
+    ],
+    "find": "pub open spec fn filer_writes_same_text() -> bool { false }",
+    "name": "filer-writes-same-text",
+    "replace": "pub open spec fn filer_writes_same_text() -> bool { true }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_without_prop_set_same_text_keeps_old"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_exprs/cypher_exprs.rs": "4731f182abab78e482004c40abb80ffa3091292c8be8a1aa94e623ec44004bd4",
+    ".g5/Verus_verification/models/cypher_exprs/model.json": "c39d799fbec597abff792963965f73321c47a27b0c0358adec296afd01e2b5c8"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/filer-writes-same-text/20261117T032350Z/models/cypher_exprs/cypher_exprs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_without_prop_set_same_text_keeps_old": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T032350Z-control-filer-writes-same-text-theorem_without_prop_set_same_text_keeps_old.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T032350Z-control-filer-writes-same-text.log",
+    "timed_out": false,
+    "verified": 20
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_exprs/20261117T032351Z-control-filer-writes-same-text/logs/20261117T032350Z-control-filer-writes-same-text-theorem_without_prop_set_same_text_keeps_old.log": "b21d6504e6324a3cb2c5ca9034969234b4f69f877ec2b2e75ac3ce4411ac6ac5",
+    ".g5/Verus_verification/results/cypher_exprs/20261117T032351Z-control-filer-writes-same-text/logs/20261117T032350Z-control-filer-writes-same-text.log": "6c50ae05632486825e84cdfacdfb897365662a7ace234d5e3ce8f216b0e29513"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

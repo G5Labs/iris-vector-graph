@@ -1,0 +1,11 @@
+verification results:: 34 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/guided-cap-top-k-only/20261117T032113Z/models/retrieval_compose/retrieval_compose.rs:366:13
+    |
+365 | pub proof fn theorem_guided_cap_is_ppr_top_k(max_nodes: nat, ppr_top_k: nat)
+    | ---------------------------------------------------------------------------- at the end of the function body
+366 |     ensures guided_cap(max_nodes, ppr_top_k) <= max_nodes, guided_cap(max_nodes, ppr_top_k) <= ppr_top_k,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

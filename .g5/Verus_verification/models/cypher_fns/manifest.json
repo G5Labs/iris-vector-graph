@@ -1,6 +1,6 @@
 {
   "title": "cypher fns",
-  "question": "Cypher built-in functions over values known only at run time: negative index (bug-cyp-111), reverse of a stored list (bug-cyp-112), n[k] by a row key (bug-cyp-113), range step 0 (F-C0841), randomUUID/rand per row (bug-cyp-114)",
+  "question": "Cypher built-in functions over values known only at run time: list index by list source and index kind incl. null (bug-cyp-111, bug-cyp-126), reverse by argument kind and column knowledge (bug-cyp-112), n[k] by row, parameter or WITH key (bug-cyp-113), range step 0 (F-C0841), randomUUID/rand per row (bug-cyp-114, premise only)",
   "ontology_ids": [
     "query.functions",
     "query.functions.list_index",
@@ -15,13 +15,13 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 11}"
+      "expect": "{\"errors\": 0, \"verified\": 16}"
     },
     {
       "label": "row-index-through-ivglistget",
       "kind": "control",
       "variant": "as-built bounded transcription",
-      "expect": "{\"fail_in\": [\"theorem_row_negative_index_fails\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"theorem_row_negative_index_fails\", \"theorem_null_index_reads_first_element\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "ivglistget-no-wrap",
@@ -36,16 +36,46 @@
       "expect": "{\"fail_in\": [\"theorem_literal_index_follows_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
+      "label": "with-literal-elem-unwrapped",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_with_literal_row_index_follows_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "with-literal-elem-untyped",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_with_literal_row_index_follows_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-index-is-null",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_null_index_reads_first_element\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
       "label": "property-to-cy-reverse",
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_stored_list_reversed_as_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
+      "label": "reverse-column-typed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unknown_list_variable_answered_as_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
       "label": "row-key-by-value",
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_row_key_reads_variable_name\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "with-key-by-value",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_with_column_key_fails\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "range-zero-raises",

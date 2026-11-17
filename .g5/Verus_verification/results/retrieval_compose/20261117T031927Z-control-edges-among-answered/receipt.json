@@ -1,0 +1,78 @@
+{
+  "control": {
+    "classification": "decision (the repair of bug-plt-113's edge loss and bug-plt-114): the answer lists every edge between two answered nodes; the uncapped neighbor still verifies",
+    "expect_fail_in": [
+      "theorem_guided_subgraph_drops_edges_among_top_nodes",
+      "theorem_guided_seeds_exceed_cap",
+      "theorem_last_hop_edges_missing",
+      "theorem_capped_subgraph_lists_edge_to_unlisted_node"
+    ],
+    "find": "pub open spec fn lists_edge(r: St, adj: spec_fn(int) -> Seq<int>, e: (int, int)) -> bool { r.edges.contains(e) }",
+    "name": "edges-among-answered",
+    "replace": "pub open spec fn lists_edge(r: St, adj: spec_fn(int) -> Seq<int>, e: (int, int)) -> bool { r.seen.contains(e.0) && r.seen.contains(e.1) && adj(e.0).contains(e.1) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_guided_subgraph_drops_edges_among_top_nodes",
+      "theorem_guided_seeds_exceed_cap",
+      "theorem_last_hop_edges_missing",
+      "theorem_capped_subgraph_lists_edge_to_unlisted_node"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/retrieval_compose/model.json": "50d615fbe9481943e4eb30dc42d071a0f987249ec1f845ac804550763e7a4b9e",
+    ".g5/Verus_verification/models/retrieval_compose/retrieval_compose.rs": "1f5e1fc427ea5a7519ed1444e9c125bfe8122f44a2179c2a9865d553657c97c5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T031920Z/models/retrieval_compose/retrieval_compose.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_capped_subgraph_lists_edge_to_unlisted_node": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031920Z-control-edges-among-answered-theorem_capped_subgraph_lists_edge_to_unlisted_node.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_guided_seeds_exceed_cap": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031920Z-control-edges-among-answered-theorem_guided_seeds_exceed_cap.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_guided_subgraph_drops_edges_among_top_nodes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031920Z-control-edges-among-answered-theorem_guided_subgraph_drops_edges_among_top_nodes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_last_hop_edges_missing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031920Z-control-edges-among-answered-theorem_last_hop_edges_missing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031920Z-control-edges-among-answered.log",
+    "timed_out": false,
+    "verified": 31
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031927Z-control-edges-among-answered/logs/20261117T031920Z-control-edges-among-answered-theorem_capped_subgraph_lists_edge_to_unlisted_node.log": "59bdc1563bb2b85595066404d247e5540dd8b9d1ec8579543c15da8fe3b4c535",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031927Z-control-edges-among-answered/logs/20261117T031920Z-control-edges-among-answered-theorem_guided_seeds_exceed_cap.log": "fb50004869a14b7763f11ed493b7d5ef407f1ec500fefb7ec4bbbb9a8db4ea05",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031927Z-control-edges-among-answered/logs/20261117T031920Z-control-edges-among-answered-theorem_guided_subgraph_drops_edges_among_top_nodes.log": "3a7ea2f109bba5a5e5c71b38f68ec3cc4e4cacb8f246dd71b0a48ee2dd9184ba",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031927Z-control-edges-among-answered/logs/20261117T031920Z-control-edges-among-answered-theorem_last_hop_edges_missing.log": "e8e9596da2e5a8ef8e7d76ce8d12ae665e5f8d1bda9c74bb8a7b16b51707dbea",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031927Z-control-edges-among-answered/logs/20261117T031920Z-control-edges-among-answered.log": "e5617e4edf0888ff228c2342314f97b90c1f863d96512333fe5962a424f85daf"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

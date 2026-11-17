@@ -1,0 +1,116 @@
+{
+  "all_sensitivities_detected": true,
+  "cases": 9,
+  "cells_from_ivf_insert": {
+    "cross_cell_then_delete": [
+      0,
+      1
+    ],
+    "insert_then_delete": [
+      0
+    ],
+    "same_cell_twice": [
+      0,
+      0
+    ]
+  },
+  "elapsed_s": 3.8,
+  "fixture": "ivg-cont-20261117-iris",
+  "inputs": {
+    ".g5/Verus_verification/models/ivf_entries/binding.py": "2462dd585480288b743a3c8ca5c43ee155541b0557b56d9019e6b1844b6dc404",
+    ".g5/Verus_verification/models/ivf_entries/ivf_entries.rs": "153732ab1028839dd2f0a926f2e2743c328e999d571842deb785603a28c6703d",
+    ".g5/Verus_verification/models/ivf_entries/model.json": "cf5cb7be3d76089ea0571e2188ff7b21e5d109d7be756c2cbdeb776b75aeda54",
+    "iris_src/src/Graph/KG/IVFIndex.cls": "884fd9e1e572f659f479e3c412ff39e7b0f9821ae4ad8b734e8c06a8f95b286e",
+    "iris_src/src/Graph/KG/SqlProcs.cls": "5007cdedd0486a38623da0c8ce33a1ce7e73b5a470ab26d36c3e7fe6386da427",
+    "iris_vector_graph/_engine/vector.py": "f7e0297f514c2c87c0c3b98df18b7264624e9c10fa81c0ec1d28508d95c0b0d5"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "ivf_entries",
+  "observation_tamper_detected": true,
+  "observed": {
+    "cell_cosine": {
+      "build_cell": [
+        0
+      ],
+      "cells_after": [
+        0,
+        1
+      ],
+      "indexed_delta": 1,
+      "insert_cell": 1
+    },
+    "cell_dot": {
+      "build_cell": [
+        0
+      ],
+      "cells_after": [
+        0,
+        1
+      ],
+      "indexed_delta": 1,
+      "insert_cell": 1
+    },
+    "cell_l2": {
+      "build_cell": [
+        0
+      ],
+      "cells_after": [
+        0
+      ],
+      "indexed_delta": 1,
+      "insert_cell": 0
+    },
+    "cosine_ivf_search": {
+      "order": [
+        "long_off",
+        "unit_on",
+        "other"
+      ],
+      "scores": {
+        "long_off": 6.0,
+        "other": 0.0,
+        "unit_on": 1.0
+      }
+    },
+    "cosine_kg_IVF": {
+      "order": [
+        "long_off",
+        "unit_on",
+        "other"
+      ],
+      "scores": {
+        "long_off": 6.0,
+        "other": 0.0,
+        "unit_on": 1.0
+      }
+    },
+    "cross_cell_then_delete": {
+      "found": true,
+      "indexed_delta": 1
+    },
+    "insert_then_delete": {
+      "found": false,
+      "indexed_delta": 0
+    },
+    "other_width_answered": true,
+    "same_cell_twice": {
+      "found": true,
+      "indexed_delta": 2
+    }
+  },
+  "port": 36317,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "run": "20261117T032440Z",
+  "scope": "Actual IVF calls on IRIS 2026.1 (pin 3eaa79cf), two cells, cosine; iteration 50: the build's cell for a node (read from ^IVF) against Insert's cell for the same vector under cosine, dot and l2 (two separated clusters, centroids taken as the clusters' means under the observed labels); the W53 cosine case through ivf_search and SQL kg_IVF (one cell, vectors of lengths 10, 1, 1); numpy and scikit-learn from the pinned venv for the build.",
+  "sensitivities_detected_cases": {
+    "cosine_normalized": 2,
+    "cosine_takes_l2_branch": 2,
+    "delete_all": 1,
+    "delete_noop": 2,
+    "insert_by_distance": 2,
+    "insert_replaces": 2,
+    "width_checked": 1
+  },
+  "verdict": "AGREES"
+}

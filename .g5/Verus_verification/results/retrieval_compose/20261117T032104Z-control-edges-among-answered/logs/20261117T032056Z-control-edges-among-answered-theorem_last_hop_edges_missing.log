@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:439:13
+    |
+438 |   pub proof fn theorem_last_hop_edges_missing()
+    |   --------------------------------------------- at the end of the function body
+439 |       ensures ({
+    |  _____________^
+440 | |         let r = expand_frontier(seq![9int], |n: int| star(n), seeded(set![9int], 1), 10000);
+441 | |         r.seen.contains(1) && r.seen.contains(2) && !lists_edge(r, |n: int| star(n), (1int, 2int))
+442 | |             && rule_lists_edge(r, |n: int| star(n), (1int, 2int)) && lists_edge(r, |n: int| star(n), (9int, 1int))
+443 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

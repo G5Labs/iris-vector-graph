@@ -1,7 +1,7 @@
 {
   "name": "ivf_entries",
   "root": "ivf_entries.rs",
-  "expected_verified": 9,
+  "expected_verified": 19,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -57,9 +57,19 @@
       "find": "    match m { Metric::Cosine => dot(q, v), Metric::Dot => dot(q, v), Metric::L2 => -sqdist(q, v) }",
       "replace": "    match m { Metric::Cosine => -sqdist(q, v), Metric::Dot => dot(q, v), Metric::L2 => -sqdist(q, v) }",
       "expect_fail_in": [
-        "theorem_cosine_ranks_as_dot"
+        "theorem_cosine_ranks_as_dot",
+        "theorem_cosine_metric_misranks"
       ],
-      "classification": "decision: the cosine branch is not the dot branch (Search's first If chooses another scorer)"
+      "classification": "decision: the cosine branch is not the dot branch (Search's first If chooses another scorer); iteration 50: also names theorem_cosine_metric_misranks, which this control always failed (the l2 order puts the aligned vector first), and the equal-length witness no longer fails for want of distance facts"
+    },
+    {
+      "name": "insert-by-distance",
+      "find": "    match m { Metric::Cosine => dot(v, c), Metric::Dot => dot(v, c), Metric::L2 => -sqdist(v, c) }",
+      "replace": "    match m { Metric::Cosine => -sqdist(v, c), Metric::Dot => -sqdist(v, c), Metric::L2 => -sqdist(v, c) }",
+      "expect_fail_in": [
+        "theorem_cosine_reinsert_changes_cell"
+      ],
+      "classification": "decision: Insert picks the cell by Euclidean distance, as the build's k-means labels do (one repair of the m8 inconsistency); the l2 neighbor still verifies"
     }
   ]
 }

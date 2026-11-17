@@ -290,14 +290,16 @@ A node's ID is its identity, so a Cypher `CREATE` of a node whose ID already exi
 
 A `CREATE` stores each property value its map computes, as a `SET` of the same expression stores it.
 - Today a node `CREATE` whose value calls a function IVG cannot work out before running the query, such as `size()`, `abs()`, `toInteger()` of a string, `substring()`, `replace()`, `randomUUID()` or `rand()`, is refused with nothing written. `toUpper()`, `trim()`, `coalesce()`, `toString()` and arithmetic are stored ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-119)).
-- Today a relationship `CREATE` whose end nodes the same `CREATE` makes keeps only literal values and `UNWIND` literals. Any computed value, even `1 + 1`, is dropped without an error, and the relationship has no such property ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-120)). Between matched nodes such a value is refused ([conformance](#query.conformance)).
+- Today a relationship `CREATE` whose end nodes the same `CREATE` makes keeps only literal values and `UNWIND` literals. Any other value, a computed one such as `1 + 1` or a plain parameter such as `$k`, is dropped without an error, and the relationship has no such property ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-120)). Between matched nodes a literal or a parameter is stored and a computed value is refused ([conformance](#query.conformance)).
+- Today a `SET` or `CREATE` whose value is a list holding a property read, such as `[n.a, 1]`, fails with a Python `TypeError` and writes nothing; lists of literals, parameters, `UNWIND` values and arithmetic are stored ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-128)).
 
 
 <a id="query.writes.retype"></a>
 [D · query.writes.retype]
 
 A `SET` that gives a node property a value with the same text and another type stores the new type: `SET n.age = toInteger(n.age)` over the string `'30'` stores the integer 30, as `SET n.age = 30` does.
-- From 4.7.0 IVG writes such a value through the `Prop_Set` SQL function. A namespace whose IVG classes predate 4.7.0 keeps the old string until setup deploys the function.
+- From 4.7.0 IVG writes such a value through the `Prop_Set` SQL function. A namespace whose IVG classes predate 4.7.0 keeps the old string until setup deploys the function. IVG checks once per engine whether the function exists, and takes an unreadable answer as yes, so a missing function then fails the write instead of keeping the old type.
+- This covers node properties. A relationship property is stored as text and read back by its spelling ([relationship text](#query.values.relationship_text)). Today a relationship `SET` from a function of its own property, such as `SET r.age = toInteger(r.age)`, is refused with a message saying that reading its own property is allowed ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-132)).
 
 
 ## Entry points
@@ -465,8 +467,9 @@ A relationship property read in a Cypher result is decoded from its stored text.
 <a id="query.values.conditions"></a>
 [I · query.values.conditions]
 
-A boolean value can be a `CASE WHEN` or `WHERE` condition wherever it comes from: a stored property, a literal, a comparison, an `UNWIND` row, a `WITH` column or a parameter. Simple and generic `CASE` over stored or run-time values give the openCypher answer, and a missing value takes the `ELSE`.
+A boolean value can be a `CASE WHEN` or `WHERE` condition wherever it comes from: a stored property, a literal, a comparison, an `UNWIND` row, a `WITH` column or a parameter. A generic `CASE` over stored or run-time values gives the openCypher answer, a simple `CASE` takes the first `WHEN` [equal](#query.values.equality) to its test, and a missing value takes the `ELSE`.
 - Today a bare boolean from an `UNWIND` row, a `WITH` column or a parameter fails the whole query (`UNWIND [true] AS b RETURN CASE WHEN b THEN 1 END`, `WITH b WHERE b`). Comparing it (`b = true`) or negating it (`NOT b`) works ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-118)).
+- Today a simple `CASE` whose test is a property or a run-time value takes a `WHEN` of another type when the text matches: with `n.s = '1'`, `CASE n.s WHEN 1 THEN 'num' END` gives `'num'`, although `n.s = 1` is false. A literal test, and a `WHEN` of the same type, follow the rule ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-127)).
 
 ## Built-in functions
 
@@ -484,20 +487,23 @@ Cypher's built-in list, string, map and aggregate functions give the openCypher 
 <a id="query.functions.list_index"></a>
 [I · query.functions.list_index]
 
-`list[i]` counts a negative `i` from the end, and an `i` past either end gives null.
-- Today this holds for an index written in the query. An index known only at run time fails the whole query when it is negative, and a run-time index answers the element as text (`'1'` for 1) ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-111)).
+`list[i]` counts a negative `i` from the end, an `i` past either end gives null, a null `i` gives null, and the element keeps its type.
+- Today this holds for an index written in the query, and for a run-time index into a list a `WITH` holds from a literal (`WITH [1, 2, 3] AS l UNWIND [-1] AS i RETURN l[i]` gives 3).
+- Today, for a list read from a property (directly or through a `WITH` column), a negative run-time index fails the whole query and a non-negative one answers the element as text (`'1'` for 1); a negative parameter index fails for every list ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-111)).
+- Today a null index known only at run time, and `l[null]` on a list a row holds, give the list's first element ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-126)).
 
 <a id="query.functions.reverse"></a>
 [I · query.functions.reverse]
 
 `reverse()` of a list is the list in reverse order, and of a string the reversed string.
-- Today `reverse()` of a list held in a stored property reverses the list's JSON text, so `[1, 2, 3]` gives the string `']3 ,2 ,1['` ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-112)).
+- Today `reverse()` of a list read from a property, a slice, a subscript or a `coalesce()` reverses the list's JSON text, so `[1, 2, 3]` gives the string `']3 ,2 ,1['` ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-112)).
+- Today `reverse()` of a `WITH` column that holds a list from a property reverses the list but answers its JSON text, the string `'[3,2,1]'`. A list literal, a list a `WITH` holds from a literal, and a call that answers a list (`tail()`, `split()`, `+`) give the list ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-112)).
 
 <a id="query.functions.dynamic_access"></a>
 [I · query.functions.dynamic_access]
 
 `n[k]` reads the property of node `n` whose name is the value of `k`, and `m[k]` reads that key of map `m`; a missing name gives null.
-- Today a node key that comes from `UNWIND` is read as the literal name `k`, so `UNWIND keys(n) AS k RETURN n[k]` gives null for every key; a parameter key works ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-113)).
+- Today a node key that comes from `UNWIND` is read as the literal name `k`, so `UNWIND keys(n) AS k RETURN n[k]` gives null for every key, and a key from a `WITH` column (`WITH n, 'num' AS k RETURN n[k]`) fails the query; a parameter key works ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-113)).
 - Today a map value read by key comes back as text: `'1'` for 1 and for `true` ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-115)).
 
 <a id="query.functions.range"></a>
@@ -505,6 +511,7 @@ Cypher's built-in list, string, map and aggregate functions give the openCypher 
 
 `range(start, end, step)` lists `start`, `start + step`, ... up to `end`, and is empty when the step points away from `end`. A step of 0 is an error (NumberOutOfRange).
 - Today a step of 0 that is known only at run time gives `[]` instead of the error; a step of 0 written in the query is refused ([finding](../../Verus_verification/bugs_issues.md#F-C0841)).
+- The arguments are integers. Today a fractional step known only at run time is used as it is (`range(1, 3, s)` with `s = 1.5` gives `[1, 2.5]`); one written in the query is refused ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-131)).
 
 <a id="query.functions.percentile"></a>
 [D · query.functions.percentile]
@@ -530,13 +537,15 @@ The SQL functions `CypherFn_IVG*` are kept for SQL callers. Cypher queries reach
 `list[a..b]` gives the elements from position `a` up to, but not including, `b`. A negative bound counts from the end, a bound past either end is clamped to the list, and a null bound gives null.
 - Today this holds for bounds written in the query and for run-time bounds of 0 or more. A negative bound known only at run time counts as 0, so `l[-3..5]` gives the whole list and `l[0..-1]` gives `[]` ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-117)).
 - Today a lower bound that is a variable name does not parse: `l[a..3]`, `l[a..b]` and `l[a..]` are refused, while `l[$a..3]` and `l[x[0]..3]` work ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-122)).
+- Today slicing a null list gives `[]` instead of null ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-129)). With the fixture's driver a slice of a parameter list by parameter bounds (`$l[$s..$e]`) fails, while `WITH $l AS l RETURN l[$s..$e]` works ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-125)).
 
 <a id="query.functions.strings"></a>
 [I · query.functions.strings]
 
-String functions give the openCypher answer for literal and run-time arguments alike. `toUpper`, `toLower`, `trim`, `ltrim`, `rtrim` and `replace` (every occurrence) work on the text; `substring(s, start, length)` counts from 0 and takes at most `length` characters; `left` and `right` take at most that many; `size()` counts a string's characters or a list's elements; `toInteger` and `toFloat` read numeric text and give null for other text.
+String functions give the openCypher answer for literal and run-time arguments alike. `toUpper`, `toLower`, `trim`, `ltrim`, `rtrim` and `replace` (every occurrence) work on the text, and the trim functions remove leading or trailing whitespace; `substring(s, start, length)` counts from 0 and takes at most `length` characters; `left` and `right` take at most that many; `size()` counts a string's characters or a list's elements; `toInteger` and `toFloat` read numeric text and give null for other text.
 - A negative start or length is an error. Today a negative `substring` start answers leading characters (`substring('hello', -1, 2)` is `'h'`), a negative length fails with an IRIS error that names no Cypher error, and `left(s, -1)` is null ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-123)).
 - A length of 0 gives the empty string. Today `left(s, 0)`, `right(s, 0)` and `substring(s, 1, 0)` give null ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-124)).
+- Today `trim()` in a result or a `SET` removes spaces only, so `trim('\t a \n')` is unchanged and `rtrim()` keeps a line break, while a node `CREATE` of the same `trim()` removes tabs and line breaks too ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-130)).
 
 <a id="query.functions.coalesce"></a>
 [I · query.functions.coalesce]
@@ -876,22 +885,25 @@ Sources: [USER_GUIDE, a node's ID is its identity](../../../docs/USER_GUIDE.md#L
 - user-facing-behavior, data-integrity
 - Expands: [Writes](#query.writes).
 - Sources: openCypher (`Create*`, `Set*`); [`translator.py` `_create_resolve_prop_value`, `_fold_constant`](../../../iris_vector_graph/cypher/translator.py#L9319-L9671); [`_create_clause_relationship_entry`](../../../iris_vector_graph/cypher/translator.py#L10183-L10246); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
-- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `folds`, `create_node_value`, `create_rel_value`; neighbors `theorem_folded_create_value_written`, `theorem_inline_rel_literal_written`; as-built departures `theorem_unfolded_create_value_refused` (control `create-value-translated` is the repair) and `theorem_inline_rel_expression_dropped` (control `rel-value-kept`); both rest on observed driver behavior
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `folds`, `create_node_value`, `create_rel_value`; neighbors `theorem_folded_create_value_written`, `theorem_inline_rel_literal_written`; as-built departures `theorem_unfolded_create_value_refused` (control `create-value-translated` is the repair), `theorem_inline_rel_expression_dropped` (control `rel-value-kept`) and `theorem_inline_rel_param_dropped` (control `rel-param-kept`, iteration 50); the node refusal rests on observed driver behavior. The list-literal `TypeError` (third bullet) is observed only
 
 Recovered in iteration 48. A `SET` of each of the 15 function shapes probed is stored; the two `CREATE` paths decide by the value's syntax and by what the Python constant folder can work out.
 
 Simplification: [One SQL path for values a write computes](../../Verus_verification/design_simplification.md#simp-cyp-102)
 
-Findings: [A node CREATE whose map value calls an unfolded function is refused](../../Verus_verification/bugs_issues.md#bug-cyp-119); [A relationship CREATE between new nodes drops every computed property value](../../Verus_verification/bugs_issues.md#bug-cyp-120); [randomUUID() and rand() in a CREATE](../../Verus_verification/bugs_issues.md#bug-cyp-114)
+Findings: [A node CREATE whose map value calls an unfolded function is refused](../../Verus_verification/bugs_issues.md#bug-cyp-119); [A relationship CREATE between new nodes drops every computed or parameter property value](../../Verus_verification/bugs_issues.md#bug-cyp-120); [A SET or CREATE of a list literal that holds a property read fails with a raw Python TypeError](../../Verus_verification/bugs_issues.md#bug-cyp-128); [randomUUID() and rand() in a CREATE](../../Verus_verification/bugs_issues.md#bug-cyp-114)
 
 ### query.writes.retype
 - agent
 - data-integrity, architecture-decision
 - Expands: [Writes](#query.writes).
 - Sources: KNOWN_ISSUES "A property cannot tell a number from a string that spells it" (workaround, 4.7.0); [`translator.py` `_prop_set`](../../../iris_vector_graph/cypher/translator.py#L12960-L12968); [`PropWrite.cls` `SetVal`](../../../iris_src/src/Graph/KG/PropWrite.cls); [`SqlProcs.cls` `PropSet`](../../../iris_src/src/Graph/KG/SqlProcs.cls#L187-L190); [`engine.py` `_prop_set_deployed`](../../../iris_vector_graph/engine.py#L1762-L1781); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
-- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `setval`, `node_update`; `theorem_prop_set_retypes`, neighbor `theorem_without_prop_set_same_text_keeps_old` (conditional on the filer premise; controls `setval-skips-retype`, `prop-set-not-emitted`, `filer-writes-same-text`)
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `setval`, `node_update`; `prop_set_deployed`; `theorem_prop_set_retypes`, `theorem_prop_set_switch_decides_retype` (the engine's switch from its dictionary read, iteration 50; control `unreadable-taken-as-absent`), neighbor `theorem_without_prop_set_same_text_keeps_old` (conditional on the filer premise; controls `setval-skips-retype`, `prop-set-not-emitted`, `filer-writes-same-text`). The relationship bullet is observed only
 
 Recovered in iteration 48; frozen prediction W4 held. The binding observed both paths on the fixture, the second through the product's own switch for a namespace without `Prop_Set`.
+
+Findings: [A relationship SET from a function of its own property is refused with a message that says such a read is allowed](../../Verus_verification/bugs_issues.md#bug-cyp-132)
+
 
 ### query.read-only
 - agent
@@ -1028,7 +1040,7 @@ State machines: [node read](../../Verus_verification/models/node_read/manifest.j
 
 As-built SQL-path behavior on IRIS 2026.1 for values written by `create_node` and `create_edge`. The native executor declines every non-string equality value ([`native_plan._value`](../../../iris_vector_graph/cypher/native_plan.py#L62-L74); [observation](../../uplift/consolidated/iteration-17/native-equality-PAIRS.md)), so these rules hold on both paths. Parameters, `IN` lists, `MERGE` patterns and Cypher-written values were not checked.
 
-Findings: [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102); [A string predicate matches a node property stored as a number by its digits](../../Verus_verification/bugs_issues.md#bug-cyp-105); [IN lists compare a property's text with each value's spelling, so they disagree with = on nodes and relationships](../../Verus_verification/bugs_issues.md#bug-cyp-106)
+Findings: [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102); [A string predicate matches a node property stored as a number by its digits](../../Verus_verification/bugs_issues.md#bug-cyp-105); [IN lists compare a property's text with each value's spelling, so they disagree with = on nodes and relationships](../../Verus_verification/bugs_issues.md#bug-cyp-106); [A simple CASE over a property or a row value takes a WHEN of another type when the text matches](../../Verus_verification/bugs_issues.md#bug-cyp-127)
 
 State machines: [typed equality](../../Verus_verification/models/typed_equality/manifest.json)
 
@@ -1114,7 +1126,7 @@ State machines: [typed equality](../../Verus_verification/models/typed_equality/
 
 Public case M18. The canonical rule is the decoder's own docstring and patterns; Python's `\d` also matches non-ASCII digits and `$` matches before a final line break, which is where the pin departs from it.
 
-Findings: [Relationship property text with a trailing line break or non-ASCII digits is read back as a number](../../Verus_verification/bugs_issues.md#bug-cyp-101); [coalesce over a relationship property returns its stored text, and a boolean as '1'](../../Verus_verification/bugs_issues.md#bug-cyp-107)
+Findings: [Relationship property text with a trailing line break or non-ASCII digits is read back as a number](../../Verus_verification/bugs_issues.md#bug-cyp-101); [coalesce over a relationship property returns its stored text, and a boolean as '1'](../../Verus_verification/bugs_issues.md#bug-cyp-107); [A relationship SET from a function of its own property is refused with a message that says such a read is allowed](../../Verus_verification/bugs_issues.md#bug-cyp-132)
 
 Audit reproduction: [bug-cyp-101](../../Verus_verification/bugs_issues.md#bug-cyp-101) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
@@ -1124,16 +1136,18 @@ State machines: [rel prop text](../../Verus_verification/models/rel_prop_text/ma
 - agent
 - user-facing-behavior
 - Expands: [Values in results](#query.values)
-- Sources: openCypher TCK `Conditional2`; KNOWN_ISSUES "A boolean property of a map row reads as false in a `CASE WHEN`"; [`translator.py` `_expr_case`](../../../iris_vector_graph/cypher/translator.py#L22189-L22238), [`_translate_boolean_expression`](../../../iris_vector_graph/cypher/translator.py#L18651-L18716); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
-- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `condition_sql`, `case_when`; neighbor `theorem_predicate_condition_follows_rule`; as-built departure `theorem_row_boolean_condition_fails`, conditional on the observed IRIS premise (controls `row-condition-compared`, `iris-accepts-scalar-condition`)
+- Sources: openCypher TCK `Conditional1`, `Conditional2`; KNOWN_ISSUES "A boolean property of a map row reads as false in a `CASE WHEN`"; [`translator.py` `_expr_case`](../../../iris_vector_graph/cypher/translator.py#L22189-L22238), [`_translate_boolean_expression`](../../../iris_vector_graph/cypher/translator.py#L18651-L18716); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `condition_sql`, `case_when`; neighbor `theorem_predicate_condition_follows_rule`; as-built departure `theorem_row_boolean_condition_fails`, conditional on the observed IRIS premise (controls `row-condition-compared`, `iris-accepts-scalar-condition`); simple CASE: `simple_case_takes`, as-built departure `theorem_simple_case_coerces_across_kinds` (control `case-kinds-compared`), neighbor `theorem_simple_case_same_kind_or_literal_follows_rule` (iteration 50)
 
 Recovered in iteration 48. Frozen predictions C1, C2 and the stored half of C4 held; the `UNWIND` half of C4 missed.
 
-Findings: [A boolean known only at run time cannot be a CASE WHEN or WHERE condition](../../Verus_verification/bugs_issues.md#bug-cyp-118)
+Iteration 50 (review 47-49 item 7): the opening sentence claimed the openCypher answer for simple CASE over stored and run-time values; corrected, with the departure as a bullet.
+
+Findings: [A boolean known only at run time cannot be a CASE WHEN or WHERE condition](../../Verus_verification/bugs_issues.md#bug-cyp-118); [A simple CASE over a property or a row value takes a WHEN of another type when the text matches](../../Verus_verification/bugs_issues.md#bug-cyp-127)
 
 ### query.functions
 
-- Sources: openCypher TCK (`List*`, `String*`, `Map*`); [query.conformance](#query.conformance); [`translator.py` `_expr_subscript`, `_scalar_string`, `_expr_fn_list_ops`](../../../iris_vector_graph/cypher/translator.py#L23500-L23656); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
+- Sources: openCypher TCK (`List*`, `String*`, `Map*`); [query.conformance](#query.conformance); [`translator.py` `_expr_subscript`](../../../iris_vector_graph/cypher/translator.py#L23509-L23656), [`_scalar_string`](../../../iris_vector_graph/cypher/translator.py#L24475-L24513), [`_expr_fn_list_ops`](../../../iris_vector_graph/cypher/translator.py#L29102-L29122); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
 - Verus: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) (the run-time distinctions in the children); the rest observed only
 - agent
 - user-facing-behavior
@@ -1144,31 +1158,35 @@ Findings: [head() of a number fails with an error that does not name TypeError](
 
 ### query.functions.list_index
 
-- Sources: openCypher TCK `List1`; CHANGELOG 4.6.0 R267; [`translator.py` `_expr_subscript`, `_scalar_string`, `_expr_fn_list_ops`](../../../iris_vector_graph/cypher/translator.py#L23500-L23656); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
+- Sources: openCypher TCK `List1`; CHANGELOG 4.6.0 R267; [`translator.py` `_expr_subscript`](../../../iris_vector_graph/cypher/translator.py#L23509-L23656), [`_is_row_list_elem`](../../../iris_vector_graph/cypher/translator.py#L7681-L7732); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
 - Expands: [Built-in functions](#query.functions)
-- Verus: active: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `rule_index`, `json_arrayget`, `translated_index`, `ivglistget`; neighbors `theorem_literal_index_follows_rule`, `theorem_row_nonnegative_index_follows_rule`, `theorem_ivglistget_is_rule`; as-built departure `theorem_row_negative_index_fails` (control `row-index-through-ivglistget` is the repair)
+- Verus: active: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `rule_index_opt`, `translated_index` (by list source and index kind), `translated_type`, `json_arrayget_opt`, `json_value_index`, `cy_list_elem`, `ivglistget`; neighbors `theorem_with_literal_row_index_follows_rule`, `theorem_literal_index_follows_rule`, `theorem_row_nonnegative_index_follows_rule`, `theorem_ivglistget_is_rule`; as-built departures `theorem_row_negative_index_fails`, `theorem_param_negative_index_fails` (control `row-index-through-ivglistget` is the repair) and `theorem_null_index_reads_first_element` (control `null-index-is-null`)
 - agent
 - user-facing-behavior
 
-Findings: [A list index known only at run time fails the whole query when it is negative](../../Verus_verification/bugs_issues.md#bug-cyp-111)
+Iteration 50 (review 47-49 items 2 and 6): narrowed to lists from a property and parameter indexes; the null index added.
+
+Findings: [A list index known only at run time fails the query when it is negative, for a list read from a property or indexed by a parameter](../../Verus_verification/bugs_issues.md#bug-cyp-111); [A null list index known only at run time answers the list's first element](../../Verus_verification/bugs_issues.md#bug-cyp-126)
 
 Simplification: [One run-time path for list positions, whatever the index or bound's syntax](../../Verus_verification/design_simplification.md#simp-cyp-101)
 
 ### query.functions.reverse
 
-- Sources: openCypher; CHANGELOG 4.7.0 (row 20b); [`translator.py` `_expr_subscript`, `_scalar_string`, `_expr_fn_list_ops`](../../../iris_vector_graph/cypher/translator.py#L23500-L23656); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
+- Sources: openCypher; CHANGELOG 4.7.0 (row 20b); [`translator.py` `_scalar_string` (reverse)](../../../iris_vector_graph/cypher/translator.py#L24495-L24513), [`_container_kind`](../../../iris_vector_graph/cypher/translator.py#L21911-L21963); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
 - Expands: [Built-in functions](#query.functions)
-- Verus: active: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `uses_cy_reverse`, `reverse_result`; neighbor `theorem_reverse_neighbors`; as-built departure `theorem_stored_list_reversed_as_text` (control `property-to-cy-reverse`)
+- Verus: active: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `uses_cy_reverse`, `reverse_result` (argument kind and whether the column is known to be a list); neighbor `theorem_reverse_neighbors`; as-built departures `theorem_stored_list_reversed_as_text` (control `property-to-cy-reverse`) and `theorem_unknown_list_variable_answered_as_text` (control `reverse-column-typed`)
 - agent
 - user-facing-behavior
 
-Findings: [reverse() of a list held in a stored property reverses its JSON text](../../Verus_verification/bugs_issues.md#bug-cyp-112)
+Iteration 50 (review 47-49 item 3): widened to slices, subscripts and `coalesce()`, and the `WITH` column answered as text.
+
+Findings: [reverse() of a list held in a property, a slice, a subscript or a coalesce reverses its JSON text](../../Verus_verification/bugs_issues.md#bug-cyp-112)
 
 ### query.functions.dynamic_access
 
-- Sources: openCypher (`Map*`, dynamic property access); [`translator.py` `_expr_subscript`, `_scalar_string`, `_expr_fn_list_ops`](../../../iris_vector_graph/cypher/translator.py#L23500-L23656); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
+- Sources: openCypher (`Map*`, dynamic property access); [`translator.py` `_expr_subscript`](../../../iris_vector_graph/cypher/translator.py#L23509-L23656); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
 - Expands: [Built-in functions](#query.functions)
-- Verus: active: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `node_key_read`; neighbor `theorem_param_key_follows_rule`; as-built departure `theorem_row_key_reads_variable_name` (control `row-key-by-value`). The map value types (second bullet) are probe only.
+- Verus: active: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `node_key_read`; neighbor `theorem_param_key_follows_rule`; as-built departures `theorem_row_key_reads_variable_name` (control `row-key-by-value`) and `theorem_with_column_key_fails` (control `with-key-by-value`, iteration 50). The map value types (second bullet) are probe only.
 - agent
 - user-facing-behavior
 
@@ -1176,13 +1194,15 @@ Findings: [n[k] with a key from UNWIND reads the property named "k"](../../Verus
 
 ### query.functions.range
 
-- Sources: openCypher TCK `List11`; [`translator.py` `_expr_subscript`, `_scalar_string`, `_expr_fn_list_ops`](../../../iris_vector_graph/cypher/translator.py#L23500-L23656); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
+- Sources: openCypher TCK `List11`; [`translator.py` `_expr_fn_list_ops` (range)](../../../iris_vector_graph/cypher/translator.py#L29114-L29122); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
 - Expands: [Built-in functions](#query.functions)
 - Verus: active: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `ivgrange`, `rule_range`; neighbor `theorem_nonzero_step_follows_rule`; as-built departure `theorem_runtime_zero_step_empty` (control `range-zero-raises`)
 - agent
 - user-facing-behavior
 
-Findings: [Cypher range() with a step of 0 known only at run time answers [] instead of raising NumberOutOfRange](../../Verus_verification/bugs_issues.md#F-C0841)
+The fractional step (second bullet) is observed only; the model's range covers integer steps.
+
+Findings: [Cypher range() with a step of 0 known only at run time answers [] instead of raising NumberOutOfRange](../../Verus_verification/bugs_issues.md#F-C0841); [range() with a step known only at run time accepts a fractional step](../../Verus_verification/bugs_issues.md#bug-cyp-131)
 
 ### query.functions.percentile
 
@@ -1195,9 +1215,9 @@ Frozen predictions L9 and L10 held (nearest rank 20, interpolation 25.0, quartil
 
 ### query.functions.random
 
-- Sources: openCypher; [`translator.py` `_expr_subscript`, `_scalar_string`, `_expr_fn_list_ops`](../../../iris_vector_graph/cypher/translator.py#L23500-L23656); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
+- Sources: openCypher; [`translator.py` `_scalar_numeric_and_datetime` (rand, randomUUID)](../../../iris_vector_graph/cypher/translator.py#L26919-L26924); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
 - Expands: [Built-in functions](#query.functions)
-- Verus: active: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `value_on_row`; as-built departure `theorem_rows_share_one_value`, conditional on the observed IRIS premise that a call with no row argument is evaluated once per statement (control `per-row-evaluation`)
+- Verus: premise only: [`cypher_fns.rs`](../../Verus_verification/models/cypher_fns/NOTES.md) `value_on_row`, `theorem_rows_share_one_value` record the observed IRIS premise that a call with no row argument is evaluated once per statement (control `per-row-evaluation` flips the premise); the translator's emitter is a locator, not a modeled decision (iteration 50, review 47-49 item 4)
 - agent
 - user-facing-behavior
 
@@ -1217,27 +1237,31 @@ Recovered in iteration 47 from the translator's emitted SQL names. The other 13 
 
 - Sources: openCypher TCK `List2`; [`translator.py` `_expr_slice`](../../../iris_vector_graph/cypher/translator.py#L23679-L23791); [`parser.py` `parse_primary_expression`](../../../iris_vector_graph/cypher/parser.py#L1621-L1641); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
 - Expands: [Built-in functions](#query.functions)
-- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `translated_bound`, `as_built_slice`, `rule_slice`, `parses`; neighbors `theorem_literal_slice_follows_rule`, `theorem_row_nonnegative_slice_follows_rule`, `theorem_other_lower_bounds_parse`; as-built departures `theorem_row_negative_slice_departs` (control `row-slice-wrapped` is the repair) and `theorem_identifier_lower_bound_refused` (control `identifier-lookahead`)
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `translated_bound`, `as_built_slice`, `rule_slice`, `parses`; neighbors `theorem_literal_slice_follows_rule`, `theorem_row_nonnegative_slice_follows_rule`, `theorem_other_lower_bounds_parse`; as-built departures `theorem_row_negative_slice_departs` (control `row-slice-wrapped` is the repair), `theorem_identifier_lower_bound_refused` (control `identifier-lookahead`; decided from the tokens since iteration 50) and `theorem_null_list_slice_is_empty` (control `null-list-guard`)
 - agent
 - user-facing-behavior
 
 Recovered in iteration 48. Frozen predictions L2, L3, L4 held; L1 missed for negative run-time bounds.
 
-Findings: [A negative list-slice bound known only at run time counts as 0](../../Verus_verification/bugs_issues.md#bug-cyp-117); [A slice whose lower bound is a variable name does not parse](../../Verus_verification/bugs_issues.md#bug-cyp-122)
+Iteration 50: the null list (`theorem_null_list_slice_is_empty`, control `null-list-guard`) and the parameter-list slice (driver premise, not modeled).
+
+Findings: [A negative list-slice bound known only at run time counts as 0](../../Verus_verification/bugs_issues.md#bug-cyp-117); [A slice whose lower bound is a variable name does not parse](../../Verus_verification/bugs_issues.md#bug-cyp-122); [Slicing a null list answers the empty list](../../Verus_verification/bugs_issues.md#bug-cyp-129); [With the driver 5.3.2 an UNWIND of a list parameter fails](../../Verus_verification/bugs_issues.md#bug-cyp-125)
 
 Simplification: [One run-time path for list positions, whatever the index or bound's syntax](../../Verus_verification/design_simplification.md#simp-cyp-101)
 
 ### query.functions.strings
 
-- Sources: openCypher TCK `String1`-`String14`, `TypeConversion2`-`4`; the Cypher 9 function reference (negative arguments); [`translator.py` `_scalar_string`](../../../iris_vector_graph/cypher/translator.py#L24475-L24494); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
+- Sources: openCypher TCK `String1`-`String14`, `TypeConversion2`-`4`; the Cypher 9 function reference (negative arguments); [`translator.py` `_scalar_string`](../../../iris_vector_graph/cypher/translator.py#L24475-L24494), [the SQL name of `trim`](../../../iris_vector_graph/cypher/translator.py#L29537), [the CREATE folder's `trim`](../../../iris_vector_graph/cypher/translator.py#L9456); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
 - Expands: [Built-in functions](#query.functions)
-- Verus: active for `substring`'s start: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `as_built_substring`, `rule_substring`; neighbor `theorem_inside_substring_follows_rule`; as-built departure `theorem_negative_start_answers_prefix` (control `substring-checks-start`). The zero-length null (second bullet), `left`/`right` and the conversions are observed only.
+- Verus: active for `substring`'s start: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `as_built_substring`, `rule_substring`; neighbor `theorem_inside_substring_follows_rule`; as-built departure `theorem_negative_start_answers_prefix` (control `substring-checks-start`). The zero-length null (second bullet), the trim whitespace (third bullet), `left`/`right` and the conversions are observed only.
 - agent
 - user-facing-behavior
 
 Recovered in iteration 48. Frozen predictions S1, S4, S5, S6 held; S2 (negative start) and S3 (length 0) were partial, for literal and run-time arguments alike.
 
-Findings: [A negative substring start answers leading characters](../../Verus_verification/bugs_issues.md#bug-cyp-123); [A zero-length left, right or substring answers null](../../Verus_verification/bugs_issues.md#bug-cyp-124)
+Iteration 50 (review 47-49 m4): the opening claim that the trim functions give the openCypher answer is qualified by the trim bullet.
+
+Findings: [A negative substring start answers leading characters](../../Verus_verification/bugs_issues.md#bug-cyp-123); [A zero-length left, right or substring answers null](../../Verus_verification/bugs_issues.md#bug-cyp-124); [trim() keeps tabs and line breaks in a query's result, while a node CREATE removes them](../../Verus_verification/bugs_issues.md#bug-cyp-130)
 
 ### query.functions.coalesce
 

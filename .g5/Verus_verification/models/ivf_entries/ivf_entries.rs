@@ -95,8 +95,34 @@ pub proof fn theorem_cosine_metric_misranks()
     assert(dot(q, v1) == 30); assert(dot(q, v2) == 25); assert(dot(v1, v1) == 100); assert(dot(v2, v2) == 25);
 }
 
-/// Neighbor: on vectors of one length the two orders agree (q = (3,4); v1 = (3,4) and v2 = (5,0), both length 5).
-pub proof fn theorem_equal_lengths_agree()
+pub proof fn lemma_ssq_strict(d1: int, d2: int)
+    requires d1 > d2,
+    ensures ssq(d1) > ssq(d2),
+{
+    if d2 >= 0 { assert(d1 * d1 > d2 * d2) by (nonlinear_arith) requires d1 > d2, d2 >= 0; }
+    else if d1 >= 0 { assert(d1 * d1 >= 0) by (nonlinear_arith); assert(d2 * d2 > 0) by (nonlinear_arith) requires d2 < 0; }
+    else { assert(d2 * d2 > d1 * d1) by (nonlinear_arith) requires d2 < d1, d1 < 0; }
+}
+/// Neighbor (m9: for every query and every pair of vectors of the same nonzero length): the dot product's order, which
+/// "cosine" uses today (theorem_cosine_ranks_as_dot), agrees with the cosine rule, so unit-length vectors are ranked
+/// correctly.
+pub proof fn theorem_equal_lengths_agree(q: Seq<int>, v1: Seq<int>, v2: Seq<int>)
+    requires dot(v1, v1) == dot(v2, v2), dot(v1, v1) > 0,
+    ensures ivf_above(Metric::Dot, q, v1, v2) == cosine_above(q, v1, v2),
+{
+    let d1 = dot(q, v1); let d2 = dot(q, v2); let l = dot(v1, v1);
+    if d1 > d2 {
+        lemma_ssq_strict(d1, d2);
+        assert(ssq(d1) * l > ssq(d2) * l) by (nonlinear_arith) requires ssq(d1) > ssq(d2), l > 0;
+    } else if d1 == d2 {
+    } else {
+        lemma_ssq_strict(d2, d1);
+        assert(ssq(d2) * l > ssq(d1) * l) by (nonlinear_arith) requires ssq(d2) > ssq(d1), l > 0;
+    }
+}
+
+/// Witness kept from iteration 47 (q = (3,4); v1 = (3,4) and v2 = (5,0), both length 5): both orders put v1 first.
+pub proof fn theorem_equal_lengths_witness()
     ensures ({ let q = seq![3int, 4int]; let v1 = seq![3int, 4int]; let v2 = seq![5int, 0int];
                ivf_above(Metric::Cosine, q, v1, v2) && cosine_above(q, v1, v2) }),
 {
@@ -104,6 +130,50 @@ pub proof fn theorem_equal_lengths_agree()
     reveal_with_fuel(dot, 3);
     assert(q.drop_first() =~= seq![4int]); assert(v1.drop_first() =~= seq![4int]); assert(v2.drop_first() =~= seq![0int]);
     assert(dot(q, v1) == 25); assert(dot(q, v2) == 15); assert(dot(v1, v1) == 25); assert(dot(v2, v2) == 25);
+    // the distances too, so the witness does not depend on which scorer the cosine branch takes
+    reveal_with_fuel(sqdist, 3);
+    assert(q.drop_first().drop_first().len() == 0); assert(v2.drop_first().drop_first().len() == 0);
+    assert(sqdist(q.drop_first(), v2.drop_first()) == 16); assert(sqdist(q, v1) == 0); assert(sqdist(q, v2) == 20);
+}
+
+// ---------------------------------------------------------------- which cell a vector is put in (review 47-49 m8)
+/// ivf_build (vector.py 1987-2017) clusters the route's raw vectors with scikit-learn MiniBatchKMeans and passes its
+/// labels to AddBatch, which stores each vector in that cell (IVFIndex.cls 237-259). The metric is not consulted.
+/// Provider premise: a label is the Euclidean-nearest final centroid (scikit-learn's compute_labels, observed on the
+/// fixture for well-separated clusters); ties go to the lower cell.
+pub open spec fn build_cell(v: Seq<int>, c0: Seq<int>, c1: Seq<int>) -> int { if sqdist(v, c0) <= sqdist(v, c1) { 0 } else { 1 } }
+/// Insert's own copy of the metric branch (IVFIndex.cls 200-205): "cosine" and "dot" score a centroid by the dot
+/// product, anything else by the negated squared distance.
+pub open spec fn insert_score(m: Metric, v: Seq<int>, c: Seq<int>) -> int {
+    match m { Metric::Cosine => dot(v, c), Metric::Dot => dot(v, c), Metric::L2 => -sqdist(v, c) }
+}
+/// Insert keeps the first best cell (`sc > bestScore`, cells in order).
+pub open spec fn insert_cell(m: Metric, v: Seq<int>, c0: Seq<int>, c1: Seq<int>) -> int {
+    if insert_score(m, v, c1) > insert_score(m, v, c0) { 1 } else { 0 }
+}
+/// Neighbor (every vector and centroid pair): under "l2" Insert picks the cell the build picks.
+pub proof fn theorem_l2_insert_matches_build(v: Seq<int>, c0: Seq<int>, c1: Seq<int>)
+    ensures insert_cell(Metric::L2, v, c0, c1) == build_cell(v, c0, c1),
+{}
+/// m8 witness (observed on the fixture in iteration 50): centroids c0 = (1,0) and c1 = (5,5), and the vector v = (2,0)
+/// that the build put in c0 (distance 1 against 34; also the cosine-nearest cell, cosine 1 against 0.71). Under
+/// "cosine" Insert scores c1 higher (dot 10 against 2) and puts v in c1, so re-inserting a node with its unchanged
+/// vector leaves its build copy in c0 as a second entry (bug-srch-107's cross-cell case).
+pub proof fn theorem_cosine_reinsert_changes_cell()
+    ensures ({ let v = seq![2int, 0int]; let c0 = seq![1int, 0int]; let c1 = seq![5int, 5int];
+               build_cell(v, c0, c1) == 0 && cosine_above(v, c0, c1) && insert_cell(Metric::Cosine, v, c0, c1) == 1 }),
+{
+    let v = seq![2int, 0int]; let c0 = seq![1int, 0int]; let c1 = seq![5int, 5int];
+    reveal_with_fuel(dot, 3); reveal_with_fuel(sqdist, 3);
+    assert(v.drop_first() =~= seq![0int]); assert(c0.drop_first() =~= seq![0int]); assert(c1.drop_first() =~= seq![5int]);
+    assert(v.drop_first().drop_first().len() == 0);
+    assert(c1.drop_first().drop_first().len() == 0); assert(c0.drop_first().drop_first().len() == 0);
+    let a = v.drop_first(); let b = c1.drop_first();
+    assert(a[0] == 0); assert(b[0] == 5); assert((a[0] - b[0]) * (a[0] - b[0]) == 25);
+    assert(a.drop_first().len() == 0); assert(sqdist(a.drop_first(), b.drop_first()) == 0);
+    assert(sqdist(a, b) == 25);
+    assert(sqdist(v, c0) == 1); assert(sqdist(v, c1) == 34);
+    assert(dot(v, c0) == 2); assert(dot(v, c1) == 10); assert(dot(c0, c0) == 1); assert(dot(c1, c1) == 50);
 }
 
 }

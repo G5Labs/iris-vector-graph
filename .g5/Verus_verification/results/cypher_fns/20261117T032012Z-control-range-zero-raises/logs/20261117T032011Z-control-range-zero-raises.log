@@ -1,0 +1,11 @@
+verification results:: 15 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/range-zero-raises/20261117T032011Z/models/cypher_fns/cypher_fns.rs:252:13
+    |
+251 | pub proof fn theorem_runtime_zero_step_empty()
+    | ---------------------------------------------- at the end of the function body
+252 |     ensures ivgrange(1, 3, 0) == Range::Elems(0), rule_range(1, 3, 0) == Range::ArgumentError,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

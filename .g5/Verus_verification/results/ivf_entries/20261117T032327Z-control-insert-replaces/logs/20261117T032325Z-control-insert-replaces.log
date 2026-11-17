@@ -1,0 +1,21 @@
+verification results:: 17 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/insert-replaces/20261117T032325Z/models/ivf_entries/ivf_entries.rs:35:13
+   |
+34 | pub proof fn theorem_same_cell_reinsert_counts_twice()
+   | ------------------------------------------------------ at the end of the function body
+35 |     ensures ({ let s = insert(insert(St { in0: false, in1: false, indexed: 5 }, 0), 0); entries(s) == 1 && s.indexed == 7 }),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/insert-replaces/20261117T032325Z/models/ivf_entries/ivf_entries.rs:40:13
+   |
+39 |   pub proof fn theorem_cross_cell_reinsert_leaves_stale_entry()
+   |   ------------------------------------------------------------- at the end of the function body
+40 |       ensures ({ let s = insert(insert(St { in0: false, in1: false, indexed: 4 }, 0), 1);
+   |  _____________^
+41 | |                entries(s) == 2 && found(delete(s).0) && delete(s).1 }),
+   | |______________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

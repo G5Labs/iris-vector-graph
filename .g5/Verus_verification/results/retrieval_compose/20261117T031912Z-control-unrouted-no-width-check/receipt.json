@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: PyOps looks the route up before checking the width, as the engine does (the repair of bug-srch-111)",
+    "expect_fail_in": [
+      "theorem_unrouted_rest_search_refuses_width"
+    ],
+    "find": "    if qdim != pyops_expected(route_width, 768, named) { Search::WidthRefused }",
+    "name": "unrouted-no-width-check",
+    "replace": "    if route_width.is_some() && qdim != pyops_expected(route_width, 768, named) { Search::WidthRefused }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_unrouted_rest_search_refuses_width"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/retrieval_compose/model.json": "50d615fbe9481943e4eb30dc42d071a0f987249ec1f845ac804550763e7a4b9e",
+    ".g5/Verus_verification/models/retrieval_compose/retrieval_compose.rs": "1f5e1fc427ea5a7519ed1444e9c125bfe8122f44a2179c2a9865d553657c97c5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/unrouted-no-width-check/20261117T031909Z/models/retrieval_compose/retrieval_compose.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_unrouted_rest_search_refuses_width": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031909Z-control-unrouted-no-width-check-theorem_unrouted_rest_search_refuses_width.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031909Z-control-unrouted-no-width-check.log",
+    "timed_out": false,
+    "verified": 35
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031912Z-control-unrouted-no-width-check/logs/20261117T031909Z-control-unrouted-no-width-check-theorem_unrouted_rest_search_refuses_width.log": "a6aa133f3a3e3fd19132d9cefa4bba93d9cc3d8f84e3d8a967b753da6e8eb6ca",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031912Z-control-unrouted-no-width-check/logs/20261117T031909Z-control-unrouted-no-width-check.log": "9e1f7c43546178645f2cdb595859889cb927dea0c414592bfbe734e0eeb4456c"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

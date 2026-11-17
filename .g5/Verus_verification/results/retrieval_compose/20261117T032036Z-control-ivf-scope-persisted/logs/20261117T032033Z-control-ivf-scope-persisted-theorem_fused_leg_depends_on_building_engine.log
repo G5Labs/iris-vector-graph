@@ -1,0 +1,29 @@
+verification results:: 1 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/ivf-scope-persisted/20261117T032033Z/models/retrieval_compose/retrieval_compose.rs:139:1
+    |
+139 | pub proof fn theorem_fused_leg_depends_on_building_engine(g: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/ivf-scope-persisted/20261117T032033Z/models/retrieval_compose/retrieval_compose.rs:142:9
+    |
+139 | pub proof fn theorem_fused_leg_depends_on_building_engine(g: int)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+142 |         leg_index(Some(ivf_scope_seen(false, g)), true, g) == Choice::Hnsw,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/ivf-scope-persisted/20261117T032033Z/models/retrieval_compose/retrieval_compose.rs:144:9
+    |
+139 | pub proof fn theorem_fused_leg_depends_on_building_engine(g: int)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+144 |         above(leg_index(Some(ivf_scope_seen(false, g)), true, g), (1, 0), (10, 10)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -157,8 +157,9 @@ pub proof fn theorem_other_graph_ivf_not_read(g: int, h: int)
 // =============================================================== PyOps (the /vectorSearch and /hybridSearch bodies)
 /// HybridSearch's `c = int(c) if c else 60`.
 pub open spec fn hybrid_c(c: nat) -> nat { if c == 0 { 60 } else { c } }
-pub proof fn theorem_hybrid_c_zero_becomes_60()
-    ensures hybrid_c(0) == 60, hybrid_c(1) == 1, hybrid_c(60) == 60,
+/// Transcription (m9: stated for every c): 0 becomes 60, any other c is kept.
+pub proof fn theorem_hybrid_c_zero_becomes_60(c: nat)
+    ensures hybrid_c(0) == 60, c > 0 ==> hybrid_c(c) == c,
 {}
 pub enum Search { Rows, NoRows, WidthRefused }
 /// getExpectedDimension: the route's width, else (a named graph with no route) getDefaultDimension = 768; the default
@@ -188,8 +189,9 @@ pub proof fn theorem_unrouted_rest_search_refuses_width()
 
 // =============================================================== kg_VECTOR_GRAPH_SEARCH
 /// The candidate set's iteration order (Python set order: arbitrary, varies with the hash seed) is `order`; the
-/// method keeps its first k and only then sorts by vector similarity. A candidate is answered iff it is kept.
-pub open spec fn truncate_first() -> bool { true }
+/// method keeps its first k (`list(set(...))[:k]`, vector.py 1513) and only then sorts by vector similarity. A
+/// candidate is answered iff it is kept. (Iteration 50: transcribed directly; the former premise constant
+/// `truncate_first()` is gone, so the control changes the transcribed order of operations.)
 pub open spec fn index_of(order: Seq<int>, x: int) -> int
     decreases order.len(),
 {
@@ -197,14 +199,16 @@ pub open spec fn index_of(order: Seq<int>, x: int) -> int
         let i = index_of(order.drop_first(), x); if i < 0 { -1 } else { i + 1 }
     }
 }
-/// `sim_rank(x)`: x's place by vector similarity (0 = best). The repair keeps the k best.
-pub open spec fn answered(order: Seq<int>, sim_rank: spec_fn(int) -> int, k: int, x: int) -> bool {
-    if truncate_first() { 0 <= index_of(order, x) < k } else { 0 <= index_of(order, x) && sim_rank(x) < k }
+/// `sim_rank(x)`: x's place by vector similarity (0 = best); the as-built method does not read it before truncating.
+pub open spec fn answered(order: Seq<int>, sim_rank: spec_fn(int) -> int, k: int, x: int) -> bool { 0 <= index_of(order, x) < k }
+/// HD-0603's ranked alternative (the repair): sort the candidates by similarity, then keep the k best.
+pub open spec fn rule_answered(order: Seq<int>, sim_rank: spec_fn(int) -> int, k: int, x: int) -> bool {
+    0 <= index_of(order, x) && sim_rank(x) < k
 }
 /// W56 V1 (held; HD-0603, E2E for 5 of 8 hash seeds): candidates a (best), b, p, r, n; with k = 2 and the observed
 /// order p, r, a, b, n the best vector hit a is not answered.
 pub proof fn theorem_best_hit_can_be_dropped()
-    ensures !answered(seq![3int, 4, 1, 2, 5], |x: int| x - 1, 2, 1),
+    ensures !answered(seq![3int, 4, 1, 2, 5], |x: int| x - 1, 2, 1), rule_answered(seq![3int, 4, 1, 2, 5], |x: int| x - 1, 2, 1),
 {
     reveal_with_fuel(index_of, 4);
 }
@@ -232,9 +236,25 @@ pub proof fn theorem_expansion_flag_and_text_only_zero()
 {}
 
 // =============================================================== kg_SUBGRAPH / kg_PPR_GUIDED_SUBGRAPH
+// Scope: the ObjectScript Owner Graph.KG.Subgraph.SubgraphJson. IRISGraphStore.execute_subgraph (iris_sql_store.py
+// 2526-2541) asks the Arno reader Graph.KG.ArnoAccel.SubgraphNativeJson first when no edge_types are given and routing
+// says native; that path is not modeled (no Arno on the fixture). Every theorem below is about the Owner path.
 pub struct St { pub seen: Set<int>, pub count: nat, pub edges: Seq<(int, int)> }
-/// The cap kg_PPR_GUIDED_SUBGRAPH hands kg_SUBGRAPH.
+/// The cap kg_PPR_GUIDED_SUBGRAPH hands kg_SUBGRAPH: min(max_nodes, ppr_top_k) (algorithms.py 971-973). This is the
+/// documented cap (docstring 956-957; the design note's top_k "hard node cap", "len(result.nodes) <= top_k always").
 pub open spec fn guided_cap(max_nodes: nat, ppr_top_k: nat) -> nat { if max_nodes < ppr_top_k { max_nodes } else { ppr_top_k } }
+pub open spec fn empty_st() -> St { St { seen: Set::empty(), count: 0, edges: seq![] } }
+/// SubgraphJson's seed loop (Subgraph.cls 37-48): every seed with an edge either way enters the frontier and is
+/// counted once; the cap is not consulted, so the seeds alone can exceed it.
+pub open spec fn admit(seeds: Seq<int>, has_edge: spec_fn(int) -> bool, st: St, cap: nat) -> St
+    decreases seeds.len(),
+{
+    if seeds.len() == 0 { st } else {
+        let s = seeds[0];
+        let st1 = if has_edge(s) && !st.seen.contains(s) { St { seen: st.seen.insert(s), count: st.count + 1, ..st } } else { st };
+        admit(seeds.drop_first(), has_edge, st1, cap)
+    }
+}
 /// SubgraphJson's inner loop over one node's out-neighbors: the edge is recorded first; an unseen neighbor is added
 /// unless the count has reached the cap, which stops the whole expansion.
 pub open spec fn expand_node(n: int, outs: Seq<int>, st: St, cap: nat) -> (St, bool)
@@ -257,58 +277,169 @@ pub open spec fn expand_frontier(frontier: Seq<int>, adj: spec_fn(int) -> Seq<in
         if r.1 || r.0.count >= cap { r.0 } else { expand_frontier(frontier.drop_first(), adj, r.0, cap) }
     }
 }
+/// What the answer lists as an edge: SubgraphJson returns the edges it recorded (kg_SUBGRAPH and
+/// kg_PPR_GUIDED_SUBGRAPH reshape them, adding and removing none).
+pub open spec fn lists_edge(r: St, adj: spec_fn(int) -> Seq<int>, e: (int, int)) -> bool { r.edges.contains(e) }
+/// The documented answer (algorithms.op.subgraph and .guided): the answered nodes, and every edge between two of them.
+pub open spec fn rule_lists_edge(r: St, adj: spec_fn(int) -> Seq<int>, e: (int, int)) -> bool {
+    r.seen.contains(e.0) && r.seen.contains(e.1) && adj(e.0).contains(e.1)
+}
+/// The documented size: at most the cap.
+pub open spec fn rule_within_cap(r: St, cap: nat) -> bool { r.count <= cap }
+
+// ---- general facts about the transcription (m9: stated for every input, not one example)
+pub proof fn lemma_expand_node_count_grows(n: int, outs: Seq<int>, st: St, cap: nat)
+    ensures expand_node(n, outs, st, cap).0.count >= st.count,
+    decreases outs.len(),
+{
+    if outs.len() > 0 {
+        let o = outs[0];
+        let st1 = St { edges: st.edges.push((n, o)), ..st };
+        if st1.seen.contains(o) { lemma_expand_node_count_grows(n, outs.drop_first(), st1, cap); }
+        else if st1.count >= cap { }
+        else { lemma_expand_node_count_grows(n, outs.drop_first(), St { seen: st1.seen.insert(o), count: st1.count + 1, ..st1 }, cap); }
+    }
+}
+/// expand_node keeps the edges it was given and adds only edges that leave n.
+pub proof fn lemma_expand_node_edges_leave_n(n: int, outs: Seq<int>, st: St, cap: nat)
+    ensures ({ let r = expand_node(n, outs, st, cap).0;
+               r.edges.len() >= st.edges.len()
+               && (forall|i: int| 0 <= i < st.edges.len() ==> r.edges[i] == st.edges[i])
+               && (forall|i: int| st.edges.len() <= i < r.edges.len() ==> r.edges[i].0 == n) }),
+    decreases outs.len(),
+{
+    if outs.len() > 0 {
+        let o = outs[0];
+        let st1 = St { edges: st.edges.push((n, o)), ..st };
+        if st1.seen.contains(o) { lemma_expand_node_edges_leave_n(n, outs.drop_first(), st1, cap); }
+        else if st1.count >= cap { }
+        else { lemma_expand_node_edges_leave_n(n, outs.drop_first(), St { seen: st1.seen.insert(o), count: st1.count + 1, ..st1 }, cap); }
+    }
+}
+/// W56 S_star_cap3 generalized (bug-plt-114): whenever the count has reached the cap and a node's first out-neighbor
+/// is unseen, that edge is listed while its far node is not, and expansion stops.
+pub proof fn theorem_capped_subgraph_lists_edge_to_unlisted_node(n: int, adj: spec_fn(int) -> Seq<int>, st: St, cap: nat)
+    requires adj(n).len() > 0, !st.seen.contains(adj(n)[0]), st.count >= cap,
+    ensures ({ let r = expand_node(n, adj(n), st, cap);
+               lists_edge(r.0, adj, (n, adj(n)[0])) && !r.0.seen.contains(adj(n)[0]) && r.1 }),
+{
+    let r = expand_node(n, adj(n), st, cap);
+    assert(r.0.edges == st.edges.push((n, adj(n)[0])));
+    assert(r.0.edges[st.edges.len() as int] == (n, adj(n)[0]));
+}
+/// bug-plt-113 generalized: once the admitted seeds fill the cap, only the first frontier node in collation order is
+/// expanded, so every listed edge leaves that node, for every frontier, adjacency and cap.
+pub proof fn theorem_filled_cap_expands_only_first_node(frontier: Seq<int>, adj: spec_fn(int) -> Seq<int>, st: St, cap: nat)
+    requires frontier.len() > 0, st.count >= cap, st.edges.len() == 0,
+    ensures ({ let r = expand_frontier(frontier, adj, st, cap);
+               forall|e: (int, int)| #[trigger] lists_edge(r, adj, e) ==> e.0 == frontier[0] }),
+{
+    let r1 = expand_node(frontier[0], adj(frontier[0]), st, cap);
+    lemma_expand_node_count_grows(frontier[0], adj(frontier[0]), st, cap);
+    lemma_expand_node_edges_leave_n(frontier[0], adj(frontier[0]), st, cap);
+    assert(expand_frontier(frontier, adj, st, cap) == r1.0);
+    assert forall|e: (int, int)| #[trigger] lists_edge(r1.0, adj, e) implies e.0 == frontier[0] by {
+        let i = choose|i: int| 0 <= i < r1.0.edges.len() && r1.0.edges[i] == e;
+    }
+}
+/// bug-plt-113 (seeds over the cap) generalized: distinct seeds that all have an edge and are not yet seen are all
+/// admitted whatever the cap, so more seeds than the cap give an answer larger than the cap (from the empty state:
+/// `admit(seeds, has_edge, empty_st(), cap).count == seeds.len()`).
+pub proof fn theorem_admitted_seeds_ignore_cap(seeds: Seq<int>, has_edge: spec_fn(int) -> bool, st: St, cap: nat)
+    requires seeds.no_duplicates(), forall|i: int| 0 <= i < seeds.len() ==> has_edge(seeds[i]) && !st.seen.contains(seeds[i]),
+    ensures admit(seeds, has_edge, st, cap).count == st.count + seeds.len(),
+            st.count + seeds.len() > cap ==> !rule_within_cap(admit(seeds, has_edge, st, cap), cap),
+    decreases seeds.len(),
+{
+    if seeds.len() > 0 {
+        let s = seeds[0];
+        let st1 = St { seen: st.seen.insert(s), count: st.count + 1, ..st };
+        assert forall|j: int| 0 <= j < seeds.drop_first().len() implies has_edge(seeds.drop_first()[j]) && !st1.seen.contains(seeds.drop_first()[j]) by {
+            assert(seeds.drop_first()[j] == seeds[j + 1]);
+            assert(seeds[j + 1] != seeds[0]);
+        }
+        theorem_admitted_seeds_ignore_cap(seeds.drop_first(), has_edge, st1, cap);
+    }
+}
+/// The cap rule for every input: min(max_nodes, ppr_top_k); ppr_top_k under the default max_nodes 5000.
+pub proof fn theorem_guided_cap_is_ppr_top_k(max_nodes: nat, ppr_top_k: nat)
+    ensures guided_cap(max_nodes, ppr_top_k) <= max_nodes, guided_cap(max_nodes, ppr_top_k) <= ppr_top_k,
+            guided_cap(max_nodes, ppr_top_k) == max_nodes || guided_cap(max_nodes, ppr_top_k) == ppr_top_k,
+            ppr_top_k <= max_nodes ==> guided_cap(max_nodes, ppr_top_k) == ppr_top_k,
+{}
+
+// ---- witnesses on the observed star (each mirrors a binding case; the general claims above carry the rule)
 /// The star of follow-up 3: s = 9 -> a1..a6 = 1..6, and a1 -> a2. Collation puts a1..a6 before s.
 pub open spec fn star(n: int) -> Seq<int> {
     if n == 9 { seq![1int, 2, 3, 4, 5, 6] } else if n == 1 { seq![2int] } else { seq![] }
 }
+pub open spec fn star_has_edge(n: int) -> bool { (1 <= n && n <= 6) || n == 9 }
 pub open spec fn seeded(seeds: Set<int>, count: nat) -> St { St { seen: seeds, count: count, edges: seq![] } }
-/// W56 P1 (missed; new bug-plt-113): kg_PPR_GUIDED_SUBGRAPH with ppr_top_k = 3 seeds kg_SUBGRAPH with s, a2, a1 and
-/// a cap of 3. The cap is already reached, so only a1 is expanded: the answer has the edge a1->a2 and lacks s->a1 and
-/// s->a2 although s, a1 and a2 are all answered. Observed: nodes a1, a2, s; edges a1>a2.
+/// Witness (W56 P1; bug-plt-113): ppr_top_k = 3 gives the seeds s, a2, a1 and the cap 3, which they already fill;
+/// only a1 is expanded. The answer lists a1->a2 and not s->a1 or s->a2, although s, a1 and a2 are all answered and
+/// the rule lists those edges. Observed: nodes a1, a2, s; edges a1>a2.
 pub proof fn theorem_guided_subgraph_drops_edges_among_top_nodes()
     ensures ({
-        let r = expand_frontier(seq![1int, 2, 9], |n: int| star(n), seeded(set![9int, 2, 1], 3), guided_cap(5000, 3));
-        r.edges == seq![(1int, 2int)] && !r.edges.contains((9int, 1int)) && r.seen.contains(9) && r.seen.contains(1)
+        let st = admit(seq![9int, 2, 1], |n: int| star_has_edge(n), empty_st(), guided_cap(5000, 3));
+        let r = expand_frontier(seq![1int, 2, 9], |n: int| star(n), st, guided_cap(5000, 3));
+        r.edges == seq![(1int, 2int)] && !lists_edge(r, |n: int| star(n), (9int, 1int))
+            && rule_lists_edge(r, |n: int| star(n), (9int, 1int)) && r.seen.contains(9) && r.seen.contains(1)
     }),
 {
+    reveal_with_fuel(admit, 4);
     reveal_with_fuel(expand_node, 3);
     reveal_with_fuel(expand_frontier, 3);
-    let st = seeded(set![9int, 2, 1], 3);
+    let st = admit(seq![9int, 2, 1], |n: int| star_has_edge(n), empty_st(), 3);
+    assert(seq![9int, 2, 1].drop_first() =~= seq![2int, 1]);
+    assert(seq![2int, 1].drop_first() =~= seq![1int]);
+    assert(seq![1int].drop_first() =~= seq![]);
+    assert(st.seen =~= set![9int, 2, 1]);
+    assert(st.count == 3);
+    assert(st.edges =~= seq![]);
     let r1 = expand_node(1, seq![2int], st, 3);
     assert(seq![2int].drop_first() =~= seq![]);
-    assert(st.seen.contains(2));
     assert(r1.0.edges =~= seq![(1int, 2int)]);
     let r = expand_frontier(seq![1int, 2, 9], |n: int| star(n), st, guided_cap(5000, 3));
     assert(r.edges =~= seq![(1int, 2int)]);
     assert(!r.edges.contains((9int, 1int))) by {
         if r.edges.contains((9int, 1int)) { let i = choose|i: int| 0 <= i < r.edges.len() && r.edges[i] == (9int, 1int); assert(i == 0); }
     }
+    assert(star(9)[0] == 1);
 }
-/// W56 S_star_cap3 (new, bug-plt-114): kg_SUBGRAPH([s], max_nodes = 3): the edge to a3 is recorded and a3 is not.
-pub proof fn theorem_capped_subgraph_lists_edge_to_unlisted_node()
+/// Witness (review 47-49, reproduced in iteration 50; bug-plt-113): seeds s, a3, a4 with ppr_top_k = 1 (top id a3)
+/// give a cap of 1; all three seeds are admitted (3 nodes > 1) and the first frontier node a3 has no out-edge, so
+/// the answer lists no edge, although the rule lists s->a3 and s->a4. Observed: nodes a3, a4, s; no edges.
+pub proof fn theorem_guided_seeds_exceed_cap()
     ensures ({
-        let r = expand_node(9, star(9), seeded(set![9int], 1), 3);
-        r.0.edges.contains((9int, 3int)) && !r.0.seen.contains(3) && r.1
+        let st = admit(seq![9int, 3, 4], |n: int| star_has_edge(n), empty_st(), guided_cap(5000, 1));
+        let r = expand_frontier(seq![3int, 4, 9], |n: int| star(n), st, guided_cap(5000, 1));
+        r.count == 3 && !rule_within_cap(r, guided_cap(5000, 1)) && r.edges.len() == 0
+            && !lists_edge(r, |n: int| star(n), (9int, 3int)) && rule_lists_edge(r, |n: int| star(n), (9int, 3int))
     }),
 {
-    reveal_with_fuel(expand_node, 4);
-    let s0 = seeded(set![9int], 1);
-    let e3 = s0.edges.push((9int, 1int)).push((9int, 2int)).push((9int, 3int));
-    assert(star(9).drop_first().drop_first().drop_first() =~= seq![4int, 5, 6]);
-    assert(star(9).drop_first() =~= seq![2int, 3, 4, 5, 6]);
-    assert(star(9).drop_first().drop_first() =~= seq![3int, 4, 5, 6]);
-    let r = expand_node(9, star(9), s0, 3);
-    assert(r.0.edges =~= e3);
-    assert(e3[2] == (9int, 3int));
-    assert(!set![9int].insert(1int).insert(2int).contains(3int));
+    reveal_with_fuel(admit, 4);
+    reveal_with_fuel(expand_node, 2);
+    reveal_with_fuel(expand_frontier, 2);
+    let st = admit(seq![9int, 3, 4], |n: int| star_has_edge(n), empty_st(), 1);
+    assert(seq![9int, 3, 4].drop_first() =~= seq![3int, 4]);
+    assert(seq![3int, 4].drop_first() =~= seq![4int]);
+    assert(seq![4int].drop_first() =~= seq![]);
+    assert(st.seen =~= set![9int, 3, 4]);
+    assert(st.count == 3);
+    assert(st.edges =~= seq![]);
+    assert(star(3) =~= seq![]);
+    let r = expand_frontier(seq![3int, 4, 9], |n: int| star(n), st, guided_cap(5000, 1));
+    assert(r == st);
+    assert(star(9)[2] == 3);
+    assert(star(9).contains(3));
 }
-/// W56 S_star_1hop (new, bug-plt-114): kg_SUBGRAPH([s], k_hops = 1) answers a1 and a2 but not the edge a1->a2: only
-/// the frontier's out-edges are recorded. Neighbor (P1_top10 / PG_star_top50): with a cap above the reachable nodes the
-/// expanded nodes' edges are all recorded.
+/// Witness (W56 S_star_1hop; bug-plt-114): kg_SUBGRAPH([s], k_hops = 1) answers a1 and a2 but does not list a1->a2:
+/// only the frontier's out-edges are recorded.
 pub proof fn theorem_last_hop_edges_missing()
     ensures ({
         let r = expand_frontier(seq![9int], |n: int| star(n), seeded(set![9int], 1), 10000);
-        r.seen.contains(1) && r.seen.contains(2) && !r.edges.contains((1int, 2int)) && r.edges.contains((9int, 1int))
+        r.seen.contains(1) && r.seen.contains(2) && !lists_edge(r, |n: int| star(n), (1int, 2int))
+            && rule_lists_edge(r, |n: int| star(n), (1int, 2int)) && lists_edge(r, |n: int| star(n), (9int, 1int))
     }),
 {
     reveal_with_fuel(expand_node, 8);
@@ -327,10 +458,60 @@ pub proof fn theorem_last_hop_edges_missing()
         if es.contains((1int, 2int)) { let i = choose|i: int| 0 <= i < es.len() && es[i] == (1int, 2int); }
     }
     assert(es[0] == (9int, 1int));
+    assert(star(1)[0] == 2);
 }
-pub proof fn theorem_guided_cap_is_ppr_top_k()
-    ensures guided_cap(5000, 50) == 50, guided_cap(5000, 3) == 3, guided_cap(2, 50) == 2,
-{}
+/// Neighbor witness (W56 PG_star_top50): ppr_top_k = 50 admits all seven reachable nodes under a cap of 50; every
+/// edge among them is listed, as the rule requires.
+pub proof fn theorem_guided_uncapped_lists_all_edges()
+    ensures ({
+        let st = admit(seq![9int, 2, 1, 3, 4, 5, 6], |n: int| star_has_edge(n), empty_st(), guided_cap(5000, 50));
+        let r = expand_frontier(seq![1int, 2, 3, 4, 5, 6, 9], |n: int| star(n), st, guided_cap(5000, 50));
+        rule_within_cap(r, guided_cap(5000, 50)) && r.count == 7
+            && lists_edge(r, |n: int| star(n), (1int, 2int)) && lists_edge(r, |n: int| star(n), (9int, 1int))
+            && lists_edge(r, |n: int| star(n), (9int, 6int))
+    }),
+{
+    reveal_with_fuel(admit, 8);
+    reveal_with_fuel(expand_node, 8);
+    reveal_with_fuel(expand_frontier, 8);
+    let seeds = seq![9int, 2, 1, 3, 4, 5, 6];
+    assert(seeds.drop_first() =~= seq![2int, 1, 3, 4, 5, 6]);
+    assert(seeds.drop_first().drop_first() =~= seq![1int, 3, 4, 5, 6]);
+    assert(seeds.drop_first().drop_first().drop_first() =~= seq![3int, 4, 5, 6]);
+    assert(seeds.drop_first().drop_first().drop_first().drop_first() =~= seq![4int, 5, 6]);
+    assert(seeds.drop_first().drop_first().drop_first().drop_first().drop_first() =~= seq![5int, 6]);
+    assert(seeds.drop_first().drop_first().drop_first().drop_first().drop_first().drop_first() =~= seq![6int]);
+    assert(seq![6int].drop_first() =~= seq![]);
+    let st = admit(seeds, |n: int| star_has_edge(n), empty_st(), 50);
+    let all = set![9int, 2, 1, 3, 4, 5, 6];
+    assert(st.seen =~= all);
+    assert(st.count == 7);
+    assert(st.edges =~= seq![]);
+    let f = seq![1int, 2, 3, 4, 5, 6, 9];
+    assert(f.drop_first() =~= seq![2int, 3, 4, 5, 6, 9]);
+    assert(f.drop_first().drop_first() =~= seq![3int, 4, 5, 6, 9]);
+    assert(f.drop_first().drop_first().drop_first() =~= seq![4int, 5, 6, 9]);
+    assert(f.drop_first().drop_first().drop_first().drop_first() =~= seq![5int, 6, 9]);
+    assert(f.drop_first().drop_first().drop_first().drop_first().drop_first() =~= seq![6int, 9]);
+    assert(f.drop_first().drop_first().drop_first().drop_first().drop_first().drop_first() =~= seq![9int]);
+    assert(seq![9int].drop_first() =~= seq![]);
+    assert(seq![2int].drop_first() =~= seq![]);
+    let s1 = expand_node(1, seq![2int], st, 50).0;
+    assert(s1.edges =~= seq![(1int, 2int)]);
+    assert(s1.seen == all && s1.count == 7);
+    assert(star(2) =~= seq![]); assert(star(3) =~= seq![]); assert(star(4) =~= seq![]); assert(star(5) =~= seq![]); assert(star(6) =~= seq![]);
+    assert(star(9).drop_first() =~= seq![2int, 3, 4, 5, 6]);
+    assert(star(9).drop_first().drop_first() =~= seq![3int, 4, 5, 6]);
+    assert(star(9).drop_first().drop_first().drop_first() =~= seq![4int, 5, 6]);
+    assert(star(9).drop_first().drop_first().drop_first().drop_first() =~= seq![5int, 6]);
+    assert(star(9).drop_first().drop_first().drop_first().drop_first().drop_first() =~= seq![6int]);
+    let es = seq![(1int, 2int), (9int, 1int), (9int, 2int), (9int, 3int), (9int, 4int), (9int, 5int), (9int, 6int)];
+    let s9 = expand_node(9, star(9), s1, 50).0;
+    assert(s9.edges =~= es);
+    let r = expand_frontier(f, |n: int| star(n), st, 50);
+    assert(r == s9);
+    assert(es[0] == (1int, 2int)); assert(es[1] == (9int, 1int)); assert(es[6] == (9int, 6int));
+}
 
 // =============================================================== multi_vector_search
 pub enum Src { Rows(nat), Fails }

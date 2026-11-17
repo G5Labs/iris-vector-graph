@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: a literal relationship value dropped too",
+    "expect_fail_in": [
+      "theorem_inline_rel_literal_written"
+    ],
+    "find": "        RelValue::Lit => WriteOut::Written,",
+    "name": "rel-literal-dropped",
+    "replace": "        RelValue::Lit => WriteOut::WrittenWithoutProperty,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_inline_rel_literal_written"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_exprs/cypher_exprs.rs": "4731f182abab78e482004c40abb80ffa3091292c8be8a1aa94e623ec44004bd4",
+    ".g5/Verus_verification/models/cypher_exprs/model.json": "c39d799fbec597abff792963965f73321c47a27b0c0358adec296afd01e2b5c8"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/rel-literal-dropped/20261117T032341Z/models/cypher_exprs/cypher_exprs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_inline_rel_literal_written": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T032341Z-control-rel-literal-dropped-theorem_inline_rel_literal_written.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T032341Z-control-rel-literal-dropped.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_exprs/20261117T032342Z-control-rel-literal-dropped/logs/20261117T032341Z-control-rel-literal-dropped-theorem_inline_rel_literal_written.log": "23a37086029f3ea0c30853b0ece81c36a167d85fd7c7fb97b49ddca24d0dfaae",
+    ".g5/Verus_verification/results/cypher_exprs/20261117T032342Z-control-rel-literal-dropped/logs/20261117T032341Z-control-rel-literal-dropped.log": "d6fa0569aa6b13025e8a28cdea2dc25ea784ad7502546f98c0bc531a3a46dc97"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "retrieval_compose",
   "root": "retrieval_compose.rs",
-  "expected_verified": 28,
+  "expected_verified": 35,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -81,12 +81,12 @@
     },
     {
       "name": "sort-before-truncate",
-      "find": "pub open spec fn truncate_first() -> bool { true }",
-      "replace": "pub open spec fn truncate_first() -> bool { false }",
+      "find": "pub open spec fn answered(order: Seq<int>, sim_rank: spec_fn(int) -> int, k: int, x: int) -> bool { 0 <= index_of(order, x) < k }",
+      "replace": "pub open spec fn answered(order: Seq<int>, sim_rank: spec_fn(int) -> int, k: int, x: int) -> bool { 0 <= index_of(order, x) && sim_rank(x) < k }",
       "expect_fail_in": [
         "theorem_best_hit_can_be_dropped"
       ],
-      "classification": "decision: keep the k best by similarity instead of the first k of the set (HD-0603's ranked alternative); the covering-k neighbor still verifies"
+      "classification": "decision: keep the k best by similarity instead of the first k of the set (HD-0603's ranked alternative), applied to the transcribed order of operations (iteration 50; formerly a flipped premise constant); the covering-k neighbor still verifies"
     },
     {
       "name": "expansion-flag-excludes-hits",
@@ -104,17 +104,50 @@
       "expect_fail_in": [
         "theorem_capped_subgraph_lists_edge_to_unlisted_node"
       ],
-      "classification": "effect: the edge that crosses the cap is not recorded; the guided and last-hop theorems still verify"
+      "classification": "effect: the edge that crosses the cap is not recorded; the guided witnesses, the last-hop witness and the filled-cap theorem still verify"
     },
     {
-      "name": "guided-cap-max-nodes",
-      "find": "pub open spec fn guided_cap(max_nodes: nat, ppr_top_k: nat) -> nat { if max_nodes < ppr_top_k { max_nodes } else { ppr_top_k } }",
-      "replace": "pub open spec fn guided_cap(max_nodes: nat, ppr_top_k: nat) -> nat { max_nodes }",
+      "name": "edges-among-answered",
+      "find": "pub open spec fn lists_edge(r: St, adj: spec_fn(int) -> Seq<int>, e: (int, int)) -> bool { r.edges.contains(e) }",
+      "replace": "pub open spec fn lists_edge(r: St, adj: spec_fn(int) -> Seq<int>, e: (int, int)) -> bool { r.seen.contains(e.0) && r.seen.contains(e.1) && adj(e.0).contains(e.1) }",
       "expect_fail_in": [
+        "theorem_filled_cap_expands_only_first_node",
         "theorem_guided_subgraph_drops_edges_among_top_nodes",
+        "theorem_guided_seeds_exceed_cap",
+        "theorem_last_hop_edges_missing",
+        "theorem_capped_subgraph_lists_edge_to_unlisted_node"
+      ],
+      "classification": "decision (the repair of bug-plt-113's edge loss and bug-plt-114): the answer lists every edge between two answered nodes, so edges leaving later frontier nodes appear; the uncapped neighbor still verifies"
+    },
+    {
+      "name": "seeds-capped",
+      "find": "        let st1 = if has_edge(s) && !st.seen.contains(s) { St { seen: st.seen.insert(s), count: st.count + 1, ..st } } else { st };",
+      "replace": "        let st1 = if has_edge(s) && !st.seen.contains(s) && st.count < cap { St { seen: st.seen.insert(s), count: st.count + 1, ..st } } else { st };",
+      "expect_fail_in": [
+        "theorem_admitted_seeds_ignore_cap",
+        "theorem_guided_seeds_exceed_cap"
+      ],
+      "classification": "decision (the repair of bug-plt-113's seeds over the cap): a seed is admitted only while the count is below the cap; the top-3 witness and the uncapped neighbor still verify"
+    },
+    {
+      "name": "expand-whole-frontier-at-cap",
+      "find": "        if r.1 || r.0.count >= cap { r.0 } else { expand_frontier(frontier.drop_first(), adj, r.0, cap) }",
+      "replace": "        if r.1 { r.0 } else { expand_frontier(frontier.drop_first(), adj, r.0, cap) }",
+      "expect_fail_in": [
+        "theorem_filled_cap_expands_only_first_node",
+        "theorem_guided_subgraph_drops_edges_among_top_nodes",
+        "theorem_guided_seeds_exceed_cap"
+      ],
+      "classification": "effect: the frontier loop goes on to later nodes after a node leaves the count at the cap (edges to seen nodes recorded); the per-node cap test still stops at an unseen neighbor"
+    },
+    {
+      "name": "guided-cap-top-k-only",
+      "find": "pub open spec fn guided_cap(max_nodes: nat, ppr_top_k: nat) -> nat { if max_nodes < ppr_top_k { max_nodes } else { ppr_top_k } }",
+      "replace": "pub open spec fn guided_cap(max_nodes: nat, ppr_top_k: nat) -> nat { ppr_top_k }",
+      "expect_fail_in": [
         "theorem_guided_cap_is_ppr_top_k"
       ],
-      "classification": "decision: kg_PPR_GUIDED_SUBGRAPH passes max_nodes alone (the repair of bug-plt-113's cap)"
+      "classification": "effect: max_nodes no longer lowers the documented cap min(max_nodes, ppr_top_k); replaces iteration 49's guided-cap-max-nodes, which encoded the wrong repair (review 47-49 item 1)"
     }
   ]
 }

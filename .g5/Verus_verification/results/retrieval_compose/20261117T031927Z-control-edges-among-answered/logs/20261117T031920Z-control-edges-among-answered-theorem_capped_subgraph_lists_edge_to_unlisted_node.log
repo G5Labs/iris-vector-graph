@@ -1,0 +1,16 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T031920Z/models/retrieval_compose/retrieval_compose.rs:323:13
+    |
+321 |   pub proof fn theorem_capped_subgraph_lists_edge_to_unlisted_node(n: int, adj: spec_fn(int) -> Seq<int>, st: St, cap: nat)
+    |   ------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+322 |       requires adj(n).len() > 0, !st.seen.contains(adj(n)[0]), st.count >= cap,
+323 |       ensures ({ let r = expand_node(n, adj(n), st, cap);
+    |  _____________^
+324 | |                lists_edge(r.0, adj, (n, adj(n)[0])) && !r.0.seen.contains(adj(n)[0]) && r.1 }),
+    | |______________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

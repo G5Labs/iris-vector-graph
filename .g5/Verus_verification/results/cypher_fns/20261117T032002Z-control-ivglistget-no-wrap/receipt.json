@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: IVGLISTGET without its negative wrap",
+    "expect_fail_in": [
+      "theorem_ivglistget_is_rule"
+    ],
+    "find": "    let j = if i < 0 { len + i } else { i };",
+    "name": "ivglistget-no-wrap",
+    "replace": "    let j = i;"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_ivglistget_is_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_fns/cypher_fns.rs": "c0a744c69b5dd10833acd947ae8c8e2be13471c843bcc28dabe10b339c4f26d8",
+    ".g5/Verus_verification/models/cypher_fns/model.json": "dfc9eadf600204766a257e0c0fa74097986e9162b31d848f2f6cf251816ff806"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/ivglistget-no-wrap/20261117T032001Z/models/cypher_fns/cypher_fns.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_ivglistget_is_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T032001Z-control-ivglistget-no-wrap-theorem_ivglistget_is_rule.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T032001Z-control-ivglistget-no-wrap.log",
+    "timed_out": false,
+    "verified": 15
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_fns/20261117T032002Z-control-ivglistget-no-wrap/logs/20261117T032001Z-control-ivglistget-no-wrap-theorem_ivglistget_is_rule.log": "91432ed719b82d9e44461fa39c1d5736225a5f16e39e3438940054e3f383f59c",
+    ".g5/Verus_verification/results/cypher_fns/20261117T032002Z-control-ivglistget-no-wrap/logs/20261117T032001Z-control-ivglistget-no-wrap.log": "669bf3353a15884ec3ff7b2cfa04e2eb54af6c4fc1bf11b2208bfa68572a2d3c"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

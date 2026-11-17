@@ -1,0 +1,27 @@
+verification results:: 15 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/row-key-by-value/20261117T032009Z/models/cypher_fns/cypher_fns.rs:212:1
+    |
+212 | pub proof fn theorem_row_key_reads_variable_name(name: int, value: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/row-key-by-value/20261117T032009Z/models/cypher_fns/cypher_fns.rs:214:13
+    |
+212 | pub proof fn theorem_row_key_reads_variable_name(name: int, value: int)
+    | ----------------------------------------------------------------------- at the end of the function body
+213 |     requires name != value,
+214 |     ensures node_key_read(KeyArg::RowVar { name, value }) == KeyOut::Reads(name),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/row-key-by-value/20261117T032009Z/models/cypher_fns/cypher_fns.rs:215:13
+    |
+212 | pub proof fn theorem_row_key_reads_variable_name(name: int, value: int)
+    | ----------------------------------------------------------------------- at the end of the function body
+...
+215 |             node_key_read(KeyArg::RowVar { name, value }) != rule_node_key(KeyArg::RowVar { name, value }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

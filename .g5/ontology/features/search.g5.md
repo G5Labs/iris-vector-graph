@@ -247,7 +247,9 @@ An IVF index puts each vector in the cell of its nearest centroid and searches t
 [I · search.ivf.metric]
 
 An IVF index scores by the metric it was built with. With "dot" the score is the dot product, with "l2" or "euclidean" it is the negative squared distance, and with "cosine" (the default) it is the cosine, so a vector's length does not change its rank.
-- Today "cosine" scores the raw dot product, the same as "dot", when it picks cells and when it ranks hits. A long vector can then outrank a perfectly aligned one ([finding](../../Verus_verification/bugs_issues.md#bug-srch-109)).
+- Today "cosine" scores the raw dot product, the same as "dot", when a search picks the cells to probe, when an insert picks a node's cell, and when hits are ranked. A long vector can then outrank a perfectly aligned one ([finding](../../Verus_verification/bugs_issues.md#bug-srch-109)).
+- A build puts each vector in the cell of its nearest centroid by plain distance, whatever the metric.
+- Today, under "cosine" or "dot", re-inserting a node with its unchanged vector can therefore pick another cell than the build did, and the old entry stays ([finding](../../Verus_verification/bugs_issues.md#bug-srch-107)).
 - Unit-length vectors get the same order either way.
 
 <a id="search.quarantine"></a>
@@ -798,15 +800,15 @@ Findings: [Re-inserting a node into an IVF index keeps its old vector](../../Ver
 
 ### search.ivf.metric
 
-- Sources: [API_REFERENCE ivf_build, ivf_info](../../../docs/API_REFERENCE.md); [`_validate.py` `_IVF_METRICS`](../../../iris_vector_graph/_validate.py#L9); [`IVFIndex.cls` Search, Insert](../../../iris_src/src/Graph/KG/IVFIndex.cls#L55-L215); the route search and `VecIndex` (4.7.0) score the cosine
+- Sources: [API_REFERENCE ivf_build, ivf_info](../../../docs/API_REFERENCE.md); [`_validate.py` `_IVF_METRICS`](../../../iris_vector_graph/_validate.py#L9); [`IVFIndex.cls` Search, Insert](../../../iris_src/src/Graph/KG/IVFIndex.cls#L55-L215); [`ivf_build`'s k-means](../../../iris_vector_graph/_engine/vector.py#L1985-L2017) and [`AddBatch`](../../../iris_src/src/Graph/KG/IVFIndex.cls#L233-L259); the route search and `VecIndex` (4.7.0) score the cosine
 - Expands: [IVF index](#search.ivf)
-- Verus: active: [`ivf_entries.rs`](../../Verus_verification/models/ivf_entries/NOTES.md) `entry_score`, `ivf_above`, `cosine_above`; neighbor `theorem_equal_lengths_agree`; as-built departures `theorem_cosine_ranks_as_dot`, `theorem_cosine_metric_misranks` (control `cosine-normalized` is the repaired order)
+- Verus: active: [`ivf_entries.rs`](../../Verus_verification/models/ivf_entries/NOTES.md) `entry_score`, `ivf_above`, `cosine_above`; neighbor `theorem_equal_lengths_agree` (every pair of equal lengths since iteration 50); as-built departures `theorem_cosine_ranks_as_dot`, `theorem_cosine_metric_misranks` (control `cosine-normalized` is the repaired order); cells: `build_cell`, `insert_cell`, neighbor `theorem_l2_insert_matches_build`, departure `theorem_cosine_reinsert_changes_cell` (control `insert-by-distance`)
 - agent
 - user-facing-behavior
 
-Recovered in iteration 47 from the metric's name, the accepted metric list and the sibling cosine searches; observed on the fixture ([W53](../../uplift/consolidated/iteration-47/sqlprocs-PAIRS.md)).
+Recovered in iteration 47 from the metric's name, the accepted metric list and the sibling cosine searches; observed on the fixture ([W53](../../uplift/consolidated/iteration-47/sqlprocs-PAIRS.md)). Iteration 50 ([review 47-49](../../uplift/consolidated/iteration-50/REVIEW-47-49.md) m8) narrowed "when it picks cells" to search and insert, added the build's distance clustering, and observed the cell change in the [binding](../../Verus_verification/results/ivf_entries/20261117T032444Z-binding/receipt.json) (`cell_cosine`, `cell_dot`, `cell_l2`).
 
-Findings: [An IVF index built with metric "cosine" ranks by the raw dot product](../../Verus_verification/bugs_issues.md#bug-srch-109); [The engine's fusion reads a cosine IVF index only in the process that built it, so the same call ranks differently elsewhere](../../Verus_verification/bugs_issues.md#bug-srch-110)
+Findings: [An IVF index built with metric "cosine" ranks by the raw dot product](../../Verus_verification/bugs_issues.md#bug-srch-109); [Re-inserting a node into an IVF index keeps its old vector](../../Verus_verification/bugs_issues.md#bug-srch-107); [The engine's fusion reads a cosine IVF index only in the process that built it, so the same call ranks differently elsewhere](../../Verus_verification/bugs_issues.md#bug-srch-110)
 
 ### search.quarantine
 

@@ -21,7 +21,8 @@ RUN = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()); TAG = RUN[-7:-1]
 P = f"i49b_{TAG}_"; G, G2, G3, GV = f"i49bf{TAG}", f"i49be{TAG}", f"i49bu{TAG}", f"i49bv{TAG}"
 MUTS = ["engine-absent-zero", "sql-absent-like-engine", "vector-failure-isolated", "ivf-scope-persisted", "hnsw-before-own-ivf",
         "ivf-cosine-normalized", "hybrid-c-kept", "unrouted-no-width-check", "sort-before-truncate", "expansion-flag-excludes-hits",
-        "edge-recorded-after-cap-test", "guided-cap-max-nodes"]
+        "edge-recorded-after-cap-test", "edges-among-answered", "seeds-capped", "expand-whole-frontier-at-cap",
+        "guided-cap-top-k-only"]
 
 
 def sha(p):
@@ -111,6 +112,8 @@ def subgraph(seeds, adj, hops, cap, m):
     seen, count, edges, frontier = set(), 0, [], []
     for s in seeds:
         if s in has_edge:
+            if m.get("seeds-capped") and s not in seen and count >= cap:
+                continue
             if s not in frontier:
                 frontier.append(s)
             if s not in seen:
@@ -132,16 +135,18 @@ def subgraph(seeds, adj, hops, cap, m):
                 if rec_edge not in edges:
                     edges.append(rec_edge)
                 seen.add(o); count += 1; nxt.append(o)
-            if stop or count >= cap:
+            if stop or (count >= cap and not m.get("expand-whole-frontier-at-cap")):
                 stop = True; break
         frontier = nxt
         if stop or not frontier or count >= cap:
             break
+    if m.get("edges-among-answered"):
+        edges = [(n, o) for n in seen for o in adj.get(n, []) if o in seen]
     return {"nodes": sorted(sh(n) for n in seen), "edges": sorted(f"{sh(a)}>{sh(b)}" for a, b in edges)}
 
 
 def guided_cap(max_nodes, top_k, m):
-    return max_nodes if m.get("guided-cap-max-nodes") else min(max_nodes, top_k)
+    return top_k if m.get("guided-cap-top-k-only") else min(max_nodes, top_k)
 
 
 # ------------------------------------------------------------------ the run
@@ -266,6 +271,13 @@ def main():
         r = e1.kg_PPR_GUIDED_SUBGRAPH([P + "s"], ppr_top_k=t, k_hops=1)
         obs["guided"][t] = {"nodes": sorted(sh(n) for n in r.nodes), "edges": sorted(f"{sh(x['src'])}>{sh(x['dst'])}" for x in r.edges)}
         inputs["guided_ppr"][t] = [k_ for k_, _ in r.ppr_scores]
+    # iteration 50 (review 47-49 item 1): several seeds, and a max_nodes below ppr_top_k
+    obs["guided_more"], inputs["guided_more"] = {}, {}
+    for label, seeds, t, mx in [("s+a3+a4|1|5000", ["s", "a3", "a4"], 1, 5000), ("a3+a4+a5|1|5000", ["a3", "a4", "a5"], 1, 5000),
+                                ("s|50|3", ["s"], 50, 3), ("s|50|5000", ["s"], 50, 5000)]:
+        r = e1.kg_PPR_GUIDED_SUBGRAPH([P + x for x in seeds], ppr_top_k=t, k_hops=1, max_nodes=mx)
+        obs["guided_more"][label] = {"nodes": sorted(sh(n) for n in r.nodes), "edges": sorted(f"{sh(x['src'])}>{sh(x['dst'])}" for x in r.edges)}
+        inputs["guided_more"][label] = {"seeds": [P + x for x in seeds], "top": [k_ for k_, _ in r.ppr_scores], "t": t, "max": mx}
 
     # multi_vector_search: the 4-wide route and a 3-wide second model in G
     K2 = f"i49bk{TAG}"; e1.store_embedding(P + "n00", [1.0, 0.0, 0.0], graph=G, model_key=K2)
@@ -315,6 +327,10 @@ def main():
         for t, top in inputs["guided_ppr"].items():
             seeds = list(dict.fromkeys([P + "s"] + [x for x in top]))
             w["guided"][t] = subgraph(seeds, a, 1, guided_cap(5000, int(t), m), m)
+        w["guided_more"] = {}
+        for label, g in inputs["guided_more"].items():
+            seeds = list(dict.fromkeys(g["seeds"] + list(g["top"])))
+            w["guided_more"][label] = subgraph(seeds, a, 1, guided_cap(g["max"], g["t"], m), m)
         w["mvs_one_fails"] = obs["mvs_valid_only"]; w["mvs_valid_only"] = obs["mvs_valid_only"]; w["mvs_all_fail"] = []
         return json.loads(json.dumps(w))
 
@@ -330,7 +346,7 @@ def main():
     def compare(want, got):
         cases = []
         for k_ in want:
-            if k_ in ("vgs", "subgraph", "guided"):
+            if k_ in ("vgs", "subgraph", "guided", "guided_more"):
                 for s in want[k_]:
                     cases.append((f"{k_}[{s}]", want[k_][s], got[k_].get(str(s), got[k_].get(s))))
             else:
@@ -344,7 +360,14 @@ def main():
     contrast = {"x_engine": pos(obs["engine_fuse"], "x"), "x_pyops": pos(obs["pyops_hybrid"], "x"),
                 "L_building": pos(obs["engine_fuse_building"], "L"), "L_fresh": pos(obs["engine_fuse_fresh"], "L"),
                 "best_dropped_seeds": [s for s, v in obs["vgs"].items() if "a" not in [r[0] for r in v]],
-                "guided_top7": obs["guided"]["7"]}
+                "guided_top7": obs["guided"]["7"],
+                "guided_more": obs["guided_more"],
+                # the documented rule at the reader: answered nodes, edges among them, at most the cap
+                "rule_departures": {lab: {"edges_among_answered_missing": sorted(
+                                              f"{x}>{o}" for x, os_ in inputs["adj"].items() for o in os_
+                                              if x in g["nodes"] and o in g["nodes"] and f"{x}>{o}" not in g["edges"]),
+                                          "over_cap": len(g["nodes"]) > min(inputs["guided_more"][lab]["max"], inputs["guided_more"][lab]["t"])}
+                                    for lab, g in obs["guided_more"].items()}}
     sens = {}
     for mu in MUTS:
         bad, _ = compare(predict({mu: True}), obs); sens[mu] = len(bad)
@@ -366,7 +389,8 @@ def main():
                      "a cosine IVF index read by the building engine versus a fresh engine and the operators, PyOps HybridSearch "
                      "(route path, c 60 and 0) and VectorSearch (routed, unrouted 4- and 768-wide), the SQL kg_RRF_FUSE procedure on the "
                      "default graph, kg_VECTOR_GRAPH_SEARCH under hash seeds 0-7, kg_SUBGRAPH (8 seed/hop/cap shapes) and "
-                     "kg_PPR_GUIDED_SUBGRAPH (ppr_top_k 3, 5, 7, 50) on a star and a chain, multi_vector_search with a failing source. "
+                     "kg_PPR_GUIDED_SUBGRAPH (ppr_top_k 3, 5, 7, 50; iteration 50: seeds s+a3+a4 and a3+a4+a5 with ppr_top_k 1, and [s] with "
+                     "ppr_top_k 50 under max_nodes 3 and 5000) on a star and a chain, ObjectScript SubgraphJson path (no Arno reader), multi_vector_search with a failing source. "
                      "Floating sums compared to 2e-9; Python set order and PPR scores are provider inputs, not derived."}
     d = REPO / ".g5/Verus_verification/results/retrieval_compose" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")

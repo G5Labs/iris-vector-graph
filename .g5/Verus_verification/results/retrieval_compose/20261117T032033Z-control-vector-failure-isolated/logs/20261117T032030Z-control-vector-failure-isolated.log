@@ -1,0 +1,12 @@
+verification results:: 34 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/vector-failure-isolated/20261117T032030Z/models/retrieval_compose/retrieval_compose.rs:102:9
+    |
+100 | pub proof fn theorem_failed_vector_leg_reads_as_no_match()
+    | ---------------------------------------------------------- at the end of the function body
+101 |     ensures
+102 |         engine_fuse(Leg::Fails, true, Leg::Rows(60)) == FuseOut::Empty,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

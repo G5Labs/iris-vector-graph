@@ -1,0 +1,14 @@
+verification results:: 2 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/sql-absent-like-engine/20261117T032026Z/models/retrieval_compose/retrieval_compose.rs:55:9
+   |
+51 | pub proof fn theorem_engine_absent_rank_reorders()
+   | -------------------------------------------------- at the end of the function body
+...
+55 |         rrf(Surface::SqlProcedure, 60, Some(1), 62, None, 60) < rrf(Surface::SqlProcedure, 60, Some(32), 62, Some(31), 60),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

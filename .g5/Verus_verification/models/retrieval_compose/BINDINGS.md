@@ -1,6 +1,6 @@
 # retrieval compose
 
-Composed retrieval: each fusion surface's rule for an item one leg lacks; a failed vector leg read as no match; which vector index the engine's fusion reads, by engine instance; the REST bodies' width check and constant; kg_VECTOR_GRAPH_SEARCH's truncation before the sort and its flags; kg_SUBGRAPH's edges and cap and kg_PPR_GUIDED_SUBGRAPH's cap; multi_vector_search's failing source
+Composed retrieval: each fusion surface's rule for an item one leg lacks; a failed vector leg read as no match; which vector index the engine's fusion reads, by engine instance; the REST bodies' width check and constant; kg_VECTOR_GRAPH_SEARCH's truncation before the sort and its flags; kg_SUBGRAPH's edges and cap; kg_PPR_GUIDED_SUBGRAPH against its documented cap (seeds admitted over it, edges among answered nodes missing; ObjectScript SubgraphJson path); multi_vector_search's failing source
 
 Evidence status: active. Variant: as-built bounded transcription.
 

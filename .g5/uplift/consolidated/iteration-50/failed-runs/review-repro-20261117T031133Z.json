@@ -1,0 +1,695 @@
+{
+ "run": "20261117T031133Z",
+ "prefix": "i50_031133_",
+ "fixture": "ivg-cont-20261117-iris",
+ "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "cases": {
+  "setup": {
+   "item": "setup",
+   "q": "CREATE (n:I50031133 {id: 'i50_031133_c', l: [1, 2, 3], nl: [[1, 2], [3, 4]], num: 5, s1: '1', i1: 1, a: 2, k: 'gotcha'})",
+   "params": null,
+   "exception": "TypeError: InvalidPropertyType: property `nl` must be a scalar or a list of scalars, not a map or a nested collection"
+  },
+  "idx_with_literal_row_neg": {
+   "item": "2",
+   "q": "WITH [1, 2, 3] AS l UNWIND [-1] AS i RETURN l[i]",
+   "params": null,
+   "rows": [
+    [
+     3
+    ]
+   ],
+   "error": null
+  },
+  "idx_with_literal_row_nonneg": {
+   "item": "2",
+   "q": "WITH [1, 2, 3] AS l UNWIND [0, 2, 5] AS i RETURN i, l[i]",
+   "params": null,
+   "rows": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     5,
+     null
+    ]
+   ],
+   "error": null
+  },
+  "idx_with_literal_param_neg": {
+   "item": "2",
+   "q": "WITH [1, 2, 3] AS l RETURN l[$i]",
+   "params": {
+    "i": -1
+   },
+   "rows": [],
+   "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Open()>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONARRAYGET+1^Graph.KG.funcJSONARRAYGET.1>]"
+  },
+  "idx_prop_row_neg": {
+   "item": "2",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) UNWIND [-1] AS i RETURN n.l[i]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "idx_prop_row_nonneg": {
+   "item": "2",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) UNWIND [0] AS i RETURN n.l[i]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "idx_with_prop_row_neg": {
+   "item": "2",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) WITH n.l AS l UNWIND [-1] AS i RETURN l[i]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "idx_with_prop_row_nonneg": {
+   "item": "2",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) WITH n.l AS l UNWIND [1] AS i RETURN l[i]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "rev_prop": {
+   "item": "3",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN reverse(n.l)",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "rev_with_prop": {
+   "item": "3",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) WITH n.l AS l RETURN reverse(l)",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "rev_with_literal": {
+   "item": "3",
+   "q": "WITH [1, 2, 3] AS l RETURN reverse(l)",
+   "params": null,
+   "rows": [
+    [
+     [
+      3,
+      2,
+      1
+     ]
+    ]
+   ],
+   "error": null
+  },
+  "rev_slice": {
+   "item": "3",
+   "q": "WITH [1, 2, 3] AS l RETURN reverse(l[0..2])",
+   "params": null,
+   "rows": [
+    [
+     "]2,1["
+    ]
+   ],
+   "error": null
+  },
+  "rev_coalesce": {
+   "item": "3",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN reverse(coalesce(n.l, []))",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "rev_nested_subscript": {
+   "item": "3",
+   "q": "WITH [[1, 2], [3, 4]] AS l RETURN reverse(l[0])",
+   "params": null,
+   "rows": [
+    [
+     "]2,1["
+    ]
+   ],
+   "error": null
+  },
+  "rev_literal": {
+   "item": "3",
+   "q": "RETURN reverse([1, 2, 3])",
+   "params": null,
+   "rows": [
+    [
+     [
+      3,
+      2,
+      1
+     ]
+    ]
+   ],
+   "error": null
+  },
+  "rev_string_prop": {
+   "item": "3",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN reverse(n.k)",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "rev_tail_prop": {
+   "item": "3",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN reverse(tail(n.l))",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "rel_new_param": {
+   "item": "5",
+   "q": "CREATE (a:I50031133Q {id: 'i50_031133_q1'})-[r:Q031133 {k: $k, lit: 1}]->(b:I50031133Q {id: 'i50_031133_q2'})",
+   "params": {
+    "k": 4
+   },
+   "rows": [],
+   "error": null
+  },
+  "rel_new_param_read": {
+   "item": "5",
+   "q": "MATCH (a {id: 'i50_031133_q1'})-[r:Q031133]->(b) RETURN r.k, r.lit, keys(r)",
+   "params": null,
+   "rows": [
+    [
+     null,
+     1,
+     [
+      "lit"
+     ]
+    ]
+   ],
+   "error": null
+  },
+  "rel_matched_param": {
+   "item": "5",
+   "q": "MATCH (a {id: 'i50_031133_q1'}), (b {id: 'i50_031133_q2'}) CREATE (a)-[r:M031133 {k: $k}]->(b)",
+   "params": {
+    "k": 9
+   },
+   "rows": [],
+   "error": null
+  },
+  "rel_matched_param_read": {
+   "item": "5",
+   "q": "MATCH (a {id: 'i50_031133_q1'})-[r:M031133]->(b) RETURN r.k",
+   "params": null,
+   "rows": [
+    [
+     9
+    ]
+   ],
+   "error": null
+  },
+  "node_param": {
+   "item": "5",
+   "q": "CREATE (n:I50031133N {id: 'i50_031133_np', k: $k})",
+   "params": {
+    "k": 4
+   },
+   "rows": [],
+   "error": null
+  },
+  "node_param_read": {
+   "item": "5",
+   "q": "MATCH (n {id: 'i50_031133_np'}) RETURN n.k",
+   "params": null,
+   "rows": [
+    [
+     4
+    ]
+   ],
+   "error": null
+  },
+  "idx_null_row_with_literal": {
+   "item": "6",
+   "q": "WITH [1, 2, 3] AS l UNWIND [null] AS i RETURN l[i]",
+   "params": null,
+   "rows": [
+    [
+     "1"
+    ]
+   ],
+   "error": null
+  },
+  "idx_null_literal_prop": {
+   "item": "6",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN n.l[null]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "idx_null_missing_prop": {
+   "item": "6",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN n.l[n.nope]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "idx_null_param": {
+   "item": "6",
+   "q": "WITH [1, 2, 3] AS l RETURN l[$i]",
+   "params": {
+    "i": null
+   },
+   "rows": [],
+   "error": "<ARGUMENT ERROR> Bad argument given; Details: Incorrect number of parameters"
+  },
+  "idx_null_literal_list": {
+   "item": "6",
+   "q": "RETURN [1, 2, 3][null]",
+   "params": null,
+   "rows": [
+    [
+     null
+    ]
+   ],
+   "error": null
+  },
+  "idx_null_row_prop": {
+   "item": "6",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) UNWIND [null] AS i RETURN n.l[i]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "case_simple_prop_str_vs_int": {
+   "item": "7",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN CASE n.s1 WHEN 1 THEN 'num' WHEN '1' THEN 'str' ELSE 'other' END",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "case_simple_row_str_vs_int": {
+   "item": "7",
+   "q": "UNWIND ['1'] AS s RETURN CASE s WHEN 1 THEN 'num' ELSE 'other' END",
+   "params": null,
+   "rows": [
+    [
+     "num"
+    ]
+   ],
+   "error": null
+  },
+  "case_simple_int_prop_vs_str": {
+   "item": "7",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN CASE n.i1 WHEN '1' THEN 'str' WHEN 1 THEN 'num' ELSE 'other' END",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "eq_prop_str_vs_int": {
+   "item": "7",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN n.s1 = 1, CASE WHEN n.s1 = 1 THEN 'num' ELSE 'other' END",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "case_simple_same_type": {
+   "item": "7",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN CASE n.i1 WHEN 1 THEN 'num' ELSE 'other' END, CASE n.s1 WHEN '1' THEN 'str' ELSE 'other' END",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "where_prop_str_vs_int": {
+   "item": "7",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) WHERE n.s1 = 1 RETURN n.id",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "null_list_slice": {
+   "item": "m1",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN n.missing[0..2]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "null_list_index": {
+   "item": "m1",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN n.missing[0]",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "param_list_slice": {
+   "item": "m2",
+   "q": "RETURN $l[$s..$e]",
+   "params": {
+    "l": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "s": 1,
+    "e": 3
+   },
+   "rows": [],
+   "error": "<ARGUMENT ERROR> Bad argument given; Details: Incorrect number of parameters"
+  },
+  "param_list_slice_open": {
+   "item": "m2",
+   "q": "RETURN $l[$s..]",
+   "params": {
+    "l": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "s": 1
+   },
+   "rows": [],
+   "error": "<ARGUMENT ERROR> Bad argument given; Details: Incorrect number of parameters"
+  },
+  "param_list_slice_literal_bounds": {
+   "item": "m2",
+   "q": "RETURN $l[1..3]",
+   "params": {
+    "l": [
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "rows": [
+    [
+     [
+      2,
+      3
+     ]
+    ]
+   ],
+   "error": null
+  },
+  "param_list_index": {
+   "item": "m2",
+   "q": "RETURN $l[$s]",
+   "params": {
+    "l": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "s": 1
+   },
+   "rows": [],
+   "error": "<PARAMETER ERROR>; Details: Invalid number of parameters."
+  },
+  "with_param_list_slice": {
+   "item": "m2",
+   "q": "WITH $l AS l RETURN l[$s..$e]",
+   "params": {
+    "l": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "s": 1,
+    "e": 3
+   },
+   "rows": [
+    [
+     [
+      2,
+      3
+     ]
+    ]
+   ],
+   "error": null
+  },
+  "set_list_from_props": {
+   "item": "m3",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) SET n.l2 = [n.a, 1] RETURN n.l2",
+   "params": null,
+   "exception": "TypeError: Object of type PropertyReference is not JSON serializable"
+  },
+  "set_list_literal": {
+   "item": "m3",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) SET n.l3 = [2, 1] RETURN n.l3",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "trim_tabs_newlines": {
+   "item": "m4",
+   "q": "RETURN trim('\\t a \\n') AS t, size(trim('\\t a \\n')) AS n",
+   "params": null,
+   "rows": [
+    [
+     "\t a \n",
+     5
+    ]
+   ],
+   "error": null
+  },
+  "trim_spaces": {
+   "item": "m4",
+   "q": "RETURN trim('  a  ') AS t, size(trim('  a  ')) AS n",
+   "params": null,
+   "rows": [
+    [
+     "a",
+     1
+    ]
+   ],
+   "error": null
+  },
+  "key_from_with_column": {
+   "item": "m5",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) WITH n, 'num' AS k RETURN n[k]",
+   "params": null,
+   "rows": [],
+   "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Open()>]\r\n[%msg: <SQL Function GRAPH_KG.CYPHERFN_IVGTYPEERROR failed with error:  SQLCODE=-400,%msg=Non-integer index type for list subscript>]"
+  },
+  "key_from_param": {
+   "item": "m5",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) RETURN n[$k]",
+   "params": {
+    "k": "num"
+   },
+   "rows": [],
+   "error": null
+  },
+  "range_fractional_step_literal": {
+   "item": "m6",
+   "q": "RETURN range(1, 3, 1.5)",
+   "params": null,
+   "exception": "ValueError: range() argument 2 must be an integer, got 'float'"
+  },
+  "range_fractional_step_row": {
+   "item": "m6",
+   "q": "UNWIND [1.5] AS s RETURN range(1, 3, s)",
+   "params": null,
+   "rows": [
+    [
+     [
+      1,
+      2.5
+     ]
+    ]
+   ],
+   "error": null
+  },
+  "rel_retype_setup": {
+   "item": "m10",
+   "q": "CREATE (a:I50031133R {id: 'i50_031133_r1'})-[r:R031133 {age: '30'}]->(b:I50031133R {id: 'i50_031133_r2'})",
+   "params": null,
+   "rows": [],
+   "error": null
+  },
+  "rel_retype": {
+   "item": "m10",
+   "q": "MATCH (a {id: 'i50_031133_r1'})-[r:R031133]->(b) SET r.age = toInteger(r.age)",
+   "params": null,
+   "exception": "SyntaxError: SET r.age = <value>: a relationship's value can read only its own `age`; a SET of a relationship from another property or another variable is not supported"
+  },
+  "rel_retype_read": {
+   "item": "m10",
+   "q": "MATCH (a {id: 'i50_031133_r1'})-[r:R031133]->(b) RETURN r.age",
+   "params": null,
+   "rows": [
+    [
+     30
+    ]
+   ],
+   "error": null
+  },
+  "node_retype": {
+   "item": "m10",
+   "q": "MATCH (n:I50031133 {id: 'i50_031133_c'}) SET n.s1 = toInteger(n.s1) RETURN n.s1",
+   "params": null,
+   "rows": [],
+   "error": null
+  }
+ },
+ "subgraph": {
+  "guided_s_top3_max5000": {
+   "nodes": [
+    "a1",
+    "a2",
+    "s"
+   ],
+   "edges": [
+    "a1>a2"
+   ],
+   "top_ids": [
+    "s",
+    "a2",
+    "a1"
+   ]
+  },
+  "guided_s_top7_max5000": {
+   "nodes": [
+    "a1",
+    "a2",
+    "a3",
+    "a4",
+    "a5",
+    "a6",
+    "s"
+   ],
+   "edges": [
+    "a1>a2"
+   ],
+   "top_ids": [
+    "s",
+    "a2",
+    "a1",
+    "a3",
+    "a4",
+    "a5",
+    "a6"
+   ]
+  },
+  "guided_s_top50_max5000": {
+   "nodes": [
+    "a1",
+    "a2",
+    "a3",
+    "a4",
+    "a5",
+    "a6",
+    "s"
+   ],
+   "edges": [
+    "a1>a2",
+    "s>a1",
+    "s>a2",
+    "s>a3",
+    "s>a4",
+    "s>a5",
+    "s>a6"
+   ],
+   "top_ids": [
+    "s",
+    "a2",
+    "a1",
+    "a3",
+    "a4",
+    "a5",
+    "a6"
+   ]
+  },
+  "guided_s+a3+a4_top1_max5000": {
+   "nodes": [
+    "a3",
+    "a4",
+    "s"
+   ],
+   "edges": [],
+   "top_ids": [
+    "a3"
+   ]
+  },
+  "guided_s_top50_max3": {
+   "nodes": [
+    "a1",
+    "a2",
+    "a3",
+    "a4",
+    "a5",
+    "a6",
+    "s"
+   ],
+   "edges": [
+    "a1>a2"
+   ],
+   "top_ids": [
+    "s",
+    "a2",
+    "a1",
+    "a3",
+    "a4",
+    "a5",
+    "a6"
+   ]
+  },
+  "guided_a3+a4+a5_top1_max5000": {
+   "nodes": [
+    "a3",
+    "a4",
+    "a5"
+   ],
+   "edges": [],
+   "top_ids": [
+    "a3"
+   ]
+  },
+  "subgraph_s_max3_hops1": {
+   "nodes": [
+    "a1",
+    "a2",
+    "s"
+   ],
+   "edges": [
+    "s>a1",
+    "s>a2",
+    "s>a3"
+   ]
+  },
+  "subgraph_s_max10000_hops1": {
+   "nodes": [
+    "a1",
+    "a2",
+    "a3",
+    "a4",
+    "a5",
+    "a6",
+    "s"
+   ],
+   "edges": [
+    "s>a1",
+    "s>a2",
+    "s>a3",
+    "s>a4",
+    "s>a5",
+    "s>a6"
+   ]
+  },
+  "subgraph_a1+a2+s_max3_hops1": {
+   "nodes": [
+    "a1",
+    "a2",
+    "s"
+   ],
+   "edges": [
+    "a1>a2"
+   ]
+  }
+ },
+ "arno_loaded": false
+}

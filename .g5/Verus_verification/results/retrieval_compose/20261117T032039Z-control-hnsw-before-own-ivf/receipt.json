@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: hnsw ahead of the graph's own IVF index (the docstring's R119 reading); the other-graph neighbor still verifies",
+    "expect_fail_in": [
+      "theorem_fused_leg_depends_on_building_engine"
+    ],
+    "find": "        Some(Scope::Recorded(h)) if h == g => Choice::Ivf,",
+    "name": "hnsw-before-own-ivf",
+    "replace": "        Some(Scope::Recorded(h)) if h == g && !hnsw => Choice::Ivf,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_fused_leg_depends_on_building_engine"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/retrieval_compose/model.json": "641d15dc0feecc87669cd854cec830faed0464c5f7628376d5ebea87ccd867c7",
+    ".g5/Verus_verification/models/retrieval_compose/retrieval_compose.rs": "0bc7361d7d916493bdb53b65019a7ab8305b1b4c950b7875773aed881226d882"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/hnsw-before-own-ivf/20261117T032036Z/models/retrieval_compose/retrieval_compose.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_fused_leg_depends_on_building_engine": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T032036Z-control-hnsw-before-own-ivf-theorem_fused_leg_depends_on_building_engine.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T032036Z-control-hnsw-before-own-ivf.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/retrieval_compose/20261117T032039Z-control-hnsw-before-own-ivf/logs/20261117T032036Z-control-hnsw-before-own-ivf-theorem_fused_leg_depends_on_building_engine.log": "32b9ee37d8f123449857e0c81b543aadba4d51760b4cb9bc8b5008d40a35f85e",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T032039Z-control-hnsw-before-own-ivf/logs/20261117T032036Z-control-hnsw-before-own-ivf.log": "d67ec6910a41cf22f7f6c851513b136318cca2a86174c556cba75260e1b200ad"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,12 @@
+verification results:: 21 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/case-kinds-compared/20261117T033114Z/models/cypher_exprs/cypher_exprs.rs:150:13
+    |
+148 | pub proof fn theorem_simple_case_coerces_across_kinds(ts: Syntax, t: V, w: V)
+    | ----------------------------------------------------------------------------- at the end of the function body
+149 |     requires !kind_known(ts), t.kind != w.kind, t.text == w.text,
+150 |     ensures simple_case_takes(ts, t, Syntax::Literal, w), !rule_simple_case(t, w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

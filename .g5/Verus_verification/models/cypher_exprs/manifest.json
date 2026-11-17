@@ -1,6 +1,6 @@
 {
   "title": "cypher exprs",
-  "question": "Cypher expressions over values known only at run time: slice bounds (bug-cyp-117, -122), boolean conditions (bug-cyp-118), CREATE map values (bug-cyp-119, -120), coalesce typing (bug-cyp-121), substring start (bug-cyp-123), Prop_Set retyping",
+  "question": "Cypher expressions over values known only at run time: slice bounds (bug-cyp-117, -122), boolean conditions (bug-cyp-118), CREATE map values (bug-cyp-119, -120), coalesce typing (bug-cyp-121), substring start (bug-cyp-123), Prop_Set retyping; iteration 50: a parameter on a relationship CREATE between new nodes (bug-cyp-120), simple CASE across value kinds (bug-cyp-127), a null list's slice (bug-cyp-129), the parser's identifier branch from its tokens and _prop_set_deployed's switch",
   "ontology_ids": [
     "query.functions.slice",
     "query.functions.strings",
@@ -14,7 +14,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 17}"
+      "expect": "{\"errors\": 0, \"verified\": 22}"
     },
     {
       "label": "row-slice-wrapped",
@@ -104,19 +104,49 @@
       "label": "setval-skips-retype",
       "kind": "control",
       "variant": "as-built bounded transcription",
-      "expect": "{\"fail_in\": [\"theorem_prop_set_retypes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"theorem_prop_set_retypes\", \"theorem_prop_set_switch_decides_retype\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "prop-set-not-emitted",
       "kind": "control",
       "variant": "as-built bounded transcription",
-      "expect": "{\"fail_in\": [\"theorem_prop_set_retypes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"theorem_prop_set_retypes\", \"theorem_prop_set_switch_decides_retype\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "filer-writes-same-text",
       "kind": "control",
       "variant": "as-built bounded transcription",
-      "expect": "{\"fail_in\": [\"theorem_without_prop_set_same_text_keeps_old\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"theorem_without_prop_set_same_text_keeps_old\", \"theorem_prop_set_switch_decides_retype\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-list-guard",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_null_list_slice_is_empty\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rel-param-kept",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_inline_rel_param_dropped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "case-kinds-compared",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_simple_case_coerces_across_kinds\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "case-literal-kinds-unchecked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_simple_case_same_kind_or_literal_follows_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unreadable-taken-as-absent",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_prop_set_switch_decides_retype\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

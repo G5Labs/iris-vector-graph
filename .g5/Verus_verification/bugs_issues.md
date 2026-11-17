@@ -1051,42 +1051,42 @@ The same rule holds for the batch writer and the delete (iteration 31, [observat
 Repair proposal (checked in the model only): open the caller's level first, as `WriteTxn.begin` does with autocommit off (`Txn_Begin(1)`), around the direct temporal calls, or write the SQL part first (controls `temporal-sql-first`, `delete-sql-first` make the split theorem fail). Preserve: the calls join the caller's transaction after `START TRANSACTION` on both engines (T4, T5, W37). Distinguishing case: T11 against T13.
 
 <a id="bug-cyp-120"></a>
-### A relationship CREATE between new nodes drops every computed property value without an error
+### A relationship CREATE between new nodes drops every computed or parameter property value without an error
 
 Severity: High · Decision: Open
 
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
-Found by: a follow-up to W55's write pairs before the source reading (`F7_rel_fn` in [follow-up 2](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json)), isolated in [follow-up 3](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_inline_rel_expression_dropped` with neighbor `theorem_inline_rel_literal_written`; controls `rel-value-kept`, `rel-literal-dropped`.
+Found by: a follow-up to W55's write pairs before the source reading (`F7_rel_fn` in [follow-up 2](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json)), isolated in [follow-up 3](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json); the plain-parameter case by [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 5; [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_inline_rel_expression_dropped` and `theorem_inline_rel_param_dropped` with neighbor `theorem_inline_rel_literal_written`; controls `rel-value-kept`, `rel-param-kept`, `rel-literal-dropped`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json) `toUpper_lit`, `size_lit`, `arith`, `toString_lit`, `uuid`, `param_fn`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F7_rel_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `create_rel_*`). `CREATE (:N {id: 'a'})-[:T {v: 1 + 1}]->(:N {id: 'b'})` succeeds and writes both nodes and the relationship, but the relationship's stored qualifiers are NULL: `RETURN r.v` is null, `keys(r)` null, `properties(r)` `{}`; the same holds for `toUpper('ab')`, `size('ab')`, `toString(1)`, `randomUUID()` and `toUpper($s)`. Passing neighbors: a literal `{v: 'ab'}` is stored as `{"v": "ab"}`, and an `UNWIND` literal variable is stored; between matched nodes the same value is refused with a message naming the property (documented in KNOWN_ISSUES).
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json) `toUpper_lit`, `size_lit`, `arith`, `toString_lit`, `uuid`, `param_fn`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F7_rel_*`; iteration 50: [fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `rel_new_param*`, [binding](results/cypher_exprs/20261117T033119Z-binding/receipt.json) `create_rel_*`, `create_rel_matched_*`, `create_node_Param`). `CREATE (:N {id: 'a'})-[:T {v: 1 + 1}]->(:N {id: 'b'})` succeeds and writes both nodes and the relationship, but the relationship has no `v`; the same holds for `toUpper('ab')`, `size('ab')`, `toString(1)`, `randomUUID()`, `toUpper($s)` and a plain parameter: `CREATE (a {id: ...})-[r {k: $k, lit: 1}]->(b {id: ...})` with `$k = 4` stores `keys(r) = ['lit']` and `r.k` null. Passing neighbors: a literal `{v: 'ab'}` and an `UNWIND` literal variable are stored; a node `CREATE` stores `$k`; between matched nodes `$k` and literals are stored, and a computed value is refused with a message naming the property (documented in KNOWN_ISSUES).
 
-Expected: openCypher: a `CREATE` stores each property value its map computes; where IVG cannot, it refuses (as it does between matched nodes).
+Expected: openCypher: a `CREATE` stores each property value its map computes or binds; where IVG cannot, it refuses (as it does between matched nodes).
 
-Observed: `_create_clause_relationship_entry`, for endpoints known literally, keeps a property value only when it is a Literal or a FOREACH/UNWIND literal variable; any other expression maps to None, and the next line drops None values as "null props are not stored" (`translator.py:10212-10227`). The multigraph branch receives the same filtered map.
+Observed: `_create_clause_relationship_entry`, for endpoints known literally, keeps a property value only when it is a Literal or a FOREACH/UNWIND literal variable; any other expression, an `ast.Parameter` included, maps to None, and the next line drops None values as "null props are not stored" (`translator.py:10213-10226`). The multigraph branch receives the same filtered map.
 
-Consequence: the write reports success and the property is lost; nothing tells the caller. High (silent data loss on an ordinary `CREATE` pattern).
+Consequence: the write reports success and the property is lost; nothing tells the caller. Drivers send values as parameters, so the ordinary pattern `CREATE (a {id: $a})-[:R {since: $since}]->(b {id: $b})` loses `since`. High (silent data loss on an ordinary `CREATE` pattern).
 
-Repair proposal (not implemented): resolve a relationship value as a node value is resolved (fold, else translate or refuse with the property's name), never dropping a non-null computed value. The control `rel-value-kept` checks the model's partial repair only. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
+Repair proposal (not implemented): resolve a relationship value as a node value is resolved: bind a parameter as its value, fold or translate a computed value, or refuse naming the property; never drop a non-null value. Preserve: literal and `UNWIND`-literal values, the matched-node refusal until computed values are supported there, and null values not stored. Writers and readers affected: the literal-endpoint fast path and its multigraph branch; every reader of `rdf_edges.qualifiers`. Distinguishing case: `CREATE (:N {id: 'a'})-[:T {k: $k}]->(:N {id: 'b'})` stores `k`. The controls `rel-param-kept` and `rel-value-kept` check the repaired rule in the model only. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
 
 <a id="bug-plt-113"></a>
-### kg_PPR_GUIDED_SUBGRAPH returns its top nodes with almost none of the edges among them
+### kg_PPR_GUIDED_SUBGRAPH lists almost none of the edges among its answered nodes and can answer more nodes than its cap
 
 Severity: High · Decision: Open
 
 Run: Uplift 2026-11-17 (continuation, iteration 49)
 
-Found by: W56 prediction P1 ([predictions](../uplift/consolidated/iteration-49/retrieval-PAIRS.md), missed), traced through `kg_PPR_GUIDED_SUBGRAPH` and `Graph.KG.Subgraph.SubgraphJson`; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_guided_subgraph_drops_edges_among_top_nodes` with neighbor `theorem_last_hop_edges_missing`'s uncapped expansion; controls `guided-cap-max-nodes`, `edge-recorded-after-cap-test`.
+Found by: W56 prediction P1 ([predictions](../uplift/consolidated/iteration-49/retrieval-PAIRS.md), missed), traced through `kg_PPR_GUIDED_SUBGRAPH` and `Graph.KG.Subgraph.SubgraphJson`; corrected after [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 1, which found that the iteration-49 entry treated the documented cap as the defect and proposed the wrong repair, and found the seeds-over-the-cap case. [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_filled_cap_expands_only_first_node` and `theorem_admitted_seeds_ignore_cap` (every input), witnesses `theorem_guided_subgraph_drops_edges_among_top_nodes` and `theorem_guided_seeds_exceed_cap`, neighbor `theorem_guided_uncapped_lists_all_edges`; controls `edges-among-answered`, `seeds-capped`, `expand-whole-frontier-at-cap`, `guided-cap-top-k-only` ([prove](results/retrieval_compose/20261117T032018Z-prove/receipt.json), 15 of 15 controls EXPECTED_FAIL). The iteration-49 control `guided-cap-max-nodes` encoded the wrong repair and is withdrawn (its receipts are kept).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed3-20261117T024208Z.json) `PG_star_top3`, `PG_star_top7`, `PG_star_top50`; [first probe](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `P1_top1`-`P1_top10`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `guided[3]`-`guided[50]`). Default graph, star s → a1..a6 plus a1 → a2. `kg_PPR_GUIDED_SUBGRAPH([s], ppr_top_k=7)` answers all seven nodes (all have positive scores) with the single edge a1 → a2; the six edges s → a_i are missing. With `ppr_top_k=3` it answers s, a1, a2 and again only a1 → a2. Passing neighbor: `ppr_top_k=50` (more than the reachable nodes) answers all seven edges, and `kg_SUBGRAPH([s], k_hops=2)` lists them too.
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, ObjectScript `SubgraphJson` path (no Arno reader on the fixture): iteration-50 [fixture reproduction](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) and [binding](results/retrieval_compose/20261117T032153Z-binding/receipt.json) `guided[*]`, `guided_more[*]` (AGREES 45 cases); earlier [observation](../uplift/consolidated/iteration-49/retrieval-observed3-20261117T024208Z.json) `PG_star_top3`, `PG_star_top7`, `PG_star_top50`. Default graph, star s → a1..a6 plus a1 → a2. `kg_PPR_GUIDED_SUBGRAPH([s], ppr_top_k=7)` answers all seven nodes with the single edge a1 → a2; `ppr_top_k=3` answers s, a1, a2 with only a1 → a2. Seeds s, a3, a4 with `ppr_top_k=1` answer three nodes (the cap is 1) and no edge, although s → a3 and s → a4 join them; [s] with `ppr_top_k=50` and `max_nodes=3` answers seven nodes and only a1 → a2. Passing neighbor: [s] with `ppr_top_k=50` and the default `max_nodes` answers all seven edges.
 
-Expected: the API reference and docstring: "the subgraph around the nodes personalized PageRank ranks highest", i.e. [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph)'s nodes within `k_hops` and the edges among them.
+Expected: the docstring (`algorithms.py:956-957`): the subgraph of the seeds and the top nodes within `k_hops`, "capped at `min(max_nodes, ppr_top_k)` nodes"; the [design note](../../docs/dev/notes/enhancements/001-ppr-guided-subgraph.md) (`top_k` a "hard node cap"; acceptance "`len(result.nodes) <= top_k` always"); [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph): the edges among the answered nodes. The cap itself is intended.
 
-Observed: `kg_PPR_GUIDED_SUBGRAPH` calls `kg_SUBGRAPH(seeds + top_ids, k_hops, max_nodes=min(max_nodes, ppr_top_k))` (`algorithms.py:971-973`). `SubgraphJson` admits every seed without a cap, so the count already equals the cap; the first hop expands only the first frontier node in ID order, records its out-edges and stops at the cap test after that node (`Subgraph.cls:51-99`).
+Observed: `kg_PPR_GUIDED_SUBGRAPH` calls `kg_SUBGRAPH(seeds + top_ids, k_hops, max_nodes=min(max_nodes, ppr_top_k))` (`algorithms.py:971-973`). `SubgraphJson` admits every seed that has an edge with no cap test (`Subgraph.cls:36-48`), so the seeds alone can exceed the cap; once the count has reached the cap it expands only the first frontier node in ID order, recording that node's out-edges, and stops (`Subgraph.cls:51-99`). With Arno loaded and no `edge_types`, `IRISGraphStore.execute_subgraph` asks `ArnoAccel.SubgraphNativeJson` first (`iris_sql_store.py:2526-2541`); that path was not checked.
 
-Consequence: whenever the walk reaches at least `ppr_top_k` nodes (with the default 50, any ordinary graph), the answer is the top nodes with only the out-edges of the alphabetically first one, which may also point outside the answer. A retrieval caller gets a node list with its relationships missing and no sign of it. High: wrong result of the method's main output under its defaults.
+Consequence: whenever the walk reaches at least `ppr_top_k` nodes (with the default 50, any ordinary graph), the answer is the top nodes with only the out-edges of the alphabetically first one, which may also point outside the answer; with more seeds than the cap the answer is larger than the documented cap. A retrieval caller gets a node list with its relationships missing and no sign of it. High is kept: the method's main output is wrong under its defaults, silently; the cap being intended does not change the edge loss. The over-cap node count alone would be Medium.
 
-Repair proposal (not implemented): pass `max_nodes` (not `min(max_nodes, ppr_top_k)`) and have the subgraph list the edges among its answered nodes; preserve the PPR ranking, `ppr_top_k`, argument checks and the uncapped answer. The control `guided-cap-max-nodes` checks the first half in the model only. Governing statement: [algorithms.op.subgraph.guided](../ontology/features/algorithms.g5.md#algorithms.op.subgraph.guided).
+Repair proposal (not implemented): keep the cap; admit seeds and top nodes only up to the cap (best PPR score first), then list every edge whose two ends are answered (the same repair as bug-plt-114's). Preserve: the cap `min(max_nodes, ppr_top_k)`, the PPR ranking and `ppr_top_k`, argument checks before any read, `k_hops`, and the uncapped answer (all seven edges when the cap exceeds the reachable nodes). Writers and readers: `SubgraphJson` (seed loop, frontier loop, edge list), `kg_SUBGRAPH` and `kg_PPR_GUIDED_SUBGRAPH` (reshape), `IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH`; the Arno reader must give the same answer. Distinguishing cases: [s] with `ppr_top_k=3` lists s → a1 and s → a2; seeds s, a3, a4 with `ppr_top_k=1` answer one node. Checked in the model only (controls `edges-among-answered` and `seeds-capped` make the departures fail while the uncapped neighbor verifies); not run on the product. Governing statement: [algorithms.op.subgraph.guided](../ontology/features/algorithms.g5.md#algorithms.op.subgraph.guided).
 
 <a id="bug-str-004"></a>
 ### verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity
@@ -2993,7 +2993,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 46)
 
 Found by: the frozen W52 prediction V4 missed ([predictions](../uplift/consolidated/iteration-46/ivf-PAIRS.md)), then a second observation; [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cross_cell_reinsert_leaves_stale_entry`, `theorem_same_cell_reinsert_counts_twice`, controls `insert-replaces`, `delete-all`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-46/ivf-observed-20261117T011444Z.json) V4; [second observation](../uplift/consolidated/iteration-46/ivf-observed2-20261117T011512Z.json); [binding](results/ivf_entries/20261117T011629Z-binding/receipt.json)). `ivf_insert(name, "x", v1)` then `ivf_insert(name, "x", v2)` with `v2` nearest another centroid leaves both entries: a search with `v1` still returns `x` first, and after one `ivf_delete(name, "x")` (answering True) `x` is still returned. In the same cell the second insert replaces the vector but `ivf_info.indexed` rises by 2.
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-46/ivf-observed-20261117T011444Z.json) V4; [second observation](../uplift/consolidated/iteration-46/ivf-observed2-20261117T011512Z.json); [binding](results/ivf_entries/20261117T011629Z-binding/receipt.json)). `ivf_insert(name, "x", v1)` then `ivf_insert(name, "x", v2)` with `v2` nearest another centroid leaves both entries: a search with `v1` still returns `x` first, and after one `ivf_delete(name, "x")` (answering True) `x` is still returned. In the same cell the second insert replaces the vector but `ivf_info.indexed` rises by 2. Iteration 50 ([review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m8): the cross-cell case needs no change of vector. Under metric "cosine" or "dot", re-inserting a node with the vector the build stored can choose another cell, because the build clusters by Euclidean k-means and `Insert` picks the cell with the largest dot product ([binding](results/ivf_entries/20261117T032444Z-binding/receipt.json) `cell_cosine`, `cell_dot`: built in cell 0, inserted in cell 1, now in both, `indexed` + 1; neighbor `cell_l2` keeps cell 0). [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cosine_reinsert_changes_cell`, neighbor `theorem_l2_insert_matches_build`, control `insert-by-distance`.
 
 Expected: the API reference: `ivf_insert` "add[s] one vector ... in the cell of its nearest centroid"; `ivf_delete` "remove[s] node_id's vector ... Returns True if it was there"; `ivf_info.indexed` is the index's size. [search.scope.indexes.upkeep](../ontology/features/search.g5.md#search.scope.indexes.upkeep): the caller keeps the index in step through these calls.
 
@@ -3010,13 +3010,13 @@ Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
-Found by: source reading of `IVFIndex.Search` while checking W53's SQL reader ([predictions](../uplift/consolidated/iteration-47/sqlprocs-PAIRS.md); not a frozen prediction); [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cosine_ranks_as_dot` (every query and vector pair) and `theorem_cosine_metric_misranks` (witness), controls `cosine-normalized` (the repaired order; the equal-length neighbor `theorem_equal_lengths_agree` still verifies) and `cosine-takes-l2-branch`.
+Found by: source reading of `IVFIndex.Search` while checking W53's SQL reader ([predictions](../uplift/consolidated/iteration-47/sqlprocs-PAIRS.md); not a frozen prediction); [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cosine_ranks_as_dot` (every query and vector pair) and `theorem_cosine_metric_misranks` (witness), controls `cosine-normalized` (the repaired order; the equal-length neighbor `theorem_equal_lengths_agree`, general since iteration 50, still verifies) and `cosine-takes-l2-branch` (which also fails `theorem_cosine_metric_misranks`, named since iteration 50).
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/ivf-cosine-observed-20261117T014744Z.json); [binding](results/ivf_entries/20261117T014907Z-binding/receipt.json) `cosine_ivf_search`, `cosine_kg_IVF`). One graph holds `long_off` = (10,0,0,0), `unit_on` = (0.6,0.8,0,0) and `other` = (0,0,1,0); `ivf_build(..., metric="cosine")`, then the query (0.6,0.8,0,0). `ivf_search` and `SELECT kg_IVF(...)` both answer `long_off` 6.0, `unit_on` 1.0, `other` 0.0. Passing neighbor on the same vectors: the route search `search_nodes_by_vector` answers `unit_on` 1.0, `long_off` 0.6, `other` 0.0. Not exercised: `vector_search`'s IVF fallback and `kg_RRF_FUSE`'s IVF leg (the fixture supports `VECTOR_COSINE`, so the fallback is not taken).
 
 Expected: the metric's name and default (`ivf_build(metric="cosine")`, reported back by `ivf_info`); `_IVF_METRICS` accepts "cosine" and "dot" as different choices; the route search ranks by cosine, and `VecIndex` was changed in 4.7.0 so that a cosine index scores the cosine.
 
-Observed: every branch that scores under "cosine" computes `$vectorop("sum", $vectorop("v*", q, v))`, the same as "dot": centroid choice and entry scoring in `Search` (`IVFIndex.cls:75-78`, `112-115`) and the cell choice in `Insert` (`:200-201`). `ivf_build` clusters and stores the raw vectors (`vector.py:1970-2022`) and nothing divides by a length.
+Observed: every branch that scores under "cosine" computes `$vectorop("sum", $vectorop("v*", q, v))`, the same as "dot": centroid choice and entry scoring in `Search` (`IVFIndex.cls:75-78`, `112-115`) and the cell choice in `Insert` (`:200-201`). `ivf_build` clusters the raw vectors with Euclidean k-means whatever the metric and stores them in those cells (`vector.py:1985-2017`, `AddBatch`); nothing divides by a length. So under "cosine" the build's cells follow distance while `Search` and `Insert` follow the dot product ([review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m8; see [bug-srch-107](#bug-srch-107)).
 
 Consequence: with stored vectors that are not unit length (`store_embedding` accepts any), a cosine IVF index returns a different top k from the route search on the same data, through both the Python and the SQL reader. Unit-length embeddings, which most providers return, are unaffected. Medium: wrong ranking under a confirmed but data-dependent trigger.
 
@@ -3048,7 +3048,7 @@ Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-17 (continuation, iteration 49)
 
-Found by: the source of `Graph.KG.Subgraph.SubgraphJson` while tracing bug-plt-113; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_last_hop_edges_missing`, `theorem_capped_subgraph_lists_edge_to_unlisted_node`; control `edge-recorded-after-cap-test`.
+Found by: the source of `Graph.KG.Subgraph.SubgraphJson` while tracing bug-plt-113; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_last_hop_edges_missing`, `theorem_capped_subgraph_lists_edge_to_unlisted_node`; control `edge-recorded-after-cap-test`. Iteration 50: `theorem_capped_subgraph_lists_edge_to_unlisted_node` now holds for every node, adjacency and state at the cap ([review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m9); the repair is checked in the model by the control `edges-among-answered`, which also repairs bug-plt-113's edge loss.
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed3-20261117T024208Z.json) `S_star_1hop`, `S_star_cap3`, `S_isolated_seed`; [follow-up](../uplift/consolidated/iteration-49/retrieval-observed2-20261117T024059Z.json) `S_cap*`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `subgraph[*]`). Star s → a1..a6 plus a1 → a2: `kg_SUBGRAPH([s], k_hops=1)` answers a1 and a2 but not the edge a1 → a2; with `max_nodes=3` it answers s, a1, a2 and the edge s → a3; a seed with no edges is not answered. Passing neighbor: `k_hops=2` lists a1 → a2.
 
@@ -3061,42 +3061,42 @@ Consequence: callers that read the edge list (context building, `kg_PPR_GUIDED_S
 Repair proposal (not implemented): after the walk, list every edge whose two ends are answered (and drop a crossing edge at the cap); answer an isolated seed as a node. Preserve the hop limit, the cap and the edge-type filter. Governing statement: [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph).
 
 <a id="bug-cyp-111"></a>
-### A list index known only at run time fails the whole query when it is negative, and answers the element as text
+### A list index known only at run time fails the query when it is negative, for a list read from a property or indexed by a parameter, and answers the element as text
 
 Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
-Found by: the frozen W54 prediction L2 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_row_negative_index_fails` with neighbors `theorem_literal_index_follows_rule`, `theorem_row_nonnegative_index_follows_rule` and `theorem_ivglistget_is_rule`; controls `row-index-through-ivglistget`, `literal-negative-unwrapped`, `ivglistget-no-wrap`.
+Found by: the frozen W54 prediction L2 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); narrowed by [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 2 (a WITH-held literal list answers correctly); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_row_negative_index_fails` and `theorem_param_negative_index_fails` with neighbors `theorem_with_literal_row_index_follows_rule`, `theorem_literal_index_follows_rule`, `theorem_row_nonnegative_index_follows_rule` and `theorem_ivglistget_is_rule`; controls `row-index-through-ivglistget`, `with-literal-elem-unwrapped`, `with-literal-elem-untyped`, `literal-negative-unwrapped`, `ivglistget-no-wrap`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `I_row_*`, `I_param_neg`, `I_with_list_neg`; [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `row_index_*`, `literal_index_*`, `sql_ivglistget_*`). Over a stored `n.l = [1, 2, 3]`, `UNWIND [-1] AS i RETURN n.l[i]` (and -3, -4) fails with `-149 ... JSON_ARRAYGET ... <RANGE>`, so no row is returned; `n.l[$i]` with `$i = -1` fails "Incorrect number of parameters"; `WITH n.l AS l UNWIND [-1] AS i RETURN l[i]` fails `<RANGE>` in `JSON_VALUE`. Passing neighbors: the literal `n.l[-1]` answers 3 and `n.l[-4]` null; a run-time 0 or 2 answers the element and 3 answers null; the SQL function `CypherFn_IVGLISTGET('[1,2,3]', '-1')` answers 3. A run-time index also answers the element as text: `UNWIND [0] AS i RETURN n.l[i]` answers `'1'` where `n.l[0]` answers 1.
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([iteration-47 observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `I_row_*`, `I_param_neg`, `I_with_list_neg`; iteration 50: [fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `idx_*`, [binding](results/cypher_fns/20261117T033050Z-binding/receipt.json) `index_<source>_<kind>_<i>`, 63 cases over three list sources). Over a stored `n.l = [1, 2, 3]`, `UNWIND [-1] AS i RETURN n.l[i]` (and -3, -4) fails with `-149 ... JSON_ARRAYGET ... <RANGE>`; `WITH n.l AS l UNWIND [-1] AS i RETURN l[i]` fails `<RANGE>` in `JSON_VALUE`; `n.l[$i]` fails "Incorrect number of parameters" for every value; `WITH [1, 2, 3] AS l RETURN l[$i]` with `$i = -1` fails `<RANGE>`. A non-negative run-time index into a list from a property answers text: `UNWIND [0] AS i RETURN n.l[i]` answers `'1'` where `n.l[0]` answers 1. Passing neighbors: a WITH-held literal list read by a row index follows the rule with the element's type (`WITH [1, 2, 3] AS l UNWIND [-1] AS i RETURN l[i]` answers the integer 3, review item 2); every literal index; `CypherFn_IVGLISTGET('[1,2,3]', '-1')` answers 3.
 
-Expected: openCypher (TCK `List1`): a negative index counts from the end, an index past either end is null. The translator already wraps a literal negative index (4.6.0 R267).
+Expected: openCypher (TCK `List1`): a negative index counts from the end, an index past either end is null, and the element keeps its type. The translator already wraps a literal negative index (4.6.0 R267) and a row index into a WITH-held literal list (R308, `CY_LIST_ELEM`).
 
-Observed: for an index that is not a literal integer, `_expr_subscript` emits `JSON_ARRAYGET(l, CAST(i AS INTEGER))` (`translator.py:23656`); `Graph_KG.JSON_ARRAYGET` is `%DynamicArray.%Get(i)` (`schema.py:2179`), which raises `<RANGE>` for a negative position. The product's `CypherFn.IVGLISTGET`, which wraps negatives, is not emitted for this shape.
+Observed: `_expr_subscript` decides by the list's source and the index's syntax (`translator.py:23509-23656`). A property read takes `JSON_ARRAYGET(l, CAST(i AS INTEGER))`; another WITH column takes `JSON_VALUE(l, '$.' || i)`; a parameter index is inlined into `JSON_ARRAYGET` for a WITH column and left as a marker IRIS refuses on a property read. `Graph_KG.JSON_ARRAYGET` and `JSON_VALUE` are `%Get(i)` (`schema.py:2179-2184`), which raises `<RANGE>` below 0 and answers text. Only a row index into a WITH-held literal list reaches `CY_LIST_ELEM` (`_is_row_list_elem`, `translator.py:7681-7732`).
 
-Consequence: a query that indexes a list with a computed or unwound negative index returns nothing and an error; with a non-negative index the value comes back as a string. Medium.
+Consequence: a query that indexes a stored list with a computed or unwound negative index, or any list with a negative parameter, returns nothing and an error; with a non-negative index into a stored list the value comes back as a string. Medium.
 
-Repair proposal (not implemented): emit the typed element function with the wrap (`CY_LIST_ELEM` or `CypherFn_IVGLISTGET`) for a run-time index. Preserve: literal indexes and null past either end. The control `row-index-through-ivglistget` checks the repaired rule in the model only. Governing statement: [query.functions.list_index](../ontology/features/cypher.g5.md#query.functions.list_index).
+Repair proposal (not implemented): emit `CY_LIST_ELEM` (typed, wraps negatives) for every run-time index, whatever the list's source, and compute a parameter index in Python as R311 does for literals. Preserve: literal indexes, the WITH-literal path, null past either end, and a null index giving null (today it does not: [bug-cyp-126](#bug-cyp-126)). Writers and readers affected: the `RETURN`/`WITH` columns that read an element, and `CY_LIST_ELEM`'s callers. Distinguishing case: `MATCH (n) UNWIND [-1] AS i RETURN n.l[i]` answers 3 while `WITH [1, 2, 3] AS l UNWIND [-1] AS i RETURN l[i]` still answers 3. The control `row-index-through-ivglistget` checks the repaired rule in the model only. Governing statement: [query.functions.list_index](../ontology/features/cypher.g5.md#query.functions.list_index).
 
 <a id="bug-cyp-112"></a>
-### reverse() of a list held in a stored property reverses its JSON text instead of the list
+### reverse() of a list held in a property, a slice, a subscript or a coalesce reverses its JSON text, and of a WITH column from a property answers the JSON text
 
 Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
-Found by: the frozen W54 prediction L1 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_stored_list_reversed_as_text`, neighbor `theorem_reverse_neighbors`, control `property-to-cy-reverse`.
+Found by: the frozen W54 prediction L1 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); widened by [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 3 (slice, subscript, coalesce, and the Variable case the model mispredicted); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_stored_list_reversed_as_text`, `theorem_unknown_list_variable_answered_as_text`, neighbor `theorem_reverse_neighbors`; controls `property-to-cy-reverse`, `reverse-column-typed`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed-20261117T015433Z.json) `L1_list`, `L1_empty`; [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `reverse_property_list`). For a Cypher-written `n.l = [1, 2, 3]`, `RETURN reverse(n.l)` answers the string `']3 ,2 ,1['`, and for `n.e = []` the string `']['`. Passing neighbors: `reverse([1, 2, 3])` and `reverse(tail(n.l))` answer lists; `reverse(n.str)` of `'abc'` answers `'cba'`. Through a `WITH` (`WITH n.l AS l RETURN reverse(l)`) the answer is the text `'[3,2,1]'`, not a list.
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([iteration-47 observation](../uplift/consolidated/iteration-47/cypherfn-observed-20261117T015433Z.json) `L1_list`, `L1_empty`; iteration 50: [fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `rev_*`, [binding](results/cypher_fns/20261117T033050Z-binding/receipt.json) `reverse_*`, eleven argument forms). For a Cypher-written `n.l = [1, 2, 3]`: `reverse(n.l)` and `reverse(coalesce(n.l, []))` answer the string `']3 ,2 ,1['`; `WITH [1, 2, 3] AS l RETURN reverse(l[0..3])` answers `']3,2,1['`; `WITH [[1, 2, 3], [4]] AS l RETURN reverse(l[0])` answers `']3,2,1['`; `WITH n.l AS l RETURN reverse(l)` answers the string `'[3,2,1]'` (reversed, but as text). Passing neighbors: `reverse([1, 2, 3])`, `WITH [1, 2, 3] AS l RETURN reverse(l)`, `reverse(n.l + [])`, `reverse(tail(n.l))` and `reverse(CASE WHEN 1 = 1 THEN [1, 2, 3] END)` answer lists; `reverse(n.str)` of `'gotcha'` answers `'ahctog'`.
 
 Expected: openCypher: `reverse()` of a list is the list in reverse order; of a string, the reversed string.
 
-Observed: `_scalar_string` sends only list literals, comprehensions, list-valued functions, variables and `CASE` to `CY_REVERSE`; a property read goes to SQL `REVERSE()`, which reverses the stored JSON text (`translator.py:24495-24513`).
+Observed: two decisions. `_scalar_string` sends only list literals, comprehensions, list-valued calls (by `_container_kind`), variables and `CASE` to `CY_REVERSE`; a property read, a slice, a subscript or another call goes to SQL `REVERSE()`, which reverses the text (`translator.py:24495-24513`). And `CY_REVERSE`'s JSON answer is decoded into a list only for a column the translator knows to be a list, so a variable from a property comes back as JSON text.
 
 Consequence: wrong values for a common list operation on stored data. Medium.
 
-Repair proposal (not implemented): send every non-literal argument to `CY_REVERSE`, which already reverses a JSON array or a string by its run-time value, and type the column as a list. A stored string that spells a list would then reverse as the list (the documented known issue). Governing statement: [query.functions.reverse](../ontology/features/cypher.g5.md#query.functions.reverse).
+Repair proposal (not implemented): send every non-literal argument to `CY_REVERSE`, which already reverses a JSON array or a string by its run-time value, and mark the column for decoding by the value's run-time kind. A stored string that spells a list would then reverse as the list (the documented known issue). Preserve: string arguments and the list forms that work today. Distinguishing case: `WITH n.l AS l RETURN reverse(l)` answers `[3, 2, 1]` and `reverse(n.str)` still `'ahctog'`. Controls `property-to-cy-reverse` and `reverse-column-typed` check the two halves in the model only. Governing statement: [query.functions.reverse](../ontology/features/cypher.g5.md#query.functions.reverse).
 
 <a id="bug-cyp-113"></a>
 ### n[k] with a key from UNWIND reads the property named "k", so keys(n) then n[k] answers null for every key
@@ -3105,13 +3105,13 @@ Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
-Found by: the frozen W54 prediction L7 missed, then source reading ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_row_key_reads_variable_name`, neighbor `theorem_param_key_follows_rule`, control `row-key-by-value`.
+Found by: the frozen W54 prediction L7 missed, then source reading ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_row_key_reads_variable_name`, neighbor `theorem_param_key_follows_rule`, control `row-key-by-value`; the WITH-column failure (already in this entry's evidence) gained `theorem_with_column_key_fails` and control `with-key-by-value` in iteration 50 ([review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m5; [binding](results/cypher_fns/20261117T033050Z-binding/receipt.json) `node_with_key`, [fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `key_from_with_column`).
 
 Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `N_row_key`, `N_with_key`; [idiom](../uplift/consolidated/iteration-47/cypherfn-observed3-20261117T020020Z.json) `keys_idiom`; [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `node_row_key`). A node with `k: 'gotcha'`, `num: 5`: `UNWIND ['num', 'str', 'zz'] AS k RETURN k, n[k]` answers `'gotcha'` on every row; `MATCH (n) UNWIND keys(n) AS k RETURN k, n[k]` answers null for every key; `WITH n, 'str' AS k RETURN n[k]` raises "Non-integer index type for list subscript". Passing neighbor: `n[$k]` with `$k = 'num'` answers 5.
 
 Expected: openCypher: `n[k]` is the property whose name is `k`'s value.
 
-Observed: for a `Variable` index on a node, `_expr_subscript` binds `context.input_params.get(idx.name, idx.name)`, so a variable that is not a parameter becomes its own name as the key of the `rdf_props` join (`translator.py:23533-23541`).
+Observed: for a `Variable` index on a node, `_expr_subscript` binds `context.input_params.get(idx.name, idx.name)`, so a variable that is not a parameter becomes its own name as the key of the `rdf_props` join (`translator.py:23533-23541`). A node carried through `WITH` is a stage column, so `n[k]` takes the scalar branch, where a key known to be a string raises "Non-integer index type for list subscript" (`translator.py:23583-23610`).
 
 Consequence: dynamic property reads silently answer another property or null. Medium: wrong values with no error.
 
@@ -3192,6 +3192,63 @@ Observed: `_create_resolve_prop_value` asks `_fold_constant` to work out a funct
 Consequence: a node cannot be created with a generated identifier, a size, an absolute value or a parsed number in one statement; the whole write is refused (nothing partial). Medium. bug-cyp-114 named the `randomUUID()` and `rand()` cases; this is their cause.
 
 Repair proposal (not implemented): translate an unfolded value to SQL as `SET` does (control `create-value-translated` checks the repaired rule in the model only); see [one SQL path for computed write values](design_simplification.md#simp-cyp-102). Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
+
+<a id="bug-cyp-126"></a>
+### A null list index known only at run time answers the list's first element instead of null
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 50)
+
+Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 6 (reviewer probe `p2`); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_null_index_reads_first_element`; controls `null-index-is-null`, `row-index-through-ivglistget`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `idx_null_*`; [binding](results/cypher_fns/20261117T033050Z-binding/receipt.json) `index_*_null`). `WITH [1, 2, 3] AS l UNWIND [null] AS i RETURN l[i]` answers `'1'`; so do `MATCH (n) RETURN n.l[null]`, `n.l[n.nope]`, `UNWIND [null] AS i RETURN n.l[i]`, `WITH n.l AS l UNWIND [null] AS i RETURN l[i]` and `WITH [1, 2, 3] AS l RETURN l[null]`. A null parameter index fails "Incorrect number of parameters". Passing neighbor: the literal list `[1, 2, 3][null]` answers null (folded by the translator).
+
+Expected: openCypher (TCK `List1`): a null index gives null.
+
+Observed: the run-time paths of `_expr_subscript` hand the null to `JSON_ARRAYGET(l, CAST(NULL AS INTEGER))` or `JSON_VALUE(l, '$.' || CAST(NULL AS VARCHAR))` (`translator.py:23620-23656`). IRIS passes SQL NULL to an ObjectScript function as `""`; `%Get("")` reads position 0, and `'$.' || NULL` is the path `'$.'` whose key `""` also reads position 0 (`schema.py:2179-2184`). `CY_LIST_ELEM` would also read position 0 for `""`.
+
+Consequence: a missing index silently selects the first element, so `l[m.idx]` over rows lacking `idx` returns a real-looking value. Medium: wrong value with no error.
+
+Repair proposal (not implemented): test the index for null before the lookup (`CASE WHEN i IS NULL THEN NULL ELSE ... END`) on every run-time path, or have the element functions treat `""` as null. Preserve: the literal-list fold and every non-null index. Distinguishing case: `UNWIND [null, 0] AS i RETURN n.l[i]` answers null then 1. The control `null-index-is-null` checks the property path in the model only. Governing statement: [query.functions.list_index](../ontology/features/cypher.g5.md#query.functions.list_index).
+
+<a id="bug-cyp-127"></a>
+### A simple CASE over a property or a row value takes a WHEN of another type when the text matches
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 50)
+
+Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 7 (reviewer probe `p5`); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_simple_case_coerces_across_kinds` with neighbor `theorem_simple_case_same_kind_or_literal_follows_rule`; controls `case-kinds-compared`, `case-literal-kinds-unchecked`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `case_simple_*`, `eq_prop_str_vs_int`; [binding](results/cypher_exprs/20261117T033119Z-binding/receipt.json) `simple_case_*`, nine kind pairs). With `n.s1 = '1'` and `n.i1 = 1`: `CASE n.s1 WHEN 1 THEN 'num' WHEN '1' THEN 'str' END` answers `'num'`; `UNWIND ['1'] AS s RETURN CASE s WHEN 1 ...` answers `'num'`; `CASE n.i1 WHEN '1' THEN 'str' ...` answers `'str'`. Passing neighbors: `n.s1 = 1` is false and `CASE WHEN n.s1 = 1 THEN 'num' ELSE 'other' END` answers `'other'`; `CASE '1' WHEN 1 ...` (literal test) takes the ELSE; same-type WHENs match.
+
+Expected: openCypher and [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality): a simple CASE takes the first WHEN equal to the test, and `'1'` does not equal 1.
+
+Observed: `_expr_case` drops a WHEN of another kind only when both kinds are known statically, which `_static_value_kind` knows only for literals; every other WHEN goes to SQL `CASE x WHEN y`, which IRIS evaluates with its own coercion, so a number equals text that spells it (`translator.py:22189-22238`).
+
+Consequence: a branch chosen on stored or unwound data can be wrong while the equivalent generic `CASE` is right. Medium: wrong value with no error.
+
+Repair proposal (not implemented): translate a simple CASE whose test or WHEN kind is unknown to the generic form through the typed comparison `=` already uses (`CY_JCMP`), keeping the static drop for literals. Preserve: literal simple CASEs, same-type matches, null tests taking the ELSE. Distinguishing case: `CASE n.s1 WHEN 1 THEN 'num' ELSE 'other' END` answers `'other'` while `CASE n.i1 WHEN 1 ...` still answers `'num'`. The control `case-kinds-compared` checks the repaired rule in the model only. Governing statement: [query.values.conditions](../ontology/features/cypher.g5.md#query.values.conditions).
+
+<a id="bug-cyp-128"></a>
+### A SET or CREATE of a list literal that holds a property read fails with a raw Python TypeError and writes nothing
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 50)
+
+Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m3 (reviewer probe `p4`). No formal contract (probe and source reading only).
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `set_list_from_props`; [follow-up](../uplift/consolidated/iteration-50/review-repro2-20261117T032546Z.json) `set_list_*`, `create_list_property_elem`, `after_refusal_read`). `MATCH (n) SET n.l1 = [n.a, 1]` and `MATCH (n) CREATE (:X {l: [n.a, 1]})` raise `TypeError: Object of type PropertyReference is not JSON serializable` before any SQL runs; `n.l1` stays null. Passing neighbors: `[x, 1]` from `UNWIND`, `[$x, 1]` and `[1 + 1, 1]` are stored.
+
+Expected: openCypher: a list literal's elements are evaluated per row and the list is stored; where IVG cannot, a Cypher error naming the property, as the matched-relationship refusal does.
+
+Observed: `_translate_set_value` hands a list literal to `_constant_value` and, when that answers `_NOT_CONSTANT`, `json.dumps` the raw elements, AST nodes included (`translator.py:12638-12642`).
+
+Consequence: an ordinary write is refused with an internal error that names no Cypher concept. Medium (refusal of a valid write; nothing partial).
+
+Repair proposal (not implemented): build the list in SQL from translated elements (as `SET` translates scalars), or refuse with a `CypherError` naming the property. Preserve: constant lists and row-literal lists. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
 
 <a id="bug-cyp-115"></a>
 ### A map value read by a key answers numbers and booleans as text
@@ -3320,7 +3377,85 @@ Observed: a potential problem only: whether 5.4.x binds the marker is not establ
 
 Consequence: if 5.3.x is supported, the main bulk-load pattern (`UNWIND $rows ...`) fails with it. Low until established.
 
+Iteration 50 triage of [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m2 ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `param_list_slice*`, `param_list_index`): `RETURN $l[$s..$e]` and `RETURN $l[$s..]` fail "Incorrect number of parameters", and `RETURN $l[$s]` "Invalid number of parameters", while `RETURN $l[1..3]` (worked out in Python, 4.6.0 R311) and `WITH $l AS l RETURN l[$s..$e]` answer `[2, 3]`. The translated slice reads `JSON_TABLE(?, ...)`, the same marker-in-`JSON_TABLE` shape as above, so this is the same premise, not a new finding. Source reading adds one fault that would remain on any driver: `_expr_slice` adds the null-guard markers to the parameter list after the slice's own markers but writes them first in the SQL (`translator.py:23778-23789`), so with a parameter list the first guard would receive the list's text. Not modeled (`cypher_exprs` has no parameter-list base).
+
 Governing statement: [query.conformance](../ontology/features/cypher.g5.md#query.conformance).
+
+<a id="bug-cyp-129"></a>
+### Slicing a null list answers the empty list instead of null
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 50)
+
+Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m1 (reviewer probe `p4`); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_null_list_slice_is_empty`; control `null-list-guard`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `null_list_slice`, `null_list_index`; [binding](results/cypher_exprs/20261117T033119Z-binding/receipt.json) `null_list_slice_*`). `MATCH (n) RETURN n.missing[0..2]` answers `[]` for literal, row and parameter bounds. Passing neighbor: `n.missing[0]` answers null.
+
+Expected: openCypher: an operation on null gives null.
+
+Observed: `_expr_slice` returns NULL only for an explicit null bound; the list goes into `JSON_TABLE`, which yields no rows for NULL, and the aggregate answers `[]` (`translator.py:23679-23791`).
+
+Consequence: a missing list reads as empty, so `size(n.missing[0..2])` is 0 instead of null. Low.
+
+Repair proposal (not implemented): add the list to the null guard. Governing statement: [query.functions.slice](../ontology/features/cypher.g5.md#query.functions.slice).
+
+<a id="bug-cyp-130"></a>
+### trim() keeps tabs and line breaks in a query's result, while a node CREATE removes them
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 50)
+
+Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m4 (reviewer probe `p4`). No formal contract (probe and source reading only).
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `trim_*`; [follow-up](../uplift/consolidated/iteration-50/review-repro2-20261117T032546Z.json) `return_trim_*`, `create_trim*`, `set_trim`). `RETURN trim('\t a \n')` answers the string unchanged (size 5), as does `trim(n.s)` and `SET n.t = trim(...)`; `rtrim('a \n')` keeps the line break while `ltrim('\t a')` answers `'a'`; `CREATE (:X {t: trim('\t a \n')})` stores `'a'`. Passing neighbor: `trim('  a  ')` answers `'a'`.
+
+Expected: Neo4j's Cypher manual: `trim()` removes leading and trailing whitespace; the same expression gives the same value in `RETURN`, `SET` and `CREATE`.
+
+Observed: `RETURN` and `SET` translate `trim` to SQL `TRIM` (`translator.py:29537`), which removes spaces only; the node `CREATE` folder works it out with Python's `str.strip` (`translator.py:9456`), which removes all whitespace.
+
+Consequence: text with tabs or line breaks is compared or stored differently depending on the clause. Low.
+
+Repair proposal (not implemented): trim the same whitespace set on both paths (SQL `$ZSTRIP`-style function or a Python fold limited to spaces), after deciding which set is intended. Governing statement: [query.functions.strings](../ontology/features/cypher.g5.md#query.functions.strings).
+
+<a id="bug-cyp-131"></a>
+### range() with a step known only at run time accepts a fractional step
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 50)
+
+Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m6 (reviewer probe `p1`). No formal contract: `cypher_fns`'s range model covers integer steps only.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `range_fractional_step_*`; [follow-up](../uplift/consolidated/iteration-50/review-repro2-20261117T032546Z.json) `range_*`). `UNWIND [1.5] AS s RETURN range(1, 3, s)` and `range(1, 3, $s)` with 1.5 answer `[1, 2.5]`. Passing neighbors: the literal `range(1, 3, 1.5)` is refused ("must be an integer"); a run-time step of 2 answers `[1, 3, 5]`.
+
+Expected: openCypher: `range()` takes integers; the translator already refuses a literal fractional step.
+
+Observed: `CypherFn.IVGRANGE` loops with whatever step it receives (`CypherFn.cls:255`), and the translator checks only literal arguments (`translator.py:29114-29122`).
+
+Consequence: a fractional run-time step yields non-integer elements instead of an error. Low.
+
+Repair proposal (not implemented): raise in `IVGRANGE` for a non-integer argument, as for a step of 0 ([F-C0841](#F-C0841)). Governing statement: [query.functions.range](../ontology/features/cypher.g5.md#query.functions.range).
+
+<a id="bug-cyp-132"></a>
+### A relationship SET from a function of its own property is refused with a message that says such a read is allowed
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 50)
+
+Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m10 (reviewer probe `p3`). No formal contract (probe only).
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `rel_retype*`; [follow-up](../uplift/consolidated/iteration-50/review-repro2-20261117T032546Z.json) `rel_set_*`, `rel_read`). `MATCH ()-[r]->() SET r.age = toInteger(r.age)` and `SET r.n = toString(r.n)` are refused with "a relationship's value can read only its own `age`; a SET of a relationship from another property or another variable is not supported", although the value reads only its own property. Passing neighbor: `SET r.n = r.n + 1` is stored; a relationship's stored `'30'` already reads back as 30 ([relationship text](../ontology/features/cypher.g5.md#query.values.relationship_text)).
+
+Expected: either the SET is stored, or the refusal names the actual limit (a function of the property is not supported).
+
+Observed: the relationship `SET` path accepts arithmetic over the relationship's own property only; any function call is refused with the shared message.
+
+Consequence: a misleading error; the stored value is unchanged. Low.
+
+Repair proposal (not implemented): name the unsupported shape in the message, or translate the function as the node `SET` does. Governing statement: [query.writes.retype](../ontology/features/cypher.g5.md#query.writes.retype).
 
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero

@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:412:1
+    |
+412 | pub proof fn theorem_guided_seeds_exceed_cap()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:427:12
+    |
+427 |     assert(st.seen =~= set![9int, 3, 4]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/seeds-capped/20261117T032104Z/models/retrieval_compose/retrieval_compose.rs:428:12
+    |
+428 |     assert(st.count == 3);
+    |            ^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

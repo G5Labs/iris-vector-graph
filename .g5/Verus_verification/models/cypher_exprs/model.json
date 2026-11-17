@@ -1,7 +1,7 @@
 {
   "name": "cypher_exprs",
   "root": "cypher_exprs.rs",
-  "expected_verified": 17,
+  "expected_verified": 22,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -106,12 +106,12 @@
     },
     {
       "name": "identifier-lookahead",
-      "find": "pub open spec fn identifier_branch_looks_ahead() -> bool { false }",
-      "replace": "pub open spec fn identifier_branch_looks_ahead() -> bool { true }",
+      "find": "    if next == Tok::Dot { after == Tok::Ident } else { true }",
+      "replace": "    if next == Tok::Dot { after == Tok::Ident || after == Tok::Dot || after == Tok::FloatLit } else { true }",
       "expect_fail_in": [
         "theorem_identifier_lower_bound_refused"
       ],
-      "classification": "decision: the identifier branch looks ahead for `..` (the repair)"
+      "classification": "decision: the identifier branch looks ahead for `..` (a second dot, or a float starting with a point) before taking a property access (the repair); iteration 50 decides it from the tokens"
     },
     {
       "name": "substring-checks-start",
@@ -136,7 +136,8 @@
       "find": "    if old.text == new.text && old.num != new.num { new } else { old }",
       "replace": "    old",
       "expect_fail_in": [
-        "theorem_prop_set_retypes"
+        "theorem_prop_set_retypes",
+        "theorem_prop_set_switch_decides_retype"
       ],
       "classification": "effect: PropWrite.SetVal no longer writes a same-text retype"
     },
@@ -145,7 +146,8 @@
       "find": "    if deployed { filer_update(setval(old, new), new) } else { filer_update(old, new) }",
       "replace": "    filer_update(old, new)",
       "expect_fail_in": [
-        "theorem_prop_set_retypes"
+        "theorem_prop_set_retypes",
+        "theorem_prop_set_switch_decides_retype"
       ],
       "classification": "decision: _prop_set leaves the bare value (an undeployed namespace's path) everywhere"
     },
@@ -154,9 +156,55 @@
       "find": "pub open spec fn filer_writes_same_text() -> bool { false }",
       "replace": "pub open spec fn filer_writes_same_text() -> bool { true }",
       "expect_fail_in": [
-        "theorem_without_prop_set_same_text_keeps_old"
+        "theorem_without_prop_set_same_text_keeps_old",
+        "theorem_prop_set_switch_decides_retype"
       ],
       "classification": "provider: a filer that writes same-text values would make Prop_Set unnecessary (the neighbor is conditional on this premise)"
+    },
+    {
+      "name": "null-list-guard",
+      "find": "match l { ListIn::Null => SliceOut::Elems(Slice { from: 0, to: 0 }),",
+      "replace": "match l { ListIn::Null => SliceOut::Null,",
+      "expect_fail_in": [
+        "theorem_null_list_slice_is_empty"
+      ],
+      "classification": "decision (iteration 50): the slice tests the list for null (the repair)"
+    },
+    {
+      "name": "rel-param-kept",
+      "find": "        RelValue::Param => WriteOut::WrittenWithoutProperty,",
+      "replace": "        RelValue::Param => WriteOut::Written,",
+      "expect_fail_in": [
+        "theorem_inline_rel_param_dropped"
+      ],
+      "classification": "decision (iteration 50): a relationship CREATE between new nodes binds a parameter value as the node CREATE does (the repair's parameter half)"
+    },
+    {
+      "name": "case-kinds-compared",
+      "find": "    if kind_known(ts) && kind_known(ws) && t.kind != w.kind { false } else { sql_case_eq(t, w) }",
+      "replace": "    if t.kind != w.kind { false } else { sql_case_eq(t, w) }",
+      "expect_fail_in": [
+        "theorem_simple_case_coerces_across_kinds"
+      ],
+      "classification": "decision (iteration 50): a simple CASE compares kinds whatever the syntax, e.g. through CY_JCMP (the repair); the neighbors must still verify"
+    },
+    {
+      "name": "case-literal-kinds-unchecked",
+      "find": "    if kind_known(ts) && kind_known(ws) && t.kind != w.kind { false } else { sql_case_eq(t, w) }",
+      "replace": "    if false { false } else { sql_case_eq(t, w) }",
+      "expect_fail_in": [
+        "theorem_simple_case_same_kind_or_literal_follows_rule"
+      ],
+      "classification": "effect (iteration 50): the static drop of WHENs of another literal kind removed"
+    },
+    {
+      "name": "unreadable-taken-as-absent",
+      "find": "        None => match check { DictCheck::Found => true, DictCheck::Absent => false, DictCheck::Unreadable => true },",
+      "replace": "        None => match check { DictCheck::Found => true, DictCheck::Absent => false, DictCheck::Unreadable => false },",
+      "expect_fail_in": [
+        "theorem_prop_set_switch_decides_retype"
+      ],
+      "classification": "decision (iteration 50): an unreadable dictionary is taken as no Prop_Set (the alternative the docstring rejects)"
     }
   ]
 }

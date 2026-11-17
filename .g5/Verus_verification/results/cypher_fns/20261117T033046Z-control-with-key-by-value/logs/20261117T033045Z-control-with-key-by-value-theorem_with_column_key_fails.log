@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/with-key-by-value/20261117T033045Z/models/cypher_fns/cypher_fns.rs:224:13
+    |
+223 | pub proof fn theorem_with_column_key_fails(name: int, value: int)
+    | ----------------------------------------------------------------- at the end of the function body
+224 |     ensures node_key_read(KeyArg::WithColumn { name, value }) == KeyOut::Fails,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

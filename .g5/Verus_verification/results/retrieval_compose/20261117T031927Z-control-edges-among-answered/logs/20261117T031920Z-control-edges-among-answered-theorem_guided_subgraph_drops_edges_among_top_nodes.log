@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T031920Z/models/retrieval_compose/retrieval_compose.rs:387:13
+    |
+386 |   pub proof fn theorem_guided_subgraph_drops_edges_among_top_nodes()
+    |   ------------------------------------------------------------------ at the end of the function body
+387 |       ensures ({
+    |  _____________^
+388 | |         let st = admit(seq![9int, 2, 1], |n: int| star_has_edge(n), empty_st(), guided_cap(5000, 3));
+389 | |         let r = expand_frontier(seq![1int, 2, 9], |n: int| star(n), st, guided_cap(5000, 3));
+390 | |         r.edges == seq![(1int, 2int)] && !lists_edge(r, |n: int| star(n), (9int, 1int))
+391 | |             && rule_lists_edge(r, |n: int| star(n), (9int, 1int)) && r.seen.contains(9) && r.seen.contains(1)
+392 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

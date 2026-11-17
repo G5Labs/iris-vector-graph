@@ -1,18 +1,19 @@
 {
   "name": "cypher_fns",
   "root": "cypher_fns.rs",
-  "expected_verified": 11,
+  "expected_verified": 16,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
     {
       "name": "row-index-through-ivglistget",
-      "find": "        IdxKind::RowValue => json_arrayget(len, i),",
-      "replace": "        IdxKind::RowValue => ivglistget(len, i),",
+      "find": "            Src::PropertyRead => json_arrayget_opt(len, i),",
+      "replace": "            Src::PropertyRead => match i { Some(i) => ivglistget(len, i), None => Elem::Null },",
       "expect_fail_in": [
-        "theorem_row_negative_index_fails"
+        "theorem_row_negative_index_fails",
+        "theorem_null_index_reads_first_element"
       ],
-      "classification": "decision: a run-time index goes through CypherFn_IVGLISTGET (the repair); the non-negative neighbor must still verify"
+      "classification": "decision: a run-time index into a list from a property goes through CypherFn_IVGLISTGET with a null test (the repair); the non-negative neighbor must still verify"
     },
     {
       "name": "ivglistget-no-wrap",
@@ -25,30 +26,75 @@
     },
     {
       "name": "literal-negative-unwrapped",
-      "find": "        IdxKind::LiteralInt => if i < 0 { if len >= -i { json_arrayget(len, len + i) } else { Elem::Null } } else { json_arrayget(len, i) },",
-      "replace": "        IdxKind::LiteralInt => json_arrayget(len, i),",
+      "find": "            Some(i) => if i < 0 { if len >= -i { json_arrayget(len, len + i) } else { Elem::Null } } else { json_arrayget(len, i) },",
+      "replace": "            Some(i) => json_arrayget(len, i),",
       "expect_fail_in": [
         "theorem_literal_index_follows_rule"
       ],
       "classification": "decision: the 4.6.0 R267 CASE for a literal negative index removed"
     },
     {
+      "name": "with-literal-elem-unwrapped",
+      "find": "            Src::WithLiteralList => match i { Some(i) => cy_list_elem(len, i), None => json_value_index(len, None) },",
+      "replace": "            Src::WithLiteralList => match i { Some(i) => json_arrayget(len, i), None => json_value_index(len, None) },",
+      "expect_fail_in": [
+        "theorem_with_literal_row_index_follows_rule"
+      ],
+      "classification": "decision (iteration 50): a row index into a WITH-held literal list takes JSON_ARRAYGET like a property's list (the shape bug-cyp-111 first claimed); the observed typed, wrapped answer must then fail"
+    },
+    {
+      "name": "with-literal-elem-untyped",
+      "find": "        IdxKind::RowValue => match src { Src::WithLiteralList => Ty::Typed, _ => Ty::Text },",
+      "replace": "        IdxKind::RowValue => match src { Src::WithLiteralList => Ty::Text, _ => Ty::Text },",
+      "expect_fail_in": [
+        "theorem_with_literal_row_index_follows_rule"
+      ],
+      "classification": "effect (iteration 50): CY_LIST_ELEM's typed answer removed"
+    },
+    {
+      "name": "null-index-is-null",
+      "find": "    match i { Some(i) => json_arrayget(len, i), None => if len > 0 { Elem::At(0) } else { Elem::Null } }",
+      "replace": "    match i { Some(i) => json_arrayget(len, i), None => Elem::Null }",
+      "expect_fail_in": [
+        "theorem_null_index_reads_first_element"
+      ],
+      "classification": "provider/decision (iteration 50): a null index reads null through JSON_ARRAYGET (the repair for property lists); JSON_VALUE's '$.' still reads position 0, so the theorem must fail for the property source"
+    },
+    {
       "name": "property-to-cy-reverse",
-      "find": "    match k { ArgKind::PropertyRead => false, _ => true }",
-      "replace": "    match k { _ => true }",
+      "find": "        _ => false,\n    }\n}\n/// The reader:",
+      "replace": "        _ => true,\n    }\n}\n/// The reader:",
       "expect_fail_in": [
         "theorem_stored_list_reversed_as_text"
       ],
-      "classification": "decision: a property read also goes to CY_REVERSE (the repair); the string neighbor must still verify"
+      "classification": "decision: every argument goes to CY_REVERSE (the first half of the repair); the string neighbor must still verify"
+    },
+    {
+      "name": "reverse-column-typed",
+      "find": "        Val::List => if uses_cy_reverse(k) { if known_list { Rev::ReversedList } else { Rev::ListAsJsonText } } else { Rev::ReversedText },",
+      "replace": "        Val::List => if uses_cy_reverse(k) { Rev::ReversedList } else { Rev::ReversedText },",
+      "expect_fail_in": [
+        "theorem_unknown_list_variable_answered_as_text"
+      ],
+      "classification": "decision (iteration 50): the reverse() column is typed as a list whatever the translator knows (the second half of the repair)"
     },
     {
       "name": "row-key-by-value",
-      "find": "    match k { KeyArg::RowVar { name, value } => name, KeyArg::Param { value } => value }",
-      "replace": "    match k { KeyArg::RowVar { name, value } => value, KeyArg::Param { value } => value }",
+      "find": "        KeyArg::RowVar { name, value } => KeyOut::Reads(name),",
+      "replace": "        KeyArg::RowVar { name, value } => KeyOut::Reads(value),",
       "expect_fail_in": [
         "theorem_row_key_reads_variable_name"
       ],
       "classification": "decision: n[k] reads the property named by k's value (the repair)"
+    },
+    {
+      "name": "with-key-by-value",
+      "find": "        KeyArg::WithColumn { name, value } => KeyOut::Fails,",
+      "replace": "        KeyArg::WithColumn { name, value } => KeyOut::Reads(value),",
+      "expect_fail_in": [
+        "theorem_with_column_key_fails"
+      ],
+      "classification": "decision (iteration 50): a node carried through WITH reads the key's value instead of taking the scalar branch (the repair)"
     },
     {
       "name": "range-zero-raises",

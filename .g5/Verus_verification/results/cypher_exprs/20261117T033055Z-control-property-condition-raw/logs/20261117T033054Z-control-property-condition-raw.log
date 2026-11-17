@@ -1,0 +1,27 @@
+verification results:: 21 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/property-condition-raw/20261117T033054Z/models/cypher_exprs/cypher_exprs.rs:123:1
+    |
+123 | pub proof fn theorem_predicate_condition_follows_rule(v: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/property-condition-raw/20261117T033054Z/models/cypher_exprs/cypher_exprs.rs:125:9
+    |
+123 | pub proof fn theorem_predicate_condition_follows_rule(v: bool)
+    | -------------------------------------------------------------- at the end of the function body
+124 |     ensures
+125 |         case_when(Syntax::PropertyRead, v) == rule_case_when(v),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/property-condition-raw/20261117T033054Z/models/cypher_exprs/cypher_exprs.rs:126:9
+    |
+123 | pub proof fn theorem_predicate_condition_follows_rule(v: bool)
+    | -------------------------------------------------------------- at the end of the function body
+...
+126 |         case_when(Syntax::Literal, v) == rule_case_when(v),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

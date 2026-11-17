@@ -3,7 +3,8 @@
 //   translate_boolean_expression 18638 / _translate_boolean_expression 18651-18716 (a CASE WHEN or WHERE condition);
 //   _create_resolve_prop_value 9594-9671 with _fold_constant 9319 / _fold_or_raise 9543 (a node CREATE map value,
 //   called from _create_node_literal 9726, _create_node_from_alias 9812, _create_node_per_row 10002);
-//   _create_clause_relationship_entry 10183-10246 (a relationship CREATE map value between new nodes);
+//   _create_clause_relationship_entry 10183-10246 (a relationship CREATE map value between new nodes; a parameter too);
+//   _expr_case 22189-22238 (a simple CASE's WHENs by static kind); engine.py IRISGraphEngine._prop_set_deployed 1762-1781;
 //   _is_typed_coalesce 7620 / _scalar_coalesce 24455 (coalesce's result type); _scalar_string 24475-24494 (substring);
 //   _prop_set 12961 (a node property UPDATE). Parser: iris_vector_graph/cypher/parser.py Parser.parse_primary_expression
 //   1621-1641 (an identifier followed by `.`). ObjectScript: Graph.KG.SqlProcs.PropSet (Prop_Set) forwarding to
@@ -43,6 +44,24 @@ pub open spec fn translated_bound(syn: Syntax, n: int, len: int) -> int {
 pub open spec fn as_built_slice(syn: Syntax, len: int, s: int, e: int) -> Slice {
     Slice { from: clamp(translated_bound(syn, s, len), len), to: clamp(translated_bound(syn, e, len), len) }
 }
+
+/// A list value: null, or a list of that length.
+pub enum ListIn { Null, Of(int) }
+pub enum SliceOut { Null, Elems(Slice) }
+/// _expr_slice / _slice_sql read the list through JSON_TABLE and test only an explicit null bound for null: a null list
+/// has no rows to keep, so the aggregate answers the empty list.
+pub open spec fn as_built_slice_of(syn: Syntax, l: ListIn, s: int, e: int) -> SliceOut {
+    match l { ListIn::Null => SliceOut::Elems(Slice { from: 0, to: 0 }), ListIn::Of(len) => SliceOut::Elems(as_built_slice(syn, len, s, e)) }
+}
+/// openCypher (TCK List2 and the null rules): slicing a null list gives null.
+pub open spec fn rule_slice_of(l: ListIn, s: int, e: int) -> SliceOut {
+    match l { ListIn::Null => SliceOut::Null, ListIn::Of(len) => SliceOut::Elems(rule_slice(len, s, e)) }
+}
+/// Iteration 50 (new, bug-cyp-129; review m1): `n.missing[0..2]` answers [] for every bound syntax and value.
+pub proof fn theorem_null_list_slice_is_empty(syn: Syntax, s: int, e: int)
+    ensures as_built_slice_of(syn, ListIn::Null, s, e) == SliceOut::Elems(Slice { from: 0, to: 0 }),
+            rule_slice_of(ListIn::Null, s, e) == SliceOut::Null,
+{}
 
 /// Neighbor: literal bounds of any sign follow the rule, for every list length.
 pub proof fn theorem_literal_slice_follows_rule(len: int, s: int, e: int)
@@ -108,6 +127,35 @@ pub proof fn theorem_predicate_condition_follows_rule(v: bool)
         case_when(Syntax::Comparison, v) == rule_case_when(v),
 {}
 
+// ---------------------------------------------------------------- simple CASE across value kinds
+pub enum Kind { Num, Str }
+/// A value: its kind and its text (numbered). The domain is numbers in canonical spelling and strings that spell one.
+pub struct V { pub kind: Kind, pub text: int }
+/// _static_value_kind knows the kind only of a literal (a property, a row variable or a parameter is unknown).
+pub open spec fn kind_known(syn: Syntax) -> bool { syn == Syntax::Literal }
+/// Provider (IRIS SQL, observed on 2026.1): `CASE x WHEN y` compares a number with text that spells it as equal.
+pub open spec fn sql_case_eq(t: V, w: V) -> bool { t.text == w.text }
+/// _expr_case for `CASE test WHEN w ...`: a WHEN is dropped when both kinds are known and differ; every other WHEN is
+/// left to SQL's comparison.
+pub open spec fn simple_case_takes(ts: Syntax, t: V, ws: Syntax, w: V) -> bool {
+    if kind_known(ts) && kind_known(ws) && t.kind != w.kind { false } else { sql_case_eq(t, w) }
+}
+/// openCypher and query.values.equality: the WHEN is taken when the test equals it; '1' does not equal 1.
+pub open spec fn rule_simple_case(t: V, w: V) -> bool { t.kind == w.kind && t.text == w.text }
+
+/// Iteration 50 (new, bug-cyp-127; review 47-49 item 7): with a test from a property or a row, `CASE n.s1 WHEN 1`
+/// takes the branch for the string '1', and `CASE n.i1 WHEN '1'` for the integer 1.
+pub proof fn theorem_simple_case_coerces_across_kinds(ts: Syntax, t: V, w: V)
+    requires !kind_known(ts), t.kind != w.kind, t.text == w.text,
+    ensures simple_case_takes(ts, t, Syntax::Literal, w), !rule_simple_case(t, w),
+{}
+/// Neighbors: a literal test against a literal WHEN, and any test against a WHEN of the same kind, follow the rule.
+pub proof fn theorem_simple_case_same_kind_or_literal_follows_rule(ts: Syntax, t: V, w: V)
+    ensures
+        simple_case_takes(Syntax::Literal, t, Syntax::Literal, w) == rule_simple_case(t, w),
+        t.kind == w.kind ==> simple_case_takes(ts, t, Syntax::Literal, w) == rule_simple_case(t, w),
+{}
+
 // ---------------------------------------------------------------- a function value in a CREATE map
 /// A CREATE map value that is a function call, by function and argument type.
 pub enum Fn { ToUpper, ToLower, Trim, Coalesce, ToStringFn, ToIntegerOfNumber, ToFloatOfNumber, Arith,
@@ -132,16 +180,24 @@ pub open spec fn create_node_value(f: Fn) -> WriteOut {
 }
 /// SET n.p = f(...): the value's SQL goes into the UPDATE (through Prop_Set), whatever the function.
 pub open spec fn set_value(f: Fn) -> WriteOut { WriteOut::Written }
-/// A relationship CREATE map value between nodes the same CREATE makes.
-pub enum RelValue { Lit, ForeachVar, Call(Fn) }
-/// _create_clause_relationship_entry (literal endpoints): a Literal is kept, a FOREACH/UNWIND literal variable is
-/// looked up, any other expression becomes None, and "null props are not stored", so the edge is inserted without it.
+/// A relationship CREATE map value: a literal, a FOREACH/UNWIND literal variable, a parameter (`$k`), or a call.
+pub enum RelValue { Lit, ForeachVar, Param, Call(Fn) }
+/// _create_clause_relationship_entry (literal endpoints, translator.py 10213-10226): a Literal is kept, a FOREACH/UNWIND
+/// literal variable is looked up, and any other expression, an ast.Parameter included, becomes None; "null props are
+/// not stored", so the edge is inserted without it.
 pub open spec fn create_rel_value(v: RelValue) -> WriteOut {
     match v {
         RelValue::Lit => WriteOut::Written,
         RelValue::ForeachVar => WriteOut::Written,
+        RelValue::Param => WriteOut::WrittenWithoutProperty,
         RelValue::Call(_) => WriteOut::WrittenWithoutProperty,
     }
+}
+/// The neighbors a caller compares with: a node CREATE binds a parameter value, and a relationship CREATE between
+/// matched nodes (the alias path) writes a literal or a parameter.
+pub open spec fn create_node_param() -> WriteOut { WriteOut::Written }
+pub open spec fn create_rel_matched_value(v: RelValue) -> WriteOut {
+    match v { RelValue::Lit | RelValue::ForeachVar | RelValue::Param => WriteOut::Written, RelValue::Call(_) => WriteOut::RefusedNothingWritten }
 }
 /// openCypher: a CREATE stores each property value the map computes.
 pub open spec fn rule_write() -> WriteOut { WriteOut::Written }
@@ -164,6 +220,15 @@ pub proof fn theorem_folded_create_value_written(f: Fn)
 pub proof fn theorem_inline_rel_expression_dropped(f: Fn)
     ensures create_rel_value(RelValue::Call(f)) == WriteOut::WrittenWithoutProperty,
             create_rel_value(RelValue::Call(f)) != rule_write(),
+{}
+/// Iteration 50 (bug-cyp-120, widened; review 47-49 item 5): `CREATE (a {id: ...})-[r {k: $k}]->(b {id: ...})` stores the
+/// relationship without k, while the same parameter is written on a node and between matched nodes.
+pub proof fn theorem_inline_rel_param_dropped()
+    ensures
+        create_rel_value(RelValue::Param) == WriteOut::WrittenWithoutProperty,
+        create_rel_value(RelValue::Param) != rule_write(),
+        create_node_param() == rule_write(),
+        create_rel_matched_value(RelValue::Param) == rule_write(),
 {}
 /// Neighbor: a literal or an UNWIND literal variable is stored.
 pub proof fn theorem_inline_rel_literal_written()
@@ -201,20 +266,34 @@ pub proof fn theorem_node_coalesce_keeps_type(b: CoArg)
 
 // ---------------------------------------------------------------- the parser: a slice's lower bound
 pub enum Lower { IntLiteral, Identifier, Subscript, Param }
-/// Parser.parse_primary_expression: after an identifier, `matches(DOT)` is taken as a property access and then
-/// `expect(IDENTIFIER)`; `a..3` lexes as IDENT DOT FLOAT('.3') and `a..b` as IDENT DOT DOT IDENT. The postfix loop
-/// of parse_power_expression (used for `1..3`, `ab[0]..ab[1]`) looks ahead for the second dot; this branch does not.
-pub open spec fn identifier_branch_looks_ahead() -> bool { false }
-pub open spec fn parses(lo: Lower) -> bool {
-    match lo { Lower::Identifier => identifier_branch_looks_ahead(), _ => true }
+/// What follows `..` in the slice: an integer (`a..3`), an identifier (`a..b`) or the closing bracket (`a..]`).
+pub enum Upper { Int, Ident, Close }
+pub enum Tok { Dot, FloatLit, Ident, Other }
+/// The lexer, as observed: after `a`, `..3` is DOT then FLOAT('.3'); `..b` and `..]` are DOT then DOT.
+pub open spec fn tokens_after_lower(u: Upper) -> (Tok, Tok) {
+    match u { Upper::Int => (Tok::Dot, Tok::FloatLit), Upper::Ident => (Tok::Dot, Tok::Dot), Upper::Close => (Tok::Dot, Tok::Dot) }
 }
-/// W55 L1 follow-up (new finding): `l[a..3]`, `l[a..b]`, `l[a..]` with an identifier lower bound do not parse.
-pub proof fn theorem_identifier_lower_bound_refused()
-    ensures !parses(Lower::Identifier),
+/// Parser.parse_primary_expression after an identifier (parser.py 1621-1641): `matches(DOT)` is taken as a property
+/// access, then `expect(IDENTIFIER)`, so the token after the dot must be an identifier. (Iteration 50: decided from the
+/// tokens, replacing the premise constant `identifier_branch_looks_ahead`.)
+pub open spec fn identifier_branch_parses(next: Tok, after: Tok) -> bool {
+    if next == Tok::Dot { after == Tok::Ident } else { true }
+}
+/// An integer, a subscript or a parameter lower bound reaches the postfix loop of parse_power_expression, which looks
+/// ahead for the second dot.
+pub open spec fn parses(lo: Lower, u: Upper) -> bool {
+    match lo {
+        Lower::Identifier => { let (n, a) = tokens_after_lower(u); identifier_branch_parses(n, a) },
+        _ => true,
+    }
+}
+/// W55 L1 follow-up (bug-cyp-122): `l[a..3]`, `l[a..b]`, `l[a..]` with an identifier lower bound do not parse.
+pub proof fn theorem_identifier_lower_bound_refused(u: Upper)
+    ensures !parses(Lower::Identifier, u),
 {}
-/// Neighbor: an integer, a subscript or a parameter lower bound parses.
-pub proof fn theorem_other_lower_bounds_parse()
-    ensures parses(Lower::IntLiteral), parses(Lower::Subscript), parses(Lower::Param),
+/// Neighbor: an integer, a subscript or a parameter lower bound parses, whatever follows.
+pub proof fn theorem_other_lower_bounds_parse(u: Upper)
+    ensures parses(Lower::IntLiteral, u), parses(Lower::Subscript, u), parses(Lower::Param, u),
 {}
 
 // ---------------------------------------------------------------- substring() with a negative start
@@ -262,6 +341,18 @@ pub open spec fn filer_update(old: Stored, new: Stored) -> Stored {
 pub open spec fn setval(old: Stored, new: Stored) -> Stored {
     if old.text == new.text && old.num != new.num { new } else { old }
 }
+/// The dictionary read engine._prop_set_deployed makes: the forwarder's PropSet method found, absent, or unreadable
+/// (the read raised).
+pub enum DictCheck { Found, Absent, Unreadable }
+/// engine._prop_set_deployed (engine.py 1762-1781): the cached answer if any (cleared when capabilities are set), else
+/// compiled_method_exists(<schema>.<forwarder>, "PropSet"); a dictionary that cannot be read is taken as deployed.
+/// (Iteration 50: the member's own logic, replacing the bare `deployed` input.)
+pub open spec fn prop_set_deployed(cached: Option<bool>, check: DictCheck) -> bool {
+    match cached {
+        Some(b) => b,
+        None => match check { DictCheck::Found => true, DictCheck::Absent => false, DictCheck::Unreadable => true },
+    }
+}
 /// _prop_set: the UPDATE's SET is Prop_Set(...) when the namespace has it (engine._prop_set_deployed), else the value.
 pub open spec fn node_update(deployed: bool, old: Stored, new: Stored) -> Stored {
     if deployed { filer_update(setval(old, new), new) } else { filer_update(old, new) }
@@ -270,6 +361,17 @@ pub open spec fn node_update(deployed: bool, old: Stored, new: Stored) -> Stored
 /// (`SET n.age = toInteger(n.age)` over the string '30' stores the integer 30).
 pub proof fn theorem_prop_set_retypes(old: Stored, new: Stored)
     ensures node_update(true, old, new) == new,
+{}
+/// Iteration 50 (review 47-49 item 4): the switch decides the retype. A namespace whose dictionary lacks PropSet keeps a
+/// same-text old value; an unreadable dictionary is taken as deployed, so the retype is written (the docstring's choice:
+/// a missing function would then fail the write rather than keep the old type silently).
+pub proof fn theorem_prop_set_switch_decides_retype(old: Stored, new: Stored)
+    requires old.text == new.text, old.num != new.num,
+    ensures
+        node_update(prop_set_deployed(None, DictCheck::Found), old, new) == new,
+        node_update(prop_set_deployed(None, DictCheck::Unreadable), old, new) == new,
+        node_update(prop_set_deployed(None, DictCheck::Absent), old, new) == old,
+        node_update(prop_set_deployed(Some(false), DictCheck::Found), old, new) == old,
 {}
 /// Neighbor: on a namespace without Prop_Set (classes before 4.7.0) a same-text retype keeps the old string, as the
 /// known-issues guide says; a value with another text is written either way.

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: an insert replaces the node's entry wherever it is (the repair)",
+    "expect_fail_in": [
+      "theorem_same_cell_reinsert_counts_twice",
+      "theorem_cross_cell_reinsert_leaves_stale_entry"
+    ],
+    "find": "    if cell == 0 { St { in0: true, indexed: s.indexed + 1, ..s } } else { St { in1: true, indexed: s.indexed + 1, ..s } }",
+    "name": "insert-replaces",
+    "replace": "    if cell == 0 { St { in0: true, in1: false, indexed: if found(s) { s.indexed } else { s.indexed + 1 } } } else { St { in1: true, in0: false, indexed: if found(s) { s.indexed } else { s.indexed + 1 } } }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_same_cell_reinsert_counts_twice",
+      "theorem_cross_cell_reinsert_leaves_stale_entry"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ivf_entries/ivf_entries.rs": "153732ab1028839dd2f0a926f2e2743c328e999d571842deb785603a28c6703d",
+    ".g5/Verus_verification/models/ivf_entries/model.json": "cf5cb7be3d76089ea0571e2188ff7b21e5d109d7be756c2cbdeb776b75aeda54"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/insert-replaces/20261117T032405Z/models/ivf_entries/ivf_entries.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cross_cell_reinsert_leaves_stale_entry": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/20261117T032405Z-control-insert-replaces-theorem_cross_cell_reinsert_leaves_stale_entry.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_same_cell_reinsert_counts_twice": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/20261117T032405Z-control-insert-replaces-theorem_same_cell_reinsert_counts_twice.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/20261117T032405Z-control-insert-replaces.log",
+    "timed_out": false,
+    "verified": 17
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ivf_entries/20261117T032407Z-control-insert-replaces/logs/20261117T032405Z-control-insert-replaces-theorem_cross_cell_reinsert_leaves_stale_entry.log": "98c373ff4b7c91f4a1d07388c7094ae48718a26f1bfedccf18414690f5e6b41e",
+    ".g5/Verus_verification/results/ivf_entries/20261117T032407Z-control-insert-replaces/logs/20261117T032405Z-control-insert-replaces-theorem_same_cell_reinsert_counts_twice.log": "fb7835604a71ee029c66317289a2f11f7ffedadc6c4fa4e1b67465f2068b52f7",
+    ".g5/Verus_verification/results/ivf_entries/20261117T032407Z-control-insert-replaces/logs/20261117T032405Z-control-insert-replaces.log": "b4d876f5fd1c0bc66d473ca53f3456ce68e4a0d4571a19b565008dae6b98bb87"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

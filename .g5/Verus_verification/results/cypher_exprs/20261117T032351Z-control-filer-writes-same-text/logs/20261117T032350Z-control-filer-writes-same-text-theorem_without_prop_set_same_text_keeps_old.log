@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/filer-writes-same-text/20261117T032350Z/models/cypher_exprs/cypher_exprs.rs:380:9
+    |
+378 | pub proof fn theorem_without_prop_set_same_text_keeps_old(old: Stored, new: Stored)
+    | ----------------------------------------------------------------------------------- at the end of the function body
+379 |     ensures
+380 |         (old.text == new.text) ==> node_update(false, old, new) == old,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

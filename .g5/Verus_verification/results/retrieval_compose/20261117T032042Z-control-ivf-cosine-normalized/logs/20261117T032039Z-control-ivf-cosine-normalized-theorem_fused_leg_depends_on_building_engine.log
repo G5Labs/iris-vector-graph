@@ -1,0 +1,14 @@
+verification results:: 1 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/ivf-cosine-normalized/20261117T032039Z/models/retrieval_compose/retrieval_compose.rs:143:9
+    |
+139 | pub proof fn theorem_fused_leg_depends_on_building_engine(g: int)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+143 |         above(leg_index(Some(ivf_scope_seen(true, g)), true, g), (10, 10), (1, 0)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: every coalesce keeps its winner's type (the repair)",
+    "expect_fail_in": [
+      "theorem_row_coalesce_number_as_text"
+    ],
+    "find": "pub open spec fn coalesce_number(a: CoArg, b: CoArg) -> Out { if typed_coalesce(a, b) { Out::Int } else { Out::Text } }",
+    "name": "coalesce-always-typed",
+    "replace": "pub open spec fn coalesce_number(a: CoArg, b: CoArg) -> Out { Out::Int }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_row_coalesce_number_as_text"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_exprs/cypher_exprs.rs": "4731f182abab78e482004c40abb80ffa3091292c8be8a1aa94e623ec44004bd4",
+    ".g5/Verus_verification/models/cypher_exprs/model.json": "58bba2eaa683bdcd4ade413b8ba72272c08bb67f6861c5c67775459665b1060f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-always-typed/20261117T033101Z/models/cypher_exprs/cypher_exprs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_row_coalesce_number_as_text": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T033101Z-control-coalesce-always-typed-theorem_row_coalesce_number_as_text.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T033101Z-control-coalesce-always-typed.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_exprs/20261117T033102Z-control-coalesce-always-typed/logs/20261117T033101Z-control-coalesce-always-typed-theorem_row_coalesce_number_as_text.log": "63dce6b3f5e9e70d239c756d39d98ced01a683d6add7a784b11512ebcdd398e0",
+    ".g5/Verus_verification/results/cypher_exprs/20261117T033102Z-control-coalesce-always-typed/logs/20261117T033101Z-control-coalesce-always-typed.log": "45443c0bd96bd72888e10bcb83d70ac3282efd3702ec5270081a1f151c55589d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,6 +1,6 @@
 # ivf entries
 
-IVF index after its build: stale copies and counts on re-insert; no query width check; metric cosine ranks as dot
+IVF index after its build: stale copies and counts on re-insert; no query width check; metric cosine ranks as dot; the build's Euclidean cell against Insert's metric cell (a cosine or dot re-insert of an unchanged vector moves it)
 
 Evidence status: active. Variant: as-built bounded transcription.
 

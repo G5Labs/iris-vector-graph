@@ -10,11 +10,26 @@ sys.path.insert(0, str(REPO / ".g5/uplift/consolidated/iteration-36"))
 import runtime  # noqa: E402
 
 RUN = os.environ.get("CF_RUN", time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())); TAG = RUN[-7:-1]
-MUTS = ["row_index_through_ivglistget", "ivglistget_no_wrap", "literal_negative_unwrapped", "property_to_cy_reverse",
-        "row_key_by_value", "range_zero_raises", "range_ignores_direction", "per_row_evaluation"]
+MUTS = ["row_index_through_ivglistget", "ivglistget_no_wrap", "literal_negative_unwrapped", "with_literal_elem_unwrapped",
+        "with_literal_elem_untyped", "null_index_is_null", "property_to_cy_reverse", "reverse_column_typed",
+        "row_key_by_value", "with_key_by_value", "range_zero_raises", "range_ignores_direction", "per_row_evaluation"]
 LIST = [1, 2, 3]
 INDEXES = [-4, -3, -1, 0, 2, 3]
+SOURCES = ("property", "with_literal", "with_other")
+KINDS = ("row", "literal", "param")
 RANGES = [(1, 3, 0), (1, 5, 2), (5, 1, -2), (1, 5, -1), (5, 1, 1), (1, 1, 3)]
+
+
+def REV(C, W, O):
+    """reverse() argument forms: (kind, value, whether the translator knows the column is a list, query)."""
+    return [("property", "list", False, f"{C} RETURN reverse(n.l)"), ("slice", "list", True, f"{W} RETURN reverse(l[0..3])"),
+            ("subscript", "list", False, "WITH [[1, 2, 3], [4]] AS l RETURN reverse(l[0])"),
+            ("other_call", "list", False, f"{C} RETURN reverse(coalesce(n.l, []))"),
+            ("variable", "list", False, f"{O} RETURN reverse(l)"), ("variable", "list", True, f"{W} RETURN reverse(l)"),
+            ("literal", "list", True, "RETURN reverse([1, 2, 3])"), ("list_call", "list", True, f"{C} RETURN reverse(n.l + [])"),
+            ("case", "list", True, "RETURN reverse(CASE WHEN 1 = 1 THEN [1, 2, 3] END)"),
+            ("property", "string", False, f"{C} RETURN reverse(n.str)"),
+            ("variable", "string", False, f"{C} WITH n.str AS s RETURN reverse(s)")]
 
 
 def sha(p):
@@ -31,20 +46,70 @@ def ivglistget(n, i, m):
     return "null" if j < 0 or j >= n else ("at", j)
 
 
-def translated_index(kind, n, i, m):
+def json_arrayget_opt(n, i, m):
+    if i is None:
+        return "null" if m.get("null_index_is_null") else (("at", 0) if n > 0 else "null")
+    return json_arrayget(n, i)
+
+
+def json_value_index(n, i):
+    if i is None:
+        return ("at", 0) if n > 0 else "null"
+    return "fails" if i < 0 else (("at", i) if i < n else "null")
+
+
+def cy_list_elem(n, i):
+    j = n + i if i < 0 else i
+    return "null" if j < 0 or j >= n else ("at", j)
+
+
+def translated_index(src, kind, n, i, m):
     if kind == "literal":
+        if i is None:
+            return json_arrayget_opt(n, None, m)
         if m.get("literal_negative_unwrapped"):
             return json_arrayget(n, i)
         return (json_arrayget(n, n + i) if n >= -i else "null") if i < 0 else json_arrayget(n, i)
-    return ivglistget(n, i, m) if m.get("row_index_through_ivglistget") else json_arrayget(n, i)
+    if kind == "row":
+        if src == "property":
+            if m.get("row_index_through_ivglistget"):
+                return "null" if i is None else ivglistget(n, i, m)
+            return json_arrayget_opt(n, i, m)
+        if src == "with_literal":
+            if i is None:
+                return json_value_index(n, None)
+            return json_arrayget(n, i) if m.get("with_literal_elem_unwrapped") else cy_list_elem(n, i)
+        return json_value_index(n, i)
+    if src == "property":
+        return "fails"
+    return "fails" if i is None else json_arrayget(n, i)
 
 
-def reverse_result(kind, val, m):
-    cy = kind != "property" or m.get("property_to_cy_reverse")
-    return ("list" if val == "list" else "text") if cy else "text"
+def translated_type(src, kind, m):
+    if kind == "literal":
+        return "typed"
+    if kind == "row":
+        return "typed" if src == "with_literal" and not m.get("with_literal_elem_untyped") else "text"
+    return "text"
+
+
+def with_type(elem, src, kind, i, m):
+    # the type is compared where the index is not null (a null index's element type is not claimed)
+    return elem if not isinstance(elem, tuple) or i is None else (elem[0], elem[1], translated_type(src, kind, m))
+
+
+def reverse_result(kind, val, known, m):
+    if val == "string":
+        return "reversed_text"
+    cy = kind in ("literal", "comprehension", "list_call", "variable", "case") or m.get("property_to_cy_reverse")
+    if not cy:
+        return "reversed_text"
+    return "list" if (known or m.get("reverse_column_typed")) else "list_as_json_text"
 
 
 def node_key_read(kind, name, value, m):
+    if kind == "with":
+        return value if m.get("with_key_by_value") else "fails"
     return value if kind == "param" or m.get("row_key_by_value") else name
 
 
@@ -68,13 +133,32 @@ def distinct_per_rows(rows, m):
     return rows if m.get("per_row_evaluation") else 1
 
 
-def classify_elem(rows, error):
+FAIL_MARKS = ("RANGE", "Incorrect number of parameters", "Invalid number of parameters", "JSON_VALUE")
+
+
+def classify_elem(rows, error, i=None):
     if error:
-        return "fails" if "RANGE" in error else "error:" + error[-80:]
-    v = rows[0][0]
+        return "fails" if any(x in error for x in FAIL_MARKS) else "error:" + error[-80:]
+    v = rows[0][-1]
     if v is None:
         return "null"
-    return ("at", LIST.index(int(v)))
+    pos = LIST.index(int(v))
+    return ("at", pos) if i is None else ("at", pos, "typed" if isinstance(v, int) and not isinstance(v, bool) else "text")
+
+
+def classify_reverse(rows, err, want_list, want_text):
+    if err or not rows:
+        return f"error:{err}"
+    v = rows[0][-1]
+    if isinstance(v, list):
+        return "list" if v == want_list else f"other:{v!r}"
+    if isinstance(v, str):
+        if v == want_text:
+            return "reversed_text"
+        if v.startswith("["):
+            return "list_as_json_text"
+        return "reversed_text" if v.startswith("]") else f"other:{v!r}"
+    return f"other:{v!r}"
 
 
 def main():
@@ -104,9 +188,21 @@ def main():
             cur.close()
 
     got = {}
-    for i in INDEXES:
-        got[f"row_index_{i}"] = classify_elem(*run(f"{C} UNWIND [{i}] AS i RETURN n.l[i]"))
-        got[f"literal_index_{i}"] = classify_elem(*run(f"{C} RETURN n.l[{i}]"))
+    W = "WITH [1, 2, 3] AS l"
+    O = f"{C} WITH n.l AS l"
+    for i in INDEXES + [None]:
+        lit = "null" if i is None else str(i)
+        tag = "null" if i is None else str(i)
+        q = {("property", "row"): f"{C} UNWIND [{lit}] AS i RETURN n.l[i]", ("property", "literal"): f"{C} RETURN n.l[{lit}]",
+             ("property", "param"): f"{C} RETURN n.l[$i]",
+             ("with_literal", "row"): f"{W} UNWIND [{lit}] AS i RETURN l[i]", ("with_literal", "literal"): f"{W} RETURN l[{lit}]",
+             ("with_literal", "param"): f"{W} RETURN l[$i]",
+             ("with_other", "row"): f"{O} UNWIND [{lit}] AS i RETURN l[i]", ("with_other", "literal"): f"{O} RETURN l[{lit}]",
+             ("with_other", "param"): f"{O} RETURN l[$i]"}
+        for (src, kind), text in q.items():
+            got[f"index_{src}_{kind}_{tag}"] = classify_elem(*run(text, {"i": i} if kind == "param" else None), i=i)
+        if i is None:
+            continue
         v, err = sql("CypherFn_IVGLISTGET", "[1,2,3]", str(i))
         got[f"sql_ivglistget_{i}"] = "fails" if err else ("null" if v in (None, "") else ("at", LIST.index(int(v))))
         # JSON_ARRAYGET refuses `?` arguments on IRIS ("Invalid number of parameters"), so the literals are inlined
@@ -117,12 +213,12 @@ def main():
             v, err = None, str(x)
         cur.close()
         got[f"sql_json_arrayget_{i}"] = ("fails" if "RANGE" in err else "error:" + err[-80:]) if err else ("null" if v in (None, "") else ("at", LIST.index(int(v))))
-    for k, q in (("reverse_property_list", f"{C} RETURN reverse(n.l)"), ("reverse_literal_list", "RETURN reverse([1, 2, 3])"),
-                 ("reverse_property_string", f"{C} RETURN reverse(n.str)")):
-        rows, err = run(q); v = rows[0][0] if rows else None
-        got[k] = "list" if isinstance(v, list) and v == [3, 2, 1] else ("text" if isinstance(v, str) else f"other:{v!r}:{err}")
+    for kind, val, known, text in REV(C, W, O):
+        got[f"reverse_{kind}_{val}_{'known' if known else 'unknown'}"] = classify_reverse(*run(text), [3, 2, 1], "cba" if val == "string" else None)
     rows, _ = run(f"{C} UNWIND ['num'] AS k RETURN n[k]"); got["node_row_key"] = {"gotcha": "name", 5: "value"}.get(rows[0][0], repr(rows[0][0]))
     rows, _ = run(f"{C} RETURN n[$k]", {"k": "num"}); got["node_param_key"] = {"gotcha": "name", 5: "value"}.get(rows[0][0], repr(rows[0][0]))
+    rows, err = run(f"{C} WITH n, 'num' AS k RETURN n[k]")
+    got["node_with_key"] = "fails" if err and "Non-integer index type" in err else ({"gotcha": "name", 5: "value"}.get(rows[0][0], repr(rows[0][0])) if rows else f"error:{err}")
     for s_, e_, st in RANGES:
         rows, err = run(f"UNWIND [{st}] AS s RETURN range({s_}, {e_}, s)")
         got[f"range_row_{s_}_{e_}_{st}"] = "error" if err else len(rows[0][0])
@@ -134,16 +230,20 @@ def main():
 
     def predict(m):
         out = {}
-        for i in INDEXES:
-            out[f"row_index_{i}"] = translated_index("row", 3, i, m)
-            out[f"literal_index_{i}"] = translated_index("literal", 3, i, m)
+        for i in INDEXES + [None]:
+            tag = "null" if i is None else str(i)
+            for src in SOURCES:
+                for kind in KINDS:
+                    out[f"index_{src}_{kind}_{tag}"] = with_type(translated_index(src, kind, 3, i, m), src, kind, i, m)
+            if i is None:
+                continue
             out[f"sql_ivglistget_{i}"] = ivglistget(3, i, m)
             out[f"sql_json_arrayget_{i}"] = json_arrayget(3, i)
-        out["reverse_property_list"] = reverse_result("property", "list", m)
-        out["reverse_literal_list"] = reverse_result("literal", "list", m)
-        out["reverse_property_string"] = reverse_result("property", "string", m)
+        for kind, val, known, _ in REV("", "", ""):
+            out[f"reverse_{kind}_{val}_{'known' if known else 'unknown'}"] = reverse_result(kind, val, known, m)
         out["node_row_key"] = "value" if node_key_read("row", "k", "num", m) == "num" else "name"
         out["node_param_key"] = "value" if node_key_read("param", "k", "num", m) == "num" else "name"
+        out["node_with_key"] = (lambda r: "fails" if r == "fails" else ("value" if r == "num" else "name"))(node_key_read("with", "k", "num", m))
         for s_, e_, st in RANGES:
             out[f"range_row_{s_}_{e_}_{st}"] = ivgrange(s_, e_, st, m)
             out[f"sql_ivgrange_{s_}_{e_}_{st}"] = ivgrange(s_, e_, st, m)
@@ -154,7 +254,7 @@ def main():
     got = norm(got); want = norm(predict({}))
     mism = [{"case": k, "observed": got.get(k), "expected": want[k]} for k in want if got.get(k) != want[k]]
     sens = {mm: sum(1 for k, v in norm(predict({mm: True})).items() if v != got.get(k)) for mm in MUTS}
-    tampered = dict(got); tampered["row_index_-1"] = ["at", 2]
+    tampered = dict(got); tampered["index_property_row_-1"] = ["at", 2, "typed"]
     tamper_detected = any(tampered.get(k) != want[k] for k in want)
     body = {"kind": "binding", "model": "cypher_fns", "fixture": runtime.NAME, "port": runtime.PORT, "product_baseline": runtime.PRODUCT,
             "run": RUN, "verdict": "AGREES" if not mism else "DISAGREES", "cases": len(want), "mismatches": mism, "observed": got,
@@ -165,8 +265,10 @@ def main():
                        **{f: sha(Path(runtime.PIN) / f) for f in ["iris_vector_graph/cypher/translator.py", "iris_vector_graph/schema.py",
                                                                    "iris_src/src/Graph/KG/CypherFn.cls", "iris_src/src/Graph/KG/SqlProcs.cls"]}},
             "scope": "Actual execute_cypher SQL path and SQL-callable helpers on IRIS 2026.1 (pin 3eaa79cf); one Cypher-written node; "
-                     "indexes -4..3 over [1,2,3]; six run-time ranges; five rows for randomUUID()/rand(). The native executor declined every "
-                     "function shape here (counted in native_declined)."}
+                     "indexes -4..3 and null over [1,2,3] from three list sources (property, WITH literal, WITH property) by literal, row "
+                     "and parameter; eleven reverse() argument forms; three node-key forms; six run-time ranges; five rows for "
+                     "randomUUID()/rand(). The native executor declined every function shape here (counted in native_declined). The "
+                     "element type is compared for non-null indexes only. Iteration 50 (review 47-49 items 2, 3, 6, m5)."}
     d = REPO / ".g5/Verus_verification/results/cypher_fns" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "native_declined", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s")}))

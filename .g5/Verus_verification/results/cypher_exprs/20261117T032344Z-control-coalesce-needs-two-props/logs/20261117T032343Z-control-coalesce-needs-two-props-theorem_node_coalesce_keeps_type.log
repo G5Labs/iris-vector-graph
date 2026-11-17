@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-needs-two-props/20261117T032343Z/models/cypher_exprs/cypher_exprs.rs:262:1
+    |
+262 | pub proof fn theorem_node_coalesce_keeps_type(b: CoArg)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-needs-two-props/20261117T032343Z/models/cypher_exprs/cypher_exprs.rs:264:13
+    |
+262 | pub proof fn theorem_node_coalesce_keeps_type(b: CoArg)
+    | ------------------------------------------------------- at the end of the function body
+263 |     requires b != CoArg::ListLiteral, b != CoArg::RowVar,
+264 |     ensures coalesce_number(CoArg::NodeProp, b) == Out::Int, coalesce_number(b, CoArg::NodeProp) == Out::Int,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-needs-two-props/20261117T032343Z/models/cypher_exprs/cypher_exprs.rs:264:62
+    |
+262 | pub proof fn theorem_node_coalesce_keeps_type(b: CoArg)
+    | ------------------------------------------------------- at the end of the function body
+263 |     requires b != CoArg::ListLiteral, b != CoArg::RowVar,
+264 |     ensures coalesce_number(CoArg::NodeProp, b) == Out::Int, coalesce_number(b, CoArg::NodeProp) == Out::Int,
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

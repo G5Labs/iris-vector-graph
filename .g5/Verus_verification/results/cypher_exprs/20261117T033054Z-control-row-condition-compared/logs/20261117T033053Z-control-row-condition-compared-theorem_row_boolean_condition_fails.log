@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/row-condition-compared/20261117T033053Z/models/cypher_exprs/cypher_exprs.rs:118:9
+    |
+116 | pub proof fn theorem_row_boolean_condition_fails(v: bool)
+    | --------------------------------------------------------- at the end of the function body
+117 |     ensures
+118 |         case_when(Syntax::RowVar, v) == CaseOut::PrepareFails,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

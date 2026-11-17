@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: a vector failure no longer skips the text leg (one try per leg)",
+    "expect_fail_in": [
+      "theorem_failed_vector_leg_reads_as_no_match"
+    ],
+    "find": "        Leg::Fails => FuseOut::Empty,",
+    "name": "vector-failure-isolated",
+    "replace": "        Leg::Fails => if text_requested { FuseOut::TextOnly } else { FuseOut::Empty },"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failed_vector_leg_reads_as_no_match"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/retrieval_compose/model.json": "50d615fbe9481943e4eb30dc42d071a0f987249ec1f845ac804550763e7a4b9e",
+    ".g5/Verus_verification/models/retrieval_compose/retrieval_compose.rs": "1f5e1fc427ea5a7519ed1444e9c125bfe8122f44a2179c2a9865d553657c97c5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/vector-failure-isolated/20261117T031854Z/models/retrieval_compose/retrieval_compose.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_failed_vector_leg_reads_as_no_match": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031854Z-control-vector-failure-isolated-theorem_failed_vector_leg_reads_as_no_match.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031854Z-control-vector-failure-isolated.log",
+    "timed_out": false,
+    "verified": 35
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031857Z-control-vector-failure-isolated/logs/20261117T031854Z-control-vector-failure-isolated-theorem_failed_vector_leg_reads_as_no_match.log": "8fee2722bf0a01bb9f186f6315c17e666e28da23020b5761d4f2105adce65c45",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031857Z-control-vector-failure-isolated/logs/20261117T031854Z-control-vector-failure-isolated.log": "9a89f7d998018ff2c2a352189337f2cbd3c2fcfe1b7b005685d793b19f87ab16"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

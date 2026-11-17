@@ -1,0 +1,26 @@
+verification results:: 15 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/reverse-column-typed/20261117T032008Z/models/cypher_fns/cypher_fns.rs:176:1
+    |
+176 | pub proof fn theorem_unknown_list_variable_answered_as_text()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/reverse-column-typed/20261117T032008Z/models/cypher_fns/cypher_fns.rs:177:13
+    |
+176 | pub proof fn theorem_unknown_list_variable_answered_as_text()
+    | ------------------------------------------------------------- at the end of the function body
+177 |     ensures reverse_result(ArgKind::Variable, Val::List, false) == Rev::ListAsJsonText,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/reverse-column-typed/20261117T032008Z/models/cypher_fns/cypher_fns.rs:178:13
+    |
+176 | pub proof fn theorem_unknown_list_variable_answered_as_text()
+    | ------------------------------------------------------------- at the end of the function body
+177 |     ensures reverse_result(ArgKind::Variable, Val::List, false) == Rev::ListAsJsonText,
+178 |             reverse_result(ArgKind::Variable, Val::List, false) != rule_reverse(Val::List),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

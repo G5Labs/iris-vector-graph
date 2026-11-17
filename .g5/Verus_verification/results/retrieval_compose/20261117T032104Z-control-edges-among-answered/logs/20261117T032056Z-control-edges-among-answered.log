@@ -1,0 +1,67 @@
+verification results:: 30 verified, 5 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:323:13
+    |
+321 |   pub proof fn theorem_capped_subgraph_lists_edge_to_unlisted_node(n: int, adj: spec_fn(int) -> Seq<int>, st: St, cap: nat)
+    |   ------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+322 |       requires adj(n).len() > 0, !st.seen.contains(adj(n)[0]), st.count >= cap,
+323 |       ensures ({ let r = expand_node(n, adj(n), st, cap);
+    |  _____________^
+324 | |                lists_edge(r.0, adj, (n, adj(n)[0])) && !r.0.seen.contains(adj(n)[0]) && r.1 }),
+    | |______________________________________________________________________________________________^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:341:78
+    |
+341 |     assert forall|e: (int, int)| #[trigger] lists_edge(r1.0, adj, e) implies e.0 == frontier[0] by {
+    |                                                                              ^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:342:32
+    |
+342 |         let i = choose|i: int| 0 <= i < r1.0.edges.len() && r1.0.edges[i] == e;
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:382:13
+    |
+381 |   pub proof fn theorem_guided_subgraph_drops_edges_among_top_nodes()
+    |   ------------------------------------------------------------------ at the end of the function body
+382 |       ensures ({
+    |  _____________^
+383 | |         let st = admit(seq![9int, 2, 1], |n: int| star_has_edge(n), empty_st(), guided_cap(5000, 3));
+384 | |         let r = expand_frontier(seq![1int, 2, 9], |n: int| star(n), st, guided_cap(5000, 3));
+385 | |         r.edges == seq![(1int, 2int)] && !lists_edge(r, |n: int| star(n), (9int, 1int))
+386 | |             && rule_lists_edge(r, |n: int| star(n), (9int, 1int)) && r.seen.contains(9) && r.seen.contains(1)
+387 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:413:13
+    |
+412 |   pub proof fn theorem_guided_seeds_exceed_cap()
+    |   ---------------------------------------------- at the end of the function body
+413 |       ensures ({
+    |  _____________^
+414 | |         let st = admit(seq![9int, 3, 4], |n: int| star_has_edge(n), empty_st(), guided_cap(5000, 1));
+415 | |         let r = expand_frontier(seq![3int, 4, 9], |n: int| star(n), st, guided_cap(5000, 1));
+416 | |         r.count == 3 && !rule_within_cap(r, guided_cap(5000, 1)) && r.edges.len() == 0
+417 | |             && !lists_edge(r, |n: int| star(n), (9int, 3int)) && rule_lists_edge(r, |n: int| star(n), (9int, 3int))
+418 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/edges-among-answered/20261117T032056Z/models/retrieval_compose/retrieval_compose.rs:439:13
+    |
+438 |   pub proof fn theorem_last_hop_edges_missing()
+    |   --------------------------------------------- at the end of the function body
+439 |       ensures ({
+    |  _____________^
+440 | |         let r = expand_frontier(seq![9int], |n: int| star(n), seeded(set![9int], 1), 10000);
+441 | |         r.seen.contains(1) && r.seen.contains(2) && !lists_edge(r, |n: int| star(n), (1int, 2int))
+442 | |             && rule_lists_edge(r, |n: int| star(n), (1int, 2int)) && lists_edge(r, |n: int| star(n), (9int, 1int))
+443 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

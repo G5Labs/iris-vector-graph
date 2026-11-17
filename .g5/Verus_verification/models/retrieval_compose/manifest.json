@@ -1,6 +1,6 @@
 {
   "title": "retrieval compose",
-  "question": "Composed retrieval: each fusion surface's absent-rank rule (bug-srch-005), failed versus empty legs, which vector index the engine's fusion reads (bug-srch-110), PyOps width and c handling (bug-srch-111, -112), kg_VECTOR_GRAPH_SEARCH truncation and flags (HD-0603), kg_SUBGRAPH and kg_PPR_GUIDED_SUBGRAPH caps and edges (bug-plt-113, -114), multi_vector_search's failing source",
+  "question": "Composed retrieval: each fusion surface's absent-rank rule (bug-srch-005), failed versus empty legs, which vector index the engine's fusion reads (bug-srch-110), PyOps width and c handling (bug-srch-111, -112), kg_VECTOR_GRAPH_SEARCH truncation and flags (HD-0603), kg_SUBGRAPH and kg_PPR_GUIDED_SUBGRAPH caps and edges (bug-plt-113, -114), multi_vector_search's failing source; iteration 50: the guided subgraph against its documented cap and edges (seeds over the cap, edges among answered nodes)",
   "ontology_ids": [
     "search.fusion",
     "search.fusion.surfaces",
@@ -17,7 +17,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 28}"
+      "expect": "{\"errors\": 0, \"verified\": 35}"
     },
     {
       "label": "engine-absent-zero",
@@ -86,16 +86,34 @@
       "expect": "{\"fail_in\": [\"theorem_capped_subgraph_lists_edge_to_unlisted_node\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
-      "label": "guided-cap-max-nodes",
+      "label": "edges-among-answered",
       "kind": "control",
       "variant": "as-built bounded transcription",
-      "expect": "{\"fail_in\": [\"theorem_guided_subgraph_drops_edges_among_top_nodes\", \"theorem_guided_cap_is_ppr_top_k\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"theorem_filled_cap_expands_only_first_node\", \"theorem_guided_subgraph_drops_edges_among_top_nodes\", \"theorem_guided_seeds_exceed_cap\", \"theorem_last_hop_edges_missing\", \"theorem_capped_subgraph_lists_edge_to_unlisted_node\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "seeds-capped",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_admitted_seeds_ignore_cap\", \"theorem_guided_seeds_exceed_cap\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "expand-whole-frontier-at-cap",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_filled_cap_expands_only_first_node\", \"theorem_guided_subgraph_drops_edges_among_top_nodes\", \"theorem_guided_seeds_exceed_cap\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "guided-cap-top-k-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_guided_cap_is_ppr_top_k\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",
       "kind": "binding",
       "variant": "as-built bounded transcription",
-      "expect": "AGREES"
+      "expect": null
     }
   ]
 }

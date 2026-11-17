@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "decision: the engine gives a missing item no contribution (the RRFFusion rule; the repair of bug-srch-005); the rank-10-in-both neighbor still verifies",
+    "expect_fail_in": [
+      "theorem_engine_absent_rank_reorders",
+      "theorem_engine_absent_depends_on_length",
+      "theorem_engine_skipped_leg_adds_constant"
+    ],
+    "find": "        Surface::Engine => Some(leg_len + c),",
+    "name": "engine-absent-zero",
+    "replace": "        Surface::Engine => None,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_engine_absent_rank_reorders",
+      "theorem_engine_absent_depends_on_length",
+      "theorem_engine_skipped_leg_adds_constant"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/retrieval_compose/model.json": "50d615fbe9481943e4eb30dc42d071a0f987249ec1f845ac804550763e7a4b9e",
+    ".g5/Verus_verification/models/retrieval_compose/retrieval_compose.rs": "1f5e1fc427ea5a7519ed1444e9c125bfe8122f44a2179c2a9865d553657c97c5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/engine-absent-zero/20261117T031846Z/models/retrieval_compose/retrieval_compose.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_engine_absent_depends_on_length": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031846Z-control-engine-absent-zero-theorem_engine_absent_depends_on_length.log",
+        "timed_out": false,
+        "verified": 1
+      },
+      "theorem_engine_absent_rank_reorders": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031846Z-control-engine-absent-zero-theorem_engine_absent_rank_reorders.log",
+        "timed_out": false,
+        "verified": 2
+      },
+      "theorem_engine_skipped_leg_adds_constant": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031846Z-control-engine-absent-zero-theorem_engine_skipped_leg_adds_constant.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031846Z-control-engine-absent-zero.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031851Z-control-engine-absent-zero/logs/20261117T031846Z-control-engine-absent-zero-theorem_engine_absent_depends_on_length.log": "5b451ae7a6b80a898ec16f9f33763ec160520c3dee6879f8670419231df8917a",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031851Z-control-engine-absent-zero/logs/20261117T031846Z-control-engine-absent-zero-theorem_engine_absent_rank_reorders.log": "2f49e45751482f8ab81d2b922d4f1099c54e2b55d984496fd2eed0e2612c8457",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031851Z-control-engine-absent-zero/logs/20261117T031846Z-control-engine-absent-zero-theorem_engine_skipped_leg_adds_constant.log": "f9a1bbe4c0a3e1e43535431abd57a245f57c25b92721f6c290de83a705168714",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031851Z-control-engine-absent-zero/logs/20261117T031846Z-control-engine-absent-zero.log": "431e557ef542fbdae5d590ce22b0c55b9710c0ec8dda725a61173e4c0f15399a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

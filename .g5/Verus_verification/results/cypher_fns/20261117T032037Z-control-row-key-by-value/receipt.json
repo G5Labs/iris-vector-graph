@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: n[k] reads the property named by k's value (the repair)",
+    "expect_fail_in": [
+      "theorem_row_key_reads_variable_name"
+    ],
+    "find": "        KeyArg::RowVar { name, value } => KeyOut::Reads(name),",
+    "name": "row-key-by-value",
+    "replace": "        KeyArg::RowVar { name, value } => KeyOut::Reads(value),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_row_key_reads_variable_name"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_fns/cypher_fns.rs": "5f47447f7e8261664b88ad7b51f126f08b544071bc382a90b5ff83a57c918122",
+    ".g5/Verus_verification/models/cypher_fns/model.json": "dfc9eadf600204766a257e0c0fa74097986e9162b31d848f2f6cf251816ff806"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/row-key-by-value/20261117T032036Z/models/cypher_fns/cypher_fns.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_row_key_reads_variable_name": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T032036Z-control-row-key-by-value-theorem_row_key_reads_variable_name.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T032036Z-control-row-key-by-value.log",
+    "timed_out": false,
+    "verified": 15
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_fns/20261117T032037Z-control-row-key-by-value/logs/20261117T032036Z-control-row-key-by-value-theorem_row_key_reads_variable_name.log": "641b194a722daff6f8cf8a09340145d041e04583c31ec9fe1f0812148f52408f",
+    ".g5/Verus_verification/results/cypher_fns/20261117T032037Z-control-row-key-by-value/logs/20261117T032036Z-control-row-key-by-value.log": "8486a03d177701b014adacfdea22dd2bec037f99e7f4b96252343b558ecb9ff2"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

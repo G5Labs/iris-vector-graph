@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: a run-time index into a list from a property goes through CypherFn_IVGLISTGET with a null test (the repair); the non-negative neighbor must still verify",
+    "expect_fail_in": [
+      "theorem_row_negative_index_fails",
+      "theorem_null_index_reads_first_element"
+    ],
+    "find": "            Src::PropertyRead => json_arrayget_opt(len, i),",
+    "name": "row-index-through-ivglistget",
+    "replace": "            Src::PropertyRead => match i { Some(i) => ivglistget(len, i), None => Elem::Null },"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_row_negative_index_fails",
+      "theorem_null_index_reads_first_element"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_fns/cypher_fns.rs": "c0a744c69b5dd10833acd947ae8c8e2be13471c843bcc28dabe10b339c4f26d8",
+    ".g5/Verus_verification/models/cypher_fns/model.json": "dfc9eadf600204766a257e0c0fa74097986e9162b31d848f2f6cf251816ff806"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/row-index-through-ivglistget/20261117T032000Z/models/cypher_fns/cypher_fns.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_null_index_reads_first_element": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T032000Z-control-row-index-through-ivglistget-theorem_null_index_reads_first_element.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_row_negative_index_fails": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T032000Z-control-row-index-through-ivglistget-theorem_row_negative_index_fails.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/20261117T032000Z-control-row-index-through-ivglistget.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_fns/20261117T032001Z-control-row-index-through-ivglistget/logs/20261117T032000Z-control-row-index-through-ivglistget-theorem_null_index_reads_first_element.log": "f2aa9e34b135baae3e24557479278c89543fc55b4e7ad3edc07ca9fd0b49614b",
+    ".g5/Verus_verification/results/cypher_fns/20261117T032001Z-control-row-index-through-ivglistget/logs/20261117T032000Z-control-row-index-through-ivglistget-theorem_row_negative_index_fails.log": "1476afd7a2d37dd3192c03e6f72715d7df5ad2d230c3b9ec57c2705818dbdc24",
+    ".g5/Verus_verification/results/cypher_fns/20261117T032001Z-control-row-index-through-ivglistget/logs/20261117T032000Z-control-row-index-through-ivglistget.log": "28d6e1eacb0bc6ad719086a1132680317e6b4a33e955c87fa671396c9af37c12"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

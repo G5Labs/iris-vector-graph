@@ -167,9 +167,11 @@ Subgraph extraction returns the nodes within `k_hops` (2) of the seeds, at most 
 <a id="algorithms.op.subgraph.guided"></a>
 [I · algorithms.op.subgraph.guided]
 
-`kg_PPR_GUIDED_SUBGRAPH` runs personalized PageRank from the seeds on the default graph, keeps the `ppr_top_k` (50) best positive scores, and returns the subgraph within `k_hops` (1) of the seeds and those nodes with their scores.
+`kg_PPR_GUIDED_SUBGRAPH` runs personalized PageRank from the seeds on the default graph, keeps the `ppr_top_k` (50) best positive scores, and returns the subgraph within `k_hops` (1) of the seeds and those nodes with their scores. The answer has at most `min(max_nodes, ppr_top_k)` nodes and lists the edges among them.
 - Damping outside (0, 1) or fewer than 1 iteration raises `ValueError` before any data is read. A repeated seed counts once; seeds that are not nodes add nothing.
-- Today the subgraph's cap is `ppr_top_k`, which the seeds and top nodes already fill. Once the walk reaches that many nodes, the answer is those nodes with only the out-edges of the first one in ID order ([finding](../../Verus_verification/bugs_issues.md#bug-plt-113)).
+- Today every seed and top node with an edge is taken in, however many there are, so the answer can exceed the cap: three seeds with `ppr_top_k` 1 answer three nodes ([finding](../../Verus_verification/bugs_issues.md#bug-plt-113)).
+- Today, once those nodes fill the cap, only the first of them in ID order is expanded, so the answer lists only its out-edges and the edges among the others are missing. With the default 50 this happens whenever the walk reaches 50 nodes ([finding](../../Verus_verification/bugs_issues.md#bug-plt-113)).
+- Both departures were seen on the ObjectScript subgraph reader. With the Arno accelerator loaded and no edge-type filter, another reader answers first; it was not checked.
 - `IRISGraphOperators` takes `top_k` and `max_hops` as other names for `ppr_top_k` and `k_hops`. `kg_PPR` is the same walk's scores as a list, best first, zero scores included.
 
 
@@ -538,7 +540,7 @@ State machines: [communities](../../Verus_verification/models/communities/manife
 - Sources: [API_REFERENCE kg_SUBGRAPH](../../../docs/API_REFERENCE.md); [_engine/algorithms.py kg_SUBGRAPH](../../../iris_vector_graph/_engine/algorithms.py); [Subgraph.cls SubgraphJson](../../../iris_src/src/Graph/KG/Subgraph.cls#L6-L100)
 - Expands: [Operations](#algorithms.op)
 - Children: [PPR-guided subgraph](#algorithms.op.subgraph.guided)
-- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `expand_node`, `expand_frontier`, `theorem_capped_subgraph_lists_edge_to_unlisted_node`, `theorem_last_hop_edges_missing` (controls `edge-recorded-after-cap-test`)
+- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `admit`, `expand_node`, `expand_frontier`, `lists_edge` against `rule_lists_edge`; `theorem_capped_subgraph_lists_edge_to_unlisted_node` (every input since iteration 50), witness `theorem_last_hop_edges_missing` (controls `edge-recorded-after-cap-test`, `edges-among-answered`)
 - agent
 - user-facing-behavior
 
@@ -546,21 +548,21 @@ The walk direction is not documented. A code comment still calls the traversal n
 
 State machines: [retrieval compose](../../Verus_verification/models/retrieval_compose/manifest.json)
 
-Findings: [kg_SUBGRAPH misses edges among the outermost nodes and lists an edge to a node it left out when capped](../../Verus_verification/bugs_issues.md#bug-plt-114); [kg_PPR_GUIDED_SUBGRAPH returns its top nodes with almost none of the edges among them](../../Verus_verification/bugs_issues.md#bug-plt-113)
+Findings: [kg_SUBGRAPH misses edges among the outermost nodes and lists an edge to a node it left out when capped](../../Verus_verification/bugs_issues.md#bug-plt-114); [kg_PPR_GUIDED_SUBGRAPH lists almost none of the edges among its answered nodes and can answer more nodes than its cap](../../Verus_verification/bugs_issues.md#bug-plt-113)
 
 ### algorithms.op.subgraph.guided
 
-- Sources: [kg_PPR_GUIDED_SUBGRAPH](../../../iris_vector_graph/_engine/algorithms.py#L947-L985), [check_ppr_args](../../../iris_vector_graph/_engine/algorithms.py#L66-L76), [kg_PPR](../../../iris_vector_graph/_engine/algorithms.py#L1028-L1042), [IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH](../../../iris_vector_graph/operators.py#L112-L124), [enhancement note](../../../docs/dev/notes/enhancements/001-ppr-guided-subgraph.md)
+- Sources: [kg_PPR_GUIDED_SUBGRAPH](../../../iris_vector_graph/_engine/algorithms.py#L947-L985) (the cap in its docstring, lines 956-957), [execute_subgraph](../../../iris_vector_graph/stores/iris_sql_store.py#L2500-L2560) (the Arno reader first, lines 2526-2541), [check_ppr_args](../../../iris_vector_graph/_engine/algorithms.py#L66-L76), [kg_PPR](../../../iris_vector_graph/_engine/algorithms.py#L1028-L1042), [IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH](../../../iris_vector_graph/operators.py#L112-L124), [enhancement note](../../../docs/dev/notes/enhancements/001-ppr-guided-subgraph.md)
 - Expands: [Subgraph](#algorithms.op.subgraph)
-- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `guided_cap`, `theorem_guided_subgraph_drops_edges_among_top_nodes`, `theorem_guided_cap_is_ppr_top_k` (control `guided-cap-max-nodes`)
+- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `guided_cap`, `admit`, `lists_edge` against the rule `rule_lists_edge`, `rule_within_cap`; `theorem_guided_cap_is_ppr_top_k`, `theorem_admitted_seeds_ignore_cap`, `theorem_filled_cap_expands_only_first_node`; witnesses `theorem_guided_subgraph_drops_edges_among_top_nodes`, `theorem_guided_seeds_exceed_cap`, neighbor `theorem_guided_uncapped_lists_all_edges` (controls `edges-among-answered`, `seeds-capped`, `expand-whole-frontier-at-cap`, `guided-cap-top-k-only`)
 - agent
 - user-facing-behavior
 
-Recovered in iteration 49 ([W56 predictions](../../uplift/consolidated/iteration-49/retrieval-PAIRS.md) P1-P4, R2): P2, P3, P4 and R2 held; P1 missed (the answer is capped at `ppr_top_k` nodes).
+Recovered in iteration 49 ([W56 predictions](../../uplift/consolidated/iteration-49/retrieval-PAIRS.md) P1-P4, R2): P2, P3, P4 and R2 held; P1 missed (the answer is capped at `ppr_top_k` nodes). Corrected in iteration 50 after [review 47-49](../../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 1: the cap `min(max_nodes, ppr_top_k)` is documented intent (the docstring and the [enhancement note](../../../docs/dev/notes/enhancements/001-ppr-guided-subgraph.md)'s `top_k` "hard node cap", "`len(result.nodes) <= top_k` always"), so it is now the statement; the departures are the missing edges and the seeds over the cap ([fixture reproduction](../../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json)).
 
 State machines: [retrieval compose](../../Verus_verification/models/retrieval_compose/manifest.json)
 
-Findings: [kg_PPR_GUIDED_SUBGRAPH returns its top nodes with almost none of the edges among them](../../Verus_verification/bugs_issues.md#bug-plt-113)
+Findings: [kg_PPR_GUIDED_SUBGRAPH lists almost none of the edges among its answered nodes and can answer more nodes than its cap](../../Verus_verification/bugs_issues.md#bug-plt-113)
 
 ### algorithms.op.degree
 

@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "effect: the frontier loop goes on to later nodes after a node leaves the count at the cap (edges to seen nodes recorded); the per-node cap test still stops at an unseen neighbor",
+    "expect_fail_in": [
+      "theorem_filled_cap_expands_only_first_node",
+      "theorem_guided_subgraph_drops_edges_among_top_nodes",
+      "theorem_guided_seeds_exceed_cap"
+    ],
+    "find": "        if r.1 || r.0.count >= cap { r.0 } else { expand_frontier(frontier.drop_first(), adj, r.0, cap) }",
+    "name": "expand-whole-frontier-at-cap",
+    "replace": "        if r.1 { r.0 } else { expand_frontier(frontier.drop_first(), adj, r.0, cap) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_filled_cap_expands_only_first_node",
+      "theorem_guided_subgraph_drops_edges_among_top_nodes",
+      "theorem_guided_seeds_exceed_cap"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/retrieval_compose/model.json": "50d615fbe9481943e4eb30dc42d071a0f987249ec1f845ac804550763e7a4b9e",
+    ".g5/Verus_verification/models/retrieval_compose/retrieval_compose.rs": "1f5e1fc427ea5a7519ed1444e9c125bfe8122f44a2179c2a9865d553657c97c5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/expand-whole-frontier-at-cap/20261117T031931Z/models/retrieval_compose/retrieval_compose.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_filled_cap_expands_only_first_node": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031931Z-control-expand-whole-frontier-at-cap-theorem_filled_cap_expands_only_first_node.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_guided_seeds_exceed_cap": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031931Z-control-expand-whole-frontier-at-cap-theorem_guided_seeds_exceed_cap.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_guided_subgraph_drops_edges_among_top_nodes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031931Z-control-expand-whole-frontier-at-cap-theorem_guided_subgraph_drops_edges_among_top_nodes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/20261117T031931Z-control-expand-whole-frontier-at-cap.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031936Z-control-expand-whole-frontier-at-cap/logs/20261117T031931Z-control-expand-whole-frontier-at-cap-theorem_filled_cap_expands_only_first_node.log": "a091d00b4b24f874391c47a78dec7c24ca9e18b394223cefddfb8e5a4a88b338",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031936Z-control-expand-whole-frontier-at-cap/logs/20261117T031931Z-control-expand-whole-frontier-at-cap-theorem_guided_seeds_exceed_cap.log": "ef64dc43021d09c51bc5613cbe0bca43c4d89b7ba1f39cae31808265e39c25f3",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031936Z-control-expand-whole-frontier-at-cap/logs/20261117T031931Z-control-expand-whole-frontier-at-cap-theorem_guided_subgraph_drops_edges_among_top_nodes.log": "09629964ee618298faf211b8d4f374bc6bc2b28320aae11a8e64a0d681a69ae8",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T031936Z-control-expand-whole-frontier-at-cap/logs/20261117T031931Z-control-expand-whole-frontier-at-cap.log": "28ca07bfda7606cf80d1b6b29bae2993e257e74feb49f66cd5ce57e2d20bd3a6"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

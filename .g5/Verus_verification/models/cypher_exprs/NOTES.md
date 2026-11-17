@@ -78,3 +78,44 @@ access conditions, CASE results and nested functions in CREATE are not separatel
 ([bug-cyp-124](../../bugs_issues.md#bug-cyp-124)), `left`/`right` and the type conversions are observed only.
 `PropWrite.Layout` and the lock path of `SetVal` are not modeled. Both IRIS premises and the driver premise are observed
 on IRIS 2026.1 with intersystems-irispython 5.3.2 only.
+
+## Iteration 50: repairs from review 47-49
+
+[Review](../../../uplift/consolidated/iteration-50/REVIEW-47-49.md) items 4, 5, 7 and m1; dispositions in [DISPOSITIONS.md](../../../uplift/consolidated/iteration-50/DISPOSITIONS.md). Earlier sections describe iteration 48 and are
+kept; where they differ, this section governs.
+
+- **A parameter on a relationship CREATE between new nodes** (item 5). `RelValue::Param` is dropped like a call
+  (`translator.py:10213-10226`: an `ast.Parameter` is neither a Literal nor a Variable). Neighbors in the model:
+  `create_node_param` (written) and `create_rel_matched_value` (the alias path writes a literal or a parameter and refuses
+  a computed value, observed for `toUpper('ab')`, `size('ab')` and `a.num + 1`). `theorem_inline_rel_param_dropped`,
+  control `rel-param-kept`.
+- **Simple CASE across kinds** (item 7). `simple_case_takes`: `_expr_case` drops a WHEN of another kind only when both
+  kinds are known statically (literals); otherwise IRIS's `CASE x WHEN y` compares a number with text that spells it as
+  equal (`sql_case_eq`, an observed provider behavior over canonical spellings). `theorem_simple_case_coerces_across_kinds`,
+  neighbor `theorem_simple_case_same_kind_or_literal_follows_rule`; controls `case-kinds-compared` (the repair),
+  `case-literal-kinds-unchecked`.
+- **A null list's slice** (m1). `as_built_slice_of` over `ListIn::Null` answers the empty list: `JSON_TABLE` over NULL
+  has no rows and nothing tests the list. `theorem_null_list_slice_is_empty`, control `null-list-guard`.
+- **Premise constants** (item 4). `identifier_branch_looks_ahead()` is gone: `parses(lo, upper)` now derives the
+  parser's refusal from the observed tokens (`a..3` is DOT FLOAT, `a..b` and `a..]` DOT DOT) and the branch's
+  `expect(IDENTIFIER)`. `node_update`'s `deployed` input now comes from `prop_set_deployed(cached, check)`, the member's
+  own logic (cache, else the dictionary check; unreadable counts as deployed), with `theorem_prop_set_switch_decides_retype`
+  and control `unreadable-taken-as-absent`; the binding drives its found, absent (an engine whose IVG Schema does not
+  exist), unreadable (a closed connection) and cached branches without overriding them. `driver_accepts_ast()`,
+  `iris_accepts_scalar_condition()` and `filer_writes_same_text()` stay: each is a provider's behavior (the driver, IRIS
+  Prepare, IRIS's filer), observed and named as a premise; the emitter's choice beside each is modeled from its input
+  (`folds(f)`, `condition_sql(syn)`, `setval`), so those bindings stay active.
+
+Theorems (22 verified). Controls (22, all EXPECTED_FAIL, each failing exactly its named theorems): new `null-list-guard`,
+`rel-param-kept`, `case-kinds-compared`, `case-literal-kinds-unchecked`, `unreadable-taken-as-absent`; `setval-skips-retype`,
+`prop-set-not-emitted` and `filer-writes-same-text` now also name `theorem_prop_set_switch_decides_retype`, which their
+change also breaks (their first iteration-50 runs failed it unnamed; receipts kept). Final:
+[prove](../../results/cypher_exprs/20261117T033051Z-prove/receipt.json).
+
+Binding: **AGREES 233 cases**, all 22 mutations and the tamper check detected
+([receipt](../../results/cypher_exprs/20261117T033119Z-binding/receipt.json)).
+
+Not modeled (observed only): a list literal holding a property read in `SET`/`CREATE` raises a Python `TypeError`
+([bug-cyp-128](../../bugs_issues.md#bug-cyp-128)); `trim`'s whitespace ([bug-cyp-130](../../bugs_issues.md#bug-cyp-130));
+a parameter list sliced by parameter bounds ([bug-cyp-125](../../bugs_issues.md#bug-cyp-125), driver premise plus the
+null-guard marker order).

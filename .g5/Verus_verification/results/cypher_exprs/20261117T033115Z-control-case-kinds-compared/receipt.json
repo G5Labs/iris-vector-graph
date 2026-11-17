@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision (iteration 50): a simple CASE compares kinds whatever the syntax, e.g. through CY_JCMP (the repair); the neighbors must still verify",
+    "expect_fail_in": [
+      "theorem_simple_case_coerces_across_kinds"
+    ],
+    "find": "    if kind_known(ts) && kind_known(ws) && t.kind != w.kind { false } else { sql_case_eq(t, w) }",
+    "name": "case-kinds-compared",
+    "replace": "    if t.kind != w.kind { false } else { sql_case_eq(t, w) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_simple_case_coerces_across_kinds"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_exprs/cypher_exprs.rs": "4731f182abab78e482004c40abb80ffa3091292c8be8a1aa94e623ec44004bd4",
+    ".g5/Verus_verification/models/cypher_exprs/model.json": "58bba2eaa683bdcd4ade413b8ba72272c08bb67f6861c5c67775459665b1060f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/case-kinds-compared/20261117T033114Z/models/cypher_exprs/cypher_exprs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_simple_case_coerces_across_kinds": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T033114Z-control-case-kinds-compared-theorem_simple_case_coerces_across_kinds.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/20261117T033114Z-control-case-kinds-compared.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_exprs/20261117T033115Z-control-case-kinds-compared/logs/20261117T033114Z-control-case-kinds-compared-theorem_simple_case_coerces_across_kinds.log": "c67f6ef05dc7cfef11c311b67567ad5258788d988140c618b87cde4938fd86bc",
+    ".g5/Verus_verification/results/cypher_exprs/20261117T033115Z-control-case-kinds-compared/logs/20261117T033114Z-control-case-kinds-compared.log": "abe774023bf4a16671b09df7cabdca831cf403c5aa46310e991e19bca5ebdcdf"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

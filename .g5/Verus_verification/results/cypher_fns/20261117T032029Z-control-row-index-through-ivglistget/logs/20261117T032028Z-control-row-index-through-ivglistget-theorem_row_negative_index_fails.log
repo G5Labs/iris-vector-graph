@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_fns/controls/row-index-through-ivglistget/20261117T032028Z/models/cypher_fns/cypher_fns.rs:98:9
+   |
+95 | pub proof fn theorem_row_negative_index_fails(len: nat, i: int)
+   | --------------------------------------------------------------- at the end of the function body
+...
+98 |         translated_index(Src::PropertyRead, IdxKind::RowValue, len, Some(i)) == Elem::Fails,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

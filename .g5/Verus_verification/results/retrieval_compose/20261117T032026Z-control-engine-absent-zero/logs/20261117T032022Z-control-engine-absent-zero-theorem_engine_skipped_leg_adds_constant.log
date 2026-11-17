@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/engine-absent-zero/20261117T032022Z/models/retrieval_compose/retrieval_compose.rs:80:13
+   |
+79 | pub proof fn theorem_engine_skipped_leg_adds_constant(r: nat)
+   | ------------------------------------------------------------- at the end of the function body
+80 |     ensures rrf(Surface::Engine, 60, Some(r), 62, None, 0) == 1real / (60real + r as real) + 1real / 120real,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

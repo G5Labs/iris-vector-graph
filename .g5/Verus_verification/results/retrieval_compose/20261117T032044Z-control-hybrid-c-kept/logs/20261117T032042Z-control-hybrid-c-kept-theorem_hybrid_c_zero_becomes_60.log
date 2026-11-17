@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/retrieval_compose/controls/hybrid-c-kept/20261117T032042Z/models/retrieval_compose/retrieval_compose.rs:162:13
+    |
+161 | pub proof fn theorem_hybrid_c_zero_becomes_60(c: nat)
+    | ----------------------------------------------------- at the end of the function body
+162 |     ensures hybrid_c(0) == 60, c > 0 ==> hybrid_c(c) == c,
+    |             ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -8,7 +8,11 @@ sys.path.insert(0, str(REPO / ".g5/uplift/consolidated/iteration-36"))
 import runtime  # noqa: E402
 
 RUN = os.environ.get("IE_RUN", time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())); TAG = RUN[-7:-1]
-MUTS = ["insert_replaces", "delete_all", "width_checked", "delete_noop", "cosine_normalized", "cosine_takes_l2_branch"]
+MUTS = ["insert_replaces", "delete_all", "width_checked", "delete_noop", "cosine_normalized", "cosine_takes_l2_branch",
+        "insert_by_distance"]
+# iteration 50 (review 47-49 m8): two well-separated clusters, one short and one long; a1 is re-inserted with its own vector
+CELL_VECS = {"a1": [1.2, 0.0, 0.0, 0.0], "a2": [1.0, 0.0, 0.0, 0.0], "a3": [0.8, 0.1, 0.0, 0.0],
+             "b1": [10.0, 10.0, 0.0, 0.0], "b2": [11.0, 9.0, 0.0, 0.0], "b3": [9.0, 11.0, 0.0, 0.0]}
 COS_VECS = {"long_off": [10.0, 0.0, 0.0, 0.0], "unit_on": [0.6, 0.8, 0.0, 0.0], "other": [0.0, 0.0, 1.0, 0.0]}
 COS_Q = [0.6, 0.8, 0.0, 0.0]
 
@@ -42,6 +46,28 @@ def entry_score(metric, q, v, m):
     if metric == "cosine" and m.get("cosine_takes_l2_branch"):
         return -sq
     return dot if metric in ("cosine", "dot") else -sq
+
+
+def sqd(a, b):
+    return sum((x - y) ** 2 for x, y in zip(a, b))
+
+
+def build_cell(v, cents):
+    """Port of build_cell: the Euclidean-nearest centroid (lower cell on a tie)."""
+    return min(range(len(cents)), key=lambda k: (sqd(v, cents[k]), k))
+
+
+def insert_cell(metric, v, cents, m):
+    """Port of insert_score / insert_cell: the first best cell by the metric branch (or by distance under the control)."""
+    def score(cn):
+        if metric in ("cosine", "dot") and not m.get("insert_by_distance"):
+            return sum(a * b for a, b in zip(v, cn))
+        return -sqd(v, cn)
+    best = 0
+    for k in range(1, len(cents)):
+        if score(cents[k]) > score(cents[best]):
+            best = k
+    return best
 
 
 def cos_predict(m):
@@ -79,6 +105,20 @@ def main():
     for n, v in COS_VECS.items():
         e.create_node(p + n, graph=G + "c"); e.store_embedding(p + n, v, graph=G + "c", model_key=K)
     e.ivf_build(cname, nlist=1, graph=G + "c", model_key=K, metric="cosine")
+    # m8: which cell the build puts a1 in (read from ^IVF(name,"list",cell,node)) and which cell Insert picks for the
+    # same vector; the centroids are the clusters' means under the observed build labels (provider input: k-means)
+    io = e._iris_obj(); cell_inputs = {}
+    for n, v in CELL_VECS.items():
+        e.create_node(p + "k" + n, graph=G + "k"); e.store_embedding(p + "k" + n, v, graph=G + "k", model_key=K)
+    for metric in ("cosine", "dot", "l2"):
+        name = f"ie{TAG}k{metric[0]}"; e.ivf_build(name, nlist=2, graph=G + "k", model_key=K, metric=metric)
+        labels = {n: [cc for cc in (0, 1) if io.isDefined("IVF", name, "list", cc, p + "k" + n)] for n in CELL_VECS}
+        base = e.ivf_info(name)["indexed"]
+        cell = e.ivf_insert(name, p + "ka1", CELL_VECS["a1"])
+        after = [cc for cc in (0, 1) if io.isDefined("IVF", name, "list", cc, p + "ka1")]
+        cell_inputs[metric] = labels
+        got[f"cell_{metric}"] = {"build_cell": labels["a1"], "insert_cell": cell, "cells_after": after,
+                                 "indexed_delta": e.ivf_info(name)["indexed"] - base}
     py = e.ivf_search(cname, COS_Q, k=3, nprobe=1)
     cur = c.cursor(); cur.execute(f"SELECT {e._ivg_schema}.kg_IVF(?, ?, ?, ?)", [cname, json.dumps(COS_Q), 3, 1])
     sq = [(r["id"], float(r["score"])) for r in json.loads(cur.fetchone()[0])]; cur.close()
@@ -90,6 +130,14 @@ def main():
         out = {k: port_seq(plan[k][0], plan[k][1], m) for k in plan}
         out["other_width_answered"] = not m.get("width_checked")
         out["cosine_ivf_search"] = out["cosine_kg_IVF"] = cos_predict(m)
+        for metric, labels in cell_inputs.items():
+            cents = []
+            for k in (0, 1):
+                mem = [CELL_VECS[n] for n, cs in labels.items() if cs == [k]]
+                cents.append([sum(col) / len(mem) for col in zip(*mem)] if mem else [0.0] * 4)
+            b = build_cell(CELL_VECS["a1"], cents); i = insert_cell(metric, CELL_VECS["a1"], cents, m)
+            out[f"cell_{metric}"] = {"build_cell": [b], "insert_cell": i, "cells_after": sorted({b, i}),
+                                     "indexed_delta": 1}
         return out
 
     want = predict({})
@@ -104,7 +152,7 @@ def main():
             "sensitivities_detected_cases": sens, "all_sensitivities_detected": all(v > 0 for v in sens.values()), "observation_tamper_detected": tamper_detected, "elapsed_s": round(time.time() - t0, 1),
             "inputs": {**{str(q.relative_to(REPO)): sha(q) for q in [HERE / "binding.py", HERE / "ivf_entries.rs", HERE / "model.json"]},
                        **{f: sha(Path(runtime.PIN) / f) for f in ["iris_src/src/Graph/KG/IVFIndex.cls", "iris_src/src/Graph/KG/SqlProcs.cls", "iris_vector_graph/_engine/vector.py"]}},
-            "scope": "Actual IVF calls on IRIS 2026.1 (pin 3eaa79cf), two cells, cosine; the W53 cosine case through ivf_search and SQL kg_IVF (one cell, vectors of lengths 10, 1, 1); numpy and scikit-learn from the pinned venv for the build."}
+            "scope": "Actual IVF calls on IRIS 2026.1 (pin 3eaa79cf), two cells, cosine; iteration 50: the build's cell for a node (read from ^IVF) against Insert's cell for the same vector under cosine, dot and l2 (two separated clusters, centroids taken as the clusters' means under the observed labels); the W53 cosine case through ivf_search and SQL kg_IVF (one cell, vectors of lengths 10, 1, 1); numpy and scikit-learn from the pinned venv for the build."}
     d = REPO / ".g5/Verus_verification/results/ivf_entries" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "observed", "cells_from_ivf_insert", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s")}))

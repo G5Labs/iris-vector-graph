@@ -1,0 +1,13 @@
+verification results:: 18 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/ivf_entries/controls/insert-by-distance/20261117T032335Z/models/ivf_entries/ivf_entries.rs:159:13
+    |
+158 |   pub proof fn theorem_cosine_reinsert_changes_cell()
+    |   --------------------------------------------------- at the end of the function body
+159 |       ensures ({ let v = seq![2int, 0int]; let c0 = seq![1int, 0int]; let c1 = seq![5int, 5int];
+    |  _____________^
+160 | |                build_cell(v, c0, c1) == 0 && cosine_above(v, c0, c1) && insert_cell(Metric::Cosine, v, c0, c1) == 1 }),
+    | |______________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+
