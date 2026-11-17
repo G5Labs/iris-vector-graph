@@ -1,0 +1,45 @@
+{
+  "title": "ivf entries",
+  "question": "IVF index after its build: stale copies and counts on re-insert (bug-srch-107); no query width check (bug-srch-108)",
+  "ontology_ids": [
+    "search.ivf"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 4}"
+    },
+    {
+      "label": "insert-replaces",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_same_cell_reinsert_counts_twice\", \"theorem_cross_cell_reinsert_leaves_stale_entry\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-all",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_cross_cell_reinsert_leaves_stale_entry\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "width-checked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_width_answered\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-noop",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_insert_then_delete\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

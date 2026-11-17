@@ -1,0 +1,46 @@
+{
+  "name": "ivf_entries",
+  "root": "ivf_entries.rs",
+  "expected_verified": 4,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "insert-replaces",
+      "find": "    if cell == 0 { St { in0: true, indexed: s.indexed + 1, ..s } } else { St { in1: true, indexed: s.indexed + 1, ..s } }",
+      "replace": "    if cell == 0 { St { in0: true, in1: false, indexed: if found(s) { s.indexed } else { s.indexed + 1 } } } else { St { in1: true, in0: false, indexed: if found(s) { s.indexed } else { s.indexed + 1 } } }",
+      "expect_fail_in": [
+        "theorem_same_cell_reinsert_counts_twice",
+        "theorem_cross_cell_reinsert_leaves_stale_entry"
+      ],
+      "classification": "effect: an insert replaces the node's entry wherever it is (the repair)"
+    },
+    {
+      "name": "delete-all",
+      "find": "    if s.in0 { (St { in0: false, indexed: s.indexed - 1, ..s }, true) }",
+      "replace": "    if s.in0 { (St { in0: false, in1: false, indexed: s.indexed - entries(s), ..s }, true) }",
+      "expect_fail_in": [
+        "theorem_cross_cell_reinsert_leaves_stale_entry"
+      ],
+      "classification": "effect: delete removes every copy"
+    },
+    {
+      "name": "width-checked",
+      "find": "pub open spec fn search_answers(q: nat, dim: nat) -> bool { true }",
+      "replace": "pub open spec fn search_answers(q: nat, dim: nat) -> bool { q == dim }",
+      "expect_fail_in": [
+        "theorem_other_width_answered"
+      ],
+      "classification": "decision: a query of another width is refused (the repair)"
+    },
+    {
+      "name": "delete-noop",
+      "find": "    if s.in0 { (St { in0: false, indexed: s.indexed - 1, ..s }, true) }",
+      "replace": "    if s.in0 { (s, true) }",
+      "expect_fail_in": [
+        "theorem_insert_then_delete"
+      ],
+      "classification": "effect: delete leaves the entry"
+    }
+  ]
+}

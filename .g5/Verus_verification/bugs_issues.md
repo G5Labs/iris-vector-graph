@@ -2946,6 +2946,25 @@ Consequence: a failed export is indistinguishable from a query that matched noth
 
 Repair proposal (not implemented): raise when the query's result carries an error (or run it with `raise_on_error=True`). Governing statement: [install.export.rdf.cypher](../ontology/concepts/install.g5.md#install.export.rdf.cypher).
 
+<a id="bug-srch-107"></a>
+### Re-inserting a node into an IVF index keeps its old vector when the new one lands in another cell, and counts it twice
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 46)
+
+Found by: the frozen W52 prediction V4 missed ([predictions](../uplift/consolidated/iteration-46/ivf-PAIRS.md)), then a second observation; [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cross_cell_reinsert_leaves_stale_entry`, `theorem_same_cell_reinsert_counts_twice`, controls `insert-replaces`, `delete-all`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-46/ivf-observed-20261117T011444Z.json) V4; [second observation](../uplift/consolidated/iteration-46/ivf-observed2-20261117T011512Z.json); [binding](results/ivf_entries/20261117T011629Z-binding/receipt.json)). `ivf_insert(name, "x", v1)` then `ivf_insert(name, "x", v2)` with `v2` nearest another centroid leaves both entries: a search with `v1` still returns `x` first, and after one `ivf_delete(name, "x")` (answering True) `x` is still returned. In the same cell the second insert replaces the vector but `ivf_info.indexed` rises by 2.
+
+Expected: the API reference: `ivf_insert` "add[s] one vector ... in the cell of its nearest centroid"; `ivf_delete` "remove[s] node_id's vector ... Returns True if it was there"; `ivf_info.indexed` is the index's size. [search.scope.indexes.upkeep](../ontology/features/search.g5.md#search.scope.indexes.upkeep): the caller keeps the index in step through these calls.
+
+Observed: `IVFIndex.Insert` writes `^IVF(name,"list",cell,node)` without clearing the node's entry in other cells and always adds one to `indexed`; `Delete` removes the first cell's entry and stops (`IVFIndex.cls:180-230`).
+
+Consequence: updating a node's vector leaves its old vector answering searches, deleting it does not remove it, and the reported size drifts. Medium: silent stale results.
+
+Repair proposal (not implemented): remove the node from every cell before inserting, count only new nodes, and delete every copy. Governing statement: [search.ivf](../ontology/features/search.g5.md#search.ivf).
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -4520,6 +4539,23 @@ Expected: SEMANTIC_LAYER.md: "Return three columns named `s`, `p` and `o` (or an
 Consequence: renaming columns silently changes which rows are exported. Low.
 
 Repair proposal (not implemented): test positional values against null, as the named path does. Governing statement: [install.export.rdf.cypher](../ontology/concepts/install.g5.md#install.export.rdf.cypher).
+
+<a id="bug-srch-108"></a>
+### ivf_search answers a query of another width with scores instead of refusing it
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 46)
+
+Found by: the frozen W52 prediction V8 missed ([predictions](../uplift/consolidated/iteration-46/ivf-PAIRS.md)); [ivf_entries](models/ivf_entries/NOTES.md) `theorem_other_width_answered`, control `width-checked`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-46/ivf-observed-20261117T011444Z.json) V8; [binding](results/ivf_entries/20261117T011629Z-binding/receipt.json) `other_width_answered`). On a 4-wide index a 3-wide query returns three hits, two of them scored 1.0.
+
+Expected: [search.embedding.width](../ontology/features/search.g5.md#search.embedding.width): "A query vector is never padded or cut to fit a table. A query of the wrong width raises an error instead of returning scores." The IVF index is built from such a table.
+
+Consequence: a caller mixing models gets a ranking computed over part of the vector, with no error. Low: needs a wrong-width query.
+
+Repair proposal (not implemented): refuse a query whose width differs from `cfg dim`. Governing statement: [search.ivf](../ontology/features/search.g5.md#search.ivf).
 
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections

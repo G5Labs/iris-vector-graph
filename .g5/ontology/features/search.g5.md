@@ -234,6 +234,14 @@ A PLAID index holds several vectors per document and ranks documents by late int
 ## Quarantine
 
 
+<a id="search.ivf"></a>
+[D · search.ivf]
+
+An IVF index puts each vector in the cell of its nearest centroid and searches the cells nearest the query. After a build, inserts and deletes change it one node at a time, and a rebuild replaces it with the route's vectors.
+- A node not in the index, or an index that was never built, gives no hit and no error; an insert into a missing index is refused.
+- Today an insert does not remove the node's earlier vector in another cell, a delete removes only one copy, and every insert adds one to the reported size ([finding](../../Verus_verification/bugs_issues.md#bug-srch-107)).
+- Today a query of another width is answered with scores ([finding](../../Verus_verification/bugs_issues.md#bug-srch-108)).
+
 <a id="search.quarantine"></a>
 [I · search.quarantine]
 
@@ -451,6 +459,8 @@ Open questions: [May an undeclared writer add vectors to the default graph's tab
 - architecture-decision, data-integrity, operations
 
 State machines: [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
+
+Findings: [ivf_search answers a query of another width](../../Verus_verification/bugs_issues.md#bug-srch-108)
 
 ### search.embedding.width.raw-helpers
 - Expands: [parent](#search.embedding.width)
@@ -674,6 +684,8 @@ Open questions: [May an index build be seen half-done, and may a stopped build l
 - agent
 - architecture-decision, operations
 
+Findings: [Re-inserting a node into an IVF index keeps its old vector](../../Verus_verification/bugs_issues.md#bug-srch-107)
+
 ### search.scope.indexes.ivf
 
 - design-verified
@@ -715,6 +727,18 @@ State machines: [vec index](../../Verus_verification/models/vec_index/manifest.j
 Findings: [Vector index stores do not check width or duplicates](../../Verus_verification/bugs_issues.md#F-0608)
 
 State machines: [plaid index](../../Verus_verification/models/plaid_index/manifest.json)
+
+### search.ivf
+
+- Sources: [API_REFERENCE ivf_build, ivf_search, ivf_insert, ivf_delete, ivf_info, ivf_drop](../../../docs/API_REFERENCE.md); [`IVFIndex.cls` Insert, Delete, Search](../../../iris_src/src/Graph/KG/IVFIndex.cls#L55-L230)
+- Expands: [Named search index scope](#search.scope.indexes.upkeep)
+- Verus: active: [`ivf_entries.rs`](../../Verus_verification/models/ivf_entries/NOTES.md) `theorem_insert_then_delete`; as-built departures `theorem_same_cell_reinsert_counts_twice`, `theorem_cross_cell_reinsert_leaves_stale_entry`, `theorem_other_width_answered`.
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered in iteration 46 from the API reference and observation ([W52](../../uplift/consolidated/iteration-46/ivf-PAIRS.md)).
+
+Findings: [Re-inserting a node into an IVF index keeps its old vector](../../Verus_verification/bugs_issues.md#bug-srch-107); [ivf_search answers a query of another width](../../Verus_verification/bugs_issues.md#bug-srch-108)
 
 ### search.quarantine
 

@@ -1,0 +1,14 @@
+verification results:: 3 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/ivf_entries/controls/delete-noop/20261117T011604Z/models/ivf_entries/ivf_entries.rs:29:13
+   |
+27 |   pub proof fn theorem_insert_then_delete(c: int)
+   |   ----------------------------------------------- at the end of the function body
+28 |       requires c == 0 || c == 1,
+29 |       ensures ({ let s0 = St { in0: false, in1: false, indexed: 5 }; let (s2, r) = delete(insert(s0, c));
+   |  _____________^
+30 | |                r && !found(s2) && s2.indexed == 5 }),
+   | |____________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

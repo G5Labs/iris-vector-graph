@@ -1,0 +1,55 @@
+{
+  "all_sensitivities_detected": true,
+  "cases": 4,
+  "cells_from_ivf_insert": {
+    "cross_cell_then_delete": [
+      0,
+      1
+    ],
+    "insert_then_delete": [
+      0
+    ],
+    "same_cell_twice": [
+      0,
+      0
+    ]
+  },
+  "elapsed_s": 3.0,
+  "fixture": "ivg-cont-20261117-iris",
+  "inputs": {
+    ".g5/Verus_verification/models/ivf_entries/binding.py": "ef27fed1bf47ff993f03018098d3e7ba1e2cc577eeb403479d48a0fc93c622bc",
+    ".g5/Verus_verification/models/ivf_entries/ivf_entries.rs": "21df69725be7ae65641b38523bc565c4eacc25aca02fc91453de03040160623b",
+    ".g5/Verus_verification/models/ivf_entries/model.json": "4b22135d8313b8eaf5b8e2dd5796ff6964146709a4d948083ff737ea91b788a3",
+    "iris_src/src/Graph/KG/IVFIndex.cls": "884fd9e1e572f659f479e3c412ff39e7b0f9821ae4ad8b734e8c06a8f95b286e",
+    "iris_vector_graph/_engine/vector.py": "f7e0297f514c2c87c0c3b98df18b7264624e9c10fa81c0ec1d28508d95c0b0d5"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "ivf_entries",
+  "observed": {
+    "cross_cell_then_delete": {
+      "found": true,
+      "indexed_delta": 1
+    },
+    "insert_then_delete": {
+      "found": false,
+      "indexed_delta": 0
+    },
+    "other_width_answered": true,
+    "same_cell_twice": {
+      "found": true,
+      "indexed_delta": 2
+    }
+  },
+  "port": 36317,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "run": "20261117T011626Z",
+  "scope": "Actual IVF calls on IRIS 2026.1 (pin 3eaa79cf), two cells, cosine; numpy and scikit-learn from the pinned venv for the build.",
+  "sensitivities_detected_cases": {
+    "delete_all": 1,
+    "delete_noop": 2,
+    "insert_replaces": 2,
+    "width_checked": 1
+  },
+  "verdict": "AGREES"
+}

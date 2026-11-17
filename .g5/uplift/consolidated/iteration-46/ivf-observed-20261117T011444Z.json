@@ -1,0 +1,138 @@
+{
+  "run": "20261117T011444Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "cases": {
+    "V1_build": {
+      "answer": {
+        "nlist": 2,
+        "dim": 4,
+        "metric": "cosine",
+        "indexed": 5
+      },
+      "info": {
+        "nlist": 2,
+        "dim": 4,
+        "metric": "cosine",
+        "indexed": 5,
+        "type": "ivf"
+      }
+    },
+    "V2_exact": [
+      [
+        "c",
+        1.0
+      ],
+      [
+        "a",
+        0.0
+      ],
+      [
+        "b",
+        0.0
+      ]
+    ],
+    "V3_insert": {
+      "cell": 1,
+      "top": [
+        [
+          "f",
+          0.98
+        ],
+        [
+          "c",
+          0.7
+        ],
+        [
+          "d",
+          0.7
+        ]
+      ],
+      "indexed": 6
+    },
+    "V4_reinsert_same_node": {
+      "cell": 1,
+      "top_new": [
+        [
+          "f",
+          0.98
+        ],
+        [
+          "a",
+          0.7
+        ],
+        [
+          "d",
+          0.7
+        ]
+      ],
+      "top_old": [
+        [
+          "c",
+          0.7
+        ],
+        [
+          "d",
+          0.7
+        ],
+        [
+          "f",
+          0.49
+        ]
+      ],
+      "indexed": 7
+    },
+    "V5_delete": {
+      "existing": true,
+      "missing": false,
+      "top": [
+        [
+          "a",
+          0.0
+        ],
+        [
+          "b",
+          0.0
+        ],
+        [
+          "d",
+          0.0
+        ]
+      ],
+      "indexed": 6
+    },
+    "V6_never_built": {
+      "search": [],
+      "info": {}
+    },
+    "V7_insert_never_built": "RAISED ValueError: ivf_insert: index 'nope011444' not found \u2014 call ivf_build first",
+    "V8_other_width": [
+      [
+        "a",
+        1.0
+      ],
+      [
+        "e",
+        1.0
+      ],
+      [
+        "f",
+        0.7
+      ]
+    ],
+    "V9_rebuild": {
+      "answer": {
+        "nlist": 2,
+        "dim": 4,
+        "metric": "cosine",
+        "indexed": 5
+      },
+      "f_found": false,
+      "c_found": true,
+      "indexed": 5
+    },
+    "V10_drop": {
+      "info": {},
+      "search": []
+    }
+  }
+}
