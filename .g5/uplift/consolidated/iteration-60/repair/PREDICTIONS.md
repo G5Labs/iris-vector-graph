@@ -36,3 +36,14 @@ temporal text marker). IDs start with `i60r`.
 | R7.c | `set_property`, `add_label` on an ID that is no node | exception class and message | ledger `NodeNotFoundError` (`op_index` of that op, `missing_node` set) whose message says "create_relationship failed" |
 | R8 | `ledger_verify` repaired model | Verus | the old `theorem_temporal_marked_rows_left_out` / `theorem_adoption_closes_the_difference` cannot both stand unchanged once the two marker rules are separate inputs; a text-"true" temporal qualifier in the tables makes every verify diverge, whatever the history |
 | R9 | `ledger_client` repaired model | Verus | `theorem_caller_transaction_holds_the_head` holds only with lock count +0 once the caller's transaction holds the counter row |
+
+## Addendum (still before any native run)
+
+R3.b needs an ObjectScript process holding the head lock without a transaction. The product's own lock test does this
+through `scripts/dev/tcp_setup.py`, which loads helper classes into `%SYS` of the shared fixture; I will not do that.
+A Native API `lock` is, per that test's note, not seen by ObjectScript's `Lock`; I will try it once and report R3.b as
+"not observed" if it does not block. Added neighbour that needs no helper:
+
+| ID | Case (changing input) | Reader | Predicted outcome |
+|---|---|---|---|
+| R3.d (**new**) | caller A, inside its open transaction, commits a changeset with a 5,000-character message (refused `inconsistent`, uncounted: the revision row save fails before the counter row is touched); process B then commits | B's exception and wall time; `rej_lock_timeout` from a third connection | A holds the head (the unlock inside its transaction is deferred) but not the counter row: B gets `LedgerLockTimeoutError` after about 30 s (not 40) and `rej_lock_timeout` +1 |
