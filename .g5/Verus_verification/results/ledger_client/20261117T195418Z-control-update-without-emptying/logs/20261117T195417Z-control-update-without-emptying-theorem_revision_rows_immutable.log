@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/update-without-emptying/20261117T195417Z/models/ledger_client/ledger_client.rs:702:9
+    |
+696 | pub proof fn theorem_revision_rows_immutable(u: RowUpdate)
+    | ---------------------------------------------------------- at the end of the function body
+...
+702 |         !u.free_text_emptied ==> !update_allowed(u),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

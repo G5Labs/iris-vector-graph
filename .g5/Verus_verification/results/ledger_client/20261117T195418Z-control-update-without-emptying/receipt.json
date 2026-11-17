@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_revision_rows_immutable"
+    ],
+    "find": "u.ctx_names_row && u.redacted_rev && !u.other_changed && u.free_text_emptied",
+    "name": "update-without-emptying",
+    "replace": "u.ctx_names_row && u.redacted_rev && !u.other_changed",
+    "why": "the redaction exception no longer requires empty free text"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_revision_rows_immutable"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a449d085e34ff8ce781a58678da1f6805b15407347261a93cc74d78f9b6cea7f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/update-without-emptying/20261117T195417Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_revision_rows_immutable": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195417Z-control-update-without-emptying-theorem_revision_rows_immutable.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195417Z-control-update-without-emptying.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195418Z-control-update-without-emptying/logs/20261117T195417Z-control-update-without-emptying-theorem_revision_rows_immutable.log": "7f4736caef85198d5aaf9717e3551d0cf3d59b600dc21a149a5a889a6173d9c6",
+    ".g5/Verus_verification/results/ledger_client/20261117T195418Z-control-update-without-emptying/logs/20261117T195417Z-control-update-without-emptying.log": "f364dcd3c0cfc9ccab634c182a2d16c2485df486e99483191e9e105010853cf1"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

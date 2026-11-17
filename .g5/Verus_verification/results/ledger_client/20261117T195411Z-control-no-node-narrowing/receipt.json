@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_failed_operation_reported",
+      "theorem_error_mapping_fallbacks"
+    ],
+    "find": "if missing is Some { Exc::NodeNotFound { index: i, node: missing->Some_0 } } else { Exc::OpError { index: i } }",
+    "name": "no-node-narrowing",
+    "replace": "Exc::OpError { index: i }",
+    "why": "node_not_found stays a plain ChangesetOperationError"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failed_operation_reported",
+      "theorem_error_mapping_fallbacks"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a449d085e34ff8ce781a58678da1f6805b15407347261a93cc74d78f9b6cea7f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/no-node-narrowing/20261117T195409Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_error_mapping_fallbacks": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195409Z-control-no-node-narrowing-theorem_error_mapping_fallbacks.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_failed_operation_reported": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195409Z-control-no-node-narrowing-theorem_failed_operation_reported.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195409Z-control-no-node-narrowing.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195411Z-control-no-node-narrowing/logs/20261117T195409Z-control-no-node-narrowing-theorem_error_mapping_fallbacks.log": "1fc82719776197140a1b05026a93f3b02bf7d916cfcad805372873094dc3f2be",
+    ".g5/Verus_verification/results/ledger_client/20261117T195411Z-control-no-node-narrowing/logs/20261117T195409Z-control-no-node-narrowing-theorem_failed_operation_reported.log": "0c84f78b990a6e1ba81f697a279c8c0758c4f9fafa4b75e1967d0cd150590c63",
+    ".g5/Verus_verification/results/ledger_client/20261117T195411Z-control-no-node-narrowing/logs/20261117T195409Z-control-no-node-narrowing.log": "a10348211e21eb8db0a8b516e1b3b4e4dc7973742206344d4079539fd6ee3793"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

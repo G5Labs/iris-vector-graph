@@ -1,0 +1,202 @@
+{
+  "name": "ledger_client",
+  "root": "ledger_client.rs",
+  "expected_verified": 27,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "controls": [
+    {
+      "name": "message-fingerprinted",
+      "why": "fingerprint covers the message",
+      "find": "pub open spec fn fingerprint(c: Cs) -> int {\n    sha256(scope(c))\n}",
+      "replace": "pub open spec fn fingerprint(c: Cs) -> int {\n    sha256(scope(c)) + c.message\n}",
+      "expect_fail_in": [
+        "theorem_metadata_outside_fingerprint",
+        "theorem_retry_with_new_metadata_replays"
+      ]
+    },
+    {
+      "name": "ops-not-fingerprinted",
+      "why": "the operations leave the hashed scope",
+      "find": "Scope { actor: c.actor, actor_type: c.actor_type, ops: c.ops }",
+      "replace": "Scope { actor: c.actor, actor_type: c.actor_type, ops: seq![] }",
+      "expect_fail_in": [
+        "theorem_reordered_operations_conflict"
+      ]
+    },
+    {
+      "name": "expected-head-before-idempotency",
+      "why": "the stale-head check runs before the key check",
+      "find": "    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+      "replace": "    } else if c.expected is Some && c.expected->Some_0 != head_id(s) {\n        refuse(s, err(Code::StaleHead, Some(head_id(s))))\n    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+      "expect_fail_in": [
+        "theorem_retry_with_new_metadata_replays"
+      ]
+    },
+    {
+      "name": "replay-counted-as-commit",
+      "why": "a replay moves commits_ok",
+      "find": "(Srv { cnt: Cnt { replays: s.cnt.replays + 1, ..s.cnt }, ..s },",
+      "replace": "(Srv { cnt: Cnt { ok: s.cnt.ok + 1, ..s.cnt }, ..s },",
+      "expect_fail_in": [
+        "theorem_retry_with_new_metadata_replays"
+      ]
+    },
+    {
+      "name": "key-bound-on-refusal",
+      "why": "a stale-head refusal binds its key",
+      "find": "refuse(s, err(Code::StaleHead, Some(head_id(s))))",
+      "replace": "refuse(if c.key is Some { Srv { idem: s.idem.insert(c.key->Some_0, (s.head, fingerprint(c))), ..s } } else { s }, err(Code::StaleHead, Some(head_id(s))))",
+      "expect_fail_in": [
+        "theorem_refused_key_stays_free",
+        "theorem_refusal_writes_nothing"
+      ]
+    },
+    {
+      "name": "stale-names-expected",
+      "why": "StaleHeadError names the expected head, not the current one",
+      "find": "refuse(s, err(Code::StaleHead, Some(head_id(s))))",
+      "replace": "refuse(s, err(Code::StaleHead, c.expected))",
+      "expect_fail_in": [
+        "theorem_expected_head_outcomes",
+        "theorem_refused_key_stays_free"
+      ]
+    },
+    {
+      "name": "unknown-as-stale",
+      "why": "an ID that is no revision is treated as a stale head",
+      "find": "    } else if c.expected is Some && !s.seq_of.contains_key(c.expected->Some_0) {\n",
+      "replace": "    } else if false {\n",
+      "expect_fail_in": [
+        "theorem_expected_head_outcomes"
+      ]
+    },
+    {
+      "name": "never-counted-as-disabled",
+      "why": "a never-enabled ledger answers disabled and counts it",
+      "find": "(s, err(Code::NotEnabled, None))",
+      "replace": "refuse(s, err(Code::Disabled, None))",
+      "expect_fail_in": [
+        "theorem_disabled_and_never_enabled"
+      ]
+    },
+    {
+      "name": "no-client-validate",
+      "why": "the empty check moves to the server",
+      "find": "    if c.ops.len() == 0 {\n        Out",
+      "replace": "    if false {\n        Out",
+      "expect_fail_in": [
+        "theorem_empty_refused_before_the_server"
+      ]
+    },
+    {
+      "name": "size-limit-exclusive",
+      "why": "exactly max_ops operations are refused",
+      "find": "} else if c.ops.len() > s.max_ops {",
+      "replace": "} else if c.ops.len() >= s.max_ops {",
+      "expect_fail_in": [
+        "theorem_size_limit_boundary"
+      ]
+    },
+    {
+      "name": "no-node-narrowing",
+      "why": "node_not_found stays a plain ChangesetOperationError",
+      "find": "if missing is Some { Exc::NodeNotFound { index: i, node: missing->Some_0 } } else { Exc::OpError { index: i } }",
+      "replace": "Exc::OpError { index: i }",
+      "expect_fail_in": [
+        "theorem_failed_operation_reported",
+        "theorem_error_mapping_fallbacks"
+      ]
+    },
+    {
+      "name": "op-index-lost",
+      "why": "the failing position is dropped",
+      "find": "let i: int = if op_index is Some { op_index->Some_0 as int } else { -1 };",
+      "replace": "let i: int = -1;",
+      "expect_fail_in": [
+        "theorem_failed_operation_reported",
+        "theorem_error_mapping_fallbacks"
+      ]
+    },
+    {
+      "name": "lock-released-inside-transaction",
+      "why": "the head lock is released when the nested commit ends",
+      "find": "        Out { srv: Srv { holder: Some(p), ..o.srv }, ..o }\n",
+      "replace": "        o\n",
+      "expect_fail_in": [
+        "theorem_caller_transaction_holds_the_head"
+      ]
+    },
+    {
+      "name": "idem-not-journaled",
+      "why": "the key binding survives the caller's rollback",
+      "find": "Srv { holder: None, cnt: Cnt { lock: cur.cnt.lock, ..before.cnt }, ..before }",
+      "replace": "Srv { holder: None, idem: cur.idem, cnt: Cnt { lock: cur.cnt.lock, ..before.cnt }, ..before }",
+      "expect_fail_in": [
+        "theorem_rollback_frees_key_and_seq"
+      ]
+    },
+    {
+      "name": "unknown-id-reads-genesis",
+      "why": "an unknown revision ID resolves to seq 0",
+      "find": "if s.seq_of.contains_key(id) { Read::At(s.seq_of[id]) } else { Read::Raise(Exc::UnknownRev) }",
+      "replace": "if s.seq_of.contains_key(id) { Read::At(s.seq_of[id]) } else { Read::At(0) }",
+      "expect_fail_in": [
+        "theorem_revision_readers_resolve_ids"
+      ]
+    },
+    {
+      "name": "head-refused-while-disabled",
+      "why": "head() refuses a disabled ledger",
+      "find": "if s.state == LState::Never { Read::Raise(Exc::NotEnabled) } else { Read::At(s.head) }",
+      "replace": "if s.state != LState::Enabled { Read::Raise(Exc::NotEnabled) } else { Read::At(s.head) }",
+      "expect_fail_in": [
+        "theorem_head_reader_states"
+      ]
+    },
+    {
+      "name": "enable-on-enabled-sets-strict",
+      "why": "enable(strict=...) on an enabled ledger switches strict",
+      "find": "        (s, EnableOut::Head(s.head))\n",
+      "replace": "        (Srv { strict, ..s }, EnableOut::Head(s.head))\n",
+      "expect_fail_in": [
+        "theorem_enable_lifecycle"
+      ]
+    },
+    {
+      "name": "update-without-emptying",
+      "why": "the redaction exception no longer requires empty free text",
+      "find": "u.ctx_names_row && u.redacted_rev && !u.other_changed && u.free_text_emptied",
+      "replace": "u.ctx_names_row && u.redacted_rev && !u.other_changed",
+      "expect_fail_in": [
+        "theorem_revision_rows_immutable"
+      ]
+    },
+    {
+      "name": "chunk-off-by-one",
+      "why": "each staged chunk drops its last character",
+      "find": "seq![p.subrange(0, n as int)] + chunks(p.subrange(n as int, p.len() as int), n)",
+      "replace": "seq![p.subrange(0, n as int - 1)] + chunks(p.subrange(n as int, p.len() as int), n)",
+      "expect_fail_in": [
+        "lemma_join_chunks"
+      ]
+    },
+    {
+      "name": "text-source-kept",
+      "why": "a text source is stored as given",
+      "find": "match x { Src::Object(j) => Some(j), _ => None }",
+      "replace": "match x { Src::Object(j) => Some(j), Src::Text(t) => Some(t), _ => None }",
+      "expect_fail_in": [
+        "witness_text_source_is_dropped"
+      ]
+    },
+    {
+      "name": "event-on-client-refusal",
+      "why": "a client-side refusal also emits a hook event",
+      "find": "Out { srv: s, py: Py::Raise(Exc::OpError { index: c.bad_ref->Some_0 as int }), events: seq![] }",
+      "replace": "Out { srv: s, py: Py::Raise(Exc::OpError { index: c.bad_ref->Some_0 as int }), events: seq![Ev::Refused(Code::FailedOp)] }",
+      "expect_fail_in": [
+        "theorem_one_event_per_server_call"
+      ]
+    }
+  ]
+}

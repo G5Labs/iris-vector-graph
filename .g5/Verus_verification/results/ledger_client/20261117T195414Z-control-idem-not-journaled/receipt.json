@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_rollback_frees_key_and_seq"
+    ],
+    "find": "Srv { holder: None, cnt: Cnt { lock: cur.cnt.lock, ..before.cnt }, ..before }",
+    "name": "idem-not-journaled",
+    "replace": "Srv { holder: None, idem: cur.idem, cnt: Cnt { lock: cur.cnt.lock, ..before.cnt }, ..before }",
+    "why": "the key binding survives the caller's rollback"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_rollback_frees_key_and_seq"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a449d085e34ff8ce781a58678da1f6805b15407347261a93cc74d78f9b6cea7f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/idem-not-journaled/20261117T195413Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_rollback_frees_key_and_seq": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195413Z-control-idem-not-journaled-theorem_rollback_frees_key_and_seq.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195413Z-control-idem-not-journaled.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195414Z-control-idem-not-journaled/logs/20261117T195413Z-control-idem-not-journaled-theorem_rollback_frees_key_and_seq.log": "c41301f8830c1ff99d59ae57e01d510633bbe72d688e7762b38a5bbebac5478c",
+    ".g5/Verus_verification/results/ledger_client/20261117T195414Z-control-idem-not-journaled/logs/20261117T195413Z-control-idem-not-journaled.log": "dbe1f8bea94bbe95b6e62c50777cd1d381388c8fbdebc790f603abe026106948"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

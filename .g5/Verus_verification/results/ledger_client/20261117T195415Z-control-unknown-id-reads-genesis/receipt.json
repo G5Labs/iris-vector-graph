@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_revision_readers_resolve_ids"
+    ],
+    "find": "if s.seq_of.contains_key(id) { Read::At(s.seq_of[id]) } else { Read::Raise(Exc::UnknownRev) }",
+    "name": "unknown-id-reads-genesis",
+    "replace": "if s.seq_of.contains_key(id) { Read::At(s.seq_of[id]) } else { Read::At(0) }",
+    "why": "an unknown revision ID resolves to seq 0"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_revision_readers_resolve_ids"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a449d085e34ff8ce781a58678da1f6805b15407347261a93cc74d78f9b6cea7f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/unknown-id-reads-genesis/20261117T195414Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_revision_readers_resolve_ids": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195414Z-control-unknown-id-reads-genesis-theorem_revision_readers_resolve_ids.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195414Z-control-unknown-id-reads-genesis.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195415Z-control-unknown-id-reads-genesis/logs/20261117T195414Z-control-unknown-id-reads-genesis-theorem_revision_readers_resolve_ids.log": "229cf523b13ef35c8bbaebfb5843540b7a2915c8d8dafbed9c32d219c5fc9d80",
+    ".g5/Verus_verification/results/ledger_client/20261117T195415Z-control-unknown-id-reads-genesis/logs/20261117T195414Z-control-unknown-id-reads-genesis.log": "72ba01b7dcc2c7af99a9f07ae203bec6b80e8c95db1915818e317868f5114fa9"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

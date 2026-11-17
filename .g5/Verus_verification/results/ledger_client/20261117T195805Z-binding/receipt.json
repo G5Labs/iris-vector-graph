@@ -1,0 +1,657 @@
+{
+  "cases": [
+    {
+      "name": "B1.first",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 1,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "success"
+        ],
+        "head_moved": 1,
+        "py": [
+          "Res",
+          40,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "B1.retry_new_metadata_stale_head",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 1,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "replayed"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Res",
+          40,
+          true,
+          false
+        ]
+      }
+    },
+    {
+      "name": "B2.first",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 1,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "success"
+        ],
+        "head_moved": 1,
+        "py": [
+          "Res",
+          41,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "B2.reordered",
+      "observed": {
+        "delta": {
+          "conflict": 1,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "idempotency_conflict"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "Conflict",
+          {}
+        ]
+      }
+    },
+    {
+      "name": "B3.stale",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 1,
+          "unknown": 0
+        },
+        "events": [
+          "stale_head"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "Stale",
+          {
+            "current_head": "1ae1997ae2c111f1a1f336fcf217e862"
+          }
+        ]
+      }
+    },
+    {
+      "name": "B3.reuse",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 1,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "success"
+        ],
+        "head_moved": 1,
+        "py": [
+          "Res",
+          42,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "B4.unknown_head",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 1
+        },
+        "events": [
+          "unknown_head"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "UnknownRev",
+          {}
+        ]
+      }
+    },
+    {
+      "name": "B5.empty_enabled",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "Empty",
+          {}
+        ]
+      }
+    },
+    {
+      "name": "B5.empty_never",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "Empty",
+          {}
+        ]
+      }
+    },
+    {
+      "name": "B5.empty_stale",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "Empty",
+          {}
+        ]
+      }
+    },
+    {
+      "name": "B5.bad_op_ref",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "OpError",
+          {
+            "op_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "B6.at_limit",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 1,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "success"
+        ],
+        "head_moved": 1,
+        "py": [
+          "Res",
+          6,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "B6.over_limit",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 1,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "too_large"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "TooLarge",
+          {
+            "limit": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "B7.missing_node",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 1,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "failed_op"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "NodeNotFound",
+          {
+            "missing_node": "i60b_195723_nope",
+            "op_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "B7.relationship_exists",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 1,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "failed_op"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "OpError",
+          {
+            "op_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "B13.never_enabled",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 0,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "not_enabled"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "NotEnabled",
+          {}
+        ]
+      }
+    },
+    {
+      "name": "B13.disabled",
+      "observed": {
+        "delta": {
+          "conflict": 0,
+          "disabled": 1,
+          "failed": 0,
+          "lock": 0,
+          "ok": 0,
+          "replays": 0,
+          "size": 0,
+          "stale": 0,
+          "unknown": 0
+        },
+        "events": [
+          "disabled"
+        ],
+        "head_moved": 0,
+        "py": [
+          "Raise",
+          "Disabled",
+          {}
+        ]
+      }
+    },
+    {
+      "name": "B11.head_while_disabled",
+      "observed": [
+        "At",
+        42
+      ]
+    },
+    {
+      "name": "B12.strict_after_reenable",
+      "observed": false
+    },
+    {
+      "name": "B12.enable_strict_on_enabled",
+      "observed": false
+    },
+    {
+      "name": "B11.head_never_enabled",
+      "observed": [
+        "Raise",
+        "NotEnabled"
+      ]
+    },
+    {
+      "name": "B10.get_revision_unknown",
+      "observed": [
+        "Raise",
+        "UnknownRev"
+      ]
+    },
+    {
+      "name": "B10.reconstruct_unknown",
+      "observed": [
+        "Raise",
+        "UnknownRev"
+      ]
+    },
+    {
+      "name": "B10.export_unknown",
+      "observed": [
+        "Raise",
+        "UnknownRev"
+      ]
+    },
+    {
+      "name": "B10.diff_unknown",
+      "observed": [
+        "Raise",
+        "UnknownRev"
+      ]
+    },
+    {
+      "name": "B10.export_wrote_nothing",
+      "observed": false
+    },
+    {
+      "name": "B10.head_id_resolves",
+      "observed": [
+        "At",
+        42
+      ]
+    },
+    {
+      "name": "B9.rollback_frees_key_and_seq",
+      "observed": [
+        [
+          "Res",
+          43,
+          false,
+          true
+        ],
+        [
+          "Res",
+          43,
+          false,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "B8.caller_transaction_holds_head",
+      "observed": [
+        [
+          "Res",
+          44,
+          false,
+          true
+        ],
+        [
+          "Raise",
+          "LockTimeout",
+          {}
+        ],
+        [
+          "lock_timeout"
+        ],
+        [
+          "Res",
+          44,
+          false,
+          true
+        ],
+        true
+      ]
+    },
+    {
+      "name": "B14.sql_update",
+      "observed": "refused"
+    },
+    {
+      "name": "B14.sql_delete",
+      "observed": "refused"
+    },
+    {
+      "name": "B15.staged_changeset_values",
+      "observed": [
+        true,
+        45,
+        [
+          30000
+        ]
+      ]
+    },
+    {
+      "name": "B15.large_answer",
+      "observed": [
+        "CHUNKED",
+        3,
+        true
+      ]
+    },
+    {
+      "name": "B17.source",
+      "observed": [
+        "object",
+        null,
+        true,
+        []
+      ]
+    }
+  ],
+  "changed_observation_caught": true,
+  "comparisons": 34,
+  "fixture": {
+    "container": "ivg-uplift-next-20261115",
+    "host": "127.0.0.1",
+    "iris": "IRIS Community 2026.1 (Build 234U)",
+    "kind": "local-shared",
+    "port": 35975
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/binding.py": "e8c0e0d680ceb31c690bf5db3288fdad9b4ec40c2900bbf63f2fe90e88e5c141",
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    ".g5/uplift/consolidated/local-runtime/runtime.py": "4a47d7a8a8aaba0a40ceda4dfc78cc78896e30aeb4f811545889d261ee3177a4",
+    "iris_src/src/Graph/KG/Ledger.cls": "d0a0e0149b09dda68c908da6c7544a99830afdc2e94905b57209589a7dad54dd",
+    "iris_src/src/Graph/KG/LedgerRevision.cls": "e2ab6acd0c6d26830a89ee7b3faee0ffb19b07ae512989b21e70335e31199da5",
+    "iris_src/src/Graph/KG/LedgerStats.cls": "8cafaa72392e2ddc55d4fd535045f66ad8698dbe3938adbd454a4dd9dfd53c3f",
+    "iris_vector_graph/ledger/changeset.py": "0542061cd17b5c74f4d34f9a9ad42a7cc673804b6911136a8e5d256dd1cd79c3",
+    "iris_vector_graph/ledger/client.py": "7a7674fe4c8efec9723847d409c6da867c3f90d7821991c94cc9b2eaee7ef08c",
+    "iris_vector_graph/ledger/errors.py": "d8d68032cb143882cea86b8c49aa25215941f2efe875e1661ebc03484c130b1d"
+  },
+  "kind": "binding",
+  "mismatch_count": 0,
+  "mismatches": [],
+  "model": "ledger_client",
+  "mutations_detected": {
+    "chunk-off-by-one": true,
+    "enable-on-enabled-sets-strict": true,
+    "event-on-client-refusal": true,
+    "expected-head-before-idempotency": true,
+    "head-refused-while-disabled": true,
+    "idem-not-journaled": true,
+    "key-bound-on-refusal": false,
+    "lock-released-inside-transaction": true,
+    "message-fingerprinted": true,
+    "never-counted-as-disabled": true,
+    "no-client-validate": true,
+    "no-node-narrowing": true,
+    "op-index-lost": true,
+    "ops-not-fingerprinted": true,
+    "replay-counted-as-commit": true,
+    "size-limit-exclusive": true,
+    "stale-names-expected": true,
+    "text-source-kept": true,
+    "unknown-as-stale": true,
+    "unknown-id-reads-genesis": true,
+    "update-without-emptying": false
+  },
+  "mutations_not_natively_exercisable": {
+    "update-without-emptying": "redaction-context UPDATE not forged (inspected only)"
+  },
+  "namespaces": [
+    "I60LA",
+    "I60LC",
+    "I60LE"
+  ],
+  "not_observed": "IdempotencyRedactedError and the redaction marker (excluded area); object-path re-save/delete of a revision row; Inconsistent transport failures; the ObjectScript bodies are executed, not proved",
+  "observed": "actual GraphLedger.commit/_commit/_send_changeset/_call/_emit/head/get_revision/diff/reconstruct/export_reconstruction/history/stats/enable/disable/set_strict, Changeset builder/validate/fingerprint, errors.from_commit_error, and the deployed Graph.KG.Ledger/LedgerApply/LedgerStats/LedgerRevision on IRIS",
+  "pin": {
+    "all_equal": true,
+    "files_equal_pin_blobs": {
+      "iris_vector_graph/_engine/nodes_edges.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/schema.py": true
+    },
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "pin_dir": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin"
+  },
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.8",
+  "run_stamp": "195723",
+  "substituted": "none for the product; the expected side is an unverified hand transcription of ledger_client.rs",
+  "verdict": "DISAGREES"
+}

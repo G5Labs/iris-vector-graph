@@ -1,0 +1,19 @@
+verification results:: 24 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/replay-counted-as-commit/20261117T195248Z/models/ledger_client/ledger_client.rs:419:13
+    |
+417 |   pub proof fn theorem_retry_with_new_metadata_replays(s: Srv, c: Cs, m: int, corr: int, e: Option<int>, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+418 |       requires admits(s, c, p, a), c.key is Some, s.holder is None,
+419 |       ensures ({
+    |  _____________^
+420 | |         let o1 = client_commit(s, c, p, a, f1);
+421 | |         let d = Cs { message: m, correlation: corr, expected: e, ..c };
+422 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+...   |
+427 | |         &&& o2.events == seq![Ev::Replayed(s.head + 1)]
+428 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

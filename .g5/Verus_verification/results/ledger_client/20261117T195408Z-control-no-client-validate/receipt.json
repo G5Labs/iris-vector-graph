@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_empty_refused_before_the_server"
+    ],
+    "find": "    if c.ops.len() == 0 {\n        Out",
+    "name": "no-client-validate",
+    "replace": "    if false {\n        Out",
+    "why": "the empty check moves to the server"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_refused_before_the_server"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a449d085e34ff8ce781a58678da1f6805b15407347261a93cc74d78f9b6cea7f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/no-client-validate/20261117T195407Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_refused_before_the_server": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195407Z-control-no-client-validate-theorem_empty_refused_before_the_server.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195407Z-control-no-client-validate.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195408Z-control-no-client-validate/logs/20261117T195407Z-control-no-client-validate-theorem_empty_refused_before_the_server.log": "097158c475645281c8edb9ad9acef39e8c6fadd969942631849fb5b1a8d44683",
+    ".g5/Verus_verification/results/ledger_client/20261117T195408Z-control-no-client-validate/logs/20261117T195407Z-control-no-client-validate.log": "20fe6f5557fdde554d83e0d3a0a95e98f9a6c071967173a2e6f60210401a9763"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

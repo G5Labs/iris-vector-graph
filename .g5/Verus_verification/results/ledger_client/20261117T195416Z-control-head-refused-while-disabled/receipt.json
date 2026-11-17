@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_head_reader_states"
+    ],
+    "find": "if s.state == LState::Never { Read::Raise(Exc::NotEnabled) } else { Read::At(s.head) }",
+    "name": "head-refused-while-disabled",
+    "replace": "if s.state != LState::Enabled { Read::Raise(Exc::NotEnabled) } else { Read::At(s.head) }",
+    "why": "head() refuses a disabled ledger"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_head_reader_states"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a449d085e34ff8ce781a58678da1f6805b15407347261a93cc74d78f9b6cea7f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/head-refused-while-disabled/20261117T195415Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_head_reader_states": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195415Z-control-head-refused-while-disabled-theorem_head_reader_states.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195415Z-control-head-refused-while-disabled.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195416Z-control-head-refused-while-disabled/logs/20261117T195415Z-control-head-refused-while-disabled-theorem_head_reader_states.log": "db96cd5d04026633a2ed179fe89a48192505f1561fd23612acf6befc19fe09f3",
+    ".g5/Verus_verification/results/ledger_client/20261117T195416Z-control-head-refused-while-disabled/logs/20261117T195415Z-control-head-refused-while-disabled.log": "839b494eec19e3ab1e0844f1031368806c877b1de2e550c64f2c38fe01bbaacf"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

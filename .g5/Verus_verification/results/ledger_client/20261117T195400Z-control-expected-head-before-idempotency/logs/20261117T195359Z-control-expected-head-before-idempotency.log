@@ -1,0 +1,35 @@
+verification results:: 25 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/expected-head-before-idempotency/20261117T195359Z/models/ledger_client/ledger_client.rs:421:13
+    |
+419 |   pub proof fn theorem_retry_with_new_metadata_replays(s: Srv, c: Cs, m: int, corr: int, e: Option<int>, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+420 |       requires admits(s, c, p, a), c.key is Some, s.holder is None,
+421 |       ensures ({
+    |  _____________^
+422 | |         let o1 = client_commit(s, c, p, a, f1);
+423 | |         let d = Cs { message: m, correlation: corr, expected: e, ..c };
+424 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+...   |
+429 | |         &&& o2.events == seq![Ev::Replayed(s.head + 1)]
+430 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/expected-head-before-idempotency/20261117T195359Z/models/ledger_client/ledger_client.rs:491:13
+    |
+489 |   pub proof fn theorem_expected_head_outcomes(s: Srv, c: Cs, e: int, p: nat, a: Apply, f: int)
+    |   -------------------------------------------------------------------------------------------- at the end of the function body
+490 |       requires s.state == LState::Enabled, s.holder is None, c.key is None, c.bad_ref is None, c.ops.len() > 0, c.expected == Some(e),
+491 |       ensures ({
+    |  _____________^
+492 | |         let o = client_commit(s, c, p, a, f);
+493 | |         &&& !s.seq_of.contains_key(e) ==> o.py == Py::Raise(Exc::UnknownRev) && o.srv.cnt == (Cnt { unknown: s.cnt.unknown + 1, ....
+494 | |         &&& s.seq_of.contains_key(e) && e != head_id(s) ==> o.py == Py::Raise(Exc::Stale { current: Some(head_id(s)) })
+495 | |                 && o.srv.cnt == (Cnt { stale: s.cnt.stale + 1, ..s.cnt })
+496 | |         &&& (e != head_id(s) ==> same_ledger(o.srv, s))
+497 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

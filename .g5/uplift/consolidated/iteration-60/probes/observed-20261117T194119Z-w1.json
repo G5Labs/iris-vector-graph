@@ -1,0 +1,1945 @@
+{
+ "meta": {
+  "fixture": {
+   "container": "ivg-uplift-next-20261115",
+   "host": "127.0.0.1",
+   "port": 35975,
+   "kind": "local-shared",
+   "iris": "IRIS Community 2026.1 (Build 234U)"
+  },
+  "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "started": "20261117T194119Z",
+  "sections": [
+   "w1"
+  ],
+  "identity": [
+   true,
+   "1a97b1515453"
+  ],
+  "finished": "20261117T194126Z"
+ },
+ "obs": {
+  "w1": {
+   "enable": {
+    "seq": 1,
+    "id": "dc8acd62e2be11f1a1f336fcf217e862",
+    "parent": null,
+    "kind": "genesis",
+    "actor": "system:ledger",
+    "op_count": 0
+   },
+   "events_after_enable": [],
+   "seed": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 2,
+      "id": "dc8e8a0ce2be11f1a1f336fcf217e862",
+      "parent": "dc8acd62e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 3
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P1.1.A.first": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 3,
+      "id": "dcacf375e2be11f1a1f336fcf217e862",
+      "parent": "dc8e8a0ce2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 2
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P1.1.A.retry": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 3,
+      "id": "dcacf375e2be11f1a1f336fcf217e862",
+      "parent": "dc8e8a0ce2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 2
+     },
+     "replayed": true,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P1.1.A.head_hist": [
+    2,
+    3,
+    2,
+    3
+   ],
+   "P1.1.B.conflict": {
+    "ok": false,
+    "exc": {
+     "class": "IdempotencyConflictError",
+     "mro": [
+      "IdempotencyConflictError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "idempotency key 'i60-k1' already bound to a different changeset"
+    }
+   },
+   "P1.1.B.after": {
+    "head": 3,
+    "head_before": 3,
+    "node": {
+     "id": "i60_p11",
+     "labels": [],
+     "properties": null
+    }
+   },
+   "P1.1.B.fresh": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 4,
+      "id": "dcb143a2e2be11f1a1f336fcf217e862",
+      "parent": "dcacf375e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P1.2": {
+    "same_json": true,
+    "same_fp": true,
+    "fp_len": 64,
+    "dict_order_same_fp": true,
+    "reversed_same_fp": false,
+    "actor_type_same_fp": false,
+    "message_same_fp": true
+   },
+   "P1.2.commit_first": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 5,
+      "id": "dcb18677e2be11f1a1f336fcf217e862",
+      "parent": "dcb143a2e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 2
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P1.2.commit_reversed_same_key": {
+    "ok": false,
+    "exc": {
+     "class": "IdempotencyConflictError",
+     "mro": [
+      "IdempotencyConflictError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "idempotency key 'i60-k12' already bound to a different changeset"
+    }
+   },
+   "S1.3": {
+    "id": {
+     "ok": false,
+     "exc": {
+      "class": "ChangesetOperationError",
+      "mro": [
+       "ChangesetOperationError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "changeset operation 0 failed: reserved_property: 'id' may not be set or removed",
+      "op_index": 0,
+      "reason": "reserved_property: 'id' may not be set or removed"
+     }
+    },
+    "__graph": {
+     "ok": false,
+     "exc": {
+      "class": "ChangesetOperationError",
+      "mro": [
+       "ChangesetOperationError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "changeset operation 0 failed: reserved_property: '__graph' may not be set or removed",
+      "op_index": 0,
+      "reason": "reserved_property: '__graph' may not be set or removed"
+     }
+    },
+    "idx": {
+     "ok": true,
+     "value": [
+      {
+       "op": "set_prop",
+       "id": "i60_m",
+       "key": "idx",
+       "value": "v"
+      }
+     ]
+    },
+    "both_refs": {
+     "ok": false,
+     "exc": {
+      "class": "ValueError",
+      "mro": [
+       "ValueError",
+       "Exception",
+       "BaseException",
+       "object"
+      ],
+      "msg": "exactly one of ref (tuple or OpRef) or stmt_id must be given"
+     }
+    },
+    "tuple_only": {
+     "ok": true,
+     "value": [
+      {
+       "op": "delete_rel",
+       "ref": {
+        "tuple": {
+         "s": "i60_a",
+         "p": "R",
+         "o": "i60_b",
+         "graph": null
+        }
+       }
+      }
+     ]
+    },
+    "create_node_reserved": {
+     "ok": false,
+     "exc": {
+      "class": "ChangesetOperationError",
+      "mro": [
+       "ChangesetOperationError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "changeset operation 0 failed: reserved_property: 'id' may not be set or removed",
+      "op_index": 0,
+      "reason": "reserved_property: 'id' may not be set or removed"
+     }
+    }
+   },
+   "S1.4": {
+    "same_fp": true,
+    "json": "{\"actor\":\"w1\",\"actor_type\":\"agent\",\"correlation_id\":null,\"expected_head\":null,\"idempotency_key\":null,\"message\":null,\"ops\":[{\"id\":\"i60_m\",\"key\":\"p\",\"op\":\"set_prop\",\"value\":\"30\"}],\"source\":null}"
+   },
+   "P2.1.A": {
+    "head": {
+     "seq": 5,
+     "id": "dcb18677e2be11f1a1f336fcf217e862",
+     "parent": "dcb143a2e2be11f1a1f336fcf217e862",
+     "kind": "changeset",
+     "actor": "w1",
+     "op_count": 2
+    },
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 6,
+       "id": "dcb1e798e2be11f1a1f336fcf217e862",
+       "parent": "dcb18677e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    }
+   },
+   "P2.1.B.y": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 7,
+      "id": "dcb20c5de2be11f1a1f336fcf217e862",
+      "parent": "dcb1e798e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P2.1.B.stale": {
+    "ok": false,
+    "exc": {
+     "class": "StaleHeadError",
+     "mro": [
+      "StaleHeadError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "expected_head dcb1e798e2be11f1a1f336fcf217e862 but head is dcb20c5de2be11f1a1f336fcf217e862 (current head: dcb20c5de2be11f1a1f336fcf217e862)",
+     "current_head": "dcb20c5de2be11f1a1f336fcf217e862"
+    }
+   },
+   "P2.1.B.after": {
+    "head": {
+     "seq": 7,
+     "id": "dcb20c5de2be11f1a1f336fcf217e862",
+     "parent": "dcb1e798e2be11f1a1f336fcf217e862",
+     "kind": "changeset",
+     "actor": "w1",
+     "op_count": 1
+    },
+    "node": null
+   },
+   "P2.1.B.next": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 8,
+      "id": "dcb96f80e2be11f1a1f336fcf217e862",
+      "parent": "dcb20c5de2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P2.2.A.replay_stale": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 5,
+      "id": "dcb18677e2be11f1a1f336fcf217e862",
+      "parent": "dcb143a2e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 2
+     },
+     "replayed": true,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P2.2.B.fresh_stale": {
+    "ok": false,
+    "exc": {
+     "class": "StaleHeadError",
+     "mro": [
+      "StaleHeadError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "expected_head dcb1e798e2be11f1a1f336fcf217e862 but head is dcb96f80e2be11f1a1f336fcf217e862 (current head: dcb96f80e2be11f1a1f336fcf217e862)",
+     "current_head": "dcb96f80e2be11f1a1f336fcf217e862"
+    }
+   },
+   "P2.2.B.unknown": {
+    "ok": false,
+    "exc": {
+     "class": "UnknownRevisionError",
+     "mro": [
+      "UnknownRevisionError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "expected_head 0123456789abcdef0123456789abcdef is not a revision of this ledger"
+    }
+   },
+   "S2.3.empty_stale": {
+    "ok": false,
+    "exc": {
+     "class": "EmptyChangesetError",
+     "mro": [
+      "EmptyChangesetError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "changeset has no operations"
+    }
+   },
+   "S2.3.empty_current": {
+    "ok": false,
+    "exc": {
+     "class": "EmptyChangesetError",
+     "mro": [
+      "EmptyChangesetError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "changeset has no operations"
+    }
+   },
+   "S2.3.counters_events": {
+    "stats_before": {
+     "commits_ok": 8,
+     "replays_idem": 2,
+     "rej": {
+      "rej_stale_head": 2,
+      "rej_unknown_head": 1,
+      "rej_idem_conflict": 2,
+      "rej_failed_op": 0,
+      "rej_strict_block": 0,
+      "rej_size_limit": 0,
+      "rej_disabled": 0,
+      "rej_lock_timeout": 0
+     },
+     "state": "enabled",
+     "strict": false
+    },
+    "stats_after": {
+     "commits_ok": 8,
+     "replays_idem": 2,
+     "rej": {
+      "rej_stale_head": 2,
+      "rej_unknown_head": 1,
+      "rej_idem_conflict": 2,
+      "rej_failed_op": 0,
+      "rej_strict_block": 0,
+      "rej_size_limit": 0,
+      "rej_disabled": 0,
+      "rej_lock_timeout": 0
+     },
+     "state": "enabled",
+     "strict": false
+    },
+    "events_added": []
+   },
+   "N2.refused_key_free": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 9,
+      "id": "dcbf809be2be11f1a1f336fcf217e862",
+      "parent": "dcb96f80e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P3.1.A": {
+    "res": {
+     "ok": false,
+     "exc": {
+      "class": "NodeNotFoundError",
+      "mro": [
+       "NodeNotFoundError",
+       "ChangesetOperationError",
+       "LedgerError",
+       "IVGError"
+      ],
+      "msg": "create_relationship failed: node 'i60_missing' does not exist. Add upsert_node('i60_missing') to the changeset, or set auto_stub_missing_nodes=True on the Changeset.",
+      "op_index": 2,
+      "missing_node": "i60_missing",
+      "reason": "node_not_found: 'i60_missing'"
+     }
+    },
+    "head": [
+     9,
+     9
+    ],
+    "nodes": [
+     null,
+     null
+    ],
+    "events": [
+     {
+      "outcome": "failed_op",
+      "revision_id": null,
+      "seq": null,
+      "actor": "w1",
+      "actor_type": "agent",
+      "op_count": 3,
+      "duration_ms": 41.784,
+      "reason": "node_not_found: 'i60_missing'"
+     }
+    ]
+   },
+   "P3.1.B": {
+    "ops": [
+     "create_node",
+     "create_node",
+     "upsert_node",
+     "create_rel"
+    ],
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 10,
+       "id": "dccdd91ae2be11f1a1f336fcf217e862",
+       "parent": "dcbf809be2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 4
+      },
+      "replayed": false,
+      "stmt_ids": {
+       "3": "1"
+      },
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "missing": {
+     "id": "i60_missing",
+     "labels": [],
+     "properties": null
+    }
+   },
+   "S3.3": {
+    "subclass": {
+     "StaleHeadError": true,
+     "UnknownRevisionError": true,
+     "IdempotencyConflictError": true,
+     "NodeNotFoundError": true,
+     "ChangesetTooLargeError": true,
+     "EmptyChangesetError": true,
+     "LedgerDisabledError": true,
+     "LedgerNotEnabledError": true,
+     "LedgerLockTimeoutError": true,
+     "LedgerStrictModeError": true
+    },
+    "unknown": {
+     "class": "LedgerError",
+     "msg": "weird_code: why"
+    }
+   },
+   "S3.4": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 11,
+       "id": "dcce2850e2be11f1a1f336fcf217e862",
+       "parent": "dccdd91ae2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "event": [
+     {
+      "outcome": "success",
+      "revision_id": "dcce2850e2be11f1a1f336fcf217e862",
+      "seq": 11,
+      "actor": "w1",
+      "actor_type": "agent",
+      "op_count": 1,
+      "duration_ms": 0.507,
+      "reason": null
+     }
+    ]
+   },
+   "N3.setup": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 12,
+      "id": "dcce4fb8e2be11f1a1f336fcf217e862",
+      "parent": "dcce2850e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {
+      "0": "2"
+     },
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "N3.A": {
+    "res": {
+     "ok": false,
+     "exc": {
+      "class": "ChangesetOperationError",
+      "mro": [
+       "ChangesetOperationError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "changeset operation 1 failed: relationship_exists: i60_a -[R]-> i60_b",
+      "op_index": 1,
+      "reason": "relationship_exists: i60_a -[R]-> i60_b"
+     }
+    },
+    "head": [
+     12,
+     12
+    ],
+    "a": {
+     "id": "i60_a",
+     "labels": [],
+     "properties": null
+    }
+   },
+   "N3.B": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 13,
+       "id": "dcd956c6e2be11f1a1f336fcf217e862",
+       "parent": "dcce4fb8e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 2
+      },
+      "replayed": false,
+      "stmt_ids": {
+       "1": "2"
+      },
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "records": [
+     [
+      1,
+      "set_prop",
+      "node",
+      "i60_a",
+      "x",
+      null,
+      "1"
+     ],
+     [
+      2,
+      "set_qual",
+      "rel",
+      "2",
+      "w",
+      null,
+      "2"
+     ]
+    ],
+    "cypher": {
+     "ok": true,
+     "value": [
+      [
+       1
+      ]
+     ]
+    }
+   },
+   "N4.A": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 14,
+       "id": "dcf09b74e2be11f1a1f336fcf217e862",
+       "parent": "dcd956c6e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 3
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "records": [
+     [
+      1,
+      "create_node",
+      "node",
+      "i60_n4",
+      "",
+      null,
+      ""
+     ],
+     [
+      2,
+      "add_label",
+      "node",
+      "i60_n4",
+      "L",
+      null,
+      ""
+     ],
+     [
+      3,
+      "set_prop",
+      "node",
+      "i60_n4",
+      "p",
+      null,
+      "1"
+     ]
+    ]
+   },
+   "N4.B.mixed": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 15,
+       "id": "dcf16579e2be11f1a1f336fcf217e862",
+       "parent": "dcf09b74e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "records": [
+     [
+      1,
+      "set_prop",
+      "node",
+      "i60_n4",
+      "q",
+      null,
+      "2"
+     ]
+    ]
+   },
+   "N4.B.allnoop": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 16,
+       "id": "dcf1b5f6e2be11f1a1f336fcf217e862",
+       "parent": "dcf16579e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 0
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "records": []
+   },
+   "N5.A": {
+    "get_revision": {
+     "ok": false,
+     "exc": {
+      "class": "UnknownRevisionError",
+      "mro": [
+       "UnknownRevisionError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "unknown revision 00000000000000000000000000000000"
+     }
+    },
+    "diff": {
+     "ok": false,
+     "exc": {
+      "class": "UnknownRevisionError",
+      "mro": [
+       "UnknownRevisionError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "unknown revision 00000000000000000000000000000000"
+     }
+    },
+    "reconstruct": {
+     "ok": false,
+     "exc": {
+      "class": "UnknownRevisionError",
+      "mro": [
+       "UnknownRevisionError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "unknown revision ffffffffffffffffffffffffffffffff"
+     }
+    },
+    "export": {
+     "ok": false,
+     "exc": {
+      "class": "UnknownRevisionError",
+      "mro": [
+       "UnknownRevisionError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "unknown revision ffffffffffffffffffffffffffffffff"
+     }
+    },
+    "export_file_exists": false,
+    "malformed": {
+     "ok": false,
+     "exc": {
+      "class": "UnknownRevisionError",
+      "mro": [
+       "UnknownRevisionError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "unknown revision xyz"
+     }
+    }
+   },
+   "N5.B": {
+    "get_revision_head_seq": true,
+    "diff_equal": 0
+   },
+   "N7.C1": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 17,
+      "id": "dcf31323e2be11f1a1f336fcf217e862",
+      "parent": "dcf1b5f6e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 3
+     },
+     "replayed": false,
+     "stmt_ids": {
+      "2": "3"
+     },
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "N7.C2": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 18,
+       "id": "dcf3392ce2be11f1a1f336fcf217e862",
+       "parent": "dcf31323e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "records": [
+     [
+      1,
+      "set_qual",
+      "rel",
+      "3",
+      "w",
+      null,
+      "1"
+     ]
+    ]
+   },
+   "N7.B.unknown_stmt": {
+    "res": {
+     "ok": false,
+     "exc": {
+      "class": "ChangesetOperationError",
+      "mro": [
+       "ChangesetOperationError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "changeset operation 0 failed: statement 100003 is unknown",
+      "op_index": 0,
+      "reason": "statement 100003 is unknown"
+     }
+    },
+    "head": [
+     18,
+     18
+    ]
+   },
+   "N7.C3": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 19,
+       "id": "dcf7ddd2e2be11f1a1f336fcf217e862",
+       "parent": "dcf3392ce2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "records": [
+     [
+      1,
+      "delete_rel",
+      "rel",
+      "3",
+      "",
+      "{\"graph\":null,\"o\":\"i60_sb\",\"p\":\"R\",\"quals\":{\"w\":\"1\"},\"s\":\"i60_sa\"}",
+      null
+     ]
+    ]
+   },
+   "N7.C3.reconstruct_has": null,
+   "N7.C3.diff": [
+    [
+     "rel",
+     "3",
+     "",
+     "{\"graph\":null,\"o\":\"i60_sb\",\"p\":\"R\",\"quals\":{\"w\":\"1\"},\"s\":\"i60_sa\"}",
+     null
+    ]
+   ],
+   "N8.commit": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 20,
+      "id": "dcf8c290e2be11f1a1f336fcf217e862",
+      "parent": "dcf7ddd2e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "N8.replay": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 20,
+      "id": "dcf8c290e2be11f1a1f336fcf217e862",
+      "parent": "dcf7ddd2e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": true,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "N8.replay_event": [
+    {
+     "outcome": "replayed",
+     "revision_id": "dcf8c290e2be11f1a1f336fcf217e862",
+     "seq": 20,
+     "actor": "w1",
+     "actor_type": "agent",
+     "op_count": 1,
+     "duration_ms": 0.289,
+     "reason": null
+    }
+   ],
+   "N8.stale": {
+    "ok": false,
+    "exc": {
+     "class": "StaleHeadError",
+     "mro": [
+      "StaleHeadError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "expected_head dcb1e798e2be11f1a1f336fcf217e862 but head is dcf8c290e2be11f1a1f336fcf217e862 (current head: dcf8c290e2be11f1a1f336fcf217e862)",
+     "current_head": "dcf8c290e2be11f1a1f336fcf217e862"
+    }
+   },
+   "N8.stats": [
+    {
+     "commits_ok": 19,
+     "replays_idem": 2,
+     "rej": {
+      "rej_stale_head": 2,
+      "rej_unknown_head": 1,
+      "rej_idem_conflict": 2,
+      "rej_failed_op": 3,
+      "rej_strict_block": 0,
+      "rej_size_limit": 0,
+      "rej_disabled": 0,
+      "rej_lock_timeout": 0
+     },
+     "state": "enabled",
+     "strict": false
+    },
+    {
+     "commits_ok": 20,
+     "replays_idem": 2,
+     "rej": {
+      "rej_stale_head": 2,
+      "rej_unknown_head": 1,
+      "rej_idem_conflict": 2,
+      "rej_failed_op": 3,
+      "rej_strict_block": 0,
+      "rej_size_limit": 0,
+      "rej_disabled": 0,
+      "rej_lock_timeout": 0
+     },
+     "state": "enabled",
+     "strict": false
+    },
+    {
+     "commits_ok": 20,
+     "replays_idem": 3,
+     "rej": {
+      "rej_stale_head": 2,
+      "rej_unknown_head": 1,
+      "rej_idem_conflict": 2,
+      "rej_failed_op": 3,
+      "rej_strict_block": 0,
+      "rej_size_limit": 0,
+      "rej_disabled": 0,
+      "rej_lock_timeout": 0
+     },
+     "state": "enabled",
+     "strict": false
+    },
+    {
+     "commits_ok": 20,
+     "replays_idem": 3,
+     "rej": {
+      "rej_stale_head": 3,
+      "rej_unknown_head": 1,
+      "rej_idem_conflict": 2,
+      "rej_failed_op": 3,
+      "rej_strict_block": 0,
+      "rej_size_limit": 0,
+      "rej_disabled": 0,
+      "rej_lock_timeout": 0
+     },
+     "state": "enabled",
+     "strict": false
+    }
+   ],
+   "N8.status": {
+    "ok": true,
+    "value": {
+     "state": "enabled",
+     "head_seq": 20,
+     "head": 20
+    }
+   },
+   "P5.1.A": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 21,
+       "id": "dd0fba2ee2be11f1a1f336fcf217e862",
+       "parent": "dcf8c290e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": true,
+      "post_commit_error": null
+     }
+    },
+    "node": {
+     "id": "i60_p",
+     "labels": [],
+     "properties": null
+    },
+    "records": [
+     [
+      1,
+      "create_node",
+      "node",
+      "i60_p",
+      "",
+      null,
+      ""
+     ]
+    ],
+    "verify": {
+     "result": "diverges",
+     "seq": 21,
+     "diffs": [
+      [
+       "node",
+       "i60_p",
+       "prop:last_rev",
+       null,
+       "dd0fba2ee2be11f1a1f336fcf217e862"
+      ]
+     ],
+     "adoption": null
+    }
+   },
+   "P5.1.B.plain": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 22,
+       "id": "dd1a9efde2be11f1a1f336fcf217e862",
+       "parent": "dd0fba2ee2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "node": {
+     "id": "i60_p0",
+     "labels": [],
+     "properties": null
+    }
+   },
+   "P5.1.B.replay": {
+    "before": {
+     "id": "i60_p",
+     "labels": [],
+     "properties": null
+    },
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 21,
+       "id": "dd0fba2ee2be11f1a1f336fcf217e862",
+       "parent": "dcf8c290e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": true,
+      "stmt_ids": {},
+      "post_commit_applied": true,
+      "post_commit_error": null
+     }
+    },
+    "after": {
+     "id": "i60_p",
+     "labels": [],
+     "properties": null
+    }
+   },
+   "S5.3.before": false,
+   "S5.3.prop": [
+    true,
+    false
+   ],
+   "S5.3.rel": [
+    true,
+    false
+   ],
+   "S5.3.status": {
+    "ok": true,
+    "value": {
+     "pending_sync": false
+    }
+   },
+   "S5.3.nkg_meta": {
+    "ok": true,
+    "value": "None"
+   },
+   "P5.2.A": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 25,
+       "id": "dd226110e2be11f1a1f336fcf217e862",
+       "parent": "dd1cf974e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": true,
+      "post_commit_error": null
+     }
+    },
+    "ghost_node": {
+     "id": "i60_ghost",
+     "labels": [],
+     "properties": null
+    },
+    "ghost_rows": {
+     "ok": true,
+     "value": 1
+    },
+    "ghost_node_rows": {
+     "ok": true,
+     "value": 0
+    }
+   },
+   "P5.2.B.in_txn": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 26,
+      "id": "dd262411e2be11f1a1f336fcf217e862",
+      "parent": "dd226110e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": true,
+     "post_commit_error": null
+    }
+   },
+   "P5.2.B.after": {
+    "head": [
+     25,
+     25
+    ],
+    "node": null,
+    "props": {
+     "ok": true,
+     "value": 0
+    }
+   },
+   "P5.2.B.next": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 26,
+      "id": "dd2d0b5de2be11f1a1f336fcf217e862",
+      "parent": "dd226110e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "N2.A.in_txn": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 27,
+      "id": "dd2d4275e2be11f1a1f336fcf217e862",
+      "parent": "dd2d0b5de2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "N2.A.reuse": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 27,
+      "id": "dd33c515e2be11f1a1f336fcf217e862",
+      "parent": "dd2d0b5de2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "N2.B.conflict": {
+    "ok": false,
+    "exc": {
+     "class": "IdempotencyConflictError",
+     "mro": [
+      "IdempotencyConflictError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "idempotency key 'i60-k2' already bound to a different changeset"
+    }
+   },
+   "P4.1.A": {
+    "create": {
+     "ok": true,
+     "value": true
+    },
+    "verify": {
+     "result": "diverges",
+     "seq": 27,
+     "diffs": [
+      [
+       "node",
+       "i60_free",
+       "",
+       null,
+       ""
+      ],
+      [
+       "node",
+       "i60_ghost",
+       "",
+       null,
+       ""
+      ],
+      [
+       "node",
+       "i60_ghost",
+       "prop:k",
+       null,
+       "v"
+      ],
+      [
+       "node",
+       "i60_p",
+       "prop:last_rev",
+       null,
+       "dd0fba2ee2be11f1a1f336fcf217e862"
+      ]
+     ],
+     "adoption": null
+    }
+   },
+   "P4.1.A.commit": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 28,
+      "id": "dd3a25d2e2be11f1a1f336fcf217e862",
+      "parent": "dd33c515e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "P4.1.B": {
+    "create": {
+     "ok": false,
+     "exc": {
+      "class": "LedgerStrictModeError",
+      "mro": [
+       "LedgerStrictModeError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "ledger strict mode: structural write 'create_node' rejected; commit a changeset via engine.ledger"
+     }
+    },
+    "node": null,
+    "cypher": {
+     "ok": false,
+     "exc": {
+      "class": "LedgerStrictModeError",
+      "mro": [
+       "LedgerStrictModeError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "ledger strict mode: structural write 'cypher_dml' rejected; commit a changeset via engine.ledger"
+     }
+    },
+    "cypher_read": {
+     "ok": true,
+     "value": [
+      [
+       null
+      ]
+     ]
+    },
+    "cy_node": null
+   },
+   "P4.1.B.commit": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 29,
+      "id": "dd454b95e2be11f1a1f336fcf217e862",
+      "parent": "dd3a25d2e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "N8.strict_counter": [
+    0,
+    1
+   ],
+   "P5.1.B.strict_pcp": {
+    "res": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 30,
+       "id": "dd45785be2be11f1a1f336fcf217e862",
+       "parent": "dd454b95e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": true,
+      "post_commit_error": null
+     }
+    },
+    "node": {
+     "id": "i60_strictpc",
+     "labels": [],
+     "properties": null
+    }
+   },
+   "P4.1.B.after_off": {
+    "ok": true,
+    "value": true
+   },
+   "S4.5.prime": {
+    "ok": true,
+    "value": true
+   },
+   "S4.5": [
+    [
+     0.0,
+     true,
+     null
+    ],
+    [
+     0.5,
+     true,
+     null
+    ],
+    [
+     1.01,
+     true,
+     null
+    ],
+    [
+     1.52,
+     true,
+     null
+    ],
+    [
+     2.03,
+     true,
+     null
+    ],
+    [
+     2.53,
+     true,
+     null
+    ],
+    [
+     3.04,
+     true,
+     null
+    ],
+    [
+     3.55,
+     true,
+     null
+    ],
+    [
+     4.06,
+     true,
+     null
+    ],
+    [
+     4.57,
+     true,
+     null
+    ],
+    [
+     5.07,
+     false,
+     "LedgerStrictModeError"
+    ]
+   ],
+   "P4.2.A.disable": [
+    {
+     "ok": true,
+     "value": null
+    },
+    {
+     "ok": true,
+     "value": null
+    }
+   ],
+   "P4.2.A.create_off": {
+    "ok": true,
+    "value": true
+   },
+   "P4.2.A.head_unchanged": [
+    30,
+    30
+   ],
+   "P3.2.B.commit_disabled": {
+    "ok": false,
+    "exc": {
+     "class": "LedgerDisabledError",
+     "mro": [
+      "LedgerDisabledError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "ledger is disabled; re-enable before committing"
+    }
+   },
+   "P3.2.B.stats": [
+    0,
+    1
+   ],
+   "P3.2.B.events": [
+    {
+     "outcome": "disabled",
+     "revision_id": null,
+     "seq": null,
+     "actor": "w1",
+     "actor_type": "agent",
+     "op_count": 1,
+     "duration_ms": 0.598,
+     "reason": "ledger is disabled; re-enable before committing"
+    }
+   ],
+   "N6.B.disabled_readers": {
+    "head": {
+     "ok": true,
+     "value": {
+      "seq": 30,
+      "id": "dd45785be2be11f1a1f336fcf217e862",
+      "parent": "dd454b95e2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 1
+     }
+    },
+    "history_n": {
+     "ok": true,
+     "value": 30
+    },
+    "status_state": {
+     "ok": true,
+     "value": "disabled"
+    }
+   },
+   "P4.2.A.reenable": {
+    "res": {
+     "ok": true,
+     "value": {
+      "seq": 31,
+      "id": "e05ed7a2e2be11f1a1f336fcf217e862",
+      "parent": "dd45785be2be11f1a1f336fcf217e862",
+      "kind": "adoption",
+      "actor": "system:ledger-verify",
+      "op_count": 18
+     }
+    },
+    "strict_meta": false,
+    "create_after": {
+     "ok": true,
+     "value": true
+    },
+    "verify": {
+     "result": "diverges",
+     "seq": 31,
+     "diffs": [
+      [
+       "node",
+       "i60_after_reenable",
+       "",
+       null,
+       ""
+      ]
+     ],
+     "adoption": null
+    }
+   },
+   "P4.2.A.adoption_records": [
+    [
+     1,
+     "create_node",
+     "node",
+     "i60_e2_0",
+     "",
+     null,
+     ""
+    ],
+    [
+     2,
+     "create_node",
+     "node",
+     "i60_e2_1",
+     "",
+     null,
+     ""
+    ],
+    [
+     3,
+     "create_node",
+     "node",
+     "i60_e2_2",
+     "",
+     null,
+     ""
+    ],
+    [
+     4,
+     "create_node",
+     "node",
+     "i60_e2_3",
+     "",
+     null,
+     ""
+    ],
+    [
+     5,
+     "create_node",
+     "node",
+     "i60_e2_4",
+     "",
+     null,
+     ""
+    ],
+    [
+     6,
+     "create_node",
+     "node",
+     "i60_e2_5",
+     "",
+     null,
+     ""
+    ],
+    [
+     7,
+     "create_node",
+     "node",
+     "i60_e2_6",
+     "",
+     null,
+     ""
+    ],
+    [
+     8,
+     "create_node",
+     "node",
+     "i60_e2_7",
+     "",
+     null,
+     ""
+    ],
+    [
+     9,
+     "create_node",
+     "node",
+     "i60_e2_8",
+     "",
+     null,
+     ""
+    ],
+    [
+     10,
+     "create_node",
+     "node",
+     "i60_e2_9",
+     "",
+     null,
+     ""
+    ],
+    [
+     11,
+     "create_node",
+     "node",
+     "i60_e2a",
+     "",
+     null,
+     ""
+    ],
+    [
+     12,
+     "create_node",
+     "node",
+     "i60_free",
+     "",
+     null,
+     ""
+    ],
+    [
+     13,
+     "create_node",
+     "node",
+     "i60_free2",
+     "",
+     null,
+     ""
+    ],
+    [
+     14,
+     "create_node",
+     "node",
+     "i60_ghost",
+     "",
+     null,
+     ""
+    ],
+    [
+     15,
+     "set_prop",
+     "node",
+     "i60_ghost",
+     "k",
+     null,
+     "v"
+    ],
+    [
+     16,
+     "create_node",
+     "node",
+     "i60_off",
+     "",
+     null,
+     ""
+    ],
+    [
+     17,
+     "set_prop",
+     "node",
+     "i60_p",
+     "last_rev",
+     null,
+     "dd0fba2ee2be11f1a1f336fcf217e862"
+    ],
+    [
+     18,
+     "set_prop",
+     "node",
+     "i60_strictpc",
+     "k",
+     null,
+     "v"
+    ]
+   ],
+   "P4.2.B.enable_strict_on_enabled": {
+    "res": {
+     "ok": true,
+     "value": {
+      "seq": 31,
+      "id": "e05ed7a2e2be11f1a1f336fcf217e862",
+      "parent": "dd45785be2be11f1a1f336fcf217e862",
+      "kind": "adoption",
+      "actor": "system:ledger-verify",
+      "op_count": 18
+     }
+    },
+    "head": [
+     31,
+     31
+    ],
+    "strict_meta": false,
+    "create": {
+     "ok": true,
+     "value": true
+    }
+   },
+   "P4.2.B.reenable_strict": {
+    "res": {
+     "ok": true,
+     "value": {
+      "seq": 32,
+      "id": "e0622bf3e2be11f1a1f336fcf217e862",
+      "parent": "e05ed7a2e2be11f1a1f336fcf217e862",
+      "kind": "adoption",
+      "actor": "system:ledger-verify",
+      "op_count": 3
+     }
+    },
+    "strict_meta": true,
+    "create": {
+     "ok": false,
+     "exc": {
+      "class": "LedgerStrictModeError",
+      "mro": [
+       "LedgerStrictModeError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "ledger strict mode: structural write 'create_node' rejected; commit a changeset via engine.ledger"
+     }
+    }
+   },
+   "S4.3": {
+    "tlevel": {
+     "ok": true,
+     "value": 1
+    },
+    "enable": {
+     "ok": false,
+     "exc": {
+      "class": "LedgerTransactionOpenError",
+      "mro": [
+       "LedgerTransactionOpenError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "ledger.enable() cannot run inside the caller's open transaction ($TLEVEL 1) on the engine's connection; nothing was done. Commit or roll it back, then call it again"
+     }
+    },
+    "disable": {
+     "ok": true,
+     "value": null
+    },
+    "state_in_txn": "disabled",
+    "state_after_rollback": "enabled",
+    "node_after_rollback": null
+   },
+   "N9.clean": {
+    "result": "equal",
+    "seq": 32,
+    "diffs": [],
+    "adoption": null
+   },
+   "N9.A": {
+    "verify": {
+     "result": "equal",
+     "seq": 32,
+     "diffs": [],
+     "adoption": null
+    },
+    "head": [
+     32,
+     32
+    ]
+   },
+   "N9.B": {
+    "first": {
+     "result": "diverges",
+     "seq": 32,
+     "diffs": [
+      [
+       "node",
+       "i60_n9u",
+       "",
+       null,
+       ""
+      ]
+     ],
+     "adoption": {
+      "seq": 33,
+      "id": "e06cd47fe2be11f1a1f336fcf217e862",
+      "parent": "e0622bf3e2be11f1a1f336fcf217e862",
+      "kind": "adoption",
+      "actor": "system:ledger-verify",
+      "op_count": 1
+     }
+    },
+    "second": {
+     "result": "equal",
+     "seq": 33,
+     "diffs": [],
+     "adoption": null
+    },
+    "head": [
+     32,
+     33
+    ],
+    "parent_is_old_head": true
+   },
+   "final_head": {
+    "seq": 33,
+    "id": "e06cd47fe2be11f1a1f336fcf217e862",
+    "parent": "e0622bf3e2be11f1a1f336fcf217e862",
+    "kind": "adoption",
+    "actor": "system:ledger-verify",
+    "op_count": 1
+   }
+  }
+ }
+}

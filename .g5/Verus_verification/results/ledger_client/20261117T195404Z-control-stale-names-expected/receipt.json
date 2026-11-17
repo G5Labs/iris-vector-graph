@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_expected_head_outcomes",
+      "theorem_refused_key_stays_free"
+    ],
+    "find": "refuse(s, err(Code::StaleHead, Some(head_id(s))))",
+    "name": "stale-names-expected",
+    "replace": "refuse(s, err(Code::StaleHead, c.expected))",
+    "why": "StaleHeadError names the expected head, not the current one"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_expected_head_outcomes",
+      "theorem_refused_key_stays_free"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a449d085e34ff8ce781a58678da1f6805b15407347261a93cc74d78f9b6cea7f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/stale-names-expected/20261117T195403Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_expected_head_outcomes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195403Z-control-stale-names-expected-theorem_expected_head_outcomes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_refused_key_stays_free": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195403Z-control-stale-names-expected-theorem_refused_key_stays_free.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195403Z-control-stale-names-expected.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195404Z-control-stale-names-expected/logs/20261117T195403Z-control-stale-names-expected-theorem_expected_head_outcomes.log": "173f40b5e65a15b4ab1d26198411dda047962c8dc903c7d0e26e86f4c5f3db54",
+    ".g5/Verus_verification/results/ledger_client/20261117T195404Z-control-stale-names-expected/logs/20261117T195403Z-control-stale-names-expected-theorem_refused_key_stays_free.log": "28614841773f2bd2fb5cd82a18b38cccdec1e1bd8cdc607c3a2bd7af0ed17178",
+    ".g5/Verus_verification/results/ledger_client/20261117T195404Z-control-stale-names-expected/logs/20261117T195403Z-control-stale-names-expected.log": "ecfa051d269303106b049da4a199598dff914160ca163362ae1d722a521becf5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

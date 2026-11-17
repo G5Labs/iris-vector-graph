@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_refused_key_stays_free",
+      "theorem_refusal_writes_nothing"
+    ],
+    "find": "refuse(s, err(Code::StaleHead, Some(head_id(s))))",
+    "name": "key-bound-on-refusal",
+    "replace": "refuse(if c.key is Some { Srv { idem: s.idem.insert(c.key->Some_0, (s.head, fingerprint(c))), ..s } } else { s }, err(Code::StaleHead, Some(head_id(s))))",
+    "why": "a stale-head refusal binds its key"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_refused_key_stays_free",
+      "theorem_refusal_writes_nothing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "84b3991f637609a1b032857ad1e82c6e57c128fd849e2e3d399a3741296163fe",
+    ".g5/Verus_verification/models/ledger_client/model.json": "114016eecb72cc327b315b110ef766f4e4527182da3f072831c6cd11c2a6b581"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/key-bound-on-refusal/20261117T195249Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_refusal_writes_nothing": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195249Z-control-key-bound-on-refusal-theorem_refusal_writes_nothing.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_refused_key_stays_free": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195249Z-control-key-bound-on-refusal-theorem_refused_key_stays_free.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195249Z-control-key-bound-on-refusal.log",
+    "timed_out": false,
+    "verified": 23
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195251Z-control-key-bound-on-refusal/logs/20261117T195249Z-control-key-bound-on-refusal-theorem_refusal_writes_nothing.log": "3b3a5e481a48b88a30f69b3275897885a6a56a964cf8cd620a764556d45d8489",
+    ".g5/Verus_verification/results/ledger_client/20261117T195251Z-control-key-bound-on-refusal/logs/20261117T195249Z-control-key-bound-on-refusal-theorem_refused_key_stays_free.log": "7b154fd082539c7b451e8a0994e69138d18a0ed3fc4d2a2140d8048233aae918",
+    ".g5/Verus_verification/results/ledger_client/20261117T195251Z-control-key-bound-on-refusal/logs/20261117T195249Z-control-key-bound-on-refusal.log": "d927a4b60ff82f3aee4b92ae3baa4e1f137404815b03dc8d082fcd8c9ed83218"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

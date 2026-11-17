@@ -1,0 +1,157 @@
+{
+  "title": "ledger client",
+  "question": "changeset scope and client validation, admission derived from the ledger's own state, the Python error classes and counters a commit outcome produces, caller-transaction lock and rollback, revision-ID readers, lifecycle settings, revision-row immutability and chunked transport",
+  "ontology_ids": [
+    "ledger.changeset",
+    "ledger.commit",
+    "ledger.commit.admission",
+    "ledger.commit.expected-head",
+    "ledger.commit.size",
+    "ledger.commit.caller-transaction",
+    "ledger.idempotency",
+    "ledger.lifecycle",
+    "ledger.readers",
+    "ledger.immutability",
+    "ledger.observability"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 27}"
+    },
+    {
+      "label": "message-fingerprinted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_metadata_outside_fingerprint\", \"theorem_retry_with_new_metadata_replays\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ops-not-fingerprinted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_reordered_operations_conflict\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "expected-head-before-idempotency",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_retry_with_new_metadata_replays\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "replay-counted-as-commit",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_retry_with_new_metadata_replays\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "key-bound-on-refusal",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_refused_key_stays_free\", \"theorem_refusal_writes_nothing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stale-names-expected",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_expected_head_outcomes\", \"theorem_refused_key_stays_free\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unknown-as-stale",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_expected_head_outcomes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "never-counted-as-disabled",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_disabled_and_never_enabled\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-client-validate",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_refused_before_the_server\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "size-limit-exclusive",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_size_limit_boundary\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-node-narrowing",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_operation_reported\", \"theorem_error_mapping_fallbacks\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "op-index-lost",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_operation_reported\", \"theorem_error_mapping_fallbacks\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "lock-released-inside-transaction",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_caller_transaction_holds_the_head\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "idem-not-journaled",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_rollback_frees_key_and_seq\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unknown-id-reads-genesis",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_revision_readers_resolve_ids\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "head-refused-while-disabled",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_head_reader_states\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "enable-on-enabled-sets-strict",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_enable_lifecycle\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "update-without-emptying",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_revision_rows_immutable\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "chunk-off-by-one",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_join_chunks\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "text-source-kept",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"witness_text_source_is_dropped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "event-on-client-refusal",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_one_event_per_server_call\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

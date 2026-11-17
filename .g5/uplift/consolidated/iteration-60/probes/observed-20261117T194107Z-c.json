@@ -1,0 +1,304 @@
+{
+ "meta": {
+  "fixture": {
+   "container": "ivg-uplift-next-20261115",
+   "host": "127.0.0.1",
+   "port": 35975,
+   "kind": "local-shared",
+   "iris": "IRIS Community 2026.1 (Build 234U)"
+  },
+  "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "started": "20261117T194107Z",
+  "sections": [
+   "c"
+  ],
+  "identity": [
+   true,
+   "1a97b1515453"
+  ],
+  "finished": "20261117T194108Z"
+ },
+ "obs": {
+  "c": {
+   "N6.A": {
+    "meta": {
+     "ok": true,
+     "state": "never-enabled",
+     "strict": false,
+     "max_ops": 50000,
+     "recon_bound": 250000,
+     "head_seq": 0,
+     "head_id": null
+    },
+    "head": {
+     "ok": false,
+     "exc": {
+      "class": "LedgerNotEnabledError",
+      "mro": [
+       "LedgerNotEnabledError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "ledger has not been enabled"
+     }
+    },
+    "verify": {
+     "ok": false,
+     "exc": {
+      "class": "LedgerNotEnabledError",
+      "mro": [
+       "LedgerNotEnabledError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "ledger has not been enabled"
+     }
+    },
+    "status_state": {
+     "ok": true,
+     "value": "never-enabled"
+    },
+    "stats": {
+     "ok": true,
+     "value": {
+      "commits_ok": 0,
+      "replays_idem": 0,
+      "rej": {},
+      "state": "never-enabled",
+      "strict": false
+     }
+    },
+    "history": {
+     "ok": true,
+     "value": [
+      0,
+      null
+     ]
+    },
+    "set_strict": {
+     "ok": false,
+     "exc": {
+      "class": "LedgerNotEnabledError",
+      "mro": [
+       "LedgerNotEnabledError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "ledger has not been enabled"
+     }
+    },
+    "disable": {
+     "ok": true,
+     "value": null
+    }
+   },
+   "P3.2.A": {
+    "res": {
+     "ok": false,
+     "exc": {
+      "class": "LedgerNotEnabledError",
+      "mro": [
+       "LedgerNotEnabledError",
+       "LedgerError",
+       "IVGError",
+       "Exception"
+      ],
+      "msg": "ledger has not been enabled"
+     }
+    },
+    "events": [
+     {
+      "outcome": "not_enabled",
+      "revision_id": null,
+      "seq": null,
+      "actor": "w1",
+      "actor_type": "agent",
+      "op_count": 1,
+      "duration_ms": 0.327,
+      "reason": "ledger has not been enabled"
+     }
+    ],
+    "node": null,
+    "meta_state": "never-enabled"
+   },
+   "enable": {
+    "seq": 1,
+    "id": "d5b25adae2be11f1a1f336fcf217e862",
+    "parent": null,
+    "kind": "genesis",
+    "actor": "system:ledger",
+    "op_count": 0
+   },
+   "S3.4.enable_events": [],
+   "meta": {
+    "ok": true,
+    "state": "enabled",
+    "strict": false,
+    "max_ops": 2,
+    "recon_bound": 1,
+    "head_seq": 1,
+    "head_id": "d5b25adae2be11f1a1f336fcf217e862"
+   },
+   "R2.B.commits": {
+    "a": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 2,
+       "id": "d5b5f396e2be11f1a1f336fcf217e862",
+       "parent": "d5b25adae2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "b": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 3,
+       "id": "d5b61a88e2be11f1a1f336fcf217e862",
+       "parent": "d5b5f396e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    },
+    "del_b": {
+     "ok": true,
+     "value": {
+      "revision": {
+       "seq": 4,
+       "id": "d5c8411de2be11f1a1f336fcf217e862",
+       "parent": "d5b61a88e2be11f1a1f336fcf217e862",
+       "kind": "changeset",
+       "actor": "w1",
+       "op_count": 1
+      },
+      "replayed": false,
+      "stmt_ids": {},
+      "post_commit_applied": false,
+      "post_commit_error": null
+     }
+    }
+   },
+   "R2.B.reconstruct_head": {
+    "ok": false,
+    "exc": {
+     "class": "ReconstructionTooLargeError",
+     "mro": [
+      "ReconstructionTooLargeError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "reconstruction of ~2 entities exceeds bound 1; request stream=True",
+     "bound": 1,
+     "estimate": 2
+    }
+   },
+   "R2.B.stream": {
+    "ok": true,
+    "value": [
+     "('node', 'i60_ca', NodeState(labels=set(), props={}))"
+    ]
+   },
+   "R2.B.export": {
+    "ok": true,
+    "value": "ExportSummary(path='/var/folders/6m/hcldwlsj4k72ml4b0s9d5fqr0000gn/T/i60-r2b-dstj__lc/h.ndjson', nodes=1, rels=0)"
+   },
+   "R2.B.export_lines": [
+    "{\"id\":\"i60_ca\",\"labels\":[],\"props\":{},\"type\":\"node\"}"
+   ],
+   "R2.B.reconstruct_a": {
+    "ok": true,
+    "value": [
+     "i60_ca"
+    ]
+   },
+   "S3.5.two": {
+    "ok": true,
+    "value": {
+     "revision": {
+      "seq": 5,
+      "id": "d5cb5ba0e2be11f1a1f336fcf217e862",
+      "parent": "d5c8411de2be11f1a1f336fcf217e862",
+      "kind": "changeset",
+      "actor": "w1",
+      "op_count": 2
+     },
+     "replayed": false,
+     "stmt_ids": {},
+     "post_commit_applied": false,
+     "post_commit_error": null
+    }
+   },
+   "S3.5.three": {
+    "ok": false,
+    "exc": {
+     "class": "ChangesetTooLargeError",
+     "mro": [
+      "ChangesetTooLargeError",
+      "LedgerError",
+      "IVGError",
+      "Exception"
+     ],
+     "msg": "changeset has 3 operations; max_ops is 2",
+     "limit": 2
+    }
+   },
+   "S3.5.events": [
+    {
+     "outcome": "success",
+     "revision_id": "d5cb5ba0e2be11f1a1f336fcf217e862",
+     "seq": 5,
+     "actor": "w1",
+     "actor_type": "agent",
+     "op_count": 2,
+     "duration_ms": 0.555,
+     "reason": null
+    },
+    {
+     "outcome": "too_large",
+     "revision_id": null,
+     "seq": null,
+     "actor": "w1",
+     "actor_type": "agent",
+     "op_count": 3,
+     "duration_ms": 0.314,
+     "reason": "changeset has 3 operations; max_ops is 2"
+    }
+   ],
+   "S3.5.rej_size": 1
+  },
+  "d": {
+   "enable": {
+    "seq": 1,
+    "id": "d5e06438e2be11f1a1f336fcf217e862",
+    "parent": null,
+    "kind": "genesis",
+    "actor": "system:ledger",
+    "op_count": 0
+   },
+   "R2.B.bound2_head": {
+    "ok": true,
+    "value": [
+     "i60_da"
+    ]
+   }
+  }
+ }
+}

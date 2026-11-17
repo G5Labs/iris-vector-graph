@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_join_chunks"
+    ],
+    "find": "seq![p.subrange(0, n as int)] + chunks(p.subrange(n as int, p.len() as int), n)",
+    "name": "chunk-off-by-one",
+    "replace": "seq![p.subrange(0, n as int - 1)] + chunks(p.subrange(n as int, p.len() as int), n)",
+    "why": "each staged chunk drops its last character"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_join_chunks"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "7ba9f18af43b85fa5c760c6143c65a822f51aeec8c48704e3cd354640be6e19b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a449d085e34ff8ce781a58678da1f6805b15407347261a93cc74d78f9b6cea7f"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/controls/chunk-off-by-one/20261117T195418Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_join_chunks": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195418Z-control-chunk-off-by-one-lemma_join_chunks.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_client/20261117T195418Z-control-chunk-off-by-one.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T195419Z-control-chunk-off-by-one/logs/20261117T195418Z-control-chunk-off-by-one-lemma_join_chunks.log": "8e39e432cc3132bb48839bd49c2d42c926583a56d5a78fd813056b84aed2227e",
+    ".g5/Verus_verification/results/ledger_client/20261117T195419Z-control-chunk-off-by-one/logs/20261117T195418Z-control-chunk-off-by-one.log": "b0effd73688d580db62e6e6e4ad38cf5aa77c5b30e0b049e578b8df912b45e7e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
