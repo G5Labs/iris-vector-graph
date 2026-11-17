@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/no-mismatch-check/20261117T070112Z/models/install_lifecycle/install_lifecycle.rs:73:1
+   |
+73 | pub proof fn theorem_other_record_refused(ns: Ns, s: nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/no-mismatch-check/20261117T070112Z/models/install_lifecycle/install_lifecycle.rs:75:13
+   |
+73 | pub proof fn theorem_other_record_refused(ns: Ns, s: nat)
+   | --------------------------------------------------------- at the end of the function body
+74 |     requires ns.record is Some, ns.record.unwrap() != s,
+75 |     ensures first_access(ns, s) == Access::Mismatch, !call_runs(ns, s, false), call_runs(ns, s, true),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/no-mismatch-check/20261117T070112Z/models/install_lifecycle/install_lifecycle.rs:75:54
+   |
+73 | pub proof fn theorem_other_record_refused(ns: Ns, s: nat)
+   | --------------------------------------------------------- at the end of the function body
+74 |     requires ns.record is Some, ns.record.unwrap() != s,
+75 |     ensures first_access(ns, s) == Access::Mismatch, !call_runs(ns, s, false), call_runs(ns, s, true),
+   |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

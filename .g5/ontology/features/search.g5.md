@@ -51,6 +51,9 @@ Two model keys match only if they are equal after trimming, lowercasing and coll
 
 A table's width is the width its vector column declares, and the registry copies that width rather than overriding it.
 - Setup never changes the width of a table that holds vectors. It changes an empty table's width only when asked.
+- A setup at another width than a populated table is meant to leave it and name it for manual migration.
+- Today, when an empty vector table sits beside the populated one at the old width, plain setup refuses for the empty one and `rewidth=True` refuses for the populated one, so the manual-migration reply never comes ([bug-plt-134](../../Verus_verification/bugs_issues.md#bug-plt-134)).
+- Today an engine that names the IVG Schema in another letter case reads no declared width, so its setup re-declares the empty tables at its own width without being asked and leaves the registry at the old width ([bug-plt-015](../../Verus_verification/bugs_issues.md#bug-plt-015)).
 - A writer that reuses a table whose column declares another width is refused before any record claims its width.
 - A query vector is never padded or cut to fit a table. A query of the wrong width raises an error instead of returning scores.
 - That refusal comes before any search statement runs, and it names both widths. The width compared is the route's, or the column's declared width when the route records none.
@@ -270,6 +273,7 @@ An upgrade puts every existing vector either into exactly one graph or into quar
 
 An operator places quarantined vectors one at a time, naming the graph and model. Placement never creates a route. It is refused, leaving the vector in quarantine, unless the route exists with the same width and element type and the node exists in that graph.
 - The vector is copied into the route and removed from quarantine in one transaction. If the route refuses the copy, for example because it already holds a vector for that node, the vector stays in quarantine.
+- Today no quarantined vector can be placed through the IRIS DB-API driver: the call fails reading the row it just fetched ("Cursor closed"), and the vector stays in quarantine ([bug-srch-116](../../Verus_verification/bugs_issues.md#bug-srch-116)).
 
 
 ## BM25 text search
@@ -282,7 +286,7 @@ A BM25 index is a named lexical index over chosen text properties of one graph's
 - A node with no indexable text is not in the index.
 - Inserting a document that is already there replaces it. Replacing it with text that has no indexable terms removes it.
 - Removing a document that is not in the index changes nothing.
-- A search returns the top k documents by score, highest first.
+- A search returns the top k documents by score, highest first. `bm25_search` and `CALL ivg.bm25.search` refuse a k below 1. Today the SQL function `kg_BM25` accepts any k and answers an empty list for 0 or less ([finding](../../Verus_verification/bugs_issues.md#bug-srch-113)).
 
 - Working assumption: Assume no cross-call consistency guarantee until a read/write protocol is chosen; partial-index results remain visible risk, not approved isolation.
 - Working assumption: Keep explicit BM25 selection distinct from plain text search; a default-index fallback requires a supported API/corpus decision.
@@ -296,7 +300,7 @@ A BM25 index is a named lexical index over chosen text properties of one graph's
 A document's score adds up, for each query term, `IDF × tf × (k1 + 1) / (tf + k1 × (1 − b + b × length / average length))`, where `IDF = ln(1 + (N − df + 0.5) / (df + 0.5))`. The defaults are `k1 = 1.5` and `b = 0.75`.
 - Documents and queries are tokenized the same way: lowercased, split at punctuation, with no stemming and a fixed list of 77 common English words left out.
 - A query term counts once for each time the query repeats it.
-- Equal scores are listed in node-ID order, and a search answers the first k of that order. This is as built; no document states a tie order.
+- Scores are compared to 12 decimal places, and equal scores are listed in IRIS subscript order of their node IDs: IDs that are whole numbers come first, in numeric order, and the others follow in character-code order, so `9` comes before `10`, `d10` before `d9` and `dB` before `da`. A search answers the first k of that order. This is as built; no document states a tie order.
 
 
 <a id="search.bm25.query_time_idf"></a>
@@ -517,7 +521,9 @@ Open questions: [May an undeclared writer add vectors to the default graph's tab
 
 State machines: [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
 
-Findings: [ivf_search answers a query of another width](../../Verus_verification/bugs_issues.md#bug-srch-108)
+Setup's width decision (iteration 56): [install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_populated_never_rewidened`, `theorem_empty_other_width_needs_rewidth`, `theorem_unknown_width_altered_unasked`; controls `populated-altered`, `rewidth-not-required`, `unknown-width-counted`.
+
+Findings: [ivf_search answers a query of another width](../../Verus_verification/bugs_issues.md#bug-srch-108); [bug-plt-134](../../Verus_verification/bugs_issues.md#bug-plt-134); [bug-plt-015](../../Verus_verification/bugs_issues.md#bug-plt-015)
 
 ### search.embedding.width.raw-helpers
 - Expands: [parent](#search.embedding.width)
@@ -533,6 +539,7 @@ Audit (HD-1704): Existing authority: The low-level raw DB-API helper pads/trunca
 ### search.embedding.check_on_write
 - Sources: [enforce_embedding_identity](../../../iris_vector_graph/_engine/schema.py#L1354-L1396), [store_embedding](../../../iris_vector_graph/_engine/embeddings.py#L942-L1025), [store_embeddings](../../../iris_vector_graph/_engine/embeddings.py#L1028-L1115), [offered unknown identity](../../../iris_vector_graph/embedding_identity.py#L79-L98), [CHANGELOG v3.2.0](../../../CHANGELOG.md#L4371-L4440)
 - Expands: [Embedding identity](#search.embedding)
+- Verus: [install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_width_enforced_whatever_the_model` (binding `W:store8`, `I:enforce_*`)
 - Observed divergence: the check passes when [the registry cannot be read](../../../iris_vector_graph/_engine/schema.py#L1033-L1084), and [the IRIS queue worker](../../../iris_src/src/Graph/KG/EmbedQueue.cls#L256-L345) writes default-graph entries without it (F8, F11 in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings)).
 - agent
 - data-integrity
@@ -542,6 +549,7 @@ Findings: [The embedding queue checks identity against the wrong table, and its 
 
 ### search.embedding.claim
 - Sources: [ADR-0006 on the conditional first-writer claim](../../../docs/adr/0006-embedding-identity-lives-in-a-registry-not-the-ledger.md#L51-L54), [set_embedding_identity](../../../iris_vector_graph/_engine/schema.py#L1086-L1220), [concurrent claim test](../../../tests/integration/test_embedding_registry_e2e.py#L608-L681), [force test](../../../tests/integration/test_embedding_registry_e2e.py#L389-L398)
+- Verus: [install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_adopt_never_overwrites`, `theorem_claim_only_unknown`, `theorem_adopted_row_claimed_keeps_width`, `theorem_same_model_kept`, `theorem_undeclared_set_refused` (binding `I:*`: adopted, claimed, normalized key kept, other model refused, forced, re-adoption leaves rows; concurrency not exercised)
 - Expands: [Embedding identity](#search.embedding)
 - agent
 - data-integrity, operations
@@ -826,9 +834,12 @@ Open questions: [Should erasure and redaction reach the store in REACH-2?](../..
 ### search.quarantine.placement
 - Sources: [place_quarantined](../../../iris_vector_graph/_engine/schema.py#L1972-L2070), [CHANGELOG v4.0.0](../../../CHANGELOG.md#L4199-L4217)
 - Expands: [Quarantine](#search.quarantine)
-- Note: only mocked unit tests exercise placement ([test_227_quarantine_api.py](../../../tests/unit/test_227_quarantine_api.py)).
+- Note: only mocked unit tests exercise placement ([test_227_quarantine_api.py](../../../tests/unit/test_227_quarantine_api.py)); a mocked cursor hides the closed-cursor read of bug-srch-116.
+- Verus: [install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_unreadable_row_never_placed` (as built), `theorem_placed_only_when_every_check_passes`, `theorem_refused_row_stays`, `theorem_placement_conserves_and_never_creates_route` (the post-read checks bound only with the row read repaired: binding `QR:*`)
 - agent
 - operations, data-integrity
+
+Findings: [bug-srch-116](../../Verus_verification/bugs_issues.md#bug-srch-116)
 
 ### search.bm25
 
@@ -842,6 +853,8 @@ Open questions: [Should erasure and redaction reach the store in REACH-2?](../..
 
 Audit reproduction: [F-C0715](../../Verus_verification/bugs_issues.md#F-C0715) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
+Findings: [kg_BM25 answers an empty list for k of 0 or less](../../Verus_verification/bugs_issues.md#bug-srch-113) (review 53-55 minor; modeled as `bm25_scoring.rs::entry_k`, `theorem_sql_k_nonpositive_empty_others_refuse`, bound by binding cases `k:sql@0`, `k:sql@-1`, `k:py@0`, `k:cypher@0`, iteration 56).
+
 Findings: [bm25_search rewrites document ids: its leading-dot patch runs over the whole answer, so an id holding ':.5', ',.7' or '[.9' comes back as ':0.5', ',0.7', '[0.9'](../../Verus_verification/bugs_issues.md#F-C0715).
 
 Open questions: [Is spec 044's kg_TXT-to-BM25 fallback still wanted?](../../Verus_verification/open_questions.md#HD-0703), [Is `__stop__` a reserved BM25 index name?](../../Verus_verification/open_questions.md#HD-0704), [May a BM25 search observe an index write that is still in progress?](../../Verus_verification/open_questions.md#q-srch-003), [Should plain text search use a BM25 index named "default" when one exists?](../../Verus_verification/open_questions.md#q-srch-004)
@@ -853,9 +866,11 @@ Open questions: [Is spec 044's kg_TXT-to-BM25 fallback still wanted?](../../Veru
 - agent
 - user-facing-behavior
 - design-verified
-- Formal: [`theorem_stopword_query_empty`, `theorem_repeat_adds_twice`, `theorem_unknown_term_adds_nothing`, `theorem_shorter_document_scores_higher`, `theorem_tf_raises_and_saturates`, `theorem_idf_arg_positive_and_decreasing`, `theorem_worked_example`, `theorem_ties_by_id`](../../Verus_verification/models/bm25_scoring/bm25_scoring.rs)
+- Formal: [`theorem_stopword_query_empty`, `theorem_repeat_adds_twice`, `theorem_unknown_term_adds_nothing`, `theorem_shorter_document_scores_higher`, `theorem_tf_raises_and_saturates`, `theorem_idf_arg_positive_and_decreasing`, `theorem_worked_example`, `theorem_ties_by_id`, `theorem_ties_in_subscript_order`](../../Verus_verification/models/bm25_scoring/bm25_scoring.rs)
 
 The model computes the length factor exactly as a rational for k1 1.5 and b 0.75, and represents IDF by its argument; `ln` is a named premise (P-LN), so scores are checked against the formula natively (relative tolerance 1e-12, [binding](../../Verus_verification/models/bm25_scoring/BINDINGS.md)) and their ordering properties formally. Tokenizing with the IRIS analyzer is a provider; the stopword filter is modeled.
+
+Tie order (iteration 56, review 53-55): `before_id`/`id_lt` spell out IRIS subscript collation (premise P-COLLATE); the binding's six-way tie (two numeric ids, `d10`, `d9`, `dB`, `da`) agrees on three readers, and the controls `numeric-ids-as-text` and `text-case-folded` fail as expected.
 
 State machines: [BM25 scoring](../../Verus_verification/models/bm25_scoring/manifest.json)
 

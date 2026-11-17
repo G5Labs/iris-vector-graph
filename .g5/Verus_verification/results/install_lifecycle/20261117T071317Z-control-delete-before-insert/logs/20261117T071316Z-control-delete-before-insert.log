@@ -1,0 +1,15 @@
+verification results:: 31 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/delete-before-insert/20261117T071316Z/models/install_lifecycle/install_lifecycle.rs:338:13
+    |
+335 | / pub proof fn theorem_placement_conserves_and_never_creates_route(q: nat, r: nat, routes: nat, row: bool, row_read_ok: bool, route...
+336 | |         row_dim: Option<nat>, row_dtype: nat, node_in_graph: bool, insert_ok: bool)
+    | |___________________________________________________________________________________- at the end of the function body
+337 |       requires q > 0,
+338 |       ensures ({ let e = place_effect(q, r, routes, place(row, row_read_ok, route, row_dim, row_dtype, node_in_graph, insert_ok));
+    |  _____________^
+339 | |                e.0 + e.1 == q + r && e.2 == routes }),
+    | |_____________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

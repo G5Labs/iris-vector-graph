@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "guard: refuse_package_clash removed",
+    "expect_fail_in": [
+      "theorem_clash_refused_before_anything"
+    ],
+    "find": "    else if i.clash { SetupOut::Clash }",
+    "name": "clash-unchecked",
+    "replace": "    else if false { SetupOut::Clash }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_clash_refused_before_anything"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs": "e52c1631d8776427eff256192c2313e16732f47d3b4a95223aaea02105325940",
+    ".g5/Verus_verification/models/install_lifecycle/model.json": "eb426c2eadba44d3163016b682a1098f99b91c72121f924935a33e67337eaf7e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/clash-unchecked/20261117T070118Z/models/install_lifecycle/install_lifecycle.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_clash_refused_before_anything": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/20261117T070118Z-control-clash-unchecked-theorem_clash_refused_before_anything.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/20261117T070118Z-control-clash-unchecked.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/install_lifecycle/20261117T070119Z-control-clash-unchecked/logs/20261117T070118Z-control-clash-unchecked-theorem_clash_refused_before_anything.log": "5c9f3cbbdafd858d8b5b3adfa00b7fba6fcd50294576f55ac44037c4390a18ff",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T070119Z-control-clash-unchecked/logs/20261117T070118Z-control-clash-unchecked.log": "8184232345c55a4f6b0549bc5b0ecf983888c14a39d960ecdbf5bea90b9452c7"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

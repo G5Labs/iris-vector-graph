@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: placement creates a route",
+    "expect_fail_in": [
+      "theorem_placement_conserves_and_never_creates_route"
+    ],
+    "find": "    if out == PlaceOut::Placed && q > 0 { ((q - 1) as nat, r + 1, routes) } else { (q, r, routes) }",
+    "name": "placement-creates-route",
+    "replace": "    if out == PlaceOut::Placed && q > 0 { ((q - 1) as nat, r + 1, routes + 1) } else { (q, r, routes) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_placement_conserves_and_never_creates_route"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs": "6a9361be17d0fec7cd1b28251e0769500787e020903e9c14a5309eaa63749e8b",
+    ".g5/Verus_verification/models/install_lifecycle/model.json": "90f015225dfeda8dda8c1b9c700a50ed8161d965cea69bba5c44d44016c12058"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/placement-creates-route/20261117T070825Z/models/install_lifecycle/install_lifecycle.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_placement_conserves_and_never_creates_route": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/20261117T070825Z-control-placement-creates-route-theorem_placement_conserves_and_never_creates_route.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/20261117T070825Z-control-placement-creates-route.log",
+    "timed_out": false,
+    "verified": 31
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/install_lifecycle/20261117T070826Z-control-placement-creates-route/logs/20261117T070825Z-control-placement-creates-route-theorem_placement_conserves_and_never_creates_route.log": "cccc9bef676538a23e0c484cde3bb77891a105a45fecbf520447fdf8843441dd",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T070826Z-control-placement-creates-route/logs/20261117T070825Z-control-placement-creates-route.log": "5008c8d2164d6e700f4165fbe0bd98d4a6903cb4eb0dcc3ee2827d002e63369f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

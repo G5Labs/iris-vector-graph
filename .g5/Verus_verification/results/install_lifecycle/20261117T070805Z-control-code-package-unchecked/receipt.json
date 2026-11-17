@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: a name whose package is under IVG's code packages accepted",
+    "expect_fail_in": [
+      "theorem_name_rules_refuse_before_default"
+    ],
+    "find": "    else if n.under_code_pkg { NameOut::Refused(NameRule::CodePackage) }",
+    "name": "code-package-unchecked",
+    "replace": "    else if false { NameOut::Refused(NameRule::CodePackage) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_name_rules_refuse_before_default"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs": "6a9361be17d0fec7cd1b28251e0769500787e020903e9c14a5309eaa63749e8b",
+    ".g5/Verus_verification/models/install_lifecycle/model.json": "90f015225dfeda8dda8c1b9c700a50ed8161d965cea69bba5c44d44016c12058"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/code-package-unchecked/20261117T070804Z/models/install_lifecycle/install_lifecycle.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_name_rules_refuse_before_default": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/20261117T070804Z-control-code-package-unchecked-theorem_name_rules_refuse_before_default.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/20261117T070804Z-control-code-package-unchecked.log",
+    "timed_out": false,
+    "verified": 31
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/install_lifecycle/20261117T070805Z-control-code-package-unchecked/logs/20261117T070804Z-control-code-package-unchecked-theorem_name_rules_refuse_before_default.log": "cea53fb2af81f18875cb7160056cfa8077e1015cfe441fe1fef4beb3ed3a5bec",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T070805Z-control-code-package-unchecked/logs/20261117T070804Z-control-code-package-unchecked.log": "35d14e0da2357005a8355baa8b40394198e30829eb7b0f1e757c404f02ce1111"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

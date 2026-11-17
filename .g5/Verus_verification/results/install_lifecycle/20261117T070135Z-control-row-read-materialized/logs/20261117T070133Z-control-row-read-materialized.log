@@ -1,0 +1,43 @@
+verification results:: 29 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/row-read-materialized/20261117T070133Z/models/install_lifecycle/install_lifecycle.rs:333:13
+    |
+331 | / pub proof fn theorem_placed_only_when_every_check_passes(row: bool, row_read_ok: bool, route: Option<Route>, row_dim: Option<nat>...
+332 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+333 |       ensures place(row, row_read_ok, route, row_dim, row_dtype, node_in_graph, insert_ok) == PlaceOut::Placed <==>
+    |  _____________^
+334 | |         (row && row_read_ok && route is Some && route.unwrap().dim is Some
+335 | |          && (if row_dim is Some { row_dim.unwrap() } else { 0nat }) == route.unwrap().dim.unwrap() && row_dtype == route.unwrap()...
+336 | |          && node_in_graph && insert_ok),
+    | |_______________________________________^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/row-read-materialized/20261117T070133Z/models/install_lifecycle/install_lifecycle.rs:345:1
+    |
+345 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dty...
+346 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/row-read-materialized/20261117T070133Z/models/install_lifecycle/install_lifecycle.rs:348:13
+    |
+345 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dty...
+346 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+347 |       requires q > 0,
+348 |       ensures place(true, false, route, row_dim, row_dtype, node_in_graph, insert_ok) == PlaceOut::RowReadFails,
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/row-read-materialized/20261117T070133Z/models/install_lifecycle/install_lifecycle.rs:349:13
+    |
+345 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dtype:...
+346 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+...
+349 |               place_effect(q, r, routes, place(true, false, route, row_dim, row_dtype, node_in_graph, insert_ok)) == (q, r, routes),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

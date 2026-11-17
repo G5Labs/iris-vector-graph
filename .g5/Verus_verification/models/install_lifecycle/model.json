@@ -1,0 +1,192 @@
+{
+  "name": "install_lifecycle",
+  "root": "install_lifecycle.rs",
+  "expected_verified": 32,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "code-package-unchecked",
+      "find": "    else if n.under_code_pkg { NameOut::Refused(NameRule::CodePackage) }",
+      "replace": "    else if false { NameOut::Refused(NameRule::CodePackage) }",
+      "expect_fail_in": [
+        "theorem_name_rules_refuse_before_default"
+      ],
+      "classification": "decision: a name whose package is under IVG's code packages accepted"
+    },
+    {
+      "name": "env-over-arg",
+      "find": "    if arg_given { Src::Arg } else if env_nonempty { Src::Env } else { Src::Default }",
+      "replace": "    if env_nonempty { Src::Env } else if arg_given { Src::Arg } else { Src::Default }",
+      "expect_fail_in": [
+        "theorem_arg_wins"
+      ],
+      "classification": "decision: IVG_SCHEMA_PREFIX preferred to the schema_prefix argument"
+    },
+    {
+      "name": "no-mismatch-check",
+      "find": "        Some(r) => if r == s { Access::Ok } else { Access::Mismatch },",
+      "replace": "        Some(r) => Access::Ok,",
+      "expect_fail_in": [
+        "theorem_other_record_refused"
+      ],
+      "classification": "guard: the first-access check admits an engine for another schema than the record"
+    },
+    {
+      "name": "unrecorded-marker-refused",
+      "find": "        None => if ns.marker.contains(s) { Access::Ok }",
+      "replace": "        None => if false { Access::Ok }",
+      "expect_fail_in": [
+        "theorem_unrecorded_with_marker_admitted"
+      ],
+      "classification": "repair (install.schema.not_ready; bug-plt-133): no record refuses even when this release's marker function is there"
+    },
+    {
+      "name": "traces-before-legacy",
+      "find": "                else if ns.legacy { Access::NotUpgraded }\n                else if ns.traces { Access::Unfinished }",
+      "replace": "                else if ns.traces { Access::Unfinished }\n                else if ns.legacy { Access::NotUpgraded }",
+      "expect_fail_in": [
+        "theorem_unrecorded_reason_order"
+      ],
+      "classification": "decision: an earlier release's objects no longer take precedence over IVG's own traces in the message"
+    },
+    {
+      "name": "dry-run-records",
+      "find": "    match setup(i) { SetupOut::Ran(h) => if h == How::Existing { i.record } else { Some(i.s) }, _ => i.record }",
+      "replace": "    match setup(i) { SetupOut::Ran(h) => if h == How::Existing { i.record } else { Some(i.s) }, SetupOut::Plan(h) => Some(i.s), _ => i.record }",
+      "expect_fail_in": [
+        "theorem_dry_run_and_refusals_keep_record"
+      ],
+      "classification": "effect: the dry run writes the schema record"
+    },
+    {
+      "name": "explicit-refused",
+      "find": "    else if i.explicit { Some(How::Explicit) }",
+      "replace": "    else if false { Some(How::Explicit) }",
+      "expect_fail_in": [
+        "theorem_other_schema_needs_a_name"
+      ],
+      "classification": "repair (spec FR-009, install.schema.existing; bug-plt-026): a schema named explicitly is refused when IVG's tables are in one other schema"
+    },
+    {
+      "name": "clash-unchecked",
+      "find": "    else if i.clash { SetupOut::Clash }",
+      "replace": "    else if false { SetupOut::Clash }",
+      "expect_fail_in": [
+        "theorem_clash_refused_before_anything"
+      ],
+      "classification": "guard: refuse_package_clash removed"
+    },
+    {
+      "name": "skip-on-marker-only",
+      "find": "pub open spec fn unchanged(d: DeployIn) -> bool { d.marker == Some(d.fp) && d.all_compiled }",
+      "replace": "pub open spec fn unchanged(d: DeployIn) -> bool { d.marker == Some(d.fp) }",
+      "expect_fail_in": [
+        "theorem_skip_iff_same_fingerprint_and_all_compiled",
+        "theorem_missing_class_redeploys"
+      ],
+      "classification": "decision: skip on the fingerprint alone (pre-R299), a class gone stays gone"
+    },
+    {
+      "name": "failed-deploy-keeps-marker",
+      "find": "        DeployOut::Deployed => if d.compile_ok { Some(d.fp) } else { None },",
+      "replace": "        DeployOut::Deployed => Some(d.fp),",
+      "expect_fail_in": [
+        "theorem_failed_deploy_retried"
+      ],
+      "classification": "effect: a failed deploy records the fingerprint, so the next setup skips it"
+    },
+    {
+      "name": "populated-altered",
+      "find": "    else if rows != Some(0nat) { ColAction::Manual }",
+      "replace": "    else if false { ColAction::Manual }",
+      "expect_fail_in": [
+        "theorem_populated_never_rewidened"
+      ],
+      "classification": "guard: a populated (or uncounted) column at another width re-declared"
+    },
+    {
+      "name": "rewidth-not-required",
+      "find": "    else if rewidth { ColAction::Alter } else { ColAction::Rewidth }",
+      "replace": "    else { ColAction::Alter }",
+      "expect_fail_in": [
+        "theorem_empty_other_width_needs_rewidth"
+      ],
+      "classification": "decision: an empty column at another width follows the engine without being asked (pre-4.7.0)"
+    },
+    {
+      "name": "adopt-overwrites",
+      "find": "    match rec { Some(r) => r, None => Row",
+      "replace": "    match rec { Some(r) => Row { id: Ident { model: None, mech: None, dim: declared, dtype }, by: SetBy::Adopted }, None => Row",
+      "expect_fail_in": [
+        "theorem_adopt_never_overwrites"
+      ],
+      "classification": "effect: adoption overwrites a recorded identity"
+    },
+    {
+      "name": "width-only-with-models",
+      "find": "    else if r.dim is Some && o.dim is Some && r.dim != o.dim { Conflict::Width }",
+      "replace": "    else if r.model is Some && o.model is Some && r.dim is Some && o.dim is Some && r.dim != o.dim { Conflict::Width }",
+      "expect_fail_in": [
+        "theorem_width_enforced_whatever_the_model"
+      ],
+      "classification": "guard: width compared only when both sides name a model"
+    },
+    {
+      "name": "claim-known-model",
+      "find": "            Some(r) => if r.id.model is None && (r.id.dim is None || r.id.dim == o.dim) {",
+      "replace": "            Some(r) => if (r.id.dim is None || r.id.dim == o.dim) {",
+      "expect_fail_in": [
+        "theorem_claim_only_unknown",
+        "theorem_same_model_kept"
+      ],
+      "classification": "decision: a recorded model is claimed over by another writer"
+    },
+    {
+      "name": "place-skips-node-check",
+      "find": "    else if !node_in_graph { PlaceOut::NoNode }",
+      "replace": "    else if false { PlaceOut::NoNode }",
+      "expect_fail_in": [
+        "theorem_placed_only_when_every_check_passes",
+        "theorem_refused_row_stays"
+      ],
+      "classification": "guard: placement without the node-in-graph check"
+    },
+    {
+      "name": "placement-creates-route",
+      "find": "    if out == PlaceOut::Placed && q > 0 { ((q - 1) as nat, r + 1, routes) } else { (q, r, routes) }",
+      "replace": "    if out == PlaceOut::Placed && q > 0 { ((q - 1) as nat, r + 1, routes + 1) } else { (q, r, routes) }",
+      "expect_fail_in": [
+        "theorem_placement_conserves_and_never_creates_route"
+      ],
+      "classification": "effect: placement creates a route"
+    },
+    {
+      "name": "delete-before-insert",
+      "find": "    if out == PlaceOut::Placed && q > 0 { ((q - 1) as nat, r + 1, routes) } else { (q, r, routes) }",
+      "replace": "    if out == PlaceOut::Placed && q > 0 { ((q - 1) as nat, r + 1, routes) } else if out == PlaceOut::RouteRefused && q > 0 { ((q - 1) as nat, r, routes) } else { (q, r, routes) }",
+      "expect_fail_in": [
+        "theorem_placement_conserves_and_never_creates_route"
+      ],
+      "classification": "effect: the quarantine row deleted before a refused copy (the order place_quarantined avoids)"
+    },
+    {
+      "name": "row-read-materialized",
+      "find": "    else if !row_read_ok { PlaceOut::RowReadFails }",
+      "replace": "    else if false { PlaceOut::RowReadFails }",
+      "expect_fail_in": [
+        "theorem_unreadable_row_never_placed"
+      ],
+      "classification": "repair (bug-srch-116): _quarantined_row materializes its row before closing the cursor"
+    },
+    {
+      "name": "unknown-width-counted",
+      "find": "    else if db is None { ColAction::Alter }",
+      "replace": "    else if db is None && rows == Some(0nat) { ColAction::Alter }",
+      "expect_fail_in": [
+        "theorem_unknown_width_altered_unasked"
+      ],
+      "classification": "repair (bug-plt-015): a column whose width cannot be read is altered only when its table is counted empty"
+    }
+  ]
+}

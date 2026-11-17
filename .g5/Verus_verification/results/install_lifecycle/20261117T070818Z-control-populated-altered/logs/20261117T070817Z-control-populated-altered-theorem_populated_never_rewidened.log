@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/populated-altered/20261117T070817Z/models/install_lifecycle/install_lifecycle.rs:219:1
+    |
+219 | pub proof fn theorem_populated_never_rewidened(db: nat, dim: nat, rows: Option<nat>, rewidth: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/populated-altered/20261117T070817Z/models/install_lifecycle/install_lifecycle.rs:221:13
+    |
+219 | pub proof fn theorem_populated_never_rewidened(db: nat, dim: nat, rows: Option<nat>, rewidth: bool)
+    | --------------------------------------------------------------------------------------------------- at the end of the function body
+220 |     requires db != dim, rows != Some(0nat),
+221 |     ensures col_action(Some(db), dim, rows, rewidth) == ColAction::Manual,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/populated-altered/20261117T070817Z/models/install_lifecycle/install_lifecycle.rs:223:13
+    |
+219 | pub proof fn theorem_populated_never_rewidened(db: nat, dim: nat, rows: Option<nat>, rewidth: bool)
+    | --------------------------------------------------------------------------------------------------- at the end of the function body
+...
+223 |             rewidth ==> width_refused(col_action(Some(db), dim, rows, rewidth), rewidth),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

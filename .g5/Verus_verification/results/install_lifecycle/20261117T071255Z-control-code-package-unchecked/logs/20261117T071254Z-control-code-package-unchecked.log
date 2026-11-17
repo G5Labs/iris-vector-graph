@@ -1,0 +1,27 @@
+verification results:: 31 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/code-package-unchecked/20261117T071254Z/models/install_lifecycle/install_lifecycle.rs:45:1
+   |
+45 | pub proof fn theorem_name_rules_refuse_before_default(n: NameShape)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/code-package-unchecked/20261117T071254Z/models/install_lifecycle/install_lifecycle.rs:49:9
+   |
+45 | pub proof fn theorem_name_rules_refuse_before_default(n: NameShape)
+   | ------------------------------------------------------------------- at the end of the function body
+...
+49 |         (!n.empty && !n.pct && n.pattern_ok && !n.sqluser && !n.is_default && n.under_code_pkg) ==> validate(n) == NameOut::Refused(NameRule::CodePackage),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/code-package-unchecked/20261117T071254Z/models/install_lifecycle/install_lifecycle.rs:50:9
+   |
+45 | pub proof fn theorem_name_rules_refuse_before_default(n: NameShape)
+   | ------------------------------------------------------------------- at the end of the function body
+...
+50 |         validate(n) == NameOut::Accepted <==> (!n.empty && !n.pct && n.pattern_ok && !n.sqluser && !n.is_default && !n.under_code_pkg),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/traces-before-legacy/20261117T070115Z/models/install_lifecycle/install_lifecycle.rs:80:9
+   |
+77 | pub proof fn theorem_unrecorded_reason_order(ns: Ns, s: nat)
+   | ------------------------------------------------------------ at the end of the function body
+...
+80 |         ns.legacy ==> first_access(ns, s) == Access::NotUpgraded,
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

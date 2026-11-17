@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: a recorded model is claimed over by another writer",
+    "expect_fail_in": [
+      "theorem_claim_only_unknown",
+      "theorem_same_model_kept"
+    ],
+    "find": "            Some(r) => if r.id.model is None && (r.id.dim is None || r.id.dim == o.dim) {",
+    "name": "claim-known-model",
+    "replace": "            Some(r) => if (r.id.dim is None || r.id.dim == o.dim) {"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_claim_only_unknown",
+      "theorem_same_model_kept"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs": "726ffdd84cfa18425097d4206fdb955ac062375b9d0d21d0aa012e863c996169",
+    ".g5/Verus_verification/models/install_lifecycle/model.json": "bb461726fa014b5021b84c457db439a578e65b680004cf2cdcdc28f366061134"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/claim-known-model/20261117T071311Z/models/install_lifecycle/install_lifecycle.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_claim_only_unknown": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T071311Z-control-claim-known-model-theorem_claim_only_unknown.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_same_model_kept": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T071311Z-control-claim-known-model-theorem_same_model_kept.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T071311Z-control-claim-known-model.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/install_lifecycle/20261117T071313Z-control-claim-known-model/logs/20261117T071311Z-control-claim-known-model-theorem_claim_only_unknown.log": "ed87188325c7f5cfce5d59c1611ba9dfb82506b31852e0afe2a799ac5e9c8153",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T071313Z-control-claim-known-model/logs/20261117T071311Z-control-claim-known-model-theorem_same_model_kept.log": "82712c6190ff1c51aadf87cd72b44f2d43161ff2845aa7e18fd5191546406534",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T071313Z-control-claim-known-model/logs/20261117T071311Z-control-claim-known-model.log": "6c5fa28d629063e6ed3e16648a89efeb2dec55c8048a21202493c313945e3f61"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

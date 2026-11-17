@@ -1,0 +1,21 @@
+error[E0599]: no method named `get_Wrote_0` found for enum `SetOut` in the current scope
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs:279:45
+    |
+237 | pub enum SetOut { Wrote(Row), Kept(Row), Refused(Conflict), BadArg }
+    | --------------- method `get_Wrote_0` not found for this enum
+...
+279 |             set_identity(Some(r), o, false).get_Wrote_0().by == SetBy::Claimed,
+    |                                             ^^^^^^^^^^^ method not found in `SetOut`
+
+error[E0599]: no method named `get_Wrote_0` found for enum `SetOut` in the current scope
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs:280:45
+    |
+237 | pub enum SetOut { Wrote(Row), Kept(Row), Refused(Conflict), BadArg }
+    | --------------- method `get_Wrote_0` not found for this enum
+...
+280 |             set_identity(Some(r), o, false).get_Wrote_0().id.dim == r.id.dim,
+    |                                             ^^^^^^^^^^^ method not found in `SetOut`
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0599`.

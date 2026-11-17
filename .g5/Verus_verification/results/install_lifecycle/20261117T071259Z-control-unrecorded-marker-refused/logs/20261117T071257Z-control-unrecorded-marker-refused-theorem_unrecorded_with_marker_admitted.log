@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/unrecorded-marker-refused/20261117T071257Z/models/install_lifecycle/install_lifecycle.rs:87:1
+   |
+87 | pub proof fn theorem_unrecorded_with_marker_admitted(ns: Ns, s: nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/unrecorded-marker-refused/20261117T071257Z/models/install_lifecycle/install_lifecycle.rs:89:13
+   |
+87 | pub proof fn theorem_unrecorded_with_marker_admitted(ns: Ns, s: nat)
+   | -------------------------------------------------------------------- at the end of the function body
+88 |     requires ns.record is None, ns.marker.contains(s),
+89 |     ensures first_access(ns, s) == Access::Ok, call_runs(ns, s, false),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/unrecorded-marker-refused/20261117T071257Z/models/install_lifecycle/install_lifecycle.rs:89:48
+   |
+87 | pub proof fn theorem_unrecorded_with_marker_admitted(ns: Ns, s: nat)
+   | -------------------------------------------------------------------- at the end of the function body
+88 |     requires ns.record is None, ns.marker.contains(s),
+89 |     ensures first_access(ns, s) == Access::Ok, call_runs(ns, s, false),
+   |                                                ^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

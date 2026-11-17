@@ -1,0 +1,27 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/unknown-width-counted/20261117T071318Z/models/install_lifecycle/install_lifecycle.rs:238:1
+    |
+238 | pub proof fn theorem_unknown_width_altered_unasked(dim: nat, rows: Option<nat>, rewidth: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/unknown-width-counted/20261117T071318Z/models/install_lifecycle/install_lifecycle.rs:239:13
+    |
+238 | pub proof fn theorem_unknown_width_altered_unasked(dim: nat, rows: Option<nat>, rewidth: bool)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+239 |     ensures col_action(None, dim, rows, rewidth) == ColAction::Alter, !width_refused(col_action(None, dim, rows, rewidth), rewidth),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/unknown-width-counted/20261117T071318Z/models/install_lifecycle/install_lifecycle.rs:239:71
+    |
+238 | pub proof fn theorem_unknown_width_altered_unasked(dim: nat, rows: Option<nat>, rewidth: bool)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+239 |     ensures col_action(None, dim, rows, rewidth) == ColAction::Alter, !width_refused(col_action(None, dim, rows, rewidth), rewidth),
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

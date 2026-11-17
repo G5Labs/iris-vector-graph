@@ -1,0 +1,32 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/row-read-materialized/20261117T070133Z/models/install_lifecycle/install_lifecycle.rs:345:1
+    |
+345 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dty...
+346 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/row-read-materialized/20261117T070133Z/models/install_lifecycle/install_lifecycle.rs:348:13
+    |
+345 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dty...
+346 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+347 |       requires q > 0,
+348 |       ensures place(true, false, route, row_dim, row_dtype, node_in_graph, insert_ok) == PlaceOut::RowReadFails,
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/row-read-materialized/20261117T070133Z/models/install_lifecycle/install_lifecycle.rs:349:13
+    |
+345 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dtype:...
+346 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+...
+349 |               place_effect(q, r, routes, place(true, false, route, row_dim, row_dtype, node_in_graph, insert_ok)) == (q, r, routes),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

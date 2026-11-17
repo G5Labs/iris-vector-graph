@@ -1,0 +1,30 @@
+verification results:: 29 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/explicit-refused/20261117T070811Z/models/install_lifecycle/install_lifecycle.rs:131:13
+    |
+129 | pub proof fn theorem_first_setup_records_engine_schema(i: SetupIn)
+    | ------------------------------------------------------------------ at the end of the function body
+130 |     requires i.record is None, !i.dry, !i.clash, !i.held_other || i.explicit,
+131 |     ensures record_after(i) == Some(i.s),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/explicit-refused/20261117T070811Z/models/install_lifecycle/install_lifecycle.rs:138:13
+    |
+135 | pub proof fn theorem_other_schema_needs_a_name(i: SetupIn)
+    | ---------------------------------------------------------- at the end of the function body
+...
+138 |             (i.explicit && !i.dry) ==> setup(i) == SetupOut::Ran(How::Explicit) && record_after(i) == Some(i.s),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/explicit-refused/20261117T070811Z/models/install_lifecycle/install_lifecycle.rs:147:13
+    |
+145 | pub proof fn theorem_setup_then_access(i: SetupIn, ns: Ns)
+    | ---------------------------------------------------------- at the end of the function body
+146 |     requires ns.record == i.record, i.record is None, !i.dry, !i.clash, !i.held_other || i.explicit,
+147 |     ensures first_access(Ns { record: record_after(i), ..ns }, i.s) == Access::Ok,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

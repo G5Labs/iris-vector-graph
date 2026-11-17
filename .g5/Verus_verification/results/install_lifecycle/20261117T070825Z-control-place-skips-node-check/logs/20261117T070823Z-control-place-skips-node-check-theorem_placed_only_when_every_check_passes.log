@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/place-skips-node-check/20261117T070823Z/models/install_lifecycle/install_lifecycle.rs:341:13
+    |
+339 | / pub proof fn theorem_placed_only_when_every_check_passes(row: bool, row_read_ok: bool, route: Option<Route>, row_dim: Option<nat>...
+340 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+341 |       ensures place(row, row_read_ok, route, row_dim, row_dtype, node_in_graph, insert_ok) == PlaceOut::Placed <==>
+    |  _____________^
+342 | |         (row && row_read_ok && route is Some && route.unwrap().dim is Some
+343 | |          && (if row_dim is Some { row_dim.unwrap() } else { 0nat }) == route.unwrap().dim.unwrap() && row_dtype == route.unwrap()...
+344 | |          && node_in_graph && insert_ok),
+    | |_______________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

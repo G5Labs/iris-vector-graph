@@ -28,3 +28,38 @@ history that changes, the reader, and the expected difference. Fixture: fresh na
 | F2 | place quarantined: route already holds node | route already has a vector for that node | `place_quarantined` | route refuses the copy; vector stays in quarantine | — | search.quarantine.placement |
 
 Committed alone, before the deciding source was opened.
+
+---
+
+## Result (written after the freeze commit `4f1c5d25`; not part of the freeze)
+
+Observations: binding receipt
+[20261117T071614Z](../../../Verus_verification/results/install_lifecycle/20261117T071614Z-binding/receipt.json)
+(AGREES 138 against the model; the raw observations are in the receipt), first probe runs
+[observed-20261117T065715Z.json](install/observed-20261117T065715Z.json) and
+[observed-20261117T065950Z.json](install/observed-20261117T065950Z.json), and the case probe
+[case-observed-20261117T070557Z.json](install/case-observed-20261117T070557Z.json). Fresh namespaces I56SA-I56SD.
+
+| # | A | B (neighbor) | Verdict | What was observed |
+|---|---|---|---|---|
+| A1 | held | held | **held** | fresh: `new`, 18 tables, record `Graph_KG`; re-run: `existing`, no table, nothing compiled, record unchanged |
+| A2 | held | held | **held** | `I56ALT` engine: first call, setup, dry run and `deploy_packaged_classes` all refused naming both; `status()` answers `Graph_KG`; the recorded name in lower case is accepted |
+| A3 | partly | held | **partial (miss)** | no name: refused naming `I56X`, nothing recorded (held); named `I56Y` (argument or environment): the dry run plans `explicit` and setup records `I56Y`, then `I56X`'s engine is refused (missed: the owner/FR-009 reading; bug-plt-026 reproduced) |
+| A4 | held | held | **held** | dry run: no record, no table, no fingerprint, engine still refused; reply 18 tables, 58 routines, `new`; the real run created those 18 |
+| A5 | missed | held | **miss** | record removed after a complete setup: the next engine is **admitted** (this release's marker function is there; KNOWN_ISSUES; bug-plt-133); next setup `inferred` and the record back (held). With the marker function also dropped the engine is refused "setup has not finished" |
+| A6 | held | held | **held** | `1abc`, `SQLUser`, `sqluser`, `%X`, `""`, `a-b`, `Graph_KG_x`, `IVG_A`, `IVGC` → `ValueError`; `I56_OK` accepted; `graph_kg`/`GRAPH_KG` → `Graph_KG`; argument over environment; `IRIS_SCHEMA_PREFIX` ignored. Not frozen: a setup by the other-case engine misbehaves (bug-plt-015) |
+| B1 | held | held | **held** | empty namespace "never been set up"; an earlier-release class "set up by an earlier IVG release"; (also) only an IVG global "setup has not finished" |
+| B2 | held | held | **held** | `status().schema` None on a refused namespace; the ordinary call raises |
+| C1 | held | not run | **held (A only)** | re-run: `objectscript_compiled` empty, `plan_packaged_classes(...).unchanged` True; `IVG_FORCE_CLASS_DEPLOY=1` not tried |
+| C2 | held | held | **held** | fingerprint altered: plan not unchanged, setup compiles every class and writes the fingerprint back; `IVG.Percentile` deleted: plan not unchanged, setup recompiles, class back |
+| D1 | held | held | **held** | width 8 → engine 16, tables empty: setup raises `EmbeddingIdentityConflict`, column stays 8; `rewidth=True` re-declares all three at 16, registry 16 (`adopted` kept) |
+| D2 | missed | held | **partial (miss)** | a populated table at 16 beside empty ones: plain setup at 8 **raises** (the empty ones need rewidth), no `needs_manual_migration` reply (bug-plt-134); `rewidth=True` raises (held); dry run lists the populated table under `needs_manual_migration` (held) |
+| D3 | held | held | **held** | 8-wide write to a 16-wide table refused (dimension mismatch); 16-wide written |
+| E1 | held | held | **held** | setup adopts (width from the column, model unknown, `adopted`); a declared model claims it (`claimed`); the same key in other case/spaces is kept; another model refused; `force=True` → `forced`; a deleted legacy edge row re-adopted as an edge route; a second adoption changes nothing |
+| F1 | missed | held (row stays) | **miss** | every placement of an existing row fails "Cursor closed" (bug-srch-116); the row stays. With the row read repaired (harness substitution): placed (−1/+1) and every documented refusal, row kept |
+| F2 | not reached | — | **held under the repair only** | the second vector for the node is refused by the route's key (SQLCODE -119); the row stays |
+
+Totals: 16 frozen workflows, 32 predictions; 10 workflows held in full, 1 held in A only (C1, B not run), 2 partial,
+2 missed, 1 held only under the repair. Material predictions gained: the record decision with an explicit name, the
+admission of an unrecorded namespace with this release's objects, the width refusal across sibling tables, the
+case-variant width bypass, and that placement is unusable over the DB-API driver. Withdrawn: none.

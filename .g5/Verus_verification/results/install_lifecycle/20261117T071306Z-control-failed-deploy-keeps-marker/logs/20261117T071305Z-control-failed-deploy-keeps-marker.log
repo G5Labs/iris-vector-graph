@@ -1,0 +1,12 @@
+verification results:: 31 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/failed-deploy-keeps-marker/20261117T071305Z/models/install_lifecycle/install_lifecycle.rs:190:13
+    |
+188 | pub proof fn theorem_failed_deploy_retried(d: DeployIn)
+    | ------------------------------------------------------- at the end of the function body
+189 |     requires deploy(d) == DeployOut::Deployed, !d.compile_ok,
+190 |     ensures ({ let n = DeployIn { marker: marker_after(d), force: false, ..d }; deploy(n) != DeployOut::Unchanged }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

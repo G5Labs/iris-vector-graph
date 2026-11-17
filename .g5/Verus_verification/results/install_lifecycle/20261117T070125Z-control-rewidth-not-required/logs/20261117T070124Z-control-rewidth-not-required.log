@@ -1,0 +1,12 @@
+verification results:: 30 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/rewidth-not-required/20261117T070124Z/models/install_lifecycle/install_lifecycle.rs:227:13
+    |
+225 | pub proof fn theorem_empty_other_width_needs_rewidth(db: nat, dim: nat)
+    | ----------------------------------------------------------------------- at the end of the function body
+226 |     requires db != dim,
+227 |     ensures width_refused(col_action(Some(db), dim, Some(0nat), false), false),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

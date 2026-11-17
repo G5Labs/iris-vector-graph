@@ -1,0 +1,12 @@
+verification results:: 31 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/rewidth-not-required/20261117T071308Z/models/install_lifecycle/install_lifecycle.rs:229:13
+    |
+227 | pub proof fn theorem_empty_other_width_needs_rewidth(db: nat, dim: nat)
+    | ----------------------------------------------------------------------- at the end of the function body
+228 |     requires db != dim,
+229 |     ensures width_refused(col_action(Some(db), dim, Some(0nat), false), false),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

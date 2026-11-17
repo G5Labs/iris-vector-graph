@@ -41,6 +41,7 @@ The engine's IVG Schema is the `schema_prefix` argument, else the `IVG_SCHEMA_PR
 - Setup refuses a name whose class package already holds classes IVG did not create, before any DDL.
 - An invalid name raises an error naming the rule before any database call.
 - Names that differ only in letter case are the same schema.
+- Today an engine that names the recorded schema in another letter case is accepted, but its setup loads the schema classes under its own spelling, which fail to compile, and re-declares the empty vector columns at its own width without being asked, while the registry keeps the old width ([bug-plt-015](../../Verus_verification/bugs_issues.md#bug-plt-015)).
 
 
 <a id="install.schema.record"></a>
@@ -70,6 +71,8 @@ An engine on a namespace with no schema record, or without the current release's
 - never set up for IVG;
 - a setup that stopped before finishing.
 
+- Today a namespace with no record whose IVG Schema already holds this release's SQL objects (a setup that stopped after creating them, or a record removed by hand) admits every engine for that schema, and a namespace with a record is not checked for its objects ([bug-plt-133](../../Verus_verification/bugs_issues.md#bug-plt-133)).
+
 
 <a id="install.schema.existing"></a>
 [I · install.schema.existing]
@@ -81,6 +84,7 @@ Setup on a namespace without a record decides what to record from where IVG's ta
 - Tables in one other schema only: refuse, name that schema, and record nothing, even when the engine's schema was named explicitly.
 - Tables in several schemas and no name given: refuse, list each schema with its row counts, and record nothing.
 - Tables in several schemas and a name given: record the named schema and report the others, untouched.
+- Today a name given also records the named schema when the tables are in one other schema only, and that schema's engine is refused from then on ([bug-plt-026](../../Verus_verification/bugs_issues.md#bug-plt-026)). ADMIN_GUIDE and the setup error's own advice describe this path, so the docs disagree with spec FR-009.
 
 
 <a id="install.schema.concurrency"></a>
@@ -214,6 +218,9 @@ A dry run of setup writes nothing: no DDL, row, global or grant. It reports what
 
 If setup stops partway, the next setup finishes the job and ends in the same state as one uninterrupted run. Setup writes the schema record as its last step, so a namespace with IVG objects and no record is an unfinished setup, and status says so.
 
+- The next setup records the schema as `inferred` when IVG's tables are in the engine's schema alone.
+- Today engines are not refused meanwhile once the unfinished setup created this release's SQL objects ([install.schema.not_ready](#install.schema.not_ready)).
+
 
 ## Deploying classes and IRIS editions
 
@@ -226,7 +233,7 @@ Setup compiles only the classes the server can run, and reports each skipped cla
 - A class with Python methods needs embedded Python.
 - A class that names `%AI` classes needs them installed.
 - A class that depends on a skipped class is skipped too.
-- A deploy is skipped only when the same sources were deployed cleanly and every class is compiled, so the next setup redoes a failed deploy.
+- A deploy is skipped only when the same sources were deployed cleanly and every class is compiled, so the next setup redoes a failed deploy. A changed fingerprint (as after a package upgrade) or one class gone makes setup compile every class again.
 - Benchmark classes and the class that runs arbitrary code strings are not shipped.
 - The REST dispatcher and the FHIR sync task ship, and stay inert until a web application or task schedule names them.
 
@@ -554,7 +561,9 @@ Findings: [ADR-0016 still describes the IVG Schema design before it was built](.
 
 US3 is recorded as "Tom's requirement". ADR-0016 states the pattern as `[A-Z][A-Z0-9_]*`; the spec and the code accept mixed case, compared case-insensitively. Suspected divergence: the deploy rewrites class sources with the engine's spelling, not the recorded one (no test covers a lower-case engine on an upper-case record).
 
-Findings: [An engine whose schema name differs only in case from the record loads classes under its own spelling](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-015)
+Iteration 56: the case variant reproduced end to end (fresh namespaces I56SB, I56SD); [install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_name_rules_refuse_before_default`, `theorem_arg_wins`, `theorem_unknown_width_altered_unasked`.
+
+Findings: [An engine whose schema name differs only in case from the record loads classes under its own spelling](../../Verus_verification/bugs_issues.md#bug-plt-015)
 
 ### install.schema.record
 
@@ -576,7 +585,7 @@ Findings: [Two concurrent first setups can both record their IVG Schema, and the
 - data-integrity, security
 - test-coverage
 
-Live coverage: `tests/e2e/test_262_record.py`. The skipped check for a login without `%Native_GlobalAccess` is documented in ADMIN_GUIDE §3. Observed divergence: migrations build their own engine and waive this refusal too ([receipt](../../Verus_verification/receipts/native/platform_schema_waiver.json); see [migration schema](#install.migration.schema)).
+Live coverage: `tests/e2e/test_262_record.py`. The skipped check for a login without `%Native_GlobalAccess` is documented in ADMIN_GUIDE §3. Iteration 56: [install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_other_record_refused` (every public call refused, the exempt calls run; binding `A:alt_*`) and `theorem_deploy_refuses_other_record`. Observed divergence: migrations build their own engine and waive this refusal too ([receipt](../../Verus_verification/receipts/native/platform_schema_waiver.json); see [migration schema](#install.migration.schema)).
 
 Findings: [The migrations' schema-check waiver also releases the refusal of a mismatched schema](../../Verus_verification/bugs_issues.md#bug-plt-007); [The schema check is skipped silently for logins without global access and for non-IRIS connections](../../Verus_verification/bugs_issues.md#bug-plt-022)
 
@@ -590,7 +599,11 @@ Open questions: [Should an engine that cannot read the schema record be refused?
 - user-facing-behavior, operations
 - test-coverage
 
-Live coverage: `tests/e2e/test_262_not_upgraded.py`. Known issue: after a setup that stopped once the current SQL objects existed, the engine is accepted without a record (KNOWN_ISSUES "After an interrupted setup").
+Live coverage: `tests/e2e/test_262_not_upgraded.py`. Known issue: after a setup that stopped once the current SQL objects existed, the engine is accepted without a record (KNOWN_ISSUES "After an interrupted setup"). ADMIN_GUIDE describes the as-built rule ("no record and lacks 4.6.0's SQL objects").
+
+Iteration 56: [install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_unrecorded_reason_order`, `theorem_unrecorded_with_marker_admitted`, `theorem_record_admits_without_objects`; control `unrecorded-marker-refused`; binding cases `A:norecord_marker_call`, `A:record_nomarker_call`, `C:*`.
+
+Findings: [An unrecorded namespace holding this release's SQL objects admits engines](../../Verus_verification/bugs_issues.md#bug-plt-133)
 
 ### install.schema.existing
 
@@ -604,7 +617,9 @@ Live coverage: `tests/e2e/test_262_not_upgraded.py`. Known issue: after a setup 
 
 Observed divergence (code reading, review round 3 R3-reader H3): setup records an explicitly named engine schema even when IVG's tables are in one other schema ([schema.py](../../../iris_vector_graph/_engine/schema.py#L2229-L2242)); FR-009 allows an explicit name only when the tables are in several schemas, and the engine's own comment says the same ([engine.py](../../../iris_vector_graph/engine.py#L294-L297)). The only test uses a default engine.
 
-Findings: [Setup records an explicitly named schema while IVG's tables sit in one other schema](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-plt-026)
+Iteration 56: reproduced end to end in I56SB ([install_lifecycle](../../Verus_verification/models/install_lifecycle/NOTES.md) `theorem_other_schema_needs_a_name`, control `explicit-refused`, binding `B:y_explicit_setup`).
+
+Findings: [Setup records an explicitly named schema while IVG's tables sit in one other schema](../../Verus_verification/bugs_issues.md#bug-plt-026)
 
 ### install.schema.concurrency
 
@@ -770,6 +785,7 @@ State machines: [setup record](../../Verus_verification/models/setup_record/mani
 - Sources: [Spec 262 FR-013, Edge Cases (Read-only and dry runs)](../../../specs/262-ivg-owned-sql-schema/spec.md)
 - Tests (live): whole-namespace before/after snapshots in `tests/e2e/test_262_record.py` and `tests/e2e/test_262_upgrade_451.py`
 - Verus: [setup_record.rs](../../Verus_verification/models/setup_record/setup_record.rs) `theorem_dry_run_writes_nothing` and `theorem_refusal_writes_nothing`; [scope and native lifecycle observations](../../Verus_verification/models/setup_record/NOTES.md)
+- Verus: [install_lifecycle.rs](../../Verus_verification/models/install_lifecycle/install_lifecycle.rs) `theorem_dry_run_and_refusals_keep_record`, `theorem_clash_refused_before_anything`; [scope, premises and bindings](../../Verus_verification/models/install_lifecycle/NOTES.md)
 - Expands: [Setup](#install.setup)
 - agent
 - operations
@@ -783,9 +799,12 @@ State machines: [setup record](../../Verus_verification/models/setup_record/mani
 - Sources: [Spec 262 Edge Cases (An interrupted upgrade)](../../../specs/262-ivg-owned-sql-schema/spec.md); [KNOWN_ISSUES: After an interrupted setup](../../../docs/KNOWN_ISSUES.md)
 - Tests (live): `tests/e2e/test_262_upgrade_451.py::test_an_interrupted_upgrade_resumes_to_the_same_end` covers only an interruption after the functions exist and before the record is written
 - Verus: [setup_record.rs](../../Verus_verification/models/setup_record/setup_record.rs) `theorem_interrupted_setup_resumes`; [scope and native lifecycle observations](../../Verus_verification/models/setup_record/NOTES.md)
+- Verus: [install_lifecycle.rs](../../Verus_verification/models/install_lifecycle/install_lifecycle.rs) `theorem_existing_after_first_run`, `theorem_setup_then_access`, `theorem_unrecorded_with_marker_admitted`; [scope, premises and bindings](../../Verus_verification/models/install_lifecycle/NOTES.md)
 - Expands: [Setup](#install.setup)
 - agent
 - operations, data-integrity
+
+Findings: [An unrecorded namespace holding this release's marker function admits engines](../../Verus_verification/bugs_issues.md#bug-plt-133)
 
 State machines: [setup record](../../Verus_verification/models/setup_record/manifest.json)
 
@@ -793,6 +812,7 @@ State machines: [setup record](../../Verus_verification/models/setup_record/mani
 
 - Sources: [ADMIN_GUIDE: Classes setup skips](../../../docs/ADMIN_GUIDE.md); [Spec 262 Edge Cases (Embedded Python and Community Edition), FR-015, FR-016](../../../specs/262-ivg-owned-sql-schema/spec.md); [class_deploy.py](../../../iris_vector_graph/_engine/class_deploy.py)
 - Tests (live): `tests/e2e/test_262_inventory.py` compares the published inventory, including the skipped table, with a fresh namespace
+- Verus: [install_lifecycle.rs](../../Verus_verification/models/install_lifecycle/install_lifecycle.rs) `theorem_skip_iff_same_fingerprint_and_all_compiled`, `theorem_failed_deploy_retried`, `theorem_clean_deploy_then_skip`, `theorem_missing_class_redeploys`, `theorem_deploy_refuses_other_record`; [scope, premises and bindings](../../Verus_verification/models/install_lifecycle/NOTES.md)
 - Children: [editions](#install.deploy.editions)
 - agent
 - operations

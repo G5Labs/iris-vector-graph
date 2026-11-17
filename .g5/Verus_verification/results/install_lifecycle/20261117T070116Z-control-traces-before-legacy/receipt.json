@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: an earlier release's objects no longer take precedence over IVG's own traces in the message",
+    "expect_fail_in": [
+      "theorem_unrecorded_reason_order"
+    ],
+    "find": "                else if ns.legacy { Access::NotUpgraded }\n                else if ns.traces { Access::Unfinished }",
+    "name": "traces-before-legacy",
+    "replace": "                else if ns.traces { Access::Unfinished }\n                else if ns.legacy { Access::NotUpgraded }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_unrecorded_reason_order"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs": "e52c1631d8776427eff256192c2313e16732f47d3b4a95223aaea02105325940",
+    ".g5/Verus_verification/models/install_lifecycle/model.json": "eb426c2eadba44d3163016b682a1098f99b91c72121f924935a33e67337eaf7e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/traces-before-legacy/20261117T070115Z/models/install_lifecycle/install_lifecycle.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_unrecorded_reason_order": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/20261117T070115Z-control-traces-before-legacy-theorem_unrecorded_reason_order.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/20261117T070115Z-control-traces-before-legacy.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/install_lifecycle/20261117T070116Z-control-traces-before-legacy/logs/20261117T070115Z-control-traces-before-legacy-theorem_unrecorded_reason_order.log": "60fb7b17a8c874e7099fafca0c8b8096b6992b0fe169a607bf11537edd7867b4",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T070116Z-control-traces-before-legacy/logs/20261117T070115Z-control-traces-before-legacy.log": "747d574a99eae1d25bd7009d831472ec1ea8110ab374e7d47db1c52b15699d03"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,21 @@
+verification results:: 30 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/skip-on-marker-only/20261117T070814Z/models/install_lifecycle/install_lifecycle.rs:183:13
+    |
+181 | pub proof fn theorem_skip_iff_same_fingerprint_and_all_compiled(d: DeployIn)
+    | ---------------------------------------------------------------------------- at the end of the function body
+182 |     requires !d.force,
+183 |     ensures (deploy(d) == DeployOut::Unchanged) <==> (d.marker == Some(d.fp) && d.all_compiled),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/skip-on-marker-only/20261117T070814Z/models/install_lifecycle/install_lifecycle.rs:196:13
+    |
+194 | pub proof fn theorem_missing_class_redeploys(d: DeployIn)
+    | --------------------------------------------------------- at the end of the function body
+195 |     requires !d.all_compiled, !d.taken,
+196 |     ensures deploy(d) == DeployOut::Deployed,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

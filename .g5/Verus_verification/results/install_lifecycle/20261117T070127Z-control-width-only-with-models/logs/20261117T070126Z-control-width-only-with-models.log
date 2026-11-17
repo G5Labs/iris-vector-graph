@@ -1,0 +1,27 @@
+verification results:: 30 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/width-only-with-models/20261117T070126Z/models/install_lifecycle/install_lifecycle.rs:278:1
+    |
+278 | pub proof fn theorem_width_enforced_whatever_the_model(r: Row, o: Ident)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/width-only-with-models/20261117T070126Z/models/install_lifecycle/install_lifecycle.rs:281:13
+    |
+278 | pub proof fn theorem_width_enforced_whatever_the_model(r: Row, o: Ident)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+281 |     ensures !enforce_ok(Some(r), o), conflicts(r.id, o) == Conflict::Width,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/install_lifecycle/controls/width-only-with-models/20261117T070126Z/models/install_lifecycle/install_lifecycle.rs:281:38
+    |
+278 | pub proof fn theorem_width_enforced_whatever_the_model(r: Row, o: Ident)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+281 |     ensures !enforce_ok(Some(r), o), conflicts(r.id, o) == Conflict::Width,
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+
