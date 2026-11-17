@@ -1,0 +1,19 @@
+verification results:: 30 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/put-always-interns/20261117T041928Z/models/operator_reports/operator_reports.rs:343:13
+    |
+341 |   pub proof fn theorem_fresh_namespace_edges_skip_nkg(e: Edge, eng: Eng)
+    |   ---------------------------------------------------------------------- at the end of the function body
+342 |       requires !eng.dirty,
+343 |       ensures ({
+    |  _____________^
+344 | |         let ns = create_edge(fresh_setup(), e);
+345 | |         let s = status(ns, eng);
+346 | |         &&& ready_for_bfs(s) && ready_for_multihop_bfs(s)
+347 | |         &&& !s.nkg_populated && sync_line(s) == SyncLine::InSync
+348 | |         &&& !verify(ns, eng).in_sync
+349 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

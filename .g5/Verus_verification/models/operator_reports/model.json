@@ -1,0 +1,156 @@
+{
+  "name": "operator_reports",
+  "root": "operator_reports.rs",
+  "expected_verified": 31,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "registry-keeps-case",
+      "find": "pub open spec fn registry_text(name: Seq<int>) -> Seq<int> { Seq::new(name.len(), |i: int| up(name[i])) }",
+      "replace": "pub open spec fn registry_text(name: Seq<int>) -> Seq<int> { name }",
+      "expect_fail_in": [
+        "lemma_upper_never_route"
+      ],
+      "classification": "provider: the registry read answers the stored (lower-case) name, as SQLite or an EXACT collation would (the bug-plt-115 repair direction: compare case-insensitively)"
+    },
+    {
+      "name": "verify-counts-distinct-rows",
+      "find": "let sql_exceeds = ns.rows.len() > ns.nkg_count;",
+      "replace": "let sql_exceeds = ndistinct(ns.rows) > ns.nkg_count;",
+      "expect_fail_in": [
+        "theorem_shared_triple_never_in_sync",
+        "theorem_heal_claims_in_sync_then_drift"
+      ],
+      "classification": "decision: verify_sync compares ^NKG with the distinct (s,p,o) rows (the bug-plt-116 repair direction)"
+    },
+    {
+      "name": "nkg-per-graph",
+      "find": "nkg_count: ndistinct(ns.rows) as int, ..ns }",
+      "replace": "nkg_count: ns.rows.len() as int, ..ns }",
+      "expect_fail_in": [
+        "theorem_shared_triple_never_in_sync",
+        "theorem_heal_claims_in_sync_then_drift"
+      ],
+      "classification": "effect: BuildNKG counts one edge per row (a graph dimension in ^NKG)"
+    },
+    {
+      "name": "heal-rereads",
+      "find": "else { (SyncReport { in_sync: true, healed: true, ..r }, sync_ns(ns), sync_eng(ns, eng)) }",
+      "replace": "else { (SyncReport { healed: true, ..verify(sync_ns(ns), sync_eng(ns, eng)) }, sync_ns(ns), sync_eng(ns, eng)) }",
+      "expect_fail_in": [
+        "theorem_heal_claims_in_sync_then_drift"
+      ],
+      "classification": "effect: heal=True reports what a check after the sync reads, not a stamped in_sync"
+    },
+    {
+      "name": "status-pending-reads-nkg",
+      "find": "bfs_path: if kgp { Path::ObjectScript } else { Path::None }, pending: eng.dirty,",
+      "replace": "bfs_path: if kgp { Path::ObjectScript } else { Path::None }, pending: eng.dirty || (kgp && !ns.nkg_dict),",
+      "expect_fail_in": [
+        "theorem_fresh_namespace_edges_skip_nkg",
+        "theorem_delete_status_vs_verify"
+      ],
+      "classification": "decision: the report's sync line also says 'needs sync' when edges exist and ^NKG is not built"
+    },
+    {
+      "name": "setup-inits-skeleton",
+      "find": "setup(Ns { rows: Seq::empty(), node_graphs: Seq::empty(), nkg_skeleton: false,",
+      "replace": "setup(Ns { rows: Seq::empty(), node_graphs: Seq::empty(), nkg_skeleton: true,",
+      "expect_fail_in": [
+        "theorem_fresh_namespace_edges_skip_nkg"
+      ],
+      "classification": "effect: setup of an empty namespace creates the ^NKG skeleton, so the first edges are interned"
+    },
+    {
+      "name": "put-always-interns",
+      "find": "    if ns.nkg_skeleton {\n        if (ns.nkg_triples)",
+      "replace": "    if true {\n        if (ns.nkg_triples)",
+      "expect_fail_in": [
+        "theorem_fresh_namespace_edges_skip_nkg"
+      ],
+      "classification": "guard: remove Adjacency.Put's $Data(^NKG(\"$meta\",\"nodeCount\")) guard"
+    },
+    {
+      "name": "multihop-needs-nkg",
+      "find": "pub open spec fn ready_for_multihop_bfs(s: Status) -> bool { ready_for_bfs(s) && s.bfs_path != Path::None }",
+      "replace": "pub open spec fn ready_for_multihop_bfs(s: Status) -> bool { ready_for_bfs(s) && s.nkg_populated }",
+      "expect_fail_in": [
+        "theorem_fresh_namespace_edges_skip_nkg"
+      ],
+      "classification": "decision: multi-hop readiness requires ^NKG (the ADMIN_GUIDE 'algorithms need it' reading)"
+    },
+    {
+      "name": "sync-sets-markers",
+      "find": "Ns { nkg_skeleton: true, nkg_dict: ns.rows.len() > 0, nkg_triples: triples_of(ns.rows),",
+      "replace": "Ns { marker_kg: true, marker_nkg: true, nkg_skeleton: true, nkg_dict: ns.rows.len() > 0, nkg_triples: triples_of(ns.rows),",
+      "expect_fail_in": [
+        "lemma_markers_kept"
+      ],
+      "classification": "effect: sync() records the kg_built/nkg_built markers (the bug-plt-117 repair direction)"
+    },
+    {
+      "name": "setup-marks-empty",
+      "find": "if ns.rows.len() > 0 && !ns.marker_kg {",
+      "replace": "if !ns.marker_kg {",
+      "expect_fail_in": [
+        "theorem_markers_never_set_after_empty_setup"
+      ],
+      "classification": "guard: bootstrap_kg_global sets the markers with no rows to build from"
+    },
+    {
+      "name": "engine-cache-unchanged",
+      "find": "Eng { dirty: false, caps: Some(Caps { kg_built: true, ..c }) }",
+      "replace": "Eng { dirty: false, caps: Some(c) }",
+      "expect_fail_in": [
+        "theorem_markers_never_set_after_empty_setup"
+      ],
+      "classification": "effect: _sync_kg does not set the calling engine's capabilities.kg_built"
+    },
+    {
+      "name": "bulk-leaves-flag",
+      "find": "pub open spec fn bulk_eng(eng: Eng) -> Eng { Eng { dirty: true, ..eng } }",
+      "replace": "pub open spec fn bulk_eng(eng: Eng) -> Eng { eng }",
+      "expect_fail_in": [
+        "theorem_bulk_pending_is_engine_local"
+      ],
+      "classification": "effect: bulk_load_session in a caller transaction leaves _nkg_dirty alone"
+    },
+    {
+      "name": "delete-keeps-nkg",
+      "find": "Ns { rows: keep, nkg_skeleton: false, nkg_dict: false, nkg_triples: |t: (int, int, int)| false, nkg_count: 0, ..ns }",
+      "replace": "Ns { rows: keep, ..ns }",
+      "expect_fail_in": [
+        "theorem_delete_status_vs_verify"
+      ],
+      "classification": "effect: the Eraser leaves ^NKG in place"
+    },
+    {
+      "name": "drop-keeps-index",
+      "find": "pub open spec fn bm25_drop(ns: Ns, name: int) -> Ns { Ns { bm25: ns.bm25.remove(name), ..ns } }",
+      "replace": "pub open spec fn bm25_drop(ns: Ns, name: int) -> Ns { ns }",
+      "expect_fail_in": [
+        "theorem_full_text_follows_index"
+      ],
+      "classification": "effect: bm25_drop leaves the name in BM25Index.List"
+    },
+    {
+      "name": "stats-every-graph",
+      "find": "pub open spec fn stats_nodes(ns: Ns) -> nat { count_in(ns.node_graphs, 0) }",
+      "replace": "pub open spec fn stats_nodes(ns: Ns) -> nat { ns.node_graphs.len() }",
+      "expect_fail_in": [
+        "theorem_stats_default_vs_server_every_graph"
+      ],
+      "classification": "decision: /stats counts every graph (the pre-4.6.0 R249 behavior)"
+    },
+    {
+      "name": "viz-none-distinct",
+      "find": "        None => 0,",
+      "replace": "        None => -1,",
+      "expect_fail_in": [
+        "theorem_unlabeled_endpoint_is_first_label"
+      ],
+      "classification": "decision: an unlabeled endpoint gets an id no label has (the bug-plt-118 repair direction)"
+    }
+  ]
+}

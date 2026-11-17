@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/setup-marks-empty/20261117T041933Z/models/operator_reports/operator_reports.rs:475:13
+    |
+473 |   pub proof fn theorem_markers_never_set_after_empty_setup(acts: Seq<Act>, eng: Eng)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+474 |       requires eng.caps.is_none(),
+475 |       ensures ({
+    |  _____________^
+476 | |         let ns = run(fresh_setup(), acts);
+477 | |         &&& !detect(ns).kg_built && !detect(ns).nkg_built
+478 | |         &&& caps_of(ns, sync_eng(ns, eng)).kg_built
+479 | |         &&& !caps_of(ns, sync_eng(ns, eng)).nkg_built
+480 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

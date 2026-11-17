@@ -1,0 +1,12 @@
+verification results:: 30 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/stats-every-graph/20261117T041940Z/models/operator_reports/operator_reports.rs:512:13
+    |
+510 | pub proof fn theorem_stats_default_vs_server_every_graph(ns: Ns, eng: Eng, k: int)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+511 |     requires 0 <= k < ns.node_graphs.len(), ns.node_graphs[k] != 0,
+512 |     ensures stats_nodes(ns) < server(status(ns, eng)).nodes,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

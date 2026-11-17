@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: verify_sync compares ^NKG with the distinct (s,p,o) rows (the bug-plt-116 repair direction)",
+    "expect_fail_in": [
+      "theorem_shared_triple_never_in_sync",
+      "theorem_heal_claims_in_sync_then_drift"
+    ],
+    "find": "let sql_exceeds = ns.rows.len() > ns.nkg_count;",
+    "name": "verify-counts-distinct-rows",
+    "replace": "let sql_exceeds = ndistinct(ns.rows) > ns.nkg_count;"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_shared_triple_never_in_sync",
+      "theorem_heal_claims_in_sync_then_drift"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "92415a7f0869473988cf1f01769427e19dbd1810a2ac9ea0986141f3d641350d",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "be2b98975c6e7d1680b377d338d21b00e63e42d5a2fab4238e130aaf5d0e3bcb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/verify-counts-distinct-rows/20261117T041919Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_heal_claims_in_sync_then_drift": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T041919Z-control-verify-counts-distinct-rows-theorem_heal_claims_in_sync_then_drift.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_shared_triple_never_in_sync": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T041919Z-control-verify-counts-distinct-rows-theorem_shared_triple_never_in_sync.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T041919Z-control-verify-counts-distinct-rows.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T041921Z-control-verify-counts-distinct-rows/logs/20261117T041919Z-control-verify-counts-distinct-rows-theorem_heal_claims_in_sync_then_drift.log": "3f4169dc39e755c16d389b6f30dd68545856beb7250287f4d9c3aae3d372116d",
+    ".g5/Verus_verification/results/operator_reports/20261117T041921Z-control-verify-counts-distinct-rows/logs/20261117T041919Z-control-verify-counts-distinct-rows-theorem_shared_triple_never_in_sync.log": "a21a49d0f3e62b90e7c38f5f53ca9f20596091ac0afbb2f1d6a85e645e305e61",
+    ".g5/Verus_verification/results/operator_reports/20261117T041921Z-control-verify-counts-distinct-rows/logs/20261117T041919Z-control-verify-counts-distinct-rows.log": "3abc549e82bbd9f1d2d20ff09e703d6a0e5042ac14c58a64b999b090f24cf3d5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

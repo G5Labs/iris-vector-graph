@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: /stats counts every graph (the pre-4.6.0 R249 behavior)",
+    "expect_fail_in": [
+      "theorem_stats_default_vs_server_every_graph"
+    ],
+    "find": "pub open spec fn stats_nodes(ns: Ns) -> nat { count_in(ns.node_graphs, 0) }",
+    "name": "stats-every-graph",
+    "replace": "pub open spec fn stats_nodes(ns: Ns) -> nat { ns.node_graphs.len() }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_stats_default_vs_server_every_graph"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "92415a7f0869473988cf1f01769427e19dbd1810a2ac9ea0986141f3d641350d",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "be2b98975c6e7d1680b377d338d21b00e63e42d5a2fab4238e130aaf5d0e3bcb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/stats-every-graph/20261117T041940Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_stats_default_vs_server_every_graph": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T041940Z-control-stats-every-graph-theorem_stats_default_vs_server_every_graph.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T041940Z-control-stats-every-graph.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T041941Z-control-stats-every-graph/logs/20261117T041940Z-control-stats-every-graph-theorem_stats_default_vs_server_every_graph.log": "ecd6c548c393093268e4e0d1e37325ba158ed469e8db19b308004d58a11f978e",
+    ".g5/Verus_verification/results/operator_reports/20261117T041941Z-control-stats-every-graph/logs/20261117T041940Z-control-stats-every-graph.log": "f515ff74766e85e126cdb4e60278f3319b88cd6914858d0e8061da8c949f7c53"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
