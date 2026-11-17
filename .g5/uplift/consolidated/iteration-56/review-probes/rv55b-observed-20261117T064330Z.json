@@ -1,0 +1,265 @@
+{
+ "run": "20261117T064330Z",
+ "tag": "064330",
+ "prefix": "rv55b_064330_",
+ "cyp136_group": {
+  "q": "MATCH (n:RV55BG064330) RETURN n.k AS k, count(*) AS c",
+  "sql": {
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ],
+     [
+      "int",
+      3
+     ]
+    ],
+    [
+     [
+      "bool",
+      true
+     ],
+     [
+      "int",
+      2
+     ]
+    ]
+   ]
+  },
+  "native_engine": {
+   "rows": [
+    [
+     [
+      "str",
+      "1"
+     ],
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "int",
+      1
+     ],
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "float",
+      1.0
+     ],
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "bool",
+      true
+     ],
+     [
+      "int",
+      2
+     ]
+    ]
+   ]
+  },
+  "_try_native": {
+   "exc": "AttributeError: 'tuple' object has no attribute 'rows'"
+  }
+ },
+ "len_null_fixed": {
+  "q": "MATCH (a:RV55BA064330 {name: 'a3'}) OPTIONAL MATCH p = (a)-[:RV55BK064330]->(b) RETURN length(p) AS l, p IS NULL AS isnull",
+  "sql": {
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ],
+     [
+      "bool",
+      true
+     ]
+    ]
+   ]
+  },
+  "native_engine": {
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ],
+     [
+      "bool",
+      true
+     ]
+    ]
+   ]
+  },
+  "_try_native": "declined"
+ },
+ "len_nonnull_fixed": {
+  "q": "MATCH (a:RV55BA064330 {name: 'a1'}) OPTIONAL MATCH p = (a)-[:RV55BK064330]->(b) RETURN length(p) AS l",
+  "sql": {
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  },
+  "native_engine": {
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  },
+  "_try_native": "declined"
+ },
+ "len_null_var": {
+  "q": "MATCH (a:RV55BA064330 {name: 'a3'}) OPTIONAL MATCH p = (a)-[:RV55BK064330*1..2]->(b) RETURN length(p) AS l",
+  "sql": {
+   "rows": [
+    [
+     [
+      "NoneType",
+      null
+     ]
+    ]
+   ]
+  },
+  "native_engine": {
+   "rows": [
+    [
+     [
+      "NoneType",
+      null
+     ]
+    ]
+   ]
+  },
+  "_try_native": "declined"
+ },
+ "len_null_all": {
+  "q": "MATCH (a:RV55BA064330) OPTIONAL MATCH p = (a)-[:RV55BK064330]->(b) RETURN a.name AS a, length(p) AS l ORDER BY a",
+  "sql": {
+   "rows": [
+    [
+     [
+      "str",
+      "a1"
+     ],
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "str",
+      "a2"
+     ],
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "str",
+      "a3"
+     ],
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  },
+  "native_engine": {
+   "rows": [
+    [
+     [
+      "str",
+      "a1"
+     ],
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "str",
+      "a2"
+     ],
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "str",
+      "a3"
+     ],
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  },
+  "_try_native": "declined"
+ },
+ "len_literal_null": {
+  "q": "RETURN length(null) AS l",
+  "sql": {
+   "rows": [
+    [
+     [
+      "NoneType",
+      null
+     ]
+    ]
+   ]
+  },
+  "native_engine": {
+   "rows": [
+    [
+     [
+      "NoneType",
+      null
+     ]
+    ]
+   ]
+  },
+  "_try_native": "declined"
+ },
+ "bolt_tx": {
+  "tx_fail_error": "CypherSyntaxError",
+  "execute_write_abort": "RuntimeError",
+  "persisted_tx_rb": 1,
+  "get_node_tx_rb": true,
+  "persisted_tx_fail": 1,
+  "get_node_tx_fail": true,
+  "persisted_tx_fn": 1,
+  "get_node_tx_fn": true
+ }
+}

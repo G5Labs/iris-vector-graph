@@ -1,0 +1,562 @@
+{
+ "run": "20261117T064229Z",
+ "tag": "064229",
+ "prefix": "rv55_064229_",
+ "cyp135_group": {
+  "q": "MATCH (n:RV55G064229) RETURN n.k AS k, count(*) AS c ORDER BY c DESC",
+  "params": {},
+  "sql": {
+   "columns": [
+    "k",
+    "c"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ],
+     [
+      "int",
+      3
+     ]
+    ],
+    [
+     [
+      "float",
+      1.5
+     ],
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "cyp135_distinct": {
+  "q": "MATCH (n:RV55G064229) RETURN DISTINCT n.k AS k",
+  "params": {},
+  "sql": {
+   "columns": [
+    "k"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "str",
+      "1"
+     ]
+    ],
+    [
+     [
+      "float",
+      1.5
+     ]
+    ]
+   ]
+  }
+ },
+ "cyp135_countdistinct": {
+  "q": "MATCH (n:RV55G064229) RETURN count(DISTINCT n.k) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "c"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      2
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "int_float_group": {
+  "q": "MATCH (n:RV55S064229) RETURN n.k AS k, count(*) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "k",
+    "c"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ],
+     [
+      "int",
+      2
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "int_float_countdistinct": {
+  "q": "MATCH (n:RV55S064229) RETURN count(DISTINCT n.k) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "c"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "int_float_distinct": {
+  "q": "MATCH (n:RV55S064229) RETURN DISTINCT n.k AS k",
+  "params": {},
+  "sql": {
+   "columns": [
+    "k"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "float",
+      1.0
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "cyp138_union": {
+  "q": "MATCH (n:RV55A064229 {name: 'rv55_064229_a1'}) RETURN n.v AS x UNION RETURN 0 AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     [
+      "str",
+      "\u0001N1"
+     ]
+    ],
+    [
+     [
+      "int",
+      0
+     ]
+    ]
+   ]
+  }
+ },
+ "cyp138_union_f": {
+  "q": "MATCH (n:RV55A064229 {name: 'rv55_064229_a1'}) RETURN n.f AS x UNION ALL RETURN 0 AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     [
+      "str",
+      "\u0001D2.5"
+     ]
+    ],
+    [
+     [
+      "int",
+      0
+     ]
+    ]
+   ]
+  }
+ },
+ "cyp138_plain": {
+  "q": "MATCH (n:RV55A064229 {name: 'rv55_064229_a1'}) RETURN n.v AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  }
+ },
+ "union_name_mismatch": {
+  "q": "RETURN 1 AS a UNION RETURN 2 AS b",
+  "params": {},
+  "sql": {
+   "exc": "SyntaxError: All UNION branches must have the same column names: ['a'] vs ['b']"
+  }
+ },
+ "union_null_dedup": {
+  "q": "RETURN null AS a UNION RETURN null AS a",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a"
+   ],
+   "rows": [
+    [
+     [
+      "NoneType",
+      null
+     ]
+    ]
+   ]
+  }
+ },
+ "cyp134_p90": {
+  "q": "UNWIND [10, 20, 30, 40] AS x RETURN percentileDisc(x, 0.9) AS p",
+  "params": {},
+  "sql": {
+   "columns": [
+    "p"
+   ],
+   "rows": [
+    [
+     [
+      "float",
+      30.0
+     ]
+    ]
+   ]
+  }
+ },
+ "cyp134_p60": {
+  "q": "UNWIND [10, 20, 30, 40] AS x RETURN percentileDisc(x, 0.6) AS p",
+  "params": {},
+  "sql": {
+   "columns": [
+    "p"
+   ],
+   "rows": [
+    [
+     [
+      "float",
+      20.0
+     ]
+    ]
+   ]
+  }
+ },
+ "pct_nulls": {
+  "q": "UNWIND [10, null, 30] AS x RETURN percentileDisc(x, 0.5) AS d, percentileCont(x, 0.5) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "d",
+    "c"
+   ],
+   "rows": [
+    [
+     [
+      "float",
+      10.0
+     ],
+     [
+      "float",
+      20.0
+     ]
+    ]
+   ]
+  }
+ },
+ "pct_large_max": {
+  "q": "UNWIND range(1, 3000) AS x RETURN percentileDisc(x, 1.0) AS d",
+  "params": {},
+  "sql": {
+   "columns": [
+    "d"
+   ],
+   "rows": [
+    [
+     [
+      "float",
+      3000.0
+     ]
+    ]
+   ]
+  }
+ },
+ "pct_large_max_9000": {
+  "q": "UNWIND range(1, 9000) AS x RETURN percentileDisc(x, 1.0) AS d",
+  "params": {},
+  "sql": {
+   "columns": [
+    "d"
+   ],
+   "rows": [
+    [
+     [
+      "float",
+      9000.0
+     ]
+    ]
+   ]
+  }
+ },
+ "pct_strings_stored": {
+  "q": "MATCH (n:RV55G064229) RETURN percentileDisc(n.k, 1.0) AS d",
+  "params": {},
+  "sql": {
+   "columns": [
+    "d"
+   ],
+   "rows": [
+    [
+     [
+      "float",
+      1.5
+     ]
+    ]
+   ]
+  }
+ },
+ "pct_param_null": {
+  "q": "UNWIND [10, 20, 30] AS x RETURN percentileDisc(x, $p) AS d",
+  "params": {
+   "p": null
+  },
+  "sql": {
+   "exc": "TypeError: float() argument must be a string or a real number, not 'NoneType'"
+  }
+ },
+ "pct_param_str": {
+  "q": "UNWIND [10, 20, 30] AS x RETURN percentileDisc(x, $p) AS d",
+  "params": {
+   "p": "0.5"
+  },
+  "sql": {
+   "columns": [
+    "d"
+   ],
+   "rows": [
+    [
+     [
+      "float",
+      20.0
+     ]
+    ]
+   ]
+  }
+ },
+ "pct_grouped_mixed": {
+  "q": "MATCH (n:RV55A064229) RETURN percentileDisc(n.v, 1.0) AS d",
+  "params": {},
+  "sql": {
+   "columns": [
+    "d"
+   ],
+   "rows": [
+    [
+     [
+      "float",
+      2.0
+     ]
+    ]
+   ]
+  }
+ },
+ "limit_zero": {
+  "q": "MATCH (n:RV55G064229) RETURN n.k LIMIT 0",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.k"
+   ],
+   "rows": []
+  }
+ },
+ "limit_str_param": {
+  "q": "MATCH (n:RV55G064229) RETURN n.k LIMIT $l",
+  "params": {
+   "l": "2"
+  },
+  "sql": {
+   "columns": [
+    "n.k"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ],
+    [
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  }
+ },
+ "path_null_opt": {
+  "q": "MATCH (a:RV55A064229 {name: 'rv55_064229_a2'}) OPTIONAL MATCH p = (a)-[:RV55K064229]->(b) RETURN length(p) AS l, nodes(p) AS ns, relationships(p) AS rs",
+  "params": {},
+  "sql": {
+   "columns": [
+    "l",
+    "ns",
+    "rs"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ],
+     [
+      "NoneType",
+      null
+     ],
+     [
+      "NoneType",
+      null
+     ]
+    ]
+   ]
+  }
+ },
+ "delete_null": {
+  "q": "MATCH (a:RV55A064229 {name: 'rv55_064229_a2'}) OPTIONAL MATCH (a)-[:RV55K064229]->(b) DELETE b RETURN count(*) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "c"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  }
+ },
+ "delete_incoming_only": {
+  "q": "MATCH (a:RV55A064229 {name: 'rv55_064229_a2'}) DELETE a",
+  "params": {},
+  "sql": {
+   "exc": "GraphWriteError: ConstraintVerificationFailed: Cannot delete node with existing relationships. Use DETACH DELETE."
+  }
+ },
+ "after_delete_incoming": {
+  "q": "MATCH (a:RV55A064229 {name: 'rv55_064229_a2'}) RETURN count(a) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "c"
+   ],
+   "rows": [
+    [
+     [
+      "int",
+      1
+     ]
+    ]
+   ]
+  }
+ },
+ "cyp145_str_eq_int": {
+  "q": "MATCH (n:RV55A064229) WHERE n.v = '1' RETURN n.name AS name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "name"
+   ],
+   "rows": [
+    [
+     [
+      "str",
+      "rv55_064229_a1"
+     ]
+    ]
+   ]
+  }
+ },
+ "cyp145_int_eq_int": {
+  "q": "MATCH (n:RV55A064229) WHERE n.v = 1 RETURN n.name AS name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "name"
+   ],
+   "rows": [
+    [
+     [
+      "str",
+      "rv55_064229_a1"
+     ]
+    ]
+   ]
+  }
+ },
+ "bm25_ties": {
+  "build": {
+   "indexed": 4,
+   "avgdl": 2,
+   "vocab_size": 2,
+   "graph": ""
+  },
+  "search": [
+   [
+    "rv55_064229_d10",
+    0.1053605156578263
+   ],
+   [
+    "rv55_064229_d9",
+    0.1053605156578263
+   ],
+   [
+    "rv55_064229_dB",
+    0.1053605156578263
+   ],
+   [
+    "rv55_064229_da",
+    0.1053605156578263
+   ]
+  ],
+  "kg_BM25_k0": "[]",
+  "kg_BM25_k-1": "[]",
+  "kg_BM25_k2": "[{\"id\":\"rv55_064229_d10\",\"score\":0.10536051565782629524},{\"id\":\"rv55_064229_d9\",\"score\":0.10536051565782629524}]",
+  "search_k0": "exc ValidationError"
+ },
+ "matchedges_graph": {
+  "g=''": "[{\"s\":\"rv55_064229_a1\",\"p\":\"RV55K064229\",\"o\":\"rv55_064229_a2\",\"w\":1,\"g\":\"\"}]",
+  "g='0'": "[{\"s\":\"rv55_064229_a1\",\"p\":\"RV55K064229\",\"o\":\"rv55_064229_a2\",\"w\":1,\"g\":\"\"}]",
+  "g='nosuch'": "[]"
+ },
+ "bolt": "exc TypeError: 'NoneType' object is not iterable"
+}
