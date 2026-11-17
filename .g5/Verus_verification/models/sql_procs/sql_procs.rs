@@ -23,8 +23,27 @@ verus! {
 /// SQL's '' (and NULL, and an omitted argument), which reach the body as $Char(0) or "" and are both read as "".
 pub struct Arc { pub g: int, pub s: int, pub p: int, pub o: int, pub w: Option<int> }
 
-/// MatchEdges' graph argument: '' / NULL / 0 / omitted are the default graph's key 0; a name is its own key.
+/// A graph key as ScanOneGraph reads it (already normalized: 0 is the default graph, a name its own key).
 pub open spec fn graph_key(graph: int) -> int { graph }
+
+/// MatchEdges' raw graph argument as its body receives it (iteration 56, review 53-55 minor): SQL '' arrives as
+/// $Char(0); NULL, an omitted argument and a bound '' arrive as ""; 0 and '0'; a graph name (Name(n), n > 0).
+pub enum GArg { Char0, Empty, Zero, ZeroText, Name(int) }
+/// EdgeScan.MatchEdges 52: `Set:graph=$Char(0) graph = ""`.
+pub open spec fn after_nul(g: GArg) -> GArg { if g == GArg::Char0 { GArg::Empty } else { g } }
+/// EdgeScan.MatchEdges 55-57: `If graph = "" { Set graph = 0 }`.
+pub open spec fn after_empty(g: GArg) -> GArg { if g == GArg::Empty { GArg::Zero } else { g } }
+/// The ^KG("out", graph, ...) subscript ScanOneGraph reads (provider: IRIS subscript collation, under which the text
+/// "0" is the canonical number 0). A "" left in place would be a graph nobody writes (-1); a $Char(0) left in place a
+/// graph named $Char(0) that nobody writes (-2).
+pub open spec fn subscript_of(g: GArg) -> int {
+    match g { GArg::Zero => 0, GArg::ZeroText => 0, GArg::Name(n) => n, GArg::Empty => -1, GArg::Char0 => -2 }
+}
+pub open spec fn graph_arg_key(g: GArg) -> int { subscript_of(after_empty(after_nul(g))) }
+/// The scan MatchEdges answers for a raw graph argument.
+pub open spec fn match_edges_arg(adj: Seq<Arc>, src: int, pred: int, shard: int, g: GArg) -> Seq<Arc> {
+    match_edges(adj, src, pred, shard, graph_arg_key(g))
+}
 /// The weight the scan reports: the leaf's value, 1.0 when the leaf has none.
 pub open spec fn scan_w(a: Arc) -> int { match a.w { Some(w) => w, None => 1 } }
 /// ScanOneGraph's test for one graph key: source and predicate each match, or are '' (every one).
@@ -44,8 +63,70 @@ pub open spec fn match_all(adj: Seq<Arc>, src: int, pred: int, shard: int) -> Se
 
 // =============================================================== the privilege gate
 pub enum Ans<T> { Refused, Ok(T) }
-/// RequireSelect / RequireWrite: %All or the privilege on the table (or its schema) passes; otherwise SQLCODE -99.
+/// What an entry does with RequireSelect / RequireWrite's verdict (`holds`: the call returned $$$OK).
 pub open spec fn gate<T>(holds: bool, t: T) -> Ans<T> { if holds { Ans::Ok(t) } else { Ans::Refused } }
+
+// --------------------------------------------------------------- the verdict, derived from the caller's grants
+// (iteration 56, review 53-55 F4: the verdict was an input; now it is computed from what IRIS records for the caller.)
+pub enum Act { S, I, U, D }
+/// What one grantee (the user, or one of its roles) holds as IRIS records it: privileges on a table, on a schema, and
+/// column privileges (on some columns of a table).
+pub struct Grantee { pub table: Set<(int, Act)>, pub schema: Set<(int, Act)>, pub column: Set<(int, Act)> }
+/// The caller: $Username's own grants, the roles in $Roles, and whether %All is among them.
+pub struct Caller { pub all: bool, pub user: Grantee, pub roles: Seq<Grantee> }
+/// Provider premise P-CHECKPRIV: $SYSTEM.SQL.Security.CheckPrivilege(grantee, 1, table, a) is true when the grantee
+/// holds a on the table or on the table's schema; a column privilege does not count (ADMIN_GUIDE 574-576; observed by
+/// the binding's users).
+pub open spec fn check_priv(gr: Grantee, sch: int, t: int, a: Act) -> bool {
+    gr.table.contains((t, a)) || gr.schema.contains((sch, a))
+}
+/// SqlPrivilege.Holds 106-121: the user, or else the first role in $Roles that holds it.
+pub open spec fn any_role(roles: Seq<Grantee>, sch: int, t: int, a: Act) -> bool decreases roles.len() {
+    if roles.len() == 0 { false } else { check_priv(roles.last(), sch, t, a) || any_role(roles.drop_last(), sch, t, a) }
+}
+pub open spec fn holds_priv(c: Caller, sch: int, t: int, a: Act) -> bool {
+    check_priv(c.user, sch, t, a) || any_role(c.roles, sch, t, a)
+}
+pub enum Gate { Pass, Refused(int, Act) }
+/// The inner loop of RequireWrite (49-53): the first action of acts not held on t.
+pub open spec fn first_act(c: Caller, sch: int, t: int, acts: Seq<Act>) -> Option<Act> decreases acts.len() {
+    if acts.len() == 0 { None }
+    else if !holds_priv(c, sch, t, acts[0]) { Some(acts[0]) }
+    else { first_act(c, sch, t, acts.subrange(1, acts.len() as int)) }
+}
+/// The outer loop of RequireSelect (24-28) / RequireWrite (44-54): the first table, then action, not held.
+pub open spec fn first_missing(c: Caller, sch: int, ts: Seq<int>, acts: Seq<Act>) -> Option<(int, Act)> decreases ts.len() {
+    if ts.len() == 0 { None }
+    else { match first_act(c, sch, ts[0], acts) {
+        Some(a) => Some((ts[0], a)),
+        None => first_missing(c, sch, ts.subrange(1, ts.len() as int), acts),
+    } }
+}
+/// RequireSelect(ts) is require(c, sch, ts, [S]); RequireWrite(ts, "i") is require(c, sch, ts, [I]). %All passes
+/// before any check (lines 22 and 41); otherwise SQLCODE -99 naming the first missing privilege and table.
+pub open spec fn require(c: Caller, sch: int, ts: Seq<int>, acts: Seq<Act>) -> Gate {
+    if c.all { Gate::Pass }
+    else { match first_missing(c, sch, ts, acts) { None => Gate::Pass, Some(x) => Gate::Refused(x.0, x.1) } }
+}
+/// The tables the entries name, in the IVG Schema sch.
+pub open spec fn t_nodes() -> int { 1 }
+pub open spec fn t_edges() -> int { 2 }
+pub open spec fn select_ok(c: Caller, sch: int) -> bool { require(c, sch, seq![t_edges()], seq![Act::S]) == Gate::Pass }
+pub open spec fn insert_ok(c: Caller, sch: int) -> bool {
+    require(c, sch, seq![t_nodes(), t_edges()], seq![Act::I]) == Gate::Pass
+}
+/// SqlProcs.MatchEdges 145-149 for a caller: RequireSelect(rdf_edges), then the scan.
+pub open spec fn match_edges_sql(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, shard: int, g: GArg) -> Ans<Seq<Arc>> {
+    gate(select_ok(c, sch), match_edges_arg(adj, src, pred, shard, g))
+}
+/// SqlProcs.MatchEdgesAllGraphs 151-155: RequireSelect(rdf_edges), then every graph's scan.
+pub open spec fn match_all_sql(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, shard: int) -> Ans<Seq<Arc>> {
+    gate(select_ok(c, sch), match_all(adj, src, pred, shard))
+}
+/// SqlProcs.DijkstraPath 160-164: RequireSelect(rdf_edges), then DijkstraProc -> DijkstraJson.
+pub open spec fn dijkstra_sql(c: Caller, sch: int, src: End, dst: End, wp: WProp, dir: Dir) -> Ans<PathAns> {
+    dijkstra_path(select_ok(c, sch), src, dst, wp, dir)
+}
 
 // =============================================================== the Cypher hop on the two SQL plans
 pub enum Plan { Rows, Scan }
@@ -198,6 +279,120 @@ pub proof fn theorem_entries_gated(adj: Seq<Arc>, src: int, pred: int, graph: in
         backfill_sql(false, st) == Ans::<(Bf, nat)>::Refused,
         gate(true, match_edges(adj, src, pred, 0, graph)) == Ans::Ok(match_edges(adj, src, pred, 0, graph)),
         backfill_sql(true, st) == Ans::Ok((backfill(st), backfill_count(st))),
+{}
+
+// =============================================================== theorems: the privilege verdict (iteration 56, F4)
+/// %All passes every check before any grant is read (RequireSelect 22, RequireWrite 41).
+pub proof fn theorem_all_passes(c: Caller, sch: int, ts: Seq<int>, acts: Seq<Act>)
+    requires c.all,
+    ensures require(c, sch, ts, acts) == Gate::Pass,
+{}
+
+/// General, one table and one action: a caller without %All passes exactly when it, or one of its roles, holds the
+/// privilege on the table or on its schema; otherwise the refusal names that table and privilege.
+pub proof fn theorem_single_check_iff_holds(c: Caller, sch: int, t: int, a: Act)
+    requires !c.all,
+    ensures require(c, sch, seq![t], seq![a]) == (if holds_priv(c, sch, t, a) { Gate::Pass } else { Gate::Refused(t, a) }),
+{
+    reveal_with_fuel(first_missing, 2);
+    reveal_with_fuel(first_act, 2);
+    assert(seq![t].subrange(1, 1) =~= Seq::<int>::empty());
+    assert(seq![a].subrange(1, 1) =~= Seq::<Act>::empty());
+}
+
+proof fn lemma_any_role(roles: Seq<Grantee>, sch: int, t: int, a: Act, i: int)
+    requires 0 <= i < roles.len(), check_priv(roles[i], sch, t, a),
+    ensures any_role(roles, sch, t, a),
+    decreases roles.len(),
+{
+    if i < roles.len() - 1 {
+        assert(roles.drop_last()[i] == roles[i]);
+        lemma_any_role(roles.drop_last(), sch, t, a, i);
+    }
+}
+
+/// ADMIN_GUIDE 576 "SELECT on some of its columns does not [count]": a caller whose only SELECT on rdf_edges is a
+/// column privilege is refused naming rdf_edges, and MatchEdges answers nothing.
+pub proof fn theorem_column_only_select_refused(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, shard: int, g: GArg)
+    requires
+        !c.all, c.roles.len() == 0,
+        c.user.column.contains((t_edges(), Act::S)),
+        !c.user.table.contains((t_edges(), Act::S)), !c.user.schema.contains((sch, Act::S)),
+    ensures
+        require(c, sch, seq![t_edges()], seq![Act::S]) == Gate::Refused(t_edges(), Act::S),
+        match_edges_sql(c, sch, adj, src, pred, shard, g) == Ans::<Seq<Arc>>::Refused,
+{
+    theorem_single_check_iff_holds(c, sch, t_edges(), Act::S);
+}
+
+/// Neighbors: SELECT on the table, on its schema, or held by any role in $Roles each pass, and MatchEdges answers
+/// the scan.
+pub proof fn theorem_table_schema_role_select_pass(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, shard: int, g: GArg, i: int)
+    requires
+        !c.all,
+        c.user.table.contains((t_edges(), Act::S)) || c.user.schema.contains((sch, Act::S))
+            || (0 <= i < c.roles.len() && c.roles[i].table.contains((t_edges(), Act::S))),
+    ensures
+        require(c, sch, seq![t_edges()], seq![Act::S]) == Gate::Pass,
+        match_edges_sql(c, sch, adj, src, pred, shard, g) == Ans::Ok(match_edges_arg(adj, src, pred, shard, g)),
+{
+    if !(c.user.table.contains((t_edges(), Act::S)) || c.user.schema.contains((sch, Act::S))) {
+        lemma_any_role(c.roles, sch, t_edges(), Act::S, i);
+    }
+    theorem_single_check_iff_holds(c, sch, t_edges(), Act::S);
+}
+
+/// RequireWrite(nodes, rdf_edges, "i") names the first missing pair in table order: no INSERT on nodes names nodes;
+/// INSERT on nodes but not on rdf_edges names rdf_edges; both pass. backfill_temporal_rows follows the verdict.
+pub proof fn theorem_write_names_first_missing(c: Caller, sch: int, st: Bf)
+    requires !c.all,
+    ensures
+        !holds_priv(c, sch, t_nodes(), Act::I) ==> require(c, sch, seq![t_nodes(), t_edges()], seq![Act::I]) == Gate::Refused(t_nodes(), Act::I),
+        holds_priv(c, sch, t_nodes(), Act::I) && !holds_priv(c, sch, t_edges(), Act::I)
+            ==> require(c, sch, seq![t_nodes(), t_edges()], seq![Act::I]) == Gate::Refused(t_edges(), Act::I),
+        holds_priv(c, sch, t_nodes(), Act::I) && holds_priv(c, sch, t_edges(), Act::I)
+            ==> backfill_sql(insert_ok(c, sch), st) == Ans::Ok((backfill(st), backfill_count(st))),
+        !holds_priv(c, sch, t_nodes(), Act::I) ==> backfill_sql(insert_ok(c, sch), st) == Ans::<(Bf, nat)>::Refused,
+{
+    reveal_with_fuel(first_missing, 3);
+    reveal_with_fuel(first_act, 2);
+    assert(seq![Act::I].subrange(1, 1) =~= Seq::<Act>::empty());
+    assert(seq![t_nodes(), t_edges()].subrange(1, 2) =~= seq![t_edges()]);
+    assert(seq![t_edges()].subrange(1, 1) =~= Seq::<int>::empty());
+}
+
+/// The three reading entries check SELECT on rdf_edges, the table ^KG stands for: a caller holding SELECT on nodes
+/// only is refused by all three, and one holding it on rdf_edges answered by all three (the table is the entries'
+/// own choice; ADMIN_GUIDE 572-574).
+pub proof fn theorem_readers_check_rdf_edges(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, g: GArg, s2: End, d2: End)
+    requires !c.all, c.roles.len() == 0, !c.user.schema.contains((sch, Act::S)),
+    ensures
+        c.user.table.contains((t_nodes(), Act::S)) && !c.user.table.contains((t_edges(), Act::S)) ==> {
+            &&& match_edges_sql(c, sch, adj, src, pred, 0, g) == Ans::<Seq<Arc>>::Refused
+            &&& match_all_sql(c, sch, adj, src, pred, 0) == Ans::<Seq<Arc>>::Refused
+            &&& dijkstra_sql(c, sch, s2, d2, WProp::Empty, Dir::Out) == Ans::<PathAns>::Refused
+        },
+        c.user.table.contains((t_edges(), Act::S)) ==> {
+            &&& match_edges_sql(c, sch, adj, src, pred, 0, g) == Ans::Ok(match_edges_arg(adj, src, pred, 0, g))
+            &&& match_all_sql(c, sch, adj, src, pred, 0) == Ans::Ok(match_all(adj, src, pred, 0))
+            &&& dijkstra_sql(c, sch, s2, d2, WProp::Empty, Dir::Out) == Ans::Ok(dijkstra_json(s2, d2, WProp::Empty, Dir::Out))
+        },
+{
+    theorem_single_check_iff_holds(c, sch, t_edges(), Act::S);
+}
+
+// =============================================================== theorems: MatchEdges' graph argument
+/// SQL '' (arriving as $Char(0)), "" (NULL, an omitted argument, a bound ''), 0 and '0' all read the default
+/// graph's key 0; a name reads its own graph (and theorem_graph_scoped_vs_all keeps the graphs apart).
+pub proof fn theorem_default_graph_spellings(adj: Seq<Arc>, src: int, pred: int, shard: int, n: int)
+    requires n > 0,
+    ensures
+        graph_arg_key(GArg::Char0) == 0, graph_arg_key(GArg::Empty) == 0,
+        graph_arg_key(GArg::Zero) == 0, graph_arg_key(GArg::ZeroText) == 0,
+        graph_arg_key(GArg::Name(n)) == n,
+        match_edges_arg(adj, src, pred, shard, GArg::Char0) == match_edges(adj, src, pred, shard, 0),
+        match_edges_arg(adj, src, pred, shard, GArg::Empty) == match_edges(adj, src, pred, shard, 0),
+        match_edges_arg(adj, src, pred, shard, GArg::ZeroText) == match_edges(adj, src, pred, shard, 0),
 {}
 
 // =============================================================== theorems: the IVG_EDGESCAN plan

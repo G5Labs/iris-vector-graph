@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_scalar_duplicate_rows_count_twice"
+    ],
+    "find": "total:a.total+if yes{ticks(v)}else{0}",
+    "name": "sum-overwritten",
+    "replace": "total:if yes{ticks(v)}else{a.total}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_scalar_duplicate_rows_count_twice"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "894798511c947dc8f5eb9a947f8386a992ef470363f8daaa27a89d57eb5d3d2e",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/controls/sum-overwritten/20261117T065740Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_scalar_duplicate_rows_count_twice": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/20261117T065740Z-control-sum-overwritten-theorem_scalar_duplicate_rows_count_twice.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/20261117T065740Z-control-sum-overwritten.log",
+    "timed_out": false,
+    "verified": 72
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261117T065742Z-control-sum-overwritten/logs/20261117T065740Z-control-sum-overwritten-theorem_scalar_duplicate_rows_count_twice.log": "c7414d72886a1aedabf24bbeacf6075bf419c30b1f0e0db2b5d94f261f817234",
+    ".g5/Verus_verification/results/aggregate_results/20261117T065742Z-control-sum-overwritten/logs/20261117T065740Z-control-sum-overwritten.log": "1f891ecc6d2b484a98c344c67aa8f5263fdef3bfee9a7223878ddc4d116a6eed"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -10,9 +10,9 @@ and its children `.after-purge`, `.window`, `.writers`, `.velocity`, `.distinct`
 
 | Run | Result | Receipt |
 |---|---|---|
-| prove | PASS 58 verified, 0 errors (iteration 53; 51 in iteration 51) | `results/temporal_stats/20261117T044949Z-prove` |
-| controls | 18 of 18 EXPECTED_FAIL (iteration 53 adds `nested-serialized-as-json`, `ms-buckets-apart`) | `results/temporal_stats/20261117T044958Z`…`T045104Z-control-*` |
-| binding | AGREES, 148 cases, all 18 mutations detected, tampered observation detected (iteration 53, prefix `i53t_`) | `results/temporal_stats/20261117T045124Z-binding` |
+| prove | PASS 64 verified, 0 errors (iteration 56; 58 in iteration 53; 51 in iteration 51) | `results/temporal_stats/20261117T065847Z-prove` |
+| controls | 20 of 20 EXPECTED_FAIL (iteration 56 adds `empty-key-refused`, `empty-key-never-raises`; iteration 53 added `nested-serialized-as-json`, `ms-buckets-apart`) | `results/temporal_stats/20261117T0658*`…`-control-*` |
+| binding | AGREES, 159 cases, all 20 mutations detected, tampered observation detected (iteration 56; 148 in iteration 53) | `results/temporal_stats/20261117T065845Z-binding` |
 
 Iteration 53 (review round 2, M1 and m1): `20261117T045049Z-binding` AGREES 146 is of the binding before the m9
 millisecond-window cases were added; it is superseded by `T045124Z`, not a failure. Iteration-51 receipts
@@ -104,11 +104,24 @@ The newest-event index (`NoteLatest`, `Relatest`, `RelatestRange`, `RebuildLates
 iteration-51 probe observed L1-L8 and every prediction held, but no Verus claim covers tlast exactness yet.
 `get_edge_attrs`, `get_window_sources`, `BulkInsert` (a wrapper returning the first count of `BulkInsertCounts`, not
 exercised), legacy `PurgeBefore`'s statistics kill, `RebuildBucket` (migration only), `EraseNodes`/`EraseGraph`,
-the all-sources distinct merge (`source=""`, observed in the probes only), and every empty-key case (review m2, owned
-as built in `temporal.stats.window`/`.distinct`, observed by the iteration-53 probe): an empty source or predicate in
-`get_temporal_aggregate` and an empty predicate with a named source in `get_distinct_count` fail with an IRIS
-`<SUBSCRIPT>` error (in a cut-only window only when an edge falls in the cut range), while `get_bucket_groups("")`,
+the all-sources distinct merge (`source=""`, observed in the probes only), and the empty-key cases other than the
+aggregate read (review m2; the aggregate read is modeled since iteration 56, below): an empty predicate with a named
+source in `get_distinct_count` fails with an IRIS `<SUBSCRIPT>` error, while `get_bucket_groups("")`,
 `get_bucket_group_targets(s, "")` and `get_distinct_count("", p)` mean every predicate or source. `InternLabelSet` on
 text that is not JSON (it throws, not ""; the Python entry point always sends `json.dumps` of a dict) and on a top-level
 array (it returns a hash, not ""). The millisecond class's own readers over seconds-class edges were probed
 (`GetAggregate` whole 1, cut 0) but are not bound.
+
+## Iteration 56: an empty source or predicate in the aggregate read (review 53-55, challenge to round-2 m2; bug-tmp-108)
+
+Round 2 left the empty-key aggregate read "owned as built, not modeled". Review round 3 pointed out that the same
+invalid call answers 0 when the window only cuts buckets. Now `get_aggregate_keys(st, div, g, s, p, lo, hi)` takes the
+keys as `Option` (None for ""): with both keys it is `get_aggregate`; with an empty one it raises when the window
+holds a whole bucket (`some_whole`: `$Get(^KG("tagg", g, b, "", ...))`) or meets a timestamp of its graph in the cut
+range (`ts_present`, any source: `$Order(^KG("tout", g, ts, "", ...))`), and otherwise answers the empty aggregate.
+`get_temporal_aggregate_keys` adds the Python conversion. Theorems: `theorem_empty_key_quiet_cut_window_answers_zero`
+(general), `theorem_empty_key_raises_with_whole_bucket_or_event` (general), `theorem_empty_key_witness` (the binding's
+fixture). Controls: `empty-key-refused` (the repair, the owner's rule) and `empty-key-never-raises` (the guard
+removed). Binding cases `ek_*` (11): quiet cut window 0 / 0.0 (empty source, empty predicate, both), min raises the
+store's `ValueError`; a met timestamp and a whole bucket (with or without data) raise `<SUBSCRIPT>`
+(`GetAggregate+13` on tagg, `+32` on tout, error text kept in the receipt's `ek_errors`); the given-key neighbors 1 and 0.

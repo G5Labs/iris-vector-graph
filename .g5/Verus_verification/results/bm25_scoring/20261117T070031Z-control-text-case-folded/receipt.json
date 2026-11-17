@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "collation altered: character codes compared in reverse (dB/da and d10/d9 swap)",
+    "expect_fail_in": [
+      "theorem_ties_in_subscript_order"
+    ],
+    "find": "    else if a[0] != b[0] { a[0] < b[0] }",
+    "name": "text-case-folded",
+    "replace": "    else if a[0] != b[0] { a[0] > b[0] }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_ties_in_subscript_order"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bm25_scoring/bm25_scoring.rs": "90da7a6ef099a184a69b31802e70f30114c4c3b4c141ca3ddbd27de461679550",
+    ".g5/Verus_verification/models/bm25_scoring/model.json": "3ebf5ba8952ad018e7b0f05d793dd3da33a16c31482165afc9fd10aeed011f8e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/text-case-folded/20261117T070029Z/models/bm25_scoring/bm25_scoring.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_ties_in_subscript_order": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T070029Z-control-text-case-folded-theorem_ties_in_subscript_order.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T070029Z-control-text-case-folded.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bm25_scoring/20261117T070031Z-control-text-case-folded/logs/20261117T070029Z-control-text-case-folded-theorem_ties_in_subscript_order.log": "1e4b0b1f22a77fc3738af7b0d365e5cdea7113e8b1e967b304ed8befd09e159b",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T070031Z-control-text-case-folded/logs/20261117T070029Z-control-text-case-folded.log": "69ab03cd548ba80e5e03ca9aeb35e8eab4bc04adadd6d1b9d66999ab421813ea"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

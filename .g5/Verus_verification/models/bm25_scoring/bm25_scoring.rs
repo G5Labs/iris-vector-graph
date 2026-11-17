@@ -96,8 +96,45 @@ pub open spec fn score(st: Stats, idf: spec_fn(Tok) -> Q, ts: Seq<Tok>, d: int) 
 
 // =============================================================== ranking
 /// The order of the answer: a higher 12-decimal key first, then the lower document id. (Each (key, id) pair is a
-/// distinct subscript, so no document is lost to a tie.)
+/// distinct subscript, so no document is lost to a tie.) Here an id stands for its rank in IRIS subscript collation;
+/// `before_id` below spells that collation out (iteration 56, review 53-55 minor).
 pub open spec fn before(ka: int, a: int, kb: int, b: int) -> bool { ka > kb || (ka == kb && a < b) }
+
+/// A document id as a ^||bm25sorted(key, id) subscript (SearchCore 336-360). Provider premise P-COLLATE (IRIS default
+/// subscript collation): an id that is a canonical number collates first, by value; every other id after, by
+/// character codes (so "d10" < "d9" and "dB" < "da").
+pub enum DocId { Num(int), Text(Seq<char>) }
+pub open spec fn text_lt(a: Seq<char>, b: Seq<char>) -> bool decreases a.len() {
+    if a.len() == 0 { b.len() > 0 }
+    else if b.len() == 0 { false }
+    else if a[0] != b[0] { a[0] < b[0] }
+    else { text_lt(a.drop_first(), b.drop_first()) }
+}
+pub open spec fn id_lt(a: DocId, b: DocId) -> bool {
+    match (a, b) {
+        (DocId::Num(x), DocId::Num(y)) => x < y,
+        (DocId::Num(_), DocId::Text(_)) => true,
+        (DocId::Text(_), DocId::Num(_)) => false,
+        (DocId::Text(x), DocId::Text(y)) => text_lt(x, y),
+    }
+}
+/// The answer order with ids as subscripts: higher key first, then subscript order within a key.
+pub open spec fn before_id(ka: int, a: DocId, kb: int, b: DocId) -> bool { ka > kb || (ka == kb && id_lt(a, b)) }
+
+// =============================================================== k at each entry (iteration 56, bug-srch-113)
+/// SearchCore's walk quits when `count >= k` before taking a document (336-345), so k <= 0 answers []; otherwise the
+/// first min(k, ranked) documents.
+pub open spec fn taken(k: int, ranked: nat) -> nat { if k <= 0 { 0 } else if k < ranked { k as nat } else { ranked } }
+/// The three readers: SQL kg_BM25 (SqlProcs 131-135 -> SearchProc -> Search) passes k through; bm25_search
+/// (BM25SearchInput, k >= 1) and CALL ivg.bm25.search (translator 3161-3166, the same validator) refuse k < 1 first.
+pub enum Entry { Sql, Python, Cypher }
+pub enum KAns { Refused, Answer(nat) }
+pub open spec fn entry_k(e: Entry, k: int, ranked: nat) -> KAns {
+    match e {
+        Entry::Sql => KAns::Answer(taken(k, ranked)),
+        _ => if k < 1 { KAns::Refused } else { KAns::Answer(taken(k, ranked)) },
+    }
+}
 
 // =============================================================== schema 1 vs schema 2
 /// The IDF argument a search uses: schema 2 from the statistics read now; schema 1 the argument Build stored.
@@ -339,5 +376,36 @@ pub proof fn theorem_id_with_colon_dot_digit_rewritten()
     assert(patch('"', s) =~= seq!['c', ':', '0', '.', '5', 'x']);
     assert(patch('"', s).len() == 6);
 }
+
+// =============================================================== theorems: tie order and k (iteration 56)
+/// Ties in subscript order (review 53-55 minor; owner search.bm25.scoring): on equal keys a numeric id comes first
+/// and numeric ids compare by value (9 before 10, where text order puts "10" first); other ids compare by character
+/// codes (d10 before d9, dB before da).
+pub proof fn theorem_ties_in_subscript_order(k: int, n: int, t: Seq<char>)
+    ensures
+        before_id(k, DocId::Num(9), k, DocId::Num(10)),
+        before_id(k, DocId::Text(seq!['d', '1', '0']), k, DocId::Text(seq!['d', '9'])),
+        before_id(k, DocId::Text(seq!['d', 'B']), k, DocId::Text(seq!['d', 'a'])),
+        before_id(k, DocId::Text(seq!['d', '9']), k, DocId::Text(seq!['d', 'B'])),
+        before_id(k, DocId::Num(n), k, DocId::Text(t)),
+        !before_id(k, DocId::Text(seq!['d', '9']), k, DocId::Text(seq!['d', '1', '0'])),
+{
+    reveal_with_fuel(text_lt, 3);
+    assert(seq!['d', '1', '0'].drop_first() =~= seq!['1', '0']);
+    assert(seq!['d', '9'].drop_first() =~= seq!['9']);
+    assert(seq!['d', 'B'].drop_first() =~= seq!['B']);
+    assert(seq!['d', 'a'].drop_first() =~= seq!['a']);
+}
+
+/// bug-srch-113, general over k and the ranked count: SQL kg_BM25 answers [] for every k <= 0 while bm25_search and
+/// CALL ivg.bm25.search refuse it; for k >= 1 the three answer the same first min(k, ranked) documents.
+pub proof fn theorem_sql_k_nonpositive_empty_others_refuse(k: int, ranked: nat)
+    ensures
+        k <= 0 ==> entry_k(Entry::Sql, k, ranked) == KAns::Answer(0),
+        k <= 0 ==> entry_k(Entry::Python, k, ranked) == KAns::Refused && entry_k(Entry::Cypher, k, ranked) == KAns::Refused,
+        k >= 1 ==> entry_k(Entry::Sql, k, ranked) == entry_k(Entry::Python, k, ranked)
+            && entry_k(Entry::Python, k, ranked) == entry_k(Entry::Cypher, k, ranked),
+        k >= 1 && ranked > 0 ==> entry_k(Entry::Sql, k, ranked) != KAns::Answer(0),
+{}
 
 } // verus!

@@ -107,6 +107,11 @@ pub proof fn theorem_foreign_graph_row_skipped(a:Acc,r:Row,q:Query,k:Key) requir
 pub proof fn theorem_null_count_star_differs(q:Query,k:Key,g:nat)
  requires q.graph==None,
  ensures ({let r=Row{graph:g,key:k,value:Val::Null,entity:None};let a=fold(seq![r],q,key(r,q));a.rows==1&&a.count==0&&a.items.len()==0&&a.total==0&&avg(a).is_none()}),{reveal_with_fuel(fold,3);}
+// CONDITIONAL (iteration 56, review 53-55 F3): this certifies that count(DISTINCT) over 1 and 1.0 counts one value. That is
+// correct only if the open question query.aggregation.keys.numbers is answered "an integer and a float of equal value are
+// one value"; the owner's provisional working assumption is "two values" (query.aggregation.keys), under which this is
+// the as-built behavior of a departure, not a guarantee. It also holds only for keys of one kind on IRIS: a number and the
+// string spelling it are one SQL key (bug-cyp-135, cypher_clauses theorem_sql_group_merges_number_and_its_text).
 pub proof fn theorem_numeric_distinct_normalizes_int_and_whole_double(n:int) ensures token(Val::I(n))==token(Val::D(2*n)),token(Val::I(n))!=token(Val::S(0)),{}
 pub proof fn theorem_float_presence_uses_all_inputs(n:int,q:Query,k:Key,g:nat)
  requires q.distinct,q.graph==None,!q.grouped,k==Key::Global,

@@ -22,7 +22,35 @@ import runtime  # noqa: E402
 RUN = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()); T = RUN[-7:-1]
 P = f"i53s_{T}_"; G = f"i53spg{T}"
 TOL = 1e-9
-MUTS = ["disc-nearest-rank", "cont-floor-only", "no-range-check", "empty-is-zero"]
+MUTS = ["disc-nearest-rank", "cont-floor-only", "no-range-check", "empty-is-zero",
+        "disc-keeps-input-kind", "null-param-refused", "literal-null-refused"]
+# iteration 56: answer kinds (bug-cyp-147) and the p argument (bug-cyp-148) over [10, 20, 30]
+KINDS = {"int": [10, 20, 30, 40], "float": [1.5, 2.5, 3.5]}
+PARGS = {"param_num": ("Param", "Num", 0.5), "param_null": ("Param", "Null", None), "param_numtext": ("Param", "NumText", "0.5"),
+         "param_othertext": ("Param", "OtherText", "x"), "param_true": ("Param", "Bool", True), "param_false": ("Param", "Bool", False),
+         "missing": ("Missing", None, None), "lit_null": ("Lit", "Null", None), "lit_num": ("Lit", "Num", 0.5)}
+
+
+def answer_kind(fn, input_kind, m):
+    if fn == "cont":
+        return "float"
+    return input_kind if m.get("disc-keeps-input-kind") else "float"
+
+
+def as_built_p(src, kind, value, m):
+    """percentile.rs as_built_p, and the value the run answers over [10, 20, 30] (floor((n - 1) p))."""
+    xs = [10.0, 20.0, 30.0]
+    if src == "Missing":
+        return "Undefined"
+    if src == "Lit":
+        if kind == "Null":
+            return "Refused" if m.get("literal-null-refused") else ["run", xs[0]]
+        return ["run", xs[int(2 * float(value))]]
+    if kind == "Null":
+        return "Refused" if m.get("null-param-refused") else "RawTypeError"
+    if kind == "OtherText":
+        return "RawValueError"
+    return ["run", xs[int(2 * float(value))]]
 LISTS = {"four": [10, 20, 30, 40], "three": [10, 20, 30], "ten": list(range(1, 11)), "unsorted": [30, 10, 40, 20],
          "dups": [10, 10, 20, 30], "neg": [-5, 3, -1], "one": [7], "floats": [1.5, 2.5, 3.5], "nulls": [10, None, 30]}
 PS = ["0", "0.25", "1/3", "0.5", "0.6", "0.75", "0.9", "0.95", "1"]
@@ -96,6 +124,29 @@ def main():
         got[f"match:{ps}"] = cy(f"USE GRAPH '{G}' MATCH (n:I53SV) RETURN percentileDisc(n.v, $p) AS d, percentileCont(n.v, $p) AS c",
                                 {"p": float(frac(ps))})
     got["match:none"] = cy(f"USE GRAPH '{G}' MATCH (n:I53SV) WHERE n.v > 100 RETURN percentileDisc(n.v, 0.5) AS d, percentileCont(n.v, 0.5) AS c")
+    # iteration 56: answer kinds through Cypher (UNWIND literals and stored integers), and the p argument
+    for kn, xs in KINDS.items():
+        r = e.execute_cypher(f"UNWIND {lit(xs)} AS x RETURN percentileDisc(x, 0.5) AS d, percentileCont(x, 0.5) AS c")
+        got[f"kind:unwind:{kn}"] = [type(v).__name__ for v in r.rows[0]]
+    r = e.execute_cypher(f"USE GRAPH '{G}' MATCH (n:I53SV) RETURN percentileDisc(n.v, 0.5) AS d, percentileCont(n.v, 0.5) AS c, min(n.v) AS mn")
+    got["kind:match:int"] = [type(v).__name__ for v in r.rows[0]]
+    for pk, (src, kind, value) in PARGS.items():
+        q = "UNWIND [10, 20, 30] AS x RETURN percentileDisc(x, " + ("null" if (src == "Lit" and kind == "Null") else repr(value) if src == "Lit" else "$p") + ") AS d"
+        params = {} if src in ("Missing", "Lit") else {"p": value}
+        try:
+            r = e.execute_cypher(q, params)
+            if getattr(r, "error", None):
+                got[f"p:{pk}"] = "Refused" if ("InvalidArgumentType" in str(r.error) or "NumberOutOfRange" in str(r.error)) else f"error:{str(r.error)[:100]}"
+            else:
+                got[f"p:{pk}"] = ["run", None if r.rows[0][0] is None else float(r.rows[0][0])]
+        except TypeError as x:
+            got[f"p:{pk}"] = "RawTypeError" if "NoneType" in str(x) else f"TypeError:{x}"
+        except ValueError as x:
+            got[f"p:{pk}"] = "RawValueError" if "could not convert" in str(x) else f"ValueError:{x}"
+        except SyntaxError as x:
+            got[f"p:{pk}"] = "Undefined" if "Undefined variable" in str(x) else f"SyntaxError:{x}"
+        except Exception as x:
+            got[f"p:{pk}"] = f"{type(x).__name__}:{str(x)[:100]}"
     # the SQL functions directly
     for ln, xs in LISTS.items():
         for ps in ("0.5", "0.9", "1") + tuple(BAD):
@@ -123,6 +174,11 @@ def main():
         for ps in PS + BAD:
             out[f"match:{ps}"] = both(stored, frac(ps))
         out["match:none"] = both([], Fraction(1, 2))
+        for kn in KINDS:
+            out[f"kind:unwind:{kn}"] = [answer_kind("disc", kn, m), answer_kind("cont", kn, m)]
+        out["kind:match:int"] = [answer_kind("disc", "int", m), answer_kind("cont", "int", m), "int"]
+        for pk, (src, kind, value) in PARGS.items():
+            out[f"p:{pk}"] = as_built_p(src, kind, value, m)
         for ln, xs in LISTS.items():
             for ps in ("0.5", "0.9", "1") + tuple(BAD):
                 d, cc = pdisc(xs, frac(ps), m), pcont(xs, frac(ps), m)
@@ -152,7 +208,9 @@ def main():
             "scope": "Actual execute_cypher and the SQL functions on IRIS 2026.1 (pin 3eaa79cf): 9 lists (even, odd, ten, "
                      "unsorted, duplicates, negatives, one value, floats, a null) x 11 percentiles (9 in range, 2 out) through "
                      "UNWIND of a literal list; stored values with a null through MATCH with a $p parameter (11 p) and an empty "
-                     "match; the SQL functions on 9 lists x 5 p."}
+                     "match; the SQL functions on 9 lists x 5 p. Iteration 56: the answer kind of each function over integers and floats "
+                     "(UNWIND and stored integers, beside min() as the int-keeping neighbor) and p supplied as a number, null, numeric "
+                     "text, other text, a boolean, a missing parameter, a literal null and a literal number."}
     d = REPO / ".g5/Verus_verification/results/percentile" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s")}))

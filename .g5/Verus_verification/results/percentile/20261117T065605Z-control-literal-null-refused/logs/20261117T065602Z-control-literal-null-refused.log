@@ -1,0 +1,20 @@
+verification results:: 28 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/literal-null-refused/20261117T065602Z/models/percentile/percentile.rs:252:9
+    |
+246 | pub proof fn theorem_non_number_p_not_refused()
+    | ----------------------------------------------- at the end of the function body
+...
+252 |         as_built_p(PSrc::Lit(PVal::Null)) == PRes::RunAtZero,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/literal-null-refused/20261117T065602Z/models/percentile/percentile.rs:258:13
+    |
+257 | pub proof fn theorem_p_departs_exactly_on_non_numbers(s: PSrc)
+    | -------------------------------------------------------------- at the end of the function body
+258 |     ensures (as_built_p(s) == rule_p(s)) == (s is Missing || s == PSrc::Param(PVal::Num) || s == PSrc::Lit(PVal::Num)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

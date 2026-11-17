@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: GetAggregate reads a whole bucket edge by edge too (no pre-aggregates)",
+    "expect_fail_in": [
+      "theorem_one_whole_bucket_reads_statistics"
+    ],
+    "find": "    if whole(b, lo, hi, div) { stat_agg(st, (g, b, s, p)) }",
+    "name": "whole-reads-raw",
+    "replace": "    if whole(b, lo, hi, div) { raw_agg(st.raw, g, s, p, b_lo(b, div), b_hi(b, div)) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_one_whole_bucket_reads_statistics"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "4b99794029a2c0ddafcb948dc885b37eee015e810fcaebf311fe8aad853704a0",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "0aa672856beebcc40eba3864d4315b06321a16c9c4a44beaa4733fa832cc724e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/whole-reads-raw/20261117T065902Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_one_whole_bucket_reads_statistics": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T065902Z-control-whole-reads-raw-theorem_one_whole_bucket_reads_statistics.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T065902Z-control-whole-reads-raw.log",
+    "timed_out": false,
+    "verified": 63
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T065906Z-control-whole-reads-raw/logs/20261117T065902Z-control-whole-reads-raw-theorem_one_whole_bucket_reads_statistics.log": "dec9f11bfcf312bb2855b1c861d8af865f61efa9c20dc2816eacff64f5d47e12",
+    ".g5/Verus_verification/results/temporal_stats/20261117T065906Z-control-whole-reads-raw/logs/20261117T065902Z-control-whole-reads-raw.log": "8c6f6607621db3251d454723fe1c94041ab830a8f9f4a98d53e6a329edd45738"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

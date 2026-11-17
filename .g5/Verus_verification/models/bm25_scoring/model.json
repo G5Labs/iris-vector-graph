@@ -1,7 +1,7 @@
 {
   "name": "bm25_scoring",
   "root": "bm25_scoring.rs",
-  "expected_verified": 32,
+  "expected_verified": 35,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -91,6 +91,42 @@
         "theorem_id_with_colon_dot_digit_rewritten"
       ],
       "classification": "reader (repair direction of F-C0715): bm25_search's `_parse` leaves the ids alone"
+    },
+    {
+      "name": "numeric-ids-as-text",
+      "find": "        (DocId::Num(x), DocId::Num(y)) => x < y,",
+      "replace": "        (DocId::Num(x), DocId::Num(y)) => x > y,",
+      "expect_fail_in": [
+        "theorem_ties_in_subscript_order"
+      ],
+      "classification": "provider premise flipped for this case: numeric ids no longer compare by value (9 and 10 in text order put 10 first)"
+    },
+    {
+      "name": "text-case-folded",
+      "find": "    else if a[0] != b[0] { a[0] < b[0] }",
+      "replace": "    else if a[0] != b[0] { a[0] > b[0] }",
+      "expect_fail_in": [
+        "theorem_ties_in_subscript_order"
+      ],
+      "classification": "collation altered: character codes compared in reverse (dB/da and d10/d9 swap)"
+    },
+    {
+      "name": "sql-entry-validates-k",
+      "find": "        Entry::Sql => KAns::Answer(taken(k, ranked)),",
+      "replace": "        Entry::Sql => if k < 1 { KAns::Refused } else { KAns::Answer(taken(k, ranked)) },",
+      "expect_fail_in": [
+        "theorem_sql_k_nonpositive_empty_others_refuse"
+      ],
+      "classification": "repair of bug-srch-113: kg_BM25 refuses k < 1 like the other two readers"
+    },
+    {
+      "name": "nonpositive-k-takes-all",
+      "find": "pub open spec fn taken(k: int, ranked: nat) -> nat { if k <= 0 { 0 }",
+      "replace": "pub open spec fn taken(k: int, ranked: nat) -> nat { if k <= 0 { ranked }",
+      "expect_fail_in": [
+        "theorem_sql_k_nonpositive_empty_others_refuse"
+      ],
+      "classification": "decision: SearchCore's `count >= k` guard before the first document removed (k <= 0 answers everything)"
     }
   ]
 }

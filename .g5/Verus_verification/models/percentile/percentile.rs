@@ -185,4 +185,77 @@ pub proof fn theorem_empty_and_out_of_range(xs: Seq<int>, pn: int, pd: int)
         !in_range(pn, pd) ==> rule_disc(xs, pn, pd) == Ans::OutOfRange,
 {}
 
+// =============================================================== answer type and the p argument (iteration 56, review 53-55 minors)
+//   Type: _scalar_statistical emits JSON_ARRAYAGG(CAST(x AS DOUBLE)) and the translator types the column FLOAT, so the
+//   reader _float_expr_value (query.py 1243-1260) turns every number into a float. Neo4j (and the TCK's Aggregation6
+//   result tables) answer percentileDisc in the input's type: over integers an integer (20, not 20.0); percentileCont is
+//   always a float. bug-cyp-147.
+//   p argument: a `$p` parameter goes through Python float(context.input_params[p]) (translator.py 28595-28603); a literal
+//   null p is pasted as SQL NULL, which Percentile.cls reads as "" and so as 0 in its arithmetic (provider premise
+//   P-OS-EMPTY-ZERO, observed). bug-cyp-148.
+pub enum NKind { Int, Float }
+/// The values the CAST reads are all doubles; the FLOAT column reader answers a float for every input kind.
+pub open spec fn cast_kind(input: NKind) -> NKind { NKind::Float }
+pub open spec fn disc_answer_kind(input: NKind) -> NKind { cast_kind(input) }
+pub open spec fn cont_answer_kind(input: NKind) -> NKind { NKind::Float }
+/// The rule: percentileDisc returns one of the values, so it keeps their type; percentileCont answers a float.
+pub open spec fn rule_disc_kind(input: NKind) -> NKind { input }
+pub open spec fn rule_cont_kind(input: NKind) -> NKind { NKind::Float }
+
+/// bug-cyp-147: over integers percentileDisc answers a float, where the rule answers an integer.
+pub proof fn theorem_disc_over_ints_answers_float()
+    ensures disc_answer_kind(NKind::Int) == NKind::Float, rule_disc_kind(NKind::Int) == NKind::Int,
+{}
+/// Neighbors: over floats percentileDisc, and percentileCont over anything, keep the rule's type.
+pub proof fn theorem_float_and_cont_kinds_follow_rule(k: NKind)
+    ensures disc_answer_kind(NKind::Float) == rule_disc_kind(NKind::Float), cont_answer_kind(k) == rule_cont_kind(k),
+{}
+
+/// What the caller supplies for p.
+pub enum PVal { Num, Null, NumText, OtherText, Bool }
+pub enum PSrc { Lit(PVal), Param(PVal), Missing }
+pub enum PRes { Run, RunAtZero, RawTypeError, RawValueError, Undefined, Refused }
+/// Python float() of a parameter value: a number, a numeric string and a boolean convert; None raises TypeError,
+/// other text ValueError.
+pub open spec fn py_float(v: PVal) -> PRes {
+    match v {
+        PVal::Num => PRes::Run, PVal::NumText => PRes::Run, PVal::Bool => PRes::Run,
+        PVal::Null => PRes::RawTypeError, PVal::OtherText => PRes::RawValueError,
+    }
+}
+/// As built: a parameter goes through float(); a literal null arrives as SQL NULL and reads as 0 (P-OS-EMPTY-ZERO);
+/// a literal number runs; a parameter not supplied is an undefined variable. Other literal kinds are not in scope.
+pub open spec fn as_built_p(s: PSrc) -> PRes {
+    match s {
+        PSrc::Param(v) => py_float(v),
+        PSrc::Lit(v) => match v { PVal::Null => PRes::RunAtZero, _ => PRes::Run },
+        PSrc::Missing => PRes::Undefined,
+    }
+}
+/// The rule: p is a number; anything else is refused as a Cypher argument error (openCypher leaves a null p unstated;
+/// a null answer would be the other acceptable reading, see NOTES), and a missing parameter is a missing parameter.
+pub open spec fn rule_p(s: PSrc) -> PRes {
+    match s {
+        PSrc::Param(v) => if v == PVal::Num { PRes::Run } else { PRes::Refused },
+        PSrc::Lit(v) => if v == PVal::Num { PRes::Run } else { PRes::Refused },
+        PSrc::Missing => PRes::Undefined,
+    }
+}
+/// bug-cyp-148: a null p parameter raises Python's raw TypeError, other text a raw ValueError, a numeric string and a
+/// boolean are used as numbers, and a literal null p answers the p = 0 value.
+pub proof fn theorem_non_number_p_not_refused()
+    ensures
+        as_built_p(PSrc::Param(PVal::Null)) == PRes::RawTypeError,
+        as_built_p(PSrc::Param(PVal::OtherText)) == PRes::RawValueError,
+        as_built_p(PSrc::Param(PVal::NumText)) == PRes::Run,
+        as_built_p(PSrc::Param(PVal::Bool)) == PRes::Run,
+        as_built_p(PSrc::Lit(PVal::Null)) == PRes::RunAtZero,
+        rule_p(PSrc::Param(PVal::Null)) == PRes::Refused,
+        rule_p(PSrc::Lit(PVal::Null)) == PRes::Refused,
+{}
+/// General: as built follows the rule exactly for numbers and a missing parameter, and departs for every other value.
+pub proof fn theorem_p_departs_exactly_on_non_numbers(s: PSrc)
+    ensures (as_built_p(s) == rule_p(s)) == (s is Missing || s == PSrc::Param(PVal::Num) || s == PSrc::Lit(PVal::Num)),
+{}
+
 } // verus!

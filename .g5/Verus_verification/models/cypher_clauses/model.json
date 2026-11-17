@@ -1,7 +1,7 @@
 {
   "name": "cypher_clauses",
   "root": "cypher_clauses.rs",
-  "expected_verified": 26,
+  "expected_verified": 29,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -239,6 +239,36 @@
         "theorem_opt_neighbors_follow_rule"
       ],
       "classification": "decision: the OPTIONAL WHERE placed in the query's WHERE (drops the row instead of nulling the optional side)"
+    },
+    {
+      "name": "fixed-length-from-row",
+      "find": "    match p { PathPat::Fixed(_) => f == PathFn::Length, PathPat::VarLen => false }",
+      "replace": "    match p { PathPat::Fixed(_) => false, PathPat::VarLen => false }",
+      "expect_fail_in": [
+        "theorem_unmatched_fixed_path_length_is_hops",
+        "theorem_path_fn_departs_exactly_on_unmatched_fixed_length"
+      ],
+      "classification": "decision: length() of a fixed path read from the bound row like nodes()/relationships() (the repair direction, bug-cyp-146)"
+    },
+    {
+      "name": "varlen-length-from-pattern",
+      "find": "    match p { PathPat::Fixed(_) => f == PathFn::Length, PathPat::VarLen => false }",
+      "replace": "    match p { PathPat::Fixed(_) => f == PathFn::Length, PathPat::VarLen => f == PathFn::Length }",
+      "expect_fail_in": [
+        "theorem_bound_or_varlen_path_follows_rule",
+        "theorem_path_fn_departs_exactly_on_unmatched_fixed_length"
+      ],
+      "classification": "decision: a variable-length path's length taken from the pattern instead of _vlp_path_sql's row value"
+    },
+    {
+      "name": "anchor-null-ignored",
+      "find": "    if anchor_null { PathAns::Null }\n    else if length_from_pattern(p, f)",
+      "replace": "    if false { PathAns::Null }\n    else if length_from_pattern(p, f)",
+      "expect_fail_in": [
+        "theorem_bound_or_varlen_path_follows_rule",
+        "theorem_path_fn_departs_exactly_on_unmatched_fixed_length"
+      ],
+      "classification": "decision: the optional_null_row_unconditional branch (null anchor answers NULL) removed"
     }
   ]
 }

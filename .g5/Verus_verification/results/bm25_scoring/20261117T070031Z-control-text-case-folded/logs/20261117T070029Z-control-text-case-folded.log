@@ -1,0 +1,27 @@
+verification results:: 34 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/text-case-folded/20261117T070029Z/models/bm25_scoring/bm25_scoring.rs:384:1
+    |
+384 | pub proof fn theorem_ties_in_subscript_order(k: int, n: int, t: Seq<char>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/text-case-folded/20261117T070029Z/models/bm25_scoring/bm25_scoring.rs:387:9
+    |
+384 | pub proof fn theorem_ties_in_subscript_order(k: int, n: int, t: Seq<char>)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+387 |         before_id(k, DocId::Text(seq!['d', '1', '0']), k, DocId::Text(seq!['d', '9'])),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/text-case-folded/20261117T070029Z/models/bm25_scoring/bm25_scoring.rs:388:9
+    |
+384 | pub proof fn theorem_ties_in_subscript_order(k: int, n: int, t: Seq<char>)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+388 |         before_id(k, DocId::Text(seq!['d', 'B']), k, DocId::Text(seq!['d', 'a'])),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

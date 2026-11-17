@@ -1,0 +1,72 @@
+verification results:: 36 verified, 7 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-reports-more/20261117T070346Z/models/bolt_stream/bolt_stream.rs:307:13
+    |
+305 | pub proof fn theorem_pull_reads_input_rows_then_clears(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+306 |     requires s.pending==Some(rows),
+307 |     ensures record_rows(pull(s,n).out)==selected(rows,n),pull(s,n).state.pending==None,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-reports-more/20261117T070346Z/models/bolt_stream/bolt_stream.rs:313:9
+    |
+310 | pub proof fn theorem_partial_pull_drops_suffix_and_reports_no_more(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+...
+313 |         pull(s,n).out.last()==(Answer::Summary{has_more:None}),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-reports-more/20261117T070346Z/models/bolt_stream/bolt_stream.rs:318:13
+    |
+316 | pub proof fn theorem_all_rows_for_nonpositive_pull(s:Session,rows:Rows,n:int)
+    | ----------------------------------------------------------------------------- at the end of the function body
+317 |     requires s.pending==Some(rows),n<=0,
+318 |     ensures record_rows(pull(s,n).out)==rows,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-reports-more/20261117T070346Z/models/bolt_stream/bolt_stream.rs:322:49
+    |
+320 | pub proof fn theorem_commit_preserves_but_rollback_discards(s:Session,rows:Rows)
+    | -------------------------------------------------------------------------------- at the end of the function body
+321 |     requires s.pending==Some(rows),
+322 |     ensures commit(s).state.pending==Some(rows),record_rows(pull(commit(s).state,-1).out)==rows,
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-reports-more/20261117T070346Z/models/bolt_stream/bolt_stream.rs:347:9
+    |
+344 | pub proof fn theorem_raw_pull_field_drives_records(s:Session,rows:Rows,n:u8)
+    | ---------------------------------------------------------------------------- at the end of the function body
+...
+347 |         record_rows(dispatch(s,pull_body(n),failed_result()).unwrap().out)==selected(rows,tiny(n).unwrap()),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-reports-more/20261117T070346Z/models/bolt_stream/bolt_stream.rs:391:13
+    |
+389 |   pub proof fn theorem_raw_wire_run_then_pull_final_records(s:Session,cols:Names,rows:Rows,n:u8)
+    |   ---------------------------------------------------------------------------------------------- at the end of the function body
+390 |       requires s.phase!=Phase::Failed,s.phase!=Phase::Defunct,cols.len()<3,0<n<=127,
+391 |       ensures ({let start=WireSession{receiver:empty_receiver(),session:s,open:true};
+    |  _____________^
+392 | |         let run_step=advance(start,encode(run_body(),max_chunk()),EngineResult::Rows{columns:cols,rows,error:None}).unwrap();
+393 | |         let pulled=advance(run_step.next,encode(pull_body(n),max_chunk()),failed_result()).unwrap();
+394 | |         let again=advance(pulled.next,encode(pull_body(n),max_chunk()),failed_result()).unwrap();
+395 | |         run_step.engine_calls==1 && pulled.engine_calls==0 && pulled.next.session.pending==None
+396 | |         && record_rows(pulled.out)==selected(rows,n as int) && record_rows(again.out)==seq![]}),
+    | |_______________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-reports-more/20261117T070346Z/models/bolt_stream/bolt_stream.rs:424:13
+    |
+422 | pub proof fn theorem_positive_pull_is_prefix(s:Session,rows:Rows,n:int)
+    | ----------------------------------------------------------------------- at the end of the function body
+423 |     requires s.pending==Some(rows),0<n<rows.len(),
+424 |     ensures record_rows(pull(s,n).out)==rows.take(n),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 7 previous errors
+

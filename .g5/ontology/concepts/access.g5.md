@@ -34,7 +34,7 @@ Bolt carries an ordered stream of messages and results over TCP or WebSocket. Ch
 - Working assumption: Keep ambiguous write outcomes distinct from known pre-write failure; automatic resend of non-idempotent writes is not presumed safe.
 - Working assumption: Retry a read, or a write known not to have executed (a connection error raised before the statement was sent). Never re-run a write whose outcome is unknown; return an error that says the outcome is unknown. A write carrying a verified idempotency key may be retried.
 - Working assumption: after an ambiguous outcome resend only a known read or an explicitly idempotent operation; report an unknown outcome otherwise; treat client and server retries as one protocol. Note that this narrows a documented feature (compatibility decision).
-- Working assumption: Assume per-statement commits on Bolt until an explicit transaction contract is established.
+- A statement run outside an explicit transaction commits on its own when it finishes. What an explicit transaction promises is owned by [Bolt transactions](#access.bolt.transactions).
 
 
 <a id="access.bolt.framing"></a>
@@ -50,9 +50,18 @@ A message can use any positive chunk sizes through 65,535 bytes and ends with a 
 
 A successful RUN supplies a result stream, preserving admitted values and field order.
 - PULL with a positive n returns at most n records, keeps the unread suffix, and reports that more records remain until the stream is exhausted; n=-1 returns every remaining record.
-- RESET discards the pending result and permits a later RUN.
+- RESET discards the pending result and permits a later RUN. ROLLBACK also discards the pending result; what it does to the transaction's writes is owned by [Bolt transactions](#access.bolt.transactions).
 - A failed RUN emits FAILURE, clears pending rows, and ordinary requests are ignored until recovery.
+- Today a PULL with a positive n returns the first n records and drops the rest, without saying that more remained ([finding](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1602)).
 
+
+<a id="access.bolt.transactions"></a>
+[I · access.bolt.transactions]
+
+An explicit Bolt transaction keeps its writes only if it commits. A ROLLBACK, a failed statement, a RESET or a closed connection before COMMIT must leave none of the transaction's writes behind; a server that cannot do this must refuse BEGIN with a FAILURE, so the client knows each statement commits on its own.
+- A statement outside an explicit transaction commits when it finishes, and a committed transaction keeps all of its writes.
+- Which of the two forms IVG keeps, real transactions or a refused BEGIN, is not decided ([question](../../Verus_verification/open_questions.md#access.transactions)).
+- Today BEGIN, COMMIT and ROLLBACK all answer SUCCESS and change nothing, and each statement commits as it runs. A rolled-back transaction, one with a failed statement, one ended by RESET or a closed connection, and an aborted `execute_write` all keep their writes while the driver reports no error ([finding](../../Verus_verification/bugs_issues.md#bug-plt-127)).
 
 <a id="access.bolt.versions"></a>
 [I · access.bolt.versions]
@@ -85,7 +94,9 @@ A value in a Bolt record arrives with the value and type the engine answers, and
 
 The real privilege boundary is the IRIS login: its database resources and its SQL privileges in the IVG Schema. IVG's server settings add a gate in front of that, not a replacement for it.
 
-- SQL functions that read a global first check that the caller may SELECT the table the global stands for.
+- SQL functions that read a global first check that the caller may SELECT the table the global stands for, and otherwise fail naming that table.
+- The caller holds a privilege when `%All` is among its roles, or when the login or any of its roles holds it on the table or on the table's whole schema. A privilege on only some of a table's columns does not count.
+- A function that checks several tables or privileges names the first one missing, in the order it checks them.
 - SQL functions that write a global first check INSERT or UPDATE on its table.
 - ObjectScript class methods called over the Native API do not check SQL privileges.
 - A login whose database access is read-only cannot write, whatever IVG's settings say.
@@ -268,7 +279,7 @@ Findings: [The Neo4j HTTP transaction route answers a whole node as three text c
 - uncertain
 - Sources: [Bolt protocol commitment](../../../iris_vector_graph/bolt_server.py#L1-L8), [ADMIN_API](../../../docs/ADMIN_API.md); [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/)
 - Verus: [bolt_stream model and limits](../../Verus_verification/models/bolt_stream/NOTES.md), as-built byte/state transcription; raw framing through admitted RUN/PULL final records, no generic codec/provider/network or database transaction proof.
-- Children: [framing](#access.bolt.framing), [result stream](#access.bolt.results), [versions](#access.bolt.versions), [errors](#access.bolt.errors), [graph values](#access.bolt.graph_values)
+- Children: [framing](#access.bolt.framing), [result stream](#access.bolt.results), [transactions](#access.bolt.transactions), [versions](#access.bolt.versions), [errors](#access.bolt.errors), [graph values](#access.bolt.graph_values)
 - Expands: [Entry points](#access.surfaces)
 - agent
 - user-facing-behavior, data-integrity
@@ -304,7 +315,7 @@ State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manife
 
 - design-verified
 - Sources: [primary message specification: PULL](https://neo4j.com/docs/bolt/current/bolt/message/), [`_handle_run/_handle_pull/_handle_reset` and dispatch](../../../iris_vector_graph/bolt_server.py#L500-L669)
-- Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `theorem_raw_wire_run_then_pull_final_records`, `theorem_partial_pull_drops_suffix_and_reports_no_more`, `theorem_raw_error_string_decides_failure`, `theorem_commit_preserves_but_rollback_discards`, `theorem_reset_allows_next_result`; [scope](../../Verus_verification/models/bolt_stream/NOTES.md). Admitted scalar/list/map cells and fixed canonical request fragments, not general PackStream/graph objects or SQL/provider execution.
+- Verus: [bolt_stream.rs](../../Verus_verification/models/bolt_stream/bolt_stream.rs): `theorem_raw_wire_run_then_pull_final_records`, `theorem_partial_pull_drops_suffix_and_reports_no_more`, `theorem_raw_error_string_decides_failure`, `theorem_commit_preserves_but_rollback_discards` (pending rows only, not writes), `theorem_reset_allows_next_result`; [scope](../../Verus_verification/models/bolt_stream/NOTES.md). Admitted scalar/list/map cells and fixed canonical request fragments, not general PackStream/graph objects or SQL/provider execution.
 - Expands: [Bolt stream](#access.bolt)
 - agent
 - user-facing-behavior, data-integrity
@@ -313,9 +324,28 @@ Observed: positive n slices rows then clears the entire pending result and omits
 
 Iteration 55: the PULL suffix loss reproduced with the neo4j driver 6.4.1 (`fetch_size=2` receives 2 of 5 records, no error); Bolt is not capped at 1,000 rows as the HTTP routes are.
 
-Findings: [An integer result past 64 bits ends the Bolt session](../../Verus_verification/bugs_issues.md#bug-plt-125); [PULL drops its unread suffix](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1602); [Explicit transactions commit per RUN](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1601).
+Findings: [An integer result past 64 bits ends the Bolt session](../../Verus_verification/bugs_issues.md#bug-plt-125); [PULL drops its unread suffix](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1602). Explicit transactions moved to [Bolt transactions](#access.bolt.transactions) in iteration 56.
 
 State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manifest.json)
+
+### access.bolt.transactions
+
+- design-verified
+- uncertain
+- Sources: [BEGIN/COMMIT/ROLLBACK dispatch](../../../iris_vector_graph/bolt_server.py#L500-L510), [`_handle_run`](../../../iris_vector_graph/bolt_server.py#L567-L622), [`_handle_reset`](../../../iris_vector_graph/bolt_server.py#L662-L667); [primary Bolt message specification: BEGIN, COMMIT, ROLLBACK, RESET](https://neo4j.com/docs/bolt/current/bolt/message/); [USER_GUIDE: a caller's rollback removes IVG's writes (engine)](../../../docs/USER_GUIDE.md); [README: a neo4j-driver compatible server](../../../README.md)
+- Verus: [bolt_tx.rs](../../Verus_verification/models/bolt_tx/bolt_tx.rs) `step`, the rule `neo`, general `theorem_rollback_keeps_writes`, `theorem_rollback_departs_iff_writes`, `theorem_failed_tx_keeps_earlier_writes`, `theorem_reset_or_close_keeps_writes`, neighbors `theorem_commit_agrees`, `theorem_autocommit_agrees`, the checked alternative `theorem_refusal_matches_rule` (controls `atomic-tx`, `begin-refused`, `rollback-answers-failure`, `run-not-committed`, `failed-run-writes`, `failure-not-sticky`, `rule-rollback-keeps`); [scope](../../Verus_verification/models/bolt_tx/NOTES.md)
+- Evidence: [review 53-55 F1 probe](../../uplift/consolidated/iteration-56/review-probes/rv55b-observed-20261117T064330Z.json); [bolt_tx binding](../../Verus_verification/results/bolt_tx/20261117T065936Z-binding/receipt.json) (raw Bolt 4.4 client and neo4j driver 6.4.1)
+- Expands: [Bolt stream](#access.bolt)
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered in iteration 56 from the Bolt message specification, the README's neo4j-driver compatibility claim and the engine's own transaction contract (USER_GUIDE: a caller's rollback removes IVG's writes). No product document says Bolt transactions are unsupported. Both answers the open question lists keep the rule above: either real transactions, or a refused BEGIN; neither allows answering SUCCESS to a ROLLBACK whose writes stay. The open choice is which of the two.
+
+Open questions: [Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning?](../../Verus_verification/open_questions.md#access.transactions)
+
+Findings: [A Bolt rollback keeps the transaction's writes](../../Verus_verification/bugs_issues.md#bug-plt-127) (formerly F-1601)
+
+State machines: [bolt transactions](../../Verus_verification/models/bolt_tx/manifest.json)
 
 ### access.bolt.versions
 
@@ -365,13 +395,16 @@ State machines: [bolt answers](../../Verus_verification/models/bolt_answers/mani
 
 ### access.iris_boundary
 
-- Sources: [ADMIN_GUIDE §3 Privileges](../../../docs/ADMIN_GUIDE.md); [SqlPrivilege.cls](../../../iris_src/src/Graph/KG/SqlPrivilege.cls)
+- Sources: [ADMIN_GUIDE §3 Privileges](../../../docs/ADMIN_GUIDE.md); [ADMIN_GUIDE, table or schema counts, columns do not](../../../docs/ADMIN_GUIDE.md#L566-L576); [SqlPrivilege.cls](../../../iris_src/src/Graph/KG/SqlPrivilege.cls)
+- Formal: [`require`, `holds_priv`, `check_priv`, `theorem_all_passes`, `theorem_single_check_iff_holds`, `theorem_column_only_select_refused`, `theorem_table_schema_role_select_pass`, `theorem_write_names_first_missing`](../../Verus_verification/models/sql_procs/sql_procs.rs)
 - Expands: [Entry points](#access.surfaces)
 - agent
 - security, architecture-decision
 - test-coverage
 
 Introduced in 4.6.0 (R280 readers, R289 writers). Live coverage: `tests/e2e/test_460_r280_sql_global_readers_privilege_e2e.py`, `tests/e2e/test_460_r289_sql_writers_privilege_e2e.py`, and the role rows in `tests/e2e/test_460_r202_reading_role_e2e.py`, `test_460_r050_select_only_role_e2e.py`, `test_460_r311_writer_role_e2e.py`. Observed: `kg_IVF` checks a table named by a global that any database writer can change.
+
+Iteration 56 (review 53-55 F4): the verdict is derived from the caller's recorded grants, not supplied. The sql_procs binding calls MatchEdges, MatchEdgesAllGraphs, DijkstraPath, backfill_temporal_rows and rebuild_edge_indices as eight users (no grant, schema SELECT, schema write, table SELECT, column-only SELECT, a role holding table SELECT, schema SELECT with INSERT on nodes only, %All) and compares the verdict and the table it names; CheckPrivilege's treatment of table, schema and column grants is the provider premise P-CHECKPRIV, observed there.
 
 Findings: [The sample environment file sets IRIS_USER, but the server reads IRIS_USERNAME and silently connects as _SYSTEM](../../Verus_verification/bugs_issues.md#bug-plt-009); [The IVF SQL function checks the privilege on a table that the index's own global names](../../Verus_verification/bugs_issues.md#bug-plt-023)
 

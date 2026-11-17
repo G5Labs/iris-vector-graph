@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "repair of bug-tmp-108: an empty source or predicate is always refused (the owner's rule); the as-built quiet answer 0 is then not provable",
+    "expect_fail_in": [
+      "theorem_empty_key_quiet_cut_window_answers_zero",
+      "theorem_empty_key_witness"
+    ],
+    "find": "        _ => if some_whole(lo, hi, div) || ts_present(st, g, lo, hi) { KAns::Raises } else { KAns::Agg(zero()) },",
+    "name": "empty-key-refused",
+    "replace": "        _ => KAns::Raises,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_key_quiet_cut_window_answers_zero",
+      "theorem_empty_key_witness"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "4b99794029a2c0ddafcb948dc885b37eee015e810fcaebf311fe8aad853704a0",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "0aa672856beebcc40eba3864d4315b06321a16c9c4a44beaa4733fa832cc724e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/empty-key-refused/20261117T070006Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_key_quiet_cut_window_answers_zero": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T070006Z-control-empty-key-refused-theorem_empty_key_quiet_cut_window_answers_zero.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_empty_key_witness": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T070006Z-control-empty-key-refused-theorem_empty_key_witness.log",
+        "timed_out": false,
+        "verified": 3
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T070006Z-control-empty-key-refused.log",
+    "timed_out": false,
+    "verified": 62
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T070012Z-control-empty-key-refused/logs/20261117T070006Z-control-empty-key-refused-theorem_empty_key_quiet_cut_window_answers_zero.log": "24aed009d30431e3c15f06b6b5cee20f64bd8d5c6bd92df64744650af77ea1af",
+    ".g5/Verus_verification/results/temporal_stats/20261117T070012Z-control-empty-key-refused/logs/20261117T070006Z-control-empty-key-refused-theorem_empty_key_witness.log": "c3344eeb7767bd7566ead66573fdbae877c8f1d7f6f05aaaed98abb0496b8209",
+    ".g5/Verus_verification/results/temporal_stats/20261117T070012Z-control-empty-key-refused/logs/20261117T070006Z-control-empty-key-refused.log": "b21f206f3f75f56c4264e9a8a26861ef706245ec73e69f389ca5504515e15e9f"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

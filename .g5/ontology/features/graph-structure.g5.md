@@ -258,9 +258,9 @@ A bulk path that writes rows without index upkeep must leave no duplicate rows a
 <a id="structure.adjacency.scan"></a>
 [I · structure.adjacency.scan]
 
-The SQL function `MatchEdges(source, predicate, shard, graph)` answers one graph's out-edges from the adjacency index, and `MatchEdgesAllGraphs(source, predicate, shard)` answers every graph's, each edge with its graph. A caller without SELECT on `rdf_edges` is refused before anything is read.
+The SQL function `MatchEdges(source, predicate, shard, graph)` answers one graph's out-edges from the adjacency index, and `MatchEdgesAllGraphs(source, predicate, shard)` answers every graph's, each edge with its graph. A caller without SELECT on `rdf_edges` is refused before anything is read ([who holds SELECT](../concepts/access.g5.md#access.iris_boundary)).
 - An empty source means every source, and an empty or NULL predicate every predicate.
-- For `MatchEdges` a graph of `''`, NULL, 0 or none is the default graph alone; no value of it means every graph.
+- For `MatchEdges` a graph of `''`, NULL, 0, `'0'` or none is the default graph alone; no value of it means every graph. SQL hands `''` to the function as a character 0, which it reads as empty.
 - Each edge carries its stored weight, 1.0 when it has none. A triple held by two graphs is answered once for each.
 - The `shard` argument is not read: every value answers the same edges.
 - `IVG_EDGESCAN=1` sends a Cypher hop from a node named by its id, with no `USE GRAPH` or `USE GRAPH ''`, through this scan instead of the edge rows. It must answer what the default plan answers. Today the hop's edges are the same, but every relationship property, `r.weight` included, reads null on the scan ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-133)).
@@ -703,8 +703,8 @@ Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leav
 
 ### structure.adjacency.scan
 - Sources: [SqlProcs MatchEdges and MatchEdgesAllGraphs](../../../iris_src/src/Graph/KG/SqlProcs.cls#L145-L155), [EdgeScan header and scans](../../../iris_src/src/Graph/KG/EdgeScan.cls#L1-L145), [the IVG_EDGESCAN hop](../../../iris_vector_graph/cypher/translator.py#L16467-L16530), [a scan alias's property is NULL](../../../iris_vector_graph/cypher/translator.py#L22266-L22273), [ADMIN_GUIDE, global readers check SELECT](../../../docs/ADMIN_GUIDE.md#L566-L576), [ADMIN_GUIDE, IVG_EDGESCAN](../../../docs/ADMIN_GUIDE.md#L1248), [CHANGELOG, '' as every predicate (R269)](../../../CHANGELOG.md#L1499)
-- Formal: [sql_procs](../../Verus_verification/models/sql_procs/sql_procs.rs) `match_edges`, `match_all`, `theorem_empty_predicate_every_predicate`, `theorem_shard_ignored`, `theorem_graph_scoped_vs_all`, `theorem_edgescan_reads_null_property`
-- Evidence: [frozen predictions](../../uplift/consolidated/iteration-53/sqlprocs-PAIRS.md) ME1-ME5, [probe](../../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json), [binding](../../Verus_verification/results/sql_procs/20261117T051429Z-binding/receipt.json)
+- Formal: [sql_procs](../../Verus_verification/models/sql_procs/sql_procs.rs) `match_edges`, `match_all`, `theorem_empty_predicate_every_predicate`, `theorem_shard_ignored`, `theorem_graph_scoped_vs_all`, `theorem_edgescan_reads_null_property`, `graph_arg_key`, `theorem_default_graph_spellings` (iteration 56), `match_edges_sql`, `theorem_column_only_select_refused`, `theorem_table_schema_role_select_pass` (iteration 56)
+- Evidence: [frozen predictions](../../uplift/consolidated/iteration-53/sqlprocs-PAIRS.md) ME1-ME5, [probe](../../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json), [binding](../../Verus_verification/results/sql_procs/20261117T051429Z-binding/receipt.json); iteration 56: binding cases `me_spell_*` (eight spellings of the graph argument) and `priv_i56q_*` (users with recorded grants), [sql_procs results](../../Verus_verification/results/sql_procs/)
 - Expands: [adjacency index](#structure.adjacency)
 - agent
 - architecture-decision

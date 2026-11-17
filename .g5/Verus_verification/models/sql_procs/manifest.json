@@ -13,7 +13,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 16}"
+      "expect": "{\"errors\": 0, \"verified\": 27}"
     },
     {
       "label": "shard-partitions",
@@ -86,6 +86,60 @@
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_rebuild_answers_four_or_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "column-grant-counts",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_column_only_select_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "schema-grant-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_table_schema_role_select_pass\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "roles-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_table_schema_role_select_pass\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "all-not-shortcut",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_all_passes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "first-table-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_write_names_first_missing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nul-not-normalized",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_default_graph_spellings\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-not-default",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_default_graph_spellings\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "zero-text-is-a-name",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_default_graph_spellings\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "readers-check-nodes",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_readers_check_rdf_edges\", \"theorem_column_only_select_refused\", \"theorem_table_schema_role_select_pass\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

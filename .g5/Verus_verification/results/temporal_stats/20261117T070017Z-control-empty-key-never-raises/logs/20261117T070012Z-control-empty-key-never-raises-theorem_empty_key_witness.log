@@ -1,0 +1,20 @@
+verification results:: 3 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/empty-key-never-raises/20261117T070012Z/models/temporal_stats/temporal_stats.rs:1131:13
+     |
+1129 |   pub proof fn theorem_empty_key_witness(e: Ev, t: int)
+     |   ----------------------------------------------------- at the end of the function body
+1130 |       requires t % 300 == 0, t >= 0, e.ts == t + 50,
+1131 |       ensures ({
+     |  _____________^
+1132 | |         let st = St { raw: seq![e], cnt: Map::empty(), sum: Map::empty(), mn: Map::empty(), mx: Map::empty(),
+1133 | |                       hll: Map::empty(), bkt: Map::empty() };
+1134 | |         &&& get_temporal_aggregate_keys(st, 300, e.g, None, Some(e.p), Metric::Count, t + 100, t + 200) == Py::Int(0)
+1135 | |         &&& get_temporal_aggregate_keys(st, 300, e.g, None, Some(e.p), Metric::Count, t + 10, t + 100) == Py::Raises
+1136 | |     }),
+     | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "provider: IRIS accepting those ON expressions would remove the refusal (bug-cyp-142 is conditional on P-OUTER-ON)",
+    "expect_fail_in": [
+      "theorem_outer_arith_or_refused"
+    ],
+    "find": "pub open spec fn iris_accepts_on(c: OptCond) -> bool { !(c == OptCond::OuterArith || c == OptCond::OuterOrOpt) }",
+    "name": "iris-accepts-outer-on",
+    "replace": "pub open spec fn iris_accepts_on(c: OptCond) -> bool { true }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_outer_arith_or_refused"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "b893a377d3296c199cb18b561b87be96d797c5e8a6d50e07e1deb3a106cc299b",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "34bb5126ccce33eac88d4bcd715214baf456224c5e43ce35f779552b1cf8e639"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/iris-accepts-outer-on/20261117T065714Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_outer_arith_or_refused": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065714Z-control-iris-accepts-outer-on-theorem_outer_arith_or_refused.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065714Z-control-iris-accepts-outer-on.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065715Z-control-iris-accepts-outer-on/logs/20261117T065714Z-control-iris-accepts-outer-on-theorem_outer_arith_or_refused.log": "1abb52d4a6dbcac9c648ac0499ef77a2a60de0229c04049b19257a87408d081d",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065715Z-control-iris-accepts-outer-on/logs/20261117T065714Z-control-iris-accepts-outer-on.log": "e7281a82e725e5653f3641abe7ccc603b7e09b464774b7fa8b6b2e13318abe81"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

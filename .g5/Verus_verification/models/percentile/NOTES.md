@@ -48,5 +48,27 @@ visible by binary p.
 - P-AGG-NULL: `JSON_ARRAYAGG` leaves nulls out (observed: [10, null, 30] gives 10 and 20.0).
 - A list parameter (`UNWIND $xs`) fails before the function with this driver ([bug-cyp-125](../../bugs_issues.md#bug-cyp-125)),
   so the binding uses literal lists and stored values.
-- Integer answers read as floats (20.0): the translator types the column FLOAT; owned as built.
+- Integer answers read as floats (20.0): the translator types the column FLOAT; registered in iteration 56 as
+  [bug-cyp-147](../../bugs_issues.md#bug-cyp-147) and modeled (below).
 - Non-numeric values are cast to DOUBLE by the translator; not probed.
+
+## Iteration 56 (review 53-55 minors): answer type and the p argument
+
+30 verified (26 before; [prove](../../results/percentile/20261117T065549Z-prove/receipt.json)). Controls 7, all EXPECTED_FAIL (`20261117T0655*`). Binding **AGREES 168** (156 before; [receipt](../../results/percentile/20261117T065550Z-binding/receipt.json)), 7/7 mutations and the tamper detected.
+
+- **Answer type** (`cast_kind`, `disc_answer_kind`, `cont_answer_kind` vs `rule_disc_kind`, `rule_cont_kind`). Input: the kind
+  of the values (integer or float). `_scalar_statistical` casts every value to DOUBLE and the column is FLOAT, so the
+  reader answers a float for every input. The rule: `percentileDisc` returns one of the values and keeps their type
+  (Neo4j: 20 over integers); `percentileCont` is a float. `theorem_disc_over_ints_answers_float`
+  ([bug-cyp-147](../../bugs_issues.md#bug-cyp-147)); neighbor `theorem_float_and_cont_kinds_follow_rule`; control
+  `disc-keeps-input-kind`. Binding cases `kind:*` (UNWIND integers and floats; stored integers beside `min()`, which keeps
+  int).
+- **The p argument** (`py_float`, `as_built_p` vs `rule_p`). Input: the source (literal, parameter, missing) and the
+  value kind (number, null, numeric text, other text, boolean). A parameter goes through Python `float()`
+  (`translator.py` 28595-28603): None raises `TypeError`, other text `ValueError`, and a numeric string or a boolean
+  converts. A literal null is pasted as SQL NULL, which `Percentile.cls` reads as "" and so as 0 (premise
+  P-OS-EMPTY-ZERO, observed). The rule refuses every non-number as a Cypher argument error; openCypher does not say
+  whether a null p fails or answers null, and both readings reject today's answers.
+  `theorem_non_number_p_not_refused`, general `theorem_p_departs_exactly_on_non_numbers`
+  ([bug-cyp-148](../../bugs_issues.md#bug-cyp-148)); controls `null-param-refused`, `literal-null-refused`. Binding cases
+  `p:*` (9).

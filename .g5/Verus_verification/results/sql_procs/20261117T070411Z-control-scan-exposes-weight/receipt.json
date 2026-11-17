@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "reader: the edge-scan alias exposes its `w` column for `r.weight` (the bug-cyp-133 repair direction)",
+    "expect_fail_in": [
+      "theorem_edgescan_reads_null_property"
+    ],
+    "find": "    match pl { Plan::Rows => a.w, Plan::Scan => None }",
+    "name": "scan-exposes-weight",
+    "replace": "    match pl { Plan::Rows => a.w, Plan::Scan => a.w }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_edgescan_reads_null_property"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/sql_procs/model.json": "111d43dd8222f7adf2f297096b86fb269c4cf7eed5071528e506ad6ab71fca02",
+    ".g5/Verus_verification/models/sql_procs/sql_procs.rs": "86a7392c4a2b963013b473d18e566dd47f93a9f3173e3ce428a63e5bd2aaa1b4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/scan-exposes-weight/20261117T070409Z/models/sql_procs/sql_procs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_edgescan_reads_null_property": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T070409Z-control-scan-exposes-weight-theorem_edgescan_reads_null_property.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T070409Z-control-scan-exposes-weight.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sql_procs/20261117T070411Z-control-scan-exposes-weight/logs/20261117T070409Z-control-scan-exposes-weight-theorem_edgescan_reads_null_property.log": "0508f758da2b4158523616bfe92b7246f32f7586e9b0354e44e3199653af7150",
+    ".g5/Verus_verification/results/sql_procs/20261117T070411Z-control-scan-exposes-weight/logs/20261117T070409Z-control-scan-exposes-weight.log": "578a4ed4c278a78e6da9dbfb5ee417bc44db5443a6061b0f78888ee27e7bd9b2"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/raw-purge-drops-statistics/20261117T065916Z/models/temporal_stats/temporal_stats.rs:577:13
+    |
+575 |   pub proof fn theorem_raw_purge_keeps_statistics(st: St, g: int, lo: int, hi: int, s: int, p: int, x: int, y: int)
+    |   ----------------------------------------------------------------------------------------------------------------- at the end of the function body
+576 |       requires lo <= x, y < hi,
+577 |       ensures ({
+    |  _____________^
+578 | |         let st2 = purge_raw_before(st, g, lo, hi);
+579 | |         &&& st2.cnt == st.cnt && st2.sum == st.sum && st2.mn == st.mn && st2.mx == st.mx && st2.hll == st.hll && st2.bkt == st.bkt
+580 | |         &&& raw_agg(st2.raw, g, s, p, x, y) == zero()
+581 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

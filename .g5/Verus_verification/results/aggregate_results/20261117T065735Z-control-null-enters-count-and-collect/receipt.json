@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_null_count_star_differs"
+    ],
+    "find": "present(v:Val)->bool {v!=Val::Null}",
+    "name": "null-enters-count-and-collect",
+    "replace": "present(v:Val)->bool {true}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_null_count_star_differs"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "894798511c947dc8f5eb9a947f8386a992ef470363f8daaa27a89d57eb5d3d2e",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/controls/null-enters-count-and-collect/20261117T065733Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_null_count_star_differs": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/20261117T065733Z-control-null-enters-count-and-collect-theorem_null_count_star_differs.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/20261117T065733Z-control-null-enters-count-and-collect.log",
+    "timed_out": false,
+    "verified": 73
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261117T065735Z-control-null-enters-count-and-collect/logs/20261117T065733Z-control-null-enters-count-and-collect-theorem_null_count_star_differs.log": "9a4919de8a769adbd921cd0e7ca0d27e1832ad120d40f161380ec314877af01f",
+    ".g5/Verus_verification/results/aggregate_results/20261117T065735Z-control-null-enters-count-and-collect/logs/20261117T065733Z-control-null-enters-count-and-collect.log": "a61c783f7168cfdadd1e9ed2506029c15913d61af6c22a48df191d32e8f41259"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

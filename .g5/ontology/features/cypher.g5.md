@@ -378,12 +378,13 @@ An aggregate uses the rows reaching its query stage, and grouping chooses which 
 <a id="query.aggregation.keys"></a>
 [I · query.aggregation.keys]
 
-Grouping keys, `DISTINCT` and `count(DISTINCT)` treat two values as one exactly when they are [equal](#query.values.equality) values of the same type, on both paths: the integer 1 and the string "1" are two groups.
+Grouping keys, `DISTINCT` and `count(DISTINCT)` treat two values as one when they are [equal](#query.values.equality), on both paths. A number and a string are never one value, so the integer 1 and the string "1" are two groups. Whether an integer and a float of equal value, such as 1 and 1.0, are one value is [still open](../../Verus_verification/open_questions.md#query.aggregation.keys.numbers); openCypher compares numbers by value.
 - Today on the SQL path a grouping key, `count(DISTINCT)` and `WITH DISTINCT` compare a stored value's text. So a stored number and the string that spells it (1 and "1", 1.0 and "1") are one group, whose key reads as one of them, while `RETURN DISTINCT` and `collect(DISTINCT)` keep them apart ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-135)).
 - Today the native executor groups by type, so the same grouped query answers different groups on the two paths ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-136)).
 - Over a list the query holds, `UNWIND [1, '1'] AS k` also gives one group and one `DISTINCT` row.
 - A boolean and the string that spells it are one stored value ([documented known issue](../../../docs/KNOWN_ISSUES.md#L332-L368)), so they stay one group on both paths.
 - Working assumption: an integer and a float of equal value (1 and 1.0) are two groups, as the native executor answers; this is provisional.
+- Today on the SQL path a grouping key and `count(DISTINCT)` make 1 and 1.0 one value, while `RETURN DISTINCT` keeps them apart. Which of the two departs depends on the open question.
 
 
 <a id="query.aggregation.arithmetic"></a>
@@ -405,6 +406,7 @@ Arithmetic over aggregates gives the openCypher number: over `v` 1, 2 and `f` 2.
 - It reads relationships written by the API, by Cypher and in a named graph alike, and always runs on the SQL path.
 - Today a `WHERE` inside it that combines a variable bound earlier with arithmetic or `OR`, such as `b.v = a.v + 1`, fails the query with SQLCODE -94 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-142)).
 - Today a comparison in that `WHERE` on a property of a variable bound earlier, such as `b.v = a.v`, drops the rows of the nodes that lack the property instead of keeping them with nulls ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-143)).
+- A path variable the `OPTIONAL MATCH` did not bind is null, and so are `length(p)`, `nodes(p)` and `relationships(p)`. Today `length(p)` of an unbound fixed-length path answers the pattern's relationship count instead, such as 1 for `p = (a)-[:K]->(b)`, while `p IS NULL` is true. A variable-length path gives null as it should ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-146)).
 
 
 <a id="query.paging"></a>
@@ -592,7 +594,8 @@ Cypher's built-in list, string, map and aggregate functions give the openCypher 
 `percentileDisc(x, p)` returns the stored value at the nearest rank, and `percentileCont(x, p)` interpolates between the two nearest values. Both leave out nulls, give null when no value remains, and fail with NumberOutOfRange when `p` is outside 0 to 1.
 - Over 10, 20, 30 and 40 at 0.5, `percentileDisc` gives 20 and `percentileCont` 25.0, as Neo4j does.
 - Today `percentileDisc` takes the value at position (n − 1) × p rounded down, not the nearest rank. Over 10, 20, 30 and 40, p 0.6 gives 20 and p 0.9 gives 30, where Neo4j gives 30 and 40; p 0.95 over 1 to 10 gives 9, not 10 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-134)).
-- Today both answer a float, also over whole numbers (20.0).
+- `percentileDisc` answers one of the values, so over integers it answers an integer, as Neo4j does; `percentileCont` answers a float. Today both answer a float, also over integers (20.0) ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-147)).
+- `p` must be a number. Today a null `$p` parameter fails with Python's raw `TypeError` and other text with a raw `ValueError`; a numeric string or a boolean parameter is used as a number (true as 1); and a literal `null` answers the p = 0 value ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-148)).
 
 <a id="query.functions.random"></a>
 [I · query.functions.random]
@@ -1050,7 +1053,7 @@ State machines: [procedure results](../../Verus_verification/models/procedure_re
 - design-verified
 - Children: [keys](#query.aggregation.keys), [arithmetic](#query.aggregation.arithmetic)
 - Sources: [USER_GUIDE, grouped reporting](../../../docs/USER_GUIDE.md#L165); [typed property sums and WITH](../../../tests/unit/test_sum_column_typing.py); [known-list typed collection](../../../tests/unit/test_460_r308_collect_typed.py); [empty result columns](../../../tests/unit/test_empty_result_columns.py); [aggregate order and page scope](../../../tests/unit/test_order_limit_aggregate_scope.py); [count DISTINCT with LIMIT](../../../tests/e2e/test_470_issue13_count_distinct_limit_e2e.py)
-- Verus: [aggregate_results.rs](../../Verus_verification/models/aggregate_results/aggregate_results.rs) `theorem_raw_group_SUM_reaches_typed_scalar_reader`, `theorem_key_enumeration_complete_unique`, `theorem_full_output_before_page` and `theorem_reader_projection_keeps_exact_public_cells`; [scope](../../Verus_verification/models/aggregate_results/NOTES.md). Raw rows and a RETURN AST fragment derive groups, folds, result kind and full output before paging; exact integer/half-unit arithmetic, SQL equality/aggregate operations, JSON spelling/parsing, raw-name generation and collation remain stated provider frames. Native Group/GroupOf/EmitGroups have inspected typed count transcriptions only, under their nonnull/pW1/equality/order premises; the SQL native panels do not execute those bodies. OPTIONAL synthetic fallback remains observed and partial under bug-agg-001.
+- Verus: [aggregate_results.rs](../../Verus_verification/models/aggregate_results/aggregate_results.rs) `theorem_raw_group_SUM_reaches_typed_scalar_reader`, `theorem_key_enumeration_complete_unique`, `theorem_full_output_before_page` and `theorem_reader_projection_keeps_exact_public_cells`; [scope](../../Verus_verification/models/aggregate_results/NOTES.md). Narrowed (iterations 54 and 56, [model NOTES](../../Verus_verification/models/aggregate_results/NOTES.md#narrowed-scope-iterations-54-and-56)): `theorem_key_enumeration_complete_unique` takes key equality as a premise that IRIS meets only for keys of one kind ([keys](#query.aggregation.keys)); `theorem_numeric_distinct_normalizes_int_and_whole_double` is conditional on the open question [query.aggregation.keys.numbers](../../Verus_verification/open_questions.md#query.aggregation.keys.numbers) and is not a guarantee under the provisional working assumption. Raw rows and a RETURN AST fragment derive groups, folds, result kind and full output before paging; exact integer/half-unit arithmetic, SQL equality/aggregate operations, JSON spelling/parsing, raw-name generation and collation remain stated provider frames. Native Group/GroupOf/EmitGroups have inspected typed count transcriptions only, under their nonnull/pW1/equality/order premises; the SQL native panels do not execute those bodies. OPTIONAL synthetic fallback remains observed and partial under bug-agg-001.
 - agent
 - user-facing-behavior, data-integrity
 
@@ -1083,7 +1086,7 @@ Findings: [A grouping key and count(DISTINCT) treat a stored number and the stri
 - agent
 - user-facing-behavior, data-integrity
 
-Recovered in iteration 54: the frozen predictions AG1 and AG2 missed. This also bounds the inherited [aggregate results](../../Verus_verification/models/aggregate_results/NOTES.md) model, whose SQL key equality was a named provider premise: on IRIS it holds only for keys of one kind.
+Recovered in iteration 54: the frozen predictions AG1 and AG2 missed. This also bounds the inherited [aggregate results](../../Verus_verification/models/aggregate_results/NOTES.md) model, whose SQL key equality was a named provider premise: on IRIS it holds only for keys of one kind. Iteration 56 (review 53-55 F3): the opening sentence no longer states the integer/float case as settled, and the model's `theorem_numeric_distinct_normalizes_int_and_whole_double` is marked conditional on the open question. The bullet on 1 and 1.0 today rests on the reviewer's probe (`int_float_group`: one group of two; `int_float_countdistinct`: 1; `int_float_distinct`: two rows; [observations](../../uplift/consolidated/iteration-56/review-probes/rv55-observed-20261117T064229Z.json)).
 
 Findings: [A grouping key and count(DISTINCT) treat a stored number and the string spelling it as one value, while RETURN DISTINCT keeps them apart](../../Verus_verification/bugs_issues.md#bug-cyp-135); [The SQL path and the native executor group the same stored values differently](../../Verus_verification/bugs_issues.md#bug-cyp-136)
 
@@ -1104,13 +1107,15 @@ Findings: [Arithmetic over two property aggregates answers a rounded integer: su
 ### query.optional
 
 - Sources: openCypher TCK `Null1`-`2`, `Graph3`-`9` and `Aggregation*`; [ADMIN_GUIDE, OPTIONAL MATCH is SQL-only](../../../docs/ADMIN_GUIDE.md#L756-L769); [W59 predictions OM1-OM7 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
-- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `placed_in_on`, `outer_guarded`, `as_built_opt`; departures `theorem_outer_guard_drops_row`, `theorem_outer_arith_or_refused` (conditional on the IRIS premise P-OUTER-ON); neighbor `theorem_opt_neighbors_follow_rule` (controls `opt-guard-in-on`, `range-guarded`, `iris-accepts-outer-on`, `opt-cond-in-where`)
+- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `placed_in_on`, `outer_guarded`, `as_built_opt`; departures `theorem_outer_guard_drops_row`, `theorem_outer_arith_or_refused` (conditional on the IRIS premise P-OUTER-ON); neighbor `theorem_opt_neighbors_follow_rule` (controls `opt-guard-in-on`, `range-guarded`, `iris-accepts-outer-on`, `opt-cond-in-where`). Path functions of an unbound path (iteration 56): `as_built_path_fn`, `length_from_pattern`; departure `theorem_unmatched_fixed_path_length_is_hops`, general `theorem_path_fn_departs_exactly_on_unmatched_fixed_length`, neighbor `theorem_bound_or_varlen_path_follows_rule` (controls `fixed-length-from-row`, `varlen-length-from-pattern`, `anchor-null-ignored`)
 - agent
 - user-facing-behavior
 
 Recovered in iteration 54; every frozen prediction OM1-OM7 held on API-written, Cypher-written and named-graph data, and the native executor declined every shape, as documented. The WHERE placement was then read in the source and checked over seven condition shapes; two of them depart.
 
-Findings: [A WHERE inside OPTIONAL MATCH that combines an earlier variable's property with arithmetic or OR fails the query with SQLCODE -94](../../Verus_verification/bugs_issues.md#bug-cyp-142); [A comparison on an earlier variable's property inside an OPTIONAL MATCH WHERE drops the rows of nodes that lack the property](../../Verus_verification/bugs_issues.md#bug-cyp-143) The inherited exceptions stay with their owners: [a leading grouped OPTIONAL MATCH's sum](../../Verus_verification/bugs_issues.md#bug-agg-001) and the two refused variable-length shapes ([conformance](#query.conformance)).
+Iteration 56 (review 53-55 F2): the reviewer found that `length(p)` of an unbound path answers 1; reproduced on both engines, with `nodes(p)`, `relationships(p)`, a variable-length path and a null anchor as neighbors.
+
+Findings: [A WHERE inside OPTIONAL MATCH that combines an earlier variable's property with arithmetic or OR fails the query with SQLCODE -94](../../Verus_verification/bugs_issues.md#bug-cyp-142); [A comparison on an earlier variable's property inside an OPTIONAL MATCH WHERE drops the rows of nodes that lack the property](../../Verus_verification/bugs_issues.md#bug-cyp-143); [length(p) of a path an OPTIONAL MATCH did not bind answers the pattern's length instead of null](../../Verus_verification/bugs_issues.md#bug-cyp-146) The inherited exceptions stay with their owners: [a leading grouped OPTIONAL MATCH's sum](../../Verus_verification/bugs_issues.md#bug-agg-001) and the two refused variable-length shapes ([conformance](#query.conformance)).
 
 ### query.paging
 
@@ -1392,9 +1397,9 @@ Findings: [Cypher range() with a step of 0 known only at run time answers [] ins
 - user-facing-behavior
 - design-verified
 
-Frozen predictions L9 and L10 held (nearest rank 20, interpolation 25.0, quartiles 10, 30 and 17.5, empty null, nulls left out, NumberOutOfRange for 1.5 and -1). openCypher says only "nearest". Iteration 53 corrected the iteration-47 reading that "the rounding follows Neo4j": the quartiles and the median give the same answer under rounding down and under nearest rank, but p 0.6 and 0.9 do not ([bug-cyp-134](../../Verus_verification/bugs_issues.md#bug-cyp-134)).
+Frozen predictions L9 and L10 held (nearest rank 20, interpolation 25.0, quartiles 10, 30 and 17.5, empty null, nulls left out, NumberOutOfRange for 1.5 and -1). Iteration 56 (review 53-55 minors) registered the result type ([bug-cyp-147](../../Verus_verification/bugs_issues.md#bug-cyp-147)) and the p argument's kinds ([bug-cyp-148](../../Verus_verification/bugs_issues.md#bug-cyp-148)); whether a null p should fail or answer null is not stated by openCypher, and both readings reject today's answers. openCypher says only "nearest". Iteration 53 corrected the iteration-47 reading that "the rounding follows Neo4j": the quartiles and the median give the same answer under rounding down and under nearest rank, but p 0.6 and 0.9 do not ([bug-cyp-134](../../Verus_verification/bugs_issues.md#bug-cyp-134)).
 
-- Formal: [`theorem_disc_never_above_rule`, `theorem_disc_top_percentile_misses_max`, `theorem_disc_rounds_down_p90`, `theorem_disc_agrees_at_ends_and_median`, `theorem_cont_follows_rule`, `theorem_empty_and_out_of_range`](../../Verus_verification/models/percentile/percentile.rs)
+- Formal: [`theorem_disc_never_above_rule`, `theorem_disc_top_percentile_misses_max`, `theorem_disc_rounds_down_p90`, `theorem_disc_agrees_at_ends_and_median`, `theorem_cont_follows_rule`, `theorem_empty_and_out_of_range`](../../Verus_verification/models/percentile/percentile.rs); iteration 56: answer type `theorem_disc_over_ints_answers_float`, neighbor `theorem_float_and_cont_kinds_follow_rule` (control `disc-keeps-input-kind`); the p argument `theorem_non_number_p_not_refused`, general `theorem_p_departs_exactly_on_non_numbers` (controls `null-param-refused`, `literal-null-refused`)
 
 State machines: [percentile](../../Verus_verification/models/percentile/manifest.json)
 

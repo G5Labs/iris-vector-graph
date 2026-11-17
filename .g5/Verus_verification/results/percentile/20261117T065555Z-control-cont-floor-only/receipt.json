@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "value: PCONT without the interpolation (the lower value)",
+    "expect_fail_in": [
+      "theorem_cont_follows_rule"
+    ],
+    "find": "Ans::Rat(xs[lower] * pd + r * (xs[lower + 1] - xs[lower]), pd)",
+    "name": "cont-floor-only",
+    "replace": "Ans::Rat(xs[lower] * pd, pd)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cont_follows_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/percentile/model.json": "137aef224b626e30203c39b2967eca7638f788470f5432c35290d5abf376fecd",
+    ".g5/Verus_verification/models/percentile/percentile.rs": "6454c5d4d023395da20ab4a8697d8e7ff1ea30dd660a7cc48441ea2c378630d7"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/cont-floor-only/20261117T065553Z/models/percentile/percentile.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cont_follows_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/20261117T065553Z-control-cont-floor-only-theorem_cont_follows_rule.log",
+        "timed_out": false,
+        "verified": 4
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/20261117T065553Z-control-cont-floor-only.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/percentile/20261117T065555Z-control-cont-floor-only/logs/20261117T065553Z-control-cont-floor-only-theorem_cont_follows_rule.log": "49c4a85857a7d09b1b2bce35eff369be8f79eb5dcb35388f92f28c22304302bc",
+    ".g5/Verus_verification/results/percentile/20261117T065555Z-control-cont-floor-only/logs/20261117T065553Z-control-cont-floor-only.log": "67e521460131eb3f6ca03e08f4e8d54cb311aadbf2bdd4ebe95d7dc5d98055cd"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

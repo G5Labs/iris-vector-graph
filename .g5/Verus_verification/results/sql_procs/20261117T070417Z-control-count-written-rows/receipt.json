@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: the backfill answers the rows it wrote (ADMIN_GUIDE:413's reading; the bug-tmp-107 repair direction)",
+    "expect_fail_in": [
+      "theorem_backfill_count_overstates",
+      "theorem_backfill_idempotent_same_count"
+    ],
+    "find": "pub open spec fn backfill_count(st: Bf) -> nat { structural(st).len() }",
+    "name": "count-written-rows",
+    "replace": "pub open spec fn backfill_count(st: Bf) -> nat { structural(st).filter(|t: Tri| !st.rows.contains_key(t)).len() }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_backfill_count_overstates",
+      "theorem_backfill_idempotent_same_count"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/sql_procs/model.json": "111d43dd8222f7adf2f297096b86fb269c4cf7eed5071528e506ad6ab71fca02",
+    ".g5/Verus_verification/models/sql_procs/sql_procs.rs": "86a7392c4a2b963013b473d18e566dd47f93a9f3173e3ce428a63e5bd2aaa1b4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/count-written-rows/20261117T070415Z/models/sql_procs/sql_procs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_backfill_count_overstates": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T070415Z-control-count-written-rows-theorem_backfill_count_overstates.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_backfill_idempotent_same_count": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T070415Z-control-count-written-rows-theorem_backfill_idempotent_same_count.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T070415Z-control-count-written-rows.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sql_procs/20261117T070417Z-control-count-written-rows/logs/20261117T070415Z-control-count-written-rows-theorem_backfill_count_overstates.log": "5d849dec4221ae46fad89d0009fac9584ed31742647ea1a17085e79651725375",
+    ".g5/Verus_verification/results/sql_procs/20261117T070417Z-control-count-written-rows/logs/20261117T070415Z-control-count-written-rows-theorem_backfill_idempotent_same_count.log": "e6fa69c4839c71fbcee16bf1ccbee152b3b33303d7eb9f1cf0e093be636c678a",
+    ".g5/Verus_verification/results/sql_procs/20261117T070417Z-control-count-written-rows/logs/20261117T070415Z-control-count-written-rows.log": "e829d609728c7b2b80439bdcfe6162c3fd2af93eed6a2861c66f2834036dd516"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

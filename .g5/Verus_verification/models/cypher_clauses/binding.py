@@ -18,7 +18,18 @@ MUTS = ["group_by_typed", "return_distinct_text", "native_text_key", "int_unmark
         "bool_literal_text", "page_int_only", "page_no_negative_check", "page_no_fraction_check",
         "count_guard_sees_union", "shortcut_newline_from", "ensure_from_always", "endpoint_reads_json",
         "type_reads_alias", "delete_outgoing_only", "delete_no_check",
-        "opt_guard_in_on", "range_guarded", "iris_accepts_outer_on", "opt_cond_in_where"]
+        "opt_guard_in_on", "range_guarded", "iris_accepts_outer_on", "opt_cond_in_where",
+        "fixed_length_from_row", "varlen_length_from_pattern", "anchor_null_ignored"]
+# ---- I (iteration 56, bug-cyp-146): path functions of a named OPTIONAL path over i1->i2->i3.
+# case: (pattern, hops or None for var-length, anchor node or None for a null anchor, row lengths bound, function)
+PATH_CASES = {
+    "fix1_unmatched_len": ("Fixed", 1, "i3", [], "Length"), "fix1_unmatched_nodes": ("Fixed", 1, "i3", [], "Nodes"),
+    "fix1_unmatched_rels": ("Fixed", 1, "i3", [], "Rels"), "fix1_matched_len": ("Fixed", 1, "i1", [1], "Length"),
+    "fix1_matched_nodes": ("Fixed", 1, "i1", [1], "Nodes"), "fix1_matched_rels": ("Fixed", 1, "i1", [1], "Rels"),
+    "fix2_unmatched_len": ("Fixed", 2, "i2", [], "Length"), "fix2_matched_len": ("Fixed", 2, "i1", [2], "Length"),
+    "var_unmatched_len": ("VarLen", None, "i3", [], "Length"), "var_matched_len": ("VarLen", None, "i1", [1, 2], "Length"),
+    "fix1_anchor_null_len": ("Fixed", 1, None, [], "Length"),
+}
 # ---- H: a WHERE inside OPTIONAL MATCH; outer nodes h1 (v 1), h2 (v 2), h3 (no v); edges h1->h2, h2->h3
 OPT_CONDS = {"OptOnly": "b.v = 2", "EqProps": "b.v = a.v", "NeProps": "b.v <> a.v", "RangeProps": "b.v > a.v",
              "OuterLitAndOpt": "a.v = 1 AND b.v = 2", "OuterArith": "b.v = a.v + 1", "OuterOrOpt": "a.v = 1 OR b.v = 5"}
@@ -176,6 +187,19 @@ def as_built_opt(c, outer_missing, m):
 DELETES = {"out_only": (1, 0), "in_only": (0, 1), "both": (1, 1), "none": (0, 0)}
 
 
+def path_fn(pat, hops, row, f, anchor_null, m):
+    """cypher_clauses.rs as_built_path_fn; row = None (unmatched) or the bound length."""
+    if anchor_null and not m.get("anchor_null_ignored"):
+        return None
+    from_pattern = (f == "Length") and ((pat == "Fixed" and not m.get("fixed_length_from_row")) or
+                                        (pat == "VarLen" and m.get("varlen_length_from_pattern")))
+    if from_pattern:
+        return hops if pat == "Fixed" else None
+    if row is None:
+        return None
+    return {"Length": row, "Nodes": ["list", row + 1], "Rels": ["list", row]}[f]
+
+
 def predict(m):
     out = {}
     for a, b in PAIRS:
@@ -213,6 +237,11 @@ def predict(m):
         out[f"H_{k}_missing"] = as_built_opt(k, True, m)
     for k in ("OptOnly", "EqProps", "OuterLitAndOpt"):
         out[f"H_{k}_present"] = as_built_opt(k, False, m)
+    for k, (pat, hops, anchor, rows, f) in PATH_CASES.items():
+        vals = [path_fn(pat, hops, r, f, anchor is None, m) for r in (rows or [None])]
+        out[f"I_{k}"] = vals
+        if k == "fix1_unmatched_len":
+            out[f"I_{k}_native_on"] = vals
     return out
 
 
@@ -386,6 +415,32 @@ def main():
         # h4 has v 9 and its only match (h3, no v) fails every condition
         if k in ("OptOnly", "EqProps", "OuterLitAndOpt"):
             got[f"H_{k}_present"] = ("KeptWithNull" if byname.get("h4") == [None] else "Dropped" if "h4" not in byname else f"other:{byname.get('h4')}")
+    # I: path functions of a named OPTIONAL path (bug-cyp-146); i1->i2->i3 written by create_edge
+    LI = f"I56C{TAG}I"; KI = f"KI{TAG}"
+    for n in ("i1", "i2", "i3"):
+        e.create_node(P + n, labels=[LI], properties={"name": n})
+    e.create_edge(P + "i1", KI, P + "i2"); e.create_edge(P + "i2", KI, P + "i3")
+    en_on = IRISGraphEngine(c, embedding_dimension=768, native_cypher=True)
+
+    def path_val(v, f):
+        if v is None:
+            return None
+        if f == "Length":
+            return v
+        return ["list", len(v)] if isinstance(v, list) else f"other:{v!r}"
+    for k, (pat, hops, anchor, rows_, f) in PATH_CASES.items():
+        pattern = {1: f"(a)-[:{KI}]->(b)", 2: f"(a)-[:{KI}]->(b)-[:{KI}]->(c)", None: f"(a)-[:{KI}*1..2]->(b)"}[hops]
+        fx = {"Length": "length(p)", "Nodes": "nodes(p)", "Rels": "relationships(p)"}[f]
+        head = (f"MATCH (a:{LI} {{name: '{anchor}'}})" if anchor else f"OPTIONAL MATCH (a:{LI} {{name: 'none'}})")
+        q = f"{head} OPTIONAL MATCH p = {pattern} RETURN {fx} AS v ORDER BY length(p)"
+        rows, err = run(q)
+        got[f"I_{k}"] = [path_val(r[0], f) for r in rows] if rows is not None else f"error:{err[:120]}"
+        if k == "fix1_unmatched_len":
+            try:
+                r2 = en_on.execute_cypher(q, {})
+                got[f"I_{k}_native_on"] = [path_val(x[0], f) for x in r2.rows]
+            except Exception as x:
+                got[f"I_{k}_native_on"] = f"error:{x}"
     c.close()
 
     norm = lambda d: json.loads(json.dumps(d))
@@ -394,6 +449,8 @@ def main():
     sens = {mm: sum(1 for k, v in norm(predict({mm: True})).items() if v != got.get(k)) for mm in MUTS}
     tampered = dict(got); tampered["B_b13_sumv_plus_sumf"] = 13
     tamper_detected = any(tampered.get(k) != want[k] for k in want)
+    tampered_i = dict(got); tampered_i["I_fix1_unmatched_len"] = [None]   # the repaired answer must be detected too
+    tamper_detected = tamper_detected and any(tampered_i.get(k) != want[k] for k in want)
     body = {"kind": "binding", "model": "cypher_clauses", "fixture": runtime.NAME, "port": runtime.PORT,
             "product_baseline": runtime.PRODUCT, "run": RUN, "verdict": "AGREES" if not mism else "DISAGREES",
             "cases": len(want), "mismatches": mism, "observed": got, "native_declined": len(native_declined),
@@ -411,7 +468,9 @@ def main():
                      "UNION branch and its neighbors; F startNode/endNode/type of relationships(p) elements (fixed and variable length) "
                      "and of a matched edge; G DELETE and DETACH DELETE over out-only, in-only, both and no edges (adjacency read by the "
                      "native walk), and a default-graph DELETE of an id a named graph also holds with an edge; H a WHERE inside OPTIONAL MATCH in seven "
-                     "shapes, on a node lacking the property the condition reads and on one that has it, with no passing match."}
+                     "shapes, on a node lacking the property the condition reads and on one that has it, with no passing match; I (iteration 56) "
+                     "length/nodes/relationships of a named OPTIONAL path, fixed (1 and 2 hops) and variable-length, unmatched, matched and "
+                     "under a null anchor, plus the native-on engine for the unmatched fixed length."}
     d = REPO / ".g5/Verus_verification/results/cypher_clauses" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "native_declined", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s")}))

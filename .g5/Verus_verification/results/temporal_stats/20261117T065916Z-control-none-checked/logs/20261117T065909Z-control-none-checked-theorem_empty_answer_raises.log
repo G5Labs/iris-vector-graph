@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T065909Z/models/temporal_stats/temporal_stats.rs:549:1
+    |
+549 | pub proof fn theorem_empty_answer_raises(a: Agg, m: Metric)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T065909Z/models/temporal_stats/temporal_stats.rs:551:9
+    |
+549 | pub proof fn theorem_empty_answer_raises(a: Agg, m: Metric)
+    | ----------------------------------------------------------- at the end of the function body
+550 |     ensures
+551 |         server_answer(a, m) == SAns::Empty ==> py_value(server_answer(a, m), m) == Py::Raises && documented_py(a, m) == Py::Float(0),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T065909Z/models/temporal_stats/temporal_stats.rs:552:9
+    |
+549 | pub proof fn theorem_empty_answer_raises(a: Agg, m: Metric)
+    | ----------------------------------------------------------- at the end of the function body
+...
+552 |         a.count == 0 && a.min.is_none() ==> py_value(server_answer(a, Metric::Min), Metric::Min) == Py::Raises,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

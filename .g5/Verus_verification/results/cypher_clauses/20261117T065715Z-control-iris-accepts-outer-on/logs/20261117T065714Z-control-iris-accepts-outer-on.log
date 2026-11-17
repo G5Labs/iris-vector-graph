@@ -1,0 +1,25 @@
+verification results:: 28 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/iris-accepts-outer-on/20261117T065714Z/models/cypher_clauses/cypher_clauses.rs:392:1
+    |
+392 | pub proof fn theorem_outer_arith_or_refused(m: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/iris-accepts-outer-on/20261117T065714Z/models/cypher_clauses/cypher_clauses.rs:393:13
+    |
+392 | pub proof fn theorem_outer_arith_or_refused(m: bool)
+    | ---------------------------------------------------- at the end of the function body
+393 |     ensures as_built_opt(OptCond::OuterArith, m) == OptOut::Refused, as_built_opt(OptCond::OuterOrOpt, m) == OptOut::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/iris-accepts-outer-on/20261117T065714Z/models/cypher_clauses/cypher_clauses.rs:393:70
+    |
+392 | pub proof fn theorem_outer_arith_or_refused(m: bool)
+    | ---------------------------------------------------- at the end of the function body
+393 |     ensures as_built_opt(OptCond::OuterArith, m) == OptOut::Refused, as_built_opt(OptCond::OuterOrOpt, m) == OptOut::Refused,
+    |                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

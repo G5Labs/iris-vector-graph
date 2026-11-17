@@ -1,0 +1,28 @@
+verification results:: 72 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/controls/global-empty-row-omitted/20261117T065750Z/models/aggregate_results/aggregate_results.rs:173:10
+    |
+173 |  ensures key_order(rs,q).to_set()==keys(rs,q),key_order(rs,q).no_duplicates(),
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+174 |  decreases rs.len(),
+175 |  {if !q.grouped{let e=Seq::<Key>::empty();e.to...(keys(p,q).insert(key(r,q))=~=keys(p,q));}}}}
+    |   --------------------------------------------...-------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/controls/global-empty-row-omitted/20261117T065750Z/models/aggregate_results/aggregate_results.rs:217:10
+    |
+216 | pub proof fn theorem_AST_global_empty_and_grouped_empty(d:bool)
+    | --------------------------------------------------------------- at the end of the function body
+217 |  ensures ast_output(seq![],RawAst{graph:None,returns:seq![ReturnExpr::Agg{kind:AggKind::CountValue,distinct:d}]},0).len()==1,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/controls/global-empty-row-omitted/20261117T065750Z/models/aggregate_results/aggregate_results.rs:245:10
+    |
+244 | pub proof fn theorem_full_report_one_row_global_empty_and_none_grouped(d:bool)
+    | ------------------------------------------------------------------------------ at the end of the function body
+245 |  ensures report(seq![],RawAst{graph:None,returns:seq![ReturnExpr::Agg{kind:AggKind::CountStar,distinct:d}]}).len()==1,
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

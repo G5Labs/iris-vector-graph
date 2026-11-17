@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/nested-serialized-as-json/20261117T065958Z/models/temporal_stats/temporal_stats.rs:992:1
+    |
+992 | pub proof fn theorem_nested_content_ignored(ps1: Seq<(Seq<char>, LVal)>, ps2: Seq<(Seq<char>, LVal)>, refs: Seq<Seq<char>>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/nested-serialized-as-json/20261117T065958Z/models/temporal_stats/temporal_stats.rs:1001:20
+     |
+1001 |             assert(val_text(ps1[i].1, refs[i]) == enc(refs[i]));
+     |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/nested-serialized-as-json/20261117T065958Z/models/temporal_stats/temporal_stats.rs:1002:20
+     |
+1002 |             assert(val_text(ps2[i].1, refs[i]) == enc(refs[i]));
+     |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

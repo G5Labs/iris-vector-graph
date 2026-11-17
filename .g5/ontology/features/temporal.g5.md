@@ -140,7 +140,8 @@ Aggregate, group and target reads answer exactly the requested window, both ends
 - A group read returns one row per source and predicate that has something in the window, and no row for one that has nothing. A row carries no target.
 - A target read lists the distinct targets of one source's edges in exactly the window, read from the edges themselves, so a raw purge empties it and a bucket-range purge does not.
 - Each read sees only its own graph.
-- An empty predicate in a group or target read means every predicate. An aggregate read needs a source and a predicate: today an empty one fails with a server subscript error, unless the window only cuts buckets and no edge falls in the cut part, which answers 0.
+- An empty predicate in a group or target read means every predicate.
+- An aggregate read needs a source and a predicate, and a read with an empty one must be refused. Today it fails with a server subscript error when the window holds a whole bucket or any edge of the graph falls in the cut part. Otherwise it answers 0 for a count and 0.0 for a sum, as if the source had no edges ([finding](../../Verus_verification/bugs_issues.md#bug-tmp-108)).
 - These reads assume seconds. Today an edge written by the millisecond entry point lands in the seconds bucket of its time in seconds, because both entry points share the statistics. Whole-bucket counts, groups, velocity and distinct estimates then include it, while target reads, edge-by-edge reads and cut windows do not ([bug-tmp-106](../../Verus_verification/bugs_issues.md#bug-tmp-106)).
 
 
@@ -600,11 +601,11 @@ State machines: [temporal statistics](../../Verus_verification/models/temporal_s
 - agent
 - user-facing-behavior
 - design-verified
-- Formal: [`theorem_cut_bucket_is_exact`, `theorem_one_whole_bucket_reads_statistics`, `theorem_empty_answer_raises`, `theorem_group_row_absent`, `theorem_targets_follow_raw`, `theorem_ms_edge_in_seconds_whole_bucket`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
+- Formal: [`theorem_cut_bucket_is_exact`, `theorem_one_whole_bucket_reads_statistics`, `theorem_empty_answer_raises`, `theorem_group_row_absent`, `theorem_targets_follow_raw`, `theorem_ms_edge_in_seconds_whole_bucket`, `theorem_empty_key_quiet_cut_window_answers_zero`, `theorem_empty_key_raises_with_whole_bucket_or_event`](../../Verus_verification/models/temporal_stats/temporal_stats.rs)
 
-Findings: [bug-tmp-009](../../Verus_verification/bugs_issues.md#bug-tmp-009) (strengthened in iteration 51: an unknown metric, and a whole bucket left with a count but no extremes, raise too); [bug-tmp-106](../../Verus_verification/bugs_issues.md#bug-tmp-106) (the millisecond writer; found by independent review round 2, reproduced and modeled in iteration 53).
+Findings: [bug-tmp-009](../../Verus_verification/bugs_issues.md#bug-tmp-009) (strengthened in iteration 51: an unknown metric, and a whole bucket left with a count but no extremes, raise too); [bug-tmp-106](../../Verus_verification/bugs_issues.md#bug-tmp-106) (the millisecond writer; found by independent review round 2, reproduced and modeled in iteration 53); [bug-tmp-108](../../Verus_verification/bugs_issues.md#bug-tmp-108) (an empty key answers 0 on a quiet cut window; review round 3, modeled and bound in iteration 56).
 
-The empty-key cases (review round 2, m2) are owned as built and observed by the [iteration-53 probe](../../uplift/consolidated/iteration-53/temporal/temporal-observed-20261117T044748Z.json) (`m2_*`); they are not modeled. No document promises a wildcard for the aggregate read; the group read's docstring says an empty predicate matches all.
+The empty-key rule (review round 2, m2; challenged in round 3): no document promises a wildcard for the aggregate read, so an empty source or predicate is an invalid call and the rule asks for a refusal. As built it raises a server subscript error on a whole bucket or a met timestamp, and answers 0 on a quiet cut window ([iteration-53 probe](../../uplift/consolidated/iteration-53/temporal/temporal-observed-20261117T044748Z.json) `m2_*`; temporal_stats binding cases `ek_*`, iteration 56). The group read's docstring says an empty predicate matches all.
 
 State machines: [temporal statistics](../../Verus_verification/models/temporal_stats/manifest.json)
 

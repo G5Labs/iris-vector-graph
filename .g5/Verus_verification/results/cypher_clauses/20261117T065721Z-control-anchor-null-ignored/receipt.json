@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: the optional_null_row_unconditional branch (null anchor answers NULL) removed",
+    "expect_fail_in": [
+      "theorem_bound_or_varlen_path_follows_rule",
+      "theorem_path_fn_departs_exactly_on_unmatched_fixed_length"
+    ],
+    "find": "    if anchor_null { PathAns::Null }\n    else if length_from_pattern(p, f)",
+    "name": "anchor-null-ignored",
+    "replace": "    if false { PathAns::Null }\n    else if length_from_pattern(p, f)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bound_or_varlen_path_follows_rule",
+      "theorem_path_fn_departs_exactly_on_unmatched_fixed_length"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "b893a377d3296c199cb18b561b87be96d797c5e8a6d50e07e1deb3a106cc299b",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "34bb5126ccce33eac88d4bcd715214baf456224c5e43ce35f779552b1cf8e639"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/anchor-null-ignored/20261117T065720Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bound_or_varlen_path_follows_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065720Z-control-anchor-null-ignored-theorem_bound_or_varlen_path_follows_rule.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_path_fn_departs_exactly_on_unmatched_fixed_length": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065720Z-control-anchor-null-ignored-theorem_path_fn_departs_exactly_on_unmatched_fixed_length.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065720Z-control-anchor-null-ignored.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065721Z-control-anchor-null-ignored/logs/20261117T065720Z-control-anchor-null-ignored-theorem_bound_or_varlen_path_follows_rule.log": "2dc179bdc9b1373f19645dd216ee62d2fbdf125bd9b6dcd036ddaceb1a7a998d",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065721Z-control-anchor-null-ignored/logs/20261117T065720Z-control-anchor-null-ignored-theorem_path_fn_departs_exactly_on_unmatched_fixed_length.log": "ccfb8ce35af1a386fb80ce01c9ed38d1202e12a92024cb76a7c59400ce9ff7de",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065721Z-control-anchor-null-ignored/logs/20261117T065720Z-control-anchor-null-ignored.log": "ff32aeac072b79581c3d8266fbe0ddb12f9a248771f83640b640a9609c99e073"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: MatchEdges reads the default graph's key 0 as every graph (the pre-spec-230 behavior the EdgeScan header records)",
+    "expect_fail_in": [
+      "theorem_graph_scoped_vs_all"
+    ],
+    "find": "    a.g == key && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
+    "name": "default-reads-every-graph",
+    "replace": "    (a.g == key || key == 0) && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_graph_scoped_vs_all"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/sql_procs/model.json": "c525ef1458585acfe8b23e1681045358e2549c288956745ab880f2f0074390c7",
+    ".g5/Verus_verification/models/sql_procs/sql_procs.rs": "e414e8fb517770833b98a6103b1ae080a9f15c515b827e021ec97c86115d0942"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/default-reads-every-graph/20261117T065554Z/models/sql_procs/sql_procs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_graph_scoped_vs_all": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T065554Z-control-default-reads-every-graph-theorem_graph_scoped_vs_all.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T065554Z-control-default-reads-every-graph.log",
+    "timed_out": false,
+    "verified": 24
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sql_procs/20261117T065556Z-control-default-reads-every-graph/logs/20261117T065554Z-control-default-reads-every-graph-theorem_graph_scoped_vs_all.log": "fa865282f5ab50c763563335f096e13ec1d10f00d74cbf52713b9fc4a9faa9d4",
+    ".g5/Verus_verification/results/sql_procs/20261117T065556Z-control-default-reads-every-graph/logs/20261117T065554Z-control-default-reads-every-graph.log": "fe5a78ed738856d93620d9461d98d7559e5e076bf880f44aeabb0ce6cb9d3630"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

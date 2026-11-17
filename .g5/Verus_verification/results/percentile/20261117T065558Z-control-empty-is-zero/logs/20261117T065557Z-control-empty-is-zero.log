@@ -1,0 +1,26 @@
+verification results:: 28 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/empty-is-zero/20261117T065557Z/models/percentile/percentile.rs:89:13
+    |
+ 89 |       ensures rat_eq(pcont(xs, pn, pd), rule_cont(xs, pn, pd)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+ 90 |   {
+ 91 | /     if in_range(pn, pd) && xs.len() > 0 {
+ 92 | |         let n = xs.len() as int;
+ 93 | |         lemma_index_bounds(n, pn, pd);
+ 94 | |         let fl = ((n - 1) * pn) / pd;
+...   |
+106 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/empty-is-zero/20261117T065557Z/models/percentile/percentile.rs:183:9
+    |
+181 | pub proof fn theorem_empty_and_out_of_range(xs: Seq<int>, pn: int, pd: int)
+    | --------------------------------------------------------------------------- at the end of the function body
+182 |     ensures
+183 |         in_range(pn, pd) && xs.len() == 0 ==> pdisc(xs, pn, pd) == Ans::Null && pcont(xs, pn, pd) == Ans::Null,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

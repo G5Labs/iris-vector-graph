@@ -1,122 +1,205 @@
 {
- "name": "sql_procs",
- "root": "sql_procs.rs",
- "expected_verified": 16,
- "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
- "additional_inputs": [],
- "controls": [
-  {
-   "name": "shard-partitions",
-   "find": "    a.g == key && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
-   "replace": "    a.g == key && shard == 0 && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
-   "expect_fail_in": [
-    "theorem_shard_ignored",
-    "theorem_empty_predicate_every_predicate",
-    "theorem_graph_scoped_vs_all"
-   ],
-   "classification": "decision: the scan reads its shard argument (only shard 0 answers); as built shard is never read (ME5)"
-  },
-  {
-   "name": "default-reads-every-graph",
-   "find": "    a.g == key && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
-   "replace": "    (a.g == key || key == 0) && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
-   "expect_fail_in": [
-    "theorem_graph_scoped_vs_all"
-   ],
-   "classification": "decision: MatchEdges reads the default graph's key 0 as every graph (the pre-spec-230 behavior the EdgeScan header records)"
-  },
-  {
-   "name": "empty-predicate-matches-none",
-   "find": "    a.g == key && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
-   "replace": "    a.g == key && (src == 0 || a.s == src) && a.p == pred",
-   "expect_fail_in": [
-    "theorem_empty_predicate_every_predicate"
-   ],
-   "classification": "decision: an empty predicate matches no edge (MatchEdges called from SQL with '' before 4.6.0 R269)"
-  },
-  {
-   "name": "all-graphs-default-only",
-   "find": "    (src == 0 || a.s == src) && (pred == 0 || a.p == pred)\n}",
-   "replace": "    a.g == 0 && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)\n}",
-   "expect_fail_in": [
-    "theorem_graph_scoped_vs_all",
-    "theorem_shared_triple_once_per_graph"
-   ],
-   "classification": "decision: the all-graphs scan reads only the default graph"
-  },
-  {
-   "name": "no-select-check",
-   "find": "{ if holds { Ans::Ok(t) } else { Ans::Refused } }",
-   "replace": "{ Ans::Ok(t) }",
-   "expect_fail_in": [
-    "theorem_entries_gated"
-   ],
-   "classification": "guard: the SQL entries skip RequireSelect / RequireWrite (the pre-4.6.0 R289/R293 behavior)"
-  },
-  {
-   "name": "scan-exposes-weight",
-   "find": "    match pl { Plan::Rows => a.w, Plan::Scan => None }",
-   "replace": "    match pl { Plan::Rows => a.w, Plan::Scan => a.w }",
-   "expect_fail_in": [
-    "theorem_edgescan_reads_null_property"
-   ],
-   "classification": "reader: the edge-scan alias exposes its `w` column for `r.weight` (the bug-cyp-133 repair direction)"
-  },
-  {
-   "name": "sql-entry-unchecked",
-   "find": "    if wp == WProp::Other { PathAns::Raises }\n    else if dir == Dir::Other { PathAns::Raises }\n    else if src",
-   "replace": "    if src",
-   "expect_fail_in": [
-    "theorem_sql_entry_refuses_bad_arguments"
-   ],
-   "classification": "guard: only the Python CALL checks the direction and weight property; the SQL entry would search (or answer no path)"
-  },
-  {
-   "name": "nul-read-as-empty",
-   "find": "pub open spec fn sql_end(empty: bool, id: int) -> End { if empty { End::Nul } else { End::Id(id) } }",
-   "replace": "pub open spec fn sql_end(empty: bool, id: int) -> End { if empty { End::Missing } else { End::Id(id) } }",
-   "expect_fail_in": [
-    "theorem_sql_empty_endpoints_zero_path",
-    "theorem_dijkstra_endpoint_neighbors"
-   ],
-   "classification": "provider/input: SQL's '' reaches the body as \"\" (as $Translate($Char(0)) would make it; the bug-str-112 repair direction)"
-  },
-  {
-   "name": "count-written-rows",
-   "find": "pub open spec fn backfill_count(st: Bf) -> nat { structural(st).len() }",
-   "replace": "pub open spec fn backfill_count(st: Bf) -> nat { structural(st).filter(|t: Tri| !st.rows.contains_key(t)).len() }",
-   "expect_fail_in": [
-    "theorem_backfill_count_overstates",
-    "theorem_backfill_idempotent_same_count"
-   ],
-   "classification": "effect: the backfill answers the rows it wrote (ADMIN_GUIDE:413's reading; the bug-tmp-107 repair direction)"
-  },
-  {
-   "name": "optout-backfilled",
-   "find": "pub open spec fn structural(st: Bf) -> Set<Tri> { st.tout.filter(|t: Tri| !st.optout.contains((t.0, t.2))) }",
-   "replace": "pub open spec fn structural(st: Bf) -> Set<Tri> { st.tout }",
-   "expect_fail_in": [
-    "theorem_backfill_writes_missing_only"
-   ],
-   "classification": "guard: the backfill ignores the temporal-only registrations (TemporalPolicy.IsStructuralKey)"
-  },
-  {
-   "name": "backfill-marks-existing",
-   "find": "|t: Tri| if st.rows.contains_key(t) { st.rows[t] } else { true })",
-   "replace": "|t: Tri| true)",
-   "expect_fail_in": [
-    "theorem_backfill_writes_missing_only"
-   ],
-   "classification": "effect: the backfill marks every row it walks, an explicit edge's included (AssertTemporalRow's NOT EXISTS guard removed)"
-  },
-  {
-   "name": "rebuild-refusal-answers-zero",
-   "find": "        Schema::Present => if build_priv { RbAns::Ok(4) } else { RbAns::RaisesNamingTable },",
-   "replace": "        Schema::Present => if build_priv { RbAns::Ok(4) } else { RbAns::Ok(0) },",
-   "expect_fail_in": [
-    "theorem_rebuild_answers_four_or_raises"
-   ],
-   "classification": "effect: a refused BUILD INDEX answers 0 (the pre-4.6.0 behavior)"
-  }
- ]
+  "name": "sql_procs",
+  "root": "sql_procs.rs",
+  "expected_verified": 27,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "shard-partitions",
+      "find": "    a.g == key && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
+      "replace": "    a.g == key && shard == 0 && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
+      "expect_fail_in": [
+        "theorem_shard_ignored",
+        "theorem_empty_predicate_every_predicate",
+        "theorem_graph_scoped_vs_all"
+      ],
+      "classification": "decision: the scan reads its shard argument (only shard 0 answers); as built shard is never read (ME5)"
+    },
+    {
+      "name": "default-reads-every-graph",
+      "find": "    a.g == key && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
+      "replace": "    (a.g == key || key == 0) && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
+      "expect_fail_in": [
+        "theorem_graph_scoped_vs_all"
+      ],
+      "classification": "decision: MatchEdges reads the default graph's key 0 as every graph (the pre-spec-230 behavior the EdgeScan header records)"
+    },
+    {
+      "name": "empty-predicate-matches-none",
+      "find": "    a.g == key && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)",
+      "replace": "    a.g == key && (src == 0 || a.s == src) && a.p == pred",
+      "expect_fail_in": [
+        "theorem_empty_predicate_every_predicate"
+      ],
+      "classification": "decision: an empty predicate matches no edge (MatchEdges called from SQL with '' before 4.6.0 R269)"
+    },
+    {
+      "name": "all-graphs-default-only",
+      "find": "    (src == 0 || a.s == src) && (pred == 0 || a.p == pred)\n}",
+      "replace": "    a.g == 0 && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)\n}",
+      "expect_fail_in": [
+        "theorem_graph_scoped_vs_all",
+        "theorem_shared_triple_once_per_graph"
+      ],
+      "classification": "decision: the all-graphs scan reads only the default graph"
+    },
+    {
+      "name": "no-select-check",
+      "find": "{ if holds { Ans::Ok(t) } else { Ans::Refused } }",
+      "replace": "{ Ans::Ok(t) }",
+      "expect_fail_in": [
+        "theorem_entries_gated"
+      ],
+      "classification": "guard: the SQL entries skip RequireSelect / RequireWrite (the pre-4.6.0 R289/R293 behavior)"
+    },
+    {
+      "name": "scan-exposes-weight",
+      "find": "    match pl { Plan::Rows => a.w, Plan::Scan => None }",
+      "replace": "    match pl { Plan::Rows => a.w, Plan::Scan => a.w }",
+      "expect_fail_in": [
+        "theorem_edgescan_reads_null_property"
+      ],
+      "classification": "reader: the edge-scan alias exposes its `w` column for `r.weight` (the bug-cyp-133 repair direction)"
+    },
+    {
+      "name": "sql-entry-unchecked",
+      "find": "    if wp == WProp::Other { PathAns::Raises }\n    else if dir == Dir::Other { PathAns::Raises }\n    else if src",
+      "replace": "    if src",
+      "expect_fail_in": [
+        "theorem_sql_entry_refuses_bad_arguments"
+      ],
+      "classification": "guard: only the Python CALL checks the direction and weight property; the SQL entry would search (or answer no path)"
+    },
+    {
+      "name": "nul-read-as-empty",
+      "find": "pub open spec fn sql_end(empty: bool, id: int) -> End { if empty { End::Nul } else { End::Id(id) } }",
+      "replace": "pub open spec fn sql_end(empty: bool, id: int) -> End { if empty { End::Missing } else { End::Id(id) } }",
+      "expect_fail_in": [
+        "theorem_sql_empty_endpoints_zero_path",
+        "theorem_dijkstra_endpoint_neighbors"
+      ],
+      "classification": "provider/input: SQL's '' reaches the body as \"\" (as $Translate($Char(0)) would make it; the bug-str-112 repair direction)"
+    },
+    {
+      "name": "count-written-rows",
+      "find": "pub open spec fn backfill_count(st: Bf) -> nat { structural(st).len() }",
+      "replace": "pub open spec fn backfill_count(st: Bf) -> nat { structural(st).filter(|t: Tri| !st.rows.contains_key(t)).len() }",
+      "expect_fail_in": [
+        "theorem_backfill_count_overstates",
+        "theorem_backfill_idempotent_same_count"
+      ],
+      "classification": "effect: the backfill answers the rows it wrote (ADMIN_GUIDE:413's reading; the bug-tmp-107 repair direction)"
+    },
+    {
+      "name": "optout-backfilled",
+      "find": "pub open spec fn structural(st: Bf) -> Set<Tri> { st.tout.filter(|t: Tri| !st.optout.contains((t.0, t.2))) }",
+      "replace": "pub open spec fn structural(st: Bf) -> Set<Tri> { st.tout }",
+      "expect_fail_in": [
+        "theorem_backfill_writes_missing_only"
+      ],
+      "classification": "guard: the backfill ignores the temporal-only registrations (TemporalPolicy.IsStructuralKey)"
+    },
+    {
+      "name": "backfill-marks-existing",
+      "find": "|t: Tri| if st.rows.contains_key(t) { st.rows[t] } else { true })",
+      "replace": "|t: Tri| true)",
+      "expect_fail_in": [
+        "theorem_backfill_writes_missing_only"
+      ],
+      "classification": "effect: the backfill marks every row it walks, an explicit edge's included (AssertTemporalRow's NOT EXISTS guard removed)"
+    },
+    {
+      "name": "rebuild-refusal-answers-zero",
+      "find": "        Schema::Present => if build_priv { RbAns::Ok(4) } else { RbAns::RaisesNamingTable },",
+      "replace": "        Schema::Present => if build_priv { RbAns::Ok(4) } else { RbAns::Ok(0) },",
+      "expect_fail_in": [
+        "theorem_rebuild_answers_four_or_raises"
+      ],
+      "classification": "effect: a refused BUILD INDEX answers 0 (the pre-4.6.0 behavior)"
+    },
+    {
+      "name": "column-grant-counts",
+      "find": "    gr.table.contains((t, a)) || gr.schema.contains((sch, a))\n",
+      "replace": "    gr.table.contains((t, a)) || gr.schema.contains((sch, a)) || gr.column.contains((t, a))\n",
+      "expect_fail_in": [
+        "theorem_column_only_select_refused"
+      ],
+      "classification": "provider premise flipped: a column privilege counts as SELECT on the table (ADMIN_GUIDE 576 says it does not)"
+    },
+    {
+      "name": "schema-grant-ignored",
+      "find": "    gr.table.contains((t, a)) || gr.schema.contains((sch, a))\n",
+      "replace": "    gr.table.contains((t, a))\n",
+      "expect_fail_in": [
+        "theorem_table_schema_role_select_pass"
+      ],
+      "classification": "decision: a schema-wide grant no longer passes"
+    },
+    {
+      "name": "roles-ignored",
+      "find": "    check_priv(c.user, sch, t, a) || any_role(c.roles, sch, t, a)\n",
+      "replace": "    check_priv(c.user, sch, t, a)\n",
+      "expect_fail_in": [
+        "theorem_table_schema_role_select_pass"
+      ],
+      "classification": "decision: Holds checks $Username only, not the roles in $Roles"
+    },
+    {
+      "name": "all-not-shortcut",
+      "find": "    if c.all { Gate::Pass }\n    else { match first_missing",
+      "replace": "    if false { Gate::Pass }\n    else { match first_missing",
+      "expect_fail_in": [
+        "theorem_all_passes"
+      ],
+      "classification": "decision: %All no longer passes before the grants are read"
+    },
+    {
+      "name": "first-table-only",
+      "find": "        None => first_missing(c, sch, ts.subrange(1, ts.len() as int), acts),",
+      "replace": "        None => first_missing(c, sch, ts.subrange(ts.len() as int, ts.len() as int), acts),",
+      "expect_fail_in": [
+        "theorem_write_names_first_missing"
+      ],
+      "classification": "decision: RequireWrite stops after the first table (rdf_edges never checked); recursion kept so the function stays recursive (first receipt ERROR: fuel on a non-recursive function, kept)"
+    },
+    {
+      "name": "nul-not-normalized",
+      "find": "pub open spec fn after_nul(g: GArg) -> GArg { if g == GArg::Char0 { GArg::Empty } else { g } }",
+      "replace": "pub open spec fn after_nul(g: GArg) -> GArg { g }",
+      "expect_fail_in": [
+        "theorem_default_graph_spellings"
+      ],
+      "classification": "decision: MatchEdges line 52 removed; SQL '' scans a graph named $Char(0) (4.6.0 R269)"
+    },
+    {
+      "name": "empty-not-default",
+      "find": "pub open spec fn after_empty(g: GArg) -> GArg { if g == GArg::Empty { GArg::Zero } else { g } }",
+      "replace": "pub open spec fn after_empty(g: GArg) -> GArg { g }",
+      "expect_fail_in": [
+        "theorem_default_graph_spellings"
+      ],
+      "classification": "decision: MatchEdges 55-57 removed; \"\" is not the default graph's key 0"
+    },
+    {
+      "name": "zero-text-is-a-name",
+      "find": "    match g { GArg::Zero => 0, GArg::ZeroText => 0,",
+      "replace": "    match g { GArg::Zero => 0, GArg::ZeroText => -3,",
+      "expect_fail_in": [
+        "theorem_default_graph_spellings"
+      ],
+      "classification": "provider premise flipped: the text '0' is a different subscript from the number 0"
+    },
+    {
+      "name": "readers-check-nodes",
+      "find": "pub open spec fn select_ok(c: Caller, sch: int) -> bool { require(c, sch, seq![t_edges()], seq![Act::S]) == Gate::Pass }",
+      "replace": "pub open spec fn select_ok(c: Caller, sch: int) -> bool { require(c, sch, seq![t_nodes()], seq![Act::S]) == Gate::Pass }",
+      "expect_fail_in": [
+        "theorem_readers_check_rdf_edges",
+        "theorem_column_only_select_refused",
+        "theorem_table_schema_role_select_pass"
+      ],
+      "classification": "decision: the reading entries check SELECT on nodes instead of rdf_edges"
+    }
+  ]
 }

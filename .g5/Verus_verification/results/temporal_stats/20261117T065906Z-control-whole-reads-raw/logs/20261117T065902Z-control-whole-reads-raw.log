@@ -1,0 +1,11 @@
+verification results:: 63 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/whole-reads-raw/20261117T065902Z/models/temporal_stats/temporal_stats.rs:405:13
+    |
+404 | pub proof fn theorem_one_whole_bucket_reads_statistics(st: St, g: int, s: int, p: int, b: int)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+405 |     ensures get_aggregate(st, 300, g, s, p, b_lo(b, 300), b_hi(b, 300)) == stat_agg(st, (g, b, s, p)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

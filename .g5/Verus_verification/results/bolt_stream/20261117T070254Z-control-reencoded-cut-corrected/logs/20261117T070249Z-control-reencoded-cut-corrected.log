@@ -1,0 +1,38 @@
+verification results:: 41 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/reencoded-cut-corrected/20261117T070249Z/models/bolt_stream/bolt_stream.rs:134:1
+    |
+134 | pub proof fn theorem_buffer_and_queue_come_from_raw(s:Receive,a:Bytes)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/reencoded-cut-corrected/20261117T070249Z/models/bolt_stream/bolt_stream.rs:138:9
+    |
+134 | pub proof fn theorem_buffer_and_queue_come_from_raw(s:Receive,a:Bytes)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+138 |         receive(s,a).cut==encoded_lengths(decode(s.buffer+a).bodies),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/reencoded-cut-corrected/20261117T070249Z/models/bolt_stream/bolt_stream.rs:139:9
+    |
+134 | pub proof fn theorem_buffer_and_queue_come_from_raw(s:Receive,a:Bytes)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+139 |         receive(s,a).next.buffer==drop(s.buffer+a,encoded_lengths(decode(s.buffer+a).bodies)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/reencoded-cut-corrected/20261117T070249Z/models/bolt_stream/bolt_stream.rs:159:13
+    |
+158 |   pub proof fn theorem_small_chunk_reencoding_leaves_terminator()
+    |   --------------------------------------------------------------- at the end of the function body
+159 |       ensures ({let body=seq![0xb0u8,0x0fu8];let wire=encode(body,1);
+    |  _____________^
+160 | |         let r=receive(Receive{buffer:seq![],queue:seq![]},wire);
+161 | |         r.read==Read::Message(body) && r.actual_used==8 && r.cut==6 && r.next.buffer==end() && r.next.queue==seq![]}),
+    | |_____________________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,12 @@
+verification results:: 34 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/nonpositive-k-takes-all/20261117T070033Z/models/bm25_scoring/bm25_scoring.rs:404:9
+    |
+402 | pub proof fn theorem_sql_k_nonpositive_empty_others_refuse(k: int, ranked: nat)
+    | ------------------------------------------------------------------------------- at the end of the function body
+403 |     ensures
+404 |         k <= 0 ==> entry_k(Entry::Sql, k, ranked) == KAns::Answer(0),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

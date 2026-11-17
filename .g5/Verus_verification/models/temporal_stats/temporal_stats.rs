@@ -271,6 +271,33 @@ pub open spec fn get_temporal_aggregate(st: St, div: int, g: int, s: int, p: int
     py_value(server_answer(get_aggregate(st, div, g, s, p, lo, hi), m), m)
 }
 
+// --------------------------------------------------------------- an empty source or predicate (iteration 56)
+/// Review 53-55 (challenge to round-2 m2): GetAggregate with source "" or predicate "". Whole bucket:
+/// `$Get(^KG("tagg", g, b, "", ...))` raises <SUBSCRIPT>. Cut bucket: the walk visits each timestamp ^KG("tout", g)
+/// holds in the cut range (any source's) and `$Order(^KG("tout", g, ts, "", ...))` raises there. A window that holds
+/// no whole bucket and meets no timestamp of its graph reads nothing and answers 0, the answer of a valid read.
+pub enum KAns { Raises, Agg(Agg) }
+pub open spec fn some_whole(lo: int, hi: int, div: int) -> bool {
+    exists|b: int| bucket_of(lo, div) <= b <= bucket_of(hi, div) && #[trigger] whole(b, lo, hi, div)
+}
+pub open spec fn ts_present(st: St, g: int, lo: int, hi: int) -> bool {
+    exists|i: int| 0 <= i < st.raw.len() && (#[trigger] st.raw[i]).g == g && lo <= st.raw[i].ts <= hi
+}
+/// The key arguments: Some(id) for a given key, None for "".
+pub open spec fn get_aggregate_keys(st: St, div: int, g: int, s: Option<int>, p: Option<int>, lo: int, hi: int) -> KAns {
+    match (s, p) {
+        (Some(s1), Some(p1)) => KAns::Agg(get_aggregate(st, div, g, s1, p1, lo, hi)),
+        _ => if some_whole(lo, hi, div) || ts_present(st, g, lo, hi) { KAns::Raises } else { KAns::Agg(zero()) },
+    }
+}
+/// get_temporal_aggregate with key arguments (the Python layer passes "" through unchanged).
+pub open spec fn get_temporal_aggregate_keys(st: St, div: int, g: int, s: Option<int>, p: Option<int>, m: Metric, lo: int, hi: int) -> Py {
+    match get_aggregate_keys(st, div, g, s, p, lo, hi) {
+        KAns::Raises => Py::Raises,
+        KAns::Agg(a) => py_value(server_answer(a, m), m),
+    }
+}
+
 /// GetBucketGroupTargets (1598-1633): targets of the raw edges in exactly [lo, hi].
 pub open spec fn is_target(st: St, g: int, s: int, p: int, lo: int, hi: int, o: int) -> bool {
     exists|i: int| 0 <= i < st.raw.len() && #[trigger] hit(st.raw[i], g, s, p, lo, hi) && st.raw[i].o == o
@@ -1069,6 +1096,54 @@ pub proof fn theorem_ms_edge_in_seconds_whole_bucket(st: St, hf: spec_fn(int) ->
         lemma_fundamental_div_mod(x, 300);
         assert(hit(es, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)));
     }
+}
+
+// =============================================================== theorems: an empty key (iteration 56, bug-tmp-108)
+/// bug-tmp-108, general: for every state, graph and key, an aggregate read with an empty source (or predicate) over a
+/// window that holds no whole bucket and meets no timestamp of its graph answers count 0 and sum 0, silently; the
+/// owner's rule (temporal.stats.window: an aggregate read needs a source and a predicate) asks for a refusal.
+pub proof fn theorem_empty_key_quiet_cut_window_answers_zero(st: St, div: int, g: int, k: int, lo: int, hi: int)
+    requires !some_whole(lo, hi, div), !ts_present(st, g, lo, hi),
+    ensures
+        get_temporal_aggregate_keys(st, div, g, None, Some(k), Metric::Count, lo, hi) == Py::Int(0),
+        get_temporal_aggregate_keys(st, div, g, Some(k), None, Metric::Sum, lo, hi) == Py::Float(0),
+        get_temporal_aggregate_keys(st, div, g, None, None, Metric::Count, lo, hi) == Py::Int(0),
+{}
+
+/// Neighbors: the same empty-key read raises when the window holds a whole bucket, or when any edge of the graph
+/// (any source) has a timestamp in the cut range.
+pub proof fn theorem_empty_key_raises_with_whole_bucket_or_event(st: St, div: int, g: int, k: int, lo: int, hi: int, b: int, i: int)
+    requires
+        (bucket_of(lo, div) <= b <= bucket_of(hi, div) && whole(b, lo, hi, div))
+            || (0 <= i < st.raw.len() && st.raw[i].g == g && lo <= st.raw[i].ts <= hi),
+    ensures
+        get_temporal_aggregate_keys(st, div, g, None, Some(k), Metric::Count, lo, hi) == Py::Raises,
+        get_temporal_aggregate_keys(st, div, g, Some(k), None, Metric::Count, lo, hi) == Py::Raises,
+{
+    if bucket_of(lo, div) <= b <= bucket_of(hi, div) && whole(b, lo, hi, div) { assert(some_whole(lo, hi, div)); }
+    else { assert(ts_present(st, g, lo, hi)); }
+}
+
+/// Witness on the binding's fixture: one edge at T+50 in a 300-second bucket starting at T; the empty-source count over
+/// [T+100, T+200] answers 0, over [T+10, T+100] it raises.
+pub proof fn theorem_empty_key_witness(e: Ev, t: int)
+    requires t % 300 == 0, t >= 0, e.ts == t + 50,
+    ensures ({
+        let st = St { raw: seq![e], cnt: Map::empty(), sum: Map::empty(), mn: Map::empty(), mx: Map::empty(),
+                      hll: Map::empty(), bkt: Map::empty() };
+        &&& get_temporal_aggregate_keys(st, 300, e.g, None, Some(e.p), Metric::Count, t + 100, t + 200) == Py::Int(0)
+        &&& get_temporal_aggregate_keys(st, 300, e.g, None, Some(e.p), Metric::Count, t + 10, t + 100) == Py::Raises
+    }),
+{
+    let st = St { raw: seq![e], cnt: Map::empty(), sum: Map::empty(), mn: Map::empty(), mx: Map::empty(),
+                  hll: Map::empty(), bkt: Map::empty() };
+    assert(bucket_of(t + 100, 300) == t / 300) by (nonlinear_arith) requires t % 300 == 0, t >= 0;
+    assert(bucket_of(t + 200, 300) == t / 300) by (nonlinear_arith) requires t % 300 == 0, t >= 0;
+    assert(b_lo(t / 300, 300) == t) by (nonlinear_arith) requires t % 300 == 0, t >= 0;
+    assert(!some_whole(t + 100, t + 200, 300));
+    assert(!ts_present(st, e.g, t + 100, t + 200));
+    assert(st.raw[0] == e);
+    assert(ts_present(st, e.g, t + 10, t + 100));
 }
 
 } // verus!

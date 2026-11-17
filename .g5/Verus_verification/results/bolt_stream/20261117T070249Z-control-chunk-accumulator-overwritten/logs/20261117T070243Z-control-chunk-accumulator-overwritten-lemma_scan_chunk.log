@@ -1,0 +1,30 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/chunk-accumulator-overwritten/20261117T070243Z/models/bolt_stream/bolt_stream.rs:69:1
+   |
+69 | pub proof fn lemma_scan_chunk(body:Bytes,rest:Bytes,current:Bytes)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/chunk-accumulator-overwritten/20261117T070243Z/models/bolt_stream/bolt_stream.rs:71:13
+   |
+69 | pub proof fn lemma_scan_chunk(body:Bytes,rest:Bytes,current:Bytes)
+   | ------------------------------------------------------------------ at the end of the function body
+70 |     requires 0<body.len()<=max_chunk(),
+71 |     ensures scan(header(body.len())+body+rest,current).bodies==scan(rest,current+body).bodies,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/chunk-accumulator-overwritten/20261117T070243Z/models/bolt_stream/bolt_stream.rs:72:9
+   |
+69 |   pub proof fn lemma_scan_chunk(body:Bytes,rest:Bytes,current:Bytes)
+   |   ------------------------------------------------------------------ at the end of the function body
+...
+72 | /         scan(header(body.len())+body+rest,current).used==
+73 | |             (if scan(rest,current+body).bodies.len()>0{body.len()+2+scan(rest,current+body).used}else{0}),
+   | |_________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

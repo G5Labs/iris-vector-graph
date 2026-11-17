@@ -1,0 +1,11 @@
+verification results:: 28 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/typed-read-plain/20261117T065654Z/models/cypher_clauses/cypher_clauses.rs:213:13
+    |
+212 | pub proof fn theorem_single_query_decodes(t: int)
+    | ------------------------------------------------- at the end of the function body
+213 |     ensures read(Dec::Typed, raw_stored_int(t)) == Out::Number(t),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

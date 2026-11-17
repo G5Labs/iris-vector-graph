@@ -1,0 +1,27 @@
+verification results:: 63 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T065853Z/models/temporal_stats/temporal_stats.rs:445:1
+    |
+445 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T065853Z/models/temporal_stats/temporal_stats.rs:447:13
+    |
+445 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+446 |     requires occupied(st.raw, e),
+447 |     ensures write(st, 300, hf, Mode::Insert, e) == st, write(st, 300, hf, Mode::Skip, e) == st,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T065853Z/models/temporal_stats/temporal_stats.rs:447:56
+    |
+445 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+446 |     requires occupied(st.raw, e),
+447 |     ensures write(st, 300, hf, Mode::Insert, e) == st, write(st, 300, hf, Mode::Skip, e) == st,
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

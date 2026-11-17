@@ -402,5 +402,66 @@ pub proof fn theorem_opt_neighbors_follow_rule(m: bool)
         as_built_opt(OptCond::OuterLitAndOpt, false) == rule_opt(OptCond::OuterLitAndOpt, false),
 {}
 
+// ======================================================================== I. length / nodes / relationships of a named path
+//   translator.py path-function branch (28775-28815, pin 3eaa79cf): a null-anchor OPTIONAL row answers NULL (28788-28790);
+//   a variable-length path reads its value from the bound row (_vlp_path_sql 28791-28795, null when unmatched); otherwise
+//   length() of a fixed pattern is the constant len(pattern.relationships) (28797-28802), whatever the row bound, while
+//   nodes() / relationships() read the row's aliases (JSON_ARRAY of node ids / edge columns, null when unmatched, observed).
+//   Reader: the execute_cypher row (SQL path; OPTIONAL MATCH never runs native, so the native-on engine answers the same).
+//   Iteration 56 (review 53-55 F2, bug-cyp-146).
+/// The path pattern: a fixed pattern of `hops` relationships, or a variable-length one.
+pub enum PathPat { Fixed(nat), VarLen }
+/// What the row bound for the path: a match of `len` relationships, or nothing (an unmatched OPTIONAL MATCH).
+pub enum PathRow { Matched(nat), Unmatched }
+pub enum PathFn { Length, Nodes, Rels }
+pub enum PathAns { Int(nat), List(nat), Null }
+/// The row's own value of a path function: derived from what the row bound.
+pub open spec fn from_row(row: PathRow, f: PathFn) -> PathAns {
+    match row {
+        PathRow::Unmatched => PathAns::Null,
+        PathRow::Matched(n) => match f { PathFn::Length => PathAns::Int(n), PathFn::Nodes => PathAns::List(n + 1), PathFn::Rels => PathAns::List(n) },
+    }
+}
+/// As built: whether the translator takes the answer from the pattern instead of the row.
+pub open spec fn length_from_pattern(p: PathPat, f: PathFn) -> bool {
+    match p { PathPat::Fixed(_) => f == PathFn::Length, PathPat::VarLen => false }
+}
+/// `anchor_null` is the optional_null_row_unconditional flag (the OPTIONAL MATCH's anchor is a null scalar).
+pub open spec fn as_built_path_fn(p: PathPat, row: PathRow, f: PathFn, anchor_null: bool) -> PathAns {
+    if anchor_null { PathAns::Null }
+    else if length_from_pattern(p, f) { match p { PathPat::Fixed(h) => PathAns::Int(h), PathPat::VarLen => PathAns::Null } }
+    else { from_row(row, f) }
+}
+/// openCypher and owner query.optional: a path the OPTIONAL MATCH did not bind is null, and every function of it is
+/// null; a bound path answers its own length, nodes and relationships.
+pub open spec fn rule_path_fn(row: PathRow, f: PathFn, anchor_null: bool) -> PathAns {
+    if anchor_null { PathAns::Null } else { from_row(row, f) }
+}
+/// A row is consistent with its pattern: a fixed pattern binds exactly its hops.
+pub open spec fn row_fits(p: PathPat, row: PathRow) -> bool {
+    match (p, row) { (PathPat::Fixed(h), PathRow::Matched(n)) => n == h, _ => true }
+}
+/// bug-cyp-146 (general): for every fixed pattern, an unmatched OPTIONAL path answers length = its hop count instead of
+/// null, while nodes() and relationships() of the same path are null.
+pub proof fn theorem_unmatched_fixed_path_length_is_hops(h: nat)
+    ensures
+        as_built_path_fn(PathPat::Fixed(h), PathRow::Unmatched, PathFn::Length, false) == PathAns::Int(h),
+        rule_path_fn(PathRow::Unmatched, PathFn::Length, false) == PathAns::Null,
+        as_built_path_fn(PathPat::Fixed(h), PathRow::Unmatched, PathFn::Nodes, false) == PathAns::Null,
+        as_built_path_fn(PathPat::Fixed(h), PathRow::Unmatched, PathFn::Rels, false) == PathAns::Null,
+{}
+/// Neighbors: every bound path consistent with its pattern, every variable-length path (bound or not), and a null
+/// anchor follow the rule for every function.
+pub proof fn theorem_bound_or_varlen_path_follows_rule(p: PathPat, row: PathRow, f: PathFn, anchor_null: bool)
+    requires row_fits(p, row), (row is Matched || p is VarLen || anchor_null),
+    ensures as_built_path_fn(p, row, f, anchor_null) == rule_path_fn(row, f, anchor_null),
+{}
+/// General: as built and the rule differ exactly on length() of an unmatched fixed path with a non-null anchor.
+pub proof fn theorem_path_fn_departs_exactly_on_unmatched_fixed_length(p: PathPat, row: PathRow, f: PathFn, anchor_null: bool)
+    requires row_fits(p, row),
+    ensures (as_built_path_fn(p, row, f, anchor_null) != rule_path_fn(row, f, anchor_null))
+        == (!anchor_null && p is Fixed && row is Unmatched && f == PathFn::Length),
+{}
+
 fn main() {}
 } // verus!

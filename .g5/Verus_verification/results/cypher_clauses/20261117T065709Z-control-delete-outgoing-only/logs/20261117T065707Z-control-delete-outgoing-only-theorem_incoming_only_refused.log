@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/delete-outgoing-only/20261117T065707Z/models/cypher_clauses/cypher_clauses.rs:347:13
+    |
+345 | pub proof fn theorem_incoming_only_refused(in_edges: nat)
+    | --------------------------------------------------------- at the end of the function body
+346 |     requires in_edges > 0,
+347 |     ensures as_built_delete(false, 0, in_edges) == DelOut::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

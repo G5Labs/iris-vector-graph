@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/nested-serialized-as-json/20261117T065958Z/models/temporal_stats/temporal_stats.rs:1020:1
+     |
+1020 | pub proof fn theorem_nested_value_hash_per_call(store: Set<Seq<char>>, ps: Seq<(Seq<char>, LVal)>, r1: Seq<Seq<char>>, r2: Seq<Seq<char>>)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/nested-serialized-as-json/20261117T065958Z/models/temporal_stats/temporal_stats.rs:1041:12
+     |
+1041 |     assert(t1.last() == (k, enc(r1.last())));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/nested-serialized-as-json/20261117T065958Z/models/temporal_stats/temporal_stats.rs:1042:12
+     |
+1042 |     assert(t2.last() == (k, enc(r2.last())));
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

@@ -24,7 +24,12 @@ RUN = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()); T = RUN[-7:-1]
 P = f"i53s_{T}_"; G = f"i53sbg{T}"; PROP = f"i53sbt{T}"
 TOL = 1e-12
 MUTS = ["stopwords-kept", "query-terms-deduplicated", "unknown-terms-scored", "no-fallback", "left-to-right-denominator",
-        "idf-without-plus-one", "ties-by-key-only", "schema2-reads-stored", "parse-keeps-ids"]
+        "idf-without-plus-one", "ties-by-key-only", "schema2-reads-stored", "parse-keeps-ids",
+        # iteration 56 (review 53-55 minors): subscript collation of tied ids; k at the three readers
+        "numeric-ids-as-text", "text-case-folded", "sql-entry-validates-k", "nonpositive-k-takes-all"]
+# a tie: six documents with the same text; two ids are canonical numbers (9 before 10 by value, "10" first as text)
+NUM9, NUM10 = "7" + T + "9", "7" + T + "10"
+TIES = [NUM9, NUM10, P + "d10", P + "d9", P + "dB", P + "da"]
 STOP = set("a,an,the,and,or,but,in,on,at,to,for,of,with,by,from,is,are,was,were,be,been,being,have,has,had,do,does,did,"
            "will,would,could,should,may,might,shall,this,that,these,those,it,its,i,we,you,he,she,they,them,their,our,your,"
            "his,her,not,no,nor,so,yet,both,either,neither,each,all,any,such,as,if,than,then,there,here,when,where,which,"
@@ -105,8 +110,25 @@ def search(st, query, k, m, frac=0.0, stored=None):
             keyed[(key, "")] = (d, s)        # one subscript per key: the last document written wins
         else:
             keyed[(key, d)] = (d, s)
-    order = sorted(keyed, key=lambda x: (-x[0], x[1]))
+    order = sorted(keyed, key=lambda x: (-x[0], collate(x[1], m)))
     return {"results": [list(keyed[x]) for x in order[:k]], "skipped": sorted(skip), "fallback": fallback}
+
+
+def collate(d, m):
+    """P-COLLATE: a canonical number first, by value; other ids by character codes."""
+    canon = re.fullmatch(r"-?(0|[1-9][0-9]*)", d) is not None
+    if canon and not m.get("numeric-ids-as-text"):
+        return (0, int(d), ())
+    return (1, 0, tuple(-ord(c) for c in d) if m.get("text-case-folded") else tuple(ord(c) for c in d))
+
+
+def take(results, k, entry, m):
+    """entry_k: SQL passes k through (SearchCore answers [] for k <= 0); Python and Cypher refuse k < 1."""
+    if k < 1 and (entry != "sql" or m.get("sql-entry-validates-k")):
+        return "refused"
+    if k <= 0:
+        return list(results) if m.get("nonpositive-k-takes-all") else []
+    return list(results[:k])
 
 
 def py_patch(raw, m):
@@ -153,7 +175,31 @@ def main():
     e.bm25_build(fresh, [PROP], graph=G2)
     got["fresh:graph"] = strip(e.bm25_search(fresh, "graph", 10))
     got["fresh:database"] = strip(e.bm25_search(fresh, "database", 10))
-    for n_ in (name, fresh):
+    # iteration 56: tie order over subscript collation, and k <= 0 at the three readers
+    G3 = G + "t"
+    for d in TIES:
+        e.create_node(d, labels=["I53SB"], properties={PROP: "tieword"}, graph=G3)
+    ties = name + "t"
+    e.bm25_build(ties, [PROP], graph=G3)
+    got["tie:py"] = strip(e.bm25_search(ties, "tieword", 10))
+    got["tie:py@k3"] = strip(e.bm25_search(ties, "tieword", 3))
+    got["tie:raw"] = strip([(r["id"], r["score"]) for r in json.loads(obj.classMethodValue("Graph.KG.BM25Index", "Search", ties, "tieword", 10))])
+    cur.execute(f"SELECT {e._ivg_schema}.kg_BM25(?, ?, ?)", [ties, "tieword", 10])
+    got["tie:sql"] = strip([(r["id"], r["score"]) for r in json.loads(cur.fetchone()[0])])
+    for k in (0, -1, 1):
+        cur.execute(f"SELECT {e._ivg_schema}.kg_BM25(?, ?, ?)", [fresh, "graph", k])
+        got[f"k:sql@{k}"] = strip([(r["id"], r["score"]) for r in json.loads(cur.fetchone()[0])])
+        try:
+            got[f"k:py@{k}"] = strip(e.bm25_search(fresh, "graph", k))
+        except Exception as x:  # noqa: BLE001
+            got[f"k:py@{k}"] = "refused"; got[f"k:py@{k}:error"] = type(x).__name__
+        try:
+            r = e.execute_cypher(f"USE GRAPH '{G2}' CALL ivg.bm25.search('{fresh}', 'graph', {k}) YIELD node, score "
+                                 "RETURN node.node_id AS id, score")
+            got[f"k:cypher@{k}"] = "refused" if r.error else strip([(x[0], x[1]) for x in r.rows])
+        except Exception as x:  # noqa: BLE001
+            got[f"k:cypher@{k}"] = "refused"; got[f"k:cypher@{k}:error"] = type(x).__name__
+    for n_ in (name, fresh, ties):
         e.bm25_drop(n_)
     c.close()
 
@@ -180,6 +226,16 @@ def main():
         out["inc_delete:database"] = pid(search(stats(d2, m), "database", 10, m, stored=st0)["results"])
         out["fresh:graph"] = pid(search(stats(d2, m), "graph", 10, m)["results"])
         out["fresh:database"] = pid(search(stats(d2, m), "database", 10, m)["results"])
+        tdocs = {d: "tieword" for d in TIES}
+        stt = stats(tdocs, m)
+        tres = [[i[len(P):] if i.startswith(P) else i, s] for i, s in search(stt, "tieword", 10, m)["results"]]
+        out["tie:py"] = pid(tres); out["tie:raw"] = tres; out["tie:sql"] = tres
+        out["tie:py@k3"] = pid(tres[:3])
+        full = search(stats(d2, m), "graph", 10**6, m)["results"]
+        for k in (0, -1, 1):
+            out[f"k:sql@{k}"] = take(full, k, "sql", m)
+            out[f"k:py@{k}"] = take(pid(full), k, "py", m)
+            out[f"k:cypher@{k}"] = take(full, k, "cypher", m)
         return out
 
     def same(a, b):
@@ -211,7 +267,9 @@ def main():
                      "ivg.bm25.search on IRIS 2026.1 (pin 3eaa79cf): 9 documents (stopwords, punctuation, accents, repeats, an "
                      "id holding ':.5', a stopword-only text), 14 queries on two readers, k 1 and 2 on a three-way tie, 5 "
                      "cutoff cases with the report, kg_BM25 and the Cypher procedure on 2 queries, an incremental insert and "
-                     "delete against a fresh build over the same documents."}
+                     "delete against a fresh build over the same documents; iteration 56: a six-way tie whose ids include two "
+                     "canonical numbers (subscript collation) on three readers, and k 0, -1, 1 on kg_BM25, bm25_search and "
+                     "CALL ivg.bm25.search."}
     d = REPO / ".g5/Verus_verification/results/bm25_scoring" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, ensure_ascii=False, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s")}))

@@ -1,0 +1,389 @@
+{
+ "fix1_un": {
+  "sql": [
+   [
+    [
+     "int",
+     1
+    ],
+    [
+     "bool",
+     true
+    ],
+    [
+     "NoneType",
+     null
+    ],
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "int",
+     1
+    ],
+    [
+     "bool",
+     true
+    ],
+    [
+     "NoneType",
+     null
+    ],
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ]
+ },
+ "fix1_m": {
+  "sql": [
+   [
+    [
+     "int",
+     1
+    ],
+    [
+     "bool",
+     false
+    ],
+    [
+     "int",
+     2
+    ],
+    [
+     "int",
+     1
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "int",
+     1
+    ],
+    [
+     "bool",
+     false
+    ],
+    [
+     "int",
+     2
+    ],
+    [
+     "int",
+     1
+    ]
+   ]
+  ]
+ },
+ "fix2_un": {
+  "sql": [
+   [
+    [
+     "int",
+     2
+    ],
+    [
+     "bool",
+     true
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "int",
+     2
+    ],
+    [
+     "bool",
+     true
+    ]
+   ]
+  ]
+ },
+ "fix2_m": {
+  "sql": [
+   [
+    [
+     "int",
+     2
+    ],
+    [
+     "bool",
+     false
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "int",
+     2
+    ],
+    [
+     "bool",
+     false
+    ]
+   ]
+  ]
+ },
+ "var_un": {
+  "sql": [
+   [
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ]
+ },
+ "var_m": {
+  "sql": [
+   [
+    [
+     "int",
+     1
+    ]
+   ],
+   [
+    [
+     "int",
+     2
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "int",
+     1
+    ]
+   ],
+   [
+    [
+     "int",
+     2
+    ]
+   ]
+  ]
+ },
+ "anchor_null": {
+  "sql": [
+   [
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ]
+ },
+ "with_null": {
+  "sql": [
+   [
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ]
+ },
+ "lit_null": {
+  "sql": [
+   [
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "NoneType",
+     null
+    ]
+   ]
+  ]
+ },
+ "match_fixed": {
+  "sql": [
+   [
+    [
+     "int",
+     1
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "int",
+     1
+    ]
+   ]
+  ]
+ },
+ "pct_int": {
+  "sql": [
+   [
+    [
+     "float",
+     20.0
+    ],
+    [
+     "float",
+     25.0
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "float",
+     20.0
+    ],
+    [
+     "float",
+     25.0
+    ]
+   ]
+  ]
+ },
+ "pct_flt": {
+  "sql": [
+   [
+    [
+     "float",
+     1.5
+    ],
+    [
+     "float",
+     2.0
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "float",
+     1.5
+    ],
+    [
+     "float",
+     2.0
+    ]
+   ]
+  ]
+ },
+ "min_int": {
+  "sql": [
+   [
+    [
+     "int",
+     10
+    ],
+    [
+     "int",
+     20
+    ]
+   ]
+  ],
+  "native_on": [
+   [
+    [
+     "int",
+     10
+    ],
+    [
+     "int",
+     20
+    ]
+   ]
+  ]
+ },
+ "pct_p_null": "exc:TypeError:float() argument must be a string or a real number, not 'NoneType'",
+ "pct_p_null_cont": "exc:TypeError:float() argument must be a string or a real number, not 'NoneType'",
+ "pct_p_str": [
+  [
+   [
+    "float",
+    20.0
+   ]
+  ]
+ ],
+ "pct_p_strx": "exc:ValueError:could not convert string to float: 'x'",
+ "pct_p_num": [
+  [
+   [
+    "float",
+    20.0
+   ]
+  ]
+ ],
+ "pct_p_bool": [
+  [
+   [
+    "float",
+    30.0
+   ]
+  ]
+ ],
+ "pct_p_missing": "exc:SyntaxError:Undefined variable: p",
+ "pct_lit_null": [
+  [
+   [
+    "float",
+    10.0
+   ]
+  ]
+ ],
+ "_run": "20261117T065840Z",
+ "_prefix": "i56c_065839_",
+ "_queries": {
+  "fix1_un": "MATCH (a:I56CA065839 {name:'a3'}) OPTIONAL MATCH p=(a)-[:I56CK065839]->(b) RETURN length(p), p IS NULL, nodes(p), relationships(p)",
+  "fix1_m": "MATCH (a:I56CA065839 {name:'a1'}) OPTIONAL MATCH p=(a)-[:I56CK065839]->(b) RETURN length(p), p IS NULL, size(nodes(p)), size(relationships(p))",
+  "fix2_un": "MATCH (a:I56CA065839 {name:'a2'}) OPTIONAL MATCH p=(a)-[:I56CK065839]->(b)-[:I56CK065839]->(c) RETURN length(p), p IS NULL",
+  "fix2_m": "MATCH (a:I56CA065839 {name:'a1'}) OPTIONAL MATCH p=(a)-[:I56CK065839]->(b)-[:I56CK065839]->(c) RETURN length(p), p IS NULL",
+  "var_un": "MATCH (a:I56CA065839 {name:'a3'}) OPTIONAL MATCH p=(a)-[:I56CK065839*1..2]->(b) RETURN length(p)",
+  "var_m": "MATCH (a:I56CA065839 {name:'a1'}) OPTIONAL MATCH p=(a)-[:I56CK065839*1..2]->(b) RETURN length(p) ORDER BY length(p)",
+  "anchor_null": "OPTIONAL MATCH (a:I56CA065839 {name:'zz'}) OPTIONAL MATCH p=(a)-[:I56CK065839]->(b) RETURN length(p)",
+  "with_null": "WITH null AS a OPTIONAL MATCH p=(a)-[:I56CK065839]->(b) RETURN length(p)",
+  "lit_null": "RETURN length(null)",
+  "match_fixed": "MATCH p=(a:I56CA065839 {name:'a1'})-[:I56CK065839]->(b) RETURN length(p)",
+  "pct_int": "UNWIND [10,20,30,40] AS x RETURN percentileDisc(x,0.5), percentileCont(x,0.5)",
+  "pct_flt": "UNWIND [1.5,2.5] AS x RETURN percentileDisc(x,0.5), percentileCont(x,0.5)",
+  "min_int": "UNWIND [10,20] AS x RETURN min(x), max(x)"
+ }
+}

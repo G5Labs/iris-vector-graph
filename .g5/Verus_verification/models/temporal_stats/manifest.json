@@ -15,7 +15,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 58}"
+      "expect": "{\"errors\": 0, \"verified\": 64}"
     },
     {
       "label": "update-keeps-statistics",
@@ -124,6 +124,18 @@
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_ms_edge_in_seconds_whole_bucket\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-key-refused",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_key_quiet_cut_window_answers_zero\", \"theorem_empty_key_witness\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-key-never-raises",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_key_raises_with_whole_bucket_or_event\", \"theorem_empty_key_witness\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

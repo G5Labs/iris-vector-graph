@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_empty_chunk_is_emitted"
+    ],
+    "find": "Read::Message(body)=>body.len()>0",
+    "name": "empty-message-keeps-ws-open",
+    "replace": "Read::Message(body)=>true",
+    "why": "empty-message-keeps-ws-open"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_chunk_is_emitted"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/empty-message-keeps-ws-open/20261117T070311Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": true,
+    "per_function": {
+      "theorem_empty_chunk_is_emitted": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/20261117T070311Z-control-empty-message-keeps-ws-open-theorem_empty_chunk_is_emitted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/20261117T070311Z-control-empty-message-keeps-ws-open.log",
+    "timed_out": false,
+    "verified": 40
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261117T070317Z-control-empty-message-keeps-ws-open/logs/20261117T070311Z-control-empty-message-keeps-ws-open-theorem_empty_chunk_is_emitted.log": "fcaedba6a52af3e3d5a5a79988cd5f08981146db64723742a59a069c3fbcecb5",
+    ".g5/Verus_verification/results/bolt_stream/20261117T070317Z-control-empty-message-keeps-ws-open/logs/20261117T070311Z-control-empty-message-keeps-ws-open.log": "8fbdc4ae6787145aa8534aea3560b5144fb6af476bff01b993587cb0fd796e15"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

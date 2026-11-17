@@ -1,0 +1,79 @@
+{
+  "name": "bolt_tx",
+  "root": "bolt_tx.rs",
+  "expected_verified": 20,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "begin-refused",
+      "find": "                Msg::Begin => (s, Ans::Success),",
+      "replace": "                Msg::Begin => (S { store: s.store, failed: true, tx: None }, Ans::Failure),",
+      "expect_fail_in": [
+        "theorem_rollback_keeps_writes",
+        "theorem_commit_agrees",
+        "theorem_failed_tx_keeps_earlier_writes",
+        "theorem_reset_or_close_keeps_writes"
+      ],
+      "classification": "repair (alternative): BEGIN refused with FAILURE, as design Refuse; the client is told there is no transaction, so every as-built departure theorem and the commit neighbor change"
+    },
+    {
+      "name": "atomic-tx",
+      "find": "            Design::AsBuilt => match m {\n                Msg::Begin => (s, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { (S { store: s.store + w, failed: false, tx: s.tx }, Ans::Success) },\n                Msg::Pull => (s, Ans::Success),\n                Msg::Commit => (s, Ans::Success),\n                Msg::Rollback => (s, Ans::Success),\n                Msg::Reset => (s, Ans::Success),\n                Msg::Close => (s, Ans::Success),",
+      "replace": "            Design::AsBuilt => match m {\n                Msg::Begin => (S { store: s.store, failed: false, tx: Some(0) }, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { match s.tx { Some(p) => (S { store: s.store, failed: false, tx: Some(p + w) }, Ans::Success),\n                                        None => (S { store: s.store + w, failed: false, tx: None }, Ans::Success) } },\n                Msg::Pull => (s, Ans::Success),\n                Msg::Commit => (match s.tx { Some(p) => S { store: s.store + p, failed: false, tx: None }, None => s }, Ans::Success),\n                Msg::Rollback => (S { store: s.store, failed: false, tx: None }, Ans::Success),\n                Msg::Reset => (S { store: s.store, failed: false, tx: None }, Ans::Success),\n                Msg::Close => (S { store: s.store, failed: false, tx: None }, Ans::Success),",
+      "expect_fail_in": [
+        "theorem_rollback_keeps_writes",
+        "theorem_failed_tx_keeps_earlier_writes",
+        "theorem_reset_or_close_keeps_writes"
+      ],
+      "classification": "repair (intended): BEGIN opens a transaction whose writes are held until COMMIT; ROLLBACK, RESET and a closed connection discard them"
+    },
+    {
+      "name": "rollback-answers-failure",
+      "find": "                Msg::Rollback => (s, Ans::Success),",
+      "replace": "                Msg::Rollback => (s, Ans::Failure),",
+      "expect_fail_in": [
+        "theorem_rollback_keeps_writes"
+      ],
+      "classification": "answer: ROLLBACK answered FAILURE instead of SUCCESS (the client would learn the writes stayed)"
+    },
+    {
+      "name": "run-not-committed",
+      "find": "            Design::AsBuilt => match m {\n                Msg::Begin => (s, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { (S { store: s.store + w, failed: false, tx: s.tx }, Ans::Success) },",
+      "replace": "            Design::AsBuilt => match m {\n                Msg::Begin => (s, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { (S { store: s.store, failed: false, tx: s.tx }, Ans::Success) },",
+      "expect_fail_in": [
+        "lemma_plain_as_built"
+      ],
+      "classification": "decision: a successful RUN's write not committed by execute_cypher (removes P-AUTOCOMMIT); the auto-commit neighbor and every theorem built on the lemma lose their store"
+    },
+    {
+      "name": "failed-run-writes",
+      "find": "            Design::AsBuilt => match m {\n                Msg::Begin => (s, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { (S { store: s.store + w, failed: false, tx: s.tx }, Ans::Success) },",
+      "replace": "            Design::AsBuilt => match m {\n                Msg::Begin => (s, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store + w, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { (S { store: s.store + w, failed: false, tx: s.tx }, Ans::Success) },",
+      "expect_fail_in": [
+        "theorem_failed_tx_keeps_earlier_writes"
+      ],
+      "classification": "premise P-STMT-ATOMIC flipped: a failing statement keeps its own writes"
+    },
+    {
+      "name": "failure-not-sticky",
+      "find": "    if s.failed {",
+      "replace": "    if false && s.failed {",
+      "expect_fail_in": [
+        "lemma_plain_failed",
+        "theorem_failed_tx_keeps_earlier_writes"
+      ],
+      "classification": "decision: the FAILED state's guard removed, so PULL and ROLLBACK after a failure are no longer IGNORED"
+    },
+    {
+      "name": "rule-rollback-keeps",
+      "find": "            Msg::Rollback => C { store: c.store, tx: None, failed: false },",
+      "replace": "            Msg::Rollback => match c.tx { Some(p) => C { store: c.store + p, tx: None, failed: false }, None => c },",
+      "expect_fail_in": [
+        "theorem_rollback_keeps_writes",
+        "theorem_refusal_matches_rule"
+      ],
+      "classification": "rule weakened: the client ledger keeps a rolled-back transaction's writes (checks that the departure theorems constrain the rule, not only the server)"
+    }
+  ]
+}

@@ -66,3 +66,27 @@ from the written corpus, `math.log` for P-LN); relative tolerance 1e-12. The Cyp
 - Not modeled: `Build`'s graph-scoped SELECT, `Insert`/`Delete` locking and transactions (bm25_counts and the write
   lock owner), schema-1 `Upgrade`, `SearchReport`'s skipped-term order (q-srch-005; the binding compares a set),
   `kg_BM25`'s rdf_props privilege check (W53).
+
+## Iteration 56: tie order and k at the three readers (review 53-55 minors; bug-srch-113)
+
+**Tie order.** The owner said "node-ID order"; the product orders equal 12-decimal keys by IRIS subscript collation of
+the ids. `before` keeps ids as their collation rank; `DocId`, `text_lt`, `id_lt` and `before_id` spell the collation
+out (premise P-COLLATE: canonical numbers first, by value; other ids by character codes).
+`theorem_ties_in_subscript_order`: 9 before 10, `d10` before `d9`, `d9` before `dB`, `dB` before `da`, a number before
+any text. Controls `numeric-ids-as-text`, `text-case-folded`. Binding: a six-way tie (`7<T>9`, `7<T>10`, `d10`, `d9`,
+`dB`, `da`, one text each) on `bm25_search` (k 10 and 3), the raw `Search` and SQL `kg_BM25`: observed
+`7<T>9, 7<T>10, d10, d9, dB, da` on all three (text order would put `7<T>10` first).
+
+**k.** `taken` (SearchCore quits when `count >= k` before the first document) and `entry_k` (SQL passes k through;
+`bm25_search` and `CALL ivg.bm25.search` refuse k < 1 through `BM25SearchInput`).
+`theorem_sql_k_nonpositive_empty_others_refuse` (general over k and the ranked count). Controls
+`sql-entry-validates-k` (the repair of bug-srch-113), `nonpositive-k-takes-all`. Binding `k:sql@0`, `@-1` answer
+`[]`; `k:py@0`, `@-1` raise `ValidationError`; `k:cypher@0`, `@-1` raise `ValueError`; k 1 agrees on all three.
+
+Results: prove **35 verified** (was 32); **13/13 controls EXPECTED_FAIL** (4 new); binding **AGREES 59** (was 46), all
+13 mutations and the tamper detected ([results](../../results/bm25_scoring/)).
+
+Binding-integrity note (review 53-55 F5): `used_arg` takes the statistics as inputs, so it does not decide anything
+`BM25Index.Build` or `bm25_build` produce; their crosswalk rows are relabeled `cites` (locator only) in iteration 56.
+`SearchCore`'s schema-2 rows (`theorem_schema2_reads_current_stats`) keep the decision that reads N, totalLen and df at
+search time.

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/bursts-filter-predicate/20261117T065926Z/models/temporal_stats/temporal_stats.rs:781:13
+    |
+780 | pub proof fn theorem_bursts_ignore_predicate(st: St, g: int, p1: int, p2: int, s: int, window: int, thr: int, now_ts: int, clock_s: int)
+    | ---------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+781 |     ensures burst_listed(st, 300, g, p1, s, window, thr, now_ts, clock_s) == burst_listed(st, 300, g, p2, s, window, thr, now_ts, clock_s),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/null-param-refused/20261117T065600Z/models/percentile/percentile.rs:258:13
+    |
+257 | pub proof fn theorem_p_departs_exactly_on_non_numbers(s: PSrc)
+    | -------------------------------------------------------------- at the end of the function body
+258 |     ensures (as_built_p(s) == rule_p(s)) == (s is Missing || s == PSrc::Param(PVal::Num) || s == PSrc::Lit(PVal::Num)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

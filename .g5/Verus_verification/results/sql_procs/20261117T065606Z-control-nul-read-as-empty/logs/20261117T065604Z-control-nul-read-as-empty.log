@@ -1,0 +1,36 @@
+verification results:: 24 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T065604Z/models/sql_procs/sql_procs.rs:398:1
+    |
+398 | pub proof fn theorem_sql_empty_endpoints_zero_path(wp: WProp, dir: Dir)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T065604Z/models/sql_procs/sql_procs.rs:401:9
+    |
+398 | pub proof fn theorem_sql_empty_endpoints_zero_path(wp: WProp, dir: Dir)
+    | ----------------------------------------------------------------------- at the end of the function body
+...
+401 |         dijkstra_path(true, sql_end(true, 0), sql_end(true, 0), wp, dir) == Ans::Ok(PathAns::ZeroPath(End::Nul)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T065604Z/models/sql_procs/sql_procs.rs:402:9
+    |
+398 | pub proof fn theorem_sql_empty_endpoints_zero_path(wp: WProp, dir: Dir)
+    | ----------------------------------------------------------------------- at the end of the function body
+...
+402 |         dijkstra_json(sql_end(true, 0), sql_end(true, 0), wp, dir) != rule_empty_endpoint(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T065604Z/models/sql_procs/sql_procs.rs:410:9
+    |
+406 | pub proof fn theorem_dijkstra_endpoint_neighbors(x: int, y: int, wp: WProp, dir: Dir)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+...
+410 |         dijkstra_json(sql_end(true, 0), End::Id(y), wp, dir) == PathAns::Search,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

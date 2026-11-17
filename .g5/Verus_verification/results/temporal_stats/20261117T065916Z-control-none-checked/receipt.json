@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "decision: the store tests the driver's None before converting (the bug-tmp-009 repair; the docstring's 0.0)",
+    "expect_fail_in": [
+      "theorem_empty_answer_raises",
+      "theorem_rolled_back_first_write",
+      "theorem_bucket_purge_whole_vs_cut"
+    ],
+    "find": "        SAns::Empty => Py::Raises,",
+    "name": "none-checked",
+    "replace": "        SAns::Empty => Py::Float(0),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_answer_raises",
+      "theorem_rolled_back_first_write",
+      "theorem_bucket_purge_whole_vs_cut"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "4b99794029a2c0ddafcb948dc885b37eee015e810fcaebf311fe8aad853704a0",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "0aa672856beebcc40eba3864d4315b06321a16c9c4a44beaa4733fa832cc724e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T065909Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bucket_purge_whole_vs_cut": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T065909Z-control-none-checked-theorem_bucket_purge_whole_vs_cut.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_empty_answer_raises": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T065909Z-control-none-checked-theorem_empty_answer_raises.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rolled_back_first_write": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T065909Z-control-none-checked-theorem_rolled_back_first_write.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T065909Z-control-none-checked.log",
+    "timed_out": false,
+    "verified": 61
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T065916Z-control-none-checked/logs/20261117T065909Z-control-none-checked-theorem_bucket_purge_whole_vs_cut.log": "e7adaed230a477398f43f75357c5a9b645b8755ecddbe4ebd38595de3fb4c01b",
+    ".g5/Verus_verification/results/temporal_stats/20261117T065916Z-control-none-checked/logs/20261117T065909Z-control-none-checked-theorem_empty_answer_raises.log": "ee9b7132788610fec14cf1641880db4dd558cc25fd89f4d9f576347d65398780",
+    ".g5/Verus_verification/results/temporal_stats/20261117T065916Z-control-none-checked/logs/20261117T065909Z-control-none-checked-theorem_rolled_back_first_write.log": "ce28e25348b7f09e119b1fe4dfe4810eff39cade084d2d5a76228b74781a3586",
+    ".g5/Verus_verification/results/temporal_stats/20261117T065916Z-control-none-checked/logs/20261117T065909Z-control-none-checked.log": "a5f8801c06e03c2649a9a3bd724c5b49e98fbd785b8c177066d2dc510694967a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

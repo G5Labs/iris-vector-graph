@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/literal-null-refused/20261117T065602Z/models/percentile/percentile.rs:252:9
+    |
+246 | pub proof fn theorem_non_number_p_not_refused()
+    | ----------------------------------------------- at the end of the function body
+...
+252 |         as_built_p(PSrc::Lit(PVal::Null)) == PRes::RunAtZero,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

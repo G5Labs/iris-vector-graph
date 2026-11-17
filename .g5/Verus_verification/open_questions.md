@@ -6034,6 +6034,7 @@ Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning? There is no
 
 - Today Bolt's begin, commit and rollback do nothing, so each statement commits on its own and a rollback keeps earlier writes.
 - A Neo4j HTTP batch keeps earlier statements when a later one fails.
+- Iteration 56 (review 53-55 F1): reproduced end to end with the neo4j driver 6.4.1 and a raw Bolt client against the product's own listener ([bug-plt-127](bugs_issues.md#bug-plt-127), [bolt_tx binding](results/bolt_tx/20261117T065936Z-binding/receipt.json)): rollback, a failure then rollback, RESET, a closed connection and an aborted `execute_write` all keep the transaction's writes while every answer is SUCCESS. Both listed answers rule this out; the owner [access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions) now states that shared rule (auto-commit statements still commit on their own), and the model checks both repairs (`atomic-tx`, `begin-refused`). Only the choice of repair remains open.
 
 Disposition: open. Working assumption: Assume per-statement commits on Bolt until an explicit transaction contract is established.
 

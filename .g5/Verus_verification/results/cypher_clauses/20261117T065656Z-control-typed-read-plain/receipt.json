@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: the reader's CY_TYPED decode removed",
+    "expect_fail_in": [
+      "theorem_single_query_decodes"
+    ],
+    "find": "Raw::Marked(m, t) => if d == Dec::Typed { Out::Number(t) } else { Out::MarkedText(t) },",
+    "name": "typed-read-plain",
+    "replace": "Raw::Marked(m, t) => Out::MarkedText(t),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_single_query_decodes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "b893a377d3296c199cb18b561b87be96d797c5e8a6d50e07e1deb3a106cc299b",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "34bb5126ccce33eac88d4bcd715214baf456224c5e43ce35f779552b1cf8e639"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/typed-read-plain/20261117T065654Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_single_query_decodes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065654Z-control-typed-read-plain-theorem_single_query_decodes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065654Z-control-typed-read-plain.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065656Z-control-typed-read-plain/logs/20261117T065654Z-control-typed-read-plain-theorem_single_query_decodes.log": "26618d3f7bf3889750903b8ef6d1873f06fd8fbdf5809c96bb4ecfb76ef17374",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065656Z-control-typed-read-plain/logs/20261117T065654Z-control-typed-read-plain.log": "a36907e680549bad6a30db7af7ed1d7c4330ec3713eccc935c150daf0c3d2926"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

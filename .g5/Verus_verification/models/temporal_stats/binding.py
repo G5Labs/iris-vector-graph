@@ -27,7 +27,8 @@ B = T // 300
 MUTS = ["update-keeps-statistics", "insert-overwrites", "counters-journaled", "whole-reads-raw", "cut-reads-tagg",
         "none-checked", "raw-purge-drops-statistics", "delete-skips-missing-statistics", "bursts-filter-predicate",
         "burst-threshold-strict", "velocity-not-rounded", "ms-now-in-ms", "small-range-correction", "no-empty-guard",
-        "distinct-whole-buckets-only", "escape-values", "nested-serialized-as-json", "ms-buckets-apart"]
+        "distinct-whole-buckets-only", "escape-values", "nested-serialized-as-json", "ms-buckets-apart",
+        "empty-key-refused", "empty-key-never-raises"]
 
 
 def sha(p):
@@ -124,6 +125,17 @@ class Port:
     def raw_agg(self, g, s, p, lo, hi):
         ws = [e[5] for e in self.raw if e[0] == g and e[2] == s and e[3] == p and lo <= e[1] <= hi]
         return (len(ws), sum(ws), min(ws) if ws else None, max(ws) if ws else None)
+
+    def py_aggregate_keys(self, g, s, p, metric, lo, hi):
+        """get_aggregate_keys (iteration 56, bug-tmp-108): an empty source or predicate raises on a whole bucket or on
+        any timestamp of the graph in the cut range; otherwise it reads nothing and answers as an empty valid read."""
+        if s and p:
+            return self.py_aggregate(g, s, p, metric, lo, hi)
+        whole = any(self.whole(b, lo, hi) for b in range(lo // self.div, hi // self.div + 1))
+        met = any(e[0] == g and lo <= e[1] <= hi for e in self.raw)
+        if self.m.get("empty-key-refused") or ((whole or met) and not self.m.get("empty-key-never-raises")):
+            return "Raises"
+        return {"count": 0, "sum": 0.0, "min": "Raises", "max": "Raises", "avg": "Raises"}[metric]
 
     def raw_hll(self, g, s, p, lo, hi):
         r = EMPTY
@@ -389,6 +401,14 @@ def reads():
     return r
 
 
+EK = {"ek_src_quiet_count": ("", "P", "count", 100, 200), "ek_src_quiet_sum": ("", "P", "sum", 100, 200),
+      "ek_pred_quiet_count": ("ek", "", "count", 100, 200), "ek_both_quiet_count": ("", "", "count", 100, 200),
+      "ek_src_quiet_min": ("", "P", "min", 100, 200), "ek_src_event_count": ("", "P", "count", 10, 100),
+      "ek_pred_event_count": ("ek", "", "count", 10, 100), "ek_src_whole_count": ("", "P", "count", 0, 299),
+      "ek_src_whole_empty_bucket": ("", "P", "count", 300, 599), "ek_given_event_count": ("ek", "P", "count", 10, 100),
+      "ek_given_quiet_count": ("ek", "P", "count", 100, 200)}
+
+
 def main():
     t0 = time.time()
     c = runtime.connect(); e = runtime.engine(c); nat = e._iris_obj()
@@ -504,6 +524,15 @@ def main():
     obs["ms_vel_window_300000"] = int(nat.classMethodValue("Graph.KG.TemporalIndexMS", "GetVelocity", gv, N("mv"), 300000, nv))
     obs["ms_in_sec_groups"] = {f"{r['source'][len(P):]}|{r['predicate']}": [r["count"], r["sum"], r["min"], r["max"]]
                                for r in e.get_bucket_groups("P", T, T + 299, source_prefix=P, graph=gx)}
+    # an empty source or predicate (iteration 56, review 53-55 challenge to round-2 m2, bug-tmp-108): one edge at T+50
+    gk = G("k")
+    e.create_edge_temporal(N("ek"), "P", N("a"), timestamp=T + 50, weight=1.0, graph=gk)
+    obs["ek_errors"] = {}
+    for name, (s_, p_, m_, lo, hi) in EK.items():
+        try:
+            obs[name] = e.get_temporal_aggregate(N(s_) if s_ else "", p_, m_, T + lo, T + hi, graph=gk)
+        except Exception as x:  # noqa: BLE001 - the observation is "it raised", the class is kept
+            obs[name] = "Raises"; obs["ek_errors"][name] = f"{type(x).__name__}: {str(x)[:160]}"
     c.close()
 
     def predict(m):
@@ -579,6 +608,10 @@ def main():
         w["ms_vel_window_300"] = pv.velocity(gv, N("mv"), 300, nv, clock)
         w["ms_vel_window_300000"] = pv.velocity(gv, N("mv"), 300000, nv, clock)
         w["ms_in_sec_groups"] = {k[len(P):]: [r[0], r[1], r[2], r[3]] for k, r in px.groups(gx, "P", T, T + 299, P).items()}
+        pk = Port(m)
+        pk.write("insert", [gk, T + 50, N("ek"), "P", N("a"), 1])
+        for name, (s_, p_, m_, lo, hi) in EK.items():
+            w[name] = pk.py_aggregate_keys(gk, N(s_) if s_ else "", p_, m_, T + lo, T + hi)
         return w
 
     def close(x, y):
@@ -615,6 +648,7 @@ def main():
     contrasts["fraction_canonical"] = obs["labels"]["fraction"]["canonical"]
     contrasts["nested"] = {k: v for k, v in obs["nested"].items() if k.endswith("same_hash")}
     contrasts["nested_map_canonicals"] = [obs["nested"]["nested_map_1"]["canonical"], obs["nested"]["nested_map_2"]["canonical"]]
+    contrasts["empty_key"] = {k: obs[k] for k in EK}
     contrasts["ms_in_sec"] = {k: obs[k] for k in ("ms_in_sec_whole_count", "ms_in_sec_cut_count", "ms_in_sec_raw_window", "ms_in_sec_velocity",
                                                     "ms_vel_window_300", "ms_vel_window_300000")}
     body = {"kind": "binding", "model": "temporal_stats", "fixture": runtime.NAME, "port": runtime.PORT, "product_baseline": runtime.PRODUCT,
@@ -633,7 +667,8 @@ def main():
                      "and GetBucketCount through the driver. Expected answers from the port of the model's writers applied to the same history. "
                      "SHA-1 register choice computed as HLLAdd does (provider); IRIS number text in label sets is a provider rule; a nested value's per-call "
                      "object reference text is read back from the product (provider input; its form NN@%Library.DynamicObject/Array is checked). "
-                     "The millisecond edge is read by the seconds readers (iteration 53). Latest reads "
+                     "The millisecond edge is read by the seconds readers (iteration 53). An empty source or predicate on "
+                     "get_temporal_aggregate over quiet cut, met cut and whole windows (iteration 56, bug-tmp-108). Latest reads "
                      "are observed by the iteration-51 probe only."}
     d = REPO / ".g5/Verus_verification/results/temporal_stats" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_raw_error_string_decides_failure"
+    ],
+    "find": "error.is_some() && error.unwrap().len()>0",
+    "name": "empty-error-is-failure",
+    "replace": "error.is_some()",
+    "why": "empty-error-is-failure"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_raw_error_string_decides_failure"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/empty-error-is-failure/20261117T070427Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_raw_error_string_decides_failure": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/20261117T070427Z-control-empty-error-is-failure-theorem_raw_error_string_decides_failure.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/20261117T070427Z-control-empty-error-is-failure.log",
+    "timed_out": false,
+    "verified": 42
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261117T070431Z-control-empty-error-is-failure/logs/20261117T070427Z-control-empty-error-is-failure-theorem_raw_error_string_decides_failure.log": "8c4cc6769061a45f06e8a07dbf3548776cf0991488dcc99fae66e671a4019186",
+    ".g5/Verus_verification/results/bolt_stream/20261117T070431Z-control-empty-error-is-failure/logs/20261117T070427Z-control-empty-error-is-failure.log": "154360428579e2602d497566c036964d193398eb6561d451d4b0a235c574929d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,20 @@
+verification results:: 27 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/delete-no-check/20261117T065709Z/models/cypher_clauses/cypher_clauses.rs:342:13
+    |
+341 | pub proof fn theorem_delete_follows_rule(detach: bool, out_edges: nat, in_edges: nat)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+342 |     ensures as_built_delete(detach, out_edges, in_edges) == rule_delete(detach, out_edges, in_edges),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/delete-no-check/20261117T065709Z/models/cypher_clauses/cypher_clauses.rs:347:13
+    |
+345 | pub proof fn theorem_incoming_only_refused(in_edges: nat)
+    | --------------------------------------------------------- at the end of the function body
+346 |     requires in_edges > 0,
+347 |     ensures as_built_delete(false, 0, in_edges) == DelOut::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

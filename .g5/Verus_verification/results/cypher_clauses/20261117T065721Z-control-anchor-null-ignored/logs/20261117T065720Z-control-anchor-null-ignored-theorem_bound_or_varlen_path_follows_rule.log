@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/anchor-null-ignored/20261117T065720Z/models/cypher_clauses/cypher_clauses.rs:457:13
+    |
+455 | pub proof fn theorem_bound_or_varlen_path_follows_rule(p: PathPat, row: PathRow, f: PathFn, anchor_null: bool)
+    | -------------------------------------------------------------------------------------------------------------- at the end of the function body
+456 |     requires row_fits(p, row), (row is Matched || p is VarLen || anchor_null),
+457 |     ensures as_built_path_fn(p, row, f, anchor_null) == rule_path_fn(row, f, anchor_null),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,37 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/readers-check-nodes/20261117T070434Z/models/sql_procs/sql_procs.rs:367:1
+    |
+367 | pub proof fn theorem_readers_check_rdf_edges(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, g: GArg, s2: End, d2: End)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/readers-check-nodes/20261117T070434Z/models/sql_procs/sql_procs.rs:370:9
+    |
+367 |   pub proof fn theorem_readers_check_rdf_edges(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, g: GArg, s2: End, d2: End)
+    |   -------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+370 | /         c.user.table.contains((t_nodes(), Act::S)) && !c.user.table.contains((t_edges(), Act::S)) ==> {
+371 | |             &&& match_edges_sql(c, sch, adj, src, pred, 0, g) == Ans::<Seq<Arc>>::Refused
+372 | |             &&& match_all_sql(c, sch, adj, src, pred, 0) == Ans::<Seq<Arc>>::Refused
+373 | |             &&& dijkstra_sql(c, sch, s2, d2, WProp::Empty, Dir::Out) == Ans::<PathAns>::Refused
+374 | |         },
+    | |_________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/readers-check-nodes/20261117T070434Z/models/sql_procs/sql_procs.rs:375:9
+    |
+367 |   pub proof fn theorem_readers_check_rdf_edges(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, g: GArg, s2: End, d2: End)
+    |   -------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+375 | /         c.user.table.contains((t_edges(), Act::S)) ==> {
+376 | |             &&& match_edges_sql(c, sch, adj, src, pred, 0, g) == Ans::Ok(match_edges_arg(adj, src, pred, 0, g))
+377 | |             &&& match_all_sql(c, sch, adj, src, pred, 0) == Ans::Ok(match_all(adj, src, pred, 0))
+378 | |             &&& dijkstra_sql(c, sch, s2, d2, WProp::Empty, Dir::Out) == Ans::Ok(dijkstra_json(s2, d2, WProp::Empty, Dir::Out))
+379 | |         },
+    | |_________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/zero-text-is-a-name/20261117T070433Z/models/sql_procs/sql_procs.rs:387:1
+    |
+387 | pub proof fn theorem_default_graph_spellings(adj: Seq<Arc>, src: int, pred: int, shard: int, n: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/zero-text-is-a-name/20261117T070433Z/models/sql_procs/sql_procs.rs:391:41
+    |
+387 | pub proof fn theorem_default_graph_spellings(adj: Seq<Arc>, src: int, pred: int, shard: int, n: int)
+    | ---------------------------------------------------------------------------------------------------- at the end of the function body
+...
+391 |         graph_arg_key(GArg::Zero) == 0, graph_arg_key(GArg::ZeroText) == 0,
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/zero-text-is-a-name/20261117T070433Z/models/sql_procs/sql_procs.rs:395:9
+    |
+387 | pub proof fn theorem_default_graph_spellings(adj: Seq<Arc>, src: int, pred: int, shard: int, n: int)
+    | ---------------------------------------------------------------------------------------------------- at the end of the function body
+...
+395 |         match_edges_arg(adj, src, pred, shard, GArg::ZeroText) == match_edges(adj, src, pred, shard, 0),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

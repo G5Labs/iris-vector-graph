@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/first-table-only/20261117T065650Z/models/sql_procs/sql_procs.rs:343:9
+    |
+339 |   pub proof fn theorem_write_names_first_missing(c: Caller, sch: int, st: Bf)
+    |   --------------------------------------------------------------------------- at the end of the function body
+...
+343 | /         holds_priv(c, sch, t_nodes(), Act::I) && !holds_priv(c, sch, t_edges(), Act::I)
+344 | |             ==> require(c, sch, seq![t_nodes(), t_edges()], seq![Act::I]) == Gate::Refused(t_edges(), Act::I),
+    | |_____________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

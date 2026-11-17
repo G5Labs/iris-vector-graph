@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_foreign_graph_row_skipped"
+    ],
+    "find": "q.graph.is_none() || q.graph==Some(r.graph)",
+    "name": "foreign-graph-admitted",
+    "replace": "true"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_foreign_graph_row_skipped"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/aggregate_results/aggregate_results.rs": "894798511c947dc8f5eb9a947f8386a992ef470363f8daaa27a89d57eb5d3d2e",
+    ".g5/Verus_verification/models/aggregate_results/model.json": "cfc373a2b555a462ddbfecde7f819f9b9b8bea7aa289c4e24c1ad1d75ceb7b62",
+    ".g5/Verus_verification/models/node_read/node_read.rs": "5ecb57cde29cdf9cc5feabb06dd7dc4eabc24d6382a43bd60dbb43c14700a6fe"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/controls/foreign-graph-admitted/20261117T065730Z/models/aggregate_results/aggregate_results.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_foreign_graph_row_skipped": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/20261117T065730Z-control-foreign-graph-admitted-theorem_foreign_graph_row_skipped.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/aggregate_results/20261117T065730Z-control-foreign-graph-admitted.log",
+    "timed_out": false,
+    "verified": 74
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/aggregate_results/20261117T065733Z-control-foreign-graph-admitted/logs/20261117T065730Z-control-foreign-graph-admitted-theorem_foreign_graph_row_skipped.log": "ad1a67304223ce082fa2c9e2a4f7e430e82b16755b84011f9df7ad40383cbb71",
+    ".g5/Verus_verification/results/aggregate_results/20261117T065733Z-control-foreign-graph-admitted/logs/20261117T065730Z-control-foreign-graph-admitted.log": "10b6e04fe54be6399fd0dc426ed1c64172f3f4367a9da8639056bd01d2291aeb"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

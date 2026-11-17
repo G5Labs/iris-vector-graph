@@ -1,11 +1,15 @@
 """Binding for sql_procs (iteration 53, Part B) on the run-isolated continuation fixture.
 
-The SQL procedures read or write a whole namespace, so the binding drops and re-creates its own namespace I53Q (from
+Iteration 56 (review 53-55 F4): the namespace is now I56Q; the privilege verdict is computed from each user's recorded
+grants (table, schema and column privileges, a role, %All) by a port of `require`, never hand-labelled; MatchEdges is
+also called with every spelling of the default graph (SQL '', CHAR(0), a bound '', 0, '0', NULL) beside a name.
+
+The SQL procedures read or write a whole namespace, so the binding drops and re-creates its own namespace I56Q (from
 %SYS, in the container ivg-cont-20261117-iris only), runs setup, writes one history through the public engine API
 (nodes and weighted edges in graphs g, g2, gz and the default graph; temporal edges, a temporal-only predicate, an
 explicit edge with a timestamp, a structural row deleted by SQL), and calls the SQL entry points `MatchEdges`,
-`MatchEdgesAllGraphs`, `DijkstraPath`, `backfill_temporal_rows` and `rebuild_edge_indices` as _SYSTEM and as three
-users i53q_* with different grants (created in %SYS for the run and deleted after it). It also runs the same Cypher hop
+`MatchEdgesAllGraphs`, `DijkstraPath`, `backfill_temporal_rows` and `rebuild_edge_indices` as _SYSTEM and as eight
+users i56q_* with different grants (created in %SYS for the run and deleted after it). It also runs the same Cypher hop
 with IVG_EDGESCAN unset and 1, and the Cypher CALL ivg.shortestPath.weighted beside the SQL entry. Every expected
 answer comes from a Python port of sql_procs.rs applied to the history the binding wrote (and, for the search, a
 port of the documented rule: the cheapest path within maxCost and maxHops, weights <= 0 as 1), never from the
@@ -21,20 +25,75 @@ REPO = Path(os.environ.get("IVG_REPO", str(HERE.parents[3]))).resolve()
 sys.path.insert(0, str(REPO / ".g5/uplift/consolidated/iteration-36"))
 import runtime  # noqa: E402
 
-NS = "I53Q"
-PW = "i53qPass9"
+NS = "I56Q"
+PW = "i56qPass9"
 RUN = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
 OK_TAIL = 'Write "RESULT ",$Select($System.Status.IsOK(sc):"OK",1:$System.Status.GetErrorText(sc)),!'
 MUTS = ["shard-partitions", "default-reads-every-graph", "empty-predicate-matches-none", "all-graphs-default-only",
         "no-select-check", "scan-exposes-weight", "sql-entry-unchecked", "nul-read-as-empty", "count-written-rows",
-        "optout-backfilled", "backfill-marks-existing", "rebuild-refusal-answers-zero"]
-# user: (holds SELECT on rdf_edges, holds INSERT on nodes and rdf_edges, holds %BUILD_INDEX), and the grants made
+        "optout-backfilled", "backfill-marks-existing", "rebuild-refusal-answers-zero",
+        # iteration 56 (review 53-55 F4 and the MatchEdges graph argument)
+        "column-grant-counts", "schema-grant-ignored", "roles-ignored", "all-not-shortcut", "first-table-only",
+        "nul-not-normalized", "empty-not-default", "zero-text-is-a-name", "readers-check-nodes"]
+# Iteration 56 (review 53-55 F4): the verdict is no longer hand-labelled. Each user's grants are recorded as IRIS
+# records them (own table / schema / column privileges, roles with their grants, %All) and the expected verdict is
+# computed from them by the port of `require` below. Users and the role are created for the run and deleted after it.
+SCH = "Graph_KG"
+T_NODES, T_EDGES = "Graph_KG.nodes", "Graph_KG.rdf_edges"
+EXEC = "GRANT EXECUTE ON SCHEMA Graph_KG TO {u}"
+# user: (caller as recorded: all, own {table,schema,column} privilege pairs, role names), the SQL grants made, %BUILD_INDEX
 USERS = {
-    "i53q_noselect": ((False, False, False), ["GRANT EXECUTE ON SCHEMA Graph_KG TO {u}", "GRANT SELECT ON Graph_KG.nodes TO {u}"]),
-    "i53q_select": ((True, False, False), ["GRANT EXECUTE ON SCHEMA Graph_KG TO {u}", "GRANT SELECT ON SCHEMA Graph_KG TO {u}"]),
-    "i53q_writer": ((True, True, False), ["GRANT EXECUTE ON SCHEMA Graph_KG TO {u}", "GRANT SELECT ON SCHEMA Graph_KG TO {u}",
-                                          "GRANT INSERT, UPDATE, DELETE ON SCHEMA Graph_KG TO {u}"]),
+    "i56q_noselect": ({"all": False, "table": {(T_NODES, "s")}, "schema": set(), "column": set(), "roles": []},
+                      [EXEC, "GRANT SELECT ON Graph_KG.nodes TO {u}"], False),
+    "i56q_select": ({"all": False, "table": set(), "schema": {(SCH, "s")}, "column": set(), "roles": []},
+                    [EXEC, "GRANT SELECT ON SCHEMA Graph_KG TO {u}"], False),
+    "i56q_writer": ({"all": False, "table": set(), "schema": {(SCH, "s"), (SCH, "i"), (SCH, "u"), (SCH, "d")}, "column": set(), "roles": []},
+                    [EXEC, "GRANT SELECT ON SCHEMA Graph_KG TO {u}", "GRANT INSERT, UPDATE, DELETE ON SCHEMA Graph_KG TO {u}"], False),
+    "i56q_table": ({"all": False, "table": {(T_EDGES, "s")}, "schema": set(), "column": set(), "roles": []},
+                   [EXEC, "GRANT SELECT ON Graph_KG.rdf_edges TO {u}"], False),
+    "i56q_column": ({"all": False, "table": set(), "schema": set(), "column": {(T_EDGES, "s")}, "roles": []},
+                    [EXEC, "GRANT SELECT (s, p, o_id) ON Graph_KG.rdf_edges TO {u}"], False),
+    "i56q_role": ({"all": False, "table": set(), "schema": set(), "column": set(), "roles": ["i56q_r"]},
+                  [EXEC, "GRANT i56q_r TO {u}"], False),
+    "i56q_nodesins": ({"all": False, "table": {(T_NODES, "i")}, "schema": {(SCH, "s")}, "column": set(), "roles": []},
+                      [EXEC, "GRANT SELECT ON SCHEMA Graph_KG TO {u}", "GRANT INSERT ON Graph_KG.nodes TO {u}"], False),
+    "i56q_all": ({"all": True, "table": set(), "schema": set(), "column": set(), "roles": ["%All"]},
+                 [], True),
 }
+ROLES = {"i56q_r": {"table": {(T_EDGES, "s")}, "schema": set(), "column": set()}}
+ROLE_GRANTS = {"i56q_r": ["GRANT SELECT ON Graph_KG.rdf_edges TO i56q_r"]}
+
+
+def check_priv(gr, t, a, m):
+    """P-CHECKPRIV: a table or schema privilege counts; a column privilege does not."""
+    if (t, a) in gr["table"]:
+        return True
+    if not m.get("schema-grant-ignored") and (SCH, a) in gr["schema"]:
+        return True
+    return bool(m.get("column-grant-counts") and (t, a) in gr["column"])
+
+
+def holds_priv(c, t, a, m):
+    if check_priv(c, t, a, m):
+        return True
+    if m.get("roles-ignored"):
+        return False
+    return any(check_priv(ROLES[r], t, a, m) for r in c["roles"] if r in ROLES)
+
+
+def require(c, tables, acts, m):
+    """RequireSelect / RequireWrite: %All passes; else the first (table, action) not held is named."""
+    if c["all"] and not m.get("all-not-shortcut"):
+        return "pass"
+    for i, t in enumerate(tables):
+        if i > 0 and m.get("first-table-only"):
+            break
+        for a in acts:
+            if not holds_priv(c, t, a, m):
+                return f"refused:{ {'s': 'SELECT', 'i': 'INSERT'}[a]} {t}"
+    return "pass"
+
+
 # the edges written: (s, p, o, weight or None, graph or None)
 E = [("a", "P", "b", 1.0, "g"), ("b", "P", "c", 1.0, "g"), ("c", "P", "d", 1.0, "g"), ("a", "P", "d", 10.0, "g"),
      ("a", "Q", "e", 1.0, "g"), ("e", "Q", "d", None, "g"),
@@ -50,6 +109,23 @@ def sha(p):
 # ------------------------------------------------------------------ port of sql_procs.rs
 def gkey(graph):
     return "" if graph in (None, "", 0) else graph
+
+
+def graph_arg_key(raw, m):
+    """EdgeScan.MatchEdges 52-58 on the raw argument as the body receives it: CHAR0 ($Char(0), SQL's ''), "" (NULL,
+    omitted, a bound ''), 0, "0", or a name. "" is the default graph's key; "<nul>"/"<empty>" are graphs nobody writes."""
+    g = raw
+    if g == "CHAR0" and not m.get("nul-not-normalized"):
+        g = ""
+    if g == "" and not m.get("empty-not-default"):
+        g = 0
+    if g == "CHAR0":
+        return "<nul>"
+    if g == "":
+        return "<empty>"
+    if g in (0, "0"):
+        return "<zero-text>" if (g == "0" and m.get("zero-text-is-a-name")) else ""
+    return g
 
 
 def scan_hit(a, key, src, pred, shard, m):
@@ -85,6 +161,10 @@ def norm_arcs(arcs):
 
 def match_edges(adj, src, pred, shard, graph, m):
     return norm_arcs([a for a in adj if scan_hit(a, gkey(graph), src, pred, shard, m)])
+
+
+def match_edges_arg(adj, src, pred, raw, m):
+    return norm_arcs([a for a in adj if scan_hit(a, graph_arg_key(raw, m), src, pred, 0, m)])
 
 
 def match_all(adj, src, pred, shard, m):
@@ -241,6 +321,14 @@ def classify_err(v):
     return "other:" + v[:160]
 
 
+def refusal_name(v):
+    import re as _re
+    if isinstance(v, str) and v.startswith("EXC"):
+        mm = _re.search(r"lacks (SELECT|INSERT) on ([A-Za-z_.]+)", v)
+        return f"refused:{mm.group(1)} {mm.group(2)}" if mm else "other:" + v[:160]
+    return "pass"
+
+
 def scan_obs(v):
     c = classify_err(v)
     if c:
@@ -281,6 +369,18 @@ def main():
     for k, sql in (("zero", "SELECT Graph_KG.MatchEdges('','P',0,0)"), ("null", "SELECT Graph_KG.MatchEdges('','P',0,NULL)"),
                    ("omitted", "SELECT Graph_KG.MatchEdges('','P')")):
         got[f"me_default_{k}"] = scan_obs(q1(cur, sql))
+    # iteration 56: every spelling of the default graph, literally (SQL '' reaches the body as $Char(0)), bound, as
+    # CHAR(0), 0 and '0'; beside a name
+    GSPELL = {"lit_empty": ("SELECT Graph_KG.MatchEdges('','P',0,'')", (), "CHAR0"),
+              "char0": ("SELECT Graph_KG.MatchEdges('','P',0,CHAR(0))", (), "CHAR0"),
+              "bound_empty": ("SELECT Graph_KG.MatchEdges('','P',0,?)", ("",), "BOUND_EMPTY"),
+              "zero": ("SELECT Graph_KG.MatchEdges('','P',0,0)", (), 0),
+              "zero_text": ("SELECT Graph_KG.MatchEdges('','P',0,'0')", (), "0"),
+              "bound_zero_text": ("SELECT Graph_KG.MatchEdges('','P',0,?)", ("0",), "0"),
+              "null": ("SELECT Graph_KG.MatchEdges('','P',0,NULL)", (), ""),
+              "name_g": ("SELECT Graph_KG.MatchEdges('','P',0,'g')", (), "g")}
+    for k, (sql, args, _) in GSPELL.items():
+        got[f"me_spell_{k}"] = scan_obs(q1(cur, sql, args))
     # ---- the Cypher hop on both plans
     for flag in ("0", "1"):
         os.environ["IVG_EDGESCAN"] = flag
@@ -344,21 +444,31 @@ def main():
         got[f"rb_{k}"] = classify_err(v) or v
     got["rb_rows_after"] = q1(cur, "SELECT COUNT(*) FROM Graph_KG.rdf_edges WHERE p IN ('P', 'Q', 'Y', 'Z')")
     got["rb_scan_after"] = scan_obs(q1(cur, "SELECT Graph_KG.MatchEdges('a','P',0,'g')"))
-    # ---- privileges
+    # ---- privileges (iteration 56: grants recorded, verdict computed by `require`)
     made = {}
     try:
-        for u, (_, grants) in USERS.items():
+        for r, gl in ROLE_GRANTS.items():
+            for sql in (f"DROP ROLE {r}", f"CREATE ROLE {r}"):
+                try:
+                    cur.execute(sql)
+                except Exception:
+                    pass
+            for g_ in gl:
+                cur.execute(g_)
+        for u, (_, grants, _) in USERS.items():
+            roles = "%All" if u == "i56q_all" else "%DB_%DEFAULT"
             out = iris_sys(f'If ##class(Security.Users).Exists("{u}") {{ Set sc=##class(Security.Users).Delete("{u}") }}\n'
-                           f'Set sc=##class(Security.Users).Create("{u}","%DB_%DEFAULT","{PW}","i53q binding user")\n' + OK_TAIL)
+                           f'Set sc=##class(Security.Users).Create("{u}","{roles}","{PW}","i56q binding user")\n' + OK_TAIL)
             assert "RESULT OK" in out, out
             for g_ in grants:
                 cur.execute(g_.format(u=u))
             cu = connect(u, PW); k = cu.cursor()
-            got[f"priv_{u}_me"] = scan_obs(q1(k, "SELECT Graph_KG.MatchEdges('a','P',0,'g')"))
+            v = q1(k, "SELECT Graph_KG.MatchEdges('a','P',0,'g')")
+            got[f"priv_{u}_me"] = scan_obs(v); got[f"priv_{u}_me_name"] = refusal_name(v)
             got[f"priv_{u}_meall"] = scan_obs(q1(k, "SELECT Graph_KG.MatchEdgesAllGraphs('a','P',0)"))
             got[f"priv_{u}_dj"] = path_obs(q1(k, "SELECT Graph_KG.DijkstraPath('a','d','',9999,10,'out','','g')"))
             v = q1(k, "SELECT Graph_KG.backfill_temporal_rows()")
-            got[f"priv_{u}_bf"] = classify_err(v) or v
+            got[f"priv_{u}_bf"] = classify_err(v) or v; got[f"priv_{u}_bf_name"] = refusal_name(v)
             v = q1(k, "SELECT Graph_KG.rebuild_edge_indices('Graph_KG')")
             got[f"priv_{u}_rb"] = classify_err(v) or v
             got[f"priv_{u}_rb_msg"] = (v[:300] if isinstance(v, str) else v)
@@ -366,6 +476,11 @@ def main():
     finally:
         for u in USERS:
             made[u] = "RESULT OK" in iris_sys(f'Set sc=##class(Security.Users).Delete("{u}")\n' + OK_TAIL)
+        for r in ROLE_GRANTS:
+            try:
+                cur.execute(f"DROP ROLE {r}"); made[r] = True
+            except Exception:
+                made[r] = False
     c.close()
 
     def predict(m):
@@ -378,6 +493,9 @@ def main():
                 out[f"meall|{src}|{pred}"] = match_all(adj, src, pred, 0, m)
         for k in ("zero", "null", "omitted"):
             out[f"me_default_{k}"] = match_edges(adj, "", "P", 0, "", m)
+        for k, (_, _, raw) in GSPELL.items():
+            raw = "" if raw == "BOUND_EMPTY" else raw
+            out[f"me_spell_{k}"] = match_edges_arg(adj, "", "P", raw, m)
         for flag in ("0", "1"):
             scan = flag == "1"
             hits = [a for a in adj if all_hit(a, "a", "P", 0, {}) ]
@@ -411,7 +529,12 @@ def main():
             out[f"rb_{k}"] = rebuild(kind, True, m)
         out["rb_rows_after"] = len([a for a in adj if a[2] in ("P", "Q", "Y", "Z")])
         out["rb_scan_after"] = match_edges(adj, "a", "P", 0, "g", {})
-        for u, ((sel, ins, bld), _) in USERS.items():
+        for u, (caller, _, bld) in USERS.items():
+            vs = require(caller, [T_NODES if m.get("readers-check-nodes") else T_EDGES], ["s"], m)
+            vi = require(caller, [T_NODES, T_EDGES], ["i"], m)
+            sel, ins = vs == "pass", vi == "pass"
+            out[f"priv_{u}_me_name"] = vs if not m.get("no-select-check") else "pass"
+            out[f"priv_{u}_bf_name"] = vi if not m.get("no-select-check") else "pass"
             out[f"priv_{u}_me"] = gate(sel, match_edges(adj, "a", "P", 0, "g", m), m)
             out[f"priv_{u}_meall"] = gate(sel, match_all(adj, "a", "P", 0, m), m)
             out[f"priv_{u}_dj"] = gate(sel, rule_search(adj, "a", "d", 9999, 10, "out", set(), "g"), m)
@@ -442,7 +565,9 @@ def main():
                      "over 26 argument sets (bounds, predicates, directions, weights <= 0, graph spellings, equal and empty "
                      "endpoints, refused arguments) and the CALL beside it; backfill_temporal_rows over a history with a "
                      "temporal-only predicate, a structural row deleted by SQL and an explicit edge; rebuild_edge_indices with 5 "
-                     "schema arguments; each entry as three users with different grants."}
+                     "schema arguments; each entry as eight users whose grants are recorded and whose verdict is computed "
+                     "(none, schema SELECT, schema write, table SELECT, column-only SELECT, a role holding table SELECT, "
+                     "schema SELECT + INSERT on nodes only, %All); MatchEdges with 8 graph-argument spellings (iteration 56)."}
     d = REPO / ".g5/Verus_verification/results/sql_procs" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s", "users_dropped")}))

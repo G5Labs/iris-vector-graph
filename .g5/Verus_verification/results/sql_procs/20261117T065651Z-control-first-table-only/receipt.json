@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: RequireWrite stops after the first table (rdf_edges never checked); recursion kept so the function stays recursive (first receipt ERROR: fuel on a non-recursive function, kept)",
+    "expect_fail_in": [
+      "theorem_write_names_first_missing"
+    ],
+    "find": "        None => first_missing(c, sch, ts.subrange(1, ts.len() as int), acts),",
+    "name": "first-table-only",
+    "replace": "        None => first_missing(c, sch, ts.subrange(ts.len() as int, ts.len() as int), acts),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_write_names_first_missing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/sql_procs/model.json": "475c4dd468396bf53f556a2dad90c166b1816765f22b8b9f2469c54d94fc4578",
+    ".g5/Verus_verification/models/sql_procs/sql_procs.rs": "e414e8fb517770833b98a6103b1ae080a9f15c515b827e021ec97c86115d0942"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/first-table-only/20261117T065650Z/models/sql_procs/sql_procs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_write_names_first_missing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T065650Z-control-first-table-only-theorem_write_names_first_missing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T065650Z-control-first-table-only.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sql_procs/20261117T065651Z-control-first-table-only/logs/20261117T065650Z-control-first-table-only-theorem_write_names_first_missing.log": "413c3bc1ad5d57e911b260046b72e65b392a1c30de76ded5d10e2def9f5463c2",
+    ".g5/Verus_verification/results/sql_procs/20261117T065651Z-control-first-table-only/logs/20261117T065650Z-control-first-table-only.log": "23f630912a4f3c678bdce3dab7bb6f84ee488b6dafd81f62d41bfb30cb675002"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

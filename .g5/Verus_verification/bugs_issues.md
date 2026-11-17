@@ -1094,6 +1094,27 @@ Consequence: whenever the walk reaches at least `ppr_top_k` nodes (with the defa
 
 Repair proposal (not implemented): keep the cap; admit seeds and top nodes only up to the cap (best PPR score first), then list every edge whose two ends are answered (the same repair as bug-plt-114's). Preserve: the cap `min(max_nodes, ppr_top_k)`, the PPR ranking and `ppr_top_k`, argument checks before any read, `k_hops`, and the uncapped answer (all seven edges when the cap exceeds the reachable nodes). Writers and readers: `SubgraphJson` (seed loop, frontier loop, edge list), `kg_SUBGRAPH` and `kg_PPR_GUIDED_SUBGRAPH` (reshape), `IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH`; the Arno reader must give the same answer. Distinguishing cases: [s] with `ppr_top_k=3` lists s → a1 and s → a2; seeds s, a3, a4 with `ppr_top_k=1` answer one node. Checked in the model only (controls `edges-among-answered` and `seeds-capped` make the departures fail while the uncapped neighbor verifies); not run on the product. Governing statement: [algorithms.op.subgraph.guided](../ontology/features/algorithms.g5.md#algorithms.op.subgraph.guided).
 
+<a id="bug-plt-127"></a>
+### A Bolt rollback keeps the transaction's writes: BEGIN, COMMIT and ROLLBACK do nothing and every statement commits at once
+
+Severity: High · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 56; promoted from F-1601, playbook audit 2026-11-13/14)
+
+Found by: playbook arm, F-1601 ([review record](audits/register-20261115/bugs-review.md#F-1601); live `c16-s1-cypher-http`), then "inconclusive, not reproduced" in the 2026-11-15 register audit; reopened by independent review 53-55 item F1 ([review](../uplift/consolidated/iteration-56/REVIEW-53-55.md), probe `rv55b … bolt_tx`, [observation](../uplift/consolidated/iteration-56/review-probes/rv55b-observed-20261117T064330Z.json)). Model: [bolt_tx](models/bolt_tx/NOTES.md) `theorem_rollback_keeps_writes`, `theorem_rollback_departs_iff_writes`, `theorem_failed_tx_keeps_earlier_writes`, `theorem_reset_or_close_keeps_writes`; neighbors `theorem_commit_agrees`, `theorem_autocommit_agrees`; controls `atomic-tx`, `begin-refused` (the two repairs), `rollback-answers-failure`, `failure-not-sticky`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) read by an independent raw Bolt 4.4 client and by the neo4j Python driver 6.4.1 ([binding](results/bolt_tx/20261117T065936Z-binding/receipt.json), AGREES 17; [cells](../uplift/consolidated/iteration-56/bolt/tx-observed-20261117T065936Z.json), prefix `i56b_065931_`). Raw client: `BEGIN, RUN CREATE, PULL, ROLLBACK` answers SUCCESS to all four and a second connection counts 1 node (2 for two CREATEs); after a failing statement, PULL and ROLLBACK are IGNORED and RESET succeeds, and the earlier CREATE stays; RESET or a closed connection inside a transaction keeps it too. Driver: `tx.rollback()`, a failure then `tx.rollback()` (the driver raises only the statement's `CypherSyntaxError`), an aborted `execute_write` (only the application's `RuntimeError`) and a session closed with an open transaction all leave the node. Passing neighbors: `tx.commit()`, a successful `execute_write` and auto-commit `session.run` keep one node, as they should; an empty transaction rolled back leaves none; a failing statement writes nothing.
+
+Expected: [access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions): an explicit transaction keeps its writes only if it commits; ROLLBACK, a failed statement, RESET or a closed connection must leave none of them, or the server must refuse BEGIN so the client knows each statement commits on its own (Bolt message specification: BEGIN/COMMIT/ROLLBACK; README: "a neo4j-driver compatible server"; the engine's own contract, USER_GUIDE: a caller's rollback removes IVG's writes). Which of the two repairs IVG adopts is the open question [access.transactions](open_questions.md#access.transactions); both make this outcome impossible.
+
+Observed: `BoltSession._dispatch` answers BEGIN and COMMIT with SUCCESS and ROLLBACK with SUCCESS after clearing only the pending rows (`bolt_server.py:500-510`); `_handle_run` runs each statement through `engine.execute_cypher` on a connection with no open transaction, so each write commits when the statement finishes (`:567-622`); RESET clears pending rows only (`:662-667`).
+
+Consequence: a Neo4j application that relies on a transaction to undo its work keeps partial or unwanted writes, and every signal it gets says the rollback succeeded: a unit of work that fails halfway leaves its first half, and a retry of that unit (the driver's own `execute_write` pattern, or the application's) writes it again. The damage is silent, persisted and on the driver's standard API. High: the same class as [bug-tmp-003](#bug-tmp-003) (a rolled-back write leaves effects), here for every write a Bolt transaction makes.
+
+Repair proposal (not implemented, checked in the model only): either hold a transaction's statements in one engine transaction on the session's connection and end it on COMMIT, ROLLBACK, RESET, failure or disconnect (control `atomic-tx`), or answer BEGIN with a FAILURE saying explicit transactions are not supported (control `begin-refused`, design `Refuse`, `theorem_refusal_matches_rule`). Preserve: auto-commit statements (`theorem_autocommit_agrees`) and committed transactions (`theorem_commit_agrees`). Writers affected: `_dispatch`, `_handle_run`, `_handle_reset`, the TCP and WebSocket run loops (connection close). Distinguishing case: the binding's `R_rollback` (count 1 today, 0 after either repair) beside `R_commit` (1 on both). The read-only gate inside a transaction and isolation from other sessions are not checked.
+
+Governing statement: [access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions).
+
 <a id="bug-plt-115"></a>
 ### The status report never counts vectors in routed tables, so a namespace whose vectors are all routed reads "absent" and not ready for vector search
 
@@ -3669,6 +3690,23 @@ Repair proposal (not implemented; checked in the model only): give string operan
 
 Governing statement: [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality).
 
+<a id="bug-cyp-146"></a>
+### length(p) of a path an OPTIONAL MATCH did not bind answers the pattern's length instead of null
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 56)
+
+Found by: independent review round 3 (review 53-55 F2, reviewer session `c68a5c59`, probe `rv55b … len_*`); [cypher_clauses](models/cypher_clauses/NOTES.md) section I `theorem_unmatched_fixed_path_length_is_hops`, general `theorem_path_fn_departs_exactly_on_unmatched_fixed_length`, neighbor `theorem_bound_or_varlen_path_follows_rule`; controls `fixed-length-from-row`, `varlen-length-from-pattern`, `anchor-null-ignored`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, on an engine with the native executor off and one with it on ([probe](../uplift/consolidated/iteration-56/cypher/cypher-observed-20261117T065840Z.json) `fix1_un`, `fix2_un`; [binding](results/cypher_clauses/20261117T065639Z-binding/receipt.json) `I_fix1_unmatched_len`, `I_fix2_unmatched_len`, `I_fix1_unmatched_len_native_on`). Over `a1 → a2 → a3` written by `create_edge`, `MATCH (a {name: 'a3'}) OPTIONAL MATCH p = (a)-[:K]->(b) RETURN length(p), p IS NULL, nodes(p), relationships(p)` answers `1, true, null, null`; the two-hop pattern from `a2` answers `length(p)` = 2 with `p IS NULL` true. Passing neighbors: a bound path answers its own length (1, 2); a variable-length `OPTIONAL MATCH p = (a)-[:K*1..2]->(b)` with no match answers null and with matches 1 and 2; a null anchor (`OPTIONAL MATCH (a {name: 'none'}) OPTIONAL MATCH p = ...`) answers null; `length(null)` answers null. OPTIONAL MATCH never runs native, so both engines answer the same.
+
+Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional) ("later expressions read them as null") and openCypher: a path the OPTIONAL MATCH did not bind is null, and `length(null)` is null.
+
+Observed: the translator's path-function branch answers `length()` of a fixed pattern with the constant `len(pattern.relationships)` (`translator.py:28797-28802`), never reading the row; `nodes()` and `relationships()` read the row's aliases and so are null, and a variable-length path reads its row value (`_vlp_path_sql`). Only a null anchor (`optional_null_row_unconditional`, 28788-28790) answers NULL.
+
+Consequence: a report that counts or filters on `length(p)` after an OPTIONAL MATCH treats rows with no path as paths of full length (for example `WHERE length(p) > 0` keeps every unmatched row, and `sum(length(p))` counts them), silently. Repair proposal (not implemented): for a path bound by an OPTIONAL MATCH, emit `CASE WHEN <the path's first edge alias> IS NULL THEN NULL ELSE h END`, as `nodes(p)` already yields null. Preserve: the constant for a path bound by a plain MATCH (always bound), the variable-length branch, the null-anchor branch. Distinguishing case: the binding's `I_fix1_unmatched_len` against `I_fix1_matched_len`; the control `fixed-length-from-row` checks the direction in the model only.
+
 <a id="bug-plt-124"></a>
 ### Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors
 
@@ -3743,6 +3781,40 @@ Observed: `_resolve_pagination_value` refuses only a missing or null value and a
 
 Consequence: a client that passes the page size as text or a boolean gets rows instead of an error, and a null page size is reported as a missing parameter. No data is changed.
 
+<a id="bug-cyp-147"></a>
+### percentileDisc over integers answers a float
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 56)
+
+Found by: owned as built in iteration 53 ("Today both answer a float"); registered after independent review round 3 (review 53-55 minor "percentile result type"); [percentile](models/percentile/NOTES.md) `theorem_disc_over_ints_answers_float`, neighbor `theorem_float_and_cont_kinds_follow_rule`; control `disc-keeps-input-kind`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-56/cypher/cypher-observed-20261117T065840Z.json) `pct_int`, `pct_flt`, `min_int`; [binding](results/percentile/20261117T065550Z-binding/receipt.json) `kind:unwind:int`, `kind:match:int`). `UNWIND [10, 20, 30, 40] AS x RETURN percentileDisc(x, 0.5)` answers `20.0` (a Python float), also over stored integers. Passing neighbors: `percentileCont` answers `25.0` (a float, as it should); over floats `percentileDisc` answers `1.5`; `min(x)` and `max(x)` over the same integers answer `10` and `20` as integers, on both engines.
+
+Expected: [query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile): `percentileDisc` answers one of the values, so it keeps their type; Neo4j answers `20` over integers (openCypher TCK `Aggregation6` compares percentileDisc results over integers as integers).
+
+Observed: `_scalar_statistical` emits `Percentile_PDISC(JSON_ARRAYAGG(CAST(x AS DOUBLE)), p)` and the translator types the column FLOAT, so `_float_expr_value` (`_engine/query.py:1243-1260`) turns every answer into a float.
+
+Consequence: a client comparing the answer with a stored integer, or using it as a list index or a `LIMIT`, gets a float. Repair proposal (not implemented): type the percentileDisc column from its argument's static type (int for an integer property), leaving percentileCont FLOAT. Preserve: percentileCont's float, the `NumberOutOfRange` refusal, null for no values; the iteration-55 text-spelling read under driver 5.4.1.
+
+<a id="bug-cyp-148"></a>
+### A percentile p that is not a number: null raises a raw Python TypeError, text and booleans are converted, a literal null answers p = 0
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 56)
+
+Found by: independent review round 3 (review 53-55 minor "null percentile parameter", probe `pct_param_null`, `pct_param_str`); the other kinds by the iteration-56 probe; [percentile](models/percentile/NOTES.md) `theorem_non_number_p_not_refused`, general `theorem_p_departs_exactly_on_non_numbers`; controls `null-param-refused`, `literal-null-refused`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-56/cypher/cypher-observed-20261117T065840Z.json) `pct_p_*`, `pct_lit_null`; [binding](results/percentile/20261117T065550Z-binding/receipt.json) `p:*`). Over `UNWIND [10, 20, 30] AS x RETURN percentileDisc(x, $p)`: `$p` = null raises `TypeError: float() argument must be a string or a real number, not 'NoneType'` out of `execute_cypher` (percentileCont the same); `$p` = `'x'` raises `ValueError: could not convert string to float`; `$p` = `'0.5'` answers 20.0; `$p` = true answers 30.0 (p = 1); a literal `percentileDisc(x, null)` answers 10.0 (p = 0). Passing neighbors: `$p` = 0.5 and a literal 0.5 answer 20.0; a missing `$p` is "Undefined variable: p".
+
+Expected: [query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile): `p` is a number from 0 to 1; anything else fails as a Cypher argument error (openCypher does not say whether a null p fails or answers null; both readings reject a raw Python exception and the p = 0 answer).
+
+Observed: `_scalar_statistical` passes a `$p` parameter through Python `float(context.input_params[name])` (`translator.py:28595-28603`) during translation, outside the error handling that turns translation errors into Cypher errors; a literal null is pasted as SQL `NULL`, which `IVG.Percentile.PDISC` reads as `""` and so as 0 in its range check and index (provider premise P-OS-EMPTY-ZERO, observed).
+
+Consequence: a client passing a null or text percentile gets an untyped Python exception instead of a Cypher error, or a silent answer for a different percentile. Repair proposal (not implemented): accept only an int or float (not bool) parameter and raise `InvalidArgumentType` otherwise; refuse a literal null the same way (or answer null, by the decision on intent). Preserve: numeric parameters and literals, `NumberOutOfRange` for numbers outside 0 to 1, the missing-parameter error.
+
 <a id="bug-cyp-140"></a>
 ### A UNION whose branch is a whole-label count fails with SQLCODE -1
 
@@ -3795,6 +3867,44 @@ Observed: both classes write the same `^KG("tagg")` and `^KG("bucket")` nodes ke
 Consequence: in a graph written through both classes, whole-bucket statistics, groups, velocity and bursts mix units and disagree with the raw window. The Python engine calls only the seconds class, so this needs a direct ObjectScript caller of `TemporalIndexMS` on the same graph.
 
 Repair proposal (not implemented): keep the millisecond class's statistics under their own subscript (or refuse mixed units per graph). Preserve: each class's own whole/cut agreement. Distinguishing case: the event above counts 0 in the seconds whole bucket (control `ms-buckets-apart` checks the model's direction only). Governing statement: [temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window).
+
+<a id="bug-tmp-108"></a>
+### An aggregate read with an empty source or predicate answers 0 when the window only cuts buckets and meets no edge
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 56)
+
+Found by: independent review round 3 (session c68a5c59, challenge to the round-2 m2 disposition), on the as-built observation of the iteration-53 probe (`m2_*`). Formal: [temporal_stats](models/temporal_stats/NOTES.md) `get_aggregate_keys`, `theorem_empty_key_quiet_cut_window_answers_zero` (general over every state, graph, key and window), neighbor `theorem_empty_key_raises_with_whole_bucket_or_event`, witness `theorem_empty_key_witness`; controls `empty-key-refused` (the repair) and `empty-key-never-raises`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, iteration 56 ([binding](results/temporal_stats/20261117T065845Z-binding/receipt.json) cases `ek_*`). One edge `ek -P-> a` at T+50 in a fresh graph (T on a 300-second bucket boundary). `get_temporal_aggregate("", "P", "count", T+100, T+200)` answers `0`; `sum` answers `0.0`; `(ek, "", count)` and `("", "", count)` answer `0`. The same empty-source read over [T+10, T+100] (the edge's timestamp in the cut part) raises `RuntimeError: <SUBSCRIPT>GetAggregate+32 ^KG("tout",g,T+50,"")`; over the whole bucket [T, T+299], and over the empty whole bucket [T+300, T+599], it raises `<SUBSCRIPT>GetAggregate+13 ^KG("tagg",g,b,"")`. Neighbor: `(ek, "P", count)` answers 1 over [T+10, T+100] and 0 over [T+100, T+200].
+
+Expected: an aggregate read needs a source and a predicate ([temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window)); no document promises an empty key as a wildcard (USER_GUIDE 1011-1027, the `get_temporal_aggregate` docstring), so an invalid call is refused, the same way whatever the window.
+
+Observed: `GetAggregate` (TemporalIndex.cls 1445-1493) reads `^KG("tagg", g, b, source, predicate, ...)` for a whole bucket and walks `^KG("tout", g, ts)` for a cut one, ordering `^KG("tout", g, ts, source, predicate, o)` at each timestamp present. With an empty source or predicate the first whole bucket or the first timestamp met raises <SUBSCRIPT>; a window that holds no whole bucket and meets no timestamp of its graph (any source's) reads nothing and returns count 0 and sum 0. The Python layer (`get_temporal_aggregate`, `iris_sql_store.get_temporal_aggregate`) passes "" through; for min, max and avg the empty answer then raises the store's `ValueError` (bug-tmp-009) as for any empty window.
+
+Consequence: a caller that passes an empty source by mistake gets a plausible 0 in quiet windows and a server error in busy ones; whether the call is valid depends on the data. Low: it needs an invalid argument, and the Python entry point does not offer an empty source as a feature.
+
+Repair proposal (not implemented): refuse an empty source or predicate in `get_temporal_aggregate` (Python) or at the top of `GetAggregate`, before any read. Preserve: every given-key read (all existing `agg_*` binding cases), the group and target reads where an empty predicate means every predicate. Distinguishing case: `ek_src_quiet_count` refused instead of 0 (control `empty-key-refused` is this repair in the model; it was not run against a patched product). Governing statement: [temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window).
+
+<a id="bug-srch-113"></a>
+### The SQL function kg_BM25 answers an empty list for k of 0 or less, while bm25_search and ivg.bm25.search refuse it
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 56)
+
+Found by: independent review round 3 (session c68a5c59, minor "kg_BM25 vs bm25_search"). Formal: [bm25_scoring](models/bm25_scoring/NOTES.md) `taken`, `entry_k`, `theorem_sql_k_nonpositive_empty_others_refuse` (general over k and the ranked count); controls `sql-entry-validates-k` (the repair) and `nonpositive-k-takes-all`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, iteration 56 ([binding](results/bm25_scoring/20261117T070040Z-binding/receipt.json) cases `k:*`). Over one built index and the query `graph`: `SELECT Graph_KG.kg_BM25(name, 'graph', 0)` and `(…, -1)` answer `[]`; `bm25_search(name, 'graph', 0)` and `-1` raise a pydantic `ValidationError` (k ≥ 1); `CALL ivg.bm25.search(name, 'graph', 0)` and `-1` raise `ValueError`. Neighbor: k 1 answers the same single top document on all three.
+
+Expected: the three readers apply one argument rule. The translator (`_translate_bm25_search`, translator.py 3161-3166) says the procedure validates "the model bm25_search runs: a name and a query that are not blank, and k of 1 or more (4.6.5)"; ADMIN_GUIDE 256 and 433 list `kg_BM25` as the SQL form of the same search.
+
+Observed: `SqlProcs.kgBM25` (131-135) checks the SELECT privilege and calls `BM25Index.SearchProc` → `Search` → `SearchCore`, which quits its result walk when `count >= k` before taking a document (336-345), so any k ≤ 0 gives `[]` with no error. k is not validated on the SQL path.
+
+Consequence: a direct SQL caller that passes 0 or a negative k (for example a computed limit) silently gets no documents, where the Python and Cypher entries report the bad argument. Low: the caller passes an invalid argument and the answer is empty, not wrong documents.
+
+Repair proposal (not implemented): refuse k < 1 in `SqlProcs.kgBM25` (or `SearchProc`) with an SQL error naming k, as the other two readers do. Preserve: every k ≥ 1 answer (the binding's `sql:*`, `tie:sql` and `k:sql@1` cases). Distinguishing case: `k:sql@0` refused instead of `[]` (control `sql-entry-validates-k` is this repair in the model; not run against a patched product). Governing statement: [search.bm25](../ontology/features/search.g5.md#search.bm25).
 
 <a id="bug-cyp-133"></a>
 ### With IVG_EDGESCAN=1 every relationship property on a hop from a node named by id reads null
@@ -5890,7 +6000,7 @@ These anchors preserve older links. The corresponding claims and review disposit
 
 <span id="F-1508"></span> [F-1508: review record](audits/register-20261115/bugs-review.md#F-1508)
 
-<span id="F-1601"></span> [F-1601: review record](audits/register-20261115/bugs-review.md#F-1601)
+<span id="F-1601"></span> [F-1601: promoted to bug-plt-127 in iteration 56](#bug-plt-127); [review record](audits/register-20261115/bugs-review.md#F-1601)
 
 <span id="F-1602"></span> [F-1602: review record](audits/register-20261115/bugs-review.md#F-1602)
 

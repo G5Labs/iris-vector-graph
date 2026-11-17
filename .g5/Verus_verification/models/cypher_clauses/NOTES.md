@@ -45,6 +45,15 @@ no choice is a parameter.
   Provider premise P-OUTER-ON: IRIS 2026.1 refuses (-94) an ON with IVG's arithmetic over an earlier left-joined
   property, or an OR of it with the optional side's correlated read (observed; its exact boundary is not characterized).
 
+- **I. Path functions of a named path** (iteration 56, review 53-55 F2; `length_from_pattern`, `as_built_path_fn` vs
+  `rule_path_fn`). Inputs: the pattern (fixed with h hops, or variable-length), what the row bound (a match of n
+  relationships, or nothing under OPTIONAL MATCH), the function and the null-anchor flag. The translator's path-function
+  branch (`translator.py` 28775-28815) answers NULL for a null anchor, reads a variable-length path's value from the row
+  (`_vlp_path_sql`) and reads `nodes`/`relationships` from the row's aliases, but answers `length` of a fixed pattern
+  with the constant `len(pattern.relationships)` (28797-28802), whatever the row bound. The rule (openCypher; owner
+  [query.optional](../../../ontology/features/cypher.g5.md#query.optional)): an unbound path is null, and so is every
+  function of it.
+
 ## Value domains and exclusions
 
 - A: kinds Int, Str, Bool, List (Float is represented for its mark only). The rule claim excludes Float (whether 1 and
@@ -62,8 +71,11 @@ no choice is a parameter.
 - E, F, G: the shapes named; G counts edges in the node's own graph (the cross-graph neighbor is bound).
 - H: seven condition shapes over one hop with no passing match; multi-hop OPTIONAL groups, named paths and
   variable-length OPTIONAL hops are excluded.
+- I: fixed patterns of any hop count h (bound with 1 and 2), variable-length patterns, and a null anchor; a row that binds
+  a fixed pattern binds exactly h relationships (`row_fits`). A path projected through `WITH` (the JSON-column branch,
+  28770-28774) and `length()` of a string are outside this section.
 
-## Theorems (26 verified; no imports)
+## Theorems (29 verified; no imports; 26 before iteration 56)
 
 As-built departures: `theorem_sql_group_merges_number_and_its_text(t)` and the general
 `theorem_paths_disagree_exactly_on_marked_text(a, b)`, `theorem_sql_group_and_distinct_disagree_on_marked_text(a, b)`
@@ -75,14 +87,20 @@ As-built departures: `theorem_sql_group_merges_number_and_its_text(t)` and the g
 `theorem_label_count_branch_fails` ([bug-cyp-140](../../bugs_issues.md#bug-cyp-140));
 `theorem_path_element_endpoints_fail` ([bug-cyp-141](../../bugs_issues.md#bug-cyp-141));
 `theorem_outer_arith_or_refused(m)` ([bug-cyp-142](../../bugs_issues.md#bug-cyp-142), conditional on P-OUTER-ON);
-`theorem_outer_guard_drops_row` ([bug-cyp-143](../../bugs_issues.md#bug-cyp-143)).
+`theorem_outer_guard_drops_row` ([bug-cyp-143](../../bugs_issues.md#bug-cyp-143));
+`theorem_unmatched_fixed_path_length_is_hops(h)` (every h) and the general
+`theorem_path_fn_departs_exactly_on_unmatched_fixed_length` ([bug-cyp-146](../../bugs_issues.md#bug-cyp-146), iteration 56).
 Agreeing neighbors: `theorem_sql_return_distinct_keeps_kinds`, `theorem_native_group_follows_rule(a, b)`,
 `theorem_float_operand_or_bare_sum_keeps_value(h, a)`, `theorem_whole_total_unchanged(h)`,
 `theorem_single_query_decodes`, `theorem_all_bool_union_stays_bool`, `theorem_integer_and_fraction_follow_rule(i, v)`,
 `theorem_count_alone_and_other_branches_prepare`, `theorem_type_and_matched_endpoints_work`,
-`theorem_delete_follows_rule(detach, out, in)`, `theorem_incoming_only_refused(in)`, `theorem_opt_neighbors_follow_rule(m)`.
+`theorem_delete_follows_rule(detach, out, in)`, `theorem_incoming_only_refused(in)`, `theorem_opt_neighbors_follow_rule(m)`,
+`theorem_bound_or_varlen_path_follows_rule(p, row, f, anchor_null)` (iteration 56).
 
-## Controls (25, all EXPECTED_FAIL; [receipts](../../results/cypher_clauses/))
+## Controls (28, all EXPECTED_FAIL; [receipts](../../results/cypher_clauses/))
+
+Iteration 56 added `fixed-length-from-row` (the repair: a fixed path's length read from the row), `varlen-length-from-pattern`
+and `anchor-null-ignored` (decisive branches removed).
 
 Repairs that leave their neighbors verified: `group-by-typed`, `prop-default-unknown`, `union-keeps-decoders`,
 `page-int-only`, `count-guard-sees-union`, `shortcut-newline-from`, `endpoint-reads-json`, `opt-guard-in-on`. Decisive guard or effect
@@ -104,6 +122,11 @@ predictions are [clauses_probe.py](../../../uplift/consolidated/iteration-54/cla
 [optional_where_probe.py](../../../uplift/consolidated/iteration-54/optional_where_probe.py) and
 [optional_mixed_probe.py](../../../uplift/consolidated/iteration-54/optional_mixed_probe.py). Retained: binding
 `20261117T054801Z` (102 cases, before section H) and `060330Z` (superseded by a comment change), both AGREES.
+
+Iteration 56: section I adds 12 cases (fixed 1 and 2 hops unmatched and matched, `nodes`/`relationships` of the
+unbound path, a variable-length path unmatched and matched, a null anchor, and the native-on engine for the unbound
+fixed length), **AGREES 124** ([receipt](../../results/cypher_clauses/20261117T065639Z-binding/receipt.json); [prove](../../results/cypher_clauses/20261117T065606Z-prove/receipt.json) 29 verified; controls `20261117T0656*`-`0657*` 28/28 EXPECTED_FAIL); the three new mutations are detected and a second tamper (the unbound length replaced
+by the rule's null) is detected.
 
 ## Reconciliation with inherited models
 

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/idf-without-plus-one/20261117T070018Z/models/bm25_scoring/bm25_scoring.rs:309:63
+    |
+308 | pub proof fn theorem_worked_example()
+    | ------------------------------------- at the end of the function body
+309 |     ensures tfpart(2, 3, 8, 3) == (Q { num: 320, den: 233 }), idf_arg(3, 1) == (Q { num: 8, den: 3 }),
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

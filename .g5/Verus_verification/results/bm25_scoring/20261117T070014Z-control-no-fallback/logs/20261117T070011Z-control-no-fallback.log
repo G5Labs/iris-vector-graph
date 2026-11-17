@@ -1,0 +1,21 @@
+verification results:: 33 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/no-fallback/20261117T070011Z/models/bm25_scoring/bm25_scoring.rs:232:9
+    |
+232 |         !skipped(st, q, fnum, fden, min_tok(st, q).unwrap()),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+236 |     if min_tok(st, q).is_none() { assert(!known(st, q[i])); }
+    |     --------------------------------------------------------- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/no-fallback/20261117T070011Z/models/bm25_scoring/bm25_scoring.rs:243:13
+    |
+243 |     ensures !skipped(st, seq![u, t], fnum, fden, t),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+255 |     assert forall|i: int| 0 <= i < q.len() && known(st, #[trigger] q[i]) implies over(st, q[i], fnum, fden) by {
+    |     ------ at the end of the function body
+
+error: aborting due to 2 previous errors
+

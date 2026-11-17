@@ -1,0 +1,26 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/atomic-tx/20261117T065745Z/models/bolt_tx/bolt_tx.rs:239:1
+    |
+239 | pub proof fn theorem_rollback_keeps_writes(s: S, inner: Seq<Msg>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/atomic-tx/20261117T065745Z/models/bolt_tx/bolt_tx.rs:242:9
+    |
+239 | pub proof fn theorem_rollback_keeps_writes(s: S, inner: Seq<Msg>)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+242 |         exec(Design::AsBuilt, s, rb_shape(inner)).0.store == s.store + total(inner),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/atomic-tx/20261117T065745Z/models/bolt_tx/bolt_tx.rs:253:12
+    |
+253 |     assert(a == seq![Ans::Success] + mid + seq![Ans::Success]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

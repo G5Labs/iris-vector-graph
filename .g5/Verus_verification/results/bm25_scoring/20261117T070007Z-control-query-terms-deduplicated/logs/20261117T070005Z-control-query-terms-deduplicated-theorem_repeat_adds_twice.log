@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/query-terms-deduplicated/20261117T070005Z/models/bm25_scoring/bm25_scoring.rs:262:1
+    |
+262 | pub proof fn theorem_repeat_adds_twice(st: Stats, idf: spec_fn(Tok) -> Q, ts: Seq<Tok>, t: Tok, d: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/query-terms-deduplicated/20261117T070005Z/models/bm25_scoring/bm25_scoring.rs:269:12
+    |
+269 |     assert(score(st, idf, ts.push(t), d) == qadd(score(st, idf, ts, d), occ(st, idf, t, d)));
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/query-terms-deduplicated/20261117T070005Z/models/bm25_scoring/bm25_scoring.rs:270:12
+    |
+270 |     assert(score(st, idf, ts.push(t).push(t), d) == qadd(score(st, idf, ts.push(t), d), occ(st, idf, t, d)));
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

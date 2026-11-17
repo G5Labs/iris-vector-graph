@@ -1,0 +1,46 @@
+verification results:: 40 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/decoded-queue-dropped/20261117T070254Z/models/bolt_stream/bolt_stream.rs:137:9
+    |
+134 | pub proof fn theorem_buffer_and_queue_come_from_raw(s:Receive,a:Bytes)
+    | ---------------------------------------------------------------------- at the end of the function body
+...
+137 |         receive(s,a).next.queue==decode(s.buffer+a).bodies.drop_first(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/decoded-queue-dropped/20261117T070254Z/models/bolt_stream/bolt_stream.rs:180:13
+    |
+178 |   pub proof fn theorem_left_terminator_returns_empty_then_queues_next(next:Bytes)
+    |   ------------------------------------------------------------------------------- at the end of the function body
+179 |       requires 0<next.len()<=max_chunk(),
+180 |       ensures ({let r=receive(Receive{buffer:end(),queue:seq![]},encode(next,max_chunk()));
+    |  _____________^
+181 | |         r.read==Read::Message(seq![]) && !ws_continues(r.read) && r.next.queue==seq![next]}),
+    | |____________________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/decoded-queue-dropped/20261117T070254Z/models/bolt_stream/bolt_stream.rs:456:13
+    |
+454 |   pub proof fn theorem_coalesced_small_chunks_still_deliver_queued_run(s:Session,cols:Names,rows:Rows)
+    |   ---------------------------------------------------------------------------------------------------- at the end of the function body
+455 |       requires s.phase!=Phase::Defunct,cols.len()<3,
+456 |       ensures ({let start=WireSession{receiver:empty_receiver(),session:s,open:true};
+    |  _____________^
+457 | |         let r=advance(start,encode(seq![0xb0u8,0x0fu8],1)+encode(run_body(),max_chunk()),EngineResult::Rows{columns:cols,rows,error:None}).un...
+458 | |         let q=advance(r.next,seq![],EngineResult::Rows{columns:cols,rows,error:None}).unwrap();
+459 | |         r.next.open && r.next.receiver.queue==seq![run_body()] && !q.received && q.engine_calls==1 && q.next.session.pending==Some(rows)}),
+    | |__________________________________________________________________________________________________________________________________________^ failed this postcondition
+
+note: recommendation not met
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/decoded-queue-dropped/20261117T070254Z/models/bolt_stream/bolt_stream.rs:458:15
+    |
+458 |         let q=advance(r.next,seq![],EngineResult::Rows{columns:cols,rows,error:None}).unwrap();
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> std_specs/option.rs:154:8
+    |
+    = note: recommendation not met
+
+error: aborting due to 3 previous errors
+

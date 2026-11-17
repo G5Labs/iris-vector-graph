@@ -1,0 +1,27 @@
+verification results:: 26 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/scan-exposes-weight/20261117T070409Z/models/sql_procs/sql_procs.rs:401:1
+    |
+401 | pub proof fn theorem_edgescan_reads_null_property(adj: Seq<Arc>, src: int, pred: int, a: Arc, w: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/scan-exposes-weight/20261117T070409Z/models/sql_procs/sql_procs.rs:407:9
+    |
+401 | pub proof fn theorem_edgescan_reads_null_property(adj: Seq<Arc>, src: int, pred: int, a: Arc, w: int)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+407 |         rel_weight(Plan::Scan, a) == Option::<int>::None,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/scan-exposes-weight/20261117T070409Z/models/sql_procs/sql_procs.rs:408:9
+    |
+401 | pub proof fn theorem_edgescan_reads_null_property(adj: Seq<Arc>, src: int, pred: int, a: Arc, w: int)
+    | ----------------------------------------------------------------------------------------------------- at the end of the function body
+...
+408 |         rel_weight(plan(true, false), a) != rel_weight(plan(false, false), a),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

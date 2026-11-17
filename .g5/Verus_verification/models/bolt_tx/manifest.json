@@ -1,0 +1,58 @@
+{
+  "title": "bolt transactions",
+  "question": "Bolt explicit transactions (iteration 56, review 53-55 F1; F-1601 promoted to bug-plt-127): BEGIN, COMMIT and ROLLBACK answer SUCCESS and keep no transaction, every RUN commits at once, so a rolled-back, failed, reset or abandoned transaction keeps its writes; commit and auto-commit agree with the rule; refusing BEGIN is a checked alternative repair",
+  "ontology_ids": [
+    "access.bolt.transactions",
+    "access.bolt"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 20}"
+    },
+    {
+      "label": "begin-refused",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rollback_keeps_writes\", \"theorem_commit_agrees\", \"theorem_failed_tx_keeps_earlier_writes\", \"theorem_reset_or_close_keeps_writes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "atomic-tx",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rollback_keeps_writes\", \"theorem_failed_tx_keeps_earlier_writes\", \"theorem_reset_or_close_keeps_writes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rollback-answers-failure",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rollback_keeps_writes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "run-not-committed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_plain_as_built\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failed-run-writes",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_tx_keeps_earlier_writes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "failure-not-sticky",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_plain_failed\", \"theorem_failed_tx_keeps_earlier_writes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rule-rollback-keeps",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rollback_keeps_writes\", \"theorem_refusal_matches_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

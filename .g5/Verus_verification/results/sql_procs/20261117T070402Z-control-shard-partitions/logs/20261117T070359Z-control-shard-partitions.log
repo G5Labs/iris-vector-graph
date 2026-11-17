@@ -1,0 +1,75 @@
+verification results:: 24 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/shard-partitions/20261117T070359Z/models/sql_procs/sql_procs.rs:204:1
+    |
+204 | pub proof fn theorem_empty_predicate_every_predicate(adj: Seq<Arc>, src: int, shard: int, graph: int, a: Arc, p: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/shard-partitions/20261117T070359Z/models/sql_procs/sql_procs.rs:207:9
+    |
+207 |           match_edges(adj, src, 0, shard, graph).contains(a),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+216 | /     if adj.filter(fq).contains(a) {
+217 | |         let i = choose|i: int| 0 <= i < adj.filter(fq).len() && adj.filter(fq)[i] == a;
+218 | |         adj.lemma_filter_pred(fq, i);
+219 | |     }
+    | |_____- at the end of the function body
+
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/shard-partitions/20261117T070359Z/models/sql_procs/sql_procs.rs:214:5
+    |
+214 |     adj.lemma_filter_contains_rev(f0, a);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq_lib.rs:1809:23
+    |
+    = note: failed precondition
+
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/shard-partitions/20261117T070359Z/models/sql_procs/sql_procs.rs:215:5
+    |
+215 |     adj.lemma_filter_contains_rev(fp, a);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq_lib.rs:1809:23
+    |
+    = note: failed precondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/shard-partitions/20261117T070359Z/models/sql_procs/sql_procs.rs:232:12
+    |
+232 |     assert(f1 =~= f2);
+    |            ^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/shard-partitions/20261117T070359Z/models/sql_procs/sql_procs.rs:238:1
+    |
+238 | pub proof fn theorem_graph_scoped_vs_all(adj: Seq<Arc>, src: int, pred: int, shard: int, graph: int, a: Arc)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/shard-partitions/20261117T070359Z/models/sql_procs/sql_procs.rs:243:9
+    |
+243 |           match_edges(adj, src, pred, shard, a.g).contains(a),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+250 | /     if adj.filter(f).contains(a) {
+251 | |         let i = choose|i: int| 0 <= i < adj.filter(f).len() && adj.filter(f)[i] == a;
+252 | |         adj.lemma_filter_pred(f, i);
+253 | |     }
+    | |_____- at the end of the function body
+
+error: precondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/shard-partitions/20261117T070359Z/models/sql_procs/sql_procs.rs:249:5
+    |
+249 |     adj.lemma_filter_contains_rev(fg, a);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   --> seq_lib.rs:1809:23
+    |
+    = note: failed precondition
+
+error: aborting due to 6 previous errors
+

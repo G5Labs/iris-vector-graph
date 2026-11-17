@@ -1,0 +1,36 @@
+verification results:: 41 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/reset-keeps-pending/20261117T070412Z/models/bolt_stream/bolt_stream.rs:320:1
+    |
+320 | pub proof fn theorem_commit_preserves_but_rollback_discards(s:Session,rows:Rows)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/reset-keeps-pending/20261117T070412Z/models/bolt_stream/bolt_stream.rs:323:9
+    |
+320 | pub proof fn theorem_commit_preserves_but_rollback_discards(s:Session,rows:Rows)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+323 |         rollback(s).state.pending==None,record_rows(pull(rollback(s).state,-1).out)==seq![],
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/reset-keeps-pending/20261117T070412Z/models/bolt_stream/bolt_stream.rs:323:41
+    |
+320 | pub proof fn theorem_commit_preserves_but_rollback_discards(s:Session,rows:Rows)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+323 |         rollback(s).state.pending==None,record_rows(pull(rollback(s).state,-1).out)==seq![],
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/reset-keeps-pending/20261117T070412Z/models/bolt_stream/bolt_stream.rs:327:9
+    |
+325 | pub proof fn theorem_discard_keeps_types_reset_clears(s:Session)
+    | ---------------------------------------------------------------- at the end of the function body
+326 |     ensures discard(s).state.pending==None,discard(s).state.columns==None,discard(s).state.types==s.types,
+327 |         reset(s).state.pending==None,reset(s).state.types==None,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

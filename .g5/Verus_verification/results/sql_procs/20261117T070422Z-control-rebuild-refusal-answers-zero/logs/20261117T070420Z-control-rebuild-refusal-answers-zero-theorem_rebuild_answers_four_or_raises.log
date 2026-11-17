@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/rebuild-refusal-answers-zero/20261117T070420Z/models/sql_procs/sql_procs.rs:490:1
+    |
+490 | pub proof fn theorem_rebuild_answers_four_or_raises(schema: Schema, priv_: bool)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/rebuild-refusal-answers-zero/20261117T070420Z/models/sql_procs/sql_procs.rs:494:9
+    |
+490 | pub proof fn theorem_rebuild_answers_four_or_raises(schema: Schema, priv_: bool)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+494 |         rebuild(Schema::Present, false) == RbAns::RaisesNamingTable,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/rebuild-refusal-answers-zero/20261117T070420Z/models/sql_procs/sql_procs.rs:496:9
+    |
+490 | pub proof fn theorem_rebuild_answers_four_or_raises(schema: Schema, priv_: bool)
+    | -------------------------------------------------------------------------------- at the end of the function body
+...
+496 |         rebuild(schema, priv_) != RbAns::Ok(0),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

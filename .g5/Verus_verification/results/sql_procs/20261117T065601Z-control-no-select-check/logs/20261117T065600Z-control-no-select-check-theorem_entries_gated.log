@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T065600Z/models/sql_procs/sql_procs.rs:266:1
+    |
+266 | pub proof fn theorem_entries_gated(adj: Seq<Arc>, src: int, pred: int, graph: int, st: Bf, s2: End, d2: End)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T065600Z/models/sql_procs/sql_procs.rs:268:9
+    |
+266 | pub proof fn theorem_entries_gated(adj: Seq<Arc>, src: int, pred: int, graph: int, st: Bf, s2: End, d2: End)
+    | ------------------------------------------------------------------------------------------------------------ at the end of the function body
+267 |     ensures
+268 |         gate(false, match_edges(adj, src, pred, 0, graph)) == Ans::<Seq<Arc>>::Refused,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T065600Z/models/sql_procs/sql_procs.rs:269:9
+    |
+266 | pub proof fn theorem_entries_gated(adj: Seq<Arc>, src: int, pred: int, graph: int, st: Bf, s2: End, d2: End)
+    | ------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+269 |         gate(false, match_all(adj, src, pred, 0)) == Ans::<Seq<Arc>>::Refused,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

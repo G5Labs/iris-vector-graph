@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: %All no longer passes before the grants are read",
+    "expect_fail_in": [
+      "theorem_all_passes"
+    ],
+    "find": "    if c.all { Gate::Pass }\n    else { match first_missing",
+    "name": "all-not-shortcut",
+    "replace": "    if false { Gate::Pass }\n    else { match first_missing"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_all_passes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/sql_procs/model.json": "111d43dd8222f7adf2f297096b86fb269c4cf7eed5071528e506ad6ab71fca02",
+    ".g5/Verus_verification/models/sql_procs/sql_procs.rs": "86a7392c4a2b963013b473d18e566dd47f93a9f3173e3ce428a63e5bd2aaa1b4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/all-not-shortcut/20261117T070426Z/models/sql_procs/sql_procs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_all_passes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T070426Z-control-all-not-shortcut-theorem_all_passes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T070426Z-control-all-not-shortcut.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sql_procs/20261117T070428Z-control-all-not-shortcut/logs/20261117T070426Z-control-all-not-shortcut-theorem_all_passes.log": "f03a4f636ee2add582f0c2bc344ddff03c17dad77f17787436d7c987a0f4f1ea",
+    ".g5/Verus_verification/results/sql_procs/20261117T070428Z-control-all-not-shortcut/logs/20261117T070426Z-control-all-not-shortcut.log": "78777bdbf485d4e76142bde4f1a25b64321f041ba122c6eb845591e342c975da"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

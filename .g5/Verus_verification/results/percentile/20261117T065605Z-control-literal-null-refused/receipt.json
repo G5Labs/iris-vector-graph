@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "provider/decision: a literal null p refused instead of reaching PDISC as \"\" read as 0 (P-OS-EMPTY-ZERO flipped)",
+    "expect_fail_in": [
+      "theorem_non_number_p_not_refused",
+      "theorem_p_departs_exactly_on_non_numbers"
+    ],
+    "find": "        PSrc::Lit(v) => match v { PVal::Null => PRes::RunAtZero, _ => PRes::Run },",
+    "name": "literal-null-refused",
+    "replace": "        PSrc::Lit(v) => match v { PVal::Null => PRes::Refused, _ => PRes::Run },"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_non_number_p_not_refused",
+      "theorem_p_departs_exactly_on_non_numbers"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/percentile/model.json": "137aef224b626e30203c39b2967eca7638f788470f5432c35290d5abf376fecd",
+    ".g5/Verus_verification/models/percentile/percentile.rs": "6454c5d4d023395da20ab4a8697d8e7ff1ea30dd660a7cc48441ea2c378630d7"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/literal-null-refused/20261117T065602Z/models/percentile/percentile.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_non_number_p_not_refused": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/20261117T065602Z-control-literal-null-refused-theorem_non_number_p_not_refused.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_p_departs_exactly_on_non_numbers": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/20261117T065602Z-control-literal-null-refused-theorem_p_departs_exactly_on_non_numbers.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/20261117T065602Z-control-literal-null-refused.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/percentile/20261117T065605Z-control-literal-null-refused/logs/20261117T065602Z-control-literal-null-refused-theorem_non_number_p_not_refused.log": "34cf4e77e41958d2eeb56f40aa250233806e1ccc211c8ec4a6bcea8646da3b63",
+    ".g5/Verus_verification/results/percentile/20261117T065605Z-control-literal-null-refused/logs/20261117T065602Z-control-literal-null-refused-theorem_p_departs_exactly_on_non_numbers.log": "e00151138350ecf74ae8abc8b81db06c36e93d1329b21420e9ae6a8d22a033f4",
+    ".g5/Verus_verification/results/percentile/20261117T065605Z-control-literal-null-refused/logs/20261117T065602Z-control-literal-null-refused.log": "c89a652a2f582f62a7075a5681469913aed999477f30c94ee440f7c539f735dc"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

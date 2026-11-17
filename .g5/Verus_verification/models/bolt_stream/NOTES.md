@@ -102,6 +102,14 @@ F-1601 control. This new package does not rediscover that gap or claim database
 COMMIT/ROLLBACK from success acknowledgements. Named spy transaction ports receive
 no calls in the new local binding; actual unit persistence remains inherited.
 
+**Scope of `theorem_commit_preserves_but_rollback_discards` (iteration 56, review 53-55 F1).** Its "discards" is
+about the session's **pending result rows** only: after ROLLBACK a PULL reads no rows, while after COMMIT the pending
+rows stay readable. It says nothing about the **writes** a transaction made; no transition here touches the store. As
+built, a ROLLBACK keeps every write the transaction's RUNs made, because each RUN commits on its own; that is
+[bug-plt-127](../../bugs_issues.md#bug-plt-127) (formerly F-1601), modeled and bound in
+[bolt_tx](../bolt_tx/NOTES.md) (`theorem_rollback_keeps_writes`, binding `R_rollback` / `D_tx_rollback`). Do not cite
+this theorem as evidence that a Bolt rollback undoes anything in the database.
+
 ## Exact source roles, deliberately partial
 
 | Pin declaration | Formal role / evidence |

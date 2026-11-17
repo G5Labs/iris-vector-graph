@@ -1,7 +1,7 @@
 {
   "name": "temporal_stats",
   "root": "temporal_stats.rs",
-  "expected_verified": 58,
+  "expected_verified": 64,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -176,6 +176,26 @@
         "theorem_ms_edge_in_seconds_whole_bucket"
       ],
       "classification": "effect: the millisecond class keeps its statistics apart from the seconds class's (the bug-tmp-106 repair; a different global subscript or unit marker)"
+    },
+    {
+      "name": "empty-key-refused",
+      "find": "        _ => if some_whole(lo, hi, div) || ts_present(st, g, lo, hi) { KAns::Raises } else { KAns::Agg(zero()) },",
+      "replace": "        _ => KAns::Raises,",
+      "expect_fail_in": [
+        "theorem_empty_key_quiet_cut_window_answers_zero",
+        "theorem_empty_key_witness"
+      ],
+      "classification": "repair of bug-tmp-108: an empty source or predicate is always refused (the owner's rule); the as-built quiet answer 0 is then not provable"
+    },
+    {
+      "name": "empty-key-never-raises",
+      "find": "        _ => if some_whole(lo, hi, div) || ts_present(st, g, lo, hi) { KAns::Raises } else { KAns::Agg(zero()) },",
+      "replace": "        _ => KAns::Agg(zero()),",
+      "expect_fail_in": [
+        "theorem_empty_key_raises_with_whole_bucket_or_event",
+        "theorem_empty_key_witness"
+      ],
+      "classification": "decision: the <SUBSCRIPT> failure on a whole bucket or a met timestamp removed (empty keys read as nothing everywhere)"
     }
   ]
 }

@@ -1,0 +1,24 @@
+verification results:: 63 verified, 1 errors
+error: postcondition not satisfied
+    --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/ms-buckets-apart/20261117T070002Z/models/temporal_stats/temporal_stats.rs:1065:13
+     |
+1065 |       ensures ({
+     |  _____________^
+1066 | |         let b = x / 300;
+1067 | |         let st_ms = write(st, 300000, hf, Mode::Insert, e);
+1068 | |         let es = Ev { ts: x, ..e };
+...    |
+1072 | |         &&& (!occupied(st.raw, es) ==> raw_agg(write(st, 300, hf, Mode::Insert, es).raw, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 30...
+1073 | |     }),
+     | |______^ failed this postcondition
+...
+1093 | /     if !occupied(st.raw, es) {
+1094 | |         let st_s = write(st, 300, hf, Mode::Insert, es);
+1095 | |         assert(st_s.raw.drop_last() =~= st.raw);
+1096 | |         lemma_fundamental_div_mod(x, 300);
+1097 | |         assert(hit(es, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)));
+1098 | |     }
+     | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

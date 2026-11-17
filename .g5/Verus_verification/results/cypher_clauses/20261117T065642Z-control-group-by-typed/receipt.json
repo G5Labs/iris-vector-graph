@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "decision (repair direction of bug-cyp-135/-136): GROUP BY and COUNT(DISTINCT) compare the CY_TYPED value the RETURN item selects",
+    "expect_fail_in": [
+      "theorem_sql_group_merges_number_and_its_text",
+      "theorem_paths_disagree_exactly_on_marked_text",
+      "theorem_sql_group_and_distinct_disagree_on_marked_text"
+    ],
+    "find": "        Exec::Sql => match op { Op::ReturnDistinct => Key::Typed, _ => Key::Text },",
+    "name": "group-by-typed",
+    "replace": "        Exec::Sql => match op { _ => Key::Typed },"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_sql_group_merges_number_and_its_text",
+      "theorem_paths_disagree_exactly_on_marked_text",
+      "theorem_sql_group_and_distinct_disagree_on_marked_text"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "b893a377d3296c199cb18b561b87be96d797c5e8a6d50e07e1deb3a106cc299b",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "34bb5126ccce33eac88d4bcd715214baf456224c5e43ce35f779552b1cf8e639"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/group-by-typed/20261117T065639Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_paths_disagree_exactly_on_marked_text": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065639Z-control-group-by-typed-theorem_paths_disagree_exactly_on_marked_text.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_sql_group_and_distinct_disagree_on_marked_text": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065639Z-control-group-by-typed-theorem_sql_group_and_distinct_disagree_on_marked_text.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_sql_group_merges_number_and_its_text": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065639Z-control-group-by-typed-theorem_sql_group_merges_number_and_its_text.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T065639Z-control-group-by-typed.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065642Z-control-group-by-typed/logs/20261117T065639Z-control-group-by-typed-theorem_paths_disagree_exactly_on_marked_text.log": "9f16648ccfbb6b6761dd0e691708f611baaff00c678520072ce843faf3590a31",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065642Z-control-group-by-typed/logs/20261117T065639Z-control-group-by-typed-theorem_sql_group_and_distinct_disagree_on_marked_text.log": "cdda6e3c47a09e8823fb9e95070d1335ff444f20a4b91f630fb6f0daae5bb73f",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065642Z-control-group-by-typed/logs/20261117T065639Z-control-group-by-typed-theorem_sql_group_merges_number_and_its_text.log": "0e8a7ac0868839ccb6a68e6596b75120efa942f5922d0959618c39b1c6bfbdf9",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T065642Z-control-group-by-typed/logs/20261117T065639Z-control-group-by-typed.log": "ff915de9811db52305df285c7390b6f09b4b494f3a011cbc934bb40a8759ba17"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

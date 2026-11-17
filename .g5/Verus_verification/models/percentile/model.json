@@ -1,7 +1,7 @@
 {
   "name": "percentile",
   "root": "percentile.rs",
-  "expected_verified": 26,
+  "expected_verified": 30,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -41,6 +41,35 @@
         "theorem_empty_and_out_of_range"
       ],
       "classification": "value: PCONT over no values answers 0 (before 4.6.0 R274)"
+    },
+    {
+      "name": "disc-keeps-input-kind",
+      "find": "pub open spec fn cast_kind(input: NKind) -> NKind { NKind::Float }",
+      "replace": "pub open spec fn cast_kind(input: NKind) -> NKind { input }",
+      "expect_fail_in": [
+        "theorem_disc_over_ints_answers_float"
+      ],
+      "classification": "decision: the CAST to DOUBLE / FLOAT column removed, so percentileDisc keeps the input's type (the repair direction, bug-cyp-147)"
+    },
+    {
+      "name": "null-param-refused",
+      "find": "        PVal::Null => PRes::RawTypeError, PVal::OtherText => PRes::RawValueError,",
+      "replace": "        PVal::Null => PRes::Refused, PVal::OtherText => PRes::RawValueError,",
+      "expect_fail_in": [
+        "theorem_non_number_p_not_refused",
+        "theorem_p_departs_exactly_on_non_numbers"
+      ],
+      "classification": "decision: a null p parameter refused as a Cypher error instead of reaching float() (repair direction, bug-cyp-148)"
+    },
+    {
+      "name": "literal-null-refused",
+      "find": "        PSrc::Lit(v) => match v { PVal::Null => PRes::RunAtZero, _ => PRes::Run },",
+      "replace": "        PSrc::Lit(v) => match v { PVal::Null => PRes::Refused, _ => PRes::Run },",
+      "expect_fail_in": [
+        "theorem_non_number_p_not_refused",
+        "theorem_p_departs_exactly_on_non_numbers"
+      ],
+      "classification": "provider/decision: a literal null p refused instead of reaching PDISC as \"\" read as 0 (P-OS-EMPTY-ZERO flipped)"
     }
   ]
 }

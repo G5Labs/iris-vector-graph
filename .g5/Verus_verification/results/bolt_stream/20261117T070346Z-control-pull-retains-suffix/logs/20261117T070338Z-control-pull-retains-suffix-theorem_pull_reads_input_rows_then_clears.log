@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-retains-suffix/20261117T070338Z/models/bolt_stream/bolt_stream.rs:307:58
+    |
+305 | pub proof fn theorem_pull_reads_input_rows_then_clears(s:Session,rows:Rows,n:int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+306 |     requires s.pending==Some(rows),
+307 |     ensures record_rows(pull(s,n).out)==selected(rows,n),pull(s,n).state.pending==None,
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_partial_pull_drops_suffix_and_reports_no_more"
+    ],
+    "find": "out:records(rows)+seq![Answer::Summary{has_more:None}]",
+    "name": "pull-reports-more",
+    "replace": "out:records(rows)+seq![Answer::Summary{has_more:Some(true)}]",
+    "why": "pull-reports-more"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_partial_pull_drops_suffix_and_reports_no_more"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_stream/bolt_stream.rs": "e33a117863fb22d2c012748e0eff64341096153e1ed0a5e3a49458b2681d82b5",
+    ".g5/Verus_verification/models/bolt_stream/model.json": "d88b622ff5ad38a33d02315012f8f65eaea1b557efdea313c96593280d386194"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/controls/pull-reports-more/20261117T070346Z/models/bolt_stream/bolt_stream.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 7,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_partial_pull_drops_suffix_and_reports_no_more": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/20261117T070346Z-control-pull-reports-more-theorem_partial_pull_drops_suffix_and_reports_no_more.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_stream/20261117T070346Z-control-pull-reports-more.log",
+    "timed_out": false,
+    "verified": 36
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_stream/20261117T070355Z-control-pull-reports-more/logs/20261117T070346Z-control-pull-reports-more-theorem_partial_pull_drops_suffix_and_reports_no_more.log": "748331bb82235b6ecb0541ca16b4b3cfe01eba99fd7e3a8ae39b113ae20f58ef",
+    ".g5/Verus_verification/results/bolt_stream/20261117T070355Z-control-pull-reports-more/logs/20261117T070346Z-control-pull-reports-more.log": "bb1784507611738dc710deeb8115d18e42b23eb38c0b25bfc45426e086834581"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

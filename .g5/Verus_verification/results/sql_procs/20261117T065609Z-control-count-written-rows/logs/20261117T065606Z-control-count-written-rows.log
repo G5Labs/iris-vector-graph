@@ -1,0 +1,21 @@
+verification results:: 24 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/count-written-rows/20261117T065606Z/models/sql_procs/sql_procs.rs:435:9
+    |
+432 | pub proof fn theorem_backfill_idempotent_same_count(st: Bf)
+    | ----------------------------------------------------------- at the end of the function body
+...
+435 |         backfill_count(backfill(st)) == backfill_count(st),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/count-written-rows/20261117T065606Z/models/sql_procs/sql_procs.rs:443:13
+    |
+441 | pub proof fn theorem_backfill_count_overstates(st: Bf, t: Tri)
+    | -------------------------------------------------------------- at the end of the function body
+442 |     requires structural(st).contains(t), st.rows.contains_key(t),
+443 |     ensures rows_written(st) < backfill_count(st),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,654 @@
+{
+ "source": "bolt_tx binding receipt 20261117T065936Z (cells copied for the register's reproduction record)",
+ "tag": "065931",
+ "prefix": "i56b_065931_",
+ "neo4j_driver": "6.4.1",
+ "fixture": "ivg-cont-20261117-iris",
+ "pin": {
+  "all_equal": true,
+  "files_equal_pin_blobs": {
+   "iris_vector_graph/_engine/nodes_edges.py": true,
+   "iris_vector_graph/_engine/query.py": true,
+   "iris_vector_graph/_engine/temporal_window.py": true,
+   "iris_vector_graph/embedded.py": true,
+   "iris_vector_graph/engine.py": true,
+   "iris_vector_graph/freshness.py": true,
+   "iris_vector_graph/ledger/client.py": true,
+   "iris_vector_graph/ledger/replay.py": true,
+   "iris_vector_graph/prop_values.py": true,
+   "iris_vector_graph/schema.py": true
+  },
+  "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "pin_dir": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/pin"
+ },
+ "cases": [
+  {
+   "name": "R_rollback",
+   "section": "R",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Rollback"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   },
+   "intended": 0,
+   "expected": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   }
+  },
+  {
+   "name": "R_rollback_two",
+   "section": "R",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Rollback"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 2
+   },
+   "intended": 0,
+   "expected": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 2
+   }
+  },
+  {
+   "name": "R_fail_rollback_reset",
+   "section": "R",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Run",
+     1,
+     true
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Rollback"
+    ],
+    [
+     "Reset"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "F",
+     "I",
+     "I",
+     "S"
+    ],
+    "count": 1
+   },
+   "intended": 0,
+   "expected": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "F",
+     "I",
+     "I",
+     "S"
+    ],
+    "count": 1
+   }
+  },
+  {
+   "name": "R_reset_in_tx",
+   "section": "R",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Reset"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   },
+   "intended": 0,
+   "expected": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   }
+  },
+  {
+   "name": "R_close_in_tx",
+   "section": "R",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Close"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   },
+   "intended": 0,
+   "expected": {
+    "answers": [
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   }
+  },
+  {
+   "name": "R_commit",
+   "section": "R",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Commit"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   },
+   "intended": 1,
+   "expected": {
+    "answers": [
+     "S",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   }
+  },
+  {
+   "name": "R_autocommit",
+   "section": "R",
+   "msgs": [
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "S",
+     "S"
+    ],
+    "count": 1
+   },
+   "intended": 1,
+   "expected": {
+    "answers": [
+     "S",
+     "S"
+    ],
+    "count": 1
+   }
+  },
+  {
+   "name": "R_empty_rollback",
+   "section": "R",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Rollback"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "S",
+     "S"
+    ],
+    "count": 0
+   },
+   "intended": 0,
+   "expected": {
+    "answers": [
+     "S",
+     "S"
+    ],
+    "count": 0
+   }
+  },
+  {
+   "name": "R_fail_autocommit",
+   "section": "R",
+   "msgs": [
+    [
+     "Run",
+     1,
+     true
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Reset"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ]
+   ],
+   "observed": {
+    "answers": [
+     "F",
+     "I",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   },
+   "intended": 1,
+   "expected": {
+    "answers": [
+     "F",
+     "I",
+     "S",
+     "S",
+     "S"
+    ],
+    "count": 1
+   }
+  },
+  {
+   "name": "D_tx_rollback",
+   "section": "D",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Rollback"
+    ]
+   ],
+   "observed": {
+    "count": 1,
+    "errors": []
+   },
+   "intended": 0,
+   "expected": {
+    "count": 1,
+    "errors": []
+   }
+  },
+  {
+   "name": "D_tx_rollback_two",
+   "section": "D",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Rollback"
+    ]
+   ],
+   "observed": {
+    "count": 2,
+    "errors": []
+   },
+   "intended": 0,
+   "expected": {
+    "count": 2,
+    "errors": []
+   }
+  },
+  {
+   "name": "D_fail_then_rollback",
+   "section": "D",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Run",
+     1,
+     true
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Rollback"
+    ],
+    [
+     "Reset"
+    ]
+   ],
+   "observed": {
+    "count": 1,
+    "errors": [
+     "CypherSyntaxError"
+    ]
+   },
+   "intended": 0,
+   "expected": {
+    "count": 1,
+    "errors": [
+     "CypherSyntaxError"
+    ]
+   }
+  },
+  {
+   "name": "D_execute_write_abort",
+   "section": "D",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Rollback"
+    ]
+   ],
+   "observed": {
+    "count": 1,
+    "errors": [
+     "RuntimeError"
+    ]
+   },
+   "intended": 0,
+   "expected": {
+    "count": 1,
+    "errors": [
+     "RuntimeError"
+    ]
+   }
+  },
+  {
+   "name": "D_session_closed_open_tx",
+   "section": "D",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Rollback"
+    ]
+   ],
+   "observed": {
+    "count": 1,
+    "errors": []
+   },
+   "intended": 0,
+   "expected": {
+    "count": 1,
+    "errors": []
+   }
+  },
+  {
+   "name": "D_tx_commit",
+   "section": "D",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Commit"
+    ]
+   ],
+   "observed": {
+    "count": 1,
+    "errors": []
+   },
+   "intended": 1,
+   "expected": {
+    "count": 1,
+    "errors": []
+   }
+  },
+  {
+   "name": "D_execute_write_ok",
+   "section": "D",
+   "msgs": [
+    [
+     "Begin"
+    ],
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ],
+    [
+     "Commit"
+    ]
+   ],
+   "observed": {
+    "count": 1,
+    "errors": []
+   },
+   "intended": 1,
+   "expected": {
+    "count": 1,
+    "errors": []
+   }
+  },
+  {
+   "name": "D_autocommit",
+   "section": "D",
+   "msgs": [
+    [
+     "Run",
+     1,
+     false
+    ],
+    [
+     "Pull"
+    ]
+   ],
+   "observed": {
+    "count": 1,
+    "errors": []
+   },
+   "intended": 1,
+   "expected": {
+    "count": 1,
+    "errors": []
+   }
+  }
+ ],
+ "departures_from_rule": [
+  "R_rollback",
+  "R_rollback_two",
+  "R_fail_rollback_reset",
+  "R_reset_in_tx",
+  "R_close_in_tx",
+  "D_tx_rollback",
+  "D_tx_rollback_two",
+  "D_fail_then_rollback",
+  "D_execute_write_abort",
+  "D_session_closed_open_tx"
+ ]
+}
