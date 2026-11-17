@@ -51,6 +51,7 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | Iter | Session | Batch | Union | Active | Findings | Cost |
 |---|---|---|---|---|---|---|
 | base | - | - | 698 | 448 | - | - |
+| 58 | 2ef0ca19 | W62 clause combinations + result decoders | 914 | 706 | new: cyp-155/156 M; cyp-149..152, plt-135 L; agg-001, cyp-142, cyp-138 strengthened | 37 min, $14.36 (2 sub-workers) |
 | 57 | 763aedb5 | W61 store + traversal/adjacency | 907 | 696 | new: str-115 M (reads during sync() wrong), str-117 M (khop2_count_fast), str-113/114 L; F-1009 reproduced | 37 min, $21.31 (2 sub-workers) |
 | 56 | 2a81ea7b | repairs review round 3 + install lifecycle | 886 | 662 | new: plt-127 H (Bolt rollback keeps writes; was F-1601), cyp-146 M, srch-116 M, plt-015 L->M; cyp-147/148, tmp-108, srch-113, plt-133/134 L; 4 rows relabelled | 38 min, $35.07 (4 sub-workers) |
 | 55 | 6511d787 | W60 query pipeline + Bolt reader | 866 | 640 | new: plt-121/122/123, cyp-144/145 M; plt-124/125/126 L; cyp-125 settled (IRIS driver 5.3.2 vs 5.4.1) -> M + question query.parameters.drivers; F-1602 reproduced | 28 min, $12.82, 175k out tok |
