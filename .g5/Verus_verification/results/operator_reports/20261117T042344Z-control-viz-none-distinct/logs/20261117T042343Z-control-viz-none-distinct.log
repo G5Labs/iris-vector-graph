@@ -1,0 +1,12 @@
+verification results:: 33 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/viz-none-distinct/20261117T042343Z/models/operator_reports/operator_reports.rs:556:13
+    |
+556 |     ensures label_id(labels, None) == label_id(labels, Some(labels[0])),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+561 |     if c != 0 { assert(labels[0] != labels[c]); }
+    |     --------------------------------------------- at the end of the function body
+
+error: aborting due to 1 previous error
+

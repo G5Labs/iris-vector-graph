@@ -1,0 +1,35 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/sync-sets-markers/20261117T042333Z/models/operator_reports/operator_reports.rs:475:1
+    |
+475 | pub proof fn lemma_markers_kept(ns: Ns, acts: Seq<Act>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/sync-sets-markers/20261117T042333Z/models/operator_reports/operator_reports.rs:476:13
+    |
+476 |       ensures run(ns, acts).marker_kg == ns.marker_kg, run(ns, acts).marker_nkg == ns.marker_nkg,
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+479 | /     if acts.len() > 0 {
+480 | |         lemma_markers_kept(ns, acts.drop_last());
+481 | |         if let Act::Bulk(more) = acts.last() { lemma_bulk_markers(run(ns, acts.drop_last()), more); }
+482 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/sync-sets-markers/20261117T042333Z/models/operator_reports/operator_reports.rs:476:54
+    |
+476 |       ensures run(ns, acts).marker_kg == ns.marker_kg, run(ns, acts).marker_nkg == ns.marker_nkg,
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+479 | /     if acts.len() > 0 {
+480 | |         lemma_markers_kept(ns, acts.drop_last());
+481 | |         if let Act::Bulk(more) = acts.last() { lemma_bulk_markers(run(ns, acts.drop_last()), more); }
+482 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

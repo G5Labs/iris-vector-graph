@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: BuildNKG counts one edge per row (a graph dimension in ^NKG)",
+    "expect_fail_in": [
+      "theorem_shared_triple_never_in_sync",
+      "theorem_heal_claims_in_sync_then_drift"
+    ],
+    "find": "nkg_count: ndistinct(ns.rows) as int, ..ns }",
+    "name": "nkg-per-graph",
+    "replace": "nkg_count: ns.rows.len() as int, ..ns }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_shared_triple_never_in_sync",
+      "theorem_heal_claims_in_sync_then_drift"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/operator_reports/model.json": "b07297f8b10192ac6e55690fe5cdce004eb2ac26a40a2690f622063cad4ac38a",
+    ".g5/Verus_verification/models/operator_reports/operator_reports.rs": "94aa6265058b1eb961ff842025f44c9c04cf4bb1340f3db64995facbbcc664a4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/nkg-per-graph/20261117T042323Z/models/operator_reports/operator_reports.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_heal_claims_in_sync_then_drift": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T042323Z-control-nkg-per-graph-theorem_heal_claims_in_sync_then_drift.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_shared_triple_never_in_sync": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T042323Z-control-nkg-per-graph-theorem_shared_triple_never_in_sync.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/20261117T042323Z-control-nkg-per-graph.log",
+    "timed_out": false,
+    "verified": 32
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/operator_reports/20261117T042325Z-control-nkg-per-graph/logs/20261117T042323Z-control-nkg-per-graph-theorem_heal_claims_in_sync_then_drift.log": "609c6707bfa4f7f36b1ba3dd6c4193c3924908752b53578b15054d8b8737707d",
+    ".g5/Verus_verification/results/operator_reports/20261117T042325Z-control-nkg-per-graph/logs/20261117T042323Z-control-nkg-per-graph-theorem_shared_triple_never_in_sync.log": "3ad77fd31de9810bae9df90d94085d1da9f841d1e86cb3b1e04c87c145294056",
+    ".g5/Verus_verification/results/operator_reports/20261117T042325Z-control-nkg-per-graph/logs/20261117T042323Z-control-nkg-per-graph.log": "9a83468971364d6045cb20ab6c7de16d4e6fc0d558ed0907f8c500f3cd2aabc6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

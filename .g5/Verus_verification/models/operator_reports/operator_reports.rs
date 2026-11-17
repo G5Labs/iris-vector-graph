@@ -152,8 +152,13 @@ pub open spec fn delete_ns(ns: Ns, keep: Seq<Edge>) -> Ns {
     Ns { rows: keep, nkg_skeleton: false, nkg_dict: false, nkg_triples: |t: (int, int, int)| false, nkg_count: 0, ..ns }
 }
 
-/// bulk_load_session inside a caller transaction, committed: rows written, ^NKG left to sync().
-pub open spec fn bulk_ns(ns: Ns, more: Seq<Edge>) -> Ns { Ns { rows: ns.rows + more, ..ns } }
+/// bulk_load_session inside a caller transaction, committed: each row goes through the declared adjacency index
+/// (Adjacency.RowPut -> Put), so ^NKG interns it when its skeleton exists; the loading engine is flagged.
+pub open spec fn bulk_ns(ns: Ns, more: Seq<Edge>) -> Ns
+    decreases more.len()
+{
+    if more.len() == 0 { ns } else { create_edge(bulk_ns(ns, more.drop_last()), more.last()) }
+}
 
 pub open spec fn bulk_eng(eng: Eng) -> Eng { Eng { dirty: true, ..eng } }
 
@@ -460,11 +465,21 @@ pub proof fn theorem_full_text_follows_index(ns: Ns, eng: Eng, x: int)
 }
 
 // =============================================================== theorems: capabilities
+pub proof fn lemma_bulk_markers(ns: Ns, more: Seq<Edge>)
+    ensures bulk_ns(ns, more).marker_kg == ns.marker_kg, bulk_ns(ns, more).marker_nkg == ns.marker_nkg,
+    decreases more.len()
+{
+    if more.len() > 0 { lemma_bulk_markers(ns, more.drop_last()); }
+}
+
 pub proof fn lemma_markers_kept(ns: Ns, acts: Seq<Act>)
     ensures run(ns, acts).marker_kg == ns.marker_kg, run(ns, acts).marker_nkg == ns.marker_nkg,
     decreases acts.len()
 {
-    if acts.len() > 0 { lemma_markers_kept(ns, acts.drop_last()); }
+    if acts.len() > 0 {
+        lemma_markers_kept(ns, acts.drop_last());
+        if let Act::Bulk(more) = acts.last() { lemma_bulk_markers(run(ns, acts.drop_last()), more); }
+    }
 }
 
 /// A namespace set up before it held edges: every engine that detects its capabilities, after any later history of
@@ -487,6 +502,17 @@ pub proof fn theorem_setup_with_edges_sets_markers(ns: Ns)
     requires ns.rows.len() > 0, !ns.marker_kg,
     ensures detect(setup(ns)).kg_built && detect(setup(ns)).nkg_built,
 {
+}
+
+/// Running setup again once edges exist sets both markers, from any engine: setup replaces the engine's cached
+/// capabilities with the deploy's fresh detection before the bootstrap decides (_engine/schema.py 2583, 2674).
+pub proof fn theorem_setup_again_sets_markers(acts: Seq<Act>)
+    ensures ({
+        let ns = run(fresh_setup(), acts);
+        ns.rows.len() > 0 ==> detect(setup(ns)).kg_built && detect(setup(ns)).nkg_built
+    }),
+{
+    lemma_markers_kept(fresh_setup(), acts);
 }
 
 // =============================================================== theorems: HTTP readers, diagram, snapshot info

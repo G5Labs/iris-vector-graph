@@ -1,7 +1,7 @@
 {
   "name": "operator_reports",
   "root": "operator_reports.rs",
-  "expected_verified": 31,
+  "expected_verified": 34,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -151,6 +151,16 @@
         "theorem_unlabeled_endpoint_is_first_label"
       ],
       "classification": "decision: an unlabeled endpoint gets an id no label has (the bug-plt-118 repair direction)"
+    },
+    {
+      "name": "setup-skips-bootstrap",
+      "find": "if ns.rows.len() > 0 && !ns.marker_kg { Ns { marker_kg: true, marker_nkg: true, ..ns } } else { ns }",
+      "replace": "ns",
+      "expect_fail_in": [
+        "theorem_setup_again_sets_markers",
+        "theorem_setup_with_edges_sets_markers"
+      ],
+      "classification": "effect: initialize_schema never bootstraps the markers (only sync() would build)"
     }
   ]
 }

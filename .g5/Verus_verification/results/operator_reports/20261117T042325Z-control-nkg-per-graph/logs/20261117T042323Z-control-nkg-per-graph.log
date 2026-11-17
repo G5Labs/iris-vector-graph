@@ -1,0 +1,43 @@
+verification results:: 32 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/nkg-per-graph/20261117T042323Z/models/operator_reports/operator_reports.rs:310:1
+    |
+310 | pub proof fn theorem_shared_triple_never_in_sync(ns: Ns, eng: Eng, other: Eng, i: int, j: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/nkg-per-graph/20261117T042323Z/models/operator_reports/operator_reports.rs:313:9
+    |
+310 | pub proof fn theorem_shared_triple_never_in_sync(ns: Ns, eng: Eng, other: Eng, i: int, j: int)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+...
+313 |         !verify(sync_ns(ns), sync_eng(ns, eng)).in_sync,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/nkg-per-graph/20261117T042323Z/models/operator_reports/operator_reports.rs:314:9
+    |
+310 | pub proof fn theorem_shared_triple_never_in_sync(ns: Ns, eng: Eng, other: Eng, i: int, j: int)
+    | ---------------------------------------------------------------------------------------------- at the end of the function body
+...
+314 |         !verify(sync_ns(ns), other).in_sync,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/nkg-per-graph/20261117T042323Z/models/operator_reports/operator_reports.rs:331:13
+    |
+329 |   pub proof fn theorem_heal_claims_in_sync_then_drift(n0: Ns, eng: Eng, other: Eng, i: int, j: int)
+    |   ------------------------------------------------------------------------------------------------- at the end of the function body
+330 |       requires 0 <= i < j < n0.rows.len(), tri(n0.rows[i]) == tri(n0.rows[j]), !other.dirty,
+331 |       ensures ({
+    |  _____________^
+332 | |         let ns = sync_ns(n0);
+333 | |         let e1 = sync_eng(n0, eng);
+334 | |         let (r, ns2, eng2) = verify_heal(ns, e1);
+...   |
+338 | |         &&& !verify(ns2, other).in_sync
+339 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

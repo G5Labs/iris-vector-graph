@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/operator_reports/controls/multihop-needs-nkg/20261117T042331Z/models/operator_reports/operator_reports.rs:348:13
+    |
+346 |   pub proof fn theorem_fresh_namespace_edges_skip_nkg(e: Edge, eng: Eng)
+    |   ---------------------------------------------------------------------- at the end of the function body
+347 |       requires !eng.dirty,
+348 |       ensures ({
+    |  _____________^
+349 | |         let ns = create_edge(fresh_setup(), e);
+350 | |         let s = status(ns, eng);
+351 | |         &&& ready_for_bfs(s) && ready_for_multihop_bfs(s)
+352 | |         &&& !s.nkg_populated && sync_line(s) == SyncLine::InSync
+353 | |         &&& !verify(ns, eng).in_sync
+354 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+
