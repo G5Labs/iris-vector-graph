@@ -1,0 +1,45 @@
+{
+  "title": "prov window",
+  "question": "PROV-O readers: inclusive window, over-large reads raise (bug-plt-109), whole-history lookups fail on a large history (bug-plt-110)",
+  "ontology_ids": [
+    "install.export.prov"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 3}"
+    },
+    {
+      "label": "read-streams",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_large_window_raises\", \"theorem_as_dict_fails_on_large_history\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "as-dict-bounded",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_as_dict_fails_on_large_history\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "exclusive-end",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_bounds_inclusive\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "doc-matches-code",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_large_window_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

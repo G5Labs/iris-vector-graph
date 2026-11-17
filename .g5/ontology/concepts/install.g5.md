@@ -422,6 +422,13 @@ SHACL validation checks the labels, properties and edges of every graph, or of l
 - Today every graph's rows for one node ID are checked as one node, so a node passes a rule on the strength of the same ID in another graph ([finding](../../Verus_verification/bugs_issues.md#bug-str-107)).
 - With listed nodes only their own rows are read, so a rule about an edge's target fails unless the target is listed too ([finding](../../Verus_verification/bugs_issues.md#bug-str-108)).
 
+<a id="install.export.prov"></a>
+[D · install.export.prov]
+
+The PROV-O export publishes the default graph's temporal edges, one activity per distinct edge and time, with its source, target and start time. A window's two ends are both included, and a named graph's temporal edges are not exported.
+- A single-edge lookup and the export for the nodes of a Cypher query read the default graph's whole temporal history.
+- Today a read of more edges than one IRIS string holds (about 35,000) raises an error. So the whole-history calls fail on any large history, even for one small edge ([finding](../../Verus_verification/bugs_issues.md#bug-plt-110)), and an over-large window raises rather than exporting an empty file as the guide says ([finding](../../Verus_verification/bugs_issues.md#bug-plt-109)).
+
 ## Metadata
 
 ### install.namespace
@@ -1014,3 +1021,14 @@ State machines: [rdf reporting](../../Verus_verification/models/rdf_reporting/ma
 Recovered in iteration 39 from the semantic-layer guide and observation ([W45](../../uplift/consolidated/iteration-39/shacl-PAIRS.md)); no owner statement existed. Provider: pySHACL 0.40.2 with rdflib 7.6.0. Other Core constraints, URL-fetched shapes and SHACL-AF were not exercised.
 
 Findings: [SHACL validation treats one node ID in two graphs as one node](../../Verus_verification/bugs_issues.md#bug-str-107); [Validating only new node IDs refuses valid data whose shape checks an edge's target](../../Verus_verification/bugs_issues.md#bug-str-108)
+
+### install.export.prov
+
+- Sources: [SEMANTIC_LAYER.md PROV-O](../../../docs/SEMANTIC_LAYER.md); [API_REFERENCE prov_export, prov_as_dict, prov_export_from_cypher](../../../docs/API_REFERENCE.md); [`ProvMixin`](../../../iris_vector_graph/_engine/prov.py#L83-L219)
+- Verus: active: [`prov_window.rs`](../../Verus_verification/models/prov_window/NOTES.md) `theorem_bounds_inclusive`; as-built departures `theorem_large_window_raises`, `theorem_as_dict_fails_on_large_history`.
+- agent
+- user-facing-behavior
+
+Recovered in iteration 44 from the semantic-layer guide and observation ([W50](../../uplift/consolidated/iteration-44/prov-PAIRS.md)).
+
+Findings: [prov_as_dict and prov_export_from_cypher fail once the history is large](../../Verus_verification/bugs_issues.md#bug-plt-110); [The guide says an over-large PROV window exports an empty file](../../Verus_verification/bugs_issues.md#bug-plt-109)

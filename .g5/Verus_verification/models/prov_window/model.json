@@ -1,0 +1,46 @@
+{
+  "name": "prov_window",
+  "root": "prov_window.rs",
+  "expected_verified": 3,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "read-streams",
+      "find": "pub open spec fn read(window_edges: nat, cap: nat) -> Out { if window_edges <= cap { Out::Answer } else { Out::Raised } }",
+      "replace": "pub open spec fn read(window_edges: nat, cap: nat) -> Out { Out::Answer }",
+      "expect_fail_in": [
+        "theorem_large_window_raises",
+        "theorem_as_dict_fails_on_large_history"
+      ],
+      "classification": "effect: the window is read in chunks (the repair)"
+    },
+    {
+      "name": "as-dict-bounded",
+      "find": "pub open spec fn as_dict_out(total_default: nat, cap: nat) -> Out { read(total_default, cap) }",
+      "replace": "pub open spec fn as_dict_out(total_default: nat, cap: nat) -> Out { read(1, cap) }",
+      "expect_fail_in": [
+        "theorem_as_dict_fails_on_large_history"
+      ],
+      "classification": "decision: prov_as_dict reads only its edge's timestamp"
+    },
+    {
+      "name": "exclusive-end",
+      "find": "pub open spec fn in_window(ts: int, lo: int, hi: int) -> bool { lo <= ts && ts <= hi }",
+      "replace": "pub open spec fn in_window(ts: int, lo: int, hi: int) -> bool { lo <= ts && ts < hi }",
+      "expect_fail_in": [
+        "theorem_bounds_inclusive"
+      ],
+      "classification": "decision: ts_end exclusive"
+    },
+    {
+      "name": "doc-matches-code",
+      "find": "pub open spec fn documented(window_edges: nat, cap: nat) -> Out { if window_edges <= cap { Out::Answer } else { Out::EmptyWithWarning } }",
+      "replace": "pub open spec fn documented(window_edges: nat, cap: nat) -> Out { read(window_edges, cap) }",
+      "expect_fail_in": [
+        "theorem_large_window_raises"
+      ],
+      "classification": "documentation: the guide describes the raise"
+    }
+  ]
+}

@@ -2910,6 +2910,25 @@ Consequence: the imported graph gets no inference, another graph gets derived ed
 
 Repair proposal (not implemented): run inference on each graph the import wrote to. Governing statement: [install.import.rdf](../ontology/concepts/install.g5.md#install.import.rdf).
 
+<a id="bug-plt-110"></a>
+### prov_as_dict and prov_export_from_cypher fail for every edge once the default graph's temporal history is large
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 44)
+
+Found by: source reading after the W50 freeze (P9, not frozen) ([predictions](../uplift/consolidated/iteration-44/prov-PAIRS.md)); [prov_window](models/prov_window/NOTES.md) `theorem_as_dict_fails_on_large_history`, controls `read-streams`, `as-dict-bounded`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-44/prov-observed-20261117T010711Z.json) P8_P9; [binding](results/prov_window/20261117T010842Z-binding/receipt.json) `as_dict_with_large_history`). After 40,000 temporal edges were written to the default graph, `prov_as_dict("<s>|<p>|<A>|<t>")` for an edge that exists raises `RuntimeError: <MAXSTRING>QueryWindow+27^Graph.KG.TemporalIndex.1`; `prov_export` of a small window around the same edge still answers. Before the large load the same call answered (P4).
+
+Expected: SEMANTIC_LAYER.md says these two calls "read every temporal edge of the default graph to find theirs" (a cost), not that they stop working; the other temporal window readers were moved off the one-string read for this reason (CHANGELOG: `iter_edges_in_window`).
+
+Observed: both read `QueryWindow` over all time with one Native API call and filter in Python (`_engine/prov.py:181-219`); `QueryWindow` raises once the answer exceeds one IRIS string (about 35,000 edges).
+
+Consequence: on any namespace with a real temporal history these two PROV calls are unusable, whatever edge or nodes are asked for. Medium: a feature fails outright (visibly), with no window argument to work around it.
+
+Repair proposal (not implemented): look the edge up by its own source, predicate and timestamp (or read the window in chunks). Governing statement: [install.export.prov](../ontology/concepts/install.g5.md#install.export.prov).
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -4450,6 +4469,23 @@ Observed: the label condition is `node_id IN (SELECT s FROM rdf_labels WHERE lab
 Consequence: vectors for nodes outside the requested label in that graph. Low: extra vectors; no other data changes.
 
 Repair proposal (not implemented): scope the label subquery to the graph. Governing statement: [search.embedding.bulk](../ontology/features/search.g5.md#search.embedding.bulk).
+
+<a id="bug-plt-109"></a>
+### The semantic-layer guide says an over-large PROV window exports an empty file; the export raises instead
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 44)
+
+Found by: the frozen W50 prediction P8, taken from the guide, missed ([predictions](../uplift/consolidated/iteration-44/prov-PAIRS.md)); [prov_window](models/prov_window/NOTES.md) `theorem_large_window_raises`, control `doc-matches-code`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-44/prov-observed-20261117T010711Z.json) P8; [binding](results/prov_window/20261117T010842Z-binding/receipt.json) `export_all_time`). A window of 40,000 edges makes `prov_export` raise `RuntimeError: <MAXSTRING>…`; no file is written. Passing neighbor: windows that fit export normally (P1-P3).
+
+Expected: SEMANTIC_LAYER.md: "A window larger than that string can hold is logged as a warning and exported as an empty file, not raised"; the method's docstring: "A failed window read is logged and exports nothing."
+
+Consequence: a caller following the guide does not expect the exception. Low: the behavior is safer than documented; the documents are wrong.
+
+Repair proposal (not implemented): correct the guide and docstring, or read the window in chunks. Governing statement: [install.export.prov](../ontology/concepts/install.g5.md#install.export.prov).
 
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections

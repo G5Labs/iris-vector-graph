@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: ts_end exclusive",
+    "expect_fail_in": [
+      "theorem_bounds_inclusive"
+    ],
+    "find": "pub open spec fn in_window(ts: int, lo: int, hi: int) -> bool { lo <= ts && ts <= hi }",
+    "name": "exclusive-end",
+    "replace": "pub open spec fn in_window(ts: int, lo: int, hi: int) -> bool { lo <= ts && ts < hi }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_bounds_inclusive"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/prov_window/model.json": "21d3badde06b77d16f9fd6bb64bd4230c481119a4c2680f7efc6edc5b8a5786d",
+    ".g5/Verus_verification/models/prov_window/prov_window.rs": "01ba25e3c5ddaa927fbeefc231b5dd479a6a94b90526064f8f30f8ec6ad8690d"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/prov_window/controls/exclusive-end/20261117T010806Z/models/prov_window/prov_window.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_bounds_inclusive": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/prov_window/20261117T010806Z-control-exclusive-end-theorem_bounds_inclusive.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/prov_window/20261117T010806Z-control-exclusive-end.log",
+    "timed_out": false,
+    "verified": 2
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/prov_window/20261117T010807Z-control-exclusive-end/logs/20261117T010806Z-control-exclusive-end-theorem_bounds_inclusive.log": "f5c4b64a708b9243c0a5f80445fe37265c7a22196bc88123f5786a780ee73acb",
+    ".g5/Verus_verification/results/prov_window/20261117T010807Z-control-exclusive-end/logs/20261117T010806Z-control-exclusive-end.log": "4a2414f71873a674908b6967f03e200617c52b9a5346c518bbdbefec811a4026"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

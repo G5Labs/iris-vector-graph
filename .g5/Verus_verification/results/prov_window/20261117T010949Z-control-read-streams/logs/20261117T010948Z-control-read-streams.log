@@ -1,0 +1,21 @@
+verification results:: 1 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/prov_window/controls/read-streams/20261117T010948Z/models/prov_window/prov_window.rs:32:13
+   |
+30 | pub proof fn theorem_large_window_raises(n: nat, cap: nat)
+   | ---------------------------------------------------------- at the end of the function body
+31 |     requires n > cap,
+32 |     ensures export_out(n, cap) == Out::Raised, documented(n, cap) == Out::EmptyWithWarning,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/prov_window/controls/read-streams/20261117T010948Z/models/prov_window/prov_window.rs:39:13
+   |
+37 | pub proof fn theorem_as_dict_fails_on_large_history(small: nat, total: nat, cap: nat)
+   | ------------------------------------------------------------------------------------- at the end of the function body
+38 |     requires small <= cap, total > cap,
+39 |     ensures as_dict_out(total, cap) == Out::Raised, export_out(small, cap) == Out::Answer,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+
