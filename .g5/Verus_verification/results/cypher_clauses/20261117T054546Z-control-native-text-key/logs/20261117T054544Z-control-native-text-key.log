@@ -1,0 +1,22 @@
+verification results:: 21 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/native-text-key/20261117T054544Z/models/cypher_clauses/cypher_clauses.rs:83:13
+   |
+81 | pub proof fn theorem_native_group_follows_rule(a: Val, b: Val)
+   | -------------------------------------------------------------- at the end of the function body
+82 |     requires in_domain(a), in_domain(b), !documented_collision(a, b),
+83 |     ensures together(Exec::Native, Op::GroupBy, a, b) == rule_together(a, b),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/native-text-key/20261117T054544Z/models/cypher_clauses/cypher_clauses.rs:89:9
+   |
+87 |   pub proof fn theorem_paths_disagree_exactly_on_marked_text(a: Val, b: Val)
+   |   -------------------------------------------------------------------------- at the end of the function body
+88 |       ensures
+89 | /         (together(Exec::Sql, Op::GroupBy, a, b) != together(Exec::Native, Op::GroupBy, a, b))
+90 | |             == (a.text == b.text && mark(a.kind) != mark(b.kind)),
+   | |_________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

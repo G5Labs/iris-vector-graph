@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/endpoint-reads-json/20261117T054604Z/models/cypher_clauses/cypher_clauses.rs:315:1
+    |
+315 | pub proof fn theorem_path_element_endpoints_fail()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/endpoint-reads-json/20261117T054604Z/models/cypher_clauses/cypher_clauses.rs:317:9
+    |
+315 | pub proof fn theorem_path_element_endpoints_fail()
+    | -------------------------------------------------- at the end of the function body
+316 |     ensures
+317 |         !reads_existing_column(RelVar::PathElement, FnK::StartNode),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/endpoint-reads-json/20261117T054604Z/models/cypher_clauses/cypher_clauses.rs:318:9
+    |
+315 | pub proof fn theorem_path_element_endpoints_fail()
+    | -------------------------------------------------- at the end of the function body
+...
+318 |         !reads_existing_column(RelVar::PathElement, FnK::EndNode),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

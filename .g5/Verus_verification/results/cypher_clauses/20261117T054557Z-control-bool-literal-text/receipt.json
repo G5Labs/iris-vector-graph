@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "provider: IRIS SQL giving a boolean literal as text rather than the number 1/0",
+    "expect_fail_in": [
+      "theorem_union_dedup_by_raw",
+      "theorem_all_bool_union_stays_bool"
+    ],
+    "find": "pub open spec fn raw_lit_bool(b: bool) -> Raw { Raw::Num(if b { 1 } else { 0 }) }",
+    "name": "bool-literal-text",
+    "replace": "pub open spec fn raw_lit_bool(b: bool) -> Raw { Raw::Text(if b { 1 } else { 0 }) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_union_dedup_by_raw",
+      "theorem_all_bool_union_stays_bool"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "8827a5be94c0cf88f6bd496a84d93007e2424299623fdbe30203539fde15a104",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "5b2644d72375642515f535419cb8519df39214a9e4e25875e747cd335f53fe57"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/bool-literal-text/20261117T054555Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_all_bool_union_stays_bool": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T054555Z-control-bool-literal-text-theorem_all_bool_union_stays_bool.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_union_dedup_by_raw": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T054555Z-control-bool-literal-text-theorem_union_dedup_by_raw.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T054555Z-control-bool-literal-text.log",
+    "timed_out": false,
+    "verified": 21
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T054557Z-control-bool-literal-text/logs/20261117T054555Z-control-bool-literal-text-theorem_all_bool_union_stays_bool.log": "98166f5e2321067fc1a0b84f4f855b8fdca6fec3f1d2f8e303d777e5740804c0",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T054557Z-control-bool-literal-text/logs/20261117T054555Z-control-bool-literal-text-theorem_union_dedup_by_raw.log": "0bea4b106f028a98a8ca6eee7f657a1f1f3b0f4aa143f669a82ccf888595a055",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T054557Z-control-bool-literal-text/logs/20261117T054555Z-control-bool-literal-text.log": "b5e80c4eb68ef50257ec6b9298edd317aaffea5e4d57722db38be2d4291cb74d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

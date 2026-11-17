@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/prop-default-unknown/20261117T054547Z/models/cypher_clauses/cypher_clauses.rs:145:1
+    |
+145 | pub proof fn theorem_sum_of_property_sums_is_int_column()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/prop-default-unknown/20261117T054547Z/models/cypher_clauses/cypher_clauses.rs:147:9
+    |
+145 | pub proof fn theorem_sum_of_property_sums_is_int_column()
+    | --------------------------------------------------------- at the end of the function body
+146 |     ensures
+147 |         column_type(Column::Arith(Operand::SumOf(Arg::Prop), Operand::SumOf(Arg::Prop))) == NumT::Int,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/prop-default-unknown/20261117T054547Z/models/cypher_clauses/cypher_clauses.rs:148:9
+    |
+145 | pub proof fn theorem_sum_of_property_sums_is_int_column()
+    | --------------------------------------------------------- at the end of the function body
+...
+148 |         column_type(Column::Arith(Operand::MinMaxOf(Arg::Prop), Operand::LitInt)) == NumT::Int,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,208 @@
+{
+  "name": "cypher_clauses",
+  "root": "cypher_clauses.rs",
+  "expected_verified": 23,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "group-by-typed",
+      "find": "        Exec::Sql => match op { Op::ReturnDistinct => Key::Typed, _ => Key::Text },",
+      "replace": "        Exec::Sql => match op { _ => Key::Typed },",
+      "expect_fail_in": [
+        "theorem_sql_group_merges_number_and_its_text",
+        "theorem_paths_disagree_exactly_on_marked_text",
+        "theorem_sql_group_and_distinct_disagree_on_marked_text"
+      ],
+      "classification": "decision (repair direction of bug-cyp-135/-136): GROUP BY and COUNT(DISTINCT) compare the CY_TYPED value the RETURN item selects"
+    },
+    {
+      "name": "return-distinct-text",
+      "find": "        Exec::Sql => match op { Op::ReturnDistinct => Key::Typed, _ => Key::Text },",
+      "replace": "        Exec::Sql => match op { _ => Key::Text },",
+      "expect_fail_in": [
+        "theorem_sql_return_distinct_keeps_kinds",
+        "theorem_sql_group_and_distinct_disagree_on_marked_text"
+      ],
+      "classification": "decision: the CY_TYPED select item removed, so SELECT DISTINCT compares the stored text"
+    },
+    {
+      "name": "native-text-key",
+      "find": "        Exec::Native => Key::Typed,",
+      "replace": "        Exec::Native => Key::Text,",
+      "expect_fail_in": [
+        "theorem_native_group_follows_rule",
+        "theorem_paths_disagree_exactly_on_marked_text"
+      ],
+      "classification": "decision: the native executor's $List group key replaced by the text"
+    },
+    {
+      "name": "int-unmarked",
+      "find": "Kind::Int => Mark::N,",
+      "replace": "Kind::Int => Mark::Plain,",
+      "expect_fail_in": [
+        "theorem_sql_return_distinct_keeps_kinds"
+      ],
+      "classification": "provider: storage without the N mark (pre-4.6.4 Python numbers) makes the integer and its text one stored value"
+    },
+    {
+      "name": "prop-default-unknown",
+      "find": "match a { Arg::LitInt => NumT::Int, Arg::LitFloat => NumT::Float, Arg::Prop => NumT::Int }",
+      "replace": "match a { Arg::LitInt => NumT::Int, Arg::LitFloat => NumT::Float, Arg::Prop => NumT::Unknown }",
+      "expect_fail_in": [
+        "theorem_sum_of_property_sums_is_int_column",
+        "theorem_int_column_loses_any_half",
+        "theorem_probe_totals"
+      ],
+      "classification": "decision (repair direction of bug-cyp-137): an aggregate of a property has no static type, as a bare sum's does not"
+    },
+    {
+      "name": "float-literal-int",
+      "find": "        Operand::LitFloat => NumT::Float,",
+      "replace": "        Operand::LitFloat => NumT::Int,",
+      "expect_fail_in": [
+        "theorem_float_operand_or_bare_sum_keeps_value"
+      ],
+      "classification": "decision: a float literal operand no longer makes the column float"
+    },
+    {
+      "name": "int-read-exact",
+      "find": "if column_type(c) == NumT::Int { 2 * round_half_even_half(h) } else { h }",
+      "replace": "if column_type(c) == NumT::Int { h } else { h }",
+      "expect_fail_in": [
+        "theorem_int_column_loses_any_half",
+        "theorem_probe_totals"
+      ],
+      "classification": "effect: _int_expr_value's int(round(v)) removed (the reader keeps the value)"
+    },
+    {
+      "name": "union-keeps-decoders",
+      "find": "if first == Dec::Bool && (forall|i: int| 0 <= i < rest.len() ==> rest[i] == Dec::Bool) { Dec::Bool } else { Dec::Plain }",
+      "replace": "first",
+      "expect_fail_in": [
+        "theorem_union_answers_marked_text"
+      ],
+      "classification": "decision (repair direction of bug-cyp-138): the combined query keeps the first branch's decoder"
+    },
+    {
+      "name": "union-drops-bool",
+      "find": "if first == Dec::Bool && (forall|i: int| 0 <= i < rest.len() ==> rest[i] == Dec::Bool) { Dec::Bool } else { Dec::Plain }",
+      "replace": "Dec::Plain",
+      "expect_fail_in": [
+        "theorem_all_bool_union_stays_bool"
+      ],
+      "classification": "decision: the common boolean columns are not carried either"
+    },
+    {
+      "name": "typed-read-plain",
+      "find": "Raw::Marked(m, t) => if d == Dec::Typed { Out::Number(t) } else { Out::MarkedText(t) },",
+      "replace": "Raw::Marked(m, t) => Out::MarkedText(t),",
+      "expect_fail_in": [
+        "theorem_single_query_decodes"
+      ],
+      "classification": "effect: the reader's CY_TYPED decode removed"
+    },
+    {
+      "name": "bool-literal-text",
+      "find": "pub open spec fn raw_lit_bool(b: bool) -> Raw { Raw::Num(if b { 1 } else { 0 }) }",
+      "replace": "pub open spec fn raw_lit_bool(b: bool) -> Raw { Raw::Text(if b { 1 } else { 0 }) }",
+      "expect_fail_in": [
+        "theorem_union_dedup_by_raw",
+        "theorem_all_bool_union_stays_bool"
+      ],
+      "classification": "provider: IRIS SQL giving a boolean literal as text rather than the number 1/0"
+    },
+    {
+      "name": "page-int-only",
+      "find": "        PV::Null => POut::NotProvided,\n        PV::Int(i) => built_validate(i),\n        PV::Float(v, whole) => if !whole { POut::InvalidArgumentType } else { built_validate(v) },\n        PV::Str(s) => match s { StrV::Num(i) => built_validate(i), StrV::Other => POut::RawValueError },\n        PV::Bool(b) => POut::Rows(if b { 1 } else { 0 }),",
+      "replace": "        PV::Int(i) => built_validate(i),\n        _ => POut::InvalidArgumentType,",
+      "expect_fail_in": [
+        "theorem_non_integer_parameter_used"
+      ],
+      "classification": "decision (repair direction of bug-cyp-139): only an integer parameter is used; any other kind is InvalidArgumentType"
+    },
+    {
+      "name": "page-no-negative-check",
+      "find": "pub open spec fn built_validate(i: int) -> POut { if i < 0 { POut::NegativeIntegerArgument } else { POut::Rows(i) } }",
+      "replace": "pub open spec fn built_validate(i: int) -> POut { POut::Rows(i) }",
+      "expect_fail_in": [
+        "theorem_integer_and_fraction_follow_rule"
+      ],
+      "classification": "guard: _validate_pagination_int's negative check removed"
+    },
+    {
+      "name": "page-no-fraction-check",
+      "find": "        PV::Float(v, whole) => if !whole { POut::InvalidArgumentType } else { built_validate(v) },",
+      "replace": "        PV::Float(v, whole) => built_validate(v),",
+      "expect_fail_in": [
+        "theorem_integer_and_fraction_follow_rule"
+      ],
+      "classification": "guard: the float-with-fraction check removed"
+    },
+    {
+      "name": "count-guard-sees-union",
+      "find": "    let branch_field = false;",
+      "replace": "    let branch_field = true;",
+      "expect_fail_in": [
+        "theorem_label_count_branch_fails"
+      ],
+      "classification": "decision (repair direction of bug-cyp-140): the shortcut's guard sees that the branch is part of a UNION"
+    },
+    {
+      "name": "shortcut-newline-from",
+      "find": "pub open spec fn newline_from(s: Shape, has_union_field: bool) -> bool { !shortcut(s, has_union_field) }",
+      "replace": "pub open spec fn newline_from(s: Shape, has_union_field: bool) -> bool { true }",
+      "expect_fail_in": [
+        "theorem_label_count_branch_fails"
+      ],
+      "classification": "effect (alternative repair): the shortcut writes its FROM on a new line"
+    },
+    {
+      "name": "ensure-from-always",
+      "find": "if in_union { newline_from(s, branch_field) } else { true }",
+      "replace": "newline_from(s, branch_field)",
+      "expect_fail_in": [
+        "theorem_count_alone_and_other_branches_prepare"
+      ],
+      "classification": "guard: _ensure_from applied outside a UNION too"
+    },
+    {
+      "name": "endpoint-reads-json",
+      "find": "        _ => v == RelVar::MatchedEdge,",
+      "replace": "        _ => true,",
+      "expect_fail_in": [
+        "theorem_path_element_endpoints_fail"
+      ],
+      "classification": "decision (repair direction of bug-cyp-141): startNode/endNode of a path element read the element (as type() does)"
+    },
+    {
+      "name": "type-reads-alias",
+      "find": "        FnK::Type => true,",
+      "replace": "        FnK::Type => v == RelVar::MatchedEdge,",
+      "expect_fail_in": [
+        "theorem_type_and_matched_endpoints_work"
+      ],
+      "classification": "guard: type()'s path-element branch removed"
+    },
+    {
+      "name": "delete-outgoing-only",
+      "find": "pub open spec fn touching(out_edges: nat, in_edges: nat) -> nat { out_edges + in_edges }",
+      "replace": "pub open spec fn touching(out_edges: nat, in_edges: nat) -> nat { out_edges }",
+      "expect_fail_in": [
+        "theorem_delete_follows_rule",
+        "theorem_incoming_only_refused"
+      ],
+      "classification": "guard: the connected check counts only edges from the node (s IN ids)"
+    },
+    {
+      "name": "delete-no-check",
+      "find": "if !detach && touching(out_edges, in_edges) > 0 { DelOut::Refused } else { DelOut::Deleted }",
+      "replace": "DelOut::Deleted",
+      "expect_fail_in": [
+        "theorem_delete_follows_rule",
+        "theorem_incoming_only_refused"
+      ],
+      "classification": "guard: the __constraint_check_delete_connected__ sentinel removed"
+    }
+  ]
+}

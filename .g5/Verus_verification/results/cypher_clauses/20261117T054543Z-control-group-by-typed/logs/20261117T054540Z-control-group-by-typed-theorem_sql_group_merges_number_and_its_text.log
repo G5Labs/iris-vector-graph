@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/group-by-typed/20261117T054540Z/models/cypher_clauses/cypher_clauses.rs:70:1
+   |
+70 | pub proof fn theorem_sql_group_merges_number_and_its_text(t: int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/group-by-typed/20261117T054540Z/models/cypher_clauses/cypher_clauses.rs:72:9
+   |
+70 | pub proof fn theorem_sql_group_merges_number_and_its_text(t: int)
+   | ----------------------------------------------------------------- at the end of the function body
+71 |     ensures
+72 |         together(Exec::Sql, Op::GroupBy, Val { kind: Kind::Int, text: t }, Val { kind: Kind::Str, text: t }),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/group-by-typed/20261117T054540Z/models/cypher_clauses/cypher_clauses.rs:73:9
+   |
+70 | pub proof fn theorem_sql_group_merges_number_and_its_text(t: int)
+   | ----------------------------------------------------------------- at the end of the function body
+...
+73 |         together(Exec::Sql, Op::CountDistinct, Val { kind: Kind::Int, text: t }, Val { kind: Kind::Str, text: t }),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

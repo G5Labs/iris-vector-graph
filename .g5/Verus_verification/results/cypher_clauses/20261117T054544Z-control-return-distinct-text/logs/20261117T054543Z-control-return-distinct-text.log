@@ -1,0 +1,21 @@
+verification results:: 21 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/return-distinct-text/20261117T054543Z/models/cypher_clauses/cypher_clauses.rs:78:13
+   |
+77 | pub proof fn theorem_sql_return_distinct_keeps_kinds(t: int)
+   | ------------------------------------------------------------ at the end of the function body
+78 |     ensures !together(Exec::Sql, Op::ReturnDistinct, Val { kind: Kind::Int, text: t }, Val { kind: Kind::Str, text: t }),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/return-distinct-text/20261117T054543Z/models/cypher_clauses/cypher_clauses.rs:95:9
+   |
+93 |   pub proof fn theorem_sql_group_and_distinct_disagree_on_marked_text(a: Val, b: Val)
+   |   ----------------------------------------------------------------------------------- at the end of the function body
+94 |       ensures
+95 | /         (together(Exec::Sql, Op::GroupBy, a, b) != together(Exec::Sql, Op::ReturnDistinct, a, b))
+96 | |             == (a.text == b.text && mark(a.kind) != mark(b.kind)),
+   | |_________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+
