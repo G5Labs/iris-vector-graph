@@ -97,6 +97,14 @@ Queued embedding work is checked before it is queued, against the identity of th
 - Working assumption: one worker at a time is assumed, so entries are not claimed. An entry is marked done before its vector is stored, and is changed to an error if storing then fails.
 
 
+<a id="search.embedding.bulk"></a>
+[D · search.embedding.bulk]
+
+A bulk embed computes and stores vectors for the nodes of one graph that it selects, through the same checked write as any vector write.
+- It selects the graph's nodes with the given label, or the listed IDs, minus those an exclusion glob matches. A node that already has a vector on the route is skipped unless the call forces a new one.
+- The text embedded for a node is its ID, unless the caller gives a text function.
+- Today a glob containing `_` or `%` excludes nothing ([finding](../../Verus_verification/bugs_issues.md#bug-srch-105)), and the label may come from the same ID in another graph ([finding](../../Verus_verification/bugs_issues.md#bug-srch-106)).
+
 ## Routes and graph scope
 
 
@@ -511,6 +519,18 @@ State machines: [search](../../Verus_verification/models/search/manifest.json)
 Findings: [The embedding queue checks identity against the wrong table, and its IRIS worker writes default-graph entries with no identity check](../../Verus_verification/bugs_issues.md#bug-srch-006); [The IRIS queue worker marks an entry done when the provider fails or answers nothing](../../Verus_verification/bugs_issues.md#bug-srch-103); [The IRIS queue worker cannot store a default-graph vector](../../Verus_verification/bugs_issues.md#bug-srch-104)
 
 Open questions: [May two embed queue workers run at once?](../../Verus_verification/open_questions.md#HD-0604), [May two workers process the queue at the same time, and must an entry be marked done only after its vector is committed?](../../Verus_verification/open_questions.md#search.embedding.queue.processing)
+
+### search.embedding.bulk
+
+- Sources: [API_REFERENCE embed_nodes, get_unembedded_nodes, embedding_count](../../../docs/API_REFERENCE.md); [DATA_FORMATS §7](../../../docs/setup/DATA_FORMATS.md); [`EmbeddingsMixin.embed_nodes`](../../../iris_vector_graph/_engine/embeddings.py#L1291), [`build_node_where`](../../../iris_vector_graph/embed_selector.py#L75), [`_glob_to_sql_like`](../../../iris_vector_graph/embed_selector.py#L71-L72)
+- Expands: [Embedding identity](#search.embedding)
+- Verus: active: [`embed_selection.rs`](../../Verus_verification/models/embed_selection/NOTES.md) `theorem_existing_vectors`, `theorem_plain_pattern_excludes`; as-built departures `theorem_special_pattern_excludes_nothing`, `theorem_label_from_other_graph`.
+- agent
+- user-facing-behavior
+
+Recovered in iteration 43 from the API reference and observation ([W49](../../uplift/consolidated/iteration-43/embed-nodes-PAIRS.md)) with a fixture model on the per-text path; the SentenceTransformer batch path was not exercised.
+
+Findings: [embed_nodes ignores an exclude_pattern with an underscore](../../Verus_verification/bugs_issues.md#bug-srch-105); [embed_nodes in a named graph selects by another graph's label](../../Verus_verification/bugs_issues.md#bug-srch-106)
 
 ### search.routes
 - Sources: [CHANGELOG v4.0.0 routed tables](../../../CHANGELOG.md#L4161-L4183), [EmbeddingRoute and resolve_route](../../../iris_vector_graph/_engine/embeddings.py#L35-L301), [route preference](../../../iris_vector_graph/_engine/embeddings.py#L107-L118), [test_227_two_models.py](../../../tests/e2e/test_227_two_models.py), edge vectors: [store_edge_embedding](../../../iris_vector_graph/_engine/embeddings.py#L1117-L1205), [edge_vector_search](../../../iris_vector_graph/_engine/vector.py#L333-L398), [migration guide](../../../docs/migration/v4.0.0.md#L553-L598)

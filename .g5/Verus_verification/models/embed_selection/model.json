@@ -1,0 +1,45 @@
+{
+  "name": "embed_selection",
+  "root": "embed_selection.rs",
+  "expected_verified": 4,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "escape-honoured",
+      "find": "pub open spec fn excluded(n: Node, pattern_has_special: bool) -> bool { n.matches_glob && !pattern_has_special }",
+      "replace": "pub open spec fn excluded(n: Node, pattern_has_special: bool) -> bool { n.matches_glob }",
+      "expect_fail_in": [
+        "theorem_special_pattern_excludes_nothing"
+      ],
+      "classification": "effect: LIKE ... ESCAPE '\\\\' (the repair)"
+    },
+    {
+      "name": "label-scoped",
+      "find": "pub open spec fn label_ok_built(n: Node) -> bool { n.label_here || n.label_elsewhere }",
+      "replace": "pub open spec fn label_ok_built(n: Node) -> bool { n.label_here }",
+      "expect_fail_in": [
+        "theorem_label_from_other_graph"
+      ],
+      "classification": "decision: the label subquery is scoped to the graph (the repair)"
+    },
+    {
+      "name": "force-ignored",
+      "find": "    selected(n, pattern_has_special) && (force || !n.has_vector)",
+      "replace": "    selected(n, pattern_has_special) && !n.has_vector",
+      "expect_fail_in": [
+        "theorem_existing_vectors"
+      ],
+      "classification": "decision: force does not re-embed"
+    },
+    {
+      "name": "exclusion-ignored",
+      "find": "pub open spec fn excluded(n: Node, pattern_has_special: bool) -> bool { n.matches_glob && !pattern_has_special }",
+      "replace": "pub open spec fn excluded(n: Node, pattern_has_special: bool) -> bool { false }",
+      "expect_fail_in": [
+        "theorem_plain_pattern_excludes"
+      ],
+      "classification": "decision: exclude_pattern ignored"
+    }
+  ]
+}

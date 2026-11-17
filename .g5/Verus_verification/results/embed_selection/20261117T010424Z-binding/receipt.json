@@ -1,0 +1,69 @@
+{
+  "all_sensitivities_detected": true,
+  "answers": [
+    {
+      "embedded": 4,
+      "errors": 0,
+      "skipped": 0,
+      "total": 4
+    },
+    {
+      "embedded": 1,
+      "errors": 0,
+      "skipped": 0,
+      "total": 1
+    },
+    {
+      "embedded": 1,
+      "errors": 0,
+      "skipped": 4,
+      "total": 5
+    },
+    {
+      "embedded": 2,
+      "errors": 0,
+      "skipped": 0,
+      "total": 2
+    }
+  ],
+  "cases": 7,
+  "elapsed_s": 1.2,
+  "fixture": "ivg-cont-20261117-iris",
+  "harness_error": "binding check wrong: dx was excluded by the previous call and had no vector, so the third call rightly embedded it; corrected in the next run (product not at fault)",
+  "inputs": {
+    ".g5/Verus_verification/models/embed_selection/binding.py": "f57a401bf584bc69a798067d9033e085ecf4a03dee5a5fa34fb05bc042e6a35a",
+    ".g5/Verus_verification/models/embed_selection/embed_selection.rs": "1d67e4d084972595dffa210f9bfef8e29efff1b34698dc1e91a2d7fa4c8767ae",
+    ".g5/Verus_verification/models/embed_selection/model.json": "ef823a43c5dba5840580731fd90c857dad368ff86b4ce5385ecf68c231d8d193",
+    "iris_vector_graph/_engine/embeddings.py": "38335c3ffcf9a4097516ba01f6768390470a06c1dd30006043262ce6df235739",
+    "iris_vector_graph/embed_selector.py": "78a533f829fef576481ce1e286d426e555815472c03c5600fd0b2a7c7d48de1c"
+  },
+  "kind": "binding",
+  "mismatches": [
+    {
+      "case": "no_force_skips_existing",
+      "expected": true,
+      "observed": false
+    }
+  ],
+  "model": "embed_selection",
+  "observed": {
+    "force_reembeds_cx": true,
+    "no_force_skips_existing": false,
+    "own_in_G_selected": true,
+    "plain_pattern_dx": false,
+    "twin_in_G_selected": true,
+    "underscore_pattern_a": true,
+    "underscore_pattern_b_x": true
+  },
+  "port": 36317,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "run": "20261117T010423Z",
+  "scope": "Actual embed_nodes on IRIS 2026.1 (pin 3eaa79cf) with a fixture model on the per-text path; the SentenceTransformer batch path, text_fn and progress callbacks are not exercised. The default text is the node ID.",
+  "sensitivities_detected_cases": {
+    "escape_honoured": 2,
+    "exclusion_ignored": 2,
+    "force_ignored": 2,
+    "label_scoped": 2
+  },
+  "verdict": "DISAGREES"
+}

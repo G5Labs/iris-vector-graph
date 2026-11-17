@@ -1,0 +1,12 @@
+verification results:: 3 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/embed_selection/controls/force-ignored/20261117T010359Z/models/embed_selection/embed_selection.rs:31:82
+   |
+29 | pub proof fn theorem_existing_vectors(n: Node)
+   | ---------------------------------------------- at the end of the function body
+30 |     requires selected(n, false), n.has_vector,
+31 |     ensures !embedded(n, false, false, false), !embedded(n, false, false, true), embedded(n, false, true, false),
+   |                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

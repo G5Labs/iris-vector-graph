@@ -1,0 +1,27 @@
+verification results:: 3 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/embed_selection/controls/escape-honoured/20261117T010358Z/models/embed_selection/embed_selection.rs:41:1
+   |
+41 | pub proof fn theorem_special_pattern_excludes_nothing(n: Node)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/embed_selection/controls/escape-honoured/20261117T010358Z/models/embed_selection/embed_selection.rs:43:13
+   |
+41 | pub proof fn theorem_special_pattern_excludes_nothing(n: Node)
+   | -------------------------------------------------------------- at the end of the function body
+42 |     requires n.matches_glob, n.label_here, n.listed, !n.has_vector,
+43 |     ensures selected(n, true), embedded(n, true, false, false),
+   |             ^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/embed_selection/controls/escape-honoured/20261117T010358Z/models/embed_selection/embed_selection.rs:43:32
+   |
+41 | pub proof fn theorem_special_pattern_excludes_nothing(n: Node)
+   | -------------------------------------------------------------- at the end of the function body
+42 |     requires n.matches_glob, n.label_here, n.listed, !n.has_vector,
+43 |     ensures selected(n, true), embedded(n, true, false, false),
+   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

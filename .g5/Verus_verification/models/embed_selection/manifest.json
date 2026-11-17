@@ -1,0 +1,45 @@
+{
+  "title": "embed selection",
+  "question": "Bulk embedding selection: label from any graph (bug-srch-106), exclusion glob with _ or % ignored (bug-srch-105), skip existing unless force",
+  "ontology_ids": [
+    "search.embedding.bulk"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 4}"
+    },
+    {
+      "label": "escape-honoured",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_special_pattern_excludes_nothing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "label-scoped",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_label_from_other_graph\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "force-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_existing_vectors\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "exclusion-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_plain_pattern_excludes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

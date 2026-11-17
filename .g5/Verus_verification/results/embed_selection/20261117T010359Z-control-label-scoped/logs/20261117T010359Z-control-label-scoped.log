@@ -1,0 +1,12 @@
+verification results:: 3 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/embed_selection/controls/label-scoped/20261117T010359Z/models/embed_selection/embed_selection.rs:49:13
+   |
+47 | pub proof fn theorem_label_from_other_graph(n: Node)
+   | ---------------------------------------------------- at the end of the function body
+48 |     requires !n.label_here, n.label_elsewhere, n.listed, !n.matches_glob,
+49 |     ensures selected(n, false), !label_ok_rule(n),
+   |             ^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

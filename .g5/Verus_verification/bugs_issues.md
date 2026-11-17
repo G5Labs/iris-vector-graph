@@ -4413,6 +4413,44 @@ Consequence: a false refusal with a misleading message; qualifying the name work
 
 Repair proposal (not implemented): check the unqualified name under `SQLUser` (or resolve the default schema). Governing statement: [fhir.sql_mapping](../ontology/features/fhir.g5.md#fhir.sql_mapping).
 
+<a id="bug-srch-105"></a>
+### embed_nodes ignores an exclude_pattern that contains an underscore or a percent sign
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 43)
+
+Found by: observation in W49 (E1), then source reading ([predictions](../uplift/consolidated/iteration-43/embed-nodes-PAIRS.md); E5 was not predicted with confidence); [embed_selection](models/embed_selection/NOTES.md) `theorem_special_pattern_excludes_nothing`, control `escape-honoured`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-43/embed-nodes-observed-20261117T010321Z.json) E1, E5; [binding](results/embed_selection/20261117T010437Z-binding/receipt.json) `underscore_pattern_b_x`, `plain_pattern_dx`). `embed_nodes(label=..., exclude_pattern="<prefix>_skip*")` embeds the node `<prefix>_skip_me`; `exclude_pattern="*dx*"` (no underscore) excludes `…dx`.
+
+Expected: the parameter's name and the selector's glob translation promise exclusion by a glob; node IDs commonly contain `_`.
+
+Observed: `_glob_to_sql_like` escapes `_` and `%` with a backslash, and the clause is `node_id NOT LIKE '…'` with no `ESCAPE`; IRIS then reads the backslash as a literal character, so the pattern matches no ID (`embed_selector.py:71-72, 110-112`).
+
+Consequence: nodes the caller meant to exclude are embedded, costing model time and storing vectors nobody asked for. Low.
+
+Repair proposal (not implemented): add `ESCAPE '\'` to the clause. Governing statement: [search.embedding.bulk](../ontology/features/search.g5.md#search.embedding.bulk).
+
+<a id="bug-srch-106"></a>
+### embed_nodes in a named graph selects a node by a label that only its twin in another graph has
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 43)
+
+Found by: source reading after the W49 freeze (E8, not frozen) ([predictions](../uplift/consolidated/iteration-43/embed-nodes-PAIRS.md)); [embed_selection](models/embed_selection/NOTES.md) `theorem_label_from_other_graph`, control `label-scoped`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-43/embed-nodes-observed-20261117T010321Z.json) E6_E8_graph; [binding](results/embed_selection/20261117T010437Z-binding/receipt.json) `twin_in_G_selected`). Node `g3` has the label in the default graph; the node `g3` in graph G has no label. `embed_nodes(label=..., graph=G, model_key=k)` stores a vector for G's `g3`. Passing neighbor: a G node without the label in any graph is not selected.
+
+Expected: [graph scope](../ontology/concepts/graph-scope.g5.md): "The same node ID in two graphs is two nodes, each with its own labels"; the method's docstring: "Both the node selection and the writes are scoped".
+
+Observed: the label condition is `node_id IN (SELECT s FROM rdf_labels WHERE label = …)` with no graph condition (`embed_selector.py:98-101`), while the node and `missing_only` conditions are scoped.
+
+Consequence: vectors for nodes outside the requested label in that graph. Low: extra vectors; no other data changes.
+
+Repair proposal (not implemented): scope the label subquery to the graph. Governing statement: [search.embedding.bulk](../ontology/features/search.g5.md#search.embedding.bulk).
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 
