@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_temporal_marked_rows_left_out"
+    ],
+    "find": "exists|id: int| #[trigger] s.contains_key(id) && s[id].0 == r && !s[id].1",
+    "name": "replay-keeps-marked",
+    "replace": "exists|id: int| #[trigger] s.contains_key(id) && s[id].0 == r",
+    "why": "the replay side keeps marked statements"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_temporal_marked_rows_left_out"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "57a9aa62989b9bda5a3d47da6e1b6928e5cca0418fcb44fb0896b8b77667d96e",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "88353cbad88e2b735d93f1d0c875bcb8ceabbcfeb419eee599c733ecd3bc23ce"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/controls/replay-keeps-marked/20261117T200700Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_temporal_marked_rows_left_out": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/20261117T200700Z-control-replay-keeps-marked-theorem_temporal_marked_rows_left_out.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/20261117T200700Z-control-replay-keeps-marked.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261117T200700Z-control-replay-keeps-marked/logs/20261117T200700Z-control-replay-keeps-marked-theorem_temporal_marked_rows_left_out.log": "4c6d19d33ce08d0acd0b6b282b7db6246937a1b8a56ad0e630ac8d4c8098c50e",
+    ".g5/Verus_verification/results/ledger_verify/20261117T200700Z-control-replay-keeps-marked/logs/20261117T200700Z-control-replay-keeps-marked.log": "bec01a0673285dedb66af43c29efec504327cc602669e2019a9f1526166cbaa0"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

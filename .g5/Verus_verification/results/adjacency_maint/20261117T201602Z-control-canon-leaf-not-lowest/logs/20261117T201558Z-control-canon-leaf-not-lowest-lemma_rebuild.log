@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/canon-leaf-not-lowest/20261117T201558Z/models/adjacency_maint/adjacency_maint.rs:417:13
+    |
+417 |       ensures rebuild(multi, rows, order) == canon(multi, rows),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+420 | /     if order.len() == 0 {
+421 | |         assert forall|x: int| !(#[trigger] rows.dom().contains(x)) by { if rows.dom().contains(x) { assert(order.contains(x)); } }
+422 | |         lemma_empty_intro(rows);
+423 | |     } else {
+...   |
+437 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

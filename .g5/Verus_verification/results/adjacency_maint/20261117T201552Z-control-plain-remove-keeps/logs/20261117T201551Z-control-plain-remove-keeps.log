@@ -1,0 +1,25 @@
+verification results:: 33 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/plain-remove-keeps/20261117T201551Z/models/adjacency_maint/adjacency_maint.rs:295:13
+    |
+295 |       ensures inv(multi, rows.remove(k), row_remove(multi, e, rows.remove(k), k)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+300 | /     if single(rows) {
+301 | |         let j = lemma_single_elim(rows);
+302 | |         assert forall|x: int| !(#[trigger] o.dom().contains(x)) by {}
+303 | |         lemma_empty_intro(o);
+...   |
+313 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/plain-remove-keeps/20261117T201551Z/models/adjacency_maint/adjacency_maint.rs:526:13
+    |
+525 | pub proof fn theorem_plain_delete_takes_triple(e: Option<Entry>, others: Map<int, int>, k: int)
+    | ----------------------------------------------------------------------------------------------- at the end of the function body
+526 |     ensures row_remove(false, e, others, k) == None::<Entry>,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

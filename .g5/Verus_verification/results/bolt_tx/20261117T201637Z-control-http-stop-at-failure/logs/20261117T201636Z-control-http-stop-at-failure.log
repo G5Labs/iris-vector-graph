@@ -1,0 +1,46 @@
+verification results:: 33 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/http-stop-at-failure/20261117T201636Z/models/bolt_tx/bolt_tx.rs:452:1
+    |
+452 | pub proof fn lemma_run_all(store: nat, b: Seq<St>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/http-stop-at-failure/20261117T201636Z/models/bolt_tx/bolt_tx.rs:454:9
+    |
+454 |           run_all(store, b).0 == store + ok_total(b),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+460 | /     if b.len() > 0 {
+461 | |         lemma_run_all(if b[0].fails { store } else { store + b[0].w }, b.drop_first());
+462 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/http-stop-at-failure/20261117T201636Z/models/bolt_tx/bolt_tx.rs:455:9
+    |
+455 |           run_all(store, b).1 == b.len(),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+460 | /     if b.len() > 0 {
+461 | |         lemma_run_all(if b[0].fails { store } else { store + b[0].w }, b.drop_first());
+462 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/http-stop-at-failure/20261117T201636Z/models/bolt_tx/bolt_tx.rs:565:13
+    |
+564 |   pub proof fn theorem_http_witness_failing_middle()
+    |   -------------------------------------------------- at the end of the function body
+565 |       ensures ({
+    |  _____________^
+566 | |         let b = seq![St { w: 1, fails: false, names_write: true }, St { w: 0, fails: true, names_write: false },
+567 | |                      St { w: 1, fails: false, names_write: true }];
+568 | |         &&& http_batch(false, 0, b).store == 2
+...   |
+571 | |         &&& rule_batch(false, 0, b) == 0
+572 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

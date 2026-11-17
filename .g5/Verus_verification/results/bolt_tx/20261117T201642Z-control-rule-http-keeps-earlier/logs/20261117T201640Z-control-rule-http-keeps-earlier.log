@@ -1,0 +1,44 @@
+verification results:: 31 verified, 4 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/rule-http-keeps-earlier/20261117T201640Z/models/bolt_tx/bolt_tx.rs:506:13
+    |
+505 | pub proof fn theorem_http_rule_is_bolt_rule(store: nat, b: Seq<St>)
+    | ------------------------------------------------------------------- at the end of the function body
+506 |     ensures rule_batch(false, store, b) == neo(C { store: store, tx: None, failed: false }, tx_msgs(b)).store,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/rule-http-keeps-earlier/20261117T201640Z/models/bolt_tx/bolt_tx.rs:529:9
+    |
+522 | pub proof fn theorem_http_batch_keeps_writes_around_failure(read_only: bool, store: nat, b: Seq<St>)
+    | ---------------------------------------------------------------------------------------------------- at the end of the function body
+...
+529 |         any_fails(b) ==> rule_batch(read_only, store, b) == store,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/rule-http-keeps-earlier/20261117T201640Z/models/bolt_tx/bolt_tx.rs:537:13
+    |
+535 | pub proof fn theorem_http_batch_departs_iff(read_only: bool, store: nat, b: Seq<St>)
+    | ------------------------------------------------------------------------------------ at the end of the function body
+536 |     requires !(read_only && any_named(b)),
+537 |     ensures (http_batch(read_only, store, b).store != rule_batch(read_only, store, b)) <==> (any_fails(b) && ok_total(b) > 0),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/rule-http-keeps-earlier/20261117T201640Z/models/bolt_tx/bolt_tx.rs:565:13
+    |
+564 |   pub proof fn theorem_http_witness_failing_middle()
+    |   -------------------------------------------------- at the end of the function body
+565 |       ensures ({
+    |  _____________^
+566 | |         let b = seq![St { w: 1, fails: false, names_write: true }, St { w: 0, fails: true, names_write: false },
+567 | |                      St { w: 1, fails: false, names_write: true }];
+568 | |         &&& http_batch(false, 0, b).store == 2
+...   |
+571 | |         &&& rule_batch(false, 0, b) == 0
+572 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

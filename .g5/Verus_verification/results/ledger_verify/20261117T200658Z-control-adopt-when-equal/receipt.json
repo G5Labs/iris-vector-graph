@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_adoption_only_when_needed"
+    ],
+    "find": "adoption: adopt_asked && !empty",
+    "name": "adopt-when-equal",
+    "replace": "adoption: adopt_asked",
+    "why": "verify(adopt=True) writes an adoption revision even when equal"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_adoption_only_when_needed"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "57a9aa62989b9bda5a3d47da6e1b6928e5cca0418fcb44fb0896b8b77667d96e",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "88353cbad88e2b735d93f1d0c875bcb8ceabbcfeb419eee599c733ecd3bc23ce"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/controls/adopt-when-equal/20261117T200658Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_adoption_only_when_needed": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/20261117T200658Z-control-adopt-when-equal-theorem_adoption_only_when_needed.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/20261117T200658Z-control-adopt-when-equal.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261117T200658Z-control-adopt-when-equal/logs/20261117T200658Z-control-adopt-when-equal-theorem_adoption_only_when_needed.log": "e0f20eb864ff0f9d1d3869794a346475f401056bbe1c3d0f243804ec1e528f9a",
+    ".g5/Verus_verification/results/ledger_verify/20261117T200658Z-control-adopt-when-equal/logs/20261117T200658Z-control-adopt-when-equal.log": "c5524a0f298ab2a644a5d0064406256edcfff06c9e24e53f0eee4e6e854e2985"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

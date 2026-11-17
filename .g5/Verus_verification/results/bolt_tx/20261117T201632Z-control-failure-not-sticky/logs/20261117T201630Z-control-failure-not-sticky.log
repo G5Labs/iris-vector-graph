@@ -1,0 +1,43 @@
+verification results:: 33 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/failure-not-sticky/20261117T201630Z/models/bolt_tx/bolt_tx.rs:193:1
+    |
+193 | pub proof fn lemma_plain_failed(d: Design, s: S, ms: Seq<Msg>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/failure-not-sticky/20261117T201630Z/models/bolt_tx/bolt_tx.rs:195:13
+    |
+195 |       ensures exec(d, s, ms).0 == s, exec(d, s, ms).1.len() == ms.len(), all_are(exec(d, s, ms).1, Ans::Ignored),
+    |               ^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+198 | /     if ms.len() > 0 {
+199 | |         lemma_plain_failed(d, s, ms.drop_first());
+200 | |         let rest = exec(d, s, ms.drop_first()).1;
+201 | |         assert forall|i: int| 0 <= i < (seq![Ans::Ignored] + rest).len() implies (seq![Ans::Ignored] + rest)[i] == Ans::Ignored by {
+...   |
+204 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/failure-not-sticky/20261117T201630Z/models/bolt_tx/bolt_tx.rs:195:36
+    |
+195 |       ensures exec(d, s, ms).0 == s, exec(d, s, ms).1.len() == ms.len(), all_are(exec(d, s, ms).1, Ans::Ignored),
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+198 | /     if ms.len() > 0 {
+199 | |         lemma_plain_failed(d, s, ms.drop_first());
+200 | |         let rest = exec(d, s, ms.drop_first()).1;
+201 | |         assert forall|i: int| 0 <= i < (seq![Ans::Ignored] + rest).len() implies (seq![Ans::Ignored] + rest)[i] == Ans::Ignored by {
+...   |
+204 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/failure-not-sticky/20261117T201630Z/models/bolt_tx/bolt_tx.rs:324:12
+    |
+324 |     assert(exec(Design::AsBuilt, s2, tail).1 =~= seq![Ans::Failure, Ans::Ignored, Ans::Ignored, Ans::Success]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

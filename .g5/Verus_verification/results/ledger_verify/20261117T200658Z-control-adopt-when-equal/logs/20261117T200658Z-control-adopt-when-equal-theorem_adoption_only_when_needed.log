@@ -1,0 +1,18 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/controls/adopt-when-equal/20261117T200658Z/models/ledger_verify/ledger_verify.rs:226:9
+    |
+226 |           agree(a, b) ==> !verify(a, b, true).adoption,
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+229 | /     if agree(a, b) {
+230 | |         assert forall|f: Fact| #[trigger] compare(a, b)(f) is None by {
+231 | |             assert(a(f) == b(f));
+232 | |         }
+233 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

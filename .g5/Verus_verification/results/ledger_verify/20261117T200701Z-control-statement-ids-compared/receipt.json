@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_statement_ids_not_compared"
+    ],
+    "find": "exists|id: int| #[trigger] s.contains_key(id) && s[id].0 == r && !s[id].1",
+    "name": "statement-ids-compared",
+    "replace": "exists|id: int| #[trigger] s.contains_key(id) && s[id].0 == r && !s[id].1 && id == 0",
+    "why": "relationships are matched by statement ID"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_statement_ids_not_compared"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "57a9aa62989b9bda5a3d47da6e1b6928e5cca0418fcb44fb0896b8b77667d96e",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "88353cbad88e2b735d93f1d0c875bcb8ceabbcfeb419eee599c733ecd3bc23ce"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/controls/statement-ids-compared/20261117T200700Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_statement_ids_not_compared": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/20261117T200700Z-control-statement-ids-compared-theorem_statement_ids_not_compared.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/20261117T200700Z-control-statement-ids-compared.log",
+    "timed_out": false,
+    "verified": 6
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261117T200701Z-control-statement-ids-compared/logs/20261117T200700Z-control-statement-ids-compared-theorem_statement_ids_not_compared.log": "fdd4feb3442c46417d37f61b14ebd9e1528a32a4217de3dc769b432bc1fc394a",
+    ".g5/Verus_verification/results/ledger_verify/20261117T200701Z-control-statement-ids-compared/logs/20261117T200700Z-control-statement-ids-compared.log": "5a8e27a981a6eb597e9e0ed3294de1834e112d2405e2e41787b1446484699be5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: Remove drops the merged ^NKG edge although another graph holds the triple",
+    "expect_fail_in": [
+      "theorem_nkg_held_elsewhere"
+    ],
+    "find": "    if had && built && !held_elsewhere { false } else { before }",
+    "name": "held-elsewhere-ignored",
+    "replace": "    if had && built { false } else { before }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_nkg_held_elsewhere"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "0ab9710fff509082f6e960e4d0f59d7805203fc878e7fef42b58ecd63edffa90"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/held-elsewhere-ignored/20261117T201605Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_nkg_held_elsewhere": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/20261117T201605Z-control-held-elsewhere-ignored-theorem_nkg_held_elsewhere.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/20261117T201605Z-control-held-elsewhere-ignored.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T201607Z-control-held-elsewhere-ignored/logs/20261117T201605Z-control-held-elsewhere-ignored-theorem_nkg_held_elsewhere.log": "83a2127548cc1627b8e082d89ac6c606c9605bb29b95ab3cac908b0c45a02d95",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T201607Z-control-held-elsewhere-ignored/logs/20261117T201605Z-control-held-elsewhere-ignored.log": "3981ca9df03d0d774a06f7354bd0e1029c10b03a774e11b9ec30f24137c36d19"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

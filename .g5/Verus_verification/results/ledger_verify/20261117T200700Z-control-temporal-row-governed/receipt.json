@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_temporal_marked_rows_left_out"
+    ],
+    "find": "Fact::Rel(r) => if t.edge_rows.contains_key(r) && !t.edge_rows[r].0 { Some(0) } else { None },",
+    "name": "temporal-row-governed",
+    "replace": "Fact::Rel(r) => if t.edge_rows.contains_key(r) { Some(0) } else { None },",
+    "why": "a marked edge row counts as a relationship"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_temporal_marked_rows_left_out"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "57a9aa62989b9bda5a3d47da6e1b6928e5cca0418fcb44fb0896b8b77667d96e",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "88353cbad88e2b735d93f1d0c875bcb8ceabbcfeb419eee599c733ecd3bc23ce"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/controls/temporal-row-governed/20261117T200659Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_temporal_marked_rows_left_out": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/20261117T200659Z-control-temporal-row-governed-theorem_temporal_marked_rows_left_out.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/20261117T200659Z-control-temporal-row-governed.log",
+    "timed_out": false,
+    "verified": 7
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261117T200700Z-control-temporal-row-governed/logs/20261117T200659Z-control-temporal-row-governed-theorem_temporal_marked_rows_left_out.log": "d7ac82805764bac73e003cca79d10539eebfbd208ee708a4a669e7a05033e769",
+    ".g5/Verus_verification/results/ledger_verify/20261117T200700Z-control-temporal-row-governed/logs/20261117T200659Z-control-temporal-row-governed.log": "b15f86cebf3e51ce1330b3f11f0eb81ecab5d5b71261389e55ee33ea3c67c7c7"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

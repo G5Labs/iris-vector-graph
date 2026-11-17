@@ -6776,6 +6776,90 @@ Consequence: a caller asking for c = 0 silently gets c = 60. Low (an unusual val
 
 Repair proposal (not implemented): default only a missing `c`. Governing statement: [search.fusion.surfaces](../ontology/features/search.g5.md#search.fusion.surfaces).
 
+<a id="bug-led-012"></a>
+### A changeset source given as plain text is dropped without an error, and the history source filter matches only an object source's exact compact JSON
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (iteration 60)
+
+Description: A changeset's `source` is kept only when it is a JSON object. A text source is silently stored as nothing, so the revision has no source and `history(source=...)` cannot find it, although the history docstring calls the filter a "source string".
+
+Found by: two independent test readers of iteration 60 (`tests/unit/test_216_ledger_history_filter.py` checks only that the SQL contains `source = ?` with the text `"auto-ingest"`); [ledger_client](models/ledger_client/NOTES.md) `witness_text_source_is_dropped`, control `text-source-kept` ([receipt](results/ledger_client/20261117T195357Z-prove/receipt.json)).
+
+Reproduced by: **E2E reproduced** on the local fixture `ivg-uplift-next-20261115` (IRIS 2026.1, unchanged product `3eaa79cf`), namespace `I60LB`: [observation](../uplift/consolidated/iteration-60/probes/observed-20261117T195315Z-history-source.json) and binding case `B17.source` in [ledger_client binding](results/ledger_client/20261117T195905Z-binding/receipt.json). `Changeset(source="auto-ingest")` commits seq 38 with `ledger_revisions.source` NULL and `get_revision(...).info.source` None; `history(source="auto-ingest")` and `history(source="cmms")` return nothing. Passing neighbor: `source={"system": "cmms", "batch": "b1"}` is stored as `{"batch":"b1","system":"cmms"}` and `history(source=<that exact text>)` returns seq 39, while Python's default `json.dumps` spacing finds nothing.
+
+Expected: the history reader's docstring ("source: Filter to revisions tagged with this source string", `client.py:613`) and the CHANGELOG's history `source` filter; the builder types `source` as a dict (`changeset.py:102`) and the API contract shows a dict, so either a text source should be refused or kept, and the filter's input form should be stated.
+
+Observed: `CommitInTxn` stores `source` only when `%GetTypeOf("source") = "object"` (`Ledger.cls:522`); the client does not check the type; `fetch_history` compares the column with the given text.
+
+Consequence: a caller who tags revisions with a text source loses that provenance without an error and cannot filter by it; a dict source can be filtered only by its compact sorted-key JSON. Reachable through the public `Changeset` and `history`. Low: no graph content is wrong; audit metadata is lost or hard to query.
+
+Repair proposal (not implemented): refuse a non-object source in the builder (or store text as given), and accept a dict in `history(source=...)`, serialising it canonically. Preserve object sources and existing rows. Governing statement: [ledger.readers](../ontology/features/ledger.g5.md#ledger.readers).
+
+<a id="bug-doc-013"></a>
+### The metrics hook is not called for a commit the client refuses before sending, though its document says every commit call reports once
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (iteration 60)
+
+Description: The ledger's Prometheus page says `commit()` calls a registered hook once per call whatever the outcome. An empty changeset or an operation reference to a later operation is refused by the client before anything is sent, with no hook event, log line or counter.
+
+Found by: iteration-60 test readers (no test covers the case; `test_ledger_observability.py` checks only server outcomes); [ledger_client](models/ledger_client/NOTES.md) `theorem_one_event_per_server_call`, control `event-on-client-refusal`.
+
+Reproduced by: **E2E reproduced** on the local fixture, namespaces `I60LA` and `I60LE`: [prediction probe](../uplift/consolidated/iteration-60/probes/observed-20261117T194119Z-w1.json) case `S2.3.counters_events` (empty changesets with a stale and a current expected head: `EmptyChangesetError`, `events_added: []`, every counter unchanged) and binding cases `B5.empty_enabled`, `B5.empty_never`, `B5.bad_op_ref` in the [ledger_client binding](results/ledger_client/20261117T195905Z-binding/receipt.json). Passing neighbor: the same hook received `not_enabled`, `disabled`, `stale_head`, `failed_op`, `too_large` and `lock_timeout` events for server refusals.
+
+Expected: `docs/ledger-prometheus-hook.md` ("`engine.ledger.commit()` calls it once per call, whatever the outcome").
+
+Observed: `GraphLedger.commit` calls `changeset.validate()` before `_commit`, which is where `_emit` runs (`client.py:392`, `:410`).
+
+Consequence: an exporter that counts hook events undercounts failed calls, and its outcome list never shows client-side refusals. Low (documentation drift; no data is wrong).
+
+Repair proposal (not implemented): emit an `empty` / `failed_op` event before raising in `commit`, or narrow the document to "every commit that reaches the server". Governing statement: [ledger.observability](../ontology/features/ledger.g5.md#ledger.observability).
+
+<a id="bug-doc-014"></a>
+### The ledger API contract still lists the pre-4.7.0 transaction errors and omits the history filters and wire fields the product uses
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (iteration 60)
+
+Description: The spec 213 contract tells a caller that `commit` can raise `LedgerTransactionOpenError` and that `enable` raises only `LedgerLockTimeoutError`; since 4.7.0 a commit joins the caller's transaction and `enable` refuses one. The contract's `history` signature and changeset schema also omit fields the product sends or accepts.
+
+Found by: all three iteration-60 test readers (conflicts recorded in [test-obligations.md](../uplift/consolidated/iteration-60/test-obligations.md)); source comparison.
+
+Reproduced by: **E2E reproduced** for the behavior half on the local fixture: [prediction probe](../uplift/consolidated/iteration-60/probes/observed-20261117T194119Z-w1.json) cases `P5.2.B.in_txn` and `N2.A.in_txn` (a commit with `$TLEVEL` 1 returns a revision and the caller's rollback removes it) and `S4.3` (`enable()` raises `LedgerTransactionOpenError`). The document half is a text comparison: `ledger-api.md:26-27` against `client.py:381-401`, `:585-597`, and `changeset.schema.json` against `changeset.py:347-360` (`post_commit_properties`), `:309-345` (`create_temporal_edge`) and `errors.py:168` (`idempotency_redacted`).
+
+Expected: the contract should match the product callers use (USER_GUIDE "Writes inside your transaction", CHANGELOG 4.7.0, which already describe the new behavior).
+
+Observed: the contract lists `LedgerTransactionOpenError` among `commit` errors and only `LedgerLockTimeoutError` for `enable`; `history` lacks `correlation_id` and `source`; the schema has no `post_commit_properties`, `create_temporal_edge` op, `temporal_edge` diff kind or `idempotency_redacted` error.
+
+Consequence: a client written from the contract handles an error `commit` no longer raises and misses the one `enable` does. Low (documentation drift).
+
+Repair proposal (not implemented): update `ledger-api.md` and `changeset.schema.json` to 4.7.0. Governing statement: [ledger.commit.caller-transaction](../ontology/features/ledger.g5.md#ledger.commit.caller-transaction).
+
+<a id="bug-test-004"></a>
+### Two ledger test fixtures read a meta() key that does not exist, so their teardown always disables the ledger of the shared scratch namespace
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (iteration 60)
+
+Description: The R281 and R290 end-to-end fixtures decide whether they turned the ledger on by reading `meta()["enabled"]`. `meta()` has no such key, so each fixture always believes it enabled the ledger and always disables it afterwards, even when the namespace's ledger was enabled before the test.
+
+Found by: iteration-60 e2e test reader ([e2e reading](../uplift/consolidated/iteration-60/test-reading/i60-obl-e2e.md), key findings).
+
+Reproduced by: **Partially reproduced.** On the local fixture, `GraphLedger.meta()` on an enabled ledger returned `{"ok", "state", "strict", "max_ops", "recon_bound", "head_seq", "head_id"}` with no `enabled` key ([never-enabled and enabled meta](../uplift/consolidated/iteration-60/probes/observed-20261117T194107Z-c.json), cases `N6.A.meta` and `meta`), so `bool(meta().get("enabled"))` is False on every ledger. The fixtures' teardown was not run: it would disable the ledger of a shared namespace. Missing step: running `tests/e2e/test_460_r281_ledger_post_commit_graph_e2e.py` against a scratch namespace whose ledger was enabled beforehand and reading `meta()["state"]` after.
+
+Expected: the fixture docstrings promise to leave an already-enabled ledger enabled; the r150 and 470 fixtures read `meta()["state"]` correctly.
+
+Observed: `tests/e2e/test_460_r281_ledger_post_commit_graph_e2e.py:52` and `tests/e2e/test_460_r290_ledger_node_ops_graph_e2e.py:66` read `meta().get("enabled")`; `Ledger.Meta` (`Ledger.cls:143-156`) writes `state`.
+
+Consequence: running these files disables the ledger on the shared scratch namespace (later commits there are refused with `LedgerDisabledError` until someone re-enables it, which records an adoption). Test-suite defect only. Low.
+
+Repair proposal (not implemented): read `meta()["state"] == "enabled"`. Governing statement: [ledger.lifecycle](../ontology/features/ledger.g5.md#ledger.lifecycle).
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 

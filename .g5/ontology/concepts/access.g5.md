@@ -354,6 +354,8 @@ Open questions: [Must the Neo4j-compatible surfaces keep Neo4j's transaction mea
 
 Findings: [A Bolt rollback keeps the transaction's writes](../../Verus_verification/bugs_issues.md#bug-plt-127) (formerly F-1601)
 
+Findings: [A Neo4j HTTP `tx/commit` request keeps the writes of its successful statements when another statement fails, and runs the statements after the failure](../../Verus_verification/bugs_issues.md#bug-plt-136)
+
 State machines: [bolt transactions](../../Verus_verification/models/bolt_tx/manifest.json)
 
 ### access.http_transactions

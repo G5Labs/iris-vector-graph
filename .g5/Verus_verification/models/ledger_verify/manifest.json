@@ -1,0 +1,71 @@
+{
+  "title": "ledger verify",
+  "question": "what verify compares (nodes by ID across graphs, reserved properties and temporal-marked rows left out, relationships by tuple), the entries it reports for unrecorded writes, and that adopting them makes the next verify equal",
+  "ontology_ids": [
+    "ledger.verify",
+    "ledger.verify.scope",
+    "ledger.unrecorded"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built transcription",
+      "expect": "{\"errors\": 0, \"verified\": 8}"
+    },
+    {
+      "label": "adopt-without-cascade",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_adoption_closes_the_difference\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "new-entity-attributes-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_adoption_closes_the_difference\", \"theorem_entries_for_created_and_deleted_nodes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "adopt-when-equal",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_adoption_only_when_needed\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "graph-scoped-node-identity",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_node_identity_ignores_graph\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reserved-kept",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_reserved_properties_left_out\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "temporal-row-governed",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_temporal_marked_rows_left_out\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "replay-keeps-marked",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_temporal_marked_rows_left_out\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "statement-ids-compared",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_statement_ids_not_compared\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built transcription",
+      "expect": null
+    }
+  ]
+}

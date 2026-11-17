@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: PutKeyed's two-edge transition forgets the rows already there (OtherEdgeKeys)",
+    "expect_fail_in": [
+      "lemma_create",
+      "lemma_second"
+    ],
+    "find": "if single(others) { Map::new(others.dom(), |x: int| en.leaf) } else { others }",
+    "name": "put-keyed-drops-others",
+    "replace": "Map::<int, int>::empty()"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_create",
+      "lemma_second"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "0ab9710fff509082f6e960e4d0f59d7805203fc878e7fef42b58ecd63edffa90"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/put-keyed-drops-others/20261117T201552Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_create": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/20261117T201552Z-control-put-keyed-drops-others-lemma_create.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "lemma_second": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/20261117T201552Z-control-put-keyed-drops-others-lemma_second.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/20261117T201552Z-control-put-keyed-drops-others.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T201554Z-control-put-keyed-drops-others/logs/20261117T201552Z-control-put-keyed-drops-others-lemma_create.log": "b953e33357c3380c813f1e75cc4088949aa789577480abb206e800504477aa08",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T201554Z-control-put-keyed-drops-others/logs/20261117T201552Z-control-put-keyed-drops-others-lemma_second.log": "9e2803d9b80882f6c397f9aa90cfb2bb0f3646c903b4fbf35019e31234aa76bd",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T201554Z-control-put-keyed-drops-others/logs/20261117T201552Z-control-put-keyed-drops-others.log": "36997470ff5aff650a528d02a0c9f2744cc8a4099d469338d696d1c9ce0de3d2"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

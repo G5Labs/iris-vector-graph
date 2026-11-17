@@ -1,0 +1,12 @@
+verification results:: 7 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/controls/temporal-row-governed/20261117T200659Z/models/ledger_verify/ledger_verify.rs:260:9
+    |
+257 | pub proof fn theorem_temporal_marked_rows_left_out(t: Tables, r: Tup, q: Map<int, int>, s: Stmts, id: int)
+    | ---------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+260 |         canonical(Tables { edge_rows: t.edge_rows.insert(r, (true, q)), ..t })(Fact::Rel(r)) is None,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

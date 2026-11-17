@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: MarkGraphGone also marks for the default graph (Quit:pGraph=0 dropped)",
+    "expect_fail_in": [
+      "theorem_mark_graph_gone"
+    ],
+    "find": "    g != 0 && !g_has_out_left && built && an_end_interned",
+    "name": "mark-gone-default-graph",
+    "replace": "    !g_has_out_left && built && an_end_interned"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_mark_graph_gone"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/adjacency_maint/adjacency_maint.rs": "9c3c670ba3f109775e9ae371d8a6a4f3ebce8951591d7619766350ec8937d7b0",
+    ".g5/Verus_verification/models/adjacency_maint/model.json": "0ab9710fff509082f6e960e4d0f59d7805203fc878e7fef42b58ecd63edffa90"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/mark-gone-default-graph/20261117T201607Z/models/adjacency_maint/adjacency_maint.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_mark_graph_gone": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/20261117T201607Z-control-mark-gone-default-graph-theorem_mark_graph_gone.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/20261117T201607Z-control-mark-gone-default-graph.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/adjacency_maint/20261117T201609Z-control-mark-gone-default-graph/logs/20261117T201607Z-control-mark-gone-default-graph-theorem_mark_graph_gone.log": "f22550900de07f63d35992955003f5537e16e50832b1a6499fa58b4bd95f60dc",
+    ".g5/Verus_verification/results/adjacency_maint/20261117T201609Z-control-mark-gone-default-graph/logs/20261117T201607Z-control-mark-gone-default-graph.log": "5256a1d01b5c9a1503f3417bc21687d142c3ecfd591387af5ddc0f0c10bd558d"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

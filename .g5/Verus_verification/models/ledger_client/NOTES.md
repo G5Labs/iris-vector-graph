@@ -66,6 +66,7 @@ is kept). The prediction probe (`iteration-60/probes/`) adds the native observat
 
 - Apply outcome supplied (`Apply`): decided by `ledger_apply`; composition is a premise.
 - SHA-256 collision freedom only where `collision_free()` is required; `NewId` GUID freshness (`fresh` not yet a revision).
+- The server compares the idempotency binding with the fingerprint the caller puts in `Commit`'s meta JSON (`CommitInTxn` reads `meta.fingerprint`); the model uses `fingerprint(c)` of the applied changeset. That holds for every commit sent by `GraphLedger._send_changeset` (it computes both from the same object); a direct caller of `Graph.KG.Ledger.Commit` can send any value, so its replay/conflict outcome is outside these claims (candidate simplification in the iteration-60 handoff: compute the fingerprint on the server).
 - Caller rollback undoes every journaled write of its transaction; while it holds the head the only counters others
   move are their own lock-timeout rejections. Counters after a rollback that interleaves other refusals are not claimed.
 - Not modelled: the redaction marker (`BlocksCommit`, `IdempotencyRedactedError` is mapped but not observed natively),

@@ -1,0 +1,61 @@
+verification results:: 31 verified, 4 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/canon-leaf-not-lowest/20261117T201558Z/models/adjacency_maint/adjacency_maint.rs:274:13
+    |
+274 |       ensures inv(multi, rows.insert(k, w), row_put(multi, e, rows, k, w)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+278 | /     if empty_m(rows) {
+279 | |         assert forall|x: int| #[trigger] r2.dom().contains(x) implies x == k by { lemma_empty_elim(rows, x); }
+280 | |         lemma_single_intro(r2, k);
+281 | |     } else if single(rows) {
+...   |
+289 | |         lemma_two_not_single(r2, a, b);
+290 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/canon-leaf-not-lowest/20261117T201558Z/models/adjacency_maint/adjacency_maint.rs:295:13
+    |
+295 |       ensures inv(multi, rows.remove(k), row_remove(multi, e, rows.remove(k), k)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+300 | /     if single(rows) {
+301 | |         let j = lemma_single_elim(rows);
+302 | |         assert forall|x: int| !(#[trigger] o.dom().contains(x)) by {}
+303 | |         lemma_empty_intro(o);
+...   |
+313 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/canon-leaf-not-lowest/20261117T201558Z/models/adjacency_maint/adjacency_maint.rs:318:13
+    |
+318 |       ensures inv(multi, rows.insert(k, w), row_update(e, k, w)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+323 | /     if single(rows) {
+324 | |         let j = lemma_single_elim(rows);
+325 | |         assert forall|x: int| #[trigger] r2.dom().contains(x) implies x == k by {}
+326 | |         lemma_single_intro(r2, k);
+...   |
+330 | |         assert(multi);
+331 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/adjacency_maint/controls/canon-leaf-not-lowest/20261117T201558Z/models/adjacency_maint/adjacency_maint.rs:417:13
+    |
+417 |       ensures rebuild(multi, rows, order) == canon(multi, rows),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+420 | /     if order.len() == 0 {
+421 | |         assert forall|x: int| !(#[trigger] rows.dom().contains(x)) by { if rows.dom().contains(x) { assert(order.contains(x)); } }
+422 | |         lemma_empty_intro(rows);
+423 | |     } else {
+...   |
+437 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 4 previous errors
+

@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/ledger_verify/controls/new-entity-attributes-dropped/20261117T200657Z/models/ledger_verify/ledger_verify.rs:214:13
+    |
+212 |   pub proof fn theorem_entries_for_created_and_deleted_nodes(n: int, l: int, k: int, v: int, m: int, k2: int, v2: int)
+    |   -------------------------------------------------------------------------------------------------------------------- at the end of the function body
+213 |       requires n != m,
+214 |       ensures ({
+    |  _____________^
+215 | |         let d = compare(view_a(m, k2, v2), view_b(n, l, k, v));
+216 | |         &&& d(Fact::Node(n)) == Some(Some(0int)) && d(Fact::Label(n, l)) == Some(Some(0int)) && d(Fact::Prop(n, k)) == Some(Some(v))
+217 | |         &&& d(Fact::Node(m)) == Some(None::<int>)
+218 | |         &&& d(Fact::Prop(m, k2)) is None
+219 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

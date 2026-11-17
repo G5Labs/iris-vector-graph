@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: the FAILED state's guard removed, so PULL and ROLLBACK after a failure are no longer IGNORED",
+    "expect_fail_in": [
+      "lemma_plain_failed",
+      "theorem_failed_tx_keeps_earlier_writes"
+    ],
+    "find": "    if s.failed {",
+    "name": "failure-not-sticky",
+    "replace": "    if false && s.failed {"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_plain_failed",
+      "theorem_failed_tx_keeps_earlier_writes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_tx/bolt_tx.rs": "b558e9f5bdc3934a1fb6aff50067acea06bdf7a738bfbb8f19582f3a87f4ce46",
+    ".g5/Verus_verification/models/bolt_tx/model.json": "b6092d1a254a48b10df26f067f81e152812d9ec985b1e4f739bbb5cec3a772c3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/controls/failure-not-sticky/20261117T201630Z/models/bolt_tx/bolt_tx.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_plain_failed": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/20261117T201630Z-control-failure-not-sticky-lemma_plain_failed.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_failed_tx_keeps_earlier_writes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/20261117T201630Z-control-failure-not-sticky-theorem_failed_tx_keeps_earlier_writes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60/verus/bolt_tx/20261117T201630Z-control-failure-not-sticky.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_tx/20261117T201632Z-control-failure-not-sticky/logs/20261117T201630Z-control-failure-not-sticky-lemma_plain_failed.log": "91456d65ac085f420e538c1d7c8e6e871e8c2da305063cf4610a43554bcb315f",
+    ".g5/Verus_verification/results/bolt_tx/20261117T201632Z-control-failure-not-sticky/logs/20261117T201630Z-control-failure-not-sticky-theorem_failed_tx_keeps_earlier_writes.log": "60f8495c41989b630c2ab53534af146ec67852e0e04f22abaf817f95c7b0f680",
+    ".g5/Verus_verification/results/bolt_tx/20261117T201632Z-control-failure-not-sticky/logs/20261117T201630Z-control-failure-not-sticky.log": "ee7a4b345b4859f3084cf666f48f32474f885904ccc6c18c1365d639f51102e5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
