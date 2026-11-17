@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T035353Z/models/temporal_stats/temporal_stats.rs:416:1
+    |
+416 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T035353Z/models/temporal_stats/temporal_stats.rs:418:13
+    |
+416 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+417 |     requires occupied(st.raw, e),
+418 |     ensures write(st, 300, hf, Mode::Insert, e) == st, write(st, 300, hf, Mode::Skip, e) == st,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/insert-overwrites/20261117T035353Z/models/temporal_stats/temporal_stats.rs:418:56
+    |
+416 | pub proof fn theorem_collision_changes_nothing(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+417 |     requires occupied(st.raw, e),
+418 |     ensures write(st, 300, hf, Mode::Insert, e) == st, write(st, 300, hf, Mode::Skip, e) == st,
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

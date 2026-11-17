@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "effect: an update at an occupied coordinate leaves count, sum, bucket and extremes alone (the docstrings' 'original value' reading of bug-tmp-002)",
+    "expect_fail_in": [
+      "theorem_update_counts_twice",
+      "theorem_update_whole_vs_cut",
+      "theorem_update_then_delete_leaves_velocity"
+    ],
+    "find": "            Mode::Update => stores_written(st, div, hf, e, st.raw.update(choose|i: int| occupied_at(st.raw, e, i), e)),",
+    "name": "update-keeps-statistics",
+    "replace": "            Mode::Update => St { raw: st.raw.update(choose|i: int| occupied_at(st.raw, e, i), e), ..st },"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_update_counts_twice",
+      "theorem_update_whole_vs_cut",
+      "theorem_update_then_delete_leaves_velocity"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "c4cca8905fda85c41d69e50a2807ae878d73623598a187f2bb0e409f11b107a3",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "6d33ec1755c437ff2d408e9c21b05c8cf38a09caf7e9f6f650566602cf55c2d6"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/update-keeps-statistics/20261117T035348Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_update_counts_twice": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035348Z-control-update-keeps-statistics-theorem_update_counts_twice.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_update_then_delete_leaves_velocity": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035348Z-control-update-keeps-statistics-theorem_update_then_delete_leaves_velocity.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_update_whole_vs_cut": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035348Z-control-update-keeps-statistics-theorem_update_whole_vs_cut.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035348Z-control-update-keeps-statistics.log",
+    "timed_out": false,
+    "verified": 48
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T035353Z-control-update-keeps-statistics/logs/20261117T035348Z-control-update-keeps-statistics-theorem_update_counts_twice.log": "8946fbaeca2d0692c1428cf5794260e1bef51df3b373422c6986b6696ab16b36",
+    ".g5/Verus_verification/results/temporal_stats/20261117T035353Z-control-update-keeps-statistics/logs/20261117T035348Z-control-update-keeps-statistics-theorem_update_then_delete_leaves_velocity.log": "25d281efea02ef4efe8ddeb5e36f564f683f4e8fc442cba648ae9e419d41bf08",
+    ".g5/Verus_verification/results/temporal_stats/20261117T035353Z-control-update-keeps-statistics/logs/20261117T035348Z-control-update-keeps-statistics-theorem_update_whole_vs_cut.log": "d0c7013b2e58c4ca5c66766ac7ff80d49d5ba512f0e2d1ccc6a27a09b8c63275",
+    ".g5/Verus_verification/results/temporal_stats/20261117T035353Z-control-update-keeps-statistics/logs/20261117T035348Z-control-update-keeps-statistics.log": "d823b5e92aaf23bc36fddbe8b9f4655551395332e289f72cc610eb7ac1121b57"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

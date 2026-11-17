@@ -1,0 +1,162 @@
+{
+  "name": "temporal_stats",
+  "root": "temporal_stats.rs",
+  "expected_verified": 51,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "update-keeps-statistics",
+      "find": "            Mode::Update => stores_written(st, div, hf, e, st.raw.update(choose|i: int| occupied_at(st.raw, e, i), e)),",
+      "replace": "            Mode::Update => St { raw: st.raw.update(choose|i: int| occupied_at(st.raw, e, i), e), ..st },",
+      "expect_fail_in": [
+        "theorem_update_counts_twice",
+        "theorem_update_whole_vs_cut",
+        "theorem_update_then_delete_leaves_velocity"
+      ],
+      "classification": "effect: an update at an occupied coordinate leaves count, sum, bucket and extremes alone (the docstrings' 'original value' reading of bug-tmp-002)"
+    },
+    {
+      "name": "insert-overwrites",
+      "find": "            _ => st,",
+      "replace": "            _ => stores_written(st, div, hf, e, st.raw.update(choose|i: int| occupied_at(st.raw, e, i), e)),",
+      "expect_fail_in": [
+        "theorem_collision_changes_nothing"
+      ],
+      "classification": "guard: remove WriteStores' collision/skip early return (the pre-spec-254 overwrite)"
+    },
+    {
+      "name": "counters-journaled",
+      "find": "cnt: after.cnt, sum: after.sum, bkt: after.bkt }",
+      "replace": "cnt: before.cnt, sum: before.sum, bkt: before.bkt }",
+      "expect_fail_in": [
+        "theorem_rolled_back_first_write",
+        "theorem_rolled_back_group_row"
+      ],
+      "classification": "effect: a rollback also undoes count, sum and bucket (the bug-tmp-003 repair: journaled Sets instead of $Increment)"
+    },
+    {
+      "name": "whole-reads-raw",
+      "find": "    if whole(b, lo, hi, div) { stat_agg(st, (g, b, s, p)) }",
+      "replace": "    if whole(b, lo, hi, div) { raw_agg(st.raw, g, s, p, b_lo(b, div), b_hi(b, div)) }",
+      "expect_fail_in": [
+        "theorem_one_whole_bucket_reads_statistics"
+      ],
+      "classification": "decision: GetAggregate reads a whole bucket edge by edge too (no pre-aggregates)"
+    },
+    {
+      "name": "cut-reads-tagg",
+      "find": "    if whole(b, lo, hi, div) { stat_agg(st, (g, b, s, p)) }",
+      "replace": "    if true { stat_agg(st, (g, b, s, p)) }",
+      "expect_fail_in": [
+        "theorem_cut_bucket_is_exact"
+      ],
+      "classification": "decision: every touched bucket counted whole (the pre-4.6.0 R217 behavior)"
+    },
+    {
+      "name": "none-checked",
+      "find": "        SAns::Empty => Py::Raises,",
+      "replace": "        SAns::Empty => Py::Float(0),",
+      "expect_fail_in": [
+        "theorem_empty_answer_raises",
+        "theorem_rolled_back_first_write",
+        "theorem_bucket_purge_whole_vs_cut"
+      ],
+      "classification": "decision: the store tests the driver's None before converting (the bug-tmp-009 repair; the docstring's 0.0)"
+    },
+    {
+      "name": "raw-purge-drops-statistics",
+      "find": "pub open spec fn purge_raw_before(st: St, g: int, lo: int, hi: int) -> St { St { raw: purge_raw(st.raw, g, lo, hi), ..st } }",
+      "replace": "pub open spec fn purge_raw_before(st: St, g: int, lo: int, hi: int) -> St { St { raw: purge_raw(st.raw, g, lo, hi), cnt: Map::empty(), ..st } }",
+      "expect_fail_in": [
+        "theorem_raw_purge_keeps_statistics",
+        "theorem_raw_purge_whole_vs_cut"
+      ],
+      "classification": "effect: the raw purge also removes the statistics (legacy PurgeBefore's behavior)"
+    },
+    {
+      "name": "delete-skips-missing-statistics",
+      "find": "    rebuild(st1, div, hf, k4(e, div))",
+      "replace": "    if st.cnt.contains_key(k4(e, div)) { rebuild(st1, div, hf, k4(e, div)) } else { st1 }",
+      "expect_fail_in": [
+        "theorem_delete_after_bucket_purge_recreates",
+        "theorem_delete_rebuilds_from_survivors"
+      ],
+      "classification": "guard: a delete rebuilds only statistics that exist (one answer to the q-tmp-002 mirror)"
+    },
+    {
+      "name": "bursts-filter-predicate",
+      "find": "    present(st, g, s, (now - window) / div, now / div) && velocity(st, div, g, s, window, now_ts, clock_s) >= threshold",
+      "replace": "    present(st, g, s, (now - window) / div, now / div) && velocity(st, div, g, s, window, now_ts, clock_s) >= threshold && pred == 0",
+      "expect_fail_in": [
+        "theorem_bursts_ignore_predicate",
+        "theorem_burst_threshold_inclusive"
+      ],
+      "classification": "decision: FindBursts reads its predicate argument (F-0508's documented parameter)"
+    },
+    {
+      "name": "burst-threshold-strict",
+      "find": "    present(st, g, s, (now - window) / div, now / div) && velocity(st, div, g, s, window, now_ts, clock_s) >= threshold",
+      "replace": "    present(st, g, s, (now - window) / div, now / div) && velocity(st, div, g, s, window, now_ts, clock_s) > threshold",
+      "expect_fail_in": [
+        "theorem_burst_threshold_inclusive"
+      ],
+      "classification": "decision: the threshold excludes its own value"
+    },
+    {
+      "name": "velocity-not-rounded",
+      "find": "    bkt_sum(st, g, s, (now - window) / div, now / div)",
+      "replace": "    bkt_sum(st, g, s, (now - window) / div + 1, now / div)",
+      "expect_fail_in": [
+        "theorem_velocity_counts_touched_buckets"
+      ],
+      "classification": "decision: velocity skips the bucket holding now - window"
+    },
+    {
+      "name": "ms-now-in-ms",
+      "find": "pub open spec fn now_of(now_ts: int, clock_s: int) -> int { if now_ts > 0 { now_ts } else { clock_s } }",
+      "replace": "pub open spec fn now_of(now_ts: int, clock_s: int) -> int { if now_ts > 0 { now_ts } else { clock_s * 1000 } }",
+      "expect_fail_in": [
+        "theorem_ms_default_now_misses"
+      ],
+      "classification": "effect: the default now in the millisecond class's unit"
+    },
+    {
+      "name": "small-range-correction",
+      "find": "    if !any_set(r) { 0 } else {",
+      "replace": "    if !any_set(r) { 0 } else if zs(r, 16) > 7680 { 1 } else {",
+      "expect_fail_in": [
+        "theorem_distinct_nonempty_at_least_eleven",
+        "theorem_distinct_one_target_is_eleven"
+      ],
+      "classification": "decision: a small-range correction answers 1 for a one-register sketch (the bug-tmp-103 repair direction)"
+    },
+    {
+      "name": "no-empty-guard",
+      "find": "    if !any_set(r) { 0 } else {",
+      "replace": "    if false { 0 } else {",
+      "expect_fail_in": [
+        "theorem_distinct_empty_is_zero"
+      ],
+      "classification": "guard: remove the all-zero sketch guard (the raw estimator answers 11 for nothing)"
+    },
+    {
+      "name": "distinct-whole-buckets-only",
+      "find": "    estimate(merged(st, g, s, p, bucket_of(lo, div), bucket_of(hi, div)))",
+      "replace": "    estimate(merged(st, g, s, p, bucket_of(lo + div - 1, div), bucket_of(hi, div)))",
+      "expect_fail_in": [
+        "theorem_distinct_window_rounded_out"
+      ],
+      "classification": "decision: the distinct count skips a bucket the window's start cuts"
+    },
+    {
+      "name": "escape-values",
+      "find": "pub open spec fn enc(v: Seq<char>) -> Seq<char> { qt() + v + qt() }",
+      "replace": "pub open spec fn enc(v: Seq<char>) -> Seq<char> { qt() + esc(v) + qt() }",
+      "expect_fail_in": [
+        "theorem_label_sets_collide"
+      ],
+      "classification": "effect: InternLabelSet escapes string values (the F-0509 / bug-tmp-104 repair)"
+    }
+  ]
+}

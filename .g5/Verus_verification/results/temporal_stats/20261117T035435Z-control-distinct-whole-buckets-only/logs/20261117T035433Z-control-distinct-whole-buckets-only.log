@@ -1,0 +1,12 @@
+verification results:: 50 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/distinct-whole-buckets-only/20261117T035433Z/models/temporal_stats/temporal_stats.rs:865:9
+    |
+862 | pub proof fn theorem_distinct_window_rounded_out(hf: spec_fn(int) -> (int, int), e: Ev, lo: int, hi: int)
+    | --------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+865 |         distinct(write(empty_st(), 300, hf, Mode::Insert, e), 300, e.g, e.s, e.p, lo, hi) == 11,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

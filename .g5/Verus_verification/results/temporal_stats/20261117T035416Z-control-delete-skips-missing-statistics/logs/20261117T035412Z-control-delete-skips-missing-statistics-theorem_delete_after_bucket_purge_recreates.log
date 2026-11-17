@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/delete-skips-missing-statistics/20261117T035412Z/models/temporal_stats/temporal_stats.rs:617:13
+    |
+612 |   pub proof fn theorem_delete_after_bucket_purge_recreates(st: St, hf: spec_fn(int) -> (int, int), i: int)
+    |   -------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+617 |       ensures ({
+    |  _____________^
+618 | |         let e = st.raw[i];
+619 | |         let b = bucket_of(e.ts, 300);
+620 | |         let st1 = purge_buckets(st, e.g, b, b);
+...   |
+624 | |         &&& !st2.bkt.contains_key(k3(e, 300))
+625 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

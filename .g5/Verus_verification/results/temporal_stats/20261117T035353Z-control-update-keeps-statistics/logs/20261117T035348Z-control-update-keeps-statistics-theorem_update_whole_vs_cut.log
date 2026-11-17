@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/update-keeps-statistics/20261117T035348Z/models/temporal_stats/temporal_stats.rs:425:13
+    |
+423 |   pub proof fn theorem_update_whole_vs_cut(hf: spec_fn(int) -> (int, int), e0: Ev, w1: int, lo: int)
+    |   -------------------------------------------------------------------------------------------------- at the end of the function body
+424 |       requires 0 <= e0.ts, b_lo(bucket_of(e0.ts, 300), 300) < lo <= e0.ts,
+425 |       ensures ({
+    |  _____________^
+426 | |         let e1 = Ev { w: w1, ..e0 };
+427 | |         let b = bucket_of(e0.ts, 300);
+428 | |         let st2 = write(write(empty_st(), 300, hf, Mode::Insert, e0), 300, hf, Mode::Update, e1);
+...   |
+431 | |         &&& get_aggregate(st2, 300, e0.g, e0.s, e0.p, lo, b_hi(b, 300)) == one(w1)
+432 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

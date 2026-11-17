@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/none-checked/20261117T035404Z/models/temporal_stats/temporal_stats.rs:580:13
+    |
+578 |   pub proof fn theorem_bucket_purge_whole_vs_cut(st: St, g: int, s: int, p: int, b: int, x: int)
+    |   ---------------------------------------------------------------------------------------------- at the end of the function body
+579 |       requires b_lo(b, 300) < x <= b_hi(b, 300), st.cnt.contains_key((g, b, s, p)),
+580 |       ensures ({
+    |  _____________^
+581 | |         let st2 = purge_buckets(st, g, b, b);
+582 | |         &&& st2.raw == st.raw
+583 | |         &&& get_aggregate(st2, 300, g, s, p, b_lo(b, 300), b_hi(b, 300)) == zero()
+...   |
+587 | |         &&& purged_count(st, g, b, b) == 1
+588 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

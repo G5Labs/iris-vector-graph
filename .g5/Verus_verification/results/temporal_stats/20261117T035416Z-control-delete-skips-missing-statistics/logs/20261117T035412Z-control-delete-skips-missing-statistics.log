@@ -1,0 +1,36 @@
+verification results:: 49 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/delete-skips-missing-statistics/20261117T035412Z/models/temporal_stats/temporal_stats.rs:617:13
+    |
+612 |   pub proof fn theorem_delete_after_bucket_purge_recreates(st: St, hf: spec_fn(int) -> (int, int), i: int)
+    |   -------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+617 |       ensures ({
+    |  _____________^
+618 | |         let e = st.raw[i];
+619 | |         let b = bucket_of(e.ts, 300);
+620 | |         let st1 = purge_buckets(st, e.g, b, b);
+...   |
+624 | |         &&& !st2.bkt.contains_key(k3(e, 300))
+625 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/delete-skips-missing-statistics/20261117T035412Z/models/temporal_stats/temporal_stats.rs:638:13
+    |
+638 |       ensures ({
+    |  _____________^
+639 | |         let e = st.raw[i];
+640 | |         let b = bucket_of(e.ts, 300);
+641 | |         let st2 = delete_at(st, 300, hf, i);
+...   |
+645 | |         &&& get_aggregate(st2, 300, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)).min == a.min
+646 | |     }),
+    | |______^ failed this postcondition
+...
+653 | /     if a.count != 0 { lemma_raw_agg_nonempty(st2.raw, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)); }
+654 | |     else { lemma_raw_agg_empty(st2.raw, e.g, e.s, e.p, b_lo(b, 300), b_hi(b, 300)); }
+    | |_____________________________________________________________________________________- at the end of the function body
+
+error: aborting due to 2 previous errors
+

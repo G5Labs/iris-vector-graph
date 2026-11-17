@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: a small-range correction answers 1 for a one-register sketch (the bug-tmp-103 repair direction)",
+    "expect_fail_in": [
+      "theorem_distinct_nonempty_at_least_eleven",
+      "theorem_distinct_one_target_is_eleven"
+    ],
+    "find": "    if !any_set(r) { 0 } else {",
+    "name": "small-range-correction",
+    "replace": "    if !any_set(r) { 0 } else if zs(r, 16) > 7680 { 1 } else {"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_distinct_nonempty_at_least_eleven",
+      "theorem_distinct_one_target_is_eleven"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/temporal_stats/model.json": "c4cca8905fda85c41d69e50a2807ae878d73623598a187f2bb0e409f11b107a3",
+    ".g5/Verus_verification/models/temporal_stats/temporal_stats.rs": "6d33ec1755c437ff2d408e9c21b05c8cf38a09caf7e9f6f650566602cf55c2d6"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/small-range-correction/20261117T035427Z/models/temporal_stats/temporal_stats.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_distinct_nonempty_at_least_eleven": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035427Z-control-small-range-correction-theorem_distinct_nonempty_at_least_eleven.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_distinct_one_target_is_eleven": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035427Z-control-small-range-correction-theorem_distinct_one_target_is_eleven.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/20261117T035427Z-control-small-range-correction.log",
+    "timed_out": false,
+    "verified": 49
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/temporal_stats/20261117T035430Z-control-small-range-correction/logs/20261117T035427Z-control-small-range-correction-theorem_distinct_nonempty_at_least_eleven.log": "fcdaa0d290675eeadf7082cc7f529d486a691c6024a7725f52d85fd8d64e6819",
+    ".g5/Verus_verification/results/temporal_stats/20261117T035430Z-control-small-range-correction/logs/20261117T035427Z-control-small-range-correction-theorem_distinct_one_target_is_eleven.log": "1c304e8935fa1c3e6f5196e491d8d102b128cd5263c5e78d85c71697acc2f00d",
+    ".g5/Verus_verification/results/temporal_stats/20261117T035430Z-control-small-range-correction/logs/20261117T035427Z-control-small-range-correction.log": "49b938b2870f297473abb64e7cd494ea9035c153e9c5e814e86a9ed112f755cc"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

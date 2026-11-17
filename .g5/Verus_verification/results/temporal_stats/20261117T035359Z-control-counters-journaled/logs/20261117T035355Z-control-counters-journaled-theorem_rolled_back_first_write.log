@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/temporal_stats/controls/counters-journaled/20261117T035355Z/models/temporal_stats/temporal_stats.rs:462:13
+    |
+457 |   pub proof fn theorem_rolled_back_first_write(st: St, hf: spec_fn(int) -> (int, int), e: Ev)
+    |   ------------------------------------------------------------------------------------------- at the end of the function body
+...
+462 |       ensures ({
+    |  _____________^
+463 | |         let st2 = rolled_back(st, write(st, 300, hf, Mode::Insert, e));
+464 | |         let b = bucket_of(e.ts, 300);
+465 | |         &&& st2.raw == st.raw
+...   |
+471 | |         &&& !st2.hll.contains_key(k4(e, 300))
+472 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+
