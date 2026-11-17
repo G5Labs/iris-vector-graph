@@ -1,0 +1,2173 @@
+{
+ "run": "20261117T053516Z",
+ "tag": "053516",
+ "fixture": "ivg-cont-20261117-iris",
+ "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "mg_create_1": true,
+ "mg_create_2": false,
+ "single_create_1": true,
+ "single_create_2": false,
+ "OM1_a3": {
+  "q": "MATCH (a:I54A053516 {name: 'a3'}) OPTIONAL MATCH (a)-[r:K053516]->(b) RETURN a.name, b.name, r IS NULL",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "b.name",
+    "r IS NULL"
+   ],
+   "rows": [
+    [
+     "a3",
+     null,
+     true
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM1_a1": {
+  "q": "MATCH (a:I54A053516 {name: 'a1'}) OPTIONAL MATCH (a)-[r:K053516]->(b) RETURN a.name, b.name, r IS NULL ORDER BY b.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "b.name",
+    "r IS NULL"
+   ],
+   "rows": [
+    [
+     "a1",
+     "a2",
+     false
+    ],
+    [
+     "a1",
+     "a3",
+     false
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM1_twin_c3": {
+  "q": "MATCH (a:I54C053516 {name: 'a3'}) OPTIONAL MATCH (a)-[r:KC053516]->(b) RETURN a.name, b.name, r IS NULL",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "b.name",
+    "r IS NULL"
+   ],
+   "rows": [
+    [
+     "a3",
+     null,
+     true
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM2_type": {
+  "q": "MATCH (a:I54A053516 {name: 'a1'}) OPTIONAL MATCH (a)-[:NOSUCH053516]->(b) RETURN a.name, b",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "b_id",
+    "b_labels",
+    "b_props"
+   ],
+   "rows": [
+    [
+     "a1",
+     null,
+     "[]",
+     "[]"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM2_label": {
+  "q": "MATCH (a:I54A053516 {name: 'a1'}) OPTIONAL MATCH (a)-[:K053516]->(b:NoSuch053516) RETURN a.name, b",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "b_id",
+    "b_labels",
+    "b_props"
+   ],
+   "rows": [
+    [
+     "a1",
+     null,
+     "[]",
+     "[]"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM3_inside": {
+  "q": "MATCH (a:I54A053516) OPTIONAL MATCH (a)-[:K053516]->(b) WHERE b.v = 2 RETURN a.name, b.name ORDER BY a.name, b.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "b.name"
+   ],
+   "rows": [
+    [
+     "a1",
+     "a2"
+    ],
+    [
+     "a2",
+     null
+    ],
+    [
+     "a3",
+     null
+    ],
+    [
+     "dup",
+     null
+    ],
+    [
+     "dup",
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM3_after": {
+  "q": "MATCH (a:I54A053516) OPTIONAL MATCH (a)-[:K053516]->(b) WITH a, b WHERE b.v = 2 RETURN a.name, b.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "b.name"
+   ],
+   "rows": [
+    [
+     "a1",
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM3_inside_param": {
+  "q": "MATCH (a:I54A053516) OPTIONAL MATCH (a)-[:K053516]->(b) WHERE b.v = $v RETURN a.name, b.name ORDER BY a.name, b.name",
+  "params": {
+   "v": 2
+  },
+  "sql": {
+   "columns": [
+    "a.name",
+    "b.name"
+   ],
+   "rows": [
+    [
+     "a1",
+     "a2"
+    ],
+    [
+     "a2",
+     null
+    ],
+    [
+     "a3",
+     null
+    ],
+    [
+     "dup",
+     null
+    ],
+    [
+     "dup",
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM4_nomatch": {
+  "q": "MATCH (a:I54A053516 {name: 'a3'}) OPTIONAL MATCH (a)-[:K053516]->(b) RETURN b.v + 1, coalesce(b.v, 0), b IS NULL, b.name STARTS WITH 'x'",
+  "params": {},
+  "sql": {
+   "columns": [
+    "b.v + 1",
+    "coalesce(b.v, 0)",
+    "b IS NULL",
+    "b.name STARTS WITH 'x'"
+   ],
+   "rows": [
+    [
+     null,
+     0,
+     true,
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM4_match": {
+  "q": "MATCH (a:I54A053516 {name: 'a1'}) OPTIONAL MATCH (a)-[:K053516]->(b {name: 'a2'}) RETURN b.v + 1, coalesce(b.v, 0), b IS NULL, b.name STARTS WITH 'x'",
+  "params": {},
+  "sql": {
+   "columns": [
+    "b.v + 1",
+    "coalesce(b.v, 0)",
+    "b IS NULL",
+    "b.name STARTS WITH 'x'"
+   ],
+   "rows": [
+    [
+     3,
+     2,
+     false,
+     false
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM5_counts": {
+  "q": "MATCH (a:I54A053516) OPTIONAL MATCH (a)-[:K053516]->(b) RETURN a.name, count(b), count(*), collect(b.name) ORDER BY a.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "count(b)",
+    "count(*)",
+    "collect(b.name)"
+   ],
+   "rows": [
+    [
+     "a1",
+     2,
+     2,
+     [
+      "a2",
+      "a3"
+     ]
+    ],
+    [
+     "a2",
+     1,
+     1,
+     [
+      "a3"
+     ]
+    ],
+    [
+     "a3",
+     0,
+     1,
+     []
+    ],
+    [
+     "dup",
+     0,
+     2,
+     []
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM5_sumavg": {
+  "q": "MATCH (a:I54A053516) OPTIONAL MATCH (a)-[:K053516]->(b) RETURN a.name, sum(b.v), avg(b.v) ORDER BY a.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "sum(b.v)",
+    "avg(b.v)"
+   ],
+   "rows": [
+    [
+     "a1",
+     2,
+     2.0
+    ],
+    [
+     "a2",
+     0,
+     null
+    ],
+    [
+     "a3",
+     0,
+     null
+    ],
+    [
+     "dup",
+     0,
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM5_twin": {
+  "q": "MATCH (a:I54C053516) OPTIONAL MATCH (a)-[:KC053516]->(b) RETURN a.name, count(b), count(*), sum(b.v) ORDER BY a.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "a.name",
+    "count(b)",
+    "count(*)",
+    "sum(b.v)"
+   ],
+   "rows": [
+    [
+     "a1",
+     2,
+     2,
+     2
+    ],
+    [
+     "a2",
+     1,
+     1,
+     0
+    ],
+    [
+     "a3",
+     0,
+     1,
+     0
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM6_return": {
+  "q": "OPTIONAL MATCH (n:NoSuch053516) RETURN n",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n_id",
+    "n_labels",
+    "n_props"
+   ],
+   "rows": [
+    [
+     null,
+     null,
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM6_count": {
+  "q": "OPTIONAL MATCH (n:NoSuch053516) RETURN count(n)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(n)"
+   ],
+   "rows": [
+    [
+     0
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM7_default": {
+  "q": "MATCH (a:I54A053516 {name: 'a1'}) OPTIONAL MATCH (a)-[:K053516]->(b) OPTIONAL MATCH (b)-[:K053516]->(c) RETURN b.name, c.name ORDER BY b.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "b.name",
+    "c.name"
+   ],
+   "rows": [
+    [
+     "a2",
+     "a3"
+    ],
+    [
+     "a3",
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "OM7_named": {
+  "q": "USE GRAPH 'i54g053516' MATCH (a {name: 'gx'}) OPTIONAL MATCH (a)-[:K053516]->(b) OPTIONAL MATCH (b)-[:K053516]->(c) RETURN b.name, c.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "b.name",
+    "c.name"
+   ],
+   "rows": [
+    [
+     "gy",
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG1_api": {
+  "q": "MATCH (n:I54G053516) RETURN n.k AS k, count(*) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "k",
+    "c"
+   ],
+   "rows": [
+    [
+     1,
+     3
+    ],
+    [
+     1.5,
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG1_twin": {
+  "q": "MATCH (n:I54G053516C) RETURN n.k AS k, count(*) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "k",
+    "c"
+   ],
+   "rows": [
+    [
+     1,
+     3
+    ],
+    [
+     1.5,
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG1_api_distinct": {
+  "q": "MATCH (n:I54G053516) RETURN DISTINCT n.k AS k",
+  "params": {},
+  "sql": {
+   "columns": [
+    "k"
+   ],
+   "rows": [
+    [
+     1
+    ],
+    [
+     "1"
+    ],
+    [
+     1.5
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG2_api": {
+  "q": "MATCH (n:I54G053516D) RETURN count(DISTINCT n.k)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(DISTINCT n.k)"
+   ],
+   "rows": [
+    [
+     2
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG2_api_vals": {
+  "q": "MATCH (n:I54G053516D) RETURN n.k AS k, count(*) AS c",
+  "params": {},
+  "sql": {
+   "columns": [
+    "k",
+    "c"
+   ],
+   "rows": [
+    [
+     1,
+     2
+    ],
+    [
+     true,
+     2
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG2_unwind": {
+  "q": "UNWIND [1, '1', true, 'true'] AS k RETURN count(DISTINCT k)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(DISTINCT k)"
+   ],
+   "rows": [
+    [
+     2
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG2_param": {
+  "q": "UNWIND $xs AS k RETURN count(DISTINCT k)",
+  "params": {
+   "xs": [
+    1,
+    "1",
+    true,
+    "true"
+   ]
+  },
+  "sql": {
+   "columns": [
+    "count(DISTINCT k)"
+   ],
+   "rows": [
+    [
+     2
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG3_lists": {
+  "q": "MATCH (n:I54A053516) WHERE n.l IS NOT NULL RETURN collect(n.l)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "collect(n.l)"
+   ],
+   "rows": [
+    [
+     [
+      [
+       1,
+       2
+      ],
+      [
+       3
+      ]
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG3_maps": {
+  "q": "MATCH (n:I54A053516) WHERE n.m IS NOT NULL RETURN collect(n.m)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "collect(n.m)"
+   ],
+   "rows": [
+    [
+     [
+      {
+       "k": 1
+      }
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG3_twin_lists": {
+  "q": "MATCH (n:I54C053516) WHERE n.l IS NOT NULL RETURN collect(n.l)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "collect(n.l)"
+   ],
+   "rows": [
+    [
+     [
+      [
+       1,
+       2
+      ],
+      [
+       3
+      ]
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG4_int": {
+  "q": "MATCH (n:I54A053516) WHERE n.v IS NOT NULL RETURN sum(n.v), avg(n.v)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(n.v)",
+    "avg(n.v)"
+   ],
+   "rows": [
+    [
+     3,
+     1.5
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG4_mixed": {
+  "q": "MATCH (n:I54A053516) WHERE n.v IS NOT NULL OR n.name = 'a3' WITH n, CASE WHEN n.name = 'a3' THEN 2.5 ELSE n.v END AS x RETURN sum(x), avg(x)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(x)",
+    "avg(x)"
+   ],
+   "rows": [
+    [
+     5.5,
+     1.8333333333333333
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG4_mixed_props": {
+  "q": "MATCH (n:I54A053516) WHERE n.f IS NOT NULL RETURN sum(n.f), sum(n.v) + sum(n.f), avg(n.f)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(n.f)",
+    "sum(n.v) + sum(n.f)",
+    "avg(n.f)"
+   ],
+   "rows": [
+    [
+     3.5,
+     6,
+     1.75
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG5_api": {
+  "q": "MATCH (n:I54A053516) WHERE n.s IS NOT NULL RETURN sum(n.s)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(n.s)"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG5_api_num": {
+  "q": "MATCH (n:I54G053516) WHERE n.k = '1' OR n.k = 1 RETURN sum(n.k)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(n.k)"
+   ],
+   "rows": [
+    [
+     3
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG5_unwind": {
+  "q": "UNWIND ['1', '2'] AS x RETURN sum(x)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(x)"
+   ],
+   "rows": [
+    [
+     3
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG6_global": {
+  "q": "MATCH (n:NoSuch053516) RETURN count(n), sum(n.v), avg(n.v), collect(n.v)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(n)",
+    "sum(n.v)",
+    "avg(n.v)",
+    "collect(n.v)"
+   ],
+   "rows": [
+    [
+     0,
+     0,
+     null,
+     []
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG6_grouped": {
+  "q": "MATCH (n:NoSuch053516) RETURN n.k, count(n), sum(n.v)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.k",
+    "count(n)",
+    "sum(n.v)"
+   ],
+   "rows": []
+  },
+  "native": "declined"
+ },
+ "AG7_api": {
+  "q": "MATCH (a:I54A053516 {name: 'a1'})-[r:K053516]->() RETURN sum(coalesce(r.w, r.weight)), collect(r.w), collect(r.weight)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(coalesce(r.w, r.weight))",
+    "collect(r.w)",
+    "collect(r.weight)"
+   ],
+   "rows": [
+    [
+     3.5,
+     [
+      1
+     ],
+     [
+      2.5
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG7_api_sum": {
+  "q": "MATCH (a:I54A053516 {name: 'a1'})-[r:K053516]->() RETURN sum(r.w) + sum(r.weight)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(r.w) + sum(r.weight)"
+   ],
+   "rows": [
+    [
+     4
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "AG7_twin_sum": {
+  "q": "MATCH (a:I54C053516 {name: 'a1'})-[r:KC053516]->() RETURN sum(r.w) + sum(r.weight)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "sum(r.w) + sum(r.weight)"
+   ],
+   "rows": [
+    [
+     4
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS1_param": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name SKIP $s LIMIT $l",
+  "params": {
+   "s": 1,
+   "l": 2
+  },
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a2"
+    ],
+    [
+     "a3"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS1_literal": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name SKIP 1 LIMIT 2",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a2"
+    ],
+    [
+     "a3"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS2_param": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name LIMIT $l",
+  "params": {
+   "l": -1
+  },
+  "sql": {
+   "error": "SyntaxError: NegativeIntegerArgument: SKIP/LIMIT must be a non-negative integer, got: -1"
+  },
+  "native": "declined"
+ },
+ "WS2_literal": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name LIMIT -1",
+  "params": {},
+  "sql": {
+   "error": "SyntaxError: NegativeIntegerArgument: SKIP/LIMIT must be a non-negative integer, got: -1"
+  },
+  "native": "declined"
+ },
+ "WS3_skip_param": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name SKIP $s",
+  "params": {
+   "s": -1
+  },
+  "sql": {
+   "error": "SyntaxError: NegativeIntegerArgument: SKIP/LIMIT must be a non-negative integer, got: -1"
+  },
+  "native": "declined"
+ },
+ "WS3_skip_literal": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name SKIP -1",
+  "params": {},
+  "sql": {
+   "error": "SyntaxError: NegativeIntegerArgument: SKIP/LIMIT must be a non-negative integer, got: -1"
+  },
+  "native": "declined"
+ },
+ "WS3_limit_float_param": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name LIMIT $l",
+  "params": {
+   "l": 1.5
+  },
+  "sql": {
+   "error": "SyntaxError: InvalidArgumentType: SKIP/LIMIT requires an integer, got float: 1.5"
+  },
+  "native": "declined"
+ },
+ "WS3_limit_float_literal": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name LIMIT 1.5",
+  "params": {},
+  "sql": {
+   "error": "SyntaxError: InvalidArgumentType: SKIP/LIMIT requires an integer, got float: 1.5"
+  },
+  "native": "declined"
+ },
+ "WS3_skip_float_param": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name SKIP $s",
+  "params": {
+   "s": 1.5
+  },
+  "sql": {
+   "error": "SyntaxError: InvalidArgumentType: SKIP/LIMIT requires an integer, got float: 1.5"
+  },
+  "native": "declined"
+ },
+ "WS3_limit_string_param": {
+  "q": "MATCH (n:I54A053516) RETURN n.name ORDER BY n.name LIMIT $l",
+  "params": {
+   "l": "2"
+  },
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a1"
+    ],
+    [
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS4_param": {
+  "q": "MATCH (n:I54A053516) RETURN n.name LIMIT $l",
+  "params": {
+   "l": 0
+  },
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": []
+  },
+  "native": "declined"
+ },
+ "WS4_literal": {
+  "q": "MATCH (n:I54A053516) RETURN n.name LIMIT 0",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": []
+  },
+  "native": "declined"
+ },
+ "WS4_with_param": {
+  "q": "MATCH (n:I54A053516) WITH n ORDER BY n.name LIMIT $l RETURN n.name",
+  "params": {
+   "l": 0
+  },
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": []
+  },
+  "native": "declined"
+ },
+ "WS5_nodes": {
+  "q": "MATCH (n:I54A053516) WHERE n.name = 'dup' RETURN DISTINCT n",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n_id",
+    "n_labels",
+    "n_props"
+   ],
+   "rows": [
+    [
+     "i54_053516_d1",
+     "[\"I54A053516\"]",
+     "[\"{\\\"key\\\":\\\"name\\\",\\\"value\\\":\\\"dup\\\"}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"i54_053516_d1\\\"}\"]"
+    ],
+    [
+     "i54_053516_d2",
+     "[\"I54A053516\"]",
+     "[\"{\\\"key\\\":\\\"name\\\",\\\"value\\\":\\\"dup\\\"}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"i54_053516_d2\\\"}\"]"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS5_values": {
+  "q": "MATCH (n:I54A053516) WHERE n.name = 'dup' RETURN DISTINCT n.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "dup"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS5_count_nodes": {
+  "q": "MATCH (n:I54A053516) WHERE n.name = 'dup' RETURN count(DISTINCT n), count(DISTINCT n.name)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(DISTINCT n)",
+    "count(DISTINCT n.name)"
+   ],
+   "rows": [
+    [
+     2,
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS6_with_col": {
+  "q": "MATCH (n:I54A053516) WITH n.name AS nm, n.v AS v WHERE v IS NOT NULL RETURN nm ORDER BY v DESC",
+  "params": {},
+  "sql": {
+   "columns": [
+    "nm"
+   ],
+   "rows": [
+    [
+     "a2"
+    ],
+    [
+     "a1"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS6_alias": {
+  "q": "MATCH (n:I54A053516) RETURN n.name AS nm ORDER BY nm DESC",
+  "params": {},
+  "sql": {
+   "columns": [
+    "nm"
+   ],
+   "rows": [
+    [
+     "dup"
+    ],
+    [
+     "dup"
+    ],
+    [
+     "a3"
+    ],
+    [
+     "a2"
+    ],
+    [
+     "a1"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS7_literal": {
+  "q": "MATCH (n:I54A053516) WITH n ORDER BY n.v DESC LIMIT 1 RETURN n.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a3"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS7_param": {
+  "q": "MATCH (n:I54A053516) WITH n ORDER BY n.v DESC LIMIT $l RETURN n.name",
+  "params": {
+   "l": 1
+  },
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a3"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS7_notnull": {
+  "q": "MATCH (n:I54A053516) WHERE n.v IS NOT NULL WITH n ORDER BY n.v DESC LIMIT $l RETURN n.name",
+  "params": {
+   "l": 1
+  },
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "WS7_skip_param_with": {
+  "q": "MATCH (n:I54A053516) WITH n ORDER BY n.name SKIP $s LIMIT 1 RETURN n.name",
+  "params": {
+   "s": 2
+  },
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a3"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "UN1_union": {
+  "q": "RETURN 1 AS x UNION RETURN 1 AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "UN1_all": {
+  "q": "RETURN 1 AS x UNION ALL RETURN 1 AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     1
+    ],
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "UN2_int": {
+  "q": "MATCH (n:I54A053516 {name: 'a1'}) RETURN n.v AS x UNION MATCH (m:I54A053516 {name: 'a2'}) RETURN m.v - 1 AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     "\u0001N1"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "UN2_str": {
+  "q": "MATCH (n:I54A053516 {name: 'a1'}) RETURN n.s AS x UNION MATCH (m:I54A053516 {name: 'a2'}) RETURN m.v - 1 AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     "1"
+    ],
+    [
+     "\u0001N1"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "UN2_str_api_props": {
+  "q": "MATCH (n:I54A053516 {name: 'a1'}) RETURN n.s AS x UNION MATCH (m:I54A053516 {name: 'a1'}) RETURN m.v AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     "1"
+    ],
+    [
+     "\u0001N1"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "UN2_twin_props": {
+  "q": "MATCH (n:I54C053516 {name: 'a1'}) RETURN n.s AS x UNION MATCH (m:I54C053516 {name: 'a1'}) RETURN m.v AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     "1"
+    ],
+    [
+     "\u0001N1"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "UN2_bool_str": {
+  "q": "MATCH (n:I54G053516D) WHERE n.k = true RETURN n.k AS x UNION RETURN 'true' AS x",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x"
+   ],
+   "rows": [
+    [
+     "\u0001N1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "true"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "UN3_columns": {
+  "q": "RETURN 1 AS x UNION RETURN 2 AS y",
+  "params": {},
+  "sql": {
+   "error": "SyntaxError: All UNION branches must have the same column names: ['x'] vs ['y']"
+  },
+  "native": "declined"
+ },
+ "UN3_mixed": {
+  "q": "RETURN 1 AS x UNION RETURN 1 AS x UNION ALL RETURN 1 AS x",
+  "params": {},
+  "sql": {
+   "error": "SyntaxError: Cannot mix UNION and UNION ALL in the same query"
+  },
+  "native": "declined"
+ },
+ "UN4_nodes": {
+  "q": "MATCH (n:I54A053516 {name: 'dup'}) RETURN n UNION MATCH (n:I54A053516 {name: 'dup'}) RETURN n",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n_id",
+    "n_labels",
+    "n_props"
+   ],
+   "rows": [
+    [
+     "i54_053516_d1",
+     "[\"I54A053516\"]",
+     "[\"{\\\"key\\\":\\\"name\\\",\\\"value\\\":\\\"dup\\\"}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"i54_053516_d1\\\"}\"]"
+    ],
+    [
+     "i54_053516_d2",
+     "[\"I54A053516\"]",
+     "[\"{\\\"key\\\":\\\"name\\\",\\\"value\\\":\\\"dup\\\"}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"i54_053516_d2\\\"}\"]"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "EX1_exists": {
+  "q": "MATCH (n:I54A053516) WHERE EXISTS { (n)-[:K053516]->() } RETURN n.name ORDER BY n.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a1"
+    ],
+    [
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "EX1_pattern": {
+  "q": "MATCH (n:I54A053516) WHERE (n)-[:K053516]->() RETURN n.name ORDER BY n.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a1"
+    ],
+    [
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "EX1_not": {
+  "q": "MATCH (n:I54A053516) WHERE NOT EXISTS { (n)-[:K053516]->() } RETURN n.name ORDER BY n.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a3"
+    ],
+    [
+     "dup"
+    ],
+    [
+     "dup"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "EX1_twin": {
+  "q": "MATCH (n:I54C053516) WHERE EXISTS { (n)-[:KC053516]->() } RETURN n.name ORDER BY n.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.name"
+   ],
+   "rows": [
+    [
+     "a1"
+    ],
+    [
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "EX2_named": {
+  "q": "USE GRAPH 'i54g053516' MATCH (n) WHERE EXISTS { (n)-[:K053516]->() } RETURN n.id",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.id"
+   ],
+   "rows": [
+    [
+     "i54_053516_gx"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "EX2_all": {
+  "q": "MATCH (n) WHERE n.id STARTS WITH 'i54_053516_' AND EXISTS { (n)-[:K053516]->() } RETURN n.id ORDER BY n.id",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.id"
+   ],
+   "rows": [
+    [
+     "i54_053516_a1"
+    ],
+    [
+     "i54_053516_a2"
+    ],
+    [
+     "i54_053516_gx"
+    ],
+    [
+     "i54_053516_gx"
+    ],
+    [
+     "i54_053516_sx"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "EX2_named_pattern": {
+  "q": "USE GRAPH 'i54g053516' MATCH (n) WHERE (n)-[:K053516]->() RETURN n.id",
+  "params": {},
+  "sql": {
+   "columns": [
+    "n.id"
+   ],
+   "rows": [
+    [
+     "i54_053516_gx"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PC1_a1": {
+  "q": "MATCH (n:I54A053516 {name: 'a1'}) RETURN [(n)-[:K053516]->(m) | m.name]",
+  "params": {},
+  "sql": {
+   "columns": [
+    "[(n)-[:K053516]->(m) | m.name]"
+   ],
+   "rows": [
+    [
+     [
+      "a2",
+      "a3"
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PC1_a3": {
+  "q": "MATCH (n:I54A053516 {name: 'a3'}) RETURN [(n)-[:K053516]->(m) | m.name]",
+  "params": {},
+  "sql": {
+   "columns": [
+    "[(n)-[:K053516]->(m) | m.name]"
+   ],
+   "rows": [
+    [
+     []
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PC2_multi": {
+  "q": "USE GRAPH 'i54m053516' MATCH (x {id: 'i54_053516_mx'}) RETURN size([(x)-[:K053516]->(y) | y])",
+  "params": {},
+  "sql": {
+   "columns": [
+    "size([(x)-[:K053516]->(y) | y])"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PC2_single": {
+  "q": "MATCH (x:I54A053516S {id: 'i54_053516_sx'}) RETURN size([(x)-[:K053516]->(y) | y])",
+  "params": {},
+  "sql": {
+   "columns": [
+    "size([(x)-[:K053516]->(y) | y])"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PC3_api": {
+  "q": "MATCH (n:I54A053516 {name: 'a1'}) RETURN [x IN n.l WHERE x > 1 | x * 10]",
+  "params": {},
+  "sql": {
+   "columns": [
+    "[x IN n.l WHERE x > 1 | x * 10]"
+   ],
+   "rows": [
+    [
+     [
+      20
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PC3_twin": {
+  "q": "MATCH (n:I54C053516 {name: 'a1'}) RETURN [x IN n.l WHERE x > 1 | x * 10]",
+  "params": {},
+  "sql": {
+   "columns": [
+    "[x IN n.l WHERE x > 1 | x * 10]"
+   ],
+   "rows": [
+    [
+     [
+      20
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA1_api": {
+  "q": "MATCH p = (a:I54A053516 {name: 'a1'})-[r:K053516]->(b:I54A053516 {name: 'a2'}) RETURN length(p), type(r), startNode(r).name, endNode(r).name, size(nodes(p)), size(relationships(p))",
+  "params": {},
+  "sql": {
+   "columns": [
+    "length(p)",
+    "type(r)",
+    "startNode(r).name",
+    "endNode(r).name",
+    "size(nodes(p))",
+    "size(relationships(p))"
+   ],
+   "rows": [
+    [
+     1,
+     "K053516",
+     "a1",
+     "a2",
+     2,
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA1_twin": {
+  "q": "MATCH p = (a:I54C053516 {name: 'a1'})-[r:KC053516]->(b:I54C053516 {name: 'a2'}) RETURN length(p), type(r), startNode(r).name, endNode(r).name, size(nodes(p)), size(relationships(p))",
+  "params": {},
+  "sql": {
+   "columns": [
+    "length(p)",
+    "type(r)",
+    "startNode(r).name",
+    "endNode(r).name",
+    "size(nodes(p))",
+    "size(relationships(p))"
+   ],
+   "rows": [
+    [
+     1,
+     "KC053516",
+     "a1",
+     "a2",
+     2,
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA2_incoming": {
+  "q": "MATCH (b:I54A053516 {name: 'a2'})<-[r:K053516]-(a) RETURN startNode(r).name, endNode(r).name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "startNode(r).name",
+    "endNode(r).name"
+   ],
+   "rows": [
+    [
+     "a1",
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA2_undirected": {
+  "q": "MATCH (b:I54A053516 {name: 'a2'})-[r:K053516]-(x) RETURN x.name, startNode(r).name, endNode(r).name ORDER BY x.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "x.name",
+    "startNode(r).name",
+    "endNode(r).name"
+   ],
+   "rows": [
+    [
+     "a1",
+     "a1",
+     "a2"
+    ],
+    [
+     "a3",
+     "a2",
+     "a3"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA2_twin_incoming": {
+  "q": "MATCH (b:I54C053516 {name: 'a2'})<-[r:KC053516]-(a) RETURN startNode(r).name, endNode(r).name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "startNode(r).name",
+    "endNode(r).name"
+   ],
+   "rows": [
+    [
+     "a1",
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA3_named": {
+  "q": "USE GRAPH 'i54g053516' MATCH p = (x)-[r]->(y) RETURN type(r), startNode(r).id, length(p)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "type(r)",
+    "startNode(r).id",
+    "length(p)"
+   ],
+   "rows": [
+    [
+     "K053516",
+     "i54_053516_gx",
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA3_all": {
+  "q": "MATCH p = (x {id: 'i54_053516_gx'})-[r]->(y) RETURN type(r), startNode(r).name, endNode(r).name, length(p) ORDER BY endNode(r).name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "type(r)",
+    "startNode(r).name",
+    "endNode(r).name",
+    "length(p)"
+   ],
+   "rows": [
+    [
+     "K053516",
+     "gx",
+     "a1",
+     1
+    ],
+    [
+     "K053516",
+     "gx",
+     "gy",
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA4_var": {
+  "q": "MATCH p = (a:I54A053516 {name: 'a1'})-[:K053516*1..2]->(c) RETURN length(p), [x IN nodes(p) | x.name] ORDER BY length(p), c.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "length(p)",
+    "[x IN nodes(p) | x.name]"
+   ],
+   "rows": [
+    [
+     1,
+     [
+      "a1",
+      "a2"
+     ]
+    ],
+    [
+     1,
+     [
+      "a1",
+      "a3"
+     ]
+    ],
+    [
+     2,
+     [
+      "a1",
+      "a2",
+      "a3"
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA4_rels": {
+  "q": "MATCH p = (a:I54A053516 {name: 'a1'})-[:K053516*1..2]->(c) RETURN length(p), [r IN relationships(p) | type(r)], [r IN relationships(p) | startNode(r).name] ORDER BY length(p), c.name",
+  "params": {},
+  "sql": {
+   "columns": [],
+   "rows": [],
+   "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'LC6.S' not found in the applicable tables^SELECT ( :%qpar(1) + vlp3 . l ) AS length_p_ , ( SELECT JSON_ARRAYAGG ( Graph_KG . JSON_VALUE ( lc5 . r , '$.type' ) ) FROM JSON_TABLE ( vlp3 . r , '$[*]' COLUMNS ( r VARCHAR ( 32767 ) PATH '$' ) ) lc5 ) AS _r_IN_relationships_p____type_r__ , REPLACE ( ( SELECT JSON_ARRAYAGG ( COALESCE ( ( SELECT val FROM Graph_KG . rdf_props WHERE s = lc6 . s AND>]"
+  },
+  "native": "declined"
+ },
+ "PA5_multi": {
+  "q": "USE GRAPH 'i54m053516' MATCH (x {id: 'i54_053516_mx'})-[r:K053516]->(y) RETURN count(r), collect(r.n)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)",
+    "collect(r.n)"
+   ],
+   "rows": [
+    [
+     1,
+     [
+      1
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA5_single": {
+  "q": "MATCH (x:I54A053516S {id: 'i54_053516_sx'})-[r:K053516]->(y) RETURN count(r), collect(r.n)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)",
+    "collect(r.n)"
+   ],
+   "rows": [
+    [
+     1,
+     [
+      1
+     ]
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA5_multi_rel_ids": {
+  "q": "USE GRAPH 'i54m053516' MATCH (x {id: 'i54_053516_mx'})-[r:K053516]->(y) RETURN count(DISTINCT r), count(DISTINCT y)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(DISTINCT r)",
+    "count(DISTINCT y)"
+   ],
+   "rows": [
+    [
+     1,
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA6_bulk_ret": 2,
+ "PA6_count": {
+  "q": "MATCH (x:I54A053516B {id: 'i54_053516_bx'})-[r:K053516]->(y) RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA6_bulk_again": 1,
+ "PA6_count_again": {
+  "q": "MATCH (x:I54A053516B {id: 'i54_053516_bx'})-[r:K053516]->(y) RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA7_single": {
+  "q": "MATCH (a:I54A053516S {id: 'i54_053516_sx'}), (b:I54A053516S {id: 'i54_053516_sy'}) CREATE (a)-[:K053516]->(b)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "Expression_1"
+   ],
+   "rows": []
+  }
+ },
+ "PA7_single_count": {
+  "q": "MATCH (x:I54A053516S {id: 'i54_053516_sx'})-[r:K053516]->(y) RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "PA7_multi": {
+  "q": "USE GRAPH 'i54m053516' MATCH (a {id: 'i54_053516_mx'}), (b {id: 'i54_053516_my'}) CREATE (a)-[:K053516]->(b)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "Expression_1"
+   ],
+   "rows": []
+  }
+ },
+ "PA7_multi_count": {
+  "q": "USE GRAPH 'i54m053516' MATCH (x {id: 'i54_053516_mx'})-[r:K053516]->(y) RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     2
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL1_edges": {
+  "q": "MATCH (n:I54A053516 {id: 'i54_053516_a1'}) DELETE n",
+  "params": {},
+  "sql": {
+   "error": "GraphWriteError: ConstraintVerificationFailed: Cannot delete node with existing relationships. Use DETACH DELETE."
+  }
+ },
+ "DL1_after_a1": [
+  "b",
+  "f",
+  "id",
+  "l",
+  "labels",
+  "m",
+  "name",
+  "p_id",
+  "s",
+  "v"
+ ],
+ "DL1_after_edges": {
+  "q": "MATCH (n:I54A053516 {id: 'i54_053516_a1'})-[r]->() RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     2
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL1_noedge": {
+  "q": "MATCH (n:I54A053516 {id: 'i54_053516_d1'}) DELETE n",
+  "params": {},
+  "sql": {
+   "columns": [
+    "Aggregate_1"
+   ],
+   "rows": []
+  }
+ },
+ "DL1_after_d1": null,
+ "DL2_incoming": {
+  "q": "MATCH (n:I54A053516 {id: 'i54_053516_a3'}) DELETE n",
+  "params": {},
+  "sql": {
+   "error": "GraphWriteError: ConstraintVerificationFailed: Cannot delete node with existing relationships. Use DETACH DELETE."
+  }
+ },
+ "DL2_after_a3_refused": [
+  "id",
+  "labels",
+  "name",
+  "p_id"
+ ],
+ "DL2_detach": {
+  "q": "MATCH (n:I54A053516 {id: 'i54_053516_a3'}) DETACH DELETE n",
+  "params": {},
+  "sql": {
+   "columns": [
+    "node_id",
+    "graph_id"
+   ],
+   "rows": []
+  }
+ },
+ "DL2_after_a3": null,
+ "DL2_reader_out": {
+  "q": "MATCH (a:I54A053516 {name: 'a1'})-[:K053516]->(b) RETURN b.name ORDER BY b.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "b.name"
+   ],
+   "rows": [
+    [
+     "a2"
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL2_reader_any": {
+  "q": "MATCH (a {id: 'i54_053516_a2'})-[r]->(b) RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     0
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL2_degree_a1": null,
+ "DL3_delete_r": {
+  "q": "MATCH (:I54A053516 {id: 'i54_053516_a1'})-[r:K053516]->(:I54A053516 {id: 'i54_053516_a2'}) DELETE r",
+  "params": {},
+  "sql": {
+   "columns": [
+    "Expression_1"
+   ],
+   "rows": []
+  }
+ },
+ "DL3_after": {
+  "q": "MATCH (a:I54A053516 {id: 'i54_053516_a1'})-[r:K053516]->(b) RETURN b.name",
+  "params": {},
+  "sql": {
+   "columns": [
+    "b.name"
+   ],
+   "rows": []
+  },
+  "native": "declined"
+ },
+ "DL3_endpoints": [
+  true,
+  true
+ ],
+ "DL3_recreate": true,
+ "DL3_after_recreate": {
+  "q": "MATCH (a:I54A053516 {id: 'i54_053516_a1'})-[r:K053516]->(b) RETURN b.name, r.w",
+  "params": {},
+  "sql": {
+   "columns": [
+    "b.name",
+    "r.w"
+   ],
+   "rows": [
+    [
+     "a2",
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL4_remove_prop": {
+  "q": "MATCH (n:I54A053516 {id: 'i54_053516_a1'}) REMOVE n.f",
+  "params": {},
+  "sql": {
+   "columns": [
+    "node_id",
+    "graph_id"
+   ],
+   "rows": []
+  }
+ },
+ "DL4_keys": {
+  "q": "MATCH (n:I54A053516 {id: 'i54_053516_a1'}) RETURN keys(n), n.f",
+  "params": {},
+  "sql": {
+   "columns": [
+    "keys(n)",
+    "n.f"
+   ],
+   "rows": [
+    [
+     [
+      "name",
+      "v",
+      "s",
+      "b",
+      "l",
+      "m",
+      "id"
+     ],
+     null
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL4_get_node": [
+  "b",
+  "id",
+  "l",
+  "labels",
+  "m",
+  "name",
+  "p_id",
+  "s",
+  "v"
+ ],
+ "DL4_remove_label": {
+  "q": "MATCH (n:I54A053516 {id: 'i54_053516_a2'}) REMOVE n:I54A053516",
+  "params": {},
+  "sql": {
+   "columns": [
+    "node_id",
+    "graph_id"
+   ],
+   "rows": []
+  }
+ },
+ "DL4_labels": {
+  "q": "MATCH (n {id: 'i54_053516_a2'}) RETURN labels(n)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "labels(n)"
+   ],
+   "rows": [
+    [
+     []
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL4_get_node_labels": [],
+ "DL5_named": {
+  "q": "USE GRAPH 'i54g053516' MATCH ()-[r:K053516]->() DELETE r",
+  "params": {},
+  "sql": {
+   "columns": [
+    "Expression_1"
+   ],
+   "rows": []
+  }
+ },
+ "DL5_named_after": {
+  "q": "USE GRAPH 'i54g053516' MATCH ()-[r:K053516]->() RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     0
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL5_default_after": {
+  "q": "MATCH ({id: 'i54_053516_gx'})-[r:K053516]->() RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL6_one": {
+  "q": "USE GRAPH 'i54m053516' MATCH ({id: 'i54_053516_mx'})-[r:K053516]->() WITH r LIMIT 1 DELETE r",
+  "params": {},
+  "sql": {
+   "columns": [
+    "__edge_r_id"
+   ],
+   "rows": []
+  }
+ },
+ "DL6_after_one": {
+  "q": "USE GRAPH 'i54m053516' MATCH ({id: 'i54_053516_mx'})-[r:K053516]->() RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     1
+    ]
+   ]
+  },
+  "native": "declined"
+ },
+ "DL6_detach": {
+  "q": "USE GRAPH 'i54m053516' MATCH (n {id: 'i54_053516_mx'}) DETACH DELETE n",
+  "params": {},
+  "sql": {
+   "columns": [
+    "node_id"
+   ],
+   "rows": []
+  }
+ },
+ "DL6_after_detach": {
+  "q": "USE GRAPH 'i54m053516' MATCH ()-[r:K053516]->() RETURN count(r)",
+  "params": {},
+  "sql": {
+   "columns": [
+    "count(r)"
+   ],
+   "rows": [
+    [
+     0
+    ]
+   ]
+  },
+  "native": "declined"
+ }
+}
