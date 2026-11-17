@@ -36,3 +36,33 @@ Model-side predictions (before the edit):
 | M1 | `server` with `!stats_free(s, q)`, everything else admitting | `Inconsistent`, `same_ledger`, `cnt` unchanged, one `Refused(Inconsistent)` event: provable as is (the branch exists; no theorem names it yet) |
 | M2 | a control that deletes the `!stats_free` branch (the write goes ahead) | the new theorem fails |
 | M3 | current `txn_commit` on a nested lock-timeout refusal with the counter row free | `took_row` is true (the model counts the refusal and holds the row with the count); after the repair the count is undone (`cnt` back) while the row stays held, so `took_row` must be decided by "a counted outcome or a nested refusal whose Bump ran", not by the counter value |
+
+## Addendum (written about 22:20Z, after reading the deciding source and before any native run)
+
+Source read since the table above (all byte-equal to `git show 3eaa79cf:<path>`): `client.py` `commit` / `_commit` /
+`_call` / `enable` / `disable` / `set_strict`, `_write_txn.py` (`caller_transaction_level`, `WriteTxn`), `Ledger.cls`
+`Commit` / `CommitInTxn` / `WriteRevision` / `Count` / `RecordVerify` / `Enable` / `Disable` / `SetStrict`,
+`LedgerStats.cls`, `guard.py`, `engine.py` `_iris_obj`, `replay.py` `verify`, `nodes_edges.py` `create_node`.
+What it settles for S3 and adds:
+
+- The strict guard's `count_rejection` and `verify()`'s `RecordVerify` call `Graph.KG.Ledger` through
+  `engine._iris_obj()`. For an engine built the documented way, `IRISGraphEngine(conn, ...)` (README, USER_GUIDE,
+  ADMIN_GUIDE), `_connection_params` is unset and `_iris_obj()` is `iris.createIRIS(conn)`: the caller's own server
+  process, so the counter-row save nests in the caller's open transaction. An engine from `from_connect(...)` uses a
+  dedicated Native API connection (another process) instead. The local runtime builds engines the documented way.
+- With the driver's autocommit off, `$TLEVEL` is 0 until the caller's first write; at level 0 the Bump's own
+  `TSTART`/`TCOMMIT` commits for real and frees the row. So the in-process paths hold the row only after an earlier
+  write in the caller's transaction. The guard runs before `create_node` opens its own level.
+- `client.disable()` and `set_strict()` also save the counter row on the same process and are not refused inside a
+  caller's transaction (only `enable` and `redact` are); not probed here.
+
+I revise S3 to "an earlier application write, then the refused direct write" and add neighbours. `app` is a table of
+this repair's own in `I60SA` (created in autocommit mode); the earlier write is one `INSERT` into it.
+
+| ID | Case (changing input or history) | Reader | Predicted outcome |
+|---|---|---|---|
+| S3 (revised) | strict on; A (autocommit off) inserts one `app` row, then `create_node` (refused by the guard); B commits while A is open; A rolls back; B retries | A's exception; R's `rej_strict_block`; B's result and wall time | A: `LedgerStrictModeError`; `rej_strict_block` +1 visible to R while A is open; B: `LedgerInconsistencyError` (`stats save failed`) after about 10 s, nothing written; after A's rollback `rej_strict_block` back to its start (+0) and B's retry commits |
+| S3z (neighbour: no earlier write) | strict on; A (autocommit off, nothing written yet) calls `create_node` (refused); B commits while A is open | same | A refused; `rej_strict_block` +1 and kept after A's rollback; B commits at once |
+| S4 (neighbour: no caller transaction) | strict on; A (autocommit on) calls `create_node` (refused); B commits | same | A refused; `rej_strict_block` +1, kept; B commits at once |
+| S6 (verify inside a caller transaction) | strict off; A (autocommit off) inserts one `app` row, then `ledger.verify()`; B commits while A is open; A rolls back; B retries | B's result and wall time; R's `last_verify_result`/counters | B: `LedgerInconsistencyError` (`stats save failed`) after about 10 s, nothing written; after A's rollback B's retry commits |
+| S6n (neighbour: no earlier write) | strict off; A (autocommit off, nothing written) calls `ledger.verify()`; B commits while A is open | B's result and wall time | B commits at once |
