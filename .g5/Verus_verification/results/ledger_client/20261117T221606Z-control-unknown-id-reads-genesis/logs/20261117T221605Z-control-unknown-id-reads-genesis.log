@@ -1,0 +1,13 @@
+verification results:: 33 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/unknown-id-reads-genesis/20261117T221605Z/models/ledger_client/ledger_client.rs:869:9
+    |
+865 |   pub proof fn theorem_revision_readers_resolve_ids(s: Srv, id: int, other: int, c: Cs, p: nat, a: Apply, f: int)
+    |   --------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+869 | /         !s.redacting && !s.seq_of.contains_key(id) ==> seq_read(s, id) == Read::Raise(Exc::UnknownRev)
+870 | |             && diff_read(s, id, other) == Read::Raise(Exc::UnknownRev) && diff_read(s, other, id) is Raise,
+    | |__________________________________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

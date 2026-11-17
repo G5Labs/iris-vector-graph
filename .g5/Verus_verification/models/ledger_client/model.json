@@ -1,7 +1,7 @@
 {
   "name": "ledger_client",
   "root": "ledger_client.rs",
-  "expected_verified": 30,
+  "expected_verified": 34,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "controls": [
     {
@@ -263,6 +263,55 @@
       "replace": "    if !s.seq_of.contains_key(id) { Read::Raise(Exc::UnknownRev) }\n    else if s.redacting { Read::Raise(Exc::RedactionInProgress) } else { Read::At(s.seq_of[id]) }",
       "expect_fail_in": [
         "theorem_revision_readers_resolve_ids"
+      ]
+    },
+    {
+      "name": "nested-refusal-counted",
+      "why": "the pre-repair-2 model: a nested commit that raises keeps its refusal's count until the caller's transaction ends (write_txn's undo of IVG's level is ignored)",
+      "find": "            cnt: if undone { s.cnt } else { o.srv.cnt },\n",
+      "replace": "",
+      "expect_fail_in": [
+        "theorem_nested_refusal_is_never_counted",
+        "theorem_nested_lock_timeout_keeps_the_counter_row"
+      ]
+    },
+    {
+      "name": "nested-refusal-frees-row",
+      "why": "undoing a refused nested commit's level also releases the counter row its Bump took",
+      "find": "    let took_row = o.srv.cnt != s.cnt;\n",
+      "replace": "    let took_row = o.srv.cnt != s.cnt && o.py is Res;\n",
+      "expect_fail_in": [
+        "theorem_nested_lock_timeout_keeps_the_counter_row"
+      ]
+    },
+    {
+      "name": "held-row-not-checked",
+      "why": "a commit whose counter row another transaction holds writes anyway (the stats save is not a deciding step)",
+      "find": "    } else if !stats_free(s, p) {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n",
+      "replace": "    } else if false {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n",
+      "expect_fail_in": [
+        "theorem_held_counter_row_refuses_a_valid_commit",
+        "theorem_nested_lock_timeout_keeps_the_counter_row",
+        "theorem_in_transaction_row_save_blocks_other_writers",
+        "theorem_uncounted_outcomes"
+      ]
+    },
+    {
+      "name": "in-transaction-save-commits-at-once",
+      "why": "a counter-row save on the caller's own process commits at once even inside the caller's open transaction",
+      "find": "    } else if via is CallerConn && level > 0 {\n",
+      "replace": "    } else if false {\n",
+      "expect_fail_in": [
+        "theorem_in_transaction_row_save_blocks_other_writers"
+      ]
+    },
+    {
+      "name": "save-held-at-level-0",
+      "why": "a counter-row save on the caller's process holds the row even at $TLEVEL 0 (nothing written yet)",
+      "find": "    } else if via is CallerConn && level > 0 {\n",
+      "replace": "    } else if via is CallerConn {\n",
+      "expect_fail_in": [
+        "theorem_in_transaction_row_save_blocks_other_writers"
       ]
     }
   ]

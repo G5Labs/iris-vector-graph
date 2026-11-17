@@ -1,0 +1,35 @@
+verification results:: 32 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/bump-ignores-held-row/20261117T221614Z/models/ledger_client/ledger_client.rs:676:13
+    |
+672 |   pub proof fn theorem_caller_transaction_holds_the_head(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ---------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+676 |       ensures ({
+    |  _____________^
+677 | |         let o1 = txn_commit(s, c, p, a, f1);
+678 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+679 | |         let o3 = client_commit(txn_rollback(s, o2.srv, p), d, q, b, f2);
+...   |
+690 | |         &&& o4.srv.parent[s.head + 2] == f1
+691 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/bump-ignores-held-row/20261117T221614Z/models/ledger_client/ledger_client.rs:724:13
+    |
+722 |   pub proof fn theorem_uncounted_outcomes(s: Srv, c: Cs, p: nat, a: Apply, f: int, r: nat)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+723 |       requires calls_server(c),
+724 |       ensures ({
+    |  _____________^
+725 | |         let o = client_commit(s, c, p, a, f);
+726 | |         &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+727 | |             && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && s.redacting && a.blocked
+...   |
+736 | |         &&& stats_free(s, p) ==> count_strict(s, p).cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+737 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

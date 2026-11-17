@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_caller_transaction_holds_the_head",
+      "theorem_uncounted_outcomes"
+    ],
+    "find": "Wire::Err { code, .. } => (if stats_free(s, p) { Srv { cnt: bump(s.cnt, code), ..s } } else { s }, w),",
+    "name": "bump-ignores-held-row",
+    "replace": "Wire::Err { code, .. } => (Srv { cnt: bump(s.cnt, code), ..s }, w),",
+    "why": "a Bump lands even while another process's transaction holds the counter row"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_caller_transaction_holds_the_head",
+      "theorem_uncounted_outcomes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/bump-ignores-held-row/20261117T221614Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_caller_transaction_holds_the_head": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221614Z-control-bump-ignores-held-row-theorem_caller_transaction_holds_the_head.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_uncounted_outcomes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221614Z-control-bump-ignores-held-row-theorem_uncounted_outcomes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221614Z-control-bump-ignores-held-row.log",
+    "timed_out": false,
+    "verified": 32
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T221616Z-control-bump-ignores-held-row/logs/20261117T221614Z-control-bump-ignores-held-row-theorem_caller_transaction_holds_the_head.log": "26c748066b86b358107a94ca244d83cd62c97b8dcfbed2ccf7ba8de1370b7fbb",
+    ".g5/Verus_verification/results/ledger_client/20261117T221616Z-control-bump-ignores-held-row/logs/20261117T221614Z-control-bump-ignores-held-row-theorem_uncounted_outcomes.log": "3d6aeebb38808117e13b45711b424159314ed6c1f2bb47b7154ad8a0ced452de",
+    ".g5/Verus_verification/results/ledger_client/20261117T221616Z-control-bump-ignores-held-row/logs/20261117T221614Z-control-bump-ignores-held-row.log": "ae9eb1dc9850e61404ca1731ef516f3138a34edfb149671f595c346e31828ac8"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

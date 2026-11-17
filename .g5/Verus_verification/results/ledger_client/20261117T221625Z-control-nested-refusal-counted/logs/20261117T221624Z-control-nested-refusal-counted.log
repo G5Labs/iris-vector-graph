@@ -1,0 +1,27 @@
+verification results:: 32 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/nested-refusal-counted/20261117T221624Z/models/ledger_client/ledger_client.rs:776:13
+    |
+775 | pub proof fn theorem_nested_refusal_is_never_counted(s: Srv, c: Cs, p: nat, a: Apply, f: int)
+    | --------------------------------------------------------------------------------------------- at the end of the function body
+776 |     ensures txn_commit(s, c, p, a, f).py is Raise ==> txn_commit(s, c, p, a, f).srv.cnt == s.cnt,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/nested-refusal-counted/20261117T221624Z/models/ledger_client/ledger_client.rs:796:13
+    |
+792 |   pub proof fn theorem_nested_lock_timeout_keeps_the_counter_row(s: Srv, c: Cs, d: Cs, p: nat, q: nat, x: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   -------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+796 |       ensures ({
+    |  _____________^
+797 | |         let o1 = txn_commit(s, c, p, a, f1);
+798 | |         let s1 = Srv { holder: None, ..o1.srv };
+799 | |         let o2 = client_commit(s1, d, q, b, f2);
+...   |
+811 | |         &&& n2.srv.cnt == (Cnt { ok: s.cnt.ok + 1, lock: s.cnt.lock + 1, ..s.cnt })
+812 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

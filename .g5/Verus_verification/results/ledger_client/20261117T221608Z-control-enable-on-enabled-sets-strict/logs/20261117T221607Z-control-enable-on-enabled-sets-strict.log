@@ -1,0 +1,12 @@
+verification results:: 33 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/enable-on-enabled-sets-strict/20261117T221607Z/models/ledger_client/ledger_client.rs:890:9
+    |
+888 | pub proof fn theorem_enable_lifecycle(s: Srv, strict: bool, mo: nat, rb: nat, f: int)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+889 |     ensures
+890 |         s.state == LState::Enabled ==> enable(s, strict, mo, rb, false, f) == (s, EnableOut::Head(s.head)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

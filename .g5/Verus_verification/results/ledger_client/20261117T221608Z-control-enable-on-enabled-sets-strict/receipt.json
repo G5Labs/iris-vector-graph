@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_enable_lifecycle"
+    ],
+    "find": "        (s, EnableOut::Head(s.head))\n",
+    "name": "enable-on-enabled-sets-strict",
+    "replace": "        (Srv { strict, ..s }, EnableOut::Head(s.head))\n",
+    "why": "enable(strict=...) on an enabled ledger switches strict"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_enable_lifecycle"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/enable-on-enabled-sets-strict/20261117T221607Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_enable_lifecycle": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221607Z-control-enable-on-enabled-sets-strict-theorem_enable_lifecycle.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221607Z-control-enable-on-enabled-sets-strict.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T221608Z-control-enable-on-enabled-sets-strict/logs/20261117T221607Z-control-enable-on-enabled-sets-strict-theorem_enable_lifecycle.log": "1f860e2f97bbd77aefdb7ccdce2860a1b16c2591b195ca8efc79dc97d8a2ca40",
+    ".g5/Verus_verification/results/ledger_client/20261117T221608Z-control-enable-on-enabled-sets-strict/logs/20261117T221607Z-control-enable-on-enabled-sets-strict.log": "593f6ae4c23ce1b71a4baeede8f28be125b6202767bd65d6e265720ef9bb9de3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "witness_text_source_is_dropped"
+    ],
+    "find": "match x { Src::Object(j) => Some(j), _ => None }",
+    "name": "text-source-kept",
+    "replace": "match x { Src::Object(j) => Some(j), Src::Text(t) => Some(t), _ => None }",
+    "why": "a text source is stored as given"
+  },
+  "expected": {
+    "fail_in": [
+      "witness_text_source_is_dropped"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/text-source-kept/20261117T221611Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "witness_text_source_is_dropped": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221611Z-control-text-source-kept-witness_text_source_is_dropped.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221611Z-control-text-source-kept.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T221612Z-control-text-source-kept/logs/20261117T221611Z-control-text-source-kept-witness_text_source_is_dropped.log": "0ab4b2e378f521bc32d8873c9442adc559c52934840d79a23175c08d7b05bc46",
+    ".g5/Verus_verification/results/ledger_client/20261117T221612Z-control-text-source-kept/logs/20261117T221611Z-control-text-source-kept.log": "d02fab226e42e30ffa94925eb3ea3f91628165e438b3d9edf0cd3e28e95c4a04"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

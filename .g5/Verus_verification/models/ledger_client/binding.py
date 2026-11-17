@@ -3,12 +3,17 @@
 Run through the local runtime wrapper, which installs the fixture module as `runtime`:
     python -B .g5/uplift/consolidated/local-runtime/run_binding.py .g5/Verus_verification/models/ledger_client/binding.py
 `runtime` must provide NAME, PORT, FIXTURE, connect(namespace) (identity-checked) and engine(c, namespace). Writes only in
-task-owned namespaces, by default the iteration-60 repair's I60RA (enabled, max_ops 50000), I60RC (enabled, max_ops 2) and
-I60RE (never enabled; never enabled here); override with LEDGER_CLIENT_NS_A / _C / _E (the iteration-60 run used I60LA,
-I60LC, I60LE). IDs and keys carry a per-run stamp, so repeated runs do not collide. The repair cases add counter deltas
+task-owned namespaces, by default repair 2's I60SB (enabled, max_ops 50000, with the application table
+SQLUser.i60s_app), I60SC (enabled, max_ops 2) and I60SE (never enabled; never enabled here); override with
+LEDGER_CLIENT_NS_A / _C / _E (the iteration-60 run used I60LA, I60LC, I60LE; the first repair I60RA, I60RC, I60RE). IDs and
+keys carry a per-run stamp, so repeated runs do not collide. The repair cases add counter deltas
 read from another connection while a caller's transaction is open (B8), an uncounted nested refusal (B8b), the strict
 guard's count call (B8c), a redaction-blocked commit and the revision readers during an unfinished redaction of this
-run's own prefix (B18, B19; redaction is otherwise an excluded area), and revision-row field limits (B20).
+run's own prefix (B18, B19; redaction is otherwise an excluded area), and revision-row field limits (B20). Repair 2
+(validation V3) adds a caller's nested commit refused by the head lock held with a Native API lock, which leaves the
+caller's transaction holding the counter row, and another process's valid commit then refused as `inconsistent` (B21),
+its no-caller-transaction neighbour (B21n), and the in-process counter-row saves of the strict guard (B22, B22z) and of
+verify() (B23, B23z) after and before a caller's first write.
 
 Expected outcomes come from `Ref`, an UNVERIFIED hand transcription of ledger_client.rs's spec functions (server,
 client_commit, from_commit_error, bump, txn_commit/txn_rollback/txn_end, seq_read, diff_read, head_read, enable,
@@ -133,7 +138,7 @@ class Ref:
             return s, dict(kind="Err", code="RedactionInProgress", head=None)
         if not self.fits(c):
             return s, dict(kind="Err", code="Inconsistent", head=hid)
-        if not self.stats_free(s, p):
+        if not self.stats_free(s, p) and self.mut != "held-row-not-checked":
             return s, dict(kind="Err", code="Inconsistent", head=hid)
         n = s["head"] + 1
         s["head"] = n
@@ -179,10 +184,15 @@ class Ref:
         if calls and not foreign and self.mut != "lock-released-inside-transaction":
             s2 = dict(s2, holder=p)
         took_row = calls if self.mut == "uncounted-refusal-holds-row" else (s2["cnt"] != s["cnt"])
+        if self.mut == "nested-refusal-frees-row":
+            took_row = took_row and py[0] == "Res"
         if took_row and self.mut != "stats-row-not-held":
             if s.get("stats_holder") != p:
                 s2 = dict(s2, stats_base=dict(s["cnt"]))
             s2 = dict(s2, stats_holder=p)
+        # repair 2: write_txn takes back IVG's level when the nested commit raises, the refusal's count with it
+        if py[0] == "Raise" and self.mut != "nested-refusal-counted":
+            s2 = dict(s2, cnt=dict(s["cnt"]))
         return s2, py, ev
 
     def txn_rollback(self, before, cur, p):
@@ -198,6 +208,22 @@ class Ref:
         s = copy.deepcopy(s)
         if self.stats_free(s, q):
             s["cnt"]["strict_block"] += 1
+        return s
+
+    def row_save(self, s, p, via, level, count):
+        """ledger_client.rs row_save: a counter-row save through engine._iris_obj() (strict count or RecordVerify)."""
+        s = copy.deepcopy(s)
+        free = self.stats_free(s, p) if via == "caller" else s.get("stats_holder") is None
+        if not free:
+            return s
+        base = dict(s["cnt"])
+        if count:
+            s["cnt"]["strict_block"] += 1
+        held = via == "caller" and (level > 0 if self.mut != "save-held-at-level-0" else True)
+        if held and self.mut != "in-transaction-save-commits-at-once":
+            if s.get("stats_holder") != p:
+                s["stats_base"] = base
+            s["stats_holder"] = p
         return s
 
     def seq_read(self, s, rid):
@@ -241,7 +267,8 @@ MUTATIONS = ["message-fingerprinted", "ops-not-fingerprinted", "expected-head-be
              "unknown-id-reads-genesis", "head-refused-while-disabled", "enable-on-enabled-sets-strict", "update-without-emptying",
              "chunk-off-by-one", "text-source-kept", "event-on-client-refusal", "stats-row-not-held", "bump-ignores-held-row",
              "uncounted-refusal-holds-row", "redaction-block-counted", "field-limits-unchecked", "field-limits-before-key",
-             "lookup-before-redaction-check"]
+             "lookup-before-redaction-check", "nested-refusal-counted", "nested-refusal-frees-row", "held-row-not-checked",
+             "in-transaction-save-commits-at-once", "save-held-at-level-0"]
 # The redaction exception of RejectUpdate needs %IVGLedgerRedaction set in the SQL server process and a redactedRev entry;
 # the binding does not forge redaction internals, so that branch is an inspected source binding only.
 NOT_NATIVE = {"update-without-emptying": "redaction-context UPDATE not forged (inspected only)"}
@@ -341,9 +368,9 @@ def run(ref, live, stamp, cases_out):
     return mism
 
 
-NS_A = os.environ.get("LEDGER_CLIENT_NS_A", "I60RA")
-NS_C = os.environ.get("LEDGER_CLIENT_NS_C", "I60RC")
-NS_E = os.environ.get("LEDGER_CLIENT_NS_E", "I60RE")
+NS_A = os.environ.get("LEDGER_CLIENT_NS_A", "I60SB")
+NS_C = os.environ.get("LEDGER_CLIENT_NS_C", "I60SC")
+NS_E = os.environ.get("LEDGER_CLIENT_NS_E", "I60SE")
 
 
 def cdelta(a, b):
@@ -552,6 +579,143 @@ def main():
         s4 = ref.count_strict(s3, 3)
         return [cdelta(s1["cnt"], s2["cnt"]), cdelta(s3["cnt"], s4["cnt"])]
     add("B8c.strict_count_lost_while_row_held", [cdelta(k8c_0, k8c_1), cdelta(k8c_2, k8c_3)], exp8c)
+
+    # B21 (repair 2, validation V3) X holds the head with a Native API lock (no transaction, no counter row). A, inside
+    # its own transaction, commits: refused by the head lock timeout (about 30 s), not counted, and A's transaction
+    # keeps the counter row its Bump saved. X lets go; B's valid commit finds the head free and is refused as
+    # `inconsistent` (about 10 s), writing nothing. After A's rollback B's same commit gets the next seq and is counted.
+    # B21n: the same refusal with no caller transaction is counted and holds nothing; B's commit goes through at once.
+    import iris as _iris
+    X = NS(NS_A)
+    nat = _iris.createIRIS(X.c)
+
+    def held_head_case(label, caller_txn):
+        s = A.state()
+        s["holder"] = 3   # X: a plain lock on the head, no transaction, no counter row
+        k0 = R.counters()
+        h0 = B.L.head().seq
+        cA_, rA_ = cs_of({"ops": [("create_node", f"i60b_{stamp}_{label}a")]}, stamp)
+        dB_, rB_ = cs_of({"ops": [("create_node", f"i60b_{stamp}_{label}b")]}, stamp)
+        locked = False
+        if caller_txn:
+            A.c.setAutoCommit(False)
+        try:
+            nat.lock("", 2, "^IVG.Ledger", "head")
+            locked = True
+            t0 = time.time()
+            pyA, evA, _ = observe_commit(A, cA_)
+            waits[f"{label}.A"] = round(time.time() - t0, 1)
+            k1 = R.counters()
+            nat.unlock("", "^IVG.Ledger", "head")
+            locked = False
+            t0 = time.time()
+            pyB, evB, _ = observe_commit(B, dB_)
+            waits[f"{label}.B"] = round(time.time() - t0, 1)
+            k2 = R.counters()
+            hB = B.L.head().seq - h0
+        finally:
+            if locked:
+                nat.unlock("", "^IVG.Ledger", "head")
+            if caller_txn:
+                A.c.rollback(); A.c.setAutoCommit(True)
+        if not caller_txn:
+            def exp(ref, s=s, rA=rA_, rB=rB_):
+                n1, p1, e1 = ref.client(s, rA, 1, ok)
+                n2, p2, e2 = ref.client(dict(n1, holder=None), rB, 2, ok)
+                return [p1, e1, cdelta(s["cnt"], n1["cnt"]), p2, e2, cdelta(s["cnt"], n2["cnt"]), n2["head"] - s["head"]]
+            add(f"{label}.lock_timeout_without_caller_transaction", [pyA, evA, cdelta(k0, k1), pyB, evB, cdelta(k0, k2), hB], exp)
+            return
+        k3 = R.counters()
+        pyR, _, revR = observe_commit(B, dB_)
+        k4 = R.counters()
+        parent_ok = revR is not None and revR.parent_id == s["id_of"][s["head"]]
+
+        def exp(ref, s=s, rA=rA_, rB=rB_):
+            s1, p1, e1 = ref.txn_commit(s, rA, 1, ok)
+            s2, p2, e2 = ref.client(dict(s1, holder=None), rB, 2, ok)
+            s3 = ref.txn_rollback(dict(s, holder=None), s2, 1)
+            s4, p3, _ = ref.client(s3, rB, 2, ok)
+            return [p1, e1, cdelta(s["cnt"], s1["cnt"]), p2, e2, cdelta(s["cnt"], s2["cnt"]), s2["head"] - s["head"],
+                    cdelta(s["cnt"], s3["cnt"]), p3, cdelta(s["cnt"], s4["cnt"]),
+                    s4["parent"].get(s["head"] + 1) == s["id_of"][s["head"]]]
+        add(f"{label}.nested_lock_timeout_keeps_counter_row", [pyA, evA, cdelta(k0, k1), pyB, evB, cdelta(k0, k2), hB,
+                                                               cdelta(k0, k3), pyR, cdelta(k0, k4), parent_ok], exp)
+
+    held_head_case("B21", True)
+    held_head_case("B21n", False)
+    X.close()
+
+    # B22/B23 (repair 2) the in-process counter-row saves: the strict guard's Ledger.Count (B22) and verify()'s
+    # RecordVerify (B23), made by a caller P whose engine is built on its own connection (engine._iris_obj() is
+    # createIRIS(P.c), P's server process). After P's first write in its open transaction ($TLEVEL 1) the save holds the
+    # counter row: B's valid commit is refused as `inconsistent`; P's rollback takes the strict count back. Before any
+    # write ($TLEVEL 0, B22z, B23z) the save commits at once and B commits.
+    cur = A.c.cursor()
+    try:
+        cur.execute("CREATE TABLE SQLUser.i60s_app (k VARCHAR(64), v VARCHAR(64))")
+    except Exception:  # noqa: BLE001 - already there (the probe's bindns section creates it); the INSERT below checks
+        pass
+    cur.close()
+
+    def row_save_case(label, strict, earlier_write):
+        B.L.set_strict(strict)
+        P = NS(NS_A)   # a fresh engine: its strict guard has no cached state
+        s = P.state()
+        k0 = R.counters()
+        h0 = B.L.head().seq
+        dB_, rB_ = cs_of({"ops": [("create_node", f"i60b_{stamp}_{label}b")]}, stamp)
+        P.c.setAutoCommit(False)
+        try:
+            if earlier_write:
+                cur = P.c.cursor()
+                cur.execute("INSERT INTO SQLUser.i60s_app (k, v) VALUES (?, ?)", [f"i60b_{stamp}_{label}", "app"])
+                cur.close()
+            cur = P.c.cursor()
+            cur.execute("SELECT $TLEVEL")
+            level = int(cur.fetchone()[0])
+            cur.close()
+            if strict:
+                try:
+                    P.e.create_node(f"i60b_{stamp}_{label}a")
+                    what = "written"
+                except LE.LedgerStrictModeError:
+                    what = "LedgerStrictModeError"
+            else:
+                P.L.verify()
+                what = "verified"
+            k1 = R.counters()
+            t0 = time.time()
+            pyB, evB, _ = observe_commit(B, dB_)
+            waits[f"{label}.B"] = round(time.time() - t0, 1)
+            hB = B.L.head().seq - h0
+        finally:
+            P.c.rollback(); P.c.setAutoCommit(True)
+        k3 = R.counters()
+        pyR = None
+        if pyB[0] != "Res":
+            pyR, _, _ = observe_commit(B, dB_)
+        k4 = R.counters()
+        if strict:
+            B.L.set_strict(False)
+        P.close()
+
+        def exp(ref, s=s, rB=rB_, strict=strict, earlier_write=earlier_write):
+            lvl = 1 if earlier_write else 0   # write_routing's premise: $TLEVEL 0 until the caller's first write
+            s1 = ref.row_save(s, 1, "caller", lvl, strict)
+            s2, p2, e2 = ref.client(s1, rB, 2, ok)
+            s3 = ref.txn_rollback(s, s2, 1)
+            p3, s4 = None, s3
+            if p2[0] != "Res":
+                s4, p3, _ = ref.client(s3, rB, 2, ok)
+            return ["LedgerStrictModeError" if strict else "verified", lvl, cdelta(s["cnt"], s1["cnt"]), p2, e2,
+                    s2["head"] - s["head"], cdelta(s["cnt"], s3["cnt"]), p3, cdelta(s["cnt"], s4["cnt"])]
+        add(f"{label}.{'strict_count' if strict else 'verify'}_{'after' if earlier_write else 'before'}_first_write",
+            [what, level, cdelta(k0, k1), pyB, evB, hB, cdelta(k0, k3), pyR, cdelta(k0, k4)], exp)
+
+    row_save_case("B22", True, True)
+    row_save_case("B22z", True, False)
+    row_save_case("B23", False, True)
+    row_save_case("B23z", False, False)
     B.close(); R.close()
     # B18 a commit into the target of an unfinished redaction of this run's own prefix: RedactionInProgressError, one
     # event, no counter, nothing written; a neighbour outside the target commits. B19: while it is unfinished, every
@@ -679,13 +843,16 @@ def main():
         "not_observed": "IdempotencyRedactedError; the redaction marker only as a neighbour (one blocked commit and the "
                         "readers during one unfinished redaction of this run's own prefix; whether records touch the target "
                         "is the ledger_redaction input `blocked`); object-path re-save/delete of a revision row; Inconsistent "
-                        "transport failures; a write whose counter row another transaction holds while the head is free; "
+                        "transport failures; RecordVerify's stall while another transaction holds the row; disable()/set_strict() "
+                        "inside a caller's transaction; an engine from from_connect (its own connection) for B22/B23; "
                         "the ObjectScript bodies are executed, not proved",
     }
     out = bc.write_receipt("ledger_client", Path(__file__), body)
     d = json.loads(out.read_text())
     for p in ["iris_vector_graph/ledger/changeset.py", "iris_vector_graph/ledger/client.py", "iris_vector_graph/ledger/errors.py",
-              "iris_src/src/Graph/KG/Ledger.cls", "iris_src/src/Graph/KG/LedgerStats.cls", "iris_src/src/Graph/KG/LedgerRevision.cls"]:
+              "iris_src/src/Graph/KG/Ledger.cls", "iris_src/src/Graph/KG/LedgerStats.cls", "iris_src/src/Graph/KG/LedgerRevision.cls",
+              "iris_vector_graph/_write_txn.py", "iris_vector_graph/ledger/guard.py", "iris_vector_graph/ledger/replay.py",
+              "iris_vector_graph/engine.py", "iris_src/src/Graph/KG/Txn.cls"]:
         d["inputs"][p] = bc.sha(PIN_DIR / p)
         assert d["inputs"][p] == bc.sha(bc.REPO / p), p
     d["inputs"][".g5/uplift/consolidated/local-runtime/runtime.py"] = bc.sha(Path(rt.__file__))

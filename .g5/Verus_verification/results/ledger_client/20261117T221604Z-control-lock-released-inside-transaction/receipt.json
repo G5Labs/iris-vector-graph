@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_caller_transaction_holds_the_head"
+    ],
+    "find": "            holder: if took_head { Some(p) } else { o.srv.holder },\n",
+    "name": "lock-released-inside-transaction",
+    "replace": "            holder: o.srv.holder,\n",
+    "why": "the head lock is released when the nested commit ends"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_caller_transaction_holds_the_head"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/lock-released-inside-transaction/20261117T221602Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_caller_transaction_holds_the_head": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221602Z-control-lock-released-inside-transaction-theorem_caller_transaction_holds_the_head.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221602Z-control-lock-released-inside-transaction.log",
+    "timed_out": false,
+    "verified": 32
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T221604Z-control-lock-released-inside-transaction/logs/20261117T221602Z-control-lock-released-inside-transaction-theorem_caller_transaction_holds_the_head.log": "73e79168c20d9c5558e2b066bceda1923c32315bdd332259313dd63d9abac731",
+    ".g5/Verus_verification/results/ledger_client/20261117T221604Z-control-lock-released-inside-transaction/logs/20261117T221602Z-control-lock-released-inside-transaction.log": "68bcc170d351f00e7919d60d899b3585bb52d5d492863fdd79ff53916a259ef3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

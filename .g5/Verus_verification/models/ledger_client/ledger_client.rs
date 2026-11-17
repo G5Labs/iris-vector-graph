@@ -21,6 +21,14 @@
 // not_enabled, empty, a redaction-blocked commit, and `inconsistent` (a revision row that does not fit its columns,
 // LedgerRevision MAXLEN, or a counter row another transaction holds). Readers that take a revision ID refuse an
 // unfinished redaction before looking the ID up.
+//
+// Repair 2 after the round-1 validation (case V3): a nested commit that raises is never counted. IVG's write_txn
+// (_write_txn.py WriteTxn.__exit__ -> rollback -> Txn_Undo) takes back its own level when _commit raises, and that
+// level holds the refusal's Bump; the counter row's lock stays until the caller's transaction ends. A caller's
+// transaction can therefore hold the counter row without the head: after a nested commit refused by the head lock
+// timeout, or after a counter-row save made on the caller's own server process (`row_save`: the strict guard's
+// Ledger.Count, verify()'s RecordVerify) once the caller has written. Another process's otherwise valid commit then
+// finds the head free and is refused `inconsistent` at the counter row (server's `!stats_free` branch), writing nothing.
 use vstd::prelude::*;
 
 verus! {
@@ -312,15 +320,20 @@ pub open spec fn client_commit(s: Srv, c: Cs, p: nat, a: Apply, fresh: int) -> O
 /// is released only when the caller's transaction ends (an unlock inside a transaction waits for its end), whatever
 /// the outcome. A counted outcome also saved the counter row inside the caller's transaction, which then holds that
 /// row until it ends; an uncounted refusal (not_enabled, inconsistent, redaction_in_progress) leaves the row free.
+/// When the nested commit raises, write_txn takes back IVG's level, and with it the refusal's Bump (repair 2,
+/// validation V3: the refusal is never counted), but not the row lock the Bump took: `took_row` is decided before
+/// that undo.
 pub open spec fn txn_commit(s: Srv, c: Cs, p: nat, a: Apply, fresh: int) -> Out {
     let o = client_commit(s, c, p, a, fresh);
     let took_head = calls_server(c) && !(s.holder is Some && s.holder->Some_0 != p);
     let took_row = o.srv.cnt != s.cnt;
+    let undone = o.py is Raise;
     Out {
         srv: Srv {
             holder: if took_head { Some(p) } else { o.srv.holder },
             stats_holder: if took_row { Some(p) } else { o.srv.stats_holder },
             stats_base: if took_row && o.srv.stats_holder != Some(p) { s.cnt } else { o.srv.stats_base },
+            cnt: if undone { s.cnt } else { o.srv.cnt },
             ..o.srv
         },
         ..o
@@ -343,6 +356,30 @@ pub open spec fn txn_end(cur: Srv) -> Srv {
 /// own transaction, lost while another process's transaction holds the counter row.
 pub open spec fn count_strict(s: Srv, q: nat) -> Srv {
     if stats_free(s, q) { Srv { cnt: Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt }, ..s } } else { s }
+}
+
+/// Where engine._iris_obj() runs a class call (write_routing's native_proc): the caller's own server process for an
+/// engine built on the caller's connection (`IRISGraphEngine(conn)`, the documented construction), a Native API
+/// connection of its own for an engine made by from_connect.
+pub enum Via { CallerConn, OwnConn }
+
+/// A counter-row save outside a commit, made by caller p through engine._iris_obj(): the strict guard's Ledger.Count
+/// (`count`: rej_strict_block + 1) or verify()'s RecordVerify (no counter moves; its last-verify fields are not
+/// modelled). `level` is the caller's $TLEVEL: 0 with no caller transaction, and also with the driver's autocommit off
+/// until the caller's first write. On the caller's process at a level above 0 the save's TSTART/TCOMMIT nests in the
+/// caller's transaction: it holds the counter row until that transaction ends, and the caller's rollback takes the
+/// count back (`stats_base`). At level 0, or on the engine's own connection, it commits at once and the row is free
+/// again. While another process's transaction holds the row the save waits about 10 s, fails and changes nothing.
+pub open spec fn row_save(s: Srv, p: nat, via: Via, level: nat, count: bool) -> Srv {
+    let free = if via is CallerConn { stats_free(s, p) } else { s.stats_holder is None };
+    let cnt = if count { Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt } } else { s.cnt };
+    if !free {
+        s
+    } else if via is CallerConn && level > 0 {
+        Srv { cnt, stats_holder: Some(p), stats_base: if s.stats_holder == Some(p) { s.stats_base } else { s.cnt }, ..s }
+    } else {
+        Srv { cnt, ..s }
+    }
 }
 
 // =============================================================== readers
@@ -730,6 +767,92 @@ pub proof fn theorem_rollback_frees_key_and_seq(s: Srv, c: Cs, d: Cs, p: nat, q:
         &&& same_ledger(s1, s) && s1.holder is None && s1.cnt == s.cnt
         &&& o2.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
         &&& o2.srv.id_of[s.head + 1] == f2
+    }),
+{
+}
+
+/// A nested commit that raises is never counted, whatever its refusal and whoever holds the row (repair 2,
+/// validation V3: write_txn takes back the level that holds the Bump).
+pub proof fn theorem_nested_refusal_is_never_counted(s: Srv, c: Cs, p: nat, a: Apply, f: int)
+    ensures txn_commit(s, c, p, a, f).py is Raise ==> txn_commit(s, c, p, a, f).srv.cnt == s.cnt,
+{
+}
+
+/// A changeset another process's commit can write: no key, no expected head, a known-good apply that fits.
+pub open spec fn plain_valid(s: Srv, d: Cs, b: Apply) -> bool {
+    &&& d.key is None && d.expected is None && d.bad_ref is None && 0 < d.ops.len() <= s.max_ops
+    &&& b.ok && !b.blocked && fits(d)
+}
+
+/// Validation V3. X holds the head with a plain lock (no transaction, no counter row). Caller p, inside its own
+/// transaction, commits: refused by the head lock timeout, not counted, and its Bump leaves p's transaction holding the
+/// counter row (but not the head). Once X lets go, process q's otherwise valid commit finds the head free and is
+/// refused LedgerInconsistencyError at the counter row: nothing written, nothing counted, one `inconsistent` event.
+/// After p's rollback the same commit gets the next seq on the prior head and is counted. Neighbour: the same refusal
+/// with no caller transaction is counted and holds nothing, and q's commit then goes through at once.
+pub proof fn theorem_nested_lock_timeout_keeps_the_counter_row(s: Srv, c: Cs, d: Cs, p: nat, q: nat, x: nat, a: Apply, b: Apply, f1: int, f2: int)
+    requires
+        p != q, x != p, x != q, s.state == LState::Enabled, s.holder == Some(x), s.stats_holder is None,
+        calls_server(c), plain_valid(s, d, b),
+    ensures ({
+        let o1 = txn_commit(s, c, p, a, f1);
+        let s1 = Srv { holder: None, ..o1.srv };
+        let o2 = client_commit(s1, d, q, b, f2);
+        let o3 = client_commit(txn_rollback(Srv { holder: None, ..s }, o2.srv, p), d, q, b, f2);
+        let n1 = client_commit(s, c, p, a, f1);
+        let n2 = client_commit(Srv { holder: None, ..n1.srv }, d, q, b, f2);
+        &&& o1.py == Py::Raise(Exc::LockTimeout) && o1.events == seq![Ev::Refused(Code::LockTimeout)]
+        &&& o1.srv.cnt == s.cnt && o1.srv.stats_holder == Some(p) && o1.srv.holder == Some(x) && same_ledger(o1.srv, s)
+        &&& o2.py == Py::Raise(Exc::Inconsistent) && o2.events == seq![Ev::Refused(Code::Inconsistent)] && o2.srv == s1
+        &&& o3.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+        &&& o3.srv.parent[s.head + 1] == head_id(s) && o3.srv.cnt == (Cnt { ok: s.cnt.ok + 1, ..s.cnt })
+        &&& n1.py == Py::Raise(Exc::LockTimeout) && n1.srv.stats_holder is None
+        &&& n1.srv.cnt == (Cnt { lock: s.cnt.lock + 1, ..s.cnt })
+        &&& n2.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+        &&& n2.srv.cnt == (Cnt { ok: s.cnt.ok + 1, lock: s.cnt.lock + 1, ..s.cnt })
+    }),
+{
+}
+
+/// Whoever holds it, a counter row held by another process's open transaction refuses an otherwise valid commit once
+/// the head is free: LedgerInconsistencyError ("stats save failed"), nothing written, nothing counted, one
+/// `inconsistent` event. With the row free the same commit writes the next revision and counts it.
+pub proof fn theorem_held_counter_row_refuses_a_valid_commit(s: Srv, d: Cs, q: nat, b: Apply, f: int)
+    requires
+        s.state == LState::Enabled, s.holder is None || s.holder == Some(q),
+        s.stats_holder is Some, s.stats_holder != Some(q), plain_valid(s, d, b),
+    ensures
+        client_commit(s, d, q, b, f)
+            == (Out { srv: s, py: Py::Raise(Exc::Inconsistent), events: seq![Ev::Refused(Code::Inconsistent)] }),
+        client_commit(Srv { stats_holder: None, ..s }, d, q, b, f).py == (Py::Res { seq: s.head + 1, replayed: false, stmts: true }),
+        client_commit(Srv { stats_holder: None, ..s }, d, q, b, f).srv.cnt == (Cnt { ok: s.cnt.ok + 1, ..s.cnt }),
+{
+}
+
+/// The ordinary producers of a held row without the head: a strict-guard refusal or a verify() made by caller p
+/// through an engine on its own connection, after p has written in its open transaction (level above 0). p's
+/// transaction then holds the counter row: q's valid commit is refused as `inconsistent`; p's rollback takes back the
+/// strict count and frees the row, and q's commit goes through. Neighbours: at level 0 (nothing written yet), or
+/// through the engine's own connection (from_connect), the save commits at once, the strict count is kept and q's
+/// commit goes through.
+pub proof fn theorem_in_transaction_row_save_blocks_other_writers(s: Srv, d: Cs, p: nat, q: nat, b: Apply, f: int, level: nat, count: bool)
+    requires
+        p != q, level > 0, s.state == LState::Enabled, s.holder is None, s.stats_holder is None, plain_valid(s, d, b),
+    ensures ({
+        let s1 = row_save(s, p, Via::CallerConn, level, count);
+        let o = client_commit(s1, d, q, b, f);
+        let r = txn_rollback(s, o.srv, p);
+        let z = row_save(s, p, Via::CallerConn, 0, count);
+        let w = row_save(s, p, Via::OwnConn, level, count);
+        &&& s1.stats_holder == Some(p) && same_ledger(s1, s)
+        &&& o.py == Py::Raise(Exc::Inconsistent) && o.events == seq![Ev::Refused(Code::Inconsistent)] && o.srv == s1
+        &&& r.cnt == s.cnt && r.stats_holder is None
+        &&& client_commit(r, d, q, b, f).py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+        &&& z.stats_holder is None && w.stats_holder is None
+        &&& client_commit(z, d, q, b, f).py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+        &&& client_commit(w, d, q, b, f).py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+        &&& count ==> z.cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+        &&& count ==> s1.cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
     }),
 {
 }

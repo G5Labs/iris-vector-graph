@@ -1,0 +1,36 @@
+verification results:: 31 verified, 3 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/message-fingerprinted/20261117T221544Z/models/ledger_client/ledger_client.rs:489:13
+    |
+488 | pub proof fn theorem_metadata_outside_fingerprint(c: Cs, m: int, corr: int, k: Option<int>, e: Option<int>)
+    | ----------------------------------------------------------------------------------------------------------- at the end of the function body
+489 |     ensures fingerprint(Cs { message: m, correlation: corr, key: k, expected: e, ..c }) == fingerprint(c),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/message-fingerprinted/20261117T221544Z/models/ledger_client/ledger_client.rs:498:13
+    |
+496 | pub proof fn theorem_scope_decides_fingerprint(c: Cs, d: Cs)
+    | ------------------------------------------------------------ at the end of the function body
+497 |     requires collision_free(), scope(c) != scope(d),
+498 |     ensures fingerprint(c) != fingerprint(d),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/message-fingerprinted/20261117T221544Z/models/ledger_client/ledger_client.rs:521:13
+    |
+519 |   pub proof fn theorem_retry_with_new_metadata_replays(s: Srv, c: Cs, m: int, corr: int, e: Option<int>, ml: Lens, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+520 |       requires admits(s, c, p, a), c.key is Some, s.holder is None,
+521 |       ensures ({
+    |  _____________^
+522 | |         let o1 = client_commit(s, c, p, a, f1);
+523 | |         let d = Cs { message: m, correlation: corr, expected: e, lens: ml, ..c };
+524 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+...   |
+529 | |         &&& o2.events == seq![Ev::Replayed(s.head + 1)]
+530 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

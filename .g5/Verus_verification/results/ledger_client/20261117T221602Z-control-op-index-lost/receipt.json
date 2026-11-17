@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_failed_operation_reported",
+      "theorem_error_mapping_fallbacks"
+    ],
+    "find": "let i: int = if op_index is Some { op_index->Some_0 as int } else { -1 };",
+    "name": "op-index-lost",
+    "replace": "let i: int = -1;",
+    "why": "the failing position is dropped"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_failed_operation_reported",
+      "theorem_error_mapping_fallbacks"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/op-index-lost/20261117T221601Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_error_mapping_fallbacks": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221601Z-control-op-index-lost-theorem_error_mapping_fallbacks.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_failed_operation_reported": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221601Z-control-op-index-lost-theorem_failed_operation_reported.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221601Z-control-op-index-lost.log",
+    "timed_out": false,
+    "verified": 32
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T221602Z-control-op-index-lost/logs/20261117T221601Z-control-op-index-lost-theorem_error_mapping_fallbacks.log": "2c892e37a4fe1f60969ed5ce9d753e1e4ad053af77dc9af0842af7e80d5cdd93",
+    ".g5/Verus_verification/results/ledger_client/20261117T221602Z-control-op-index-lost/logs/20261117T221601Z-control-op-index-lost-theorem_failed_operation_reported.log": "b3e7b8361d8271235f0357c2ef867bb0233a920fa42eb437ee761dc41f8e657f",
+    ".g5/Verus_verification/results/ledger_client/20261117T221602Z-control-op-index-lost/logs/20261117T221601Z-control-op-index-lost.log": "9b45071efa3af945e5a01c7b063f8423df168283a45d4ce2c7fb727199c7ec44"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

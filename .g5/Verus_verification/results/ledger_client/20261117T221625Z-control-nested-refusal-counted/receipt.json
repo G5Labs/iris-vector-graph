@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_nested_refusal_is_never_counted",
+      "theorem_nested_lock_timeout_keeps_the_counter_row"
+    ],
+    "find": "            cnt: if undone { s.cnt } else { o.srv.cnt },\n",
+    "name": "nested-refusal-counted",
+    "replace": "",
+    "why": "the pre-repair-2 model: a nested commit that raises keeps its refusal's count until the caller's transaction ends (write_txn's undo of IVG's level is ignored)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_nested_refusal_is_never_counted",
+      "theorem_nested_lock_timeout_keeps_the_counter_row"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/nested-refusal-counted/20261117T221624Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_nested_lock_timeout_keeps_the_counter_row": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221624Z-control-nested-refusal-counted-theorem_nested_lock_timeout_keeps_the_counter_row.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_nested_refusal_is_never_counted": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221624Z-control-nested-refusal-counted-theorem_nested_refusal_is_never_counted.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221624Z-control-nested-refusal-counted.log",
+    "timed_out": false,
+    "verified": 32
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T221625Z-control-nested-refusal-counted/logs/20261117T221624Z-control-nested-refusal-counted-theorem_nested_lock_timeout_keeps_the_counter_row.log": "363f18ad7b11ac5c2cbf1b824e4d8485db666cd58c52241b683e0d9931c5df3c",
+    ".g5/Verus_verification/results/ledger_client/20261117T221625Z-control-nested-refusal-counted/logs/20261117T221624Z-control-nested-refusal-counted-theorem_nested_refusal_is_never_counted.log": "20b36cd651b0ef8a8252ee986b270150fde78265b471131fee605ff8d7eaa72f",
+    ".g5/Verus_verification/results/ledger_client/20261117T221625Z-control-nested-refusal-counted/logs/20261117T221624Z-control-nested-refusal-counted.log": "6c1abacca1ee15b162c9f37d8eb71984294e28e6d89f0bd183b671c7af823574"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

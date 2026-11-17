@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_expected_head_outcomes"
+    ],
+    "find": "    } else if c.expected is Some && !s.seq_of.contains_key(c.expected->Some_0) {\n",
+    "name": "unknown-as-stale",
+    "replace": "    } else if false {\n",
+    "why": "an ID that is no revision is treated as a stale head"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_expected_head_outcomes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/unknown-as-stale/20261117T221553Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_expected_head_outcomes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221553Z-control-unknown-as-stale-theorem_expected_head_outcomes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221553Z-control-unknown-as-stale.log",
+    "timed_out": false,
+    "verified": 33
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T221555Z-control-unknown-as-stale/logs/20261117T221553Z-control-unknown-as-stale-theorem_expected_head_outcomes.log": "fc51332e435f415f130381050c93339bdd936ddcc4f8c1705cf56e2641cdceee",
+    ".g5/Verus_verification/results/ledger_client/20261117T221555Z-control-unknown-as-stale/logs/20261117T221553Z-control-unknown-as-stale.log": "697ebade71bb52f98bd58619d5ab52cf563a827657c831a2e83a73aa2f313691"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

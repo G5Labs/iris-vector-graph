@@ -1,0 +1,19 @@
+verification results:: 33 verified, 1 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/in-transaction-save-commits-at-once/20261117T221629Z/models/ledger_client/ledger_client.rs:841:13
+    |
+838 |   pub proof fn theorem_in_transaction_row_save_blocks_other_writers(s: Srv, d: Cs, p: nat, q: nat, b: Apply, f: int, level: nat, count: bool)
+    |   ------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+841 |       ensures ({
+    |  _____________^
+842 | |         let s1 = row_save(s, p, Via::CallerConn, level, count);
+843 | |         let o = client_commit(s1, d, q, b, f);
+844 | |         let r = txn_rollback(s, o.srv, p);
+...   |
+855 | |         &&& count ==> s1.cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+856 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

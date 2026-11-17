@@ -1,0 +1,78 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_held_counter_row_refuses_a_valid_commit",
+      "theorem_nested_lock_timeout_keeps_the_counter_row",
+      "theorem_in_transaction_row_save_blocks_other_writers",
+      "theorem_uncounted_outcomes"
+    ],
+    "find": "    } else if !stats_free(s, p) {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n",
+    "name": "held-row-not-checked",
+    "replace": "    } else if false {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n",
+    "why": "a commit whose counter row another transaction holds writes anyway (the stats save is not a deciding step)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_held_counter_row_refuses_a_valid_commit",
+      "theorem_nested_lock_timeout_keeps_the_counter_row",
+      "theorem_in_transaction_row_save_blocks_other_writers",
+      "theorem_uncounted_outcomes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "e2fc4395e596f5e5b667149c74347b926262f7c70549a03b9668dbdaacba6c31",
+    ".g5/Verus_verification/models/ledger_client/model.json": "97955b00f539a4a324bc407487bf48e2d7b748c6dcb9469c995287e1e453ee56"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/controls/held-row-not-checked/20261117T221627Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_held_counter_row_refuses_a_valid_commit": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221627Z-control-held-row-not-checked-theorem_held_counter_row_refuses_a_valid_commit.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_in_transaction_row_save_blocks_other_writers": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221627Z-control-held-row-not-checked-theorem_in_transaction_row_save_blocks_other_writers.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_nested_lock_timeout_keeps_the_counter_row": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221627Z-control-held-row-not-checked-theorem_nested_lock_timeout_keeps_the_counter_row.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_uncounted_outcomes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221627Z-control-held-row-not-checked-theorem_uncounted_outcomes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60s/verus/ledger_client/20261117T221627Z-control-held-row-not-checked.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T221629Z-control-held-row-not-checked/logs/20261117T221627Z-control-held-row-not-checked-theorem_held_counter_row_refuses_a_valid_commit.log": "47072e9d64e64610ff3b17a77b87220c64c09726997ed449f23f455b731a3a05",
+    ".g5/Verus_verification/results/ledger_client/20261117T221629Z-control-held-row-not-checked/logs/20261117T221627Z-control-held-row-not-checked-theorem_in_transaction_row_save_blocks_other_writers.log": "62659fad13402936dd92ef36fbb6c389328af9025f1228999183fe0bf83f6b5f",
+    ".g5/Verus_verification/results/ledger_client/20261117T221629Z-control-held-row-not-checked/logs/20261117T221627Z-control-held-row-not-checked-theorem_nested_lock_timeout_keeps_the_counter_row.log": "dde425f3b9cf2183944192dac660c1ae0df94fbc2e5f82b95a50c69fd7e3f973",
+    ".g5/Verus_verification/results/ledger_client/20261117T221629Z-control-held-row-not-checked/logs/20261117T221627Z-control-held-row-not-checked-theorem_uncounted_outcomes.log": "d4510a3b90c5ecd51f6e1e4023997d2d002eddd089279eeb2a0b9fbd22c30cc3",
+    ".g5/Verus_verification/results/ledger_client/20261117T221629Z-control-held-row-not-checked/logs/20261117T221627Z-control-held-row-not-checked.log": "fd7b4807eaac9692b45725b9a8d35e0fc7e95026f5e37f72090971e923ed88b6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
