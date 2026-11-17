@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/idem-not-journaled/20261117T211645Z/models/ledger_client/ledger_client.rs:725:13
+    |
+721 |   pub proof fn theorem_rollback_frees_key_and_seq(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   --------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+725 |       ensures ({
+    |  _____________^
+726 | |         let o1 = txn_commit(s, c, p, a, f1);
+727 | |         let s1 = txn_rollback(s, o1.srv, p);
+728 | |         let o2 = client_commit(s1, d, q, b, f2);
+...   |
+732 | |         &&& o2.srv.id_of[s.head + 1] == f2
+733 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

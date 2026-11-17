@@ -1,7 +1,7 @@
 {
   "name": "ledger_client",
   "root": "ledger_client.rs",
-  "expected_verified": 27,
+  "expected_verified": 30,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "controls": [
     {
@@ -27,7 +27,7 @@
       "name": "expected-head-before-idempotency",
       "why": "the stale-head check runs before the key check",
       "find": "    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
-      "replace": "    } else if c.expected is Some && c.expected->Some_0 != head_id(s) {\n        refuse(s, err(Code::StaleHead, Some(head_id(s))))\n    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+      "replace": "    } else if c.expected is Some && c.expected->Some_0 != head_id(s) {\n        refuse(s, err(Code::StaleHead, Some(head_id(s))), p)\n    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
       "expect_fail_in": [
         "theorem_retry_with_new_metadata_replays"
       ]
@@ -35,8 +35,8 @@
     {
       "name": "replay-counted-as-commit",
       "why": "a replay moves commits_ok",
-      "find": "(Srv { cnt: Cnt { replays: s.cnt.replays + 1, ..s.cnt }, ..s },",
-      "replace": "(Srv { cnt: Cnt { ok: s.cnt.ok + 1, ..s.cnt }, ..s },",
+      "find": "Srv { cnt: Cnt { replays: s.cnt.replays + 1, ..s.cnt }, ..s }",
+      "replace": "Srv { cnt: Cnt { ok: s.cnt.ok + 1, ..s.cnt }, ..s }",
       "expect_fail_in": [
         "theorem_retry_with_new_metadata_replays"
       ]
@@ -44,8 +44,8 @@
     {
       "name": "key-bound-on-refusal",
       "why": "a stale-head refusal binds its key",
-      "find": "refuse(s, err(Code::StaleHead, Some(head_id(s))))",
-      "replace": "refuse(if c.key is Some { Srv { idem: s.idem.insert(c.key->Some_0, (s.head, fingerprint(c))), ..s } } else { s }, err(Code::StaleHead, Some(head_id(s))))",
+      "find": "refuse(s, err(Code::StaleHead, Some(head_id(s))), p)",
+      "replace": "refuse(if c.key is Some { Srv { idem: s.idem.insert(c.key->Some_0, (s.head, fingerprint(c))), ..s } } else { s }, err(Code::StaleHead, Some(head_id(s))), p)",
       "expect_fail_in": [
         "theorem_refused_key_stays_free",
         "theorem_refusal_writes_nothing"
@@ -54,8 +54,8 @@
     {
       "name": "stale-names-expected",
       "why": "StaleHeadError names the expected head, not the current one",
-      "find": "refuse(s, err(Code::StaleHead, Some(head_id(s))))",
-      "replace": "refuse(s, err(Code::StaleHead, c.expected))",
+      "find": "refuse(s, err(Code::StaleHead, Some(head_id(s))), p)",
+      "replace": "refuse(s, err(Code::StaleHead, c.expected), p)",
       "expect_fail_in": [
         "theorem_expected_head_outcomes",
         "theorem_refused_key_stays_free"
@@ -74,7 +74,7 @@
       "name": "never-counted-as-disabled",
       "why": "a never-enabled ledger answers disabled and counts it",
       "find": "(s, err(Code::NotEnabled, None))",
-      "replace": "refuse(s, err(Code::Disabled, None))",
+      "replace": "refuse(s, err(Code::Disabled, None), p)",
       "expect_fail_in": [
         "theorem_disabled_and_never_enabled"
       ]
@@ -120,8 +120,8 @@
     {
       "name": "lock-released-inside-transaction",
       "why": "the head lock is released when the nested commit ends",
-      "find": "        Out { srv: Srv { holder: Some(p), ..o.srv }, ..o }\n",
-      "replace": "        o\n",
+      "find": "            holder: if took_head { Some(p) } else { o.srv.holder },\n",
+      "replace": "            holder: o.srv.holder,\n",
       "expect_fail_in": [
         "theorem_caller_transaction_holds_the_head"
       ]
@@ -129,8 +129,8 @@
     {
       "name": "idem-not-journaled",
       "why": "the key binding survives the caller's rollback",
-      "find": "Srv { holder: None, cnt: Cnt { lock: cur.cnt.lock, ..before.cnt }, ..before }",
-      "replace": "Srv { holder: None, idem: cur.idem, cnt: Cnt { lock: cur.cnt.lock, ..before.cnt }, ..before }",
+      "find": "Srv { holder: None, stats_holder: None, cnt: if cur.stats_holder == Some(p) { cur.stats_base } else { cur.cnt }, ..before }",
+      "replace": "Srv { holder: None, stats_holder: None, idem: cur.idem, cnt: if cur.stats_holder == Some(p) { cur.stats_base } else { cur.cnt }, ..before }",
       "expect_fail_in": [
         "theorem_rollback_frees_key_and_seq"
       ]
@@ -196,6 +196,73 @@
       "replace": "Out { srv: s, py: Py::Raise(Exc::OpError { index: c.bad_ref->Some_0 as int }), events: seq![Ev::Refused(Code::FailedOp)] }",
       "expect_fail_in": [
         "theorem_one_event_per_server_call"
+      ]
+    },
+    {
+      "name": "stats-row-not-held",
+      "why": "the iteration-60 model: a caller's transaction holds the head but not the counter row, so another process's lock-timeout is counted (lock + 1)",
+      "find": "            stats_holder: if took_row { Some(p) } else { o.srv.stats_holder },\n",
+      "replace": "            stats_holder: o.srv.stats_holder,\n",
+      "expect_fail_in": [
+        "theorem_caller_transaction_holds_the_head"
+      ]
+    },
+    {
+      "name": "bump-ignores-held-row",
+      "why": "a Bump lands even while another process's transaction holds the counter row",
+      "find": "Wire::Err { code, .. } => (if stats_free(s, p) { Srv { cnt: bump(s.cnt, code), ..s } } else { s }, w),",
+      "replace": "Wire::Err { code, .. } => (Srv { cnt: bump(s.cnt, code), ..s }, w),",
+      "expect_fail_in": [
+        "theorem_caller_transaction_holds_the_head",
+        "theorem_uncounted_outcomes"
+      ]
+    },
+    {
+      "name": "uncounted-refusal-holds-row",
+      "why": "every nested commit that reaches the server holds the counter row, counted or not",
+      "find": "    let took_row = o.srv.cnt != s.cnt;\n",
+      "replace": "    let took_row = calls_server(c);\n",
+      "expect_fail_in": [
+        "theorem_uncounted_nested_refusal_leaves_the_counter_row"
+      ]
+    },
+    {
+      "name": "redaction-block-counted",
+      "why": "a redaction-blocked commit is counted as a failed operation",
+      "find": "        (s, err(Code::RedactionInProgress, None))\n",
+      "replace": "        refuse(s, err(Code::FailedOp, None), p)\n",
+      "expect_fail_in": [
+        "theorem_uncounted_outcomes"
+      ]
+    },
+    {
+      "name": "field-limits-unchecked",
+      "why": "\"only the operation count is limited\": a revision row longer than its columns is written",
+      "find": "    } else if !fits(c) {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n",
+      "replace": "    } else if false {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n",
+      "expect_fail_in": [
+        "theorem_uncounted_outcomes",
+        "theorem_field_limits_checked_after_the_key",
+        "theorem_uncounted_nested_refusal_leaves_the_counter_row"
+      ]
+    },
+    {
+      "name": "field-limits-before-key",
+      "why": "the field limits are checked before the idempotency key, so a keyed retry with a long message fails",
+      "find": "    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+      "replace": "    } else if !fits(c) {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+      "expect_fail_in": [
+        "theorem_field_limits_checked_after_the_key",
+        "theorem_retry_with_new_metadata_replays"
+      ]
+    },
+    {
+      "name": "lookup-before-redaction-check",
+      "why": "an unknown revision ID is refused as unknown before the redaction check",
+      "find": "    if s.redacting { Read::Raise(Exc::RedactionInProgress) }\n    else if s.seq_of.contains_key(id) { Read::At(s.seq_of[id]) } else { Read::Raise(Exc::UnknownRev) }",
+      "replace": "    if !s.seq_of.contains_key(id) { Read::Raise(Exc::UnknownRev) }\n    else if s.redacting { Read::Raise(Exc::RedactionInProgress) } else { Read::At(s.seq_of[id]) }",
+      "expect_fail_in": [
+        "theorem_revision_readers_resolve_ids"
       ]
     }
   ]

@@ -1,6 +1,6 @@
 {
   "title": "ledger client",
-  "question": "changeset scope and client validation, admission derived from the ledger's own state, the Python error classes and counters a commit outcome produces, caller-transaction lock and rollback, revision-ID readers, lifecycle settings, revision-row immutability and chunked transport",
+  "question": "changeset scope and client validation, admission derived from the ledger's own state, the Python error classes and counters a commit outcome produces, caller-transaction lock and rollback, revision-ID readers, lifecycle settings, revision-row immutability and chunked transport; which outcomes are counted (none while another caller's transaction holds the counter row; redaction-blocked, field-limit and not-enabled refusals never)",
   "ontology_ids": [
     "ledger.changeset",
     "ledger.commit",
@@ -19,7 +19,7 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built transcription",
-      "expect": "{\"errors\": 0, \"verified\": 27}"
+      "expect": "{\"errors\": 0, \"verified\": 30}"
     },
     {
       "label": "message-fingerprinted",
@@ -146,6 +146,48 @@
       "kind": "control",
       "variant": "as-built transcription",
       "expect": "{\"fail_in\": [\"theorem_one_event_per_server_call\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stats-row-not-held",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_caller_transaction_holds_the_head\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bump-ignores-held-row",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_caller_transaction_holds_the_head\", \"theorem_uncounted_outcomes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "uncounted-refusal-holds-row",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_uncounted_nested_refusal_leaves_the_counter_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "redaction-block-counted",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_uncounted_outcomes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "field-limits-unchecked",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_uncounted_outcomes\", \"theorem_field_limits_checked_after_the_key\", \"theorem_uncounted_nested_refusal_leaves_the_counter_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "field-limits-before-key",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_field_limits_checked_after_the_key\", \"theorem_retry_with_new_metadata_replays\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "lookup-before-redaction-check",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_revision_readers_resolve_ids\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

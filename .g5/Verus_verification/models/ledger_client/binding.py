@@ -3,8 +3,12 @@
 Run through the local runtime wrapper, which installs the fixture module as `runtime`:
     python -B .g5/uplift/consolidated/local-runtime/run_binding.py .g5/Verus_verification/models/ledger_client/binding.py
 `runtime` must provide NAME, PORT, FIXTURE, connect(namespace) (identity-checked) and engine(c, namespace). Writes only in
-task-owned namespaces: I60LA (enabled, max_ops 50000), I60LC (enabled, max_ops 2), I60LE (never enabled; never enabled here).
-IDs and keys carry a per-run stamp, so repeated runs do not collide.
+task-owned namespaces, by default the iteration-60 repair's I60RA (enabled, max_ops 50000), I60RC (enabled, max_ops 2) and
+I60RE (never enabled; never enabled here); override with LEDGER_CLIENT_NS_A / _C / _E (the iteration-60 run used I60LA,
+I60LC, I60LE). IDs and keys carry a per-run stamp, so repeated runs do not collide. The repair cases add counter deltas
+read from another connection while a caller's transaction is open (B8), an uncounted nested refusal (B8b), the strict
+guard's count call (B8c), a redaction-blocked commit and the revision readers during an unfinished redaction of this
+run's own prefix (B18, B19; redaction is otherwise an excluded area), and revision-row field limits (B20).
 
 Expected outcomes come from `Ref`, an UNVERIFIED hand transcription of ledger_client.rs's spec functions (server,
 client_commit, from_commit_error, bump, txn_commit/txn_rollback/txn_end, seq_read, diff_read, head_read, enable,
@@ -33,15 +37,18 @@ from iris_vector_graph.ledger import errors as LE  # noqa: E402
 
 CNT = {"ok": "commits_ok", "replays": "replays_idem", "stale": "rej_stale_head", "unknown": "rej_unknown_head",
        "conflict": "rej_idem_conflict", "failed": "rej_failed_op", "size": "rej_size_limit", "disabled": "rej_disabled",
-       "lock": "rej_lock_timeout"}
+       "lock": "rej_lock_timeout", "strict_block": "rej_strict_block"}
 EXC = {"NotEnabled": "LedgerNotEnabledError", "Disabled": "LedgerDisabledError", "Empty": "EmptyChangesetError",
        "TooLarge": "ChangesetTooLargeError", "Stale": "StaleHeadError", "UnknownRev": "UnknownRevisionError",
        "Conflict": "IdempotencyConflictError", "IdemRedacted": "IdempotencyRedactedError", "OpError": "ChangesetOperationError",
        "NodeNotFound": "NodeNotFoundError", "LockTimeout": "LedgerLockTimeoutError", "Base": "LedgerError",
-       "TxnOpen": "LedgerTransactionOpenError"}
+       "TxnOpen": "LedgerTransactionOpenError", "Inconsistent": "LedgerInconsistencyError",
+       "RedactionInProgress": "RedactionInProgressError"}
 WIRE = {"NotEnabled": "not_enabled", "Disabled": "disabled", "Empty": "empty", "TooLarge": "too_large", "StaleHead": "stale_head",
         "UnknownHead": "unknown_head", "Conflict": "idempotency_conflict", "IdemRedacted": "idempotency_redacted",
-        "FailedOp": "failed_op", "LockTimeout": "lock_timeout"}
+        "FailedOp": "failed_op", "LockTimeout": "lock_timeout", "Inconsistent": "inconsistent",
+        "RedactionInProgress": "redaction_in_progress"}
+LIMITS = {"message": 4000, "source": 4000, "actor": 256, "actor_type": 32, "correlation": 256, "key": 256}
 
 
 # ---------------------------------------------------------------------------------------------- reference (model)
@@ -68,12 +75,21 @@ class Ref:
             cnt[k] += 1
         return cnt
 
+    def stats_free(self, s, p):
+        return s.get("stats_holder") is None or s.get("stats_holder") == p or self.mut == "bump-ignores-held-row"
+
+    def fits(self, c):
+        if self.mut == "field-limits-unchecked":
+            return True
+        return all(c["lens"][k] <= LIMITS[k] for k in LIMITS)
+
     def server(self, s, c, p, a):
         s = copy.deepcopy(s)
         hid = s["id_of"].get(s["head"])
 
         def refuse(code, head=None, **kw):
-            s["cnt"] = self.bump(s["cnt"], code)
+            if self.stats_free(s, p):
+                s["cnt"] = self.bump(s["cnt"], code)
             return s, dict(kind="Err", code=code, head=head, **kw)
         if s["holder"] is not None and s["holder"] != p:
             return refuse("LockTimeout")
@@ -87,9 +103,13 @@ class Ref:
         stale = e is not None and e in s["seq_of"] and e != hid
         if self.mut == "expected-head-before-idempotency" and stale:
             return refuse("StaleHead", hid)
+        if self.mut == "field-limits-before-key" and not self.fits(c):
+            return s, dict(kind="Err", code="Inconsistent", head=hid)
         if k is not None and k in s["idem"]:
             if self.fp(s["idem"][k][1]) == self.fp(c):
-                if self.mut == "replay-counted-as-commit":
+                if not self.stats_free(s, p):
+                    pass
+                elif self.mut == "replay-counted-as-commit":
                     s["cnt"]["ok"] += 1
                 else:
                     s["cnt"]["replays"] += 1
@@ -107,6 +127,14 @@ class Ref:
             return refuse("TooLarge", limit=s["max_ops"])
         if not a["ok"]:
             return refuse("FailedOp", op_index=a["index"], missing=a.get("missing"))
+        if s.get("redacting") and a.get("blocked"):
+            if self.mut == "redaction-block-counted":
+                return refuse("FailedOp")
+            return s, dict(kind="Err", code="RedactionInProgress", head=None)
+        if not self.fits(c):
+            return s, dict(kind="Err", code="Inconsistent", head=hid)
+        if not self.stats_free(s, p):
+            return s, dict(kind="Err", code="Inconsistent", head=hid)
         n = s["head"] + 1
         s["head"] = n
         s["id_of"][n] = "<fresh>"
@@ -129,7 +157,8 @@ class Ref:
         if code == "TooLarge":
             return ("TooLarge", {"limit": w.get("limit")})
         return ({"NotEnabled": "NotEnabled", "Disabled": "Disabled", "Empty": "Empty", "UnknownHead": "UnknownRev",
-                 "Conflict": "Conflict", "IdemRedacted": "IdemRedacted", "LockTimeout": "LockTimeout"}.get(code, "Base"), {})
+                 "Conflict": "Conflict", "IdemRedacted": "IdemRedacted", "LockTimeout": "LockTimeout",
+                 "Inconsistent": "Inconsistent", "RedactionInProgress": "RedactionInProgress"}.get(code, "Base"), {})
 
     def client(self, s, c, p, a):
         if len(c["ops"]) == 0 and self.mut != "no-client-validate":
@@ -145,20 +174,37 @@ class Ref:
 
     def txn_commit(self, s, c, p, a):
         s2, py, ev = self.client(s, c, p, a)
+        calls = len(c["ops"]) > 0 and c.get("bad_ref") is None
         foreign = s["holder"] is not None and s["holder"] != p
-        if len(c["ops"]) > 0 and c.get("bad_ref") is None and not foreign and self.mut != "lock-released-inside-transaction":
+        if calls and not foreign and self.mut != "lock-released-inside-transaction":
             s2 = dict(s2, holder=p)
+        took_row = calls if self.mut == "uncounted-refusal-holds-row" else (s2["cnt"] != s["cnt"])
+        if took_row and self.mut != "stats-row-not-held":
+            if s.get("stats_holder") != p:
+                s2 = dict(s2, stats_base=dict(s["cnt"]))
+            s2 = dict(s2, stats_holder=p)
         return s2, py, ev
 
-    def txn_rollback(self, before, cur):
+    def txn_rollback(self, before, cur, p):
         out = copy.deepcopy(before)
         out["holder"] = None
-        out["cnt"] = dict(before["cnt"], lock=cur["cnt"]["lock"])
+        out["stats_holder"] = None
+        out["cnt"] = dict(cur["stats_base"]) if cur.get("stats_holder") == p else dict(cur["cnt"])
         if self.mut == "idem-not-journaled":
             out["idem"] = copy.deepcopy(cur["idem"])
         return out
 
+    def count_strict(self, s, q):
+        s = copy.deepcopy(s)
+        if self.stats_free(s, q):
+            s["cnt"]["strict_block"] += 1
+        return s
+
     def seq_read(self, s, rid):
+        if self.mut == "lookup-before-redaction-check" and rid not in s["seq_of"]:
+            return ("Raise", "UnknownRev")
+        if s.get("redacting"):
+            return ("Raise", "RedactionInProgress")
         if rid in s["seq_of"]:
             return ("At", s["seq_of"][rid])
         return ("At", 0) if self.mut == "unknown-id-reads-genesis" else ("Raise", "UnknownRev")
@@ -193,7 +239,9 @@ MUTATIONS = ["message-fingerprinted", "ops-not-fingerprinted", "expected-head-be
              "key-bound-on-refusal", "stale-names-expected", "unknown-as-stale", "never-counted-as-disabled", "no-client-validate",
              "size-limit-exclusive", "no-node-narrowing", "op-index-lost", "lock-released-inside-transaction", "idem-not-journaled",
              "unknown-id-reads-genesis", "head-refused-while-disabled", "enable-on-enabled-sets-strict", "update-without-emptying",
-             "chunk-off-by-one", "text-source-kept", "event-on-client-refusal"]
+             "chunk-off-by-one", "text-source-kept", "event-on-client-refusal", "stats-row-not-held", "bump-ignores-held-row",
+             "uncounted-refusal-holds-row", "redaction-block-counted", "field-limits-unchecked", "field-limits-before-key",
+             "lookup-before-redaction-check"]
 # The redaction exception of RejectUpdate needs %IVGLedgerRedaction set in the SQL server process and a redactedRev entry;
 # the binding does not forge redaction internals, so that branch is an inspected source binding only.
 NOT_NATIVE = {"update-without-emptying": "redaction-context UPDATE not forged (inspected only)"}
@@ -226,9 +274,10 @@ class NS:
         if state != "Never":
             for r in self.L.history(limit=100000).revisions:
                 ids[r.revision_id] = r.seq
+        redacting = state != "Never" and self.L.redaction_in_progress() is not None
         return {"state": state, "strict": bool(m.get("strict")), "max_ops": int(m["max_ops"]), "head": head,
                 "id_of": {v: k for k, v in ids.items()}, "seq_of": ids, "parent": {}, "idem": dict(self.idem),
-                "holder": None, "cnt": self.counters()}
+                "holder": None, "stats_holder": None, "stats_base": None, "redacting": redacting, "cnt": self.counters()}
 
     def close(self):
         self.c.close()
@@ -243,9 +292,13 @@ def cs_of(spec, stamp):
         getattr(c, op[0])(*op[1:])
     if spec.get("bad_ref") is not None:
         c.ops.append({"op": "delete_rel", "ref": {"op_ref": spec["bad_ref"] + 5}})
+    src = c.source if isinstance(c.source, dict) else None   # a text source is stored empty (bug-led-012)
+    lens = {"message": len(c.message or ""), "source": len(json.dumps(src, sort_keys=True, separators=(",", ":"))) if src else 0,
+            "actor": len(c.actor or ""), "actor_type": len(c.actor_type or ""), "correlation": len(c.correlation_id or ""),
+            "key": len(c.idempotency_key or "")}
     ref = {"actor": c.actor, "actor_type": c.actor_type, "message": c.message, "key": c.idempotency_key,
            "expected": c.expected_head, "ops": [json.dumps(o, sort_keys=True) for o in c.ops],
-           "bad_ref": (len(c.ops) - 1) if spec.get("bad_ref") is not None else None}
+           "bad_ref": (len(c.ops) - 1) if spec.get("bad_ref") is not None else None, "lens": lens}
     return c, ref
 
 
@@ -288,10 +341,20 @@ def run(ref, live, stamp, cases_out):
     return mism
 
 
+NS_A = os.environ.get("LEDGER_CLIENT_NS_A", "I60RA")
+NS_C = os.environ.get("LEDGER_CLIENT_NS_C", "I60RC")
+NS_E = os.environ.get("LEDGER_CLIENT_NS_E", "I60RE")
+
+
+def cdelta(a, b):
+    return {k: b[k] - a[k] for k in a if b[k] != a[k]}
+
+
 def main():
     stamp = time.strftime("%H%M%S", time.gmtime())
-    A, C, E = NS("I60LA"), NS("I60LC"), NS("I60LE")
+    A, C, E = NS(NS_A), NS(NS_C), NS(NS_E)
     live = []
+    waits = {}
 
     def add(name, observed, expect_fn):
         live.append({"name": name, "observed": observed, "expect_fn": expect_fn})
@@ -407,34 +470,148 @@ def main():
 
     def exp9(ref, s=s9, r9=r9, r9b=r9b):
         s1, p1, _ = ref.txn_commit(s, r9, 1, ok)
-        s2 = ref.txn_rollback(s, s1)
+        s2 = ref.txn_rollback(s, s1, 1)
         _, p2, _ = ref.client(s2, r9b, 2, ok)
         return [p1, p2]
     add("B9.rollback_frees_key_and_seq", [py9, py9b], exp9)
-    # B8 caller transaction holds the head: another process times out (about 40 s), then succeeds after the rollback
+    # B8 caller transaction holds the head and the counter row: another process times out (about 40 s) and its refusal
+    # is NOT counted (counters read from a third connection while A is open and after A's rollback); after the
+    # rollback the same commit succeeds with the kept parent (review 60 FE-3: B8 had no counter delta before)
     s8 = A.state()
-    B = NS("I60LA")
+    B, R = NS(NS_A), NS(NS_A)
     A.c.setAutoCommit(False)
     try:
         c8, r8 = cs_of({"ops": [("create_node", f"i60b_{stamp}_la")]}, stamp)
         py8a, _, _ = observe_commit(A, c8)
+        k8_open0 = R.counters()
         d8, rd8 = cs_of({"ops": [("create_node", f"i60b_{stamp}_lb")]}, stamp)
         t0 = time.time()
         py8b, ev8b, _ = observe_commit(B, d8)
-        waited = round(time.time() - t0, 1)
+        waits["B8"] = round(time.time() - t0, 1)
+        k8_open1 = R.counters()
     finally:
         A.c.rollback(); A.c.setAutoCommit(True)
+    k8_rb = R.counters()
     py8c, _, rev8c = observe_commit(B, d8)
+    k8_c = R.counters()
     parent_ok = rev8c is not None and rev8c.parent_id == s8["id_of"][s8["head"]]
 
     def exp8(ref, s=s8, r8=r8, rd8=rd8):
         s1, p1, _ = ref.txn_commit(s, r8, 1, ok)
         s2, p2, e2 = ref.client(s1, rd8, 2, ok)
-        s3 = ref.txn_rollback(s, s2)
+        s3 = ref.txn_rollback(s, s2, 1)
         s4, p3, _ = ref.client(s3, rd8, 2, ok)
-        return [p1, p2, e2, p3, s4["parent"].get(s["head"] + 1) == s["id_of"][s["head"]]]
-    add("B8.caller_transaction_holds_head", [py8a, py8b, ev8b, py8c, parent_ok], exp8)
-    B.close()
+        return [p1, p2, e2, cdelta(s1["cnt"], s2["cnt"]), cdelta(s["cnt"], s3["cnt"]), p3, cdelta(s["cnt"], s4["cnt"]),
+                s4["parent"].get(s["head"] + 1) == s["id_of"][s["head"]]]
+    add("B8.caller_transaction_holds_head", [py8a, py8b, ev8b, cdelta(k8_open0, k8_open1), cdelta(s8["cnt"], k8_rb), py8c,
+                                             cdelta(s8["cnt"], k8_c), parent_ok], exp8)
+    # B8b a nested commit refused without a count (revision row too long) holds the head but not the counter row:
+    # the other process times out after about 30 s and its lock-timeout IS counted, and the count survives the rollback
+    s8b = A.state()
+    A.c.setAutoCommit(False)
+    try:
+        c8b, r8b = cs_of({"message": "m" * 5000, "ops": [("create_node", f"i60b_{stamp}_lc")]}, stamp)
+        py8b_a, ev8b_a, _ = observe_commit(A, c8b)
+        d8b, rd8b = cs_of({"ops": [("create_node", f"i60b_{stamp}_ld")]}, stamp)
+        t0 = time.time()
+        py8b_b, ev8b_b, _ = observe_commit(B, d8b)
+        waits["B8b"] = round(time.time() - t0, 1)
+        k8b_open = R.counters()
+    finally:
+        A.c.rollback(); A.c.setAutoCommit(True)
+    k8b_rb = R.counters()
+
+    def exp8b(ref, s=s8b, r8b=r8b, rd8b=rd8b):
+        s1, p1, e1 = ref.txn_commit(s, r8b, 1, ok)
+        s2, p2, e2 = ref.client(s1, rd8b, 2, ok)
+        s3 = ref.txn_rollback(s, s2, 1)
+        return [p1, e1, p2, e2, cdelta(s["cnt"], s2["cnt"]), cdelta(s["cnt"], s3["cnt"])]
+    add("B8b.uncounted_nested_refusal_leaves_counter_row", [py8b_a, ev8b_a, py8b_b, ev8b_b, cdelta(s8b["cnt"], k8b_open),
+                                                           cdelta(s8b["cnt"], k8b_rb)], exp8b)
+    # B8c the strict guard's counter call (Ledger.Count) from another process is lost while A's transaction holds the row
+    s8c = A.state()
+    A.c.setAutoCommit(False)
+    try:
+        c8c, r8c = cs_of({"ops": [("create_node", f"i60b_{stamp}_le")]}, stamp)
+        observe_commit(A, c8c)
+        k8c_0 = R.counters()
+        t0 = time.time()
+        R.e._iris_obj().classMethodValue("Graph.KG.Ledger", "Count", "rej_strict_block")
+        waits["B8c"] = round(time.time() - t0, 1)
+        k8c_1 = R.counters()
+    finally:
+        A.c.rollback(); A.c.setAutoCommit(True)
+    k8c_2 = R.counters()
+    R.e._iris_obj().classMethodValue("Graph.KG.Ledger", "Count", "rej_strict_block")
+    k8c_3 = R.counters()
+
+    def exp8c(ref, s=s8c, r8c=r8c):
+        s1, _, _ = ref.txn_commit(s, r8c, 1, ok)
+        s2 = ref.count_strict(s1, 3)
+        s3 = ref.txn_rollback(s, s2, 1)
+        s4 = ref.count_strict(s3, 3)
+        return [cdelta(s1["cnt"], s2["cnt"]), cdelta(s3["cnt"], s4["cnt"])]
+    add("B8c.strict_count_lost_while_row_held", [cdelta(k8c_0, k8c_1), cdelta(k8c_2, k8c_3)], exp8c)
+    B.close(); R.close()
+    # B18 a commit into the target of an unfinished redaction of this run's own prefix: RedactionInProgressError, one
+    # event, no counter, nothing written; a neighbour outside the target commits. B19: while it is unfinished, every
+    # revision-ID reader refuses with RedactionInProgressError before looking the ID up (review 60 FE-4, FE-6)
+    pfx = f"i60b{stamp}red"
+    # One redaction batch scans at most batch_size x 20 records from the start of the history and sets the marker at its
+    # first tombstone (LedgerRedact.BatchInLock). Size the batch to reach this run's target and give the target more
+    # records than one batch tombstones, so exactly one unfinished redaction exists (run 1 of this repair used
+    # batch_size=1, scanned no target record and left no marker: probes/ledger_client-binding-run1-crashed.log).
+    prior = sum(int(r.op_count or 0) for r in A.L.history(limit=100000).revisions)
+    batch18 = prior // 20 + 2
+    rids = [f"{pfx}|{i}" for i in range(batch18 + 3)]
+    cs18 = Changeset(actor="bind", actor_type="agent")
+    for i in rids:
+        cs18.upsert_node(i, properties={"p": "x"})
+    A.L.commit(cs18)
+    cs18 = Changeset(actor="bind", actor_type="agent")
+    for i in rids:
+        cs18.delete_node(i)
+    A.L.commit(cs18)
+    red1 = A.L.redact(None, prefix=pfx, batch_size=batch18, max_batches=1)
+    if A.L.redaction_in_progress() is None:
+        raise RuntimeError(f"setup: no unfinished redaction after one batch of {batch18} (prior records {prior})")
+    commit_case("B18.redaction_blocked", A, {"ops": [("upsert_node", f"{pfx}|9")]}, {"ok": True, "index": 0, "blocked": True})
+    commit_case("B18.neighbour_outside_target", A, {"ops": [("create_node", f"i60b_{stamp}_out")]}, {"ok": True, "index": 0, "blocked": False})
+    s19 = A.state()
+    tmp19 = Path(tempfile.mkdtemp(prefix="i60r-bind-")) / "x.ndjson"
+    for label, fn in (("get_revision", lambda: A.L.get_revision(unknown)), ("reconstruct", lambda: A.L.reconstruct(unknown)),
+                      ("export", lambda: A.L.export_reconstruction(unknown, str(tmp19))), ("diff", lambda: A.L.diff(stale_id, unknown))):
+        try:
+            fn(); got = ("At", "?")
+        except LE.RedactionInProgressError:
+            got = ("Raise", "RedactionInProgress")
+        except LE.UnknownRevisionError:
+            got = ("Raise", "UnknownRev")
+        add(f"B19.{label}_unknown_during_redaction", got, lambda ref, s=s19: ref.seq_read(s, unknown))
+    red2 = A.L.redact(None, prefix=pfx)
+    waits["B18.redaction"] = {"first_complete": red1.complete, "second_complete": red2.complete, "batch_size": batch18,
+                              "prior_records": prior, "target_nodes": len(rids)}
+    s19b = A.state()
+    try:
+        A.L.get_revision(unknown); got = ("At", "?")
+    except LE.UnknownRevisionError:
+        got = ("Raise", "UnknownRev")
+    add("B19.get_revision_unknown_after_redaction", got, lambda ref, s=s19b: ref.seq_read(s, unknown))
+    # B20 revision-row field limits: refused as `inconsistent` after apply, uncounted, nothing written; a keyed retry
+    # with an over-long message replays because the key is decided first (review 60 FE-5)
+    commit_case("B20.message_4000", A, {"message": "m" * 4000, "ops": [("create_node", f"i60b_{stamp}_f1")]}, ok)
+    commit_case("B20.message_5000", A, {"message": "m" * 5000, "ops": [("create_node", f"i60b_{stamp}_f2")]}, ok)
+    commit_case("B20.key_300", A, {"key": f"i60b-{stamp}-" + "k" * 290, "ops": [("create_node", f"i60b_{stamp}_f3")]}, ok)
+    commit_case("B20.correlation_300", A, {"correlation": "c" * 300, "ops": [("create_node", f"i60b_{stamp}_f4")]}, ok)
+    commit_case("B20.actor_300", A, {"actor": "a" * 300, "ops": [("create_node", f"i60b_{stamp}_f5")]}, ok)
+    commit_case("B20.source_object_4100", A, {"source": {"blob": "s" * 4100}, "ops": [("create_node", f"i60b_{stamp}_f6")]}, ok)
+    k20 = f"i60b-{stamp}-k20"
+    # a relationship op makes the result's statement IDs observable (a node-only changeset has none either way; run 2 of
+    # this repair compared a node-only replay and disagreed only on that vacuous flag)
+    o20 = [("create_node", f"i60b_{stamp}_f7"), ("create_node", f"i60b_{stamp}_f8"),
+           ("create_relationship", f"i60b_{stamp}_f7", "R", f"i60b_{stamp}_f8")]
+    commit_case("B20.keyed_first", A, {"key": k20, "message": "first", "ops": o20}, ok)
+    commit_case("B20.keyed_retry_long_message", A, {"key": k20, "message": "m" * 5000, "ops": o20}, ok)
     # B14 revision rows are immutable through SQL
     cur = A.c.cursor()
     for label, sql in (("update", "UPDATE Graph_KG.ledger_revisions SET message='x' WHERE seq=1"),
@@ -493,14 +670,17 @@ def main():
         "verdict": verdict, "comparisons": len(live), "mismatch_count": len(mism), "mismatches": mism,
         "mutations_detected": detected, "mutations_not_natively_exercisable": NOT_NATIVE, "changed_observation_caught": changed_caught,
         "cases": [{"name": c["name"], "observed": c["observed"]} for c in live],
-        "fixture": rt.FIXTURE, "namespaces": ["I60LA", "I60LC", "I60LE"], "run_stamp": stamp,
+        "fixture": rt.FIXTURE, "namespaces": [NS_A, NS_C, NS_E], "run_stamp": stamp, "wall_seconds_not_compared": waits,
         "pin": bc.pin_identity(PIN_DIR),
         "observed": "actual GraphLedger.commit/_commit/_send_changeset/_call/_emit/head/get_revision/diff/reconstruct/"
                     "export_reconstruction/history/stats/enable/disable/set_strict, Changeset builder/validate/fingerprint, "
                     "errors.from_commit_error, and the deployed Graph.KG.Ledger/LedgerApply/LedgerStats/LedgerRevision on IRIS",
         "substituted": "none for the product; the expected side is an unverified hand transcription of ledger_client.rs",
-        "not_observed": "IdempotencyRedactedError and the redaction marker (excluded area); object-path re-save/delete of a "
-                        "revision row; Inconsistent transport failures; the ObjectScript bodies are executed, not proved",
+        "not_observed": "IdempotencyRedactedError; the redaction marker only as a neighbour (one blocked commit and the "
+                        "readers during one unfinished redaction of this run's own prefix; whether records touch the target "
+                        "is the ledger_redaction input `blocked`); object-path re-save/delete of a revision row; Inconsistent "
+                        "transport failures; a write whose counter row another transaction holds while the head is free; "
+                        "the ObjectScript bodies are executed, not proved",
     }
     out = bc.write_receipt("ledger_client", Path(__file__), body)
     d = json.loads(out.read_text())

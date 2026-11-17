@@ -1,6 +1,6 @@
 {
   "title": "ledger verify",
-  "question": "what verify compares (nodes by ID across graphs, reserved properties and temporal-marked rows left out, relationships by tuple), the entries it reports for unrecorded writes, and that adopting them makes the next verify equal",
+  "question": "what verify compares (nodes by ID across graphs, from node, label or property rows; reserved properties left out; edge rows whose temporal qualifier is the JSON boolean true left out of the tables, statements whose temporal qualifier is the text \"true\" left out of the replay; relationships by tuple), the entries it reports for unrecorded writes, when adopting them makes the next verify equal, and that a relationship stored with temporal text \"true\" never verifies equal",
   "ontology_ids": [
     "ledger.verify",
     "ledger.verify.scope",
@@ -11,19 +11,19 @@
       "label": "proof",
       "kind": "proof",
       "variant": "as-built transcription",
-      "expect": "{\"errors\": 0, \"verified\": 8}"
+      "expect": "{\"errors\": 0, \"verified\": 15}"
     },
     {
       "label": "adopt-without-cascade",
       "kind": "control",
       "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_adoption_closes_the_difference\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"lemma_adopt_agrees\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "new-entity-attributes-dropped",
       "kind": "control",
       "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_adoption_closes_the_difference\", \"theorem_entries_for_created_and_deleted_nodes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"lemma_adopt_agrees\", \"theorem_entries_for_created_and_deleted_nodes\", \"theorem_orphan_property_reports_node\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "adopt-when-equal",
@@ -53,13 +53,37 @@
       "label": "replay-keeps-marked",
       "kind": "control",
       "variant": "as-built transcription",
-      "expect": "{\"fail_in\": [\"theorem_temporal_marked_rows_left_out\"], \"verdict\": \"EXPECTED_FAIL\"}"
+      "expect": "{\"fail_in\": [\"theorem_temporal_marked_rows_left_out\", \"lemma_replay_view_dropped\", \"theorem_marker_rules_differ\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "statement-ids-compared",
       "kind": "control",
       "variant": "as-built transcription",
       "expect": "{\"fail_in\": [\"theorem_statement_ids_not_compared\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "one-marker-rule",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_text_marker_never_equal\", \"theorem_marker_rules_differ\", \"theorem_temporal_marked_rows_left_out\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "text-marker-premise-dropped",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_adoption_closes_the_difference\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-redrop",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"theorem_adoption_never_closes_a_text_marker\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "node-from-node-rows-only",
+      "kind": "control",
+      "variant": "as-built transcription",
+      "expect": "{\"fail_in\": [\"lemma_canonical_wf\", \"theorem_orphan_property_reports_node\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

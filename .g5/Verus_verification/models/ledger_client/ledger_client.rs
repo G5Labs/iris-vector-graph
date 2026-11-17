@@ -10,9 +10,17 @@
 //
 // Premises (not proved here): the apply outcome of an admitted changeset is supplied by `Apply` (its producer is the
 // separate ledger_apply model); SHA-256 is collision-free where a theorem says so (`collision_free`); `NewId` GUIDs are
-// fresh; a caller transaction's rollback undoes every journaled global and row it wrote (IRIS transactions), and the
-// only counters another process can move while it holds the head lock are its own lock-timeout rejections. Redaction
-// marker blocking (BlocksCommit) and the strict-mode guard are modelled elsewhere (ledger_redaction, platform).
+// fresh; a caller transaction's rollback undoes every journaled global and row it wrote (IRIS transactions). Redaction
+// marker blocking (BlocksCommit, whether the applied records touch the target) is an input here (`Apply.blocked`,
+// decided in ledger_redaction); the strict-mode guard is modelled in platform.
+//
+// Repair after review 60 (FE-3, FE-4, FE-5, FE-6): the counter row. A counted outcome saves the single ledger_stats row
+// (WriteRevision's CommitsOk, or Bump after the commit's own level); inside a caller's transaction that row stays
+// locked until the transaction ends, and another process's Bump waits about 10 s for it and is lost (observed: a
+// lock-timeout refusal and a Ledger.Count call while the caller's transaction is open move no counter). Uncounted:
+// not_enabled, empty, a redaction-blocked commit, and `inconsistent` (a revision row that does not fit its columns,
+// LedgerRevision MAXLEN, or a counter row another transaction holds). Readers that take a revision ID refuse an
+// unfinished redaction before looking the ID up.
 use vstd::prelude::*;
 
 verus! {
@@ -30,6 +38,18 @@ pub struct Cs {
     pub expected: Option<int>,
     pub ops: Seq<int>,
     pub bad_ref: Option<nat>,
+    /// lengths of the revision-row text fields this changeset fills (message, source JSON, actor, actor type,
+    /// correlation ID, idempotency key)
+    pub lens: Lens,
+}
+
+pub struct Lens { pub message: nat, pub source: nat, pub actor: nat, pub actor_type: nat, pub correlation: nat, pub key: nat }
+
+/// LedgerRevision column limits (MAXLEN): message and source 4000; actor, correlation_id and idempotency_key 256;
+/// actor_type 32. A longer value fails the revision row's %Save in WriteRevision.
+pub open spec fn fits(c: Cs) -> bool {
+    c.lens.message <= 4000 && c.lens.source <= 4000 && c.lens.actor <= 256 && c.lens.actor_type <= 32
+        && c.lens.correlation <= 256 && c.lens.key <= 256
 }
 
 /// changeset.py fingerprint(): the hashed scope is {actor, actor_type, ops} only.
@@ -69,6 +89,7 @@ pub struct Cnt {
     pub size: nat,
     pub disabled: nat,
     pub lock: nat,
+    pub strict_block: nat,
 }
 
 pub struct Srv {
@@ -92,6 +113,12 @@ pub struct Srv {
     pub content: Seq<Seq<int>>,
     /// the process whose open transaction holds ^IVG.Ledger("head")
     pub holder: Option<nat>,
+    /// the process whose open transaction has saved the ledger_stats row (holds its lock until it ends), and the
+    /// counters as they were when it took the row
+    pub stats_holder: Option<nat>,
+    pub stats_base: Cnt,
+    /// ^IVG.Ledger("redacting"): a redaction is unfinished
+    pub redacting: bool,
     pub cnt: Cnt,
 }
 
@@ -112,9 +139,11 @@ pub struct Apply {
     pub ok: bool,
     pub index: nat,
     pub missing: Option<int>,
+    /// LedgerRedact.BlocksCommit: the applied records touch the unfinished redaction's target (ledger_redaction)
+    pub blocked: bool,
 }
 
-pub enum Code { NotEnabled, Disabled, Empty, TooLarge, StaleHead, UnknownHead, Conflict, IdemRedacted, FailedOp, LockTimeout, Inconsistent, Other(int) }
+pub enum Code { NotEnabled, Disabled, Empty, TooLarge, StaleHead, UnknownHead, Conflict, IdemRedacted, FailedOp, LockTimeout, Inconsistent, RedactionInProgress, Other(int) }
 
 /// Ledger.Err / ErrLimit / RevisionResponse JSON.
 pub enum Wire {
@@ -127,7 +156,7 @@ pub open spec fn err(code: Code, head: Option<int>) -> Wire {
 }
 
 /// Ledger.Commit sets pBump in CommitInTxn and calls LedgerStats.Bump after its level ends; PropertyFor maps the
-/// column name; a refusal with no pBump (not_enabled, empty, inconsistent) moves no counter.
+/// column name; a refusal with no pBump (not_enabled, empty, inconsistent, redaction_in_progress) moves no counter.
 pub open spec fn bump(c: Cnt, code: Code) -> Cnt {
     match code {
         Code::Disabled => Cnt { disabled: c.disabled + 1, ..c },
@@ -142,41 +171,55 @@ pub open spec fn bump(c: Cnt, code: Code) -> Cnt {
     }
 }
 
-pub open spec fn refuse(s: Srv, w: Wire) -> (Srv, Wire) {
+/// The counter row is free for process p unless another process's open transaction has saved it.
+pub open spec fn stats_free(s: Srv, p: nat) -> bool {
+    s.stats_holder is None || s.stats_holder == Some(p)
+}
+
+/// Bump(pBump) after the commit's level: counted only when the counter row is free; otherwise its %Save waits for the
+/// row lock, fails, and the increment is lost (the refusal itself is still returned).
+pub open spec fn refuse(s: Srv, w: Wire, p: nat) -> (Srv, Wire) {
     match w {
-        Wire::Err { code, .. } => (Srv { cnt: bump(s.cnt, code), ..s }, w),
+        Wire::Err { code, .. } => (if stats_free(s, p) { Srv { cnt: bump(s.cnt, code), ..s } } else { s }, w),
         _ => (s, w),
     }
 }
 
 /// Ledger.CommitInTxn (inside Commit's TSTART). Order: head lock, state, idempotency, redacted key, expected head,
-/// empty/size, apply, write. `p` is the calling process; `fresh` is NewId().
+/// empty/size, apply, redaction block, revision row (field limits), counter row, write. `p` is the calling process;
+/// `fresh` is NewId(). The last three refusals have no pBump: they are uncounted.
 pub open spec fn server(s: Srv, c: Cs, p: nat, a: Apply, fresh: int) -> (Srv, Wire) {
     if s.holder is Some && s.holder->Some_0 != p {
-        refuse(s, err(Code::LockTimeout, None))
+        refuse(s, err(Code::LockTimeout, None), p)
     } else if s.state == LState::Never {
         (s, err(Code::NotEnabled, None))
     } else if s.state == LState::Disabled {
-        refuse(s, err(Code::Disabled, None))
+        refuse(s, err(Code::Disabled, None), p)
     } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {
         if s.idem[c.key->Some_0].1 == fingerprint(c) {
-            (Srv { cnt: Cnt { replays: s.cnt.replays + 1, ..s.cnt }, ..s },
+            (if stats_free(s, p) { Srv { cnt: Cnt { replays: s.cnt.replays + 1, ..s.cnt }, ..s } } else { s },
              Wire::Ok { seq: s.idem[c.key->Some_0].0, replayed: true, stmts: false })
         } else {
-            refuse(s, err(Code::Conflict, Some(head_id(s))))
+            refuse(s, err(Code::Conflict, Some(head_id(s))), p)
         }
     } else if c.key is Some && s.redacted_keys.contains(c.key->Some_0) {
-        refuse(s, err(Code::IdemRedacted, Some(head_id(s))))
+        refuse(s, err(Code::IdemRedacted, Some(head_id(s))), p)
     } else if c.expected is Some && !s.seq_of.contains_key(c.expected->Some_0) {
-        refuse(s, err(Code::UnknownHead, Some(head_id(s))))
+        refuse(s, err(Code::UnknownHead, Some(head_id(s))), p)
     } else if c.expected is Some && c.expected->Some_0 != head_id(s) {
-        refuse(s, err(Code::StaleHead, Some(head_id(s))))
+        refuse(s, err(Code::StaleHead, Some(head_id(s))), p)
     } else if c.ops.len() == 0 {
         (s, err(Code::Empty, Some(head_id(s))))
     } else if c.ops.len() > s.max_ops {
-        refuse(s, Wire::Err { code: Code::TooLarge, head: None, op_index: None, missing: None, limit: Some(s.max_ops) })
+        refuse(s, Wire::Err { code: Code::TooLarge, head: None, op_index: None, missing: None, limit: Some(s.max_ops) }, p)
     } else if !a.ok {
-        refuse(s, Wire::Err { code: Code::FailedOp, head: None, op_index: Some(a.index), missing: a.missing, limit: None })
+        refuse(s, Wire::Err { code: Code::FailedOp, head: None, op_index: Some(a.index), missing: a.missing, limit: None }, p)
+    } else if s.redacting && a.blocked {
+        (s, err(Code::RedactionInProgress, None))
+    } else if !fits(c) {
+        (s, err(Code::Inconsistent, Some(head_id(s))))
+    } else if !stats_free(s, p) {
+        (s, err(Code::Inconsistent, Some(head_id(s))))
     } else {
         write(s, c, fresh)
     }
@@ -202,6 +245,7 @@ pub open spec fn write(s: Srv, c: Cs, fresh: int) -> (Srv, Wire) {
 pub enum Exc {
     Base, NotEnabled, Disabled, Empty, TooLarge { limit: Option<nat> }, Stale { current: Option<int> }, UnknownRev,
     Conflict, IdemRedacted, OpError { index: int }, NodeNotFound { index: int, node: int }, LockTimeout, Inconsistent, TxnOpen,
+    RedactionInProgress,
 }
 
 /// errors.py from_commit_error.
@@ -222,6 +266,7 @@ pub open spec fn from_commit_error(w: Wire) -> Exc {
             },
             Code::LockTimeout => Exc::LockTimeout,
             Code::Inconsistent => Exc::Inconsistent,
+            Code::RedactionInProgress => Exc::RedactionInProgress,
             Code::Other(_) => Exc::Base,
         },
         _ => Exc::Base,
@@ -264,35 +309,51 @@ pub open spec fn client_commit(s: Srv, c: Cs, p: nat, a: Apply, fresh: int) -> O
 // =============================================================== caller transactions
 
 /// GraphLedger.commit inside the caller's transaction (write_txn; Ledger.Commit nested): the head lock the commit took
-/// is released only when the caller's transaction ends (an unlock inside a transaction waits for its end).
+/// is released only when the caller's transaction ends (an unlock inside a transaction waits for its end), whatever
+/// the outcome. A counted outcome also saved the counter row inside the caller's transaction, which then holds that
+/// row until it ends; an uncounted refusal (not_enabled, inconsistent, redaction_in_progress) leaves the row free.
 pub open spec fn txn_commit(s: Srv, c: Cs, p: nat, a: Apply, fresh: int) -> Out {
     let o = client_commit(s, c, p, a, fresh);
-    if calls_server(c) && !(s.holder is Some && s.holder->Some_0 != p) {
-        Out { srv: Srv { holder: Some(p), ..o.srv }, ..o }
-    } else {
-        o
+    let took_head = calls_server(c) && !(s.holder is Some && s.holder->Some_0 != p);
+    let took_row = o.srv.cnt != s.cnt;
+    Out {
+        srv: Srv {
+            holder: if took_head { Some(p) } else { o.srv.holder },
+            stats_holder: if took_row { Some(p) } else { o.srv.stats_holder },
+            stats_base: if took_row && o.srv.stats_holder != Some(p) { s.cnt } else { o.srv.stats_base },
+            ..o.srv
+        },
+        ..o
     }
 }
 
-/// The caller's ROLLBACK: every journaled global and row of its transaction goes back, the counters too, except the
-/// lock-timeout rejections other processes counted in their own transactions meanwhile.
-pub open spec fn txn_rollback(before: Srv, cur: Srv) -> Srv {
-    Srv { holder: None, cnt: Cnt { lock: cur.cnt.lock, ..before.cnt }, ..before }
+/// The caller's ROLLBACK: every journaled global and row of its transaction goes back. Its counter changes go back to
+/// where they were when it took the counter row (no other process could move them after that); when it never took
+/// the row, other processes' counts made meanwhile stay.
+pub open spec fn txn_rollback(before: Srv, cur: Srv, p: nat) -> Srv {
+    Srv { holder: None, stats_holder: None, cnt: if cur.stats_holder == Some(p) { cur.stats_base } else { cur.cnt }, ..before }
 }
 
-/// The caller's COMMIT keeps everything and frees the head.
+/// The caller's COMMIT keeps everything and frees the head and the counter row.
 pub open spec fn txn_end(cur: Srv) -> Srv {
-    Srv { holder: None, ..cur }
+    Srv { holder: None, stats_holder: None, ..cur }
+}
+
+/// Ledger.Count(kind) from another process (the strict guard's LedgerGuard.count_rejection): LedgerStats.Bump in its
+/// own transaction, lost while another process's transaction holds the counter row.
+pub open spec fn count_strict(s: Srv, q: nat) -> Srv {
+    if stats_free(s, q) { Srv { cnt: Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt }, ..s } } else { s }
 }
 
 // =============================================================== readers
 
 pub enum Read { At(nat), Raise(Exc) }
 
-/// GraphLedger._seq_of (Ledger.SeqOf): get_revision, reconstruct and export_reconstruction resolve their revision here
-/// before reading anything.
+/// get_revision, diff, reconstruct and export_reconstruction first refuse an unfinished redaction
+/// (_refuse_while_redacting), then resolve the revision with GraphLedger._seq_of (Ledger.SeqOf) before reading anything.
 pub open spec fn seq_read(s: Srv, id: int) -> Read {
-    if s.seq_of.contains_key(id) { Read::At(s.seq_of[id]) } else { Read::Raise(Exc::UnknownRev) }
+    if s.redacting { Read::Raise(Exc::RedactionInProgress) }
+    else if s.seq_of.contains_key(id) { Read::At(s.seq_of[id]) } else { Read::Raise(Exc::UnknownRev) }
 }
 
 /// GraphLedger.diff resolves both endpoints first.
@@ -410,15 +471,19 @@ pub open spec fn admits(s: Srv, c: Cs, p: nat, a: Apply) -> bool {
     &&& c.bad_ref is None
     &&& 0 < c.ops.len() <= s.max_ops
     &&& a.ok
+    &&& !a.blocked
+    &&& fits(c)
+    &&& s.stats_holder is None
 }
 
 /// A retry with the same key, actor, actor type and operations but a new message, correlation ID and any expected
 /// head (stale or unknown) replays the first revision, writes nothing, counts a replay and returns no statement IDs.
-pub proof fn theorem_retry_with_new_metadata_replays(s: Srv, c: Cs, m: int, corr: int, e: Option<int>, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+/// The retry's metadata lengths do not matter: the field limits are met only when a revision row is written.
+pub proof fn theorem_retry_with_new_metadata_replays(s: Srv, c: Cs, m: int, corr: int, e: Option<int>, ml: Lens, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
     requires admits(s, c, p, a), c.key is Some, s.holder is None,
     ensures ({
         let o1 = client_commit(s, c, p, a, f1);
-        let d = Cs { message: m, correlation: corr, expected: e, ..c };
+        let d = Cs { message: m, correlation: corr, expected: e, lens: ml, ..c };
         let o2 = client_commit(o1.srv, d, q, b, f2);
         &&& o1.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
         &&& o2.py == Py::Res { seq: s.head + 1, replayed: true, stmts: false }
@@ -427,7 +492,7 @@ pub proof fn theorem_retry_with_new_metadata_replays(s: Srv, c: Cs, m: int, corr
         &&& o2.events == seq![Ev::Replayed(s.head + 1)]
     }),
 {
-    assert(scope(Cs { message: m, correlation: corr, expected: e, ..c }) == scope(c));
+    assert(scope(Cs { message: m, correlation: corr, expected: e, lens: ml, ..c }) == scope(c));
 }
 
 /// The same key with the operations in another order is a conflict: nothing written, one conflict counted.
@@ -469,9 +534,9 @@ pub proof fn theorem_refusal_writes_nothing(s: Srv, c: Cs, p: nat, a: Apply, f: 
 /// A key carried only by a refused (stale-head) commit stays free: the same key with other operations then commits.
 pub proof fn theorem_refused_key_stays_free(s: Srv, c: Cs, d: Cs, k: int, e: int, p: nat, a: Apply, b: Apply, f1: int, f2: int)
     requires
-        s.state == LState::Enabled, s.holder is None, c.key == Some(k), !s.idem.contains_key(k), !s.redacted_keys.contains(k),
+        s.state == LState::Enabled, s.holder is None, s.stats_holder is None, c.key == Some(k), !s.idem.contains_key(k), !s.redacted_keys.contains(k),
         c.expected == Some(e), s.seq_of.contains_key(e), e != head_id(s), c.ops.len() > 0, c.bad_ref is None,
-        d.key == Some(k), d.expected is None, d.bad_ref is None, 0 < d.ops.len() <= s.max_ops, b.ok,
+        d.key == Some(k), d.expected is None, d.bad_ref is None, 0 < d.ops.len() <= s.max_ops, b.ok, !b.blocked, fits(d),
     ensures ({
         let o1 = client_commit(s, c, p, a, f1);
         let o2 = client_commit(o1.srv, d, p, b, f2);
@@ -483,9 +548,9 @@ pub proof fn theorem_refused_key_stays_free(s: Srv, c: Cs, d: Cs, k: int, e: int
 }
 
 /// Expected head: a revision of this ledger that is not the head → StaleHeadError naming the current head; an ID that
-/// is no revision → UnknownRevisionError. Neither writes; each counts its own rejection.
+/// is no revision → UnknownRevisionError. Neither writes; each counts its own rejection (counter row free).
 pub proof fn theorem_expected_head_outcomes(s: Srv, c: Cs, e: int, p: nat, a: Apply, f: int)
-    requires s.state == LState::Enabled, s.holder is None, c.key is None, c.bad_ref is None, c.ops.len() > 0, c.expected == Some(e),
+    requires s.state == LState::Enabled, s.holder is None, s.stats_holder is None, c.key is None, c.bad_ref is None, c.ops.len() > 0, c.expected == Some(e),
     ensures ({
         let o = client_commit(s, c, p, a, f);
         &&& !s.seq_of.contains_key(e) ==> o.py == Py::Raise(Exc::UnknownRev) && o.srv.cnt == (Cnt { unknown: s.cnt.unknown + 1, ..s.cnt })
@@ -498,7 +563,7 @@ pub proof fn theorem_expected_head_outcomes(s: Srv, c: Cs, e: int, p: nat, a: Ap
 
 /// Never enabled vs disabled: different classes; only the disabled refusal is counted. Both emit one event.
 pub proof fn theorem_disabled_and_never_enabled(s: Srv, c: Cs, p: nat, a: Apply, f: int)
-    requires s.holder is None, calls_server(c),
+    requires s.holder is None, s.stats_holder is None, calls_server(c),
     ensures ({
         let o = client_commit(s, c, p, a, f);
         &&& s.state == LState::Never ==> o.py == Py::Raise(Exc::NotEnabled) && o.srv == s && o.events == seq![Ev::Refused(Code::NotEnabled)]
@@ -520,7 +585,8 @@ pub proof fn theorem_empty_refused_before_the_server(s: Srv, c: Cs, p: nat, a: A
 
 /// The size limit is inclusive: exactly max_ops operations commit; one more is refused with the limit attached.
 pub proof fn theorem_size_limit_boundary(s: Srv, c: Cs, p: nat, a: Apply, f: int)
-    requires s.state == LState::Enabled, s.holder is None, c.key is None, c.expected is None, c.bad_ref is None, s.max_ops > 0, a.ok,
+    requires s.state == LState::Enabled, s.holder is None, s.stats_holder is None, c.key is None, c.expected is None, c.bad_ref is None,
+        s.max_ops > 0, a.ok, !a.blocked, fits(c),
     ensures
         c.ops.len() == s.max_ops ==> client_commit(s, c, p, a, f).py == (Py::Res { seq: s.head + 1, replayed: false, stmts: true }),
         c.ops.len() == s.max_ops + 1 ==> client_commit(s, c, p, a, f).py == Py::Raise(Exc::TooLarge { limit: Some(s.max_ops) })
@@ -554,33 +620,100 @@ pub proof fn theorem_error_mapping_fallbacks(i: nat, n: int, h: Option<int>, x: 
         from_commit_error(err(Code::NotEnabled, h)) != from_commit_error(err(Code::Disabled, h)),
         from_commit_error(err(Code::StaleHead, h)) != from_commit_error(err(Code::UnknownHead, h)),
         is_conflict(from_commit_error(err(Code::IdemRedacted, h))),
+        from_commit_error(err(Code::Inconsistent, h)) == Exc::Inconsistent,
+        from_commit_error(err(Code::RedactionInProgress, h)) == Exc::RedactionInProgress,
 {
 }
 
 // =============================================================== theorems: caller transactions
 
-/// A commit inside a caller's transaction holds the head lock until the transaction ends: another process's commit is
-/// refused with LedgerLockTimeoutError and changes nothing; after the caller's rollback the same commit gets the next
-/// seq with the last kept revision as parent (no gap); had the caller committed, it builds on the caller's revision.
+/// A commit inside a caller's transaction holds the head lock and the counter row until the transaction ends: another
+/// process's commit is refused with LedgerLockTimeoutError, changes nothing and is NOT counted (its Bump waits for the
+/// row and is lost; repaired after review 60 FE-3: the iteration-60 claim was `lock + 1`); after the caller's rollback
+/// the same commit gets the next seq with the last kept revision as parent (no gap) and the counters are the caller's
+/// starting ones plus that commit; had the caller committed, it builds on the caller's revision.
 pub proof fn theorem_caller_transaction_holds_the_head(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
     requires
         p != q, admits(s, c, p, a), s.holder is None, c.key is None,
-        d.key is None, d.expected is None, d.bad_ref is None, 0 < d.ops.len() <= s.max_ops, b.ok,
+        d.key is None, d.expected is None, d.bad_ref is None, 0 < d.ops.len() <= s.max_ops, b.ok, !b.blocked, fits(d),
     ensures ({
         let o1 = txn_commit(s, c, p, a, f1);
         let o2 = client_commit(o1.srv, d, q, b, f2);
-        let o3 = client_commit(txn_rollback(s, o2.srv), d, q, b, f2);
+        let o3 = client_commit(txn_rollback(s, o2.srv, p), d, q, b, f2);
         let o4 = client_commit(txn_end(o1.srv), d, q, b, f2);
         &&& o1.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+        &&& o1.srv.holder == Some(p) && o1.srv.stats_holder == Some(p)
         &&& o2.py == Py::Raise(Exc::LockTimeout)
-        &&& same_ledger(o2.srv, o1.srv) && o2.srv.cnt == (Cnt { lock: o1.srv.cnt.lock + 1, ..o1.srv.cnt })
+        &&& o2.events == seq![Ev::Refused(Code::LockTimeout)]
+        &&& same_ledger(o2.srv, o1.srv) && o2.srv.cnt == o1.srv.cnt
         &&& o3.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
         &&& o3.srv.parent[s.head + 1] == head_id(s)
-        &&& o3.srv.cnt.lock == s.cnt.lock + 1
+        &&& o3.srv.cnt == (Cnt { ok: s.cnt.ok + 1, ..s.cnt })
         &&& o4.py == Py::Res { seq: s.head + 2, replayed: false, stmts: true }
         &&& o4.srv.parent[s.head + 2] == f1
     }),
 {
+}
+
+/// A nested commit refused without a count (here: a revision row that does not fit its columns) still holds the head
+/// until the caller's transaction ends, but not the counter row: another process's commit times out and its
+/// lock-timeout refusal IS counted, and that count survives the caller's rollback (observed: 30 s and +1, against 40 s
+/// and +0 when the nested commit was counted).
+pub proof fn theorem_uncounted_nested_refusal_leaves_the_counter_row(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    requires
+        p != q, s.state == LState::Enabled, s.holder is None, s.stats_holder is None, c.key is None, c.expected is None,
+        c.bad_ref is None, 0 < c.ops.len() <= s.max_ops, a.ok, !a.blocked, !fits(c),
+        d.key is None, d.expected is None, d.bad_ref is None, 0 < d.ops.len() <= s.max_ops,
+    ensures ({
+        let o1 = txn_commit(s, c, p, a, f1);
+        let o2 = client_commit(o1.srv, d, q, b, f2);
+        &&& o1.py == Py::Raise(Exc::Inconsistent) && o1.events == seq![Ev::Refused(Code::Inconsistent)]
+        &&& same_ledger(o1.srv, s) && o1.srv.cnt == s.cnt
+        &&& o1.srv.holder == Some(p) && o1.srv.stats_holder is None
+        &&& o2.py == Py::Raise(Exc::LockTimeout)
+        &&& o2.srv.cnt == (Cnt { lock: s.cnt.lock + 1, ..s.cnt })
+        &&& txn_rollback(s, o2.srv, p).cnt.lock == s.cnt.lock + 1
+    }),
+{
+}
+
+/// Which server outcomes are counted. With the counter row free: a written revision counts commits_ok, a replay
+/// replays_idem, and each refusal its own rejection kind (`bump`), except not_enabled, a redaction-blocked commit and
+/// `inconsistent` (a revision row that does not fit its columns), which move no counter. Each of these still sends one
+/// hook event and writes nothing. While another process's transaction holds the counter row, no outcome of this
+/// process is counted, and the strict guard's count call is lost too.
+pub proof fn theorem_uncounted_outcomes(s: Srv, c: Cs, p: nat, a: Apply, f: int, r: nat)
+    requires calls_server(c),
+    ensures ({
+        let o = client_commit(s, c, p, a, f);
+        &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+            && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && s.redacting && a.blocked
+            ==> o.py == Py::Raise(Exc::RedactionInProgress) && o.srv == s && o.events == seq![Ev::Refused(Code::RedactionInProgress)]
+        &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+            && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && !(s.redacting && a.blocked) && !fits(c)
+            ==> o.py == Py::Raise(Exc::Inconsistent) && o.srv == s && o.events == seq![Ev::Refused(Code::Inconsistent)]
+        &&& s.state == LState::Never && (s.holder is None || s.holder == Some(p))
+            ==> o.srv == s && o.py == Py::Raise(Exc::NotEnabled)
+        &&& !stats_free(s, p) ==> o.srv.cnt == s.cnt
+        &&& r != p && s.stats_holder == Some(r) ==> count_strict(s, p) == s
+        &&& stats_free(s, p) ==> count_strict(s, p).cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+    }),
+{
+}
+
+/// A keyed retry is decided by its key before the revision row: the same key and operations with a message too long
+/// for its column replay the first revision instead of failing (observed).
+pub proof fn theorem_field_limits_checked_after_the_key(s: Srv, c: Cs, ml: Lens, p: nat, a: Apply, b: Apply, f1: int, f2: int)
+    requires admits(s, c, p, a), c.key is Some, s.holder is None, ml.message > 4000,
+    ensures ({
+        let o1 = client_commit(s, c, p, a, f1);
+        let d = Cs { lens: ml, ..c };
+        &&& !fits(d)
+        &&& client_commit(o1.srv, d, p, b, f2).py == Py::Res { seq: s.head + 1, replayed: true, stmts: false }
+        &&& client_commit(s, d, p, a, f1).py == Py::Raise(Exc::Inconsistent)
+    }),
+{
+    assert(scope(Cs { lens: ml, ..c }) == scope(c));
 }
 
 /// A caller's rollback takes back the revision, its seq and its idempotency binding: the key is free again and the
@@ -588,13 +721,13 @@ pub proof fn theorem_caller_transaction_holds_the_head(s: Srv, c: Cs, d: Cs, p: 
 pub proof fn theorem_rollback_frees_key_and_seq(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
     requires
         admits(s, c, p, a), s.holder is None, c.key is Some,
-        d.key == c.key, d.expected is None, d.bad_ref is None, 0 < d.ops.len() <= s.max_ops, b.ok,
+        d.key == c.key, d.expected is None, d.bad_ref is None, 0 < d.ops.len() <= s.max_ops, b.ok, !b.blocked, fits(d),
     ensures ({
         let o1 = txn_commit(s, c, p, a, f1);
-        let s1 = txn_rollback(s, o1.srv);
+        let s1 = txn_rollback(s, o1.srv, p);
         let o2 = client_commit(s1, d, q, b, f2);
         &&& o1.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
-        &&& same_ledger(s1, s) && s1.holder is None
+        &&& same_ledger(s1, s) && s1.holder is None && s1.cnt == s.cnt
         &&& o2.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
         &&& o2.srv.id_of[s.head + 1] == f2
     }),
@@ -603,14 +736,17 @@ pub proof fn theorem_rollback_frees_key_and_seq(s: Srv, c: Cs, d: Cs, p: nat, q:
 
 // =============================================================== theorems: readers and lifecycle
 
-/// Every revision reader resolves its ID first: an ID that is no revision raises UnknownRevisionError before any read
-/// or file write; a committed revision's ID resolves to its seq.
+/// Every revision reader first refuses an unfinished redaction (RedactionInProgressError, for a known or unknown ID
+/// alike), then resolves its ID: an ID that is no revision raises UnknownRevisionError before any read or file write;
+/// a committed revision's ID resolves to its seq.
 pub proof fn theorem_revision_readers_resolve_ids(s: Srv, id: int, other: int, c: Cs, p: nat, a: Apply, f: int)
     ensures
-        !s.seq_of.contains_key(id) ==> seq_read(s, id) == Read::Raise(Exc::UnknownRev)
+        s.redacting ==> seq_read(s, id) == Read::Raise(Exc::RedactionInProgress)
+            && diff_read(s, id, other) == Read::Raise(Exc::RedactionInProgress),
+        !s.redacting && !s.seq_of.contains_key(id) ==> seq_read(s, id) == Read::Raise(Exc::UnknownRev)
             && diff_read(s, id, other) == Read::Raise(Exc::UnknownRev) && diff_read(s, other, id) is Raise,
-        s.seq_of.contains_key(id) ==> seq_read(s, id) == Read::At(s.seq_of[id]),
-        admits(s, c, p, a) && s.holder is None ==> seq_read(client_commit(s, c, p, a, f).srv, f) == Read::At(s.head + 1),
+        !s.redacting && s.seq_of.contains_key(id) ==> seq_read(s, id) == Read::At(s.seq_of[id]),
+        !s.redacting && admits(s, c, p, a) && s.holder is None ==> seq_read(client_commit(s, c, p, a, f).srv, f) == Read::At(s.head + 1),
 {
 }
 

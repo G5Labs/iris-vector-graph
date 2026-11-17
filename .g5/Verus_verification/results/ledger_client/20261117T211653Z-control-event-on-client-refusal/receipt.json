@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_one_event_per_server_call"
+    ],
+    "find": "Out { srv: s, py: Py::Raise(Exc::OpError { index: c.bad_ref->Some_0 as int }), events: seq![] }",
+    "name": "event-on-client-refusal",
+    "replace": "Out { srv: s, py: Py::Raise(Exc::OpError { index: c.bad_ref->Some_0 as int }), events: seq![Ev::Refused(Code::FailedOp)] }",
+    "why": "a client-side refusal also emits a hook event"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_one_event_per_server_call"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "176d6d3029d8b293e42c34e000674b65b0aabe718d9485680f67a3a2d04f081b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a54a8aaea2749edf1b4e8e004fb09c2b373048cb869ceba8440727b483d68a80"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/event-on-client-refusal/20261117T211652Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_one_event_per_server_call": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211652Z-control-event-on-client-refusal-theorem_one_event_per_server_call.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211652Z-control-event-on-client-refusal.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T211653Z-control-event-on-client-refusal/logs/20261117T211652Z-control-event-on-client-refusal-theorem_one_event_per_server_call.log": "08c96107b2cfed2cabe421a09f64028c49366bf198e29f06b36f214fd98e95c3",
+    ".g5/Verus_verification/results/ledger_client/20261117T211653Z-control-event-on-client-refusal/logs/20261117T211652Z-control-event-on-client-refusal.log": "45c087226056862190075f8236aad9f863d58ce08869ae3fa852843574707bf3"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

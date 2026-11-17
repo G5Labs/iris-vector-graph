@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_disabled_and_never_enabled"
+    ],
+    "find": "(s, err(Code::NotEnabled, None))",
+    "name": "never-counted-as-disabled",
+    "replace": "refuse(s, err(Code::Disabled, None), p)",
+    "why": "a never-enabled ledger answers disabled and counts it"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_disabled_and_never_enabled"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "176d6d3029d8b293e42c34e000674b65b0aabe718d9485680f67a3a2d04f081b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a54a8aaea2749edf1b4e8e004fb09c2b373048cb869ceba8440727b483d68a80"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/never-counted-as-disabled/20261117T211637Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_disabled_and_never_enabled": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211637Z-control-never-counted-as-disabled-theorem_disabled_and_never_enabled.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211637Z-control-never-counted-as-disabled.log",
+    "timed_out": false,
+    "verified": 28
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T211638Z-control-never-counted-as-disabled/logs/20261117T211637Z-control-never-counted-as-disabled-theorem_disabled_and_never_enabled.log": "92cd45e4417dbacf08928f19743db59b4b58471b8739990de6263eb76ae2d2d1",
+    ".g5/Verus_verification/results/ledger_client/20261117T211638Z-control-never-counted-as-disabled/logs/20261117T211637Z-control-never-counted-as-disabled.log": "6e5cee24b029ccaf139d937f9bd9ef612e7334f71ad0543c7a4812409f3c69f6"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

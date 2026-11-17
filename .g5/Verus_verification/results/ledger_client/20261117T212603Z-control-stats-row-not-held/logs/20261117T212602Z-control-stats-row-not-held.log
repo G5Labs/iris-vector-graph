@@ -1,0 +1,35 @@
+verification results:: 28 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/stats-row-not-held/20261117T212602Z/models/ledger_client/ledger_client.rs:639:13
+    |
+635 |   pub proof fn theorem_caller_transaction_holds_the_head(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ---------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+639 |       ensures ({
+    |  _____________^
+640 | |         let o1 = txn_commit(s, c, p, a, f1);
+641 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+642 | |         let o3 = client_commit(txn_rollback(s, o2.srv, p), d, q, b, f2);
+...   |
+653 | |         &&& o4.srv.parent[s.head + 2] == f1
+654 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/stats-row-not-held/20261117T212602Z/models/ledger_client/ledger_client.rs:725:13
+    |
+721 |   pub proof fn theorem_rollback_frees_key_and_seq(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   --------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+725 |       ensures ({
+    |  _____________^
+726 | |         let o1 = txn_commit(s, c, p, a, f1);
+727 | |         let s1 = txn_rollback(s, o1.srv, p);
+728 | |         let o2 = client_commit(s1, d, q, b, f2);
+...   |
+732 | |         &&& o2.srv.id_of[s.head + 1] == f2
+733 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

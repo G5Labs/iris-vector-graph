@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_uncounted_outcomes",
+      "theorem_field_limits_checked_after_the_key",
+      "theorem_uncounted_nested_refusal_leaves_the_counter_row"
+    ],
+    "find": "    } else if !fits(c) {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n",
+    "name": "field-limits-unchecked",
+    "replace": "    } else if false {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n",
+    "why": "\"only the operation count is limited\": a revision row longer than its columns is written"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_uncounted_outcomes",
+      "theorem_field_limits_checked_after_the_key",
+      "theorem_uncounted_nested_refusal_leaves_the_counter_row"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "176d6d3029d8b293e42c34e000674b65b0aabe718d9485680f67a3a2d04f081b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a54a8aaea2749edf1b4e8e004fb09c2b373048cb869ceba8440727b483d68a80"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/field-limits-unchecked/20261117T211658Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_field_limits_checked_after_the_key": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211658Z-control-field-limits-unchecked-theorem_field_limits_checked_after_the_key.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_uncounted_nested_refusal_leaves_the_counter_row": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211658Z-control-field-limits-unchecked-theorem_uncounted_nested_refusal_leaves_the_counter_row.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_uncounted_outcomes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211658Z-control-field-limits-unchecked-theorem_uncounted_outcomes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211658Z-control-field-limits-unchecked.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T211700Z-control-field-limits-unchecked/logs/20261117T211658Z-control-field-limits-unchecked-theorem_field_limits_checked_after_the_key.log": "423b87ce7c0f1f6d6862b8bffec27a0f3fdda3fedf27c27bbd7f957b45ca0a6a",
+    ".g5/Verus_verification/results/ledger_client/20261117T211700Z-control-field-limits-unchecked/logs/20261117T211658Z-control-field-limits-unchecked-theorem_uncounted_nested_refusal_leaves_the_counter_row.log": "cb2c2dd1d3a0b2213a4731ddd16a998fcf1ce5126b7c04d5e7ae59a8b781570b",
+    ".g5/Verus_verification/results/ledger_client/20261117T211700Z-control-field-limits-unchecked/logs/20261117T211658Z-control-field-limits-unchecked-theorem_uncounted_outcomes.log": "21c627fa5eb64954416fb65fe4dfae95b603d0a30478b201dccc68a01c157044",
+    ".g5/Verus_verification/results/ledger_client/20261117T211700Z-control-field-limits-unchecked/logs/20261117T211658Z-control-field-limits-unchecked.log": "0bf17c373e235ded6ad98935cb2214530f54dd1ff5c99ea8fc1e86af5d9c2df5"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,27 @@
+verification results:: 13 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/node-from-node-rows-only/20261117T211230Z/models/ledger_verify/ledger_verify.rs:255:1
+    |
+255 | pub proof fn lemma_canonical_wf(t: Tables)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/node-from-node-rows-only/20261117T211230Z/models/ledger_verify/ledger_verify.rs:261:82
+    |
+261 |             Fact::Label(n, l) => { assert(t.label_rows.contains((n, l))); assert(canon_node(t, n)); }
+    |                                                                                  ^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/node-from-node-rows-only/20261117T211230Z/models/ledger_verify/ledger_verify.rs:262:100
+    |
+262 |             Fact::Prop(n, k) => { assert(t.prop_rows.contains_key((n, k)) && !reserved(k)); assert(canon_node(t, n)); }
+    |                                                                                                    ^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/node-from-node-rows-only/20261117T211230Z/models/ledger_verify/ledger_verify.rs:279:12
+    |
+279 |     assert(canon_node(t, n));
+    |            ^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

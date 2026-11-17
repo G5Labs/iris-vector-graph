@@ -48,7 +48,7 @@ T = test-only policy not promoted (reason given).
 | B1 | Payload ≤ 1,000,000 chars sent inline; above it staged in order and joined exactly; large answers returned as `CHUNKED:tag:n` and joined | U15-U17, I87 (2.5M answer), I88 (1.2 MB changeset) | mock / live | RUN-UNIT; NATIVE N10 (5.1 MB), B15 | `theorem_chunked_transport_roundtrip`, `lemma_join_chunks` (control `chunk-off-by-one`) | N + OC |
 | B2 | Commit meta carries fingerprint, expected head, key, kind, schema | U18 | mock | RUN-UNIT | `client_commit` wire fields; exact meta key names are implementation detail | N / T |
 | B3 | One `Commit` call per `commit()`, never retried | U19, U25 | mock | RUN-UNIT; NATIVE (one hook event per call) | `theorem_one_event_per_server_call` | N |
-| B4 | Transport failures never raise from the transport layer; they become `inconsistent` → `LedgerInconsistencyError` | U23, U24 | mock raising | RUN-UNIT | `from_commit_error` (Inconsistent) — inspected, not observed natively | N (inspected). A failure after the server committed is reported as inconsistent though the revision exists — M (no idempotent recovery claim) |
+| B4 | Transport failures never raise from the transport layer; they become `inconsistent` → `LedgerInconsistencyError` | U23, U24 | mock raising | RUN-UNIT | `from_commit_error` (Inconsistent) — inspected, not observed natively | N (inspected). A failure after the server committed is reported as inconsistent though the revision exists — M (no idempotent recovery claim). **Repair:** `inconsistent` also has a deterministic caller-input producer (revision fields over their column limits, nothing applied, uncounted: `theorem_uncounted_outcomes`, binding B20, bug-led-015); the caller cannot tell the cases apart (review 60 CG-2) — owner `ledger.commit.size` states it |
 
 ## C. Error classes and mapping (owner `ledger.commit`, `.expected-head`, `.size`)
 
@@ -57,7 +57,7 @@ T = test-only policy not promoted (reason given).
 | C1 | Every ledger error is a `LedgerError`/`IVGError`; `NodeNotFoundError` is a `ChangesetOperationError`; `IdempotencyRedactedError` an `IdempotencyConflictError` | U27, U31 | RUN-UNIT; NATIVE S3.3 | `is_op_error`, `is_conflict`, class rows bound | N |
 | C2 | Attributes: `current_head`, `op_index` (zero-based; -1 if absent), `reason`, `limit`, `missing_node`, `bound`/`estimate` | U28, U30, U32, I15, I19, I26 | RUN-UNIT; NATIVE P2.1, P3.1, S3.5, R2-B | `theorem_failed_operation_reported`, `theorem_error_mapping_fallbacks`, `theorem_expected_head_outcomes`, `theorem_size_limit_boundary`; reconstruction `theorem_transient_oversize_refuses` | N |
 | C3 | Each wire code maps to its class; unknown code → plain `LedgerError` with the text; `node_not_found:` narrows | U29, U33, U34, I56 | RUN-UNIT; NATIVE S3.3, B7 | `theorem_error_mapping_fallbacks` (controls `no-node-narrowing`, `op-index-lost`) | N |
-| C4 | Two `NodeNotFoundError` classes exist (top-level and ledger); US02 and 217 expect different ones and pass only through subclassing | I15 vs I56 (reader conflict C5) | NOT-RUN | — | T (naming hazard noted; no outcome change) |
+| C4 | Two `NodeNotFoundError` classes exist (top-level and ledger); US02 and 217 expect different ones and pass only through subclassing | I15 vs I56 (reader conflict C5) | NOT-RUN; **NATIVE (repair probe `c4`)**: `except iris_vector_graph.NodeNotFoundError` (the class the API reference documents) does not catch the ledger's missing-endpoint error; property/label ops on a missing ID raise it with a "create_relationship failed" message | class identity, not a model decision (`from_commit_error` narrowing is bound) | **C → bug-led-016 + OC** (`ledger.commit` now names the ledger's class). Corrected in the repair after review 60: the iteration-60 disposition "T, no outcome change" was wrong — a caller following the reference does not catch the error |
 
 ## D. Admission, idempotency, concurrency (owner `ledger.commit.admission`, `.idempotency`, `.expected-head`, `.serial`, `.size`)
 
@@ -72,18 +72,18 @@ T = test-only policy not promoted (reason given).
 | D7 | Two writers with the same expected head: exactly one wins; same key and payload concurrently: one revision | I26, I33 | NOT-RUN (multi-process) | playbook `proofs-pa3` head lock / `theorem_key_binds_one_fingerprint` (reviewed design) | D |
 | D8 | Many writers keep one contiguous single-parent chain | I27, I28, I93 | NOT-RUN (perf/soak, destructive reset) | `proofs-pa3` serialization (reviewed design); `ledger_client::write` (parent = head) | D |
 | D9 | Over `max_ops` refused with the limit before apply; exactly `max_ops` commits | I19, observability too_large | NOT-RUN; NATIVE S3.5, B6 | `theorem_size_limit_boundary` (control `size-limit-exclusive`) | N |
-| D10 | A failing op rolls back the whole changeset; position reported; references to entities deleted earlier in the changeset fail at that op | I15, I16, I21, I22 | NOT-RUN; NATIVE P3.1, N3 | `ledger_apply::theorem_mid_failure_rolls_back_prefix` | D |
+| D10 | A failing op rolls back the whole changeset; position reported; references to entities deleted earlier in the changeset fail at that op | I15, I16, I21, I22 | NOT-RUN; NATIVE P3.1, N3 | `ledger_apply::theorem_mid_failure_rolls_back_prefix` (rollback and position) | **D (partial) + M** (repair, review 60 CG-4): `ledger_apply` has no delete operation, so "a later op naming a node or statement deleted earlier in this changeset fails at that op" (`OpCreateRel`'s `pCtx("deletedNode")` / `deletedStmt` checks) is not derived; first missing step: add `delete_node`/`delete_rel` with that context to `ledger_apply` |
 | D11 | Duplicate set in one changeset records both; same-value write records nothing; an all-no-op changeset is still a revision | I20, I67 | NOT-RUN; NATIVE N4 | `ledger_apply::theorem_two_writes_produce_priors`, `theorem_noop_has_no_property_record`; empty revision owner only | D + OC |
 | D12 | Statement IDs are never reused | I21 | NOT-RUN | `ledger_content` fresh coherent identities | D |
 | D13 | A store refusal (trigger `%ok=0`) fails the whole commit | I23 | NOT-RUN (adds triggers to shared tables) | `ledger_apply` assumes successful SQL | P (provider refusal not modelled) |
-| D14 | Lock held by another process > 30 s → `LedgerLockTimeoutError` for commit and enable; then succeeds | I9 | NOT-RUN (holds the lock 38 s) ; NATIVE N1 (40 s, through a caller transaction) | `theorem_caller_transaction_holds_the_head`; enable's lock wait not modelled | N (commit) / M (enable) |
+| D14 | Lock held by another process > 30 s → `LedgerLockTimeoutError` for commit and enable; then succeeds | I9 | NOT-RUN (holds the lock 38 s) ; NATIVE N1 (40 s, through a caller transaction); **repair**: 30.0 s and counted behind a Native API lock (probe R3.b) or an uncounted nested refusal (B8b); the extra 10 s is the counter-row wait (bug-led-014) | `theorem_caller_transaction_holds_the_head`, `theorem_uncounted_nested_refusal_leaves_the_counter_row`; enable's lock wait not modelled | N (commit) / M (enable) |
 
 ## E. Caller transactions (owner `ledger.commit.caller-transaction`)
 
 | ID | Rule | Tests | Status | Formal | Disp. |
 |---|---|---|---|---|---|
 | E1 | A commit joins the caller's open transaction (`$TLEVEL` stays); caller commit keeps both, rollback removes revision, writes and post-commit properties with no seq gap | E20-E23, E25, I24 | NOT-RUN; NATIVE P5.2-B, N2.A, B9 | `theorem_rollback_frees_key_and_seq`, `txn_rollback` | N |
-| E2 | The head stays locked until the caller's transaction ends; another connection's commit times out and changes nothing | E24 (raw `lock` with timeout 0 only), USER_GUIDE 296-300 | E24 NOT-RUN; **no test drives a competing commit**; NATIVE N1, B8 | `theorem_caller_transaction_holds_the_head` (control `lock-released-inside-transaction`) | N + OC |
+| E2 | The head stays locked until the caller's transaction ends; another connection's commit times out and changes nothing | E24 (raw `lock` with timeout 0 only), USER_GUIDE 296-300 | E24 NOT-RUN; **no test drives a competing commit**; NATIVE N1, B8; **repair B8/B8b/B8c** (counter deltas) | `theorem_caller_transaction_holds_the_head` (corrected: the refusal is not counted; controls `lock-released-inside-transaction`, `stats-row-not-held`, `bump-ignores-held-row`), `theorem_uncounted_nested_refusal_leaves_the_counter_row` | N (corrected) + OC + C → bug-led-014 (the iteration-60 theorem asserted lock + 1, never measured; natively +0 after 40 s) |
 | E3 | `enable()`/`redact()` refuse an open caller transaction (`LedgerTransactionOpenError`), nothing done | E26, I8 | NOT-RUN; NATIVE S4.3 | `theorem_enable_lifecycle` (in-transaction branch) | N |
 | E4 | `disable()`/`set_strict()` join the caller transaction (not refused) | none | NATIVE S4.3 (disable joined, rolled back) | none | O (HD-1102 open; evidence added in handoff) |
 | E5 | Autocommit off counts as a caller transaction | none (doc only) | NATIVE (probes use `setAutoCommit(False)`) | not distinguished in the model | O |
@@ -119,7 +119,7 @@ T = test-only policy not promoted (reason given).
 | H1 | History ascending, paged exactly once, filters (actor, actor_type, time, correlation) keep order | I43-I46, U60, E4-E6 | NOT-RUN / RUN-UNIT; NATIVE H1, H2 | `history_paging` | D |
 | H2 | `history(source=...)` filters by source | U60 (SQL text only) | NATIVE: a text source is dropped; only exact compact JSON of an object matches | `witness_text_source_is_dropped` (control `text-source-kept`) | C → bug-led-012; OC |
 | H3 | `get_revision` returns ordinal-ordered records with prior/new; records SQL proc pages; `CanonicalRecord` sorted keys | I47, I85, I86, O17-O19 | NOT-RUN | `ledger_apply::revision`, `ledger_content` records | D (CanonicalRecord unbound; redaction-adjacent) |
-| H4 | Unknown revision ID → `UnknownRevisionError` from `get_revision`/`diff` (and reconstruct/export) | I48 | NOT-RUN; NATIVE N5, B10 | `theorem_revision_readers_resolve_ids` (control `unknown-id-reads-genesis`) | N + OC |
+| H4 | Unknown revision ID → `UnknownRevisionError` from `get_revision`/`diff` (and reconstruct/export) | I48 | NOT-RUN; NATIVE N5, B10; **repair B19**: while a redaction is unfinished all four raise `RedactionInProgressError` first, whatever the ID | `theorem_revision_readers_resolve_ids` (controls `unknown-id-reads-genesis`, `lookup-before-redaction-check`) | N + OC (redaction check added to `ledger.readers`, review 60 FE-6) |
 | H5 | Diff is net, deterministic, node-before-rel ordered, exact inverse, lifecycle-aware, empty for equal endpoints | I49-I54, U47-U52 | NOT-RUN / RUN-UNIT; NATIVE D1, D2 | `history_diff`, `ledger_content` | D (new bindings for `Diff`, `DiffEntry.inverse`, `Diff.__eq__`) |
 | H6 | Reconstruct at a revision; bound refuses intermediate oversize; stream and export unbounded; export round-trips through `import_graph_ndjson` | I57-I61, U53-U55 | NOT-RUN; NATIVE R1, R2 | `reconstruction`, `ledger_content` | D; the import half of I61 not modelled — M |
 
@@ -128,10 +128,10 @@ T = test-only policy not promoted (reason given).
 | ID | Rule | Tests | Status | Formal | Disp. |
 |---|---|---|---|---|---|
 | I1 | Clean ledger → `equal`, no differences, verified head = head; result recorded in stats | I62 | NOT-RUN; NATIVE V1, N9, V0 | `ledger_verify::theorem_equal_iff_views_agree`, `theorem_adoption_only_when_needed` | N (stats `last_verify_*` owner `install.status.ledger` only — O) |
-| I2 | Legacy, Cypher and raw SQL writes are unrecorded: diverges with node/label/prop/rel entries | I35, I63, I4 | NOT-RUN; NATIVE V1-B, V2-A, C2, verify binding V1 | `theorem_entries_for_created_and_deleted_nodes` (control `new-entity-attributes-dropped`) | N |
-| I3 | `verify(adopt=True)` writes one adoption revision (actor `system:ledger-verify`, parent the old head), one record per difference; next verify equal | I64 | NOT-RUN; NATIVE N9, C2, verify binding V2 | `theorem_adoption_closes_the_difference` (control `adopt-without-cascade`) | N + OC |
+| I2 | Legacy, Cypher and raw SQL writes are unrecorded: diverges with node/label/prop/rel entries | I35, I63, I4 | NOT-RUN; NATIVE V1-B, V2-A, C2, verify binding V1 (repair V1 adds a post-commit property on an ID with no node row) | `theorem_entries_for_created_and_deleted_nodes` (control `new-entity-attributes-dropped`); repair (review 60 FE-2): `lemma_canonical_wf`, `theorem_orphan_property_reports_node` (control `node-from-node-rows-only`) — a label or property row makes the node | N |
+| I3 | `verify(adopt=True)` writes one adoption revision (actor `system:ledger-verify`, parent the old head), one record per difference; next verify equal | I64 | NOT-RUN; NATIVE N9, C2, verify binding V2; **repair T2**: with a relationship whose `temporal` qualifier is the text "true" the adoption is written and the next verify still diverges | `theorem_adoption_closes_the_difference` **narrowed** to tables with no text-"true" temporal qualifier (controls `adopt-without-cascade`, `text-marker-premise-dropped`); `theorem_adoption_never_closes_a_text_marker` (control `no-redrop`) | N (narrowed) + OC + **C → bug-led-013**. Corrected in the repair: the iteration-60 claim was unconditional |
 | I4 | Verify without adopt is read-only; with adopt and no differences writes nothing | I65 | NOT-RUN; NATIVE N9, V0 | `theorem_adoption_only_when_needed` (control `adopt-when-equal`) | N + OC |
-| I5 | Temporal edges are not structural: marked rows out on both sides; a governed create adopts the row | I37, I40, I41, E3, U59 | NOT-RUN / RUN-UNIT; NATIVE V2-B, C1 | `theorem_temporal_marked_rows_left_out` (controls `temporal-row-governed`, `replay-keeps-marked`) | N (the replay half inspected only; U59's fake has no marked row — reader note) |
+| I5 | Temporal edges are not structural: marked rows out on both sides; a governed create adopts the row | I37, I40, I41, E3, U59 | NOT-RUN / RUN-UNIT; NATIVE V2-B, C1; **repair probe `fe1` and binding T1/T2**: the two sides use different markers (tables: JSON boolean true; replay: text "true"), so a committed `temporal="true"` or `True` relationship diverges forever; `"yes"` and a JSON-true direct write are fine | `theorem_temporal_marked_rows_left_out` **split** into the two rules with neighbours (controls `temporal-row-governed`, `replay-keeps-marked`, `one-marker-rule`), `theorem_marker_rules_differ`, `theorem_text_marker_never_equal` | N (repaired; replay half now observed) + OC + **C → bug-led-013**. Corrected in the repair: the iteration-60 model held one marker and could not represent the case |
 | I6 | Nodes by ID across graphs; reserved props out; statement IDs not compared | I3 (named graph), r290 (no verify call) | NOT-RUN; NATIVE verify binding (`uy` in a named graph) | `theorem_node_identity_ignores_graph`, `theorem_reserved_properties_left_out`, `theorem_statement_ids_not_compared` | N. A node ID with property rows in two graphs merges in row order — M (q-led-004) |
 | I7 | Verify alongside a commit reports a head it observed at the start and claims no false deletion | I66 | NOT-RUN | premise of quiescence (q-led-006) | P (the model assumes what the test probes) |
 
@@ -139,7 +139,7 @@ T = test-only policy not promoted (reason given).
 
 | ID | Rule | Tests | Status | Formal | Disp. |
 |---|---|---|---|---|---|
-| J1 | Each server outcome is logged once, sent to every hook once (success, replayed, stale_head, idempotency_conflict, failed_op, too_large, disabled, not_enabled, lock_timeout) and counted (`commits_ok` incl. genesis, `replays_idem`, `rej_*`; not_enabled uncounted) | I83, I84, U40, U41 | NOT-RUN / RUN-UNIT; NATIVE N8, S3.4, P3.2, binding deltas on every case | counter and event conclusions of the `ledger_client` theorems; `theorem_one_event_per_server_call` | N + OC |
+| J1 | Each server outcome is logged once, sent to every hook once (success, replayed, stale_head, idempotency_conflict, failed_op, too_large, disabled, not_enabled, lock_timeout) and counted (`commits_ok` incl. genesis, `replays_idem`, `rej_*`; not_enabled uncounted) | I83, I84, U40, U41 | NOT-RUN / RUN-UNIT; NATIVE N8, S3.4, P3.2, binding deltas on every case; **repair B8, B8b, B8c, B18, B20**: uncounted also `redaction_in_progress`, `inconsistent`, and every outcome while another caller's transaction holds the counter row | counter and event conclusions of the `ledger_client` theorems; `theorem_one_event_per_server_call`; repair: `theorem_uncounted_outcomes` (controls `redaction-block-counted`, `field-limits-unchecked`, `bump-ignores-held-row`) | N (corrected) + OC + **C → bug-led-014, bug-led-015**. Corrected in the repair: the iteration-60 owner said every server outcome is counted (review 60 FE-4) |
 | J2 | A raising hook is logged and does not change the result; `enable()` emits no event (adoption on re-enable does, through `verify`) | U41 | RUN-UNIT; NATIVE S3.4 | owner only | OC |
 | J3 | Client-side refusals reach no hook, against the hook doc | **no test** | NATIVE S2.3, B5 | `theorem_one_event_per_server_call` (control `event-on-client-refusal`) | C → bug-doc-013 |
 | J4 | `status().ledger` for a never-enabled or unreadable ledger | I6, O24 | NOT-RUN / RUN-UNIT | `operator_reports` | D |
@@ -172,13 +172,13 @@ functions (187 items), 118 integration functions (123 items), 35 e2e items and 3
 | Primary disposition | Groups | Which |
 |---|---|---|
 | Newly represented in iteration 60 (N: formal claim with control + native binding or observation) | 36 | A1, A2, A8, B1-B4, C1-C3, D1-D6, D9, D14, E1-E3, F1, F2, F4-F6, H4, I1-I6, J1, K1, K2 |
-| Already derived by an existing model (D, some partial) | 19 | A3, A4, D7, D8, D10-D12, F3, G1-G4, H1, H3, H5, H6, J4, L1, L2 |
+| Already derived by an existing model (D, some partial) | 19 | A3, A4, D7, D8, D10 (partial, repair), D11, D12, F3, G1-G4, H1, H3, H5, H6, J4, L1, L2 |
 | Owner only, no formal claim (O) | 6 | A5, E4, E5, F7, J2, L3 |
 | Owner corrected, no formal claim (OC) | 1 | A7 |
-| Missing distinction left open (M) | 6 | A6, E6, L4, L5, L6, L8 (also secondary in B4, D14, H6, I6, L2) |
+| Missing distinction left open (M) | 6 | A6, E6, L4, L5, L6, L8 (also secondary in B4, D10 (repair), D14, H6, I6, L2) |
 | Mismatched premise (P) | 2 | D13 (provider refusal), I7 (concurrent verify) |
-| Conflict with owner/docs → finding (C) | 4 | E7 → bug-doc-014, F8 → bug-test-004, H2 → bug-led-012, J3 → bug-doc-013 |
-| Test-only policy not promoted (T) | 2 | C4, L7 (also secondary in A7, B2, G4) |
+| Conflict with owner/docs → finding (C) | 5 | E7 → bug-doc-014, F8 → bug-test-004, H2 → bug-led-012, J3 → bug-doc-013, C4 → bug-led-016 (repair); secondary C: I3, I5 → bug-led-013; E2, J1 → bug-led-014; J1, B4 → bug-led-015 |
+| Test-only policy not promoted (T) | 1 | L7 (also secondary in A7, B2, G4) |
 
 Owner text was corrected or added for 18 groups (A4, A6, A7, A8, B1, D5, D11, E2, F2, F4, F5, F6, H2, H4, I3, I4, J1,
 J2), including the new block `ledger.observability`. Of the 36 newly represented groups, four have no test at all (D5, E2's competing commit, F2, F6), H4 is tested only for
@@ -197,3 +197,14 @@ uses an op that never marks; the adjacency `deg == ""` checks are vacuous (`^KG(
 inserts the node it says is absent; `test_262_alt_schema_paths.py:464` counts `'altrd:x'` for a node written as
 `'altrd|x'`; `ledger_reset` calls `PurgeAll` through a second connection inside `suppress`, a pattern
 `test_master_cleanup.py:7-14` says never worked (unverified here).
+
+## Repair after review 60 (iteration-60 repair)
+
+Rows corrected after the independent review (`$G5_RUN_STATE/review-60/REVIEW.md`), each reproduced natively by this
+repair before the change ([repair dispositions](repair/DISPOSITIONS.md), [predictions](repair/PREDICTIONS.md),
+[probes](repair/probes/)): **I3** and **I5** (FE-1: two temporal-marker rules; bug-led-013), **I2** (FE-2: node existence
+from label/property rows), **E2**, **D14** and **J1** (FE-3, FE-4: the counter row and the uncounted outcomes;
+bug-led-014), **B4** and **J1** (FE-5: field limits refused as `inconsistent`; bug-led-015), **H4** (FE-6: the redaction
+check comes first), **C4** (the package-root `NodeNotFoundError` does not catch the ledger's; bug-led-016; T → C) and
+**D10** (`ledger_apply` has no delete operation; D → D partial + M). Primary-disposition counts after the repair: N 36,
+D 19 (D10 now partial), O 6, OC 1, M 6, P 2, C 5, T 1 (76 groups).

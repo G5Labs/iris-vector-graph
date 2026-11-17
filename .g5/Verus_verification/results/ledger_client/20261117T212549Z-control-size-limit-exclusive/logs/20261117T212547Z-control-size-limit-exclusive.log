@@ -1,0 +1,189 @@
+verification results:: 18 verified, 12 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:484:13
+    |
+482 |   pub proof fn theorem_retry_with_new_metadata_replays(s: Srv, c: Cs, m: int, corr: int, e: Option<int>, ml: Lens, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+483 |       requires admits(s, c, p, a), c.key is Some, s.holder is None,
+484 |       ensures ({
+    |  _____________^
+485 | |         let o1 = client_commit(s, c, p, a, f1);
+486 | |         let d = Cs { message: m, correlation: corr, expected: e, lens: ml, ..c };
+487 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+...   |
+492 | |         &&& o2.events == seq![Ev::Replayed(s.head + 1)]
+493 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:501:13
+    |
+499 |   pub proof fn theorem_reordered_operations_conflict(s: Srv, c: Cs, x: int, y: int, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   --------------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+500 |       requires admits(s, c, p, a), c.key is Some, s.holder is None, collision_free(), x != y, c.ops == seq![x, y],
+501 |       ensures ({
+    |  _____________^
+502 | |         let o1 = client_commit(s, c, p, a, f1);
+503 | |         let d = Cs { ops: seq![y, x], ..c };
+504 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+...   |
+509 | |         &&& o2.events == seq![Ev::Refused(Code::Conflict)]
+510 | |     }),
+    | |______^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:518:1
+    |
+518 | pub proof fn witness_replay_returns_no_statement_ids(s: Srv, c: Cs, p: nat, a: Apply, f1: int, f2: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:521:9
+    |
+518 | pub proof fn witness_replay_returns_no_statement_ids(s: Srv, c: Cs, p: nat, a: Apply, f1: int, f2: int)
+    | ------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+521 |         client_commit(s, c, p, a, f1).py is Res && client_commit(s, c, p, a, f1).py->stmts,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:522:9
+    |
+518 | pub proof fn witness_replay_returns_no_statement_ids(s: Srv, c: Cs, p: nat, a: Apply, f1: int, f2: int)
+    | ------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+522 |         client_commit(client_commit(s, c, p, a, f1).srv, c, p, a, f2).py == (Py::Res { seq: s.head + 1, replayed: true, stmts: false }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:540:13
+    |
+535 |   pub proof fn theorem_refused_key_stays_free(s: Srv, c: Cs, d: Cs, k: int, e: int, p: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+540 |       ensures ({
+    |  _____________^
+541 | |         let o1 = client_commit(s, c, p, a, f1);
+542 | |         let o2 = client_commit(o1.srv, d, p, b, f2);
+543 | |         &&& o1.py == Py::Raise(Exc::Stale { current: Some(head_id(s)) })
+544 | |         &&& o2.py == Py::Res { seq: s.head + 1, replayed: false, stmts: true }
+545 | |         &&& o2.srv.idem[k] == (s.head + 1, fingerprint(d))
+546 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:591:9
+    |
+587 | pub proof fn theorem_size_limit_boundary(s: Srv, c: Cs, p: nat, a: Apply, f: int)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+591 |         c.ops.len() == s.max_ops ==> client_commit(s, c, p, a, f).py == (Py::Res { seq: s.head + 1, replayed: false, stmts: true }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:602:13
+    |
+600 |   pub proof fn theorem_failed_operation_reported(s: Srv, c: Cs, p: nat, a: Apply, f: int)
+    |   --------------------------------------------------------------------------------------- at the end of the function body
+601 |       requires admits(s, Cs { ..c }, p, Apply { ok: true, ..a }), !a.ok, c.key is None,
+602 |       ensures ({
+    |  _____________^
+603 | |         let o = client_commit(s, c, p, a, f);
+604 | |         &&& a.missing is Some ==> o.py == Py::Raise(Exc::NodeNotFound { index: a.index as int, node: a.missing->Some_0 })
+605 | |         &&& a.missing is None ==> o.py == Py::Raise(Exc::OpError { index: a.index as int })
+...   |
+608 | |         &&& o.srv.cnt == Cnt { failed: s.cnt.failed + 1, ..s.cnt }
+609 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:639:13
+    |
+635 |   pub proof fn theorem_caller_transaction_holds_the_head(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ---------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+639 |       ensures ({
+    |  _____________^
+640 | |         let o1 = txn_commit(s, c, p, a, f1);
+641 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+642 | |         let o3 = client_commit(txn_rollback(s, o2.srv, p), d, q, b, f2);
+...   |
+653 | |         &&& o4.srv.parent[s.head + 2] == f1
+654 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:667:13
+    |
+662 |   pub proof fn theorem_uncounted_nested_refusal_leaves_the_counter_row(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+667 |       ensures ({
+    |  _____________^
+668 | |         let o1 = txn_commit(s, c, p, a, f1);
+669 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+670 | |         &&& o1.py == Py::Raise(Exc::Inconsistent) && o1.events == seq![Ev::Refused(Code::Inconsistent)]
+...   |
+675 | |         &&& txn_rollback(s, o2.srv, p).cnt.lock == s.cnt.lock + 1
+676 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:687:13
+    |
+685 |   pub proof fn theorem_uncounted_outcomes(s: Srv, c: Cs, p: nat, a: Apply, f: int, r: nat)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+686 |       requires calls_server(c),
+687 |       ensures ({
+    |  _____________^
+688 | |         let o = client_commit(s, c, p, a, f);
+689 | |         &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+690 | |             && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && s.redacting && a.blocked
+...   |
+699 | |         &&& stats_free(s, p) ==> count_strict(s, p).cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+700 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:708:13
+    |
+706 |   pub proof fn theorem_field_limits_checked_after_the_key(s: Srv, c: Cs, ml: Lens, p: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+707 |       requires admits(s, c, p, a), c.key is Some, s.holder is None, ml.message > 4000,
+708 |       ensures ({
+    |  _____________^
+709 | |         let o1 = client_commit(s, c, p, a, f1);
+710 | |         let d = Cs { lens: ml, ..c };
+711 | |         &&& !fits(d)
+712 | |         &&& client_commit(o1.srv, d, p, b, f2).py == Py::Res { seq: s.head + 1, replayed: true, stmts: false }
+713 | |         &&& client_commit(s, d, p, a, f1).py == Py::Raise(Exc::Inconsistent)
+714 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:725:13
+    |
+721 |   pub proof fn theorem_rollback_frees_key_and_seq(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   --------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+725 |       ensures ({
+    |  _____________^
+726 | |         let o1 = txn_commit(s, c, p, a, f1);
+727 | |         let s1 = txn_rollback(s, o1.srv, p);
+728 | |         let o2 = client_commit(s1, d, q, b, f2);
+...   |
+732 | |         &&& o2.srv.id_of[s.head + 1] == f2
+733 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs:749:9
+    |
+742 | pub proof fn theorem_revision_readers_resolve_ids(s: Srv, id: int, other: int, c: Cs, p: nat, a: Apply, f: int)
+    | --------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+749 |         !s.redacting && admits(s, c, p, a) && s.holder is None ==> seq_read(client_commit(s, c, p, a, f).srv, f) == Read::At(s.head + 1),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 13 previous errors
+

@@ -1,6 +1,6 @@
 # ledger verify
 
-what verify compares (nodes by ID across graphs, reserved properties and temporal-marked rows left out, relationships by tuple), the entries it reports for unrecorded writes, and that adopting them makes the next verify equal
+what verify compares (nodes by ID across graphs, from node, label or property rows; reserved properties left out; JSON-true temporal rows left out of the tables and text-"true" temporal statements left out of the replay), the entries it reports for unrecorded writes, when adoption makes the next verify equal, and that a relationship stored with temporal text "true" never verifies equal
 
 Evidence status: active. Variant: as-built transcription.
 

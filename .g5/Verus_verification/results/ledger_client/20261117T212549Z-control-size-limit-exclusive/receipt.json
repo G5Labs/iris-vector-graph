@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_size_limit_boundary"
+    ],
+    "find": "} else if c.ops.len() > s.max_ops {",
+    "name": "size-limit-exclusive",
+    "replace": "} else if c.ops.len() >= s.max_ops {",
+    "why": "exactly max_ops operations are refused"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_size_limit_boundary"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "176d6d3029d8b293e42c34e000674b65b0aabe718d9485680f67a3a2d04f081b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "1fbd1e70dbb5716b54ab267bf52c11eda3fd66e1632bb3bf16b6487ec6b1ee69"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/size-limit-exclusive/20261117T212547Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 12,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_size_limit_boundary": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T212547Z-control-size-limit-exclusive-theorem_size_limit_boundary.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T212547Z-control-size-limit-exclusive.log",
+    "timed_out": false,
+    "verified": 18
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T212549Z-control-size-limit-exclusive/logs/20261117T212547Z-control-size-limit-exclusive-theorem_size_limit_boundary.log": "e03fe8f9e99f3756dd0cce7eba919b05148ad983c944a5b140536091a7a0828b",
+    ".g5/Verus_verification/results/ledger_client/20261117T212549Z-control-size-limit-exclusive/logs/20261117T212547Z-control-size-limit-exclusive.log": "98be0a3b8f05909045f67412d4c994818b8d01716c2f97e18a2e56ec9100b203"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

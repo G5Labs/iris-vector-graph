@@ -1,0 +1,27 @@
+verification results:: 29 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/text-source-kept/20261117T212600Z/models/ledger_client/ledger_client.rs:818:1
+    |
+818 | pub proof fn witness_text_source_is_dropped(t: int, j: int, k: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/text-source-kept/20261117T212600Z/models/ledger_client/ledger_client.rs:821:9
+    |
+818 | pub proof fn witness_text_source_is_dropped(t: int, j: int, k: int)
+    | ------------------------------------------------------------------- at the end of the function body
+...
+821 |         stored_source(Src::Text(t)) is None,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/text-source-kept/20261117T212600Z/models/ledger_client/ledger_client.rs:822:9
+    |
+818 | pub proof fn witness_text_source_is_dropped(t: int, j: int, k: int)
+    | ------------------------------------------------------------------- at the end of the function body
+...
+822 |         !source_filter_matches(stored_source(Src::Text(t)), t),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

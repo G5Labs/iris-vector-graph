@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_temporal_marked_rows_left_out",
+      "lemma_replay_view_dropped",
+      "theorem_marker_rules_differ"
+    ],
+    "find": "s.contains_key(id) && s[id].0 == r && !replay_marked(s[id].1)",
+    "name": "replay-keeps-marked",
+    "replace": "s.contains_key(id) && s[id].0 == r",
+    "why": "the replay side keeps statements whose temporal qualifier text is \"true\""
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_temporal_marked_rows_left_out",
+      "lemma_replay_view_dropped",
+      "theorem_marker_rules_differ"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "3c88aa437b53d1ffadb71a12d9ab72835683012363e0fa74033eac069f2c6eeb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/replay-keeps-marked/20261117T211226Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_replay_view_dropped": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211226Z-control-replay-keeps-marked-lemma_replay_view_dropped.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_marker_rules_differ": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211226Z-control-replay-keeps-marked-theorem_marker_rules_differ.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_temporal_marked_rows_left_out": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211226Z-control-replay-keeps-marked-theorem_temporal_marked_rows_left_out.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211226Z-control-replay-keeps-marked.log",
+    "timed_out": false,
+    "verified": 12
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261117T211227Z-control-replay-keeps-marked/logs/20261117T211226Z-control-replay-keeps-marked-lemma_replay_view_dropped.log": "aac2e3fc9294473915ab9e224bb62c0b3311ec2c4965d70b511e5d1f7779e519",
+    ".g5/Verus_verification/results/ledger_verify/20261117T211227Z-control-replay-keeps-marked/logs/20261117T211226Z-control-replay-keeps-marked-theorem_marker_rules_differ.log": "e0b83a47297b0621e0981bd53b1d41309dbf53050a9cfe07780ff615e51b9639",
+    ".g5/Verus_verification/results/ledger_verify/20261117T211227Z-control-replay-keeps-marked/logs/20261117T211226Z-control-replay-keeps-marked-theorem_temporal_marked_rows_left_out.log": "f4de8275fbc1d763c3bfe36b2362d7261bfa1f94110ea6a3fb51f4e3ba136291",
+    ".g5/Verus_verification/results/ledger_verify/20261117T211227Z-control-replay-keeps-marked/logs/20261117T211226Z-control-replay-keeps-marked.log": "cf5f2b007fd3fda21d06be753284fbc061c4bccdfa03930a3c019c9c4e8b2f24"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

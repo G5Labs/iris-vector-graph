@@ -1,0 +1,34 @@
+verification results:: 28 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/never-counted-as-disabled/20261117T211637Z/models/ledger_client/ledger_client.rs:567:13
+    |
+565 |   pub proof fn theorem_disabled_and_never_enabled(s: Srv, c: Cs, p: nat, a: Apply, f: int)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+566 |       requires s.holder is None, s.stats_holder is None, calls_server(c),
+567 |       ensures ({
+    |  _____________^
+568 | |         let o = client_commit(s, c, p, a, f);
+569 | |         &&& s.state == LState::Never ==> o.py == Py::Raise(Exc::NotEnabled) && o.srv == s && o.events == seq![Ev::Refused(Code::N...
+570 | |         &&& s.state == LState::Disabled ==> o.py == Py::Raise(Exc::Disabled) && same_ledger(o.srv, s)
+571 | |                 && o.srv.cnt == (Cnt { disabled: s.cnt.disabled + 1, ..s.cnt }) && o.events == seq![Ev::Refused(Code::Disabled)]
+572 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/never-counted-as-disabled/20261117T211637Z/models/ledger_client/ledger_client.rs:687:13
+    |
+685 |   pub proof fn theorem_uncounted_outcomes(s: Srv, c: Cs, p: nat, a: Apply, f: int, r: nat)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+686 |       requires calls_server(c),
+687 |       ensures ({
+    |  _____________^
+688 | |         let o = client_commit(s, c, p, a, f);
+689 | |         &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+690 | |             && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && s.redacting && a.blocked
+...   |
+699 | |         &&& stats_free(s, p) ==> count_strict(s, p).cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+700 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

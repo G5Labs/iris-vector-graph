@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/message-fingerprinted/20261117T211628Z/models/ledger_client/ledger_client.rs:452:13
+    |
+451 | pub proof fn theorem_metadata_outside_fingerprint(c: Cs, m: int, corr: int, k: Option<int>, e: Option<int>)
+    | ----------------------------------------------------------------------------------------------------------- at the end of the function body
+452 |     ensures fingerprint(Cs { message: m, correlation: corr, key: k, expected: e, ..c }) == fingerprint(c),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -4183,6 +4183,27 @@ Repair proposal (not implemented; checked only as a harness substitution, `QR:*`
 
 Governing statement: [search.quarantine.placement](../ontology/features/search.g5.md#search.quarantine.placement).
 
+<a id="bug-led-013"></a>
+### A relationship whose qualifier `temporal` is the text "true" never verifies equal, and every adopting verify records it again
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (iteration 60 repair, review 60 FE-1)
+
+Description: Verify leaves temporal edges out by two different rules: the tables drop a row whose qualifier `temporal` is the JSON boolean true, the replay drops a statement whose qualifier `temporal` is the text "true". The ledger stores every qualifier as text, so a relationship committed with `temporal` "true" (or Python `True`) is in the tables but never in the replay. Verify reports it as an unrecorded write forever, and every `verify(adopt=True)`, including the one each re-enable runs, appends another adoption revision that does not close it.
+
+Found by: review 60 (FE-1, independent reviewer, native probe in its own namespace); [ledger_verify](models/ledger_verify/NOTES.md) `theorem_text_marker_never_equal`, `theorem_adoption_never_closes_a_text_marker`, controls `one-marker-rule` and `no-redrop` ([proof receipt](results/ledger_verify/20261117T211222Z-prove/receipt.json)).
+
+Reproduced by: **E2E reproduced** on the local fixture `ivg-uplift-next-20261115` (IRIS 2026.1, unchanged product `3eaa79cf`), namespace `I60RT`: [repair probe](../uplift/consolidated/iteration-60/repair/probes/observed-20261117T210756Z-fe1-fe2-fe5-c4.json) section `fe1`. `Changeset.create_relationship(a, R, b, qualifiers={"temporal": "true", "w": "1"})` commits (seq 3; row `{"temporal":"true","w":"1"}`, records `create_rel`, `set_qual temporal "true"`); `verify()` gives `diverges` / `unrecorded_writes` with the tuple's existence and `qual:temporal`, `qual:w` entries; `verify(adopt=True)` writes adoption revision 4 (create_rel + set_qual records) and the next `verify()` has the same three entries. `qualifiers={"temporal": True}` is stored as `"true"` and behaves the same (adoption 6, still diverging); an unrecorded `engine.create_edge(..., qualifiers={"temporal": "true"})` also never closes (adoption 7). Passing neighbours: `{"temporal": "yes"}` gives no entry; `engine.create_edge(..., qualifiers={"temporal": True})` (JSON boolean) is left out of both sides. Binding cases `T1.text_marker_entries` and `T2.adoption_never_closes` in the [ledger_verify binding](results/ledger_verify/20261117T212044Z-binding/receipt.json) agree with the repaired model.
+
+Expected: one marker rule on both sides. `_drop_temporal_marked`'s docstring says it applies "the rule read_canonical applies to the tables" to the ledger's side, and `LedgerGenesis`'s marker test says "a qualifier temporal of 1 or "true" is an ordinary qualifier"; `ledger.verify` promises that adopting makes the next verify equal.
+
+Observed: `read_canonical` skips a row only when `parsed.get("temporal") is True` (`replay.py:617-620`); `_drop_temporal_marked` drops a statement when `quals.get("temporal") == "true"` (`replay.py:792-803`); `LedgerApply.QualsJson` stores every value as text (`LedgerApply.cls:420-434`) and `changeset._str_value` turns `True` into `"true"`.
+
+Consequence: an operator never sees `equal` on a ledger that holds such a relationship, so real unrecorded writes are hidden in a permanent false divergence, and each adopting verify or re-enable grows the history by one spurious adoption revision. Reachable through the public `Changeset` with an ordinary qualifier name; limited to a qualifier named exactly `temporal` whose value is "true" or `True` (the name is neither reserved nor documented as reserved). An administrator can clear it only by changing or removing that qualifier. Medium: visible misbehaviour of the ledger's integrity check, repairable by an administrator, no graph content lost.
+
+Repair proposal (not implemented): drop replay statements by the marker only for records written by a genesis before 4.6.0 (the case the rule was written for), or reserve the qualifier name `temporal` in the builder and the server; preserve the JSON-true exclusion of temporal writes' plain rows. Distinguishing case: the `temporal="true"` commit above must verify equal and the JSON-true direct temporal write must stay out of both sides. Related shared root (unreserved marker name), different trigger and reader: [F-C0351](audits/register-20261115/bugs-review.md#F-C0351), [F-C0450](audits/register-20261115/bugs-review.md#F-C0450). Governing statements: [ledger.verify](../ontology/features/ledger.g5.md#ledger.verify), [ledger.verify.scope](../ontology/features/ledger.g5.md#ledger.verify.scope).
+
 <a id="bug-plt-124"></a>
 ### Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors
 
@@ -6859,6 +6880,69 @@ Observed: `tests/e2e/test_460_r281_ledger_post_commit_graph_e2e.py:52` and `test
 Consequence: running these files disables the ledger on the shared scratch namespace (later commits there are refused with `LedgerDisabledError` until someone re-enables it, which records an adoption). Test-suite defect only. Low.
 
 Repair proposal (not implemented): read `meta()["state"] == "enabled"`. Governing statement: [ledger.lifecycle](../ontology/features/ledger.g5.md#ledger.lifecycle).
+
+<a id="bug-led-014"></a>
+### A commit refused while another caller's transaction holds the ledger head is not counted, and other counter changes made meanwhile are lost
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (iteration 60 repair, review 60 FE-3, R60-F2)
+
+Description: After a counted ledger commit inside a caller's open transaction, that transaction keeps the single `ledger_stats` row locked until it ends. Another connection's commit then fails with `LedgerLockTimeoutError` after about 40 seconds instead of 30, and its lock-timeout refusal is never counted; any other counter change made meanwhile, such as the strict guard's refusal count, waits 10 seconds and is lost.
+
+Found by: review 60 (FE-3: lock count 0 observed while the iteration-60 model asserted +1); [ledger_client](models/ledger_client/NOTES.md) `theorem_caller_transaction_holds_the_head` (corrected), `theorem_uncounted_nested_refusal_leaves_the_counter_row`, controls `stats-row-not-held`, `bump-ignores-held-row`, `uncounted-refusal-holds-row` ([proof receipt](results/ledger_client/20261117T212536Z-prove/receipt.json)).
+
+Reproduced by: **E2E reproduced** on the local fixture, namespace `I60RA`: [repair probe](../uplift/consolidated/iteration-60/repair/probes/observed-20261117T210820Z-fe4-fe3.json) section `fe3` and binding cases `B8`, `B8b`, `B8c` in the [ledger_client binding](results/ledger_client/20261117T212518Z-binding/receipt.json). Caller A (autocommit off) commits; process B's commit raises `LedgerLockTimeoutError` after 40.0 s; `rej_lock_timeout`, read from a third connection, stays 0 while A is open and after A's rollback; a `Graph.KG.Ledger.Count("rej_strict_block")` call in that window returns an error status after 10.0 s and moves nothing (+1 after A ends). Passing neighbours: when A's nested commit was refused uncounted (a 5,000-character message), B's refusal comes after 30.0 s and is counted (+1, kept after A's rollback); a Native API lock on the head gives 30.0 s and +1.
+
+Expected: `ledger.observability` and `docs/ledger-prometheus-hook.md`: every lock-timeout refusal is counted (`rej_lock_timeout`); `Ledger.cls` sets `pBump = "rej_lock_timeout"` for it; `LedgerLockTimeoutError` after the 30-second `LOCKTIMEOUT`.
+
+Observed: `Ledger.Commit` calls `LedgerStats.Bump` after its own level (`Ledger.cls:397-415`); `Bump` opens and saves the stats row in its own transaction (`LedgerStats.cls:65-88`) and the save waits for the row lock that the caller's transaction took when `WriteRevision` (or a nested `Bump`) saved the row; it fails after the lock timeout, `Bump` rolls back, and `Commit` ignores the status.
+
+Consequence: dashboards undercount lock contention exactly when a long caller transaction causes it, strict-mode refusal counts made in that window are lost, and the refused caller waits 10 s longer than documented. No graph or ledger content is wrong. Reachable whenever callers commit inside their own transactions (4.7.0 behaviour) while other connections write. Low: observability drift and a longer wait.
+
+Repair proposal (not implemented): bump rejection counters outside the caller's transaction scope (for example a process-private increment flushed by a separate job, or `$Increment` on a global instead of an object save), and make `Bump` report a failed save. Preserve the caller-transaction rollback of the caller's own counts. Governing statements: [ledger.observability](../ontology/features/ledger.g5.md#ledger.observability), [ledger.commit.caller-transaction](../ontology/features/ledger.g5.md#ledger.commit.caller-transaction), [ledger.commit.serial](../ontology/features/ledger.g5.md#ledger.commit.serial).
+
+<a id="bug-led-015"></a>
+### A revision field longer than its column is refused as LedgerInconsistencyError after the changeset was applied, and is not counted
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (iteration 60 repair, review 60 FE-5, R60-F3)
+
+Description: The revision row's text columns have limits (message and source 4,000; actor, correlation ID and idempotency key 256; actor type 32). A changeset with a longer value is applied, then refused when the revision row is saved, and the caller gets `LedgerInconsistencyError`, the class documented as "the ledger's own structures disagree", with no counter and an `inconsistent` hook event.
+
+Found by: review 60 (FE-5); [ledger_client](models/ledger_client/NOTES.md) `theorem_uncounted_outcomes`, `theorem_field_limits_checked_after_the_key`, controls `field-limits-unchecked`, `field-limits-before-key`.
+
+Reproduced by: **E2E reproduced** on the local fixture, namespace `I60RA`: [repair probe](../uplift/consolidated/iteration-60/repair/probes/observed-20261117T210756Z-fe1-fe2-fe5-c4.json) section `fe5` and binding cases `B20.*` in the [ledger_client binding](results/ledger_client/20261117T212518Z-binding/receipt.json). A 4,000-character message commits (`commits_ok` +1); a 5,000-character message, a 300-character idempotency key, correlation ID or actor, and an object source whose JSON is 4,100+ characters each raise `LedgerInconsistencyError("revision row save failed: ... MAXLEN ...")`, with one `inconsistent` hook event, every counter unchanged, the head unchanged and the node not written. A keyed retry of a committed changeset with a 5,000-character message replays (`replayed=True`, `replays_idem` +1), because the key is decided first.
+
+Expected: `ledger.commit.size` (iteration 60) said only the operation count is limited; `errors.py:87-88` documents `LedgerInconsistencyError` as an internal inconsistency, and `B4` of the test map keeps it for transport failures whose outcome is unknown. A caller-input refusal should be distinguishable from both and checked before the work is applied.
+
+Observed: `WriteRevision` returns `Err("inconsistent", "revision row save failed: ...")` when `LedgerRevision.%Save()` fails its MAXLEN validation (`Ledger.cls:554-555`, `LedgerRevision.cls:22-36`); `CommitInTxn` sets no `pBump` for it; the client neither checks the lengths nor maps the reason.
+
+Consequence: a caller cannot tell an input it can fix from a ledger fault or a lost transport answer, may retry a request that can never succeed, and operators see no counter for it. Nothing is written, so no data is wrong. Reachable through the public `Changeset` fields. Low: misleading error class and missing count.
+
+Repair proposal (not implemented): check the field lengths in `Changeset.validate` (or before `ApplyAll` on the server) and refuse with a `ChangesetOperationError`-style input error and its own counter; keep `LedgerInconsistencyError` for genuine inconsistency. Governing statements: [ledger.commit.size](../ontology/features/ledger.g5.md#ledger.commit.size), [ledger.observability](../ontology/features/ledger.g5.md#ledger.observability).
+
+<a id="bug-led-016"></a>
+### The ledger's NodeNotFoundError is not the package-root NodeNotFoundError the API reference documents, and its message names create_relationship for node operations
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (iteration 60 repair, review 60 C4 and CG-3, R60-F4)
+
+Description: Two unrelated classes are named `NodeNotFoundError`: the package root's (`iris_vector_graph.errors`, documented in the API reference as "a referenced node id does not exist") and the ledger's (`iris_vector_graph.ledger.errors`, a `ChangesetOperationError`). A ledger commit with a missing node raises only the ledger's, so a handler written from the API reference does not catch it. The ledger's message also says "create_relationship failed" when the failing operation is a property, label or node-deletion change.
+
+Found by: review 60 (C4: the iteration-60 test map had marked the two classes "test-only, no outcome change"; CG-3); iteration-60 test readers noted that `test_ledger_us02_rollback.py` and `test_217_ledger_missing_node_e2e.py` expect different classes.
+
+Reproduced by: **E2E reproduced** on the local fixture, namespace `I60RA`: [repair probe](../uplift/consolidated/iteration-60/repair/probes/observed-20261117T210756Z-fe1-fe2-fe5-c4.json) section `c4`. A changeset with `upsert_node(x)` and `create_relationship(x, R, absent)`: `except iris_vector_graph.NodeNotFoundError` does not catch it; it escapes as `iris_vector_graph.ledger.errors.NodeNotFoundError` with `op_index` 1 and `missing_node` set; `except iris_vector_graph.ledger.NodeNotFoundError`, `except IVGError` and `except ChangesetOperationError` catch it (passing neighbours); `issubclass(ledger NodeNotFoundError, root NodeNotFoundError)` is False. `set_property`, `add_label` and `remove_property` on an ID that is no node raise the ledger class with the message "create_relationship failed: node '...' does not exist ...".
+
+Expected: `docs/API_REFERENCE.md:3123-3127` documents `from iris_vector_graph import NodeNotFoundError` for a missing node; `docs/USER_GUIDE.md` section 9 says a missing relationship endpoint "fails the commit with `NodeNotFoundError`" without naming the module.
+
+Observed: `errors.py:90` (root, `IVGError`) and `ledger/errors.py:91` (`ChangesetOperationError`); `from_commit_error` narrows every `node_not_found:` reason, which `LedgerApply.cls` produces for relationship endpoints and for node operations (`:290, 299, 315, 325, 380, 459-460`), to the ledger class, whose default message is written for relationships (`ledger/errors.py:120-125`).
+
+Consequence: callers following the reference miss the error (it propagates as an unexpected exception) and the message points them at the wrong operation. No data is wrong; the commit is refused either way. Low: misleading documentation and text.
+
+Repair proposal (not implemented): make the ledger class a subclass of both `ChangesetOperationError` and the root `NodeNotFoundError` (or document the ledger class in the API reference), and word the message from the failing operation's kind. Governing statement: [ledger.commit](../ontology/features/ledger.g5.md#ledger.commit).
 
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections

@@ -1,0 +1,168 @@
+{
+  "cases": [
+    {
+      "name": "V0.equal_no_adoption",
+      "observed": {
+        "adoption": false,
+        "head_moved": 0,
+        "result": "equal"
+      }
+    },
+    {
+      "name": "V1.entries",
+      "observed": {
+        "facts": [
+          "(('Label', 'i60v212042_ux', 'X'), '0')",
+          "(('Node', 'i60v212042_n3'), None)",
+          "(('Node', 'i60v212042_orphan'), '0')",
+          "(('Node', 'i60v212042_ux'), '0')",
+          "(('Node', 'i60v212042_uy'), '0')",
+          "(('Prop', 'i60v212042_n1', 'p'), '9')",
+          "(('Prop', 'i60v212042_orphan', 'k'), 'v')",
+          "(('Prop', 'i60v212042_ux', 'k'), 'v')",
+          "(('Qual', ('i60v212042_n2', 'Q', 'i60v212042_n1', None), 'z'), '1')",
+          "(('Rel', ('i60v212042_n1', 'K', 'i60v212042_n2', None)), None)",
+          "(('Rel', ('i60v212042_n2', 'Q', 'i60v212042_n1', None)), '0')",
+          "(('Rel', ('i60v212042_n2', 'Y', 'i60v212042_n3', None)), None)"
+        ],
+        "result": "diverges"
+      }
+    },
+    {
+      "name": "V2.adopt_closes",
+      "observed": {
+        "adoption_kind": "adoption",
+        "adoption_parent_is_head": true,
+        "next": "equal",
+        "next_facts": [],
+        "records": 12
+      }
+    },
+    {
+      "name": "T1.text_marker_entries",
+      "observed": {
+        "facts": [
+          "(('Qual', ('i60r_t20261117t210756z_ba', 'I60RREL', 'i60r_t20261117t210756z_bb', None), 'temporal'), 'true')",
+          "(('Qual', ('i60r_t20261117t210756z_ta', 'I60RREL', 'i60r_t20261117t210756z_tb', None), 'temporal'), 'true')",
+          "(('Qual', ('i60r_t20261117t210756z_ta', 'I60RREL', 'i60r_t20261117t210756z_tb', None), 'w'), '1')",
+          "(('Qual', ('i60r_t20261117t210756z_ya', 'I60RUT', 'i60r_t20261117t210756z_tb', None), 'temporal'), 'true')",
+          "(('Qual', ('i60t212042_a', 'TT', 'i60t212042_b', None), 'temporal'), 'true')",
+          "(('Qual', ('i60t212042_a', 'TT', 'i60t212042_b', None), 'w'), '2')",
+          "(('Qual', ('i60t212042_a', 'UT', 'i60t212042_d', None), 'temporal'), 'true')",
+          "(('Qual', ('i60t212042_c', 'TB', 'i60t212042_d', None), 'temporal'), 'true')",
+          "(('Rel', ('i60r_t20261117t210756z_ba', 'I60RREL', 'i60r_t20261117t210756z_bb', None)), '0')",
+          "(('Rel', ('i60r_t20261117t210756z_ta', 'I60RREL', 'i60r_t20261117t210756z_tb', None)), '0')",
+          "(('Rel', ('i60r_t20261117t210756z_ya', 'I60RUT', 'i60r_t20261117t210756z_tb', None)), '0')",
+          "(('Rel', ('i60t212042_a', 'TT', 'i60t212042_b', None)), '0')",
+          "(('Rel', ('i60t212042_a', 'UT', 'i60t212042_d', None)), '0')",
+          "(('Rel', ('i60t212042_c', 'TB', 'i60t212042_d', None)), '0')"
+        ],
+        "result": "diverges",
+        "this_run": [
+          "(('Qual', ('i60t212042_a', 'TT', 'i60t212042_b', None), 'temporal'), 'true')",
+          "(('Qual', ('i60t212042_a', 'TT', 'i60t212042_b', None), 'w'), '2')",
+          "(('Qual', ('i60t212042_a', 'UT', 'i60t212042_d', None), 'temporal'), 'true')",
+          "(('Qual', ('i60t212042_c', 'TB', 'i60t212042_d', None), 'temporal'), 'true')",
+          "(('Rel', ('i60t212042_a', 'TT', 'i60t212042_b', None)), '0')",
+          "(('Rel', ('i60t212042_a', 'UT', 'i60t212042_d', None)), '0')",
+          "(('Rel', ('i60t212042_c', 'TB', 'i60t212042_d', None)), '0')"
+        ]
+      }
+    },
+    {
+      "name": "T2.adoption_never_closes",
+      "observed": {
+        "adoption_written": true,
+        "head_moved": 1,
+        "next": "diverges",
+        "next_facts": [
+          "(('Qual', ('i60r_t20261117t210756z_ba', 'I60RREL', 'i60r_t20261117t210756z_bb', None), 'temporal'), 'true')",
+          "(('Qual', ('i60r_t20261117t210756z_ta', 'I60RREL', 'i60r_t20261117t210756z_tb', None), 'temporal'), 'true')",
+          "(('Qual', ('i60r_t20261117t210756z_ta', 'I60RREL', 'i60r_t20261117t210756z_tb', None), 'w'), '1')",
+          "(('Qual', ('i60r_t20261117t210756z_ya', 'I60RUT', 'i60r_t20261117t210756z_tb', None), 'temporal'), 'true')",
+          "(('Qual', ('i60t212042_a', 'TT', 'i60t212042_b', None), 'temporal'), 'true')",
+          "(('Qual', ('i60t212042_a', 'TT', 'i60t212042_b', None), 'w'), '2')",
+          "(('Qual', ('i60t212042_a', 'UT', 'i60t212042_d', None), 'temporal'), 'true')",
+          "(('Qual', ('i60t212042_c', 'TB', 'i60t212042_d', None), 'temporal'), 'true')",
+          "(('Rel', ('i60r_t20261117t210756z_ba', 'I60RREL', 'i60r_t20261117t210756z_bb', None)), '0')",
+          "(('Rel', ('i60r_t20261117t210756z_ta', 'I60RREL', 'i60r_t20261117t210756z_tb', None)), '0')",
+          "(('Rel', ('i60r_t20261117t210756z_ya', 'I60RUT', 'i60r_t20261117t210756z_tb', None)), '0')",
+          "(('Rel', ('i60t212042_a', 'TT', 'i60t212042_b', None)), '0')",
+          "(('Rel', ('i60t212042_a', 'UT', 'i60t212042_d', None)), '0')",
+          "(('Rel', ('i60t212042_c', 'TB', 'i60t212042_d', None)), '0')"
+        ],
+        "records": 14
+      }
+    }
+  ],
+  "changed_observation_caught": true,
+  "comparisons": 5,
+  "fixture": {
+    "container": "ivg-uplift-next-20261115",
+    "host": "127.0.0.1",
+    "iris": "IRIS Community 2026.1 (Build 234U)",
+    "kind": "local-shared",
+    "port": 35975
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/binding.py": "21edc10b75ae987e48a6843f0eaa93bd56922f24c0e8dca5b35a2c13aaa9b0f3",
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/tools/binding_common.py": "c0e7292671b37f7fae18dbf90102fb5c3f9c2a746d4f2a642b92cd96fe781f8a",
+    ".g5/uplift/consolidated/local-runtime/runtime.py": "4a47d7a8a8aaba0a40ceda4dfc78cc78896e30aeb4f811545889d261ee3177a4",
+    "iris_src/src/Graph/KG/LedgerApply.cls": "73068abd02f1e93a8cda77365e9c8be41f8d756f1bc25dbb33e8a7468700c414",
+    "iris_src/src/Graph/KG/LedgerGenesis.cls": "afd64ea71b6159a5e49f729e3bb43fbd0796617cfa8fa69aa00c4e37f1629909",
+    "iris_vector_graph/ledger/changeset.py": "0542061cd17b5c74f4d34f9a9ad42a7cc673804b6911136a8e5d256dd1cd79c3",
+    "iris_vector_graph/ledger/client.py": "7a7674fe4c8efec9723847d409c6da867c3f90d7821991c94cc9b2eaee7ef08c",
+    "iris_vector_graph/ledger/replay.py": "2cf6d87ea3b1c66f785c1bf8dcd7cf38c99e29cc3cac2794d73edf6af20d00b3"
+  },
+  "kind": "binding",
+  "mismatch_count": 0,
+  "mismatches": [],
+  "model": "ledger_verify",
+  "mutations_detected": {
+    "adopt-when-equal": true,
+    "adopt-without-cascade": true,
+    "graph-scoped-node-identity": true,
+    "new-entity-attributes-dropped": true,
+    "no-redrop": true,
+    "node-from-node-rows-only": true,
+    "one-marker-rule": true,
+    "replay-keeps-marked": true,
+    "reserved-kept": true,
+    "statement-ids-compared": false,
+    "temporal-row-governed": true
+  },
+  "mutations_not_natively_exercisable": {
+    "statement-ids-compared": "needs a tuple whose table row and history name different statement IDs; not forged",
+    "text-marker-premise-dropped": "a proof premise (no_text_marker); its runtime consequence is the no-redrop mutation"
+  },
+  "namespaces": [
+    "I60RV",
+    "I60RT"
+  ],
+  "not_observed": "statement-ID mismatch between table and history; concurrent writers (q-led-006); a node ID with property rows in two graphs (q-led-004)",
+  "observed": "GraphLedger.verify / replay.verify -> read_canonical, _drop_temporal_marked, compare, _adoption_items, commit(kind='adoption') -> LedgerGenesis.Adopt on IRIS; next verify",
+  "pin": {
+    "all_equal": true,
+    "files_equal_pin_blobs": {
+      "iris_vector_graph/_engine/nodes_edges.py": true,
+      "iris_vector_graph/_engine/query.py": true,
+      "iris_vector_graph/_engine/temporal_window.py": true,
+      "iris_vector_graph/embedded.py": true,
+      "iris_vector_graph/engine.py": true,
+      "iris_vector_graph/freshness.py": true,
+      "iris_vector_graph/ledger/client.py": true,
+      "iris_vector_graph/ledger/replay.py": true,
+      "iris_vector_graph/prop_values.py": true,
+      "iris_vector_graph/schema.py": true
+    },
+    "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "pin_dir": "/Users/ziniuw/runs/ivg-consolidated-20261114/pin"
+  },
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "python": "3.11.8",
+  "run_stamp": "212042",
+  "substituted": "none for the product; expected side is an unverified transcription of ledger_verify.rs over harness-read tables and the product's reconstruct() fold",
+  "verdict": "AGREES"
+}

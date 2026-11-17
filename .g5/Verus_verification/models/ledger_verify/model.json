@@ -1,7 +1,7 @@
 {
   "name": "ledger_verify",
   "root": "ledger_verify.rs",
-  "expected_verified": 8,
+  "expected_verified": 15,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "controls": [
     {
@@ -10,7 +10,7 @@
       "find": "    } else if owner(f) is Some && d(owner(f)->Some_0) is Some && d(owner(f)->Some_0)->Some_0 is None {\n        None\n",
       "replace": "    } else if false {\n        None\n",
       "expect_fail_in": [
-        "theorem_adoption_closes_the_difference"
+        "lemma_adopt_agrees"
       ]
     },
     {
@@ -19,8 +19,9 @@
       "find": "a(f) != b(f) && !(owner(f) is Some && a(owner(f)->Some_0) is Some && b(owner(f)->Some_0) is None)",
       "replace": "a(f) != b(f) && !(owner(f) is Some && a(owner(f)->Some_0) is Some && b(owner(f)->Some_0) is None) && !(owner(f) is Some && a(owner(f)->Some_0) is None)",
       "expect_fail_in": [
-        "theorem_adoption_closes_the_difference",
-        "theorem_entries_for_created_and_deleted_nodes"
+        "lemma_adopt_agrees",
+        "theorem_entries_for_created_and_deleted_nodes",
+        "theorem_orphan_property_reports_node"
       ]
     },
     {
@@ -34,9 +35,9 @@
     },
     {
       "name": "graph-scoped-node-identity",
-      "why": "nodes are matched in the default graph only",
-      "find": "Fact::Node(n) => if exists|g: int| t.node_rows.contains((n, g)) { Some(0) } else { None },",
-      "replace": "Fact::Node(n) => if t.node_rows.contains((n, 0)) { Some(0) } else { None },",
+      "why": "nodes are matched in the default graph only (and only by node rows)",
+      "find": "    (exists|g: int| #[trigger] t.node_rows.contains((n, g)))\n",
+      "replace": "    t.node_rows.contains((n, 0))\n",
       "expect_fail_in": [
         "theorem_node_identity_ignores_graph"
       ]
@@ -44,37 +45,78 @@
     {
       "name": "reserved-kept",
       "why": "reserved properties are compared",
-      "find": "if !reserved(k) && t.prop_rows.contains_key((n, k))",
-      "replace": "if t.prop_rows.contains_key((n, k))",
+      "find": "if !reserved(k) && t.prop_rows.contains_key((n, k)) {",
+      "replace": "if t.prop_rows.contains_key((n, k)) {",
       "expect_fail_in": [
         "theorem_reserved_properties_left_out"
       ]
     },
     {
       "name": "temporal-row-governed",
-      "why": "a marked edge row counts as a relationship",
-      "find": "Fact::Rel(r) => if t.edge_rows.contains_key(r) && !t.edge_rows[r].0 { Some(0) } else { None },",
-      "replace": "Fact::Rel(r) => if t.edge_rows.contains_key(r) { Some(0) } else { None },",
+      "why": "a row whose temporal qualifier is the JSON boolean true counts as a relationship",
+      "find": "    q.contains_key(k_temporal()) && q[k_temporal()] == QVal::Bool(true)\n",
+      "replace": "    false\n",
       "expect_fail_in": [
         "theorem_temporal_marked_rows_left_out"
       ]
     },
     {
       "name": "replay-keeps-marked",
-      "why": "the replay side keeps marked statements",
-      "find": "exists|id: int| #[trigger] s.contains_key(id) && s[id].0 == r && !s[id].1",
-      "replace": "exists|id: int| #[trigger] s.contains_key(id) && s[id].0 == r",
+      "why": "the replay side keeps statements whose temporal qualifier text is \"true\"",
+      "find": "s.contains_key(id) && s[id].0 == r && !replay_marked(s[id].1)",
+      "replace": "s.contains_key(id) && s[id].0 == r",
       "expect_fail_in": [
-        "theorem_temporal_marked_rows_left_out"
+        "theorem_temporal_marked_rows_left_out",
+        "lemma_replay_view_dropped",
+        "theorem_marker_rules_differ"
       ]
     },
     {
       "name": "statement-ids-compared",
       "why": "relationships are matched by statement ID",
-      "find": "exists|id: int| #[trigger] s.contains_key(id) && s[id].0 == r && !s[id].1",
-      "replace": "exists|id: int| #[trigger] s.contains_key(id) && s[id].0 == r && !s[id].1 && id == 0",
+      "find": "s.contains_key(id) && s[id].0 == r && !replay_marked(s[id].1)",
+      "replace": "s.contains_key(id) && s[id].0 == r && !replay_marked(s[id].1) && id == 0",
       "expect_fail_in": [
         "theorem_statement_ids_not_compared"
+      ]
+    },
+    {
+      "name": "one-marker-rule",
+      "why": "the iteration-60 model's single marker: the tables also leave out a row whose temporal text is \"true\" (hides FE-1)",
+      "find": "    q.contains_key(k_temporal()) && q[k_temporal()] == QVal::Bool(true)\n",
+      "replace": "    q.contains_key(k_temporal()) && (q[k_temporal()] == QVal::Bool(true) || q[k_temporal()] == QVal::Text(t_true()))\n",
+      "expect_fail_in": [
+        "theorem_text_marker_never_equal",
+        "theorem_marker_rules_differ",
+        "theorem_temporal_marked_rows_left_out"
+      ]
+    },
+    {
+      "name": "text-marker-premise-dropped",
+      "why": "the iteration-60 unconditional claim: adoption closes every difference",
+      "find": "    requires wf(a), wf(b), no_text_marker(b),\n",
+      "replace": "    requires wf(a), wf(b),\n",
+      "expect_fail_in": [
+        "theorem_adoption_closes_the_difference"
+      ]
+    },
+    {
+      "name": "no-redrop",
+      "why": "the replay of the adoption is taken as the adopted view, without the drop rule running again",
+      "find": "    redrop(adopt(a, d))\n",
+      "replace": "    adopt(a, d)\n",
+      "expect_fail_in": [
+        "theorem_adoption_never_closes_a_text_marker"
+      ]
+    },
+    {
+      "name": "node-from-node-rows-only",
+      "why": "the iteration-60 model: a node exists only through a node row (label/property rows ignored)",
+      "find": "    (exists|g: int| #[trigger] t.node_rows.contains((n, g)))\n    || (exists|l: int| #[trigger] t.label_rows.contains((n, l)))\n    || (exists|k: int| #[trigger] t.prop_rows.contains_key((n, k)) && !reserved(k))\n",
+      "replace": "    (exists|g: int| #[trigger] t.node_rows.contains((n, g)))\n",
+      "expect_fail_in": [
+        "lemma_canonical_wf",
+        "theorem_orphan_property_reports_node"
       ]
     }
   ]

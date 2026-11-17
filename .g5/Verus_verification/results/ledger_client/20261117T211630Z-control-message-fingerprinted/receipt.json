@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_metadata_outside_fingerprint",
+      "theorem_retry_with_new_metadata_replays"
+    ],
+    "find": "pub open spec fn fingerprint(c: Cs) -> int {\n    sha256(scope(c))\n}",
+    "name": "message-fingerprinted",
+    "replace": "pub open spec fn fingerprint(c: Cs) -> int {\n    sha256(scope(c)) + c.message\n}",
+    "why": "fingerprint covers the message"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_metadata_outside_fingerprint",
+      "theorem_retry_with_new_metadata_replays"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "176d6d3029d8b293e42c34e000674b65b0aabe718d9485680f67a3a2d04f081b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a54a8aaea2749edf1b4e8e004fb09c2b373048cb869ceba8440727b483d68a80"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/message-fingerprinted/20261117T211628Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_metadata_outside_fingerprint": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211628Z-control-message-fingerprinted-theorem_metadata_outside_fingerprint.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_retry_with_new_metadata_replays": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211628Z-control-message-fingerprinted-theorem_retry_with_new_metadata_replays.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211628Z-control-message-fingerprinted.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T211630Z-control-message-fingerprinted/logs/20261117T211628Z-control-message-fingerprinted-theorem_metadata_outside_fingerprint.log": "83c3b054624c6667e7029ae7719fc7b8203b95d6ee24328b3fe4a34aeea5bcbd",
+    ".g5/Verus_verification/results/ledger_client/20261117T211630Z-control-message-fingerprinted/logs/20261117T211628Z-control-message-fingerprinted-theorem_retry_with_new_metadata_replays.log": "ac6efaf7c5b84a8f631782c7b6d94d23f38eb5fb5dff47d4477e3ecd7998da86",
+    ".g5/Verus_verification/results/ledger_client/20261117T211630Z-control-message-fingerprinted/logs/20261117T211628Z-control-message-fingerprinted.log": "881c14ff0043e9f720eb11bbc24b294e73b6b517c57b25b9eb7534a1a07ddead"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

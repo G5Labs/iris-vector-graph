@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/never-counted-as-disabled/20261117T211637Z/models/ledger_client/ledger_client.rs:567:13
+    |
+565 |   pub proof fn theorem_disabled_and_never_enabled(s: Srv, c: Cs, p: nat, a: Apply, f: int)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+566 |       requires s.holder is None, s.stats_holder is None, calls_server(c),
+567 |       ensures ({
+    |  _____________^
+568 | |         let o = client_commit(s, c, p, a, f);
+569 | |         &&& s.state == LState::Never ==> o.py == Py::Raise(Exc::NotEnabled) && o.srv == s && o.events == seq![Ev::Refused(Code::N...
+570 | |         &&& s.state == LState::Disabled ==> o.py == Py::Raise(Exc::Disabled) && same_ledger(o.srv, s)
+571 | |                 && o.srv.cnt == (Cnt { disabled: s.cnt.disabled + 1, ..s.cnt }) && o.events == seq![Ev::Refused(Code::Disabled)]
+572 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

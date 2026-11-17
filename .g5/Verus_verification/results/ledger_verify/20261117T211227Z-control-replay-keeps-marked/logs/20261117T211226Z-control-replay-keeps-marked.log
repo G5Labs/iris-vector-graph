@@ -1,0 +1,21 @@
+verification results:: 12 verified, 3 errors
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/replay-keeps-marked/20261117T211226Z/models/ledger_verify/ledger_verify.rs:355:31
+    |
+355 |         assert forall|i: int| !(#[trigger] live_id(s1, r, i)) by {
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/replay-keeps-marked/20261117T211226Z/models/ledger_verify/ledger_verify.rs:372:20
+    |
+372 |             assert(!replay_marked(s[id].1));
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/replay-keeps-marked/20261117T211226Z/models/ledger_verify/ledger_verify.rs:436:31
+    |
+436 |         assert forall|i: int| !(#[trigger] live_id(s, r, i)) by {}
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_node_identity_ignores_graph"
+    ],
+    "find": "    (exists|g: int| #[trigger] t.node_rows.contains((n, g)))\n",
+    "name": "graph-scoped-node-identity",
+    "replace": "    t.node_rows.contains((n, 0))\n",
+    "why": "nodes are matched in the default graph only (and only by node rows)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_node_identity_ignores_graph"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "3c88aa437b53d1ffadb71a12d9ab72835683012363e0fa74033eac069f2c6eeb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/graph-scoped-node-identity/20261117T211224Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_node_identity_ignores_graph": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211224Z-control-graph-scoped-node-identity-theorem_node_identity_ignores_graph.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211224Z-control-graph-scoped-node-identity.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261117T211225Z-control-graph-scoped-node-identity/logs/20261117T211224Z-control-graph-scoped-node-identity-theorem_node_identity_ignores_graph.log": "7e34843a50e6f55514fa4097ff1969e88be2717aa271f88d0d7679f68cc1d86a",
+    ".g5/Verus_verification/results/ledger_verify/20261117T211225Z-control-graph-scoped-node-identity/logs/20261117T211224Z-control-graph-scoped-node-identity.log": "09a9bdc4cd0263b9836f8a78e5830f60c4201820acbbfe685033af70061be644"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

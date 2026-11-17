@@ -1,0 +1,60 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_field_limits_checked_after_the_key",
+      "theorem_retry_with_new_metadata_replays"
+    ],
+    "find": "    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+    "name": "field-limits-before-key",
+    "replace": "    } else if !fits(c) {\n        (s, err(Code::Inconsistent, Some(head_id(s))))\n    } else if c.key is Some && s.idem.contains_key(c.key->Some_0) {\n",
+    "why": "the field limits are checked before the idempotency key, so a keyed retry with a long message fails"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_field_limits_checked_after_the_key",
+      "theorem_retry_with_new_metadata_replays"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "176d6d3029d8b293e42c34e000674b65b0aabe718d9485680f67a3a2d04f081b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "1fbd1e70dbb5716b54ab267bf52c11eda3fd66e1632bb3bf16b6487ec6b1ee69"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/field-limits-before-key/20261117T212609Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_field_limits_checked_after_the_key": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T212609Z-control-field-limits-before-key-theorem_field_limits_checked_after_the_key.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_retry_with_new_metadata_replays": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T212609Z-control-field-limits-before-key-theorem_retry_with_new_metadata_replays.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T212609Z-control-field-limits-before-key.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T212610Z-control-field-limits-before-key/logs/20261117T212609Z-control-field-limits-before-key-theorem_field_limits_checked_after_the_key.log": "b36363171347076897d5f1d27b8d35cbb21c247388d8878388c8d6cea62fca85",
+    ".g5/Verus_verification/results/ledger_client/20261117T212610Z-control-field-limits-before-key/logs/20261117T212609Z-control-field-limits-before-key-theorem_retry_with_new_metadata_replays.log": "5a48febe05ea5c82966266c7224c9046b142f2f5a806b80cc06e376f20d5cf10",
+    ".g5/Verus_verification/results/ledger_client/20261117T212610Z-control-field-limits-before-key/logs/20261117T212609Z-control-field-limits-before-key.log": "7eb96d55750191018dc7edf8650888ee4943efa23b1ae1066bc3a4fdd45ac449"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

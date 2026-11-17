@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/bump-ignores-held-row/20261117T211654Z/models/ledger_client/ledger_client.rs:687:13
+    |
+685 |   pub proof fn theorem_uncounted_outcomes(s: Srv, c: Cs, p: nat, a: Apply, f: int, r: nat)
+    |   ---------------------------------------------------------------------------------------- at the end of the function body
+686 |       requires calls_server(c),
+687 |       ensures ({
+    |  _____________^
+688 | |         let o = client_commit(s, c, p, a, f);
+689 | |         &&& (s.holder is None || s.holder == Some(p)) && s.state == LState::Enabled
+690 | |             && (c.key is None) && c.expected is None && c.ops.len() <= s.max_ops && a.ok && s.redacting && a.blocked
+...   |
+699 | |         &&& stats_free(s, p) ==> count_strict(s, p).cnt == (Cnt { strict_block: s.cnt.strict_block + 1, ..s.cnt })
+700 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

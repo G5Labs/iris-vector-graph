@@ -1,0 +1,35 @@
+verification results:: 28 verified, 2 errors
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/lock-released-inside-transaction/20261117T212552Z/models/ledger_client/ledger_client.rs:639:13
+    |
+635 |   pub proof fn theorem_caller_transaction_holds_the_head(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ---------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+639 |       ensures ({
+    |  _____________^
+640 | |         let o1 = txn_commit(s, c, p, a, f1);
+641 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+642 | |         let o3 = client_commit(txn_rollback(s, o2.srv, p), d, q, b, f2);
+...   |
+653 | |         &&& o4.srv.parent[s.head + 2] == f1
+654 | |     }),
+    | |______^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/lock-released-inside-transaction/20261117T212552Z/models/ledger_client/ledger_client.rs:667:13
+    |
+662 |   pub proof fn theorem_uncounted_nested_refusal_leaves_the_counter_row(s: Srv, c: Cs, d: Cs, p: nat, q: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+667 |       ensures ({
+    |  _____________^
+668 | |         let o1 = txn_commit(s, c, p, a, f1);
+669 | |         let o2 = client_commit(o1.srv, d, q, b, f2);
+670 | |         &&& o1.py == Py::Raise(Exc::Inconsistent) && o1.events == seq![Ev::Refused(Code::Inconsistent)]
+...   |
+675 | |         &&& txn_rollback(s, o2.srv, p).cnt.lock == s.cnt.lock + 1
+676 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

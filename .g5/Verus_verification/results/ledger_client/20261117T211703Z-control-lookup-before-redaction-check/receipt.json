@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_revision_readers_resolve_ids"
+    ],
+    "find": "    if s.redacting { Read::Raise(Exc::RedactionInProgress) }\n    else if s.seq_of.contains_key(id) { Read::At(s.seq_of[id]) } else { Read::Raise(Exc::UnknownRev) }",
+    "name": "lookup-before-redaction-check",
+    "replace": "    if !s.seq_of.contains_key(id) { Read::Raise(Exc::UnknownRev) }\n    else if s.redacting { Read::Raise(Exc::RedactionInProgress) } else { Read::At(s.seq_of[id]) }",
+    "why": "an unknown revision ID is refused as unknown before the redaction check"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_revision_readers_resolve_ids"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "176d6d3029d8b293e42c34e000674b65b0aabe718d9485680f67a3a2d04f081b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a54a8aaea2749edf1b4e8e004fb09c2b373048cb869ceba8440727b483d68a80"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/lookup-before-redaction-check/20261117T211702Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_revision_readers_resolve_ids": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211702Z-control-lookup-before-redaction-check-theorem_revision_readers_resolve_ids.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211702Z-control-lookup-before-redaction-check.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T211703Z-control-lookup-before-redaction-check/logs/20261117T211702Z-control-lookup-before-redaction-check-theorem_revision_readers_resolve_ids.log": "4105ee0bbddae2129be0d18392d4db34c8bf02dd75d643cf0e85b63db2bdcaf6",
+    ".g5/Verus_verification/results/ledger_client/20261117T211703Z-control-lookup-before-redaction-check/logs/20261117T211702Z-control-lookup-before-redaction-check.log": "350875f98ee8a302f8ca02370ec70366f62c312c654873cb353b99cf5bbdfb7f"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

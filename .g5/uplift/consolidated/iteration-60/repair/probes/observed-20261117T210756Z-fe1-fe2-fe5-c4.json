@@ -1,0 +1,624 @@
+{
+ "fixture": {
+  "container": "ivg-uplift-next-20261115",
+  "host": "127.0.0.1",
+  "port": 35975,
+  "kind": "local-shared",
+  "iris": "IRIS Community 2026.1 (Build 234U)"
+ },
+ "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "identity": [
+  {
+   "ns": "I60RT",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RV",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  },
+  {
+   "ns": "I60RA",
+   "ok": true,
+   "host": "1a97b1515453"
+  }
+ ],
+ "started": "20261117T210756Z",
+ "ok": [
+  "fe1",
+  "fe2",
+  "fe5",
+  "c4"
+ ],
+ "errors": {},
+ "fe1": {
+  "verify_start": {
+   "result": "equal",
+   "classification": null,
+   "seq": 1,
+   "entries": [],
+   "adoption_seq": null
+  },
+  "R1a.commit_seq": 2,
+  "R1a.verify": {
+   "result": "equal",
+   "entries_for_yes": []
+  },
+  "R1b.commit": {
+   "seq": 3,
+   "stmt_ids": {
+    "2": "2"
+   }
+  },
+  "R1b.row_qualifiers": [
+   "{\"temporal\":\"true\",\"w\":\"1\"}"
+  ],
+  "R1b.records": [
+   [
+    "create_node",
+    "i60r_t20261117t210756z_ta",
+    "",
+    ""
+   ],
+   [
+    "create_node",
+    "i60r_t20261117t210756z_tb",
+    "",
+    ""
+   ],
+   [
+    "create_rel",
+    "2",
+    "",
+    "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}"
+   ],
+   [
+    "set_qual",
+    "2",
+    "temporal",
+    "true"
+   ],
+   [
+    "set_qual",
+    "2",
+    "w",
+    "1"
+   ]
+  ],
+  "R1b.verify_1": {
+   "result": "diverges",
+   "classification": "unrecorded_writes",
+   "entries": [
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "",
+     null,
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}"
+    ],
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "qual:temporal",
+     null,
+     "true"
+    ],
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "qual:w",
+     null,
+     "1"
+    ]
+   ]
+  },
+  "R1b.verify_adopt": {
+   "result": "diverges",
+   "adoption_seq": 4,
+   "entries": [
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "",
+     null,
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}"
+    ],
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "qual:temporal",
+     null,
+     "true"
+    ],
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "qual:w",
+     null,
+     "1"
+    ]
+   ],
+   "head_moved": 1
+  },
+  "R1b.adoption_records": [
+   [
+    "create_rel",
+    "2",
+    "",
+    "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}"
+   ],
+   [
+    "set_qual",
+    "2",
+    "temporal",
+    "true"
+   ],
+   [
+    "set_qual",
+    "2",
+    "w",
+    "1"
+   ]
+  ],
+  "R1b.verify_2": {
+   "result": "diverges",
+   "entries": [
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "",
+     null,
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}"
+    ],
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "qual:temporal",
+     null,
+     "true"
+    ],
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ta\"}",
+     "qual:w",
+     null,
+     "1"
+    ]
+   ]
+  },
+  "R1c.commit_seq": 5,
+  "R1c.row_qualifiers": [
+   "{\"temporal\":\"true\"}"
+  ],
+  "R1c.verify_1": {
+   "result": "diverges",
+   "entries": [
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_bb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ba\"}",
+     "",
+     null,
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_bb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ba\"}"
+    ],
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_bb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ba\"}",
+     "qual:temporal",
+     null,
+     "true"
+    ]
+   ]
+  },
+  "R1c.verify_adopt": {
+   "adoption_seq": 6,
+   "head_moved": 1
+  },
+  "R1c.verify_2": {
+   "result": "diverges",
+   "entries": [
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_bb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ba\"}",
+     "",
+     null,
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_bb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ba\"}"
+    ],
+    [
+     "rel",
+     "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_bb\",\"p\":\"I60RREL\",\"s\":\"i60r_t20261117t210756z_ba\"}",
+     "qual:temporal",
+     null,
+     "true"
+    ]
+   ]
+  },
+  "R1de.rows": [
+   [
+    "I60RUB",
+    "{\"temporal\": true}"
+   ],
+   [
+    "I60RUT",
+    "{\"temporal\": \"true\"}"
+   ]
+  ],
+  "R1d.verify_1": [
+   [
+    "rel",
+    "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RUT\",\"s\":\"i60r_t20261117t210756z_ya\"}",
+    "",
+    null,
+    "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RUT\",\"s\":\"i60r_t20261117t210756z_ya\"}"
+   ],
+   [
+    "rel",
+    "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RUT\",\"s\":\"i60r_t20261117t210756z_ya\"}",
+    "qual:temporal",
+    null,
+    "true"
+   ]
+  ],
+  "R1e.verify_1": [],
+  "R1d.verify_adopt": {
+   "adoption_seq": 7,
+   "head_moved": 1
+  },
+  "R1d.verify_2": [
+   [
+    "rel",
+    "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RUT\",\"s\":\"i60r_t20261117t210756z_ya\"}",
+    "",
+    null,
+    "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RUT\",\"s\":\"i60r_t20261117t210756z_ya\"}"
+   ],
+   [
+    "rel",
+    "{\"graph\":null,\"o\":\"i60r_t20261117t210756z_tb\",\"p\":\"I60RUT\",\"s\":\"i60r_t20261117t210756z_ya\"}",
+    "qual:temporal",
+    null,
+    "true"
+   ]
+  ],
+  "R1e.verify_2": [],
+  "final_result": "diverges"
+ },
+ "fe2": {
+  "verify_start": "equal",
+  "commit": {
+   "seq": 2,
+   "post_applied": true,
+   "post_error": null
+  },
+  "orphan_node_rows": 0,
+  "orphan_prop_rows": [
+   [
+    "k",
+    "v"
+   ]
+  ],
+  "verify_1": {
+   "result": "diverges",
+   "entries": [
+    [
+     "node",
+     "i60r_orphan20261117t210756z",
+     "",
+     null,
+     ""
+    ],
+    [
+     "node",
+     "i60r_orphan20261117t210756z",
+     "prop:k",
+     null,
+     "v"
+    ]
+   ]
+  },
+  "verify_adopt_seq": 3,
+  "verify_2": "equal"
+ },
+ "fe5": {
+  "message_4000": {
+   "result": {
+    "ok_seq": 2
+   },
+   "head_moved": 1,
+   "node_rows": 1,
+   "counter_delta": {
+    "commits_ok": 1
+   },
+   "events": [
+    "success"
+   ]
+  },
+  "message_5000": {
+   "result": {
+    "class": "LedgerInconsistencyError",
+    "module": "iris_vector_graph.ledger.errors",
+    "mro": [
+     "LedgerInconsistencyError",
+     "LedgerError",
+     "IVGError",
+     "Exception",
+     "BaseException"
+    ],
+    "msg": "revision row save failed: ERROR #7201: Datatype value 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"
+   },
+   "head_moved": 0,
+   "node_rows": 0,
+   "counter_delta": {},
+   "events": [
+    "inconsistent"
+   ]
+  },
+  "key_256": {
+   "result": {
+    "ok_seq": 3
+   },
+   "head_moved": 1,
+   "node_rows": 1,
+   "counter_delta": {
+    "commits_ok": 1
+   },
+   "events": [
+    "success"
+   ]
+  },
+  "key_300": {
+   "result": {
+    "class": "LedgerInconsistencyError",
+    "module": "iris_vector_graph.ledger.errors",
+    "mro": [
+     "LedgerInconsistencyError",
+     "LedgerError",
+     "IVGError",
+     "Exception",
+     "BaseException"
+    ],
+    "msg": "revision row save failed: ERROR #7201: Datatype value 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk20261117t210757z' length longer than MAXLEN allowed of 256\r\n "
+   },
+   "head_moved": 0,
+   "node_rows": 0,
+   "counter_delta": {},
+   "events": [
+    "inconsistent"
+   ]
+  },
+  "correlation_300": {
+   "result": {
+    "class": "LedgerInconsistencyError",
+    "module": "iris_vector_graph.ledger.errors",
+    "mro": [
+     "LedgerInconsistencyError",
+     "LedgerError",
+     "IVGError",
+     "Exception",
+     "BaseException"
+    ],
+    "msg": "revision row save failed: ERROR #7201: Datatype value 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc' length longer than MAXLEN allowed of 256\r\n "
+   },
+   "head_moved": 0,
+   "node_rows": 0,
+   "counter_delta": {},
+   "events": [
+    "inconsistent"
+   ]
+  },
+  "actor_300": {
+   "result": {
+    "class": "LedgerInconsistencyError",
+    "module": "iris_vector_graph.ledger.errors",
+    "mro": [
+     "LedgerInconsistencyError",
+     "LedgerError",
+     "IVGError",
+     "Exception",
+     "BaseException"
+    ],
+    "msg": "revision row save failed: ERROR #7201: Datatype value 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' length longer than MAXLEN allowed of 256\r\n "
+   },
+   "head_moved": 0,
+   "node_rows": 0,
+   "counter_delta": {},
+   "events": [
+    "inconsistent"
+   ]
+  },
+  "source_object_4100": {
+   "result": {
+    "class": "LedgerInconsistencyError",
+    "module": "iris_vector_graph.ledger.errors",
+    "mro": [
+     "LedgerInconsistencyError",
+     "LedgerError",
+     "IVGError",
+     "Exception",
+     "BaseException"
+    ],
+    "msg": "revision row save failed: ERROR #7201: Datatype value '{\"blob\":\"ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+   },
+   "head_moved": 0,
+   "node_rows": 0,
+   "counter_delta": {},
+   "events": [
+    "inconsistent"
+   ]
+  },
+  "R6c.keyed_retry_long_message": {
+   "result": {
+    "seq": 4,
+    "replayed": true,
+    "same_seq": true
+   },
+   "counter_delta": {
+    "replays_idem": 1
+   },
+   "events": [
+    "replayed"
+   ]
+  }
+ },
+ "c4": {
+  "root_NodeNotFoundError": {
+   "caught": false,
+   "escaped": {
+    "class": "NodeNotFoundError",
+    "module": "iris_vector_graph.ledger.errors",
+    "mro": [
+     "NodeNotFoundError",
+     "ChangesetOperationError",
+     "LedgerError",
+     "IVGError",
+     "Exception"
+    ],
+    "msg": "create_relationship failed: node 'i60r_absent20261117t210759z' does not exist. Add upsert_node('i60r_absent20261117t210759z') to the changeset, or set auto_stub_missing_nodes=True on the Changeset.",
+    "op_index": 1,
+    "missing_node": "i60r_absent20261117t210759z"
+   }
+  },
+  "ledger_NodeNotFoundError": {
+   "caught": true,
+   "as": "iris_vector_graph.ledger.errors.NodeNotFoundError"
+  },
+  "IVGError": {
+   "caught": true,
+   "as": "iris_vector_graph.ledger.errors.NodeNotFoundError"
+  },
+  "ChangesetOperationError": {
+   "caught": true,
+   "as": "iris_vector_graph.ledger.errors.NodeNotFoundError"
+  },
+  "root_is_ledger_class": false,
+  "ledger_subclasses_root": false,
+  "CG3.set_property": {
+   "class": "NodeNotFoundError",
+   "module": "iris_vector_graph.ledger.errors",
+   "mro": [
+    "NodeNotFoundError",
+    "ChangesetOperationError",
+    "LedgerError",
+    "IVGError",
+    "Exception"
+   ],
+   "msg": "create_relationship failed: node 'i60r_ghost20261117t210759z' does not exist. Add upsert_node('i60r_ghost20261117t210759z') to the changeset, or set auto_stub_missing_nodes=True on the Changeset.",
+   "op_index": 1,
+   "missing_node": "i60r_ghost20261117t210759z"
+  },
+  "CG3.add_label": {
+   "class": "NodeNotFoundError",
+   "module": "iris_vector_graph.ledger.errors",
+   "mro": [
+    "NodeNotFoundError",
+    "ChangesetOperationError",
+    "LedgerError",
+    "IVGError",
+    "Exception"
+   ],
+   "msg": "create_relationship failed: node 'i60r_ghost20261117t210759z' does not exist. Add upsert_node('i60r_ghost20261117t210759z') to the changeset, or set auto_stub_missing_nodes=True on the Changeset.",
+   "op_index": 1,
+   "missing_node": "i60r_ghost20261117t210759z"
+  },
+  "CG3.remove_property": {
+   "class": "NodeNotFoundError",
+   "module": "iris_vector_graph.ledger.errors",
+   "mro": [
+    "NodeNotFoundError",
+    "ChangesetOperationError",
+    "LedgerError",
+    "IVGError",
+    "Exception"
+   ],
+   "msg": "create_relationship failed: node 'i60r_ghost20261117t210759z' does not exist. Add upsert_node('i60r_ghost20261117t210759z') to the changeset, or set auto_stub_missing_nodes=True on the Changeset.",
+   "op_index": 1,
+   "missing_node": "i60r_ghost20261117t210759z"
+  }
+ },
+ "finished": "20261117T210759Z"
+}

@@ -1,0 +1,15 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/op-index-lost/20261117T211642Z/models/ledger_client/ledger_client.rs:616:9
+    |
+614 |   pub proof fn theorem_error_mapping_fallbacks(i: nat, n: int, h: Option<int>, x: int)
+    |   ------------------------------------------------------------------------------------ at the end of the function body
+615 |       ensures
+616 | /         from_commit_error(Wire::Err { code: Code::FailedOp, head: h, op_index: Some(i), missing: Some(n), limit: None })
+617 | |             == (Exc::NodeNotFound { index: i as int, node: n }),
+    | |_______________________________________________________________^ failed this postcondition
+
+error: aborting due to 1 previous error
+

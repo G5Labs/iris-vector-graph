@@ -1,6 +1,6 @@
 # ledger client
 
-changeset scope and client validation, admission derived from the ledger's own state, the Python error classes and counters a commit outcome produces, caller-transaction lock and rollback, revision-ID readers, lifecycle settings, revision-row immutability and chunked transport
+changeset scope and client validation, admission derived from the ledger's own state, the Python error classes and counters a commit outcome produces (none while another caller's transaction holds the counter row; redaction-blocked, field-limit and not-enabled refusals never), caller-transaction lock and rollback, revision-ID readers (redaction check first), lifecycle settings, revision-row immutability and field limits, and chunked transport
 
 Evidence status: active. Variant: as-built transcription.
 

@@ -1,0 +1,69 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "lemma_adopt_agrees",
+      "theorem_entries_for_created_and_deleted_nodes",
+      "theorem_orphan_property_reports_node"
+    ],
+    "find": "a(f) != b(f) && !(owner(f) is Some && a(owner(f)->Some_0) is Some && b(owner(f)->Some_0) is None)",
+    "name": "new-entity-attributes-dropped",
+    "replace": "a(f) != b(f) && !(owner(f) is Some && a(owner(f)->Some_0) is Some && b(owner(f)->Some_0) is None) && !(owner(f) is Some && a(owner(f)->Some_0) is None)",
+    "why": "an entity only in the tables gets its existence entry alone"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_adopt_agrees",
+      "theorem_entries_for_created_and_deleted_nodes",
+      "theorem_orphan_property_reports_node"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "3c88aa437b53d1ffadb71a12d9ab72835683012363e0fa74033eac069f2c6eeb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/new-entity-attributes-dropped/20261117T211222Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 5,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_adopt_agrees": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211222Z-control-new-entity-attributes-dropped-lemma_adopt_agrees.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_entries_for_created_and_deleted_nodes": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211222Z-control-new-entity-attributes-dropped-theorem_entries_for_created_and_deleted_nodes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_orphan_property_reports_node": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211222Z-control-new-entity-attributes-dropped-theorem_orphan_property_reports_node.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211222Z-control-new-entity-attributes-dropped.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261117T211223Z-control-new-entity-attributes-dropped/logs/20261117T211222Z-control-new-entity-attributes-dropped-lemma_adopt_agrees.log": "3ce41b2315817562c0a1e986f28ef31d649681c88591a28177ae7fe3e116664d",
+    ".g5/Verus_verification/results/ledger_verify/20261117T211223Z-control-new-entity-attributes-dropped/logs/20261117T211222Z-control-new-entity-attributes-dropped-theorem_entries_for_created_and_deleted_nodes.log": "cc673390c3ae8306ad36f1ee786eb6f1ca89043fd7d5e8cc1c567dedace03d62",
+    ".g5/Verus_verification/results/ledger_verify/20261117T211223Z-control-new-entity-attributes-dropped/logs/20261117T211222Z-control-new-entity-attributes-dropped-theorem_orphan_property_reports_node.log": "1fa55deee2c4c9b6bc5dea0296d3bd3e037bee136a469537a6bdeecd7c3b3e43",
+    ".g5/Verus_verification/results/ledger_verify/20261117T211223Z-control-new-entity-attributes-dropped/logs/20261117T211222Z-control-new-entity-attributes-dropped.log": "35f3391a2180943a7e5ce27d1c757889c2c83d56d978af15311a1d8132385071"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_reordered_operations_conflict"
+    ],
+    "find": "Scope { actor: c.actor, actor_type: c.actor_type, ops: c.ops }",
+    "name": "ops-not-fingerprinted",
+    "replace": "Scope { actor: c.actor, actor_type: c.actor_type, ops: seq![] }",
+    "why": "the operations leave the hashed scope"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_reordered_operations_conflict"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_client/ledger_client.rs": "176d6d3029d8b293e42c34e000674b65b0aabe718d9485680f67a3a2d04f081b",
+    ".g5/Verus_verification/models/ledger_client/model.json": "a54a8aaea2749edf1b4e8e004fb09c2b373048cb869ceba8440727b483d68a80"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/ops-not-fingerprinted/20261117T211630Z/models/ledger_client/ledger_client.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_reordered_operations_conflict": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211630Z-control-ops-not-fingerprinted-theorem_reordered_operations_conflict.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/20261117T211630Z-control-ops-not-fingerprinted.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_client/20261117T211631Z-control-ops-not-fingerprinted/logs/20261117T211630Z-control-ops-not-fingerprinted-theorem_reordered_operations_conflict.log": "8c9d5a41e39a309ed4a15b6ac334b97b605def00ca86f702e90e9e9f08d267c4",
+    ".g5/Verus_verification/results/ledger_client/20261117T211631Z-control-ops-not-fingerprinted/logs/20261117T211630Z-control-ops-not-fingerprinted.log": "ed15e178e0397a70743488e66c049b62529092b3da94519d262ac54ac26df005"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

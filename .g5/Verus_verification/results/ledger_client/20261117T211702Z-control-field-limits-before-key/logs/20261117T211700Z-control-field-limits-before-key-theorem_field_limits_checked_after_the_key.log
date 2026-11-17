@@ -1,0 +1,21 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/field-limits-before-key/20261117T211700Z/models/ledger_client/ledger_client.rs:710:13
+    |
+708 |   pub proof fn theorem_field_limits_checked_after_the_key(s: Srv, c: Cs, ml: Lens, p: nat, a: Apply, b: Apply, f1: int, f2: int)
+    |   ------------------------------------------------------------------------------------------------------------------------------ at the end of the function body
+709 |       requires admits(s, c, p, a), c.key is Some, s.holder is None, ml.message > 4000,
+710 |       ensures ({
+    |  _____________^
+711 | |         let o1 = client_commit(s, c, p, a, f1);
+712 | |         let d = Cs { lens: ml, ..c };
+713 | |         &&& !fits(d)
+714 | |         &&& client_commit(o1.srv, d, p, b, f2).py == Py::Res { seq: s.head + 1, replayed: true, stmts: false }
+715 | |         &&& client_commit(s, d, p, a, f1).py == Py::Raise(Exc::Inconsistent)
+716 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

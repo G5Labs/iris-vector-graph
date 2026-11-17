@@ -1,0 +1,19 @@
+error[E0061]: this function takes 3 arguments but 2 arguments were supplied
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/expected-head-before-idempotency/20261117T211631Z/models/ledger_client/ledger_client.rs:199:9
+    |
+199 |         refuse(s, err(Code::StaleHead, Some(head_id(s))))
+    |         ^^^^^^------------------------------------------- argument #3 of type `vstd::prelude::nat` is missing
+    |
+note: function defined here
+   --> /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_client/controls/expected-head-before-idempotency/20261117T211631Z/models/ledger_client/ledger_client.rs:181:18
+    |
+181 | pub open spec fn refuse(s: Srv, w: Wire, p: nat) -> (Srv, Wire) {
+    |                  ^^^^^^                  ------
+help: provide the argument
+    |
+199 |         refuse(s, err(Code::StaleHead, Some(head_id(s))), /* vstd::prelude::nat */)
+    |                                                         ++++++++++++++++++++++++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0061`.

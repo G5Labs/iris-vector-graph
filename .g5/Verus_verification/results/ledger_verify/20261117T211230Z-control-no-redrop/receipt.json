@@ -1,0 +1,51 @@
+{
+  "control": {
+    "expect_fail_in": [
+      "theorem_adoption_never_closes_a_text_marker"
+    ],
+    "find": "    redrop(adopt(a, d))\n",
+    "name": "no-redrop",
+    "replace": "    adopt(a, d)\n",
+    "why": "the replay of the adoption is taken as the adopted view, without the drop rule running again"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_adoption_never_closes_a_text_marker"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/ledger_verify/ledger_verify.rs": "05c2662ecc88a73b566860fb0f79a08f548f5e13d5692ad31a450673ee53eff5",
+    ".g5/Verus_verification/models/ledger_verify/model.json": "3c88aa437b53d1ffadb71a12d9ab72835683012363e0fa74033eac069f2c6eeb"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus /Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/controls/no-redrop/20261117T211230Z/models/ledger_verify/ledger_verify.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_adoption_never_closes_a_text_marker": {
+        "errors": 1,
+        "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211230Z-control-no-redrop-theorem_adoption_never_closes_a_text_marker.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/Users/ziniuw/Desktop/projects/G5-benchmark/results/local/iris-test-obligations-20261117/runtime/i60r/verus/ledger_verify/20261117T211230Z-control-no-redrop.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/ledger_verify/20261117T211230Z-control-no-redrop/logs/20261117T211230Z-control-no-redrop-theorem_adoption_never_closes_a_text_marker.log": "b9c34027285d9d18b5205ef03afea50ad3c75b5b55ee19378e9f9075eaa4903b",
+    ".g5/Verus_verification/results/ledger_verify/20261117T211230Z-control-no-redrop/logs/20261117T211230Z-control-no-redrop.log": "2f447419dc9fc036d4d17740983304dec137dc96ed2d95399fbc46c7f9f8e89c"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/Users/ziniuw/.cache/g5-verification/0.2026.10.04.426d8b0/verus-arm64-macos/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
