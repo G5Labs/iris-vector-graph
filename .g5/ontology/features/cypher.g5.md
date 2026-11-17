@@ -417,6 +417,16 @@ Arithmetic over aggregates gives the openCypher number: over `v` 1, 2 and `f` 2.
 - Today a parameter of another type is used as a count: the string "2" as 2, true as 1 and 2.0 as 2. The string "x" fails with a Python `ValueError`, and a null parameter is reported as not provided ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-139)).
 
 
+<a id="query.parameters"></a>
+[I · query.parameters]
+
+A parameter supplies a value of its own type wherever the query could hold a literal, on `execute_cypher`, Bolt and the HTTP routes. The answer should not depend on which IRIS Python driver runs the query.
+- Working assumption: intersystems-irispython 5.3.x, the version the repository's lock file pins, is a supported driver ([question](../../Verus_verification/open_questions.md#query.parameters.drivers)).
+- Scalars, lists, maps and null come back unchanged from `RETURN $x`, and `IN $list`, `SKIP $s` and `LIMIT $l` work on both drivers. A parameter that is not supplied is refused as an undefined variable.
+- Today with driver 5.3.2, `UNWIND $list`, `$l[$i]` and `$l[$s..$e]` fail with "Invalid number of parameters"; with 5.4.1 they run. Passing the list through `WITH $list AS l` first works with both ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-125)).
+- Today with driver 5.4.1, `$l[$s..$e]` answers the empty list, and `$l[$i]` answers the element as text ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-144)).
+- A string parameter is compared as a string literal is ([equality](#query.values.equality)).
+
 <a id="query.union"></a>
 [I · query.union]
 
@@ -470,6 +480,7 @@ A `WHERE` equality between a stored property and a boolean or integer literal fo
 - An integer literal on a relationship matches the qualifier text that spells the integer or its float twin (`1`, `1.0`), so a JSON boolean (read as 1 or 0), the string "1" and the string "1.0" all equal 1.
 - A whole JSON float on a relationship keeps its spelling (`1.0`), so it equals 1 but not `true`; the same value stored as a node double equals both.
 - The boolean legacy match is a documented known issue that typed storage is planned to remove in 4.8.0; openCypher equality matches only values of the same type.
+- Today a string literal or string parameter that spells a node's stored number equals it: `n.v = '1'` and `n.v = $x` with `$x = '1'` keep a node whose `v` is the integer 1, although an integer literal or parameter matches only the number ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-145)).
 
 
 <a id="query.values.ordering"></a>
@@ -1112,6 +1123,24 @@ Recovered in iteration 54; the frozen predictions WS1-WS7 held. The other parame
 
 Findings: [SKIP and LIMIT use a string, boolean or whole-float parameter as a count, and call a null parameter "not provided"](../../Verus_verification/bugs_issues.md#bug-cyp-139)
 
+### query.parameters
+
+- design-verified
+- uncertain
+- Sources: openCypher parameters; [README conformance (drivers 5.4.0, 5.4.1)](../../../README.md), [`docs/dev/TCK.md`](../../../docs/dev/TCK.md), [`docs/dev/driver-drift.md` item 6](../../../docs/dev/driver-drift.md), [`uv.lock` (intersystems-irispython 5.3.2)](../../../uv.lock); [`_expr_slice`](../../../iris_vector_graph/cypher/translator.py#L23778-L23789)
+- Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `binds_json_table_marker` (provider premise P-DRV-JT), `theorem_unwind_param_depends_on_driver`, `params_order`, `slice_answer`, `theorem_param_slice_answers_empty` (controls `driver-532-binds`, `slice-markers-in-order`); [scope](../../Verus_verification/models/bolt_answers/NOTES.md)
+- Evidence: [W60 predictions PA1-PA8 and results, both drivers](../../uplift/consolidated/iteration-55/pipeline-PAIRS.md)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 55. PA1, PA5, PA7 and PA8 held on both drivers and over Bolt; PA3 and PA4 missed (5.4.1 binds the marker; the slice answers []).
+
+Open questions: [Which IRIS Python drivers must IVG's Cypher parameters work with?](../../Verus_verification/open_questions.md#query.parameters.drivers)
+
+Findings: [With the driver 5.3.2 an UNWIND of a list parameter fails](../../Verus_verification/bugs_issues.md#bug-cyp-125); [A slice of a list parameter by parameters answers the empty list](../../Verus_verification/bugs_issues.md#bug-cyp-144)
+
+State machines: [bolt answers](../../Verus_verification/models/bolt_answers/manifest.json)
+
 ### query.union
 
 - Sources: openCypher TCK `Union1`-`3`; [`_tts_union_branches`](../../../iris_vector_graph/cypher/translator.py#L4632-L4714); [`_lone_label_count`](../../../iris_vector_graph/cypher/translator.py#L7413-L7459); [W59 predictions UN1-UN3 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
@@ -1192,6 +1221,8 @@ Findings: [A boolean equality also matches stored integers 1 and 0, beyond the l
 State machines: [typed equality](../../Verus_verification/models/typed_equality/manifest.json)
 
 Findings: [A grouping key and count(DISTINCT) treat a stored number and the string spelling it as one value, while RETURN DISTINCT keeps them apart](../../Verus_verification/bugs_issues.md#bug-cyp-135) (iteration 54: grouping compares text, unlike `=`)
+
+Findings: [A string literal or string parameter equals a stored node number that it spells](../../Verus_verification/bugs_issues.md#bug-cyp-145) (iteration 55; [bolt_answers](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `theorem_string_operand_matches_number`, `theorem_int_operands_and_string_values_follow_rule`; controls `string-compare-typed`, `int-param-raw`)
 
 ### query.values.ordering
 

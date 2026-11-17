@@ -1,0 +1,12 @@
+verification results:: 26 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/gates-folded/20261117T063028Z/models/bolt_answers/bolt_answers.rs:182:13
+    |
+180 | pub proof fn theorem_gate_codes_follow_rule(c: Cause)
+    | ----------------------------------------------------- at the end of the function body
+181 |     requires c == Cause::ReadOnlyWrite || c == Cause::BadKey || c == Cause::Parse,
+182 |     ensures bolt_code(c) == neo4j_code(c),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

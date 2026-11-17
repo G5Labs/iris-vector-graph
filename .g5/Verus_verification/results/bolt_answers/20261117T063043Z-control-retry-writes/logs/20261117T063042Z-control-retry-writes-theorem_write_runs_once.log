@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/retry-writes/20261117T063042Z/models/bolt_answers/bolt_answers.rs:285:13
+    |
+283 | pub proof fn theorem_write_runs_once(e: Option<ErrText>, s: Stmt)
+    | ----------------------------------------------------------------- at the end of the function body
+284 |     requires s.transactional,
+285 |     ensures runs(e, s) == 1,
+    |             ^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

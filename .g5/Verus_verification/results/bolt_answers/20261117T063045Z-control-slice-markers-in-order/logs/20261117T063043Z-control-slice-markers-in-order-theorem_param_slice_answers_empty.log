@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/slice-markers-in-order/20261117T063043Z/models/bolt_answers/bolt_answers.rs:323:1
+    |
+323 | pub proof fn theorem_param_slice_answers_empty(l: Seq<int>, s: int, e: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/slice-markers-in-order/20261117T063043Z/models/bolt_answers/bolt_answers.rs:325:13
+    |
+323 | pub proof fn theorem_param_slice_answers_empty(l: Seq<int>, s: int, e: int)
+    | --------------------------------------------------------------------------- at the end of the function body
+324 |     requires 0 <= s < e <= l.len(),
+325 |     ensures slice_answer(Drv::V541, l, s, e) == Ans::Rows(Seq::<int>::empty()),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/slice-markers-in-order/20261117T063043Z/models/bolt_answers/bolt_answers.rs:326:13
+    |
+323 | pub proof fn theorem_param_slice_answers_empty(l: Seq<int>, s: int, e: int)
+    | --------------------------------------------------------------------------- at the end of the function body
+...
+326 |             slice_answer(Drv::V541, l, s, e) != Ans::Rows(l.subrange(s, e)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

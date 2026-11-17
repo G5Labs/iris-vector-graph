@@ -1,0 +1,45 @@
+verification results:: 24 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/swap-columns/20261117T063032Z/models/bolt_answers/bolt_answers.rs:224:1
+    |
+224 | pub proof fn theorem_endpoints_follow_columns(a: int, b: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/swap-columns/20261117T063032Z/models/bolt_answers/bolt_answers.rs:226:13
+    |
+224 | pub proof fn theorem_endpoints_follow_columns(a: int, b: int)
+    | ------------------------------------------------------------- at the end of the function body
+225 |     requires a != b, a != 0, b != 0,
+226 |     ensures reported(seq![Col::Node(b), Col::Rel, Col::Node(a)], 1) == (b, a),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/swap-columns/20261117T063032Z/models/bolt_answers/bolt_answers.rs:227:13
+    |
+224 | pub proof fn theorem_endpoints_follow_columns(a: int, b: int)
+    | ------------------------------------------------------------- at the end of the function body
+...
+227 |             reported(seq![Col::Node(b), Col::Rel, Col::Node(a)], 1) != (a, b),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/swap-columns/20261117T063032Z/models/bolt_answers/bolt_answers.rs:236:13
+    |
+234 | pub proof fn theorem_one_hop_right_iff_source_first(x: int, y: int, src: int, dst: int)
+    | --------------------------------------------------------------------------------------- at the end of the function body
+235 |     requires x != y, src != dst, (x == src && y == dst) || (x == dst && y == src),
+236 |     ensures (reported(seq![Col::Node(x), Col::Rel, Col::Node(y)], 1) == (src, dst)) == (x == src),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/swap-columns/20261117T063032Z/models/bolt_answers/bolt_answers.rs:244:13
+    |
+242 | pub proof fn theorem_rel_alone_or_last(a: int, b: int)
+    | ------------------------------------------------------ at the end of the function body
+243 |     ensures reported(seq![Col::Rel], 0) == (0int, 0int),
+244 |             reported(seq![Col::Node(a), Col::Node(b), Col::Rel], 2) == (b, 0int),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

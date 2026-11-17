@@ -54,6 +54,32 @@ A successful RUN supplies a result stream, preserving admitted values and field 
 - A failed RUN emits FAILURE, clears pending rows, and ordinary requests are ignored until recovery.
 
 
+<a id="access.bolt.versions"></a>
+[I · access.bolt.versions]
+
+The Bolt listener agrees on Bolt 4.4 or a version from 5.0 to 5.4, reading the client's four proposals in order. When none of them can be met, it answers four zero bytes and closes the connection.
+- A 5.x proposal with a range is met at its highest minor version up to 5.4: 5.8 with a range of 4 gets 5.4, while 5.8 alone, or 5.6 to 5.8, is refused.
+- A proposal it does not know, such as the Bolt 5.7 manifest offer, is skipped, and a later proposal can still be met.
+- A Bolt 4 client sends the API key in HELLO; a Bolt 5.1 or later client sends it in LOGON.
+
+
+<a id="access.bolt.errors"></a>
+[I · access.bolt.errors]
+
+A RUN that fails answers FAILURE with a Neo4j status code and the failure's text, and the session accepts RESET and a new RUN. A write refused by read-only mode gets `Neo.ClientError.Statement.AccessMode`, and a wrong API key gets `Neo.ClientError.Security.Unauthorized`.
+- Today every other failure carries `Neo.ClientError.Statement.SyntaxError`, including an IRIS SQL error, a parameter the IRIS driver refuses and an undefined parameter, so a client cannot tell a bad query from a failed database ([finding](../../Verus_verification/bugs_issues.md#bug-plt-124)).
+- Today an integer result outside 64 bits ends the session instead of failing the query ([finding](../../Verus_verification/bugs_issues.md#bug-plt-125)).
+
+
+<a id="access.bolt.graph_values"></a>
+[I · access.bolt.graph_values]
+
+A value in a Bolt record arrives with the value and type the engine answers, and a whole node or relationship arrives as a Bolt node or relationship. A node carries its own identity, labels and stored properties; a relationship carries its type, its properties and its stored start and end node.
+- Integers, floats, strings, booleans, null, lists, maps and paths arrive alike on Bolt, `execute_cypher` and the HTTP routes. Integers use the smallest PackStream width; a path arrives as the engine's map of node ids and relationship types.
+- Today a node's id is 31 bits of Python's hash of its node ID, so two nodes can reach the client as one, and ids change when the server restarts ([finding](../../Verus_verification/bugs_issues.md#bug-plt-122)).
+- Today a relationship's start and end are the node columns before and after it in the RETURN: `RETURN b, r, a` reports b as the start of a stored `a→b`, and `RETURN r` alone has no endpoints ([finding](../../Verus_verification/bugs_issues.md#bug-plt-123)).
+- Today a whole node carries each property longer than 200 characters as its first 200 characters and `...`, and a long list or map as that text ([finding](../../Verus_verification/bugs_issues.md#bug-plt-121)).
+
 <a id="access.iris_boundary"></a>
 [D · access.iris_boundary]
 
@@ -232,6 +258,9 @@ Assumption review evidence: Changed from decisions.md: **no**. Same reading. Add
 
 State machines: [http rows](../../Verus_verification/models/http_rows/manifest.json)
 
+
+Findings: [The Neo4j HTTP transaction route answers a whole node as three text columns](../../Verus_verification/bugs_issues.md#bug-plt-126) (iteration 55)
+
 ### access.bolt
 
 - design-verified
@@ -239,7 +268,7 @@ State machines: [http rows](../../Verus_verification/models/http_rows/manifest.j
 - uncertain
 - Sources: [Bolt protocol commitment](../../../iris_vector_graph/bolt_server.py#L1-L8), [ADMIN_API](../../../docs/ADMIN_API.md); [primary Bolt message specification](https://neo4j.com/docs/bolt/current/bolt/message/)
 - Verus: [bolt_stream model and limits](../../Verus_verification/models/bolt_stream/NOTES.md), as-built byte/state transcription; raw framing through admitted RUN/PULL final records, no generic codec/provider/network or database transaction proof.
-- Children: [framing](#access.bolt.framing), [result stream](#access.bolt.results)
+- Children: [framing](#access.bolt.framing), [result stream](#access.bolt.results), [versions](#access.bolt.versions), [errors](#access.bolt.errors), [graph values](#access.bolt.graph_values)
 - Expands: [Entry points](#access.surfaces)
 - agent
 - user-facing-behavior, data-integrity
@@ -282,9 +311,57 @@ State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manife
 
 Observed: positive n slices rows then clears the entire pending result and omits has_more (known F-1602); n=0 emits all rows but is only an as-built out-of-domain neighbor, not a compatible PULL request. RUN replaces pending rows. DISCARD, RESET and ROLLBACK clear pending rows; COMMIT leaves them despite returning READY. These as-built transitions do not establish that every sequence is allowed by the protocol. Scalar/list/map admitted codec values and final records are a narrower scope than all graph objects or arbitrary query providers.
 
-Findings: [PULL drops its unread suffix](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1602); [Explicit transactions commit per RUN](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1601).
+Iteration 55: the PULL suffix loss reproduced with the neo4j driver 6.4.1 (`fetch_size=2` receives 2 of 5 records, no error); Bolt is not capped at 1,000 rows as the HTTP routes are.
+
+Findings: [An integer result past 64 bits ends the Bolt session](../../Verus_verification/bugs_issues.md#bug-plt-125); [PULL drops its unread suffix](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1602); [Explicit transactions commit per RUN](../../Verus_verification/audits/register-20261115/bugs-review.md#F-1601).
 
 State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manifest.json)
+
+### access.bolt.versions
+
+- design-verified
+- Sources: [`negotiate_version`](../../../iris_vector_graph/bolt_server.py#L331-L347), [`_handle_hello`/`_handle_logon`](../../../iris_vector_graph/bolt_server.py#L547-L565), [ADMIN_API Authentication](../../../docs/ADMIN_API.md); [Bolt handshake specification](https://neo4j.com/docs/bolt/current/bolt/handshake/)
+- Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `negotiate`, general `theorem_answer_is_zero_or_supported`, `theorem_v5_rule`, `theorem_probe_offers` (controls `range-unchecked`, `no-bolt5`); [scope](../../Verus_verification/models/bolt_answers/NOTES.md)
+- Evidence: [W60 predictions BP1, BP2 and results](../../uplift/consolidated/iteration-55/pipeline-PAIRS.md)
+- Expands: [Bolt stream](#access.bolt)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 55 from the handshake specification and ADMIN_API. BP1 held; BP2's main prediction (4.4 only) missed: 5.0 to 5.4 are agreed. The neo4j driver 6.4.1 agreed 5.4. HELLO answers `server: Neo4j/5.0.0`; Node and Relationship structures keep the Bolt 4 field layout on Bolt 5, which the Python driver accepts (other drivers unchecked).
+
+State machines: [bolt answers](../../Verus_verification/models/bolt_answers/manifest.json)
+
+### access.bolt.errors
+
+- design-verified
+- Sources: [`_handle_run`](../../../iris_vector_graph/bolt_server.py#L567-L622), [`_refuse_unauthorized`/`_authenticate`](../../../iris_vector_graph/bolt_server.py#L523-L545), [`PackStream._pack_int`](../../../iris_vector_graph/bolt_server.py#L95-L105); [Neo4j status codes](https://neo4j.com/docs/status-codes/current/); [ADMIN_API read-only mode](../../../docs/ADMIN_API.md)
+- Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `bolt_code`, `theorem_runtime_failure_reported_as_syntax`, `theorem_gate_codes_follow_rule`, `pull_value`, `theorem_overflow_breaks_connection`, `theorem_int64_values_arrive` (controls `code-by-cause`, `gates-folded`, `nofit-is-failure`)
+- Evidence: [W60 predictions ER1, ER2, BP4, T5 and results](../../uplift/consolidated/iteration-55/pipeline-PAIRS.md)
+- Expands: [Bolt stream](#access.bolt)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 55. The engine itself answers a failed read with `IVGResult.error` and no rows unless `raise_on_error=True` (its docstring and USER_GUIDE); Bolt and the HTTP routes turn that into a failure.
+
+Findings: [Bolt reports every failed query as a syntax error](../../Verus_verification/bugs_issues.md#bug-plt-124); [An integer result past 64 bits ends the Bolt session](../../Verus_verification/bugs_issues.md#bug-plt-125)
+
+State machines: [bolt answers](../../Verus_verification/models/bolt_answers/manifest.json)
+
+### access.bolt.graph_values
+
+- design-verified
+- Sources: [`_node_int_id`, `pack_node`](../../../iris_vector_graph/bolt_server.py#L351-L362), [`_recompose_graph_row`, `_pack_rel_from_value`, `_parse_props_field`](../../../iris_vector_graph/bolt_server.py#L713-L905), [`PackStream`](../../../iris_vector_graph/bolt_server.py#L67-L150); [USER_GUIDE: lists, maps and paths through execute_cypher, REST and Bolt](../../../docs/USER_GUIDE.md); [PackStream specification](https://neo4j.com/docs/bolt/current/packstream/)
+- Verus: [bolt_answers.rs](../../Verus_verification/models/bolt_answers/bolt_answers.rs) `int_marker`, `theorem_marker_is_smallest`; `bolt_id`, `client_view2`, `theorem_hash_collision_loses_first_node`, `theorem_distinct_ids_keep_both`; `reported`, `theorem_endpoints_follow_columns`, `theorem_one_hop_right_iff_source_first`, `theorem_rel_alone_or_last`; `bolt_node_prop`, `theorem_long_property_truncated`, `theorem_short_property_kept`
+- Evidence: [W60 predictions RT1-RT11, BP6-BP8, T1-T3 and results](../../uplift/consolidated/iteration-55/pipeline-PAIRS.md)
+- Expands: [Bolt stream](#access.bolt)
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered in iteration 55. The value-type rows RT1-RT7 held on all four readers (Python, Bolt, `/api/cypher`, `/db/neo4j/tx/commit`). The id collision relies on the neo4j driver's per-result node cache (provider premise P-DRIVER-ID, observed with 6.4.1).
+
+Findings: [Bolt cuts long node properties](../../Verus_verification/bugs_issues.md#bug-plt-121); [Bolt node ids can collide](../../Verus_verification/bugs_issues.md#bug-plt-122); [Bolt relationship endpoints follow column order](../../Verus_verification/bugs_issues.md#bug-plt-123); [The Neo4j HTTP transaction route answers a node as three text columns](../../Verus_verification/bugs_issues.md#bug-plt-126)
+
+State machines: [bolt answers](../../Verus_verification/models/bolt_answers/manifest.json)
 
 ### access.iris_boundary
 

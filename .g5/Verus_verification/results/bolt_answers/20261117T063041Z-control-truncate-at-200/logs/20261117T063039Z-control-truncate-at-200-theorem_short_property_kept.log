@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/truncate-at-200/20261117T063039Z/models/bolt_answers/bolt_answers.rs:268:13
+    |
+266 | pub proof fn theorem_short_property_kept(v: PVal)
+    | ------------------------------------------------- at the end of the function body
+267 |     requires v.rendered <= 200,
+268 |     ensures bolt_node_prop(v) == v,
+    |             ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: every -400 retried",
+    "expect_fail_in": [
+      "theorem_other_400_not_retried"
+    ],
+    "find": "pub open spec fn is_long(e: ErrText) -> bool { e.c400 && e.subscript && (e.temp || (e.sqlcq && e.encoded && e.over)) }",
+    "name": "retry-any-400",
+    "replace": "pub open spec fn is_long(e: ErrText) -> bool { e.c400 }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_other_400_not_retried"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_answers/bolt_answers.rs": "94cd6427f63d030bfcdbec33d686e131f842be81d9718d5e34fae1ccf53f10b2",
+    ".g5/Verus_verification/models/bolt_answers/model.json": "375925aa8404e020a0cafcec37f7c4523e047c5c56bed0b6e21db5ac5dd67805"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/retry-any-400/20261117T063041Z/models/bolt_answers/bolt_answers.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_other_400_not_retried": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063041Z-control-retry-any-400-theorem_other_400_not_retried.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063041Z-control-retry-any-400.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_answers/20261117T063042Z-control-retry-any-400/logs/20261117T063041Z-control-retry-any-400-theorem_other_400_not_retried.log": "93a38d359ce417c52d45fa01dd63c2fb272db5e430424b056a04a65acc93edba",
+    ".g5/Verus_verification/results/bolt_answers/20261117T063042Z-control-retry-any-400/logs/20261117T063041Z-control-retry-any-400.log": "a5a09d17a09bc47788f6903288b7db006968a516a49b55d1bdf3c3a30c237faf"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

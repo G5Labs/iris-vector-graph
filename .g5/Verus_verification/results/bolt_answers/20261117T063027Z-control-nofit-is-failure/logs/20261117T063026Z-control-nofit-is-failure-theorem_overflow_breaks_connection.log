@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/nofit-is-failure/20261117T063026Z/models/bolt_answers/bolt_answers.rs:149:1
+    |
+149 | pub proof fn theorem_overflow_breaks_connection(v: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/nofit-is-failure/20261117T063026Z/models/bolt_answers/bolt_answers.rs:151:13
+    |
+149 | pub proof fn theorem_overflow_breaks_connection(v: int)
+    | ------------------------------------------------------- at the end of the function body
+150 |     requires v > 9223372036854775807,
+151 |     ensures pull_value(v) == PullOutcome::Broken, pull_value(v) != PullOutcome::Failure,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/nofit-is-failure/20261117T063026Z/models/bolt_answers/bolt_answers.rs:151:51
+    |
+149 | pub proof fn theorem_overflow_breaks_connection(v: int)
+    | ------------------------------------------------------- at the end of the function body
+150 |     requires v > 9223372036854775807,
+151 |     ensures pull_value(v) == PullOutcome::Broken, pull_value(v) != PullOutcome::Failure,
+    |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

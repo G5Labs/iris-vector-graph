@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/range-unchecked/20261117T063018Z/models/bolt_answers/bolt_answers.rs:82:1
+   |
+82 | pub proof fn theorem_probe_offers()
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/range-unchecked/20261117T063018Z/models/bolt_answers/bolt_answers.rs:88:13
+   |
+82 | pub proof fn theorem_probe_offers()
+   | ----------------------------------- at the end of the function body
+...
+88 |             negotiate(0x0805, 0, 0, 0) == 0,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/range-unchecked/20261117T063018Z/models/bolt_answers/bolt_answers.rs:89:13
+   |
+82 | pub proof fn theorem_probe_offers()
+   | ----------------------------------- at the end of the function body
+...
+89 |             negotiate(0x020805, 0, 0, 0) == 0,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,139 @@
+{
+  "title": "bolt answers",
+  "question": "One answer through the query pipeline to the Neo4j driver (W60, iteration 55): Bolt version negotiation, PackStream integer widths and the int64 overflow at PULL (bug-plt-125), FAILURE codes by cause (bug-plt-124), node ids by hash (bug-plt-122), relationship endpoints by column order (bug-plt-123), whole-node property truncation (bug-plt-121), the long-list retry decision, list parameters under two IRIS drivers (bug-cyp-125, -144), node filter equality of string literals and parameters (bug-cyp-145)",
+  "ontology_ids": [
+    "access.bolt.versions",
+    "access.bolt.errors",
+    "access.bolt.graph_values",
+    "query.parameters",
+    "query.values.equality"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 27}"
+    },
+    {
+      "label": "range-unchecked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_v5_rule\", \"theorem_probe_offers\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-bolt5",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_v5_rule\", \"theorem_probe_offers\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "tiny-to-255",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_marker_is_smallest\", \"theorem_probe_widths\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "i16-not-smallest",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_marker_is_smallest\", \"theorem_probe_widths\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nofit-is-failure",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_overflow_breaks_connection\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "code-by-cause",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_runtime_failure_reported_as_syntax\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "gates-folded",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_gate_codes_follow_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "id-from-node-id",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_hash_collision_loses_first_node\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "driver-no-id-cache",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_hash_collision_loses_first_node\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "swap-columns",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_endpoints_follow_columns\", \"theorem_one_hop_right_iff_source_first\", \"theorem_rel_alone_or_last\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-prev-node",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_endpoints_follow_columns\", \"theorem_one_hop_right_iff_source_first\", \"theorem_rel_alone_or_last\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-truncation",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_long_property_truncated\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "truncate-at-200",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_short_property_kept\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "retry-any-400",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_400_not_retried\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "retry-writes",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_write_runs_once\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "slice-markers-in-order",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_param_slice_answers_empty\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "driver-532-binds",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unwind_param_depends_on_driver\", \"theorem_param_slice_answers_empty\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "string-compare-typed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_string_operand_matches_number\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "int-param-raw",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_int_operands_and_string_values_follow_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"verdict\": \"AGREES\"}"
+    }
+  ]
+}

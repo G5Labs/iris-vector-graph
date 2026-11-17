@@ -6526,3 +6526,40 @@ Disposition: open. Working assumption: two values. Evidence: [W59](../uplift/con
   ]
 }
 ```
+
+<a id="query.parameters.drivers"></a>
+### Which IRIS Python drivers must IVG's Cypher parameters work with?
+
+[Q · query.parameters.drivers]
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Must `UNWIND $list`, a list parameter indexed or sliced by parameters, and the other reads that pass a list parameter into `JSON_TABLE` work with intersystems-irispython 5.3.x, the version the repository's `uv.lock` pins?
+- Provisional answer (agent, unratified): yes. The lock file is what `uv sync --frozen` installs, and `pyproject.toml` accepts any driver version; until the project says otherwise, a read that fails only on the locked driver is a defect.
+- Alternative: no. The README and `docs/dev/TCK.md` measure conformance with 5.4.0 and 5.4.1 only; 5.3.x would then need a stated lower bound (`intersystems-irispython>=5.4`) and a lock refresh, and [bug-cyp-125](bugs_issues.md#bug-cyp-125) would become a packaging defect.
+- As built: with 5.3.2 the IRIS driver refuses a `?` inside `JSON_TABLE`'s source ("Invalid number of parameters"); with 5.4.1 it binds it (iteration 55, both drivers on one fixture).
+
+Disposition: open. Working assumption: 5.3.x is supported. Evidence: [W60](../uplift/consolidated/iteration-55/pipeline-PAIRS.md), [bolt_answers](models/bolt_answers/NOTES.md) (provider premise P-DRV-JT). Owner: [query.parameters](../ontology/features/cypher.g5.md#query.parameters).
+
+```g5-question
+{
+  "schema": 1,
+  "id": "query.parameters.drivers",
+  "status": "open",
+  "prompt": "Must Cypher list parameters (UNWIND $list, $l[$i], $l[$s..$e]) work with intersystems-irispython 5.3.x, the version uv.lock pins?",
+  "severity": "medium",
+  "default_assumption": "Yes: the locked driver is supported until the project states a lower bound.",
+  "allow_free_text": true,
+  "multi_select": false,
+  "options": [
+    {
+      "label": "Yes: 5.3.x is supported",
+      "description": "A read that fails only on 5.3.x is a product defect (bug-cyp-125)."
+    },
+    {
+      "label": "No: require intersystems-irispython 5.4 or later",
+      "description": "State the lower bound in pyproject.toml and refresh uv.lock; bug-cyp-125 becomes a packaging fix."
+    }
+  ]
+}
+```

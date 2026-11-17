@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/id-from-node-id/20261117T063030Z/models/bolt_answers/bolt_answers.rs:198:1
+    |
+198 | pub proof fn theorem_hash_collision_loses_first_node(a: SNode, b: SNode)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/id-from-node-id/20261117T063030Z/models/bolt_answers/bolt_answers.rs:200:13
+    |
+198 | pub proof fn theorem_hash_collision_loses_first_node(a: SNode, b: SNode)
+    | ------------------------------------------------------------------------ at the end of the function body
+199 |     requires a.key != b.key, a.props != b.props, a.h % 0x80000000 == b.h % 0x80000000,
+200 |     ensures client_view2(a, b).0 != a.props, client_view2(a, b) == (b.props, b.props),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/id-from-node-id/20261117T063030Z/models/bolt_answers/bolt_answers.rs:200:46
+    |
+198 | pub proof fn theorem_hash_collision_loses_first_node(a: SNode, b: SNode)
+    | ------------------------------------------------------------------------ at the end of the function body
+199 |     requires a.key != b.key, a.props != b.props, a.h % 0x80000000 == b.h % 0x80000000,
+200 |     ensures client_view2(a, b).0 != a.props, client_view2(a, b) == (b.props, b.props),
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

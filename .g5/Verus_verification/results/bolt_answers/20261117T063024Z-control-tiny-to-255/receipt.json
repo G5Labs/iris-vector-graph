@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "encoding: the tiny marker's upper bound widened past what it can carry",
+    "expect_fail_in": [
+      "theorem_marker_is_smallest",
+      "theorem_probe_widths"
+    ],
+    "find": "    if -16 <= v && v <= 127 { IntMarker::Tiny }",
+    "name": "tiny-to-255",
+    "replace": "    if -16 <= v && v <= 255 { IntMarker::Tiny }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_marker_is_smallest",
+      "theorem_probe_widths"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_answers/bolt_answers.rs": "94cd6427f63d030bfcdbec33d686e131f842be81d9718d5e34fae1ccf53f10b2",
+    ".g5/Verus_verification/models/bolt_answers/model.json": "375925aa8404e020a0cafcec37f7c4523e047c5c56bed0b6e21db5ac5dd67805"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/tiny-to-255/20261117T063022Z/models/bolt_answers/bolt_answers.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_marker_is_smallest": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063022Z-control-tiny-to-255-theorem_marker_is_smallest.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_probe_widths": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063022Z-control-tiny-to-255-theorem_probe_widths.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063022Z-control-tiny-to-255.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_answers/20261117T063024Z-control-tiny-to-255/logs/20261117T063022Z-control-tiny-to-255-theorem_marker_is_smallest.log": "f25ecf4dc11b71a5930ff0307775c81867879bc38c5874d4e3a6c3d2a50120ac",
+    ".g5/Verus_verification/results/bolt_answers/20261117T063024Z-control-tiny-to-255/logs/20261117T063022Z-control-tiny-to-255-theorem_probe_widths.log": "6b151508c0d8dd377a52ea6dff281fa159969cc749d7e87688fa2acea9beb8e2",
+    ".g5/Verus_verification/results/bolt_answers/20261117T063024Z-control-tiny-to-255/logs/20261117T063022Z-control-tiny-to-255.log": "9a24981bf742c28eb518b09b34b01d5b2ff1e5941e5e46e0c0b2d615920016ee"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

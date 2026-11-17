@@ -15,7 +15,7 @@
 //       Reader: the neo4j Python driver 6.4.1's hydrated Node/Relationship (provider P-DRIVER-ID: one Node object per
 //       id within a result, the last hydration's labels and properties).
 //   Query pipeline (iris_vector_graph/_engine/query.py):
-//     E the long-list retry: _is_long_list_temp_error 1669-1678; _execute_parsed_sql 2286-2311 (a transactional
+//     E the long-list retry: _is_long_list_temp_error 1671-1678; _execute_parsed_sql 2286-2311 (a transactional
 //       statement goes to execute_transaction and is never retried; a read whose error is the long-list error goes to
 //       _unwind_by_index_retry 2251-2284, which retries once only when the rewrite used an UNWIND by index and the
 //       retry is neither transactional nor var-length).
@@ -24,9 +24,11 @@
 //       iteration-55/pipeline-PAIRS.md); _expr_slice 23778-23789 appends its null-guard markers after the slice's own
 //       markers but writes the guards first. Provider P-DRV-JT: intersystems-irispython 5.3.2 refuses a marker inside
 //       JSON_TABLE's source ("Invalid/Incorrect number of parameters"), 5.4.1 binds it (observed).
-//     G node filter equality: an integer literal gets the typed guard (a stored number of that value); a string literal,
-//       and any parameter, becomes the raw comparison `p.val = ?` / `p.val = '1'`. Provider P-IRIS-EQ: IRIS compares
-//       that raw column with a string as text and with an integer parameter as a number (observed).
+//     G node filter equality: _stored_number_comparison 16331-16358 gives an operand whose value is a number known
+//       before the query runs (_static_number: a literal or a parameter's value) the typed guard (_number_eq_sql ->
+//       _node_number_eq_sql 16264); any other operand, a string literal or a string parameter, falls through to the raw
+//       comparison `p.val = '1'` / `p.val = ?`. Provider P-IRIS-EQ: IRIS compares the raw column with a string as text,
+//       so a stored number's text equals the string (observed; the same IRIS fact as bug-cyp-102's boolean arm).
 use vstd::prelude::*;
 verus! {
 
@@ -332,8 +334,8 @@ pub proof fn theorem_param_slice_answers_empty(l: Seq<int>, s: int, e: int)
 pub enum Stored { Num(int, int), Str(int) }
 pub enum Operand { IntLit(int), StrLit(int), IntParam(int), StrParam(int) }
 pub open spec fn text_of(s: Stored) -> int { match s { Stored::Num(_, t) => t, Stored::Str(t) => t } }
-/// As built: an integer literal is guarded to stored numbers; anything else is compared raw. IRIS compares the raw
-/// column with a string as text and with an integer parameter as a number (P-IRIS-EQ).
+/// As built: a number operand (literal or parameter, resolved before the query runs) is guarded to stored numbers; a
+/// string operand is compared raw, and IRIS compares the raw column with a string as text (P-IRIS-EQ).
 pub open spec fn matches(st: Stored, op: Operand) -> bool {
     match op {
         Operand::IntLit(v) => match st { Stored::Num(n, _) => n == v, _ => false },

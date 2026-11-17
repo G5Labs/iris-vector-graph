@@ -2979,6 +2979,8 @@ Consequence: a Neo4j HTTP client gets a silently incomplete answer for any query
 
 Repair proposal (not implemented): return every row on the Neo4j routes (or honour a client limit and say when the answer was cut, as `/api/cypher` could with a total). Preserve `/api/cypher`'s documented `limitRows`. Distinguishing case: 1,000 against 1,001 rows on `/tx/commit`.
 
+Iteration 55 (W60, [probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `ER4_*`): reconfirmed at the unchanged pin (1,200 rows: `/db/neo4j/tx/commit` 1,000, `/api/cypher` 1,000 with `rowCount` 1000), and Bolt through the neo4j driver answers all 1,200, as `execute_cypher` does: the cap is specific to the HTTP routes.
+
 <a id="bug-srch-103"></a>
 ### The IRIS queue worker marks an entry done when the provider fails or answers nothing
 
@@ -3238,6 +3240,8 @@ Observed: `_expr_subscript` decides by the list's source and the index's syntax 
 Consequence: a query that indexes a stored list with a computed or unwound negative index, or any list with a negative parameter, returns nothing and an error; with a non-negative index into a stored list the value comes back as a string. Medium.
 
 Repair proposal (not implemented): emit `CY_LIST_ELEM` (typed, wraps negatives) for every run-time index, whatever the list's source, and compute a parameter index in Python as R311 does for literals. Preserve: literal indexes, the WITH-literal path, null past either end, and a null index giving null (today it does not: [bug-cyp-126](#bug-cyp-126)). Writers and readers affected: the `RETURN`/`WITH` columns that read an element, and `CY_LIST_ELEM`'s callers. Distinguishing case: `MATCH (n) UNWIND [-1] AS i RETURN n.l[i]` answers 3 while `WITH [1, 2, 3] AS l UNWIND [-1] AS i RETURN l[i]` still answers 3. The control `row-index-through-ivglistget` checks the repaired rule in the model only. Governing statement: [query.functions.list_index](../ontology/features/cypher.g5.md#query.functions.list_index).
+
+Iteration 55: a list parameter indexed by a parameter, `RETURN $l[$s]` with `l = [1, 2, 3, 4]` and `s = 1`, answers the text `'2'` with IRIS driver 5.4.1 (the index is inlined into `JSON_ARRAYGET`) and fails with 5.3.2 ([5.4.1](../uplift/consolidated/iteration-55/pipeline-params-5.4.1-observed-20261117T061233Z.json), [5.3.2](../uplift/consolidated/iteration-55/pipeline-params-5.3.2-observed-20261117T061226Z.json) `PA4_index`). Same decision, a new list source; not a new entry.
 
 <a id="bug-cyp-112"></a>
 ### reverse() of a list held in a property, a slice, a subscript or a coalesce reverses its JSON text, and of a WITH column from a property answers the JSON text
@@ -3536,6 +3540,191 @@ Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional) and
 Observed: the WHERE's read of `a.v` goes through `_expr_property_reference`, which for a variable bound before the OPTIONAL MATCH adds the structural guard `EXISTS (SELECT 1 FROM rdf_props ... "key" = 'v')` to the query's own WHERE (`translator.py:23111-23115`) whenever `_null_rejecting_refs` marks it as an operand of a comparison in the AND chain (18603-18619); the condition itself goes into the optional join's ON. The guard is right for a MATCH's WHERE (a missing property fails the row anyway) and wrong here.
 
 Consequence: rows of the outer `MATCH` disappear from an OPTIONAL MATCH report whenever the node lacks a property the optional filter compares, with no error. Repair proposal (not implemented): do not add the guard while translating a WHERE that an OPTIONAL MATCH pushes into its join, or put it into the same ON. Preserve: the guard in a plain MATCH's WHERE (OPT-3 performance), the null row for nodes with the property. The control `opt-guard-in-on` checks the direction in the model only.
+
+<a id="bug-cyp-125"></a>
+### With the driver 5.3.2 an UNWIND of a list parameter fails "Invalid number of parameters"
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the first `cypher_exprs` binding run (its `UNWIND $pairs` read answered no rows, [receipt](results/cypher_exprs/20261117T022138Z-binding/receipt.json)); a follow-up after the binding. No formal contract: potential problem, conditional on the driver.
+
+Reproduced by: **Partially reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin and its driver `intersystems-irispython` 5.3.2 (the fixture's venv); not run on 5.4.x. `UNWIND $xs AS a RETURN a` with `$xs = [1, 2]` answers `<PARAMETER ERROR> Invalid number of parameters`, and after a `MATCH` `<ARGUMENT ERROR> Incorrect number of parameters`; the translated SQL reads `JSON_TABLE(?, '$[*]' ...)`. Passing neighbor: `WITH $xs AS l UNWIND l AS a RETURN a` answers `[1], [2]`. Iteration 47's "Incorrect number of parameters" observations for `n.l[$i]` and `m[$k]` ([bug-cyp-111](#bug-cyp-111)) may share this premise.
+
+Expected: the README: the TCK passes on Community 2026.1 with drivers 5.4.0 and 5.4.1; `pyproject.toml` accepts `intersystems-iris>=1.0.0`. The iris-sql-quirks guide (item 6) says a `?` inside `JSON_TABLE`'s source is not a parameter.
+
+Observed: a potential problem only: whether 5.4.x binds the marker is not established here, and whether 5.3.x is a supported driver is not stated.
+
+Consequence: if 5.3.x is supported, the main bulk-load pattern (`UNWIND $rows ...`) fails with it. Low until established.
+
+Iteration 50 triage of [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m2 ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `param_list_slice*`, `param_list_index`): `RETURN $l[$s..$e]` and `RETURN $l[$s..]` fail "Incorrect number of parameters", and `RETURN $l[$s]` "Invalid number of parameters", while `RETURN $l[1..3]` (worked out in Python, 4.6.0 R311) and `WITH $l AS l RETURN l[$s..$e]` answer `[2, 3]`. The translated slice reads `JSON_TABLE(?, ...)`, the same marker-in-`JSON_TABLE` shape as above, so this is the same premise, not a new finding. Source reading adds one fault that would remain on any driver: `_expr_slice` adds the null-guard markers to the parameter list after the slice's own markers but writes them first in the SQL (`translator.py:23778-23789`), so with a parameter list the first guard would receive the list's text. Not modeled (`cypher_exprs` has no parameter-list base).
+
+Iteration 55 (W60) settles the driver question: **E2E reproduced** on both drivers ([5.3.2](../uplift/consolidated/iteration-55/pipeline-params-5.3.2-observed-20261117T061226Z.json), [5.4.1](../uplift/consolidated/iteration-55/pipeline-params-5.4.1-observed-20261117T061233Z.json); isolated venv outside the repository; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `F_*`, `C_driver_param`). With intersystems-irispython 5.4.1, `UNWIND $xs AS a RETURN a`, the same after a `MATCH`, and `RETURN $l[$s]` run; with 5.3.2 each fails as above, through `execute_cypher` (the result's error), Bolt and HTTP. The frozen prediction PA3 (fails on both, from driver-drift item 6) missed: item 6 concerns procedure calls inside the source, and 5.4.1 binds a plain marker. The product's own `uv.lock` pins intersystems-irispython **5.3.2** (pyproject accepts any version), so the locked environment reproduces the failure; severity raised to Medium for that reason. `UNWIND $rows ... CREATE` writes on both drivers (another route). The slice with parameter bounds is a separate wrong answer on 5.4.1: [bug-cyp-144](#bug-cyp-144); `$l[$s]` answers its element as text on 5.4.1, as [bug-cyp-111](#bug-cyp-111) records for other run-time indexes. Formal: [bolt_answers](models/bolt_answers/NOTES.md) `theorem_unwind_param_depends_on_driver` (provider premise P-DRV-JT, control `driver-532-binds`). Open question: [query.parameters.drivers](open_questions.md#query.parameters.drivers).
+
+Governing statement: [query.conformance](../ontology/features/cypher.g5.md#query.conformance).
+
+<a id="bug-plt-121"></a>
+### A node returned whole over Bolt carries each property longer than 200 characters cut to 200 characters and "...", and a long list or map as that cut text
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Found by: source reading after the W60 freeze ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md), post-read T1, prediction written before the probe ran); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_long_property_truncated`, neighbor `theorem_short_property_kept`; controls `no-truncation`, `truncate-at-200`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T1_node`, `T1_scalar`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `D3_wire_*`, `D3_unit_*`). A node with `s201` of 201 characters, `s300` of 300 and `lst` = `[0, ..., 99]`: `MATCH (n) RETURN n` over Bolt answers a Node whose `s201` is its first 200 characters plus `...`, and whose `lst` is the string `"[0, 1, 2, ..., 51, 5..."`. Passing neighbors: a 200-character value comes whole; `RETURN n.s201`, `n.lst` and `properties(n)` answer the stored values over Bolt, `execute_cypher` and HTTP.
+
+Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): a Node carries its stored properties (Bolt structure semantics); USER_GUIDE: a list comes back as the list "through `execute_cypher`, REST and Bolt alike".
+
+Observed: `BoltSession._parse_props_field` cuts any value whose `str()` is longer than 200 characters to `str(val)[:200] + "..."` (`bolt_server.py:887-898`); `_recompose_graph_row` builds every whole node from it (`:745-756`).
+
+Consequence: a driver application (or a tool such as LangChain or Neo4j Browser) that reads a node's text or list property gets a silently shortened string of another type; the same value read as `n.p` is whole. Medium: silent wrong values at a documented reader.
+
+Repair proposal (not implemented; checked in the model only): send the parsed value whole. Preserve the decoding of booleans and JSON values. Distinguishing case: a 201-character string and a 100-element list in `RETURN n`.
+
+Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values).
+
+<a id="bug-plt-122"></a>
+### Bolt identifies a node by 31 bits of Python's string hash, so two nodes can reach the driver as one, with the second node's properties in both rows
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Found by: source reading after the W60 freeze (post-read T3, [predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_hash_collision_loses_first_node` (provider premise P-DRIVER-ID), neighbor `theorem_distinct_ids_keep_both`; controls `id-from-node-id`, `driver-no-id-cache`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T3_collide`, `collision`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `D1_wire_collision`). The probe searched node IDs in the listener's own process until two collided (`i55b_061633_h6045`, `i55b_061633_h27318` → 1939752146), created both with `n: 1` and `n: 2`, and read `MATCH (n:L) RETURN n ORDER BY n.n`: two records, both the second node (`n: 2`, its `id`), `result.graph()` one node. `execute_cypher` answers both nodes. Passing neighbor: two nodes whose ids differ arrive as themselves.
+
+Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): each node in a result has its own identity (Bolt: a Node's id and element_id identify it within a transaction).
+
+Observed: `_node_int_id` is `hash(node_id) & 0x7FFFFFFF` (`bolt_server.py:351-352`); Python salts string hashes per process, and the driver keeps one Node object per id within a result (observed, neo4j 6.4.1).
+
+Consequence: with n nodes in one answer the chance of a merge is about n²/2³²: about 1% at 10,000 nodes. The client then shows one node's labels and properties for another and loses the first; graph views merge them. Ids also change on every server restart. Medium.
+
+Repair proposal (not implemented; checked in the model only): derive the id from a unique key (and send the node id as `element_id` on Bolt 5). Preserve one id per node within a result. Distinguishing case: the colliding pair above.
+
+Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values).
+
+<a id="bug-plt-123"></a>
+### Bolt reports a relationship's start and end from the order of the columns around it, not from the stored direction
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Found by: source reading after the W60 freeze (post-read T2, [predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_endpoints_follow_columns`, general `theorem_one_hop_right_iff_source_first`, `theorem_rel_alone_or_last`; controls `swap-columns`, `no-prev-node`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T2_*`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `D2_wire_*`, `D2_unit_*`). Stored `a→b`: `RETURN a, r, b` reports start a, end b (passing neighbor); `RETURN b, r, a` and `MATCH (b)<-[r]-(a) RETURN b, r, a` report start b, end a; `RETURN a, b, r` reports start b and no end; `RETURN r` alone has no endpoints.
+
+Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): a Relationship carries its own start and end node (Bolt structure semantics; openCypher `startNode(r)`).
+
+Observed: `_recompose_graph_row` takes `prev_node_id` (the node triplet before the column) as start and the triplet after it as end, else 0 (`bolt_server.py:787-799`); the engine's relationship value `{"type", "props"}` has no endpoints.
+
+Consequence: a driver application that walks relationships by `start_node`/`end_node`, or draws them, gets the direction wrong whenever the query names the end node first, and no endpoint otherwise. Medium.
+
+Repair proposal (not implemented; checked in the model only): carry the stored source and target with the relationship value. Distinguishing case: `RETURN b, r, a` against `RETURN a, r, b`.
+
+Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values).
+
+<a id="bug-cyp-144"></a>
+### A slice of a list parameter by parameters answers the empty list with IRIS driver 5.4.1 (and fails with 5.3.2)
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Found by: frozen W60 prediction PA4 missed ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); the iteration-50 source note on [bug-cyp-125](#bug-cyp-125) (markers out of order) now observed; [bolt_answers](models/bolt_answers/NOTES.md) `theorem_param_slice_answers_empty`; controls `slice-markers-in-order`, `driver-532-binds`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, under intersystems-irispython [5.3.2](../uplift/consolidated/iteration-55/pipeline-params-5.3.2-observed-20261117T061226Z.json) and [5.4.1](../uplift/consolidated/iteration-55/pipeline-params-5.4.1-observed-20261117T061233Z.json) (an isolated venv outside the repository) ([binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `F_slice_*`). `RETURN $l[$s..$e]` with `l = [1, 2, 3, 4]`, `s = 1`, `e = 3` answers `[]` on 5.4.1 and fails "Incorrect number of parameters" on 5.3.2. Passing neighbor: `WITH $l AS l RETURN l[$s..$e]` answers `[2, 3]` on both.
+
+Expected: [query.parameters](../ontology/features/cypher.g5.md#query.parameters); openCypher list slicing: `[2, 3]`.
+
+Observed: the translated SQL is `CASE WHEN (?) IS NULL OR (?) IS NULL THEN NULL ELSE (... JSON_TABLE(?, ...) ... WHERE rn > (?) AND rn <= (?)) END` with parameters `[list, s, e, s, e]`: `_expr_slice` appends the guard values after the slice's own (`translator.py:23778-23789`), so the guards read the list and `s`, and JSON_TABLE reads `e`'s text, which yields no row.
+
+Consequence: a parameterized page of a list parameter answers nothing, with no error, on the driver the TCK uses. Medium.
+
+Repair proposal (not implemented; checked in the model only): append the guard values first, in the SQL's order. Preserve the WITH-held list path. Distinguishing case: the probe query on 5.4.1.
+
+Governing statement: [query.parameters](../ontology/features/cypher.g5.md#query.parameters).
+
+<a id="bug-cyp-145"></a>
+### A string literal or string parameter equals a stored node number that it spells
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Found by: frozen W60 prediction PA2 missed ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); post-read T4; [bolt_answers](models/bolt_answers/NOTES.md) `theorem_string_operand_matches_number`, general `theorem_int_operands_and_string_values_follow_rule`; controls `string-compare-typed`, `int-param-raw`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, on `execute_cypher`, Bolt and HTTP ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `PA2_str`; [post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T4_*`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `G_*`). Over a node with the integer `v: 1` (written by `create_node`) and one with the string `v: "1"`: `WHERE n.v = '1'` and `WHERE n.v = $x` with `$x = "1"` match both. Passing neighbors: `n.v = 1` and `n.v = $x` with `$x = 1` match only the integer.
+
+Expected: KNOWN_ISSUES ("A property cannot tell a number from a string that spells it", 4.7.0): a node filter reads the stored type; openCypher: a string never equals a number. [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality).
+
+Observed: an integer literal gets the typed guard (`CAST(p.val AS DOUBLE) = ...` behind the N-mark test); a string literal or any parameter becomes the raw comparison `p.val = '1'` / `p.val = ?`, which IRIS evaluates as text against the stored number's text (translated SQL recorded in the predictions file).
+
+Consequence: a filter by a string id or code also returns nodes whose number has the same digits. Medium.
+
+Repair proposal (not implemented; checked in the model only): give string operands the same typed guard (stored strings only). Preserve the integer-literal and integer-parameter behavior. Distinguishing case: `n.v = '1'` over a stored 1.
+
+Governing statement: [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality).
+
+<a id="bug-plt-124"></a>
+### Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Found by: frozen W60 prediction ER2 (the failure held; its code was not predicted); source `_handle_run`; [bolt_answers](models/bolt_answers/NOTES.md) `theorem_runtime_failure_reported_as_syntax`, neighbor `theorem_gate_codes_follow_rule`; controls `code-by-cause`, `gates-folded`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `ER2_union_count`, `PA3_*`, `PA6_missing`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `C_*`). An SQLCODE -1 failure ([bug-cyp-140](#bug-cyp-140)), a driver "Invalid number of parameters" and an undefined parameter each raise `CypherSyntaxError` with code `Neo.ClientError.Statement.SyntaxError`; `/db/neo4j/tx/commit` answers the same code. Passing neighbors: a parse error is a SyntaxError; `IVG_READ_ONLY` gives AccessMode; a wrong key gives Unauthorized.
+
+Expected: [access.bolt.errors](../ontology/concepts/access.g5.md#access.bolt.errors): Neo4j status codes classify a failure by cause (a database failure is a DatabaseError or TransientError; a missing parameter is ParameterMissing).
+
+Observed: `_handle_run` sends `Neo.ClientError.Statement.SyntaxError` for every exception, including `result.error` re-raised (`bolt_server.py:612-618`).
+
+Consequence: a driver's managed transaction never retries a transient database error, and a client cannot tell a bad query from a failed database. Low.
+
+Governing statement: [access.bolt.errors](../ontology/concepts/access.g5.md#access.bolt.errors).
+
+<a id="bug-plt-125"></a>
+### An integer result past 64 bits ends the Bolt session instead of failing the query, and the engine answers it
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Found by: post-read T5 ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_overflow_breaks_connection`, neighbors `theorem_int64_values_arrive`, `theorem_marker_is_smallest`; control `nofit-is-failure`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T5_*`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `B_wire_overflow`). `RETURN 9223372036854775807 + 1 AS x`: `execute_cypher` answers 9223372036854775810; over Bolt the driver raises `ServiceUnavailable` ("defunct connection"), and a raw client sees the socket closed. Passing neighbors: 2⁶³−1 and −2⁶³ arrive; the literal 9223372036854775808 is refused as IntegerOverflow on every reader.
+
+Expected: openCypher: integer arithmetic overflows with an error; [access.bolt.results](../ontology/concepts/access.g5.md#access.bolt.results): a failed RUN or PULL is a FAILURE.
+
+Observed: `PackStream._pack_int` falls through to `struct.pack('>q')`, which raises for a value outside int64 (`bolt_server.py:95-105`); `_handle_pull` sends records outside RUN's try (`:640-650`).
+
+Consequence: the client loses its connection and any open transaction; `execute_cypher` returns an approximate number. Low.
+
+Governing statement: [access.bolt.results](../ontology/concepts/access.g5.md#access.bolt.results).
+
+<a id="bug-plt-126"></a>
+### The Neo4j HTTP transaction route answers a whole node as three text columns, not a node
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 55)
+
+Found by: frozen W60 prediction RT8 (TX) missed ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)).
+
+Reproduced by: **E2E reproduced** in-process (FastAPI `TestClient`) against the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `RT8_node`, `RT9_*`, `RT10_rel`). `MATCH (n) RETURN n` on `POST /db/neo4j/tx/commit` answers columns `n_id`, `n_labels`, `n_props` with JSON text, as `execute_cypher` does; Bolt answers one Node. Passing neighbor: `RETURN properties(n)` answers the map with node `meta`.
+
+Expected: the Neo4j HTTP API answers a node as its property map with node `meta`; [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces) (each call does what the engine method does) does not settle which shape a Neo4j route owes.
+
+Observed: the route returns the engine's columns unchanged; only Bolt recomposes node triplets.
+
+Consequence: a Neo4j HTTP client gets three columns per node and must parse JSON text. Low.
+
+Governing statement: [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces).
 
 <a id="bug-cyp-139"></a>
 ### SKIP and LIMIT use a string, boolean or whole-float parameter as a count, and call a null parameter "not provided"
@@ -3841,27 +4030,6 @@ Observed: the SQL functions answer IRIS's empty string, which SQL reads as null;
 Consequence: `IS NULL` tests and `coalesce` treat an empty prefix as missing. Low.
 
 Governing statement: [query.functions.strings](../ontology/features/cypher.g5.md#query.functions.strings).
-
-<a id="bug-cyp-125"></a>
-### With the driver 5.3.2 an UNWIND of a list parameter fails "Invalid number of parameters"
-
-Severity: Low · Decision: Open
-
-Run: Uplift 2026-11-17 (continuation, iteration 48)
-
-Found by: the first `cypher_exprs` binding run (its `UNWIND $pairs` read answered no rows, [receipt](results/cypher_exprs/20261117T022138Z-binding/receipt.json)); a follow-up after the binding. No formal contract: potential problem, conditional on the driver.
-
-Reproduced by: **Partially reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin and its driver `intersystems-irispython` 5.3.2 (the fixture's venv); not run on 5.4.x. `UNWIND $xs AS a RETURN a` with `$xs = [1, 2]` answers `<PARAMETER ERROR> Invalid number of parameters`, and after a `MATCH` `<ARGUMENT ERROR> Incorrect number of parameters`; the translated SQL reads `JSON_TABLE(?, '$[*]' ...)`. Passing neighbor: `WITH $xs AS l UNWIND l AS a RETURN a` answers `[1], [2]`. Iteration 47's "Incorrect number of parameters" observations for `n.l[$i]` and `m[$k]` ([bug-cyp-111](#bug-cyp-111)) may share this premise.
-
-Expected: the README: the TCK passes on Community 2026.1 with drivers 5.4.0 and 5.4.1; `pyproject.toml` accepts `intersystems-iris>=1.0.0`. The iris-sql-quirks guide (item 6) says a `?` inside `JSON_TABLE`'s source is not a parameter.
-
-Observed: a potential problem only: whether 5.4.x binds the marker is not established here, and whether 5.3.x is a supported driver is not stated.
-
-Consequence: if 5.3.x is supported, the main bulk-load pattern (`UNWIND $rows ...`) fails with it. Low until established.
-
-Iteration 50 triage of [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m2 ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `param_list_slice*`, `param_list_index`): `RETURN $l[$s..$e]` and `RETURN $l[$s..]` fail "Incorrect number of parameters", and `RETURN $l[$s]` "Invalid number of parameters", while `RETURN $l[1..3]` (worked out in Python, 4.6.0 R311) and `WITH $l AS l RETURN l[$s..$e]` answer `[2, 3]`. The translated slice reads `JSON_TABLE(?, ...)`, the same marker-in-`JSON_TABLE` shape as above, so this is the same premise, not a new finding. Source reading adds one fault that would remain on any driver: `_expr_slice` adds the null-guard markers to the parameter list after the slice's own markers but writes them first in the SQL (`translator.py:23778-23789`), so with a parameter list the first guard would receive the list's text. Not modeled (`cypher_exprs` has no parameter-list base).
-
-Governing statement: [query.conformance](../ontology/features/cypher.g5.md#query.conformance).
 
 <a id="bug-cyp-129"></a>
 ### Slicing a null list answers the empty list instead of null
@@ -5725,6 +5893,8 @@ These anchors preserve older links. The corresponding claims and review disposit
 <span id="F-1601"></span> [F-1601: review record](audits/register-20261115/bugs-review.md#F-1601)
 
 <span id="F-1602"></span> [F-1602: review record](audits/register-20261115/bugs-review.md#F-1602)
+
+Iteration 55 (W60): F-1602's lost suffix reproduced with a real client: the neo4j Python driver 6.4.1 with `fetch_size=2` over `UNWIND [1,2,3,4,5] AS i RETURN i` receives 2 records and no error, and 5 with `fetch_size=-1`; a raw `PULL {n: 2}` gets two records and a SUCCESS without `has_more` ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `BP5_*`). The owner [access.bolt.results](../ontology/concepts/access.g5.md#access.bolt.results) states the intended behavior.
 
 <span id="F-1607"></span> [F-1607: review record](audits/register-20261115/bugs-review.md#F-1607)
 

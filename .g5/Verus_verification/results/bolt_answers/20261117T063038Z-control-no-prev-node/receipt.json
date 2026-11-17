@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "effect: prev_node_id not carried (a node triplet sets no start); first run ERROR (replacement made the function non-recursive, so reveal_with_fuel failed to build), receipt kept",
+    "expect_fail_in": [
+      "theorem_endpoints_follow_columns",
+      "theorem_one_hop_right_iff_source_first",
+      "theorem_rel_alone_or_last"
+    ],
+    "find": "    else { match cols[i - 1] { Col::Node(x) => x, _ => prev_node(cols, i - 1) } }",
+    "name": "no-prev-node",
+    "replace": "    else { match cols[i - 1] { Col::Node(x) => 0, _ => prev_node(cols, i - 1) } }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_endpoints_follow_columns",
+      "theorem_one_hop_right_iff_source_first",
+      "theorem_rel_alone_or_last"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_answers/bolt_answers.rs": "94cd6427f63d030bfcdbec33d686e131f842be81d9718d5e34fae1ccf53f10b2",
+    ".g5/Verus_verification/models/bolt_answers/model.json": "375925aa8404e020a0cafcec37f7c4523e047c5c56bed0b6e21db5ac5dd67805"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/no-prev-node/20261117T063035Z/models/bolt_answers/bolt_answers.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_endpoints_follow_columns": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063035Z-control-no-prev-node-theorem_endpoints_follow_columns.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_one_hop_right_iff_source_first": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063035Z-control-no-prev-node-theorem_one_hop_right_iff_source_first.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rel_alone_or_last": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063035Z-control-no-prev-node-theorem_rel_alone_or_last.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063035Z-control-no-prev-node.log",
+    "timed_out": false,
+    "verified": 24
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_answers/20261117T063038Z-control-no-prev-node/logs/20261117T063035Z-control-no-prev-node-theorem_endpoints_follow_columns.log": "1b70c3e6f06c3e0382e8ffe9a997ab9aa93390d41423a90de9cb7a445afb21fa",
+    ".g5/Verus_verification/results/bolt_answers/20261117T063038Z-control-no-prev-node/logs/20261117T063035Z-control-no-prev-node-theorem_one_hop_right_iff_source_first.log": "b277494af93a2f6a03427de42351982741bdc177b2d77c1df74245180317c284",
+    ".g5/Verus_verification/results/bolt_answers/20261117T063038Z-control-no-prev-node/logs/20261117T063035Z-control-no-prev-node-theorem_rel_alone_or_last.log": "d91a5240b2a31985e76e0793a6b37e0533e34fabd1d2d0696387ad6745b6d8f8",
+    ".g5/Verus_verification/results/bolt_answers/20261117T063038Z-control-no-prev-node/logs/20261117T063035Z-control-no-prev-node.log": "9c62a713dc6eb04960f8313a77e4e6aeecf935472790408b99555c6c17e2d117"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

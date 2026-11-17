@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the read-only gate's AccessMode removed",
+    "expect_fail_in": [
+      "theorem_gate_codes_follow_rule"
+    ],
+    "find": "    match c { Cause::ReadOnlyWrite => Code::AccessMode, Cause::BadKey => Code::Unauthorized, _ => Code::SyntaxError }",
+    "name": "gates-folded",
+    "replace": "    match c { Cause::BadKey => Code::Unauthorized, _ => Code::SyntaxError }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_gate_codes_follow_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_answers/bolt_answers.rs": "94cd6427f63d030bfcdbec33d686e131f842be81d9718d5e34fae1ccf53f10b2",
+    ".g5/Verus_verification/models/bolt_answers/model.json": "375925aa8404e020a0cafcec37f7c4523e047c5c56bed0b6e21db5ac5dd67805"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/gates-folded/20261117T063028Z/models/bolt_answers/bolt_answers.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_gate_codes_follow_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063028Z-control-gates-folded-theorem_gate_codes_follow_rule.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T063028Z-control-gates-folded.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_answers/20261117T063030Z-control-gates-folded/logs/20261117T063028Z-control-gates-folded-theorem_gate_codes_follow_rule.log": "0f420314e065852c496049c9f0e38cdd2afc61571e0c0ed56ccb1194fbed1943",
+    ".g5/Verus_verification/results/bolt_answers/20261117T063030Z-control-gates-folded/logs/20261117T063028Z-control-gates-folded.log": "698c120c94db06730020a2aefbefda4ba2bfd1845b1c8c5bac4986553f04481e"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

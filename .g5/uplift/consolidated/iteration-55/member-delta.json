@@ -1,0 +1,160 @@
+{
+  "before": {
+    "revision": "adea8019",
+    "active": 619,
+    "union": 847
+  },
+  "after": {
+    "revision": "working tree at the iteration-55 seal",
+    "active": 640,
+    "union": 866
+  },
+  "denominator": 4130,
+  "newly_bound": [
+    {
+      "member": "iris_vector_graph/bolt_server.py::negotiate_version",
+      "reason": "decision: the agreed version from the four proposals in order (5.x at min(minor,4) when its range reaches it; 4.x minor>=4 as 4.4; else 0)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::TcpBoltSession._do_handshake",
+      "reason": "effect/reader: sends the four agreed bytes; 0 closes the connection (TCP)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::TcpBoltSession.run",
+      "reason": "effect: on 0 the session closes before any message (the wire refusal BP1)",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._do_handshake",
+      "reason": "effect/reader: the WebSocket handshake writes the same four bytes (not exercised here; same decision)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::start_tcp_bolt_server",
+      "reason": "entry: the TCP listener every fixture case connects to; one TcpBoltSession per connection (no decision of its own)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::PackStream._pack_int",
+      "reason": "decision: the integer marker, smallest width; past int64 struct.pack raises",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::PackStream.pack",
+      "reason": "delegate: a bool before int, an int to _pack_int, a float as C1, a string by UTF-8 length; value types reach the client unchanged (RT rows)",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._refuse_unauthorized",
+      "reason": "effect: the Unauthorized FAILURE and FAILED state",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._authenticate",
+      "reason": "decision: a configured key must match the presented credentials; a wrong one ends authentication",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._handle_logon",
+      "reason": "decision: Bolt 5.1+ presents the key in LOGON (the driver 6.4.1 path exercised: wrong key refused, right key runs)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._handle_hello",
+      "reason": "decision: a Bolt 4 HELLO (or one carrying credentials) checks the key; a Bolt 5 HELLO without them waits for LOGON",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/_engine/query.py::_raise_if_error",
+      "reason": "reader: a failed read stays IVGResult.error unless raise_on_error; Bolt and HTTP turn it into a failure",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::_node_int_id",
+      "reason": "decision: a node's Bolt id is hash(node_id) & 0x7FFFFFFF (salted per process)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._recompose_graph_row",
+      "reason": "decision: node triplets become Bolt Nodes with _node_int_id; a relationship column takes the triplet before as start and after as end (bug-plt-123)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._detect_graph_columns",
+      "reason": "decision: a column triplet x_id/x_labels/x_props marks a graph row, so the recomposition runs",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._parse_props_field",
+      "reason": "decision: a whole node's property longer than 200 characters becomes 200 characters and \"...\" (bug-plt-121)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._coerce_scalar",
+      "reason": "reader: a scalar row value goes to PackStream unchanged (a Decimal as float)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/_engine/query.py::_is_long_list_temp_error",
+      "reason": "decision: only the long-list <SUBSCRIPT> error text is recognized (the 64 feature combinations)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/_engine/query.py::QueryMixin._unwind_by_index_retry",
+      "reason": "decision: the retry runs once more only when the rewrite used an UNWIND by index and is neither transactional nor var-length",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_stored_number_comparison",
+      "reason": "decision: a number operand known before the query runs (literal or parameter) gets the typed guard; a string operand falls through to the raw comparison",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_static_number",
+      "reason": "decision: the operand's number (a literal or a $param's value) or None for a string",
+      "existing_locator": false
+    }
+  ],
+  "newly_reached": 19,
+  "existing_locator_gaining_binding": [
+    "iris_vector_graph/bolt_server.py::PackStream.pack",
+    "iris_vector_graph/bolt_server.py::TcpBoltSession.run"
+  ],
+  "strengthened": [
+    {
+      "member": "iris_vector_graph/_engine/query.py::QueryMixin.execute_cypher",
+      "by": "bolt_answers: reader: a list parameter through JSON_TABLE(?) depends on the IRIS driver (provider P-DRV-JT; bug-cyp-125)"
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._handle_run",
+      "by": "bolt_answers: decision: FAILURE code by cause: read-only write AccessMode; any other exception (result.error re-raised) SyntaxError"
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._handle_pull",
+      "by": "bolt_answers: effect: a value with no marker raises inside PULL, outside RUN's try"
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_node_number_eq_sql",
+      "by": "bolt_answers: effect: the typed guard a number operand gets on a node"
+    },
+    {
+      "member": "iris_vector_graph/_engine/query.py::QueryMixin._execute_parsed_sql",
+      "by": "bolt_answers: decision: a transactional statement (any write) goes to execute_transaction and never reaches the retry"
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_expr_slice",
+      "by": "bolt_answers: decision: the slice's guard values are appended after its own, while the SQL writes the guards first, so JSON_TABLE reads the upper bound (bug-cyp-144)"
+    }
+  ],
+  "withdrawn_or_narrowed": [
+    {
+      "member": "query.values.equality / typed_equality scope note",
+      "change": "typed_equality said parameters were not checked; iteration 55 binds numeric parameters to the typed guard (_static_number) and string literals/parameters to the raw comparison; no inherited theorem withdrawn"
+    }
+  ],
+  "lost": [],
+  "lost_reason": "none lost",
+  "command": "python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-before55 (at adea8019, before any edit) and --out $RUN_DIR/reach-after55 (working tree before the seal); union adds the baseline historical locators ($G5_RUN_STATE/baseline/historical.json members) as master/tools/score.py does"
+}
