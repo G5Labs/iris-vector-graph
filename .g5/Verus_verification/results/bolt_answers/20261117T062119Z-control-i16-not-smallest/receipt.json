@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "encoding: a wider marker than needed",
+    "expect_fail_in": [
+      "theorem_marker_is_smallest",
+      "theorem_probe_widths"
+    ],
+    "find": "    else if -32768 <= v && v <= 32767 { IntMarker::I16 }",
+    "name": "i16-not-smallest",
+    "replace": "    else if -32768 <= v && v <= 32767 { IntMarker::I32 }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_marker_is_smallest",
+      "theorem_probe_widths"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_answers/bolt_answers.rs": "0925ca274f98a2b1ec519b3fd3b5bb22014065683232106665fded80bb207fe7",
+    ".g5/Verus_verification/models/bolt_answers/model.json": "b099961055e8a7a070287084b371850d2525de3537b3e30ab684c502c5488f69"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/i16-not-smallest/20261117T062117Z/models/bolt_answers/bolt_answers.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_marker_is_smallest": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T062117Z-control-i16-not-smallest-theorem_marker_is_smallest.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_probe_widths": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T062117Z-control-i16-not-smallest-theorem_probe_widths.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T062117Z-control-i16-not-smallest.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_answers/20261117T062119Z-control-i16-not-smallest/logs/20261117T062117Z-control-i16-not-smallest-theorem_marker_is_smallest.log": "e490522169e46702f0ab566d795829f32e8a917b869ef17820c7f49ff74ecde0",
+    ".g5/Verus_verification/results/bolt_answers/20261117T062119Z-control-i16-not-smallest/logs/20261117T062117Z-control-i16-not-smallest-theorem_probe_widths.log": "a4e6b615cf523b38739f03550637729cfd0eaea86c641adc013032f13fd6606b",
+    ".g5/Verus_verification/results/bolt_answers/20261117T062119Z-control-i16-not-smallest/logs/20261117T062117Z-control-i16-not-smallest.log": "934e26230d1c8242fafe9a4b1699d24474fffdec9b83bd51becd4fb974d61a1a"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

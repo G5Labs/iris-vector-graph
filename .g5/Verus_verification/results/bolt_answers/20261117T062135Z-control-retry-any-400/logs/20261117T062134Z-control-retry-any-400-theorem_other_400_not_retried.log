@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/retry-any-400/20261117T062134Z/models/bolt_answers/bolt_answers.rs:291:1
+    |
+291 | pub proof fn theorem_other_400_not_retried(s: Stmt)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/retry-any-400/20261117T062134Z/models/bolt_answers/bolt_answers.rs:292:13
+    |
+291 | pub proof fn theorem_other_400_not_retried(s: Stmt)
+    | --------------------------------------------------- at the end of the function body
+292 |     ensures runs(Some(ErrText { c400: true, subscript: false, temp: true, sqlcq: true, encoded: true, over: true }), s) == 1,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/retry-any-400/20261117T062134Z/models/bolt_answers/bolt_answers.rs:293:13
+    |
+291 | pub proof fn theorem_other_400_not_retried(s: Stmt)
+    | --------------------------------------------------- at the end of the function body
+292 |     ensures runs(Some(ErrText { c400: true, subscript: false, temp: true, sqlcq: true, encoded: true, over: true }), s) == 1,
+293 |             runs(Some(ErrText { c400: true, subscript: true, temp: false, sqlcq: true, encoded: true, over: false }), s) == 1,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

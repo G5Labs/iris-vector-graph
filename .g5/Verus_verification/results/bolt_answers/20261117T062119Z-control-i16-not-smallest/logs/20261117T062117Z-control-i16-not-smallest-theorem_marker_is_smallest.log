@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/i16-not-smallest/20261117T062117Z/models/bolt_answers/bolt_answers.rs:130:13
+    |
+127 | pub proof fn theorem_marker_is_smallest(v: int, m: IntMarker)
+    | ------------------------------------------------------------- at the end of the function body
+...
+130 |             carries(m, v) ==> width(int_marker(v)) <= width(m),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

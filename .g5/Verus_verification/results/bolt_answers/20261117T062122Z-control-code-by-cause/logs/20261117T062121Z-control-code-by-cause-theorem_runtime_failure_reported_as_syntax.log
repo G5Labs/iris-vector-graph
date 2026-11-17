@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/code-by-cause/20261117T062121Z/models/bolt_answers/bolt_answers.rs:173:1
+    |
+173 | pub proof fn theorem_runtime_failure_reported_as_syntax()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/code-by-cause/20261117T062121Z/models/bolt_answers/bolt_answers.rs:174:13
+    |
+173 | pub proof fn theorem_runtime_failure_reported_as_syntax()
+    | --------------------------------------------------------- at the end of the function body
+174 |     ensures bolt_code(Cause::IrisSql) == Code::SyntaxError, neo4j_code(Cause::IrisSql) != Code::SyntaxError,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/code-by-cause/20261117T062121Z/models/bolt_answers/bolt_answers.rs:175:13
+    |
+173 | pub proof fn theorem_runtime_failure_reported_as_syntax()
+    | --------------------------------------------------------- at the end of the function body
+174 |     ensures bolt_code(Cause::IrisSql) == Code::SyntaxError, neo4j_code(Cause::IrisSql) != Code::SyntaxError,
+175 |             bolt_code(Cause::DriverParam) == Code::SyntaxError, bolt_code(Cause::Parse) == bolt_code(Cause::IrisSql),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

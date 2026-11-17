@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/no-truncation/20261117T062131Z/models/bolt_answers/bolt_answers.rs:258:1
+    |
+258 | pub proof fn theorem_long_property_truncated(v: PVal)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/no-truncation/20261117T062131Z/models/bolt_answers/bolt_answers.rs:260:13
+    |
+258 | pub proof fn theorem_long_property_truncated(v: PVal)
+    | ----------------------------------------------------- at the end of the function body
+259 |     requires v.whole, v.rendered > 200,
+260 |     ensures !bolt_node_prop(v).whole, bolt_node_prop(v).kind == PKind::Str, scalar_read(v).whole,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/no-truncation/20261117T062131Z/models/bolt_answers/bolt_answers.rs:260:39
+    |
+258 | pub proof fn theorem_long_property_truncated(v: PVal)
+    | ----------------------------------------------------- at the end of the function body
+259 |     requires v.whole, v.rendered > 200,
+260 |     ensures !bolt_node_prop(v).whole, bolt_node_prop(v).kind == PKind::Str, scalar_read(v).whole,
+    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

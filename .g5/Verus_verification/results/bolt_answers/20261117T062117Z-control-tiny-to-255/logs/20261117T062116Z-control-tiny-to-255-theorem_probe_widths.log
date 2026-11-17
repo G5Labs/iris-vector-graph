@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/tiny-to-255/20261117T062116Z/models/bolt_answers/bolt_answers.rs:134:49
+    |
+133 | pub proof fn theorem_probe_widths()
+    | ----------------------------------- at the end of the function body
+134 |     ensures int_marker(127) == IntMarker::Tiny, int_marker(128) == IntMarker::I16, int_marker(-16) == IntMarker::Tiny,
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

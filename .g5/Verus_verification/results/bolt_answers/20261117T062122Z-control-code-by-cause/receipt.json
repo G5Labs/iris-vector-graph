@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "repair direction: a failure that is not a parse error named by its cause (bug-plt-124)",
+    "expect_fail_in": [
+      "theorem_runtime_failure_reported_as_syntax"
+    ],
+    "find": "    match c { Cause::ReadOnlyWrite => Code::AccessMode, Cause::BadKey => Code::Unauthorized, _ => Code::SyntaxError }",
+    "name": "code-by-cause",
+    "replace": "    match c { Cause::ReadOnlyWrite => Code::AccessMode, Cause::BadKey => Code::Unauthorized, Cause::Parse => Code::SyntaxError, Cause::Undefined => Code::ParameterMissing, _ => Code::DatabaseError }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_runtime_failure_reported_as_syntax"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_answers/bolt_answers.rs": "0925ca274f98a2b1ec519b3fd3b5bb22014065683232106665fded80bb207fe7",
+    ".g5/Verus_verification/models/bolt_answers/model.json": "b099961055e8a7a070287084b371850d2525de3537b3e30ab684c502c5488f69"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/controls/code-by-cause/20261117T062121Z/models/bolt_answers/bolt_answers.rs --crate-type=lib --num-threads 4 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_runtime_failure_reported_as_syntax": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T062121Z-control-code-by-cause-theorem_runtime_failure_reported_as_syntax.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_answers/20261117T062121Z-control-code-by-cause.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_answers/20261117T062122Z-control-code-by-cause/logs/20261117T062121Z-control-code-by-cause-theorem_runtime_failure_reported_as_syntax.log": "45cd4384546d1a7c4da0408584e630a7c42124f2f943aa54a677952d7a761d71",
+    ".g5/Verus_verification/results/bolt_answers/20261117T062122Z-control-code-by-cause/logs/20261117T062121Z-control-code-by-cause.log": "40891390c64315a4662996da259d4ab4d06e8b27284aa356d1f29c0c47eb0607"
+  },
+  "threads": "4",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "name": "bolt_answers",
+  "root": "bolt_answers.rs",
+  "expected_verified": 27,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "range-unchecked",
+      "find": "    else if major(raw) == 5 && (min4(minor(raw)) as int) > (minor(raw) as int) - (rng(raw) as int) - 1 {",
+      "replace": "    else if major(raw) == 5 {",
+      "expect_fail_in": [
+        "theorem_v5_rule",
+        "theorem_probe_offers"
+      ],
+      "classification": "decision: a 5.x offer answered without checking that its range reaches a supported minor (5.8 alone would get 5.4)"
+    },
+    {
+      "name": "no-bolt5",
+      "find": "        Some(min4(minor(raw)) * 256 + 5)",
+      "replace": "        None",
+      "expect_fail_in": [
+        "theorem_v5_rule",
+        "theorem_probe_offers"
+      ],
+      "classification": "decision: the 5.x branch removed (4.4 only)"
+    },
+    {
+      "name": "tiny-to-255",
+      "find": "    if -16 <= v && v <= 127 { IntMarker::Tiny }",
+      "replace": "    if -16 <= v && v <= 255 { IntMarker::Tiny }",
+      "expect_fail_in": [
+        "theorem_marker_is_smallest",
+        "theorem_probe_widths"
+      ],
+      "classification": "encoding: the tiny marker's upper bound widened past what it can carry"
+    },
+    {
+      "name": "i16-not-smallest",
+      "find": "    else if -32768 <= v && v <= 32767 { IntMarker::I16 }",
+      "replace": "    else if -32768 <= v && v <= 32767 { IntMarker::I32 }",
+      "expect_fail_in": [
+        "theorem_marker_is_smallest",
+        "theorem_probe_widths"
+      ],
+      "classification": "encoding: a wider marker than needed"
+    },
+    {
+      "name": "nofit-is-failure",
+      "find": "    match int_marker(v) { IntMarker::NoFit => PullOutcome::Broken, _ => PullOutcome::Records }",
+      "replace": "    match int_marker(v) { IntMarker::NoFit => PullOutcome::Failure, _ => PullOutcome::Records }",
+      "expect_fail_in": [
+        "theorem_overflow_breaks_connection"
+      ],
+      "classification": "repair direction: a value past int64 answered as a FAILURE (bug-plt-125)"
+    },
+    {
+      "name": "code-by-cause",
+      "find": "    match c { Cause::ReadOnlyWrite => Code::AccessMode, Cause::BadKey => Code::Unauthorized, _ => Code::SyntaxError }",
+      "replace": "    match c { Cause::ReadOnlyWrite => Code::AccessMode, Cause::BadKey => Code::Unauthorized, Cause::Parse => Code::SyntaxError, Cause::Undefined => Code::ParameterMissing, _ => Code::DatabaseError }",
+      "expect_fail_in": [
+        "theorem_runtime_failure_reported_as_syntax"
+      ],
+      "classification": "repair direction: a failure that is not a parse error named by its cause (bug-plt-124)"
+    },
+    {
+      "name": "gates-folded",
+      "find": "    match c { Cause::ReadOnlyWrite => Code::AccessMode, Cause::BadKey => Code::Unauthorized, _ => Code::SyntaxError }",
+      "replace": "    match c { Cause::BadKey => Code::Unauthorized, _ => Code::SyntaxError }",
+      "expect_fail_in": [
+        "theorem_gate_codes_follow_rule"
+      ],
+      "classification": "decision: the read-only gate's AccessMode removed"
+    },
+    {
+      "name": "id-from-node-id",
+      "find": "pub open spec fn bolt_id(n: SNode) -> int { n.h % 0x80000000 }",
+      "replace": "pub open spec fn bolt_id(n: SNode) -> int { n.key }",
+      "expect_fail_in": [
+        "theorem_hash_collision_loses_first_node"
+      ],
+      "classification": "repair direction: a Bolt id that is unique per node id (bug-plt-122)"
+    },
+    {
+      "name": "driver-no-id-cache",
+      "find": "    if bolt_id(a) == bolt_id(b) { (b.props, b.props) } else { (a.props, b.props) }",
+      "replace": "    (a.props, b.props)",
+      "expect_fail_in": [
+        "theorem_hash_collision_loses_first_node"
+      ],
+      "classification": "provider flip P-DRIVER-ID: a client that keeps one object per record"
+    },
+    {
+      "name": "swap-columns",
+      "find": "pub open spec fn reported(cols: Seq<Col>, i: int) -> (int, int) { (prev_node(cols, i), next_node(cols, i)) }",
+      "replace": "pub open spec fn reported(cols: Seq<Col>, i: int) -> (int, int) { (next_node(cols, i), prev_node(cols, i)) }",
+      "expect_fail_in": [
+        "theorem_endpoints_follow_columns",
+        "theorem_one_hop_right_iff_source_first",
+        "theorem_rel_alone_or_last"
+      ],
+      "classification": "decision: start and end taken from the other side"
+    },
+    {
+      "name": "no-prev-node",
+      "find": "    else { match cols[i - 1] { Col::Node(x) => x, _ => prev_node(cols, i - 1) } }",
+      "replace": "    else { match cols[i - 1] { Col::Node(x) => 0, _ => prev_node(cols, i - 1) } }",
+      "expect_fail_in": [
+        "theorem_endpoints_follow_columns",
+        "theorem_one_hop_right_iff_source_first",
+        "theorem_rel_alone_or_last"
+      ],
+      "classification": "effect: prev_node_id not carried (a node triplet sets no start); first run ERROR (replacement made the function non-recursive, so reveal_with_fuel failed to build), receipt kept"
+    },
+    {
+      "name": "no-truncation",
+      "find": "    if v.rendered > 200 { PVal { kind: PKind::Str, rendered: 203, whole: false } } else { v }",
+      "replace": "    v",
+      "expect_fail_in": [
+        "theorem_long_property_truncated"
+      ],
+      "classification": "repair direction: the property sent whole (bug-plt-121)"
+    },
+    {
+      "name": "truncate-at-200",
+      "find": "    if v.rendered > 200 { PVal { kind: PKind::Str, rendered: 203, whole: false } } else { v }",
+      "replace": "    if v.rendered >= 200 { PVal { kind: PKind::Str, rendered: 203, whole: false } } else { v }",
+      "expect_fail_in": [
+        "theorem_short_property_kept"
+      ],
+      "classification": "boundary: a 200-character value cut too"
+    },
+    {
+      "name": "retry-any-400",
+      "find": "pub open spec fn is_long(e: ErrText) -> bool { e.c400 && e.subscript && (e.temp || (e.sqlcq && e.encoded && e.over)) }",
+      "replace": "pub open spec fn is_long(e: ErrText) -> bool { e.c400 }",
+      "expect_fail_in": [
+        "theorem_other_400_not_retried"
+      ],
+      "classification": "decision: every -400 retried"
+    },
+    {
+      "name": "retry-writes",
+      "find": "    if s.transactional { 1 } else { match first_error { Some(e) => if is_long(e) && s.used_unwind && !s.transactional && !s.var_length { 2 } else { 1 }, None => 1 } }",
+      "replace": "    match first_error { Some(e) => if is_long(e) && s.used_unwind && !s.var_length { 2 } else { 1 }, None => 1 }",
+      "expect_fail_in": [
+        "theorem_write_runs_once"
+      ],
+      "classification": "decision: both transactional guards removed (the write path and the retry's own is_transactional check)"
+    },
+    {
+      "name": "slice-markers-in-order",
+      "find": "pub open spec fn params_order() -> Seq<Slot> { seq![Slot::L, Slot::S, Slot::E, Slot::S, Slot::E] }",
+      "replace": "pub open spec fn params_order() -> Seq<Slot> { seq![Slot::S, Slot::E, Slot::L, Slot::S, Slot::E] }",
+      "expect_fail_in": [
+        "theorem_param_slice_answers_empty"
+      ],
+      "classification": "repair direction: the guard values bound first, as the SQL writes them (bug-cyp-144)"
+    },
+    {
+      "name": "driver-532-binds",
+      "find": "pub open spec fn binds_json_table_marker(d: Drv) -> bool { match d { Drv::V532 => false, Drv::V541 => true } }",
+      "replace": "pub open spec fn binds_json_table_marker(d: Drv) -> bool { true }",
+      "expect_fail_in": [
+        "theorem_unwind_param_depends_on_driver",
+        "theorem_param_slice_answers_empty"
+      ],
+      "classification": "provider flip P-DRV-JT: 5.3.2 binding the marker (bug-cyp-125)"
+    },
+    {
+      "name": "string-compare-typed",
+      "find": "        Operand::StrLit(t) => text_of(st) == t,",
+      "replace": "        Operand::StrLit(t) => match st { Stored::Str(u) => u == t, _ => false },",
+      "expect_fail_in": [
+        "theorem_string_operand_matches_number"
+      ],
+      "classification": "repair direction: a string literal compared with stored strings only (bug-cyp-145)"
+    },
+    {
+      "name": "int-param-raw",
+      "find": "        Operand::IntParam(v) => match st { Stored::Num(n, _) => n == v, _ => false },",
+      "replace": "        Operand::IntParam(v) => text_of(st) == v,",
+      "expect_fail_in": [
+        "theorem_int_operands_and_string_values_follow_rule"
+      ],
+      "classification": "provider flip P-IRIS-EQ: an integer parameter compared as text"
+    }
+  ]
+}
