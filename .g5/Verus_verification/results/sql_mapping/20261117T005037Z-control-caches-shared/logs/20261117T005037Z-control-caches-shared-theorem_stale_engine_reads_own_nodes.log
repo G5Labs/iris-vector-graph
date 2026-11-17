@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_mapping/controls/caches-shared/20261117T005037Z/models/sql_mapping/sql_mapping.rs:30:13
+   |
+29 | pub proof fn theorem_stale_engine_reads_own_nodes()
+   | --------------------------------------------------- at the end of the function body
+30 |     ensures !cache_current(false, false, false),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

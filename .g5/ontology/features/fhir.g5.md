@@ -130,6 +130,8 @@ An existing SQL table can be mapped to a node label as a read-only view: Cypher 
 
 - A mapped label is read from its table only: Cypher no longer reads IVG's own nodes that carry the same label.
 - Removing a mapping also removes every relationship mapping from or to its label, and leaves the SQL table untouched.
+- Each engine reads mappings from its own cache, so an engine already running keeps its old reading of a label until it calls `reload_table_mappings()` ([open question](../../Verus_verification/open_questions.md#fhir.sql_mapping.cache)).
+- A table named without a schema is refused even when IRIS has it in `SQLUser` ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-110)).
 
 - Working assumption: Treat mapped SQL labels as namespace-global today; assigning every row to a graph needs mapping metadata and migration policy.
 
@@ -137,7 +139,9 @@ An existing SQL table can be mapped to a node label as a read-only view: Cypher 
 <a id="fhir.sql_mapping.relationships"></a>
 [D · fhir.sql_mapping.relationships]
 
-A relationship between two mapped labels can be mapped to SQL, either as a foreign key on the source table or as a join table. Both labels must already be mapped.
+A relationship between two mapped labels can be mapped to SQL, either through a key column or as a join table. Both labels must already be mapped.
+- The key column `target_fk` is read on the target table and holds the source row's id, although the method's documentation puts it on the source table ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-108)).
+- A pattern from a mapped node through a relationship that is not mapped fails with an SQL error ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-109)).
 
 
 <a id="fhir.sql_mapping.adjacency"></a>
@@ -312,7 +316,13 @@ The spec's clarification answers carry no human attribution.
 
 The code defines these calls in the same module as the FHIR bridges (`FhirMixin`), so they are kept on this page rather than on the install page. Since 4.7.0 they join the caller's transaction. The rule that a mapped label hides IVG's own nodes with that label is from the translator code only. No spec for the feature was found.
 
-Open questions: [Which graph do rows of a mapped FHIR SQL table belong to?](../../Verus_verification/open_questions.md#q-plt-018)
+Observed (iteration 40, [W46](../../uplift/consolidated/iteration-40/sqlmap-PAIRS.md)): mapping, hiding IVG's own nodes, removal, relationship-mapping removal, the adjacency limit, `USE GRAPH` (the same rows) and typed `WHERE` agree with these statements.
+
+Verus: active: [`sql_mapping.rs`](../../Verus_verification/models/sql_mapping/NOTES.md) `theorem_writer_reads_current`, `theorem_stale_engine_reads_own_nodes`, `theorem_fk_side_differs`, `theorem_mapped_with_ivg_relationship_errors`, `theorem_unqualified_name_refused`.
+
+Findings: [map_sql_relationship reads target_fk on the target table](../../Verus_verification/bugs_issues.md#bug-cyp-108); [A pattern from a mapped label through an IVG relationship fails](../../Verus_verification/bugs_issues.md#bug-cyp-109); [map_sql_table refuses a table named without a schema](../../Verus_verification/bugs_issues.md#bug-cyp-110)
+
+Open questions: [Which graph do rows of a mapped FHIR SQL table belong to?](../../Verus_verification/open_questions.md#q-plt-018), [Should a table mapping made by one engine reach engines that are already running?](../../Verus_verification/open_questions.md#fhir.sql_mapping.cache)
 
 ### fhir.sql_mapping.relationships
 
@@ -320,6 +330,8 @@ Open questions: [Which graph do rows of a mapped FHIR SQL table belong to?](../.
 - Expands: [Mapped SQL tables](#fhir.sql_mapping)
 - agent
 - user-facing-behavior
+
+Findings: [map_sql_relationship reads target_fk on the target table](../../Verus_verification/bugs_issues.md#bug-cyp-108); [A pattern from a mapped label through an IVG relationship fails](../../Verus_verification/bugs_issues.md#bug-cyp-109)
 
 ### fhir.sql_mapping.adjacency
 
@@ -329,6 +341,8 @@ Open questions: [Which graph do rows of a mapped FHIR SQL table belong to?](../.
 - architecture-decision
 
 Stated in the method's documentation. Consistency checks of the adjacency index cannot see this gap, because nothing was written to the edge table.
+
+Findings: [A pattern from a mapped label through an IVG relationship fails](../../Verus_verification/bugs_issues.md#bug-cyp-109)
 
 ### fhir.sql_mapping.embeddings
 

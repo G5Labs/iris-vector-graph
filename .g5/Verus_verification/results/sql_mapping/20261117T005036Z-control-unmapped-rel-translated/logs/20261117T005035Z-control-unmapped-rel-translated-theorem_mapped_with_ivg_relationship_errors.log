@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_mapping/controls/unmapped-rel-translated/20261117T005035Z/models/sql_mapping/sql_mapping.rs:57:13
+   |
+56 | pub proof fn theorem_mapped_with_ivg_relationship_errors()
+   | ---------------------------------------------------------- at the end of the function body
+57 |     ensures pattern_outcome(Source::Table, Rel::Unmapped) == Outcome::SqlError,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

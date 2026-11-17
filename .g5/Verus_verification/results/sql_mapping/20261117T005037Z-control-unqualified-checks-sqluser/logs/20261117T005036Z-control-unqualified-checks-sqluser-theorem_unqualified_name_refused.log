@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_mapping/controls/unqualified-checks-sqluser/20261117T005036Z/models/sql_mapping/sql_mapping.rs:69:13
+   |
+68 | pub proof fn theorem_unqualified_name_refused()
+   | ----------------------------------------------- at the end of the function body
+69 |     ensures !accepted(false, 0, SQLUSER()), accepted(true, SQLUSER(), SQLUSER()),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1,0 +1,46 @@
+{
+  "all_sensitivities_detected": true,
+  "cases": 11,
+  "elapsed_s": 1.8,
+  "fixture": "ivg-cont-20261117-iris",
+  "inputs": {
+    ".g5/Verus_verification/models/sql_mapping/binding.py": "5fcbc45616ee10e788281dd0c7da8166a5721672bf0bc9340258b564e9fecd5d",
+    ".g5/Verus_verification/models/sql_mapping/model.json": "ab7848d4dd3f0babde86c5d553b34f2b5f2f91beed299607a3c1c369fc4455f0",
+    ".g5/Verus_verification/models/sql_mapping/sql_mapping.rs": "a36b9ae111f92598e421a3d6622b75150d1b95585f5f1b2941b3e2493bd08c70",
+    "iris_vector_graph/_engine/fhir.py": "acbaab7ae79a1dbe3c6e4cc9e81654b6216ca5db44e1fb57c4107c5151226aba",
+    "iris_vector_graph/cypher/translator.py": "0a37bc8fb5c00a26a3b672eb524de6cbc8e5c8092f4415fb5c83a96c7fe8d78c"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "sql_mapping",
+  "observed": {
+    "A_after_map": "Table",
+    "A_after_remove": "IvgNodes",
+    "B_after_map_no_reload": "IvgNodes",
+    "B_after_reload": "IvgNodes",
+    "ivg_unmapped_rel": "Rows",
+    "join_key_on_source": "SqlError",
+    "join_key_on_target": [
+      [
+        "d1",
+        "t1"
+      ]
+    ],
+    "mapped_mapped_rel": "Rows",
+    "mapped_unmapped_rel": "SqlError",
+    "qualified_sqluser_accepted": true,
+    "unqualified_accepted": false
+  },
+  "port": 36317,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "run": "20261117T005113Z",
+  "scope": "Actual mapping calls and Cypher on two engines over IRIS 2026.1 (pin 3eaa79cf); outcome classes (which source a label reads, rows or SQL error, accepted or refused). The join key case on the source table has no same-named column on the target table, so IRIS refuses it; with such a column the join would silently use it (not exercised).",
+  "sensitivities_detected_cases": {
+    "caches_shared": 1,
+    "join_on_source_fk": 2,
+    "mapping_ignored": 1,
+    "unmapped_rel_translated": 1,
+    "unqualified_checks_sqluser": 1
+  },
+  "verdict": "AGREES"
+}

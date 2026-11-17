@@ -1,0 +1,120 @@
+{
+  "run": "20261117T004907Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "cases": {
+    "T2_before_mapping_engine_A": [
+      [
+        "own004907",
+        "ivg-own",
+        null
+      ]
+    ],
+    "T9_before_mapping_engine_B": [
+      [
+        "own004907",
+        "ivg-own",
+        null
+      ]
+    ],
+    "T1_map": {
+      "label": "MDrug004907",
+      "sql_table": "W46x004907.Drug",
+      "id_column": "id",
+      "prop_columns": [
+        "name",
+        "yr"
+      ]
+    },
+    "T1_T2_after_mapping_engine_A": [
+      [
+        "d1",
+        "aspirin",
+        1899
+      ],
+      [
+        "d2",
+        "imatinib",
+        2001
+      ],
+      [
+        "d3",
+        "crizotinib",
+        2011
+      ]
+    ],
+    "T1_node_count_unchanged": {
+      "before": 80096,
+      "after": 80096
+    },
+    "T9_after_mapping_engine_B_no_reload": [
+      [
+        "own004907",
+        "ivg-own",
+        null
+      ]
+    ],
+    "T8_where_integer": [
+      [
+        "d3"
+      ]
+    ],
+    "T8b_where_param_integer": [
+      [
+        "d3"
+      ]
+    ],
+    "T7_use_graph": [
+      [
+        "d1"
+      ],
+      [
+        "d2"
+      ],
+      [
+        "d3"
+      ]
+    ],
+    "T4_map_rel": {
+      "source_label": "MTarget004907",
+      "predicate": "OF",
+      "target_label": "MDrug004907",
+      "target_fk": "drug_id",
+      "via_table": null
+    },
+    "T4_rel_rows": "ERROR <SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'N1.DRUG_ID' not found in the applicable tables^SELECT Graph_KG . CY_TYPED ( n0 . id ) AS t_id , Graph_KG . CY_TYPED ( n1 . id ) AS d_id FROM W46x004907 . Target n0 JOIN W46x00490",
+    "T6_khop_from_mapped": {
+      "nodes": [],
+      "edges": []
+    },
+    "T6_varlength_from_mapped": [],
+    "T0_unqualified_table": "RAISED ValueError: Table 'W46Plain004907' or column 'id' not found. Verify the table exists and id_column is correct.",
+    "T5_T3_remove": {
+      "mappings": [
+        "MTarget004907"
+      ]
+    },
+    "T3_after_remove_engine_A": [
+      [
+        "own004907",
+        "ivg-own",
+        null
+      ]
+    ],
+    "T3_table_untouched": 3,
+    "T5_rel_after_remove": "ERROR <SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'N0.NODE_ID' not found in the applicable tables^SELECT Graph_KG . CY_TYPED ( n0 . id ) AS t_id , Graph_KG . CY_TYPED ( %EXACT ( p3 . val ) ) AS d_id FROM W46x004907 . Target n0 JO",
+    "T9_after_remove_engine_B_no_reload": [
+      [
+        "own004907",
+        "ivg-own",
+        null
+      ]
+    ],
+    "T9_engine_B_after_reload": [
+      [
+        "own004907",
+        "ivg-own",
+        null
+      ]
+    ]
+  }
+}

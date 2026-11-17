@@ -1,0 +1,27 @@
+verification results:: 4 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_mapping/controls/join-on-source-fk/20261117T005034Z/models/sql_mapping/sql_mapping.rs:41:1
+   |
+41 | pub proof fn theorem_fk_side_differs(s_id: int, t_id: int, null_fk: int)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_mapping/controls/join-on-source-fk/20261117T005034Z/models/sql_mapping/sql_mapping.rs:43:52
+   |
+41 | pub proof fn theorem_fk_side_differs(s_id: int, t_id: int, null_fk: int)
+   | ------------------------------------------------------------------------ at the end of the function body
+42 |     requires s_id != t_id, null_fk != s_id, null_fk != t_id,
+43 |     ensures joined_doc(s_id, t_id, t_id, null_fk), !joined_built(s_id, t_id, t_id, null_fk),
+   |                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_mapping/controls/join-on-source-fk/20261117T005034Z/models/sql_mapping/sql_mapping.rs:44:9
+   |
+41 | pub proof fn theorem_fk_side_differs(s_id: int, t_id: int, null_fk: int)
+   | ------------------------------------------------------------------------ at the end of the function body
+...
+44 |         joined_built(s_id, null_fk, t_id, s_id), !joined_doc(s_id, null_fk, t_id, s_id),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

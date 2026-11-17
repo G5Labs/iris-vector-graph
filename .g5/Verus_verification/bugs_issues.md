@@ -4307,6 +4307,59 @@ Consequence: an ingestion step built as the guide shows refuses valid data for a
 
 Repair proposal (not implemented): load the listed nodes' edge targets' type triples too, or document the limitation beside the pattern. Governing statement: [install.shacl](../ontology/concepts/install.g5.md#install.shacl).
 
+<a id="bug-cyp-108"></a>
+### map_sql_relationship reads target_fk on the target table, while its documentation puts the key on the source table
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 40)
+
+Found by: the frozen W46 prediction T4 missed ([predictions](../uplift/consolidated/iteration-40/sqlmap-PAIRS.md)); [sql_mapping](models/sql_mapping/NOTES.md) `theorem_fk_side_differs`, control `join-on-source-fk`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-40/sqlmap-observed-20261117T004907Z.json) T4; [second observation](../uplift/consolidated/iteration-40/sqlmap-observed2-20261117T004940Z.json); [binding](results/sql_mapping/20261117T005114Z-binding/receipt.json) `join_key_on_source`, `join_key_on_target`). With `Target.drug_id` holding a drug's id, `map_sql_relationship("MTarget", "OF", "MDrug", target_fk="drug_id")` (the key on the source table, as documented) makes `MATCH (t:MTarget)-[:OF]->(d:MDrug)` fail with `SQLCODE -29` ("Field 'N1.DRUG_ID' not found"); mapping the reverse direction, `MDrug -[:HAS]-> MTarget` with the same `target_fk`, answers the right pairs.
+
+Expected: the method's documentation: "The edge is either a foreign key on the source table (`target_fk`) or a join table"; [fhir.sql_mapping.relationships](../ontology/features/fhir.g5.md#fhir.sql_mapping.relationships) said the same.
+
+Consequence: a caller following the documentation gets an error, or, where the target table happens to have a column of that name, a silent join on the wrong column (not exercised). Low.
+
+Repair proposal (not implemented): read `target_fk` on the source table, or rename the parameter and document that it names a target-table column holding the source id. Governing statement: [fhir.sql_mapping](../ontology/features/fhir.g5.md#fhir.sql_mapping).
+
+<a id="bug-cyp-109"></a>
+### A Cypher pattern from a mapped label through an IVG relationship fails with an SQL error
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 40)
+
+Found by: source-informed addition to W46 after the freeze ([second observation](../uplift/consolidated/iteration-40/sqlmap-observed2-20261117T004940Z.json)); [sql_mapping](models/sql_mapping/NOTES.md) `theorem_mapped_with_ivg_relationship_errors`, control `unmapped-rel-translated`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-40/sqlmap-observed-20261117T004907Z.json) T5_rel_after_remove; [second observation](../uplift/consolidated/iteration-40/sqlmap-observed2-20261117T004940Z.json); [binding](results/sql_mapping/20261117T005114Z-binding/receipt.json) `mapped_unmapped_rel`). With node `d1` of a mapped label and an IVG edge `d1 -[TREATS]-> x`, `MATCH (d:MappedLabel)-[:TREATS]->(x)` and `MATCH (d)-[r]->(x)` from a mapped node return `result.error` with `SQLCODE -29` ("Field 'N0.NODE_ID' not found"). Passing neighbors: the same relationship from an IVG node, and a mapped relationship between mapped labels, answer rows.
+
+Expected: [fhir.sql_mapping.adjacency](../ontology/features/fhir.g5.md#fhir.sql_mapping.adjacency): "Pattern and property queries in Cypher see them"; nothing says a mapped node cannot take part in a pattern with IVG's own relationships.
+
+Consequence: a query mixing mapped rows and IVG edges cannot be answered; the error is visible (`result.error`, or `RuntimeError` with `raise_on_error`). Low.
+
+Repair proposal (not implemented): translate a non-mapped relationship from a mapped node against the mapped id column, or refuse it with a message that names the limitation. Governing statement: [fhir.sql_mapping](../ontology/features/fhir.g5.md#fhir.sql_mapping).
+
+<a id="bug-cyp-110"></a>
+### map_sql_table refuses an existing table named without a schema
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 40)
+
+Found by: source reading during W46 (not frozen) ([observation](../uplift/consolidated/iteration-40/sqlmap-observed-20261117T004907Z.json) T0); [sql_mapping](models/sql_mapping/NOTES.md) `theorem_unqualified_name_refused`, control `unqualified-checks-sqluser`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([binding](results/sql_mapping/20261117T005114Z-binding/receipt.json) `unqualified_accepted`, `qualified_sqluser_accepted`). A table created as `CREATE TABLE BPlain…` (IRIS puts it in `SQLUser`) is refused by `map_sql_table("BPlain…", ...)` with "Table … or column 'id' not found"; `map_sql_table("SQLUser.BPlain…", ...)` accepts it.
+
+Expected: the API reference: "Map an existing SQL table". IRIS resolves an unqualified table name in `SQLUser`.
+
+Observed: the existence check looks in `INFORMATION_SCHEMA.COLUMNS` under `TABLE_SCHEMA = 'USER'` when the name has no schema (`_engine/fhir.py:111-118`).
+
+Consequence: a false refusal with a misleading message; qualifying the name works. Low.
+
+Repair proposal (not implemented): check the unqualified name under `SQLUser` (or resolve the default schema). Governing statement: [fhir.sql_mapping](../ontology/features/fhir.g5.md#fhir.sql_mapping).
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 

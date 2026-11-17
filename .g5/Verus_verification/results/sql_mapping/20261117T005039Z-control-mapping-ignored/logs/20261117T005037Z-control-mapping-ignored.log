@@ -1,0 +1,20 @@
+verification results:: 3 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_mapping/controls/mapping-ignored/20261117T005037Z/models/sql_mapping/sql_mapping.rs:24:13
+   |
+23 | pub proof fn theorem_writer_reads_current(mapped: bool)
+   | ------------------------------------------------------- at the end of the function body
+24 |     ensures label_source(mapped) == (if mapped { Source::Table } else { Source::IvgNodes }),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_mapping/controls/mapping-ignored/20261117T005037Z/models/sql_mapping/sql_mapping.rs:31:9
+   |
+29 | pub proof fn theorem_stale_engine_reads_own_nodes()
+   | --------------------------------------------------- at the end of the function body
+30 |     ensures !cache_current(false, false, false),
+31 |         label_source(true) != label_source(false),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

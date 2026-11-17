@@ -3682,6 +3682,39 @@ Canonical owner: [query.compiled.fallback.failure-policy](#HD-0904).
 }
 ```
 
+<a id="fhir.sql_mapping.cache"></a>
+### Should a table mapping made by one engine reach engines that are already running?
+
+[Q · fhir.sql_mapping.cache]
+
+Should a table mapping made by one engine reach engines that are already running?
+- Provisional answer (agent, unratified): yes for long-lived servers. An HTTP or Bolt server's engine keeps answering from IVG's own nodes after another engine maps the label, until it reloads; the two answer one query differently.
+- Alternative: keep the per-engine cache and document that every other engine must call `reload_table_mappings()` (or restart).
+- As built: each engine loads mappings on first use and refreshes them only on its own mapping calls or `reload_table_mappings()`.
+
+Disposition: open. Working assumption: keep the cache, and document the reload. Evidence: [W46](../uplift/consolidated/iteration-40/sqlmap-PAIRS.md), [sql_mapping](models/sql_mapping/NOTES.md).
+
+```g5-question
+{
+  "schema": 1,
+  "id": "fhir.sql_mapping.cache",
+  "status": "open",
+  "prompt": "Should a table mapping made by one engine reach engines that are already running?",
+  "allow_free_text": true,
+  "multi_select": false,
+  "options": [
+    {
+      "label": "Yes: running engines see a mapping change without a reload",
+      "description": ""
+    },
+    {
+      "label": "Keep the per-engine cache and document reload_table_mappings() for every other engine",
+      "description": ""
+    }
+  ]
+}
+```
+
 <a id="install.inference.assert_after"></a>
 ### Should creating an edge that inference already wrote make it an asserted edge?
 

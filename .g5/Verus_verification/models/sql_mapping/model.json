@@ -1,0 +1,55 @@
+{
+  "name": "sql_mapping",
+  "root": "sql_mapping.rs",
+  "expected_verified": 5,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "join-on-source-fk",
+      "find": "pub open spec fn joined_built(s_id: int, s_fk: int, t_id: int, t_fk: int) -> bool { t_fk == s_id }",
+      "replace": "pub open spec fn joined_built(s_id: int, s_fk: int, t_id: int, t_fk: int) -> bool { s_fk == t_id }",
+      "expect_fail_in": [
+        "theorem_fk_side_differs"
+      ],
+      "classification": "decision: the key is read on the source table, as documented"
+    },
+    {
+      "name": "unmapped-rel-translated",
+      "find": "(Source::Table, Rel::Unmapped) => Outcome::SqlError,",
+      "replace": "(Source::Table, Rel::Unmapped) => Outcome::Rows,",
+      "expect_fail_in": [
+        "theorem_mapped_with_ivg_relationship_errors"
+      ],
+      "classification": "decision: a mapped node can take an IVG relationship"
+    },
+    {
+      "name": "unqualified-checks-sqluser",
+      "find": "if qualified { schema } else { USER() }",
+      "replace": "if qualified { schema } else { SQLUSER() }",
+      "expect_fail_in": [
+        "theorem_unqualified_name_refused"
+      ],
+      "classification": "decision: an unqualified name is checked in SQLUser (the repair)"
+    },
+    {
+      "name": "caches-shared",
+      "find": "    made_last_write || reloaded_after || first_load_after\n",
+      "replace": "    true\n",
+      "expect_fail_in": [
+        "theorem_stale_engine_reads_own_nodes"
+      ],
+      "classification": "effect: every engine sees a mapping change at once"
+    },
+    {
+      "name": "mapping-ignored",
+      "find": "pub open spec fn label_source(cache_has_mapping: bool) -> Source { if cache_has_mapping { Source::Table } else { Source::IvgNodes } }",
+      "replace": "pub open spec fn label_source(cache_has_mapping: bool) -> Source { Source::IvgNodes }",
+      "expect_fail_in": [
+        "theorem_writer_reads_current",
+        "theorem_stale_engine_reads_own_nodes"
+      ],
+      "classification": "decision: a mapped label still reads IVG nodes"
+    }
+  ]
+}

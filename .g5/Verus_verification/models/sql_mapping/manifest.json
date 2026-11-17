@@ -1,0 +1,51 @@
+{
+  "title": "sql mapping",
+  "question": "SQL table mappings: per-engine cache, target_fk side (bug-cyp-108), IVG relationship from a mapped node (bug-cyp-109), unqualified table (bug-cyp-110)",
+  "ontology_ids": [
+    "fhir.sql_mapping"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 5}"
+    },
+    {
+      "label": "join-on-source-fk",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fk_side_differs\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unmapped-rel-translated",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_mapped_with_ivg_relationship_errors\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unqualified-checks-sqluser",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unqualified_name_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "caches-shared",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_stale_engine_reads_own_nodes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "mapping-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_writer_reads_current\", \"theorem_stale_engine_reads_own_nodes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}
