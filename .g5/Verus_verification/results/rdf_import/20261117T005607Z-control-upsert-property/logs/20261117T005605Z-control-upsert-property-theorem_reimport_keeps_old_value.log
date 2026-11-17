@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rdf_import/controls/upsert-property/20261117T005605Z/models/rdf_import/rdf_import.rs:47:13
+   |
+45 | pub proof fn theorem_reimport_keeps_old_value(old: int, new: int)
+   | ----------------------------------------------------------------- at the end of the function body
+46 |     requires old != new,
+47 |     ensures after_import(Some(old), new) == Some(old), !counted(Some(old)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

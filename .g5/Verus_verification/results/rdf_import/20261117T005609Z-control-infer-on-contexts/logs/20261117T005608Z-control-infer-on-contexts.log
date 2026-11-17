@@ -1,0 +1,12 @@
+verification results:: 4 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rdf_import/controls/infer-on-contexts/20261117T005608Z/models/rdf_import/rdf_import.rs:62:47
+   |
+60 | pub proof fn theorem_infer_ignores_contexts(g: G)
+   | ------------------------------------------------- at the end of the function body
+61 |     requires g != 0,
+62 |     ensures effective_graph(Some(g), 0) == g, infer_graph(0, Some(g)) != g,
+   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

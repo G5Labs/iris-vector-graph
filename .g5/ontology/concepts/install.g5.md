@@ -348,6 +348,15 @@ After any bulk load finishes, the adjacency index, the degree cache and the grap
 Imports write as they go. `load_networkx`, `import_graph_ndjson` and `load_obo` write one node or relationship at a time, and `import_rdf` commits one batch at a time, so a failure keeps what was already written. Every import, and materializing or retracting inference, is refused in ledger strict mode.
 
 
+<a id="install.import.rdf"></a>
+[D · install.import.rdf]
+
+An RDF import writes each statement into the graph its quad names, or else into the graph the caller gives. A statement whose object is an IRI or blank node becomes an edge, and one whose object is a literal becomes a property of the subject under the predicate's local name.
+- Two predicates with the same local name write one property, so one of the two literals is lost.
+- Today a literal is stored as its text without its datatype, so an imported integer reads back as text ([finding](../../Verus_verification/bugs_issues.md#bug-str-109)).
+- Today a property already set is not changed by a later import, and the import counts it as not written ([finding](../../Verus_verification/bugs_issues.md#bug-str-110)).
+- Today inference requested with an import runs on the graph the caller gives, not on the graphs the quads went to ([finding](../../Verus_verification/bugs_issues.md#bug-str-111)).
+
 <a id="install.import.ndjson"></a>
 [D · install.import.ndjson]
 
@@ -858,13 +867,25 @@ Findings: [Rebuild adjacency once after load_networkx](../../Verus_verification/
 State machines: [bulk load](../../Verus_verification/models/bulk_load/manifest.json)
 
 ### install.import
-- Children: [NDJSON](#install.import.ndjson), [inference](#install.inference)
+- Children: [RDF](#install.import.rdf), [NDJSON](#install.import.ndjson), [inference](#install.inference)
 
 - Sources: [snapshot.py load_networkx](../../../iris_vector_graph/_engine/snapshot.py#L446-L556), [import_rdf](../../../iris_vector_graph/_engine/snapshot.py#L557-L720), [import_graph_ndjson](../../../iris_vector_graph/_engine/snapshot.py#L1727-L1856), [load_obo](../../../iris_vector_graph/_engine/snapshot.py#L1694-L1726), [materialize_inference](../../../iris_vector_graph/_engine/schema.py#L2966), [ledger strict list](../features/ledger.g5.md#ledger.strict), [operations inventory G7](../../uplift/ivg-verus-initial/intent/operations.md#L150-L158)
 - agent
 - data-integrity, operations
 
 Added by review round 3 R3-reader M23 (the stage-A reconstruction check items 3, 4 and 7 had raised it). `import_rdf`'s docstring says it "commits per batch"; inside a caller's transaction each batch is an IVG level nested in it, and a non-indexed install refuses the caller's transaction. Whether re-running an import after a failure finishes it cleanly was not checked. The inference commit boundary was not traced. Not modelled and not observed natively.
+
+### install.import.rdf
+
+- Sources: [SEMANTIC_LAYER.md Importing RDF and Named graphs](../../../docs/SEMANTIC_LAYER.md#L56-L66); [API_REFERENCE import_rdf](../../../docs/API_REFERENCE.md); [`SnapshotMixin.import_rdf`](../../../iris_vector_graph/_engine/snapshot.py#L557), [`_literal_key`](../../../iris_vector_graph/_engine/snapshot.py#L381-L384)
+- Expands: [imports](#install.import)
+- Verus: active: [`rdf_import.rs`](../../Verus_verification/models/rdf_import/NOTES.md) `theorem_context_wins`, `theorem_local_name_collision`; as-built departures `theorem_datatype_dropped`, `theorem_reimport_keeps_old_value`, `theorem_infer_ignores_contexts`.
+- agent
+- data-integrity, user-facing-behavior
+
+Recovered in iteration 41 from the semantic-layer guide, the docstring and observation ([W47](../../uplift/consolidated/iteration-41/rdfimport-PAIRS.md)). Not exercised: TriG, JSON-LD, language tags, blank-node identity across files, batch boundaries.
+
+Findings: [import_rdf drops a literal's datatype](../../Verus_verification/bugs_issues.md#bug-str-109); [Re-importing RDF never updates a property](../../Verus_verification/bugs_issues.md#bug-str-110); [import_rdf(infer=True) infers in the graph argument](../../Verus_verification/bugs_issues.md#bug-str-111)
 
 ### install.import.ndjson
 
@@ -888,7 +909,7 @@ State machines: [ndjson export](../../Verus_verification/models/ndjson_export/ma
 
 Recovered in iteration 38 from the API reference and observation ([W44](../../uplift/consolidated/iteration-38/inference-PAIRS.md)); no owner statement existed. OWL rules (`rules="owl"`), multigraph mode and the ledger-related retraction case F-C0151 were not exercised.
 
-Findings: [retract_inference deletes an edge the user created after the same triple was inferred](../../Verus_verification/bugs_issues.md#bug-str-105); [materialize_inference derives less than the RDFS entailments the API reference promises](../../Verus_verification/bugs_issues.md#bug-str-106)
+Findings: [retract_inference deletes an edge the user created after the same triple was inferred](../../Verus_verification/bugs_issues.md#bug-str-105); [materialize_inference derives less than the RDFS entailments the API reference promises](../../Verus_verification/bugs_issues.md#bug-str-106); [import_rdf(infer=True) infers in the graph argument](../../Verus_verification/bugs_issues.md#bug-str-111)
 
 Open questions: [Should creating an edge that inference already wrote make it an asserted edge?](../../Verus_verification/open_questions.md#install.inference.assert_after)
 

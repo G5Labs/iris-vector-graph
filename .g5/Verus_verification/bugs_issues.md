@@ -2857,6 +2857,59 @@ Consequence: data written to a named graph that breaks a shape is accepted when 
 
 Repair proposal (not implemented): validate each graph's context on its own (or mint graph-qualified IRIs for validation), and name the graph in each violation. Governing statements: [install.shacl](../ontology/concepts/install.g5.md#install.shacl), [graph scope](../ontology/concepts/graph-scope.g5.md).
 
+<a id="bug-str-109"></a>
+### import_rdf drops a literal's datatype, so an imported xsd:integer reads back as text and matches no number
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 41)
+
+Found by: the frozen W47 prediction R5 missed ([predictions](../uplift/consolidated/iteration-41/rdfimport-PAIRS.md)); [rdf_import](models/rdf_import/NOTES.md) `theorem_datatype_dropped`, control `keep-datatype`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin and rdflib 7.6.0 ([observation](../uplift/consolidated/iteration-41/rdfimport-observed-20261117T005436Z.json) R5; [stored rows and Cypher](../uplift/consolidated/iteration-41/rdfimport-observed2-20261117T005514Z.json); [binding](results/rdf_import/20261117T005643Z-binding/receipt.json) `int_literal_reads_as`, `int_literal_equals_in_cypher`). `"2011"^^xsd:integer` is stored as the text `2011`, like the plain literal `"2011"`; `get_node` returns `"2011"` and `MATCH (n) WHERE n.yr = 2011` finds nothing. Passing neighbors: an integer 2011 written by `create_node` reads back as 2011 and matches; `"true"^^xsd:boolean` reads back as True.
+
+Expected: SEMANTIC_LAYER.md: "a literal becomes a property of the subject"; the export writes integer properties as `xsd:integer` and IVG's readers keep a written integer's type ([query.values](../ontology/features/cypher.g5.md#query.values)), so a declared integer is expected to stay one.
+
+Consequence: numeric filters, sorting and comparisons over imported data silently miss or misorder rows. Medium: wrong query answers, no error.
+
+Repair proposal (not implemented): store numeric and boolean literals in the typed form the API's writers use. Governing statement: [install.import.rdf](../ontology/concepts/install.g5.md#install.import.rdf).
+
+<a id="bug-str-110"></a>
+### Re-importing RDF never updates a property: a changed literal keeps the old value and is only logged
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 41)
+
+Found by: source reading after the W47 freeze (R9, not frozen) ([predictions](../uplift/consolidated/iteration-41/rdfimport-PAIRS.md)); [rdf_import](models/rdf_import/NOTES.md) `theorem_reimport_keeps_old_value`, control `upsert-property`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-41/rdfimport-observed-20261117T005436Z.json) R7, R9; [binding](results/rdf_import/20261117T005643Z-binding/receipt.json) `reimport_value`, `reimport_properties_counted`). After importing `<u> <label> "first"`, importing `<u> <label> "second"` answers `properties: 0`, logs an `SQLCODE -119` warning, and `get_node` and Cypher still read `"first"`. Passing neighbor: an edge in a re-imported file is not duplicated.
+
+Expected: the API reference: "write its triples as nodes, edges and properties"; the docstring counts "rows already present included", which holds for edges but not for properties.
+
+Observed: each property is a plain `INSERT` into `rdf_props`; the primary key `(graph_id, s, key)` refuses it and the failure is logged and skipped (`_engine/snapshot.py`, `import_rdf._flush`).
+
+Consequence: refreshing a graph from an updated RDF file leaves stale values while the call succeeds; the answer's counts differ between edges and properties. Medium: silent stale data.
+
+Repair proposal (not implemented): upsert properties (or report the rows not written in the answer). Governing statement: [install.import.rdf](../ontology/concepts/install.g5.md#install.import.rdf).
+
+<a id="bug-str-111"></a>
+### import_rdf(infer=True) on N-Quads or TriG infers in the graph argument, not in the graphs the quads were written to
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 41)
+
+Found by: source reading after the W47 freeze (R10, not frozen) ([predictions](../uplift/consolidated/iteration-41/rdfimport-PAIRS.md)); [rdf_import](models/rdf_import/NOTES.md) `theorem_infer_ignores_contexts`, control `infer-on-contexts`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-41/rdfimport-observed-20261117T005436Z.json) R1_R2_R10; [binding](results/rdf_import/20261117T005643Z-binding/receipt.json) `inferred_rows_in_context_graph`). An N-Quads file with `A subClassOf B` and `i type A`, all in context `urn:ivg:graph:trials…`, imported with `infer=True` and no `graph`, writes no inferred edge in `trials…`, and answers `"inferred": 7`: seven edges materialized in the default graph from data the file did not contain.
+
+Expected: the docstring: "`infer` ... runs `materialize_inference`" after an import whose "quad's own graph name wins"; [install.inference](../ontology/concepts/install.g5.md#install.inference) scopes inference to one graph.
+
+Consequence: the imported graph gets no inference, another graph gets derived edges the caller did not ask for, and the answer's count describes the other graph. Medium.
+
+Repair proposal (not implemented): run inference on each graph the import wrote to. Governing statement: [install.import.rdf](../ontology/concepts/install.g5.md#install.import.rdf).
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "effect: a re-import replaces the value (the repair)",
+    "expect_fail_in": [
+      "theorem_reimport_keeps_old_value",
+      "theorem_local_name_collision"
+    ],
+    "find": "pub open spec fn after_import(cur: Option<int>, v: int) -> Option<int> { match cur { Some(c) => Some(c), None => Some(v) } }",
+    "name": "upsert-property",
+    "replace": "pub open spec fn after_import(cur: Option<int>, v: int) -> Option<int> { Some(v) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_reimport_keeps_old_value",
+      "theorem_local_name_collision"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_import/model.json": "207218e1ca8db4ef384c71f23826d1ef10c410f3b4867e77b11f9b5c2f2a924a",
+    ".g5/Verus_verification/models/rdf_import/rdf_import.rs": "58e1de524653d2424cf6639bc2c280daecb2ed3c3b8188a56b7ba8234a7b1721"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rdf_import/controls/upsert-property/20261117T005605Z/models/rdf_import/rdf_import.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_local_name_collision": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rdf_import/20261117T005605Z-control-upsert-property-theorem_local_name_collision.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_reimport_keeps_old_value": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rdf_import/20261117T005605Z-control-upsert-property-theorem_reimport_keeps_old_value.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rdf_import/20261117T005605Z-control-upsert-property.log",
+    "timed_out": false,
+    "verified": 3
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/rdf_import/20261117T005607Z-control-upsert-property/logs/20261117T005605Z-control-upsert-property-theorem_local_name_collision.log": "5ce9c1253c18c9a91e032fd828beff724a14791871e7d9ba203ffbac849fbb35",
+    ".g5/Verus_verification/results/rdf_import/20261117T005607Z-control-upsert-property/logs/20261117T005605Z-control-upsert-property-theorem_reimport_keeps_old_value.log": "287b376312af0472cbfb406764248b2bdb847dccb49289efd7b9a03df1198700",
+    ".g5/Verus_verification/results/rdf_import/20261117T005607Z-control-upsert-property/logs/20261117T005605Z-control-upsert-property.log": "767b7061962aaf51d98c7a77598507769a5a3ccb7e6fd66bbef4ffff88b97294"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

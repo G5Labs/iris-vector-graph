@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/rdf_import/controls/context-ignored/20261117T005603Z/models/rdf_import/rdf_import.rs:34:13
+   |
+33 | pub proof fn theorem_context_wins(g: G, arg: G)
+   | ----------------------------------------------- at the end of the function body
+34 |     ensures effective_graph(Some(g), arg) == g, effective_graph(None, arg) == arg,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

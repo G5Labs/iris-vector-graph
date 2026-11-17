@@ -1,0 +1,38 @@
+{
+  "all_sensitivities_detected": true,
+  "cases": 7,
+  "elapsed_s": 5.5,
+  "files": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/w47/rdf-import-binding-20261117T005637Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "inputs": {
+    ".g5/Verus_verification/models/rdf_import/binding.py": "01f00275793e300ca78699e0959f9857bc9fdcb7e5278f9062af6a7c4aea7d37",
+    ".g5/Verus_verification/models/rdf_import/model.json": "207218e1ca8db4ef384c71f23826d1ef10c410f3b4867e77b11f9b5c2f2a924a",
+    ".g5/Verus_verification/models/rdf_import/rdf_import.rs": "58e1de524653d2424cf6639bc2c280daecb2ed3c3b8188a56b7ba8234a7b1721",
+    "iris_vector_graph/_engine/schema.py": "e10b8cc75335c7426ca7e32ecd52024e02150d3dda178fbb56453cdbd29d1c51",
+    "iris_vector_graph/_engine/snapshot.py": "531d13c55254657f278691aee1c13717ff0965924ee16b3b62a140de979d33bc"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "rdf_import",
+  "observed": {
+    "collision_keys": 1,
+    "ctx_node_in_context_graph": true,
+    "inferred_rows_in_context_graph": 0,
+    "int_literal_equals_in_cypher": false,
+    "int_literal_reads_as": "str",
+    "reimport_properties_counted": 0,
+    "reimport_value": "first"
+  },
+  "port": 36317,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "run": "20261117T005637Z",
+  "scope": "Actual import_rdf (rdflib 7.6.0) on IRIS 2026.1 (pin 3eaa79cf) with N-Quads and Turtle files; read back through node_exists, get_node, Cypher and rdf_edges. Which colliding literal survives follows rdflib's iteration order and is not compared.",
+  "sensitivities_detected_cases": {
+    "context_ignored": 1,
+    "full_iri_key": 1,
+    "infer_on_contexts": 1,
+    "keep_datatype": 2,
+    "upsert_property": 2
+  },
+  "verdict": "AGREES"
+}

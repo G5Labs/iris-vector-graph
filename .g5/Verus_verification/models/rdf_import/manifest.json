@@ -1,0 +1,51 @@
+{
+  "title": "rdf import",
+  "question": "RDF import: quad context wins; datatype dropped (bug-str-109); property insert-only (bug-str-110); local-name keys collide; infer on the graph argument (bug-str-111)",
+  "ontology_ids": [
+    "install.import.rdf"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 5}"
+    },
+    {
+      "label": "context-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_context_wins\", \"theorem_infer_ignores_contexts\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "keep-datatype",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_datatype_dropped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "upsert-property",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_reimport_keeps_old_value\", \"theorem_local_name_collision\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "full-iri-key",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_local_name_collision\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "infer-on-contexts",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_infer_ignores_contexts\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "name": "rdf_import",
+  "root": "rdf_import.rs",
+  "expected_verified": 5,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "context-ignored",
+      "find": "pub open spec fn effective_graph(ctx: Option<G>, arg: G) -> G { match ctx { Some(g) => g, None => arg } }",
+      "replace": "pub open spec fn effective_graph(ctx: Option<G>, arg: G) -> G { arg }",
+      "expect_fail_in": [
+        "theorem_context_wins",
+        "theorem_infer_ignores_contexts"
+      ],
+      "classification": "decision: the argument overrides a quad's context"
+    },
+    {
+      "name": "keep-datatype",
+      "find": "pub open spec fn stored_has_datatype(l: Lit) -> bool { false }",
+      "replace": "pub open spec fn stored_has_datatype(l: Lit) -> bool { l.dt != Dt::Plain }",
+      "expect_fail_in": [
+        "theorem_datatype_dropped"
+      ],
+      "classification": "effect: the stored row keeps the datatype (the repair)"
+    },
+    {
+      "name": "upsert-property",
+      "find": "pub open spec fn after_import(cur: Option<int>, v: int) -> Option<int> { match cur { Some(c) => Some(c), None => Some(v) } }",
+      "replace": "pub open spec fn after_import(cur: Option<int>, v: int) -> Option<int> { Some(v) }",
+      "expect_fail_in": [
+        "theorem_reimport_keeps_old_value",
+        "theorem_local_name_collision"
+      ],
+      "classification": "effect: a re-import replaces the value (the repair)"
+    },
+    {
+      "name": "full-iri-key",
+      "find": "pub open spec fn key_of(namespace: int, local: int) -> int { local }",
+      "replace": "pub open spec fn key_of(namespace: int, local: int) -> int { namespace }",
+      "expect_fail_in": [
+        "theorem_local_name_collision"
+      ],
+      "classification": "decision: the key includes the namespace"
+    },
+    {
+      "name": "infer-on-contexts",
+      "find": "pub open spec fn infer_graph(arg: G, quads_ctx: Option<G>) -> G { arg }",
+      "replace": "pub open spec fn infer_graph(arg: G, quads_ctx: Option<G>) -> G { match quads_ctx { Some(g) => g, None => arg } }",
+      "expect_fail_in": [
+        "theorem_infer_ignores_contexts"
+      ],
+      "classification": "decision: inference runs where the quads went (the repair)"
+    }
+  ]
+}
