@@ -1,4 +1,4 @@
-**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 48 (W55 Cypher expressions over run-time values). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`, and from iteration 47 under `7c5f718a`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
+**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 49 (W56 composed retrieval: fusion surfaces, IVF leg choice, vector-and-graph search, PPR-guided subgraph). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`, and from iteration 47 under `7c5f718a`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
 
 <a id="continuation-2026-11-17"></a>
 ## Continuation (2026-11-17, from `cloud-iris-continuation-start-20261117`)
@@ -20,13 +20,14 @@ Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bb
 | [46](iteration-46/HANDOFF.md) | W52 IVF index after its build | Medium bug-srch-107, Low bug-srch-108 (new), owner `search.ivf`; model `ivf_entries`; 441 → 448 |
 | [47](iteration-47/HANDOFF.md) | W53 SQL readers `kg_IVF`/`kg_BM25` (stopped draft, finished); W54 Cypher built-in functions at run time; `Txn_*` SQL entry points | Medium bug-srch-109, bug-cyp-111, -112, -113, -114, Low bug-cyp-115, -116 (new); F-C0841 modeled; owners `search.ivf.metric`, `query.functions` (8 blocks); model `cypher_fns`, `ivf_entries` extended; 448 → 463 |
 | [48](iteration-48/HANDOFF.md) | W55 Cypher expressions over run-time values: string functions, slices, `CASE`/`coalesce`, aggregation, `CREATE`/`SET` values, `Prop_Set` (16 held, 4 partial, 2 missed of 22) | High bug-cyp-120, Medium bug-cyp-117, -118, -119, Low bug-cyp-121..-124, Low potential bug-cyp-125 (new); bug-cyp-114's refusal traced; simp-cyp-101, -102; 6 owner blocks; model `cypher_exprs`; 463 → 480 |
+| [49](iteration-49/HANDOFF.md) | W56 composed retrieval: engine/SQL/`PyOps`/operator fusion, IVF leg choice, `kg_VECTOR_GRAPH_SEARCH`, `kg_PPR_GUIDED_SUBGRAPH`/`kg_SUBGRAPH`, `kg_RERANK`, `multi_vector_search` (18 held, 4 partial, 3 missed of 25) | High bug-plt-113, Medium bug-srch-110, bug-plt-114, Low bug-srch-111, -112 (new); bug-srch-005 now E2E reproduced; HD-0603 observed; 6 owner blocks; model `retrieval_compose`; 480 → 503 |
 
 
 ### Residual queue and interim judgment (kept current)
 
 Not converged. Every iteration of this continuation opened an area the earlier stops had not assessed, and eleven of
 thirteen produced new findings (28 new through iteration 47, plus one inherited divergence registered; iteration 42
-was the only clean one; iteration 48 added nine, one of them a driver-conditional potential problem).
+was the only clean one; iteration 48 added nine, one of them a driver-conditional potential problem; iteration 49 added five, one High, in retrieval composition).
 The frozen predictions taken from the docs mostly held; most findings came from reading the source after the freeze.
 Iteration 47 is the exception: four of twelve frozen openCypher predictions missed outright, all where a function's
 argument is known only at run time, which suggests the remaining Cypher expression surface (translator 962 members,
@@ -52,7 +53,7 @@ Next candidates, ranked by consequence and tractability (each still unowned or u
    owned (`temporal.stats`) with known divergences; no model.
 6. Embedding identity maintenance (`reconcile_recorded_dimensions`, `adopt_embedding_identities`, `list_quarantine`,
    `place_quarantined`, `measure_route_recall`).
-7. `kg_PPR_GUIDED_SUBGRAPH`, `kg_RERANK`, `kg_VECTOR_GRAPH_SEARCH`, `multi_vector_search` (retrieval composition).
+7. Retrieval composition residue after iteration 49 (first missing steps in the [iteration-49 residual list](iteration-49/HANDOFF.md#residual-list-first-missing-step-for-each)): the REST routes over HTTP (bug-srch-111/-112 partial), `PyOps` privilege reporting, `/metaPath`, `bfs_vector_rerank`, `search_nodes_by_vector`, duplicate IVF entries in the engine fusion (last occurrence wins). Iteration 49 covered the fusion surfaces, the IVF leg choice, `kg_VECTOR_GRAPH_SEARCH`, the PPR-guided subgraph, `kg_RERANK` and `multi_vector_search`.
 8. The `ivg` CLI (32 members, 4 bound) and the HTTP admin routes beyond `/api/cypher`.
 
 Still excluded or blocked as before: erasure, redaction and tenant removal (security-related); FHIR (external provider);

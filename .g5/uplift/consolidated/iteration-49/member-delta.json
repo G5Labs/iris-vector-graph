@@ -1,0 +1,129 @@
+{
+ "before": {
+  "revision": "e5f61f45",
+  "active": 480
+ },
+ "after": {
+  "revision": "working tree (iteration 49 seal)",
+  "active": 503
+ },
+ "denominator": 4130,
+ "newly_reached_and_bound": [
+  "iris_src/src/Graph/KG/PyOps.cls::FuseRanks",
+  "iris_src/src/Graph/KG/PyOps.cls::HybridSearch",
+  "iris_src/src/Graph/KG/PyOps.cls::RouteVectorRows",
+  "iris_src/src/Graph/KG/PyOps.cls::VectorSearch",
+  "iris_src/src/Graph/KG/PyOps.cls::getDefaultDimension",
+  "iris_src/src/Graph/KG/PyOps.cls::getExpectedDimension",
+  "iris_src/src/Graph/KG/PyOps.cls::getVectorTable",
+  "iris_src/src/Graph/KG/PyOps.cls::vectorToJson",
+  "iris_src/src/Graph/KG/Subgraph.cls::SubgraphJson",
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_PPR_GUIDED_SUBGRAPH",
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_RERANK",
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_SUBGRAPH",
+  "iris_vector_graph/_engine/vector.py::VectorMixin._fusion_leg_index",
+  "iris_vector_graph/_engine/vector.py::VectorMixin._index_graph",
+  "iris_vector_graph/_engine/vector.py::VectorMixin._index_graph_scopes",
+  "iris_vector_graph/_engine/vector.py::VectorMixin.kg_RRF_FUSE",
+  "iris_vector_graph/_engine/vector.py::VectorMixin.kg_VECTOR_GRAPH_SEARCH",
+  "iris_vector_graph/_engine/vector.py::VectorMixin.multi_vector_search",
+  "iris_vector_graph/operators.py::IRISGraphOperators.__init__",
+  "iris_vector_graph/operators.py::IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH",
+  "iris_vector_graph/operators.py::IRISGraphOperators.kg_RRF_FUSE",
+  "iris_vector_graph/operators.py::IRISGraphOperators.kg_VECTOR_GRAPH_SEARCH",
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_subgraph"
+ ],
+ "strengthened": [
+  "iris_vector_graph/_engine/vector.py::VectorMixin.ivf_build",
+  "iris_vector_graph/_engine/vector.py::VectorMixin.ivf_search",
+  "iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list"
+ ],
+ "lost": [],
+ "overlap": 0,
+ "distinct_additions": 26,
+ "roles": {
+  "iris_src/src/Graph/KG/PyOps.cls::FuseRanks": [
+   "decision: a missing row ranks 10^9; first occurrence per leg"
+  ],
+  "iris_src/src/Graph/KG/PyOps.cls::HybridSearch": [
+   "decision: c 0 becomes 60 (bug-srch-112); a routed graph fuses RouteVectorRows and kg_TXT through FuseRanks, else the SQL procedure"
+  ],
+  "iris_src/src/Graph/KG/PyOps.cls::RouteVectorRows": [
+   "decision: a named graph's own node route is read, else None for kg_KNN_VEC"
+  ],
+  "iris_src/src/Graph/KG/PyOps.cls::VectorSearch": [
+   "entry: the width check (vectorToJson) runs before the route lookup (RouteVectorRows)"
+  ],
+  "iris_src/src/Graph/KG/PyOps.cls::getDefaultDimension": [
+   "constant: the 768 an unrouted named graph is checked against"
+  ],
+  "iris_src/src/Graph/KG/PyOps.cls::getExpectedDimension": [
+   "decision: the route's width, else 768 for a named graph with no route"
+  ],
+  "iris_src/src/Graph/KG/PyOps.cls::getVectorTable": [
+   "provider: answers \"\" for a named graph with no route, which sends getExpectedDimension to the default width"
+  ],
+  "iris_src/src/Graph/KG/PyOps.cls::vectorToJson": [
+   "decision: refuses a query whose width differs from getExpectedDimension (bug-srch-111)"
+  ],
+  "iris_src/src/Graph/KG/Subgraph.cls::SubgraphJson": [
+   "decision: seeds with an edge, BFS over the frontier in ID order, the edge recorded before the cap test, out-edges of expanded nodes only (bug-plt-114)",
+   "decision (same body): one hop over the frontier and the stop after a node at the cap"
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_PPR_GUIDED_SUBGRAPH": [
+   "decision: the subgraph cap is min(max_nodes, ppr_top_k), seeded with the seeds and the top ids (bug-plt-113)",
+   "decision (same lines): guided_cap"
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_RERANK": [
+   "delegating entry with a stated role: fixes c = 60 and k1 = k2 = 2 * top_n, so the engine rule decides (R1: identical answers)"
+  ],
+  "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_SUBGRAPH": [
+   "delegating with a stated role: kg_SUBGRAPH forwards max_nodes to the store and reshapes its edges"
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin._fusion_leg_index": [
+   "decision: an index recorded for the graph, else hnsw, else an index of unknown graph, else no vector leg"
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin._index_graph": [
+   "decision: an IVF index built by another engine has an unknown graph (bug-srch-110)"
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin._index_graph_scopes": [
+   "state: the per-engine scope map, filled only by this engine's bm25_build and ivf_build"
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.kg_RRF_FUSE": [
+   "decision: a missing item is placed at len(other leg) + c (bug-srch-005); an empty or skipped leg adds 1/(2c)",
+   "decision (same lines): the engine surface of absent_place and rrf",
+   "decision: one try around both legs; a vector failure skips the text leg and the fusion answers []"
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.kg_VECTOR_GRAPH_SEARCH": [
+   "decision: list(set(...))[:k] before the sort by similarity; in_graph_expansion is expansion membership; similarity from the vector leg only",
+   "decision (same method): the flags and scores of answered nodes"
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.multi_vector_search": [
+   "decision: a source that raises is logged and skipped"
+  ],
+  "iris_vector_graph/operators.py::IRISGraphOperators.__init__": [
+   "decision: each IRISGraphOperators makes its own engine, which never sees another engine's IVF scope"
+  ],
+  "iris_vector_graph/operators.py::IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH": [
+   "delegating with a stated role: top_k replaces ppr_top_k and max_hops k_hops (P4: identical answers)"
+  ],
+  "iris_vector_graph/operators.py::IRISGraphOperators.kg_RRF_FUSE": [
+   "entry: the default query_vector \"[]\" takes the failing-vector branch (observed []), c defaults to 60"
+  ],
+  "iris_vector_graph/operators.py::IRISGraphOperators.kg_VECTOR_GRAPH_SEARCH": [
+   "delegating entry with a stated role: k = k_final or k_vector or k decides how many candidates are kept"
+  ],
+  "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_subgraph": [
+   "delegating with a stated role: passes seeds, hops and the cap to SubgraphJson unchanged (no Arno reader on the fixture)"
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.ivf_build": [
+   "writer: records the built IVF index's graph in the building engine only"
+  ],
+  "iris_vector_graph/_engine/vector.py::VectorMixin.ivf_search": [
+   "effect: the IVF leg read by the building engine ranks by the dot product under \"cosine\""
+  ],
+  "iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list": [
+   "effect: the SQL kg_RRF_FUSE body places a missing row at 10^9 (COALESCE(r, 1000000000))"
+  ]
+ }
+}

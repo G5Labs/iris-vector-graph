@@ -3160,6 +3160,8 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 Audit: Working assumption (agent, unratified): Unchanged: the reviewed ranking contract is the best k of the scored candidate set with defined ties; the documented set-order truncation is the baseline (now confirmed live). Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-0603).
 
+Iteration 49 evidence (agent): the truncation is now observed at the reader. With k = 2 and five candidates, `kg_VECTOR_GRAPH_SEARCH` left out the best vector hit for 7 of 8 Python hash seeds in one run and 5 of 8 in another ([binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json)); `retrieval_compose.rs::theorem_best_hit_can_be_dropped`, with the ranked alternative as control `sort-before-truncate`. The as-built rule is stated in [search.fusion.vector_graph](../ontology/features/search.g5.md#search.fusion.vector_graph). The question itself is unchanged.
+
 Canonical owner: [search.fusion.vector-graph-policy](#HD-0603).
 
 ```g5-question
@@ -3287,6 +3289,8 @@ _Imported from the playbook arm by `tools/make_crosswalk.py`; regenerate rather 
 
 
 Audit: Working assumption (agent, unratified): Preserve and test each surface's rule, including missing-rank handling and which text list it reads; document that the engine method and the SQL procedure of the same name differ. Introduce a single formula only with a versioned contract. Same as decisions.md. Options/implications and settling evidence remain explicit in the [per-ID review](audits/register-20261115/question-review.md#HD-0702).
+
+Iteration 49 evidence (agent): the engine rule and the `FuseRanks`/SQL rule were both observed on one graph with the same legs (a vector-only item 31st versus 61st; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json)); bug-srch-005 is now E2E reproduced. The per-surface rules are stated in [search.fusion.surfaces](../ontology/features/search.g5.md#search.fusion.surfaces). No authority settled the rule.
 
 Canonical owner: [search.fusion.absent](#HD-0702).
 

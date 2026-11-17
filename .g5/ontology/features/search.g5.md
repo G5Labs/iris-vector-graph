@@ -401,6 +401,52 @@ The exported Python `RRFFusion.fuse_results` uses each entity's first position i
 - Working assumption: Treat the three as compatibility surfaces and qualify each: RRFFusion is a pure standard-RRF helper (document that its rule differs from engine `kg_RRF_FUSE`, HD-0702); HybridSearchFusion is de facto public (migration guide) and graph-scoped; TextSearchEngine is exported but reads every graph and its document search cannot reach the IVG Schema, so it is not a supported reader of graph-scoped data. Prefer deprecation with migration advice (to `kg_TXT` / `bm25_search`) or a `graph=` argument; do not remove without a compatibility decision.
 
 
+<a id="search.fusion.surfaces"></a>
+[I · search.fusion.surfaces]
+
+Each fusion entry point keeps its own rule for an item one leg lacks and its own text list, so the same query can rank differently by entry point.
+- The engine's `kg_RRF_FUSE` (and `kg_RERANK`, `IRISGraphOperators.kg_RRF_FUSE`) reads a BM25 index of node properties and places a missing item at the other leg's length plus c. An item only the vector leg finds can then outrank items both legs rank well ([finding](../../Verus_verification/bugs_issues.md#bug-srch-005)).
+- The SQL `kg_RRF_FUSE` procedure and the `/hybridSearch` body (`PyOps.HybridSearch`, through `FuseRanks` for a routed graph) read the documents table through `kg_TXT` and place a missing item at 10^9, which is almost nothing.
+- An empty text query or an empty leg still adds 1/(2c) to every row the engine answers, so the reported score is not 1/(c + rank).
+- The engine method takes `c` with no default; `IRISGraphOperators` and `kg_RERANK` use 60, and `kg_RERANK` searches each leg 2 × `top_n` deep. `/hybridSearch` replaces a `c` of 0 with 60 ([finding](../../Verus_verification/bugs_issues.md#bug-srch-112)).
+- Working assumption: Each rule stays as it is until one rule is chosen ([open question](../../Verus_verification/open_questions.md#HD-0702)).
+
+
+<a id="search.fusion.leg_index"></a>
+[D · search.fusion.leg_index]
+
+The engine's fusion reads its vector leg from an IVF index recorded for the requested graph, else from the server-side vector search, else from an IVF index whose graph is unknown; with none of these the vector leg is empty.
+- Only the engine object that built an IVF index knows its graph. The same call on the same data therefore reads the IVF index in the process that built it and the server-side search everywhere else, including in `IRISGraphOperators`, which makes its own engine ([finding](../../Verus_verification/bugs_issues.md#bug-srch-110)).
+- An IVF index built with "cosine" ranks by the dot product ([search.ivf.metric](#search.ivf.metric)), so the two answers can differ.
+- The text leg uses the graph's own BM25 index, whose graph is stored with it.
+
+
+<a id="search.fusion.vector_graph"></a>
+[I · search.fusion.vector_graph]
+
+`kg_VECTOR_GRAPH_SEARCH` collects vector hits, their one-hop neighbours over edges whose `confidence` is at least 1000 × `min_confidence`, and text hits into one set, keeps k of them, and only then sorts the kept ones by vector similarity.
+- Which k are kept follows Python's set order, which changes between processes, so the best vector hit can be left out of the answer ([open question](../../Verus_verification/open_questions.md#HD-0603)).
+- A node found only by expansion or text scores 0.0, even when it has a stored vector.
+- `in_graph_expansion` is true for every node an edge reached, including a node the vector search also found.
+- An edge without a `confidence` value is not followed. A query vector of the wrong width raises; a graph with no vectors answers nothing.
+
+
+<a id="search.fusion.rest"></a>
+[I · search.fusion.rest]
+
+The `/vectorSearch` and `/hybridSearch` bodies (`Graph.KG.PyOps`) read a named graph's own route and the default graph's original table, like the engine.
+- Today they check the query's width before looking the route up. A named graph with no route expects width 768, so a query of another width is refused with a width error where the engine answers nothing ([finding](../../Verus_verification/bugs_issues.md#bug-srch-111)).
+- A failed read is raised with the SQL code, and a missing privilege names the table.
+
+
+<a id="search.fusion.multi_vector"></a>
+[I · search.fusion.multi_vector]
+
+`multi_vector_search` searches each source for 2 × `top_k` rows and fuses them by weighted reciprocal rank, `weight / (rrf_k + rank)` summed per ID; any other `fusion` value ranks by the raw score and ignores the weights.
+- A source that fails, such as one of another width or a routed table without a graph, is logged and skipped, so an answer can come from fewer sources than asked, and all sources failing answers nothing ([search.fusion.failed_leg](#search.fusion.failed_leg)).
+- A source's own `graph` overrides the call's.
+
+
 ## What erasure removes from search stores
 
 
@@ -573,6 +619,8 @@ Findings: [Claiming the default embedding table for a model that already has a d
 - data-integrity, user-facing-behavior
 
 State machines: [search](../../Verus_verification/models/search/manifest.json), [vector admission](../../Verus_verification/models/vector_admission/manifest.json)
+
+Findings: [`/vectorSearch` and `/hybridSearch` refuse a query of another width for a graph with no vectors](../../Verus_verification/bugs_issues.md#bug-srch-111)
 
 ### search.routes.cache
 
@@ -758,7 +806,7 @@ Findings: [Re-inserting a node into an IVF index keeps its old vector](../../Ver
 
 Recovered in iteration 47 from the metric's name, the accepted metric list and the sibling cosine searches; observed on the fixture ([W53](../../uplift/consolidated/iteration-47/sqlprocs-PAIRS.md)).
 
-Findings: [An IVF index built with metric "cosine" ranks by the raw dot product](../../Verus_verification/bugs_issues.md#bug-srch-109)
+Findings: [An IVF index built with metric "cosine" ranks by the raw dot product](../../Verus_verification/bugs_issues.md#bug-srch-109); [The engine's fusion reads a cosine IVF index only in the process that built it, so the same call ranks differently elsewhere](../../Verus_verification/bugs_issues.md#bug-srch-110)
 
 ### search.quarantine
 
@@ -886,13 +934,15 @@ Open questions: [In which order must the common-term cutoff list the terms it sk
 
 - uncertain
 - Sources: [engine kg_RRF_FUSE](../../../iris_vector_graph/_engine/vector.py#L1382-L1451), [API reference](../../../docs/API_REFERENCE.md#L985-L1000), [RRFFusion](../../../iris_vector_graph/fusion.py#L21-L64), [SQL kg_RRF_FUSE](../../../iris_vector_graph/schema.py#L2526-L2560), [Cypher ivg.retrieve](../../../iris_vector_graph/cypher/translator.py#L3239-L3360), [operators default c](../../../iris_vector_graph/operators.py#L37-L44), [test_rrf_fuse_e2e.py](../../../tests/unit/test_rrf_fuse_e2e.py)
-- Children: [Same graph](#search.fusion.same_graph), [Failed leg](#search.fusion.failed_leg), [Python fusion](#search.fusion.python), [Which reciprocal-rank-fusion rule is the product's?](../../Verus_verification/open_questions.md#HD-0702), [Should every fusion entry point use the same text ranking?](../../Verus_verification/open_questions.md#q-srch-006)
+- Children: [Same graph](#search.fusion.same_graph), [Failed leg](#search.fusion.failed_leg), [Python fusion](#search.fusion.python), [Surfaces](#search.fusion.surfaces), [Leg index](#search.fusion.leg_index), [Vector and graph search](#search.fusion.vector_graph), [REST bodies](#search.fusion.rest), [Several vector columns](#search.fusion.multi_vector), [Which reciprocal-rank-fusion rule is the product's?](../../Verus_verification/open_questions.md#HD-0702), [Should every fusion entry point use the same text ranking?](../../Verus_verification/open_questions.md#q-srch-006)
 - Note: the live test checks result shape only. The engine method and the SQL procedure take `c` with no default.
 - agent
 - user-facing-behavior
 - test-coverage
 
 Findings: [The engine's fusion gives a result missing from one leg a non-zero, length-dependent score](../../Verus_verification/bugs_issues.md#bug-srch-005); [One fusion function with an explicit absent-rank rule and per-leg failure reporting](../../Verus_verification/design_simplification.md#simp-srch-001)
+
+Iteration 49: [bug-srch-005](../../Verus_verification/bugs_issues.md#bug-srch-005) is now E2E reproduced at the engine and `/hybridSearch` readers ([retrieval_compose binding](../../Verus_verification/models/retrieval_compose/NOTES.md)); the rule per entry point is owned by [Surfaces](#search.fusion.surfaces).
 
 Audit reproduction: [bug-srch-005](../../Verus_verification/bugs_issues.md#bug-srch-005) is partial reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/components.json). This is product observation, not executable-body verification.
 
@@ -913,6 +963,7 @@ Findings: [Under USE GRAPH, fusion reads a BM25 index built for another graph as
 - Sources: [KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L172-L181), [text leg re-raise rationale](../../../iris_vector_graph/fusion.py#L154-L170)
 - Expands: [Fusion](#search.fusion)
 - Verus: [fusion_ranking](../../Verus_verification/models/fusion_ranking/NOTES.md) as-built `theorem_vector_failure_dropped_text_failure_raises`, `theorem_empty_success_is_a_retained_leg`, `theorem_graph_failure_dropped`; provider outcomes are external inputs, and catch/mode admission is derived. This models the Python wrapper's departure, not compliance with the intended failure rule.
+- Verus (engine, iteration 49): [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `engine_fuse`, `theorem_failed_vector_leg_reads_as_no_match` (control `vector-failure-isolated`), bound to the fixture: a 3-wide query answers [] while the text leg has 60 rows, and an empty vector leg answers the text ranking; `multi_vector_search` skips a failing source the same way (`theorem_failed_source_skipped`).
 - Observed divergence: the engine's fusion logs a failed leg and answers an empty or one-leg ranking, which `IRISGraphOperators.kg_RRF_FUSE`'s default empty query vector triggers. The known-issue entry plans the fix for 4.7.1 ([KNOWN_ISSUES](../../../docs/KNOWN_ISSUES.md#L172-L181)), and the [API reference](../../../docs/API_REFERENCE.md#L999) still documents the log-and-continue behaviour.
 - agent
 - user-facing-behavior
@@ -940,6 +991,78 @@ Open questions: [Are `TextSearchEngine`, `RRFFusion` and `HybridSearchFusion` su
 State machines: [fusion ranking](../../Verus_verification/models/fusion_ranking/manifest.json)
 
 Assumption review evidence: Same direction as decisions.md.
+
+### search.fusion.surfaces
+
+- uncertain
+- Sources: [engine kg_RRF_FUSE](../../../iris_vector_graph/_engine/vector.py#L1382-L1451), [kg_RERANK](../../../iris_vector_graph/_engine/algorithms.py#L1043-L1050), [operators](../../../iris_vector_graph/operators.py#L36-L43), [SQL kg_RRF_FUSE](../../../iris_vector_graph/schema.py#L2526-L2560), [PyOps FuseRanks, HybridSearch](../../../iris_src/src/Graph/KG/PyOps.cls#L351-L421), [API reference](../../../docs/API_REFERENCE.md#L985-L1000)
+- Expands: [Fusion](#search.fusion)
+- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `absent_place`, `rrf`, `theorem_engine_absent_rank_reorders`, `theorem_both_legs_rank10_wins_everywhere`, `theorem_engine_absent_depends_on_length`, `theorem_engine_skipped_leg_adds_constant`, `hybrid_c`, `theorem_hybrid_c_zero_becomes_60`
+- agent
+- user-facing-behavior
+
+Recovered in iteration 49 from the surfaces' source after the [W56 predictions](../../uplift/consolidated/iteration-49/retrieval-PAIRS.md) F1-F8; observed on the fixture (the same legs put a vector-only item 31st in the engine's answer and 61st in `/hybridSearch`'s).
+
+Open questions: [Which reciprocal-rank-fusion rule is the product's?](../../Verus_verification/open_questions.md#HD-0702), [Should every fusion entry point use the same text ranking?](../../Verus_verification/open_questions.md#q-srch-006)
+
+State machines: [retrieval compose](../../Verus_verification/models/retrieval_compose/manifest.json)
+
+Findings: [The engine's fusion gives a result missing from one leg a non-zero, length-dependent score](../../Verus_verification/bugs_issues.md#bug-srch-005); [`/hybridSearch` replaces a fusion constant of 0 with 60](../../Verus_verification/bugs_issues.md#bug-srch-112)
+
+### search.fusion.leg_index
+
+- Sources: [_fusion_leg_index](../../../iris_vector_graph/_engine/vector.py#L187-L225), [_index_graph](../../../iris_vector_graph/_engine/vector.py#L150-L185), [ivf_build scope](../../../iris_vector_graph/_engine/vector.py#L2023-L2025), [IRISGraphOperators.__init__](../../../iris_vector_graph/operators.py#L15-L18)
+- Expands: [Fusion](#search.fusion)
+- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `ivf_scope_seen`, `leg_index`, `above`, `theorem_fused_leg_depends_on_building_engine`, `theorem_other_graph_ivf_not_read`
+- agent
+- architecture-decision
+
+Recovered in iteration 49; prediction F7 held for the building engine and missed for a fresh engine and the operators.
+
+State machines: [retrieval compose](../../Verus_verification/models/retrieval_compose/manifest.json)
+
+Findings: [The engine's fusion reads a cosine IVF index only in the process that built it, so the same call ranks differently elsewhere](../../Verus_verification/bugs_issues.md#bug-srch-110)
+
+### search.fusion.vector_graph
+
+- uncertain
+- Sources: [kg_VECTOR_GRAPH_SEARCH](../../../iris_vector_graph/_engine/vector.py#L1453-L1548), [API reference](../../../docs/API_REFERENCE.md#L1015-L1031), [IRISGraphOperators.kg_VECTOR_GRAPH_SEARCH](../../../iris_vector_graph/operators.py#L67-L80)
+- Expands: [Fusion](#search.fusion)
+- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `answered`, `theorem_best_hit_can_be_dropped`, `theorem_k_covering_set_keeps_best`, `in_graph_expansion`, `vector_similarity`, `theorem_expansion_flag_and_text_only_zero`
+- agent
+- user-facing-behavior
+
+Observed in iteration 49: with k = 2 the best vector hit was missing for 7 of 8 hash seeds in the binding run (5 of 8 in the first probe). Predictions V1, V2, V3 and V5 held; V4 missed.
+
+Open questions: [Should the vector-and-graph search keep its k best candidates?](../../Verus_verification/open_questions.md#HD-0603)
+
+State machines: [retrieval compose](../../Verus_verification/models/retrieval_compose/manifest.json)
+
+### search.fusion.rest
+
+- Sources: [PyOps VectorSearch, RouteVectorRows, vectorToJson, getExpectedDimension](../../../iris_src/src/Graph/KG/PyOps.cls#L98-L349), [ADMIN_GUIDE Graph.KG.Service](../../../docs/ADMIN_GUIDE.md#L702-L725)
+- Expands: [Fusion](#search.fusion)
+- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `pyops_vector_search`, `engine_knn`, `theorem_unrouted_rest_search_refuses_width`
+- agent
+- user-facing-behavior
+
+Observed by calling the class methods on the fixture; the REST web application itself was not deployed. Prediction Y1 held for a 768-wide query and missed for a 4-wide one.
+
+State machines: [retrieval compose](../../Verus_verification/models/retrieval_compose/manifest.json)
+
+Findings: [`/vectorSearch` and `/hybridSearch` refuse a query of another width for a graph with no vectors](../../Verus_verification/bugs_issues.md#bug-srch-111)
+
+### search.fusion.multi_vector
+
+- Sources: [multi_vector_search](../../../iris_vector_graph/_engine/vector.py#L1288-L1381), [API reference](../../../docs/API_REFERENCE.md#L1067-L1081)
+- Expands: [Fusion](#search.fusion)
+- Verus: active: [retrieval_compose](../../Verus_verification/models/retrieval_compose/NOTES.md) `mvs_rows`, `theorem_failed_source_skipped` (no control; a transcription of the skip)
+- agent
+- user-facing-behavior
+
+Predictions M1 and M3 held; M2 was partial (the weights are ignored outside RRF, as the API reference's "raw score" says). `resolve_route` names a route without its schema; the generic helper needs `Graph_KG.` in front.
+
+State machines: [retrieval compose](../../Verus_verification/models/retrieval_compose/manifest.json)
 
 ### search.erasure
 - Sources: [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md#L8-L23), [EraseGraph](../../../iris_src/src/Graph/KG/Eraser.cls#L36-L313), [EraseAll registry delete](../../../iris_src/src/Graph/KG/Eraser.cls#L750-L760), [store inventory](../../../iris_src/src/Graph/KG/GraphStores.cls#L1-L60), [test_227_erase_isolation.py](../../../tests/e2e/test_227_erase_isolation.py)

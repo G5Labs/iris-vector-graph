@@ -507,6 +507,22 @@ CONTROL=row-slice-wrapped python3 .g5/Verus_verification/run_verus.py controls .
 python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after48                 # 480/4130
 ```
 
+Iteration 49 (W56, composed retrieval), same environment:
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/retrieval_compose     # PASS 28
+CONTROL=guided-cap-max-nodes python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/retrieval_compose
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/retrieval_compose/binding.py) # AGREES 41
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after49                 # 503/4130
+```
+
+Worked lookup (iteration 49): `algorithms.op.subgraph.guided` → `retrieval_compose.rs::theorem_guided_subgraph_drops_edges_among_top_nodes`
+→ the rows for `iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin.kg_PPR_GUIDED_SUBGRAPH` (line 971, decision: the cap
+`min(max_nodes, ppr_top_k)`) and `iris_src/src/Graph/KG/Subgraph.cls::SubgraphJson` (lines 6 and 51, decision) in
+`crosswalk/decision-links.tsv`; in reverse, those keys in `bindings.json` list the claims and roles. The distinguishing
+control is `guided-cap-max-nodes`; the product observation is the binding's `guided[7]` (seven nodes, one edge) beside
+`guided[50]` (all seven edges).
+
 Worked lookup (iteration 48): `query.writes.computed_values` → `cypher_exprs.rs::theorem_inline_rel_expression_dropped`
 → the row for `iris_vector_graph/cypher/translator.py::_create_clause_relationship_entry` (line 10212, decision) in
 `crosswalk/decision-links.tsv`; in reverse, that member's key in `bindings.json` lists this claim. The distinguishing

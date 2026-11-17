@@ -1069,6 +1069,25 @@ Consequence: the write reports success and the property is lost; nothing tells t
 
 Repair proposal (not implemented): resolve a relationship value as a node value is resolved (fold, else translate or refuse with the property's name), never dropping a non-null computed value. The control `rel-value-kept` checks the model's partial repair only. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
 
+<a id="bug-plt-113"></a>
+### kg_PPR_GUIDED_SUBGRAPH returns its top nodes with almost none of the edges among them
+
+Severity: High · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 49)
+
+Found by: W56 prediction P1 ([predictions](../uplift/consolidated/iteration-49/retrieval-PAIRS.md), missed), traced through `kg_PPR_GUIDED_SUBGRAPH` and `Graph.KG.Subgraph.SubgraphJson`; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_guided_subgraph_drops_edges_among_top_nodes` with neighbor `theorem_last_hop_edges_missing`'s uncapped expansion; controls `guided-cap-max-nodes`, `edge-recorded-after-cap-test`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed3-20261117T024208Z.json) `PG_star_top3`, `PG_star_top7`, `PG_star_top50`; [first probe](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `P1_top1`-`P1_top10`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `guided[3]`-`guided[50]`). Default graph, star s → a1..a6 plus a1 → a2. `kg_PPR_GUIDED_SUBGRAPH([s], ppr_top_k=7)` answers all seven nodes (all have positive scores) with the single edge a1 → a2; the six edges s → a_i are missing. With `ppr_top_k=3` it answers s, a1, a2 and again only a1 → a2. Passing neighbor: `ppr_top_k=50` (more than the reachable nodes) answers all seven edges, and `kg_SUBGRAPH([s], k_hops=2)` lists them too.
+
+Expected: the API reference and docstring: "the subgraph around the nodes personalized PageRank ranks highest", i.e. [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph)'s nodes within `k_hops` and the edges among them.
+
+Observed: `kg_PPR_GUIDED_SUBGRAPH` calls `kg_SUBGRAPH(seeds + top_ids, k_hops, max_nodes=min(max_nodes, ppr_top_k))` (`algorithms.py:971-973`). `SubgraphJson` admits every seed without a cap, so the count already equals the cap; the first hop expands only the first frontier node in ID order, records its out-edges and stops at the cap test after that node (`Subgraph.cls:51-99`).
+
+Consequence: whenever the walk reaches at least `ppr_top_k` nodes (with the default 50, any ordinary graph), the answer is the top nodes with only the out-edges of the alphabetically first one, which may also point outside the answer. A retrieval caller gets a node list with its relationships missing and no sign of it. High: wrong result of the method's main output under its defaults.
+
+Repair proposal (not implemented): pass `max_nodes` (not `min(max_nodes, ppr_top_k)`) and have the subgraph list the edges among its answered nodes; preserve the PPR ranking, `ppr_top_k`, argument checks and the uncapped answer. The control `guided-cap-max-nodes` checks the first half in the model only. Governing statement: [algorithms.op.subgraph.guided](../ontology/features/algorithms.g5.md#algorithms.op.subgraph.guided).
+
 <a id="bug-str-004"></a>
 ### verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity
 
@@ -1128,11 +1147,11 @@ Severity: Medium · Decision: Open
 
 Run: Uplift 2026-11-13
 
-**Suspected.** Derived from source arithmetic; no run compared the rankings. Severity is lowered one level from High.
+Iteration 49: the trigger is now confirmed at the real readers (below). Severity stays Medium: a wrong ranking among retrieved candidates, consistent with bug-srch-109.
 
-Found by: A-search F5 and S1 ([intent](../uplift/ivg-verus-initial/intent/search.md)).
+Found by: A-search F5 and S1 ([intent](../uplift/ivg-verus-initial/intent/search.md)); W56 predictions F1/F1b ([predictions](../uplift/consolidated/iteration-49/retrieval-PAIRS.md), F1b missed); [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_engine_absent_rank_reorders`, `theorem_engine_skipped_leg_adds_constant`, neighbor `theorem_both_legs_rank10_wins_everywhere`; controls `engine-absent-zero`, `sql-absent-like-engine`.
 
-Reproduced by: **partial reproduced** — [executable component cases](audits/register-20261115/components.py) and [results](audits/register-20261115/components.json). Remaining gate: a real pair of vector/BM25 providers and final reader ranking contrast remain; absent-rank policy is still Q search.fusion.absent
+Reproduced by: **E2E reproduced** (iteration 49) on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `F1_engine`, `F8_pyops_hybrid_G`, `F3_empty_text`, `F6_sql_fuse`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `engine_fuse`, `pyops_hybrid`, `sql_fuse`, `engine_empty_text`). One graph: x is vector rank 1 and in no text list; n00..n59 are in both legs in the same order (vector leg 62 long, text legs 60 long). The engine's `kg_RRF_FUSE(..., c=60)` answers x 31st with 1/61 + 1/180; the `/hybridSearch` body (`PyOps.HybridSearch` → `FuseRanks`) on the same graph answers x 61st with 1/61, and the SQL procedure on the default graph follows the 10^9 rule as well. An empty text query adds 1/120 to every engine row. Passing neighbor: an item at rank 10 in both legs beats x on every surface. Earlier record: partial reproduced — [executable component cases](audits/register-20261115/components.py) and [results](audits/register-20261115/components.json). Remaining gate: a real pair of vector/BM25 providers and final reader ranking contrast remain; absent-rank policy is still Q search.fusion.absent
 
 Historical reproduction record: none
 
@@ -3003,6 +3022,44 @@ Consequence: with stored vectors that are not unit length (`store_embedding` acc
 
 Repair proposal (not implemented): normalize vectors and centroids at build and insert time for metric "cosine" (or divide by the stored length at search time). Preserve: "dot" and "l2"/"euclidean" scores unchanged; equal-length vectors keep their order. Writers: `ivf_build`, `AddBatch`, `Insert`; readers: `Search` (via `ivf_search`, `kg_IVF`, `ivg.ivf.search`, `vector_search`'s fallback, `kg_RRF_FUSE`). The control `cosine-normalized` checks the repaired order in the model only; the repair was not run on the product. Governing statement: [search.ivf.metric](../ontology/features/search.g5.md#search.ivf.metric).
 
+<a id="bug-srch-110"></a>
+### The engine's fusion reads a cosine IVF index only in the process that built it, so the same call ranks differently elsewhere
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 49)
+
+Found by: W56 prediction F7 ([predictions](../uplift/consolidated/iteration-49/retrieval-PAIRS.md); held for the building engine, missed for a fresh engine and the operators) and the source of `_fusion_leg_index` / `_index_graph`; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_fused_leg_depends_on_building_engine` with neighbor `theorem_other_graph_ivf_not_read`; controls `ivf-scope-persisted`, `hnsw-before-own-ivf`, `ivf-cosine-normalized`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `leg_index_choice_*`, `F7_engine_building`, `F7_engine_fresh`, `F7_ops_fresh`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `choice_building`, `choice_fresh`, `engine_fuse_building`, `engine_fuse_fresh`, `ops_fuse_fresh`). One graph with 62 vectors including L = (10,10,0,0); `ivf_build(..., metric="cosine")` in engine e1. The same `kg_RRF_FUSE(100, 200, 200, 60, [1,0,0,0], "zeta", graph=g)` answers L 31st in e1 (it reads the IVF index, which scores L's dot product 10 first) and 62nd in a fresh engine and in `IRISGraphOperators` (they cannot tell the index's graph and read the server-side cosine search). Passing neighbor: before the IVF build, e1 answers exactly as the fresh engine does.
+
+Expected: one answer per call and data; [search.ivf.metric](../ontology/features/search.g5.md#search.ivf.metric) (a cosine index scores the cosine).
+
+Observed: `ivf_build` records the index's graph only in the building engine's `_index_graph_scopes` (`vector.py:2023-2025`); `_index_graph` answers None for an IVF index in any other engine (`:164-176`), and `_fusion_leg_index` prefers an index recorded for the graph over `hnsw` (`:187-225`). The IVF leg (`ivf_search`) also ignores `graph`.
+
+Consequence: a service that builds its IVF index in one process and searches in another (or restarts) silently changes the vector leg and the fused ranking; with non-unit vectors, the building process ranks by bug-srch-109's dot product. Medium: wrong ranking, data- and process-dependent.
+
+Repair proposal (not implemented): record an IVF index's graph with the index (as BM25 does) and choose the leg by that, and repair bug-srch-109; preserve the BM25 leg's choice and the hnsw leg's graph scope. Governing statement: [search.fusion.leg_index](../ontology/features/search.g5.md#search.fusion.leg_index).
+
+<a id="bug-plt-114"></a>
+### kg_SUBGRAPH misses edges among the outermost nodes and lists an edge to a node it left out when capped
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 49)
+
+Found by: the source of `Graph.KG.Subgraph.SubgraphJson` while tracing bug-plt-113; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_last_hop_edges_missing`, `theorem_capped_subgraph_lists_edge_to_unlisted_node`; control `edge-recorded-after-cap-test`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed3-20261117T024208Z.json) `S_star_1hop`, `S_star_cap3`, `S_isolated_seed`; [follow-up](../uplift/consolidated/iteration-49/retrieval-observed2-20261117T024059Z.json) `S_cap*`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `subgraph[*]`). Star s → a1..a6 plus a1 → a2: `kg_SUBGRAPH([s], k_hops=1)` answers a1 and a2 but not the edge a1 → a2; with `max_nodes=3` it answers s, a1, a2 and the edge s → a3; a seed with no edges is not answered. Passing neighbor: `k_hops=2` lists a1 → a2.
+
+Expected: [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph): the nodes within `k_hops`, at most `max_nodes`, and the edges among them.
+
+Observed: `SubgraphJson` records only edges leaving a frontier node, records the edge before the cap test and quits, and admits a seed only when it has an edge either way (`Subgraph.cls:38-99`).
+
+Consequence: callers that read the edge list (context building, `kg_PPR_GUIDED_SUBGRAPH`) miss relationships among returned nodes and can meet an edge whose end is not in the node list. Medium: visible wrong structure, no stored data changed.
+
+Repair proposal (not implemented): after the walk, list every edge whose two ends are answered (and drop a crossing edge at the cap); answer an isolated seed as a node. Preserve the hop limit, the cap and the edge-type filter. Governing statement: [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph).
+
 <a id="bug-cyp-111"></a>
 ### A list index known only at run time fails the whole query when it is negative, and answers the element as text
 
@@ -4856,6 +4913,42 @@ Expected: [search.embedding.width](../ontology/features/search.g5.md#search.embe
 Consequence: a caller mixing models gets a ranking computed over part of the vector, with no error. Low: needs a wrong-width query.
 
 Repair proposal (not implemented): refuse a query whose width differs from `cfg dim`. Governing statement: [search.ivf](../ontology/features/search.g5.md#search.ivf).
+
+<a id="bug-srch-111"></a>
+### `/vectorSearch` and `/hybridSearch` refuse a query of another width for a graph with no vectors
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 49)
+
+Found by: W56 prediction Y1 (held for a 768-wide query, missed for a 4-wide one) and the source of `PyOps.vectorToJson` / `getExpectedDimension`; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_unrouted_rest_search_refuses_width`; control `unrouted-no-width-check`.
+
+Reproduced by: **Partially reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `Y1_*`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `pyops_unrouted_4`, `pyops_unrouted_768`, `engine_unrouted_4`). `Graph.KG.PyOps.VectorSearch` (the `/vectorSearch` body) for a named graph with no route and a 4-wide query raises "Query embedding dimension 4 does not match expected 768"; with a 768-wide query it answers []; the engine's `kg_KNN_VEC` answers [] for the 4-wide query. The REST application itself was not deployed, so the HTTP response is the missing step.
+
+Expected: [search.routes.no_fallback](../ontology/features/search.g5.md#search.routes.no_fallback): an unrouted pair answers nothing, never a width error.
+
+Observed: `vectorToJson` checks the width against `getExpectedDimension`, which answers `getDefaultDimension()` = 768 for a pair with no route (`PyOps.cls:136-141`), before the route is looked up.
+
+Consequence: a REST search of a graph that has no vectors yet fails with a misleading width error instead of an empty answer. Low.
+
+Repair proposal (not implemented): look the route up first and answer [] for an unrouted named graph. Governing statement: [search.fusion.rest](../ontology/features/search.g5.md#search.fusion.rest).
+
+<a id="bug-srch-112"></a>
+### `/hybridSearch` replaces a fusion constant of 0 with 60
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 49)
+
+Found by: the source of `PyOps.HybridSearch` (`c = int(c) if c else 60`, `PyOps.cls:374`) after W56 F8; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_hybrid_c_zero_becomes_60`; control `hybrid-c-kept`.
+
+Reproduced by: **Partially reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `F8_pyops_hybrid_G_c0`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `pyops_hybrid_c0`): `HybridSearch(q, "zeta", 100, 0, g)` answers exactly the scores of `c = 60`. The REST route's own argument handling was not exercised.
+
+Expected: the caller's constant (the SQL procedure and the engine accept 0 and score 1/rank).
+
+Consequence: a caller asking for c = 0 silently gets c = 60. Low (an unusual value).
+
+Repair proposal (not implemented): default only a missing `c`. Governing statement: [search.fusion.surfaces](../ontology/features/search.g5.md#search.fusion.surfaces).
 
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
