@@ -220,3 +220,14 @@ nulls before reading `Exec.cls`; then model the gate decision with the reader be
 - Bindings use unverified Python transcriptions of the spec functions; ObjectScript bodies are executed, not proved.
 - The redaction exception, marked replay statements and statement-ID mismatches were not forged natively.
 - No independent review has run on this batch yet.
+
+## Repair after review 60 (round 1)
+
+The independent review (`$G5_RUN_STATE/review-60/REVIEW.md`, CONDITIONAL) found four material defects in this batch;
+all were reproduced natively and repaired: see [repair/DISPOSITIONS.md](repair/DISPOSITIONS.md). In short: verify's two
+temporal-marker rules (bug-led-013, Medium; `ledger_verify` now 15 verified / 12 controls, the unconditional adoption
+theorem withdrawn and narrowed), the counter row a caller's transaction holds (bug-led-014; the iteration-60
+`theorem_caller_transaction_holds_the_head` asserted lock + 1, now + 0), field limits refused as `inconsistent`
+(bug-led-015), the ledger's `NodeNotFoundError` vs the documented root class (bug-led-016; map row C4 was wrong), D10
+partial, 24 declaration-only classes relabelled `cites` (recount union 1007, active 772). Sections 3, 5, 7 and 9 above
+are the iteration-60 state; the repair's figures supersede them where they differ.
