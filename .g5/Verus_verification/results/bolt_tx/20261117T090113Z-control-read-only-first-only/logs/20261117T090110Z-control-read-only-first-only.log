@@ -1,0 +1,27 @@
+verification results:: 34 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/read-only-first-only/20261117T090110Z/models/bolt_tx/bolt_tx.rs:554:1
+    |
+554 | pub proof fn theorem_http_read_only_runs_none(store: nat, b: Seq<St>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/read-only-first-only/20261117T090110Z/models/bolt_tx/bolt_tx.rs:557:9
+    |
+554 | pub proof fn theorem_http_read_only_runs_none(store: nat, b: Seq<St>)
+    | --------------------------------------------------------------------- at the end of the function body
+...
+557 |         http_batch(true, store, b).store == store,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/read-only-first-only/20261117T090110Z/models/bolt_tx/bolt_tx.rs:558:9
+    |
+554 | pub proof fn theorem_http_read_only_runs_none(store: nat, b: Seq<St>)
+    | --------------------------------------------------------------------- at the end of the function body
+...
+558 |         http_batch(true, store, b).ran == 0,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

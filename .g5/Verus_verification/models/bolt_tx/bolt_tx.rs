@@ -380,4 +380,204 @@ pub proof fn theorem_witness_one_create_rolled_back()
     theorem_rollback_keeps_writes(S { store: 0, failed: false, tx: None }, inner);
 }
 
+
+// ================================================================== HTTP /db/neo4j/tx/commit batch (iteration 59, review 56-58 G1)
+// product 3eaa79cf, iris_vector_graph/cypher_api.py::neo4j_tx_commit 379-404:
+//   379-384 read-only gate: if IVG_READ_ONLY and ANY statement's text names a write (writes_cypher), answer 403 with
+//           Neo.ClientError.Statement.AccessMode and run NONE of the statements (ADMIN_API "Read-only mode").
+//   390-399 otherwise every statement runs in order through _run_cypher (239-265: engine.execute_cypher on the shared
+//           cached engine, whose connection has no caller transaction, so a write commits when the call returns:
+//           P-AUTOCOMMIT); an exception appends one error and the loop CONTINUES with the next statement; a failing
+//           statement leaves no writes of its own (P-STMT-ATOMIC, observed by the binding's failing statement).
+//   401-404 status 200 when no statement failed, else 400; the successful statements' results are returned beside
+//           the errors.
+// Rule (access.http_transactions, the same rule as access.bolt.transactions): one tx/commit request is one
+// transaction, BEGIN + its statements + COMMIT; a failed statement fails the transaction, so COMMIT cannot keep
+// anything and none of its writes may stay (`theorem_http_rule_is_bolt_rule` derives the batch rule from `neo`).
+
+/// A statement of the batch: the nodes it creates if it succeeds, whether it fails, whether its text names a write.
+pub struct St { pub w: nat, pub fails: bool, pub names_write: bool }
+pub enum HStatus { Ok200, Bad400, Forbidden403 }
+pub struct HOut { pub store: nat, pub ran: nat, pub errors: nat, pub status: HStatus }
+
+pub open spec fn any_named(b: Seq<St>) -> bool
+    decreases b.len()
+{ if b.len() == 0 { false } else { b[0].names_write || any_named(b.drop_first()) } }
+
+pub open spec fn any_fails(b: Seq<St>) -> bool
+    decreases b.len()
+{ if b.len() == 0 { false } else { b[0].fails || any_fails(b.drop_first()) } }
+
+pub open spec fn fail_count(b: Seq<St>) -> nat
+    decreases b.len()
+{ if b.len() == 0 { 0 } else { (if b[0].fails { 1nat } else { 0nat }) + fail_count(b.drop_first()) } }
+
+/// The writes of the statements that succeed.
+pub open spec fn ok_total(b: Seq<St>) -> nat
+    decreases b.len()
+{ if b.len() == 0 { 0 } else { (if b[0].fails { 0nat } else { b[0].w }) + ok_total(b.drop_first()) } }
+
+/// As built (390-399): every statement runs; a failure is recorded and the loop goes on. (store, ran, errors)
+pub open spec fn run_all(store: nat, b: Seq<St>) -> (nat, nat, nat)
+    decreases b.len()
+{
+    if b.len() == 0 { (store, 0, 0) }
+    else {
+        let st = b[0];
+        let r = run_all(if st.fails { store } else { store + st.w }, b.drop_first());
+        (r.0, r.1 + 1, r.2 + (if st.fails { 1nat } else { 0nat }))
+    }
+}
+
+pub open spec fn http_batch(read_only: bool, store: nat, b: Seq<St>) -> HOut {
+    if read_only && any_named(b) { HOut { store: store, ran: 0, errors: 1, status: HStatus::Forbidden403 } }
+    else {
+        let r = run_all(store, b);
+        HOut { store: r.0, ran: r.1, errors: r.2, status: if r.2 == 0 { HStatus::Ok200 } else { HStatus::Bad400 } }
+    }
+}
+
+/// The rule's final store for one request: refused, failed or committed whole.
+pub open spec fn rule_batch(read_only: bool, store: nat, b: Seq<St>) -> nat {
+    if read_only && any_named(b) { store } else if any_fails(b) { store } else { store + ok_total(b) }
+}
+
+/// The request as Bolt messages: BEGIN, one RUN per statement, COMMIT, then the connection closes.
+pub open spec fn as_runs(b: Seq<St>) -> Seq<Msg>
+    decreases b.len()
+{ if b.len() == 0 { Seq::empty() } else { seq![Msg::Run(b[0].w, b[0].fails)] + as_runs(b.drop_first()) } }
+
+pub open spec fn tx_msgs(b: Seq<St>) -> Seq<Msg> { seq![Msg::Begin] + as_runs(b) + seq![Msg::Commit, Msg::Close] }
+
+pub proof fn lemma_run_all(store: nat, b: Seq<St>)
+    ensures
+        run_all(store, b).0 == store + ok_total(b),
+        run_all(store, b).1 == b.len(),
+        run_all(store, b).2 == fail_count(b),
+        (fail_count(b) > 0) <==> any_fails(b),
+    decreases b.len()
+{
+    if b.len() > 0 {
+        lemma_run_all(if b[0].fails { store } else { store + b[0].w }, b.drop_first());
+    }
+}
+
+/// The rule's ledger ignores every statement once the transaction has failed.
+pub proof fn lemma_neo_failed_runs(c: C, b: Seq<St>)
+    requires c.failed,
+    ensures neo(c, as_runs(b)) == c,
+    decreases b.len()
+{
+    if b.len() > 0 {
+        let rest = as_runs(b.drop_first());
+        assert(as_runs(b) == seq![Msg::Run(b[0].w, b[0].fails)] + rest);
+        lemma_neo_append(c, seq![Msg::Run(b[0].w, b[0].fails)], rest);
+        lemma_neo_one(c, Msg::Run(b[0].w, b[0].fails));
+        lemma_neo_failed_runs(c, b.drop_first());
+    }
+}
+
+/// Inside an open transaction: the statements either fail it, or add their writes to the held transaction.
+pub proof fn lemma_neo_runs(c: C, b: Seq<St>, p: nat)
+    requires !c.failed, c.tx == Some(p),
+    ensures
+        neo(c, as_runs(b)).store == c.store,
+        neo(c, as_runs(b)).failed == any_fails(b),
+        !any_fails(b) ==> neo(c, as_runs(b)).tx == Some(p + ok_total(b)),
+    decreases b.len()
+{
+    if b.len() > 0 {
+        let m = Msg::Run(b[0].w, b[0].fails);
+        let rest = as_runs(b.drop_first());
+        assert(as_runs(b) == seq![m] + rest);
+        lemma_neo_append(c, seq![m], rest);
+        lemma_neo_one(c, m);
+        let c1 = neo_step(c, m);
+        if b[0].fails {
+            lemma_neo_failed_runs(c1, b.drop_first());
+        } else {
+            lemma_neo_runs(c1, b.drop_first(), p + b[0].w);
+        }
+    }
+}
+
+/// The batch rule is Bolt's rule: a request is BEGIN, its statements and COMMIT on one transaction.
+pub proof fn theorem_http_rule_is_bolt_rule(store: nat, b: Seq<St>)
+    ensures rule_batch(false, store, b) == neo(C { store: store, tx: None, failed: false }, tx_msgs(b)).store,
+{
+    let c = C { store: store, tx: None, failed: false };
+    let cb = neo_step(c, Msg::Begin);
+    lemma_neo_append(c, seq![Msg::Begin] + as_runs(b), seq![Msg::Commit, Msg::Close]);
+    lemma_neo_append(c, seq![Msg::Begin], as_runs(b));
+    lemma_neo_one(c, Msg::Begin);
+    lemma_neo_runs(cb, b, 0);
+    let c2 = neo(cb, as_runs(b));
+    reveal_with_fuel(neo, 3);
+    assert(seq![Msg::Commit, Msg::Close].drop_first() =~= seq![Msg::Close]);
+    assert(seq![Msg::Close].drop_first() =~= Seq::<Msg>::empty());
+}
+
+/// As built: outside the read-only refusal every statement runs, the failures are counted, and the successful
+/// statements' writes stay whatever failed around them; the status is 400 exactly when a statement failed.
+pub proof fn theorem_http_batch_keeps_writes_around_failure(read_only: bool, store: nat, b: Seq<St>)
+    requires !(read_only && any_named(b)),
+    ensures
+        http_batch(read_only, store, b).store == store + ok_total(b),
+        http_batch(read_only, store, b).ran == b.len(),
+        http_batch(read_only, store, b).errors == fail_count(b),
+        (http_batch(read_only, store, b).status == HStatus::Bad400) <==> any_fails(b),
+        any_fails(b) ==> rule_batch(read_only, store, b) == store,
+{
+    lemma_run_all(store, b);
+}
+
+/// The departure is exactly a failed batch whose other statements wrote something.
+pub proof fn theorem_http_batch_departs_iff(read_only: bool, store: nat, b: Seq<St>)
+    requires !(read_only && any_named(b)),
+    ensures (http_batch(read_only, store, b).store != rule_batch(read_only, store, b)) <==> (any_fails(b) && ok_total(b) > 0),
+{
+    lemma_run_all(store, b);
+}
+
+/// Neighbor: a batch with no failing statement commits all of its writes on both, with status 200.
+pub proof fn theorem_http_all_succeed_agrees(read_only: bool, store: nat, b: Seq<St>)
+    requires !(read_only && any_named(b)), !any_fails(b),
+    ensures
+        http_batch(read_only, store, b).store == store + ok_total(b),
+        rule_batch(read_only, store, b) == store + ok_total(b),
+        http_batch(read_only, store, b).status == HStatus::Ok200,
+{
+    lemma_run_all(store, b);
+}
+
+/// Neighbor already following the rule: under read-only mode a batch naming a write runs none of its statements.
+pub proof fn theorem_http_read_only_runs_none(store: nat, b: Seq<St>)
+    requires any_named(b),
+    ensures
+        http_batch(true, store, b).store == store,
+        http_batch(true, store, b).ran == 0,
+        http_batch(true, store, b).status == HStatus::Forbidden403,
+        rule_batch(true, store, b) == store,
+{}
+
+/// The binding's shape: CREATE, a failing statement, CREATE. Both CREATEs stay, three statements ran, status 400.
+pub proof fn theorem_http_witness_failing_middle()
+    ensures ({
+        let b = seq![St { w: 1, fails: false, names_write: true }, St { w: 0, fails: true, names_write: false },
+                     St { w: 1, fails: false, names_write: true }];
+        &&& http_batch(false, 0, b).store == 2
+        &&& http_batch(false, 0, b).ran == 3
+        &&& http_batch(false, 0, b).status == HStatus::Bad400
+        &&& rule_batch(false, 0, b) == 0
+    }),
+{
+    let b = seq![St { w: 1, fails: false, names_write: true }, St { w: 0, fails: true, names_write: false },
+                 St { w: 1, fails: false, names_write: true }];
+    reveal_with_fuel(any_named, 4); reveal_with_fuel(any_fails, 4); reveal_with_fuel(ok_total, 4);
+    reveal_with_fuel(run_all, 4);
+    assert(b.drop_first() =~= seq![St { w: 0, fails: true, names_write: false }, St { w: 1, fails: false, names_write: true }]);
+    assert(b.drop_first().drop_first() =~= seq![St { w: 1, fails: false, names_write: true }]);
+    assert(b.drop_first().drop_first().drop_first() =~= Seq::<St>::empty());
+}
+
 } // verus!

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: a successful RUN's write not committed by execute_cypher (removes P-AUTOCOMMIT); the auto-commit neighbor and every theorem built on the lemma lose their store",
+    "expect_fail_in": [
+      "lemma_plain_as_built"
+    ],
+    "find": "            Design::AsBuilt => match m {\n                Msg::Begin => (s, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { (S { store: s.store + w, failed: false, tx: s.tx }, Ans::Success) },",
+    "name": "run-not-committed",
+    "replace": "            Design::AsBuilt => match m {\n                Msg::Begin => (s, Ans::Success),\n                Msg::Run(w, fails) => if fails { (S { store: s.store, failed: true, tx: s.tx }, Ans::Failure) }\n                    else { (S { store: s.store, failed: false, tx: s.tx }, Ans::Success) },"
+  },
+  "expected": {
+    "fail_in": [
+      "lemma_plain_as_built"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_tx/bolt_tx.rs": "61cd3409f0b989a911f231bc54aba86a696be02afebffe57d76cc257f1d2f553",
+    ".g5/Verus_verification/models/bolt_tx/model.json": "709c572062429c38315f8dedec5d097ce9c82fa81a2959427a1529a717c8af00"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/run-not-committed/20261117T085902Z/models/bolt_tx/bolt_tx.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "lemma_plain_as_built": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T085902Z-control-run-not-committed-lemma_plain_as_built.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T085902Z-control-run-not-committed.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_tx/20261117T085904Z-control-run-not-committed/logs/20261117T085902Z-control-run-not-committed-lemma_plain_as_built.log": "2cd2989d0e840c9870fc9fb01e7856a274c3e8c2cb923ad8730dbc7f9dcd8038",
+    ".g5/Verus_verification/results/bolt_tx/20261117T085904Z-control-run-not-committed/logs/20261117T085902Z-control-run-not-committed.log": "8a63a85eb0de6ca34cbe6e1cd81e65318b18ba35fb7c8f6828f97c65e3450a05"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -17,7 +17,10 @@ import binding_common as bc  # noqa: E402
 PIN = bc.import_pin()
 import runtime  # noqa: E402
 
-MUTS = ["begin-refused", "atomic-tx", "rollback-answers-failure", "run-not-committed", "failed-run-writes", "failure-not-sticky"]
+MUTS = ["begin-refused", "atomic-tx", "rollback-answers-failure", "run-not-committed", "failed-run-writes", "failure-not-sticky",
+        "http-batch-atomic", "http-stop-at-failure", "http-failure-writes", "http-read-only-runs-reads", "http-status-ok-on-error",
+        "read-only-first-only"]
+BOLT_MUTS = MUTS[:6]; HTTP_MUTS = MUTS[6:]
 
 
 # ------------------------------------------------------------------ port of bolt_tx.rs (m = active mutation)
@@ -69,6 +72,35 @@ def neo(msgs):  # the rule (client ledger), recorded only
         elif k == "Commit" and tx is not None: store, tx = store + tx, None
         elif k in ("Rollback", "Reset", "Close"): tx = None
     return store
+
+
+# ------------------------------------------------------------------ port of the HTTP batch section (iteration 59, G1)
+# statements: ("W", 1) a CREATE of one node, ("B",) a statement that fails in translation (names CREATE), ("R",) a read
+def http_port(ro, stmts, m):
+    named = lambda x: x[0] in ("W", "B")
+    refused = (named(stmts[0]) if stmts else False) if m == "read-only-first-only" else any(named(x) for x in stmts)
+    if ro and refused:
+        if m == "http-read-only-runs-reads":
+            return {"status": 403, "results": sum(1 for x in stmts if not named(x)), "errors": 1, "count": 0}
+        return {"status": 403, "results": 0, "errors": 1, "count": 0}
+    store, results, errors = 0, 0, 0
+    for x in stmts:
+        if x[0] == "B":
+            errors += 1
+            if m == "http-failure-writes": store += 1
+            if m == "http-stop-at-failure": break
+        else:
+            results += 1
+            if x[0] == "W": store += x[1]
+    if m == "http-batch-atomic" and errors: store = 0
+    status = 200 if (errors == 0 or m == "http-status-ok-on-error") else 400
+    return {"status": status, "results": results, "errors": errors, "count": store}
+
+
+def http_rule(ro, stmts):  # rule_batch: refused, failed or committed whole (recorded only)
+    if ro and any(x[0] in ("W", "B") for x in stmts): return 0
+    if any(x[0] == "B" for x in stmts): return 0
+    return sum(x[1] for x in stmts if x[0] == "W")
 
 
 # ------------------------------------------------------------------ independent raw Bolt 4.4 client
@@ -183,7 +215,7 @@ def main():
         time.sleep(0.2)
         obs = {"answers": ans, "count": count(name)}
         cases.append({"name": name, "section": "R", "msgs": msgs, "observed": obs, "intended": neo(msgs),
-                      "predict": (lambda m, msgs=msgs: exec_(msgs, m))})
+                      "predict": (lambda m, msgs=msgs: exec_(msgs, m if m in BOLT_MUTS else None))})
 
     # D: the neo4j driver
     def drv():
@@ -250,8 +282,43 @@ def main():
             time.sleep(0.2)
             obs = {"errors": errs, "count": count(name)}
             cases.append({"name": name, "section": "D", "msgs": msgs, "observed": obs, "intended": neo(msgs),
-                          "predict": (lambda m, msgs=msgs, ee=errs_expected: {"errors": ee, "count": exec_(msgs, m)["count"]})})
+                          "predict": (lambda m, msgs=msgs, ee=errs_expected: {"errors": ee, "count": exec_(msgs, m if m in BOLT_MUTS else None)["count"]})})
     loop.call_soon_threadsafe(srv.close); time.sleep(0.3); loop.call_soon_threadsafe(loop.stop)
+
+    # H: the HTTP /db/neo4j/tx/commit batch (iteration 59, review 56-58 G1), in-process FastAPI app on USER
+    os.environ.update(IRIS_HOST="127.0.0.1", IRIS_PORT=str(runtime.PORT), IRIS_NAMESPACE="USER", BOLT_ENABLED="0")
+    os.environ.setdefault("IRIS_USERNAME", "_SYSTEM"); os.environ.setdefault("IRIS_PASSWORD", "SYS")
+    from fastapi.testclient import TestClient
+    from iris_vector_graph import cypher_api
+    WH, BH, RH = ("W", 1), ("B",), ("R",)
+    h_cases = {
+        "H_fail_middle": (False, [WH, BH, WH]),
+        "H_fail_first": (False, [BH, WH]),
+        "H_fail_last": (False, [WH, BH]),
+        "H_two_failures": (False, [WH, BH, WH, BH]),
+        "H_all_ok": (False, [WH, WH]),
+        "H_reads_around_failure": (False, [RH, BH, RH]),
+        "H_read_only_write": (True, [WH, RH]),
+        "H_read_only_reads": (True, [RH, RH]),
+        "H_read_only_write_last": (True, [RH, WH]),
+    }
+    with TestClient(cypher_api.app) as client:
+        for name, (ro, stmts) in h_cases.items():
+            body_st = []
+            for i, x in enumerate(stmts):
+                q = create(name, i) if x[0] == "W" else (bad(name) if x[0] == "B" else f"MATCH (n:{label(name)}) RETURN count(n) AS c")
+                body_st.append({"statement": q, "parameters": {}})
+            if ro: os.environ["IVG_READ_ONLY"] = "true"
+            try:
+                r = client.post("/db/neo4j/tx/commit", json={"statements": body_st})
+            finally:
+                os.environ.pop("IVG_READ_ONLY", None)
+            j = r.json()
+            obs = {"status": r.status_code, "results": len(j.get("results", [])), "errors": len(j.get("errors", [])), "count": count(name)}
+            cases.append({"name": name, "section": "H", "msgs": [list(x) for x in stmts], "read_only": ro, "observed": obs,
+                          "error_codes": sorted({x.get("code") for x in j.get("errors", [])}),
+                          "intended": http_rule(ro, stmts),
+                          "predict": (lambda m, ro=ro, stmts=stmts: http_port(ro, stmts, m if m in HTTP_MUTS else None))})
 
     # ---------------- verdict, sensitivities, tamper
     mism = [x["name"] for x in cases if x["predict"](None) != x["observed"]]
@@ -259,24 +326,31 @@ def main():
     tc = next(x for x in cases if x["name"] == "R_rollback")
     tampered = dict(tc["observed"], count=0)
     tamper_detected = tc["predict"](None) != tampered
+    th = next(x for x in cases if x["name"] == "H_fail_middle")
+    tampered_h = dict(th["observed"], count=0)
+    tamper_h_detected = th["predict"](None) != tampered_h
     body = {"verdict": "AGREES" if not mism else "DISAGREES", "cases": len(cases), "comparisons": len(cases), "mismatches": mism,
             "sensitivities_detected_cases": {m: len(v) for m, v in sens.items()}, "all_sensitivities_detected": all(sens.values()),
             "rule_only_controls": ["rule-rollback-keeps"],
             "tamper": {"case": tc["name"], "tampered_observation": tampered, "detected": tamper_detected},
+            "tamper_http": {"case": th["name"], "tampered_observation": tampered_h, "detected": tamper_h_detected},
             "departures_from_rule": [x["name"] for x in cases if x["observed"]["count"] != x["intended"]],
+            "rule_only_controls_http": ["rule-http-keeps-earlier"],
             "fixture": runtime.NAME, "port": runtime.PORT, "tag": TAG, "prefix": P, "neo4j_driver": md.version("neo4j"),
             "elapsed_s": round(time.time() - t0, 1),
             "pin": bc.pin_identity(PIN), "model_json_sha256": bc.sha(HERE / "model.json"),
-            "product_files": {p: bc.sha(PIN / p) for p in ["iris_vector_graph/bolt_server.py", "iris_vector_graph/_engine/query.py"]},
+            "product_files": {p: bc.sha(PIN / p) for p in ["iris_vector_graph/bolt_server.py", "iris_vector_graph/_engine/query.py", "iris_vector_graph/cypher_api.py"]},
             "cells": [{k: v for k, v in x.items() if k != "predict"} | {"expected": x["predict"](None)} for x in cases],
             "scope": "The product's TCP Bolt listener (BoltSession._dispatch, _handle_run, _handle_reset; TcpBoltSession) over a "
                      "real engine, read by an independent raw Bolt 4.4 client and the neo4j Python driver; the final reader is a "
                      "second engine connection's count. Not covered: WebSocket Bolt (same _dispatch), Bolt 5 drivers other "
-                     "than the Python one, the HTTP transaction routes, the read-only gate inside a transaction."}
+                     "than the Python one, the read-only gate inside a Bolt transaction. Section H (iteration 59): the HTTP /db/neo4j/tx/commit "
+                     "route (neo4j_tx_commit, _run_cypher) in-process through FastAPI's TestClient on a real engine, read by a second "
+                     "engine connection's count; /db/{db}/query/v2 and a statement that fails after writing part of its effect are not covered."}
     c2.close(); c3.close()
     out = bc.write_receipt("bolt_tx", Path(__file__).resolve(), body)
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "all_sensitivities_detected", "sensitivities_detected_cases", "departures_from_rule")}
-                     | {"tamper": tamper_detected, "receipt": str(out.relative_to(REPO))}))
+                     | {"tamper": tamper_detected, "tamper_http": tamper_h_detected, "receipt": str(out.relative_to(REPO))}))
     for x in mism: print("MISMATCH", x, json.dumps([y for y in cases if y["name"] == x][0]["observed"]))
     for m, v in sens.items():
         if not v: print("UNDETECTED", m)

@@ -1,7 +1,7 @@
 {
   "name": "bolt_tx",
   "root": "bolt_tx.rs",
-  "expected_verified": 20,
+  "expected_verified": 35,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -74,6 +74,73 @@
         "theorem_refusal_matches_rule"
       ],
       "classification": "rule weakened: the client ledger keeps a rolled-back transaction's writes (checks that the departure theorems constrain the rule, not only the server)"
+    },
+    {
+      "name": "http-batch-atomic",
+      "find": "        HOut { store: r.0, ran: r.1, errors: r.2, status: if r.2 == 0 { HStatus::Ok200 } else { HStatus::Bad400 } }",
+      "replace": "        HOut { store: if r.2 == 0 { r.0 } else { store }, ran: r.1, errors: r.2, status: if r.2 == 0 { HStatus::Ok200 } else { HStatus::Bad400 } }",
+      "expect_fail_in": [
+        "theorem_http_batch_keeps_writes_around_failure",
+        "theorem_http_batch_departs_iff",
+        "theorem_http_witness_failing_middle"
+      ],
+      "classification": "repair (intended, G1): a request with a failed statement is rolled back whole, so no statement's writes stay; every as-built departure theorem must change"
+    },
+    {
+      "name": "http-stop-at-failure",
+      "find": "        let r = run_all(if st.fails { store } else { store + st.w }, b.drop_first());\n        (r.0, r.1 + 1, r.2 + (if st.fails { 1nat } else { 0nat }))",
+      "replace": "        let r = run_all(if st.fails { store } else { store + st.w }, b.drop_first());\n        if st.fails { (store, 1, 1) } else { (r.0, r.1 + 1, r.2) }",
+      "expect_fail_in": [
+        "lemma_run_all"
+      ],
+      "classification": "decision 390-399: the loop stops at the first failing statement (Neo4j's order) instead of continuing; the statements after the failure no longer run, so ran and the kept writes change"
+    },
+    {
+      "name": "http-failure-writes",
+      "find": "        let r = run_all(if st.fails { store } else { store + st.w }, b.drop_first());",
+      "replace": "        let r = run_all(store + st.w, b.drop_first());",
+      "expect_fail_in": [
+        "lemma_run_all"
+      ],
+      "classification": "premise P-STMT-ATOMIC flipped: a failing statement keeps its own writes"
+    },
+    {
+      "name": "http-read-only-runs-reads",
+      "find": "    if read_only && any_named(b) { HOut { store: store, ran: 0, errors: 1, status: HStatus::Forbidden403 } }",
+      "replace": "    if read_only && any_named(b) { HOut { store: store, ran: b.len(), errors: 1, status: HStatus::Forbidden403 } }",
+      "expect_fail_in": [
+        "theorem_http_read_only_runs_none"
+      ],
+      "classification": "decision 379-384: the read-only gate refuses only the writing statements and still runs the reads (ADMIN_API: none of its statements run)"
+    },
+    {
+      "name": "http-status-ok-on-error",
+      "find": "        HOut { store: r.0, ran: r.1, errors: r.2, status: if r.2 == 0 { HStatus::Ok200 } else { HStatus::Bad400 } }",
+      "replace": "        HOut { store: r.0, ran: r.1, errors: r.2, status: HStatus::Ok200 }",
+      "expect_fail_in": [
+        "theorem_http_batch_keeps_writes_around_failure",
+        "theorem_http_witness_failing_middle"
+      ],
+      "classification": "answer 401-402: status 200 even when a statement failed (the errors array alone reports it)"
+    },
+    {
+      "name": "rule-http-keeps-earlier",
+      "find": "    if read_only && any_named(b) { store } else if any_fails(b) { store } else { store + ok_total(b) }",
+      "replace": "    if read_only && any_named(b) { store } else { store + ok_total(b) }",
+      "expect_fail_in": [
+        "theorem_http_rule_is_bolt_rule",
+        "theorem_http_batch_keeps_writes_around_failure"
+      ],
+      "classification": "the rule weakened (a failed request keeps its successful statements): no longer Bolt's transaction rule, so the shared-rule theorem fails"
+    },
+    {
+      "name": "read-only-first-only",
+      "find": "    if read_only && any_named(b) { HOut { store: store, ran: 0, errors: 1, status: HStatus::Forbidden403 } }",
+      "replace": "    if read_only && b.len() > 0 && b[0].names_write { HOut { store: store, ran: 0, errors: 1, status: HStatus::Forbidden403 } }",
+      "expect_fail_in": [
+        "theorem_http_read_only_runs_none"
+      ],
+      "classification": "decision cypher_api.py 230-236 (_cypher_writes_under_read_only): only the first statement's write verdict is checked instead of any statement's; a batch whose later statement writes would run"
     }
   ]
 }

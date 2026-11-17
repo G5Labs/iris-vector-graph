@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/http-status-ok-on-error/20261117T085928Z/models/bolt_tx/bolt_tx.rs:565:13
+    |
+564 |   pub proof fn theorem_http_witness_failing_middle()
+    |   -------------------------------------------------- at the end of the function body
+565 |       ensures ({
+    |  _____________^
+566 | |         let b = seq![St { w: 1, fails: false, names_write: true }, St { w: 0, fails: true, names_write: false },
+567 | |                      St { w: 1, fails: false, names_write: true }];
+568 | |         &&& http_batch(false, 0, b).store == 2
+...   |
+571 | |         &&& rule_batch(false, 0, b) == 0
+572 | |     }),
+    | |______^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -93,7 +93,49 @@ the engine's documented contract, USER_GUIDE "Transactions").
 - **P-STMT-ATOMIC**: a statement that fails writes nothing (observed for a translation failure only; a statement that
   fails at run time after writing part of its effect was not tried).
 - Not covered: WebSocket Bolt (`BoltSession` itself; same `_dispatch`), other drivers (Java, JavaScript, Go), the
-  read-only gate inside a transaction, the HTTP transaction routes (`/db/neo4j/tx`), concurrent sessions and
+  read-only gate inside a transaction, the HTTP `/db/{db}/query/v2` route (one statement), concurrent sessions and
   isolation (what another session reads mid-transaction).
 - The rule is the Bolt message specification's; which repair IVG adopts is the open question. Both checked repairs
   (`atomic-tx`, `begin-refused`) satisfy it.
+
+## HTTP `/db/neo4j/tx/commit` batch (iteration 59, independent review 56-58 item G1)
+
+Owner: [access.http_transactions](../../../ontology/concepts/access.g5.md#access.http_transactions) (new); finding
+[bug-plt-136](../../bugs_issues.md#bug-plt-136) (Medium); open question [access.transactions](../../open_questions.md#access.transactions)
+(working assumption revised, review m1). No frozen prediction: a review repair; the reviewer's probe had observed the
+outcome before the source was read. 35 verified (20 + 15: 9 proofs, 6 recursive-spec termination checks).
+
+| Part | Deciding input | Derived decision | Reader |
+|---|---|---|---|
+| `http_batch` (as built, `neo4j_tx_commit` 379-404) | read-only mode, each statement's writes `w`, whether it fails, whether its text names a write | refused (403, nothing runs) when read-only and **any** statement names a write; otherwise `run_all`: every statement runs, a failure adds an error and the loop goes on (P-STMT-ATOMIC: a failing statement writes nothing), status 400 iff an error | status, result and error counts; a second connection's node count |
+| `rule_batch` (the rule) | the same | refused, or failed whole (store unchanged), or committed whole | the count the client may expect |
+| `theorem_http_rule_is_bolt_rule` | — | `rule_batch(false, s, b)` equals Bolt's `neo` on BEGIN, one RUN per statement, COMMIT, close: the HTTP rule is not a second rule | — |
+
+Theorems: general `theorem_http_batch_keeps_writes_around_failure` (outside the refusal, every statement runs, the
+successful statements' writes stay, errors = failing statements, 400 iff a failure, and the rule keeps nothing when a
+statement failed), `theorem_http_batch_departs_iff` (departure exactly when a statement failed and another wrote);
+neighbors `theorem_http_all_succeed_agrees`, `theorem_http_read_only_runs_none`; witness
+`theorem_http_witness_failing_middle` (CREATE, failing, CREATE: store 2, 3 statements ran, 400; rule 0).
+
+Controls (7 new, 14 total, all EXPECTED_FAIL): `http-batch-atomic` (the repair), `http-stop-at-failure` (Neo4j's
+order: stop at the failure), `http-failure-writes` (P-STMT-ATOMIC flipped), `http-status-ok-on-error`,
+`http-read-only-runs-reads`, `read-only-first-only` (`_cypher_writes_under_read_only` checks only the first statement),
+`rule-http-keeps-earlier` (the rule weakened; breaks the shared-rule theorem).
+
+Binding section H (9 requests, FastAPI `TestClient` over `cypher_api.app` in-process, real engine on USER, counted by a
+second connection; receipt [AGREES 26](../../results/bolt_tx/20261117T090118Z-binding/receipt.json)): `H_fail_middle`
+(2 nodes, 400, 2 results, 1 error), `H_fail_first`, `H_fail_last`, `H_two_failures`, `H_all_ok` (200), `H_reads_around_failure`
+(no write), `H_read_only_write` and `H_read_only_write_last` (403, nothing ran), `H_read_only_reads` (200). Six port
+mutations mirror the HTTP controls and are each detected; a second tamper (`H_fail_middle` count 0) is detected. Four
+H cases depart from the rule (the four with a failure among writes). Every error code is
+`Neo.ClientError.Statement.SyntaxError` (observation only).
+
+| Member | Lines | Role |
+|---|---|---|
+| `iris_vector_graph/cypher_api.py::neo4j_tx_commit` | 379-404 | decision: the read-only all-or-nothing gate; every statement runs and the loop continues after a failure; status |
+| `iris_vector_graph/cypher_api.py::_cypher_writes_under_read_only` | 230-236 | decision: "any statement writes" over every statement before one runs |
+| `iris_vector_graph/cypher_api.py::_run_cypher` | 239-265 | effect (cited): one statement through `execute_cypher` (P-AUTOCOMMIT), one retry (HD-1603), then raise |
+
+Limits: `/db/{db}/query/v2` (one statement per request), a statement that fails at run time after writing part of its
+effect, concurrent requests (the engine lock serializes them), the 1,000-row cap (owned by `http_rows`). Neo4j's HTTP
+API page could not be fetched (permission denied), so the rule rests on the product's documents and its Bolt rule.

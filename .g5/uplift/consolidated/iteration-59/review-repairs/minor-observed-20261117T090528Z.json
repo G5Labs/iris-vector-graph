@@ -1,0 +1,357 @@
+{
+ "tag": "090528",
+ "fixture": "ivg-cont-20261117-iris",
+ "pin": {
+  "pin_dir": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/pin",
+  "pin_commit": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "files_equal_pin_blobs": {
+   "iris_vector_graph/_engine/temporal_window.py": true,
+   "iris_vector_graph/freshness.py": true,
+   "iris_vector_graph/embedded.py": true,
+   "iris_vector_graph/prop_values.py": true,
+   "iris_vector_graph/schema.py": true,
+   "iris_vector_graph/_engine/query.py": true,
+   "iris_vector_graph/ledger/replay.py": true,
+   "iris_vector_graph/ledger/client.py": true,
+   "iris_vector_graph/engine.py": true,
+   "iris_vector_graph/_engine/nodes_edges.py": true
+  },
+  "all_equal": true
+ },
+ "G2_unwind_import|native=0": {
+  "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'U0.NODE_ID' not found in the applicable tables^SELECT u0 . i AS i , lat1 . d AS d FROM ( SELECT :%qpar(1) AS i UNION ALL SELECT :%qpar(2) AS i ) u0 CROSS JOIN LATERAL ( SELECT CASE WHEN SUBSTRING ( CAST ( u0 . node_id AS>]"
+ },
+ "G2_unwind_import_unwind|native=0": {
+  "raised": "SyntaxError: Undefined variable: j"
+ },
+ "G2_neighbor_match_import|native=0": {
+  "error": "<SQL ERROR>; Details: [SQLCODE: <-23>:<Label is not listed among the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Label 'P2' is not listed among the applicable tables^SELECT lat2 . d AS d FROM Graph_KG . nodes n0 JOIN Graph_KG . rdf_labels l1 ON l1 . s = n0 . node_id AND l1 . graph_id = n0 . graph_id AND l1 . label = :%qpar(1) CROSS JOIN LATERAL ( SELECT Graph_KG . CY_TYPED ( CASE WHEN SUBSTRING ( CAST ( %EXACT ( p2 . val )>]"
+ },
+ "G2_neighbor_no_import|native=0": {
+  "rows": [
+   [
+    "1",
+    "5"
+   ],
+   [
+    "2",
+    "5"
+   ]
+  ]
+ },
+ "G2_neighbor_match_import_match|native=0": {
+  "rows": [
+   [
+    "0"
+   ]
+  ]
+ },
+ "G2_unwind_import_match|native=0": {
+  "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'U0.NODE_ID' not found in the applicable tables^SELECT COALESCE ( ( SELECT COUNT ( n1 . node_id ) FROM Graph_KG . nodes n1 WHERE n1 . node_id = u0 . node_id )>]"
+ },
+ "G3_mixed|native=0": {
+  "rows": [
+   [
+    "1.5"
+   ],
+   [
+    "True"
+   ],
+   [
+    "2"
+   ],
+   [
+    "'a'"
+   ],
+   [
+    "None"
+   ]
+  ]
+ },
+ "G3_mixed_desc|native=0": {
+  "rows": [
+   [
+    "None"
+   ],
+   [
+    "'a'"
+   ],
+   [
+    "2"
+   ],
+   [
+    "True"
+   ],
+   [
+    "1.5"
+   ]
+  ]
+ },
+ "G3_bools_numbers|native=0": {
+  "rows": [
+   [
+    "0.5"
+   ],
+   [
+    "False"
+   ],
+   [
+    "True"
+   ],
+   [
+    "2"
+   ]
+  ]
+ },
+ "G3_neighbor_numbers|native=0": {
+  "rows": [
+   [
+    "0.5"
+   ],
+   [
+    "1"
+   ],
+   [
+    "2"
+   ]
+  ]
+ },
+ "G3_neighbor_after_with|native=0": {
+  "rows": [
+   [
+    "'a'"
+   ],
+   [
+    "True"
+   ],
+   [
+    "1.5"
+   ],
+   [
+    "2"
+   ],
+   [
+    "None"
+   ]
+  ]
+ },
+ "U_list_union|native=0": {
+  "rows": [
+   [
+    "'[1, 2]'"
+   ],
+   [
+    "'[3]'"
+   ]
+  ]
+ },
+ "U_list_union_all|native=0": {
+  "rows": [
+   [
+    "'[1, 2]'"
+   ],
+   [
+    "'[1, 2]'"
+   ]
+  ]
+ },
+ "U_neighbor_list_alone|native=0": {
+  "rows": [
+   [
+    "[1, 2]"
+   ]
+  ]
+ },
+ "U_neighbor_scalar_union|native=0": {
+  "rows": [
+   [
+    "1"
+   ],
+   [
+    "2"
+   ]
+  ]
+ },
+ "m3_unwind_distinct|native=0": {
+  "rows": [
+   [
+    "1"
+   ]
+  ]
+ },
+ "m3_union_1_10|native=0": {
+  "rows": [
+   [
+    "1"
+   ]
+  ]
+ },
+ "G2_unwind_import|native=1": {
+  "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'U0.NODE_ID' not found in the applicable tables^SELECT u0 . i AS i , lat1 . d AS d FROM ( SELECT :%qpar(1) AS i UNION ALL SELECT :%qpar(2) AS i ) u0 CROSS JOIN LATERAL ( SELECT CASE WHEN SUBSTRING ( CAST ( u0 . node_id AS>]"
+ },
+ "G2_unwind_import_unwind|native=1": {
+  "raised": "SyntaxError: Undefined variable: j"
+ },
+ "G2_neighbor_match_import|native=1": {
+  "error": "<SQL ERROR>; Details: [SQLCODE: <-23>:<Label is not listed among the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Label 'P2' is not listed among the applicable tables^SELECT lat2 . d AS d FROM Graph_KG . nodes n0 JOIN Graph_KG . rdf_labels l1 ON l1 . s = n0 . node_id AND l1 . graph_id = n0 . graph_id AND l1 . label = :%qpar(1) CROSS JOIN LATERAL ( SELECT Graph_KG . CY_TYPED ( CASE WHEN SUBSTRING ( CAST ( %EXACT ( p2 . val )>]"
+ },
+ "G2_neighbor_no_import|native=1": {
+  "rows": [
+   [
+    "1",
+    "5"
+   ],
+   [
+    "2",
+    "5"
+   ]
+  ]
+ },
+ "G2_neighbor_match_import_match|native=1": {
+  "rows": [
+   [
+    "0"
+   ]
+  ]
+ },
+ "G2_unwind_import_match|native=1": {
+  "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'U0.NODE_ID' not found in the applicable tables^SELECT COALESCE ( ( SELECT COUNT ( n1 . node_id ) FROM Graph_KG . nodes n1 WHERE n1 . node_id = u0 . node_id )>]"
+ },
+ "G3_mixed|native=1": {
+  "rows": [
+   [
+    "1.5"
+   ],
+   [
+    "True"
+   ],
+   [
+    "2"
+   ],
+   [
+    "'a'"
+   ],
+   [
+    "None"
+   ]
+  ]
+ },
+ "G3_mixed_desc|native=1": {
+  "rows": [
+   [
+    "None"
+   ],
+   [
+    "'a'"
+   ],
+   [
+    "2"
+   ],
+   [
+    "True"
+   ],
+   [
+    "1.5"
+   ]
+  ]
+ },
+ "G3_bools_numbers|native=1": {
+  "rows": [
+   [
+    "0.5"
+   ],
+   [
+    "False"
+   ],
+   [
+    "True"
+   ],
+   [
+    "2"
+   ]
+  ]
+ },
+ "G3_neighbor_numbers|native=1": {
+  "rows": [
+   [
+    "0.5"
+   ],
+   [
+    "1"
+   ],
+   [
+    "2"
+   ]
+  ]
+ },
+ "G3_neighbor_after_with|native=1": {
+  "rows": [
+   [
+    "'a'"
+   ],
+   [
+    "True"
+   ],
+   [
+    "1.5"
+   ],
+   [
+    "2"
+   ],
+   [
+    "None"
+   ]
+  ]
+ },
+ "U_list_union|native=1": {
+  "rows": [
+   [
+    "'[1, 2]'"
+   ],
+   [
+    "'[3]'"
+   ]
+  ]
+ },
+ "U_list_union_all|native=1": {
+  "rows": [
+   [
+    "'[1, 2]'"
+   ],
+   [
+    "'[1, 2]'"
+   ]
+  ]
+ },
+ "U_neighbor_list_alone|native=1": {
+  "rows": [
+   [
+    "[1, 2]"
+   ]
+  ]
+ },
+ "U_neighbor_scalar_union|native=1": {
+  "rows": [
+   [
+    "1"
+   ],
+   [
+    "2"
+   ]
+  ]
+ },
+ "m3_unwind_distinct|native=1": {
+  "rows": [
+   [
+    "1"
+   ]
+  ]
+ },
+ "m3_union_1_10|native=1": {
+  "rows": [
+   [
+    "1"
+   ]
+  ]
+ }
+}

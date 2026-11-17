@@ -1,16 +1,17 @@
 {
   "title": "bolt transactions",
-  "question": "Bolt explicit transactions (iteration 56, review 53-55 F1; F-1601 promoted to bug-plt-127): BEGIN, COMMIT and ROLLBACK answer SUCCESS and keep no transaction, every RUN commits at once, so a rolled-back, failed, reset or abandoned transaction keeps its writes; commit and auto-commit agree with the rule; refusing BEGIN is a checked alternative repair",
+  "question": "Bolt explicit transactions (iteration 56, review 53-55 F1; F-1601 promoted to bug-plt-127): BEGIN, COMMIT and ROLLBACK answer SUCCESS and keep no transaction, every RUN commits at once, so a rolled-back, failed, reset or abandoned transaction keeps its writes; commit and auto-commit agree with the rule; refusing BEGIN is a checked alternative repair; iteration 59 (review 56-58 G1): the HTTP /db/neo4j/tx/commit batch runs every statement and keeps the successful ones' writes around a failing statement (bug-plt-136), against the same rule derived from Bolt's (theorem_http_rule_is_bolt_rule); the read-only refusal runs none",
   "ontology_ids": [
     "access.bolt.transactions",
-    "access.bolt"
+    "access.bolt",
+    "access.http_transactions"
   ],
   "runs": [
     {
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 20}"
+      "expect": "{\"errors\": 0, \"verified\": 35}"
     },
     {
       "label": "begin-refused",
@@ -53,6 +54,48 @@
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_rollback_keeps_writes\", \"theorem_refusal_matches_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "http-batch-atomic",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_http_batch_keeps_writes_around_failure\", \"theorem_http_batch_departs_iff\", \"theorem_http_witness_failing_middle\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "http-stop-at-failure",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_run_all\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "http-failure-writes",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_run_all\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "http-read-only-runs-reads",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_http_read_only_runs_none\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "http-status-ok-on-error",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_http_batch_keeps_writes_around_failure\", \"theorem_http_witness_failing_middle\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rule-http-keeps-earlier",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_http_rule_is_bolt_rule\", \"theorem_http_batch_keeps_writes_around_failure\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "read-only-first-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_http_read_only_runs_none\"], \"verdict\": \"EXPECTED_FAIL\"}"
     }
   ]
 }

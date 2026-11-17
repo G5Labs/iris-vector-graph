@@ -61,7 +61,16 @@ A successful RUN supplies a result stream, preserving admitted values and field 
 An explicit Bolt transaction keeps its writes only if it commits. A ROLLBACK, a failed statement, a RESET or a closed connection before COMMIT must leave none of the transaction's writes behind; a server that cannot do this must refuse BEGIN with a FAILURE, so the client knows each statement commits on its own.
 - A statement outside an explicit transaction commits when it finishes, and a committed transaction keeps all of its writes.
 - Which of the two forms IVG keeps, real transactions or a refused BEGIN, is not decided ([question](../../Verus_verification/open_questions.md#access.transactions)).
-- Today BEGIN, COMMIT and ROLLBACK all answer SUCCESS and change nothing, and each statement commits as it runs. A rolled-back transaction, one with a failed statement, one ended by RESET or a closed connection, and an aborted `execute_write` all keep their writes while the driver reports no error ([finding](../../Verus_verification/bugs_issues.md#bug-plt-127)).
+- Today BEGIN, COMMIT and ROLLBACK all answer SUCCESS and none of them opens, commits or undoes anything: ROLLBACK only clears the pending rows and COMMIT only returns the session to READY, and each statement commits as it runs. A rolled-back transaction, one with a failed statement, one ended by RESET or a closed connection, and an aborted `execute_write` all keep their writes while the driver reports no error ([finding](../../Verus_verification/bugs_issues.md#bug-plt-127)).
+
+<a id="access.http_transactions"></a>
+[I · access.http_transactions]
+
+A Neo4j HTTP transaction request (`/db/neo4j/tx/commit`) is one transaction: it keeps its statements' writes only if every statement succeeds. When one fails, none of the request's writes may stay; a server that cannot do this must refuse a request it could commit only in part.
+- A request whose statements all succeed commits all of their writes.
+- Under read-only mode a request with any writing statement runs none of its statements ([read-only mode](#access.read_only)).
+- The rule is the one [Bolt transactions](#access.bolt.transactions) owns: a request is BEGIN, its statements and COMMIT. Which form IVG keeps is the same open choice ([question](../../Verus_verification/open_questions.md#access.transactions)).
+- Today each statement commits as it runs and the request goes on after a failure: CREATE, a failing statement and CREATE answer 400 and keep both nodes ([finding](../../Verus_verification/bugs_issues.md#bug-plt-136)).
 
 <a id="access.bolt.versions"></a>
 [I · access.bolt.versions]
@@ -253,7 +262,7 @@ Strict mode applies to an engine whenever the ledger is strict, however long ago
 
 - uncertain
 - Sources: [ADMIN_API.md](../../../docs/ADMIN_API.md); [cypher_api.py](../../../iris_vector_graph/cypher_api.py); [api/main.py](../../../api/main.py); [bolt_server.py](../../../iris_vector_graph/bolt_server.py); [MCPTools.cls](../../../iris_src/src/Graph/KG/MCPTools.cls); [Service.cls](../../../iris_src/src/Graph/KG/Service.cls)
-- Children: [Bolt stream](#access.bolt), [IRIS boundary](#access.iris_boundary), [graph ID](#access.graph_id)
+- Children: [Bolt stream](#access.bolt), [Neo4j HTTP transactions](#access.http_transactions), [IRIS boundary](#access.iris_boundary), [graph ID](#access.graph_id)
 - Verus: [http_rows](../../Verus_verification/models/http_rows/NOTES.md) `theorem_answer_is_prefix`, `theorem_neo4j_answer_cannot_tell_truncation`, `theorem_api_row_count_is_kept` (HTTP Cypher row cap, as built)
 - Evidence: [frozen predictions and native observations](../../uplift/consolidated/iteration-32/http-PAIRS.md)
 - agent
@@ -339,11 +348,30 @@ State machines: [bolt stream](../../Verus_verification/models/bolt_stream/manife
 - agent
 - user-facing-behavior, data-integrity
 
-Recovered in iteration 56 from the Bolt message specification, the README's neo4j-driver compatibility claim and the engine's own transaction contract (USER_GUIDE: a caller's rollback removes IVG's writes). No product document says Bolt transactions are unsupported. Both answers the open question lists keep the rule above: either real transactions, or a refused BEGIN; neither allows answering SUCCESS to a ROLLBACK whose writes stay. The open choice is which of the two.
+Recovered in iteration 56 from the Bolt message specification, the README's neo4j-driver compatibility claim and the engine's own transaction contract (USER_GUIDE: a caller's rollback removes IVG's writes). No product document says Bolt transactions are unsupported. Both answers the open question lists keep the rule above: either real transactions, or a refused BEGIN; neither allows answering SUCCESS to a ROLLBACK whose writes stay. The open choice is which of the two. Iteration 59 (review 56-58 m1): the "Today" bullet now says what COMMIT and ROLLBACK actually do (`bolt_server.py:502-510`: ROLLBACK clears the pending rows, COMMIT returns the session to READY; neither touches a write); the HTTP batch's sibling rule is [Neo4j HTTP transactions](#access.http_transactions).
 
 Open questions: [Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning?](../../Verus_verification/open_questions.md#access.transactions)
 
 Findings: [A Bolt rollback keeps the transaction's writes](../../Verus_verification/bugs_issues.md#bug-plt-127) (formerly F-1601)
+
+State machines: [bolt transactions](../../Verus_verification/models/bolt_tx/manifest.json)
+
+### access.http_transactions
+
+- design-verified
+- uncertain
+- Sources: [`neo4j_tx_commit`](../../../iris_vector_graph/cypher_api.py#L379-L404), [`_run_cypher`](../../../iris_vector_graph/cypher_api.py#L239-L265), [`_cypher_writes_under_read_only`](../../../iris_vector_graph/cypher_api.py#L230-L236); [ADMIN_API: Neo4j HTTP routes and read-only mode](../../../docs/ADMIN_API.md); [README: Neo4j-compatible surfaces](../../../README.md)
+- Verus: [bolt_tx.rs](../../Verus_verification/models/bolt_tx/bolt_tx.rs) HTTP section: the rule derived from Bolt's `theorem_http_rule_is_bolt_rule`, `theorem_http_batch_keeps_writes_around_failure`, `theorem_http_batch_departs_iff`, neighbors `theorem_http_all_succeed_agrees`, `theorem_http_read_only_runs_none`, witness `theorem_http_witness_failing_middle` (controls `http-batch-atomic`, `http-stop-at-failure`, `http-failure-writes`, `http-status-ok-on-error`, `http-read-only-runs-reads`, `read-only-first-only`, `rule-http-keeps-earlier`); [scope](../../Verus_verification/models/bolt_tx/NOTES.md)
+- Evidence: [review 56-58 G1](../../uplift/consolidated/iteration-59/REVIEW-56-58.md); [bolt_tx binding section H](../../Verus_verification/results/bolt_tx/20261117T090118Z-binding/receipt.json) (FastAPI TestClient, real engine, nine requests)
+- Expands: [Entry points](#access.surfaces)
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered in iteration 59 (review 56-58 G1) from the route's name, ADMIN_API (the read-only rule already treats one request as a unit) and the product's own Bolt rule. Neo4j's HTTP API documentation could not be fetched in this session or in the review, so it is not quoted. Observed beside the departure: every failed statement is reported as `Neo.ClientError.Statement.SyntaxError` whatever failed, and the successful statements' results are returned beside the errors.
+
+Open questions: [Must the Neo4j-compatible surfaces keep Neo4j's transaction meaning?](../../Verus_verification/open_questions.md#access.transactions)
+
+Findings: [A Neo4j HTTP tx/commit request keeps its successful statements' writes when another fails](../../Verus_verification/bugs_issues.md#bug-plt-136) (iteration 59)
 
 State machines: [bolt transactions](../../Verus_verification/models/bolt_tx/manifest.json)
 

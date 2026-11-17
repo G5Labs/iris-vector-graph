@@ -138,6 +138,24 @@
         "witness_fast_overcounts"
       ],
       "classification": "decision: the exact count / walk does not exclude the source and first-hop nodes"
+    },
+    {
+      "name": "mark-ignores-left",
+      "find": "    g != 0 && !g_has_out_left && built && an_end_interned",
+      "replace": "    g != 0 && built && an_end_interned",
+      "expect_fail_in": [
+        "theorem_mark_graph_gone"
+      ],
+      "classification": "decision 177: MarkGraphGone marks even while the named graph still has out entries (Quit:$Data(^KG(\"out\",g)) dropped)"
+    },
+    {
+      "name": "mark-never",
+      "find": "    g != 0 && !g_has_out_left && built && an_end_interned",
+      "replace": "    false",
+      "expect_fail_in": [
+        "theorem_mark_graph_gone"
+      ],
+      "classification": "effect 180: MarkGraphGone never sets ^NKG(\"$meta\",\"stale\") (a named graph's interned nodes would stay in ^NKG until a rebuild)"
     }
   ]
 }

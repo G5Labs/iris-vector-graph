@@ -20,7 +20,8 @@ import runtime  # noqa: E402
 RUN = os.environ.get("AM_RUN", time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())); TAG = RUN[-7:-1]
 MUTS = ["remove_keyed_takes_triple", "put_keyed_drops_others", "leaf_highest", "plain_remove_keeps",
         "erase_ignores_graph", "held_elsewhere_ignored", "fresh_ignores_stamp", "label_erase_by_label",
-        "reweight_ignored", "exact_is_sum", "transition_new_weight", "create_ignores_mode"]
+        "reweight_ignored", "exact_is_sum", "transition_new_weight", "create_ignores_mode",
+        "mark_ignores_left", "mark_never"]   # the last two: iteration 59 (review 56-58 B2), the ^NKG stale flag
 
 
 def sha(p):
@@ -190,7 +191,9 @@ def nkg_edge_after_remove(before, had, built, held, mu):
 
 
 def marks_stale(gkey, left, built, interned, mu):
-    return (gkey != 0 or mu.get("mark_gone_default")) and not left and built and interned
+    if mu.get("mark_never"):
+        return False
+    return bool((gkey != 0 or mu.get("mark_gone_default")) and (not left or mu.get("mark_ignores_left")) and built and interned)
 
 
 def fast_answer(fresh, total, walk, mu):
@@ -292,6 +295,10 @@ def main():
         node(n1, ["L57"], g); node(n2, ["L57"], g); node(keep, ["L57"], g)
         create(n1, R, n2, 1, g); create(n2, R, keep, 1, g); create(keep, R, n1, 1, g)
 
+    # ---- B2 (iteration 59): a named graph GZ whose only edge is erased after sync -> MarkGraphGone ----
+    GZ = f"i57bg{TAG}z"; zu, zv = P + "zu", P + "zv"
+    create(zu, R, zv, 1, GZ)
+
     # ---- multigraph: D3 parallel edges through Cypher ----
     ms, mt, mu_ = P + "ms", P + "mt", P + "mu"
     e.set_multigraph(GM, True)
@@ -320,14 +327,22 @@ def main():
             return False
         return bool(nat.isDefined("^NKG", -1, int(si), -(int(pi) + 1), int(oi)))
 
+    def stale():
+        return bool(int(_get(nat, "^NKG", "$meta", "stale") or 0))
+    obs["stale_after_sync"] = stale()
     obs["nkg_n1n2_before"] = nkg_edge(n1, R, n2)
     e.delete_edge(n1, R, n2, graph=GA); rec(("delrow", T(GA, n1, R, n2), 0))
     obs["nkg_n1n2_after_ga"] = nkg_edge(n1, R, n2)
+    obs["stale_after_ga_delete"] = stale()      # GA keeps two edges: no mark
     obs["bfs_ga_n1"] = _bfs(store, n1, GA); obs["bfs_gb_n1"] = _bfs(store, n1, GB)
     # x->a in the default graph only: delete it (not held elsewhere) -> its ^NKG edge goes
     obs["nkg_xa_before"] = nkg_edge(x, R, a)
     e.delete_edge(x, R, a); rec(("delrow", T(None, x, R, a), 0))
     obs["nkg_xa_after"] = nkg_edge(x, R, a)
+    obs["stale_after_default_delete"] = stale()  # default graph: never marked
+    notes["gz_ends_interned"] = [_get(nat, "^NKG", "$NI", zu) is not None, _get(nat, "^NKG", "$NI", zv) is not None]
+    e.delete_edge(zu, R, zv, graph=GZ); rec(("delrow", T(GZ, zu, R, zv), 0))
+    obs["stale_after_gz_last_delete"] = stale()  # GZ's last out entry went, ends interned: marked
 
     # D3: Cypher DELETE r of one of two parallel edges (LIMIT 1), then which ekey went
     before = set(_ekeys(c, ms, R, mt, GM))
@@ -379,7 +394,7 @@ def main():
     c.close()
 
     def predict(mu):
-        port = Port({GM}, mu); out = {}
+        port = Port({GM}, mu); out = {}; stale_flag = False
         idx_first_sync = hist.index(("sync",))
         for i, op in enumerate(hist):
             port.apply(op)
@@ -390,16 +405,27 @@ def main():
                 out["reweight_before_sync"] = {k: v for k, v in port.entries(P).items() if k == repr(T(None, a, R, b))}
             if i == idx_first_sync:
                 built = True
+                out["stale_after_sync"] = False
                 out["nkg_built_after_sync"] = built
                 out["nkg_n1n2_before"] = True
                 out["nkg_xa_before"] = True
             if op == ("delrow", T(None, x, R, a), 0):
                 held = any(port.adj.get(T(g, x, R, a)) is not None for g in (GA, GB, GM))
                 out["nkg_xa_after"] = nkg_edge_after_remove(True, True, True, held, mu)
+                left = True  # USER's default graph holds other prefixes' rows, so its out entries never all go
+                stale_flag = stale_flag or marks_stale(0, left, True, True, mu)
+                out["stale_after_default_delete"] = stale_flag
+            if op == ("delrow", T(GZ, zu, R, zv), 0):
+                left = any(k[0] == GZ and v is not None for k, v in port.adj.items())
+                stale_flag = stale_flag or marks_stale(GZ, left, True, any(notes["gz_ends_interned"]), mu)
+                out["stale_after_gz_last_delete"] = stale_flag
             if op == ("delrow", T(GA, n1, R, n2), 0):
                 out["bfs_ga_n1"] = port.reach(GA, n1); out["bfs_gb_n1"] = port.reach(GB, n1)
                 held = port.adj.get(T(GB, n1, R, n2)) is not None
                 out["nkg_n1n2_after_ga"] = nkg_edge_after_remove(True, True, True, held, mu)
+                left = any(k[0] == GA and v is not None for k, v in port.adj.items())
+                stale_flag = marks_stale(GA, left, True, True, mu)
+                out["stale_after_ga_delete"] = stale_flag
             if op[0] == "delrow" and op[1] == T(GM, ms, R, mt) and "multi_after_delete_r" not in out:
                 out["cypher_delete_r_rows"] = 1
                 out["multi_after_delete_r"] = {k: v for k, v in port.entries(P).items() if k == repr(T(GM, ms, R, mt))}

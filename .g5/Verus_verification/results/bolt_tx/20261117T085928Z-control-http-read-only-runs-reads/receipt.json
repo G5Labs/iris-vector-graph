@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision 379-384: the read-only gate refuses only the writing statements and still runs the reads (ADMIN_API: none of its statements run)",
+    "expect_fail_in": [
+      "theorem_http_read_only_runs_none"
+    ],
+    "find": "    if read_only && any_named(b) { HOut { store: store, ran: 0, errors: 1, status: HStatus::Forbidden403 } }",
+    "name": "http-read-only-runs-reads",
+    "replace": "    if read_only && any_named(b) { HOut { store: store, ran: b.len(), errors: 1, status: HStatus::Forbidden403 } }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_http_read_only_runs_none"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_tx/bolt_tx.rs": "61cd3409f0b989a911f231bc54aba86a696be02afebffe57d76cc257f1d2f553",
+    ".g5/Verus_verification/models/bolt_tx/model.json": "709c572062429c38315f8dedec5d097ce9c82fa81a2959427a1529a717c8af00"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/http-read-only-runs-reads/20261117T085925Z/models/bolt_tx/bolt_tx.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_http_read_only_runs_none": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T085925Z-control-http-read-only-runs-reads-theorem_http_read_only_runs_none.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T085925Z-control-http-read-only-runs-reads.log",
+    "timed_out": false,
+    "verified": 34
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_tx/20261117T085928Z-control-http-read-only-runs-reads/logs/20261117T085925Z-control-http-read-only-runs-reads-theorem_http_read_only_runs_none.log": "1eb880f395c215f80e49bdb6171d6789698e4c81f3183ec47a605873c0419085",
+    ".g5/Verus_verification/results/bolt_tx/20261117T085928Z-control-http-read-only-runs-reads/logs/20261117T085925Z-control-http-read-only-runs-reads.log": "8785566daefe6b615c906c1bd4766bab34bbe78d6f495b576f231ff4d337a78d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

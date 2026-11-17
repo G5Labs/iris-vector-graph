@@ -48,3 +48,18 @@ The adjacency state is never an input. `rows_at(h, t)` and `adj_at(mm, h, t)` fo
 ## Binding
 
 `binding.py` writes one history through the product API (engine, store, Cypher) with prefix `i57b_<tag>_` and graphs `i57bg<tag>{a,b,m}` in USER (two namespace-wide `sync()` calls; no other prefix's data erased), records it as model ops, and compares a Python port of the spec functions (applied to the history) with the observed `^KG("out")` entries (leaf, keyed children, `#`, the `in` mirror), `^KG("label")`, `Graph.KG.Adj.Count`, `execute_bfs` reach, `^NKG(-1, …)` edges by name, and `khop2_count_fast/exact`. Multigraph ekeys (read off the rows right after each Cypher CREATE) and the ekey a `LIMIT 1` `DELETE r` removed are history identity read from the rows. Mutations mirror controls (table in BINDINGS.md); the tamper adds 1 to the observed survivor leaf after `DELETE r`.
+
+## Iteration 59: the ^NKG stale flag observed (independent review 56-58 item B2)
+
+`MarkGraphGone` (Adjacency.cls 174-181) was proved and controlled but not observed. The binding now creates a named
+graph GZ with one edge before the first `sync()`, then reads `^NKG("$meta","stale")`: after `sync()` (cleared,
+TraversalBuild.cls 336: false), after the GA delete that leaves two GA edges (false), after a default-graph delete
+(false: `Quit:pGraph=0`; USER's default graph never empties, so the default-graph control is detected only by the
+proof), and after GZ's last edge is erased with both ends interned (true). New controls `mark-ignores-left` and
+`mark-never` (both EXPECTED_FAIL in `theorem_mark_graph_gone`); port mutations `mark_ignores_left` (detected by the GA
+and default reads) and `mark_never` (detected by the GZ read). Whether an end is interned is read from `^NKG("$NI")`
+(sync's decision, an input here). Receipt: [AGREES 28](../../results/adjacency_maint/20261117T090257Z-binding/receipt.json)
+(was 24); the first run of the extended harness ([DISAGREES](../../results/adjacency_maint/20261117T090243Z-binding/receipt.json))
+was a port bug (a `None` from `marks_stale` for the GA read), fixed by returning a boolean; its observations were the
+same. Controls: 16, all EXPECTED_FAIL. B1: `OtherEdgeKeys` is relabelled `cites` (its answer is the model input
+`others`).

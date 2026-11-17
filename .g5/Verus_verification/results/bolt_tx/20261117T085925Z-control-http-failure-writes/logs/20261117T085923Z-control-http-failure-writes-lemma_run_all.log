@@ -1,0 +1,33 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/http-failure-writes/20261117T085923Z/models/bolt_tx/bolt_tx.rs:452:1
+    |
+452 | pub proof fn lemma_run_all(store: nat, b: Seq<St>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/http-failure-writes/20261117T085923Z/models/bolt_tx/bolt_tx.rs:454:9
+    |
+454 |           run_all(store, b).0 == store + ok_total(b),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+460 | /     if b.len() > 0 {
+461 | |         lemma_run_all(if b[0].fails { store } else { store + b[0].w }, b.drop_first());
+462 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/http-failure-writes/20261117T085923Z/models/bolt_tx/bolt_tx.rs:455:9
+    |
+455 |           run_all(store, b).1 == b.len(),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+460 | /     if b.len() > 0 {
+461 | |         lemma_run_all(if b[0].fails { store } else { store + b[0].w }, b.drop_first());
+462 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 2 previous errors
+

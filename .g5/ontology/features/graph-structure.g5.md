@@ -377,7 +377,7 @@ A rebuild recreates the adjacency index from the rows and then the interned snap
 
 - Working assumption: that an early failure leaves the previous adjacency, and a later one leaves a partial index whose degree cache is cleared, never wrong.
 - Without the accelerator library, `sync()` still rebuilds the interned snapshot with the ObjectScript builder.
-- Today, with a declared index, the rebuild empties the adjacency index and refills it row by row while other sessions read it, so for its duration a k-hop read can answer the start alone, a path length no path, and a breadth-first walk blank types ([finding](../../Verus_verification/bugs_issues.md#bug-str-115)). Working assumption: readers see the old index or the new one, never the emptied one, as the interned snapshot's live rewrite already promises ([open question](../../Verus_verification/open_questions.md#structure.rebuild.failure)).
+- Today, with a declared index, the rebuild empties the adjacency index and refills it row by row while other sessions read it, so for its duration a k-hop read can answer the start alone, a path length no path, a breadth-first walk blank types, and a native Cypher variable-length count 0; writes made during the rebuild are kept ([finding](../../Verus_verification/bugs_issues.md#bug-str-115)). Working assumption: readers see the old index or the new one, never the emptied one, as the interned snapshot's live rewrite already promises ([open question](../../Verus_verification/open_questions.md#structure.rebuild.failure)).
 
 <a id="structure.verify"></a>
 [I · structure.verify]

@@ -1115,6 +1115,27 @@ Repair proposal (not implemented, checked in the model only): either hold a tran
 
 Governing statement: [access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions).
 
+<a id="bug-plt-136"></a>
+### A Neo4j HTTP `tx/commit` request keeps the writes of its successful statements when another statement fails, and runs the statements after the failure
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 59)
+
+Found by: independent review 56-58 item G1 ([review](../uplift/consolidated/iteration-59/REVIEW-56-58.md), probe `rv58 … B`: CREATE, a failing UNION, CREATE in one request answered 400 and kept both nodes). The open question [access.transactions](open_questions.md#access.transactions) had recorded the fact in one bullet since the uplift began, without an owner or register entry. Model: [bolt_tx](models/bolt_tx/NOTES.md) HTTP section: `theorem_http_batch_keeps_writes_around_failure`, `theorem_http_batch_departs_iff`, the rule `theorem_http_rule_is_bolt_rule`; neighbors `theorem_http_all_succeed_agrees`, `theorem_http_read_only_runs_none`; witness `theorem_http_witness_failing_middle`; controls `http-batch-atomic` (the repair), `http-stop-at-failure`, `http-failure-writes`, `http-status-ok-on-error`, `http-read-only-runs-reads`, `read-only-first-only`, `rule-http-keeps-earlier`.
+
+Reproduced by: **E2E reproduced** (iteration 59) on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin: the product's FastAPI app (`iris_vector_graph.cypher_api`) in-process through `TestClient`, real engine on USER, counted by a second engine connection ([binding](results/bolt_tx/20261117T090118Z-binding/receipt.json) section H, AGREES; prefix `i56b_090113_`). CREATE, failing, CREATE: status 400, 2 results, 1 error, **2 nodes**; failing then CREATE: 1 node; CREATE then failing: 1 node; two failures among two CREATEs: 2 nodes, 2 errors. Every error carries `Neo.ClientError.Statement.SyntaxError`, whatever failed. Passing neighbors: two CREATEs commit both (200); reads around a failure write nothing; under `IVG_READ_ONLY=true` a request with one CREATE (first or last) answers 403 `Neo.ClientError.Statement.AccessMode` and runs none of its statements (0 results), as ADMIN_API says; two reads under read-only answer 200.
+
+Expected: [access.http_transactions](../ontology/concepts/access.g5.md#access.http_transactions): one `tx/commit` request is one transaction that keeps its writes only if every statement succeeds; a server that cannot do this must refuse a request it could commit only in part. Sources: the route's own name (`/db/neo4j/tx/commit`, Neo4j's HTTP route that opens and commits a transaction in one request); ADMIN_API's Neo4j HTTP routes and its read-only rule, which already treats the request as one unit ("runs none of its statements"); the same rule the product's Bolt surface owns ([access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions)), which `theorem_http_rule_is_bolt_rule` derives the batch rule from (BEGIN, the statements, COMMIT). Neo4j's HTTP API documentation is not quoted: fetching it was denied in this session, as in the review's (limitation); the rule above rests on the product's own documents and its Bolt rule. Which repair (one transaction, or refusing multi-statement requests) is the open question [access.transactions](open_questions.md#access.transactions).
+
+Observed: `neo4j_tx_commit` (`cypher_api.py:386-404`) runs each statement through `_run_cypher` (`:239-265`, `engine.execute_cypher` on the cached engine with no caller transaction, so a write commits when the call returns), appends one error for an exception and continues with the next statement; the status is 400 when any statement failed. The read-only gate (`:379-384`, `_cypher_writes_under_read_only` `:230-236`) is the only all-or-nothing decision.
+
+Consequence: a client that sends a multi-statement request as one unit of work and gets 400 back cannot tell that the statements before and after the failure were committed; a retry of the request writes them again. Medium rather than High (unlike [bug-plt-127](#bug-plt-127)): the persisted partial write is the same class, but the client is told that the request failed (status 400 and an `errors` entry), so it is not silent; the departure needs a request that mixes a failing statement with writes.
+
+Repair proposal (not implemented, checked in the model only): run the request's statements on one engine transaction on the cached engine's connection, stop at the first failure and roll back (control `http-batch-atomic`; Neo4j also stops at the failure: `http-stop-at-failure`), or refuse a request with more than one statement that writes. Preserve: a request whose statements all succeed commits all (`theorem_http_all_succeed_agrees`), and the read-only refusal (`theorem_http_read_only_runs_none`). Writers and readers affected: `neo4j_tx_commit`, `_run_cypher` (its one retry, HD-1603, must not re-run a statement inside the transaction). Distinguishing case: the binding's `H_fail_middle` (count 2 today, 0 after the repair) beside `H_all_ok` (2 on both). `/db/{db}/query/v2` (one statement) and a statement that fails after writing part of its own effect are not checked.
+
+Governing statement: [access.http_transactions](../ontology/concepts/access.g5.md#access.http_transactions).
+
 <a id="bug-plt-115"></a>
 ### The status report never counts vectors in routed tables, so a namespace whose vectors are all routed reads "absent" and not ready for vector search
 
@@ -3532,6 +3553,8 @@ Repair proposal (not implemented): carry each column's decoder through the union
 
 Iteration 58 (W62 C4, partial): a relationship returned in a `UNION ALL` branch also reaches the reader as JSON text (`'{"type":"K","props":{}}'`), while the same `RETURN r` alone answers a map; a stored double and a stored list behaved as already recorded ([probe](../uplift/consolidated/iteration-58/clauses/probe1.out), driver 5.3.2). Observed only, not modeled.
 
+Iteration 59 (review 56-58 evidence): literal lists in a `UNION` also come back as JSON text: `RETURN [1,2] AS x UNION RETURN [3] AS x` answers `'[1, 2]'` and `'[3]'`, and `UNION ALL` of `[1,2]` twice answers `'[1, 2]'` twice, on both engines, while `RETURN [1,2]` alone answers the list `[1, 2]` and a `UNION` of scalars answers integers ([observation](../uplift/consolidated/iteration-59/review-repairs/minor-observed-20261117T090528Z.json), keys `U_*`). Found by: independent review 56-58; reproduced by: this run's probe.
+
 <a id="bug-cyp-142"></a>
 ### A WHERE inside OPTIONAL MATCH that combines an earlier variable's property with arithmetic or OR fails the query with SQLCODE -94
 
@@ -3750,6 +3773,8 @@ Observed: `TraversalBuild.BuildKG` (lines 30-140) takes the writers' lock `^IVG.
 Consequence: a silent wrong answer, not an error, for every adjacency reader in every other session for the length of a rebuild (about three seconds per `sync()` on this small fixture; proportional to the edge count): k-hop, BFS types, unweighted path lengths, and by the same mechanism degree, PPR and the native Cypher reads over `^KG` (not exercised). `sync()` is the documented step after bulk loads and erasures, and it rebuilds a declared index that needs no rebuild. Medium: silent and reachable in ordinary operation, but transient and repaired when the rebuild ends.
 
 Repair proposal (not implemented): with a declared index skip the edge-index rebuild in `sync()` (structure.rebuild already says it is not needed), or build into a shadow tree and swap once, as `RewriteNKG` does for `^NKG`. Preserve: the end state equals the rows (`theorem_end_is_rows`, `adjacency_maint::theorem_incremental_equals_rebuild`). Distinguishing case: no seed-alone read during `sync()` (control `rebuild-swaps`; proved for the repair: `theorem_swap_shows_old_or_rows`). Governing statement: [structure.rebuild](../ontology/features/graph-structure.g5.md#structure.rebuild).
+
+Iteration 59 (review 56-58 evidence): the native Cypher reader is now exercised and departs too, and the writers' side is the passing neighbor. The reviewer's race probe ([copy](../uplift/consolidated/iteration-59/review-repairs/race_repro.py), fresh prefix `i59r_`) reproduced it afresh ([observation](../uplift/consolidated/iteration-59/review-repairs/race-observed-090546.json)): of 6,238 reads during three `sync()` calls, 462 answered `MATCH (s)-[*1..2]->(b) RETURN count(DISTINCT b)` = 0 on a `native_cypher=True` engine together with k-hop = the seed alone and path length −1 (4 more mixed reads departed), where every quiet read answers 3; all 40 `create_edge` calls made during `sync()` were still in `^KG("out")` and answered by k-hop afterwards. So the race loses reads, not writes. Found by: independent review 56-58 (its own probe `race-084644`: 467 of 6,413); reproduced by: this run.
 
 <a id="bug-str-117"></a>
 ### khop2_count_fast answers the sum of the middle nodes' out-degrees right after sync(), counting the source and repeated targets, and the walked count after any unrelated write
@@ -4238,6 +4263,8 @@ Consequence: the query fails with an error naming an internal stage; no wrong an
 
 Repair proposal (not implemented): project each variable as the explicit `WITH a, r, b` does, or rewrite `*` to that list. Preserve: node variables, `WITH * WHERE`, the `CALL ... YIELD` use (2215).
 
+Governing statement (iteration 59, review 56-58 m4: moved from query.conformance, which lists documented TCK deviations): [query.with](../ontology/features/cypher.g5.md#query.with).
+
 <a id="bug-cyp-151"></a>
 ### WITH *, a.v AS av does not parse: "Expected EOF, got ,"
 
@@ -4257,6 +4284,8 @@ Consequence: a valid query is refused; no wrong answer.
 
 Repair proposal (not implemented): accept `, item [AS alias]` after `*` and have the star branch add them. Preserve: `WITH *` alone and `WITH * WHERE`.
 
+Governing statement (iteration 59, review 56-58 m4: moved from query.conformance, which lists documented TCK deviations): [query.with](../ontology/features/cypher.g5.md#query.with).
+
 <a id="bug-cyp-152"></a>
 ### FOREACH over a literal list with a SET body that reads the loop variable fails "UndefinedVariable: x" and writes nothing
 
@@ -4275,6 +4304,48 @@ Observed: `_to_sql_handle_foreach` (`translator.py:3949-3966`) binds the variabl
 Consequence: the common "set from each element" FOREACH is refused and nothing is written.
 
 Repair proposal (not implemented): resolve `foreach_literals` in the SET value translation, applying the SETs in list order. Preserve: the CREATE body, the empty list, literal SET values.
+
+<a id="bug-cyp-157"></a>
+### A CALL { } subquery that imports an UNWIND variable fails, as does one that imports a node and has no MATCH of its own
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 59)
+
+Found by: independent review 56-58 item G2 ([review](../uplift/consolidated/iteration-59/REVIEW-56-58.md)). Not modeled.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, both engines (native executor off and on) ([observation](../uplift/consolidated/iteration-59/review-repairs/minor-observed-20261117T090528Z.json), keys `G2_*`). `UNWIND [1,2] AS i CALL { WITH i RETURN i*2 AS d } RETURN i, d` fails at Prepare with SQLCODE -29 (`Field 'U0.NODE_ID' not found`); so does `UNWIND [..] AS k CALL { WITH k MATCH (m {id: k}) RETURN count(m) AS c } RETURN k, c`; `CALL { WITH i UNWIND range(1,i) AS j RETURN count(j) AS c }` raises `SyntaxError: Undefined variable: j`. Wider than the review: `MATCH (n:L) CALL { WITH n RETURN n.v * 2 AS d } RETURN d` fails with SQLCODE -23 (`Label 'P2' is not listed`). Passing neighbors: a subquery that imports nothing (`CALL { RETURN 5 AS d }` after UNWIND, two rows) and a MATCH-anchored import whose subquery matches from the imported node (count 0 for a node without edges; iteration 58 W62 C5).
+
+Expected: openCypher: a `CALL { }` subquery's importing `WITH` may name any variable in scope, whatever clause bound it; the subquery runs once per incoming row ([query.with](../ontology/features/cypher.g5.md#query.with)).
+
+Observed: `translate_subquery_call` (`translator.py:14697`, with the `CROSS JOIN LATERAL` at 14607) reads an imported variable as a node id; the cause was not traced further in this iteration.
+
+Consequence: the query fails with an internal SQL error; no wrong answer. Workaround: move the UNWIND or the expression outside the subquery. Low: loud.
+
+Repair proposal (not implemented): bind an imported scalar (an UNWIND or WITH value) by its value column, and a node by its id, in the lateral subquery; or refuse the import with a clear message. Preserve: the MATCH-anchored import (C5) and its null-row aggregates.
+
+Governing statement: [query.with](../ontology/features/cypher.g5.md#query.with).
+
+<a id="bug-cyp-158"></a>
+### ORDER BY over a list the query holds sorts booleans among the numbers
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 59)
+
+Found by: independent review 56-58 item G3 ([review](../uplift/consolidated/iteration-59/REVIEW-56-58.md)). Not modeled.
+
+Reproduced by: **E2E reproduced** on the same fixture and pin, both engines ([observation](../uplift/consolidated/iteration-59/review-repairs/minor-observed-20261117T090528Z.json), keys `G3_*`). `UNWIND [2,'a',null,1.5,true] AS x RETURN x ORDER BY x` answers `1.5, true, 2, 'a', null`; `[2,true,0.5,false]` answers `0.5, false, true, 2`; `DESC` reverses the first. Passing neighbors: numbers alone sort by value; the same list sorted by `WITH x ORDER BY x RETURN x` answers `'a', true, 1.5, 2, null` (iteration 58 C9 held); stored property values follow the kind-first key.
+
+Expected: [query.values.sorting](../ontology/features/cypher.g5.md#query.values.sorting): strings, then booleans, then numbers, then null last; openCypher orderability.
+
+Observed: a `RETURN ... ORDER BY` over an UNWIND value sorts a boolean as the number it is bound as (`true` 1, `false` 0) rather than through the kind-first key (`CY_SORT_KEY`, `translator.py:7765-7769`) the `WITH` route uses; the cause was not traced further in this iteration.
+
+Consequence: a silent wrong order, only for a list that mixes booleans with numbers; Low.
+
+Repair proposal (not implemented): sort UNWIND values through the same kind-first key as the `WITH` route and property values. Preserve: the numeric order of numbers and the C9 order after `WITH`.
+
+Governing statement: [query.values.sorting](../ontology/features/cypher.g5.md#query.values.sorting).
 
 <a id="bug-plt-135"></a>
 ### An OPTIONAL MATCH node with no match answers labels '[]' and properties '[]' at execute_cypher, /api/cypher and tx/commit

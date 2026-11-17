@@ -389,7 +389,7 @@ Grouping keys, `DISTINCT` and `count(DISTINCT)` treat two values as one when the
 - Over a list the query holds, `UNWIND [1, '1'] AS k` also gives one group and one `DISTINCT` row.
 - A boolean and the string that spells it are one stored value ([documented known issue](../../../docs/KNOWN_ISSUES.md#L332-L368)), so they stay one group on both paths.
 - Working assumption: an integer and a float of equal value (1 and 1.0) are two groups, as the native executor answers; this is provisional.
-- Today on the SQL path a grouping key and `count(DISTINCT)` make 1 and 1.0 one value, while `RETURN DISTINCT` keeps them apart. Which of the two departs depends on the open question.
+- Today on the SQL path, for stored properties, a grouping key and `count(DISTINCT)` make 1 and 1.0 one value, while `RETURN DISTINCT` keeps them apart. Over a list the query holds, `RETURN DISTINCT` and `UNION` also make them one row (`UNWIND [1, 1.0] AS x RETURN DISTINCT x` and `RETURN 1 AS x UNION RETURN 1.0 AS x` each answer one row). Which side departs depends on the open question.
 - Today over a list the query holds, a grouping key and `count(DISTINCT)` also make the integer 1 and `true` (0 and `false`) one value, and a list and the string spelling it (`[1]` and `'[1]'`) one value, while `RETURN DISTINCT` keeps them apart. The string `'true'` and `true` stay two groups ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-149)).
 
 
@@ -417,6 +417,16 @@ Arithmetic over aggregates gives the openCypher number: over `v` 1, 2 and `f` 2.
 - A `WHERE` inside it that reads only its new variables runs and keeps every row, whatever its `AND`, `OR`, `NOT` and arithmetic, such as `b.v = 2 OR b.v = 3` or `b.v - 1 = 2`. Today the SQLCODE -94 refusal follows negation: `NOT (b.v = a.v OR b.v = 10)` runs, while `NOT (b.v = a.v + 1)` and `NOT (b.v = 10 AND b.v = a.v)` are refused ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-142)).
 - A property of a node the `OPTIONAL MATCH` did not bind is null at every reader and under both IRIS drivers, also through a `WITH`, and `collect()` of the unbound node is `[]`. Today the unbound node itself, at `execute_cypher`, `/api/cypher` and tx/commit (its three columns), answers `b_id` null but `b_labels` and `b_props` as `'[]'`; Bolt answers the node as null ([finding](../../Verus_verification/bugs_issues.md#bug-plt-135)).
 
+
+<a id="query.with"></a>
+[I · query.with]
+
+`WITH` ends one part of a query and passes its rows on: the next part sees exactly the variables `WITH` names, and `WITH *` passes every variable in scope, nodes, relationships and values alike.
+- `WITH *` may be followed by more items, such as `WITH *, a.v AS av`, which add to the variables passed on.
+- A `CALL { }` subquery imports variables with a first `WITH`; it may import any variable in scope, whatever clause bound it, and runs once per incoming row.
+- `DISTINCT`, `ORDER BY`, `SKIP` and `LIMIT` after `WITH` follow [paging](#query.paging); aggregation in `WITH` follows [aggregation](#query.aggregation).
+- Today `WITH *` does not carry a relationship variable, so a later `type(r)` fails with SQLCODE -29 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-150)), and `WITH *, a.v AS av` does not parse ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-151)).
+- Today a `CALL { }` subquery that imports an `UNWIND` variable fails, and so does one that imports a node and has no `MATCH` of its own; importing a node into a subquery that matches from it works ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-157)).
 
 <a id="query.paging"></a>
 [I · query.paging]
@@ -447,6 +457,7 @@ A parameter supplies a value of its own type wherever the query could hold a lit
 - Today a branch that is a whole-label count, such as `MATCH (n:L) RETURN count(n) AS x`, fails with SQLCODE -1 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-140)).
 - The refusals do not use the TCK's error names (DifferentColumnsInUnion, InvalidClauseComposition).
 - Today a relationship in a `UNION ALL` branch reaches the reader as its JSON text, such as `'{"type":"K","props":{}}'`, while `RETURN r` alone answers a map ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-138)).
+- Today a literal list in a branch also reaches the reader as its JSON text (`'[1, 2]'`), while `RETURN [1,2]` alone answers a list ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-138)).
 
 
 ## Conformance
@@ -468,7 +479,6 @@ IVG holds its Cypher to the openCypher TCK and lists each known deviation in its
 - A `CREATE` or `MERGE` after `UNWIND $p AS e WITH e` fails.
 
 - Working assumption: Prefer a consistent structured path value; driver/path-dependent text is current behavior requiring a compatibility decision.
-- Today `WITH *` does not carry a relationship variable, so a later `type(r)` fails with SQLCODE -29 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-150)), and `WITH *` followed by more items, such as `WITH *, a.v AS av`, does not parse ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-151)).
 
 
 ## Values in results
@@ -480,9 +490,8 @@ IVG holds its Cypher to the openCypher TCK and lists each known deviation in its
 A node property read preserves its stored numeric type: a D-marked IRIS double becomes a Python float, and an N-marked integer becomes an int (a fractional or exponent N spelling becomes a float). Unmarked numeric-looking node text stays text; a string beginning with the mark is escaped with S and unwrapped once, so its contents are not decoded again.
 
 - Since 4.6.4 the Python node writers bind signed 64-bit integers and finite floats as numbers; booleans become `true`/`false` text, lists and maps JSON text, and larger integers and nonfinite floats text. Earlier Python numeric text stays text after setup. The engine's node read API decodes stored booleans and valid JSON lists/maps; a string spelling a list/map also reads as one.
-- `CY_TYPED` decides the tag from the stored IRIS value, rather than the driver's column type. SQL result decoding and the node read API consume that tag. The [batched node reader](graph-structure.g5.md#structure.node.read) also protects its structural keys.
 - Relationship properties are stored in qualifier text and follow their separately owned decoder; preserving a node's stored type does not establish that relationship values preserve their original type.
-- The translator decides per `RETURN` item which columns are decoded: a node property, a `WITH` variable bound to a bare node property, and a `RETURN` `coalesce()` of node properties and scalars read through `CY_TYPED`; a comparison is a boolean column; a list or map expression is a JSON column. Any other column reaches the reader as the IRIS driver hands it. Each typed read answers the value written, of every kind, under IRIS drivers 5.3.2 and 5.4.1 and at all four readers.
+- A returned value keeps its Cypher type at every reader and with every supported IRIS driver, whatever expression produced it: a number stays a number, a boolean a boolean, and a list or map a list or map. The four readers are the Python engine, Bolt, `/api/cypher` and `/db/neo4j/tx/commit`.
 - Today a `CASE` column whose branches are node properties is not decoded: a stored boolean answers `'true'`, a stored list or map its JSON text, and with IRIS driver 5.4.1 a stored number its text (`'3'`), on every reader ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-156)).
 - Today `WITH coalesce(n.a, n.b) AS x ... RETURN x` answers a stored number or boolean as text (`'3'`, `'true'`) under both drivers, while `RETURN coalesce(n.a, n.b)` is typed ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-155)).
 
@@ -515,6 +524,7 @@ A `WHERE` ordering comparison (`<`, `>`, `<=`, `>=`) between a stored property a
 `ORDER BY` sorts property values by a key whose first part is the value's kind: strings, then booleans, then numbers, then NaN, then null last (first with `DESC`).
 - A node property that is a string spelling a number (`"9"`) sorts among the numbers, although `RETURN` reads it as a string and a `WHERE` ordering drops it. This is the documented known issue that a property cannot tell a number from a string that spells it. Relationship text that spells a number reads back as a number, so its sort agrees with `RETURN`.
 - On the SQL path an empty-string property sorts first, as a string. On the native executor it sorts with the nulls, so the two paths order the same rows differently.
+- Today over a list the query holds, `RETURN ... ORDER BY` sorts a boolean among the numbers (`UNWIND [2,'a',null,1.5,true] AS x RETURN x ORDER BY x` answers `1.5, true, 2, 'a', null`), while the same list sorted after `WITH` follows the key ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-158)).
 
 
 <a id="query.values.nulls"></a>
@@ -1149,6 +1159,17 @@ Findings: [A WHERE inside OPTIONAL MATCH that combines an earlier variable's pro
 
 Iteration 58 (W62 C1, C3, D2): C1 and C3 held; D2 partial. Evidence: [W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md); Verus [clause_combos](../../Verus_verification/models/clause_combos/NOTES.md) `theorem_null_row_count_zero`-family and `theorem_negation_polarity`, `theorem_new_alias_only_keeps_row`, `theorem_leading_grouped_sum_is_null`; [result_decoders](../../Verus_verification/models/result_decoders/NOTES.md) `theorem_null_row_every_decoder`, `theorem_optional_node_labels`. Findings: [An OPTIONAL MATCH node with no match answers labels '[]' and properties '[]'](../../Verus_verification/bugs_issues.md#bug-plt-135).
 
+### query.with
+
+- Sources: openCypher `WITH` and `CALL { }` importing `WITH` (TCK `With*`, `Call*`); [`translate_with_clause`](../../../iris_vector_graph/cypher/translator.py#L30857-L30872) (star branch); [`translate_subquery_call`](../../../iris_vector_graph/cypher/translator.py#L14697); [W62 predictions C5 and C8](../../uplift/consolidated/iteration-58/w62-PAIRS.md)
+- Evidence: [iteration-58 C8 probes](../../uplift/consolidated/iteration-58/clauses/probe1.out); [iteration-59 G2 observation](../../uplift/consolidated/iteration-59/review-repairs/minor-observed-20261117T090528Z.json)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 59 (review 56-58 m4): the `WITH *` findings had been placed in [conformance](#query.conformance), which lists documented TCK deviations; `WITH *` is not one. No Verus claim: bug-cyp-150, -151 and -157 are probe-only; iteration 58 C5 (a MATCH-anchored import with its null-row aggregates) is modeled in [clause_combos](../../Verus_verification/models/clause_combos/NOTES.md).
+
+Iteration 58 (W62 C5 held, C8 missed): [W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md). Findings: [WITH * drops a relationship variable](../../Verus_verification/bugs_issues.md#bug-cyp-150); [WITH *, items does not parse](../../Verus_verification/bugs_issues.md#bug-cyp-151); [A CALL { } subquery importing an UNWIND variable fails](../../Verus_verification/bugs_issues.md#bug-cyp-157) (iteration 59, review 56-58 G2).
+
 ### query.paging
 
 - Sources: openCypher TCK `ReturnSkipLimit1`-`3`, `WithSkipLimit*`; [`_resolve_pagination_value`](../../../iris_vector_graph/cypher/translator.py#L8095-L8134); [W59 predictions WS1-WS7 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
@@ -1226,7 +1247,7 @@ Findings: [Cypher range() with a step of 0 known only at run time answers [] ins
 
 Open questions: [Does a Cypher path value come back as JSON text or as a map, and may that depend on the driver or execution path?](../../Verus_verification/open_questions.md#q-cyp-004)
 
-Iteration 58 (W62 C5 held, C8 missed): [W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md). Findings: [WITH * drops a relationship variable](../../Verus_verification/bugs_issues.md#bug-cyp-150); [WITH *, items does not parse](../../Verus_verification/bugs_issues.md#bug-cyp-151).
+Iteration 59 (review 56-58 m4): the `WITH *` findings (bug-cyp-150, -151) moved to [WITH](#query.with); `WITH *` is not a documented deviation.
 
 ### query.values
 
@@ -1248,6 +1269,8 @@ State machines: [node read](../../Verus_verification/models/node_read/manifest.j
 Findings: [A UNION answers stored property values as their storage text: 1 as "\x01N1", 2.5 as "\x01D2.5", a list as JSON text](../../Verus_verification/bugs_issues.md#bug-cyp-138) (iteration 54: a UNION drops the type decoders this block's reads rely on)
 
 Iteration 58 (W62 D1 missed; D3-D6 held): [W62 predictions and results](../../uplift/consolidated/iteration-58/w62-PAIRS.md); Verus [result_decoders](../../Verus_verification/models/result_decoders/NOTES.md) `theorem_typed_roundtrip`, `theorem_property_reads_roundtrip`, `theorem_strings_held_everywhere`, `theorem_with_coalesce_number_is_text`, `theorem_case_bool_is_text`, `theorem_case_container_is_text`, `theorem_case_number_by_driver`, `theorem_compare_is_boolean_or_null`. Findings: [A WITH column of coalesce() answers a stored number as its text](../../Verus_verification/bugs_issues.md#bug-cyp-155); [A CASE column answers a stored boolean as 'true'](../../Verus_verification/bugs_issues.md#bug-cyp-156).
+
+Mechanism (moved from the governing text in iteration 59, review 56-58 m2): `CY_TYPED` decides the tag from the stored IRIS value, rather than the driver's column type; SQL result decoding and the node read API consume that tag, and the [batched node reader](graph-structure.g5.md#structure.node.read) also protects its structural keys. The translator decides per `RETURN` item which columns are decoded: a node property, a `WITH` variable bound to a bare node property, and a `RETURN` `coalesce()` of node properties and scalars read through `CY_TYPED`; a comparison is a boolean column; a list or map expression is a JSON column; any other column reaches the reader as the IRIS driver hands it, which is how [bug-cyp-155](../../Verus_verification/bugs_issues.md#bug-cyp-155) and [bug-cyp-156](../../Verus_verification/bugs_issues.md#bug-cyp-156) arise. Each typed read answers the value written, of every kind, under IRIS drivers 5.3.2 and 5.4.1 and at all four readers ([result_decoders](../../Verus_verification/models/result_decoders/NOTES.md) `theorem_typed_roundtrip`, `theorem_property_reads_roundtrip`).
 
 ### query.values.equality
 
@@ -1300,6 +1323,8 @@ As-built for ordinary scalar values on IRIS 2026.1; lists, maps, graph values, d
 Findings: [ORDER BY sorts an empty-string property with the nulls on the native executor and first on the SQL path](../../Verus_verification/bugs_issues.md#bug-cyp-104)
 
 State machines: [sort key](../../Verus_verification/models/sort_key/manifest.json)
+
+Findings: [ORDER BY over a list the query holds sorts booleans among the numbers](../../Verus_verification/bugs_issues.md#bug-cyp-158) (iteration 59, review 56-58 G3; observed only).
 
 ### query.values.nulls
 - Sources: openCypher null semantics; translator `_number_eq_sql` ("`negate` is `<>`: NOT IN, still null for a null property")

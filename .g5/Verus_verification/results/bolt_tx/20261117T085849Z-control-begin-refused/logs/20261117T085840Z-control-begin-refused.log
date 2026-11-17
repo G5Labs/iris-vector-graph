@@ -1,0 +1,83 @@
+verification results:: 31 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:238:1
+    |
+238 | pub proof fn theorem_rollback_keeps_writes(s: S, inner: Seq<Msg>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:241:9
+    |
+238 | pub proof fn theorem_rollback_keeps_writes(s: S, inner: Seq<Msg>)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+241 |         exec(Design::AsBuilt, s, rb_shape(inner)).0.store == s.store + total(inner),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:252:12
+    |
+252 |     assert(a == seq![Ans::Success] + mid + seq![Ans::Success]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:271:1
+    |
+271 | pub proof fn theorem_commit_agrees(s: S, inner: Seq<Msg>)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:274:9
+    |
+271 | pub proof fn theorem_commit_agrees(s: S, inner: Seq<Msg>)
+    | --------------------------------------------------------- at the end of the function body
+...
+274 |         exec(Design::AsBuilt, s, commit_shape(inner)).0.store == s.store + total(inner),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:276:9
+    |
+271 | pub proof fn theorem_commit_agrees(s: S, inner: Seq<Msg>)
+    | --------------------------------------------------------- at the end of the function body
+...
+276 |         exec(Design::AsBuilt, s, commit_shape(inner)).1.last() == Ans::Success,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:304:1
+    |
+304 | pub proof fn theorem_failed_tx_keeps_earlier_writes(s: S, inner: Seq<Msg>, v: nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:307:9
+    |
+304 | pub proof fn theorem_failed_tx_keeps_earlier_writes(s: S, inner: Seq<Msg>, v: nat)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+...
+307 |         exec(Design::AsBuilt, s, fail_shape(inner, v)).0.store == s.store + total(inner),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:309:9
+    |
+304 |   pub proof fn theorem_failed_tx_keeps_earlier_writes(s: S, inner: Seq<Msg>, v: nat)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+...
+309 | /         exec(Design::AsBuilt, s, fail_shape(inner, v)).1
+310 | |             == seq![Ans::Success] + exec(Design::AsBuilt, s, inner).1
+311 | |                + seq![Ans::Failure, Ans::Ignored, Ans::Ignored, Ans::Success],
+    | |_____________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T085840Z/models/bolt_tx/bolt_tx.rs:334:9
+    |
+331 | pub proof fn theorem_reset_or_close_keeps_writes(s: S, inner: Seq<Msg>, end: Msg)
+    | --------------------------------------------------------------------------------- at the end of the function body
+...
+334 |         exec(Design::AsBuilt, s, seq![Msg::Begin] + inner + seq![end]).0.store == s.store + total(inner),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 7 previous errors
+
