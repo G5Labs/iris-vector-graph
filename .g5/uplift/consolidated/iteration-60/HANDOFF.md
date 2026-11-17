@@ -231,3 +231,13 @@ theorem withdrawn and narrowed), the counter row a caller's transaction holds (b
 (bug-led-015), the ledger's `NodeNotFoundError` vs the documented root class (bug-led-016; map row C4 was wrong), D10
 partial, 24 declaration-only classes relabelled `cites` (recount union 1007, active 772). Sections 3, 5, 7 and 9 above
 are the iteration-60 state; the repair's figures supersede them where they differ.
+
+## Repair 2 after the round-1 validation
+
+The targeted validation (`$G5_RUN_STATE/review-60v/VALIDATION.md`) partly validated the counters item. Its case V3 is
+reproduced and closed in [repair2/HANDOFF.md](repair2/HANDOFF.md). A caller's transaction can hold the counter row
+without the head: after its own commit timed out on the head, or after a strict-mode refusal or `verify()` once it has
+written. Every other connection's valid commit is then refused as `inconsistent` (bug-led-017, Medium, E2E).
+`ledger_client` now has 34 verified and 33 controls; `txn_commit` was corrected, because a refused nested commit is
+never counted. The binding AGREES on 58 cases. Also: the `coverage.md` union wording, and bug-led-013's re-enable
+clause observed natively. Recount: union 1009, active 774.
