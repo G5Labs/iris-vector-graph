@@ -82,6 +82,49 @@ not the neo4j driver.
 
 Filled in after the observation (below this line only).
 
+Observations: [probe](pipeline-observed-20261117T061246Z.json) (PY, BOLT, API, TX; irispython 5.3.2, neo4j 6.4.1),
+[parameters on 5.3.2](pipeline-params-5.3.2-observed-20261117T061226Z.json) and
+[on 5.4.1](pipeline-params-5.4.1-observed-20261117T061233Z.json) (isolated venv outside the repository),
+[post-read probe](pipeline-observed2-20261117T061633Z.json); binding
+[receipt](../../../Verus_verification/results/bolt_answers/20261117T063052Z-binding/receipt.json).
+
+| Row | Outcome | Note |
+|---|---|---|
+| RT1-RT7 | held (7) | every value and type equal on PY, BOLT, API, TX; `'true'` reads as `True` (documented); `2**64` text |
+| RT8 | partial | PY/API three columns and BOLT one Node held; TX answers the engine's three columns, not a Neo4j node: bug-plt-126 |
+| RT9, RT10, RT11 | held (3) | same node one id, two nodes two ids; forward `a, r, b` endpoints right; path as the dict on PY, BOLT, API |
+| PA1, PA5, PA7, PA8 | held (4) | on both drivers and over BOLT |
+| PA2 | missed | the string `'1'` matches the stored integer 1: bug-cyp-145 |
+| PA3 | missed (main); competing reading held | 5.4.1 binds the marker and answers `[1], [2]`; 5.3.2 fails: bug-cyp-125 settled as driver-dependent |
+| PA4 | missed | 5.4.1: `$l[$s..$e]` answers `[]` (bug-cyp-144), `$l[$s]` answers `'2'` (bug-cyp-111 class); 5.3.2 fails |
+| PA6 | partial | `$m.k` and `RETURN $m` held; a missing parameter is refused, as "Undefined variable" (SyntaxError), not ParameterMissing |
+| BP1, BP3, BP4, BP6, BP7, BP8 | held (6) | raw bytes show the smallest widths and UTF-8 lengths |
+| BP2 | missed (main); competing reading held | 5.0 to 5.4 are agreed (driver 6.4.1: 5.4); 5.6-5.8 refused; the 5.7 manifest offer skipped |
+| BP5 | as-built held; intended violated | `fetch_size=2` gives 2 of 5 records, no error (inherited F-1602) |
+| ER1 | held | PY `CypherParseError`, BOLT `CypherSyntaxError`, TX `Neo.ClientError.Statement.SyntaxError` |
+| ER2 | partial | BOLT and TX fail (held); PY returns no rows with `error` set, as its docstring says (prediction error); the code is SyntaxError: bug-plt-124 |
+| ER3 | partial | 3 rows written once on both drivers; the 5,000-row run was not made (the source shows no retry path for a write) |
+| ER4 | held | BOLT and PY 1,200; API and TX 1,000 (bug-plt-108 reconfirmed) |
+| NR1, NR2 | held (2) | native-on and native-off engines and the Bolt server's engine agree |
+
+Frozen rows: 33. Held 24, partial 5 (RT8, PA6, BP5, ER2, ER3), missed 4 (PA2, PA3, PA4, BP2; for PA3 and BP2 the
+recorded competing reading held).
+
+Post-read rows (T1-T7): T1 held (bug-plt-121), T2 held (bug-plt-123), T3 held and worse than predicted: the driver
+shows the second node in both rows (bug-plt-122), T4 partial (a string literal or parameter matches the number, held; an
+integer parameter does **not** match a stored string: the translator resolves a numeric parameter before the query
+runs, `_static_number`), T5 held (bug-plt-125), T6 not reached (the probed var-length shapes are expanded in SQL, so
+`_apply_sql_row_limit` never ran; `LIMIT` held at 1 row on every form), T7 held (no `<SUBSCRIPT>` on 2026.1).
+
+Translated SQL (driver-independent, `translate_to_sql` at the pin):
+- `n.v = $x` with `$x = '1'`: `... AND p2.val = ?` with `'1'` bound; `n.v = '1'`: `... AND p2.val = '1'`; `n.v = 1`:
+  the N/D-mark test and `CAST(p2.val AS DOUBLE) = CAST('1' AS DOUBLE)`.
+- `RETURN $l[$s..$e]`: `CASE WHEN (?) IS NULL OR (?) IS NULL THEN NULL ELSE (SELECT JSON_ARRAYAGG(elem) FROM (SELECT
+  elem, ROW_NUMBER() OVER() AS rn FROM JSON_TABLE(?, '$[*]' ...)) __sliced WHERE rn > (?) AND rn <= (?)) END` with
+  `['[1,2,3,4]', 1, 3, 1, 3]`.
+- `RETURN $l[$s]`: `Graph_KG.JSON_ARRAYGET(?, 1)` with `['[1,2,3,4]']`.
+- `UNWIND $xs AS a RETURN a`: `... FROM JSON_TABLE(?, '$[*]' COLUMNS (a VARCHAR(1000) PATH '$')) u0` with `['[1, 2]']`.
+
 ### Post-read probe (predictions written after the deciding source was read and before `pipeline_probe2.py` ran)
 
 Source read: `bolt_server.py` (`negotiate_version`, `_node_int_id`, `PackStream`, `_handle_hello`/`_authenticate`,

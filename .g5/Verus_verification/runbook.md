@@ -644,3 +644,35 @@ Worked lookup (iteration 54): `query.aggregation.keys` → `cypher_clauses.rs::t
 beside the inherited `aggregate_results` rows on `_expr_aggregation` and `GroupOf`. The distinguishing control is
 `group-by-typed`; the product observation is the binding's `A_Int1_Str1_sql_group` (true: one group) beside
 `A_Int1_Str1_sql_distinct` (false) and `A_Int1_Str1_native_group` (false).
+
+Iteration 55 (W60, one answer through the pipeline to the Neo4j driver;
+[handoff](../uplift/consolidated/iteration-55/HANDOFF.md)), same environment. The probes and the binding start the
+product's own TCP Bolt listener (`start_tcp_bolt_server`, a real engine on its own connection) on a free `127.0.0.1`
+port inside the probe process and read it with the neo4j Python driver 6.4.1 and a raw socket client; they write fresh
+nodes in USER (prefixes `i55_`, `i55b_`, `i55k_`) in `ivg-cont-20261117-iris` only. The IRIS driver contrast needs an
+isolated venv outside the repository with intersystems-irispython 5.4.1 in front of the fixture venv:
+
+```sh
+mkdir -p /tmp/i55dl && python3 -m pip download --no-deps -d /tmp/i55dl "intersystems-irispython==5.4.1"
+PY=$(readlink -f $RUN_DIR/venv/bin/python); $PY -m venv --without-pip $RUN_DIR/i55/venv541
+python3 -m pip install --no-deps --target $RUN_DIR/i55/venv541/lib/python3.11/site-packages /tmp/i55dl/intersystems_irispython-5.4.1-*.whl
+echo "$RUN_DIR/venv/lib/python3.11/site-packages" > $RUN_DIR/i55/venv541/lib/python3.11/site-packages/zz_base.pth
+cp $RUN_DIR/venv/lib/python3.11/site-packages/_editable_impl_iris_vector_graph.pth $RUN_DIR/i55/venv541/lib/python3.11/site-packages/
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/bolt_answers          # PASS 27
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/bolt_answers       # 19 EXPECTED_FAIL
+CONTROL=swap-columns python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/bolt_answers
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD I55_VENV541=$RUN_DIR/i55/venv541/bin/python \
+  $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/bolt_answers/binding.py)          # AGREES 400
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-55/pipeline_probe.py)    # four readers, fresh tag
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD I55_MODE=params $RUN_DIR/i55/venv541/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-55/pipeline_probe.py)  # parameters on 5.4.1
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after55                 # 640/4130
+```
+
+Worked lookup (iteration 55): `access.bolt.graph_values` → `bolt_answers.rs::theorem_endpoints_follow_columns` and the
+general `theorem_one_hop_right_iff_source_first` → the rows for `iris_vector_graph/bolt_server.py::BoltSession._recompose_graph_row`
+(787-799, decision: start = the node triplet before the relationship column, end = the one after) and
+`::_detect_graph_columns` (669-689) in `crosswalk/decision-links.tsv`; in reverse, those keys in the recount's
+`bindings.json` list the claims. The distinguishing control is `swap-columns` (and `no-prev-node`); the product
+observation is the binding's `D2_wire_bra` and `D2_wire_rev` (start = b's id for a stored `a→b`) beside `D2_wire_abr`
+(start = a's id). Second lookup: `query.parameters` → `theorem_param_slice_answers_empty` → `cypher/translator.py::_expr_slice`
+(23778-23789); control `slice-markers-in-order`; observation `F_slice_5.4.1` (`[]`) beside `F_slice_5.3.2` (`Fail`).
