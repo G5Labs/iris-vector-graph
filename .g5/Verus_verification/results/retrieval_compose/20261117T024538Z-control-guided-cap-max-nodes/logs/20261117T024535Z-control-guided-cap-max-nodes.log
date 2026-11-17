@@ -1,0 +1,50 @@
+verification results:: 26 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:268:1
+    |
+268 | pub proof fn theorem_guided_subgraph_drops_edges_among_top_nodes()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:269:13
+    |
+269 |       ensures ({
+    |  _____________^
+270 | |         let r = expand_frontier(seq![1int, 2, 9], |n: int| star(n), seeded(set![9int, 2, 1], 3), guided_cap(5000, 3));
+271 | |         r.edges == seq![(1int, 2int)] && !r.edges.contains((9int, 1int)) && r.seen.contains(9) && r.seen.contains(1)
+272 | |     }),
+    | |______^ failed this postcondition
+...
+283 |       assert(!r.edges.contains((9int, 1int))) by {
+    |       ------ at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:282:12
+    |
+282 |     assert(r.edges =~= seq![(1int, 2int)]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:331:1
+    |
+331 | pub proof fn theorem_guided_cap_is_ppr_top_k()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:332:13
+    |
+331 | pub proof fn theorem_guided_cap_is_ppr_top_k()
+    | ---------------------------------------------- at the end of the function body
+332 |     ensures guided_cap(5000, 50) == 50, guided_cap(5000, 3) == 3, guided_cap(2, 50) == 2,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:332:41
+    |
+331 | pub proof fn theorem_guided_cap_is_ppr_top_k()
+    | ---------------------------------------------- at the end of the function body
+332 |     ensures guided_cap(5000, 50) == 50, guided_cap(5000, 3) == 3, guided_cap(2, 50) == 2,
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

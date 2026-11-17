@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the SQL procedure adopts the engine's length-dependent absent place",
+    "expect_fail_in": [
+      "theorem_engine_absent_rank_reorders"
+    ],
+    "find": "        Surface::SqlProcedure => Some(1000000000nat),",
+    "name": "sql-absent-like-engine",
+    "replace": "        Surface::SqlProcedure => Some(leg_len + c),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_engine_absent_rank_reorders"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/retrieval_compose/model.json": "eaaaf3e672f91b192f3e3a1e7f58878a8471ff4cb19b5dc77a82d9882ec071e2",
+    ".g5/Verus_verification/models/retrieval_compose/retrieval_compose.rs": "001ee7e03c46c3a7b76ed688effe3f19c01e0c13d144c242751a307373a577b8"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/sql-absent-like-engine/20261117T024516Z/models/retrieval_compose/retrieval_compose.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_engine_absent_rank_reorders": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/20261117T024516Z-control-sql-absent-like-engine-theorem_engine_absent_rank_reorders.log",
+        "timed_out": false,
+        "verified": 2
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/20261117T024516Z-control-sql-absent-like-engine.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/retrieval_compose/20261117T024518Z-control-sql-absent-like-engine/logs/20261117T024516Z-control-sql-absent-like-engine-theorem_engine_absent_rank_reorders.log": "ec2ffe0acfa5a5a6f10abbe703e1e410ece1ac1203c9d8f1e7a60b4f1baeb0d4",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T024518Z-control-sql-absent-like-engine/logs/20261117T024516Z-control-sql-absent-like-engine.log": "0df003bd6c0ae9b554677824c538b624ca3455dd8677117868e2379c627f9465"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

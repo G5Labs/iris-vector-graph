@@ -1,0 +1,29 @@
+verification results:: 25 verified, 3 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/engine-absent-zero/20261117T024512Z/models/retrieval_compose/retrieval_compose.rs:53:9
+   |
+51 | pub proof fn theorem_engine_absent_rank_reorders()
+   | -------------------------------------------------- at the end of the function body
+52 |     ensures
+53 |         rrf(Surface::Engine, 60, Some(1), 62, None, 60) > rrf(Surface::Engine, 60, Some(32), 62, Some(31), 60),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/engine-absent-zero/20261117T024512Z/models/retrieval_compose/retrieval_compose.rs:71:9
+   |
+69 | pub proof fn theorem_engine_absent_depends_on_length()
+   | ------------------------------------------------------ at the end of the function body
+70 |     ensures
+71 |         part(Surface::Engine, 60, None, 0) != part(Surface::Engine, 60, None, 200),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/engine-absent-zero/20261117T024512Z/models/retrieval_compose/retrieval_compose.rs:80:13
+   |
+79 | pub proof fn theorem_engine_skipped_leg_adds_constant(r: nat)
+   | ------------------------------------------------------------- at the end of the function body
+80 |     ensures rrf(Surface::Engine, 60, Some(r), 62, None, 0) == 1real / (60real + r as real) + 1real / 120real,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

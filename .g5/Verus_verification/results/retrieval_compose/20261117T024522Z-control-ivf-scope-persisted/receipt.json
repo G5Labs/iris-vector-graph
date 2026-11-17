@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: every engine can tell the IVF index's graph (a persisted scope); the answer no longer depends on the engine instance",
+    "expect_fail_in": [
+      "theorem_fused_leg_depends_on_building_engine"
+    ],
+    "find": "    if built_by_this_engine { Scope::Recorded(built_for) } else { Scope::Unknown }",
+    "name": "ivf-scope-persisted",
+    "replace": "    Scope::Recorded(built_for)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_fused_leg_depends_on_building_engine"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/retrieval_compose/model.json": "eaaaf3e672f91b192f3e3a1e7f58878a8471ff4cb19b5dc77a82d9882ec071e2",
+    ".g5/Verus_verification/models/retrieval_compose/retrieval_compose.rs": "001ee7e03c46c3a7b76ed688effe3f19c01e0c13d144c242751a307373a577b8"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/ivf-scope-persisted/20261117T024520Z/models/retrieval_compose/retrieval_compose.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_fused_leg_depends_on_building_engine": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/20261117T024520Z-control-ivf-scope-persisted-theorem_fused_leg_depends_on_building_engine.log",
+        "timed_out": false,
+        "verified": 1
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/20261117T024520Z-control-ivf-scope-persisted.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/retrieval_compose/20261117T024522Z-control-ivf-scope-persisted/logs/20261117T024520Z-control-ivf-scope-persisted-theorem_fused_leg_depends_on_building_engine.log": "e27297d33c45d8e9507e4a7d0dfa2353f0e8f471803d8b25676213df4b917635",
+    ".g5/Verus_verification/results/retrieval_compose/20261117T024522Z-control-ivf-scope-persisted/logs/20261117T024520Z-control-ivf-scope-persisted.log": "47636c8f0ea2c4afde4fd8c34896cf5b3f32bba522d8ea037b98b2bee47eee1d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

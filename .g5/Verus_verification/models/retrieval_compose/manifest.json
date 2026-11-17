@@ -1,0 +1,101 @@
+{
+  "title": "retrieval compose",
+  "question": "Composed retrieval: each fusion surface's absent-rank rule (bug-srch-005), failed versus empty legs, which vector index the engine's fusion reads (bug-srch-110), PyOps width and c handling (bug-srch-111, -112), kg_VECTOR_GRAPH_SEARCH truncation and flags (HD-0603), kg_SUBGRAPH and kg_PPR_GUIDED_SUBGRAPH caps and edges (bug-plt-113, -114), multi_vector_search's failing source",
+  "ontology_ids": [
+    "search.fusion",
+    "search.fusion.surfaces",
+    "search.fusion.leg_index",
+    "search.fusion.failed_leg",
+    "search.fusion.vector_graph",
+    "search.fusion.rest",
+    "search.fusion.multi_vector",
+    "algorithms.op.subgraph",
+    "algorithms.op.subgraph.guided"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 28}"
+    },
+    {
+      "label": "engine-absent-zero",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_engine_absent_rank_reorders\", \"theorem_engine_absent_depends_on_length\", \"theorem_engine_skipped_leg_adds_constant\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sql-absent-like-engine",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_engine_absent_rank_reorders\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "vector-failure-isolated",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_vector_leg_reads_as_no_match\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ivf-scope-persisted",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fused_leg_depends_on_building_engine\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "hnsw-before-own-ivf",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fused_leg_depends_on_building_engine\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ivf-cosine-normalized",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fused_leg_depends_on_building_engine\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "hybrid-c-kept",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_hybrid_c_zero_becomes_60\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unrouted-no-width-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unrouted_rest_search_refuses_width\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sort-before-truncate",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_best_hit_can_be_dropped\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "expansion-flag-excludes-hits",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_expansion_flag_and_text_only_zero\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "edge-recorded-after-cap-test",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_capped_subgraph_lists_edge_to_unlisted_node\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "guided-cap-max-nodes",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_guided_subgraph_drops_edges_among_top_nodes\", \"theorem_guided_cap_is_ppr_top_k\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": "AGREES"
+    }
+  ]
+}

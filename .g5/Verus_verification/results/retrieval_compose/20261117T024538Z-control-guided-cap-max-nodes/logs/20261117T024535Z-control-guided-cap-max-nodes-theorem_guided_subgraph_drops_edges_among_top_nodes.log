@@ -1,0 +1,30 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:268:1
+    |
+268 | pub proof fn theorem_guided_subgraph_drops_edges_among_top_nodes()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:269:13
+    |
+269 |       ensures ({
+    |  _____________^
+270 | |         let r = expand_frontier(seq![1int, 2, 9], |n: int| star(n), seeded(set![9int, 2, 1], 3), guided_cap(5000, 3));
+271 | |         r.edges == seq![(1int, 2int)] && !r.edges.contains((9int, 1int)) && r.seen.contains(9) && r.seen.contains(1)
+272 | |     }),
+    | |______^ failed this postcondition
+...
+283 |       assert(!r.edges.contains((9int, 1int))) by {
+    |       ------ at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/guided-cap-max-nodes/20261117T024535Z/models/retrieval_compose/retrieval_compose.rs:282:12
+    |
+282 |     assert(r.edges =~= seq![(1int, 2int)]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

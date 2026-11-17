@@ -1,0 +1,14 @@
+verification results:: 1 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/retrieval_compose/controls/engine-absent-zero/20261117T024512Z/models/retrieval_compose/retrieval_compose.rs:71:9
+   |
+69 | pub proof fn theorem_engine_absent_depends_on_length()
+   | ------------------------------------------------------ at the end of the function body
+70 |     ensures
+71 |         part(Surface::Engine, 60, None, 0) != part(Surface::Engine, 60, None, 200),
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

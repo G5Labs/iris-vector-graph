@@ -1,0 +1,120 @@
+{
+  "name": "retrieval_compose",
+  "root": "retrieval_compose.rs",
+  "expected_verified": 28,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "engine-absent-zero",
+      "find": "        Surface::Engine => Some(leg_len + c),",
+      "replace": "        Surface::Engine => None,",
+      "expect_fail_in": [
+        "theorem_engine_absent_rank_reorders",
+        "theorem_engine_absent_depends_on_length",
+        "theorem_engine_skipped_leg_adds_constant"
+      ],
+      "classification": "decision: the engine gives a missing item no contribution (the RRFFusion rule; the repair of bug-srch-005); the rank-10-in-both neighbor still verifies"
+    },
+    {
+      "name": "sql-absent-like-engine",
+      "find": "        Surface::SqlProcedure => Some(1000000000nat),",
+      "replace": "        Surface::SqlProcedure => Some(leg_len + c),",
+      "expect_fail_in": [
+        "theorem_engine_absent_rank_reorders"
+      ],
+      "classification": "decision: the SQL procedure adopts the engine's length-dependent absent place"
+    },
+    {
+      "name": "vector-failure-isolated",
+      "find": "        Leg::Fails => FuseOut::Empty,",
+      "replace": "        Leg::Fails => if text_requested { FuseOut::TextOnly } else { FuseOut::Empty },",
+      "expect_fail_in": [
+        "theorem_failed_vector_leg_reads_as_no_match"
+      ],
+      "classification": "decision: a vector failure no longer skips the text leg (one try per leg)"
+    },
+    {
+      "name": "ivf-scope-persisted",
+      "find": "    if built_by_this_engine { Scope::Recorded(built_for) } else { Scope::Unknown }",
+      "replace": "    Scope::Recorded(built_for)",
+      "expect_fail_in": [
+        "theorem_fused_leg_depends_on_building_engine"
+      ],
+      "classification": "effect: every engine can tell the IVF index's graph (a persisted scope); the answer no longer depends on the engine instance"
+    },
+    {
+      "name": "hnsw-before-own-ivf",
+      "find": "        Some(Scope::Recorded(h)) if h == g => Choice::Ivf,",
+      "replace": "        Some(Scope::Recorded(h)) if h == g && !hnsw => Choice::Ivf,",
+      "expect_fail_in": [
+        "theorem_fused_leg_depends_on_building_engine"
+      ],
+      "classification": "decision: hnsw ahead of the graph's own IVF index (the docstring's R119 reading); the other-graph neighbor still verifies"
+    },
+    {
+      "name": "ivf-cosine-normalized",
+      "find": "    match ch { Choice::Ivf => dotq(v1) > dotq(v2),",
+      "replace": "    match ch { Choice::Ivf => cos_above(v1, v2),",
+      "expect_fail_in": [
+        "theorem_fused_leg_depends_on_building_engine"
+      ],
+      "classification": "provider effect: the IVF index scores the cosine (bug-srch-109 repaired), so both engines agree"
+    },
+    {
+      "name": "hybrid-c-kept",
+      "find": "pub open spec fn hybrid_c(c: nat) -> nat { if c == 0 { 60 } else { c } }",
+      "replace": "pub open spec fn hybrid_c(c: nat) -> nat { c }",
+      "expect_fail_in": [
+        "theorem_hybrid_c_zero_becomes_60"
+      ],
+      "classification": "decision: HybridSearch keeps the caller's c = 0"
+    },
+    {
+      "name": "unrouted-no-width-check",
+      "find": "    if qdim != pyops_expected(route_width, 768, named) { Search::WidthRefused }",
+      "replace": "    if route_width.is_some() && qdim != pyops_expected(route_width, 768, named) { Search::WidthRefused }",
+      "expect_fail_in": [
+        "theorem_unrouted_rest_search_refuses_width"
+      ],
+      "classification": "decision: PyOps looks the route up before checking the width, as the engine does (the repair of bug-srch-111)"
+    },
+    {
+      "name": "sort-before-truncate",
+      "find": "pub open spec fn truncate_first() -> bool { true }",
+      "replace": "pub open spec fn truncate_first() -> bool { false }",
+      "expect_fail_in": [
+        "theorem_best_hit_can_be_dropped"
+      ],
+      "classification": "decision: keep the k best by similarity instead of the first k of the set (HD-0603's ranked alternative); the covering-k neighbor still verifies"
+    },
+    {
+      "name": "expansion-flag-excludes-hits",
+      "find": "pub open spec fn in_graph_expansion(is_vector_hit: bool, is_expansion_target: bool) -> bool { is_expansion_target }",
+      "replace": "pub open spec fn in_graph_expansion(is_vector_hit: bool, is_expansion_target: bool) -> bool { is_expansion_target && !is_vector_hit }",
+      "expect_fail_in": [
+        "theorem_expansion_flag_and_text_only_zero"
+      ],
+      "classification": "decision: the flag marks only nodes found by expansion alone (the reading predicted in V4)"
+    },
+    {
+      "name": "edge-recorded-after-cap-test",
+      "find": "        else if st1.count >= cap { (st1, true) }",
+      "replace": "        else if st1.count >= cap { (st, true) }",
+      "expect_fail_in": [
+        "theorem_capped_subgraph_lists_edge_to_unlisted_node"
+      ],
+      "classification": "effect: the edge that crosses the cap is not recorded; the guided and last-hop theorems still verify"
+    },
+    {
+      "name": "guided-cap-max-nodes",
+      "find": "pub open spec fn guided_cap(max_nodes: nat, ppr_top_k: nat) -> nat { if max_nodes < ppr_top_k { max_nodes } else { ppr_top_k } }",
+      "replace": "pub open spec fn guided_cap(max_nodes: nat, ppr_top_k: nat) -> nat { max_nodes }",
+      "expect_fail_in": [
+        "theorem_guided_subgraph_drops_edges_among_top_nodes",
+        "theorem_guided_cap_is_ppr_top_k"
+      ],
+      "classification": "decision: kg_PPR_GUIDED_SUBGRAPH passes max_nodes alone (the repair of bug-plt-113's cap)"
+    }
+  ]
+}
