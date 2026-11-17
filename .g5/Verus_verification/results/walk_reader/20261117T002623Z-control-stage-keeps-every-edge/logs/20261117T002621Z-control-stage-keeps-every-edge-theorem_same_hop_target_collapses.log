@@ -1,0 +1,23 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-keeps-every-edge/20261117T002621Z/models/walk_reader/walk_reader.rs:57:1
+   |
+57 | pub proof fn theorem_same_hop_target_collapses(a: Row, b: Row)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-keeps-every-edge/20261117T002621Z/models/walk_reader/walk_reader.rs:65:12
+   |
+65 |     assert(stage(seq![a]) == Map::<(int, int), (int, int)>::empty().insert((a.step, a.o), (a.s, a.p)));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-keeps-every-edge/20261117T002621Z/models/walk_reader/walk_reader.rs:66:12
+   |
+66 |     assert(stage(rs) == stage(seq![a]).insert((b.step, b.o), (b.s, b.p)));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

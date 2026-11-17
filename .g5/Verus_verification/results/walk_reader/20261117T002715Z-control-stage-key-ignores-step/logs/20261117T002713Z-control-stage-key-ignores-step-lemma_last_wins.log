@@ -1,0 +1,20 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/walk_reader/controls/stage-key-ignores-step/20261117T002713Z/models/walk_reader/walk_reader.rs:33:13
+   |
+33 |       ensures walk_lists_edge(rs, rs[i]),
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+36 | /     if i == rs.len() - 1 {
+37 | |     } else {
+38 | |         let rest = rs.drop_last();
+39 | |         assert forall|j: int| i < j < rest.len() implies (#[trigger] rest[j]).step != rest[i].step || rest[j].o != rest[i].o by {
+...  |
+43 | |         assert(rs.last() == rs[rs.len() - 1]);
+44 | |     }
+   | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

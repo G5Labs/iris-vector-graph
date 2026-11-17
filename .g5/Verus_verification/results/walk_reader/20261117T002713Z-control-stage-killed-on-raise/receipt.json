@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "effect: the stage is cleared even when the read raises",
+    "expect_fail_in": [
+      "theorem_walk_overflow_raises_and_leaves_stage"
+    ],
+    "find": "    ReadOut { answered: ok, stage_left: !ok }",
+    "name": "stage-killed-on-raise",
+    "replace": "    ReadOut { answered: ok, stage_left: false }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_walk_overflow_raises_and_leaves_stage"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/walk_reader/model.json": "5ea55438328c1788334a72087e46ebe7dd930675787d7581e9bf8b665328b21b",
+    ".g5/Verus_verification/models/walk_reader/walk_reader.rs": "64bbdc527e8b2efb98fedd0be714bfea7fcdf64be9953ce8994bb49086a21e71"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/walk_reader/controls/stage-killed-on-raise/20261117T002712Z/models/walk_reader/walk_reader.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_walk_overflow_raises_and_leaves_stage": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/walk_reader/20261117T002712Z-control-stage-killed-on-raise-theorem_walk_overflow_raises_and_leaves_stage.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/walk_reader/20261117T002712Z-control-stage-killed-on-raise.log",
+    "timed_out": false,
+    "verified": 5
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/walk_reader/20261117T002713Z-control-stage-killed-on-raise/logs/20261117T002712Z-control-stage-killed-on-raise-theorem_walk_overflow_raises_and_leaves_stage.log": "8750fb8056c04be811f434c01744ef68070096cd8a48bfd7183b2bf629dca955",
+    ".g5/Verus_verification/results/walk_reader/20261117T002713Z-control-stage-killed-on-raise/logs/20261117T002712Z-control-stage-killed-on-raise.log": "970df9940b3dfee9d1b27d60bb1aa5413610dc76917d28a37c90bf8a1de05eb6"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

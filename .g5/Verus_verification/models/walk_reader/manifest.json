@@ -1,0 +1,52 @@
+{
+  "title": "walk reader",
+  "question": "Breadth-first walk readers: kg_GRAPH_WALK keeps one row per (hop, target) (bug-str-103) and raises on an answer longer than an IRIS string, leaving its stage (bug-str-104); khop answers any size",
+  "ontology_ids": [
+    "algorithms.op.walks",
+    "algorithms.op.khop"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 6}"
+    },
+    {
+      "label": "stage-keeps-every-edge",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_same_hop_target_collapses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "walk-has-stream",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_walk_overflow_raises_and_leaves_stage\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "khop-no-stream",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_khop_answers_any_size\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stage-killed-on-raise",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_walk_overflow_raises_and_leaves_stage\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stage-key-ignores-step",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_last_wins\", \"theorem_same_hop_target_collapses\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

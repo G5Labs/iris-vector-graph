@@ -4197,6 +4197,44 @@ Consequence: a caller that gathers values with these readers sees `"true"` and c
 
 Repair proposal (not implemented): decode the stored boolean spelling in these two readers as `get_node` does. Governing statement: [structure.node.read.properties](../ontology/features/graph-structure.g5.md#structure.node.read.properties).
 
+<a id="bug-str-103"></a>
+### kg_GRAPH_WALK keeps one row per hop and node, dropping other edges that reach that node at the same hop
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 37)
+
+Found by: source reading after the W43 predictions were frozen ([predictions](../uplift/consolidated/iteration-37/traversal-PAIRS.md), W1's one row per walked edge), then observation; [walk_reader](models/walk_reader/NOTES.md) `theorem_same_hop_target_collapses`, control `stage-keeps-every-edge`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-37/traversal-observed-20261117T002418Z.json) W5, W6; [binding](results/walk_reader/20261117T002834Z-binding/receipt.json) cases `diamond`, `two_types`). On a diamond s→a→x, s→b→x the walk returns s→a, s→b and b→x only; with s -R-> a and s -Q-> a it returns only the R row. `khop` on the same graphs lists every edge. Passing neighbors: a chain, a cross edge (s→b and a→b, where b is listed at hops 1 and 2) and a back edge to the start keep every edge (`chain`, `cross`, `back_edge`).
+
+Expected: [algorithms.op.walks](../ontology/features/algorithms.g5.md#algorithms.op.walks) says a graph walk "returns at most `max_results` rows of (source, type, target, hop)" and the docstring that the hop is "the hop at which the target was reached". Neither says one edge per target and hop survives, and the cross-edge rows show the walk is not a one-row-per-node tree either. Which reading is intended is the question [algorithms.op.walks.rows](open_questions.md#algorithms.op.walks.rows).
+
+Observed: `BFSFastJsonSorted` stages each walked edge as `^ArnoKG("bfs_r", tag, step, o) = (s, p, w)` (`TraversalBFS.cls:449-460`, the write at 458), so a later edge with the same hop and target overwrites an earlier one; `max_results` is applied to edges before that collapse.
+
+Consequence: a caller asking which edges or types connect a start to its neighborhood misses parallel edges and alternative parents, and which one is kept depends on walk order; the answer can be shorter than `max_results` while edges remain. Low: a reader's result, no data change.
+
+Repair proposal (not implemented): key the stage by (step, target, source, type), or document one row per (hop, node) and say which parent is kept. Governing statement: [algorithms.op.walks](../ontology/features/algorithms.g5.md#algorithms.op.walks).
+
+<a id="bug-str-104"></a>
+### A graph walk whose answer is longer than an IRIS string raises and leaves its staged rows in ^ArnoKG
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 37)
+
+Found by: the frozen W43 prediction L1 missed ([predictions](../uplift/consolidated/iteration-37/traversal-PAIRS.md)); [walk_reader](models/walk_reader/NOTES.md) `theorem_walk_overflow_raises_and_leaves_stage`, control `walk-has-stream`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-37/traversal-observed-20261117T002418Z.json) L1; [binding](results/walk_reader/20261117T002834Z-binding/receipt.json) case `large`). On a star of 40,000 edges whose targets have 40-character padding, `kg_GRAPH_WALK(hub, max_depth=1, max_results=40010)` raises `<MAXSTRING>ReadBFSResults+16^Graph.KG.TraversalBFS.1`, and a new `^ArnoKG("bfs_r", <tag>)` subtree of the staged rows remains. Passing neighbor: `khop(hub, hops=1)` on the same star returns all 40,000 edges.
+
+Expected: the 4.6/4.7 changelog says "A BFS answer past IRIS's string limit no longer fails" through `BFSFastStream` / `ReadBFSResultsStream` (scoped there to `khop()`), and `host._decode_sorted` falls back to `ReadBFSResultsStream` for exactly this tree. [algorithms.op.walks](../ontology/features/algorithms.g5.md#algorithms.op.walks) promises rows up to `max_results`.
+
+Observed: `kg_GRAPH_WALK` calls `BFSFastJsonSorted` with `_call_classmethod` and then `_call_classmethod_large(..., "ReadBFSResults", tag)` (`algorithms.py:716-729`); `host.call_large` falls back only for methods in `STREAM_FALLBACKS` (`BFSFastJson`, `BFSFastJsonDirect`), so the overflow is raised. `ReadBFSResults` kills the stage only after building its string (`TraversalBFS.cls:493-515`, the kill at 513).
+
+Consequence: a large walk fails visibly, and each failed call leaves its rows in a persistent global that nothing clears. Low: needs `max_results` above roughly 35,000 rows (the default is 100).
+
+Repair proposal (not implemented): read the stage through the `SORTED:` decoder (which has the stream fallback) or add `ReadBFSResults` → `ReadBFSResultsStream` to the fallbacks. Governing statement: [algorithms.op.walks](../ontology/features/algorithms.g5.md#algorithms.op.walks).
+
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
 

@@ -1,0 +1,55 @@
+{
+  "name": "walk_reader",
+  "root": "walk_reader.rs",
+  "expected_verified": 6,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "stage-keeps-every-edge",
+      "find": "        stage(rs.drop_last()).insert((r.step, r.o), (r.s, r.p))",
+      "replace": "        if stage(rs.drop_last()).contains_key((r.step, r.o)) { stage(rs.drop_last()) } else { stage(rs.drop_last()).insert((r.step, r.o), (r.s, r.p)) }",
+      "expect_fail_in": [
+        "theorem_same_hop_target_collapses"
+      ],
+      "classification": "decision: the first edge for a (hop, target) is kept instead of the last"
+    },
+    {
+      "name": "walk-has-stream",
+      "find": "pub open spec fn has_stream(m: Method) -> bool { m == Method::BFSFastJson }",
+      "replace": "pub open spec fn has_stream(m: Method) -> bool { true }",
+      "expect_fail_in": [
+        "theorem_walk_overflow_raises_and_leaves_stage"
+      ],
+      "classification": "decision: ReadBFSResults falls back to ReadBFSResultsStream (the repair)"
+    },
+    {
+      "name": "khop-no-stream",
+      "find": "pub open spec fn has_stream(m: Method) -> bool { m == Method::BFSFastJson }",
+      "replace": "pub open spec fn has_stream(m: Method) -> bool { false }",
+      "expect_fail_in": [
+        "theorem_khop_answers_any_size"
+      ],
+      "classification": "decision: khop loses its stream fallback"
+    },
+    {
+      "name": "stage-killed-on-raise",
+      "find": "    ReadOut { answered: ok, stage_left: !ok }",
+      "replace": "    ReadOut { answered: ok, stage_left: false }",
+      "expect_fail_in": [
+        "theorem_walk_overflow_raises_and_leaves_stage"
+      ],
+      "classification": "effect: the stage is cleared even when the read raises"
+    },
+    {
+      "name": "stage-key-ignores-step",
+      "find": "        stage(rs.drop_last()).insert((r.step, r.o), (r.s, r.p))",
+      "replace": "        stage(rs.drop_last()).insert((0, r.o), (r.s, r.p))",
+      "expect_fail_in": [
+        "lemma_last_wins",
+        "theorem_same_hop_target_collapses"
+      ],
+      "classification": "decision: rows keyed by target alone"
+    }
+  ]
+}

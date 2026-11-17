@@ -1,0 +1,17 @@
+verification results:: 4 verified, 2 errors
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/khop-no-stream/20261117T002624Z/models/walk_reader/walk_reader.rs:65:12
+   |
+65 |     assert(stage(seq![a]) == Map::<(int, int), (int, int)>::empty().insert((a.step, a.o), (a.s, a.p)));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/khop-no-stream/20261117T002624Z/models/walk_reader/walk_reader.rs:90:13
+   |
+89 | pub proof fn theorem_khop_answers_any_size(overflow: bool)
+   | ---------------------------------------------------------- at the end of the function body
+90 |     ensures khop_read(overflow).answered,
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

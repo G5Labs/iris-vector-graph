@@ -1,4 +1,4 @@
-**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 36 (W42, the embedding queue). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
+**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 37 (W43, walk readers). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
 
 <a id="continuation-2026-11-17"></a>
 ## Continuation (2026-11-17, from `cloud-iris-continuation-start-20261117`)
@@ -8,6 +8,7 @@ Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bb
 | Iteration | Workflow (predictions frozen first) | Material outcome |
 |---|---|---|
 | [36](iteration-36/HANDOFF.md) | W42 embedding queue: both workers, default and named graph, provider vector/empty/failure | Medium bug-srch-103 (inherited source-only divergence, now reproduced), Medium bug-srch-104 (new); model `embed_queue`; 375 → 392 |
+| [37](iteration-37/HANDOFF.md) | W43 k-hop and graph walk readers; client retry source binding | Low bug-str-103, Low bug-str-104 (new), question `algorithms.op.walks.rows`; model `walk_reader`; 392 → 407 |
 
 Earlier pointer (superseded): **Current pointer (retest, 2026-11-16).** CONVERGED after iteration 35. Latest seal: the clean tip with subject `Record convergence of the retest` (its parent is the iteration-35 seal). Session: iterations 25-35 (W30-W41), 6 new findings (1 High, 1 Medium, 4 Low), 4 inherited suspicions reproduced, 8 new models, reach 279 → 375 of 4,130 (96 new, 10 strengthened, 0 lost). Cost: builder wall clock about 1 h 20 min (21:15-22:35 UTC; tokens/currency unavailable). Convergence basis: [below](#retest-convergence-2026-11-16).
 

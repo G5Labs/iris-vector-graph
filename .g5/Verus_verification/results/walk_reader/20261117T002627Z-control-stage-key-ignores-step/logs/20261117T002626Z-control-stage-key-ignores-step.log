@@ -1,0 +1,36 @@
+verification results:: 4 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-key-ignores-step/20261117T002626Z/models/walk_reader/walk_reader.rs:33:13
+   |
+33 |       ensures walk_lists_edge(rs, rs[i]),
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+36 | /     if i == rs.len() - 1 {
+37 | |     } else {
+38 | |         let rest = rs.drop_last();
+39 | |         assert forall|j: int| i < j < rest.len() implies (#[trigger] rest[j]).step != rest[i].step || rest[j].o != rest[i].o by {
+...  |
+43 | |         assert(rs.last() == rs[rs.len() - 1]);
+44 | |     }
+   | |_____- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-key-ignores-step/20261117T002626Z/models/walk_reader/walk_reader.rs:57:1
+   |
+57 | pub proof fn theorem_same_hop_target_collapses(a: Row, b: Row)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-key-ignores-step/20261117T002626Z/models/walk_reader/walk_reader.rs:65:12
+   |
+65 |     assert(stage(seq![a]) == Map::<(int, int), (int, int)>::empty().insert((a.step, a.o), (a.s, a.p)));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-key-ignores-step/20261117T002626Z/models/walk_reader/walk_reader.rs:66:12
+   |
+66 |     assert(stage(rs) == stage(seq![a]).insert((b.step, b.o), (b.s, b.p)));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

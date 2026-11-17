@@ -1,0 +1,17 @@
+verification results:: 4 verified, 2 errors
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-killed-on-raise/20261117T002625Z/models/walk_reader/walk_reader.rs:65:12
+   |
+65 |     assert(stage(seq![a]) == Map::<(int, int), (int, int)>::empty().insert((a.step, a.o), (a.s, a.p)));
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/walk_reader/controls/stage-killed-on-raise/20261117T002625Z/models/walk_reader/walk_reader.rs:95:40
+   |
+94 | pub proof fn theorem_walk_overflow_raises_and_leaves_stage()
+   | ------------------------------------------------------------ at the end of the function body
+95 |     ensures !walk_read(true).answered, walk_read(true).stage_left,
+   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

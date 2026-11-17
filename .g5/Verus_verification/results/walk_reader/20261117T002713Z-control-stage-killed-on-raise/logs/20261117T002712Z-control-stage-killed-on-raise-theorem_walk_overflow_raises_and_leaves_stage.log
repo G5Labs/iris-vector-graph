@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/walk_reader/controls/stage-killed-on-raise/20261117T002712Z/models/walk_reader/walk_reader.rs:98:40
+   |
+97 | pub proof fn theorem_walk_overflow_raises_and_leaves_stage()
+   | ------------------------------------------------------------ at the end of the function body
+98 |     ensures !walk_read(true).answered, walk_read(true).stage_left,
+   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

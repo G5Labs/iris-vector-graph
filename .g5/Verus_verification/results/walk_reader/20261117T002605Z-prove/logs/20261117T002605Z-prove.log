@@ -1,0 +1,12 @@
+verification results:: 5 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/walk_reader/walk_reader.rs:60:9
+   |
+57 | pub proof fn theorem_same_hop_target_collapses(a: Row, b: Row)
+   | -------------------------------------------------------------- at the end of the function body
+...
+60 |         stage(seq![a, b]).dom() =~= set![(a.step, a.o)],
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

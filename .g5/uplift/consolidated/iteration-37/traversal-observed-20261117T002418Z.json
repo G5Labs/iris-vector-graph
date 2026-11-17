@@ -1,0 +1,236 @@
+{
+  "run": "20261117T002418Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "cases": {
+    "K1_khop_chain": {
+      "nodes": [
+        "s",
+        "a",
+        "d",
+        "b"
+      ],
+      "edges": [
+        [
+          "a",
+          "R",
+          "b",
+          2
+        ],
+        [
+          "s",
+          "R",
+          "a",
+          1
+        ],
+        [
+          "s",
+          "R",
+          "d",
+          1
+        ]
+      ]
+    },
+    "K2_khop_no_out_edge": {
+      "nodes": [
+        "c"
+      ],
+      "edges": []
+    },
+    "K3_khop_missing": {
+      "nodes": [],
+      "edges": []
+    },
+    "K4_khop_max_nodes": {
+      "nodes": [
+        "s",
+        "a"
+      ],
+      "edges": [
+        [
+          "s",
+          "R",
+          "a",
+          1
+        ]
+      ]
+    },
+    "K5_khop_diamond": {
+      "nodes": [
+        "ds",
+        "da",
+        "db",
+        "dx"
+      ],
+      "edges": [
+        [
+          "da",
+          "R",
+          "dx",
+          2
+        ],
+        [
+          "db",
+          "R",
+          "dx",
+          2
+        ],
+        [
+          "ds",
+          "R",
+          "da",
+          1
+        ],
+        [
+          "ds",
+          "R",
+          "db",
+          1
+        ]
+      ]
+    },
+    "W1_walk_chain": [
+      [
+        "s",
+        "R",
+        "a",
+        1
+      ],
+      [
+        "s",
+        "R",
+        "d",
+        1
+      ],
+      [
+        "a",
+        "R",
+        "b",
+        2
+      ],
+      [
+        "b",
+        "R",
+        "c",
+        3
+      ]
+    ],
+    "W2_walk_typed": [
+      [
+        "w1",
+        "T1",
+        "w2",
+        1
+      ],
+      [
+        "w2",
+        "T2",
+        "w3",
+        2
+      ],
+      [
+        "w3",
+        "T2",
+        "w4",
+        3
+      ]
+    ],
+    "W3_walk_max_results": [
+      [
+        "s",
+        "R",
+        "a",
+        1
+      ],
+      [
+        "s",
+        "R",
+        "d",
+        1
+      ]
+    ],
+    "W5_walk_diamond": [
+      [
+        "ds",
+        "R",
+        "da",
+        1
+      ],
+      [
+        "ds",
+        "R",
+        "db",
+        1
+      ],
+      [
+        "db",
+        "R",
+        "dx",
+        2
+      ]
+    ],
+    "W6_walk_two_types_same_target": [
+      [
+        "ws",
+        "R",
+        "w1",
+        1
+      ]
+    ],
+    "K6_khop_two_types_same_target": {
+      "nodes": [
+        "ws",
+        "w1"
+      ],
+      "edges": [
+        [
+          "ws",
+          "Q",
+          "w1",
+          1
+        ],
+        [
+          "ws",
+          "R",
+          "w1",
+          1
+        ]
+      ]
+    },
+    "P1_graph_path": [
+      [
+        1,
+        1,
+        "w1",
+        "T1",
+        "w2"
+      ],
+      [
+        1,
+        2,
+        "w2",
+        "T2",
+        "w3"
+      ]
+    ],
+    "W4_walk_named_graph_only": [],
+    "K7_khop_named_graph_only": {
+      "nodes": [
+        "gs"
+      ],
+      "edges": []
+    },
+    "L1_walk_longer_than_a_string": {
+      "loaded": 40000,
+      "load_s": 5.1,
+      "walk": "RAISED <MAXSTRING>ReadBFSResults+16^Graph.KG.TraversalBFS.1",
+      "khop": {
+        "nodes": 40001,
+        "edges": 40000,
+        "s": 0.5
+      },
+      "staged_bfs_r_left": [
+        "4240811AD64"
+      ]
+    }
+  }
+}

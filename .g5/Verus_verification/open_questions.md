@@ -3682,6 +3682,39 @@ Canonical owner: [query.compiled.fallback.failure-policy](#HD-0904).
 }
 ```
 
+<a id="algorithms.op.walks.rows"></a>
+### Should a graph walk list every edge it walks, or one row per node reached?
+
+[Q · algorithms.op.walks.rows]
+
+Should a graph walk list every edge it walks, or one row per node reached?
+- Provisional answer (agent, unratified): every edge walked, as `khop` lists them, because the rows carry the source and type and `max_results` counts edges.
+- Alternative: one row per node, at the hop it was first reached, with a stated rule for which parent is kept.
+- As built: every edge walked, except that edges reaching the same node at the same hop collapse to the last one ([bug-str-103](bugs_issues.md#bug-str-103)).
+
+Disposition: open. Working assumption: every edge walked. Evidence: [W43](../uplift/consolidated/iteration-37/traversal-PAIRS.md), [walk_reader](models/walk_reader/NOTES.md).
+
+```g5-question
+{
+  "schema": 1,
+  "id": "algorithms.op.walks.rows",
+  "status": "open",
+  "prompt": "Should a graph walk list every edge it walks, or one row per node reached?",
+  "allow_free_text": true,
+  "multi_select": false,
+  "options": [
+    {
+      "label": "Every edge walked, as khop lists them",
+      "description": ""
+    },
+    {
+      "label": "One row per node, at the hop it was first reached, with a stated rule for which parent is kept",
+      "description": ""
+    }
+  ]
+}
+```
+
 <a id="algorithms.op.walks.result-policy"></a><!-- question identity -->
 <a id="HD-1001"></a>
 ### What should `random_walk` answer, and over which graph?

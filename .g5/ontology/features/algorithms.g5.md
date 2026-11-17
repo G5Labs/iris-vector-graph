@@ -239,6 +239,8 @@ A k-hop read walks outbound, breadth first, from a seed for up to `hops` (2) hop
 The walk operations follow outbound edges from one start node.
 
 - A graph walk goes breadth first up to `max_depth` (3) hops and returns at most `max_results` (100) rows of (source, type, target, hop). Its edge-type list is a sequence: hop h follows the h-th type, and the last type repeats.
+  - Its rows are the edges walked from each hop's new nodes, ordered by hop and then target, including an edge back to a node reached earlier. Today two edges that reach the same node at the same hop leave only one row ([open question](../../Verus_verification/open_questions.md#algorithms.op.walks.rows)).
+  - A walk whose answer is longer than one IRIS string raises an error; a k-hop read of the same size is answered.
 - A graph path returns the two-hop paths start, first type, middle, second type, end, one row per step.
 - A random walk returns `num_walks` (10) walks of up to `length` (20) steps from a seed.
 
@@ -596,6 +598,8 @@ The ObjectScript Louvain does not guarantee connected communities and ignores `r
 
 The Owner answers with or without Arno, so the result has one shape (4.6.0). A failed walk raised instead of answering empty from 4.6.0.
 
+Observed (iteration 37, [W43](../../uplift/consolidated/iteration-37/traversal-PAIRS.md)): every case of this block agreed, including a diamond (each edge listed, the shared node once) and a 40,000-edge answer longer than one IRIS string. Verus: active: [`walk_reader.rs`](../../Verus_verification/models/walk_reader/walk_reader.rs) `theorem_khop_answers_any_size`.
+
 ### algorithms.op.walks
 
 - uncertain
@@ -606,7 +610,13 @@ The Owner answers with or without Arno, so the result has one shape (4.6.0). A f
 
 Observed divergence: `random_walk` needs Arno, and without it returns an empty list after a warning, against the promise that every algorithm has an Owner. The graph path's `max_hops` argument is not used. Weighted shortest paths are a Cypher procedure and use each edge's `weight` property, 1.0 when absent; [weighted path search](#algorithms.op.paths.weighted) owns that rule.
 
-Open questions: [What should `random_walk` answer, and over which graph?](../../Verus_verification/open_questions.md#HD-1001)
+Observed (iteration 37, [W43](../../uplift/consolidated/iteration-37/traversal-PAIRS.md)): chains, typed sequences, `max_results`, the named-graph case (nothing) and the graph path agree with this block. The walk keeps one row per hop and target, and an over-long walk raises and leaves its staged rows behind.
+
+Verus: active: [`walk_reader.rs`](../../Verus_verification/models/walk_reader/walk_reader.rs) `theorem_distinct_keys_list_every_edge`, `theorem_same_hop_target_collapses` (as-built), `theorem_walk_overflow_raises_and_leaves_stage` (as-built), `theorem_khop_answers_any_size`.
+
+Findings: [kg_GRAPH_WALK keeps one row per hop and node](../../Verus_verification/bugs_issues.md#bug-str-103); [A graph walk whose answer is longer than an IRIS string raises](../../Verus_verification/bugs_issues.md#bug-str-104)
+
+Open questions: [What should `random_walk` answer, and over which graph?](../../Verus_verification/open_questions.md#HD-1001), [Should a graph walk list every edge it walks, or one row per node reached?](../../Verus_verification/open_questions.md#algorithms.op.walks.rows)
 
 Assumption review evidence: Changed from decisions.md: **yes**. decisions.md asked for a declared scope plus an observable 'unavailable' result. The deployed ObjectScript walk runs without the library (upstream test and live), and ADMIN_GUIDE says every algorithm has an ObjectScript answer. So a real default-graph answer is the better-supported reading. 'Unavailable' remains only for a route that cannot honour the scope.
 
