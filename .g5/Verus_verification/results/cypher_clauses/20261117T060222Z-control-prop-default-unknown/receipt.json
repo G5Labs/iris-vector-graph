@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "decision (repair direction of bug-cyp-137): an aggregate of a property has no static type, as a bare sum's does not",
+    "expect_fail_in": [
+      "theorem_sum_of_property_sums_is_int_column",
+      "theorem_int_column_loses_any_half",
+      "theorem_probe_totals"
+    ],
+    "find": "match a { Arg::LitInt => NumT::Int, Arg::LitFloat => NumT::Float, Arg::Prop => NumT::Int }",
+    "name": "prop-default-unknown",
+    "replace": "match a { Arg::LitInt => NumT::Int, Arg::LitFloat => NumT::Float, Arg::Prop => NumT::Unknown }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_sum_of_property_sums_is_int_column",
+      "theorem_int_column_loses_any_half",
+      "theorem_probe_totals"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "d4022db4c7c87115cc5174a7d66a55015c9b27cee899f6c90bf536d8b1829d7a",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "d3f30334c1ee034effc4a128992d8f3c6ecdc0a8b35f7b76363bf8d588ea9064"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/prop-default-unknown/20261117T060220Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_int_column_loses_any_half": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060220Z-control-prop-default-unknown-theorem_int_column_loses_any_half.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_probe_totals": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060220Z-control-prop-default-unknown-theorem_probe_totals.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_sum_of_property_sums_is_int_column": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060220Z-control-prop-default-unknown-theorem_sum_of_property_sums_is_int_column.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060220Z-control-prop-default-unknown.log",
+    "timed_out": false,
+    "verified": 23
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060222Z-control-prop-default-unknown/logs/20261117T060220Z-control-prop-default-unknown-theorem_int_column_loses_any_half.log": "82a4516fbad0ad743492fafd6255ce15cae2469e2157ff1fe126d45e81b54446",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060222Z-control-prop-default-unknown/logs/20261117T060220Z-control-prop-default-unknown-theorem_probe_totals.log": "64cb5e0fb4485d4365bec72e9abc924bd2cc3c37ca945ed04a25a677726bf75d",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060222Z-control-prop-default-unknown/logs/20261117T060220Z-control-prop-default-unknown-theorem_sum_of_property_sums_is_int_column.log": "f6ee0c6b9fc3fdaf5812c627e7ce5eddc73d8f5115f362331fd71de040d4b98f",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060222Z-control-prop-default-unknown/logs/20261117T060220Z-control-prop-default-unknown.log": "369968b70e3ba736fd3169fe73bbc040f7d77c01f9c38d9e0d1bbe8dae17bff2"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -347,5 +347,60 @@ pub proof fn theorem_incoming_only_refused(in_edges: nat)
     ensures as_built_delete(false, 0, in_edges) == DelOut::Refused,
 {}
 
+// ======================================================================== H. a WHERE inside OPTIONAL MATCH
+//   translate_where_clause 17031-17188 (a condition that reads the clause's new variables goes into the outer join's ON;
+//   one that also reads earlier variables does too, when it names no later join alias, 17128-17175); the WHERE's
+//   property reads go through _expr_property_reference 22969-23120, which for an earlier-bound variable adds the
+//   structural guard EXISTS(... "key" = p) to the query's own WHERE (23111-23115) when _null_rejecting_refs 18603-18619
+//   marked the read as an operand of a comparison in the WHERE's AND chain. A range between two properties goes through
+//   CY_CMP over correlated reads instead, with no guard. Reader: the execute_cypher row and its error.
+/// The condition's shape, by what it reads and how.
+pub enum OptCond { OptOnly, EqProps, NeProps, RangeProps, OuterLitAndOpt, OuterArith, OuterOrOpt }
+pub open spec fn reads_outer(c: OptCond) -> bool { c != OptCond::OptOnly }
+/// Whether an earlier variable's property read takes the structural guard: an operand of a comparison in the AND chain,
+/// read through the property path (not the CY_CMP range, not inside arithmetic, not under OR).
+pub open spec fn outer_guarded(c: OptCond) -> bool {
+    match c { OptCond::EqProps => true, OptCond::NeProps => true, OptCond::OuterLitAndOpt => true, _ => false }
+}
+/// Where the guard goes: the query's own WHERE (as built), not the optional group's ON.
+pub open spec fn guard_in_outer_where() -> bool { true }
+/// Provider premise P-OUTER-ON (IRIS 2026.1, observed): an outer join's ON that holds an arithmetic over an earlier
+/// outer-joined property, or an OR of such a read with the optional side's correlated read, fails Prepare (SQLCODE -94).
+pub open spec fn iris_accepts_on(c: OptCond) -> bool { !(c == OptCond::OuterArith || c == OptCond::OuterOrOpt) }
+/// translate_where_clause pushes every one of these shapes into the optional group's ON (none names a later alias).
+pub open spec fn placed_in_on(c: OptCond) -> bool { true }
+pub enum OptOut { KeptWithNull, Dropped, Refused }
+/// The row of an earlier-bound node none of whose optional matches passes the condition; `outer_missing` = the node
+/// lacks the property the condition reads.
+pub open spec fn as_built_opt(c: OptCond, outer_missing: bool) -> OptOut {
+    if reads_outer(c) && !iris_accepts_on(c) { OptOut::Refused }
+    else if !placed_in_on(c) { OptOut::Dropped }
+    else if outer_guarded(c) && guard_in_outer_where() && outer_missing { OptOut::Dropped }
+    else { OptOut::KeptWithNull }
+}
+/// openCypher (owner query.optional): the WHERE filters the optional matches only; the row stays with null.
+pub open spec fn rule_opt(c: OptCond, outer_missing: bool) -> OptOut { OptOut::KeptWithNull }
+/// bug-cyp-143: a comparison on an earlier variable's property drops that node's row when the property is missing.
+pub proof fn theorem_outer_guard_drops_row()
+    ensures
+        as_built_opt(OptCond::EqProps, true) == OptOut::Dropped,
+        as_built_opt(OptCond::NeProps, true) == OptOut::Dropped,
+        as_built_opt(OptCond::OuterLitAndOpt, true) == OptOut::Dropped,
+        rule_opt(OptCond::EqProps, true) == OptOut::KeptWithNull,
+{}
+/// bug-cyp-142 (conditional on P-OUTER-ON): arithmetic or OR over an earlier variable's property refuses the query.
+pub proof fn theorem_outer_arith_or_refused(m: bool)
+    ensures as_built_opt(OptCond::OuterArith, m) == OptOut::Refused, as_built_opt(OptCond::OuterOrOpt, m) == OptOut::Refused,
+{}
+/// Neighbors: a condition on the optional side only, a two-property range, and any guarded shape over a node that has
+/// the property keep the row with null, as the rule says.
+pub proof fn theorem_opt_neighbors_follow_rule(m: bool)
+    ensures
+        as_built_opt(OptCond::OptOnly, m) == rule_opt(OptCond::OptOnly, m),
+        as_built_opt(OptCond::RangeProps, m) == rule_opt(OptCond::RangeProps, m),
+        as_built_opt(OptCond::EqProps, false) == rule_opt(OptCond::EqProps, false),
+        as_built_opt(OptCond::OuterLitAndOpt, false) == rule_opt(OptCond::OuterLitAndOpt, false),
+{}
+
 fn main() {}
 } // verus!

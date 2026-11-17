@@ -1,0 +1,119 @@
+{
+  "before": {
+    "revision": "577205f1",
+    "active": 603,
+    "union": 833
+  },
+  "after": {
+    "revision": "working tree at the iteration-54 seal",
+    "active": 619,
+    "union": 847
+  },
+  "denominator": 4130,
+  "newly_bound": [
+    {
+      "member": "iris_vector_graph/cypher/translator.py::translate_return_clause",
+      "reason": "grouping key from the plain stored text (30777) vs CY_TYPED select item (30676); bug-cyp-135",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_numeric_static_type",
+      "reason": "aggregate static type from its argument; int + int is int; bug-cyp-137",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_arith_operand_type",
+      "reason": "bare property defaults to 'int'; bug-cyp-137",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/_engine/query.py::_int_expr_value",
+      "reason": "reader: int(round(v)), half to even; bug-cyp-137",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_tts_union_branches",
+      "reason": "union keeps only common boolean decoders; branch copy empties union_queries; _ensure_from; bug-cyp-138, -140",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_lone_label_count",
+      "reason": "whole-label count shortcut and its one-line FROM; bug-cyp-140",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_translate_to_sql",
+      "reason": "entry point offering every translated query (a UNION branch too) to _lone_label_count (7380)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_resolve_pagination_value",
+      "reason": "SKIP/LIMIT parameter resolution; bug-cyp-139",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_validate_pagination_int",
+      "reason": "negative SKIP/LIMIT guard (neighbor)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_expr_fn_node_funcs",
+      "reason": "startNode/endNode read {alias}.s/.o_id; type() path-element branch; bug-cyp-141",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::translate_delete_clause",
+      "reason": "touching = s IN ids OR o_id IN ids in the node graph; connected-check sentinel (neighbor, held)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_transaction",
+      "reason": "sentinel count > 0 raises _DELETE_CONNECTED (narrow role of a shared writer)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Cypher/Exec.cls::KeyValues",
+      "reason": "native group key $List keeps a number a number; bug-cyp-136",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::translate_where_clause",
+      "reason": "OPTIONAL WHERE placement into the join ON, mixed branch without fallback; bug-cyp-142",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_expr_property_reference",
+      "reason": "structural guard of an earlier variable read added to the outer WHERE; bug-cyp-143",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_null_rejecting_refs",
+      "reason": "which WHERE reads are guardable",
+      "existing_locator": false
+    }
+  ],
+  "newly_reached": 14,
+  "existing_locator_gaining_binding": [
+    "iris_src/src/Graph/KG/Cypher/Exec.cls::KeyValues",
+    "iris_vector_graph/cypher/translator.py::_numeric_static_type"
+  ],
+  "strengthened": [
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_expr_aggregation",
+      "by": "cypher_clauses: COUNT(DISTINCT arg) over the plain argument (bug-cyp-135)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Cypher/Exec.cls::GroupOf",
+      "by": "cypher_clauses: native group by $List vs SQL by text (bug-cyp-136)"
+    }
+  ],
+  "withdrawn_or_narrowed": [
+    {
+      "member": "aggregate_results grouping correspondence (GroupOf, _expr_aggregation rows)",
+      "change": "its SQL key-equality provider premise fails on IRIS for keys of different kinds with equal text; proofs unchanged, claim at the reader narrowed to single-kind keys"
+    }
+  ],
+  "lost": [],
+  "lost_reason": "none lost",
+  "command": "python3 .g5/Verus_verification/tools/member_reach.py --revision 577205f1 --out /tmp/i54reach-before; --out /tmp/i54reach-after (working tree before the seal commit); union adds the baseline historical locators as master/tools/score.py does"
+}

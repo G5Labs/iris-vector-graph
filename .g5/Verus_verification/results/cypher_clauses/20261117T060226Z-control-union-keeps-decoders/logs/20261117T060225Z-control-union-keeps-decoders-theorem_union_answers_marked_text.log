@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/union-keeps-decoders/20261117T060225Z/models/cypher_clauses/cypher_clauses.rs:209:13
+    |
+207 | pub proof fn theorem_union_answers_marked_text(t: int, rest: Seq<Dec>)
+    | ---------------------------------------------------------------------- at the end of the function body
+208 |     requires rest.len() >= 1,
+209 |     ensures read(union_dec(Dec::Typed, rest), raw_stored_int(t)) == Out::MarkedText(t),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

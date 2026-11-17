@@ -17,7 +17,11 @@ MUTS = ["group_by_typed", "return_distinct_text", "native_text_key", "int_unmark
         "float_literal_int", "int_read_exact", "union_keeps_decoders", "union_drops_bool", "typed_read_plain",
         "bool_literal_text", "page_int_only", "page_no_negative_check", "page_no_fraction_check",
         "count_guard_sees_union", "shortcut_newline_from", "ensure_from_always", "endpoint_reads_json",
-        "type_reads_alias", "delete_outgoing_only", "delete_no_check"]
+        "type_reads_alias", "delete_outgoing_only", "delete_no_check",
+        "opt_guard_in_on", "range_guarded", "iris_accepts_outer_on", "opt_cond_in_where"]
+# ---- H: a WHERE inside OPTIONAL MATCH; outer nodes h1 (v 1), h2 (v 2), h3 (no v); edges h1->h2, h2->h3
+OPT_CONDS = {"OptOnly": "b.v = 2", "EqProps": "b.v = a.v", "NeProps": "b.v <> a.v", "RangeProps": "b.v > a.v",
+             "OuterLitAndOpt": "a.v = 1 AND b.v = 2", "OuterArith": "b.v = a.v + 1", "OuterOrOpt": "a.v = 1 OR b.v = 5"}
 
 # ---- A: stored values (kind, python value, stored text)
 VALS = {"Int1": ("Int", 1, "1"), "Str1": ("Str", "1", "1"), "Int2": ("Int", 2, "2"), "Str2": ("Str", "2", "2"),
@@ -157,6 +161,18 @@ def delete_out(detach, out_e, in_e, m):
     return "Refused" if (not detach and touching > 0) else "Deleted"
 
 
+def as_built_opt(c, outer_missing, m):
+    accepts = True if m.get("iris_accepts_outer_on") else c not in ("OuterArith", "OuterOrOpt")
+    if c != "OptOnly" and not accepts:
+        return "Refused"
+    if m.get("opt_cond_in_where"):
+        return "Dropped"
+    guarded = c in ("EqProps", "NeProps", "OuterLitAndOpt") or (c == "RangeProps" and m.get("range_guarded"))
+    if guarded and not m.get("opt_guard_in_on") and outer_missing:
+        return "Dropped"
+    return "KeptWithNull"
+
+
 DELETES = {"out_only": (1, 0), "in_only": (0, 1), "both": (1, 1), "none": (0, 0)}
 
 
@@ -193,6 +209,10 @@ def predict(m):
         out[f"G_delete_{k}"] = delete_out(False, o, i, m)
         out[f"G_detach_{k}"] = delete_out(True, o, i, m)
     out["G_delete_cross_graph"] = delete_out(False, 0, 0, m)
+    for k in OPT_CONDS:
+        out[f"H_{k}_missing"] = as_built_opt(k, True, m)
+    for k in ("OptOnly", "EqProps", "OuterLitAndOpt"):
+        out[f"H_{k}_present"] = as_built_opt(k, False, m)
     return out
 
 
@@ -344,6 +364,28 @@ def main():
     still_named = e.get_node(z, graph=NGx) is not None
     got["G_delete_cross_graph"] = ("Deleted" if (err is None and gone and still_named) else
                                    "Refused" if (err and "existing relationships" in err and not gone) else f"other:{err!r}:{gone}:{still_named}")
+    # H: h3 (no v) and h4 (v 9) each have one optional match that fails every condition
+    LH = f"I54K{TAG}H"; KH = f"KH{TAG}"
+    e.create_node(P + "h1", labels=[LH], properties={"name": "h1", "v": 1})
+    e.create_node(P + "h2", labels=[LH], properties={"name": "h2", "v": 2})
+    e.create_node(P + "h3", labels=[LH], properties={"name": "h3"})
+    e.create_node(P + "h4", labels=[LH], properties={"name": "h4", "v": 9})
+    e.create_edge(P + "h1", KH, P + "h2"); e.create_edge(P + "h2", KH, P + "h3"); e.create_edge(P + "h3", KH, P + "h4"); e.create_edge(P + "h4", KH, P + "h3")
+    for k, cond in OPT_CONDS.items():
+        rows, err = run(f"MATCH (a:{LH}) OPTIONAL MATCH (a)-[:{KH}]->(b) WHERE {cond} RETURN a.name, b.name")
+        if rows is None:
+            got[f"H_{k}_missing"] = "Refused" if "SQLCODE: <-94>" in err else f"other:{err[:100]}"
+            if k in ("OptOnly", "EqProps", "OuterLitAndOpt"):
+                got[f"H_{k}_present"] = got[f"H_{k}_missing"]
+            continue
+        byname = {}
+        for a_, b_ in rows:
+            byname.setdefault(a_, []).append(b_)
+        # h3 lacks v and its only match (h4, v 9) fails every condition: kept with null, or dropped
+        got[f"H_{k}_missing"] = ("KeptWithNull" if byname.get("h3") == [None] else "Dropped" if "h3" not in byname else f"other:{byname.get('h3')}")
+        # h4 has v 9 and its only match (h3, no v) fails every condition
+        if k in ("OptOnly", "EqProps", "OuterLitAndOpt"):
+            got[f"H_{k}_present"] = ("KeptWithNull" if byname.get("h4") == [None] else "Dropped" if "h4" not in byname else f"other:{byname.get('h4')}")
     c.close()
 
     norm = lambda d: json.loads(json.dumps(d))
@@ -368,7 +410,8 @@ def main():
                      "booleans and duplicate removal; D 13 SKIP/LIMIT values (literal and parameter kinds); E a whole-label count as a "
                      "UNION branch and its neighbors; F startNode/endNode/type of relationships(p) elements (fixed and variable length) "
                      "and of a matched edge; G DELETE and DETACH DELETE over out-only, in-only, both and no edges (adjacency read by the "
-                     "native walk), and a default-graph DELETE of an id a named graph also holds with an edge."}
+                     "native walk), and a default-graph DELETE of an id a named graph also holds with an edge; H a WHERE inside OPTIONAL MATCH in seven "
+                     "shapes, on a node lacking the property the condition reads and on one that has it, with no passing match."}
     d = REPO / ".g5/Verus_verification/results/cypher_clauses" / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-binding")
     d.mkdir(parents=True); (d / "receipt.json").write_text(json.dumps(body, indent=2, sort_keys=True, default=str) + "\n")
     print(json.dumps({k: body[k] for k in ("verdict", "cases", "native_declined", "all_sensitivities_detected", "sensitivities_detected_cases", "observation_tamper_detected", "elapsed_s")}))

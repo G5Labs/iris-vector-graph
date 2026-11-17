@@ -302,6 +302,15 @@ A `SET` that gives a node property a value with the same text and another type s
 - This covers node properties. A relationship property is stored as text and read back by its spelling ([relationship text](#query.values.relationship_text)). Today a relationship `SET` from a function of its own property, such as `SET r.age = toInteger(r.age)`, is refused with a message saying that reading its own property is allowed ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-132)).
 
 
+<a id="query.writes.delete"></a>
+[I · query.writes.delete]
+
+`DELETE n` of a node that has any relationship in its graph, outgoing or incoming, is refused with `GraphWriteError` (ConstraintVerificationFailed) and deletes nothing, whichever writer made the relationship. A node without relationships is deleted, and `DETACH DELETE` removes the node with its relationships, so `get_node` returns None and the native walk no longer reaches it.
+- `DELETE r` removes that relationship only. Its endpoints stay, and a later `create_edge` of the same triple makes a new edge. In multigraph mode, deleting one of two parallel edges leaves the other.
+- Under `USE GRAPH` only that graph's rows are touched. Without it, a node with the same ID in another graph, and that node's relationships, neither block nor follow the delete.
+- `REMOVE n.p` and `REMOVE n:L` remove the property or label for `keys(n)`, `labels(n)` and `get_node` alike.
+
+
 ## Entry points
 
 
@@ -365,6 +374,58 @@ An aggregate uses the rows reaching its query stage, and grouping chooses which 
 - SUM leaves out null and returns 0 if no value contributes. With typed numeric inputs, it stays an integer when every contributor is an integer and a float when one is a float, even for a whole total; `WITH` preserves that type.
 - A collection leaves out null and preserves its elements' types; a nested list or map is different from text spelling it.
 - Aggregation precedes final ordering, skipping and limiting. An empty result still has its declared return columns.
+
+<a id="query.aggregation.keys"></a>
+[I · query.aggregation.keys]
+
+Grouping keys, `DISTINCT` and `count(DISTINCT)` treat two values as one exactly when they are [equal](#query.values.equality) values of the same type, on both paths: the integer 1 and the string "1" are two groups.
+- Today on the SQL path a grouping key, `count(DISTINCT)` and `WITH DISTINCT` compare a stored value's text. So a stored number and the string that spells it (1 and "1", 1.0 and "1") are one group, whose key reads as one of them, while `RETURN DISTINCT` and `collect(DISTINCT)` keep them apart ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-135)).
+- Today the native executor groups by type, so the same grouped query answers different groups on the two paths ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-136)).
+- Over a list the query holds, `UNWIND [1, '1'] AS k` also gives one group and one `DISTINCT` row.
+- A boolean and the string that spells it are one stored value ([documented known issue](../../../docs/KNOWN_ISSUES.md#L332-L368)), so they stay one group on both paths.
+- Working assumption: an integer and a float of equal value (1 and 1.0) are two groups, as the native executor answers; this is provisional.
+
+
+<a id="query.aggregation.arithmetic"></a>
+[I · query.aggregation.arithmetic]
+
+Arithmetic over aggregates gives the openCypher number: over `v` 1, 2 and `f` 2.5, 1.0, `sum(n.v) + sum(n.f)` is 6.5.
+- Today arithmetic that combines two aggregates of stored properties, or such an aggregate with an integer, is read back as a whole number rounded half to even: 6.5 answers 6, 2.5 answers 2 and 3.5 answers 4, on nodes and relationships, whichever writer stored the values ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-137)). An aggregate alone, or beside a float literal, keeps its value.
+
+## Reading clauses
+
+
+<a id="query.optional"></a>
+[I · query.optional]
+
+`OPTIONAL MATCH` keeps every row that reaches it. Where its pattern has no match, the row continues once with the pattern's new variables null, and later expressions read them as null.
+- A `WHERE` inside the `OPTIONAL MATCH` filters only its matches and never drops the row; a `WITH ... WHERE` after it drops the rows whose test is null.
+- A relationship type or label that no edge or node has gives that null row, not an error and not zero rows.
+- Aggregates leave the nulls out: for an unmatched row `count(b)` is 0, `collect(b.x)` is `[]`, `sum` is 0 and `avg` is null, while `count(*)` counts the row ([aggregation](#query.aggregation)).
+- It reads relationships written by the API, by Cypher and in a named graph alike, and always runs on the SQL path.
+- Today a `WHERE` inside it that combines a variable bound earlier with arithmetic or `OR`, such as `b.v = a.v + 1`, fails the query with SQLCODE -94 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-142)).
+- Today a comparison in that `WHERE` on a property of a variable bound earlier, such as `b.v = a.v`, drops the rows of the nodes that lack the property instead of keeping them with nulls ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-143)).
+
+
+<a id="query.paging"></a>
+[I · query.paging]
+
+`DISTINCT`, `ORDER BY`, `SKIP` and `LIMIT` apply in that order to the rows a `RETURN` or `WITH` produces.
+- `RETURN DISTINCT n` keeps two nodes that share every property value; `RETURN DISTINCT n.name` keeps one row per value.
+- `ORDER BY` may name a returned alias, or after `WITH` a column that is not returned. Null sorts last ascending and first descending ([sorting](#query.values.sorting)).
+- `SKIP` and `LIMIT` take a non-negative integer, written in the query or passed as a parameter. A negative one is refused with NegativeIntegerArgument, a fractional float with InvalidArgumentType, and `LIMIT 0` gives no rows.
+- Today a parameter of another type is used as a count: the string "2" as 2, true as 1 and 2.0 as 2. The string "x" fails with a Python `ValueError`, and a null parameter is reported as not provided ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-139)).
+
+
+<a id="query.union"></a>
+[I · query.union]
+
+`UNION` combines the rows of its branches and removes duplicate rows; `UNION ALL` keeps them. Every branch returns the same column names, and one query does not mix the two; IVG refuses either mistake with a `SyntaxError` that names it.
+- Each value keeps its type, and duplicate rows are rows of [equal](#query.values.equality) values.
+- Today a stored property value in a branch reaches the reader as its storage text: the integer 1 as "\x01N1", 2.5 as "\x01D2.5", a list as JSON text, a boolean as "true", and a relationship number as text. Duplicate removal compares those raw values, so a stored 1 and a literal 1 stay two rows while the literals 1 and true become one ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-138)).
+- Today a branch that is a whole-label count, such as `MATCH (n:L) RETURN count(n) AS x`, fails with SQLCODE -1 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-140)).
+- The refusals do not use the TCK's error names (DifferentColumnsInUnion, InvalidClauseComposition).
+
 
 ## Conformance
 
@@ -556,6 +617,14 @@ String functions give the openCypher answer for literal and run-time arguments a
 `coalesce(...)` gives its first argument that is not null, with that argument's type.
 - Today the type is kept only when one argument is a node property and every other is a node property, a single literal value or a parameter. Otherwise a number or boolean comes back as text: `UNWIND [7] AS x RETURN coalesce(x, 1)` gives `'7'` and `coalesce(null, 1)` gives `'1'` ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-121)). A relationship property follows [relationship text](#query.values.relationship_text).
 
+<a id="query.functions.path_elements"></a>
+[I · query.functions.path_elements]
+
+Path functions read the path the pattern matched, whichever writer made its edges and in whichever graph. `length(p)` counts its relationships, `nodes(p)` and `relationships(p)` list them in order, `type(r)` names the type, and `startNode(r)` and `endNode(r)` are the edge's source and target whatever direction the pattern used.
+- `nodes(p)` of a variable-length path answers node ids ([documented known issue](../../../docs/KNOWN_ISSUES.md#L421-L433)); `[x IN nodes(p) | x.name]` reads through the path.
+- Today `startNode(r)` and `endNode(r)` of an element of `relationships(p)` fail with SQLCODE -29, while `type(r)` and `r.p` of it answer ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-141)).
+- Outside multigraph mode a pattern sees one relationship per source, type and target, however often `create_edge` or `bulk_create_edges` wrote it. `create_edge` keeps one edge per triple in multigraph mode too ([multigraph](graph-structure.g5.md#structure.multigraph)); there only a Cypher `CREATE` adds a parallel edge.
+
 ## Metadata
 
 ### query.paths
@@ -642,7 +711,7 @@ Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no
 
 Sources: [spec 253 FR-002, FR-012 (equality decided 2026-10-20), FR-013](../../../specs/253-native-cypher-executor/spec.md#L100-L137), [`native_shadow.compare`](../../../iris_vector_graph/cypher/native_shadow.py#L29-L69). Live: the family A and B end-to-end tests run in shadow mode ([`test_253_family_b_e2e.py`](../../../tests/e2e/test_253_family_b_e2e.py)). Model note: equality assumes the indexes are current ([Should a bulk load by another process close the native query path while indexes lag the rows?](../../Verus_verification/open_questions.md#q-cyp-003)).
 
-Findings: [The native interpreter tells used relationships apart by CRC-32, so a hash collision drops a legitimate match](../../Verus_verification/bugs_issues.md#bug-cyp-002); [ORDER BY sorts an empty-string property with the nulls on the native executor and first on the SQL path](../../Verus_verification/bugs_issues.md#bug-cyp-104)
+Findings: [The native interpreter tells used relationships apart by CRC-32, so a hash collision drops a legitimate match](../../Verus_verification/bugs_issues.md#bug-cyp-002); [ORDER BY sorts an empty-string property with the nulls on the native executor and first on the SQL path](../../Verus_verification/bugs_issues.md#bug-cyp-104); [The SQL path and the native executor group the same stored values differently](../../Verus_verification/bugs_issues.md#bug-cyp-136)
 
 Provenance: spec 253 is still "Draft" and its "Decided 2026-10-20" lines name no decider, so under the uplift's authority rule ([sources](../../uplift/ivg-verus-initial/sources.md)) the block is `agent` (review round 3 R3-reader M16).
 
@@ -822,7 +891,7 @@ Findings: [USE GRAPH accepts graph names the graph keys refuse](../../Verus_veri
 - agent
 - user-facing-behavior, data-integrity
 - test-coverage
-- Children: [atomic](#query.writes.atomic), [adjacency](#query.writes.adjacency), [ledger](#query.writes.ledger), [subquery](#query.writes.subquery), [create existing](#query.writes.create-existing), [computed values](#query.writes.computed_values), [retype](#query.writes.retype), [Should a Cypher `DELETE` clean up everything the engine's own [node delete](graph-structure.g5.md#structure.node.delete) and edge delete clean up?](../../Verus_verification/open_questions.md#query.writes.delete-scope).
+- Children: [atomic](#query.writes.atomic), [adjacency](#query.writes.adjacency), [ledger](#query.writes.ledger), [subquery](#query.writes.subquery), [create existing](#query.writes.create-existing), [computed values](#query.writes.computed_values), [retype](#query.writes.retype), [delete](#query.writes.delete), [Should a Cypher `DELETE` clean up everything the engine's own [node delete](graph-structure.g5.md#structure.node.delete) and edge delete clean up?](../../Verus_verification/open_questions.md#query.writes.delete-scope).
 
 Sources: [CHANGELOG 4.6.0, every statement uses the rows its MATCH bound](../../../CHANGELOG.md#L1742-L1744), [spec 229](../../../specs/229-tck-write-verification/spec.md), [`_write_ids`, `_capture_key`](../../../iris_vector_graph/cypher/translator.py#L13093-L13164), [`execute_transaction`](../../../iris_vector_graph/stores/iris_sql_store.py#L1580-L1818). Live: the TCK's write scenarios with side-effect counting, and `test_460_all_graphs_writes_e2e.py`.
 
@@ -908,6 +977,16 @@ Recovered in iteration 48; frozen prediction W4 held. The binding observed both 
 Findings: [A relationship SET from a function of its own property is refused with a message that says such a read is allowed](../../Verus_verification/bugs_issues.md#bug-cyp-132)
 
 
+### query.writes.delete
+
+- Expands: [Writes](#query.writes)
+- Sources: [USER_GUIDE, DELETE refusal](../../../docs/USER_GUIDE.md#L334-L345); openCypher TCK `Delete1`-`6`; [`translate_delete_clause`](../../../iris_vector_graph/cypher/translator.py#L10625-L10816); [`IRISGraphStore.execute_transaction`](../../../iris_vector_graph/stores/iris_sql_store.py#L1746-L1756); [W59 predictions DL1-DL6 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
+- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `as_built_delete`, `theorem_delete_follows_rule`, `theorem_incoming_only_refused` (controls `delete-outgoing-only`, `delete-no-check`); [scope](../../Verus_verification/models/cypher_clauses/NOTES.md)
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered in iteration 54 from the frozen predictions DL1-DL6, which all held on API-written edges in the default graph, a named graph and a multigraph graph; the cross-graph neighbor was checked after the source was read and agreed. Whether a Cypher `DELETE` should also clean up what the engine's own deletes clean up stays the open question [query.writes.delete-scope](../../Verus_verification/open_questions.md#query.writes.delete-scope).
+
 ### query.read-only
 - agent
 - security, user-facing-behavior
@@ -958,6 +1037,7 @@ State machines: [procedure results](../../Verus_verification/models/procedure_re
 ### query.aggregation
 
 - design-verified
+- Children: [keys](#query.aggregation.keys), [arithmetic](#query.aggregation.arithmetic)
 - Sources: [USER_GUIDE, grouped reporting](../../../docs/USER_GUIDE.md#L165); [typed property sums and WITH](../../../tests/unit/test_sum_column_typing.py); [known-list typed collection](../../../tests/unit/test_460_r308_collect_typed.py); [empty result columns](../../../tests/unit/test_empty_result_columns.py); [aggregate order and page scope](../../../tests/unit/test_order_limit_aggregate_scope.py); [count DISTINCT with LIMIT](../../../tests/e2e/test_470_issue13_count_distinct_limit_e2e.py)
 - Verus: [aggregate_results.rs](../../Verus_verification/models/aggregate_results/aggregate_results.rs) `theorem_raw_group_SUM_reaches_typed_scalar_reader`, `theorem_key_enumeration_complete_unique`, `theorem_full_output_before_page` and `theorem_reader_projection_keeps_exact_public_cells`; [scope](../../Verus_verification/models/aggregate_results/NOTES.md). Raw rows and a RETURN AST fragment derive groups, folds, result kind and full output before paging; exact integer/half-unit arithmetic, SQL equality/aggregate operations, JSON spelling/parsing, raw-name generation and collation remain stated provider frames. Native Group/GroupOf/EmitGroups have inspected typed count transcriptions only, under their nonnull/pW1/equality/order premises; the SQL native panels do not execute those bodies. OPTIONAL synthetic fallback remains observed and partial under bug-agg-001.
 - agent
@@ -980,6 +1060,68 @@ Findings: [An aggregate in a CALL subquery that matches nothing answers 0](../..
 Audit reproduction: [bug-agg-001](../../Verus_verification/bugs_issues.md#bug-agg-001) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 State machines: [aggregate results](../../Verus_verification/models/aggregate_results/manifest.json)
+
+Findings: [A grouping key and count(DISTINCT) treat a stored number and the string spelling it as one value, while RETURN DISTINCT keeps them apart](../../Verus_verification/bugs_issues.md#bug-cyp-135) (iteration 54: grouping keys and DISTINCT, owned by [keys](#query.aggregation.keys)); [Arithmetic over two property aggregates answers a rounded integer: sum(n.v) + sum(n.f) of 3 and 3.5 answers 6](../../Verus_verification/bugs_issues.md#bug-cyp-137) (owned by [arithmetic](#query.aggregation.arithmetic))
+
+### query.aggregation.keys
+
+- uncertain
+- Expands: [Aggregate results](#query.aggregation)
+- Sources: openCypher TCK `Return6`, `Aggregation*`; CIP2016-06-14 (equivalence); [`translate_return_clause` 30676 and 30777](../../../iris_vector_graph/cypher/translator.py#L30670-L30777); [`_expr_aggregation` 24431](../../../iris_vector_graph/cypher/translator.py#L24425-L24431); [`Graph.KG.Cypher.Exec.GroupOf`](../../../iris_src/src/Graph/KG/Cypher/Exec.cls#L1349-L1380); [W59 predictions AG1, AG2 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
+- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `key_of`, `together`; departures `theorem_sql_group_merges_number_and_its_text`, `theorem_paths_disagree_exactly_on_marked_text`, `theorem_sql_group_and_distinct_disagree_on_marked_text`; neighbors `theorem_sql_return_distinct_keeps_kinds`, `theorem_native_group_follows_rule` (controls `group-by-typed`, `return-distinct-text`, `native-text-key`, `int-unmarked`)
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered in iteration 54: the frozen predictions AG1 and AG2 missed. This also bounds the inherited [aggregate results](../../Verus_verification/models/aggregate_results/NOTES.md) model, whose SQL key equality was a named provider premise: on IRIS it holds only for keys of one kind.
+
+Findings: [A grouping key and count(DISTINCT) treat a stored number and the string spelling it as one value, while RETURN DISTINCT keeps them apart](../../Verus_verification/bugs_issues.md#bug-cyp-135); [The SQL path and the native executor group the same stored values differently](../../Verus_verification/bugs_issues.md#bug-cyp-136)
+
+Open questions: [Do an integer and a float of equal value fall in one group?](../../Verus_verification/open_questions.md#query.aggregation.keys.numbers)
+
+### query.aggregation.arithmetic
+
+- Expands: [Aggregate results](#query.aggregation)
+- Sources: openCypher arithmetic; [`_numeric_static_type`](../../../iris_vector_graph/cypher/translator.py#L22046-L22118), [`_arith_operand_type`](../../../iris_vector_graph/cypher/translator.py#L22136-L22153); [`_int_expr_value`](../../../iris_vector_graph/_engine/query.py#L1219-L1240); [W59 results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
+- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `column_type`, `answered`; departures `theorem_sum_of_property_sums_is_int_column`, `theorem_int_column_loses_any_half`, `theorem_probe_totals`; neighbors `theorem_float_operand_or_bare_sum_keeps_value`, `theorem_whole_total_unchanged` (controls `prop-default-unknown`, `float-literal-int`, `int-read-exact`)
+- agent
+- user-facing-behavior, data-integrity
+
+Recovered in iteration 54 after the first observation; the frozen sums (AG4) were single aggregates and held.
+
+Findings: [Arithmetic over two property aggregates answers a rounded integer: sum(n.v) + sum(n.f) of 3 and 3.5 answers 6](../../Verus_verification/bugs_issues.md#bug-cyp-137)
+
+### query.optional
+
+- Sources: openCypher TCK `Null1`-`2`, `Graph3`-`9` and `Aggregation*`; [ADMIN_GUIDE, OPTIONAL MATCH is SQL-only](../../../docs/ADMIN_GUIDE.md#L756-L769); [W59 predictions OM1-OM7 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
+- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `placed_in_on`, `outer_guarded`, `as_built_opt`; departures `theorem_outer_guard_drops_row`, `theorem_outer_arith_or_refused` (conditional on the IRIS premise P-OUTER-ON); neighbor `theorem_opt_neighbors_follow_rule` (controls `opt-guard-in-on`, `range-guarded`, `iris-accepts-outer-on`, `opt-cond-in-where`)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 54; every frozen prediction OM1-OM7 held on API-written, Cypher-written and named-graph data, and the native executor declined every shape, as documented. The WHERE placement was then read in the source and checked over seven condition shapes; two of them depart.
+
+Findings: [A WHERE inside OPTIONAL MATCH that combines an earlier variable's property with arithmetic or OR fails the query with SQLCODE -94](../../Verus_verification/bugs_issues.md#bug-cyp-142); [A comparison on an earlier variable's property inside an OPTIONAL MATCH WHERE drops the rows of nodes that lack the property](../../Verus_verification/bugs_issues.md#bug-cyp-143) The inherited exceptions stay with their owners: [a leading grouped OPTIONAL MATCH's sum](../../Verus_verification/bugs_issues.md#bug-agg-001) and the two refused variable-length shapes ([conformance](#query.conformance)).
+
+### query.paging
+
+- Sources: openCypher TCK `ReturnSkipLimit1`-`3`, `WithSkipLimit*`; [`_resolve_pagination_value`](../../../iris_vector_graph/cypher/translator.py#L8095-L8134); [W59 predictions WS1-WS7 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
+- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `as_built_page`, `rule_page`; departure `theorem_non_integer_parameter_used`; neighbor `theorem_integer_and_fraction_follow_rule` (controls `page-int-only`, `page-no-negative-check`, `page-no-fraction-check`)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 54; the frozen predictions WS1-WS7 held. The other parameter kinds were checked after the first observation.
+
+Findings: [SKIP and LIMIT use a string, boolean or whole-float parameter as a count, and call a null parameter "not provided"](../../Verus_verification/bugs_issues.md#bug-cyp-139)
+
+### query.union
+
+- Sources: openCypher TCK `Union1`-`3`; [`_tts_union_branches`](../../../iris_vector_graph/cypher/translator.py#L4632-L4714); [`_lone_label_count`](../../../iris_vector_graph/cypher/translator.py#L7413-L7459); [W59 predictions UN1-UN3 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
+- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `union_dec`, `read`, `prepares`; departures `theorem_union_answers_marked_text`, `theorem_union_dedup_by_raw`, `theorem_label_count_branch_fails`; neighbors `theorem_single_query_decodes`, `theorem_all_bool_union_stays_bool`, `theorem_count_alone_and_other_branches_prepare`
+- agent
+- user-facing-behavior
+
+Recovered in iteration 54: UN1 and UN3 held; UN2 held on the row count and missed on the value. The TCK's UNION scenarios return literals only, which the product decodes.
+
+Findings: [A UNION answers stored property values as their storage text: 1 as "\x01N1", 2.5 as "\x01D2.5", a list as JSON text](../../Verus_verification/bugs_issues.md#bug-cyp-138); [A UNION whose branch is a whole-label count fails with SQLCODE -1](../../Verus_verification/bugs_issues.md#bug-cyp-140)
 
 ### query.conformance
 
@@ -1031,6 +1173,8 @@ Findings: [SET n.p = null keeps the key](../../Verus_verification/bugs_issues.md
 
 State machines: [node read](../../Verus_verification/models/node_read/manifest.json)
 
+Findings: [A UNION answers stored property values as their storage text: 1 as "\x01N1", 2.5 as "\x01D2.5", a list as JSON text](../../Verus_verification/bugs_issues.md#bug-cyp-138) (iteration 54: a UNION drops the type decoders this block's reads rely on)
+
 ### query.values.equality
 
 - design-verified
@@ -1046,6 +1190,8 @@ As-built SQL-path behavior on IRIS 2026.1 for values written by `create_node` an
 Findings: [A boolean equality also matches stored integers 1 and 0, beyond the legacy strings the known issue names](../../Verus_verification/bugs_issues.md#bug-cyp-102); [A string predicate matches a node property stored as a number by its digits](../../Verus_verification/bugs_issues.md#bug-cyp-105); [IN lists compare a property's text with each value's spelling, so they disagree with = on nodes and relationships](../../Verus_verification/bugs_issues.md#bug-cyp-106); [A simple CASE over a property or a row value takes a WHEN of another type when the text matches](../../Verus_verification/bugs_issues.md#bug-cyp-127)
 
 State machines: [typed equality](../../Verus_verification/models/typed_equality/manifest.json)
+
+Findings: [A grouping key and count(DISTINCT) treat a stored number and the string spelling it as one value, while RETURN DISTINCT keeps them apart](../../Verus_verification/bugs_issues.md#bug-cyp-135) (iteration 54: grouping compares text, unlike `=`)
 
 ### query.values.ordering
 
@@ -1282,3 +1428,16 @@ Findings: [A negative substring start answers leading characters](../../Verus_ve
 Recovered in iteration 48. Frozen prediction C3 held for stored values and missed for its literal neighbor.
 
 Findings: [coalesce over row values, literals or parameters answers numbers as text](../../Verus_verification/bugs_issues.md#bug-cyp-121); inherited [coalesce over a relationship property returns its stored text](../../Verus_verification/bugs_issues.md#bug-cyp-107)
+
+### query.functions.path_elements
+
+- Expands: [Built-in functions](#query.functions)
+- Sources: openCypher TCK `Graph*`, `Path*`; [KNOWN_ISSUES, nodes(p)](../../../docs/KNOWN_ISSUES.md#L421-L433); [`_expr_fn_node_funcs`](../../../iris_vector_graph/cypher/translator.py#L28964-L29023); [W59 predictions PA1-PA7, PC1-PC3 and results](../../uplift/consolidated/iteration-54/clauses-PAIRS.md)
+- Verus: active: [`cypher_clauses.rs`](../../Verus_verification/models/cypher_clauses/cypher_clauses.rs) `reads_existing_column`; departure `theorem_path_element_endpoints_fail`; neighbor `theorem_type_and_matched_endpoints_work` (controls `endpoint-reads-json`, `type-reads-alias`)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 54. PA1-PA4, PA6, PA7 and PC1, PC3 held on API-written and named-graph edges; PA5 and PC2 missed because the prediction overlooked that `create_edge` deduplicates in multigraph mode too, which [structure.multigraph](graph-structure.g5.md#structure.multigraph) already states.
+
+Findings: [startNode() and endNode() of a relationship taken from relationships(p) fail with SQLCODE -29](../../Verus_verification/bugs_issues.md#bug-cyp-141)
+

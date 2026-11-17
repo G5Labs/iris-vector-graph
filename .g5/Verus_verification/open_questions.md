@@ -6489,3 +6489,40 @@ answer:
   answered_at: null
 default_assumption: Treat previous temporal edges as retained until an explicit cleanup or reclassification is authorized.
 ```
+
+<a id="query.aggregation.keys.numbers"></a>
+### Do an integer and a float of equal value fall in one group?
+
+[Q · query.aggregation.keys.numbers]
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Should a grouping key, `DISTINCT` and `count(DISTINCT)` treat the integer 1 and the float 1.0 as one value?
+- Provisional answer (agent, unratified): two values, as the native executor answers today (its group key keeps a number's type). It keeps grouping consistent with how IVG stores and returns the two types.
+- Alternative: one value, by openCypher's equivalence of numbers of equal value (CIP2016-06-14 compares numbers by value); Neo4j is commonly described as grouping them together, which this run did not check.
+- As built: the SQL path puts 1, 1.0 and the string "1" in one group by their text ([bug-cyp-135](bugs_issues.md#bug-cyp-135)); the native executor keeps all three apart ([bug-cyp-136](bugs_issues.md#bug-cyp-136)). The TCK at the pinned revision has no scenario that decides it.
+
+Disposition: open. Working assumption: two values. Evidence: [W59](../uplift/consolidated/iteration-54/clauses-PAIRS.md), [cypher_clauses](models/cypher_clauses/NOTES.md). Owner: [query.aggregation.keys](../ontology/features/cypher.g5.md#query.aggregation.keys).
+
+```g5-question
+{
+  "schema": 1,
+  "id": "query.aggregation.keys.numbers",
+  "status": "open",
+  "prompt": "Should a grouping key, DISTINCT and count(DISTINCT) treat the integer 1 and the float 1.0 as one value?",
+  "severity": "low",
+  "default_assumption": "Two values, as the native executor answers today.",
+  "allow_free_text": true,
+  "multi_select": false,
+  "options": [
+    {
+      "label": "Two values: a number keeps its type in grouping",
+      "description": "The native executor's answer today."
+    },
+    {
+      "label": "One value: numbers of equal value are equivalent (openCypher CIP2016-06-14)",
+      "description": "Both paths would need to compare numbers by value."
+    }
+  ]
+}
+```

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/delete-no-check/20261117T060207Z/models/cypher_clauses/cypher_clauses.rs:342:13
+    |
+341 | pub proof fn theorem_delete_follows_rule(detach: bool, out_edges: nat, in_edges: nat)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+342 |     ensures as_built_delete(detach, out_edges, in_edges) == rule_delete(detach, out_edges, in_edges),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

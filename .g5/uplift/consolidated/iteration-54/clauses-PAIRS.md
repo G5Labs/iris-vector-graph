@@ -83,3 +83,55 @@ the same values (label `C`, type `KC`). Named graph `g`: `gx-K->gy`. Multigraph 
 Not predicted with confidence: the error class names IVG gives for refused `SKIP`/`LIMIT` values and `UNION` columns
 (the TCK passes on them, so some refusal is expected), whether `AG5` coerces or refuses, and whether 1 and 1.0 group
 together (left out of AG1 for that reason).
+
+## Result (iteration 54; [observation](clauses-observed-20261117T053516Z.json), [follow-up](clauses-observed2-20261117T053826Z.json) after the first observation and before the deciding source was read, [binding](../../../Verus_verification/results/cypher_clauses/20261117T060402Z-binding/receipt.json) after it)
+
+Readers: the SQL path (`native_cypher=False`) for every row; the native executor (`_try_native` on an engine with it on,
+used from the follow-up) accepted only plain `MATCH ... RETURN` shapes, `DISTINCT`/`count` over one hop, literal
+`ORDER BY ... LIMIT` and the grouped reads of AG1, and declined every `OPTIONAL MATCH`, `UNION`, `EXISTS`,
+comprehension, path function, parameter `LIMIT` and write. Where it answered, it agreed with the SQL path except on
+grouping (bug-cyp-136).
+
+**42 rows: 35 held, 3 partial, 4 missed.**
+
+| ID | Held? | Observed |
+|---|---|---|
+| OM1-OM7 | held (7) | one null row for `a3`, two rows for `a1`; missing type or label gives the null row; WHERE inside keeps 5 rows, after keeps 1; `null, 0, true, null` vs `3, 2, false, false`; `count(b)` 0 with `count(*)` 1, `sum` 0, `avg` null; leading OPTIONAL gives `[null]` and `[0]`; the chained and named-graph forms as predicted; the Cypher twin the same |
+| AG1 | **missed** | `[1, 3], [1.5, 1]`: the integer 1 and the string "1" are one group (API and Cypher twin alike); `RETURN DISTINCT` keeps them apart → **bug-cyp-135** |
+| AG2 | **missed** | `count(DISTINCT)` 2 for the stored values and 2 for `UNWIND [1, '1', true, 'true']` (predicted 3 and 4): the key is the text → **bug-cyp-135** |
+| AG3 | held | `[[1, 2], [3]]` lists of integers; `[{k: 1}]` a map |
+| AG4 | held | 3 (integer), 1.5; 5.5, 1.8333… |
+| AG5 | partial | coerced, as the docs alternative said: `UNWIND ['1', '2']` sums to 3, but a stored `'x'` counts as 0 (`sum` over `'1'`, `'x'` is 1), which no source states |
+| AG6 | held | `[0, 0, null, []]`; no rows |
+| AG7 | partial | API relationships: `sum(coalesce(r.w, r.weight))` 3.5 as predicted; the probe's `sum(r.w) + sum(r.weight)` answered 4 on API and Cypher twins → **bug-cyp-137** (the single-sum twin was not observed in the predicted form) |
+| WS1-WS7 | held (7) | parameter and literal pages equal; `-1` and `1.5` refused with NegativeIntegerArgument and InvalidArgumentType, parameter and literal alike; `LIMIT 0` no rows; two DISTINCT nodes, one DISTINCT name; ORDER BY a WITH column and an alias; a null-`v` node first with `DESC` |
+| UN1 | held | one row; two rows |
+| UN2 | partial | row counts as predicted, but the value is `'\x01N1'`, not 1 → **bug-cyp-138** |
+| UN3 | held | both refused with a SyntaxError (messages are not the TCK's error names) |
+| EX1, EX2 | held | `a1`, `a2` for `EXISTS {}` and the pattern predicate; the complement for `NOT`; `gx` under `USE GRAPH` |
+| PC1, PC3 | held | `['a2', 'a3']`, `[]`; `[20]` both |
+| PC2 | **missed** | 1, not 2: the second `create_edge` in the multigraph graph returned False. The owner [structure.multigraph](../../../ontology/features/graph-structure.g5.md#structure.multigraph) already says direct create deduplicates at this pin; the prediction overlooked it |
+| PA1-PA4 | held | `1, 'K…', 'a1', 'a2', 2, 1` both writers; start is the source for incoming and undirected patterns; named graph; lengths 1, 1, 2 and names through the comprehension |
+| PA5 | **missed** | multigraph 1 (same cause as PC2); single-edge 1 as predicted |
+| PA6, PA7 | held | batch duplicate stored once (the call answers 2, the batch size, as documented); Cypher `CREATE` adds nothing in the single-edge graph and a second edge in multigraph mode |
+| DL1-DL6 | held (6) | refused with ConstraintVerificationFailed for outgoing and incoming-only edges; DETACH removes the node and its edges, and the native walk over `^KG` no longer reaches it; `DELETE r` keeps the endpoints and `create_edge` then answers True; `REMOVE` of a property and of a label reach `keys`, `labels` and `get_node`; `USE GRAPH` deletes only that graph's edge; one of two parallel edges remains |
+
+Found after the freeze, not predicted:
+- arithmetic over two property aggregates is read as a rounded integer (**bug-cyp-137**), from `AG4_mixed_props`;
+- a SKIP/LIMIT parameter of string, boolean or whole-float kind is used as a count, `'x'` raises a raw `ValueError`, and
+  null is "not provided" (**bug-cyp-139**);
+- a whole-label count as a UNION branch fails with SQLCODE -1 (**bug-cyp-140**);
+- `startNode`/`endNode` of a `relationships(p)` element fail with SQLCODE -29 (**bug-cyp-141**, from `PA4_rels`);
+- a UNION of `1`, `2.5`, `true`, `[1]` loses `true` (merged with 1) and answers `'[1]'` (part of bug-cyp-138);
+- the native executor answers the AG1 grouping with typed groups (**bug-cyp-136**);
+- a parameter `LIMIT` sends an otherwise native read to the SQL path (observation, no finding);
+- after the source read, the default-graph `DELETE` of an ID a named graph also holds with an edge was predicted to
+  delete (graph scope) and did.
+- after the source read of the OPTIONAL MATCH WHERE placement, a probe with its prediction written first (one row per
+  node, null where no match passes; [optional_where_probe.py](optional_where_probe.py),
+  [optional_mixed_probe.py](optional_mixed_probe.py)): eleven of twelve single-side shapes held; conditions that read
+  an earlier variable departed: arithmetic or `OR` fail with SQLCODE -94 (**bug-cyp-142**), and an equality or
+  inequality on an earlier node's property drops the nodes that lack it (**bug-cyp-143**). The first runs of both probes
+  read only the rows and showed the refusals as empty answers; they are kept under `failed-runs/`
+  ([where](failed-runs/optional-where-observed-20261117T055812Z.json), [mixed](failed-runs/optional-mixed-observed-20261117T055837Z.json));
+  the reruns ([where](optional-where-observed-20261117T060017Z.json), [mixed](optional-mixed-observed-20261117T060018Z.json)) record the error.

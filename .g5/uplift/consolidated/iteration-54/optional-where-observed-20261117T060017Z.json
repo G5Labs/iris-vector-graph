@@ -1,0 +1,208 @@
+{
+ "run": "20261117T060017Z",
+ "fixture": "ivg-cont-20261117-iris",
+ "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "eq_int": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.v = 2 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "gt_int": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.v > 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "eq_str": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.name = 'a2' RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "starts": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.name STARTS WITH 'a2' RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "in_list": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.v IN [2] RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "fn_upper": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE toUpper(b.name) = 'A2' RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "arith": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.v + 0 = 2 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "size": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE size(b.name) = 2 AND b.v = 2 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "not_null": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.v IS NOT NULL RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "param": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.v = $v RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ },
+ "mixed": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE b.v = a.v + 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [],
+  "error": "<SQL ERROR>; Details: [SQLCODE: <-94>:<Unsupported usage of OUTER JOIN>]\r\n[Location: <Prepare>]\r\n[%msg: <Unsupported usage of OUTER JOIN>]"
+ },
+ "rel_prop": {
+  "q": "MATCH (a:I54W060017) OPTIONAL MATCH (a)-[r:KW060017]->(b) WHERE r.w = 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "error": null
+ }
+}

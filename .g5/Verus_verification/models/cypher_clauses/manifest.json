@@ -1,0 +1,177 @@
+{
+  "title": "cypher clauses",
+  "question": "Cypher clauses over API-written data, default mode and parameters (W59, iteration 54): grouping and DISTINCT keys on both executors (bug-cyp-135, -136), arithmetic over aggregates (bug-cyp-137), UNION decoders and duplicates (bug-cyp-138), SKIP/LIMIT values (bug-cyp-139), a label-count UNION branch (bug-cyp-140), startNode/endNode of path elements (bug-cyp-141), DELETE refusal; a WHERE inside OPTIONAL MATCH that reads an earlier variable (bug-cyp-142, -143)",
+  "ontology_ids": [
+    "query.aggregation.keys",
+    "query.aggregation.arithmetic",
+    "query.union",
+    "query.paging",
+    "query.functions.path_elements",
+    "query.writes.delete",
+    "query.optional"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 26}"
+    },
+    {
+      "label": "group-by-typed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_group_merges_number_and_its_text\", \"theorem_paths_disagree_exactly_on_marked_text\", \"theorem_sql_group_and_distinct_disagree_on_marked_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "return-distinct-text",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_return_distinct_keeps_kinds\", \"theorem_sql_group_and_distinct_disagree_on_marked_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "native-text-key",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_native_group_follows_rule\", \"theorem_paths_disagree_exactly_on_marked_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "int-unmarked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_return_distinct_keeps_kinds\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "prop-default-unknown",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_sum_of_property_sums_is_int_column\", \"theorem_int_column_loses_any_half\", \"theorem_probe_totals\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "float-literal-int",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_float_operand_or_bare_sum_keeps_value\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "int-read-exact",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_int_column_loses_any_half\", \"theorem_probe_totals\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "union-keeps-decoders",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_union_answers_marked_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "union-drops-bool",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_all_bool_union_stays_bool\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "typed-read-plain",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_single_query_decodes\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bool-literal-text",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_union_dedup_by_raw\", \"theorem_all_bool_union_stays_bool\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "page-int-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_non_integer_parameter_used\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "page-no-negative-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_integer_and_fraction_follow_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "page-no-fraction-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_integer_and_fraction_follow_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "count-guard-sees-union",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_label_count_branch_fails\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "shortcut-newline-from",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_label_count_branch_fails\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ensure-from-always",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_count_alone_and_other_branches_prepare\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "endpoint-reads-json",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_path_element_endpoints_fail\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "type-reads-alias",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_type_and_matched_endpoints_work\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-outgoing-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_delete_follows_rule\", \"theorem_incoming_only_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-no-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_delete_follows_rule\", \"theorem_incoming_only_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "opt-guard-in-on",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_outer_guard_drops_row\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "range-guarded",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_opt_neighbors_follow_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "iris-accepts-outer-on",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_outer_arith_or_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "opt-cond-in-where",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_opt_neighbors_follow_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"verdict\": \"AGREES\"}"
+    }
+  ]
+}

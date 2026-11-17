@@ -622,3 +622,25 @@ Second lookup: `install.status.readers` → `operator_reports.rs::theorem_failed
 for `iris_vector_graph/cypher_api.py::get_metrics` and `::get_server_info` and `_engine/admin.py::AdminMixin._status_probes`;
 control `metrics-marks-unknown`; product observation: binding step s19 (`ivg_nodes_total 0` for a user without SELECT
 while `status().unknown` names `graph`).
+
+Iteration 54 (W59, Cypher clauses over API-written data, default mode and parameters;
+[handoff](../uplift/consolidated/iteration-54/HANDOFF.md)), same environment. The binding writes fresh nodes and edges
+in USER (prefix `i54k_<tag>_`) and one named graph `i54kg<tag>` in `ivg-cont-20261117-iris` only.
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/cypher_clauses       # PASS 26
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/cypher_clauses    # 25 EXPECTED_FAIL
+CONTROL=group-by-typed python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/cypher_clauses
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/cypher_clauses/binding.py)  # AGREES 112
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-54/clauses_probe.py)     # raw probe, fresh tag
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after54                 # 619/4130
+```
+
+Worked lookup (iteration 54): `query.aggregation.keys` → `cypher_clauses.rs::theorem_sql_group_merges_number_and_its_text`
+→ the rows for `iris_vector_graph/cypher/translator.py::translate_return_clause` (30676: the item selected through
+`CY_TYPED`; 30777: the plain `sql` added to `GROUP BY`) and `::_expr_aggregation` (24431, `COUNT(DISTINCT arg)`) in
+`crosswalk/decision-links.tsv`; the native side is `iris_src/src/Graph/KG/Cypher/Exec.cls::GroupOf` (1349-1380) under
+`theorem_paths_disagree_exactly_on_marked_text`. In reverse, those keys in the recount's `bindings.json` list the claims,
+beside the inherited `aggregate_results` rows on `_expr_aggregation` and `GroupOf`. The distinguishing control is
+`group-by-typed`; the product observation is the binding's `A_Int1_Str1_sql_group` (true: one group) beside
+`A_Int1_Str1_sql_distinct` (false) and `A_Int1_Str1_native_group` (false).

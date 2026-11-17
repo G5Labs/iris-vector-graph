@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/page-int-only/20261117T060156Z/models/cypher_clauses/cypher_clauses.rs:258:1
+    |
+258 | pub proof fn theorem_non_integer_parameter_used(i: int, b: bool, v: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/page-int-only/20261117T060156Z/models/cypher_clauses/cypher_clauses.rs:261:9
+    |
+258 | pub proof fn theorem_non_integer_parameter_used(i: int, b: bool, v: int)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+261 |         as_built_page(PV::Str(StrV::Num(i))) == POut::Rows(i),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/page-int-only/20261117T060156Z/models/cypher_clauses/cypher_clauses.rs:262:9
+    |
+258 | pub proof fn theorem_non_integer_parameter_used(i: int, b: bool, v: int)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+262 |         as_built_page(PV::Bool(b)) == POut::Rows(if b { 1 } else { 0 }),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

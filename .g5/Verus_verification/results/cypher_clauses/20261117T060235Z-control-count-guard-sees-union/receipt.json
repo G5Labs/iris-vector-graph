@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision (repair direction of bug-cyp-140): the shortcut's guard sees that the branch is part of a UNION",
+    "expect_fail_in": [
+      "theorem_label_count_branch_fails"
+    ],
+    "find": "    let branch_field = false;",
+    "name": "count-guard-sees-union",
+    "replace": "    let branch_field = true;"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_label_count_branch_fails"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "d4022db4c7c87115cc5174a7d66a55015c9b27cee899f6c90bf536d8b1829d7a",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "d3f30334c1ee034effc4a128992d8f3c6ecdc0a8b35f7b76363bf8d588ea9064"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/count-guard-sees-union/20261117T060234Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_label_count_branch_fails": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060234Z-control-count-guard-sees-union-theorem_label_count_branch_fails.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060234Z-control-count-guard-sees-union.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060235Z-control-count-guard-sees-union/logs/20261117T060234Z-control-count-guard-sees-union-theorem_label_count_branch_fails.log": "ed590e3eaf73c40f0edbbcb61efdf52059ea313f9e79566a6934dc98a26bd461",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060235Z-control-count-guard-sees-union/logs/20261117T060234Z-control-count-guard-sees-union.log": "70a0aee89207ef2402f38b16d27d4095476cfcdd340d166a1a50d1396e4d8292"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

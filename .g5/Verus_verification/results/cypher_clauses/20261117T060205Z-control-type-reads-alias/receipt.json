@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "guard: type()'s path-element branch removed",
+    "expect_fail_in": [
+      "theorem_type_and_matched_endpoints_work"
+    ],
+    "find": "        FnK::Type => true,",
+    "name": "type-reads-alias",
+    "replace": "        FnK::Type => v == RelVar::MatchedEdge,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_type_and_matched_endpoints_work"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "d4022db4c7c87115cc5174a7d66a55015c9b27cee899f6c90bf536d8b1829d7a",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "d3f30334c1ee034effc4a128992d8f3c6ecdc0a8b35f7b76363bf8d588ea9064"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/type-reads-alias/20261117T060204Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_type_and_matched_endpoints_work": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060204Z-control-type-reads-alias-theorem_type_and_matched_endpoints_work.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060204Z-control-type-reads-alias.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060205Z-control-type-reads-alias/logs/20261117T060204Z-control-type-reads-alias-theorem_type_and_matched_endpoints_work.log": "7e25b2c8a13fdd43097d7de25b84ade18da8c328eef77d02f46888c8cff6ebfe",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060205Z-control-type-reads-alias/logs/20261117T060204Z-control-type-reads-alias.log": "0fcc263f08512e76ffbfa7ae8ceca08f0cab7bf8e13ae4c3bcd334311f3311b7"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

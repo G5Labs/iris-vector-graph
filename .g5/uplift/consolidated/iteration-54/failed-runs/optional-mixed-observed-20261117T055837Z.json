@@ -1,0 +1,239 @@
+{
+ "run": "20261117T055837Z",
+ "fixture": "ivg-cont-20261117-iris",
+ "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+ "api_opt_plus": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.v = a.v + 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) = (CASE WHEN ISNUMERIC(p4.val) = 0 THEN COALESCE(Graph_KG.CY_ARITH(p4.val, '+', 1), NULL) ELSE (CAST(p4.val AS DOUBLE) + 1) END)\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "api_opt_gt": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.v > a.v RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p4.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p5.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (Graph_KG.CY_CMP((SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND graph_id = n2.graph_id AND \"key\" = 'v'), (SELECT val FROM Graph_KG.rdf_props WHERE s = n0.node_id AND graph_id = n0.graph_id AND \"key\" = 'v')) = 1)\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n2.node_id AND p5.graph_id = n2.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n0.node_id AND p6.graph_id = n0.graph_id AND p6.\"key\" = ?\nWHERE l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p6.val, 'x')) ASC"
+ },
+ "api_opt_and_split": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE a.v = 1 AND b.v = 2 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (((ASCII($LISTBUILD(%EXACT(p4.val))) > 0 AND ASCII(SUBSTRING($LISTBUILD(%EXACT(p4.val)), 2, 1)) BETWEEN 4 AND 9) AND CAST(p4.val AS DOUBLE) = CAST('1' AS DOUBLE)) AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) IN ('2', '2.0'))\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'v') AND l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "api_opt_ne_names": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.name <> a.name RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    "a3"
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) <> p4.val\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'name') AND l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "api_opt_eq_props": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.v = a.v RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    null
+   ],
+   [
+    "a2",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) = p4.val\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'v') AND l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "api_opt_or_mixed": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE a.v = 1 OR b.v = 5 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (((ASCII($LISTBUILD(%EXACT(p4.val))) > 0 AND ASCII(SUBSTRING($LISTBUILD(%EXACT(p4.val)), 2, 1)) BETWEEN 4 AND 9) AND CAST(p4.val AS DOUBLE) = CAST('1' AS DOUBLE)) OR (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) IN ('5', '5.0'))\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "api_opt_id_cmp": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.name STARTS WITH a.name RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    null
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND %EXACT((SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?)) LIKE %EXACT(p4.val || '%')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'name') AND l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "api_match_plus": {
+  "q": "MATCH (a:I54X055837) MATCH (a)-[:KX055837]->(b) WHERE b.v = a.v + 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p6.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p7.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nJOIN Graph_KG.rdf_edges e3 ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ?\nJOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n2.node_id AND p4.graph_id = n2.graph_id AND p4.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n0.node_id AND p6.graph_id = n0.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n2.node_id AND p7.graph_id = n2.graph_id AND p7.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p8 ON p8.s = n0.node_id AND p8.graph_id = n0.graph_id AND p8.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn2 WHERE _sgn2.s = n2.node_id AND _sgn2.graph_id = n2.graph_id AND _sgn2.\"key\" = 'v') AND l1.s IS NOT NULL AND p4.val = (CASE WHEN ISNUMERIC(p5.val) = 0 THEN COALESCE(Graph_KG.CY_ARITH(p5.val, '+', 1), NULL) ELSE (CAST(p5.val AS DOUBLE) + 1) END)\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p8.val, 'x')) ASC"
+ },
+ "api_with_after_plus": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WITH a, b WHERE b.v = a.v + 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ]
+  ],
+  "sql": "WITH Stage1 AS (\nSELECT n0.node_id AS a, n2.node_id AS b, n0.graph_id AS __g_a, n2.graph_id AS __g_b\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT OUTER JOIN Graph_KG.rdf_edges e3 ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ?\nLEFT OUTER JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nWHERE l1.s IS NOT NULL AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND graph_id = n2.graph_id AND \"key\" = ?) = CASE WHEN ISNUMERIC(p4.val) = 0 THEN COALESCE(Graph_KG.CY_ARITH(p4.val, '+', 1), NULL) ELSE (CAST(p4.val AS DOUBLE) + 1) END\n)\nSELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Stage1 Stage1\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = a AND p5.graph_id = Stage1.__g_a AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = b AND p6.graph_id = Stage1.__g_b AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = a AND p7.graph_id = Stage1.__g_a AND p7.\"key\" = ?\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "api_opt_count": {
+  "q": "MATCH (a:I54X055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.v = a.v + 1 RETURN count(*)",
+  "rows": [],
+  "sql": "SELECT COUNT(*) AS count___\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) = (CASE WHEN ISNUMERIC(p4.val) = 0 THEN COALESCE(Graph_KG.CY_ARITH(p4.val, '+', 1), NULL) ELSE (CAST(p4.val AS DOUBLE) + 1) END)\nWHERE l1.s IS NOT NULL"
+ },
+ "cypher_opt_plus": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.v = a.v + 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) = (CASE WHEN ISNUMERIC(p4.val) = 0 THEN COALESCE(Graph_KG.CY_ARITH(p4.val, '+', 1), NULL) ELSE (CAST(p4.val AS DOUBLE) + 1) END)\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "cypher_opt_gt": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.v > a.v RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p4.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p5.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (Graph_KG.CY_CMP((SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND graph_id = n2.graph_id AND \"key\" = 'v'), (SELECT val FROM Graph_KG.rdf_props WHERE s = n0.node_id AND graph_id = n0.graph_id AND \"key\" = 'v')) = 1)\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n2.node_id AND p5.graph_id = n2.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n0.node_id AND p6.graph_id = n0.graph_id AND p6.\"key\" = ?\nWHERE l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p6.val, 'x')) ASC"
+ },
+ "cypher_opt_and_split": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE a.v = 1 AND b.v = 2 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (((ASCII($LISTBUILD(%EXACT(p4.val))) > 0 AND ASCII(SUBSTRING($LISTBUILD(%EXACT(p4.val)), 2, 1)) BETWEEN 4 AND 9) AND CAST(p4.val AS DOUBLE) = CAST('1' AS DOUBLE)) AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) IN ('2', '2.0'))\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'v') AND l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "cypher_opt_ne_names": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.name <> a.name RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ],
+   [
+    "a2",
+    "a3"
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) <> p4.val\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'name') AND l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "cypher_opt_eq_props": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.v = a.v RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    null
+   ],
+   [
+    "a2",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) = p4.val\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'v') AND l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "cypher_opt_or_mixed": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE a.v = 1 OR b.v = 5 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (((ASCII($LISTBUILD(%EXACT(p4.val))) > 0 AND ASCII(SUBSTRING($LISTBUILD(%EXACT(p4.val)), 2, 1)) BETWEEN 4 AND 9) AND CAST(p4.val AS DOUBLE) = CAST('1' AS DOUBLE)) OR (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) IN ('5', '5.0'))\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "cypher_opt_id_cmp": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.name STARTS WITH a.name RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    null
+   ],
+   [
+    "a2",
+    null
+   ],
+   [
+    "a3",
+    null
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND %EXACT((SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?)) LIKE %EXACT(p4.val || '%')\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n2.node_id AND p6.graph_id = n2.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n0.node_id AND p7.graph_id = n0.graph_id AND p7.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = 'name') AND l1.s IS NOT NULL\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "cypher_match_plus": {
+  "q": "MATCH (a:I54XC055837) MATCH (a)-[:KX055837]->(b) WHERE b.v = a.v + 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ]
+  ],
+  "sql": "SELECT Graph_KG.CY_TYPED(%EXACT(p6.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p7.val)) AS b_name\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nJOIN Graph_KG.rdf_edges e3 ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ?\nJOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n2.node_id AND p4.graph_id = n2.graph_id AND p4.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = n0.node_id AND p6.graph_id = n0.graph_id AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = n2.node_id AND p7.graph_id = n2.graph_id AND p7.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p8 ON p8.s = n0.node_id AND p8.graph_id = n0.graph_id AND p8.\"key\" = ?\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn2 WHERE _sgn2.s = n2.node_id AND _sgn2.graph_id = n2.graph_id AND _sgn2.\"key\" = 'v') AND l1.s IS NOT NULL AND p4.val = (CASE WHEN ISNUMERIC(p5.val) = 0 THEN COALESCE(Graph_KG.CY_ARITH(p5.val, '+', 1), NULL) ELSE (CAST(p5.val AS DOUBLE) + 1) END)\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p8.val, 'x')) ASC"
+ },
+ "cypher_with_after_plus": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WITH a, b WHERE b.v = a.v + 1 RETURN a.name, b.name ORDER BY a.name",
+  "rows": [
+   [
+    "a1",
+    "a2"
+   ]
+  ],
+  "sql": "WITH Stage1 AS (\nSELECT n0.node_id AS a, n2.node_id AS b, n0.graph_id AS __g_a, n2.graph_id AS __g_b\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT OUTER JOIN Graph_KG.rdf_edges e3 ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ?\nLEFT OUTER JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nWHERE l1.s IS NOT NULL AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND graph_id = n2.graph_id AND \"key\" = ?) = CASE WHEN ISNUMERIC(p4.val) = 0 THEN COALESCE(Graph_KG.CY_ARITH(p4.val, '+', 1), NULL) ELSE (CAST(p4.val AS DOUBLE) + 1) END\n)\nSELECT Graph_KG.CY_TYPED(%EXACT(p5.val)) AS a_name, Graph_KG.CY_TYPED(%EXACT(p6.val)) AS b_name\nFROM Stage1 Stage1\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = a AND p5.graph_id = Stage1.__g_a AND p5.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p6 ON p6.s = b AND p6.graph_id = Stage1.__g_b AND p6.\"key\" = ?\nLEFT JOIN Graph_KG.rdf_props p7 ON p7.s = a AND p7.graph_id = Stage1.__g_a AND p7.\"key\" = ?\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p7.val, 'x')) ASC"
+ },
+ "cypher_opt_count": {
+  "q": "MATCH (a:I54XC055837) OPTIONAL MATCH (a)-[:KX055837]->(b) WHERE b.v = a.v + 1 RETURN count(*)",
+  "rows": [],
+  "sql": "SELECT COUNT(*) AS count___\nFROM Graph_KG.nodes n0\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\nLEFT OUTER JOIN (Graph_KG.rdf_edges e3 JOIN Graph_KG.nodes n2 ON n2.node_id = e3.o_id AND n2.graph_id = e3.graph_id) ON e3.s = n0.node_id AND e3.graph_id = n0.graph_id AND e3.p = ? AND (SELECT val FROM Graph_KG.rdf_props WHERE s = n2.node_id AND \"key\" = ?) = (CASE WHEN ISNUMERIC(p4.val) = 0 THEN COALESCE(Graph_KG.CY_ARITH(p4.val, '+', 1), NULL) ELSE (CAST(p4.val AS DOUBLE) + 1) END)\nWHERE l1.s IS NOT NULL"
+ }
+}

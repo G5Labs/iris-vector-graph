@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/union-drops-bool/20261117T060152Z/models/cypher_clauses/cypher_clauses.rs:218:13
+    |
+216 | pub proof fn theorem_all_bool_union_stays_bool(rest: Seq<Dec>, b: bool)
+    | ----------------------------------------------------------------------- at the end of the function body
+217 |     requires forall|i: int| 0 <= i < rest.len() ==> rest[i] == Dec::Bool,
+218 |     ensures read(union_dec(Dec::Bool, rest), raw_lit_bool(b)) == Out::Bool(b),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

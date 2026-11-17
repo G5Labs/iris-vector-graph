@@ -1,0 +1,27 @@
+verification results:: 25 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/page-no-negative-check/20261117T060231Z/models/cypher_clauses/cypher_clauses.rs:273:1
+    |
+273 | pub proof fn theorem_integer_and_fraction_follow_rule(i: int, v: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/page-no-negative-check/20261117T060231Z/models/cypher_clauses/cypher_clauses.rs:275:9
+    |
+273 | pub proof fn theorem_integer_and_fraction_follow_rule(i: int, v: int)
+    | --------------------------------------------------------------------- at the end of the function body
+274 |     ensures
+275 |         as_built_page(PV::LitInt(i)) == rule_page(PV::LitInt(i)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/page-no-negative-check/20261117T060231Z/models/cypher_clauses/cypher_clauses.rs:276:9
+    |
+273 | pub proof fn theorem_integer_and_fraction_follow_rule(i: int, v: int)
+    | --------------------------------------------------------------------- at the end of the function body
+...
+276 |         as_built_page(PV::Int(i)) == rule_page(PV::Int(i)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

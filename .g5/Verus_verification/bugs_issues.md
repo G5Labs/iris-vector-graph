@@ -3429,6 +3429,165 @@ Consequence: the answer is never above the nearest-rank value and is one rank be
 
 Repair proposal (not implemented): index `ceil(p × n) − 1` clamped to [0, n − 1] (Neo4j). Preserve: p 0 and 1, the median and quartile answers already observed, null for no values, NumberOutOfRange. Writers: none; readers: every Cypher `percentileDisc` and SQL `Percentile_PDISC`. The control `disc-nearest-rank` checks the repaired index in the model only; the repair was not run on the product.
 
+<a id="bug-cyp-135"></a>
+### A grouping key and count(DISTINCT) treat a stored number and the string spelling it as one value, while RETURN DISTINCT keeps them apart
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59 frozen predictions AG1 and AG2 ([PAIRS](../uplift/consolidated/iteration-54/clauses-PAIRS.md), both missed); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_sql_group_merges_number_and_its_text` (every spelling), `theorem_sql_group_and_distinct_disagree_on_marked_text` (exactly the pairs with equal text and different storage marks); control `group-by-typed`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-54/clauses-observed-20261117T053516Z.json) `AG1_api`, `AG1_twin`, `AG1_api_distinct`, `AG2_*`; [follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `G_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `A_*`, 112 cases). Over nodes written by `create_node` with `k` = 1, 1, `'1'` and 1.5, `MATCH (n:G) RETURN n.k AS k, count(*) AS c` answers `[1, 3], [1.5, 1]`; `RETURN DISTINCT n.k` answers 1, `'1'` and 1.5. The Cypher-written twin answers the same. `count(DISTINCT n.k)` over 1, `'1'`, 1.0, `'1.0'`, true, `'true'`, `'01'` answers 4 where `RETURN DISTINCT` and `collect(DISTINCT n.k)` list 6 values (true and `'true'` are one stored value, the documented collision). Over a literal list, `UNWIND [1, '1'] AS k` gives one group, one `DISTINCT` row and count 1; `UNWIND [1, true]`, `[[1], '[1]']` give one group but two `DISTINCT` rows. Passing neighbors: two integers, two strings, an integer and a list, `'1'` and `'x'`.
+
+Expected: [query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) ("`DISTINCT` removes repeated equal values") with [equality](../ontology/features/cypher.g5.md#query.values.equality) ("an integer literal on a node matches only a stored number of that value: the string "1" ... do[es] not equal 1"); openCypher groups and counts distinct by equivalence, so 1 and `'1'` are two groups.
+
+Observed: `translate_return_clause` selects a stored property through `CY_TYPED` (`translator.py:30676`) but adds the plain `sql`, the stored text, to `GROUP BY` (30777, "GROUP BY below keeps the plain `sql`"); `_expr_aggregation` writes `COUNT(DISTINCT arg)` over the plain argument (24431). IRIS compares the text, and the row's `CY_TYPED` value is whichever member IRIS picks.
+
+Consequence: a report grouped by a property that holds numbers on some nodes and their spelling on others (an earlier release's Python numbers, imported text) counts them as one group under the number's type, and `count(DISTINCT)` undercounts, with no error. `RETURN DISTINCT` on the same data disagrees with both.
+
+Repair proposal (not implemented): group and count distinct by the `CY_TYPED` value the column already selects. Preserve: single-kind keys, the null group, the documented boolean/list text collision, graph-and-id node distinctness. Readers: every grouped RETURN or WITH and `count(DISTINCT)`. The control `group-by-typed` checks the direction in the model only.
+
+<a id="bug-cyp-136"></a>
+### The SQL path and the native executor group the same stored values differently
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59 follow-up (the native executor's answer beside the SQL path's for AG1's shape); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_paths_disagree_exactly_on_marked_text` (for every pair of stored values), `theorem_native_group_follows_rule`; control `native-text-key`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `G_api_group`, `NV_group_api`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `A_Int1_Str1_native_group`, `A_Int2_Str2_native_group`). `MATCH (n:G) RETURN n.k AS k, count(*) AS c` over 1, `'1'`, 1.0, `'1.0'`, true, `'true'`, `'01'` answers 4 groups on the SQL path (`[1, 3]`, …) and 6 on the native executor (`['1', 1]`, `[1, 1]`, `[1.0, 1]`, …). The native executor accepts this shape by default, so the answer depends on which path the planner picks.
+
+Expected: [query.native.equal-answers](../ontology/features/cypher.g5.md#query.native.equal-answers): the native executor gives the SQL path's answer. The native grouping is the one that follows openCypher here (1 and 1.0 aside; see the [open question](open_questions.md#query.aggregation.keys.numbers)).
+
+Observed: `Graph.KG.Cypher.Exec.GroupOf` finds a group by the keys' `$List` from `KeyValues` ("a number stays a number"; `Exec.cls:1349-1380`, 1742), while the SQL path groups by text ([bug-cyp-135](#bug-cyp-135)). The shadow-mode TCK runs could not see it: their data are Cypher literals of one kind per key.
+
+Consequence: the same grouped query answers different groups and counts on the two paths, and changes answer when the planner's choice changes (an `OPTIONAL MATCH`, a parameter `LIMIT` or a native gate sends it to SQL). Repairing [bug-cyp-135](#bug-cyp-135) removes the disagreement.
+
+<a id="bug-cyp-137"></a>
+### Arithmetic over two property aggregates answers a rounded integer: sum(n.v) + sum(n.f) of 3 and 3.5 answers 6
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59, after the first observation (`AG4_mixed_props`, `AG7_api_sum`; not among the frozen predictions, whose sums were single aggregates); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_sum_of_property_sums_is_int_column`, `theorem_int_column_loses_any_half` (every total with a half), witness `theorem_probe_totals`; controls `prop-default-unknown`, `int-read-exact`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-54/clauses-observed-20261117T053516Z.json) `AG4_mixed_props`, `AG7_api_sum`, `AG7_twin_sum`; [follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `AR_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `B_*`). With `v` 1, 2 and `f` 2.5, 1.0 written by `create_node`, `RETURN sum(n.v) + sum(n.f)` answers 6 (6.5), in either order; over 1 and 1.5 it answers 2 (2.5) and over 1 and 0.5 answers 2 (1.5): Python's half-to-even round. `sum(r.w) + sum(r.weight)` over relationship values 1 and 2.5 answers 4, for API- and Cypher-written relationships. `min(n.f) * 2` answers the integer 2 for 2.0. Passing neighbors: `sum(n.f)` alone (3.5), `sum(n.v) + 0.5`, `count(*) + 0.5`, `avg(n.v) + 1`, `RETURN 3 + 3.5`.
+
+Expected: [query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) ("with typed numeric inputs, it stays an integer when every contributor is an integer and a float when one is a float") and openCypher arithmetic (3 + 3.5 = 6.5).
+
+Observed: `_numeric_static_type` types `sum`/`min`/`max` by `_arith_operand_type` of the argument, which defaults a bare property to `'int'` (`translator.py:22088-22089`, 22151-22152); `+` of two `'int'` operands is `'int'` (22110-22116), so the column joins `int_expr_aliases` (30742-30743) and `_int_expr_value` answers `int(round(v))` (`_engine/query.py:1237`). A bare `sum(n.f)` takes the typed-sum path instead.
+
+Consequence: totals, ratios and differences of aggregated stored values lose their fraction silently (financial or score reports combining two sums). No error is raised.
+
+Repair proposal (not implemented): give an aggregate of a stored property no static type (as a bare sum has none) and read the column through `CY_TYPED`, or type it from the stored values. Preserve: integer results of integer contributors, `count()`, integer division. Readers: every RETURN or WITH column of arithmetic over aggregates. The control `prop-default-unknown` checks the direction in the model only.
+
+<a id="bug-cyp-138"></a>
+### A UNION answers stored property values as their storage text: 1 as "\x01N1", 2.5 as "\x01D2.5", a list as JSON text
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59 frozen prediction UN2 (partial: one row held, the value did not); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_union_answers_marked_text` (every value, any other branches), `theorem_union_dedup_by_raw`, neighbors `theorem_single_query_decodes`, `theorem_all_bool_union_stays_bool`; controls `union-keeps-decoders`, `typed-read-plain`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-54/clauses-observed-20261117T053516Z.json) `UN2_*`; [follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `U_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `C_*`). `MATCH (n {name: 'a1'}) RETURN n.v AS x UNION RETURN 0 AS x` answers `'\x01N1'` for the stored integer 1 (and `UNION ALL` the same), `n.f` answers `'\x01D2.5'`, a stored boolean `'true'`, a stored list `'[1, 2]'`, a relationship's `r.w` `'1'`; without the UNION the same `RETURN n.v` answers 1. `RETURN n.v AS x UNION RETURN 1 AS x` answers two rows; `RETURN 1 AS x UNION RETURN true AS x` answers one row, 1; `UNION` of `1`, `2.5`, `true`, `[1]` answers 1, 2.5 and `'[1]'`, losing `true`. Passing neighbors: a `UNION` of literal numbers, of booleans in every branch, of strings, and row counts with Cypher-written data.
+
+Expected: openCypher `UNION` returns each branch's values with their types and removes duplicate rows by equivalence (TCK Union1-3, all over literals); [query.values](../ontology/features/cypher.g5.md#query.values) (a node property read preserves its stored type).
+
+Observed: `_tts_union_branches` translates each branch alone and returns `SQLQuery(sql=combined, parameters=..., bool_expr_columns=...)` (`translator.py:4714`): only the boolean marks common to every branch survive; the typed-value, JSON, relationship-text, numeric and node marks of the branches are dropped, so the reader leaves `CY_TYPED`'s marked text as it is. IRIS `UNION` then removes duplicates by those raw values.
+
+Consequence: any `UNION` over stored data answers wrong-typed values, some of them control-character text, to `execute_cypher`, REST and Bolt clients; duplicate removal keeps equal values apart and merges `1` with `true`. No error is raised.
+
+Repair proposal (not implemented): carry each column's decoder through the union when every branch agrees on it, and type-mark literal branches the same way. Preserve: column checks, the refusal of mixed `UNION`/`UNION ALL`, boolean columns. The control `union-keeps-decoders` checks the direction in the model only.
+
+<a id="bug-cyp-142"></a>
+### A WHERE inside OPTIONAL MATCH that combines an earlier variable's property with arithmetic or OR fails the query with SQLCODE -94
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59, after the source read of the OPTIONAL MATCH WHERE placement (its prediction, from the owner [query.optional](../ontology/features/cypher.g5.md#query.optional), was written in the probe before it ran: one row per node, null where no match passes); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_outer_arith_or_refused` (conditional on the provider premise P-OUTER-ON), neighbors `theorem_opt_neighbors_follow_rule`; controls `iris-accepts-outer-on`, `opt-cond-in-where`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-54/optional-mixed-observed-20261117T060018Z.json) `*_opt_plus`, `*_opt_or_mixed`, `*_opt_count`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `H_OuterArith_*`, `H_OuterOrOpt_*`). `MATCH (a:L) OPTIONAL MATCH (a)-[:K]->(b) WHERE b.v = a.v + 1 RETURN a.name, b.name`, `... WHERE a.v = 1 OR b.v = 5` and the same with `RETURN count(*)` answer no rows and the result's error "SQLCODE -94 Unsupported usage of OUTER JOIN", for API- and Cypher-written data. Passing neighbors: the same condition under a plain `MATCH` and as a `WITH a, b WHERE ...` after the OPTIONAL MATCH; conditions on the optional side only; `b.v > a.v` and `b.name <> a.name`. The first run of the probe read only the rows and saw an empty answer; it is kept under `iteration-54/failed-runs/`.
+
+Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional): the WHERE filters the optional matches and the row stays; openCypher allows any predicate there (TCK `Match`/`OptionalMatch` scenarios use predicates on one side).
+
+Observed: `translate_where_clause` pushes a condition that reads both the clause's new variables and earlier ones into the first optional join's ON when it names no later join alias (`translator.py:17128-17175`). The ON then holds IVG's arithmetic (`CASE WHEN ISNUMERIC(p4.val) ... CY_ARITH`) or an OR of an earlier left-joined property read with a correlated `(SELECT val ...)`, which IRIS 2026.1 refuses at Prepare. The pure-optional branch has a fallback for property subqueries (17095-17107); the mixed branch has none. The comment at 17038 names the same IRIS limit for `CY_CMP`.
+
+Consequence: a valid OPTIONAL MATCH filter fails the whole read with a raw SQL error; `execute_cypher` answers no rows with the error set. Workaround: move the test into a `WITH ... WHERE` after the OPTIONAL MATCH when dropping the null rows is intended, or compute `a.v + 1` in a `WITH` before it.
+
+<a id="bug-cyp-143"></a>
+### A comparison on an earlier variable's property inside an OPTIONAL MATCH WHERE drops the rows of nodes that lack the property
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59, after the source read (same probe and prediction as [bug-cyp-142](#bug-cyp-142)); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_outer_guard_drops_row`, neighbors `theorem_opt_neighbors_follow_rule`; controls `opt-guard-in-on`, `range-guarded`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-54/optional-mixed-observed-20261117T060018Z.json) `*_opt_eq_props`, `*_opt_and_split`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `H_EqProps_*`, `H_NeProps_*`, `H_OuterLitAndOpt_*`). Over `a1 {v: 1} → a2 {v: 2} → a3 {}`, `OPTIONAL MATCH (a)-[:K]->(b) WHERE b.v = a.v` answers `a1` and `a2` with null `b` and no row for `a3`; `WHERE a.v = 1 AND b.v = 2` answers `[a1, a2], [a2, null]`, again without `a3`; `b.v <> a.v` the same. API- and Cypher-written data alike. Passing neighbors: a node that has the property keeps its null row; `b.v > a.v` (the CY_CMP range) and conditions on the optional side keep every row.
+
+Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional) and openCypher: a WHERE inside OPTIONAL MATCH never removes the row; `a3` comes back with `b` null.
+
+Observed: the WHERE's read of `a.v` goes through `_expr_property_reference`, which for a variable bound before the OPTIONAL MATCH adds the structural guard `EXISTS (SELECT 1 FROM rdf_props ... "key" = 'v')` to the query's own WHERE (`translator.py:23111-23115`) whenever `_null_rejecting_refs` marks it as an operand of a comparison in the AND chain (18603-18619); the condition itself goes into the optional join's ON. The guard is right for a MATCH's WHERE (a missing property fails the row anyway) and wrong here.
+
+Consequence: rows of the outer `MATCH` disappear from an OPTIONAL MATCH report whenever the node lacks a property the optional filter compares, with no error. Repair proposal (not implemented): do not add the guard while translating a WHERE that an OPTIONAL MATCH pushes into its join, or put it into the same ON. Preserve: the guard in a plain MATCH's WHERE (OPT-3 performance), the null row for nodes with the property. The control `opt-guard-in-on` checks the direction in the model only.
+
+<a id="bug-cyp-139"></a>
+### SKIP and LIMIT use a string, boolean or whole-float parameter as a count, and call a null parameter "not provided"
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59 (WS3 held for `-1` and 1.5; the other kinds were found after the first observation); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_non_integer_parameter_used`, neighbor `theorem_integer_and_fraction_follow_rule`; controls `page-int-only`, `page-no-negative-check`, `page-no-fraction-check`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `L_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `D_*`). `LIMIT $l` with `l` = `'2'` answers two rows, with `true` one row, with `false` none, with 2.0 two rows; `'-1'` gives NegativeIntegerArgument, `'x'` a raw Python `ValueError` ("invalid literal for int()"), and `null` "Parameter '$l' used in SKIP/LIMIT but not provided in params dict" although it was provided. `SKIP` behaves the same. Passing neighbors: integer literals and parameters, negative ones (NegativeIntegerArgument), 1.5 (InvalidArgumentType), a missing parameter.
+
+Expected: openCypher (TCK ReturnSkipLimit1-2: a floating point parameter fails with InvalidArgumentType; a negative one with NegativeIntegerArgument): `SKIP` and `LIMIT` take a non-negative integer, and a value of another type is an InvalidArgumentType.
+
+Observed: `_resolve_pagination_value` refuses only a missing or null value and a float with a fraction, then uses `int(resolved)` (`translator.py:8106-8116`).
+
+Consequence: a client that passes the page size as text or a boolean gets rows instead of an error, and a null page size is reported as a missing parameter. No data is changed.
+
+<a id="bug-cyp-140"></a>
+### A UNION whose branch is a whole-label count fails with SQLCODE -1
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59 follow-up (`U_count`); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_label_count_branch_fails`, neighbor `theorem_count_alone_and_other_branches_prepare`; controls `count-guard-sees-union`, `shortcut-newline-from`, `ensure-from-always`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `U_count`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `E_*`). `MATCH (n:L) RETURN count(n) AS x UNION ALL RETURN 0 AS x` and `MATCH (n:L) RETURN count(*) AS x UNION RETURN 7 AS x` fail at Prepare (`SQLCODE -1`, "`)` expected, FROM found", the statement holding `... FROM Graph_KG.rdf_labels WHERE label = ? FROM (SELECT 1) __dual`). Passing neighbors: the count alone, and a `UNION ALL` whose branch returns `n.name`.
+
+Expected: openCypher allows any branch that returns the same columns (TCK Union1-3).
+
+Observed: `_tts_union_branches` translates each branch from a copy whose `union_queries` it empties (`translator.py:4690`), so `_lone_label_count`'s guard against a UNION passes (7424-7426) and the branch becomes a one-line `SELECT ... FROM rdf_labels WHERE ...` (7458); `_ensure_from` (4701-4704) looks for `"\nFROM "`, finds none and appends a second `FROM`.
+
+Consequence: a valid query is refused with a raw SQL error. Workaround: add `WHERE true` or a property to the branch's pattern, which skips the shortcut.
+
+<a id="bug-cyp-141"></a>
+### startNode() and endNode() of a relationship taken from relationships(p) fail with SQLCODE -29
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 54)
+
+Found by: iteration 54 W59 (`PA4_rels`, after the frozen PA4 row, which asked only for `type()`); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_path_element_endpoints_fail`, neighbor `theorem_type_and_matched_endpoints_work`; controls `endpoint-reads-json`, `type-reads-alias`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-54/clauses-observed-20261117T053516Z.json) `PA4_rels`; [follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `R_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `F_*`). `MATCH p = (a)-[:K*1..2]->(c) RETURN [r IN relationships(p) | startNode(r).name]` fails at Prepare ("Field 'LC5.S' not found"), for fixed-length paths too, and so does `endNode(r)`; `type(r)`, `r.w` and `r` itself answer. `startNode(r)` of a matched relationship answers.
+
+Expected: openCypher: `startNode(r)` of any relationship value is its start node; USER_GUIDE shows path functions with comprehensions (`[n IN nodes(p) | n.name]`).
+
+Observed: `_expr_fn_node_funcs` translates `startNode(v)` to `{alias}.s` and `endNode(v)` to `{alias}.o_id` for any bound variable (`translator.py:28993-29005`); for a `relationships(p)` element the alias is a `JSON_TABLE` row holding `{"type", "props"}`, with no such column. `type()` has a branch for that element (28989-28990).
+
+Consequence: a valid path query is refused with a raw SQL error; the element JSON carries no endpoints, so the repair also needs them in the element.
+
 <a id="bug-tmp-106"></a>
 ### A millisecond-class edge is counted by the seconds readers' whole buckets although its time is outside the window
 

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "provider: storage without the N mark (pre-4.6.4 Python numbers) makes the integer and its text one stored value",
+    "expect_fail_in": [
+      "theorem_sql_return_distinct_keeps_kinds"
+    ],
+    "find": "Kind::Int => Mark::N,",
+    "name": "int-unmarked",
+    "replace": "Kind::Int => Mark::Plain,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_sql_return_distinct_keeps_kinds"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_clauses/cypher_clauses.rs": "d4022db4c7c87115cc5174a7d66a55015c9b27cee899f6c90bf536d8b1829d7a",
+    ".g5/Verus_verification/models/cypher_clauses/model.json": "d3f30334c1ee034effc4a128992d8f3c6ecdc0a8b35f7b76363bf8d588ea9064"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/controls/int-unmarked/20261117T060219Z/models/cypher_clauses/cypher_clauses.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_sql_return_distinct_keeps_kinds": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060219Z-control-int-unmarked-theorem_sql_return_distinct_keeps_kinds.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_clauses/20261117T060219Z-control-int-unmarked.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060220Z-control-int-unmarked/logs/20261117T060219Z-control-int-unmarked-theorem_sql_return_distinct_keeps_kinds.log": "b62836c2bcef4c9cd1b6476cae0bc191038d6f9dd698798023c61224a92bb2f0",
+    ".g5/Verus_verification/results/cypher_clauses/20261117T060220Z-control-int-unmarked/logs/20261117T060219Z-control-int-unmarked.log": "a89950b09f385cee82c6152876834416edbb9cf9efd00763adf256d103b48d7e"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

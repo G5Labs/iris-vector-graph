@@ -1,7 +1,7 @@
 {
   "name": "cypher_clauses",
   "root": "cypher_clauses.rs",
-  "expected_verified": 23,
+  "expected_verified": 26,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -203,6 +203,42 @@
         "theorem_incoming_only_refused"
       ],
       "classification": "guard: the __constraint_check_delete_connected__ sentinel removed"
+    },
+    {
+      "name": "opt-guard-in-on",
+      "find": "pub open spec fn guard_in_outer_where() -> bool { true }",
+      "replace": "pub open spec fn guard_in_outer_where() -> bool { false }",
+      "expect_fail_in": [
+        "theorem_outer_guard_drops_row"
+      ],
+      "classification": "decision (repair direction of bug-cyp-143): the structural guard of an earlier variable's read goes into the optional group's ON, or is not added in an OPTIONAL WHERE"
+    },
+    {
+      "name": "range-guarded",
+      "find": "match c { OptCond::EqProps => true, OptCond::NeProps => true, OptCond::OuterLitAndOpt => true, _ => false }",
+      "replace": "match c { OptCond::EqProps => true, OptCond::NeProps => true, OptCond::OuterLitAndOpt => true, OptCond::RangeProps => true, _ => false }",
+      "expect_fail_in": [
+        "theorem_opt_neighbors_follow_rule"
+      ],
+      "classification": "decision: the CY_CMP range also takes the guard"
+    },
+    {
+      "name": "iris-accepts-outer-on",
+      "find": "pub open spec fn iris_accepts_on(c: OptCond) -> bool { !(c == OptCond::OuterArith || c == OptCond::OuterOrOpt) }",
+      "replace": "pub open spec fn iris_accepts_on(c: OptCond) -> bool { true }",
+      "expect_fail_in": [
+        "theorem_outer_arith_or_refused"
+      ],
+      "classification": "provider: IRIS accepting those ON expressions would remove the refusal (bug-cyp-142 is conditional on P-OUTER-ON)"
+    },
+    {
+      "name": "opt-cond-in-where",
+      "find": "pub open spec fn placed_in_on(c: OptCond) -> bool { true }",
+      "replace": "pub open spec fn placed_in_on(c: OptCond) -> bool { false }",
+      "expect_fail_in": [
+        "theorem_opt_neighbors_follow_rule"
+      ],
+      "classification": "decision: the OPTIONAL WHERE placed in the query's WHERE (drops the row instead of nulling the optional side)"
     }
   ]
 }
