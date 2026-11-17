@@ -19,6 +19,32 @@ Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bb
 | [45](iteration-45/HANDOFF.md) | W51 RDF export from Cypher, namespace prefixes | Medium bug-plt-111, Low bug-plt-112 (new), owner `install.export.rdf.cypher`; model `cypher_export`; 439 → 441 |
 | [46](iteration-46/HANDOFF.md) | W52 IVF index after its build | Medium bug-srch-107, Low bug-srch-108 (new), owner `search.ivf`; model `ivf_entries`; 441 → 448 |
 
+
+### Residual queue and interim judgment (kept current)
+
+Not converged. Every iteration of this continuation opened an area the earlier stops had not assessed, and nine of
+eleven produced new findings (21 new, plus one inherited divergence registered; iteration 42 was the only clean one).
+The frozen predictions taken from the docs mostly held; most findings came from reading the source after the freeze.
+The diminishing-returns claim of the retest therefore held only for the families it examined.
+
+Next candidates, ranked by consequence and tractability (each still unowned or unbound at the pin):
+
+1. SQL procedures in `Graph.KG.SqlProcs` (36 members, 0 bound): `MatchEdges`, `DijkstraPath`, `kg_BM25`, `kg_IVF`,
+   `Txn_Begin/End/Undo`, `Prop_Set` (SQL-callable surface; ledger records excluded).
+2. `load_networkx` and `load_obo` imports (a variant of the W47 import rules; expected to repeat bug-str-109's class).
+3. Operator reports: `status()`, `capabilities`, `get_schema_visualization`, `snapshot_info` (counts that guide action).
+4. Temporal analytics readers (`get_edge_velocity`, `find_burst_nodes`, `get_bucket_groups`, `get_distinct_count`):
+   owned (`temporal.stats`) with known divergences; no model.
+5. Embedding identity maintenance (`reconcile_recorded_dimensions`, `adopt_embedding_identities`, `list_quarantine`,
+   `place_quarantined`, `measure_route_recall`).
+6. `kg_PPR_GUIDED_SUBGRAPH`, `kg_RERANK`, `kg_VECTOR_GRAPH_SEARCH`, `multi_vector_search` (retrieval composition).
+7. The `ivg` CLI (32 members, 4 bound) and the HTTP admin routes beyond `/api/cypher`.
+
+Still excluded or blocked as before: erasure, redaction and tenant removal (security-related); FHIR (external provider);
+Cypher `MERGE` (quarantined subject); Arno/NKG (library absent); embedded in-IRIS execution and `IVG.CypherEngine`
+(package not in the container's embedded Python; about one iteration to install offline); the 3.2.0 to 4.0.0
+migrations (need a reconstructed 3.2.0 install; about one iteration).
+
 Earlier pointer (superseded): **Current pointer (retest, 2026-11-16).** CONVERGED after iteration 35. Latest seal: the clean tip with subject `Record convergence of the retest` (its parent is the iteration-35 seal). Session: iterations 25-35 (W30-W41), 6 new findings (1 High, 1 Medium, 4 Low), 4 inherited suspicions reproduced, 8 new models, reach 279 → 375 of 4,130 (96 new, 10 strengthened, 0 lost). Cost: builder wall clock about 1 h 20 min (21:15-22:35 UTC; tokens/currency unavailable). Convergence basis: [below](#retest-convergence-2026-11-16).
 
 <a id="retest-2026-11-16"></a>
