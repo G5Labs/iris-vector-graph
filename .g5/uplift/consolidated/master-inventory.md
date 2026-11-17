@@ -21,10 +21,10 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | 9 | `ivg` CLI and HTTP admin routes beyond `/api/cypher` | cli.py 28/32, cypher_api.py admin_* | OPEN | |
 | 10a | Cypher expression surface with run-time values (string fns, slices, size() of stored values, CASE, list comprehension, aggregation over stored values, functions in CREATE/SET maps, PropSet) | translator.py, SqlProcs.PropSet | DONE 48 (W55) | model `cypher_exprs`; 6 owner blocks; bug-cyp-117..125 (120 High); PropSet bound. Residual: driver 5.4 check for cyp-125, other CREATE shapes, SET += maps, zero-length strings model |
 | 10 | (PARTIAL 54: model cypher_clauses; residual OPTIONAL MATCH aggregates, UNWIND grouping, -94 boundary, UNION floats/lists, CALL{} agg, FOREACH, SET +=, WITH *, ORDER BY mixed; ~660/717 translator unbound) Cypher translator clause semantics on Cypher-written data (aggregation/OPTIONAL MATCH/WITH/UNWIND/CASE/list comprehension/path funcs) | translator.py 697/717, parser.py 53, ast.py 54 | OPEN | largest raw gap; prior runs leaned on TCK; needs representative workflow check before any convergence claim |
-| 11 | (ASSIGNED 57 with Traversal/TraversalBuild/Adjacency) SQL store layer `stores/iris_sql_store.py` | 140/149 | OPEN | check which public workflows reach it |
+| 11 | (PARTIAL 57: models traversal_strategy, adjacency_maint, rebuild_reads; residual str-115 for degree/PPR/native, create_edge vs BuildKG race, Traversal.cls 32 facades classify, iris_sql_store 124 unbound (execute_sql DML detection), ^NKG sketch sweep) SQL store layer `stores/iris_sql_store.py` | 140/149 | OPEN | check which public workflows reach it |
 | 12 | Engine facade `engine.py` and `_engine/query.py` | 119/124, 116/124 | OPEN | largely delegates; justify shared relation or exclude |
 | 13 | (DONE 56: model install_lifecycle; residual forced class deploy, routines+grants, concurrent setups, place_quarantined real path) Schema / schema_name / class_deploy (install & DDL) | _engine/schema.py 68/83, schema.py 53/58, schema_name.py 44/47, class_deploy 21 | OPEN | |
-| 14 | Traversal builds and BFS (`TraversalBuild` 38/38, `Traversal` 33/34, `Adjacency` 33/34, `VarLength` 15) | iris_src | OPEN | prior: "internals of modeled decisions" - re-challenge |
+| 14 | (PARTIAL 57, see row 11) Traversal builds and BFS (`TraversalBuild` 38/38, `Traversal` 33/34, `Adjacency` 33/34, `VarLength` 15) | iris_src | OPEN | prior: "internals of modeled decisions" - re-challenge |
 | 15 | (DONE 55: model bolt_answers; residual shadow/compiled at reader, var-length LIMIT route, _decode_*_columns in Verus, Bolt 5 structs with Java/JS driver, query/v2 node shape, WebSocket Bolt) Bolt server | bolt_server.py 45/53 | OPEN | |
 | 16 | SDK / host (`sdk.py` 42/43, `host.py` 38/42) | | OPEN | |
 | 17 | Cypher `Exec.cls` / `Gen.cls` native executor internals | 55/59, 23/24 | OPEN | |
@@ -51,6 +51,7 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | Iter | Session | Batch | Union | Active | Findings | Cost |
 |---|---|---|---|---|---|---|
 | base | - | - | 698 | 448 | - | - |
+| 57 | 763aedb5 | W61 store + traversal/adjacency | 907 | 696 | new: str-115 M (reads during sync() wrong), str-117 M (khop2_count_fast), str-113/114 L; F-1009 reproduced | 37 min, $21.31 (2 sub-workers) |
 | 56 | 2a81ea7b | repairs review round 3 + install lifecycle | 886 | 662 | new: plt-127 H (Bolt rollback keeps writes; was F-1601), cyp-146 M, srch-116 M, plt-015 L->M; cyp-147/148, tmp-108, srch-113, plt-133/134 L; 4 rows relabelled | 38 min, $35.07 (4 sub-workers) |
 | 55 | 6511d787 | W60 query pipeline + Bolt reader | 866 | 640 | new: plt-121/122/123, cyp-144/145 M; plt-124/125/126 L; cyp-125 settled (IRIS driver 5.3.2 vs 5.4.1) -> M + question query.parameters.drivers; F-1602 reproduced | 28 min, $12.82, 175k out tok |
 | 54 | 9b48cf72 | W59 Cypher clauses over API data / default mode / params | 847 | 619 | new: cyp-135..138, 142, 143 M; cyp-139..141 L; question query.aggregation.keys.numbers | 37 min, $17.79, 208k out tok |
