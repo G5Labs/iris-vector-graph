@@ -1,0 +1,370 @@
+{
+  "before": {
+    "revision": "b63a5ec1 (start of iteration 57; freeze 9f74e690 changed only iteration-57 files)",
+    "active": 662,
+    "union": 886
+  },
+  "after": {
+    "revision": "working tree at the iteration-57 seal",
+    "active": 696,
+    "union": 907
+  },
+  "denominator": 4130,
+  "newly_bound": [
+    {
+      "member": "iris_src/src/Graph/KG/Adj.cls::Count",
+      "existing_locator": true,
+      "roles": [
+        "models adjacency_maint.rs::contrib: reader: degree counts a # triple's edges, a bare leaf as one"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::HeldElsewhere",
+      "existing_locator": true,
+      "roles": [
+        "proves adjacency_maint.rs::theorem_nkg_held_elsewhere: decision: HeldElsewhere: another graph's ^KG(out) holds the triple"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::MarkGraphGone",
+      "existing_locator": false,
+      "roles": [
+        "proves adjacency_maint.rs::theorem_mark_graph_gone: decision: MarkGraphGone marks ^NKG stale when a named graph's last out entry went and an end is interned; never for the default graph"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::OtherEdgeKeys",
+      "existing_locator": false,
+      "roles": [
+        "proves adjacency_maint.rs::lemma_second: input: the triple's other rows by ekey, every row visible (also during %BuildIndices)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::PutKeyed",
+      "existing_locator": true,
+      "roles": [
+        "models adjacency_maint.rs::put_keyed: decision: PutKeyed keeps a bare leaf for one edge; at the one-to-two transition every other row (OtherEdgeKeys) becomes a child, the earlier with the leaf's wei",
+        "proves adjacency_maint.rs::lemma_create: decision: PutKeyed (as above)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::Remove",
+      "existing_locator": true,
+      "roles": [
+        "proves adjacency_maint.rs::theorem_plain_delete_takes_triple: decision: Remove kills the triple's out/in (with children)",
+        "models adjacency_maint.rs::nkg_edge_after_remove: decision: the merged ^NKG edge goes only when the entry was there, ^NKG is built and no other graph holds the triple"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::RemoveKeyed",
+      "existing_locator": true,
+      "roles": [
+        "models adjacency_maint.rs::remove_keyed: decision: RemoveKeyed drops one keyed edge; from two to one the survivor's weight becomes a bare leaf, children and # go; the last edge goes through Remove",
+        "proves adjacency_maint.rs::theorem_delete_one_parallel_keeps_other: decision: RemoveKeyed (as above)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::RemoveLabel",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::label_kept: writer: label entry removal per deleted rdf_labels row"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::Reweight",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::row_update: writer: Reweight sets the leaf (and in) only where present"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::RowRemove",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::row_remove: decision: a row DELETE's index entry: Remove, or RemoveKeyed in multigraph mode"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::RowUpdate",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::row_update: decision: RowUpdate of the same edge with new qualifiers: a keyed child then the leaf from the lowest, else Reweight of the leaf",
+        "proves adjacency_maint.rs::lemma_update: decision: RowUpdate (as above)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::SetLeafFromLowest",
+      "existing_locator": true,
+      "roles": [
+        "models adjacency_maint.rs::lowest_w: decision: the triple's leaf is the lowest live ekey's weight"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Eraser.cls::EraseEdges",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::erases: decision: EraseEdges erases every row of each named triple in one graph, then Adjacency.Remove"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Eraser.cls::EraseIdSet",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::erases: decision: every incident row in the graph, RemoveNode, the ids' label rows, all scoped by the graph",
+        "proves adjacency_maint.rs::theorem_erase_nodes_takes_incident: decision: EraseIdSet (as above)",
+        "proves adjacency_maint.rs::theorem_label_delete_scoped: decision: EraseIdSet's label delete keyed by (graph, node)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBuild.cls::Build2HopExactStats",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::walk_count: decision: the stored exact count = the walk's count"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBuild.cls::Build2HopStats",
+      "existing_locator": true,
+      "roles": [
+        "witnesses adjacency_maint.rs::witness_fast_overcounts: decision: the stored count is the sum of middle nodes' out-degrees (bug-str-117)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBuild.cls::BuildKG",
+      "existing_locator": true,
+      "roles": [
+        "models adjacency_maint.rs::rebuild: decision: with the declared index, purge then %BuildIndices: RowPut for every row, any order",
+        "proves adjacency_maint.rs::lemma_rebuild: decision: BuildKG (as above)",
+        "proves adjacency_maint.rs::theorem_incremental_equals_rebuild: claim: incremental maintenance equals the rebuild for every admissible history",
+        "proves adjacency_maint.rs::theorem_sync_changes_nothing: claim: sync() changes no entry",
+        "models rebuild_reads.rs::visible: decision: with a declared index the edge pass is %BuildIndices with purge, outside any lock a reader takes, so readers see the purged then partly refilled out/i",
+        "proves rebuild_reads.rs::theorem_reader_sees_seed_alone: claim: some moment of every rebuild shows a seed with no out-edge (bug-str-115)",
+        "proves rebuild_reads.rs::theorem_visible_edges_are_rows: claim: nothing invented during the rebuild; the end is the rows"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalKHop.cls::KHop2Count",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::walk_count: decision: the walk counts distinct second-hop targets other than the source and first-hop nodes"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalKHop.cls::KHop2CountExact",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::exact_answer: decision: the exact precomputed count only while Fresh(deg2p_exact) and stored, else the walk"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalKHop.cls::KHop2CountFast",
+      "existing_locator": false,
+      "roles": [
+        "models adjacency_maint.rs::fast_answer: decision: the precomputed sum only while Fresh(deg2p) and stored, else the walk (bug-str-117)",
+        "proves adjacency_maint.rs::theorem_two_hop: decision: KHop2CountFast (as above)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalPaths.cls::ShortestLength",
+      "existing_locator": true,
+      "roles": [
+        "models traversal_strategy.rs::spl_dir: decision: tBoth = (direction = \"both\"); any other direction searches out entries (bug-str-113)",
+        "witnesses traversal_strategy.rs::theorem_in_length_differs: witness: on b->a the two readers answer 1 and none for 'in'",
+        "witnesses rebuild_reads.rs::len1: reader: ShortestLength reads the visible ^KG; answers -1 (no path) mid-rebuild"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalPaths.cls::ShortestPathJson",
+      "existing_locator": true,
+      "roles": [
+        "models traversal_strategy.rs::has_len: decision: forward BFS over out/both entries of one graph; least hop count",
+        "proves traversal_strategy.rs::theorem_lengths_agree_out_both: agreement: out/both lengths equal"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/VarLength.cls::Ends",
+      "existing_locator": false,
+      "roles": [
+        "witnesses traversal_strategy.rs::theorem_vl_ends_list_source_bfs_does_not: witness: a 2-cycle makes the source an end; BFS never lists it"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/VarLength.cls::EndsByDistance",
+      "existing_locator": false,
+      "roles": [
+        "models traversal_strategy.rs::vl_end: decision: least distance plus the source's cycle; two parallel edges at the source close a 2-trail"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/VarLength.cls::EndsInto",
+      "existing_locator": false,
+      "roles": [
+        "models traversal_strategy.rs::trail: decision: trail walk, no edge identity (g,s,p,o,k) twice, least length in minh..maxh",
+        "proves traversal_strategy.rs::theorem_vl_both_no_backtrack: decision: an undirected walk does not come back over the edge it arrived by"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._bfs_rows",
+      "existing_locator": false,
+      "roles": [
+        "models traversal_strategy.rs::os_row: fold: each node but the source once, at its least walked depth, ordered (depth, id)",
+        "proves traversal_strategy.rs::theorem_bfs_never_lists_source: fold: the source is never a row",
+        "models traversal_strategy.rs::type_dir_text: fold: lowercases the direction for ReachTypes (\"OUT\" typed as out; bug-str-114)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._only_default_graph",
+      "existing_locator": false,
+      "roles": [
+        "models traversal_strategy.rs::only_default_graph: guard: the default graph is the only one in ^KG(\"out\")"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._run_objectscript_bfs",
+      "existing_locator": false,
+      "roles": [
+        "models traversal_strategy.rs::falls_back: fallback trigger: raise or SORTED:0 -> SQL walk"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._select_bfs_strategy",
+      "existing_locator": true,
+      "roles": [
+        "models traversal_strategy.rs::select: decision: BFS adapter selection (Arno only for the default graph, outbound, library + bfs capability, no other graph's edges)",
+        "proves traversal_strategy.rs::theorem_arno_only_default_outbound: decision: Arno declined by direction / named graph / other graphs"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._sql_bfs_fallback",
+      "existing_locator": false,
+      "roles": [
+        "models traversal_strategy.rs::sql_new: fallback walk: visited-checked, graph-scoped, else-branch reads both columns",
+        "models traversal_strategy.rs::sql_dir_text: fallback walk: direction text mapping (bug-str-114)",
+        "proves traversal_strategy.rs::theorem_os_rows_eq_sql_rows: agreement: ObjectScript rows == SQL fallback rows on every edge set"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_bfs",
+      "existing_locator": false,
+      "roles": [
+        "models traversal_strategy.rs::adapter_cap: reader: adapter asked for every row (cap 0), cut after the fold and sort",
+        "proves traversal_strategy.rs::theorem_cap_keeps_nearest_prefix: reader: `rows[:max_results] if max_results else rows` keeps the nearest prefix"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_knn_vec",
+      "existing_locator": false,
+      "roles": [
+        "models traversal_strategy.rs::knn_rows: decision: the (graph, model) route; None answers no neighbours"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_shortest_path",
+      "existing_locator": true,
+      "roles": [
+        "models traversal_strategy.rs::esp_len: reader: 'in' answered as the outgoing path from the target, reversed"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.shortest_path_length",
+      "existing_locator": true,
+      "roles": [
+        "models traversal_strategy.rs::spl_len: reader: passes the direction to ShortestLength unchanged ('in' not reversed; bug-str-113)"
+      ]
+    }
+  ],
+  "newly_reached": [
+    "iris_src/src/Graph/KG/Adjacency.cls::MarkGraphGone",
+    "iris_src/src/Graph/KG/Adjacency.cls::OtherEdgeKeys",
+    "iris_src/src/Graph/KG/Adjacency.cls::RemoveLabel",
+    "iris_src/src/Graph/KG/Adjacency.cls::Reweight",
+    "iris_src/src/Graph/KG/Adjacency.cls::RowRemove",
+    "iris_src/src/Graph/KG/Adjacency.cls::RowUpdate",
+    "iris_src/src/Graph/KG/Eraser.cls::EraseEdges",
+    "iris_src/src/Graph/KG/Eraser.cls::EraseIdSet",
+    "iris_src/src/Graph/KG/TraversalBuild.cls::Build2HopExactStats",
+    "iris_src/src/Graph/KG/TraversalKHop.cls::KHop2Count",
+    "iris_src/src/Graph/KG/TraversalKHop.cls::KHop2CountExact",
+    "iris_src/src/Graph/KG/TraversalKHop.cls::KHop2CountFast",
+    "iris_src/src/Graph/KG/VarLength.cls::Ends",
+    "iris_src/src/Graph/KG/VarLength.cls::EndsByDistance",
+    "iris_src/src/Graph/KG/VarLength.cls::EndsInto",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._bfs_rows",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._only_default_graph",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._run_objectscript_bfs",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._sql_bfs_fallback",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_bfs",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_knn_vec"
+  ],
+  "existing_locator_gaining_binding": [
+    "iris_src/src/Graph/KG/Adj.cls::Count",
+    "iris_src/src/Graph/KG/Adjacency.cls::HeldElsewhere",
+    "iris_src/src/Graph/KG/Adjacency.cls::PutKeyed",
+    "iris_src/src/Graph/KG/Adjacency.cls::Remove",
+    "iris_src/src/Graph/KG/Adjacency.cls::RemoveKeyed",
+    "iris_src/src/Graph/KG/Adjacency.cls::SetLeafFromLowest",
+    "iris_src/src/Graph/KG/TraversalBuild.cls::Build2HopStats",
+    "iris_src/src/Graph/KG/TraversalBuild.cls::BuildKG",
+    "iris_src/src/Graph/KG/TraversalPaths.cls::ShortestLength",
+    "iris_src/src/Graph/KG/TraversalPaths.cls::ShortestPathJson",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore._select_bfs_strategy",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.execute_shortest_path",
+    "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.shortest_path_length"
+  ],
+  "strengthened": [
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::RowPut",
+      "by": [
+        "adjacency_maint.rs::row_put: decision: a row INSERT's index entry: Put, or PutKeyed when ^IVG.GraphMode(g) = multi"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBFS.cls::BFSFast",
+      "by": [
+        "traversal_strategy.rs::os_front: producer: frontier = new nodes; a row per edge walked out of the frontier; exact direction compare",
+        "traversal_strategy.rs::os_walks_text: producer: direction text other than out/in/both walks nothing (bug-str-114)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBFS.cls::TraverseWithPredicateFast",
+      "by": [
+        "traversal_strategy.rs::edge_steps: reader scope: ^KG(\"out\", graph key, s, p, o): only q's graph is walked",
+        "traversal_strategy.rs::theorem_other_graph_edges_invisible: reader scope: another graph's edges change no walk"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalKHop.cls::Fresh",
+      "by": [
+        "adjacency_maint.rs::theorem_write_makes_stale: decision: current iff the stamp equals ^KG(__version)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/algorithms.py::AlgorithmsMixin._khop_fallback",
+      "by": [
+        "traversal_strategy.rs::khop_node: decision: BFSFastJson default graph, out, every type; nodes = seed + walked ends",
+        "traversal_strategy.rs::theorem_khop_is_default_out_bfs: agreement: khop nodes but the seed == execute_bfs ids (default, out)",
+        "rebuild_reads.rs::theorem_reader_sees_seed_alone: reader: khop walks the visible ^KG with no lock or snapshot; answers the seed alone mid-rebuild"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.delete_edge",
+      "by": [
+        "adjacency_maint.rs::theorem_other_graph_untouched: decision: rows scoped by COALESCE(graph_id,'') = the graph key (one DelRow per row); all_graphs deletes in every graph"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.set_edge_weight",
+      "by": [
+        "adjacency_maint.rs::rows_step: producer: one UPDATE per row of the default-graph triple (Update ops)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::translate_delete_clause",
+      "by": [
+        "adjacency_maint.rs::rows_step: producer: Cypher DELETE r of a single relationship deletes by edge_id (one row)"
+      ]
+    }
+  ],
+  "lost_active": [],
+  "lost_union": []
+}

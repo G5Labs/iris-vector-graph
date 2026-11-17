@@ -707,3 +707,32 @@ distinguishing controls are `atomic-tx` and `begin-refused` (the two repairs); t
 Second lookup: `access.iris_boundary` → `sql_procs.rs::theorem_column_only_select_refused` → `iris_src/src/Graph/KG/SqlPrivilege.cls::RequireSelect`
 and `::Holds`; control `column-grant-counts`; observation: user `i56q_column` refused naming `Graph_KG.rdf_edges` while
 `i56q_table` and `i56q_role` pass.
+
+Iteration 57 (W61, writes and deletes → adjacency → traversal answers, by strategy;
+[handoff](../uplift/consolidated/iteration-57/HANDOFF.md)), same environment. The bindings write fresh data in USER
+(prefixes `i57a_`, `i57b_`, `i57r_`; named graphs `i57ag…`, `i57bg…`) in `ivg-cont-20261117-iris` only.
+`adjacency_maint` and `rebuild_reads` run `sync()`, which rebuilds all of USER: **do not run them at the same time as
+another binding that reads traversal answers** (that overlap is how bug-str-115 was found).
+
+```sh
+for m in traversal_strategy adjacency_maint rebuild_reads; do
+  python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/$m      # PASS 30 / 35 / 5
+  python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/$m   # 19 / 14 / 4 EXPECTED_FAIL
+  (cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/$m/binding.py)  # AGREES 73 / 24 / race
+done
+CONTROL=rebuild-swaps python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/rebuild_reads
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-57/rebuild_race/race_probe.py)  # raw race probe
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after57                 # 696/4130
+python3 .g5/uplift/consolidated/iteration-57/member_delta.py $RUN_DIR/reach-before57 $RUN_DIR/reach-after57 /tmp/member-delta.json
+```
+
+Worked lookup (iteration 57): `structure.rebuild` → `rebuild_reads.rs::theorem_reader_sees_seed_alone` → the rows for
+`iris_src/src/Graph/KG/TraversalBuild.cls::BuildKG` (30-140, decision: with a declared index `%BuildIndices` purges and
+refills `out`/`in` outside any lock a reader takes) and the readers `_engine/algorithms.py::_khop_fallback` and
+`TraversalPaths.cls::ShortestLength` in `crosswalk/decision-links.tsv`; in reverse, those keys in the recount's
+`bindings.json` list the claims beside `adjacency_maint`'s `theorem_incremental_equals_rebuild` (the end state) and
+`traversal_strategy`'s reader rows. The distinguishing control is `rebuild-swaps`; the product observation is the
+binding's `during_sync` (`{"khop": ["s"], "spl": -1}` 4,481 times) beside `quiet` (every read `{"khop": ["a","b","c","s"], "spl": 2}`).
+Second lookup: `algorithms.op.paths` → `traversal_strategy.rs::theorem_in_length_differs` → `iris_sql_store.py::IRISGraphStore.shortest_path_length`
+and `TraversalPaths.cls::ShortestLength`; control `length-in-reversed`; observation `sp_in_p1_p3` (2 where
+`execute_shortest_path` answers -1).

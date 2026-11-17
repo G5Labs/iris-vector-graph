@@ -3752,12 +3752,12 @@ Repair proposal (not implemented): with a declared index skip the edge-index reb
 
 Severity: Medium · Decision: Open
 
+Run: Uplift 2026-11-17 (continuation, iteration 57)
+
 Severity reasoning: read-only, no data changed; but the documented meaning ("How many nodes are first reached at the
 second outbound hop from `node_id`", API_REFERENCE; docstring: "neither `node_id` nor a direct neighbour is counted")
 holds only while the stats are stale, and the same call on the same data answers differently depending on whether any
 write anywhere in the namespace happened since the last sync(); a caller cannot tell which answer it got.
-
-Run: Uplift 2026-11-17 (continuation, iteration 57)
 
 Found by: iteration 57 W61 R2 (frozen prediction expected the upper bound from test_460_r284; the departure is against
 the method's own documentation); [adjacency_maint](models/adjacency_maint/NOTES.md) `witness_fast_overcounts` (diamond 2 vs 1; back edge 1 vs 0),

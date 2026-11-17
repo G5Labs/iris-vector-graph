@@ -31,8 +31,8 @@ for k in sorted(set(a_bound) & set(b_bound)):
     if add:
         strengthened.append({'member': k, 'by': [r['formal item'].split('/')[-1] + ': ' + r['role'][:160] for r in add]})
 res = {
-    'before': {'revision': 'fb1f806b', 'active': len(b_bound), 'union': len(b_union)},
-    'after': {'revision': 'working tree at the iteration-56 seal', 'active': len(a_bound), 'union': len(a_union)},
+    'before': {'revision': 'b63a5ec1 (start of iteration 57; freeze 9f74e690 changed only iteration-57 files)', 'active': len(b_bound), 'union': len(b_union)},
+    'after': {'revision': 'working tree at the iteration-57 seal', 'active': len(a_bound), 'union': len(a_union)},
     'denominator': len(json.loads((after / 'census.json').read_text())),
     'newly_bound': [{'member': k, 'existing_locator': k in b_union,
                      'roles': [r['relation'] + ' ' + r['formal item'].split('/')[-1] + ': ' + r['role'][:160] for r in a_bound[k]]} for k in new],

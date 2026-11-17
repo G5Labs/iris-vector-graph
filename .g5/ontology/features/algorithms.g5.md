@@ -690,6 +690,7 @@ Open questions: [Which graph should the unscoped retrieval operators read?](../.
 - agent
 - user-facing-behavior
 - test-coverage
+- Findings (iteration 57): [bug-str-113](../../Verus_verification/bugs_issues.md#bug-str-113)
 
 Open questions: [Should the shortest-path routines refuse a direction they do not walk?](../../Verus_verification/open_questions.md#HD-1003)
 

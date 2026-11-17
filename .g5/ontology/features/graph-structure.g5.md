@@ -864,6 +864,7 @@ Added after the stage-A reconstruction check (gap G40). Observed divergence: the
 - data-integrity, operations
 - test-coverage
 - Verus (iteration 57): [adjacency_maint](../../Verus_verification/models/adjacency_maint/NOTES.md) `theorem_incremental_equals_rebuild`, `theorem_sync_changes_nothing`
+- Findings (iteration 57): [bug-str-115](../../Verus_verification/bugs_issues.md#bug-str-115)
 
 Live coverage: [declaring the index repairs a drifted install](../../../tests/e2e/test_252_drifted_install_e2e.py). Observed divergence, suspected: several paths can still produce drift with the index declared ([stage-A notes, F3 to F6 and F10](../../uplift/ivg-verus-initial/intent/graph-structure.md#candidate-findings)).
 
