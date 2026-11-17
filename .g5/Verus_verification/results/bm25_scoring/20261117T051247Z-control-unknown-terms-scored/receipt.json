@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "guard: SearchCore's `If df = 0 Continue` removed",
+    "expect_fail_in": [
+      "theorem_cutoff_off_scores_known",
+      "theorem_unknown_term_adds_nothing"
+    ],
+    "find": "if known(st, t) && !skipped(st, q, fnum, fden, t) { r.push(t) } else { r }",
+    "name": "unknown-terms-scored",
+    "replace": "if !skipped(st, q, fnum, fden, t) { r.push(t) } else { r }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cutoff_off_scores_known",
+      "theorem_unknown_term_adds_nothing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bm25_scoring/bm25_scoring.rs": "85aac362216a3864cf19e62fbda3a077089581f04fefcf68b7ca28d100d8b8c5",
+    ".g5/Verus_verification/models/bm25_scoring/model.json": "18943ca9a5fde86ceb3255d7551b5a07e5f8ae38e9ba767a0491c09ac122607c"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/unknown-terms-scored/20261117T051244Z/models/bm25_scoring/bm25_scoring.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cutoff_off_scores_known": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051244Z-control-unknown-terms-scored-theorem_cutoff_off_scores_known.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_unknown_term_adds_nothing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051244Z-control-unknown-terms-scored-theorem_unknown_term_adds_nothing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051244Z-control-unknown-terms-scored.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051247Z-control-unknown-terms-scored/logs/20261117T051244Z-control-unknown-terms-scored-theorem_cutoff_off_scores_known.log": "9e7c1ce37d13d4814feac0ce024b03d213e54000be9b3284108dde79ccf45a57",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051247Z-control-unknown-terms-scored/logs/20261117T051244Z-control-unknown-terms-scored-theorem_unknown_term_adds_nothing.log": "ab93586d789787fd75975fd89917edadb0d0b99bfab95a9eab22d4843d6362b9",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051247Z-control-unknown-terms-scored/logs/20261117T051244Z-control-unknown-terms-scored.log": "400438fb359824896f01686a01260fb71fc3c403f6a41dd3a83427253b25fcfb"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

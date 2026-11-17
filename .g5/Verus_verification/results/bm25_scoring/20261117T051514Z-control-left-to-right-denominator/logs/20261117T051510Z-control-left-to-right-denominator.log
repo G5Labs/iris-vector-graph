@@ -1,0 +1,44 @@
+verification results:: 29 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/left-to-right-denominator/20261117T051510Z/models/bm25_scoring/bm25_scoring.rs:246:13
+    |
+244 | pub proof fn theorem_shorter_document_scores_higher(tf: int, l1: int, l2: int, total: int, n: int)
+    | -------------------------------------------------------------------------------------------------- at the end of the function body
+245 |     requires tf > 0, 0 < l1 < l2, total > 0, n > 0,
+246 |     ensures qlt(tfpart(tf, l2, total, n), tfpart(tf, l1, total, n)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/left-to-right-denominator/20261117T051510Z/models/bm25_scoring/bm25_scoring.rs:258:1
+    |
+258 | pub proof fn theorem_tf_raises_and_saturates(t1: int, t2: int, len: int, total: int, n: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/left-to-right-denominator/20261117T051510Z/models/bm25_scoring/bm25_scoring.rs:260:13
+    |
+258 | pub proof fn theorem_tf_raises_and_saturates(t1: int, t2: int, len: int, total: int, n: int)
+    | -------------------------------------------------------------------------------------------- at the end of the function body
+259 |     requires 0 < t1 < t2, len > 0, total > 0, n > 0,
+260 |     ensures qlt(tfpart(t1, len, total, n), tfpart(t2, len, total, n)), qlt(tfpart(t2, len, total, n), Q { num: 5, den: 2 }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/left-to-right-denominator/20261117T051510Z/models/bm25_scoring/bm25_scoring.rs:260:72
+    |
+258 | pub proof fn theorem_tf_raises_and_saturates(t1: int, t2: int, len: int, total: int, n: int)
+    | -------------------------------------------------------------------------------------------- at the end of the function body
+259 |     requires 0 < t1 < t2, len > 0, total > 0, n > 0,
+260 |     ensures qlt(tfpart(t1, len, total, n), tfpart(t2, len, total, n)), qlt(tfpart(t2, len, total, n), Q { num: 5, den: 2 }),
+    |                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/left-to-right-denominator/20261117T051510Z/models/bm25_scoring/bm25_scoring.rs:272:13
+    |
+271 | pub proof fn theorem_worked_example()
+    | ------------------------------------- at the end of the function body
+272 |     ensures tfpart(2, 3, 8, 3) == (Q { num: 320, den: 233 }), idf_arg(3, 1) == (Q { num: 8, den: 3 }),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

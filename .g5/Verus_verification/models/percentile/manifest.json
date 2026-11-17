@@ -1,0 +1,45 @@
+{
+  "title": "percentile",
+  "question": "percentileDisc / percentileCont (W59, iteration 53): IVG.Percentile PDISC's floor((n - 1) p) index against nearest rank, PCONT's interpolation including the last-index branch, null for no values, NumberOutOfRange outside [0, 1] (bug-cyp-134)",
+  "ontology_ids": [
+    "query.functions.percentile"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 26}"
+    },
+    {
+      "label": "disc-nearest-rank",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_disc_rounds_down_p90\", \"theorem_disc_top_percentile_misses_max\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cont-floor-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_cont_follows_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-range-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_and_out_of_range\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-is-zero",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_and_out_of_range\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "value: PCONT over no values answers 0 (before 4.6.0 R274)",
+    "expect_fail_in": [
+      "theorem_empty_and_out_of_range"
+    ],
+    "find": "    if !in_range(pn, pd) { Ans::OutOfRange } else if xs.len() == 0 { Ans::Null } else {\n        let n = xs.len() as int;\n        let lower",
+    "name": "empty-is-zero",
+    "replace": "    if !in_range(pn, pd) { Ans::OutOfRange } else if xs.len() == 0 { Ans::Rat(0, 1) } else {\n        let n = xs.len() as int;\n        let lower"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_empty_and_out_of_range"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/percentile/model.json": "a1ab0fd9bcbf10608b93e03ac79e9a543fdd38e05fe96f245be0634736a52aa6",
+    ".g5/Verus_verification/models/percentile/percentile.rs": "076f82461dbb30ec50584f213c2b9df5b87b68d3042e6293cc3ee695e7979bb3"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/empty-is-zero/20261117T052009Z/models/percentile/percentile.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_empty_and_out_of_range": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/20261117T052009Z-control-empty-is-zero-theorem_empty_and_out_of_range.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/20261117T052009Z-control-empty-is-zero.log",
+    "timed_out": false,
+    "verified": 24
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/percentile/20261117T052011Z-control-empty-is-zero/logs/20261117T052009Z-control-empty-is-zero-theorem_empty_and_out_of_range.log": "dea05f8c671e0ced46a3fadd210c4cd28a6e34437cb402273f875fa2b04c611b",
+    ".g5/Verus_verification/results/percentile/20261117T052011Z-control-empty-is-zero/logs/20261117T052009Z-control-empty-is-zero.log": "ac004eb8fb59f9f1c69762bb75bf385b41356fc32d5f997772b312329d543a59"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

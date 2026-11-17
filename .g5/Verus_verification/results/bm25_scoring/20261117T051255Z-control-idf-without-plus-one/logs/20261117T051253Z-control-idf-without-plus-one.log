@@ -1,0 +1,35 @@
+verification results:: 29 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/idf-without-plus-one/20261117T051253Z/models/bm25_scoring/bm25_scoring.rs:251:63
+    |
+250 | pub proof fn theorem_worked_example()
+    | ------------------------------------- at the end of the function body
+251 |     ensures tfpart(2, 3, 8, 3) == (Q { num: 320, den: 233 }), idf_arg(3, 1) == (Q { num: 8, den: 3 }),
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/idf-without-plus-one/20261117T051253Z/models/bm25_scoring/bm25_scoring.rs:256:1
+    |
+256 | pub proof fn theorem_idf_arg_positive_and_decreasing(n: int, d1: int, d2: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/idf-without-plus-one/20261117T051253Z/models/bm25_scoring/bm25_scoring.rs:258:13
+    |
+256 | pub proof fn theorem_idf_arg_positive_and_decreasing(n: int, d1: int, d2: int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+257 |     requires 0 < d1 < d2 <= n,
+258 |     ensures qlt(Q { num: 1, den: 1 }, idf_arg(n, d2)), qlt(idf_arg(n, d2), idf_arg(n, d1)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/idf-without-plus-one/20261117T051253Z/models/bm25_scoring/bm25_scoring.rs:258:56
+    |
+256 | pub proof fn theorem_idf_arg_positive_and_decreasing(n: int, d1: int, d2: int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+257 |     requires 0 < d1 < d2 <= n,
+258 |     ensures qlt(Q { num: 1, den: 1 }, idf_arg(n, d2)), qlt(idf_arg(n, d2), idf_arg(n, d1)),
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

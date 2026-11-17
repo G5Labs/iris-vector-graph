@@ -1,0 +1,27 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/schema2-reads-stored/20261117T051257Z/models/bm25_scoring/bm25_scoring.rs:275:1
+    |
+275 | pub proof fn theorem_schema2_reads_current_stats(st: Stats, s1: spec_fn(Tok) -> Q, s2: spec_fn(Tok) -> Q, t: Tok)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/schema2-reads-stored/20261117T051257Z/models/bm25_scoring/bm25_scoring.rs:276:13
+    |
+275 | pub proof fn theorem_schema2_reads_current_stats(st: Stats, s1: spec_fn(Tok) -> Q, s2: spec_fn(Tok) -> Q, t: Tok)
+    | ----------------------------------------------------------------------------------------------------------------- at the end of the function body
+276 |     ensures used_arg(2, st, s1, t) == used_arg(2, st, s2, t), used_arg(2, st, s1, t) == idf_arg(st.n, (st.df)(t)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/schema2-reads-stored/20261117T051257Z/models/bm25_scoring/bm25_scoring.rs:276:63
+    |
+275 | pub proof fn theorem_schema2_reads_current_stats(st: Stats, s1: spec_fn(Tok) -> Q, s2: spec_fn(Tok) -> Q, t: Tok)
+    | ----------------------------------------------------------------------------------------------------------------- at the end of the function body
+276 |     ensures used_arg(2, st, s1, t) == used_arg(2, st, s2, t), used_arg(2, st, s1, t) == idf_arg(st.n, (st.df)(t)),
+    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

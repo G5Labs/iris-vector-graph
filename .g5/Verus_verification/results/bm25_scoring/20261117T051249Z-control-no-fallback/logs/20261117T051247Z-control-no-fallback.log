@@ -1,0 +1,12 @@
+verification results:: 30 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/no-fallback/20261117T051247Z/models/bm25_scoring/bm25_scoring.rs:195:9
+    |
+195 |         !skipped(st, q, fnum, fden, min_tok(st, q).unwrap()),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+199 |     if min_tok(st, q).is_none() { assert(!known(st, q[i])); }
+    |     --------------------------------------------------------- at the end of the function body
+
+error: aborting due to 1 previous error
+

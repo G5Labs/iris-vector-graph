@@ -3410,6 +3410,25 @@ Consequence: an ordinary write is refused with an internal error that names no C
 
 Repair proposal (not implemented): build the list in SQL from translated elements (as `SET` translates scalars), or refuse with a `CypherError` naming the property. Preserve: constant lists and row-literal lists. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
 
+<a id="bug-cyp-134"></a>
+### percentileDisc rounds the rank down: p 0.9 over 10, 20, 30, 40 answers 30, not 40
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 53)
+
+Found by: iteration 53 W59 frozen prediction P1b ([PAIRS](../uplift/consolidated/iteration-53/bm25-percentile-PAIRS.md), a miss: nearest rank was predicted); [percentile](models/percentile/NOTES.md) `theorem_disc_top_percentile_misses_max` (for every n ≥ 2 and every p with (n − 1)/n < p < 1), `theorem_disc_never_above_rule`, witness `theorem_disc_rounds_down_p90`; control `disc-nearest-rank`. The iteration-47 checks (median, quartiles) give the same answer under both rules, so they could not see it.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-53/bm25/bm25-percentile-observed-20261117T050649Z.json) `P1b_*:sql`; [follow-up](../uplift/consolidated/iteration-53/bm25/followup-observed-20261117T050736Z.json) `unwind_lit_*`, `match_param_0.9`; [binding](results/percentile/20261117T052012Z-binding/receipt.json), 156 cases). `UNWIND [10, 20, 30, 40] AS x RETURN percentileDisc(x, 0.9)` answers 30.0 and `percentileDisc(x, 0.6)` 20.0; `percentileDisc` at 0.95 over 1 to 10 answers 9.0; a stored-value `MATCH` with `$p` = 0.9 and `Percentile_PDISC('[10,20,30,40]', 0.9)` answer the same. p 1/3 over 10, 20, 30, 40 answers 10, because the double 0.333… times 3 is just below 1. Passing neighbors: p 0, 0.25, 0.5, 0.75 and 1 agree with nearest rank; `percentileCont` interpolates correctly (0.9 gives 37.0).
+
+Expected: the owner [query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile) ("the stored value at the nearest rank", "as Neo4j does"); Neo4j's `percentileDisc` "uses a rounding method and calculates the nearest value to the percentile" (index ceil(p × n) − 1, so 40 at 0.9 and 30 at 0.6).
+
+Observed: `IVG.Percentile.PDISC` takes index `((n - 1) * p) \ 1`, the floor of the interpolation position (`iris_src/src/IVG/Percentile.cls:13`), reached from the translator's `Percentile_PDISC(JSON_ARRAYAGG(CAST(x AS DOUBLE)), p)` (`translator.py:28616-28617`).
+
+Consequence: the answer is never above the nearest-rank value and is one rank below it for many p (0.6 and 0.9 of four values, though not 0.4); for every p in ((n − 1)/n, 1) it is the second-largest value instead of the largest, so high percentiles (p90, p95, p99 of latencies or scores) of small groups are understated. No error is raised.
+
+Repair proposal (not implemented): index `ceil(p × n) − 1` clamped to [0, n − 1] (Neo4j). Preserve: p 0 and 1, the median and quartile answers already observed, null for no values, NumberOutOfRange. Writers: none; readers: every Cypher `percentileDisc` and SQL `Percentile_PDISC`. The control `disc-nearest-rank` checks the repaired index in the model only; the repair was not run on the product.
+
 <a id="bug-tmp-106"></a>
 ### A millisecond-class edge is counted by the seconds readers' whole buckets although its time is outside the window
 
@@ -3428,6 +3447,63 @@ Observed: both classes write the same `^KG("tagg")` and `^KG("bucket")` nodes ke
 Consequence: in a graph written through both classes, whole-bucket statistics, groups, velocity and bursts mix units and disagree with the raw window. The Python engine calls only the seconds class, so this needs a direct ObjectScript caller of `TemporalIndexMS` on the same graph.
 
 Repair proposal (not implemented): keep the millisecond class's statistics under their own subscript (or refuse mixed units per graph). Preserve: each class's own whole/cut agreement. Distinguishing case: the event above counts 0 in the seconds whole bucket (control `ms-buckets-apart` checks the model's direction only). Governing statement: [temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window).
+
+<a id="bug-cyp-133"></a>
+### With IVG_EDGESCAN=1 every relationship property on a hop from a node named by id reads null
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 53)
+
+Found by: iteration 53 Part B, frozen prediction ME4 (partial: the edges held, the weight missed), after reading `_trp_directed_edge_join` and `_expr_propref_edge_alias`; [sql_procs](models/sql_procs/NOTES.md) `theorem_edgescan_reads_null_property` (for every edge with a stored weight), neighbor `theorem_unweighted_and_named_agree`; control `scan-exposes-weight`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json) `edgescan`; [binding](results/sql_procs/20261117T051429Z-binding/receipt.json) `hop_*`). `MATCH (a {id: 'a'})-[r:P]->(b) RETURN b.id, r.weight` answers `b 1.0`, `b 2.0`, `b2 1.0`, `d 10.0` by default and the same targets with `r.weight` null under `IVG_EDGESCAN=1`; `USE GRAPH ''` the same; `USE GRAPH 'g'` (rows plan) is unchanged. `count(r)` agrees (5 and 5).
+
+Expected: `IVG_EDGESCAN` chooses a plan, "the plan before 4.3.0" (ADMIN_GUIDE:1248, API_REFERENCE:3215), and CHANGELOG 4.3.0 reports both plans' answers equal; a plan choice must not change what a query answers ([structure.adjacency.scan](../ontology/features/graph-structure.g5.md#structure.adjacency.scan)).
+
+Observed: the hop joins a `JSON_TABLE` over `MatchEdgesAllGraphs` (or `MatchEdges` for `USE GRAPH ''`) whose columns are `s, p, o_id, w, graph_id`, and `_expr_propref_edge_alias` (`translator.py:22266-22273`) returns the literal `NULL` for every property of such an alias, although the scan carries the weight as `w`.
+
+Consequence: with the variable set, any query reading `r.weight` or another relationship property after such a hop, or filtering on one in `WHERE`, answers null or drops rows. The variable is opt-in and off by default.
+
+Repair proposal (not implemented): read `r.weight` from the scan's `w` and fall back to the rows plan for any other relationship property (as already done for inline relationship properties). Preserve: the scan's targets and graphs. Distinguishing case: the hop above reads 1.0, 2.0, 1.0, 10.0 under both settings (control `scan-exposes-weight` checks the model's direction only). Governing statement: [structure.adjacency.scan](../ontology/features/graph-structure.g5.md#structure.adjacency.scan).
+
+<a id="bug-tmp-107"></a>
+### backfill_temporal_rows answers the temporal triples it walked, not the rows it wrote, and setup reports that as edges given rows
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 53)
+
+Found by: iteration 53 Part B, frozen predictions BF1/BF2 (missed: the count), after reading `BackfillWalk`; [sql_procs](models/sql_procs/NOTES.md) `theorem_backfill_count_overstates` (for every state where one structural triple already has a row), `theorem_backfill_idempotent_same_count`, neighbor `theorem_backfill_count_exact_when_all_missing`; control `count-written-rows`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json) `backfill`; [binding](results/sql_procs/20261117T051429Z-binding/receipt.json) `bf_*`). With three structural temporal triples that already had marked rows, `SELECT Graph_KG.backfill_temporal_rows()` answered 3 and wrote nothing; again 3; after one row was deleted by SQL, 3 (one row written, marked); after an explicit edge with a timestamp, 4 (nothing written, the explicit row stays unmarked). The temporal-only predicate got no row and was not counted.
+
+Expected: ADMIN_GUIDE:413 documents setup's `temporal_rows_backfilled` as "the temporal edges it gave rows first"; setup stores this function's answer there (`schema.py:878-884`).
+
+Observed: `BackfillStructuralRows` returns `BackfillWalk(...).asserted`, which is incremented for every distinct structural triple it passes to `AssertTemporalRow`, whose `INSERT ... WHERE NOT EXISTS` writes nothing for a triple that already has a row (`TemporalIndex.cls:232-300`, `Adjacency.cls` AssertTemporalRow).
+
+Consequence: an operator upgrading a namespace where most temporal edges already have rows (written with `graph=` before the index, or by an earlier backfill) is told that many edges were given rows; a re-run never reports 0. No row is written wrongly.
+
+Repair proposal (not implemented): count only the triples whose edge `INSERT` wrote a row (`%ROWCOUNT`), or rename the field to the triples checked. Preserve: idempotence, the skip of temporal-only predicates, the bounded memory. Distinguishing case: the second run above answers 0 (control `count-written-rows`). Governing statement: [temporal.structural.upgrade](../ontology/features/temporal.g5.md#temporal.structural.upgrade).
+
+<a id="bug-str-112"></a>
+### DijkstraPath with two empty endpoints answers a zero-length path through the NUL character
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 53)
+
+Found by: iteration 53 Part B, after reading `DijkstraJson`'s endpoint tests (not a frozen prediction; DJ10 covered equal ids only); [sql_procs](models/sql_procs/NOTES.md) `theorem_sql_empty_endpoints_zero_path`, neighbors `theorem_dijkstra_endpoint_neighbors`; control `nul-read-as-empty`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json) `dijkstra.empty_both`; [binding](results/sql_procs/20261117T051429Z-binding/receipt.json) `dj_empty_both`). `SELECT Graph_KG.DijkstraPath('', '', '', 9999, 10, 'out', '', 'g')` answers `{"nodes":["\u0000"],"rels":[],"costs":[],"length":0,"totalCost":0.0}`. Neighbors: `DijkstraPath('', 'd', …)` answers `{}`; the Cypher CALL with `''` raises "from parameter not supplied".
+
+Expected: an empty source or target answers no path; "direct native empty endpoints answer no path" ([algorithms.op.paths.weighted](../ontology/features/algorithms.g5.md#algorithms.op.paths.weighted); the parent path-search rule says the same).
+
+Observed: an SQL `''` reaches the procedure body as `$Char(0)`; `DijkstraJson` (`TraversalPaths.cls:262-275`) tests `srcId = ""`, which `$Char(0)` fails, then `srcId = dstId`, which it passes, and answers the empty path of that node. `EdgeScan.MatchEdges` and `GraphKey` already map `$Char(0)` to "" (R269).
+
+Consequence: a SQL caller that passes empty parameters gets a path of length 0 and cost 0 with a node id no graph holds, instead of no path.
+
+Repair proposal (not implemented): translate `$Char(0)` to "" for both endpoints at the top of `DijkstraJson` (or in `DijkstraPath`), as `MatchEdges` does. Preserve: equal non-empty endpoints answer the empty path. Distinguishing case: the call above answers `{}` (control `nul-read-as-empty`). Governing statement: [algorithms.op.paths.weighted](../ontology/features/algorithms.g5.md#algorithms.op.paths.weighted).
 
 <a id="bug-plt-117"></a>
 ### engine.capabilities says ^KG and ^NKG are not built on a namespace set up before it held edges, whatever sync() does, until setup runs again

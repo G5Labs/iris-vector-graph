@@ -48,6 +48,13 @@ install.schema.concurrency		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.schema.classes_follow		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.schema.speed		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.status		g-only		.g5/ontology/concepts/install.g5.md	new
+install.status.readiness		g-only		.g5/ontology/concepts/install.g5.md	new
+install.status.sync		g-only		.g5/ontology/concepts/install.g5.md	new
+install.status.verify_sync		g-only		.g5/ontology/concepts/install.g5.md	new
+install.status.capabilities		g-only		.g5/ontology/concepts/install.g5.md	new
+install.status.readers		g-only		.g5/ontology/concepts/install.g5.md	new
+install.status.ledger		g-only		.g5/ontology/concepts/install.g5.md	new
+install.status.diagram		g-only		.g5/ontology/concepts/install.g5.md	new
 install.setup		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.setup.dry_run		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.setup.resume		g-only		.g5/ontology/concepts/install.g5.md	changed
@@ -68,6 +75,7 @@ install.snapshot.failure		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.snapshot.derived		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.snapshot.routes	SNP-B1.7;SNP-B2.11;SNP-B4.5	g-extended-from-p	J01	.g5/ontology/concepts/install.g5.md	new
 install.snapshot.temporal	SNP-B1;SNP-I1.1;TMP-B6	g-extended-from-p	J02	.g5/ontology/concepts/install.g5.md	new
+install.snapshot.info		g-only		.g5/ontology/concepts/install.g5.md	new
 install.bulk_load		g-only		.g5/ontology/concepts/install.g5.md	changed
 install.bulk_load.loader	WRT-B7.12;WRT-B7.14	g-extended-from-p	M23	.g5/ontology/concepts/install.g5.md	changed
 install.bulk_load.ledger		g-only		.g5/ontology/concepts/install.g5.md	changed
@@ -99,6 +107,7 @@ algorithms.op.ppr.completion		g-only		.g5/ontology/features/algorithms.g5.md	new
 algorithms.op.wcc		g-only		.g5/ontology/features/algorithms.g5.md	changed
 algorithms.op.cdlp		g-only		.g5/ontology/features/algorithms.g5.md	changed
 algorithms.op.subgraph		g-only		.g5/ontology/features/algorithms.g5.md	changed
+algorithms.op.subgraph.guided		g-only		.g5/ontology/features/algorithms.g5.md	new
 algorithms.op.degree		g-only		.g5/ontology/features/algorithms.g5.md	changed
 algorithms.op.betweenness		g-only		.g5/ontology/features/algorithms.g5.md	changed
 algorithms.op.closeness		g-only		.g5/ontology/features/algorithms.g5.md	changed
@@ -147,6 +156,8 @@ query.writes.adjacency		g-only		.g5/ontology/features/cypher.g5.md	changed
 query.writes.ledger		g-only		.g5/ontology/features/cypher.g5.md	changed
 query.writes.subquery		g-only		.g5/ontology/features/cypher.g5.md	changed
 query.writes.create-existing		g-only		.g5/ontology/features/cypher.g5.md	changed
+query.writes.computed_values		g-only		.g5/ontology/features/cypher.g5.md	new
+query.writes.retype		g-only		.g5/ontology/features/cypher.g5.md	new
 query.read-only		g-only		.g5/ontology/features/cypher.g5.md	changed
 query.browser-metadata		g-only		.g5/ontology/features/cypher.g5.md	changed
 query.system-procedures		g-only		.g5/ontology/features/cypher.g5.md	changed
@@ -161,6 +172,18 @@ query.values.nulls		g-only		.g5/ontology/features/cypher.g5.md	new
 query.values.string_predicates		g-only		.g5/ontology/features/cypher.g5.md	new
 query.values.in_lists		g-only		.g5/ontology/features/cypher.g5.md	new
 query.values.relationship_text	CYP-B17.1	g-extended-from-p	M18	.g5/ontology/features/cypher.g5.md	new
+query.values.conditions		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.list_index		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.reverse		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.dynamic_access		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.range		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.percentile		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.random		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.sql_helpers		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.slice		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.strings		g-only		.g5/ontology/features/cypher.g5.md	new
+query.functions.coalesce		g-only		.g5/ontology/features/cypher.g5.md	new
 erasure.scope		g-only		.g5/ontology/features/erasure.g5.md	changed
 erasure.live-statements		g-only		.g5/ontology/features/erasure.g5.md	changed
 erasure.history		g-only		.g5/ontology/features/erasure.g5.md	changed
@@ -214,6 +237,7 @@ structure.adjacency.declared		g-only		.g5/ontology/features/graph-structure.g5.m
 structure.adjacency.undeclared		g-only		.g5/ontology/features/graph-structure.g5.md	changed
 structure.adjacency.one_writer		g-only		.g5/ontology/features/graph-structure.g5.md	changed
 structure.adjacency.bulk		g-only		.g5/ontology/features/graph-structure.g5.md	changed
+structure.adjacency.scan		g-only		.g5/ontology/features/graph-structure.g5.md	new
 structure.adjacency.declare	ADJ-B2.9;TMP-B11.3	g-extended-from-p	M16;J07	.g5/ontology/features/graph-structure.g5.md	new
 structure.degree		g-only		.g5/ontology/features/graph-structure.g5.md	changed
 structure.degree.cache		g-only		.g5/ontology/features/graph-structure.g5.md	changed
@@ -321,6 +345,11 @@ search.fusion		g-only		.g5/ontology/features/search.g5.md	changed
 search.fusion.same_graph		g-only		.g5/ontology/features/search.g5.md	changed
 search.fusion.failed_leg		g-only		.g5/ontology/features/search.g5.md	changed
 search.fusion.python		g-only		.g5/ontology/features/search.g5.md	new
+search.fusion.surfaces		g-only		.g5/ontology/features/search.g5.md	new
+search.fusion.leg_index		g-only		.g5/ontology/features/search.g5.md	new
+search.fusion.vector_graph		g-only		.g5/ontology/features/search.g5.md	new
+search.fusion.rest		g-only		.g5/ontology/features/search.g5.md	new
+search.fusion.multi_vector		g-only		.g5/ontology/features/search.g5.md	new
 search.erasure		g-only		.g5/ontology/features/search.g5.md	changed
 search.erasure.indexes		g-only		.g5/ontology/features/search.g5.md	changed
 temporal.edge		g-only		.g5/ontology/features/temporal.g5.md	changed
@@ -333,6 +362,10 @@ temporal.write.repeatable		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.write.retry		g-only		.g5/ontology/features/temporal.g5.md	new
 temporal.stats		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.stats.after-purge		g-only		.g5/ontology/features/temporal.g5.md	changed
+temporal.stats.window		g-only		.g5/ontology/features/temporal.g5.md	new
+temporal.stats.writers		g-only		.g5/ontology/features/temporal.g5.md	new
+temporal.stats.velocity		g-only		.g5/ontology/features/temporal.g5.md	new
+temporal.stats.distinct		g-only		.g5/ontology/features/temporal.g5.md	new
 temporal.latest		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.latest.exact		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.delete		g-only		.g5/ontology/features/temporal.g5.md	changed
@@ -351,40 +384,9 @@ temporal.window	TMP-B6.1;TMP-B6.12;TMP-B6.14	g-extended-from-p		.g5/ontology/fea
 temporal.window.sources	TMP-B6.11	g-extended-from-p	M06	.g5/ontology/features/temporal.g5.md	new
 temporal.window.paging	TMP-B6;TMP-B6.3;TMP-B6.4;TMP-B6.9	g-extended-from-p	M08	.g5/ontology/features/temporal.g5.md	changed
 temporal.window.paging.release	TMP-B6.15;TMP-B6.16;TMP-B6.6;TMP-B6.7;TMP-B6.8	g-extended-from-p	M07;M08	.g5/ontology/features/temporal.g5.md	new
+temporal.labelset		g-only		.g5/ontology/features/temporal.g5.md	new
 temporal.purge		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.purge.bare-nodes		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.erase		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.ledger		g-only		.g5/ontology/features/temporal.g5.md	changed
 temporal.ledger.atomic		g-only		.g5/ontology/features/temporal.g5.md	changed
-query.functions		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.list_index		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.reverse		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.dynamic_access		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.range		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.percentile		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.random		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.sql_helpers		g-only		.g5/ontology/features/cypher.g5.md	new
-query.writes.computed_values		g-only		.g5/ontology/features/cypher.g5.md	new
-query.writes.retype		g-only		.g5/ontology/features/cypher.g5.md	new
-query.values.conditions		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.slice		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.strings		g-only		.g5/ontology/features/cypher.g5.md	new
-query.functions.coalesce		g-only		.g5/ontology/features/cypher.g5.md	new
-search.fusion.surfaces		g-only		.g5/ontology/features/search.g5.md	new
-search.fusion.leg_index		g-only		.g5/ontology/features/search.g5.md	new
-search.fusion.vector_graph		g-only		.g5/ontology/features/search.g5.md	new
-search.fusion.rest		g-only		.g5/ontology/features/search.g5.md	new
-search.fusion.multi_vector		g-only		.g5/ontology/features/search.g5.md	new
-algorithms.op.subgraph.guided		g-only		.g5/ontology/features/algorithms.g5.md	new
-temporal.stats.window		g-only		.g5/ontology/features/temporal.g5.md	new
-temporal.stats.writers		g-only		.g5/ontology/features/temporal.g5.md	new
-temporal.stats.velocity		g-only		.g5/ontology/features/temporal.g5.md	new
-temporal.stats.distinct		g-only		.g5/ontology/features/temporal.g5.md	new
-temporal.labelset		g-only		.g5/ontology/features/temporal.g5.md	new
-install.status.readiness		g-only		.g5/ontology/concepts/install.g5.md	new
-install.status.sync		g-only		.g5/ontology/concepts/install.g5.md	new
-install.status.verify_sync		g-only		.g5/ontology/concepts/install.g5.md	new
-install.status.capabilities		g-only		.g5/ontology/concepts/install.g5.md	new
-install.status.readers		g-only		.g5/ontology/concepts/install.g5.md	new
-install.status.diagram		g-only		.g5/ontology/concepts/install.g5.md	new
-install.snapshot.info		g-only		.g5/ontology/concepts/install.g5.md	new

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: the cutoff skips every common term, answering nothing (the fallback of 263-290 removed)",
+    "expect_fail_in": [
+      "theorem_fallback_keeps_lowest_df",
+      "theorem_fallback_ignores_unknown_terms"
+    ],
+    "find": "over(st, t, fnum, fden) && !(all_over(st, q, fnum, fden) && min_tok(st, q) == Some(t))",
+    "name": "no-fallback",
+    "replace": "over(st, t, fnum, fden)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_fallback_keeps_lowest_df",
+      "theorem_fallback_ignores_unknown_terms"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bm25_scoring/bm25_scoring.rs": "64c9d9f81329bed1e6a7173ecb3d61d4cc9b7c8b841221937321567ef0bcf1f2",
+    ".g5/Verus_verification/models/bm25_scoring/model.json": "d6339ccdea62ec2b6ed0a83a655ce26db742d48206981733da89232a0ebf0b5e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/no-fallback/20261117T051430Z/models/bm25_scoring/bm25_scoring.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_fallback_ignores_unknown_terms": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051430Z-control-no-fallback-theorem_fallback_ignores_unknown_terms.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_fallback_keeps_lowest_df": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051430Z-control-no-fallback-theorem_fallback_keeps_lowest_df.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051430Z-control-no-fallback.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051433Z-control-no-fallback/logs/20261117T051430Z-control-no-fallback-theorem_fallback_ignores_unknown_terms.log": "b6622864f266f4080817d9a07feb8f5c6dade28ca2cda6bd330a5ff01d1ccac9",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051433Z-control-no-fallback/logs/20261117T051430Z-control-no-fallback-theorem_fallback_keeps_lowest_df.log": "6403f0775833ece17f0d9b39d22fac4de23f01c53a12258be8d3581433b6279e",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051433Z-control-no-fallback/logs/20261117T051430Z-control-no-fallback.log": "e1652b0a4da5009c15ff73829fdca1f284b40f089c5983f2f50fb207ad3488db"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,21 @@
+verification results:: 14 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/default-reads-every-graph/20261117T051151Z/models/sql_procs/sql_procs.rs:160:9
+    |
+160 |           !match_edges(adj, src, pred, shard, graph).contains(a),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+169 | /     if adj.filter(f).contains(a) {
+170 | |         let i = choose|i: int| 0 <= i < adj.filter(f).len() && adj.filter(f)[i] == a;
+171 | |         adj.lemma_filter_pred(f, i);
+172 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/default-reads-every-graph/20261117T051151Z/models/sql_procs/sql_procs.rs:188:12
+    |
+188 |     assert(match_edges(adj, a.s, a.p, 0, a.g) =~= seq![a]);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

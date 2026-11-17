@@ -1,0 +1,77 @@
+{
+  "title": "bm25 scoring",
+  "question": "BM25 scoring and ranking (W59, iteration 53): the stopword filter, query term occurrences (repeats, unknown terms), the common-term cutoff and its fallback, the exact length/term-frequency factor for k1 1.5 and b 0.75, the IDF argument (ln a premise), query-time statistics on schema 2 vs the stored IDF of schema 1, the (score desc, id asc) order, and bm25_search's id rewrite (F-C0715) beside kg_BM25 and CALL ivg.bm25.search",
+  "ontology_ids": [
+    "search.bm25.scoring",
+    "search.bm25.query_time_idf",
+    "search.bm25.cutoff"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 32}"
+    },
+    {
+      "label": "stopwords-kept",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_stopword_query_empty\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "query-terms-deduplicated",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_repeat_adds_twice\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "unknown-terms-scored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_cutoff_off_scores_known\", \"theorem_unknown_term_adds_nothing\", \"theorem_fallback_ignores_unknown_terms\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-fallback",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fallback_keeps_lowest_df\", \"theorem_fallback_ignores_unknown_terms\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "left-to-right-denominator",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_shorter_document_scores_higher\", \"theorem_tf_raises_and_saturates\", \"theorem_worked_example\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "idf-without-plus-one",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_worked_example\", \"theorem_idf_arg_positive_and_decreasing\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ties-by-key-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ties_by_id\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "schema2-reads-stored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_schema2_reads_current_stats\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "parse-keeps-ids",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_id_with_colon_dot_digit_rewritten\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "read: schema 2 using the IDF stored at build (no query-time IDF)",
+    "expect_fail_in": [
+      "theorem_schema2_reads_current_stats"
+    ],
+    "find": "if schema >= 2 { idf_arg(st.n, (st.df)(t)) } else { stored(t) }",
+    "name": "schema2-reads-stored",
+    "replace": "if schema >= 2 { stored(t) } else { stored(t) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_schema2_reads_current_stats"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bm25_scoring/bm25_scoring.rs": "64c9d9f81329bed1e6a7173ecb3d61d4cc9b7c8b841221937321567ef0bcf1f2",
+    ".g5/Verus_verification/models/bm25_scoring/model.json": "d6339ccdea62ec2b6ed0a83a655ce26db742d48206981733da89232a0ebf0b5e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/schema2-reads-stored/20261117T051441Z/models/bm25_scoring/bm25_scoring.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_schema2_reads_current_stats": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051441Z-control-schema2-reads-stored-theorem_schema2_reads_current_stats.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051441Z-control-schema2-reads-stored.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051443Z-control-schema2-reads-stored/logs/20261117T051441Z-control-schema2-reads-stored-theorem_schema2_reads_current_stats.log": "b5d9a59c8e6babf6a585010e930b3b0652669391b45199f58f75e5f465a9341e",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051443Z-control-schema2-reads-stored/logs/20261117T051441Z-control-schema2-reads-stored.log": "571cd440b3f20b776c9567335ce52730b35782a1d2eca6ae00415795dff3279c"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

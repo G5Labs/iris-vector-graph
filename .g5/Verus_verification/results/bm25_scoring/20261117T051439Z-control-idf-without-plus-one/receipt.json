@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "value: classic Robertson IDF ln((N - df + 0.5) / (df + 0.5)) without the + 1 (negative for common terms)",
+    "expect_fail_in": [
+      "theorem_worked_example",
+      "theorem_idf_arg_positive_and_decreasing"
+    ],
+    "find": "Q { num: 2 * n + 2, den: 2 * df + 1 }",
+    "name": "idf-without-plus-one",
+    "replace": "Q { num: 2 * n - 2 * df + 1, den: 2 * df + 1 }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_worked_example",
+      "theorem_idf_arg_positive_and_decreasing"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bm25_scoring/bm25_scoring.rs": "64c9d9f81329bed1e6a7173ecb3d61d4cc9b7c8b841221937321567ef0bcf1f2",
+    ".g5/Verus_verification/models/bm25_scoring/model.json": "d6339ccdea62ec2b6ed0a83a655ce26db742d48206981733da89232a0ebf0b5e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/idf-without-plus-one/20261117T051436Z/models/bm25_scoring/bm25_scoring.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_idf_arg_positive_and_decreasing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051436Z-control-idf-without-plus-one-theorem_idf_arg_positive_and_decreasing.log",
+        "timed_out": false,
+        "verified": 1
+      },
+      "theorem_worked_example": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051436Z-control-idf-without-plus-one-theorem_worked_example.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051436Z-control-idf-without-plus-one.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051439Z-control-idf-without-plus-one/logs/20261117T051436Z-control-idf-without-plus-one-theorem_idf_arg_positive_and_decreasing.log": "492e5c91c9ddd04b62d0fa69d0e907c52ec778ff7df98b21648ea0441c954442",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051439Z-control-idf-without-plus-one/logs/20261117T051436Z-control-idf-without-plus-one-theorem_worked_example.log": "bc0500301525e95c390f2c999a6ad4e9e314bcb59effaf43ae59af62e347693f",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051439Z-control-idf-without-plus-one/logs/20261117T051436Z-control-idf-without-plus-one.log": "f132dc4a3fc66c5626458976942f87063cc15d0df9be7d5c9dab8ef2de5b6916"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

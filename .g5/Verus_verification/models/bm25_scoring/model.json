@@ -1,0 +1,96 @@
+{
+  "name": "bm25_scoring",
+  "root": "bm25_scoring.rs",
+  "expected_verified": 32,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "stopwords-kept",
+      "find": "if stop(raw.last()) { r } else { r.push(raw.last()) }",
+      "replace": "r.push(raw.last())",
+      "expect_fail_in": [
+        "theorem_stopword_query_empty"
+      ],
+      "classification": "decision: Tokenize keeps stopwords (the filter of InitStopwords' list removed)"
+    },
+    {
+      "name": "query-terms-deduplicated",
+      "find": "if ts.len() == 0 { qz() } else { qadd(score(st, idf, ts.drop_last(), d), occ(st, idf, ts.last(), d)) }",
+      "replace": "if ts.len() == 0 { qz() } else if ts.drop_last().contains(ts.last()) { score(st, idf, ts.drop_last(), d) } else { qadd(score(st, idf, ts.drop_last(), d), occ(st, idf, ts.last(), d)) }",
+      "expect_fail_in": [
+        "theorem_repeat_adds_twice"
+      ],
+      "classification": "decision: a repeated query term counted once (the owner says each time)"
+    },
+    {
+      "name": "unknown-terms-scored",
+      "find": "pub open spec fn known(st: Stats, t: Tok) -> bool { (st.df)(t) > 0 }",
+      "replace": "pub open spec fn known(st: Stats, t: Tok) -> bool { true }",
+      "expect_fail_in": [
+        "theorem_cutoff_off_scores_known",
+        "theorem_unknown_term_adds_nothing",
+        "theorem_fallback_ignores_unknown_terms"
+      ],
+      "classification": "guard: SearchCore's df = 0 tests removed (an unknown query term counts as known: it is scored, and it can be the cutoff's lowest-df term)"
+    },
+    {
+      "name": "no-fallback",
+      "find": "over(st, t, fnum, fden) && !(all_over(st, q, fnum, fden) && min_tok(st, q) == Some(t))",
+      "replace": "over(st, t, fnum, fden)",
+      "expect_fail_in": [
+        "theorem_fallback_keeps_lowest_df",
+        "theorem_fallback_ignores_unknown_terms"
+      ],
+      "classification": "decision: the cutoff skips every common term, answering nothing (the fallback of 263-290 removed)"
+    },
+    {
+      "name": "left-to-right-denominator",
+      "find": "Q { num: 20 * tf * total, den: 8 * tf * total + 3 * total + 9 * len * n }",
+      "replace": "Q { num: 5 * tf * total, den: (2 * tf + 3) * len * n }",
+      "expect_fail_in": [
+        "theorem_shorter_document_scores_higher",
+        "theorem_tf_raises_and_saturates",
+        "theorem_worked_example"
+      ],
+      "classification": "value: the pre-4.2.0 denominator (tf + k1) * (len / avgdl), evaluated left to right"
+    },
+    {
+      "name": "idf-without-plus-one",
+      "find": "Q { num: 2 * n + 2, den: 2 * df + 1 }",
+      "replace": "Q { num: 2 * n - 2 * df + 1, den: 2 * df + 1 }",
+      "expect_fail_in": [
+        "theorem_worked_example",
+        "theorem_idf_arg_positive_and_decreasing"
+      ],
+      "classification": "value: classic Robertson IDF ln((N - df + 0.5) / (df + 0.5)) without the + 1 (negative for common terms)"
+    },
+    {
+      "name": "ties-by-key-only",
+      "find": "pub open spec fn before(ka: int, a: int, kb: int, b: int) -> bool { ka > kb || (ka == kb && a < b) }",
+      "replace": "pub open spec fn before(ka: int, a: int, kb: int, b: int) -> bool { ka > kb }",
+      "expect_fail_in": [
+        "theorem_ties_by_id"
+      ],
+      "classification": "decision: the sort subscript keyed by score alone (tied documents collide)"
+    },
+    {
+      "name": "schema2-reads-stored",
+      "find": "if schema >= 2 { idf_arg(st.n, (st.df)(t)) } else { stored(t) }",
+      "replace": "if schema >= 2 { stored(t) } else { stored(t) }",
+      "expect_fail_in": [
+        "theorem_schema2_reads_current_stats"
+      ],
+      "classification": "read: schema 2 using the IDF stored at build (no query-time IDF)"
+    },
+    {
+      "name": "parse-keeps-ids",
+      "find": "let ins = c == '.' && lead(prev) && s.len() > 1 && is_digit(s[1]);",
+      "replace": "let ins = false;",
+      "expect_fail_in": [
+        "theorem_id_with_colon_dot_digit_rewritten"
+      ],
+      "classification": "reader (repair direction of F-C0715): bm25_search's `_parse` leaves the ids alone"
+    }
+  ]
+}

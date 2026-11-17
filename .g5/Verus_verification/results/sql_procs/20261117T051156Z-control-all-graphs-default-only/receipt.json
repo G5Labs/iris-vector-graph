@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: the all-graphs scan reads only the default graph",
+    "expect_fail_in": [
+      "theorem_graph_scoped_vs_all",
+      "theorem_shared_triple_once_per_graph"
+    ],
+    "find": "    (src == 0 || a.s == src) && (pred == 0 || a.p == pred)\n}",
+    "name": "all-graphs-default-only",
+    "replace": "    a.g == 0 && (src == 0 || a.s == src) && (pred == 0 || a.p == pred)\n}"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_graph_scoped_vs_all",
+      "theorem_shared_triple_once_per_graph"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/sql_procs/model.json": "21e61423e32964cc39765ec44d0d08c91ccb10e704bcb1cc17d5eab933a5d9c8",
+    ".g5/Verus_verification/models/sql_procs/sql_procs.rs": "4f50443cf24a16a1b28194099a9df6fbd994410f30d36dd99b57d03c3f5921ed"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/all-graphs-default-only/20261117T051154Z/models/sql_procs/sql_procs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_graph_scoped_vs_all": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T051154Z-control-all-graphs-default-only-theorem_graph_scoped_vs_all.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_shared_triple_once_per_graph": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T051154Z-control-all-graphs-default-only-theorem_shared_triple_once_per_graph.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T051154Z-control-all-graphs-default-only.log",
+    "timed_out": false,
+    "verified": 14
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sql_procs/20261117T051156Z-control-all-graphs-default-only/logs/20261117T051154Z-control-all-graphs-default-only-theorem_graph_scoped_vs_all.log": "0d956e02357925f5e64662f335b6941ef64e6e3f6406324450aa4ca1600699f3",
+    ".g5/Verus_verification/results/sql_procs/20261117T051156Z-control-all-graphs-default-only/logs/20261117T051154Z-control-all-graphs-default-only-theorem_shared_triple_once_per_graph.log": "42b1f968f6cdb022f76b3b69a129dbba255c5a9386fd20c2aaa98d3862ebb323",
+    ".g5/Verus_verification/results/sql_procs/20261117T051156Z-control-all-graphs-default-only/logs/20261117T051154Z-control-all-graphs-default-only.log": "201e63b7e96c45f57225ef49cc2b8b53242ce683b59bb26a2e81659318ac210d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

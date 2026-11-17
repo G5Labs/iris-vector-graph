@@ -1,0 +1,22 @@
+verification results:: 30 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/stopwords-kept/20261117T051422Z/models/bm25_scoring/bm25_scoring.rs:130:13
+    |
+130 |       ensures kept(stop, raw).len() == 0,
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+133 | /     if raw.len() > 0 {
+134 | |         assert forall|i: int| 0 <= i < raw.drop_last().len() implies stop(#[trigger] raw.drop_last()[i]) by { assert(raw.drop_las...
+135 | |         theorem_stopword_query_empty(stop, raw.drop_last());
+136 | |         assert(stop(raw.last()));
+137 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/stopwords-kept/20261117T051422Z/models/bm25_scoring/bm25_scoring.rs:211:12
+    |
+211 |     assert(min_tok(st, seq![u]) == None::<Tok>);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T051200Z/models/sql_procs/sql_procs.rs:243:9
+    |
+239 | pub proof fn theorem_dijkstra_endpoint_neighbors(x: int, y: int, wp: WProp, dir: Dir)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+...
+243 |         dijkstra_json(sql_end(true, 0), End::Id(y), wp, dir) == PathAns::Search,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

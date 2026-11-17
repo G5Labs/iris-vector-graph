@@ -1,0 +1,46 @@
+{
+  "name": "percentile",
+  "root": "percentile.rs",
+  "expected_verified": 26,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "disc-nearest-rank",
+      "find": "    let i = ((n - 1) * pn) / pd;\n",
+      "replace": "    let i = { let c = (n * pn + pd - 1) / pd; if c <= 0 { 0 } else { c - 1 } };\n",
+      "expect_fail_in": [
+        "theorem_disc_rounds_down_p90",
+        "theorem_disc_top_percentile_misses_max"
+      ],
+      "classification": "decision (repair direction of bug-cyp-134): PDISC takes the nearest rank ceil(p * n) - 1"
+    },
+    {
+      "name": "cont-floor-only",
+      "find": "Ans::Rat(xs[lower] * pd + r * (xs[lower + 1] - xs[lower]), pd)",
+      "replace": "Ans::Rat(xs[lower] * pd, pd)",
+      "expect_fail_in": [
+        "theorem_cont_follows_rule"
+      ],
+      "classification": "value: PCONT without the interpolation (the lower value)"
+    },
+    {
+      "name": "no-range-check",
+      "find": "if !in_range(pn, pd) { Ans::OutOfRange } else if xs.len() == 0 { Ans::Null } else { Ans::Value(xs[disc_index",
+      "replace": "if xs.len() == 0 { Ans::Null } else { Ans::Value(xs[disc_index",
+      "expect_fail_in": [
+        "theorem_empty_and_out_of_range"
+      ],
+      "classification": "guard: PDISC's NumberOutOfRange check removed"
+    },
+    {
+      "name": "empty-is-zero",
+      "find": "    if !in_range(pn, pd) { Ans::OutOfRange } else if xs.len() == 0 { Ans::Null } else {\n        let n = xs.len() as int;\n        let lower",
+      "replace": "    if !in_range(pn, pd) { Ans::OutOfRange } else if xs.len() == 0 { Ans::Rat(0, 1) } else {\n        let n = xs.len() as int;\n        let lower",
+      "expect_fail_in": [
+        "theorem_empty_and_out_of_range"
+      ],
+      "classification": "value: PCONT over no values answers 0 (before 4.6.0 R274)"
+    }
+  ]
+}

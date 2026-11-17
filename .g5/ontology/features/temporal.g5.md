@@ -274,6 +274,9 @@ When a triple's last timestamp in a graph goes, by a delete or a purge, that gra
 When an install declares the adjacency index, every triple with temporal edges and no structural edge gets a marked one, except triples of temporal-only predicates.
 - The upgrade never deletes rows and never registers predicates.
 - It remembers a bounded number of triples and re-checks the ones it forgot, so it never misses a row.
+- A row already there is left as it is, so an explicit edge stays unmarked. Running it again writes nothing.
+- The SQL function `backfill_temporal_rows()` runs it for every graph and refuses a caller without INSERT on `nodes` and `rdf_edges`, writing nothing. Setup runs it before declaring the edge index and reports the edges it gave rows as `temporal_rows_backfilled`.
+- Today the count it answers, and setup reports, is every structural temporal triple it walked, whether or not the triple needed a row: a second run answers the same number again ([finding](../../Verus_verification/bugs_issues.md#bug-tmp-107)).
 
 
 <a id="temporal.structural.ledger"></a>
@@ -758,11 +761,17 @@ Observed divergence: a write racing the delete or purge can leave a timestamp wi
 Findings: [Making a temporal-only predicate structural again before dropping its rows strands marked rows that nothing removes](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-005); [A temporal write inside a purge's range that lands after the purge removed the row leaves a marked row with no timestamp](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-013); [Without the adjacency index, deleting a temporal edge removes the adjacency of an explicit edge on the same triple](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-tmp-012)
 
 ### temporal.structural.upgrade
-- Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [ADR-0015 upgrade](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L105-L110), [BackfillWalk](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L226-L302); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py), [opt-out](../../../tests/e2e/test_temporal_structural_optout_e2e.py)
+- Sources: [ADR-0009](../../../docs/adr/0009-a-temporal-edge-implies-a-structural-edge.md#L9-L14), [ADR-0015 upgrade](../../../docs/adr/0015-temporal-structural-rows-opt-out.md#L105-L110), [BackfillWalk](../../../iris_src/src/Graph/KG/TemporalIndex.cls#L226-L302); live tests: [temporal rows](../../../tests/e2e/test_252_temporal_rows_e2e.py), [opt-out](../../../tests/e2e/test_temporal_structural_optout_e2e.py); [SqlProcs.backfilltemporalrows](../../../iris_src/src/Graph/KG/SqlProcs.cls#L194-L198), [AssertTemporalRow](../../../iris_src/src/Graph/KG/Adjacency.cls) (the NOT EXISTS guards), [setup's call and report](../../../iris_vector_graph/schema.py#L878-L884), [ADMIN_GUIDE setup report](../../../docs/ADMIN_GUIDE.md#L413), [ADMIN_GUIDE write privilege](../../../docs/ADMIN_GUIDE.md#L577-L579)
+- Formal: [sql_procs](../../Verus_verification/models/sql_procs/sql_procs.rs) `backfill`, `backfill_count`, `theorem_backfill_writes_missing_only`, `theorem_backfill_idempotent_same_count`, `theorem_backfill_count_overstates`, neighbor `theorem_backfill_count_exact_when_all_missing`
+- Evidence: [frozen predictions](../../uplift/consolidated/iteration-53/sqlprocs-PAIRS.md) BF1-BF5, [binding](../../Verus_verification/results/sql_procs/20261117T051429Z-binding/receipt.json) `bf_*`
 - Expands: [Implied structural edge](#temporal.structural)
 - agent
 - operations
 - test-coverage
+
+Iteration 53: the three new bullets were observed in a fresh namespace (counts 3, 3, 3 and 4 for 3, 3, 3 and 4 structural triples, while 0, 0, 1 and 0 rows were written). Premise: fewer distinct triples per graph than the seen limit, 100,000; past it a triple is walked and counted again.
+
+Findings: [backfill_temporal_rows answers the triples it walked, not the rows it wrote](../../Verus_verification/bugs_issues.md#bug-tmp-107)
 
 ### temporal.structural.ledger
 - Sources: [glossary](../../../CONTEXT.md#L65-L76), [4.3.0 notes](../../../CHANGELOG.md#L3043-L3047), [replay skip](../../../iris_vector_graph/ledger/replay.py#L610-L622), [genesis skip](../../../iris_src/src/Graph/KG/LedgerGenesis.cls#L38-L45); live tests: [coexistence](../../../tests/integration/test_ledger_us11_temporal_coexist.py), [verify after enable](../../../tests/e2e/test_460_ledger_temporal_edge_e2e.py)

@@ -1,0 +1,267 @@
+{
+  "before": {
+    "revision": "8d8d9ae4",
+    "active": 563,
+    "union": 799
+  },
+  "after": {
+    "revision": "working tree at the iteration-53 seal",
+    "active": 603,
+    "union": 833
+  },
+  "checkpoint_part_a": {
+    "revision": "99e90a08",
+    "active": 569
+  },
+  "denominator": 4130,
+  "newly_bound_part_a": [
+    {
+      "member": "iris_vector_graph/_engine/embeddings.py::EmbeddingsMixin.store_edge_embeddings",
+      "reason": "writer of routed edge vectors (m7; operator_reports s17)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/_engine/ledger.py::LedgerMixin._ledger_status",
+      "reason": "reader of the ledger line (M3; theorem_ledger_stats_failure_reads_zero)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/ledger/client.py::GraphLedger.commit",
+      "reason": "writer of ledger counters (M3; theorem_ledger_counters_follow_commits)",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_vector_graph/ledger/client.py::GraphLedger.enable",
+      "reason": "writer of the ledger head (M3)",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_vector_graph/ledger/client.py::GraphLedger.stats",
+      "reason": "decision: a failed ledger_stats read answers zeros (M3, bug-plt-120)",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.ready_for_edge_search",
+      "reason": "reader: edge readiness from the edge count (m7, bug-plt-115 edge trigger)",
+      "existing_locator": false
+    }
+  ],
+  "newly_bound_part_b": [
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::Build",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::IndexDoc",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::InitStopwords",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::Search",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::SearchCore",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::SearchProc",
+      "existing_locator": true
+    },
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::SearchReport",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::Tokenize",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/EdgeScan.cls::MatchEdges",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/EdgeScan.cls::MatchEdgesAllGraphs",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/EdgeScan.cls::ScanOneGraph",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Ledger.cls::RebuildEdgeIndices",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlPrivilege.cls::RequireSelect",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlPrivilege.cls::RequireWrite",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::DijkstraPath",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::MatchEdges",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::MatchEdgesAllGraphs",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::PercentilePCONT",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::PercentilePDISC",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::backfilltemporalrows",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::kgBM25",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::rebuildedgeindices",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TemporalIndex.cls::BackfillStructuralRows",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TemporalIndex.cls::BackfillWalk",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Traversal.cls::DijkstraProc",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/IVG/Percentile.cls::PCONT",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/IVG/Percentile.cls::PDISC",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_src/src/IVG/Percentile.cls::SortArray",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/_engine/vector.py::VectorMixin.bm25_build",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/_engine/vector.py::VectorMixin.bm25_search",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_expr_propref_edge_alias",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_scalar_statistical",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_translate_bm25_search",
+      "existing_locator": false
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_trp_directed_edge_join",
+      "existing_locator": false
+    }
+  ],
+  "newly_reached": 34,
+  "existing_locator_gaining_binding": [
+    "iris_src/src/Graph/KG/BM25Index.cls::Build",
+    "iris_src/src/Graph/KG/BM25Index.cls::IndexDoc",
+    "iris_src/src/Graph/KG/BM25Index.cls::InitStopwords",
+    "iris_src/src/Graph/KG/BM25Index.cls::SearchProc",
+    "iris_vector_graph/ledger/client.py::GraphLedger.commit",
+    "iris_vector_graph/ledger/client.py::GraphLedger.enable"
+  ],
+  "lost": [],
+  "lost_reason": "none lost",
+  "strengthened": [
+    {
+      "member": "iris_vector_graph/schema.py::GraphSchema.ensure_adjacency_index",
+      "by": "sql_procs P-INDEX premise producer"
+    },
+    {
+      "member": "iris_vector_graph/_engine/vector.py::VectorMixin.edge_vector_search",
+      "by": "operator_reports: routed edge vectors searchable (m7)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TemporalIndex.cls::WriteStores",
+      "by": "temporal_stats: ms edge in seconds bucket (m1)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalPaths.cls::DijkstraJson",
+      "by": "sql_procs: the SQL entry checks (direction, weight property) reached from DijkstraPath"
+    },
+    {
+      "member": "iris_vector_graph/_engine/admin.py::AdminMixin._status_probes",
+      "by": "operator_reports: probe failure input (M2)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.report",
+      "by": "operator_reports: ledger line and unknown parts (M2, M3)"
+    },
+    {
+      "member": "iris_vector_graph/security.py::is_routed_edge_embedding_table",
+      "by": "operator_reports: edge route test (m7)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::AssertTemporalRow",
+      "by": "sql_procs: backfill writes the marked row"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TemporalIndex.cls::GetVelocity",
+      "by": "temporal_stats: ms window unit observed (m9)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TemporalIndex.cls::InternLabelSet",
+      "by": "temporal_stats: value kinds and per-call nested text (M1, bug-tmp-105)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TemporalIndex.cls::GetAggregate",
+      "by": "temporal_stats: ms edge counted by the whole-bucket read (m1)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.ready_for_bfs",
+      "by": "operator_reports: failed probe reads False (M2)"
+    },
+    {
+      "member": "iris_vector_graph/cypher_api.py::get_server_info",
+      "by": "operator_reports: drops unknown (M2, bug-plt-119)"
+    },
+    {
+      "member": "iris_vector_graph/cypher_api.py::get_metrics",
+      "by": "operator_reports: prints 0 for a failed count (M2, bug-plt-119)"
+    }
+  ],
+  "relabeled_or_annotated": [
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_create_resolve_prop_value",
+      "change": "relabeled from decision to delegate of folds (review m4); still active, role narrowed"
+    },
+    {
+      "member": "iris_vector_graph/cypher/parser.py::Parser.parse_primary_expression",
+      "change": "row annotated only: the lexer premise is now observed by the cypher_exprs binding (m5); no new claim"
+    }
+  ],
+  "command": "python3 .g5/Verus_verification/tools/member_reach.py --revision 8d8d9ae4 --out /reach-before53; --revision 99e90a08 --out /reach-after53a; --out /reach-after53 (working tree before the seal commit); union adds the baseline historical locators as master/tools/score.py does"
+}

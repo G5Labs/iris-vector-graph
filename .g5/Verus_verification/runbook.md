@@ -595,3 +595,30 @@ those keys in the recount's `bindings.json` list the claims, beside the iteratio
 routed-table correspondence is withdrawn at the IRIS reader. The distinguishing control is `registry-keeps-case`. The
 product observation is the binding's `provider:distinct_text` (`KG_EMB_…` for `kg_emb_…`) beside `s9_routed_vectors`
 (`node_vecs` 0, `absent`) and `s9:search_g` (True).
+
+Iteration 53 (repairs from independent review round 2, review-50-52, then the remaining SQL procedure surface;
+[handoff](../uplift/consolidated/iteration-53/HANDOFF.md), [dispositions](../uplift/consolidated/iteration-53/DISPOSITIONS.md)),
+same environment. The `operator_reports` binding now drops and re-creates its own namespace `I53B` (no longer `I52B`);
+the `sql_procs` binding re-creates `I53Q`. Both run from `%SYS` in `ivg-cont-20261117-iris` only and need `docker exec`
+on that container.
+
+```sh
+for m in temporal_stats operator_reports cypher_exprs sql_procs bm25_scoring percentile; do
+  python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/$m      # PASS 58 / 48 / 22 / 16 / 32 / 26
+  python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/$m   # 18 / 24 / 22 / 12 / 9 / 4 EXPECTED_FAIL
+  (cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/$m/binding.py)  # AGREES 148 / 535 / 236 / 224 / 46 / 156
+done
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-53/temporal/labelset_probe.py)   # M1, m1, m2, m9 raw probe
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-53/reports/failed_probe.py)     # M2, M3, m7, m8 raw probe in I53
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after53                 # 603/4130
+```
+
+Worked lookup (iteration 53): `query.functions.percentile` → `percentile.rs` (see its NOTES for the floor-index claim of
+bug-cyp-134) → the rows for `iris_src/src/IVG/Percentile.cls::PDISC` (line 13, decision: index floor((n−1)·p)) and
+`iris_src/src/Graph/KG/SqlProcs.cls::PercentilePDISC` (the SQL entry the translator's `_scalar_statistical` emits) in
+`crosswalk/decision-links.tsv`; in reverse, those keys in the recount's `bindings.json` list the claims. The product
+observation is the binding's p 0.6 and 0.9 cases over 10, 20, 30, 40 (20 and 30, where the nearest rank gives 30 and 40).
+Second lookup: `install.status.readers` → `operator_reports.rs::theorem_failed_census_unknown_only_in_report` → the rows
+for `iris_vector_graph/cypher_api.py::get_metrics` and `::get_server_info` and `_engine/admin.py::AdminMixin._status_probes`;
+control `metrics-marks-unknown`; product observation: binding step s19 (`ivg_nodes_total 0` for a user without SELECT
+while `status().unknown` names `graph`).

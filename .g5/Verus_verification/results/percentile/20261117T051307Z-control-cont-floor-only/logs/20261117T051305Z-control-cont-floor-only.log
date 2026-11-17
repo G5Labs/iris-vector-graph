@@ -1,0 +1,17 @@
+verification results:: 25 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/cont-floor-only/20261117T051305Z/models/percentile/percentile.rs:89:13
+    |
+ 89 |       ensures rat_eq(pcont(xs, pn, pd), rule_cont(xs, pn, pd)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+ 90 |   {
+ 91 | /     if in_range(pn, pd) && xs.len() > 0 {
+ 92 | |         let n = xs.len() as int;
+ 93 | |         lemma_index_bounds(n, pn, pd);
+ 94 | |         let fl = ((n - 1) * pn) / pd;
+...   |
+106 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

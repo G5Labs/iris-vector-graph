@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/ties-by-key-only/20261117T051439Z/models/bm25_scoring/bm25_scoring.rs:282:1
+    |
+282 | pub proof fn theorem_ties_by_id(ka: int, a: int, kb: int, b: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/ties-by-key-only/20261117T051439Z/models/bm25_scoring/bm25_scoring.rs:284:13
+    |
+282 | pub proof fn theorem_ties_by_id(ka: int, a: int, kb: int, b: int)
+    | ----------------------------------------------------------------- at the end of the function body
+283 |     requires a != b,
+284 |     ensures before(ka, a, kb, b) || before(kb, b, ka, a), !(before(ka, a, kb, b) && before(kb, b, ka, a)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/ties-by-key-only/20261117T051439Z/models/bm25_scoring/bm25_scoring.rs:285:13
+    |
+282 | pub proof fn theorem_ties_by_id(ka: int, a: int, kb: int, b: int)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+285 |             ka == kb ==> (before(ka, a, kb, b) <==> a < b),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

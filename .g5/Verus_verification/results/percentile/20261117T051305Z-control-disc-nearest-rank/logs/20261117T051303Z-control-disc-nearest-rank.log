@@ -1,0 +1,36 @@
+verification results:: 24 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/disc-nearest-rank/20261117T051303Z/models/percentile/percentile.rs:137:1
+    |
+137 | pub proof fn theorem_disc_rounds_down_p90()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/disc-nearest-rank/20261117T051303Z/models/percentile/percentile.rs:139:9
+    |
+137 | pub proof fn theorem_disc_rounds_down_p90()
+    | ------------------------------------------- at the end of the function body
+138 |     ensures
+139 |         disc_index(4, 9, 10) == 2, rule_disc_index(4, 9, 10) == 3,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/disc-nearest-rank/20261117T051303Z/models/percentile/percentile.rs:140:9
+    |
+137 | pub proof fn theorem_disc_rounds_down_p90()
+    | ------------------------------------------- at the end of the function body
+...
+140 |         disc_index(4, 6, 10) == 1, rule_disc_index(4, 6, 10) == 2,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/percentile/controls/disc-nearest-rank/20261117T051303Z/models/percentile/percentile.rs:147:13
+    |
+145 | pub proof fn theorem_disc_top_percentile_misses_max(n: int, pn: int, pd: int)
+    | ----------------------------------------------------------------------------- at the end of the function body
+146 |     requires n >= 2, in_range(pn, pd), pn < pd, pn * n > (n - 1) * pd,
+147 |     ensures disc_index(n, pn, pd) == n - 2, rule_disc_index(n, pn, pd) == n - 1,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

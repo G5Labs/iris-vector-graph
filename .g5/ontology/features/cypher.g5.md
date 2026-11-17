@@ -519,6 +519,8 @@ Cypher's built-in list, string, map and aggregate functions give the openCypher 
 
 `percentileDisc(x, p)` returns the stored value at the nearest rank, and `percentileCont(x, p)` interpolates between the two nearest values. Both leave out nulls, give null when no value remains, and fail with NumberOutOfRange when `p` is outside 0 to 1.
 - Over 10, 20, 30 and 40 at 0.5, `percentileDisc` gives 20 and `percentileCont` 25.0, as Neo4j does.
+- Today `percentileDisc` takes the value at position (n − 1) × p rounded down, not the nearest rank. Over 10, 20, 30 and 40, p 0.6 gives 20 and p 0.9 gives 30, where Neo4j gives 30 and 40; p 0.95 over 1 to 10 gives 9, not 10 ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-134)).
+- Today both answer a float, also over whole numbers (20.0).
 
 <a id="query.functions.random"></a>
 [I · query.functions.random]
@@ -1211,8 +1213,13 @@ Findings: [Cypher range() with a step of 0 known only at run time answers [] ins
 - Expands: [Built-in functions](#query.functions)
 - agent
 - user-facing-behavior
+- design-verified
 
-Frozen predictions L9 and L10 held (nearest rank 20, interpolation 25.0, quartiles 10, 30 and 17.5, empty null, nulls left out, NumberOutOfRange for 1.5 and -1). openCypher says only "nearest"; the rounding follows Neo4j. No formal contract.
+Frozen predictions L9 and L10 held (nearest rank 20, interpolation 25.0, quartiles 10, 30 and 17.5, empty null, nulls left out, NumberOutOfRange for 1.5 and -1). openCypher says only "nearest". Iteration 53 corrected the iteration-47 reading that "the rounding follows Neo4j": the quartiles and the median give the same answer under rounding down and under nearest rank, but p 0.6 and 0.9 do not ([bug-cyp-134](../../Verus_verification/bugs_issues.md#bug-cyp-134)).
+
+- Formal: [`theorem_disc_never_above_rule`, `theorem_disc_top_percentile_misses_max`, `theorem_disc_rounds_down_p90`, `theorem_disc_agrees_at_ends_and_median`, `theorem_cont_follows_rule`, `theorem_empty_and_out_of_range`](../../Verus_verification/models/percentile/percentile.rs)
+
+State machines: [percentile](../../Verus_verification/models/percentile/manifest.json)
 
 ### query.functions.random
 

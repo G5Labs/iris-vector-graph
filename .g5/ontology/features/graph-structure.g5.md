@@ -254,6 +254,17 @@ A bulk path that writes rows without index upkeep must leave no duplicate rows a
 - the bulk loader, whose own contract is on the [install page](../concepts/install.g5.md#install.bulk_load).
 - `bulk_load_session` keeps `^NKG` current when no caller transaction is open. Inside one it leaves `^NKG` to `sync()`, and the loading engine's `status().pending_sync` stays True until then, even after a rollback; another engine or process reports False.
 
+
+<a id="structure.adjacency.scan"></a>
+[I · structure.adjacency.scan]
+
+The SQL function `MatchEdges(source, predicate, shard, graph)` answers one graph's out-edges from the adjacency index, and `MatchEdgesAllGraphs(source, predicate, shard)` answers every graph's, each edge with its graph. A caller without SELECT on `rdf_edges` is refused before anything is read.
+- An empty source means every source, and an empty or NULL predicate every predicate.
+- For `MatchEdges` a graph of `''`, NULL, 0 or none is the default graph alone; no value of it means every graph.
+- Each edge carries its stored weight, 1.0 when it has none. A triple held by two graphs is answered once for each.
+- The `shard` argument is not read: every value answers the same edges.
+- `IVG_EDGESCAN=1` sends a Cypher hop from a node named by its id, with no `USE GRAPH` or `USE GRAPH ''`, through this scan instead of the edge rows. It must answer what the default plan answers. Today the hop's edges are the same, but every relationship property, `r.weight` included, reads null on the scan ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-133)).
+
 ## Degree
 
 
@@ -360,6 +371,8 @@ A declared adjacency index cannot drift from its rows, and declaring it on an in
 [I · structure.rebuild]
 
 A rebuild recreates the adjacency index from the rows and then the interned snapshot from the index, and running it again is safe. With a declared index the adjacency never needs it; the interned snapshot still does after bulk loads and erasures.
+- The SQL function `rebuild_edge_indices(schema)` runs `BUILD INDEX` on `nodes`, `rdf_labels`, `rdf_props` and `rdf_edges` and answers 4; rows and edge reads are unchanged.
+- It refuses a schema that is not an SQL identifier before any statement runs. A caller without `%BUILD_INDEX`, or a schema without these tables, gets an error naming the table, never 0.
 
 - Working assumption: that an early failure leaves the previous adjacency, and a later one leaves a partial index whose degree cache is cleared, never wrong.
 
@@ -638,7 +651,7 @@ Findings: [Restoring a multigraph archive into an indexed namespace loses its pa
 
 - uncertain
 - Sources: [CONTEXT.md, Adjacency Index](../../../CONTEXT.md#L88-L95), [ADR-0008](../../../docs/adr/0008-the-adjacency-index-is-maintained-by-the-engine.md), [Graph.KG.Adjacency](../../../iris_src/src/Graph/KG/Adjacency.cls)
-- Children: [declared](#structure.adjacency.declared), [not declared](#structure.adjacency.undeclared), [one writer](#structure.adjacency.one_writer), [bulk loads](#structure.adjacency.bulk), [declaration](#structure.adjacency.declare)
+- Children: [declared](#structure.adjacency.declared), [not declared](#structure.adjacency.undeclared), [one writer](#structure.adjacency.one_writer), [bulk loads](#structure.adjacency.bulk), [SQL scans](#structure.adjacency.scan), [declaration](#structure.adjacency.declare)
 - agent
 - architecture-decision
 
@@ -687,6 +700,19 @@ Coverage is a source scan of the ObjectScript classes: [single-writer guard](../
 Rewritten after the stage-A reconstruction check (gap G7, G34 and section 3 item 16). FR-008 covers every bulk path that writes `%NOINDEX`, the bulk loader included, so the reviewer's proposal to limit it to the engine's paths was not applied. "No duplicate rows" means none within the load and none against rows already present, because a `%NOINDEX` insert also skips the unique key (ADR-0008 consequences). Observed divergence: the engine paths rebuild in a `finally`, but an index that does not come back is only logged; the bulk loader uses `%NOCHECK`, commits per batch, and rebuilds only after both its node and edge phases succeed, so a failed phase leaves committed rows unindexed until a manual rebuild.
 
 Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leaves a partial adjacency index](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-009), [BulkLoader's node and edge loads write without indexes and return before rebuilding them](../../Verus_verification/bugs_issues.md#bug-plt-027)
+
+### structure.adjacency.scan
+- Sources: [SqlProcs MatchEdges and MatchEdgesAllGraphs](../../../iris_src/src/Graph/KG/SqlProcs.cls#L145-L155), [EdgeScan header and scans](../../../iris_src/src/Graph/KG/EdgeScan.cls#L1-L145), [the IVG_EDGESCAN hop](../../../iris_vector_graph/cypher/translator.py#L16467-L16530), [a scan alias's property is NULL](../../../iris_vector_graph/cypher/translator.py#L22266-L22273), [ADMIN_GUIDE, global readers check SELECT](../../../docs/ADMIN_GUIDE.md#L566-L576), [ADMIN_GUIDE, IVG_EDGESCAN](../../../docs/ADMIN_GUIDE.md#L1248), [CHANGELOG, '' as every predicate (R269)](../../../CHANGELOG.md#L1499)
+- Formal: [sql_procs](../../Verus_verification/models/sql_procs/sql_procs.rs) `match_edges`, `match_all`, `theorem_empty_predicate_every_predicate`, `theorem_shard_ignored`, `theorem_graph_scoped_vs_all`, `theorem_edgescan_reads_null_property`
+- Evidence: [frozen predictions](../../uplift/consolidated/iteration-53/sqlprocs-PAIRS.md) ME1-ME5, [probe](../../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json), [binding](../../Verus_verification/results/sql_procs/20261117T051429Z-binding/receipt.json)
+- Expands: [adjacency index](#structure.adjacency)
+- agent
+- architecture-decision
+- design-verified
+
+Iteration 53. The rule that the `IVG_EDGESCAN` plan answers what the default plan answers comes from the docs calling it only "the plan before 4.3.0" and from CHANGELOG 4.3.0 ("every answer equal"). Premise: the adjacency index is declared, so the scan and the rows hold the same edges. Not observed: parallel edges of a multigraph through the scan.
+
+Findings: [With IVG_EDGESCAN=1 a relationship property on a hop reads null](../../Verus_verification/bugs_issues.md#bug-cyp-133)
 
 ### structure.adjacency.declare
 
@@ -836,9 +862,12 @@ Live coverage: [declaring the index repairs a drifted install](../../../tests/e2
 - uncertain
 - Sources: [engine.sync](../../../iris_vector_graph/_engine/schema.py#L2859-L2912), [ADMIN_GUIDE, the adjacency indexes](../../../docs/ADMIN_GUIDE.md#L1032-L1062), [spec 252 FR-010](../../../specs/252-adjacency-functional-index/spec.md#L122), [BuildKG](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L30-L172)
 - Children: [What may readers see when a rebuild fails partway?](../../Verus_verification/open_questions.md#structure.rebuild.failure)
-- Evidence: [native rebuild observation: default, named-graph and temporal-marked rows kept, an entry with no row removed](../../uplift/consolidated/iteration-21/varlength-PAIRS.md)
+- Evidence: [native rebuild observation: default, named-graph and temporal-marked rows kept, an entry with no row removed](../../uplift/consolidated/iteration-21/varlength-PAIRS.md); `rebuild_edge_indices` (iteration 53): [frozen predictions](../../uplift/consolidated/iteration-53/sqlprocs-PAIRS.md) RB1-RB4, [binding](../../Verus_verification/results/sql_procs/20261117T051429Z-binding/receipt.json) `rb_*`, `priv_*_rb`
+- Formal: [sql_procs](../../Verus_verification/models/sql_procs/sql_procs.rs) `rebuild`, `theorem_rebuild_answers_four_or_raises` (the SQL function only)
 - agent
 - operations
+
+Iteration 53: the `rebuild_edge_indices` bullets come from [Ledger.RebuildEdgeIndices](../../../iris_src/src/Graph/KG/Ledger.cls#L224-L240), ADMIN_GUIDE L577-L580 and CHANGELOG R294; a caller without `%BUILD_INDEX` got "does not have %BUILD_INDEX privileges (rebuilding the indexes of Graph_KG.nodes)".
 
 Findings: [A failed indexed rebuild, or a failed rebuild after a bulk load, leaves a partial adjacency index](../../Verus_verification/audits/register-20261115/bugs-review.md#bug-str-009)
 

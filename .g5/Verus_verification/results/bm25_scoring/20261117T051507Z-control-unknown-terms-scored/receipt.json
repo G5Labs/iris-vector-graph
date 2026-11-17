@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "guard: SearchCore's df = 0 tests removed (an unknown query term counts as known: it is scored, and it can be the cutoff's lowest-df term)",
+    "expect_fail_in": [
+      "theorem_cutoff_off_scores_known",
+      "theorem_unknown_term_adds_nothing",
+      "theorem_fallback_ignores_unknown_terms"
+    ],
+    "find": "pub open spec fn known(st: Stats, t: Tok) -> bool { (st.df)(t) > 0 }",
+    "name": "unknown-terms-scored",
+    "replace": "pub open spec fn known(st: Stats, t: Tok) -> bool { true }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_cutoff_off_scores_known",
+      "theorem_unknown_term_adds_nothing",
+      "theorem_fallback_ignores_unknown_terms"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bm25_scoring/bm25_scoring.rs": "15cd637333a52e1d0df85baf9f3e6ed3e2ed950449e610b00eee7a11f21eba4a",
+    ".g5/Verus_verification/models/bm25_scoring/model.json": "d6339ccdea62ec2b6ed0a83a655ce26db742d48206981733da89232a0ebf0b5e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/unknown-terms-scored/20261117T051504Z/models/bm25_scoring/bm25_scoring.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_cutoff_off_scores_known": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051504Z-control-unknown-terms-scored-theorem_cutoff_off_scores_known.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_fallback_ignores_unknown_terms": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051504Z-control-unknown-terms-scored-theorem_fallback_ignores_unknown_terms.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_unknown_term_adds_nothing": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051504Z-control-unknown-terms-scored-theorem_unknown_term_adds_nothing.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/20261117T051504Z-control-unknown-terms-scored.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051507Z-control-unknown-terms-scored/logs/20261117T051504Z-control-unknown-terms-scored-theorem_cutoff_off_scores_known.log": "d41aff6c8a97e3214d01b61aece29de8fb3bb02880a5895bffd0bc911527ca8b",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051507Z-control-unknown-terms-scored/logs/20261117T051504Z-control-unknown-terms-scored-theorem_fallback_ignores_unknown_terms.log": "0893a9b4dbf9d3dbc1e1f0cb3eb1ee5a153bceb18486ea9644b58db5f0ae6fb2",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051507Z-control-unknown-terms-scored/logs/20261117T051504Z-control-unknown-terms-scored-theorem_unknown_term_adds_nothing.log": "2fdc5b93496adc0fa6e1c8afebed9933cafdce46ed3c421d76ebdb80e4baf3e1",
+    ".g5/Verus_verification/results/bm25_scoring/20261117T051507Z-control-unknown-terms-scored/logs/20261117T051504Z-control-unknown-terms-scored.log": "9fd97bdc7570701f7eae3e7a88ed5d40f9475e8dad916c753c57716bc2fe6379"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

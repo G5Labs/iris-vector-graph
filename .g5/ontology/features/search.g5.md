@@ -296,6 +296,7 @@ A BM25 index is a named lexical index over chosen text properties of one graph's
 A document's score adds up, for each query term, `IDF × tf × (k1 + 1) / (tf + k1 × (1 − b + b × length / average length))`, where `IDF = ln(1 + (N − df + 0.5) / (df + 0.5))`. The defaults are `k1 = 1.5` and `b = 0.75`.
 - Documents and queries are tokenized the same way: lowercased, split at punctuation, with no stemming and a fixed list of 77 common English words left out.
 - A query term counts once for each time the query repeats it.
+- Equal scores are listed in node-ID order, and a search answers the first k of that order. This is as built; no document states a tie order.
 
 
 <a id="search.bm25.query_time_idf"></a>
@@ -848,10 +849,15 @@ Open questions: [Is spec 044's kg_TXT-to-BM25 fallback still wanted?](../../Veru
 ### search.bm25.scoring
 - Sources: [spec 044 FR-003 and FR-004](../../../specs/044-bm25-index/spec.md#L149-L150), [USER_GUIDE BM25 text search and the stopword list](../../../docs/USER_GUIDE.md#L854-L896), [InitStopwords](../../../iris_src/src/Graph/KG/BM25Index.cls#L41-L50), [bm25_build docstring](../../../iris_vector_graph/_engine/vector.py#L1749-L1785), [formula test](../../../tests/integration/test_044_bm25_incremental.py#L401-L413)
 - Expands: [BM25 index](#search.bm25)
-- Evidence: [native scores equal the formula within 1e-6 across build and incremental writes](../../uplift/consolidated/iteration-22/bm25-PAIRS.md); no formal contract (IDF uses ln)
+- Evidence: [native scores equal the formula within 1e-6 across build and incremental writes](../../uplift/consolidated/iteration-22/bm25-PAIRS.md); [iteration 53 predictions and probe](../../uplift/consolidated/iteration-53/bm25-percentile-PAIRS.md)
 - agent
 - user-facing-behavior
-- test-coverage
+- design-verified
+- Formal: [`theorem_stopword_query_empty`, `theorem_repeat_adds_twice`, `theorem_unknown_term_adds_nothing`, `theorem_shorter_document_scores_higher`, `theorem_tf_raises_and_saturates`, `theorem_idf_arg_positive_and_decreasing`, `theorem_worked_example`, `theorem_ties_by_id`](../../Verus_verification/models/bm25_scoring/bm25_scoring.rs)
+
+The model computes the length factor exactly as a rational for k1 1.5 and b 0.75, and represents IDF by its argument; `ln` is a named premise (P-LN), so scores are checked against the formula natively (relative tolerance 1e-12, [binding](../../Verus_verification/models/bm25_scoring/BINDINGS.md)) and their ordering properties formally. Tokenizing with the IRIS analyzer is a provider; the stopword filter is modeled.
+
+State machines: [BM25 scoring](../../Verus_verification/models/bm25_scoring/manifest.json)
 
 ### search.bm25.query_time_idf
 - Sources: [spec 044 FR-017](../../../specs/044-bm25-index/spec.md#L163), [ADR-0007](../../../docs/adr/0007-bm25-df-and-doc-record-schema-2.md), [SearchCore](../../../iris_src/src/Graph/KG/BM25Index.cls#L236-L312)
@@ -859,7 +865,10 @@ Open questions: [Is spec 044's kg_TXT-to-BM25 fallback still wanted?](../../Veru
 - Note: supersedes spec 044 FR-008's allowance for stale IDF. A schema-1 index still scores with the IDF stored at write time until it is upgraded.
 - agent
 - architecture-decision
-- test-coverage
+- design-verified
+- Formal: [`theorem_schema2_reads_current_stats`, `theorem_schema1_reads_stored`](../../Verus_verification/models/bm25_scoring/bm25_scoring.rs)
+
+Iteration 53: an incremental insert and delete answered the same scores as a fresh build over the same documents (binding cases `inc_*` beside `fresh:*`).
 
 ### search.bm25.counts
 
@@ -924,9 +933,12 @@ Findings: [A second or re-run BM25 upgrade rebuilds an index that is already upg
 - Expands: [BM25 index](#search.bm25)
 - agent
 - user-facing-behavior, operations
-- test-coverage
+- design-verified
+- Formal: [`theorem_cutoff_skips_common_term`, `theorem_fallback_keeps_lowest_df`, `theorem_fallback_ignores_unknown_terms`, `theorem_cutoff_off_scores_known`](../../Verus_verification/models/bm25_scoring/bm25_scoring.rs)
 
 Findings: [In which order must the common-term cutoff list the terms it skipped?](../../Verus_verification/open_questions.md#q-srch-005)
+
+Iteration 53 binding: 5 cutoff cases with the report, an unknown term beside a common one included. The binding compares the skipped terms as a set, so it does not settle q-srch-005.
 
 Audit (q-srch-005): Open owner decision. Working assumption (agent, unratified): Preserve token order in reporting skipped terms unless a different order is specified; membership is the existing scoring-relevant fact. See [current behavior, alternatives and settling sources](../../Verus_verification/audits/register-20261115/question-review.md#q-srch-005).
 

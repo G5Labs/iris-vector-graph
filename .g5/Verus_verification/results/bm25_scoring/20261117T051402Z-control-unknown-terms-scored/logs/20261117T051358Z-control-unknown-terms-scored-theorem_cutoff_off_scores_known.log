@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/unknown-terms-scored/20261117T051358Z/models/bm25_scoring/bm25_scoring.rs:151:13
+    |
+151 |       ensures scored(st, q, 0, 1, rest) =~= rest.filter(|t: Tok| (st.df)(t) > 0),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+155 | /     if rest.len() > 0 {
+156 | |         theorem_cutoff_off_scores_known(st, q, rest.drop_last());
+157 | |         assert(!over(st, rest.last(), 0, 1));
+158 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

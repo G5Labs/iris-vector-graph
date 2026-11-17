@@ -1,0 +1,97 @@
+{
+  "title": "sql procs",
+  "question": "Graph SQL procedures (iteration 53 Part B): what MatchEdges and MatchEdgesAllGraphs answer for each source, predicate, shard and graph argument, and what the Cypher hop reads on the IVG_EDGESCAN plan; what the SQL entry DijkstraPath adds in front of DijkstraJson (privilege, argument checks, SQL's empty string); which rows backfill_temporal_rows writes and what it answers; what rebuild_edge_indices answers or raises; each entry's privilege check (bug-cyp-133, bug-tmp-107, bug-str-112)",
+  "ontology_ids": [
+    "structure.adjacency.scan",
+    "algorithms.op.paths.weighted",
+    "temporal.structural.upgrade",
+    "structure.rebuild",
+    "access.iris_boundary"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 16}"
+    },
+    {
+      "label": "shard-partitions",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_shard_ignored\", \"theorem_empty_predicate_every_predicate\", \"theorem_graph_scoped_vs_all\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "default-reads-every-graph",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_graph_scoped_vs_all\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "empty-predicate-matches-none",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_empty_predicate_every_predicate\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "all-graphs-default-only",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_graph_scoped_vs_all\", \"theorem_shared_triple_once_per_graph\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-select-check",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_entries_gated\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "scan-exposes-weight",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_edgescan_reads_null_property\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sql-entry-unchecked",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_entry_refuses_bad_arguments\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nul-read-as-empty",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_sql_empty_endpoints_zero_path\", \"theorem_dijkstra_endpoint_neighbors\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "count-written-rows",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_backfill_count_overstates\", \"theorem_backfill_idempotent_same_count\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "optout-backfilled",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_backfill_writes_missing_only\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "backfill-marks-existing",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_backfill_writes_missing_only\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rebuild-refusal-answers-zero",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_rebuild_answers_four_or_raises\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

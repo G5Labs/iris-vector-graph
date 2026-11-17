@@ -1,0 +1,33 @@
+verification results:: 30 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/no-fallback/20261117T051430Z/models/bm25_scoring/bm25_scoring.rs:195:9
+    |
+195 |         !skipped(st, q, fnum, fden, min_tok(st, q).unwrap()),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+199 |     if min_tok(st, q).is_none() { assert(!known(st, q[i])); }
+    |     --------------------------------------------------------- at the end of the function body
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/no-fallback/20261117T051430Z/models/bm25_scoring/bm25_scoring.rs:204:1
+    |
+204 | pub proof fn theorem_fallback_ignores_unknown_terms(st: Stats, u: Tok, t: Tok, fnum: int, fden: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/no-fallback/20261117T051430Z/models/bm25_scoring/bm25_scoring.rs:206:13
+    |
+206 |     ensures !skipped(st, seq![u, t], fnum, fden, t),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+213 |     assert forall|i: int| 0 <= i < q.len() && known(st, #[trigger] q[i]) implies over(st, q[i], fnum, fden) by {
+    |     ------ at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/no-fallback/20261117T051430Z/models/bm25_scoring/bm25_scoring.rs:211:12
+    |
+211 |     assert(min_tok(st, seq![u]) == None::<Tok>);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,30 @@
+verification results:: 29 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/unknown-terms-scored/20261117T051504Z/models/bm25_scoring/bm25_scoring.rs:151:13
+    |
+151 |       ensures scored(st, q, 0, 1, rest) =~= rest.filter(|t: Tok| (st.df)(t) > 0),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+155 | /     if rest.len() > 0 {
+156 | |         theorem_cutoff_off_scores_known(st, q, rest.drop_last());
+157 | |         assert(!over(st, rest.last(), 0, 1));
+158 | |     }
+    | |_____- at the end of the function body
+
+error: assertion failed
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/unknown-terms-scored/20261117T051504Z/models/bm25_scoring/bm25_scoring.rs:213:12
+    |
+213 |     assert(!known(st, u));
+    |            ^^^^^^^^^^^^^ assertion failed
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bm25_scoring/controls/unknown-terms-scored/20261117T051504Z/models/bm25_scoring/bm25_scoring.rs:239:13
+    |
+237 | pub proof fn theorem_unknown_term_adds_nothing(st: Stats, q: Seq<Tok>, rest: Seq<Tok>, t: Tok, fnum: int, fden: int)
+    | -------------------------------------------------------------------------------------------------------------------- at the end of the function body
+238 |     requires (st.df)(t) == 0,
+239 |     ensures scored(st, q, fnum, fden, rest.push(t)) == scored(st, q, fnum, fden, rest),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+
