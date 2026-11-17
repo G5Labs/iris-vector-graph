@@ -1,0 +1,46 @@
+{
+  "name": "shacl_data",
+  "root": "shacl_data.rs",
+  "expected_verified": 4,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "data-graph-keeps-graphs-apart",
+      "find": "{ loaded(focus, n) && exists|h: G| #[trigger] prop(r, h, n) }",
+      "replace": "{ loaded(focus, n) && forall|h: G| #[trigger] prop(r, h, n) }",
+      "expect_fail_in": [
+        "theorem_other_graph_masks_missing_property",
+        "theorem_single_graph_min_agrees"
+      ],
+      "classification": "decision: a node must have the property in every graph (a different merge); the masking theorem must notice"
+    },
+    {
+      "name": "focus-loads-targets",
+      "find": "match focus { None => true, Some(s) => s.contains(n) }",
+      "replace": "match focus { None => true, Some(s) => true }",
+      "expect_fail_in": [
+        "theorem_focus_only_breaks_class"
+      ],
+      "classification": "effect: node_ids also loads the edge targets' triples (the repair for S6)"
+    },
+    {
+      "name": "rule-ignores-graph",
+      "find": "pub open spec fn min_ok_rule(r: Rows, g: G, n: N) -> bool { prop(r, g, n) }",
+      "replace": "pub open spec fn min_ok_rule(r: Rows, g: G, n: N) -> bool { exists|h: G| #[trigger] prop(r, h, n) }",
+      "expect_fail_in": [
+        "theorem_other_graph_masks_missing_property"
+      ],
+      "classification": "rule: graph-scope weakened to any graph"
+    },
+    {
+      "name": "class-ignores-label",
+      "find": "(loaded(focus, m) && exists|h2: G| #[trigger] lab(r, h2, m))",
+      "replace": "(loaded(focus, m))",
+      "expect_fail_in": [
+        "theorem_single_graph_class_agrees"
+      ],
+      "classification": "decision: sh:class accepts a loaded target without its label"
+    }
+  ]
+}

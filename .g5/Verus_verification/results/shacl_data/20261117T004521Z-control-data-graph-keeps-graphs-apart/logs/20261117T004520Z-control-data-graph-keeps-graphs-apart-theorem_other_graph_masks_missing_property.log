@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/controls/data-graph-keeps-graphs-apart/20261117T004520Z/models/shacl_data/shacl_data.rs:49:13
+   |
+47 | pub proof fn theorem_other_graph_masks_missing_property(r: Rows, g: G, h: G, n: N)
+   | ---------------------------------------------------------------------------------- at the end of the function body
+48 |     requires g != h, !prop(r, g, n), prop(r, h, n),
+49 |     ensures min_ok_built(r, None, n), !min_ok_rule(r, g, n),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

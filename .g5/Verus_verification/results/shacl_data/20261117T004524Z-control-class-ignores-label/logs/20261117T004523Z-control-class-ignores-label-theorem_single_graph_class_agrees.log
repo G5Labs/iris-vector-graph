@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/controls/class-ignores-label/20261117T004523Z/models/shacl_data/shacl_data.rs:77:64
+   |
+77 |         assert forall|m: N| #[trigger] edg(r, g, n, m) implies lab(r, g, m) by {
+   |                                                                ^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/controls/class-ignores-label/20261117T004523Z/models/shacl_data/shacl_data.rs:79:36
+   |
+79 |             let h2 = choose|h2: G| lab(r, h2, m);
+   |                                    ^^^^^^^^^^^^^
+
+error: aborting due to 1 previous error
+

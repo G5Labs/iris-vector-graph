@@ -1,0 +1,33 @@
+verification results:: 3 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/shacl_data/shacl_data.rs:63:1
+   |
+63 | pub proof fn theorem_single_graph_class_agrees(r: Rows, g: G, n: N)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/shacl_data/shacl_data.rs:70:32
+   |
+70 |             if h != g { assert(!edg(r, h, n, m)); }
+   |                                ^^^^^^^^^^^^^^^^ assertion failed
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/shacl_data/shacl_data.rs:75:53
+   |
+75 |         assert forall|m: N| edg(r, g, n, m) implies lab(r, g, m) by {
+   |                                                     ^^^^^^^^^^^^ assertion failed
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/shacl_data/shacl_data.rs:77:34
+   |
+77 |             let h = choose|h: G| lab(r, h, m);
+   |                                  ^^^^^^^^^^^^
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-ipm-continuous-20261116/iris-vector-graph/.g5/Verus_verification/models/shacl_data/shacl_data.rs:78:32
+   |
+78 |             if h != g { assert(!lab(r, h, m)); }
+   |                                ^^^^^^^^^^^^^ assertion failed
+
+error: aborting due to 3 previous errors
+

@@ -1,0 +1,45 @@
+{
+  "title": "shacl data",
+  "question": "SHACL data graph: one IRI per node ID across graphs (bug-str-107); node_ids reads only listed subjects (bug-str-108); pySHACL a provider",
+  "ontology_ids": [
+    "install.shacl"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 4}"
+    },
+    {
+      "label": "data-graph-keeps-graphs-apart",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_graph_masks_missing_property\", \"theorem_single_graph_min_agrees\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "focus-loads-targets",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_focus_only_breaks_class\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rule-ignores-graph",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_other_graph_masks_missing_property\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "class-ignores-label",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_single_graph_class_agrees\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

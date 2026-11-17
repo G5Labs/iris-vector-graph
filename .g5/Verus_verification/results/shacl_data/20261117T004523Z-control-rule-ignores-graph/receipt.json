@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "rule: graph-scope weakened to any graph",
+    "expect_fail_in": [
+      "theorem_other_graph_masks_missing_property"
+    ],
+    "find": "pub open spec fn min_ok_rule(r: Rows, g: G, n: N) -> bool { prop(r, g, n) }",
+    "name": "rule-ignores-graph",
+    "replace": "pub open spec fn min_ok_rule(r: Rows, g: G, n: N) -> bool { exists|h: G| #[trigger] prop(r, h, n) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_other_graph_masks_missing_property"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/shacl_data/model.json": "5e90fa63f9475a922ac2b1871bfcf2e828a2adcc2204e5aaeb257053d01c21a2",
+    ".g5/Verus_verification/models/shacl_data/shacl_data.rs": "6f11caac2be7384f5ce3c57bc11d391815552ceacdc8ae36bb46ea9e9f7dff6a"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/controls/rule-ignores-graph/20261117T004522Z/models/shacl_data/shacl_data.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_other_graph_masks_missing_property": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/20261117T004522Z-control-rule-ignores-graph-theorem_other_graph_masks_missing_property.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/20261117T004522Z-control-rule-ignores-graph.log",
+    "timed_out": false,
+    "verified": 3
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/shacl_data/20261117T004523Z-control-rule-ignores-graph/logs/20261117T004522Z-control-rule-ignores-graph-theorem_other_graph_masks_missing_property.log": "bb5eb7577dc6651b5f528862f19b65f0fcf275d913d42a9f5010caf6d03d3819",
+    ".g5/Verus_verification/results/shacl_data/20261117T004523Z-control-rule-ignores-graph/logs/20261117T004522Z-control-rule-ignores-graph.log": "b3d6686e58e4c325a79c347881f73153d01d292ee521dd6c98df5fda6b051121"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

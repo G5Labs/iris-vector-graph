@@ -405,6 +405,14 @@ After serialization succeeds, RDF export reports the number of distinct triples 
 
 - The format argument overrides extension inference. N-Quads and TriG preserve graph contexts; flat formats do not establish a context-preserving export, and no successful answer promises file atomicity on an earlier error.
 
+<a id="install.shacl"></a>
+[D · install.shacl]
+
+SHACL validation checks the labels, properties and edges of every graph, or of listed nodes only, against SHACL Core shapes, without inference, and writes nothing.
+- It sees the triples an RDF export writes. Node IDs, labels and edge types become IRIs by the export's rule, and property text that reads as a number or a boolean is typed as one, so a stored string "2011" is an integer.
+- Today every graph's rows for one node ID are checked as one node, so a node passes a rule on the strength of the same ID in another graph ([finding](../../Verus_verification/bugs_issues.md#bug-str-107)).
+- With listed nodes only their own rows are read, so a rule about an edge's target fails unless the target is listed too ([finding](../../Verus_verification/bugs_issues.md#bug-str-108)).
+
 ## Metadata
 
 ### install.namespace
@@ -974,3 +982,14 @@ The returned counts read the generated triples merged across contexts, not the r
 This settles the docs' "counts what was written" wording as a union reader without promising equal serialized line counts. Namespace binding, third-party serialization and parsing, provider failures and cross-read consistency remain qualified; no whole-serializer or failed-file guarantee follows.
 
 State machines: [rdf reporting](../../Verus_verification/models/rdf_reporting/manifest.json)
+
+### install.shacl
+
+- Sources: [SEMANTIC_LAYER.md SHACL validation](../../../docs/SEMANTIC_LAYER.md#L156-L215); [API_REFERENCE validate_shacl](../../../docs/API_REFERENCE.md); [`ShaclMixin.validate_shacl`](../../../iris_vector_graph/_engine/shacl.py#L203-L241), [`_build_rdflib_graph`](../../../iris_vector_graph/_engine/_rdf_utils.py#L102)
+- Verus: active: [`shacl_data.rs`](../../Verus_verification/models/shacl_data/NOTES.md) `theorem_single_graph_min_agrees`, `theorem_single_graph_class_agrees`; as-built departures `theorem_other_graph_masks_missing_property`, `theorem_focus_only_breaks_class`.
+- agent
+- data-integrity, user-facing-behavior
+
+Recovered in iteration 39 from the semantic-layer guide and observation ([W45](../../uplift/consolidated/iteration-39/shacl-PAIRS.md)); no owner statement existed. Provider: pySHACL 0.40.2 with rdflib 7.6.0. Other Core constraints, URL-fetched shapes and SHACL-AF were not exercised.
+
+Findings: [SHACL validation treats one node ID in two graphs as one node](../../Verus_verification/bugs_issues.md#bug-str-107); [Validating only new node IDs refuses valid data whose shape checks an edge's target](../../Verus_verification/bugs_issues.md#bug-str-108)

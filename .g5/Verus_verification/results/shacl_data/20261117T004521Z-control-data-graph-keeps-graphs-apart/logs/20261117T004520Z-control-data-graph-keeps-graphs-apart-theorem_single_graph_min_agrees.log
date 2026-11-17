@@ -1,0 +1,32 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/controls/data-graph-keeps-graphs-apart/20261117T004520Z/models/shacl_data/shacl_data.rs:39:1
+   |
+39 | pub proof fn theorem_single_graph_min_agrees(r: Rows, g: G, n: N)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/controls/data-graph-keeps-graphs-apart/20261117T004520Z/models/shacl_data/shacl_data.rs:41:13
+   |
+41 |     ensures min_ok_built(r, None, n) == min_ok_rule(r, g, n),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+42 | {
+43 |     if min_ok_built(r, None, n) { let h = choose|h: G| prop(r, h, n); assert(h == g); }
+   |     ----------------------------------------------------------------------------------- at the end of the function body
+
+note: recommendation not met: cannot prove that there exists values that satisfy the condition of the choose expression
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/controls/data-graph-keeps-graphs-apart/20261117T004520Z/models/shacl_data/shacl_data.rs:43:56
+   |
+43 |     if min_ok_built(r, None, n) { let h = choose|h: G| prop(r, h, n); assert(h == g); }
+   |                                                        ^^^^^^^^^^^^^
+
+error: assertion failed
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/shacl_data/controls/data-graph-keeps-graphs-apart/20261117T004520Z/models/shacl_data/shacl_data.rs:43:78
+   |
+43 |     if min_ok_built(r, None, n) { let h = choose|h: G| prop(r, h, n); assert(h == g); }
+   |                                                                              ^^^^^^ assertion failed
+
+error: aborting due to 2 previous errors
+

@@ -2838,6 +2838,25 @@ Consequence: two histories with the same edges before retract end differently, a
 
 Repair proposal (not implemented; checked in Verus only): have `create_edge` clear the inferred marker on an existing inferred row (control `create-marks-asserted` is the repaired rule), or refuse with a message. Governing statement: [install.inference](../ontology/concepts/install.g5.md#install.inference).
 
+<a id="bug-str-107"></a>
+### SHACL validation treats one node ID in two graphs as one node, so an invalid node passes
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 39)
+
+Found by: the frozen W45 prediction S4, taken from the semantic-layer doc's IRI rule, compared with [graph scope](../ontology/concepts/graph-scope.g5.md) ([predictions](../uplift/consolidated/iteration-39/shacl-PAIRS.md)); [shacl_data](models/shacl_data/NOTES.md) `theorem_other_graph_masks_missing_property`, control `data-graph-keeps-graphs-apart`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, pySHACL 0.40.2 and rdflib 7.6.0 ([observation](../uplift/consolidated/iteration-39/shacl-observed-20261117T004330Z.json) S4, S4b; [binding](results/shacl_data/20261117T004553Z-binding/receipt.json) case `min_twin_masked`). Node `twin` in the default graph has `approved`; the node `twin` in a named graph, with the same label, does not. `validate_shacl` with a shape requiring `approved` answers `conforms = True` and no violation. Passing neighbor: a node without `approved` in only one graph is reported (`min_bad`).
+
+Expected: [graph scope](../ontology/concepts/graph-scope.g5.md): "The same node ID in two graphs is two nodes, each with its own labels, properties and edges", and a reader of every graph answers the union of each graph's own answer, a node keeping its own graph's properties. SEMANTIC_LAYER.md recommends validation as an ingestion gate.
+
+Observed: the data graph mints a node's IRI from its ID alone (`_rdf_utils._mint_iri`), and the graphs' contexts are validated together, so the shape sees one IRI with the union of both graphs' triples.
+
+Consequence: data written to a named graph that breaks a shape is accepted when another graph has a valid node with the same ID; the reverse case reports a violation against the wrong graph's node. Medium: a wrong validation answer, silently.
+
+Repair proposal (not implemented): validate each graph's context on its own (or mint graph-qualified IRIs for validation), and name the graph in each violation. Governing statements: [install.shacl](../ontology/concepts/install.g5.md#install.shacl), [graph scope](../ontology/concepts/graph-scope.g5.md).
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -4270,6 +4289,23 @@ Expected: the API reference: "Derive RDFS (`rules="owl"`: also OWL) entailments 
 Consequence: a reader of the reference expects a superproperty query or a superclass of a domain to find these nodes, and it does not. Low: missing derived rows; asserted data unchanged.
 
 Repair proposal (not implemented): either derive to a fixpoint with rdfs7 and lift derived types, or state the rule list in the reference. Governing statement: [install.inference](../ontology/concepts/install.g5.md#install.inference).
+
+<a id="bug-str-108"></a>
+### Validating only new node IDs, as the semantic-layer guide suggests, refuses valid data whose shape checks an edge's target
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 39)
+
+Found by: the frozen W45 prediction S6 ([predictions](../uplift/consolidated/iteration-39/shacl-PAIRS.md)); [shacl_data](models/shacl_data/NOTES.md) `theorem_focus_only_breaks_class`, control `focus-loads-targets`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-39/shacl-observed-20261117T004330Z.json) S5, S6; [binding](results/shacl_data/20261117T004553Z-binding/receipt.json) cases `class_full`, `class_focus_only`). A drug with an `INHIBITS` edge to a node labelled as the shape's `sh:class` conforms when both IDs are listed, and fails ("Value does not have class") when only the drug is listed.
+
+Expected: SEMANTIC_LAYER.md's ingestion pattern validates `node_ids=new_ids` and raises on any violation; it also says "Validating only some nodes reads only their triples", so the outcome is documented, but the recommended pattern rejects a valid new node that points at an existing one.
+
+Consequence: an ingestion step built as the guide shows refuses valid data for any shape that looks at a neighbor. Low: a false refusal, visible.
+
+Repair proposal (not implemented): load the listed nodes' edge targets' type triples too, or document the limitation beside the pattern. Governing statement: [install.shacl](../ontology/concepts/install.g5.md#install.shacl).
 
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections
