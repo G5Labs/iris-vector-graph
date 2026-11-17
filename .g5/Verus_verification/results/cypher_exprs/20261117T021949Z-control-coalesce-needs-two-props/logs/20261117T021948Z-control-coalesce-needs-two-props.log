@@ -1,0 +1,27 @@
+verification results:: 16 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-needs-two-props/20261117T021948Z/models/cypher_exprs/cypher_exprs.rs:197:1
+    |
+197 | pub proof fn theorem_node_coalesce_keeps_type(b: CoArg)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-needs-two-props/20261117T021948Z/models/cypher_exprs/cypher_exprs.rs:199:13
+    |
+197 | pub proof fn theorem_node_coalesce_keeps_type(b: CoArg)
+    | ------------------------------------------------------- at the end of the function body
+198 |     requires b != CoArg::ListLiteral, b != CoArg::RowVar,
+199 |     ensures coalesce_number(CoArg::NodeProp, b) == Out::Int, coalesce_number(b, CoArg::NodeProp) == Out::Int,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-needs-two-props/20261117T021948Z/models/cypher_exprs/cypher_exprs.rs:199:62
+    |
+197 | pub proof fn theorem_node_coalesce_keeps_type(b: CoArg)
+    | ------------------------------------------------------- at the end of the function body
+198 |     requires b != CoArg::ListLiteral, b != CoArg::RowVar,
+199 |     ensures coalesce_number(CoArg::NodeProp, b) == Out::Int, coalesce_number(b, CoArg::NodeProp) == Out::Int,
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

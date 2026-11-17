@@ -1,0 +1,801 @@
+{
+  "run": "20261117T021350Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "prefix": "i48b_021350_",
+  "label": "I48F021350",
+  "cases": {
+    "F1_lit_lit": {
+      "query": "RETURN substring('hello', -1, 2), substring('hello', 1, -1)",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop - Query Open()>]\r\n[%msg: <Unexpected error occurred:  <ILLEGAL VALUE>%C0o+17^%sqlcq.USER.cls433.1>]"
+    },
+    "F1_stored_neglen": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) RETURN substring(n.s, 1, -1)",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-400>:<Fatal error occurred>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <Unexpected error occurred:  <ILLEGAL VALUE>%0AmBk1+18^%sqlcq.USER.cls434.1>]"
+    },
+    "F1_rows": {
+      "query": "UNWIND [-1, -3] AS a RETURN a, substring('hello', a, 2)",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          -1,
+          "h"
+        ],
+        [
+          -3,
+          ""
+        ]
+      ],
+      "error": null
+    },
+    "F2_lit_lit": {
+      "query": "RETURN left('hello', 0), right('hello', 0), substring('hello', 0, 0), substring('hello', 2, 0)",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          null,
+          null,
+          "",
+          null
+        ]
+      ],
+      "error": null
+    },
+    "F2_rows": {
+      "query": "UNWIND ['hello'] AS s RETURN left(s, 0), right(s, 0), substring(s, 1, 0)",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          null,
+          null,
+          null
+        ]
+      ],
+      "error": null
+    },
+    "F2_stored_sub0": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) RETURN substring(n.s, 1, 0)",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          null
+        ]
+      ],
+      "error": null
+    },
+    "F2_neg": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) RETURN left(n.s, -1)",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          null
+        ]
+      ],
+      "error": null
+    },
+    "F3_rows": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) UNWIND [[-3, -1], [-3, 5], [0, -1], [-2, 9], [1, -9], [-9, 2]] AS ab RETURN ab, n.l[ab[0]..ab[1]]",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          [
+            -3,
+            -1
+          ],
+          []
+        ],
+        [
+          [
+            -3,
+            5
+          ],
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        [
+          [
+            0,
+            -1
+          ],
+          []
+        ],
+        [
+          [
+            -2,
+            9
+          ],
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        [
+          [
+            1,
+            -9
+          ],
+          []
+        ],
+        [
+          [
+            -9,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      ],
+      "error": null
+    },
+    "F3_rows_literal_list": {
+      "query": "WITH [1, 2, 3, 4, 5] AS l UNWIND [[-3, -1], [0, -1], [-2, 9]] AS ab RETURN ab, l[ab[0]..ab[1]]",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          [
+            -3,
+            -1
+          ],
+          []
+        ],
+        [
+          [
+            0,
+            -1
+          ],
+          []
+        ],
+        [
+          [
+            -2,
+            9
+          ],
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ]
+      ],
+      "error": null
+    },
+    "F3_params": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) RETURN n.l[$a..$b], n.l[$c..], n.l[..$d]",
+      "params": {
+        "a": 0,
+        "b": -1,
+        "c": -2,
+        "d": -1
+      },
+      "native": null,
+      "rows": [
+        [
+          [],
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          []
+        ]
+      ],
+      "error": null
+    },
+    "F3_params_literal_list": {
+      "query": "WITH [1, 2, 3, 4, 5] AS l RETURN l[$a..$b], l[$c..]",
+      "params": {
+        "a": 0,
+        "b": -1,
+        "c": -2
+      },
+      "native": null,
+      "rows": [
+        [
+          [],
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ]
+      ],
+      "error": null
+    },
+    "F3_literal": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) RETURN n.l[0..-1], n.l[-2..], n.l[-3..5], n.l[1..-9]",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          [
+            1,
+            2,
+            3,
+            4
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            3,
+            4,
+            5
+          ],
+          []
+        ]
+      ],
+      "error": null
+    },
+    "F3_null_bound": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) UNWIND [null] AS b RETURN n.l[1..b]",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          null
+        ]
+      ],
+      "error": null
+    },
+    "F4_a_dotdot_3": {
+      "query": "WITH [1, 2, 3] AS l, 1 AS a RETURN l[a..3]",
+      "params": {},
+      "native": "EXC CypherParseError: Cypher error at line 1, col 40: Expected IDENTIFIER, got FLOAT_LITERAL",
+      "exception": "CypherParseError: Cypher error at line 1, col 40: Expected IDENTIFIER, got FLOAT_LITERAL"
+    },
+    "F4_a_dotdot_b": {
+      "query": "WITH [1, 2, 3] AS l, 1 AS a, 3 AS b RETURN l[a..b]",
+      "params": {},
+      "native": "EXC CypherParseError: Cypher error at line 1, col 48: Expected IDENTIFIER, got .",
+      "exception": "CypherParseError: Cypher error at line 1, col 48: Expected IDENTIFIER, got ."
+    },
+    "F4_1_dotdot_b": {
+      "query": "WITH [1, 2, 3] AS l, 3 AS b RETURN l[1..b]",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          [
+            2,
+            3
+          ]
+        ]
+      ],
+      "error": null
+    },
+    "F4_a_dotdot": {
+      "query": "WITH [1, 2, 3] AS l, 1 AS a RETURN l[a..]",
+      "params": {},
+      "native": "EXC CypherParseError: Cypher error at line 1, col 40: Expected IDENTIFIER, got .",
+      "exception": "CypherParseError: Cypher error at line 1, col 40: Expected IDENTIFIER, got ."
+    },
+    "F4_a_space": {
+      "query": "WITH [1, 2, 3] AS l, 1 AS a RETURN l[a .. 3]",
+      "params": {},
+      "native": "EXC CypherParseError: Cypher error at line 1, col 41: Expected IDENTIFIER, got .",
+      "exception": "CypherParseError: Cypher error at line 1, col 41: Expected IDENTIFIER, got ."
+    },
+    "F5_lit": {
+      "query": "RETURN coalesce(null, 1), coalesce(null, 1, 'z'), coalesce(null, 2.5, 'z'), coalesce(null, true, 'z'), coalesce('a', 1)",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          "1",
+          "1",
+          "2.5",
+          "1",
+          "a"
+        ]
+      ],
+      "error": null
+    },
+    "F5_stored_mixed": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) RETURN coalesce(n.missing, 1, 'z'), coalesce(n.missing, n.s, 1), coalesce(n.missing, n.l)",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          1,
+          "hello",
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ]
+      ],
+      "error": null
+    },
+    "F5_rows": {
+      "query": "UNWIND [null, 7] AS x RETURN x, coalesce(x, 1, 'z'), coalesce(x, 'z')",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          null,
+          "1",
+          "z"
+        ],
+        [
+          7,
+          "7",
+          "7"
+        ]
+      ],
+      "error": null
+    },
+    "F6_unwind": {
+      "query": "UNWIND [true, false] AS f RETURN f, CASE WHEN f THEN 'y' ELSE 'n' END",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-14>:<A comparison operator is required here>]\r\n[Location: <Prepare>]\r\n[%msg: < A comparison operator is required here^SELECT CASE WHEN u0 . f IS NULL THEN NULL WHEN Graph_KG . CY_JSON_NUM ( u0 . f ) IS NOT NULL THEN Graph_KG . CY_JSON_TYPED ( u0 . f ) ELSE CHAR ( 1 "
+    },
+    "F6_with": {
+      "query": "WITH true AS f RETURN CASE WHEN f THEN 'y' ELSE 'n' END",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-14>:<A comparison operator is required here>]\r\n[Location: <Prepare>]\r\n[%msg: < A comparison operator is required here^WITH Stage1 AS ( SELECT :%qpar(1) AS f ) SELECT CASE WHEN Stage1 . f THEN>]"
+    },
+    "F6_param": {
+      "query": "RETURN CASE WHEN $f THEN 'y' ELSE 'n' END",
+      "params": {
+        "f": true
+      },
+      "native": null,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-14>:<A comparison operator is required here>]\r\n[Location: <Prepare>]\r\n[%msg: < A comparison operator is required here^SELECT CASE WHEN :%qpar(1) THEN>]"
+    },
+    "F6_eq_workaround": {
+      "query": "UNWIND [true, false] AS f RETURN f, CASE WHEN f = true THEN 'y' ELSE 'n' END",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          true,
+          "y"
+        ],
+        [
+          false,
+          "n"
+        ]
+      ],
+      "error": null
+    },
+    "F6_where": {
+      "query": "UNWIND [true, false] AS f WITH f WHERE f RETURN f",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-14>:<A comparison operator is required here>]\r\n[Location: <Prepare>]\r\n[%msg: < A comparison operator is required here^WITH Stage1 AS ( SELECT u0 . f AS f FROM ( SELECT :%qpar(1) AS f UNION ALL SELECT :%qpar(2) AS f ) u0 WHERE u0 . f )>]"
+    },
+    "F6_not": {
+      "query": "UNWIND [true, false] AS f RETURN f, NOT f, f AND true",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          true,
+          false,
+          true
+        ],
+        [
+          false,
+          true,
+          false
+        ]
+      ],
+      "error": null
+    },
+    "F6_literal": {
+      "query": "RETURN CASE WHEN true THEN 'y' ELSE 'n' END",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          "y"
+        ]
+      ],
+      "error": null
+    },
+    "F6_simple_case_bool": {
+      "query": "UNWIND [true, false] AS f RETURN CASE f WHEN true THEN 'y' ELSE 'n' END",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          "y"
+        ],
+        [
+          "n"
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_toUpper_lit": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c0', v: toUpper('ab')})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_read_toUpper_lit": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c0'}) RETURN n.v",
+      "params": {},
+      "native": [
+        [
+          "AB"
+        ]
+      ],
+      "rows": [
+        [
+          "AB"
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_size_lit": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c1', v: size('ab')})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "F7_read_size_lit": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c1'}) RETURN n.v",
+      "params": {},
+      "native": [],
+      "rows": [],
+      "error": null
+    },
+    "F7_create_abs_lit": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c2', v: abs(-1)})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "F7_read_abs_lit": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c2'}) RETURN n.v",
+      "params": {},
+      "native": [],
+      "rows": [],
+      "error": null
+    },
+    "F7_create_toString_lit": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c3', v: toString(1)})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_read_toString_lit": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c3'}) RETURN n.v",
+      "params": {},
+      "native": [
+        [
+          "1"
+        ]
+      ],
+      "rows": [
+        [
+          "1"
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_toInteger_lit": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c4', v: toInteger('5')})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "F7_read_toInteger_lit": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c4'}) RETURN n.v",
+      "params": {},
+      "native": [],
+      "rows": [],
+      "error": null
+    },
+    "F7_create_arith": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c5', v: 1 + 1})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_read_arith": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c5'}) RETURN n.v",
+      "params": {},
+      "native": [
+        [
+          2
+        ]
+      ],
+      "rows": [
+        [
+          2
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_concat": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c6', v: 'a' + 'b'})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_read_concat": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c6'}) RETURN n.v",
+      "params": {},
+      "native": [
+        [
+          "ab"
+        ]
+      ],
+      "rows": [
+        [
+          "ab"
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_list": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c7', v: [1, 2]})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_read_list": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c7'}) RETURN n.v",
+      "params": {},
+      "native": [
+        [
+          [
+            1,
+            2
+          ]
+        ]
+      ],
+      "rows": [
+        [
+          [
+            1,
+            2
+          ]
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_coalesce_lit": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c8', v: coalesce(null, 'x')})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_read_coalesce_lit": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c8'}) RETURN n.v",
+      "params": {},
+      "native": [
+        [
+          "x"
+        ]
+      ],
+      "rows": [
+        [
+          "x"
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_uuid": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c9', v: randomUUID()})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "F7_read_uuid": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c9'}) RETURN n.v",
+      "params": {},
+      "native": [],
+      "rows": [],
+      "error": null
+    },
+    "F7_create_rand": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c10', v: rand()})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+    },
+    "F7_read_rand": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c10'}) RETURN n.v",
+      "params": {},
+      "native": [],
+      "rows": [],
+      "error": null
+    },
+    "F7_create_param_fn": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c11', v: toUpper($s)})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_read_param_fn": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c11'}) RETURN n.v",
+      "params": {},
+      "native": [
+        [
+          "AB"
+        ]
+      ],
+      "rows": [
+        [
+          "AB"
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_param": {
+      "query": "CREATE (:I48F021350C {id: 'i48b_021350_c12', v: $s})",
+      "params": {
+        "s": "ab"
+      },
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_read_param": {
+      "query": "MATCH (n:I48F021350C {id: 'i48b_021350_c12'}) RETURN n.v",
+      "params": {},
+      "native": [
+        [
+          "ab"
+        ]
+      ],
+      "rows": [
+        [
+          "ab"
+        ]
+      ],
+      "error": null
+    },
+    "F7_unwind_fn": {
+      "query": "UNWIND ['ab'] AS s CREATE (:I48F021350D {id: 'i48b_021350_d1', v: toUpper(s)})",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_unwind_read": {
+      "query": "MATCH (n:I48F021350D) RETURN n.id, n.v",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          "i48b_021350_d1",
+          "AB"
+        ]
+      ],
+      "error": null
+    },
+    "F7_create_then_set": {
+      "query": "CREATE (n:I48F021350E {id: 'i48b_021350_e1'}) SET n.v = toUpper('ab'), n.u = randomUUID()",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_create_then_set_read": {
+      "query": "MATCH (n:I48F021350E) RETURN n.id, n.v, size(n.u)",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          "i48b_021350_e1",
+          "AB",
+          36
+        ]
+      ],
+      "error": null
+    },
+    "F7_rel_fn": {
+      "query": "CREATE (:I48F021350H {id: 'i48b_021350_h1'})-[:R021350 {v: toUpper('ab')}]->(:I48F021350H {id: 'i48b_021350_h2'})",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_rel_read": {
+      "query": "MATCH (:I48F021350H)-[r:R021350]->() RETURN r.v",
+      "params": {},
+      "native": null,
+      "rows": [
+        [
+          null
+        ]
+      ],
+      "error": null
+    },
+    "F7_set_map": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) SET n += {u: toUpper('ab')}",
+      "params": {},
+      "native": null,
+      "rows": [],
+      "error": null
+    },
+    "F7_set_map_read": {
+      "query": "MATCH (n:I48F021350 {id: 'i48b_021350_c'}) RETURN n.u",
+      "params": {},
+      "native": [
+        [
+          "AB"
+        ]
+      ],
+      "rows": [
+        [
+          "AB"
+        ]
+      ],
+      "error": null
+    }
+  }
+}

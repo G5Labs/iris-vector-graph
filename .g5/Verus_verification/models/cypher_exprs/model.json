@@ -1,0 +1,162 @@
+{
+  "name": "cypher_exprs",
+  "root": "cypher_exprs.rs",
+  "expected_verified": 17,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "row-slice-wrapped",
+      "find": "        _ => n,",
+      "replace": "        _ => if n < 0 { if len + n > 0 { len + n } else { 0 } } else { n },",
+      "expect_fail_in": [
+        "theorem_row_negative_slice_departs"
+      ],
+      "classification": "decision: a run-time slice bound gets the literal path's negative wrap (the repair); the non-negative neighbor must still verify"
+    },
+    {
+      "name": "literal-slice-unwrapped",
+      "find": "        Syntax::Literal => if n < 0 { if len + n > 0 { len + n } else { 0 } } else { n },",
+      "replace": "        Syntax::Literal => n,",
+      "expect_fail_in": [
+        "theorem_literal_slice_follows_rule"
+      ],
+      "classification": "decision: the GREATEST(0, len + n) wrap of a literal negative bound removed"
+    },
+    {
+      "name": "row-condition-compared",
+      "find": "        Syntax::RowVar => CondSql::RawScalar,",
+      "replace": "        Syntax::RowVar => CondSql::Predicate,",
+      "expect_fail_in": [
+        "theorem_row_boolean_condition_fails"
+      ],
+      "classification": "decision: a row boolean becomes a predicate (the repair, e.g. `= 1`)"
+    },
+    {
+      "name": "property-condition-raw",
+      "find": "        _ => CondSql::Predicate,",
+      "replace": "        _ => CondSql::RawScalar,",
+      "expect_fail_in": [
+        "theorem_predicate_condition_follows_rule"
+      ],
+      "classification": "decision: a property read, literal or comparison also left as a scalar"
+    },
+    {
+      "name": "iris-accepts-scalar-condition",
+      "find": "pub open spec fn iris_accepts_scalar_condition() -> bool { false }",
+      "replace": "pub open spec fn iris_accepts_scalar_condition() -> bool { true }",
+      "expect_fail_in": [
+        "theorem_row_boolean_condition_fails"
+      ],
+      "classification": "provider: IRIS accepting a scalar condition would remove the failure (the claim is conditional on this premise)"
+    },
+    {
+      "name": "create-value-translated",
+      "find": "    if folds(f) { WriteOut::Written } else if driver_accepts_ast() { WriteOut::Written } else { WriteOut::RefusedNothingWritten }",
+      "replace": "    if true { WriteOut::Written } else if driver_accepts_ast() { WriteOut::Written } else { WriteOut::RefusedNothingWritten }",
+      "expect_fail_in": [
+        "theorem_unfolded_create_value_refused"
+      ],
+      "classification": "decision: a node CREATE value that the folder leaves is translated to SQL as SET does (the repair)"
+    },
+    {
+      "name": "toupper-not-folded",
+      "find": "        Fn::ToUpper | Fn::ToLower | Fn::Trim",
+      "replace": "        Fn::ToLower | Fn::Trim",
+      "expect_fail_in": [
+        "theorem_folded_create_value_written"
+      ],
+      "classification": "effect: the folder no longer works out toUpper; the observed written neighbor must fail"
+    },
+    {
+      "name": "rel-value-kept",
+      "find": "        RelValue::Call(_) => WriteOut::WrittenWithoutProperty,",
+      "replace": "        RelValue::Call(f) => create_node_value(f),",
+      "expect_fail_in": [
+        "theorem_inline_rel_expression_dropped"
+      ],
+      "classification": "decision: a relationship CREATE value is resolved as a node's is (the repair, partial)"
+    },
+    {
+      "name": "rel-literal-dropped",
+      "find": "        RelValue::Lit => WriteOut::Written,",
+      "replace": "        RelValue::Lit => WriteOut::WrittenWithoutProperty,",
+      "expect_fail_in": [
+        "theorem_inline_rel_literal_written"
+      ],
+      "classification": "effect: a literal relationship value dropped too"
+    },
+    {
+      "name": "coalesce-always-typed",
+      "find": "pub open spec fn coalesce_number(a: CoArg, b: CoArg) -> Out { if typed_coalesce(a, b) { Out::Int } else { Out::Text } }",
+      "replace": "pub open spec fn coalesce_number(a: CoArg, b: CoArg) -> Out { Out::Int }",
+      "expect_fail_in": [
+        "theorem_row_coalesce_number_as_text"
+      ],
+      "classification": "decision: every coalesce keeps its winner's type (the repair)"
+    },
+    {
+      "name": "coalesce-needs-two-props",
+      "find": "    (a == CoArg::NodeProp || b == CoArg::NodeProp) && scalar_ok(a) && scalar_ok(b)",
+      "replace": "    a == CoArg::NodeProp && b == CoArg::NodeProp",
+      "expect_fail_in": [
+        "theorem_node_coalesce_keeps_type"
+      ],
+      "classification": "decision: typed only when every argument is a node property"
+    },
+    {
+      "name": "identifier-lookahead",
+      "find": "pub open spec fn identifier_branch_looks_ahead() -> bool { false }",
+      "replace": "pub open spec fn identifier_branch_looks_ahead() -> bool { true }",
+      "expect_fail_in": [
+        "theorem_identifier_lower_bound_refused"
+      ],
+      "classification": "decision: the identifier branch looks ahead for `..` (the repair)"
+    },
+    {
+      "name": "substring-checks-start",
+      "find": "pub open spec fn as_built_substring(n: int, start: int, l: int) -> SubOut { iris_substring(n, start + 1, l) }",
+      "replace": "pub open spec fn as_built_substring(n: int, start: int, l: int) -> SubOut { if start < 0 || l < 0 { SubOut::Error } else { iris_substring(n, start + 1, l) } }",
+      "expect_fail_in": [
+        "theorem_negative_start_answers_prefix"
+      ],
+      "classification": "decision: a negative start or length raises (the repair); the inside neighbor must still verify"
+    },
+    {
+      "name": "substring-zero-based",
+      "find": "pub open spec fn as_built_substring(n: int, start: int, l: int) -> SubOut { iris_substring(n, start + 1, l) }",
+      "replace": "pub open spec fn as_built_substring(n: int, start: int, l: int) -> SubOut { iris_substring(n, start, l) }",
+      "expect_fail_in": [
+        "theorem_inside_substring_follows_rule"
+      ],
+      "classification": "effect: the +1 from Cypher's 0-based start to SQL's 1-based position removed"
+    },
+    {
+      "name": "setval-skips-retype",
+      "find": "    if old.text == new.text && old.num != new.num { new } else { old }",
+      "replace": "    old",
+      "expect_fail_in": [
+        "theorem_prop_set_retypes"
+      ],
+      "classification": "effect: PropWrite.SetVal no longer writes a same-text retype"
+    },
+    {
+      "name": "prop-set-not-emitted",
+      "find": "    if deployed { filer_update(setval(old, new), new) } else { filer_update(old, new) }",
+      "replace": "    filer_update(old, new)",
+      "expect_fail_in": [
+        "theorem_prop_set_retypes"
+      ],
+      "classification": "decision: _prop_set leaves the bare value (an undeployed namespace's path) everywhere"
+    },
+    {
+      "name": "filer-writes-same-text",
+      "find": "pub open spec fn filer_writes_same_text() -> bool { false }",
+      "replace": "pub open spec fn filer_writes_same_text() -> bool { true }",
+      "expect_fail_in": [
+        "theorem_without_prop_set_same_text_keeps_old"
+      ],
+      "classification": "provider: a filer that writes same-text values would make Prop_Set unnecessary (the neighbor is conditional on this premise)"
+    }
+  ]
+}

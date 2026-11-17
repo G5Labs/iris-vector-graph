@@ -1,0 +1,12 @@
+verification results:: 16 verified, 1 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/literal-slice-unwrapped/20261117T021939Z/models/cypher_exprs/cypher_exprs.rs:50:13
+   |
+48 | pub proof fn theorem_literal_slice_follows_rule(len: int, s: int, e: int)
+   | ------------------------------------------------------------------------- at the end of the function body
+49 |     requires len >= 0,
+50 |     ensures same_elements(as_built_slice(Syntax::Literal, len, s, e), rule_slice(len, s, e)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

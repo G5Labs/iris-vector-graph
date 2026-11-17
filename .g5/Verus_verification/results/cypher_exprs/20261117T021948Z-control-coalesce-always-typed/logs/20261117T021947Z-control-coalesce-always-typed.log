@@ -1,0 +1,27 @@
+verification results:: 16 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-always-typed/20261117T021947Z/models/cypher_exprs/cypher_exprs.rs:190:1
+    |
+190 | pub proof fn theorem_row_coalesce_number_as_text()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-always-typed/20261117T021947Z/models/cypher_exprs/cypher_exprs.rs:192:9
+    |
+190 | pub proof fn theorem_row_coalesce_number_as_text()
+    | -------------------------------------------------- at the end of the function body
+191 |     ensures
+192 |         coalesce_number(CoArg::RowVar, CoArg::ScalarLiteral) == Out::Text,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/cypher_exprs/controls/coalesce-always-typed/20261117T021947Z/models/cypher_exprs/cypher_exprs.rs:193:9
+    |
+190 | pub proof fn theorem_row_coalesce_number_as_text()
+    | -------------------------------------------------- at the end of the function body
+...
+193 |         coalesce_number(CoArg::ScalarLiteral, CoArg::ScalarLiteral) == Out::Text,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

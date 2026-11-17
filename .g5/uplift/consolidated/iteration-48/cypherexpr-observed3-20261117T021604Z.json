@@ -1,0 +1,128 @@
+{
+  "run": "20261117T021604Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "prefix": "i48c_021604_",
+  "cases": {
+    "literal": {
+      "expr": "'ab'",
+      "write_error": null,
+      "read": [
+        [
+          "ab",
+          [
+            "v"
+          ],
+          {
+            "v": "ab"
+          }
+        ]
+      ],
+      "stored_qualifiers": [
+        [
+          "{\"v\": \"ab\"}"
+        ]
+      ]
+    },
+    "toUpper_lit": {
+      "expr": "toUpper('ab')",
+      "write_error": null,
+      "read": [
+        [
+          null,
+          null,
+          {}
+        ]
+      ],
+      "stored_qualifiers": [
+        [
+          null
+        ]
+      ]
+    },
+    "size_lit": {
+      "expr": "size('ab')",
+      "write_error": null,
+      "read": [
+        [
+          null,
+          null,
+          {}
+        ]
+      ],
+      "stored_qualifiers": [
+        [
+          null
+        ]
+      ]
+    },
+    "arith": {
+      "expr": "1 + 1",
+      "write_error": null,
+      "read": [
+        [
+          null,
+          null,
+          {}
+        ]
+      ],
+      "stored_qualifiers": [
+        [
+          null
+        ]
+      ]
+    },
+    "toString_lit": {
+      "expr": "toString(1)",
+      "write_error": null,
+      "read": [
+        [
+          null,
+          null,
+          {}
+        ]
+      ],
+      "stored_qualifiers": [
+        [
+          null
+        ]
+      ]
+    },
+    "uuid": {
+      "expr": "randomUUID()",
+      "write_error": null,
+      "read": [
+        [
+          null,
+          null,
+          {}
+        ]
+      ],
+      "stored_qualifiers": [
+        [
+          null
+        ]
+      ]
+    },
+    "param_fn": {
+      "expr": "toUpper($s)",
+      "write_error": null,
+      "read": [
+        [
+          null,
+          null,
+          {}
+        ]
+      ],
+      "stored_qualifiers": [
+        [
+          null
+        ]
+      ]
+    },
+    "matched_toUpper": {
+      "write_exception": "GraphWriteError: A CREATE or MERGE between matched nodes cannot store the relationship property `v`, which is computed from the row: not supported yet, nothing written (docs/KNOWN_ISSUES.md). Store a literal or a parameter, or pass the value through a WITH (`WITH a, b, a.id AS w CREATE (a)-[:T {w: w}]->(b)`).",
+      "read": [],
+      "stored_qualifiers": []
+    }
+  }
+}

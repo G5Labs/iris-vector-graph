@@ -1,0 +1,70 @@
+{
+  "start": 463,
+  "after": 480,
+  "newly_reached_and_bound": [
+    "iris_src/src/Graph/KG/PropWrite.cls::SetVal",
+    "iris_src/src/Graph/KG/SqlProcs.cls::PropSet",
+    "iris_vector_graph/cypher/parser.py::Parser.parse_primary_expression",
+    "iris_vector_graph/cypher/translator.py::_create_clause_relationship_entry",
+    "iris_vector_graph/cypher/translator.py::_create_node_literal",
+    "iris_vector_graph/cypher/translator.py::_create_node_per_row",
+    "iris_vector_graph/cypher/translator.py::_create_resolve_prop_value",
+    "iris_vector_graph/cypher/translator.py::_expr_case",
+    "iris_vector_graph/cypher/translator.py::_expr_slice",
+    "iris_vector_graph/cypher/translator.py::_fold_constant",
+    "iris_vector_graph/cypher/translator.py::_fold_or_raise",
+    "iris_vector_graph/cypher/translator.py::_is_typed_coalesce",
+    "iris_vector_graph/cypher/translator.py::_prop_set",
+    "iris_vector_graph/cypher/translator.py::_scalar_coalesce",
+    "iris_vector_graph/cypher/translator.py::_slice_sql",
+    "iris_vector_graph/cypher/translator.py::translate_boolean_expression",
+    "iris_vector_graph/engine.py::IRISGraphEngine._prop_set_deployed"
+  ],
+  "strengthened": [
+    "iris_vector_graph/_engine/query.py::QueryMixin._execute_parsed_sql",
+    "iris_vector_graph/cypher/translator.py::_scalar_string",
+    "iris_vector_graph/cypher/translator.py::_stored_bool_in",
+    "iris_vector_graph/cypher/translator.py::_translate_boolean_expression"
+  ],
+  "lost": [],
+  "overlap": 0,
+  "distinct_additions": 21,
+  "locator_only_added": [],
+  "not_bound_with_reason": {
+    "iris_vector_graph/cypher/translator.py::_create_node_from_alias": "also calls _create_resolve_prop_value; its CREATE shape (a node bound earlier in the same CREATE) was not probed",
+    "iris_src/src/Graph/KG/PropWrite.cls::Layout": "storage-layout check inside SetVal; refusal path not modeled or exercised",
+    "iris_vector_graph/cypher/translator.py::_create_values_edge_keyed": "multigraph branch receives the same filtered map; the fixture's multigraph setting was not varied",
+    "left/right, toInteger/toFloat/toString, zero-length strings (bug-cyp-124)": "observed only; no formal contract",
+    "UNWIND of a list parameter (bug-cyp-125)": "driver-conditional potential problem; no formal contract"
+  },
+  "counting_rule": "member_reach.py at this commit: relation in models/proves/witnesses with a resolvable formal item and member",
+  "by_part": {
+    "W55 slices": [
+      "_expr_slice",
+      "_slice_sql",
+      "Parser.parse_primary_expression"
+    ],
+    "W55 conditions": [
+      "translate_boolean_expression",
+      "_expr_case"
+    ],
+    "W55 CREATE values": [
+      "_create_resolve_prop_value",
+      "_fold_constant",
+      "_fold_or_raise",
+      "_create_node_literal",
+      "_create_node_per_row",
+      "_create_clause_relationship_entry"
+    ],
+    "W55 coalesce": [
+      "_is_typed_coalesce",
+      "_scalar_coalesce"
+    ],
+    "W55 Prop_Set": [
+      "_prop_set",
+      "IRISGraphEngine._prop_set_deployed",
+      "SqlProcs.PropSet",
+      "PropWrite.SetVal"
+    ]
+  }
+}

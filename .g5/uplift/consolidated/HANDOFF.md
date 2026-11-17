@@ -1,4 +1,4 @@
-**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 47 (W53 IVF cosine and `kg_IVF`; W54 Cypher built-in functions at run time). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`, and from iteration 47 under `7c5f718a`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
+**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 48 (W55 Cypher expressions over run-time values). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`, and from iteration 47 under `7c5f718a`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
 
 <a id="continuation-2026-11-17"></a>
 ## Continuation (2026-11-17, from `cloud-iris-continuation-start-20261117`)
@@ -19,25 +19,31 @@ Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bb
 | [45](iteration-45/HANDOFF.md) | W51 RDF export from Cypher, namespace prefixes | Medium bug-plt-111, Low bug-plt-112 (new), owner `install.export.rdf.cypher`; model `cypher_export`; 439 → 441 |
 | [46](iteration-46/HANDOFF.md) | W52 IVF index after its build | Medium bug-srch-107, Low bug-srch-108 (new), owner `search.ivf`; model `ivf_entries`; 441 → 448 |
 | [47](iteration-47/HANDOFF.md) | W53 SQL readers `kg_IVF`/`kg_BM25` (stopped draft, finished); W54 Cypher built-in functions at run time; `Txn_*` SQL entry points | Medium bug-srch-109, bug-cyp-111, -112, -113, -114, Low bug-cyp-115, -116 (new); F-C0841 modeled; owners `search.ivf.metric`, `query.functions` (8 blocks); model `cypher_fns`, `ivf_entries` extended; 448 → 463 |
+| [48](iteration-48/HANDOFF.md) | W55 Cypher expressions over run-time values: string functions, slices, `CASE`/`coalesce`, aggregation, `CREATE`/`SET` values, `Prop_Set` (16 held, 4 partial, 2 missed of 22) | High bug-cyp-120, Medium bug-cyp-117, -118, -119, Low bug-cyp-121..-124, Low potential bug-cyp-125 (new); bug-cyp-114's refusal traced; simp-cyp-101, -102; 6 owner blocks; model `cypher_exprs`; 463 → 480 |
 
 
 ### Residual queue and interim judgment (kept current)
 
-Not converged. Every iteration of this continuation opened an area the earlier stops had not assessed, and ten of
-twelve produced new findings (28 new, plus one inherited divergence registered; iteration 42 was the only clean one).
+Not converged. Every iteration of this continuation opened an area the earlier stops had not assessed, and eleven of
+thirteen produced new findings (28 new through iteration 47, plus one inherited divergence registered; iteration 42
+was the only clean one; iteration 48 added nine, one of them a driver-conditional potential problem).
 The frozen predictions taken from the docs mostly held; most findings came from reading the source after the freeze.
 Iteration 47 is the exception: four of twelve frozen openCypher predictions missed outright, all where a function's
 argument is known only at run time, which suggests the remaining Cypher expression surface (translator 962 members,
-mostly unbound) still holds literal/run-time splits of the same kind.
+mostly unbound) still holds literal/run-time splits of the same kind. Iteration 48 tested that across five expression
+families: 16 of 22 predictions held; the run-time split decided two departures (slice bounds, boolean conditions), and
+the clause or function decided four more, including a silent loss of computed relationship values on `CREATE` (High).
+The translator still decides by argument syntax in places not yet probed (residual list of iteration 48).
 The diminishing-returns claim of the retest therefore held only for the families it examined.
 
 Next candidates, ranked by consequence and tractability (each still unowned or unbound at the pin):
 
-1. Other Cypher expressions with a literal/run-time split (iteration 47's pattern): string functions (`substring`,
-   `left`, `right`, `replace`, `toUpper`) and type conversions over stored values, list comprehensions and slices with
-   run-time bounds, `size()`/`isEmpty()` of stored values, functions inside `CREATE`/`SET` maps (bug-cyp-114's refusal).
-2. SQL procedures in `Graph.KG.SqlProcs` still unbound after iteration 47: `MatchEdges`, `MatchEdgesAllGraphs`,
-   `DijkstraPath`, `Prop_Set`, `backfill_temporal_rows`, `rebuild_edge_indices`, `kg_BM25` (needs a BM25 scoring
+1. Cypher write values beyond iteration 48: `CREATE` naming an earlier node (`_create_node_from_alias`), multigraph
+   relationship values (`_create_values_edge_keyed`), nested functions in `CREATE` maps, `SET n += {…}` with unfolded
+   functions; and bug-cyp-125 on driver 5.4.x (decides whether `UNWIND $list` is a product defect). Iteration 48 covered
+   string functions, slices, list comprehension, `CASE`/`coalesce`, stored-value aggregation and `Prop_Set`.
+2. SQL procedures in `Graph.KG.SqlProcs` still unbound after iteration 48: `MatchEdges`, `MatchEdgesAllGraphs`,
+   `DijkstraPath`, `backfill_temporal_rows`, `rebuild_edge_indices`, `kg_BM25` (needs a BM25 scoring
    model), the percentile functions, and 12 SQL-only `CypherFn_IVG*` forwarders (first missing steps in the
    [iteration-47 residual list](iteration-47/HANDOFF.md#residual-list)).
 3. `load_networkx` and `load_obo` imports (a variant of the W47 import rules; expected to repeat bug-str-109's class).

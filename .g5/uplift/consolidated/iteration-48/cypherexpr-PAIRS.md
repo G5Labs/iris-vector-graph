@@ -50,3 +50,42 @@ Not predicted with confidence: `size()` of a stored string that spells a list (d
 the error class names for a negative `substring` start (openCypher and Cypher 9 say an error is raised; the class name
 is not pinned), and whether the native executor accepts any of these shapes (iteration 47: it declined every function
 shape probed).
+
+## Result (iteration 48; [observation](cypherexpr-observed-20261117T021241Z.json), follow-ups after the first observation [2](cypherexpr-observed2-20261117T021350Z.json) and after the source reading [3](cypherexpr-observed3-20261117T021604Z.json))
+
+Reader: the SQL Cypher path (the native executor declined every read shape probed) and, for writes, a later `MATCH`
+and `get_node()`.
+
+| ID | Held? | Observed |
+|---|---|---|
+| W1 | held | run-time and literal `SET` both read back `'AB'`, `3`, `[1, 2]`; `get_node()` agrees |
+| W2 | **missed** | refused, nothing written (`<LIST ERROR>`), for the run-time and the literal form alike; the cause is `size()`, not the run-time argument: `toUpper(s)` over `UNWIND` is stored → [bug-cyp-119](../../../Verus_verification/bugs_issues.md#bug-cyp-119) |
+| W3 | held | `randomUUID()` and `rand()` refused, nothing written; neighbor `toString(1)` stored `'1'`; `SET n.v = randomUUID()` works |
+| W4 | held | both store the integer 30 (`RETURN n.age` 30, `n.age = 30` matches both) |
+| W5 | held | `sq` 1, 4; neighbor 9 |
+| S1 | held | all five functions agree for stored, literal and `UNWIND`; missing → null |
+| S2 | partial | `'ell'`, `'llo'`, `''`, `'ello'` held; a negative start answers `'h'` (literal and run-time alike) instead of an error → [bug-cyp-123](../../../Verus_verification/bugs_issues.md#bug-cyp-123) |
+| S3 | partial | `'he'`/`'lo'`, `'hello'` held; length 0 answers null, literal and run-time alike → [bug-cyp-124](../../../Verus_verification/bugs_issues.md#bug-cyp-124) |
+| S4 | held | `'bANANa'`, `'banana'`, null |
+| S5 | held | `5`, `5` (the stored list has five elements), `0`; literals; `3` |
+| S6 | held | `42`, `2`, null; `42.0`, `2.9`, null; `'7'`, `'2.5'`, for stored, literal and `UNWIND` |
+| L1 | **missed** | literal bounds held; run-time `(-3, -1)` answers `[]`, `(-3, 5)` the whole list, also with parameters → [bug-cyp-117](../../../Verus_verification/bugs_issues.md#bug-cyp-117); the probe's `n.l[a..3]` did not parse → [bug-cyp-122](../../../Verus_verification/bugs_issues.md#bug-cyp-122) |
+| L2 | held | `[3, 4, 5]`, `[1, 2, 3, 4]` for stored and literal |
+| L3 | held | `true`, `false` |
+| L4 | held | `[30, 40, 50]`, `[]` |
+| C1 | held | `'one'`, `'two'`, `'other'`, `'other'` for stored and `UNWIND` |
+| C2 | held | `'small'`, `'big'`, `'big'`, `'none'` for both |
+| C3 | partial | stored held (`1`, `'z'`, integers kept); the literal neighbor `coalesce(null, 1, 'z')` answers `'1'` → [bug-cyp-121](../../../Verus_verification/bugs_issues.md#bug-cyp-121) |
+| C4 | partial | stored booleans held (`'y'`, `'n'`); the `UNWIND` neighbor fails the query at Prepare (SQLCODE -14) → [bug-cyp-118](../../../Verus_verification/bugs_issues.md#bug-cyp-118) |
+| A1 | held | `5`, `1` (integers); strings `'a'`/`'b'`; `UNWIND` agrees |
+| A2 | held | `2` for both |
+| A3 | held | `[[1], [2, 3]]` for both |
+
+Score: 16 held, 4 partial, 2 missed (22). Unlike W54, the literal/run-time split decided only two of the six
+departures (L1's negative bound and C4's condition); the others (W2, S2, S3, C3) depend on the function or the
+argument's form in a way literals share, and the relationship-write drop (bug-cyp-120) was found by a follow-up probe
+(before the source reading), not predicted.
+
+Not frozen (found after the freeze): bug-cyp-120 (relationship `CREATE` between new nodes drops computed values),
+bug-cyp-122 (the parse failure, found by the probe's own query), bug-cyp-125 (the driver-conditional `UNWIND $list`
+failure, found by the binding harness).

@@ -1,0 +1,1163 @@
+{
+  "run": "20261117T021241Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "prefix": "i48_021241_",
+  "label": "I48E021241",
+  "cases": {
+    "S1_stored": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN toUpper(n.w), toLower(n.w), trim(n.w), ltrim(n.w), rtrim(n.w), toUpper(n.missing)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "  AB C ",
+            "  ab c ",
+            "Ab c",
+            "Ab c ",
+            "  Ab c",
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S1_literal": {
+      "query": "RETURN toUpper('  Ab c '), toLower('  Ab c '), trim('  Ab c '), ltrim('  Ab c '), rtrim('  Ab c ')",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "  AB C ",
+            "  ab c ",
+            "Ab c",
+            "Ab c ",
+            "  Ab c"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S1_unwind": {
+      "query": "UNWIND ['  Ab c '] AS w RETURN toUpper(w), toLower(w), trim(w), ltrim(w), rtrim(w)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "  AB C ",
+            "  ab c ",
+            "Ab c",
+            "Ab c ",
+            "  Ab c"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S2_rows": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) UNWIND [[1, 3], [2, 99], [5, 1]] AS ab RETURN ab, substring(n.s, ab[0], ab[1])",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              1,
+              3
+            ],
+            "ell"
+          ],
+          [
+            [
+              2,
+              99
+            ],
+            "llo"
+          ],
+          [
+            [
+              5,
+              1
+            ],
+            ""
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S2_rows_scalar": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) UNWIND [1, 2, 5] AS a RETURN a, substring(n.s, a, 3), substring(n.s, a)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1,
+            "ell",
+            "ello"
+          ],
+          [
+            2,
+            "llo",
+            "llo"
+          ],
+          [
+            5,
+            "",
+            ""
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S2_literal": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN substring('hello', 1, 3), substring(n.s, 1, 3), substring(n.s, 1), substring(n.s, 2, 99), substring(n.s, 5, 1)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "ell",
+            "ell",
+            "ello",
+            "llo",
+            ""
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S2_param": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN substring(n.s, $a, $b)",
+      "params": {
+        "a": 1,
+        "b": 3
+      },
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "ell"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S2_neg_rows": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) UNWIND [-1] AS a RETURN substring(n.s, a, 2)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "h"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S2_neg_literal": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN substring(n.s, -1, 2)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "h"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S3_rows": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) UNWIND [2, 0, 99] AS k RETURN k, left(n.s, k), right(n.s, k)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            2,
+            "he",
+            "lo"
+          ],
+          [
+            0,
+            null,
+            null
+          ],
+          [
+            99,
+            "hello",
+            "hello"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S3_literal": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN left('hello', 2), right('hello', 2), left(n.s, 2), right(n.s, 2), left(n.s, 0), right(n.s, 99)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "he",
+            "lo",
+            "he",
+            "lo",
+            null,
+            "hello"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S3_param": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN left(n.s, $k), right(n.s, $k)",
+      "params": {
+        "k": 2
+      },
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "he",
+            "lo"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S4_stored": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN replace(n.b, n.f, n.t), replace(n.b, 'zz', 'y'), replace(n.b, 'an', n.missing)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "bANANa",
+            "banana",
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S4_literal": {
+      "query": "RETURN replace('banana', 'an', 'AN')",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "bANANa"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S4_rows": {
+      "query": "UNWIND [['banana', 'an', 'AN']] AS x RETURN replace(x[0], x[1], x[2])",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "bANANa"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S5_stored": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN size(n.s), size(n.l), size(n.e)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            5,
+            5,
+            0
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S5_literal": {
+      "query": "RETURN size('hello'), size([1, 2, 3]), size([])",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            5,
+            3,
+            0
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S5_unwind": {
+      "query": "UNWIND ['hey'] AS x RETURN size(x)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            3
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S5_with_list": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) WITH n.l AS l RETURN size(l)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            5
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S6_stored": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN toInteger(n.n42), toInteger(n.n29), toInteger(n.foo), toFloat(n.n42), toFloat(n.n29), toFloat(n.foo), toString(n.i7), toString(n.f25)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            42,
+            2,
+            null,
+            42.0,
+            2.9,
+            null,
+            "7",
+            "2.5"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S6_literal": {
+      "query": "RETURN toInteger('42'), toInteger('2.9'), toInteger('foo'), toFloat('42'), toFloat('2.9'), toFloat('foo'), toString(7), toString(2.5)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            42,
+            2,
+            null,
+            42.0,
+            2.9,
+            null,
+            "7",
+            "2.5"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S6_unwind": {
+      "query": "UNWIND ['42', '2.9', 'foo'] AS x RETURN x, toInteger(x), toFloat(x)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "42",
+            42,
+            42.0
+          ],
+          [
+            "2.9",
+            2,
+            2.9
+          ],
+          [
+            "foo",
+            null,
+            null
+          ]
+        ],
+        "error": null
+      }
+    },
+    "S6_bool": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN toBoolean(n.flag), toString(n.flag)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            true,
+            "true"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L1_rows": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) UNWIND [[1, 3], [-3, -1], [3, 1], [-9, 9]] AS ab RETURN ab, n.l[ab[0]..ab[1]]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          [
+            [
+              -3,
+              -1
+            ],
+            []
+          ],
+          [
+            [
+              3,
+              1
+            ],
+            []
+          ],
+          [
+            [
+              -9,
+              9
+            ],
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L1_rows_scalar": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) UNWIND [1, -3, 3, -9] AS a RETURN a, n.l[a..3]",
+      "params": {},
+      "native": {
+        "exception": "CypherParseError: Cypher error at line 1, col 86: Expected IDENTIFIER, got FLOAT_LITERAL"
+      },
+      "sql": {
+        "exception": "CypherParseError: Cypher error at line 1, col 86: Expected IDENTIFIER, got FLOAT_LITERAL"
+      }
+    },
+    "L1_literal": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN n.l[1..3], n.l[-3..-1], n.l[3..1], n.l[-9..9]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              2,
+              3
+            ],
+            [
+              3,
+              4
+            ],
+            [],
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L1_literal_list": {
+      "query": "WITH [1, 2, 3, 4, 5] AS l RETURN l[1..3], l[-3..-1], l[3..1], l[-9..9]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              2,
+              3
+            ],
+            [
+              3,
+              4
+            ],
+            [],
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L1_param": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN n.l[$a..$b], n.l[$c..$d]",
+      "params": {
+        "a": 1,
+        "b": 3,
+        "c": -3,
+        "d": -1
+      },
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              2,
+              3
+            ],
+            []
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L2_stored": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN n.l[2..], n.l[..-1]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              3,
+              4,
+              5
+            ],
+            [
+              1,
+              2,
+              3,
+              4
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L2_literal": {
+      "query": "WITH [1, 2, 3, 4, 5] AS l RETURN l[2..], l[..-1]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              3,
+              4,
+              5
+            ],
+            [
+              1,
+              2,
+              3,
+              4
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L3_stored": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN 2 IN n.l, 9 IN n.l",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            true,
+            false
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L3_literal": {
+      "query": "RETURN 2 IN [1, 2, 3, 4, 5], 9 IN [1, 2, 3, 4, 5]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            true,
+            false
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L4_stored": {
+      "query": "MATCH (n:I48E021241 {id: 'i48_021241_c'}) RETURN [x IN n.l WHERE x > 2 | x * 10], [x IN n.e WHERE x > 2 | x * 10]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              30,
+              40,
+              50
+            ],
+            []
+          ]
+        ],
+        "error": null
+      }
+    },
+    "L4_literal": {
+      "query": "WITH [1, 2, 3, 4, 5] AS l RETURN [x IN l WHERE x > 2 | x * 10]",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              30,
+              40,
+              50
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "C1_stored": {
+      "query": "MATCH (n:I48E021241V) WHERE n.id STARTS WITH 'i48_021241_v' RETURN n.id, CASE n.v WHEN 1 THEN 'one' WHEN 2 THEN 'two' ELSE 'other' END ORDER BY n.id",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "i48_021241_v0",
+            "one"
+          ],
+          [
+            "i48_021241_v1",
+            "two"
+          ],
+          [
+            "i48_021241_v2",
+            "other"
+          ],
+          [
+            "i48_021241_v3",
+            "other"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "C1_unwind": {
+      "query": "UNWIND [1, 2, 3, null] AS v RETURN v, CASE v WHEN 1 THEN 'one' WHEN 2 THEN 'two' ELSE 'other' END",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1,
+            "one"
+          ],
+          [
+            2,
+            "two"
+          ],
+          [
+            3,
+            "other"
+          ],
+          [
+            null,
+            "other"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "C2_stored": {
+      "query": "MATCH (n:I48E021241V) WHERE n.id STARTS WITH 'i48_021241_v' RETURN n.id, CASE WHEN n.v > 1 THEN 'big' WHEN n.v IS NULL THEN 'none' ELSE 'small' END ORDER BY n.id",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "i48_021241_v0",
+            "small"
+          ],
+          [
+            "i48_021241_v1",
+            "big"
+          ],
+          [
+            "i48_021241_v2",
+            "big"
+          ],
+          [
+            "i48_021241_v3",
+            "none"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "C2_unwind": {
+      "query": "UNWIND [1, 2, 3, null] AS v RETURN v, CASE WHEN v > 1 THEN 'big' WHEN v IS NULL THEN 'none' ELSE 'small' END",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            1,
+            "small"
+          ],
+          [
+            2,
+            "big"
+          ],
+          [
+            3,
+            "big"
+          ],
+          [
+            null,
+            "none"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "C3_stored": {
+      "query": "MATCH (n:I48E021241V) WHERE n.id STARTS WITH 'i48_021241_v' RETURN n.id, coalesce(n.missing, n.v, 'z') ORDER BY n.id",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "i48_021241_v0",
+            1
+          ],
+          [
+            "i48_021241_v1",
+            2
+          ],
+          [
+            "i48_021241_v2",
+            3
+          ],
+          [
+            "i48_021241_v3",
+            "z"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "C3_literal": {
+      "query": "RETURN coalesce(null, 1, 'z')",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "1"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "C4_stored": {
+      "query": "MATCH (n:I48E021241V) WHERE n.id STARTS WITH 'i48_021241_v' WHERE n.flag IS NOT NULL RETURN n.id, CASE WHEN n.flag THEN 'y' ELSE 'n' END ORDER BY n.id",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "i48_021241_v0",
+            "y"
+          ],
+          [
+            "i48_021241_v1",
+            "n"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "C4_unwind": {
+      "query": "UNWIND [true, false] AS f RETURN f, CASE WHEN f THEN 'y' ELSE 'n' END",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [],
+        "error": "<SQL ERROR>; Details: [SQLCODE: <-14>:<A comparison operator is required here>]\r\n[Location: <Prepare>]\r\n[%msg: < A comparison operator is required here^SELECT CASE WHEN u0 . f IS NULL THEN NULL WHEN Graph_KG . CY_JSON_NUM ( u0 . f ) IS NOT NULL THEN Graph_KG . CY_JSON_TYPED ( u0 . f ) ELSE CHAR ( 1 ) || :%qpar(1) || CASE WHEN u0 . f = :%qpar(2) THEN :%qpar(3) WHEN u0 . f = :%qpar(4) THEN :%qpar(5)"
+      }
+    },
+    "A1_stored": {
+      "query": "MATCH (n:I48E021241M) RETURN max(n.v), min(n.v)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            5,
+            1
+          ]
+        ],
+        "error": null
+      }
+    },
+    "A1_strings": {
+      "query": "MATCH (n:I48E021241V) WHERE n.id STARTS WITH 'i48_021241_v' RETURN min(n.s), max(n.s)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            "a",
+            "b"
+          ]
+        ],
+        "error": null
+      }
+    },
+    "A1_unwind": {
+      "query": "UNWIND [1, 5, 3] AS v RETURN max(v), min(v)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            5,
+            1
+          ]
+        ],
+        "error": null
+      }
+    },
+    "A2_stored": {
+      "query": "MATCH (n:I48E021241V) WHERE n.id STARTS WITH 'i48_021241_v' RETURN count(DISTINCT n.s)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            2
+          ]
+        ],
+        "error": null
+      }
+    },
+    "A2_unwind": {
+      "query": "UNWIND ['a', 'a', 'b', null] AS s RETURN count(DISTINCT s)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            2
+          ]
+        ],
+        "error": null
+      }
+    },
+    "A3_stored": {
+      "query": "MATCH (n:I48E021241G) RETURN collect(n.l)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              [
+                1
+              ],
+              [
+                2,
+                3
+              ]
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "A3_unwind": {
+      "query": "UNWIND [[1], [2, 3]] AS l RETURN collect(l)",
+      "params": {},
+      "native": null,
+      "sql": {
+        "rows": [
+          [
+            [
+              [
+                1
+              ],
+              [
+                2,
+                3
+              ]
+            ]
+          ]
+        ],
+        "error": null
+      }
+    },
+    "W1_runtime": {
+      "query": "MATCH (n:I48E021241W {id: 'i48_021241_w1'}) SET n.u = toUpper(n.s), n.c = size(n.l), n.h = n.l[0..2]",
+      "params": {},
+      "write": {
+        "rows": null,
+        "error": null
+      },
+      "reads": {
+        "MATCH (n:I48E021241W {id: 'i48_021241_w1'}) RETURN n.u, n.c, n.h": "columns=['n.u', 'n.c', 'n.h'] rows=[['AB', 3, [1, 2]]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql=None params=None bolt_column_types=['scalar', 'scalar', 'scalar']"
+      },
+      "get_node": {
+        "i48_021241_w1": {
+          "id": "i48_021241_w1",
+          "labels": [
+            "I48E021241W"
+          ],
+          "p_id": "i48_021241_w1",
+          "s": "ab",
+          "l": [
+            1,
+            2,
+            3
+          ],
+          "u": "AB",
+          "c": 3,
+          "h": [
+            1,
+            2
+          ]
+        }
+      }
+    },
+    "W1_literal": {
+      "query": "MATCH (n:I48E021241W {id: 'i48_021241_w1lit'}) SET n.u = toUpper('ab'), n.c = size([1, 2, 3]), n.h = [1, 2, 3][0..2]",
+      "params": {},
+      "write": {
+        "rows": null,
+        "error": null
+      },
+      "reads": {
+        "MATCH (n:I48E021241W {id: 'i48_021241_w1lit'}) RETURN n.u, n.c, n.h": "columns=['n.u', 'n.c', 'n.h'] rows=[['AB', 3, [1, 2]]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql=None params=None bolt_column_types=['scalar', 'scalar', 'scalar']"
+      },
+      "get_node": {
+        "i48_021241_w1lit": {
+          "id": "i48_021241_w1lit",
+          "labels": [
+            "I48E021241W"
+          ],
+          "p_id": "i48_021241_w1lit",
+          "u": "AB",
+          "c": 3,
+          "h": [
+            1,
+            2
+          ]
+        }
+      }
+    },
+    "W2_runtime": {
+      "query": "UNWIND ['i48_021241_ab', 'i48_021241_cd'] AS s CREATE (:I48E021241X {id: s, u: toUpper(s), k: size(s)})",
+      "params": {},
+      "write": {
+        "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+      },
+      "reads": {
+        "MATCH (n:I48E021241X) RETURN n.id, n.u, n.k ORDER BY n.id": "columns=['n.id', 'n.u', 'n.k'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS n_id, Graph_KG.CY_TYPED(%EXACT(p3.val)) AS n_u, Graph_KG.CY_TYPED(%EXACT(p4.val)) AS n_k\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p5 ON p5.s = n0.node_id AND p5.graph_id = n0.graph_id AND p5.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p5.val, \\'x\\')) ASC' params=['I48E021241X', 'id', 'u', 'k', 'id'] bolt_column_types=['scalar', 'scalar', 'scalar']"
+      },
+      "get_node": {
+        "i48_021241_ab": null
+      }
+    },
+    "W2_literal": {
+      "query": "CREATE (:I48E021241Y {id: 'i48_021241_x', u: toUpper('ab'), k: size('ab')})",
+      "params": {},
+      "write": {
+        "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+      },
+      "reads": {
+        "MATCH (n:I48E021241Y) RETURN n.id, n.u, n.k": "columns=['n.id', 'n.u', 'n.k'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS n_id, Graph_KG.CY_TYPED(%EXACT(p3.val)) AS n_u, Graph_KG.CY_TYPED(%EXACT(p4.val)) AS n_k\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\\nWHERE l1.s IS NOT NULL' params=['I48E021241Y', 'id', 'u', 'k'] bolt_column_types=['scalar', 'scalar', 'scalar']"
+      },
+      "get_node": {
+        "i48_021241_x": null
+      }
+    },
+    "W3_uuid": {
+      "query": "CREATE (:I48E021241R {id: 'i48_021241_r', u: randomUUID()})",
+      "params": {},
+      "write": {
+        "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+      },
+      "reads": {
+        "MATCH (n:I48E021241R) RETURN n.id, n.u": "columns=['n.id', 'n.u'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS n_id, Graph_KG.CY_TYPED(%EXACT(p3.val)) AS n_u\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL' params=['I48E021241R', 'id', 'u'] bolt_column_types=['scalar', 'scalar']"
+      },
+      "get_node": {
+        "i48_021241_r": null
+      }
+    },
+    "W3_rand": {
+      "query": "CREATE (:I48E021241R {id: 'i48_021241_r1', f: rand()})",
+      "params": {},
+      "write": {
+        "exception": "GraphWriteError: execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected"
+      },
+      "reads": {
+        "MATCH (n:I48E021241R) RETURN n.id, n.f": "columns=['n.id', 'n.f'] rows=[] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS n_id, Graph_KG.CY_TYPED(%EXACT(p3.val)) AS n_f\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL' params=['I48E021241R', 'id', 'f'] bolt_column_types=['scalar', 'scalar']"
+      },
+      "get_node": {
+        "i48_021241_r1": null
+      }
+    },
+    "W3_neighbor": {
+      "query": "CREATE (:I48E021241R {id: 'i48_021241_r2', u: toString(1)})",
+      "params": {},
+      "write": {
+        "rows": null,
+        "error": null
+      },
+      "reads": {
+        "MATCH (n:I48E021241R) RETURN n.id, n.u": "columns=['n.id', 'n.u'] rows=[['i48_021241_r2', '1']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS n_id, Graph_KG.CY_TYPED(%EXACT(p3.val)) AS n_u\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nWHERE l1.s IS NOT NULL' params=['I48E021241R', 'id', 'u'] bolt_column_types=['scalar', 'scalar']"
+      },
+      "get_node": {
+        "i48_021241_r2": {
+          "id": "i48_021241_r2",
+          "labels": [
+            "I48E021241R"
+          ],
+          "p_id": "i48_021241_r2",
+          "u": "1"
+        }
+      }
+    },
+    "W3_set_uuid": {
+      "query": "MATCH (n:I48E021241R {id: 'i48_021241_r2'}) SET n.v = randomUUID()",
+      "params": {},
+      "write": {
+        "rows": null,
+        "error": null
+      },
+      "reads": {
+        "MATCH (n:I48E021241R {id: 'i48_021241_r2'}) RETURN n.v": "columns=['n.v'] rows=[['6390985C-E22C-11F1-8929-726DDB04F98E']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql=None params=None bolt_column_types=['scalar']"
+      },
+      "get_node": {}
+    },
+    "W4_runtime": {
+      "query": "MATCH (n:I48E021241A {id: 'i48_021241_a1'}) SET n.age = toInteger(n.age)",
+      "params": {},
+      "write": {
+        "rows": null,
+        "error": null
+      },
+      "reads": {
+        "MATCH (n:I48E021241A {id: 'i48_021241_a1'}) RETURN n.age": "columns=['n.age'] rows=[[30]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql=None params=None bolt_column_types=['scalar']",
+        "MATCH (n:I48E021241A) WHERE n.age = 30 RETURN n.id ORDER BY n.id": "columns=['n.id'] rows=[['i48_021241_a1']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS n_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = \\'age\\') AND l1.s IS NOT NULL AND (p2.val_key IN (\\'30\\', \\'30.0\\', CAST(CAST(\\'30\\' AS DOUBLE) AS VARCHAR(128))) AND (ASCII($LISTBUILD(%EXACT(p2.val))) > 0 AND ASCII(SUBSTRING($LISTBUILD(%EXACT(p2.val)), 2, 1)) BETWEEN 4 AND 9) AND CAST(p2.val AS DOUBLE) = CAST(\\'30\\' AS DOUBLE))\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p4.val, \\'x\\')) ASC' params=['I48E021241A', 'age', 'id', 'id'] bolt_column_types=['scalar']"
+      },
+      "get_node": {
+        "i48_021241_a1": {
+          "id": "i48_021241_a1",
+          "labels": [
+            "I48E021241A"
+          ],
+          "p_id": "i48_021241_a1",
+          "age": 30
+        }
+      }
+    },
+    "W4_literal": {
+      "query": "MATCH (n:I48E021241A {id: 'i48_021241_a2'}) SET n.age = 30",
+      "params": {},
+      "write": {
+        "rows": null,
+        "error": null
+      },
+      "reads": {
+        "MATCH (n:I48E021241A {id: 'i48_021241_a2'}) RETURN n.age": "columns=['n.age'] rows=[[30]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql=None params=None bolt_column_types=['scalar']",
+        "MATCH (n:I48E021241A) WHERE n.age = 30 RETURN n.id ORDER BY n.id": "columns=['n.id'] rows=[['i48_021241_a1'], ['i48_021241_a2']] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p3.val)) AS n_id\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\\nWHERE EXISTS (SELECT 1 FROM Graph_KG.rdf_props _sgn0 WHERE _sgn0.s = n0.node_id AND _sgn0.graph_id = n0.graph_id AND _sgn0.\"key\" = \\'age\\') AND l1.s IS NOT NULL AND (p2.val_key IN (\\'30\\', \\'30.0\\', CAST(CAST(\\'30\\' AS DOUBLE) AS VARCHAR(128))) AND (ASCII($LISTBUILD(%EXACT(p2.val))) > 0 AND ASCII(SUBSTRING($LISTBUILD(%EXACT(p2.val)), 2, 1)) BETWEEN 4 AND 9) AND CAST(p2.val AS DOUBLE) = CAST(\\'30\\' AS DOUBLE))\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p4.val, \\'x\\')) ASC' params=['I48E021241A', 'age', 'id', 'id'] bolt_column_types=['scalar']"
+      },
+      "get_node": {
+        "i48_021241_a2": {
+          "id": "i48_021241_a2",
+          "labels": [
+            "I48E021241A"
+          ],
+          "p_id": "i48_021241_a2",
+          "age": 30
+        }
+      }
+    },
+    "W5_runtime": {
+      "query": "UNWIND [1, 2] AS i CREATE (:I48E021241Z {id: 'i48_021241_z' + toString(i), sq: i * i})",
+      "params": {},
+      "write": {
+        "rows": null,
+        "error": null
+      },
+      "reads": {
+        "MATCH (n:I48E021241Z) RETURN n.id, n.sq ORDER BY n.id": "columns=['n.id', 'n.sq'] rows=[['i48_021241_z1', 1], ['i48_021241_z2', 4]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql='SELECT Graph_KG.CY_TYPED(%EXACT(p2.val)) AS n_id, Graph_KG.CY_TYPED(%EXACT(p3.val)) AS n_sq\\nFROM Graph_KG.nodes n0\\nJOIN Graph_KG.rdf_labels l1 ON l1.s = n0.node_id AND l1.graph_id = n0.graph_id AND l1.label = ?\\nLEFT JOIN Graph_KG.rdf_props p2 ON p2.s = n0.node_id AND p2.graph_id = n0.graph_id AND p2.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p3 ON p3.s = n0.node_id AND p3.graph_id = n0.graph_id AND p3.\"key\" = ?\\nLEFT JOIN Graph_KG.rdf_props p4 ON p4.s = n0.node_id AND p4.graph_id = n0.graph_id AND p4.\"key\" = ?\\nWHERE l1.s IS NOT NULL\\nORDER BY %EXACT(Graph_KG.CY_SORT_KEY(p4.val, \\'x\\')) ASC' params=['I48E021241Z', 'id', 'sq', 'id'] bolt_column_types=['scalar', 'scalar']"
+      },
+      "get_node": {
+        "i48_021241_z1": {
+          "id": "i48_021241_z1",
+          "labels": [
+            "I48E021241Z"
+          ],
+          "p_id": "i48_021241_z1",
+          "sq": 1
+        }
+      }
+    },
+    "W5_literal": {
+      "query": "CREATE (:I48E021241Z {id: 'i48_021241_w9', sq: 3 * 3})",
+      "params": {},
+      "write": {
+        "rows": null,
+        "error": null
+      },
+      "reads": {
+        "MATCH (n:I48E021241Z {id: 'i48_021241_w9'}) RETURN n.sq": "columns=['n.sq'] rows=[[9]] error=None metadata=QueryMetadata(estimated_rows=None, index_usage=[], optimization_applied=[], complexity_score=None, warnings=[]) sql=None params=None bolt_column_types=['scalar']"
+      },
+      "get_node": {
+        "i48_021241_w9": {
+          "id": "i48_021241_w9",
+          "labels": [
+            "I48E021241Z"
+          ],
+          "p_id": "i48_021241_w9",
+          "sq": 9
+        }
+      }
+    }
+  }
+}

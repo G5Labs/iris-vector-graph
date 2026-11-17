@@ -1,0 +1,560 @@
+{
+  "all_sensitivities_detected": true,
+  "cases": 209,
+  "elapsed_s": 1.9,
+  "fixture": "ivg-cont-20261117-iris",
+  "inputs": {
+    ".g5/Verus_verification/models/cypher_exprs/binding.py": "c13bfeb8ae1a3b528ee21539ab46e1bc587956c8dace4828e8d3745a33407f27",
+    ".g5/Verus_verification/models/cypher_exprs/cypher_exprs.rs": "2f64ec4a00c26c0bcfb6a67515508c4cd9d4f2ae880b50e75c713a28f9a30fcb",
+    ".g5/Verus_verification/models/cypher_exprs/model.json": "31d5c9fab81f23aa066571839fa2a69854f01ee1ce6ea8b1ed18c5c1bdba63f6",
+    "iris_src/src/Graph/KG/PropWrite.cls": "ab07a6e904a1551f93776292865ae3e9747e713dc4e56fe7fc1655007e640e92",
+    "iris_src/src/Graph/KG/SqlProcs.cls": "5007cdedd0486a38623da0c8ce33a1ce7e73b5a470ab26d36c3e7fe6386da427",
+    "iris_vector_graph/cypher/parser.py": "fb75d7be8289d65934e3bf40673c8e77db29e220a030d781b548f55820061805",
+    "iris_vector_graph/cypher/translator.py": "0a37bc8fb5c00a26a3b672eb524de6cbc8e5c8092f4415fb5c83a96c7fe8d78c",
+    "iris_vector_graph/engine.py": "89d5bc083ddf15315eef449fb1896c8d9864f5a125ba2515b1a0b39deb8a3eba"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "cypher_exprs",
+  "native_declined": 156,
+  "native_declined_queries": [
+    "MATCH (n:CE022152 {id: 'ce022152_c'}) UNWIND [[-7, -7], [-7, -3], [-7, -1], [-7, 0], [-7, 2], [-7, 5], [-7, 8], [-3, -7], [-3, -3], [-3, -1], [-3, 0], [-3, 2], [-3, 5], [-3, 8], [-1, -7], [-1, -3], [-1, -1], [-1, 0], [-1, 2], [-1, 5], [-1, 8], [0, -7], [0, -3], [0, -1], [0, 0], [0, 2], [0, 5], [0, 8], [2, -7], [2, -3], [2, -1], [2, 0], [2, 2], [2, 5], [2, 8], [5, -7], [5, -3], [5, -1], [5, 0], [5, 2], [5, 5], [5, 8], [8, -7], [8, -3], [8, -1], [8, 0], [8, 2], [8, 5], [8, 8]] AS ab RETURN ab, n.l[ab[0]..ab[1]]",
+    "MATCH (n:CE022152 {id: 'ce022152_c'}) RETURN n.l[-7..-7]",
+    "MATCH (n:CE022152 {id: 'ce022152_c'}) RETURN n.l[-7..-3]",
+    "MATCH (n:CE022152 {id: 'ce022152_c'}) RETURN n.l[-7..-1]",
+    "MATCH (n:CE022152 {id: 'ce022152_c'}) RETURN n.l[-7..0]",
+    "MATCH (n:CE022152 {id: 'ce022152_c'}) RETURN n.l[-7..2]"
+  ],
+  "observation_tamper_detected": true,
+  "observed": {
+    "coalesce_NodeProp_ListLiteral": "text",
+    "coalesce_NodeProp_RowVar": "text",
+    "coalesce_NodeProp_ScalarLiteral": "int",
+    "coalesce_NodeProp_ScalarParam": "int",
+    "coalesce_RowVar_ScalarLiteral": "text",
+    "coalesce_ScalarLiteral_NodeProp": "int",
+    "coalesce_ScalarLiteral_ScalarLiteral": "text",
+    "coalesce_ScalarParam_ScalarLiteral": "text",
+    "cond_Comparison_false": [
+      "branch",
+      false
+    ],
+    "cond_Comparison_true": [
+      "branch",
+      true
+    ],
+    "cond_Literal_false": [
+      "branch",
+      false
+    ],
+    "cond_Literal_true": [
+      "branch",
+      true
+    ],
+    "cond_Param_false": "prepare_fails",
+    "cond_Param_true": "prepare_fails",
+    "cond_PropertyRead_false": [
+      "branch",
+      false
+    ],
+    "cond_PropertyRead_true": [
+      "branch",
+      true
+    ],
+    "cond_RowVar_false": "prepare_fails",
+    "cond_RowVar_true": "prepare_fails",
+    "create_node_Abs": "refused_nothing_written",
+    "create_node_Arith": "written",
+    "create_node_Coalesce": "written",
+    "create_node_Rand": "refused_nothing_written",
+    "create_node_RandomUuid": "refused_nothing_written",
+    "create_node_Replace": "refused_nothing_written",
+    "create_node_Size": "refused_nothing_written",
+    "create_node_Substring": "refused_nothing_written",
+    "create_node_ToFloatOfNumber": "written",
+    "create_node_ToIntegerOfNumber": "written",
+    "create_node_ToIntegerOfString": "refused_nothing_written",
+    "create_node_ToLower": "written",
+    "create_node_ToStringFn": "written",
+    "create_node_ToUpper": "written",
+    "create_node_Trim": "written",
+    "create_rel_Call_Arith": "written_without_property",
+    "create_rel_Call_Size": "written_without_property",
+    "create_rel_Call_ToStringFn": "written_without_property",
+    "create_rel_Call_ToUpper": "written_without_property",
+    "create_rel_ForeachVar": "written",
+    "create_rel_Lit": "written",
+    "parse_Identifier": false,
+    "parse_IntLiteral": true,
+    "parse_Param": true,
+    "parse_Subscript": true,
+    "propset_0_other_text": [
+      "31",
+      true
+    ],
+    "propset_0_same_text_to_int": [
+      "30",
+      false
+    ],
+    "propset_0_same_text_to_str": [
+      "30",
+      true
+    ],
+    "propset_1_other_text": [
+      "31",
+      true
+    ],
+    "propset_1_same_text_to_int": [
+      "30",
+      true
+    ],
+    "propset_1_same_text_to_str": [
+      "30",
+      false
+    ],
+    "set_node_Abs": "written",
+    "set_node_Arith": "written",
+    "set_node_Coalesce": "written",
+    "set_node_Rand": "written",
+    "set_node_RandomUuid": "written",
+    "set_node_Replace": "written",
+    "set_node_Size": "written",
+    "set_node_Substring": "written",
+    "set_node_ToFloatOfNumber": "written",
+    "set_node_ToIntegerOfNumber": "written",
+    "set_node_ToIntegerOfString": "written",
+    "set_node_ToLower": "written",
+    "set_node_ToStringFn": "written",
+    "set_node_ToUpper": "written",
+    "set_node_Trim": "written",
+    "slice_literal_-1_-1": "empty",
+    "slice_literal_-1_-3": "empty",
+    "slice_literal_-1_-7": "empty",
+    "slice_literal_-1_0": "empty",
+    "slice_literal_-1_2": "empty",
+    "slice_literal_-1_5": [
+      4,
+      5
+    ],
+    "slice_literal_-1_8": [
+      4,
+      5
+    ],
+    "slice_literal_-3_-1": [
+      2,
+      4
+    ],
+    "slice_literal_-3_-3": "empty",
+    "slice_literal_-3_-7": "empty",
+    "slice_literal_-3_0": "empty",
+    "slice_literal_-3_2": "empty",
+    "slice_literal_-3_5": [
+      2,
+      5
+    ],
+    "slice_literal_-3_8": [
+      2,
+      5
+    ],
+    "slice_literal_-7_-1": [
+      0,
+      4
+    ],
+    "slice_literal_-7_-3": [
+      0,
+      2
+    ],
+    "slice_literal_-7_-7": "empty",
+    "slice_literal_-7_0": "empty",
+    "slice_literal_-7_2": [
+      0,
+      2
+    ],
+    "slice_literal_-7_5": [
+      0,
+      5
+    ],
+    "slice_literal_-7_8": [
+      0,
+      5
+    ],
+    "slice_literal_0_-1": [
+      0,
+      4
+    ],
+    "slice_literal_0_-3": [
+      0,
+      2
+    ],
+    "slice_literal_0_-7": "empty",
+    "slice_literal_0_0": "empty",
+    "slice_literal_0_2": [
+      0,
+      2
+    ],
+    "slice_literal_0_5": [
+      0,
+      5
+    ],
+    "slice_literal_0_8": [
+      0,
+      5
+    ],
+    "slice_literal_2_-1": [
+      2,
+      4
+    ],
+    "slice_literal_2_-3": "empty",
+    "slice_literal_2_-7": "empty",
+    "slice_literal_2_0": "empty",
+    "slice_literal_2_2": "empty",
+    "slice_literal_2_5": [
+      2,
+      5
+    ],
+    "slice_literal_2_8": [
+      2,
+      5
+    ],
+    "slice_literal_5_-1": "empty",
+    "slice_literal_5_-3": "empty",
+    "slice_literal_5_-7": "empty",
+    "slice_literal_5_0": "empty",
+    "slice_literal_5_2": "empty",
+    "slice_literal_5_5": "empty",
+    "slice_literal_5_8": "empty",
+    "slice_literal_8_-1": "empty",
+    "slice_literal_8_-3": "empty",
+    "slice_literal_8_-7": "empty",
+    "slice_literal_8_0": "empty",
+    "slice_literal_8_2": "empty",
+    "slice_literal_8_5": "empty",
+    "slice_literal_8_8": "empty",
+    "slice_param_-1_8": [
+      0,
+      5
+    ],
+    "slice_param_-3_5": [
+      0,
+      5
+    ],
+    "slice_param_0_-1": "empty",
+    "slice_param_2_5": [
+      2,
+      5
+    ],
+    "slice_row_-1_-1": "empty",
+    "slice_row_-1_-3": "empty",
+    "slice_row_-1_-7": "empty",
+    "slice_row_-1_0": "empty",
+    "slice_row_-1_2": [
+      0,
+      2
+    ],
+    "slice_row_-1_5": [
+      0,
+      5
+    ],
+    "slice_row_-1_8": [
+      0,
+      5
+    ],
+    "slice_row_-3_-1": "empty",
+    "slice_row_-3_-3": "empty",
+    "slice_row_-3_-7": "empty",
+    "slice_row_-3_0": "empty",
+    "slice_row_-3_2": [
+      0,
+      2
+    ],
+    "slice_row_-3_5": [
+      0,
+      5
+    ],
+    "slice_row_-3_8": [
+      0,
+      5
+    ],
+    "slice_row_-7_-1": "empty",
+    "slice_row_-7_-3": "empty",
+    "slice_row_-7_-7": "empty",
+    "slice_row_-7_0": "empty",
+    "slice_row_-7_2": [
+      0,
+      2
+    ],
+    "slice_row_-7_5": [
+      0,
+      5
+    ],
+    "slice_row_-7_8": [
+      0,
+      5
+    ],
+    "slice_row_0_-1": "empty",
+    "slice_row_0_-3": "empty",
+    "slice_row_0_-7": "empty",
+    "slice_row_0_0": "empty",
+    "slice_row_0_2": [
+      0,
+      2
+    ],
+    "slice_row_0_5": [
+      0,
+      5
+    ],
+    "slice_row_0_8": [
+      0,
+      5
+    ],
+    "slice_row_2_-1": "empty",
+    "slice_row_2_-3": "empty",
+    "slice_row_2_-7": "empty",
+    "slice_row_2_0": "empty",
+    "slice_row_2_2": "empty",
+    "slice_row_2_5": [
+      2,
+      5
+    ],
+    "slice_row_2_8": [
+      2,
+      5
+    ],
+    "slice_row_5_-1": "empty",
+    "slice_row_5_-3": "empty",
+    "slice_row_5_-7": "empty",
+    "slice_row_5_0": "empty",
+    "slice_row_5_2": "empty",
+    "slice_row_5_5": "empty",
+    "slice_row_5_8": "empty",
+    "slice_row_8_-1": "empty",
+    "slice_row_8_-3": "empty",
+    "slice_row_8_-7": "empty",
+    "slice_row_8_0": "empty",
+    "slice_row_8_2": "empty",
+    "slice_row_8_5": "empty",
+    "slice_row_8_8": "empty",
+    "slice_row_query_error": null,
+    "substring_literal_-1_1": [
+      "chars",
+      0
+    ],
+    "substring_literal_-1_2": [
+      "chars",
+      0,
+      1
+    ],
+    "substring_literal_-1_4": [
+      "chars",
+      0,
+      3
+    ],
+    "substring_literal_-1_7": [
+      "chars",
+      0,
+      5
+    ],
+    "substring_literal_-3_1": [
+      "chars",
+      0
+    ],
+    "substring_literal_-3_2": [
+      "chars",
+      0
+    ],
+    "substring_literal_-3_4": [
+      "chars",
+      0,
+      1
+    ],
+    "substring_literal_-3_7": [
+      "chars",
+      0,
+      4
+    ],
+    "substring_literal_0_1": [
+      "chars",
+      0,
+      1
+    ],
+    "substring_literal_0_2": [
+      "chars",
+      0,
+      2
+    ],
+    "substring_literal_0_4": [
+      "chars",
+      0,
+      4
+    ],
+    "substring_literal_0_7": [
+      "chars",
+      0,
+      5
+    ],
+    "substring_literal_1_1": [
+      "chars",
+      1,
+      1
+    ],
+    "substring_literal_1_2": [
+      "chars",
+      1,
+      2
+    ],
+    "substring_literal_1_4": [
+      "chars",
+      1,
+      4
+    ],
+    "substring_literal_1_7": [
+      "chars",
+      1,
+      4
+    ],
+    "substring_literal_4_1": [
+      "chars",
+      4,
+      1
+    ],
+    "substring_literal_4_2": [
+      "chars",
+      4,
+      1
+    ],
+    "substring_literal_4_4": [
+      "chars",
+      4,
+      1
+    ],
+    "substring_literal_4_7": [
+      "chars",
+      4,
+      1
+    ],
+    "substring_row_-1_1": [
+      "chars",
+      0
+    ],
+    "substring_row_-1_2": [
+      "chars",
+      0,
+      1
+    ],
+    "substring_row_-1_4": [
+      "chars",
+      0,
+      3
+    ],
+    "substring_row_-1_7": [
+      "chars",
+      0,
+      5
+    ],
+    "substring_row_-3_1": [
+      "chars",
+      0
+    ],
+    "substring_row_-3_2": [
+      "chars",
+      0
+    ],
+    "substring_row_-3_4": [
+      "chars",
+      0,
+      1
+    ],
+    "substring_row_-3_7": [
+      "chars",
+      0,
+      4
+    ],
+    "substring_row_0_1": [
+      "chars",
+      0,
+      1
+    ],
+    "substring_row_0_2": [
+      "chars",
+      0,
+      2
+    ],
+    "substring_row_0_4": [
+      "chars",
+      0,
+      4
+    ],
+    "substring_row_0_7": [
+      "chars",
+      0,
+      5
+    ],
+    "substring_row_1_1": [
+      "chars",
+      1,
+      1
+    ],
+    "substring_row_1_2": [
+      "chars",
+      1,
+      2
+    ],
+    "substring_row_1_4": [
+      "chars",
+      1,
+      4
+    ],
+    "substring_row_1_7": [
+      "chars",
+      1,
+      4
+    ],
+    "substring_row_4_1": [
+      "chars",
+      4,
+      1
+    ],
+    "substring_row_4_2": [
+      "chars",
+      4,
+      1
+    ],
+    "substring_row_4_4": [
+      "chars",
+      4,
+      1
+    ],
+    "substring_row_4_7": [
+      "chars",
+      4,
+      1
+    ],
+    "where_RowVar_false": "prepare_fails",
+    "where_RowVar_true": "prepare_fails"
+  },
+  "port": 36317,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "prop_set_deployed_on_fixture": true,
+  "run": "20261117T022152Z",
+  "scope": "Actual execute_cypher on IRIS 2026.1 (pin 3eaa79cf): slices over a stored 5-element list with 49 bound pairs (row and literal) and 4 parameter pairs; CASE WHEN / WHERE over row, parameter, stored, literal and compared booleans; 15 functions in a node CREATE map and in SET; 6 relationship CREATE values; 8 coalesce argument shapes; 4 slice lower-bound syntaxes; 20 substring (start, length) pairs with length >= 1, literal and row; 3 Prop_Set retypes with Prop_Set and through the product's path for a namespace without it.",
+  "sensitivities_detected_cases": {
+    "coalesce_always_typed": 5,
+    "coalesce_needs_two_props": 3,
+    "create_value_translated": 7,
+    "filer_writes_same_text": 2,
+    "identifier_lookahead": 1,
+    "iris_accepts_scalar_condition": 6,
+    "literal_slice_unwrapped": 12,
+    "prop_set_not_emitted": 2,
+    "property_condition_raw": 6,
+    "rel_literal_dropped": 1,
+    "rel_value_kept": 4,
+    "row_condition_compared": 6,
+    "row_slice_wrapped": 15,
+    "setval_skips_retype": 2,
+    "substring_checks_start": 16,
+    "substring_zero_based": 30,
+    "toupper_not_folded": 1
+  },
+  "verdict": "AGREES"
+}

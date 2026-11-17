@@ -1162,3 +1162,41 @@ Rejected proposal (A-structure S1): `Set ^KG("gen",g,s) = $Increment(^KG("__vers
 
 
 Audit disposition: retired counterproposal. Preserve: Sound degree-cache admission under all competing writers and rollback. Decision/cost: The existing counterexample shows an unrelated writer can produce a reused generation value; key ownership is not repaired by changing the counter source. [Actual Verus comparison](audits/register-20261115/simplification-review.md#simp-str-005).
+
+<a id="simp-cyp-101"></a>
+### One run-time path for list positions, whatever the index or bound's syntax
+
+Severity: Medium
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Comparison: [As-built](results/cypher_exprs/20261117T021938Z-prove/receipt.json) → [Proposed simplification](results/cypher_exprs/20261117T021939Z-control-row-slice-wrapped/receipt.json)
+
+Scope qualification: model only, no state counts (Verus proofs, not explored states). The as-built run proves `theorem_row_negative_slice_departs` with the literal and non-negative neighbors ([cypher_exprs](models/cypher_exprs/NOTES.md)); the proposal is the control `row-slice-wrapped`, which fails only that departure while the neighbors stay verified; the index half is [cypher_fns](models/cypher_fns/NOTES.md)'s control `row-index-through-ivglistget`. Missing run: no product run of the proposal (not implemented).
+
+What is complicated now: the translator decides how to treat a negative list position by the argument's syntax. A literal index gets the 4.6.0 R267 `CASE` and a literal slice bound `GREATEST(0, len + n)`, both worked out from the literal; a run-time index goes to `JSON_ARRAYGET`, which fails for a negative position, and a run-time slice bound goes into the row-number window as it is, where a negative value counts as 0. Two decisions on syntax give two different wrong answers for run-time values ([bug-cyp-111](bugs_issues.md#bug-cyp-111), [bug-cyp-117](bugs_issues.md#bug-cyp-117)).
+
+Proposal: normalize every position in SQL with one expression, `CASE WHEN p < 0 THEN len + p ELSE p END` (clamped for slices, null outside for an index), for literals and run-time values alike; a literal becomes the constant case of the same expression.
+
+Behavior to preserve: literal index and slice answers (TCK `List1`, `List2`), null for a null bound or an index past either end, the element's type, and one parameter binding per marker.
+
+Distinguishing case: over `[1, 2, 3, 4, 5]`, `UNWIND [-3] AS a RETURN l[a..]` answers `[3, 4, 5]` and `l[a]` answers 3, as `l[-3..]` and `l[-3]` do. Governing statements: [query.functions.slice](../ontology/features/cypher.g5.md#query.functions.slice), [query.functions.list_index](../ontology/features/cypher.g5.md#query.functions.list_index).
+
+<a id="simp-cyp-102"></a>
+### One SQL path for values a write computes
+
+Severity: High
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Comparison: [As-built](results/cypher_exprs/20261117T021938Z-prove/receipt.json) → [Proposed simplification](results/cypher_exprs/20261117T021944Z-control-create-value-translated/receipt.json)
+
+Scope qualification: model only, no state counts. The as-built run proves `theorem_unfolded_create_value_refused`, `theorem_inline_rel_expression_dropped` and the SET neighbor `theorem_folded_create_value_written`; the proposal is the control `create-value-translated` (node values) with [`rel-value-kept`](results/cypher_exprs/20261117T021946Z-control-rel-value-kept/receipt.json) (a partial relationship repair). Missing run: no product run of the proposal (not implemented).
+
+What is complicated now: a computed property value takes one of four paths by clause and syntax. `SET` translates it to SQL and stores every shape probed; a node `CREATE` works it out in Python when the constant folder knows the function and otherwise binds the syntax tree, which the driver refuses ([bug-cyp-119](bugs_issues.md#bug-cyp-119)); a relationship `CREATE` between new nodes keeps only literals and drops anything else silently ([bug-cyp-120](bugs_issues.md#bug-cyp-120)); between matched nodes it refuses a row-computed value (documented).
+
+Proposal: compute every `CREATE` map value that is not a literal or a parameter with the SQL `SET` already uses (an `INSERT ... SELECT` of the expression), keeping the Python folder only where it fixes a type SQL would lose.
+
+Behavior to preserve: the stored types the folder fixes today (an integer stays an integer, a float a float, NaN and the infinities as floats), parameter binding, errors raised before anything is written (integer division by zero), and refusal instead of a silent drop wherever a value still cannot be computed.
+
+Distinguishing case: `CREATE (:X {v: size('ab')})` stores 2, and `CREATE (:N)-[:T {v: 1 + 1}]->(:N)` stores the relationship property 2. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).

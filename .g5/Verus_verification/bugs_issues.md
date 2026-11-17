@@ -1050,6 +1050,25 @@ The same rule holds for the batch writer and the delete (iteration 31, [observat
 
 Repair proposal (checked in the model only): open the caller's level first, as `WriteTxn.begin` does with autocommit off (`Txn_Begin(1)`), around the direct temporal calls, or write the SQL part first (controls `temporal-sql-first`, `delete-sql-first` make the split theorem fail). Preserve: the calls join the caller's transaction after `START TRANSACTION` on both engines (T4, T5, W37). Distinguishing case: T11 against T13.
 
+<a id="bug-cyp-120"></a>
+### A relationship CREATE between new nodes drops every computed property value without an error
+
+Severity: High · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: a follow-up to W55's write pairs before the source reading (`F7_rel_fn` in [follow-up 2](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json)), isolated in [follow-up 3](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_inline_rel_expression_dropped` with neighbor `theorem_inline_rel_literal_written`; controls `rel-value-kept`, `rel-literal-dropped`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json) `toUpper_lit`, `size_lit`, `arith`, `toString_lit`, `uuid`, `param_fn`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F7_rel_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `create_rel_*`). `CREATE (:N {id: 'a'})-[:T {v: 1 + 1}]->(:N {id: 'b'})` succeeds and writes both nodes and the relationship, but the relationship's stored qualifiers are NULL: `RETURN r.v` is null, `keys(r)` null, `properties(r)` `{}`; the same holds for `toUpper('ab')`, `size('ab')`, `toString(1)`, `randomUUID()` and `toUpper($s)`. Passing neighbors: a literal `{v: 'ab'}` is stored as `{"v": "ab"}`, and an `UNWIND` literal variable is stored; between matched nodes the same value is refused with a message naming the property (documented in KNOWN_ISSUES).
+
+Expected: openCypher: a `CREATE` stores each property value its map computes; where IVG cannot, it refuses (as it does between matched nodes).
+
+Observed: `_create_clause_relationship_entry`, for endpoints known literally, keeps a property value only when it is a Literal or a FOREACH/UNWIND literal variable; any other expression maps to None, and the next line drops None values as "null props are not stored" (`translator.py:10212-10227`). The multigraph branch receives the same filtered map.
+
+Consequence: the write reports success and the property is lost; nothing tells the caller. High (silent data loss on an ordinary `CREATE` pattern).
+
+Repair proposal (not implemented): resolve a relationship value as a node value is resolved (fold, else translate or refuse with the property's name), never dropping a non-null computed value. The control `rel-value-kept` checks the model's partial repair only. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
+
 <a id="bug-str-004"></a>
 ### verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity
 
@@ -3054,11 +3073,68 @@ Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation f
 
 Expected: openCypher: each call of `randomUUID()` returns a new UUID and `rand()` a new number.
 
-Observed: the translator emits `Graph_KG.NEWID()` and `Graph_KG.RAND()`, calls without a row argument (`translator.py:26919-26924`; `schema.py:2321, 2324`); IRIS 2026.1 evaluates each once per statement. The write refusal was not traced to its source.
+Observed: the translator emits `Graph_KG.NEWID()` and `Graph_KG.RAND()`, calls without a row argument (`translator.py:26919-26924`; `schema.py:2321, 2324`); IRIS 2026.1 evaluates each once per statement. The write refusal was traced in iteration 48: [bug-cyp-119](#bug-cyp-119) (any function the Python constant folder does not work out).
 
 Consequence: generated identifiers repeat across rows of a read, and cannot be generated in a `CREATE` at all. Medium.
 
 Repair proposal (not implemented): pass a row-dependent argument (or declare the functions non-deterministic) so IRIS evaluates them per row, and accept a function value in a `CREATE` map. Governing statement: [query.functions.random](../ontology/features/cypher.g5.md#query.functions.random).
+
+<a id="bug-cyp-117"></a>
+### A negative list-slice bound known only at run time counts as 0
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the frozen W55 prediction L1 missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_row_negative_slice_departs` with neighbors `theorem_literal_slice_follows_rule` and `theorem_row_nonnegative_slice_follows_rule`; controls `row-slice-wrapped`, `literal-slice-unwrapped`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `L1_rows`, `L1_param`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F3_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `slice_row_*`, `slice_param_*`, `slice_literal_*`). Over a stored `n.l = [1, 2, 3, 4, 5]`, `UNWIND [[-3, -1]] AS ab RETURN n.l[ab[0]..ab[1]]` answers `[]` (rule `[3, 4]`), `[-3, 5]` answers the whole list (rule `[3, 4, 5]`), `[0, -1]` answers `[]` (rule `[1, 2, 3, 4]`); parameters `n.l[$a..$b]` behave the same, and so does a list the query holds (`WITH [1, 2, 3, 4, 5] AS l`). Passing neighbors: the same bounds written in the query (`n.l[-3..-1]` is `[3, 4]`), and every non-negative run-time bound.
+
+Expected: openCypher (TCK `List2` [6], [8]): a negative bound counts from the end; bounds are clamped to the list.
+
+Observed: `_expr_slice` wraps a literal negative bound as `GREATEST(0, JSON_ARRAYLENGTH(l) + n)` and passes any other bound as it is into `rn > (start) AND rn <= (end)` (`translator.py:23741-23772`), so a negative run-time start keeps every row and a negative run-time end keeps none.
+
+Consequence: a slice computed from data (`l[-k..]`, `l[..-1]` with a parameter) silently answers the wrong elements. Medium.
+
+Repair proposal (not implemented): give a run-time bound the same wrap in SQL (`CASE WHEN b < 0 THEN GREATEST(0, len + b) ELSE b END`); preserve literal bounds and null bounds. The control `row-slice-wrapped` checks the repaired rule in the model only (the non-negative neighbor stays verified); see [one run-time path for list positions](design_simplification.md#simp-cyp-101). Governing statement: [query.functions.slice](../ontology/features/cypher.g5.md#query.functions.slice).
+
+<a id="bug-cyp-118"></a>
+### A boolean known only at run time cannot be a CASE WHEN or WHERE condition
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the frozen W55 prediction C4 missed for its `UNWIND` half ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_row_boolean_condition_fails` (conditional on the observed IRIS premise) with neighbor `theorem_predicate_condition_follows_rule`; controls `row-condition-compared`, `property-condition-raw`, `iris-accepts-scalar-condition`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `C4_unwind`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F6_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `cond_*`, `where_RowVar_*`). `UNWIND [true, false] AS f RETURN CASE WHEN f THEN 'y' ELSE 'n' END`, `WITH true AS f RETURN CASE WHEN f ...`, `RETURN CASE WHEN $f ...` and `UNWIND [true, false] AS f WITH f WHERE f RETURN f` each fail at Prepare with SQLCODE -14 "A comparison operator is required here". Passing neighbors: a stored boolean property (`CASE WHEN n.flag`), a literal, `f = true`, `NOT f`, `f AND true` and the simple `CASE f WHEN true`.
+
+Expected: openCypher: any boolean expression is a condition; `CASE WHEN b` takes the branch when `b` is true.
+
+Observed: `_translate_boolean_expression` turns a literal, a property read, a map access and a comparison into predicates, but returns the SQL of a bare variable or parameter as it is (`translator.py:18688-18716`); IRIS 2026.1 refuses a scalar in a predicate position. The known issue "A boolean property of a map row reads as false in a CASE WHEN" is a neighbor (`input.fixed`), not this shape.
+
+Consequence: a query that branches or filters on a computed or passed-in flag fails outright. Medium.
+
+Repair proposal (not implemented): compare a bare row or parameter boolean as `= 1` (or route it through `_stored_bool_in`'s JSON-kind test). The control `row-condition-compared` checks the repaired rule in the model only. Governing statement: [query.values.conditions](../ontology/features/cypher.g5.md#query.values.conditions).
+
+<a id="bug-cyp-119"></a>
+### A node CREATE whose map value calls a function IVG does not work out in Python is refused
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the frozen W55 prediction W2 missed (W3 held as the owner predicted) ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); the source reading traced bug-cyp-114's `CREATE` refusal; [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_unfolded_create_value_refused` with neighbor `theorem_folded_create_value_written`; controls `create-value-translated`, `toupper-not-folded`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `W2_*`, `W3_*`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F7_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `create_node_*`, `set_node_*`). `CREATE (:X {id: 'a', v: size('ab')})` fails "execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected", and so do `abs(-1)`, `toInteger('5')`, `substring('abc', 1)`, `replace('a', 'a', 'b')`, `randomUUID()` and `rand()`, with or without `UNWIND`; no node is written. Passing neighbors: `toUpper('ab')`, `toLower`, `trim`, `coalesce(null, 'x')`, `toString(1)`, `toInteger(2.5)`, `1 + 1` and `toUpper($s)` are stored, and `SET x.v = <each of the 15 shapes>` stores the value.
+
+Expected: openCypher: a `CREATE` stores each property value its map computes.
+
+Observed: `_create_resolve_prop_value` asks `_fold_constant` to work out a function value in Python; the folder handles coalesce, the case and trim functions, `toString`, `toFloat`/`toInteger` of a number and arithmetic, and returns `_NOT_CONSTANT` for anything else, and the function then returns the AST itself (`translator.py:9594-9599`, `9670`), which the node INSERT binds as an argument and the driver refuses.
+
+Consequence: a node cannot be created with a generated identifier, a size, an absolute value or a parsed number in one statement; the whole write is refused (nothing partial). Medium. bug-cyp-114 named the `randomUUID()` and `rand()` cases; this is their cause.
+
+Repair proposal (not implemented): translate an unfolded value to SQL as `SET` does (control `create-value-translated` checks the repaired rule in the model only); see [one SQL path for computed write values](design_simplification.md#simp-cyp-102). Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
 
 <a id="bug-cyp-115"></a>
 ### A map value read by a key answers numbers and booleans as text
@@ -3093,6 +3169,101 @@ Expected: the 4.6.0 CHANGELOG: a type error on a row fails with IRIS's error tex
 Observed: the list element functions raise without a message (`schema.py:2300`, `2179`).
 
 Consequence: callers cannot tell a type error from another failure. Low. Governing statement: [query.functions](../ontology/features/cypher.g5.md#query.functions).
+
+<a id="bug-cyp-121"></a>
+### coalesce over row values, literals or parameters answers numbers and booleans as text
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the frozen W55 prediction C3's literal neighbor missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_row_coalesce_number_as_text` with neighbor `theorem_node_coalesce_keeps_type`; controls `coalesce-always-typed`, `coalesce-needs-two-props`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `C3_*`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F5_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `coalesce_*`). `RETURN coalesce(null, 1)` answers `'1'`, `coalesce(null, 2.5, 'z')` `'2.5'`, `coalesce(null, true, 'z')` `'1'`; `UNWIND [7] AS x RETURN coalesce(x, 'z')` `'7'`; `coalesce($p, 1)` with `$p = 7` `'7'`; `coalesce(n.i, x)` with `x` from `UNWIND` `'7'`. Passing neighbors: `coalesce(n.missing, n.v, 'z')` and `coalesce(n.i, $p)` keep the stored integer.
+
+Expected: openCypher (TCK `Conditional1`): `coalesce` returns its first non-null argument unchanged.
+
+Observed: `_is_typed_coalesce` reads the winner with its type only when a node property is among node properties, scalar literals and scalar parameters (`translator.py:7620-7642`); otherwise `_scalar_coalesce` CASTs the first argument and later non-string literals to VARCHAR (`translator.py:24455-24472`). Related inherited entry: [bug-cyp-107](#bug-cyp-107) (a relationship property in `coalesce`).
+
+Consequence: a defaulted number or flag arrives as a string, and later comparisons or arithmetic on it follow string rules. Low.
+
+Governing statement: [query.functions.coalesce](../ontology/features/cypher.g5.md#query.functions.coalesce).
+
+<a id="bug-cyp-122"></a>
+### A list slice whose lower bound is a variable name does not parse
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the W55 probe's own query `n.l[a..3]` failed to parse ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `L1_rows_scalar`); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_identifier_lower_bound_refused` with neighbor `theorem_other_lower_bounds_parse`; control `identifier-lookahead`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F4_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `parse_*`). `WITH [1, 2, 3] AS l, 1 AS a RETURN l[a..3]` fails "CypherParseError: Expected IDENTIFIER, got FLOAT_LITERAL"; `l[a..b]`, `l[a..]` and `l[a .. 3]` fail "Expected IDENTIFIER, got .". Passing neighbors: `l[1..b]`, `l[$a..3]`, `l[x[0]..3]`.
+
+Expected: openCypher: any expression may be a slice bound.
+
+Observed: `Parser.parse_primary_expression` reads a `.` after an identifier as a property access and then expects a name (`parser.py:1621-1641`); the postfix loop that serves other bounds looks ahead for `..` and the `.N` float, this branch does not.
+
+Consequence: the query is refused (fails loudly); a workaround exists (`l[(a)..3]` was not tested; `l[x[0]..3]` works). Low.
+
+Governing statement: [query.functions.slice](../ontology/features/cypher.g5.md#query.functions.slice).
+
+<a id="bug-cyp-123"></a>
+### A negative substring start answers leading characters instead of an error
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the frozen W55 prediction S2 partly missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_negative_start_answers_prefix` with neighbor `theorem_inside_substring_follows_rule`; controls `substring-checks-start`, `substring-zero-based`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `S2_neg_*`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F1_*`, `F2_neg`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `substring_*`). `substring('hello', -1, 2)` and `substring(n.s, a, 2)` with `a = -1` from `UNWIND` answer `'h'`, `a = -3` answers `''`; `substring('hello', 1, -1)` fails SQLCODE -400 `<ILLEGAL VALUE>`, a fatal IRIS error naming no Cypher error; `left(n.s, -1)` answers null. Literal and run-time arguments behave alike here. Passing neighbors: every start and length inside the string.
+
+Expected: the Cypher 9 function reference: a negative start or length raises an error (openCypher's TCK does not pin it).
+
+Observed: `_scalar_string` emits `SUBSTRING(s, (start) + 1, len)` with no check (`translator.py:24488-24494`); IRIS takes positions below 1 as the string's start.
+
+Consequence: a computed negative offset silently answers a different substring. Low.
+
+Governing statement: [query.functions.strings](../ontology/features/cypher.g5.md#query.functions.strings).
+
+<a id="bug-cyp-124"></a>
+### A zero-length left, right or substring answers null instead of the empty string
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the frozen W55 prediction S3 partly missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)). No formal contract: probe only (open in Verus).
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `S3_*`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F2_*`). `left('hello', 0)`, `right('hello', 0)`, `left(n.s, 0)`, `substring('hello', 2, 0)` and `substring(n.s, 1, 0)` answer null, for literal and run-time arguments; `substring('hello', 0, 0)` answers `''`. Passing neighbors: every length of 1 or more.
+
+Expected: openCypher: an empty result is the empty string, not null.
+
+Observed: the SQL functions answer IRIS's empty string, which SQL reads as null; not traced further.
+
+Consequence: `IS NULL` tests and `coalesce` treat an empty prefix as missing. Low.
+
+Governing statement: [query.functions.strings](../ontology/features/cypher.g5.md#query.functions.strings).
+
+<a id="bug-cyp-125"></a>
+### With the driver 5.3.2 an UNWIND of a list parameter fails "Invalid number of parameters"
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 48)
+
+Found by: the first `cypher_exprs` binding run (its `UNWIND $pairs` read answered no rows, [receipt](results/cypher_exprs/20261117T022138Z-binding/receipt.json)); a follow-up after the binding. No formal contract: potential problem, conditional on the driver.
+
+Reproduced by: **Partially reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin and its driver `intersystems-irispython` 5.3.2 (the fixture's venv); not run on 5.4.x. `UNWIND $xs AS a RETURN a` with `$xs = [1, 2]` answers `<PARAMETER ERROR> Invalid number of parameters`, and after a `MATCH` `<ARGUMENT ERROR> Incorrect number of parameters`; the translated SQL reads `JSON_TABLE(?, '$[*]' ...)`. Passing neighbor: `WITH $xs AS l UNWIND l AS a RETURN a` answers `[1], [2]`. Iteration 47's "Incorrect number of parameters" observations for `n.l[$i]` and `m[$k]` ([bug-cyp-111](#bug-cyp-111)) may share this premise.
+
+Expected: the README: the TCK passes on Community 2026.1 with drivers 5.4.0 and 5.4.1; `pyproject.toml` accepts `intersystems-iris>=1.0.0`. The iris-sql-quirks guide (item 6) says a `?` inside `JSON_TABLE`'s source is not a parameter.
+
+Observed: a potential problem only: whether 5.4.x binds the marker is not established here, and whether 5.3.x is a supported driver is not stated.
+
+Consequence: if 5.3.x is supported, the main bulk-load pattern (`UNWIND $rows ...`) fails with it. Low until established.
+
+Governing statement: [query.conformance](../ontology/features/cypher.g5.md#query.conformance).
 
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero

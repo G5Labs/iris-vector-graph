@@ -285,6 +285,21 @@ A write clause inside a `CALL { }` body is carried out, or the whole query is re
 A node's ID is its identity, so a Cypher `CREATE` of a node whose ID already exists in that graph merges into that node instead of making a second one. The node gains the new labels and any property it lacked, and keeps its old values; to change a value, `SET` it.
 
 
+<a id="query.writes.computed_values"></a>
+[I · query.writes.computed_values]
+
+A `CREATE` stores each property value its map computes, as a `SET` of the same expression stores it.
+- Today a node `CREATE` whose value calls a function IVG cannot work out before running the query, such as `size()`, `abs()`, `toInteger()` of a string, `substring()`, `replace()`, `randomUUID()` or `rand()`, is refused with nothing written. `toUpper()`, `trim()`, `coalesce()`, `toString()` and arithmetic are stored ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-119)).
+- Today a relationship `CREATE` whose end nodes the same `CREATE` makes keeps only literal values and `UNWIND` literals. Any computed value, even `1 + 1`, is dropped without an error, and the relationship has no such property ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-120)). Between matched nodes such a value is refused ([conformance](#query.conformance)).
+
+
+<a id="query.writes.retype"></a>
+[D · query.writes.retype]
+
+A `SET` that gives a node property a value with the same text and another type stores the new type: `SET n.age = toInteger(n.age)` over the string `'30'` stores the integer 30, as `SET n.age = 30` does.
+- From 4.7.0 IVG writes such a value through the `Prop_Set` SQL function. A namespace whose IVG classes predate 4.7.0 keeps the old string until setup deploys the function.
+
+
 ## Entry points
 
 
@@ -446,6 +461,13 @@ A relationship property read in a Cypher result is decoded from its stored text.
 - A result column that is not itself a relationship property read is not decoded: `coalesce(r.p, 'z')` returns the stored text (`'7'` for the number 7, `'1'` for the boolean `true`), while `RETURN r.p` returns 7 and `true`.
 - In arithmetic a relationship boolean reads as 1 (`r.p + 1` is 2), while a node boolean is the text `true` and concatenates (`n.p + 1` is `'true1'`), the documented string-arithmetic behavior.
 
+
+<a id="query.values.conditions"></a>
+[I · query.values.conditions]
+
+A boolean value can be a `CASE WHEN` or `WHERE` condition wherever it comes from: a stored property, a literal, a comparison, an `UNWIND` row, a `WITH` column or a parameter. Simple and generic `CASE` over stored or run-time values give the openCypher answer, and a missing value takes the `ELSE`.
+- Today a bare boolean from an `UNWIND` row, a `WITH` column or a parameter fails the whole query (`UNWIND [true] AS b RETURN CASE WHEN b THEN 1 END`, `WITH b WHERE b`). Comparing it (`b = true`) or negating it (`NOT b`) works ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-118)).
+
 ## Built-in functions
 
 
@@ -494,13 +516,33 @@ Cypher's built-in list, string, map and aggregate functions give the openCypher 
 [I · query.functions.random]
 
 Each call of `randomUUID()` returns a new UUID, and each call of `rand()` a new number from 0 up to 1.
-- Today every row of a query gets the same value from each, and a `CREATE` that sets a property from `randomUUID()` or `rand()` is refused with nothing written ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-114)).
+- Today every row of a query gets the same value from each, and a `CREATE` that sets a property from `randomUUID()` or `rand()` is refused with nothing written ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-114)). The refusal is shared with other functions; [computed values](#query.writes.computed_values) owns it.
 
 <a id="query.functions.sql_helpers"></a>
 [D · query.functions.sql_helpers]
 
 The SQL functions `CypherFn_IVG*` are kept for SQL callers. Cypher queries reach only four of them: the run-time `range()`, the type-error signal, and the relationship property set and remove helpers. The other list, map, string and regex functions that Cypher uses are separate SQL functions created at setup.
 - So the answers above come from the translator and those setup functions. `CypherFn_IVGLISTGET` already counts a negative index from the end, but Cypher does not use it.
+
+<a id="query.functions.slice"></a>
+[I · query.functions.slice]
+
+`list[a..b]` gives the elements from position `a` up to, but not including, `b`. A negative bound counts from the end, a bound past either end is clamped to the list, and a null bound gives null.
+- Today this holds for bounds written in the query and for run-time bounds of 0 or more. A negative bound known only at run time counts as 0, so `l[-3..5]` gives the whole list and `l[0..-1]` gives `[]` ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-117)).
+- Today a lower bound that is a variable name does not parse: `l[a..3]`, `l[a..b]` and `l[a..]` are refused, while `l[$a..3]` and `l[x[0]..3]` work ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-122)).
+
+<a id="query.functions.strings"></a>
+[I · query.functions.strings]
+
+String functions give the openCypher answer for literal and run-time arguments alike. `toUpper`, `toLower`, `trim`, `ltrim`, `rtrim` and `replace` (every occurrence) work on the text; `substring(s, start, length)` counts from 0 and takes at most `length` characters; `left` and `right` take at most that many; `size()` counts a string's characters or a list's elements; `toInteger` and `toFloat` read numeric text and give null for other text.
+- A negative start or length is an error. Today a negative `substring` start answers leading characters (`substring('hello', -1, 2)` is `'h'`), a negative length fails with an IRIS error that names no Cypher error, and `left(s, -1)` is null ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-123)).
+- A length of 0 gives the empty string. Today `left(s, 0)`, `right(s, 0)` and `substring(s, 1, 0)` give null ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-124)).
+
+<a id="query.functions.coalesce"></a>
+[I · query.functions.coalesce]
+
+`coalesce(...)` gives its first argument that is not null, with that argument's type.
+- Today the type is kept only when one argument is a node property and every other is a node property, a single literal value or a parameter. Otherwise a number or boolean comes back as text: `UNWIND [7] AS x RETURN coalesce(x, 1)` gives `'7'` and `coalesce(null, 1)` gives `'1'` ([finding](../../Verus_verification/bugs_issues.md#bug-cyp-121)). A relationship property follows [relationship text](#query.values.relationship_text).
 
 ## Metadata
 
@@ -768,7 +810,7 @@ Findings: [USE GRAPH accepts graph names the graph keys refuse](../../Verus_veri
 - agent
 - user-facing-behavior, data-integrity
 - test-coverage
-- Children: [atomic](#query.writes.atomic), [adjacency](#query.writes.adjacency), [ledger](#query.writes.ledger), [subquery](#query.writes.subquery), [create existing](#query.writes.create-existing), [Should a Cypher `DELETE` clean up everything the engine's own [node delete](graph-structure.g5.md#structure.node.delete) and edge delete clean up?](../../Verus_verification/open_questions.md#query.writes.delete-scope).
+- Children: [atomic](#query.writes.atomic), [adjacency](#query.writes.adjacency), [ledger](#query.writes.ledger), [subquery](#query.writes.subquery), [create existing](#query.writes.create-existing), [computed values](#query.writes.computed_values), [retype](#query.writes.retype), [Should a Cypher `DELETE` clean up everything the engine's own [node delete](graph-structure.g5.md#structure.node.delete) and edge delete clean up?](../../Verus_verification/open_questions.md#query.writes.delete-scope).
 
 Sources: [CHANGELOG 4.6.0, every statement uses the rows its MATCH bound](../../../CHANGELOG.md#L1742-L1744), [spec 229](../../../specs/229-tck-write-verification/spec.md), [`_write_ids`, `_capture_key`](../../../iris_vector_graph/cypher/translator.py#L13093-L13164), [`execute_transaction`](../../../iris_vector_graph/stores/iris_sql_store.py#L1580-L1818). Live: the TCK's write scenarios with side-effect counting, and `test_460_all_graphs_writes_e2e.py`.
 
@@ -828,6 +870,28 @@ Findings: [A write inside CALL { } is refused with a raw SQL syntax error instea
 - Expands: [Writes](#query.writes).
 
 Sources: [USER_GUIDE, a node's ID is its identity](../../../docs/USER_GUIDE.md#L142-L147), [CHANGELOG 4.6.5](../../../CHANGELOG.md#L359-L362), [reconstruction check 2(a)15](../../uplift/ivg-verus-initial/reconstruction-check.md). `create_node` returns False and adds nothing for an existing ID, and `store_node` replaces properties; the structure page owns those.
+
+### query.writes.computed_values
+- agent
+- user-facing-behavior, data-integrity
+- Expands: [Writes](#query.writes).
+- Sources: openCypher (`Create*`, `Set*`); [`translator.py` `_create_resolve_prop_value`, `_fold_constant`](../../../iris_vector_graph/cypher/translator.py#L9319-L9671); [`_create_clause_relationship_entry`](../../../iris_vector_graph/cypher/translator.py#L10183-L10246); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `folds`, `create_node_value`, `create_rel_value`; neighbors `theorem_folded_create_value_written`, `theorem_inline_rel_literal_written`; as-built departures `theorem_unfolded_create_value_refused` (control `create-value-translated` is the repair) and `theorem_inline_rel_expression_dropped` (control `rel-value-kept`); both rest on observed driver behavior
+
+Recovered in iteration 48. A `SET` of each of the 15 function shapes probed is stored; the two `CREATE` paths decide by the value's syntax and by what the Python constant folder can work out.
+
+Simplification: [One SQL path for values a write computes](../../Verus_verification/design_simplification.md#simp-cyp-102)
+
+Findings: [A node CREATE whose map value calls an unfolded function is refused](../../Verus_verification/bugs_issues.md#bug-cyp-119); [A relationship CREATE between new nodes drops every computed property value](../../Verus_verification/bugs_issues.md#bug-cyp-120); [randomUUID() and rand() in a CREATE](../../Verus_verification/bugs_issues.md#bug-cyp-114)
+
+### query.writes.retype
+- agent
+- data-integrity, architecture-decision
+- Expands: [Writes](#query.writes).
+- Sources: KNOWN_ISSUES "A property cannot tell a number from a string that spells it" (workaround, 4.7.0); [`translator.py` `_prop_set`](../../../iris_vector_graph/cypher/translator.py#L12960-L12968); [`PropWrite.cls` `SetVal`](../../../iris_src/src/Graph/KG/PropWrite.cls); [`SqlProcs.cls` `PropSet`](../../../iris_src/src/Graph/KG/SqlProcs.cls#L187-L190); [`engine.py` `_prop_set_deployed`](../../../iris_vector_graph/engine.py#L1762-L1781); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `setval`, `node_update`; `theorem_prop_set_retypes`, neighbor `theorem_without_prop_set_same_text_keeps_old` (conditional on the filer premise; controls `setval-skips-retype`, `prop-set-not-emitted`, `filer-writes-same-text`)
+
+Recovered in iteration 48; frozen prediction W4 held. The binding observed both paths on the fixture, the second through the product's own switch for a namespace without `Prop_Set`.
 
 ### query.read-only
 - agent
@@ -923,6 +987,8 @@ Audit reproduction: [F-C0101](../../Verus_verification/bugs_issues.md#F-C0101) i
 
 Findings: [An inline relationship property in a Cypher pattern fails on an edge with no properties](../../Verus_verification/bugs_issues.md#F-C0101).
 
+Findings: [With the driver 5.3.2 an UNWIND of a list parameter fails "Invalid number of parameters"](../../Verus_verification/bugs_issues.md#bug-cyp-125) (a driver-conditional potential problem, iteration 48).
+
 Audit reproduction: [F-0808](../../Verus_verification/bugs_issues.md#F-0808) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 Findings: [FOREACH over a parameter list does not run per item](../../Verus_verification/bugs_issues.md#F-0808).
@@ -937,7 +1003,7 @@ Open questions: [Does a Cypher path value come back as JSON text or as a map, an
 
 - design-verified
 - Sources: [`iris_vector_graph/prop_values.py`](../../../iris_vector_graph/prop_values.py#L1-L77) (the typed-values contract, 4.6.0 R308 and R310)
-- Children: [relationship property text](#query.values.relationship_text), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering), [sorting](#query.values.sorting), [nulls](#query.values.nulls), [string predicates](#query.values.string_predicates), [IN lists](#query.values.in_lists)
+- Children: [relationship property text](#query.values.relationship_text), [conditions](#query.values.conditions), [equality in WHERE](#query.values.equality), [ordering in WHERE](#query.values.ordering), [sorting](#query.values.sorting), [nulls](#query.values.nulls), [string predicates](#query.values.string_predicates), [IN lists](#query.values.in_lists)
 - Verus: [node_read](../../Verus_verification/models/node_read/NOTES.md), as-built numeric writer, D/N tag selection, S escape and numeric/text read distinctions. The scalar node-property projection reaches the final result in `theorem_sql_scalar_read_reaches_result`; JSON/J tags, N fractional/exponent parsing, nonfinite values, mixed expressions and the remaining SQL finishing pipeline are open modeling gaps. Numeric spelling/parse identity in `CY_TYPED` is an inspected provider premise, not a proved IRIS function.
 - agent
 - user-facing-behavior
@@ -1054,6 +1120,17 @@ Audit reproduction: [bug-cyp-101](../../Verus_verification/bugs_issues.md#bug-cy
 
 State machines: [rel prop text](../../Verus_verification/models/rel_prop_text/manifest.json)
 
+### query.values.conditions
+- agent
+- user-facing-behavior
+- Expands: [Values in results](#query.values)
+- Sources: openCypher TCK `Conditional2`; KNOWN_ISSUES "A boolean property of a map row reads as false in a `CASE WHEN`"; [`translator.py` `_expr_case`](../../../iris_vector_graph/cypher/translator.py#L22189-L22238), [`_translate_boolean_expression`](../../../iris_vector_graph/cypher/translator.py#L18651-L18716); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `condition_sql`, `case_when`; neighbor `theorem_predicate_condition_follows_rule`; as-built departure `theorem_row_boolean_condition_fails`, conditional on the observed IRIS premise (controls `row-condition-compared`, `iris-accepts-scalar-condition`)
+
+Recovered in iteration 48. Frozen predictions C1, C2 and the stored half of C4 held; the `UNWIND` half of C4 missed.
+
+Findings: [A boolean known only at run time cannot be a CASE WHEN or WHERE condition](../../Verus_verification/bugs_issues.md#bug-cyp-118)
+
 ### query.functions
 
 - Sources: openCypher TCK (`List*`, `String*`, `Map*`); [query.conformance](#query.conformance); [`translator.py` `_expr_subscript`, `_scalar_string`, `_expr_fn_list_ops`](../../../iris_vector_graph/cypher/translator.py#L23500-L23656); [`schema.py` Cypher SQL functions](../../../iris_vector_graph/schema.py#L2179-L2380); [`CypherFn.cls`](../../../iris_src/src/Graph/KG/CypherFn.cls); [W54 predictions and results](../../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)
@@ -1074,6 +1151,8 @@ Findings: [head() of a number fails with an error that does not name TypeError](
 - user-facing-behavior
 
 Findings: [A list index known only at run time fails the whole query when it is negative](../../Verus_verification/bugs_issues.md#bug-cyp-111)
+
+Simplification: [One run-time path for list positions, whatever the index or bound's syntax](../../Verus_verification/design_simplification.md#simp-cyp-101)
 
 ### query.functions.reverse
 
@@ -1133,3 +1212,41 @@ Findings: [randomUUID() and rand() give one value for every row of a query](../.
 - architecture-decision
 
 Recovered in iteration 47 from the translator's emitted SQL names. The other 13 `CypherFn` bodies are reachable from SQL only; their SQL behavior was not probed except `CypherFn_IVGLISTGET` and `CypherFn_IVGRANGE`.
+
+### query.functions.slice
+
+- Sources: openCypher TCK `List2`; [`translator.py` `_expr_slice`](../../../iris_vector_graph/cypher/translator.py#L23679-L23791); [`parser.py` `parse_primary_expression`](../../../iris_vector_graph/cypher/parser.py#L1621-L1641); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
+- Expands: [Built-in functions](#query.functions)
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `translated_bound`, `as_built_slice`, `rule_slice`, `parses`; neighbors `theorem_literal_slice_follows_rule`, `theorem_row_nonnegative_slice_follows_rule`, `theorem_other_lower_bounds_parse`; as-built departures `theorem_row_negative_slice_departs` (control `row-slice-wrapped` is the repair) and `theorem_identifier_lower_bound_refused` (control `identifier-lookahead`)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 48. Frozen predictions L2, L3, L4 held; L1 missed for negative run-time bounds.
+
+Findings: [A negative list-slice bound known only at run time counts as 0](../../Verus_verification/bugs_issues.md#bug-cyp-117); [A slice whose lower bound is a variable name does not parse](../../Verus_verification/bugs_issues.md#bug-cyp-122)
+
+Simplification: [One run-time path for list positions, whatever the index or bound's syntax](../../Verus_verification/design_simplification.md#simp-cyp-101)
+
+### query.functions.strings
+
+- Sources: openCypher TCK `String1`-`String14`, `TypeConversion2`-`4`; the Cypher 9 function reference (negative arguments); [`translator.py` `_scalar_string`](../../../iris_vector_graph/cypher/translator.py#L24475-L24494); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
+- Expands: [Built-in functions](#query.functions)
+- Verus: active for `substring`'s start: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `as_built_substring`, `rule_substring`; neighbor `theorem_inside_substring_follows_rule`; as-built departure `theorem_negative_start_answers_prefix` (control `substring-checks-start`). The zero-length null (second bullet), `left`/`right` and the conversions are observed only.
+- agent
+- user-facing-behavior
+
+Recovered in iteration 48. Frozen predictions S1, S4, S5, S6 held; S2 (negative start) and S3 (length 0) were partial, for literal and run-time arguments alike.
+
+Findings: [A negative substring start answers leading characters](../../Verus_verification/bugs_issues.md#bug-cyp-123); [A zero-length left, right or substring answers null](../../Verus_verification/bugs_issues.md#bug-cyp-124)
+
+### query.functions.coalesce
+
+- Sources: openCypher TCK `Conditional1`; CHANGELOG 4.6.0 R259; [`translator.py` `_is_typed_coalesce`](../../../iris_vector_graph/cypher/translator.py#L7620-L7642), [`_scalar_coalesce`](../../../iris_vector_graph/cypher/translator.py#L24455-L24472); [W55 predictions and results](../../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)
+- Expands: [Built-in functions](#query.functions)
+- Verus: active: [`cypher_exprs.rs`](../../Verus_verification/models/cypher_exprs/NOTES.md) `typed_coalesce`, `coalesce_number`; neighbor `theorem_node_coalesce_keeps_type`; as-built departure `theorem_row_coalesce_number_as_text` (control `coalesce-always-typed`)
+- agent
+- user-facing-behavior
+
+Recovered in iteration 48. Frozen prediction C3 held for stored values and missed for its literal neighbor.
+
+Findings: [coalesce over row values, literals or parameters answers numbers as text](../../Verus_verification/bugs_issues.md#bug-cyp-121); inherited [coalesce over a relationship property returns its stored text](../../Verus_verification/bugs_issues.md#bug-cyp-107)

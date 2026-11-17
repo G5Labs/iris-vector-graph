@@ -498,6 +498,21 @@ python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after4
 python3 .g5/Verus_verification/tools/check_consolidated.py                                      # PASS
 ```
 
+Iteration 48 (W55, Cypher expressions over run-time values), same environment:
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/cypher_exprs      # PASS 17
+CONTROL=row-slice-wrapped python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/cypher_exprs
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/cypher_exprs/binding.py) # AGREES 209
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after48                 # 480/4130
+```
+
+Worked lookup (iteration 48): `query.writes.computed_values` → `cypher_exprs.rs::theorem_inline_rel_expression_dropped`
+→ the row for `iris_vector_graph/cypher/translator.py::_create_clause_relationship_entry` (line 10212, decision) in
+`crosswalk/decision-links.tsv`; in reverse, that member's key in `bindings.json` lists this claim. The distinguishing
+control is `rel-value-kept`; the product observation is the binding's `create_rel_Call_Arith` (`written_without_property`)
+beside `create_rel_Lit` (`written`).
+
 Worked lookup: `query.functions.list_index` → `cypher_fns.rs::theorem_row_negative_index_fails` → the row for
 `iris_vector_graph/cypher/translator.py::_expr_subscript` (line 23509, decision) and
 `iris_vector_graph/schema.py::GraphSchema.get_procedures_sql_list` (the `JSON_ARRAYGET` body, line 2179) in
