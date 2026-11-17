@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: count(b) as COUNT(*) (the null row counted)",
+    "expect_fail_in": [
+      "theorem_after_match_follows_rule",
+      "theorem_null_row_counts"
+    ],
+    "find": "        Agg::CountVar => AVal::Int(vs.len() as int),\n        Agg::CountStar => AVal::Int(rows.len() as int),",
+    "name": "count-var-counts-rows",
+    "replace": "        Agg::CountVar => AVal::Int(rows.len() as int),\n        Agg::CountStar => AVal::Int(rows.len() as int),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_after_match_follows_rule",
+      "theorem_null_row_counts"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/clause_combos/clause_combos.rs": "5610773c054788e8aa6bfbdea1a0e7e4df51f2a8084ca0d3d18e859ca37f0a72",
+    ".g5/Verus_verification/models/clause_combos/model.json": "32ffbdc4a06de312e1aab0f10fa5b680977c08456e744061d4ec9d901e6c7374"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/count-var-counts-rows/20261117T081347Z/models/clause_combos/clause_combos.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_after_match_follows_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081347Z-control-count-var-counts-rows-theorem_after_match_follows_rule.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_null_row_counts": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081347Z-control-count-var-counts-rows-theorem_null_row_counts.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081347Z-control-count-var-counts-rows.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/clause_combos/20261117T081350Z-control-count-var-counts-rows/logs/20261117T081347Z-control-count-var-counts-rows-theorem_after_match_follows_rule.log": "93b1344b888a521da9bab6bf7b7b39eb02fd5bcdf54c80ec6c446103106732d1",
+    ".g5/Verus_verification/results/clause_combos/20261117T081350Z-control-count-var-counts-rows/logs/20261117T081347Z-control-count-var-counts-rows-theorem_null_row_counts.log": "19e9d053a79f28e947b29ae2e6ebca350c0fe3645fc127f4826d14ce7fc8abce",
+    ".g5/Verus_verification/results/clause_combos/20261117T081350Z-control-count-var-counts-rows/logs/20261117T081347Z-control-count-var-counts-rows.log": "f2eacb9afac2064a35aec363cc5badaf1852dbbebccb1673b1200d50a820a42a"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

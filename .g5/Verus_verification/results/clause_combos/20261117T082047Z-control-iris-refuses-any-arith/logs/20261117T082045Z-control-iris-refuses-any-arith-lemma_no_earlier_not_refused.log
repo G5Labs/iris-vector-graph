@@ -1,0 +1,19 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/iris-refuses-any-arith/20261117T082045Z/models/clause_combos/clause_combos.rs:341:13
+    |
+341 |       ensures !refuses_p(c, pos),
+    |               ^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+344 | /     match c {
+345 | |         Cond::Cmp(x, y) => {},
+346 | |         Cond::And(p, q) => { lemma_no_earlier_not_refused(*p, pos); lemma_no_earlier_not_refused(*q, pos); },
+347 | |         Cond::Or(p, q) => { lemma_no_earlier_not_refused(*p, pos); lemma_no_earlier_not_refused(*q, pos); },
+348 | |         Cond::Not(p) => { lemma_no_earlier_not_refused(*p, !pos); },
+349 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

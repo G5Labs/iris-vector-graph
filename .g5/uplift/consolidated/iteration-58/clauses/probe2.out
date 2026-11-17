@@ -1,0 +1,13 @@
+driver 5.3.2
+{"q": "OPTIONAL MATCH (b:I58C081924NONE) RETURN count(b), count(*), sum(b.v), collect(b.v), avg(b.v), min(b.v)", "rows": [[0, 1, 0, [], null, null]], "cols": ["count(b)", "count(*)", "sum(b.v)", "collect(b.v)", "avg(b.v)", "min(b.v)"]}
+{"q": "OPTIONAL MATCH (b:I58C081924NONE) RETURN sum(b.v)", "rows": [[0]], "cols": ["sum(b.v)"]}
+{"q": "OPTIONAL MATCH (b:I58C081924NONE) RETURN b, sum(b.v), count(*)", "rows": [[null, null, null, null, 1]], "cols": ["b_id", "b_labels", "b_props", "sum(b.v)", "count(*)"]}
+{"q": "OPTIONAL MATCH (b:I58C081924NONE) RETURN b.v AS k, sum(b.v), count(b)", "rows": [[null, null, 0]], "cols": ["k", "sum(b.v)", "count(b)"]}
+{"q": "MATCH (a:I58C081924A)-[:K081924]->(b) WITH * RETURN a.name, b.name", "rows": [["a1", "b1"]], "cols": ["a.name", "b.name"]}
+{"q": "MATCH (a:I58C081924A)-[r:K081924]->(b) WITH a, r, b RETURN a.name, type(r), b.name", "rows": [["a1", "K081924", "b1"]], "cols": ["a.name", "type(r)", "b.name"]}
+{"q": "MATCH (a:I58C081924A)-[r:K081924]->(b) WITH * RETURN a.name", "rows": [["a1"]], "cols": ["a.name"]}
+{"q": "WITH [1, true] AS l UNWIND l AS x RETURN x, count(*)", "rows": [[1, 2]], "cols": ["x", "count(*)"]}
+{"q": "WITH [1, true] AS l UNWIND l AS x RETURN DISTINCT x", "rows": [[1], [true]], "cols": ["x"]}
+{"q": "MATCH (n {id: 'i58c_081924_a1'}) FOREACH (x IN [1,2] | SET n.f = 5)", "rows": [], "cols": ["node_id", "graph_id"]}
+GET {"id": "i58c_081924_a1", "labels": ["I58C081924A"], "name": "a1", "v": 1, "p_id": "i58c_081924_a1", "f": 5}
+{"q": "MATCH (a:I58C081924A) CALL { WITH a MATCH (a)-[:K081924]->(b) RETURN count(b) AS c } RETURN a.name, c", "rows": [[1, "a1"]], "cols": ["c", "a.name"]}

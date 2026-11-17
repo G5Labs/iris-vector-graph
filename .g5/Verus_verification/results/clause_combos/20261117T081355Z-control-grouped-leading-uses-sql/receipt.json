@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: the grouped leading OPTIONAL's synthetic null row (optional_null_row_items 30791) replaced by the SQL fold",
+    "expect_fail_in": [
+      "theorem_leading_grouped_sum_is_null"
+    ],
+    "find": "    else if grouped { null_row_aggregate(k) }",
+    "name": "grouped-leading-uses-sql",
+    "replace": "    else if grouped { leading_star_patch(k, as_built_sql(k, Seq::empty())) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_leading_grouped_sum_is_null"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/clause_combos/clause_combos.rs": "5610773c054788e8aa6bfbdea1a0e7e4df51f2a8084ca0d3d18e859ca37f0a72",
+    ".g5/Verus_verification/models/clause_combos/model.json": "32ffbdc4a06de312e1aab0f10fa5b680977c08456e744061d4ec9d901e6c7374"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/grouped-leading-uses-sql/20261117T081354Z/models/clause_combos/clause_combos.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_leading_grouped_sum_is_null": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081354Z-control-grouped-leading-uses-sql-theorem_leading_grouped_sum_is_null.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081354Z-control-grouped-leading-uses-sql.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/clause_combos/20261117T081355Z-control-grouped-leading-uses-sql/logs/20261117T081354Z-control-grouped-leading-uses-sql-theorem_leading_grouped_sum_is_null.log": "8569ddc59cf94eccd9a3b2244291389ef10a3c82d5ee1e3b024f1fd6473b005a",
+    ".g5/Verus_verification/results/clause_combos/20261117T081355Z-control-grouped-leading-uses-sql/logs/20261117T081354Z-control-grouped-leading-uses-sql.log": "adbec1b026537b0c80c53937fedee5be0e9a7589a0602281bb645929cb5ab5f7"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

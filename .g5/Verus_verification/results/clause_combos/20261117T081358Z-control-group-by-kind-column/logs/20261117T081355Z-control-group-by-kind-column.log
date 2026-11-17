@@ -1,0 +1,71 @@
+verification results:: 23 verified, 4 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:240:13
+    |
+239 | pub proof fn theorem_group_iff_bound_text(l: Seq<Val>, v: Val, w: Val)
+    | ---------------------------------------------------------------------- at the end of the function body
+240 |     ensures as_built_group(l, v, w) <==> bound_text(v) == bound_text(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:244:1
+    |
+244 | pub proof fn theorem_group_merges_kinds(l: Seq<Val>, j: int, i: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:245:13
+    |
+244 | pub proof fn theorem_group_merges_kinds(l: Seq<Val>, j: int, i: int)
+    | -------------------------------------------------------------------- at the end of the function body
+245 |     ensures as_built_group(l, Val::Int(1), Val::Bool(true)), !rule_same(Val::Int(1), Val::Bool(true)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:246:13
+    |
+244 | pub proof fn theorem_group_merges_kinds(l: Seq<Val>, j: int, i: int)
+    | -------------------------------------------------------------------- at the end of the function body
+245 |     ensures as_built_group(l, Val::Int(1), Val::Bool(true)), !rule_same(Val::Int(1), Val::Bool(true)),
+246 |             as_built_group(l, Val::Int(0), Val::Bool(false)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:267:1
+    |
+267 | pub proof fn theorem_group_and_distinct_disagree(j: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:268:13
+    |
+267 |   pub proof fn theorem_group_and_distinct_disagree(j: int)
+    |   -------------------------------------------------------- at the end of the function body
+268 |       ensures ({ let l = seq![Val::Int(1), Val::Bool(true)];
+    |  _____________^
+269 | |                as_built_group(l, l[0], l[1]) && !as_built_distinct(l, l[0], l[1]) }),
+    | |____________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:270:13
+    |
+267 |   pub proof fn theorem_group_and_distinct_disagree(j: int)
+    |   -------------------------------------------------------- at the end of the function body
+...
+270 | /             ({ let l = seq![Val::List(j), Val::Str(StrV::SpellsList(j))];
+271 | |                as_built_group(l, l[0], l[1]) && !as_built_distinct(l, l[0], l[1]) }),
+    | |____________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:281:13
+    |
+281 |       ensures ({ let l = seq![Val::Int(i), Val::Str(StrV::SpellsInt(i))];
+    |  _____________^
+282 | |                as_built_group(l, l[0], l[1]) && as_built_distinct(l, l[0], l[1]) }),
+    | |___________________________________________________________________________________^ failed this postcondition
+...
+286 |       assert(!has_bool(l)) by { assert(forall|k: int| 0 <= k < l.len() ==> !(l[k] is Bool)); }
+    |       ------ at the end of the function body
+
+error: aborting due to 6 previous errors
+

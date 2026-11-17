@@ -736,3 +736,33 @@ binding's `during_sync` (`{"khop": ["s"], "spl": -1}` 4,481 times) beside `quiet
 Second lookup: `algorithms.op.paths` → `traversal_strategy.rs::theorem_in_length_differs` → `iris_sql_store.py::IRISGraphStore.shortest_path_length`
 and `TraversalPaths.cls::ShortestLength`; control `length-in-reversed`; observation `sp_in_p1_p3` (2 where
 `execute_shortest_path` answers -1).
+
+Iteration 58 (W62, remaining clause combinations and result decoders;
+[handoff](../uplift/consolidated/iteration-58/HANDOFF.md)), same environment. `clause_combos` writes fresh nodes in
+USER (prefix `i58c_`) and reads with IRIS driver 5.3.2; `result_decoders` writes `i58d_` nodes, starts the product's
+TCP Bolt listener in-process (as `bolt_answers`) and reads every case on four readers under 5.3.2 and, in a subprocess,
+5.4.1 (`I55_VENV541`, the iteration-55 venv). Neither runs `sync()`. Both in `ivg-cont-20261117-iris` only.
+
+```sh
+for m in clause_combos result_decoders; do
+  python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/$m      # PASS 28 / 12
+  python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/$m   # 17 / 17 EXPECTED_FAIL
+  (cd $RUN_DIR/pin && IVG_REPO=$OLDPWD I55_VENV541=$RUN_DIR/i55/venv541/bin/python \
+    $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/$m/binding.py)    # AGREES 87 / 480
+done
+CONTROL=with-coalesce-typed python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/result_decoders
+CONTROL=group-by-kind-column python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/clause_combos
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after58                 # 706/4130
+python3 .g5/uplift/consolidated/iteration-58/member_delta.py $RUN_DIR/reach-before58 $RUN_DIR/reach-after58 /tmp/member-delta.json
+```
+
+Worked lookup (iteration 58): `query.values` → `result_decoders.rs::theorem_with_coalesce_number_is_text` (general:
+`theorem_property_reads_roundtrip`, `theorem_typed_roundtrip`) → the rows for `iris_vector_graph/cypher/translator.py::_scalar_coalesce`
+(decision: the WITH stage casts coalesce's first argument to VARCHAR) and `::_reads_node_value` / `::_is_node_value_var`
+(a WITH variable is read as a node value only when bound to a bare property) in `crosswalk/decision-links.tsv`; in
+reverse, those keys in the recount's `bindings.json` list the claims beside the inherited `node_read` rows on
+`_decode_typed_value_columns`. The distinguishing control is `with-coalesce-typed` (the repair); the product
+observation is the binding's `5.3.2_PY_WithCoalesce_int` (`'3'`) beside `5.3.2_PY_RetCoalesce_int` (`3`). Second
+lookup: `query.aggregation.keys` → `clause_combos.rs::theorem_group_iff_bound_text` → `translate_return_clause` (GROUP
+BY the plain `sql`) and `_unwind_bool_flag`; control `group-by-kind-column`; observation `B_int_true_groups` (one group)
+beside `B_int_true_distinct_rows` (two rows).

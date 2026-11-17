@@ -1,0 +1,119 @@
+{
+  "title": "clause combos",
+  "question": "Clause combinations over API-written data, default mode (W62, iteration 58): OPTIONAL MATCH aggregates after a MATCH and leading (bug-agg-001), UNWIND held-list grouping/count(DISTINCT) vs RETURN DISTINCT keys (bug-cyp-149), the SQLCODE -94 boundary of a WHERE inside OPTIONAL MATCH by condition shape and negation polarity (bug-cyp-142)",
+  "ontology_ids": [
+    "query.optional",
+    "query.aggregation",
+    "query.aggregation.keys"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 28}"
+    },
+    {
+      "label": "sum-null-over-no-value",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_after_match_follows_rule\", \"theorem_null_row_counts\", \"theorem_leading_pure_follows_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "count-var-counts-rows",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_after_match_follows_rule\", \"theorem_null_row_counts\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "leading-star-unpatched",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_leading_pure_follows_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-row-sum-zero",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_leading_grouped_sum_is_null\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-row-count-var-one",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_leading_grouped_others_follow_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "grouped-leading-uses-sql",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_leading_grouped_sum_is_null\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "group-by-kind-column",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_group_iff_bound_text\", \"theorem_group_merges_kinds\", \"theorem_group_and_distinct_disagree\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bool-bound-as-word",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_group_merges_kinds\", \"theorem_group_neighbors_follow_rule\", \"theorem_group_and_distinct_disagree\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "distinct-plain-on-flag",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_distinct_flag_route_keeps_bool_apart\", \"theorem_group_and_distinct_disagree\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "json-route-plain",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_distinct_json_route_follows_rule\", \"theorem_group_and_distinct_disagree\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "iris-accepts-or",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_mixing_earlier_refused\", \"theorem_negation_polarity\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "iris-accepts-arith",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_mixing_earlier_refused\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "iris-refuses-any-or",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_no_earlier_not_refused\", \"theorem_neighbors\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "iris-refuses-any-arith",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_no_earlier_not_refused\", \"theorem_neighbors\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "negation-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_negation_polarity\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "collect-null-over-no-value",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_after_match_follows_rule\", \"theorem_null_row_counts\", \"theorem_leading_pure_follows_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "condition-in-where",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_new_alias_only_keeps_row\", \"theorem_mixing_earlier_refused\", \"theorem_neighbors\", \"theorem_negation_polarity\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    }
+  ]
+}

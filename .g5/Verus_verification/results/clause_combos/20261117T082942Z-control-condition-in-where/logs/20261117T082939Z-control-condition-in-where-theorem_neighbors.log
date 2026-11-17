@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/condition-in-where/20261117T082939Z/models/clause_combos/clause_combos.rs:375:1
+    |
+375 | pub proof fn theorem_neighbors(n: int, m: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/condition-in-where/20261117T082939Z/models/clause_combos/clause_combos.rs:376:13
+    |
+375 | pub proof fn theorem_neighbors(n: int, m: int)
+    | ---------------------------------------------- at the end of the function body
+376 |     ensures as_built_opt(Cond::Or(Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(n))), Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(m))))) == OptOut::KeptWithNull,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/condition-in-where/20261117T082939Z/models/clause_combos/clause_combos.rs:377:13
+    |
+375 | pub proof fn theorem_neighbors(n: int, m: int)
+    | ---------------------------------------------- at the end of the function body
+376 |     ensures as_built_opt(Cond::Or(Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(n))), Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(m))))) == ...
+377 |             as_built_opt(Cond::Cmp(Operand::Arith(Box::new(Operand::NewProp), Box::new(Operand::Lit(n))), Operand::Lit(m))) == OptOut::KeptWithNull,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

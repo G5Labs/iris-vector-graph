@@ -3530,6 +3530,8 @@ Consequence: any `UNION` over stored data answers wrong-typed values, some of th
 
 Repair proposal (not implemented): carry each column's decoder through the union when every branch agrees on it, and type-mark literal branches the same way. Preserve: column checks, the refusal of mixed `UNION`/`UNION ALL`, boolean columns. The control `union-keeps-decoders` checks the direction in the model only.
 
+Iteration 58 (W62 C4, partial): a relationship returned in a `UNION ALL` branch also reaches the reader as JSON text (`'{"type":"K","props":{}}'`), while the same `RETURN r` alone answers a map; a stored double and a stored list behaved as already recorded ([probe](../uplift/consolidated/iteration-58/clauses/probe1.out), driver 5.3.2). Observed only, not modeled.
+
 <a id="bug-cyp-142"></a>
 ### A WHERE inside OPTIONAL MATCH that combines an earlier variable's property with arithmetic or OR fails the query with SQLCODE -94
 
@@ -3546,6 +3548,8 @@ Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional): th
 Observed: `translate_where_clause` pushes a condition that reads both the clause's new variables and earlier ones into the first optional join's ON when it names no later join alias (`translator.py:17128-17175`). The ON then holds IVG's arithmetic (`CASE WHEN ISNUMERIC(p4.val) ... CY_ARITH`) or an OR of an earlier left-joined property read with a correlated `(SELECT val ...)`, which IRIS 2026.1 refuses at Prepare. The pure-optional branch has a fallback for property subqueries (17095-17107); the mixed branch has none. The comment at 17038 names the same IRIS limit for `CY_CMP`.
 
 Consequence: a valid OPTIONAL MATCH filter fails the whole read with a raw SQL error; `execute_cypher` answers no rows with the error set. Workaround: move the test into a `WITH ... WHERE` after the OPTIONAL MATCH when dropping the null rows is intended, or compute `a.v + 1` in a `WITH` before it.
+
+Iteration 58 (W62 C3, held): the refusal follows negation polarity. A WHERE reading only the new alias runs and keeps every row whatever its AND, OR, NOT and arithmetic (`b.v = 2 OR b.v = 3`, `b.v - 1 = 2`); `NOT (b.v = a.v OR b.v = 10)` runs, while `NOT (b.v = a.v + 1)` and `NOT (b.v = 10 AND b.v = a.v)` are refused. Modeled by [clause_combos](models/clause_combos/NOTES.md) `theorem_negation_polarity`, `theorem_new_alias_only_keeps_row` (15 shapes, [binding](results/clause_combos/20261117T082514Z-binding/receipt.json) `C_*`, [probe](../uplift/consolidated/iteration-58/clauses/probe3.out)); still outside the modeled domain: `NOT ((b.v = 10) OR (a.v = 1))` is refused.
 
 <a id="bug-cyp-143"></a>
 ### A comparison on an earlier variable's property inside an OPTIONAL MATCH WHERE drops the rows of nodes that lack the property
@@ -3786,6 +3790,44 @@ Repair proposal (not implemented): document fast as an upper bound while current
 statistics are a rebuilt store); docs/API_REFERENCE.md §khop2_count_fast.
 
 Affected owner: [structure.rebuilt.stamp](../ontology/features/graph-structure.g5.md#structure.rebuilt.stamp) (the reader rule holds; the value it gates departs), algorithms.op.khop.
+
+<a id="bug-cyp-155"></a>
+### A WITH column of coalesce() answers a stored number as its text: WITH coalesce(n.v, n.s) AS x RETURN x gives '3' for 3 and '2.5' for 2.5
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 58)
+
+Found by: iteration 58 W62 frozen prediction D1 neighbor B (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [result_decoders](models/result_decoders/NOTES.md) `theorem_with_coalesce_number_is_text`; valid neighbor `theorem_property_reads_roundtrip`; controls `with-coalesce-typed` (the repair), `coalesce-cast-gone`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, IRIS drivers 5.3.2 and 5.4.1, all four readers (Python `execute_cypher`, Bolt with neo4j 6.4.1, `/api/cypher`, `/db/neo4j/tx/commit`) ([5.3.2](uplift/consolidated/iteration-58/decoders/decoders-observed-5.3.2-20261117T080853Z.json), [5.4.1](uplift/consolidated/iteration-58/decoders/decoders-observed-5.4.1-20261117T080939Z.json) `D1_coalesce`; [binding](results/result_decoders/20261117T082201Z-binding/receipt.json) `*_WithCoalesce_*`). Stored `3`, `2.5`, `true` come back as `'3'`, `'2.5'`, `'true'`; `RETURN coalesce(...)` without the WITH returns them typed.
+
+Expected: openCypher: coalesce returns its first non-null argument unchanged. [query.values](../ontology/features/cypher.g5.md#query.values): "A node property read preserves its stored numeric type".
+
+Observed: in the WITH stage, `_scalar_coalesce` (`translator.py:24455-24470`) casts the first argument to VARCHAR. The final RETURN emits `x AS x` (`translator.py:30690-30691`), because `_reads_node_value` (`7644-7678`) recognises a WITH variable only when it is bound to a bare property (`_is_node_value_var` 7592), and `_is_typed_coalesce` (7620-7641) applies only to RETURN items. No decoder touches `x`.
+
+Consequence: an ordinary `WITH coalesce(...)` silently returns numbers and booleans as strings on every reader and driver.
+
+Repair proposal (not implemented): treat a WITH variable bound to a typed coalesce as a node value (add it to `prop_text_vars`) and drop the stage CAST, so the RETURN reads it through `CY_TYPED` and `parse_prop_text`. Preserve: RETURN coalesce typing, and the CASTs in WHERE. Distinguishing case: `*_WithCoalesce_int` returns `3` after the repair.
+
+<a id="bug-cyp-156"></a>
+### A CASE column answers a stored boolean as 'true', a stored list or map as its JSON text, and, with IRIS driver 5.4.1, a stored number as its text
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 58)
+
+Found by: iteration 58 W62 frozen prediction D1 A (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [result_decoders](models/result_decoders/NOTES.md) `theorem_case_bool_is_text`, `theorem_case_container_is_text`, `theorem_case_number_by_driver`; neighbor `theorem_strings_held_everywhere`; controls `case-typed`, `case-prop-text`, `driver-541-native`.
+
+Reproduced by: **E2E reproduced**, both drivers, all four readers plus the native-default engine (`D1_case`, `D1_case_noid`, `D1_ret_case`; [binding](results/result_decoders/20261117T082201Z-binding/receipt.json) `*_RetCase_*`, `*_WithCase_*`). Under 5.3.2: `3`, `2.5`, `'txt'`, `'true'`. Under 5.4.1: `'3'`, `'2.5'`, `'txt'`, `'true'`. A stored `[1, 2]` comes back as `'[1, 2]'`.
+
+Expected: openCypher: CASE returns the chosen branch's value with its type. [query.values](../ontology/features/cypher.g5.md#query.values): `CY_TYPED` decides the type rather than the driver's column type.
+
+Observed: `_reads_node_value` (`translator.py:7644-7678`) has no case for CASE expressions, so the raw `p.val` is emitted (`30690-30691`) and is in no decoder list (`query.py:332-349`). Driver 5.4.1 hands raw IRIS numbers to Python as text (`prop_values.py:204-212`).
+
+Consequence: silently wrong types on every reader; numbers are wrong on the current IRIS driver.
+
+Repair proposal (not implemented): type a CASE whose branches are all node values or scalar literals/parameters through `CY_TYPED(CASE ... END)` plus `prop_text_expr_columns`, including through a WITH. Preserve: string literal branches.
 
 <a id="bug-srch-116"></a>
 ### No quarantined vector can be placed through the IRIS DB-API driver
@@ -4158,6 +4200,101 @@ Consequence: a caller (or a protocol client passing a user-supplied direction) g
 
 Repair proposal (not implemented): normalise once at `execute_bfs` (lowercase; outbound -> out, inbound -> in) and refuse anything else with `ValueError`, before choosing a strategy. Preserve: the three exact directions' rows (`theorem_os_rows_eq_sql_rows`). Distinguishing case: `os_dirtext_OUT` answers the `os_out_any_2` rows (control `sql-unknown-dir-as-out` shows the model decision). Governing statement: `execute_bfs` docstring; [query.paths.varlength](../ontology/features/cypher.g5.md#query.paths.varlength).
 
+<a id="bug-cyp-149"></a>
+### Over a list the query holds, a grouping key and count(DISTINCT) merge 1 with true and a list with the string spelling it, while RETURN DISTINCT keeps them apart
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 58)
+
+Found by: iteration 58 W62 frozen prediction C2 (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [clause_combos](models/clause_combos/NOTES.md) `theorem_group_iff_bound_text`, `theorem_group_merges_kinds`, `theorem_group_and_distinct_disagree`, neighbors `theorem_group_neighbors_follow_rule`, `theorem_distinct_json_route_follows_rule`; controls `group-by-kind-column`, `bool-bound-as-word`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, driver 5.3.2 ([probe](uplift/consolidated/iteration-58/clauses/probe1.out); [run-time list](uplift/consolidated/iteration-58/clauses/probe2.out); [binding](results/clause_combos/20261117T082514Z-binding/receipt.json) `B_int_true_*`, `B_zero_false_*`, `B_list_spelled_*`). `UNWIND [1, true] AS x RETURN x, count(*)` answers `[[1, 2]]` and `count(DISTINCT x)` 1, while `RETURN DISTINCT x` answers `[[1], [True]]`; `[0, false]` the same; `UNWIND [[1], '[1]']` gives one group and count(DISTINCT) 1 but two DISTINCT rows; `WITH [1, true] AS l UNWIND l AS x RETURN x, count(*)` answers `[[1, 2]]`. Passing neighbors: `['true', true]` (two groups), `[1,2]`, `[2,2]`, `[true,false]`, `[1,'x']`, `[[1],1]`.
+
+Expected: [query.aggregation.keys](../ontology/features/cypher.g5.md#query.aggregation.keys) and [query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) ("a nested list or map is different from text spelling it"); openCypher: values of different types are never equivalent.
+
+Observed: `translate_return_clause` selects the row through the boolean-flag CASE (`translator.py:30665-30671`, `_unwind_bool_flag` 21457) or CY_LIST_KINDS' JSON column (30660-30664, `_unwind_json_text` 21533), keeping the kind, but adds the plain `sql` (`u0.x`) to GROUP BY (30777); `_expr_aggregation` writes `COUNT(DISTINCT u0.x)` (24431). IRIS binds true as 1 and a list row as its JSON text; the kind column (`x__b` / `x__t` / `x__k`) is never a key.
+
+Consequence: grouped counts over lists mixing booleans with 0/1, or lists with their spellings, merge groups with no error; count(DISTINCT) undercounts and disagrees with RETURN DISTINCT. Low: such lists are uncommon; the stored-value root is the Medium bug-cyp-135.
+
+Repair proposal (not implemented): add the UNWIND row's kind column to GROUP BY and to the COUNT(DISTINCT) argument whenever the translator emits one. Preserve: single-kind lists, `'true'` vs true apart, the null group. Control `group-by-kind-column` checks the direction in the model only.
+
+<a id="bug-cyp-150"></a>
+### WITH * drops a relationship variable: a later type(r) fails with SQLCODE -29 "Field 'STAGE1.R' not found"
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 58)
+
+Found by: iteration 58 W62 frozen prediction C8 (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)). Not modeled.
+
+Reproduced by: **E2E reproduced** on the same fixture and pin, driver 5.3.2 ([probe](uplift/consolidated/iteration-58/clauses/probe1.out), [neighbors](uplift/consolidated/iteration-58/clauses/probe2.out)). `MATCH (a:L)-[r:K]->(b) WITH * RETURN a.name, type(r), b.name` fails at Prepare with -29. Passing neighbors: the same without `WITH *`, `WITH a, r, b ... type(r)`, and `WITH * RETURN a.name, b.name`.
+
+Expected: openCypher: `WITH *` projects every variable in scope unchanged.
+
+Observed: the star branch of `translate_with_clause` (`translator.py:30857-30872`) projects a relationship as `{var}_s`, `{var}_p`, `{var}_o_id` only, so nothing named `r` reaches the next stage.
+
+Consequence: the query fails with an error naming an internal stage; no wrong answer. Workaround: list the variables.
+
+Repair proposal (not implemented): project each variable as the explicit `WITH a, r, b` does, or rewrite `*` to that list. Preserve: node variables, `WITH * WHERE`, the `CALL ... YIELD` use (2215).
+
+<a id="bug-cyp-151"></a>
+### WITH *, a.v AS av does not parse: "Expected EOF, got ,"
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 58)
+
+Found by: iteration 58 W62 C8 neighbor (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)). Not modeled.
+
+Reproduced by: **E2E reproduced** on the same fixture and pin, driver 5.3.2 ([probe](uplift/consolidated/iteration-58/clauses/probe1.out)): `MATCH (a:L) WITH *, a.v AS av RETURN av` raises `CypherParseError ... col 29: Expected EOF, got ,`; `WITH a, a.v AS av` passes.
+
+Expected: the openCypher grammar allows `WITH *, items`.
+
+Observed: `Parser.parse_with_clause` (`parser.py:333-345`) returns a star WithClause with no items right after `*`.
+
+Consequence: a valid query is refused; no wrong answer.
+
+Repair proposal (not implemented): accept `, item [AS alias]` after `*` and have the star branch add them. Preserve: `WITH *` alone and `WITH * WHERE`.
+
+<a id="bug-cyp-152"></a>
+### FOREACH over a literal list with a SET body that reads the loop variable fails "UndefinedVariable: x" and writes nothing
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 58)
+
+Found by: iteration 58 W62 frozen prediction C6 (partial, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)). Not modeled.
+
+Reproduced by: **E2E reproduced** on the same fixture and pin, driver 5.3.2 ([probe](uplift/consolidated/iteration-58/clauses/probe1.out), [neighbor](uplift/consolidated/iteration-58/clauses/probe2.out)): `FOREACH (x IN [1,2] | SET n.f = x)` raises `SyntaxError: UndefinedVariable` and `get_node` still reads `f: 0`. Passing neighbors: `SET n.f = 5` in the body, a `CREATE (:M {v: x})` body (creates 1 and 2), and the empty list.
+
+Expected: openCypher runs the body per element (n.f = 2); owner [query.writes](../ontology/features/cypher.g5.md#query.writes).
+
+Observed: `_to_sql_handle_foreach` (`translator.py:3949-3966`) binds the variable only as `"__foreach_literal__"` plus `foreach_literals`, which the CREATE property path reads; the SET value's translation does not resolve it. This is a different trigger from F-0808 (parameter list, CREATE body).
+
+Consequence: the common "set from each element" FOREACH is refused and nothing is written.
+
+Repair proposal (not implemented): resolve `foreach_literals` in the SET value translation, applying the SETs in list order. Preserve: the CREATE body, the empty list, literal SET values.
+
+<a id="bug-plt-135"></a>
+### An OPTIONAL MATCH node with no match answers labels '[]' and properties '[]' at execute_cypher, /api/cypher and tx/commit
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 58)
+
+Found by: iteration 58 W62 frozen prediction D2 (partial, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [result_decoders](models/result_decoders/NOTES.md) `theorem_optional_node_labels`; control `labels-null`.
+
+Reproduced by: **E2E reproduced**, both drivers (`D2_opt`, `D2_with`; [binding](results/result_decoders/20261117T082201Z-binding/receipt.json) `*_Opt_labels`). The row is `[i, null, '[]', '[]', null]`; Bolt returns `b` as null.
+
+Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional): the pattern's new variables are null.
+
+Observed: `labels_subquery` (`translator.py:1282-1289`) uses `COALESCE(JSON_ARRAYAGG(label), CAST('[]' ...))`, and the properties column also comes back `'[]'`.
+
+Consequence: a caller that tests `b_labels` or `b_props` instead of `b_id` sees a node with no labels where there is no match.
+
+Repair proposal (not implemented): return NULL for those columns when the node id is NULL. Preserve: a bound node with no labels still returns `'[]'`.
+
 <a id="bug-plt-117"></a>
 ### engine.capabilities says ^KG and ^NKG are not built on a namespace set up before it held edges, whatever sync() does, until setup runs again
 
@@ -4439,6 +4576,8 @@ Repair proposal (not implemented): return a numeric zero for SUM in the syntheti
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Actual supported caller, ordinary inputs, real relevant SQL/native providers and material external-reader contrast, with a passing neighbor.
 
 Canonical owner and evidence: [query.aggregation](../ontology/features/cypher.g5.md#query.aggregation).
+
+Iteration 58 (W62 C1 neighbor): reproduced afresh on the continuation fixture: `OPTIONAL MATCH (b:NoLabel) RETURN b.v AS k, sum(b.v), count(b)` answers `[None, None, 0]`, while the same aggregates without a grouping key answer `sum` 0. Now modeled by [clause_combos](models/clause_combos/NOTES.md) `theorem_leading_grouped_sum_is_null`; controls `null-row-sum-zero`, `grouped-leading-uses-sql`; [binding](results/clause_combos/20261117T082514Z-binding/receipt.json).
 
 <a id="bug-str-008"></a>
 ### A single-edge graph can get two rows for one triple from a stale multigraph flag or an unlocked mode switch

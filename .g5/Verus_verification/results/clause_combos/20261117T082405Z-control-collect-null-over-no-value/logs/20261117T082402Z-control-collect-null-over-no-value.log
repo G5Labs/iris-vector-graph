@@ -1,0 +1,61 @@
+verification results:: 25 verified, 3 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/collect-null-over-no-value/20261117T082402Z/models/clause_combos/clause_combos.rs:138:1
+    |
+138 | pub proof fn theorem_after_match_follows_rule(edges: Seq<Edge>, t: int, k: Agg)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/collect-null-over-no-value/20261117T082402Z/models/clause_combos/clause_combos.rs:139:13
+    |
+139 |       ensures as_built_answer(false, true, edges, t, k) == rule(k, matched(edges, t), rule_rows(edges, t)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+142 | /     if matched(edges, t).len() == 0 {
+143 | |         lemma_null_row();
+144 | |         assert(matched(edges, t) =~= Seq::<int>::empty());
+145 | |         assert(opt_rows(edges, t) == seq![None::<int>]);
+...   |
+149 | |         assert(somes(opt_rows(edges, t)) == matched(edges, t));
+150 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/collect-null-over-no-value/20261117T082402Z/models/clause_combos/clause_combos.rs:140:13
+    |
+140 |               as_built_answer(false, false, edges, t, k) == rule(k, matched(edges, t), rule_rows(edges, t)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+141 |   {
+142 | /     if matched(edges, t).len() == 0 {
+143 | |         lemma_null_row();
+144 | |         assert(matched(edges, t) =~= Seq::<int>::empty());
+145 | |         assert(opt_rows(edges, t) == seq![None::<int>]);
+...   |
+149 | |         assert(somes(opt_rows(edges, t)) == matched(edges, t));
+150 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/collect-null-over-no-value/20261117T082402Z/models/clause_combos/clause_combos.rs:159:13
+    |
+153 | pub proof fn theorem_null_row_counts(edges: Seq<Edge>, t: int)
+    | -------------------------------------------------------------- at the end of the function body
+...
+159 |             as_built_answer(false, true, edges, t, Agg::Collect) == AVal::List(Seq::empty()),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/collect-null-over-no-value/20261117T082402Z/models/clause_combos/clause_combos.rs:169:13
+    |
+169 |       ensures as_built_answer(true, false, edges, t, k) == rule(k, matched(edges, t), rule_rows(edges, t)),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+170 |   {
+171 | /     if matched(edges, t).len() > 0 { lemma_somes_wrap(matched(edges, t)); }
+172 | |     else {
+173 | |         assert(somes(Seq::<Option<int>>::empty()) =~= Seq::<int>::empty());
+174 | |         assert(matched(edges, t) =~= Seq::<int>::empty());
+175 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 4 previous errors
+

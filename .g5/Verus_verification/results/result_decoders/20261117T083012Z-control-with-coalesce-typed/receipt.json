@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision K1: a WITH coalesce column read through CY_TYPED like RETURN coalesce (R259 extended)",
+    "expect_fail_in": [
+      "theorem_with_coalesce_number_is_text",
+      "theorem_probe_rows"
+    ],
+    "find": "        Shape::WithCoalesce => false,",
+    "name": "with-coalesce-typed",
+    "replace": "        Shape::WithCoalesce => true,"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_with_coalesce_number_is_text",
+      "theorem_probe_rows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/result_decoders/model.json": "fb7d9231723de75a12e9e0617cc999c04c3e5dc26b422135ec86526aff691da9",
+    ".g5/Verus_verification/models/result_decoders/result_decoders.rs": "f92eb07be76df8d7325e795c60901356c7a21bbab4036770db55a9285568444e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/with-coalesce-typed/20261117T083011Z/models/result_decoders/result_decoders.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_probe_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T083011Z-control-with-coalesce-typed-theorem_probe_rows.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_with_coalesce_number_is_text": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T083011Z-control-with-coalesce-typed-theorem_with_coalesce_number_is_text.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T083011Z-control-with-coalesce-typed.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/result_decoders/20261117T083012Z-control-with-coalesce-typed/logs/20261117T083011Z-control-with-coalesce-typed-theorem_probe_rows.log": "db0ff2f9e695c86f5f43ed4b72d21c971b5371cbe78ed47fab138855abd1607a",
+    ".g5/Verus_verification/results/result_decoders/20261117T083012Z-control-with-coalesce-typed/logs/20261117T083011Z-control-with-coalesce-typed-theorem_with_coalesce_number_is_text.log": "2ceda53539ce71b6d1449906ca242cf379a5a95f8809cb578512199b4ceba419",
+    ".g5/Verus_verification/results/result_decoders/20261117T083012Z-control-with-coalesce-typed/logs/20261117T083011Z-control-with-coalesce-typed.log": "aa071527a50a9c9fa58ea8073b0374cf5e9c675a63198f5de2682aace662ef5d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

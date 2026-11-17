@@ -1,0 +1,126 @@
+{
+  "title": "result decoders",
+  "question": "One stored property value through the translator's column-kind decision, the SQL column form, the IRIS driver, the engine's result decoders and the four final readers (W62, iteration 58): typed reads round-trip; a WITH coalesce column answers a stored number as text (bug-cyp-155); a CASE column answers a stored boolean, list or map as text and, under IRIS driver 5.4.1, a number as text (bug-cyp-156); a comparison column answers booleans or null; an unbound OPTIONAL node answers labels '[]' at Python and HTTP (bug-plt-135)",
+  "ontology_ids": [
+    "query.values",
+    "query.optional",
+    "query.shadow",
+    "access.bolt.graph_values"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 12}"
+    },
+    {
+      "label": "case-typed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_case_bool_is_text\", \"theorem_case_number_by_driver\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "with-coalesce-typed",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_with_coalesce_number_is_text\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "coalesce-cast-gone",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_with_coalesce_number_is_text\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "driver-541-native",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_case_number_by_driver\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-mark-decode",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_typed_roundtrip\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-prop-text",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_typed_roundtrip\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "case-prop-text",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_case_bool_is_text\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bool-text-ignored",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_typed_roundtrip\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bool-expr-off",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_compare_is_boolean_or_null\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "gt-text-zero",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_compare_is_boolean_or_null\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "missing-not-null",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_null_row_every_decoder\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "labels-null",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_optional_node_labels\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "ret-coalesce-untyped",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_property_reads_roundtrip\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "with-prop-untyped",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_property_reads_roundtrip\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "typed-emitted-raw",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_typed_roundtrip\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "no-json-decode",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_typed_roundtrip\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bit-one-false",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_compare_is_boolean_or_null\", \"theorem_probe_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"verdict\": \"AGREES\"}"
+    }
+  ]
+}

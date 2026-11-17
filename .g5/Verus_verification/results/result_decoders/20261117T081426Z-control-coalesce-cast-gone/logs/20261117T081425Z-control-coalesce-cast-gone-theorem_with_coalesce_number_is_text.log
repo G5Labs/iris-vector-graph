@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/coalesce-cast-gone/20261117T081425Z/models/result_decoders/result_decoders.rs:176:1
+    |
+176 | pub proof fn theorem_with_coalesce_number_is_text(w: W, d: Driver)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/coalesce-cast-gone/20261117T081425Z/models/result_decoders/result_decoders.rs:178:13
+    |
+176 | pub proof fn theorem_with_coalesce_number_is_text(w: W, d: Driver)
+    | ------------------------------------------------------------------ at the end of the function body
+177 |     requires is_num(w),
+178 |     ensures answer(Shape::WithCoalesce, w, d) == V::Str(Text::NumT(num_of(w))),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/coalesce-cast-gone/20261117T081425Z/models/result_decoders/result_decoders.rs:179:13
+    |
+176 | pub proof fn theorem_with_coalesce_number_is_text(w: W, d: Driver)
+    | ------------------------------------------------------------------ at the end of the function body
+...
+179 |             answer(Shape::WithCoalesce, w, d) != expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

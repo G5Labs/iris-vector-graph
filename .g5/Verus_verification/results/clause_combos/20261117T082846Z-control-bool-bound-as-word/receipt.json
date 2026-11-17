@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "decision (IRIS binding): a boolean row value bound as 1 / 0",
+    "expect_fail_in": [
+      "theorem_group_merges_kinds",
+      "theorem_group_neighbors_follow_rule",
+      "theorem_group_and_distinct_disagree"
+    ],
+    "find": "        Val::Bool(b) => Txt::Num(if b { 1 } else { 0 }),",
+    "name": "bool-bound-as-word",
+    "replace": "        Val::Bool(b) => Txt::Word(if b { -1 } else { -2 }),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_group_merges_kinds",
+      "theorem_group_neighbors_follow_rule",
+      "theorem_group_and_distinct_disagree"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/clause_combos/clause_combos.rs": "15d1bbc4c54c2ca064c4a21eef6c19b79a9c5232e36aa4f862f27e5629d1b92a",
+    ".g5/Verus_verification/models/clause_combos/model.json": "90cf5967d1a69223a184757b18f9da90fbd875061ca411caeccc1ceac2aca42c"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/bool-bound-as-word/20261117T082843Z/models/clause_combos/clause_combos.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_group_and_distinct_disagree": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082843Z-control-bool-bound-as-word-theorem_group_and_distinct_disagree.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_group_merges_kinds": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082843Z-control-bool-bound-as-word-theorem_group_merges_kinds.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_group_neighbors_follow_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082843Z-control-bool-bound-as-word-theorem_group_neighbors_follow_rule.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082843Z-control-bool-bound-as-word.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/clause_combos/20261117T082846Z-control-bool-bound-as-word/logs/20261117T082843Z-control-bool-bound-as-word-theorem_group_and_distinct_disagree.log": "be890af91054ca40942e185fbd6b7a7d7b7fa0a700ee08adaa3685b6957e3a58",
+    ".g5/Verus_verification/results/clause_combos/20261117T082846Z-control-bool-bound-as-word/logs/20261117T082843Z-control-bool-bound-as-word-theorem_group_merges_kinds.log": "9aec214a11fa5660a432571b6a50707b815de925bb7a7b3699a30a1c7ca2583c",
+    ".g5/Verus_verification/results/clause_combos/20261117T082846Z-control-bool-bound-as-word/logs/20261117T082843Z-control-bool-bound-as-word-theorem_group_neighbors_follow_rule.log": "00d807942a66094dbf97123e4ec300ea697acf8c5b59ef5a3e698619567fbad5",
+    ".g5/Verus_verification/results/clause_combos/20261117T082846Z-control-bool-bound-as-word/logs/20261117T082843Z-control-bool-bound-as-word.log": "b65c827d05f5adb6982aeb0160694bbdf4215cfd3a09689ae10d62e3578482d3"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

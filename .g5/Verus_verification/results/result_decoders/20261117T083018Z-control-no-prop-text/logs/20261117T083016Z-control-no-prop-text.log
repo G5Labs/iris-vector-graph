@@ -1,0 +1,44 @@
+verification results:: 9 verified, 3 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/no-prop-text/20261117T083016Z/models/result_decoders/result_decoders.rs:165:13
+    |
+163 | pub proof fn theorem_typed_roundtrip(s: Shape, w: W, d: Driver)
+    | --------------------------------------------------------------- at the end of the function body
+164 |     requires reads_node_value(s),
+165 |     ensures answer(s, w, d) == expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/no-prop-text/20261117T083016Z/models/result_decoders/result_decoders.rs:170:1
+    |
+170 | pub proof fn theorem_property_reads_roundtrip(w: W, d: Driver)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/no-prop-text/20261117T083016Z/models/result_decoders/result_decoders.rs:171:13
+    |
+170 | pub proof fn theorem_property_reads_roundtrip(w: W, d: Driver)
+    | -------------------------------------------------------------- at the end of the function body
+171 |     ensures answer(Shape::Prop, w, d) == expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/no-prop-text/20261117T083016Z/models/result_decoders/result_decoders.rs:172:13
+    |
+170 | pub proof fn theorem_property_reads_roundtrip(w: W, d: Driver)
+    | -------------------------------------------------------------- at the end of the function body
+171 |     ensures answer(Shape::Prop, w, d) == expect(w),
+172 |             answer(Shape::WithProp, w, d) == expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/no-prop-text/20261117T083016Z/models/result_decoders/result_decoders.rs:264:13
+    |
+258 | pub proof fn theorem_probe_rows()
+    | --------------------------------- at the end of the function body
+...
+264 |             answer(Shape::RetCoalesce, W::Bool(true), Driver::D541) == V::Bool(true),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 4 previous errors
+

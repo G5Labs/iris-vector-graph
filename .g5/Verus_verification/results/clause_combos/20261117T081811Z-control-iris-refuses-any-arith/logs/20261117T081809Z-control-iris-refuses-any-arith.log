@@ -1,0 +1,26 @@
+verification results:: 26 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/iris-refuses-any-arith/20261117T081809Z/models/clause_combos/clause_combos.rs:340:13
+    |
+340 |       ensures !refuses_p(c, pos),
+    |               ^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+343 | /     match c {
+344 | |         Cond::Cmp(x, y) => {},
+345 | |         Cond::And(p, q) => { lemma_no_earlier_not_refused(*p, pos); lemma_no_earlier_not_refused(*q, pos); },
+346 | |         Cond::Or(p, q) => { lemma_no_earlier_not_refused(*p, pos); lemma_no_earlier_not_refused(*q, pos); },
+347 | |         Cond::Not(p) => { lemma_no_earlier_not_refused(*p, !pos); },
+348 | |     }
+    | |_____- at the end of the function body
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/iris-refuses-any-arith/20261117T081809Z/models/clause_combos/clause_combos.rs:375:13
+    |
+373 | pub proof fn theorem_neighbors(n: int, m: int)
+    | ---------------------------------------------- at the end of the function body
+374 |     ensures as_built_opt(Cond::Or(Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(n))), Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(m))))) == ...
+375 |             as_built_opt(Cond::Cmp(Operand::Arith(Box::new(Operand::NewProp), Box::new(Operand::Lit(n))), Operand::Lit(m))) == OptOut::KeptWithNull,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

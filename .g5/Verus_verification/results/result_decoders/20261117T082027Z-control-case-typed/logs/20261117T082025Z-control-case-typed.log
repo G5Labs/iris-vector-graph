@@ -1,0 +1,84 @@
+verification results:: 7 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:183:1
+    |
+183 | pub proof fn theorem_case_bool_is_text(s: Shape, b: bool, d: Driver)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:185:13
+    |
+183 | pub proof fn theorem_case_bool_is_text(s: Shape, b: bool, d: Driver)
+    | -------------------------------------------------------------------- at the end of the function body
+184 |     requires is_case(s),
+185 |     ensures answer(s, W::Bool(b), d) == V::Str(Text::BoolT(b)), answer(s, W::Bool(b), d) != expect(W::Bool(b)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:185:65
+    |
+183 | pub proof fn theorem_case_bool_is_text(s: Shape, b: bool, d: Driver)
+    | -------------------------------------------------------------------- at the end of the function body
+184 |     requires is_case(s),
+185 |     ensures answer(s, W::Bool(b), d) == V::Str(Text::BoolT(b)), answer(s, W::Bool(b), d) != expect(W::Bool(b)),
+    |                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:189:1
+    |
+189 | pub proof fn theorem_case_container_is_text(s: Shape, d: Driver)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:191:13
+    |
+189 | pub proof fn theorem_case_container_is_text(s: Shape, d: Driver)
+    | ---------------------------------------------------------------- at the end of the function body
+190 |     requires is_case(s),
+191 |     ensures answer(s, W::List0, d) == V::Str(Text::ListT), answer(s, W::Map0, d) == V::Str(Text::MapT),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:191:60
+    |
+189 | pub proof fn theorem_case_container_is_text(s: Shape, d: Driver)
+    | ---------------------------------------------------------------- at the end of the function body
+190 |     requires is_case(s),
+191 |     ensures answer(s, W::List0, d) == V::Str(Text::ListT), answer(s, W::Map0, d) == V::Str(Text::MapT),
+    |                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:196:1
+    |
+196 | pub proof fn theorem_case_number_by_driver(s: Shape, w: W)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:199:13
+    |
+196 | pub proof fn theorem_case_number_by_driver(s: Shape, w: W)
+    | ---------------------------------------------------------- at the end of the function body
+...
+199 |             answer(s, w, Driver::D541) == V::Str(Text::NumT(num_of(w))),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:200:13
+    |
+196 | pub proof fn theorem_case_number_by_driver(s: Shape, w: W)
+    | ---------------------------------------------------------- at the end of the function body
+...
+200 |             answer(s, w, Driver::D541) != expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-typed/20261117T082025Z/models/result_decoders/result_decoders.rs:253:13
+    |
+250 | pub proof fn theorem_probe_rows()
+    | --------------------------------- at the end of the function body
+...
+253 |             answer(Shape::RetCase, W::Int(3), Driver::D541) == V::Str(Text::NumT(Num::I(3))),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 7 previous errors
+

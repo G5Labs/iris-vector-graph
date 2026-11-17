@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/json-route-plain/20261117T082351Z/models/clause_combos/clause_combos.rs:260:13
+    |
+258 | pub proof fn theorem_distinct_json_route_follows_rule(l: Seq<Val>, v: Val, w: Val)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+259 |     requires has_list(l),
+260 |     ensures as_built_distinct(l, v, w) == rule_same(v, w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

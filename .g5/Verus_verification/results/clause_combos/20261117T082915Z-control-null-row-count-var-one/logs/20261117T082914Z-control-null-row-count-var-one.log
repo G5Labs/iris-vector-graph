@@ -1,0 +1,12 @@
+verification results:: 27 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/null-row-count-var-one/20261117T082914Z/models/clause_combos/clause_combos.rs:180:13
+    |
+178 | pub proof fn theorem_leading_grouped_others_follow_rule(edges: Seq<Edge>, t: int, k: Agg)
+    | ----------------------------------------------------------------------------------------- at the end of the function body
+179 |     requires matched(edges, t).len() == 0, k != Agg::Sum,
+180 |     ensures as_built_answer(true, true, edges, t, k) == rule(k, matched(edges, t), rule_rows(edges, t)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

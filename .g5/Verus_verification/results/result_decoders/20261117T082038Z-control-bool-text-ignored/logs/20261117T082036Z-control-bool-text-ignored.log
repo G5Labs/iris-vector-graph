@@ -1,0 +1,21 @@
+verification results:: 9 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bool-text-ignored/20261117T082036Z/models/result_decoders/result_decoders.rs:165:13
+    |
+163 | pub proof fn theorem_typed_roundtrip(s: Shape, w: W, d: Driver)
+    | --------------------------------------------------------------- at the end of the function body
+164 |     requires reads_node_value(s),
+165 |     ensures answer(s, w, d) == expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bool-text-ignored/20261117T082036Z/models/result_decoders/result_decoders.rs:256:13
+    |
+250 | pub proof fn theorem_probe_rows()
+    | --------------------------------- at the end of the function body
+...
+256 |             answer(Shape::RetCoalesce, W::Bool(true), Driver::D541) == V::Bool(true),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

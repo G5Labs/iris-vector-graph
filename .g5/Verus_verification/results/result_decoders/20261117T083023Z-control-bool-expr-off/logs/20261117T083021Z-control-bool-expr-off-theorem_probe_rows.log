@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bool-expr-off/20261117T083021Z/models/result_decoders/result_decoders.rs:258:1
+    |
+258 | pub proof fn theorem_probe_rows()
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bool-expr-off/20261117T083021Z/models/result_decoders/result_decoders.rs:267:13
+    |
+258 | pub proof fn theorem_probe_rows()
+    | --------------------------------- at the end of the function body
+...
+267 |             answer_gt(W::Float(25), 27) == V::Bool(false),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bool-expr-off/20261117T083021Z/models/result_decoders/result_decoders.rs:268:13
+    |
+258 | pub proof fn theorem_probe_rows()
+    | --------------------------------- at the end of the function body
+...
+268 |             answer_gt(W::Int(3), 27) == V::Bool(true),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

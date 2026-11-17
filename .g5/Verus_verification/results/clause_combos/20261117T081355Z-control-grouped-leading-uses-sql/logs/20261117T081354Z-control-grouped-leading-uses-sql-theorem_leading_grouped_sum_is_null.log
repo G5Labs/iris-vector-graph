@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/grouped-leading-uses-sql/20261117T081354Z/models/clause_combos/clause_combos.rs:184:1
+    |
+184 | pub proof fn theorem_leading_grouped_sum_is_null(edges: Seq<Edge>, t: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/grouped-leading-uses-sql/20261117T081354Z/models/clause_combos/clause_combos.rs:186:13
+    |
+184 | pub proof fn theorem_leading_grouped_sum_is_null(edges: Seq<Edge>, t: int)
+    | -------------------------------------------------------------------------- at the end of the function body
+185 |     requires matched(edges, t).len() == 0,
+186 |     ensures as_built_answer(true, true, edges, t, Agg::Sum) == AVal::Null,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/grouped-leading-uses-sql/20261117T081354Z/models/clause_combos/clause_combos.rs:188:13
+    |
+184 | pub proof fn theorem_leading_grouped_sum_is_null(edges: Seq<Edge>, t: int)
+    | -------------------------------------------------------------------------- at the end of the function body
+...
+188 |             as_built_answer(true, true, edges, t, Agg::Sum) != rule(Agg::Sum, matched(edges, t), rule_rows(edges, t)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

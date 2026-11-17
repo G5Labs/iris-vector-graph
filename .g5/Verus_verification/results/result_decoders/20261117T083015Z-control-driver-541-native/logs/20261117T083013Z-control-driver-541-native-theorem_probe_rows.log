@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/driver-541-native/20261117T083013Z/models/result_decoders/result_decoders.rs:261:13
+    |
+258 | pub proof fn theorem_probe_rows()
+    | --------------------------------- at the end of the function body
+...
+261 |             answer(Shape::RetCase, W::Int(3), Driver::D541) == V::Str(Text::NumT(Num::I(3))),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

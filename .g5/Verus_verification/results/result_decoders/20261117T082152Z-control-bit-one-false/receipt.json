@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decoder (_bool_expr_value): SQL 1 read as false",
+    "expect_fail_in": [
+      "theorem_compare_is_boolean_or_null",
+      "theorem_probe_rows"
+    ],
+    "find": "        DV::Bit(k) => if k == 1 { DV::B(true) }",
+    "name": "bit-one-false",
+    "replace": "        DV::Bit(k) => if k == 1 { DV::B(false) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_compare_is_boolean_or_null",
+      "theorem_probe_rows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/result_decoders/model.json": "fb7d9231723de75a12e9e0617cc999c04c3e5dc26b422135ec86526aff691da9",
+    ".g5/Verus_verification/models/result_decoders/result_decoders.rs": "f92eb07be76df8d7325e795c60901356c7a21bbab4036770db55a9285568444e"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bit-one-false/20261117T082151Z/models/result_decoders/result_decoders.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_compare_is_boolean_or_null": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T082151Z-control-bit-one-false-theorem_compare_is_boolean_or_null.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_probe_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T082151Z-control-bit-one-false-theorem_probe_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T082151Z-control-bit-one-false.log",
+    "timed_out": false,
+    "verified": 10
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/result_decoders/20261117T082152Z-control-bit-one-false/logs/20261117T082151Z-control-bit-one-false-theorem_compare_is_boolean_or_null.log": "b5ab2c39b2a588549cc8063e01d760e70020d2f1207ccb9c3a1b6ef568b16f26",
+    ".g5/Verus_verification/results/result_decoders/20261117T082152Z-control-bit-one-false/logs/20261117T082151Z-control-bit-one-false-theorem_probe_rows.log": "5f69b0e643b8f9c346d5f0f9ed81df208f345fc40eb80363992bc831461ff850",
+    ".g5/Verus_verification/results/result_decoders/20261117T082152Z-control-bit-one-false/logs/20261117T082151Z-control-bit-one-false.log": "0a73cfb6de6a7cdde057b1067877c14dcec11e9a2e59da93a5c12f92e11998ec"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

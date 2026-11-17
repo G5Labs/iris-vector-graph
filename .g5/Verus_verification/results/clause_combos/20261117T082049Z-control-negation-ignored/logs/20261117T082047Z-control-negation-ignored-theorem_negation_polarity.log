@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/negation-ignored/20261117T082047Z/models/clause_combos/clause_combos.rs:359:1
+    |
+359 | pub proof fn theorem_negation_polarity(n: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/negation-ignored/20261117T082047Z/models/clause_combos/clause_combos.rs:360:13
+    |
+359 | pub proof fn theorem_negation_polarity(n: int)
+    | ---------------------------------------------- at the end of the function body
+360 |     ensures as_built_opt(Cond::Not(Box::new(Cond::Or(Box::new(Cond::Cmp(Operand::NewProp, Operand::EarlierProp)), Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(n))))))) == OptOut::ReadsEarlier,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/negation-ignored/20261117T082047Z/models/clause_combos/clause_combos.rs:361:13
+    |
+359 | pub proof fn theorem_negation_polarity(n: int)
+    | ---------------------------------------------- at the end of the function body
+360 |     ensures as_built_opt(Cond::Not(Box::new(Cond::Or(Box::new(Cond::Cmp(Operand::NewProp, Operand::EarlierProp)), Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(n))))))) == OptOut::ReadsEarlier,
+361 |             as_built_opt(Cond::Not(Box::new(Cond::And(Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(n))), Box::new(Cond::Cmp(Operand::NewProp, Operand::EarlierProp)))))) == OptOut::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

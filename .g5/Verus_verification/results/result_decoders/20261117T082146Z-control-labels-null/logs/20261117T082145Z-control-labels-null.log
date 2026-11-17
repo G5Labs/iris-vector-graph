@@ -1,0 +1,26 @@
+verification results:: 11 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/labels-null/20261117T082145Z/models/result_decoders/result_decoders.rs:247:1
+    |
+247 | pub proof fn theorem_optional_node_labels(id: nat, l: Text)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/labels-null/20261117T082145Z/models/result_decoders/result_decoders.rs:248:13
+    |
+247 | pub proof fn theorem_optional_node_labels(id: nat, l: Text)
+    | ----------------------------------------------------------- at the end of the function body
+248 |     ensures node_labels_answer(Reader::Py, false, id, l) == Some(V::Str(Text::ListT)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/labels-null/20261117T082145Z/models/result_decoders/result_decoders.rs:249:13
+    |
+247 | pub proof fn theorem_optional_node_labels(id: nat, l: Text)
+    | ----------------------------------------------------------- at the end of the function body
+248 |     ensures node_labels_answer(Reader::Py, false, id, l) == Some(V::Str(Text::ListT)),
+249 |             node_labels_answer(Reader::Api, false, id, l) == Some(V::Str(Text::ListT)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

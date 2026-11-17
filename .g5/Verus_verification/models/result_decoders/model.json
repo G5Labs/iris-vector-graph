@@ -1,0 +1,172 @@
+{
+  "name": "result_decoders",
+  "root": "result_decoders.rs",
+  "expected_verified": 12,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "case-typed",
+      "find": "        Shape::RetCase => false,",
+      "replace": "        Shape::RetCase => true,",
+      "expect_fail_in": [
+        "theorem_case_bool_is_text",
+        "theorem_case_number_by_driver",
+        "theorem_probe_rows"
+      ],
+      "classification": "decision K1: a RETURN CASE column treated as a typed node-value read (CY_TYPED + parse_prop_text)"
+    },
+    {
+      "name": "with-coalesce-typed",
+      "find": "        Shape::WithCoalesce => false,",
+      "replace": "        Shape::WithCoalesce => true,",
+      "expect_fail_in": [
+        "theorem_with_coalesce_number_is_text",
+        "theorem_probe_rows"
+      ],
+      "classification": "decision K1: a WITH coalesce column read through CY_TYPED like RETURN coalesce (R259 extended)"
+    },
+    {
+      "name": "coalesce-cast-gone",
+      "find": "    else if s == Shape::WithCoalesce { Sql::CastVarchar }",
+      "replace": "    else if s == Shape::WithCoalesce { Sql::Raw }",
+      "expect_fail_in": [
+        "theorem_with_coalesce_number_is_text"
+      ],
+      "classification": "decision K2: the WITH stage's CAST to VARCHAR removed (the raw IRIS number reaches the driver)"
+    },
+    {
+      "name": "driver-541-native",
+      "find": "Driver::D541 => DV::T(Text::NumT(n)) },",
+      "replace": "Driver::D541 => DV::N(n) },",
+      "expect_fail_in": [
+        "theorem_case_number_by_driver",
+        "theorem_probe_rows"
+      ],
+      "classification": "provider P-DRV-NUM: driver 5.4.1 assumed to hand a raw IRIS number to Python as a number"
+    },
+    {
+      "name": "no-mark-decode",
+      "find": "        DV::T(Text::Mark(n)) => DV::N(n),",
+      "replace": "        DV::T(Text::Mark(n)) => v,",
+      "expect_fail_in": [
+        "theorem_typed_roundtrip"
+      ],
+      "classification": "decoder D1: read_prop_value no longer decodes CY_TYPED's mark"
+    },
+    {
+      "name": "no-prop-text",
+      "find": "pub open spec fn prop_text_col(s: Shape) -> bool { reads_node_value(s) }",
+      "replace": "pub open spec fn prop_text_col(s: Shape) -> bool { false }",
+      "expect_fail_in": [
+        "theorem_typed_roundtrip",
+        "theorem_probe_rows"
+      ],
+      "classification": "decision: no column is in prop_text_expr_columns (a stored boolean stays 'true')"
+    },
+    {
+      "name": "case-prop-text",
+      "find": "pub open spec fn prop_text_col(s: Shape) -> bool { reads_node_value(s) }",
+      "replace": "pub open spec fn prop_text_col(s: Shape) -> bool { reads_node_value(s) || is_case(s) }",
+      "expect_fail_in": [
+        "theorem_case_bool_is_text",
+        "theorem_probe_rows"
+      ],
+      "classification": "decision: CASE columns put in prop_text_expr_columns (the bool half of the repair)"
+    },
+    {
+      "name": "bool-text-ignored",
+      "find": "    match v { DV::T(Text::BoolT(b)) => DV::B(b), _ => v }",
+      "replace": "    match v { _ => v }",
+      "expect_fail_in": [
+        "theorem_typed_roundtrip"
+      ],
+      "classification": "decoder D2: parse_prop_text does not read 'true'/'false'"
+    },
+    {
+      "name": "bool-expr-off",
+      "find": "pub open spec fn bool_expr_col() -> bool { true }",
+      "replace": "pub open spec fn bool_expr_col() -> bool { false }",
+      "expect_fail_in": [
+        "theorem_compare_is_boolean_or_null",
+        "theorem_probe_rows"
+      ],
+      "classification": "decision K3: a comparison column not in bool_expr_columns (answers 1/0)"
+    },
+    {
+      "name": "gt-text-zero",
+      "find": "    match st { Stored::Native(n) => DV::Bit(if tenths(n) > c { 1 } else { 0 }), _ => DV::Null }",
+      "replace": "    match st { Stored::Native(n) => DV::Bit(if tenths(n) > c { 1 } else { 0 }), _ => DV::Bit(0) }",
+      "expect_fail_in": [
+        "theorem_compare_is_boolean_or_null",
+        "theorem_probe_rows"
+      ],
+      "classification": "SQL: a comparison over no value or text answers false instead of null"
+    },
+    {
+      "name": "missing-not-null",
+      "find": "        Stored::Missing => DV::Null,",
+      "replace": "        Stored::Missing => DV::T(Text::Empty),",
+      "expect_fail_in": [
+        "theorem_null_row_every_decoder"
+      ],
+      "classification": "SQL: a missing property read as '' instead of NULL"
+    },
+    {
+      "name": "labels-null",
+      "find": "if bound { DV::T(l) } else { DV::T(Text::ListT) }",
+      "replace": "if bound { DV::T(l) } else { DV::Null }",
+      "expect_fail_in": [
+        "theorem_optional_node_labels"
+      ],
+      "classification": "decision K4: the unbound node's labels column null (the repair of bug-plt-135)"
+    },
+    {
+      "name": "ret-coalesce-untyped",
+      "find": "        Shape::RetCoalesce => true,",
+      "replace": "        Shape::RetCoalesce => false,",
+      "expect_fail_in": [
+        "theorem_property_reads_roundtrip",
+        "theorem_probe_rows"
+      ],
+      "classification": "decision K1 (_is_typed_coalesce): a RETURN coalesce item no longer typed"
+    },
+    {
+      "name": "with-prop-untyped",
+      "find": "        Shape::WithProp => true,",
+      "replace": "        Shape::WithProp => false,",
+      "expect_fail_in": [
+        "theorem_property_reads_roundtrip"
+      ],
+      "classification": "decision K1 (_is_node_value_var): a WITH variable bound to a bare property no longer typed"
+    },
+    {
+      "name": "typed-emitted-raw",
+      "find": "    if reads_node_value(s) { Sql::CyTyped }",
+      "replace": "    if reads_node_value(s) { Sql::Raw }",
+      "expect_fail_in": [
+        "theorem_typed_roundtrip"
+      ],
+      "classification": "emission (translate_return_clause): a typed item emitted as the raw expression instead of CY_TYPED(sql)"
+    },
+    {
+      "name": "no-json-decode",
+      "find": "        DV::T(Text::ListT) => DV::L0,",
+      "replace": "        DV::T(Text::ListT) => v,",
+      "expect_fail_in": [
+        "theorem_typed_roundtrip"
+      ],
+      "classification": "decoder D1 (decode_json_list_map): stored '[]' text not parsed"
+    },
+    {
+      "name": "bit-one-false",
+      "find": "        DV::Bit(k) => if k == 1 { DV::B(true) }",
+      "replace": "        DV::Bit(k) => if k == 1 { DV::B(false) }",
+      "expect_fail_in": [
+        "theorem_compare_is_boolean_or_null",
+        "theorem_probe_rows"
+      ],
+      "classification": "decoder (_bool_expr_value): SQL 1 read as false"
+    }
+  ]
+}

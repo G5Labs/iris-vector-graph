@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "decision: collect without COALESCE(..., '[]') (_json_text_list_agg 21666)",
+    "expect_fail_in": [
+      "theorem_after_match_follows_rule",
+      "theorem_null_row_counts",
+      "theorem_leading_pure_follows_rule"
+    ],
+    "find": "        Agg::Collect => AVal::List(vs),\n    }\n}\n/// As built: `_null_row_aggregate`",
+    "name": "collect-null-over-no-value",
+    "replace": "        Agg::Collect => if vs.len() == 0 { AVal::Null } else { AVal::List(vs) },\n    }\n}\n/// As built: `_null_row_aggregate`"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_after_match_follows_rule",
+      "theorem_null_row_counts",
+      "theorem_leading_pure_follows_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/clause_combos/clause_combos.rs": "15d1bbc4c54c2ca064c4a21eef6c19b79a9c5232e36aa4f862f27e5629d1b92a",
+    ".g5/Verus_verification/models/clause_combos/model.json": "90cf5967d1a69223a184757b18f9da90fbd875061ca411caeccc1ceac2aca42c"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/collect-null-over-no-value/20261117T082936Z/models/clause_combos/clause_combos.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_after_match_follows_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082936Z-control-collect-null-over-no-value-theorem_after_match_follows_rule.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_leading_pure_follows_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082936Z-control-collect-null-over-no-value-theorem_leading_pure_follows_rule.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_null_row_counts": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082936Z-control-collect-null-over-no-value-theorem_null_row_counts.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082936Z-control-collect-null-over-no-value.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/clause_combos/20261117T082939Z-control-collect-null-over-no-value/logs/20261117T082936Z-control-collect-null-over-no-value-theorem_after_match_follows_rule.log": "d47a1c59d6f770b1f0602bc885be1db615f2bbb2e360c7381353ce45ca5e515f",
+    ".g5/Verus_verification/results/clause_combos/20261117T082939Z-control-collect-null-over-no-value/logs/20261117T082936Z-control-collect-null-over-no-value-theorem_leading_pure_follows_rule.log": "4686522e52554742ce7f747848d3ed0573b0464114aeaf6565fd1081f8f5f95a",
+    ".g5/Verus_verification/results/clause_combos/20261117T082939Z-control-collect-null-over-no-value/logs/20261117T082936Z-control-collect-null-over-no-value-theorem_null_row_counts.log": "67d4461c3a8371b46b4c110987d2747f5736864d93d2f529cd75b2faf151b3bd",
+    ".g5/Verus_verification/results/clause_combos/20261117T082939Z-control-collect-null-over-no-value/logs/20261117T082936Z-control-collect-null-over-no-value.log": "a832caf54ddc8209456e177e61a840ac0e13c9c38454083d02ed5fb4f086817d"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

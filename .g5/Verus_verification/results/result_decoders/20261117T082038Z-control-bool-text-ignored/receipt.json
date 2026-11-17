@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decoder D2: parse_prop_text does not read 'true'/'false'",
+    "expect_fail_in": [
+      "theorem_typed_roundtrip"
+    ],
+    "find": "    match v { DV::T(Text::BoolT(b)) => DV::B(b), _ => v }",
+    "name": "bool-text-ignored",
+    "replace": "    match v { _ => v }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_typed_roundtrip"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/result_decoders/model.json": "45e5e8fd6922ea1dc2f5cc6e9485f4083166e8b9880eb42c5e140608c5edee34",
+    ".g5/Verus_verification/models/result_decoders/result_decoders.rs": "b3200b67ffc4f124991e066b9b9e50d4212101956e5d004799b080644f2f0c07"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bool-text-ignored/20261117T082036Z/models/result_decoders/result_decoders.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_typed_roundtrip": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T082036Z-control-bool-text-ignored-theorem_typed_roundtrip.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T082036Z-control-bool-text-ignored.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/result_decoders/20261117T082038Z-control-bool-text-ignored/logs/20261117T082036Z-control-bool-text-ignored-theorem_typed_roundtrip.log": "14bbde1c15e5807e13e893bbfec75060e621834d28f34098729fa8e3b77aa74f",
+    ".g5/Verus_verification/results/result_decoders/20261117T082038Z-control-bool-text-ignored/logs/20261117T082036Z-control-bool-text-ignored.log": "f495c34aba36914e94586a6ae346e93d74c0d17a6bbfb7877e9a0edbd4ebc007"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

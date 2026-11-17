@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/bool-bound-as-word/20261117T081358Z/models/clause_combos/clause_combos.rs:244:1
+    |
+244 | pub proof fn theorem_group_merges_kinds(l: Seq<Val>, j: int, i: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/bool-bound-as-word/20261117T081358Z/models/clause_combos/clause_combos.rs:245:13
+    |
+244 | pub proof fn theorem_group_merges_kinds(l: Seq<Val>, j: int, i: int)
+    | -------------------------------------------------------------------- at the end of the function body
+245 |     ensures as_built_group(l, Val::Int(1), Val::Bool(true)), !rule_same(Val::Int(1), Val::Bool(true)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/bool-bound-as-word/20261117T081358Z/models/clause_combos/clause_combos.rs:246:13
+    |
+244 | pub proof fn theorem_group_merges_kinds(l: Seq<Val>, j: int, i: int)
+    | -------------------------------------------------------------------- at the end of the function body
+245 |     ensures as_built_group(l, Val::Int(1), Val::Bool(true)), !rule_same(Val::Int(1), Val::Bool(true)),
+246 |             as_built_group(l, Val::Int(0), Val::Bool(false)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

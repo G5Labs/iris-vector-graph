@@ -1,0 +1,31 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:267:1
+    |
+267 | pub proof fn theorem_group_and_distinct_disagree(j: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:268:13
+    |
+267 |   pub proof fn theorem_group_and_distinct_disagree(j: int)
+    |   -------------------------------------------------------- at the end of the function body
+268 |       ensures ({ let l = seq![Val::Int(1), Val::Bool(true)];
+    |  _____________^
+269 | |                as_built_group(l, l[0], l[1]) && !as_built_distinct(l, l[0], l[1]) }),
+    | |____________________________________________________________________________________^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081355Z/models/clause_combos/clause_combos.rs:270:13
+    |
+267 |   pub proof fn theorem_group_and_distinct_disagree(j: int)
+    |   -------------------------------------------------------- at the end of the function body
+...
+270 | /             ({ let l = seq![Val::List(j), Val::Str(StrV::SpellsList(j))];
+271 | |                as_built_group(l, l[0], l[1]) && !as_built_distinct(l, l[0], l[1]) }),
+    | |____________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

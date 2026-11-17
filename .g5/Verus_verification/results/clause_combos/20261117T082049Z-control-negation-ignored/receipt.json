@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "premise: negation not pushed to the comparisons (NOT (x OR y) judged as an OR)",
+    "expect_fail_in": [
+      "theorem_negation_polarity"
+    ],
+    "find": "        Cond::Not(p) => refuses_p(*p, !pos),",
+    "name": "negation-ignored",
+    "replace": "        Cond::Not(p) => refuses_p(*p, pos),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_negation_polarity"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/clause_combos/clause_combos.rs": "d5fa7369d8ce35d374c19420084b07703f1f72f3fec1bdb64ab5c3dd4a9e8b24",
+    ".g5/Verus_verification/models/clause_combos/model.json": "117c39f18158c18d2e890b70aae9daa501cd008545629306667341421102f3f5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/negation-ignored/20261117T082047Z/models/clause_combos/clause_combos.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_negation_polarity": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082047Z-control-negation-ignored-theorem_negation_polarity.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T082047Z-control-negation-ignored.log",
+    "timed_out": false,
+    "verified": 26
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/clause_combos/20261117T082049Z-control-negation-ignored/logs/20261117T082047Z-control-negation-ignored-theorem_negation_polarity.log": "da7692a7feb4f3f0b4855be01259944796a507df87b17dda4b64194c7a863922",
+    ".g5/Verus_verification/results/clause_combos/20261117T082049Z-control-negation-ignored/logs/20261117T082047Z-control-negation-ignored.log": "1357f7b10825af1c13f9fea27eb4e3d04d007fc9586e4b5df72766b401948c22"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

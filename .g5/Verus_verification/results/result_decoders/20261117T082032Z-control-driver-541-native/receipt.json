@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "provider P-DRV-NUM: driver 5.4.1 assumed to hand a raw IRIS number to Python as a number",
+    "expect_fail_in": [
+      "theorem_case_number_by_driver",
+      "theorem_probe_rows"
+    ],
+    "find": "Driver::D541 => DV::T(Text::NumT(n)) },",
+    "name": "driver-541-native",
+    "replace": "Driver::D541 => DV::N(n) },"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_case_number_by_driver",
+      "theorem_probe_rows"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/result_decoders/model.json": "45e5e8fd6922ea1dc2f5cc6e9485f4083166e8b9880eb42c5e140608c5edee34",
+    ".g5/Verus_verification/models/result_decoders/result_decoders.rs": "b3200b67ffc4f124991e066b9b9e50d4212101956e5d004799b080644f2f0c07"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/driver-541-native/20261117T082030Z/models/result_decoders/result_decoders.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_case_number_by_driver": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T082030Z-control-driver-541-native-theorem_case_number_by_driver.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_probe_rows": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T082030Z-control-driver-541-native-theorem_probe_rows.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/20261117T082030Z-control-driver-541-native.log",
+    "timed_out": false,
+    "verified": 9
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/result_decoders/20261117T082032Z-control-driver-541-native/logs/20261117T082030Z-control-driver-541-native-theorem_case_number_by_driver.log": "37237dc933d82c5be7df2881b4f4ce493c92b25f1eec690cb59c8db9c5541d23",
+    ".g5/Verus_verification/results/result_decoders/20261117T082032Z-control-driver-541-native/logs/20261117T082030Z-control-driver-541-native-theorem_probe_rows.log": "f2a8b3363b834cc9f9a72fa59ee15ee88c5d61a7567cf8c7f670b44cdddbc382",
+    ".g5/Verus_verification/results/result_decoders/20261117T082032Z-control-driver-541-native/logs/20261117T082030Z-control-driver-541-native.log": "cdc7742ab15badbbdcde0bafcf0b6e8e773fcfdee55b92758096e67c6a6095d1"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "name": "clause_combos",
+  "root": "clause_combos.rs",
+  "expected_verified": 28,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "sum-null-over-no-value",
+      "find": "        Agg::Sum => AVal::Int(sum_seq(vs)),\n        Agg::Avg => if vs.len() == 0 { AVal::Null } else { AVal::AvgOf(sum_seq(vs), vs.len()) },\n        Agg::Min => if vs.len() == 0 { AVal::Null } else { AVal::Int(min_seq(vs)) },\n        Agg::Collect => AVal::List(vs),\n    }\n}\n/// As built: `_null_row_aggregate`",
+      "replace": "        Agg::Sum => if vs.len() == 0 { AVal::Null } else { AVal::Int(sum_seq(vs)) },\n        Agg::Avg => if vs.len() == 0 { AVal::Null } else { AVal::AvgOf(sum_seq(vs), vs.len()) },\n        Agg::Min => if vs.len() == 0 { AVal::Null } else { AVal::Int(min_seq(vs)) },\n        Agg::Collect => AVal::List(vs),\n    }\n}\n/// As built: `_null_row_aggregate`",
+      "expect_fail_in": [
+        "theorem_after_match_follows_rule",
+        "theorem_null_row_counts",
+        "theorem_leading_pure_follows_rule"
+      ],
+      "classification": "decision: the SQL sum without CASE WHEN SUM IS NULL THEN 0 (18600)"
+    },
+    {
+      "name": "count-var-counts-rows",
+      "find": "        Agg::CountVar => AVal::Int(vs.len() as int),\n        Agg::CountStar => AVal::Int(rows.len() as int),",
+      "replace": "        Agg::CountVar => AVal::Int(rows.len() as int),\n        Agg::CountStar => AVal::Int(rows.len() as int),",
+      "expect_fail_in": [
+        "theorem_after_match_follows_rule",
+        "theorem_null_row_counts"
+      ],
+      "classification": "decision: count(b) as COUNT(*) (the null row counted)"
+    },
+    {
+      "name": "leading-star-unpatched",
+      "find": "    if k == Agg::CountStar && v == AVal::Int(0) { AVal::Int(1) } else { v }",
+      "replace": "    v",
+      "expect_fail_in": [
+        "theorem_leading_pure_follows_rule"
+      ],
+      "classification": "decision: R298's count(*) patch (30574-30582) removed"
+    },
+    {
+      "name": "null-row-sum-zero",
+      "find": "        Agg::Collect => AVal::List(Seq::empty()),\n        _ => AVal::Null,",
+      "replace": "        Agg::Collect => AVal::List(Seq::empty()),\n        Agg::Sum => AVal::Int(0),\n        _ => AVal::Null,",
+      "expect_fail_in": [
+        "theorem_leading_grouped_sum_is_null"
+      ],
+      "classification": "repair direction of bug-agg-001: _null_row_aggregate answers 0 for sum"
+    },
+    {
+      "name": "null-row-count-var-one",
+      "find": "        Agg::CountVar => AVal::Int(0),\n        Agg::Collect => AVal::List(Seq::empty()),",
+      "replace": "        Agg::CountVar => AVal::Int(1),\n        Agg::Collect => AVal::List(Seq::empty()),",
+      "expect_fail_in": [
+        "theorem_leading_grouped_others_follow_rule"
+      ],
+      "classification": "decision: _null_row_aggregate's count(x) '0'"
+    },
+    {
+      "name": "grouped-leading-uses-sql",
+      "find": "    else if grouped { null_row_aggregate(k) }",
+      "replace": "    else if grouped { leading_star_patch(k, as_built_sql(k, Seq::empty())) }",
+      "expect_fail_in": [
+        "theorem_leading_grouped_sum_is_null"
+      ],
+      "classification": "decision: the grouped leading OPTIONAL's synthetic null row (optional_null_row_items 30791) replaced by the SQL fold"
+    },
+    {
+      "name": "group-by-kind-column",
+      "find": "pub open spec fn group_key(l: Seq<Val>, v: Val) -> Txt { bound_text(v) }\npub open spec fn as_built_group(l: Seq<Val>, v: Val, w: Val) -> bool { group_key(l, v) == group_key(l, w) }",
+      "replace": "pub open spec fn group_key(l: Seq<Val>, v: Val) -> Txt { bound_text(v) }\npub open spec fn as_built_group(l: Seq<Val>, v: Val, w: Val) -> bool { v == w }",
+      "expect_fail_in": [
+        "theorem_group_iff_bound_text",
+        "theorem_group_merges_kinds",
+        "theorem_group_and_distinct_disagree"
+      ],
+      "classification": "repair direction: GROUP BY adds the row's kind column (x__t / x__b / x__k)"
+    },
+    {
+      "name": "bool-bound-as-word",
+      "find": "        Val::Bool(b) => Txt::Num(if b { 1 } else { 0 }),",
+      "replace": "        Val::Bool(b) => Txt::Word(if b { -1 } else { -2 }),",
+      "expect_fail_in": [
+        "theorem_group_merges_kinds",
+        "theorem_group_neighbors_follow_rule",
+        "theorem_group_and_distinct_disagree"
+      ],
+      "classification": "decision (IRIS binding): a boolean row value bound as 1 / 0"
+    },
+    {
+      "name": "distinct-plain-on-flag",
+      "find": "        Route::Flag => SelKey::Flagged(v is Bool, bound_text(v)),",
+      "replace": "        Route::Flag => SelKey::Text(bound_text(v)),",
+      "expect_fail_in": [
+        "theorem_distinct_flag_route_keeps_bool_apart",
+        "theorem_group_and_distinct_disagree"
+      ],
+      "classification": "decision: the flag route's CASE on x__b (30667-30671) removed"
+    },
+    {
+      "name": "json-route-plain",
+      "find": "        Route::JsonCol => SelKey::Typed(v),",
+      "replace": "        Route::JsonCol => SelKey::Text(bound_text(v)),",
+      "expect_fail_in": [
+        "theorem_distinct_json_route_follows_rule",
+        "theorem_group_and_distinct_disagree"
+      ],
+      "classification": "decision: the CY_LIST_KINDS JSON column item (30660-30664) removed"
+    },
+    {
+      "name": "iris-accepts-or",
+      "find": "        Cond::Or(p, q) => if pos { reads_earlier(*p) || reads_earlier(*q) || refuses_p(*p, pos) || refuses_p(*q, pos) }",
+      "replace": "        Cond::Or(p, q) => if pos { refuses_p(*p, pos) || refuses_p(*q, pos) }",
+      "expect_fail_in": [
+        "theorem_mixing_earlier_refused",
+        "theorem_negation_polarity"
+      ],
+      "classification": "premise: OR reading an earlier alias accepted in ON"
+    },
+    {
+      "name": "iris-accepts-arith",
+      "find": "        Cond::Cmp(x, y) => op_arith_over_earlier(x) || op_arith_over_earlier(y),\n        Cond::Not(p)",
+      "replace": "        Cond::Cmp(x, y) => false,\n        Cond::Not(p)",
+      "expect_fail_in": [
+        "theorem_mixing_earlier_refused"
+      ],
+      "classification": "premise: arithmetic over an earlier alias accepted in ON"
+    },
+    {
+      "name": "iris-refuses-any-or",
+      "find": "        Cond::Or(p, q) => if pos { reads_earlier(*p) || reads_earlier(*q) || refuses_p(*p, pos) || refuses_p(*q, pos) }",
+      "replace": "        Cond::Or(p, q) => if pos { true }",
+      "expect_fail_in": [
+        "lemma_no_earlier_not_refused",
+        "theorem_neighbors"
+      ],
+      "classification": "neighbor: an OR over the new alias only refused"
+    },
+    {
+      "name": "iris-refuses-any-arith",
+      "find": "    match o { Operand::Arith(x, y) => op_reads_earlier(*x) || op_reads_earlier(*y), _ => false }\n}\npub open spec fn reads_earlier",
+      "replace": "    match o { Operand::Arith(x, y) => true, _ => false }\n}\npub open spec fn reads_earlier",
+      "expect_fail_in": [
+        "lemma_no_earlier_not_refused",
+        "theorem_neighbors"
+      ],
+      "classification": "neighbor: arithmetic over the new alias only refused"
+    },
+    {
+      "name": "negation-ignored",
+      "find": "        Cond::Not(p) => refuses_p(*p, !pos),",
+      "replace": "        Cond::Not(p) => refuses_p(*p, pos),",
+      "expect_fail_in": [
+        "theorem_negation_polarity"
+      ],
+      "classification": "premise: negation not pushed to the comparisons (NOT (x OR y) judged as an OR)"
+    },
+    {
+      "name": "collect-null-over-no-value",
+      "find": "        Agg::Collect => AVal::List(vs),\n    }\n}\n/// As built: `_null_row_aggregate`",
+      "replace": "        Agg::Collect => if vs.len() == 0 { AVal::Null } else { AVal::List(vs) },\n    }\n}\n/// As built: `_null_row_aggregate`",
+      "expect_fail_in": [
+        "theorem_after_match_follows_rule",
+        "theorem_null_row_counts",
+        "theorem_leading_pure_follows_rule"
+      ],
+      "classification": "decision: collect without COALESCE(..., '[]') (_json_text_list_agg 21666)"
+    },
+    {
+      "name": "condition-in-where",
+      "find": "pub open spec fn placed_in_on(c: Cond) -> bool { true }",
+      "replace": "pub open spec fn placed_in_on(c: Cond) -> bool { false }",
+      "expect_fail_in": [
+        "theorem_new_alias_only_keeps_row",
+        "theorem_mixing_earlier_refused",
+        "theorem_neighbors",
+        "theorem_negation_polarity"
+      ],
+      "classification": "decision: translate_where_clause puts the OPTIONAL MATCH condition in the query's WHERE instead of the ON (17128-17175)"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/group-by-kind-column/20261117T081754Z/models/clause_combos/clause_combos.rs:240:13
+    |
+239 | pub proof fn theorem_group_iff_bound_text(l: Seq<Val>, v: Val, w: Val)
+    | ---------------------------------------------------------------------- at the end of the function body
+240 |     ensures as_built_group(l, v, w) <==> bound_text(v) == bound_text(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

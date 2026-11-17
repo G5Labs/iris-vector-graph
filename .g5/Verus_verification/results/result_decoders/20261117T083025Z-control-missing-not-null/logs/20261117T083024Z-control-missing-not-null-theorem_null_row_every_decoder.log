@@ -1,0 +1,28 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/missing-not-null/20261117T083024Z/models/result_decoders/result_decoders.rs:177:1
+    |
+177 | pub proof fn theorem_null_row_every_decoder(s: Shape, d: Driver, f: Sql)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/missing-not-null/20261117T083024Z/models/result_decoders/result_decoders.rs:178:13
+    |
+177 | pub proof fn theorem_null_row_every_decoder(s: Shape, d: Driver, f: Sql)
+    | ------------------------------------------------------------------------ at the end of the function body
+178 |     ensures answer(s, W::Absent, d) == V::Null,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/missing-not-null/20261117T083024Z/models/result_decoders/result_decoders.rs:179:13
+    |
+177 | pub proof fn theorem_null_row_every_decoder(s: Shape, d: Driver, f: Sql)
+    | ------------------------------------------------------------------------ at the end of the function body
+178 |     ensures answer(s, W::Absent, d) == V::Null,
+179 |             sql_value(f, Stored::Missing, d) == DV::Null,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

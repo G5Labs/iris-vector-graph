@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: the flag route's CASE on x__b (30667-30671) removed",
+    "expect_fail_in": [
+      "theorem_distinct_flag_route_keeps_bool_apart",
+      "theorem_group_and_distinct_disagree"
+    ],
+    "find": "        Route::Flag => SelKey::Flagged(v is Bool, bound_text(v)),",
+    "name": "distinct-plain-on-flag",
+    "replace": "        Route::Flag => SelKey::Text(bound_text(v)),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_distinct_flag_route_keeps_bool_apart",
+      "theorem_group_and_distinct_disagree"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/clause_combos/clause_combos.rs": "5610773c054788e8aa6bfbdea1a0e7e4df51f2a8084ca0d3d18e859ca37f0a72",
+    ".g5/Verus_verification/models/clause_combos/model.json": "32ffbdc4a06de312e1aab0f10fa5b680977c08456e744061d4ec9d901e6c7374"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/distinct-plain-on-flag/20261117T081400Z/models/clause_combos/clause_combos.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_distinct_flag_route_keeps_bool_apart": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081400Z-control-distinct-plain-on-flag-theorem_distinct_flag_route_keeps_bool_apart.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_group_and_distinct_disagree": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081400Z-control-distinct-plain-on-flag-theorem_group_and_distinct_disagree.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081400Z-control-distinct-plain-on-flag.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/clause_combos/20261117T081403Z-control-distinct-plain-on-flag/logs/20261117T081400Z-control-distinct-plain-on-flag-theorem_distinct_flag_route_keeps_bool_apart.log": "f3e0b22c58a510c32ff22692b7e710316be58908091fc51491d429ee04125f09",
+    ".g5/Verus_verification/results/clause_combos/20261117T081403Z-control-distinct-plain-on-flag/logs/20261117T081400Z-control-distinct-plain-on-flag-theorem_group_and_distinct_disagree.log": "2332f491563b0836632a13d8033046c8d05ae3c7afa8cd70c7a34a5be1fa481a",
+    ".g5/Verus_verification/results/clause_combos/20261117T081403Z-control-distinct-plain-on-flag/logs/20261117T081400Z-control-distinct-plain-on-flag.log": "8de26b0dedce91016ccb041ee2a15c951add775521dc5c0c67b3afb207e2af5c"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

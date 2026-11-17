@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/no-prop-text/20261117T082135Z/models/result_decoders/result_decoders.rs:165:13
+    |
+163 | pub proof fn theorem_typed_roundtrip(s: Shape, w: W, d: Driver)
+    | --------------------------------------------------------------- at the end of the function body
+164 |     requires reads_node_value(s),
+165 |     ensures answer(s, w, d) == expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

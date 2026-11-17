@@ -1,0 +1,21 @@
+verification results:: 26 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/iris-accepts-or/20261117T082039Z/models/clause_combos/clause_combos.rs:362:13
+    |
+359 | pub proof fn theorem_negation_polarity(n: int)
+    | ---------------------------------------------- at the end of the function body
+...
+362 |             as_built_opt(Cond::Not(Box::new(Cond::Not(Box::new(Cond::Or(Box::new(Cond::Cmp(Operand::NewProp, Operand::EarlierProp)), Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(n))))))))) == OptOut::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/iris-accepts-or/20261117T082039Z/models/clause_combos/clause_combos.rs:370:13
+    |
+368 | pub proof fn theorem_mixing_earlier_refused(n: int)
+    | --------------------------------------------------- at the end of the function body
+369 |     ensures as_built_opt(Cond::Cmp(Operand::NewProp, Operand::Arith(Box::new(Operand::EarlierProp), Box::new(Operand::Lit(n))))) == OptOut::Refused,
+370 |             as_built_opt(Cond::Or(Box::new(Cond::Cmp(Operand::NewProp, Operand::EarlierProp)), Box::new(Cond::Cmp(Operand::NewProp, Operand::Lit(n))))) == OptOut::Refused,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,36 @@
+verification results:: 10 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/coalesce-cast-gone/20261117T083012Z/models/result_decoders/result_decoders.rs:184:1
+    |
+184 | pub proof fn theorem_with_coalesce_number_is_text(w: W, d: Driver)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/coalesce-cast-gone/20261117T083012Z/models/result_decoders/result_decoders.rs:186:13
+    |
+184 | pub proof fn theorem_with_coalesce_number_is_text(w: W, d: Driver)
+    | ------------------------------------------------------------------ at the end of the function body
+185 |     requires is_num(w),
+186 |     ensures answer(Shape::WithCoalesce, w, d) == V::Str(Text::NumT(num_of(w))),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/coalesce-cast-gone/20261117T083012Z/models/result_decoders/result_decoders.rs:187:13
+    |
+184 | pub proof fn theorem_with_coalesce_number_is_text(w: W, d: Driver)
+    | ------------------------------------------------------------------ at the end of the function body
+...
+187 |             answer(Shape::WithCoalesce, w, d) != expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/coalesce-cast-gone/20261117T083012Z/models/result_decoders/result_decoders.rs:263:13
+    |
+258 | pub proof fn theorem_probe_rows()
+    | --------------------------------- at the end of the function body
+...
+263 |             answer(Shape::WithCoalesce, W::Float(25), Driver::D532) == V::Str(Text::NumT(Num::F(25))),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

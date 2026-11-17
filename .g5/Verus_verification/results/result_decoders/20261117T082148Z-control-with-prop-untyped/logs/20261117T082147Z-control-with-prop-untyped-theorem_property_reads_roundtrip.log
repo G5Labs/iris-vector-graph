@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/with-prop-untyped/20261117T082147Z/models/result_decoders/result_decoders.rs:172:13
+    |
+170 | pub proof fn theorem_property_reads_roundtrip(w: W, d: Driver)
+    | -------------------------------------------------------------- at the end of the function body
+171 |     ensures answer(Shape::Prop, w, d) == expect(w),
+172 |             answer(Shape::WithProp, w, d) == expect(w),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

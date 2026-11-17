@@ -1,0 +1,20 @@
+verification results:: 10 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bit-one-false/20261117T082151Z/models/result_decoders/result_decoders.rs:230:13
+    |
+229 | pub proof fn theorem_compare_is_boolean_or_null(w: W, c: int)
+    | ------------------------------------------------------------- at the end of the function body
+230 |     ensures is_num(w) ==> answer_gt(w, c) == V::Bool(tenths(num_of(w)) > c),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/bit-one-false/20261117T082151Z/models/result_decoders/result_decoders.rs:268:13
+    |
+258 | pub proof fn theorem_probe_rows()
+    | --------------------------------- at the end of the function body
+...
+268 |             answer_gt(W::Int(3), 27) == V::Bool(true),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

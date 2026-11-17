@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "premise: arithmetic over an earlier alias accepted in ON",
+    "expect_fail_in": [
+      "theorem_mixing_earlier_refused"
+    ],
+    "find": "        Cond::Cmp(x, y) => op_arith_over_earlier(x) || op_arith_over_earlier(y),\n        Cond::Not(p)",
+    "name": "iris-accepts-arith",
+    "replace": "        Cond::Cmp(x, y) => false,\n        Cond::Not(p)"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_mixing_earlier_refused"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/clause_combos/clause_combos.rs": "888e35ecb3740328e97094d9ea0d6349827ef8daeadf0525bd0d98a1c1a837f3",
+    ".g5/Verus_verification/models/clause_combos/model.json": "117c39f18158c18d2e890b70aae9daa501cd008545629306667341421102f3f5"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/iris-accepts-arith/20261117T081805Z/models/clause_combos/clause_combos.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_mixing_earlier_refused": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081805Z-control-iris-accepts-arith-theorem_mixing_earlier_refused.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/20261117T081805Z-control-iris-accepts-arith.log",
+    "timed_out": false,
+    "verified": 27
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/clause_combos/20261117T081807Z-control-iris-accepts-arith/logs/20261117T081805Z-control-iris-accepts-arith-theorem_mixing_earlier_refused.log": "0d345e70918895985bc45c4a81bf9e6b2f2fc004692d5293581dcda8b5fc10f1",
+    ".g5/Verus_verification/results/clause_combos/20261117T081807Z-control-iris-accepts-arith/logs/20261117T081805Z-control-iris-accepts-arith.log": "90cf05b95beb27f6b10a75e21de6b743bb607012477d6624fa91c5cb694c3218"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

@@ -1,0 +1,37 @@
+verification results:: 25 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/distinct-plain-on-flag/20261117T081400Z/models/clause_combos/clause_combos.rs:262:1
+    |
+262 | pub proof fn theorem_distinct_flag_route_keeps_bool_apart(l: Seq<Val>, i: int)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/distinct-plain-on-flag/20261117T081400Z/models/clause_combos/clause_combos.rs:264:13
+    |
+262 | pub proof fn theorem_distinct_flag_route_keeps_bool_apart(l: Seq<Val>, i: int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+263 |     requires !has_list(l), has_bool(l), has_non_bool(l),
+264 |     ensures !as_built_distinct(l, Val::Int(i), Val::Bool(true)), !as_built_distinct(l, Val::Int(i), Val::Bool(false)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/distinct-plain-on-flag/20261117T081400Z/models/clause_combos/clause_combos.rs:264:66
+    |
+262 | pub proof fn theorem_distinct_flag_route_keeps_bool_apart(l: Seq<Val>, i: int)
+    | ------------------------------------------------------------------------------ at the end of the function body
+263 |     requires !has_list(l), has_bool(l), has_non_bool(l),
+264 |     ensures !as_built_distinct(l, Val::Int(i), Val::Bool(true)), !as_built_distinct(l, Val::Int(i), Val::Bool(false)),
+    |                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/clause_combos/controls/distinct-plain-on-flag/20261117T081400Z/models/clause_combos/clause_combos.rs:268:13
+    |
+267 |   pub proof fn theorem_group_and_distinct_disagree(j: int)
+    |   -------------------------------------------------------- at the end of the function body
+268 |       ensures ({ let l = seq![Val::Int(1), Val::Bool(true)];
+    |  _____________^
+269 | |                as_built_group(l, l[0], l[1]) && !as_built_distinct(l, l[0], l[1]) }),
+    | |____________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

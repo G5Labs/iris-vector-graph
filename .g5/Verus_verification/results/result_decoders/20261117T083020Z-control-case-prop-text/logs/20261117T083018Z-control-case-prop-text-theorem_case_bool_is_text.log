@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-prop-text/20261117T083018Z/models/result_decoders/result_decoders.rs:191:1
+    |
+191 | pub proof fn theorem_case_bool_is_text(s: Shape, b: bool, d: Driver)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-prop-text/20261117T083018Z/models/result_decoders/result_decoders.rs:193:13
+    |
+191 | pub proof fn theorem_case_bool_is_text(s: Shape, b: bool, d: Driver)
+    | -------------------------------------------------------------------- at the end of the function body
+192 |     requires is_case(s),
+193 |     ensures answer(s, W::Bool(b), d) == V::Str(Text::BoolT(b)), answer(s, W::Bool(b), d) != expect(W::Bool(b)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/result_decoders/controls/case-prop-text/20261117T083018Z/models/result_decoders/result_decoders.rs:193:65
+    |
+191 | pub proof fn theorem_case_bool_is_text(s: Shape, b: bool, d: Driver)
+    | -------------------------------------------------------------------- at the end of the function body
+192 |     requires is_case(s),
+193 |     ensures answer(s, W::Bool(b), d) == V::Str(Text::BoolT(b)), answer(s, W::Bool(b), d) != expect(W::Bool(b)),
+    |                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+
