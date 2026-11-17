@@ -25,7 +25,7 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | 12 | Engine facade `engine.py` and `_engine/query.py` | 119/124, 116/124 | OPEN | largely delegates; justify shared relation or exclude |
 | 13 | Schema / schema_name / class_deploy (install & DDL) | _engine/schema.py 68/83, schema.py 53/58, schema_name.py 44/47, class_deploy 21 | OPEN | |
 | 14 | Traversal builds and BFS (`TraversalBuild` 38/38, `Traversal` 33/34, `Adjacency` 33/34, `VarLength` 15) | iris_src | OPEN | prior: "internals of modeled decisions" - re-challenge |
-| 15 | (ASSIGNED 55 with _engine/query.py pipeline) Bolt server | bolt_server.py 45/53 | OPEN | |
+| 15 | (DONE 55: model bolt_answers; residual shadow/compiled at reader, var-length LIMIT route, _decode_*_columns in Verus, Bolt 5 structs with Java/JS driver, query/v2 node shape, WebSocket Bolt) Bolt server | bolt_server.py 45/53 | OPEN | |
 | 16 | SDK / host (`sdk.py` 42/43, `host.py` 38/42) | | OPEN | |
 | 17 | Cypher `Exec.cls` / `Gen.cls` native executor internals | 55/59, 23/24 | OPEN | |
 | 18 | Ledger client/replay/changeset | 35/42, 33/43, 28/29 | OPEN | ledger family modeled; check readers |
@@ -51,6 +51,7 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | Iter | Session | Batch | Union | Active | Findings | Cost |
 |---|---|---|---|---|---|---|
 | base | - | - | 698 | 448 | - | - |
+| 55 | 6511d787 | W60 query pipeline + Bolt reader | 866 | 640 | new: plt-121/122/123, cyp-144/145 M; plt-124/125/126 L; cyp-125 settled (IRIS driver 5.3.2 vs 5.4.1) -> M + question query.parameters.drivers; F-1602 reproduced | 28 min, $12.82, 175k out tok |
 | 54 | 9b48cf72 | W59 Cypher clauses over API data / default mode / params | 847 | 619 | new: cyp-135..138, 142, 143 M; cyp-139..141 L; question query.aggregation.keys.numbers | 37 min, $17.79, 208k out tok |
 | 53 | 3b698118 | repairs review round 2 + SqlProcs/BM25/percentiles | 833 | 603 | new: tmp-105 M, plt-119 M, cyp-134 M, tmp-106/plt-120/cyp-133/tmp-107/str-112 L; models sql_procs, bm25_scoring, percentile | 45 min, $33.94 (4 sub-workers) |
 | 52 | ff337b8c | W58 operator reports | 799 | 563 | new: plt-115 M (status misses routed vectors), plt-116 M (verify_sync drift loop), plt-117/118 L; routine_reporting claim for routed tables withdrawn | 26 min, $14.81, 159k out tok |
