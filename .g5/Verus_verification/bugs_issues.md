@@ -11,6 +11,8 @@ All 434 starting IDs are reconciled. The 281 removed entries retain stable IDs a
 
 Severity: High · Decision: Open
 
+Description: When several relationships connect the same pair of nodes, deleting one through the ledger also removes the lookup entries for the others. The remaining relationships still exist, but traversal and degree counts can no longer see them.
+
 Run: Uplift 2026-11-13
 
 Found by: [witness_ledger_delete_rel_drops_survivor_indexed and witness_ledger_delete_rel_drops_survivors_non_indexed](results/graph_structure/20261114T000451Z-prove/receipt.json) in [graph_structure.rs](models/graph_structure/graph_structure.rs) (B-structure O5/F3; control `as-built-delete-rel-without-line-689` attributes the witness to line 689); A-structure F3 and S4 ([intent](../uplift/ivg-verus-initial/intent/graph-structure.md)); A-ops hazard (a)6 ([operations](../uplift/ivg-verus-initial/intent/operations.md)); review R2-data R1-2.
@@ -36,6 +38,8 @@ Canonical owner and evidence: [structure.multigraph.layout](../ontology/features
 ### A temporal write whose structural step fails keeps its raw entry, cannot be finished by a retry, and the bulk fallback reports it written
 
 Severity: High · Decision: Open
+
+Description: A temporal write can fail after saving part of the event. Retrying does not complete the missing data, and a bulk operation can still report success, leaving event readers and graph readers with different answers.
 
 Run: Uplift 2026-11-13
 
@@ -65,6 +69,8 @@ Canonical owner and evidence: [temporal.write](../ontology/features/temporal.g5.
 ### An update at an occupied temporal coordinate counts the edge twice in the statistics
 
 Severity: High · Decision: Open
+
+Description: Updating an existing temporal event adds its value to the counters again instead of replacing the previous contribution. Reports can therefore count two events when only one is stored.
 
 Run: Uplift 2026-11-13
 
@@ -97,6 +103,8 @@ Iteration 51 (strengthened, not new): [temporal_stats](models/temporal_stats/NOT
 
 Severity: High · Decision: Open
 
+Description: Rolling back a temporal write removes the event but leaves its count and sum behind. Reports include events that never committed, and retrying the write inflates the totals again.
+
 Run: Uplift 2026-11-13
 
 Found by: [witness_refused_changeset_leaves_counts, witness_blocked_changeset_leaves_counts, witness_throw_in_changeset_leaves_bucket, witness_caller_rollback_leaves_counts and witness_caller_rollback_of_ledger_commit_leaves_counts](results/temporal/20261114T001508Z-prove/receipt.json) in [temporal.rs](models/temporal/temporal.rs) (B-temporal O6/F3, with `lemma_refused_commit_restores_journaled`); A-temporal F3.
@@ -126,6 +134,8 @@ Iteration 51 (strengthened, not new): the rollback undoes the min, max and sketc
 
 Severity: High · Decision: Open
 
+Description: Rolling back a temporal deletion restores the event without restoring its bucket counter. Event counts and activity reports then undercount data that is still present.
+
 Run: Uplift 2026-11-13
 
 Found by: [witness_rolled_back_delete_undercounts](results/temporal/20261114T001508Z-prove/receipt.json) in [temporal.rs](models/temporal/temporal.rs) (valid outcome `witness_rolled_back_delete_exact_if_counters_undone`); review R2-data R1-9 (the mirror of [bug-tmp-003](#bug-tmp-003)).
@@ -151,6 +161,8 @@ Canonical owner and evidence: [temporal.delete](../ontology/features/temporal.g5
 ### Storing an edge over a marked edge does not take the edge over
 
 Severity: High · Decision: Open
+
+Description: An explicitly stored relationship should survive removal of the temporal event that originally created it. This write path leaves the relationship marked as owned by that event, so later cleanup can delete the explicit relationship.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -179,6 +191,8 @@ Canonical owner and evidence: [temporal.structural.adopt](../ontology/features/t
 
 Severity: High · Decision: Open
 
+Description: Two redactions can overlap even when they target different tenants. They share progress and audit state, so one operation can report the other's work or release its protection before it finishes.
+
 Run: Uplift 2026-11-13
 
 Also recorded as: F-1303 (playbook arm, S1, reproduced-live; [13.json](../../experiment/playbook-completion/findings/audit/13.json)). (crosswalk)
@@ -204,6 +218,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### A redaction completes while its target's content is still uncommitted-deleted, and the caller's rollback brings the content back with its history tombstoned
 
 Severity: High · Decision: Open
+
+Description: Redaction can treat another transaction's unfinished deletion as permanent. If that transaction rolls back, the content returns after its history has already been removed.
 
 Run: Uplift 2026-11-13
 
@@ -231,6 +247,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: Erasing graph data does not clear all search indexes. Searches can still return erased content, and reusing a deleted node ID can attach the old text to the new node.
+
 Run: Uplift 2026-11-13
 
 Found by: [witness_erase_leaves_bm25](results/search/20261114T000543Z-prove/receipt.json) in [search.rs](models/search/search.rs) (B-search O5/F1; repair `theorem_repaired_erase_removes_answers`); A-search F1 and S2 ([intent](../uplift/ivg-verus-initial/intent/search.md)); A-ops hazard (a)3; reconstruction check 2(b)12 and correction 6; review R3-platform R1-7.
@@ -254,6 +272,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### A caller with Cypher read access can forge a CRC-32 collision so that another shape's queries run its compiled code
 
 Severity: High · Decision: Open
+
+Description: Source and model review indicate that different Cypher query shapes can share the same compiled-plan identifier. A collision could make one query run another query's code; this has not been reproduced with real colliding queries.
 
 Run: Uplift 2026-11-13
 
@@ -281,6 +301,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: Deleting a graph leaves its vectors and node IDs in several vector indexes. Those indexes can retain information that the graph-erasure operation was expected to remove.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [06.json](../../experiment/playbook-completion/findings/audit/06.json) (live `breadth-a-live-06-vectors`; mc `breadth-a-mc-vec_ivf-as-built`; mc `breadth-a-mc-vec_ivf-reviewed`; control `breadth-a-control-vec_ivf`)
@@ -305,6 +327,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Erasure leaves BM25 indexes holding an erased graph's terms and node ids
 
 Severity: High · Decision: Open
+
+Description: Deleting a graph leaves its words and node IDs in BM25 text indexes. Search results can therefore retain content after graph erasure.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -331,6 +355,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: A text index that lacks graph ownership information is treated as belonging to the default graph. A caller can receive results from an index whose contents have not been shown to belong to that graph.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [07.json](../../experiment/playbook-completion/findings/audit/07.json) (live `b-07-f0705-f0707`; live `b-07-fp-writers`; mc `m07-leg-as-built-fusion-unknown`; mc `m07-leg-as-built-label`; mc `m07-leg-reviewed`; inspected `iris_src/src/Graph/KG/BM25Index.cls:608-612`)
@@ -355,6 +381,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Under USE GRAPH, BM25 calls do not check that the index was built for that graph
 
 Severity: High · Decision: Open
+
+Description: Selecting a graph does not make BM25 check the ownership of a named index. A search can use another graph's index and return results outside the selected graph.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -381,6 +409,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: The text-search wrapper does not consistently enforce graph selection, and its iFind path is unreachable. Callers can receive results from other graphs or be unable to use the intended search backend.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [07.json](../../experiment/playbook-completion/findings/audit/07.json) (live `b-07-f0711`; run `b-07-unit`; inspected `iris_vector_graph/text_search.py:31-256`; inspected `iris_vector_graph/__init__.py:93-125`)
@@ -404,6 +434,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Text shortcuts answer by substring and ignore USE GRAPH
 
 Severity: High · Decision: Open
+
+Description: The text-search shortcuts use substring matching and ignore the selected graph. They can return both unexpected text matches and data from another graph.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -430,6 +462,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: The AQL adapter inserts text values directly into generated Cypher and does not enforce its read-only option. The recorded concern is that input can change the query's meaning and permit writes where the caller expected reads only.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0814`; mc `m08-readonly-as-built`; mc `m08-readonly-reviewed`; inspected `iris_vector_graph/cypher/aql/translator.py:50-58`; inspected `iris_vector_graph/cypher/aql/translator.py:154-168`; inspected `iris_vector_graph/_engine/query.py:1730-1745`)
@@ -454,6 +488,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: A dotted function name is inserted directly into generated SQL. The recorded concern is that a name can change the SQL statement instead of being treated only as a function identifier.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0815`; mc `m08-scope-as-built-dotted`; mc `m08-readonly-as-built`; run `b-08-run-unit`; inspected `iris_vector_graph/cypher/parser.py:1627-1640`; inspected `iris_vector_graph/cypher/translator.py:29563-29578`)
@@ -477,6 +513,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Schema procedures ignore USE GRAPH
 
 Severity: High · Decision: Open
+
+Description: Schema procedures ignore the graph selected by the query. Their answers can describe other graphs rather than the graph the caller requested.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -503,6 +541,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: A variable-length traversal over all graphs can join edges from different graphs into one path. The returned path may exist in no individual graph.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0818`; mc `m08-scope-as-built-vlp`; mc `m08-scope-reviewed`; mc `m08-scope-control-vlp-unscoped`; inspected `iris_vector_graph/cypher/translator.py:15404-15431`; live `b-08-live-f0818-rerun`)
@@ -528,6 +568,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: The SQL path helper reads edges from every graph. A caller expecting a path within one graph can receive a route that includes another graph's data.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0820`; mc `m08-scope-as-built-graphpath`; inspected `iris_vector_graph/_engine/algorithms.py:679-697`; inspected `iris_vector_graph/operators.py:46-49`; live `b-08-live-f0820-rerun`)
@@ -552,6 +594,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: The random-walk API depends on the optional Arno library and does not restrict its walk to the selected graph. Calls can fail without that library or traverse edges from other graphs.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [10.json](../../experiment/playbook-completion/findings/audit/10.json) (live `b-10-live-nkg`; mc `m10-routes-as-built-walk-empty`; mc `m10-nkg-as-built-scope`; mc `m10-nkg-reviewed`; mc `m10-nkg-control-walk-merged`; inspected `iris_vector_graph/_engine/algorithms.py:658-678`)
@@ -575,6 +619,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Variable-length expansion's every-graph mode walks across graphs
 
 Severity: High · Decision: Open
+
+Description: Variable-length expansion over all graphs can connect edges across graph boundaries. Its results can describe paths that do not exist within any one graph.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -601,6 +647,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: Retrying an already committed operation writes its post-commit properties again. A replay can overwrite later changes instead of simply returning the original result.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [11.json](../../experiment/playbook-completion/findings/audit/11.json) (live `b-11-live-findings`; live `b-11-live-footprints-1`; mc `m11-retry-as-built-pcp`; mc `m11-retry-as-built-governed`; mc `m11-retry-reviewed`; live `ib-HD1105-replay-reapplies`)
@@ -625,6 +673,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: Erasure updates the ledger's statement mappings without taking the lock used by commits. Concurrent erasure and writes can therefore leave the ledger mappings inconsistent with the stored graph.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [11.json](../../experiment/playbook-completion/findings/audit/11.json) (live `live-f1201-reproduced`; live `b-11-live-footprints-2`; inspected `iris_src/src/Graph/KG/Eraser.cls:665-678`; inspected `iris_src/src/Graph/KG/Eraser.cls:809-811`; inspected `iris_src/src/Graph/KG/Eraser.cls:1117-1145`)
@@ -648,6 +698,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Redaction can tombstone history of content a concurrent commit made live (unlocked start, late marker)
 
 Severity: High · Decision: Open
+
+Description: A commit can make content live while redaction is starting. Redaction can then remove the history of that live content because its protection is established too late.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -674,6 +726,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: In a graph-per-tenant setup with unprefixed node IDs, redaction can finish without removing the tenant's node history. The success result can give a false impression that the requested history was cleared.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [13.json](../../experiment/playbook-completion/findings/audit/13.json) (run `live-native-rerun-1314`)
@@ -697,6 +751,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### A retried commit re-applies post-commit properties and revives erased content
 
 Severity: High · Decision: Open
+
+Description: Replaying an old commit writes its properties again after erasure. This can restore content that the caller expected to stay erased.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -724,6 +780,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: A read can overlap a redaction and see only part of its changes. The answer may mix history from before and after the redaction instead of presenting a consistent view.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [14.json](../../experiment/playbook-completion/findings/audit/14.json) (run `live-native-rerun-1314`; run `ib-HD1401-reader-full-race`)
@@ -749,6 +807,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: A node used to represent a relationship is always created in the default graph. Erasing the relationship's own graph can leave that extra node and its properties behind.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [15.json](../../experiment/playbook-completion/findings/audit/15.json) (live `c15-live-reify`; inspected `iris_vector_graph/_engine/schema.py:3296-3322`; inspected `iris_src/src/Graph/KG/Eraser.cls:185-189`; inspected `iris_src/src/Graph/KG/FHIRGraph.cls:2585-2599`; inspected `iris_vector_graph/_engine/nodes_edges.py:2176-2199`)
@@ -772,6 +832,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### delete_reification deletes any id's node, labels and properties in every graph without checking it is a reifier
 
 Severity: High · Decision: Open
+
+Description: The reification-delete API does not check that its target is a node created for reification. The recorded concern is that it can remove an ordinary node and its data across graphs.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -797,6 +859,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: The generated GraphQL API combines data from multiple graphs in one response. A caller selecting one graph can receive an answer containing another graph's data.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [16.json](../../experiment/playbook-completion/findings/audit/16.json) (live `c16-s3-graphql-sample-api`; inspected `iris_vector_graph/gql/resolvers.py:32-133`; inspected `iris_vector_graph/gql/engine.py:32-57`)
@@ -820,6 +884,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### The sample API's biomedical fields and its update mutation ignore graphs
 
 Severity: High · Decision: Open
+
+Description: Some biomedical queries and an update route in the sample API ignore graph selection. Reads and writes can therefore affect data outside the graph the caller intended.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -845,6 +911,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: The SQL adapter joins node and label data without consistently restricting it to one graph. Reused node IDs can cause data from different graphs to be combined.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [17.json](../../experiment/playbook-completion/findings/audit/17.json) (live `c17-live-engine`; inspected `iris_vector_graph/stores/iris_sql_store.py:1116-1210`; inspected `iris_vector_graph/_engine/query.py:245-275`)
@@ -868,6 +936,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### A replacing restore lays the archive's ledger over the live one
 
 Severity: High · Decision: Open
+
+Description: A replacing restore does not fully replace the live ledger before importing the archive. Old ledger state can remain mixed with restored state, so the result is not a clean copy of the backup.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -895,6 +965,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: Rows imported without rebuilding SQL indexes are missed by some deletion paths. Their endpoint nodes can be erased while the relationships survive, leaving inconsistent data until the indexes are rebuilt.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-writesets.json](../../experiment/playbook-completion/findings/audit/zz-writesets.json) (live `ws-live-noindex-erase`; live `ws-live-ins-bulkloader_load_edges`; live `ws-live-ins-import_rdf`; inspected `iris_src/src/Graph/KG/Eraser.cls:777-779`; inspected `iris_vector_graph/bulk_loader.py:380-400`)
@@ -918,6 +990,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### After a 4.5.x upgrade to a non-default IVG Schema, Graph_KG.ledger_revisions keeps the tenant's messages, sources, correlation ids and idempotency keys, which redaction never clears
 
 Severity: High · Decision: Open
+
+Description: After an upgrade to a custom schema, revision text and retry identifiers can remain in the old default-schema table. Redaction does not clear that leftover copy of tenant information.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -943,6 +1017,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: A writer that bypasses the ledger can add content after redaction checks that the target is empty. Redaction can then remove history belonging to content that is now live.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-writesets.json](../../experiment/playbook-completion/findings/audit/zz-writesets.json) (live `ws-live-ins-store_node`; live `ws-live-ins-store_edge`; live `ws-live-ins-bulk_create_nodes`; live `ws-live-ins-bulk_ingest_edges`; live `ws-live-ins-bulk_create_edges`; live `ws-live-ins-store_write_nodes`)
@@ -967,6 +1043,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: Redaction's emptiness check can miss bulk-loaded rows whose SQL indexes have not been rebuilt. It can report completion while the rows remain and later become visible again.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-writesets.json](../../experiment/playbook-completion/findings/audit/zz-writesets.json) (live `ws-live-noindex`; inspected `iris_src/src/Graph/KG/LedgerRedact.cls:149-178`; inspected `iris_vector_graph/bulk_loader.py:252-300`)
@@ -990,6 +1068,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Graph.KG.Snapshot's unused file helpers read, write and delete server files for any Native API caller
 
 Severity: High · Decision: Open
+
+Description: Unused snapshot helpers expose server-file read, write and delete operations to Native API callers. The recorded concern is that these helpers provide file access beyond the intended snapshot interface.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1016,6 +1096,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: A replacing restore leaves the live system's redaction markers and records in place. Restored content can conflict with those old records, and later redaction can leave restored revision text or retry information behind.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-writesets.json](../../experiment/playbook-completion/findings/audit/zz-writesets.json) (live `ws-live-gap-restore`; live `ws-live-gap-marker`; inspected `iris_vector_graph/_engine/snapshot.py:1654-1692`; inspected `iris_src/src/Graph/KG/LedgerRedact.cls:333-378`)
@@ -1040,6 +1122,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: High · Decision: Open
 
+Description: With driver autocommit disabled, rolling back a temporal write removes its structural relationship and nodes but leaves the temporal event. Event queries and ordinary graph queries then disagree about whether the write happened.
+
 Run: Uplift 2026-11-16 (retest, iteration 26)
 
 Found by: the first `write_routing` native binding run, which disagreed with the model in three autocommit-off histories ([receipt](results/write_routing/20261116T214148Z-binding/receipt.json)); then a targeted probe with the source-based expectation frozen first ([predictions](../uplift/consolidated/iteration-26/caller-txn-PAIRS.md)); [write_routing](models/write_routing/NOTES.md) `theorem_autocommit_off_temporal_edge_splits`.
@@ -1061,6 +1145,8 @@ Repair proposal (checked in the model only): open the caller's level first, as `
 
 Severity: High · Decision: Open
 
+Description: Creating a relationship between new nodes silently drops property values supplied through parameters or computed expressions. The command succeeds, but the stored relationship is missing data the caller provided.
+
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: a follow-up to W55's write pairs before the source reading (`F7_rel_fn` in [follow-up 2](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json)), isolated in [follow-up 3](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json); the plain-parameter case by [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 5; [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_inline_rel_expression_dropped` and `theorem_inline_rel_param_dropped` with neighbor `theorem_inline_rel_literal_written`; controls `rel-value-kept`, `rel-param-kept`, `rel-literal-dropped`.
@@ -1080,6 +1166,8 @@ Repair proposal (not implemented): resolve a relationship value as a node value 
 
 Severity: High · Decision: Open
 
+Description: The PageRank-guided subgraph API can return its chosen nodes with most of their connecting relationships missing. It can also exceed its node limit when many seed nodes are supplied, making the result incomplete or larger than requested.
+
 Run: Uplift 2026-11-17 (continuation, iteration 49)
 
 Found by: W56 prediction P1 ([predictions](../uplift/consolidated/iteration-49/retrieval-PAIRS.md), missed), traced through `kg_PPR_GUIDED_SUBGRAPH` and `Graph.KG.Subgraph.SubgraphJson`; corrected after [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 1, which found that the iteration-49 entry treated the documented cap as the defect and proposed the wrong repair, and found the seeds-over-the-cap case. [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_filled_cap_expands_only_first_node` and `theorem_admitted_seeds_ignore_cap` (every input), witnesses `theorem_guided_subgraph_drops_edges_among_top_nodes` and `theorem_guided_seeds_exceed_cap`, neighbor `theorem_guided_uncapped_lists_all_edges`; controls `edges-among-answered`, `seeds-capped`, `expand-whole-frontier-at-cap`, `guided-cap-top-k-only` ([prove](results/retrieval_compose/20261117T032018Z-prove/receipt.json), 15 of 15 controls EXPECTED_FAIL). The iteration-49 control `guided-cap-max-nodes` encoded the wrong repair and is withdrawn (its receipts are kept).
@@ -1098,6 +1186,8 @@ Repair proposal (not implemented): keep the cap; admit seeds and top nodes only 
 ### A Bolt rollback keeps the transaction's writes: BEGIN, COMMIT and ROLLBACK do nothing and every statement commits at once
 
 Severity: High · Decision: Open
+
+Description: Bolt accepts transaction and rollback commands, but each statement is committed immediately. An application can be told that rollback succeeded while its writes remain in the database.
 
 Run: Uplift 2026-11-17 (continuation, iteration 56; promoted from F-1601, playbook audit 2026-11-13/14)
 
@@ -1120,6 +1210,8 @@ Governing statement: [access.bolt.transactions](../ontology/concepts/access.g5.m
 
 Severity: Medium · Decision: Open
 
+Description: A multi-statement HTTP transaction request commits successful statements even when another statement fails, and continues running later statements. Retrying the failed request can repeat writes that already took effect.
+
 Run: Uplift 2026-11-17 (continuation, iteration 59)
 
 Found by: independent review 56-58 item G1 ([review](../uplift/consolidated/iteration-59/REVIEW-56-58.md), probe `rv58 … B`: CREATE, a failing UNION, CREATE in one request answered 400 and kept both nodes). The open question [access.transactions](open_questions.md#access.transactions) had recorded the fact in one bullet since the uplift began, without an owner or register entry. Model: [bolt_tx](models/bolt_tx/NOTES.md) HTTP section: `theorem_http_batch_keeps_writes_around_failure`, `theorem_http_batch_departs_iff`, the rule `theorem_http_rule_is_bolt_rule`; neighbors `theorem_http_all_succeed_agrees`, `theorem_http_read_only_runs_none`; witness `theorem_http_witness_failing_middle`; controls `http-batch-atomic` (the repair), `http-stop-at-failure`, `http-failure-writes`, `http-status-ok-on-error`, `http-read-only-runs-reads`, `read-only-first-only`, `rule-http-keeps-earlier`.
@@ -1140,6 +1232,8 @@ Governing statement: [access.http_transactions](../ontology/concepts/access.g5.m
 ### The status report never counts vectors in routed tables, so a namespace whose vectors are all routed reads "absent" and not ready for vector search
 
 Severity: Medium · Decision: Open
+
+Description: The status report misses vectors stored in routed tables. It can report that embeddings are absent and vector search is unavailable even while searches over those vectors work.
 
 Run: Uplift 2026-11-17 (continuation, iteration 52)
 
@@ -1177,6 +1271,8 @@ Writers and readers: `store_embeddings` and `embed_nodes` (registry rows), then 
 
 Severity: Medium · Decision: Open
 
+Description: When two graphs contain the same relationship, the sync check repeatedly reports drift even after a successful rebuild. Monitoring or repair scripts can keep rebuilding an already consistent index.
+
 Run: Uplift 2026-11-17 (continuation, iteration 52)
 
 Found by: reading `BuildNKG` after the iteration 52 W58 freeze (the frozen rows S1-S3 did not cover two graphs); [operator_reports](models/operator_reports/NOTES.md) `theorem_shared_triple_never_in_sync`, `theorem_heal_claims_in_sync_then_drift`; neighbor `theorem_unique_triples_in_sync_after_sync`; controls `verify-counts-distinct-rows`, `nkg-per-graph`, `heal-rereads`.
@@ -1213,6 +1309,8 @@ Continuation iteration 57 (strengthened): the shared-triple mechanism is modeled
 
 Severity: Medium · Decision: Open
 
+Description: When a status query fails, the API and metrics can report zero instead of unknown. Operators may mistake a monitoring failure for missing data or incorrectly decide that an operation is unavailable.
+
 Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: independent review round 2 (session `d548b72a`, item M2), source reading (`cypher_api.py:498-554`, `status.py:192-214`, `_engine/admin.py:449-476`); [operator_reports](models/operator_reports/NOTES.md) `theorem_failed_census_unknown_only_in_report`, `theorem_failed_vector_count_reads_zero`, `theorem_failed_side_counts_silent`; controls `metrics-marks-unknown`, `readiness-unknown-not-false`, `failed-count-not-zero`, `side-count-marks-unknown`.
@@ -1237,6 +1335,8 @@ Repair proposal (not implemented): carry `unknown` into `/server`; in `/metrics`
 
 Severity: Medium · Decision: Open
 
+Description: The approximate distinct-target counter reports at least eleven for any nonempty window. Small groups are substantially overcounted, so a dashboard cannot reliably distinguish one target from several.
+
 Run: Uplift 2026-11-17 (continuation, iteration 51)
 
 Found by: iteration 51 W57 frozen prediction D1 (missed; [pairs](../uplift/consolidated/iteration-51/stats-PAIRS.md)) and the source read after the freeze; [temporal_stats](models/temporal_stats/NOTES.md) `theorem_distinct_nonempty_at_least_eleven`, `theorem_distinct_one_target_is_eleven`; controls `small-range-correction`, `no-empty-guard`.
@@ -1255,6 +1355,8 @@ Repair proposal (not implemented): apply HyperLogLog's small-range correction (w
 ### Two different attribute sets can intern to the same label-set hash, and resolving it returns the other set
 
 Severity: Medium · Decision: Open
+
+Description: Different sets of event attributes can receive the same stored identifier. Looking up that identifier can return the first set's attributes instead of the attributes the caller saved.
 
 Run: Uplift 2026-11-17 (continuation, iteration 51)
 
@@ -1275,6 +1377,8 @@ Repair proposal (not implemented): build the canonical text with JSON escaping a
 
 Severity: Medium · Decision: Open
 
+Description: Attributes containing nested objects or lists are not given stable identifiers. Repeating the same input can create extra entries, while different inputs can lose their distinction when read back.
+
 Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: independent review round 2 (session d548b72a, review of commit 8d8d9ae4, probe p51b; item M1). Formal: [temporal_stats](models/temporal_stats/NOTES.md) `theorem_nested_value_hash_per_call`, `theorem_nested_content_ignored` (general), valid neighbor `theorem_scalar_sets_idempotent`; control `nested-serialized-as-json`.
@@ -1293,6 +1397,8 @@ Repair proposal (not implemented): write an object or array value as its canonic
 ### verify_graph reports healthy parallel edges as missing adjacency and cannot see lost multiplicity
 
 Severity: Medium · Decision: Open
+
+Description: The graph checker mistakes valid parallel relationships for missing index entries and can miss genuinely lost copies. Operators can be prompted to repair healthy data while a real indexing problem goes unnoticed.
 
 Run: Uplift 2026-11-13
 
@@ -1319,6 +1425,8 @@ Canonical owner and evidence: [structure.verify](../ontology/features/graph-stru
 ### A temporal aggregate read of min, max or avg over an empty window raises ValueError, although the method promises 0.0
 
 Severity: Medium · Decision: Open
+
+Description: Asking for a minimum, maximum or average over a time window with no events raises an exception. The documented result is zero, so ordinary quiet periods can break callers and dashboards.
 
 Run: Uplift 2026-11-13
 
@@ -1349,6 +1457,8 @@ Iteration 51 (strengthened, not new): the same conversion also raises for an unk
 
 Severity: Medium · Decision: Open
 
+Description: Combined text-and-vector search gives a result credit even when one search did not return it. This can change the ranking based on result-list length rather than the recorded matches.
+
 Run: Uplift 2026-11-13
 
 Iteration 49: the trigger is now confirmed at the real readers (below). Severity stays Medium: a wrong ranking among retrieved candidates, consistent with bug-srch-109.
@@ -1376,6 +1486,8 @@ Canonical owner and evidence: [search.fusion](../ontology/features/search.g5.md#
 ### A merge restore keeps at most one row per graph in the core tables and reports every row restored
 
 Severity: Medium · Decision: Open
+
+Description: Merging a backup can keep only one row from each graph while reporting that all rows were restored. The restore appears complete even though relationships are missing.
 
 Run: Uplift 2026-11-13
 
@@ -1408,6 +1520,8 @@ Fresh audit qualification: two archived parents in the same graph reproduce the 
 
 Severity: Medium · Decision: Open
 
+Description: The graph checker treats legitimate parallel relationships as an indexing error. A healthy multigraph can therefore produce false repair warnings.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [02.json](../../experiment/playbook-completion/findings/audit/02.json) (live `breadth-a-live-02-identity`)
@@ -1433,6 +1547,8 @@ Canonical owner and evidence: [structure.verify](../ontology/features/graph-stru
 ### An engine keeps a graph's mode forever, so another engine's change is not seen
 
 Severity: Medium · Decision: Open
+
+Description: An engine does not notice when another engine changes whether a graph permits parallel relationships. It can keep using the old mode and write relationships that the current mode should reject.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1461,6 +1577,8 @@ Canonical owner and evidence: [structure.multigraph.switch](../ontology/features
 
 Severity: Medium · Decision: Open
 
+Description: A graph with correctly indexed parallel relationships can still fail the consistency check. This gives operators a false indication that its indexes need rebuilding.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [04.json](../../experiment/playbook-completion/findings/audit/04.json) (live `breadth-a-live-02-identity`)
@@ -1486,6 +1604,8 @@ Canonical owner and evidence: [structure.verify](../ontology/features/graph-stru
 ### A temporal write with no time lands at epoch 0, not at the current time
 
 Severity: Medium · Decision: Open
+
+Description: When a temporal write omits its timestamp, the event is stored at the start of the Unix epoch instead of the current time. Recent-event queries then miss a write that just happened.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1515,6 +1635,8 @@ Canonical owner and evidence: [temporal.edge.clock](../ontology/features/tempora
 
 Severity: Medium · Decision: Open
 
+Description: The IVF search option named cosine uses an unnormalized dot product. Vector length can influence the ranking even though callers selected a metric intended to compare direction.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [06.json](../../experiment/playbook-completion/findings/audit/06.json) (live `breadth-a-live-06-vectors`)
@@ -1540,6 +1662,8 @@ Canonical owner and evidence: [search.scope.indexes.ivf](../ontology/features/se
 ### The SQL kg_KNN_VEC answers no rows, without error, for a graph whose vectors are under a declared model
 
 Severity: Medium · Decision: Open
+
+Description: The SQL nearest-neighbor function misses vectors stored under a declared model. It returns an empty result without an error even when searchable vectors exist.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1567,6 +1691,8 @@ Canonical owner and evidence: [search.knn](../ontology/features/search.g5.md#sea
 
 Severity: Medium · Decision: Open
 
+Description: A filter placed after RETURN is accepted but ignored. The query can return rows the caller intended to exclude instead of rejecting the unsupported syntax.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0803`; inspected `iris_vector_graph/cypher/parser.py:287-291`; run `b-08-run-unit`; live `b-08-live-f0803-rerun`; run `b-08-run-unit-rerun`)
@@ -1592,6 +1718,8 @@ Canonical owner and evidence: [query.conformance](../ontology/features/cypher.g5
 ### SET n.p = null keeps the key
 
 Severity: Medium · Decision: Open
+
+Description: Assigning null to a Cypher property leaves its key stored rather than removing the property. Later operations can observe a property that the caller intended to delete.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1620,6 +1748,8 @@ Canonical owner and evidence: [query.values](../ontology/features/cypher.g5.md#q
 
 Severity: Medium · Decision: Open
 
+Description: Inside an empty CALL subquery, maximum and average return zero instead of null, and collect returns text instead of a list. Callers cannot reliably distinguish no matching data from a real zero-valued result.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0823`; inspected `iris_vector_graph/cypher/translator.py:14543`; live `b-08-live-f0823-rerun`)
@@ -1645,6 +1775,8 @@ Canonical owner and evidence: [query.aggregation](../ontology/features/cypher.g5
 ### A cached personalized PageRank answer misses a start node written or removed without an edge
 
 Severity: Medium · Decision: Open
+
+Description: Adding or removing an isolated starting node does not invalidate its cached PageRank result. Repeating the calculation can return an answer based on the previous set of nodes.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1674,6 +1806,8 @@ Canonical owner and evidence: [algorithms.cache.token](../ontology/features/algo
 ### A merge restore guards plain tables on their first column only, and counts skipped rows as restored
 
 Severity: Medium · Decision: Open
+
+Description: A merge restore checks only the first column when deciding whether a row already exists. Distinct rows can be skipped and still counted as restored, leaving an incomplete backup recovery.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1705,6 +1839,8 @@ Fresh audit qualification: the 41-case panel exercises the two-parents-in-one-gr
 
 Severity: Medium · Decision: Open
 
+Description: A Cypher pattern that filters a relationship property fails when it encounters a relationship with no properties. Such a relationship should simply fail to match rather than abort the query.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [01.json](../../experiment/playbook-completion/findings/audit/01.json) (live `breadth-a-live-02-mode-off`; inspected `iris_vector_graph/schema.py:2185`; inspected `iris_vector_graph/cypher/translator.py:11197-11216`)
@@ -1730,6 +1866,8 @@ Canonical owner and evidence: [query.conformance](../ontology/features/cypher.g5
 ### A refused temporal write raises but leaves the edge in the temporal index
 
 Severity: Medium · Decision: Open
+
+Description: A temporal write can raise an error after leaving an event in the temporal index. The caller is told the write failed, but later event reads still see part of it.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1758,6 +1896,8 @@ Canonical owner and evidence: [temporal.write.partial-failure](open_questions.md
 
 Severity: Medium · Decision: Open
 
+Description: Nearest-neighbor search returns a separate row for each label on a node. A node with several labels can consume multiple result slots and crowd out other nearby nodes.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [06.json](../../experiment/playbook-completion/findings/audit/06.json) (live `breadth-a-live-06-embed`; inspected `iris_vector_graph/schema.py:2468-2479`)
@@ -1783,6 +1923,8 @@ Canonical owner and evidence: [search.knn](../ontology/features/search.g5.md#sea
 ### bm25_search rewrites document ids: its leading-dot patch runs over the whole answer, so an id holding ':.5', ',.7' or '[.9' comes back as ':0.5', ',0.7', '[0.9'
 
 Severity: Medium · Decision: Open
+
+Description: BM25's result-formatting step also changes some document IDs containing punctuation and decimal-like text. The returned ID can differ from the one stored, preventing a caller from identifying the correct document.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -1810,6 +1952,8 @@ Canonical owner and evidence: [search.bm25](../ontology/features/search.g5.md#se
 
 Severity: Medium · Decision: Open
 
+Description: Cypher CREATE or MERGE can silently discard a relationship property supplied as a parameter. A successful write then contains less data than the application sent.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-structural.json](../../experiment/playbook-completion/findings/audit/zz-structural.json) (live `st-live-cypher-relprop`; live `st-live-cap-values`; inspected `iris_vector_graph/cypher/translator.py:10213-10246`; inspected `iris_vector_graph/cypher/translator.py:473-504`)
@@ -1835,6 +1979,8 @@ Canonical owner and evidence: [query.writes](../ontology/features/cypher.g5.md#q
 ### Erasing a tenant by prefix leaves its temporal-only events, and the redaction that follows completes while they stay readable
 
 Severity: Medium · Decision: Open
+
+Description: Erasing a tenant by node-ID prefix misses events that exist only in temporal storage. The following redaction can report success while those events remain readable.
 
 Run: Uplift 2026-11-13
 
@@ -1864,6 +2010,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Redacting the whole default graph can remove history for nodes that are still live in named graphs. The history loss cannot be undone by repairing the ledger's current consistency state.
+
 Run: Uplift 2026-11-13
 
 Also recorded as: F-1304 (playbook arm, S1, reproduced-live; [13.json](../../experiment/playbook-completion/findings/audit/13.json)). Severity differs: here Medium, playbook S1; both are kept. (crosswalk)
@@ -1890,6 +2038,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Redaction can finish while records it could not associate with a target still contain that target's information. The completion message does not make this remaining content clear.
+
 Run: Uplift 2026-11-13
 
 Found by: [witness_unattributed_qualifier_survives](results/ledger_redaction/20261114T044401Z-prove/receipt.json) (W4) and `lemma_complete_run_removes_every_target_record`, which needs premise P_ends.
@@ -1914,6 +2064,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: A graph name containing a NUL character can identify different SQL data while sharing one traversal-index entry. Deleting through one spelling can leave the other graph's relationships invisible to traversal.
+
 Run: Uplift 2026-11-13
 
 Found by: [witness_raw_sql_name_splits_one_index_graph](results/graph_structure/20261114T000451Z-prove/receipt.json) in [graph_structure.rs](models/graph_structure/graph_structure.rs) (B-structure O1/Q5; the model proves the key half only, and is injective only modulo `canonical`); A-structure Q5; review R2-data R1-4.
@@ -1937,6 +2089,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### The embedding queue checks identity against the wrong table, and its IRIS worker writes default-graph entries with no identity check
 
 Severity: Medium · Decision: Open
+
+Description: Source review suggests that queued embeddings can be checked against the wrong model's table, while another worker path omits the identity check. This could mix model outputs or reject valid requests; the required provider was unavailable for reproduction.
 
 Run: Uplift 2026-11-13
 
@@ -1966,6 +2120,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Source review suggests that combined search can use another graph's BM25 index without checking its ownership. Results for the selected graph could then be ranked using unrelated text; this was not reproduced end to end.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Source reading only; severity is lowered one level from High.
@@ -1992,6 +2148,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: The sample API executes translated SQL outside the engine's normal statement handling. Some Cypher operations can bypass ledger checks or fail because the engine-specific execution steps were skipped.
+
 Run: Uplift 2026-11-13
 
 Found by: `theorem_strict_paths` (path `ApiSampleCypher`) and `witness_undocumented_bypasses_break_the_contract` in [platform.rs](models/platform/platform.rs) ([prove receipt](results/platform/20261114T002651Z-prove/receipt.json); B-platform W2); A-platform F-H3; A-cypher F3 ([intent](../uplift/ivg-verus-initial/intent/cypher.md)); A-ops candidate finding; reconstruction check 2(a)13 and 2(b)16; review R3-platform R1-11 (an undocumented bypass that contradicts the spec 213 contract).
@@ -2015,6 +2173,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### bulk_delete_adjacency deletes relationships under strict mode without a record
 
 Severity: Medium · Decision: Open
+
+Description: The bulk adjacency-delete API can delete relationships while ledger strict mode is enabled without recording a corresponding change. The stored graph and its audit history can diverge.
 
 Run: Uplift 2026-11-13
 
@@ -2040,6 +2200,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: A migration option intended to bypass a schema check also bypasses rejection of the wrong schema. An operator could modify another schema's data and rebuild shared indexes from the wrong rows.
+
 Run: Uplift 2026-11-13
 
 Found by: `witness_waiver_releases_a_mismatch` (W-S2) in [platform.rs](models/platform/platform.rs) ([prove receipt](results/platform/20261114T002651Z-prove/receipt.json); control `s-waive-checks`); A-platform F-S2; review R3-platform R1-5 (the mismatch case is decided by FR-006, which has no exception; only the no-record case stays open).
@@ -2063,6 +2225,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### The sample environment file sets IRIS_USER, but the server reads IRIS_USERNAME and silently connects as _SYSTEM
 
 Severity: Medium · Decision: Open
+
+Description: The sample configuration names the login setting differently from the server code. Source review indicates that following the sample can leave the server using its privileged default account instead of the intended restricted login.
 
 Run: Uplift 2026-11-13
 
@@ -2090,6 +2254,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Source review indicates that the interpreter uses a short checksum to distinguish relationships. If two relationships collide, a valid path can be excluded as though it reused the same relationship; the trigger remains qualified.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Source reading only; severity is lowered one level from High.
@@ -2115,6 +2281,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### An adopting verify that races a redaction can append the redacted tenant's IDs after the redaction finished
 
 Severity: Medium · Decision: Open
+
+Description: Source review identifies a race between ledger adoption and redaction. Adoption could add tenant identifiers back into history after redaction has completed; that interleaving was not reproduced.
 
 Run: Uplift 2026-11-13
 
@@ -2142,6 +2310,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Looking up property keys for a label combines information from multiple graphs. A caller asking about one graph can see keys that occur only in another.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [01.json](../../experiment/playbook-completion/findings/audit/01.json) (live `breadth-a-live-01-install`; inspected `iris_vector_graph/_engine/schema.py:500-515`)
@@ -2166,6 +2336,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Some Python readers join one graph's ids with another graph's data
 
 Severity: Medium · Decision: Open
+
+Description: Some Python readers find nodes in one graph and retrieve their details without the same graph restriction. When graphs reuse node IDs, an answer can contain another graph's data.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2192,6 +2364,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: The temporal purge operation clears events across all graphs but leaves the structural relationships marked as belonging to those events. The operation can affect unrelated graphs and leave the remaining stores inconsistent.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [05.json](../../experiment/playbook-completion/findings/audit/05.json) (live `breadth-a-live-05-purge`; mc `breadth-a-mc-tmp_mark-as-built`; mc `breadth-a-mc-tmp_mark-reviewed`)
@@ -2216,6 +2390,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Ledger strict mode is a cached client check that fails open (Cypher writes)
 
 Severity: Medium · Decision: Open
+
+Description: Cypher's ledger strict-mode check relies on cached client state and can allow a write when the check fails. The recorded concern is that writes can escape the audit rule the operator enabled.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2242,6 +2418,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: An all-graphs distinct count combines matching values across graphs. The answer loses graph ownership and can undercount values that should remain distinct by graph.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0819`; mc `m08-scope-as-built-hll`; inspected `iris_vector_graph/_engine/query.py:4361-4421`; live `b-08-live-f0819-rerun`)
@@ -2265,6 +2443,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Two plan shapes with one 32-bit checksum share one compiled class
 
 Severity: Medium · Decision: Open
+
+Description: Different query shapes can share the identifier used for a compiled class. The saved evidence shows that one query can then execute another query's plan and return incorrect results.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2291,6 +2471,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: The interpreter identifies relationships by a short checksum rather than their full identity. A collision can make it reject a valid traversal as a repeated relationship.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [09.json](../../experiment/playbook-completion/findings/audit/09.json) (live `b-09-f0902-collision`; mc `m09-used-as-built`; mc `m09-used-reviewed`; mc `m09-used-control-type-only`; inspected `iris_src/src/Graph/KG/Cypher/Exec.cls:1236-1250`; inspected `iris_src/src/Graph/KG/Cypher/Gen.cls:410-433`)
@@ -2315,6 +2497,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### A native reader answers default-graph calls in a namespace where a named graph has edges
 
 Severity: Medium · Decision: Open
+
+Description: The native-reader route does not establish that a default-graph request is safe when named graphs also contain edges. Whether it mixes graph data depends on the native library's behavior, which remains unconfirmed.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2345,6 +2529,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Subgraph construction retrieves vectors by node ID without consistently restricting their graph. If graphs reuse an ID, a result can contain a vector belonging to another graph.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [10.json](../../experiment/playbook-completion/findings/audit/10.json) (live `b-10-live-scope2`; inspected `iris_vector_graph/_engine/algorithms.py:850-880`; inspected `iris_vector_graph/schema.py:429-437`; inspected `iris_src/src/Graph/KG/Subgraph.cls:6-11`)
@@ -2368,6 +2554,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Two write paths skip the strict-mode guard
 
 Severity: Medium · Decision: Open
+
+Description: Bulk adjacency deletion and some sample write paths omit the ledger strict-mode guard. The recorded concern is that they can change graph data without the ledger record required of normal writes.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2394,6 +2582,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Graph erasure can remove the ledger mapping for a relationship created by a concurrent commit. The relationship can remain live without the statement entry needed to track it correctly.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [12.json](../../experiment/playbook-completion/findings/audit/12.json) (run `live-f1201-reproduced`; run `live-erase-vs-commit-fk`; run `live-erase-vs-commit-emptygraph`; original `mc:erasure-as-built`)
@@ -2419,6 +2609,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: A logged detach-delete involving named graphs can leave verification reporting a mismatch. The graph and ledger no longer agree even though the deletion used the ledger's normal write path.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [14.json](../../experiment/playbook-completion/findings/audit/14.json) (run `live-native-rerun-1314`)
@@ -2442,6 +2634,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### The bridge anchor lookup matches a node of that id in any graph
 
 Severity: Medium · Decision: Open
+
+Description: Bridge lookup accepts a matching node ID from any graph. Reused IDs can therefore attach a relationship to an anchor outside the intended graph.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2467,6 +2661,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: The demo server exposes write routes without requiring an API key. The recorded concern is that callers can modify data where an operator may expect authenticated access.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [16.json](../../experiment/playbook-completion/findings/audit/16.json) (live `c16-s8-followup`; inspected `src/iris_demo_server/app.py:1-22`; inspected `src/iris_demo_server/routes/fhir.py:503-533`)
@@ -2490,6 +2686,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### deploy/README.md promises a refusal the server does not make
 
 Severity: Medium · Decision: Open
+
+Description: The deployment guide says unauthenticated external exposure is refused unless explicitly enabled. Source review finds no matching refusal, so following the guide can give operators a false expectation of protection.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2517,6 +2715,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: The snapshot global-import helper does not apply the documented allow-list. The recorded concern is that restoring a file can load globals outside the intended graph-data scope.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [18.json](../../experiment/playbook-completion/findings/audit/18.json) (live `c18-live-file-helpers`; inspected `iris_src/src/Graph/KG/Snapshot.cls:4-73`; live `ws-live-snap-importglobals`; live `rx-live-18`)
@@ -2540,6 +2740,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Every initialize_schema moves a node with a '__graph' property into that graph (add_graph_id_to_nodes), and the engine still writes such a property: an unrecorded cross-graph move, also into a graph…
 
 Severity: Medium · Decision: Open
+
+Description: Schema initialization treats a node's __graph property as an instruction to move it. Because normal writes can still create that property, a later initialization can move data between graphs without a ledger record.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2565,6 +2767,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Inference cleanup treats the presence of an inferred qualifier as proof that it owns a relationship. It can delete a ledger-recorded relationship while leaving that relationship's ledger statement live.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-writesets.json](../../experiment/playbook-completion/findings/audit/zz-writesets.json) (live `ws-live-stmt-collision`; inspected `iris_vector_graph/_engine/schema.py:3186-3259`; inspected `iris_vector_graph/_engine/schema.py:61`)
@@ -2589,6 +2793,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: The JSON-field lookup helper inserts a field name directly into SQL. The recorded concern is that a supplied field name can alter the statement instead of simply selecting a field.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-structural.json](../../experiment/playbook-completion/findings/audit/zz-structural.json) (live `st-live-susp-json-field`; inspected `iris_vector_graph/_engine/nodes_edges.py:916-930`)
@@ -2612,6 +2818,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### A build marks whatever entry its hash holds as ok, so one shape's entry can run another shape's class for good
 
 Severity: Medium · Decision: Open
+
+Description: A background compilation can mark a cache entry ready after that entry has been replaced by another query shape. Later queries can keep using the wrong compiled code until the cache is reset.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2638,6 +2846,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: The ledger revision table accepts direct SQL inserts that can occupy the next revision number. The saved evidence shows that such a row can prevent a normal ledger commit from succeeding.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-writesets.json](../../experiment/playbook-completion/findings/audit/zz-writesets.json) (live `ws-live-sql-insert-wedge`; live `ws-live-sql-guard`; inspected `iris_src/src/Graph/KG/LedgerRevision.cls:44`; inspected `iris_src/src/Graph/KG/LedgerRevision.cls:87-108`)
@@ -2662,6 +2872,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: A redaction limited to a fixed number of batches restarts its scan from the beginning on each call. Repeated calls may revisit old work and never reach the remaining records.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [13.json](../../experiment/playbook-completion/findings/audit/13.json) (run `live-fc1303-bounded-resume`; run `core-m2-as-built-paced-resume`)
@@ -2685,6 +2897,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### IVG's own snapshot archives keep an erased and redacted tenant, the receipt does not name them, and a restore brings the tenant back
 
 Severity: Medium · Decision: Open
+
+Description: Graph erasure and redaction do not remove copies held in existing snapshot archives. Restoring one of those archives can bring back the tenant's content, but the redaction receipt does not identify those copies.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2711,6 +2925,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: A writer can keep a redaction target live and prevent the operation from finishing. While it remains open, history readers, verification and other redactions are blocked for every tenant.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [followup.json](../../experiment/playbook-completion/findings/audit/followup.json) (live `fu-r03-marker-held-open`; inspected `iris_src/src/Graph/KG/LedgerRedact.cls:202-211`; inspected `iris_src/src/Graph/KG/LedgerRedact.cls:393-441`; inspected `iris_vector_graph/ledger/client.py:682-693`; inspected `iris_vector_graph/cypher_api.py:628-643`)
@@ -2734,6 +2950,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### get_reifications reads the reifier's properties from every graph
 
 Severity: Medium · Decision: Open
+
+Description: Reading a relationship's reification retrieves the extra node's properties from all graphs. Reused node IDs can mix another graph's properties into the answer.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2759,6 +2977,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Starting Bolt outside the main server command defaults to listening on every network interface. An operator expecting a local service may expose it more broadly than intended.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [16.json](../../experiment/playbook-completion/findings/audit/16.json) (probe `c16-s6-status-maps`; inspected `iris_vector_graph/cypher_api.py:47-63`; inspected `iris_vector_graph/cli.py:419-441`; inspected `docs/ADMIN_API.md:13-28`)
@@ -2782,6 +3002,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### IRISGraphStore.query_nodes(limit=n) kills the calling Python process (SIGSEGV) on IRIS Community 2026.1 with the locked driver
 
 Severity: Medium · Decision: Open
+
+Description: The saved runtime evidence shows that a limited node query crashes the Python process with the pinned IRIS driver. A routine read can terminate the caller instead of returning rows or an exception.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2807,6 +3029,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Medium · Decision: Open
 
+Description: Redaction can leave tenant information in a revision that recorded no graph changes. Messages and retry identifiers can survive even after the operation reports that redaction is complete.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-simulator.json](../../experiment/playbook-completion/findings/audit/zz-simulator.json) (live `sim-fcs01-minimal`; live `sim-fcs01-ddmin-s1033`; trace `sim-main-20261114`; trace `sim-race-20261114`; control `sim-oracle-selftest`; inspected `iris_src/src/Graph/KG/LedgerApply.cls:229-233`)
@@ -2830,6 +3054,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Global PageRank lists at most 10,000 nodes from its owner and every node from the native reader
 
 Severity: Medium · Decision: Open
+
+Description: Global PageRank returns different sets of nodes depending on which implementation runs. One path stops at 10,000 nodes while the native path returns all nodes, so switching execution paths changes the answer.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -2857,6 +3083,8 @@ Audit: Actual public engine and ObjectScript Owner list 10000 of 10002 ordinary 
 
 Severity: Medium · Decision: Open
 
+Description: A Cypher filter for a boolean also matches stored numeric zero or one. A read, update or delete can therefore include rows whose property has the wrong type.
+
 Run: Uplift 2026-11-16 (cloud continuation, iteration 16)
 
 Found by: source-first contrast of Cypher `WHERE` equality against the `RETURN` readers, with predictions frozen before observation ([predictions](../uplift/consolidated/iteration-16/typed-equality-PAIRS.md)); [typed_equality](models/typed_equality/NOTES.md) `theorem_node_true_exact` and `theorem_node_where_return_disagree`.
@@ -2875,6 +3103,8 @@ Repair proposal (not implemented, not checked): until typed storage, restrict th
 ### A relationship property that is not a number orders as one against a number literal
 
 Severity: Medium · Decision: Open
+
+Description: Numeric comparisons on relationship properties can treat text values as numbers. Range filters can include relationships with nonnumeric properties and disagree with the values shown by RETURN.
 
 Run: Uplift 2026-11-16 (cloud continuation, iteration 17)
 
@@ -2895,6 +3125,8 @@ Repair proposal (not implemented, not checked): give relationship operands a typ
 
 Severity: Medium · Decision: Open
 
+Description: Sorting an empty-string property gives different results on the SQL and native execution paths. Queries using LIMIT or SKIP can return different rows depending on the selected executor.
+
 Run: Uplift 2026-11-16 (cloud continuation, iteration 18)
 
 Found by: the sort-key binding, where `Graph.KG.Cypher.SortKey.Key("")` over the Native API returned the null rank while `CY_SORT_KEY('')` over SQL returned the string rank; then an executor comparison with the prediction frozen first ([predictions](../uplift/consolidated/iteration-18/order-by-PAIRS.md)); [sort_key](models/sort_key/NOTES.md) `theorem_executors_disagree_on_empty_string`.
@@ -2913,6 +3145,8 @@ Repair proposal (not implemented, not checked): have `Exec.SortKey` pass a store
 ### IN lists compare a property's text with each value's spelling, so they disagree with = on nodes and relationships
 
 Severity: Medium · Decision: Open
+
+Description: Membership tests with IN compare property values differently from equality tests. Rewriting equivalent-looking filters can change which nodes or relationships are returned or modified.
 
 Run: Uplift 2026-11-16 (cloud continuation, iteration 23)
 
@@ -2933,6 +3167,8 @@ Repair proposal (not implemented, not checked): translate a literal integer list
 
 Severity: Medium · Decision: Open
 
+Description: If a bulk node load stops after creating nodes but before adding their details, rerunning it skips those nodes. Their labels and properties remain missing even though the retry treats them as already loaded.
+
 Run: Uplift 2026-11-13
 
 Found by: A-platform F-B5 (sub-reader b), source reading; confirmed in the retest's iteration 25 with predictions frozen first ([predictions](../uplift/consolidated/iteration-25/bulk-loader-PAIRS.md)); [bulk_load](models/bulk_load/NOTES.md) `theorem_interrupted_load_is_never_completed`, `witness_interrupted_rerun_strands`.
@@ -2951,6 +3187,8 @@ Repair proposal (checked in the model only): let the re-run also process nodes o
 ### BulkLoader's node and edge loads write without indexes and return before rebuilding them
 
 Severity: Medium · Decision: Open
+
+Description: The individual bulk-load methods finish before rebuilding the indexes they bypassed. Data exists in the tables but remains invisible to traversal and indexed reads until an explicit rebuild.
 
 Run: Uplift 2026-11-13
 
@@ -2973,6 +3211,8 @@ Repair proposal (not implemented, not checked): end each `%NOINDEX` public load 
 
 Severity: Medium · Decision: Open
 
+Description: Vector indexes accept inconsistent vector widths and count repeated inserts as new entries. Reported sizes can drift, and searches can compare only part of a vector without warning.
+
 Run: Playbook completion audit (imported 2026-11-14)
 
 Found by: the playbook arm's audit (module 06), live on the IVF index; the PLAID branch in iteration 30 ([predictions](../uplift/consolidated/iteration-30/plaid-PAIRS.md), [plaid_index](models/plaid_index/NOTES.md) `theorem_reinsert_inflates_counts`, `theorem_insert_accepts_other_width`) (`p0608_ivf_insert_duplicates`: re-inserting `a` put it in two cells and raised `indexed` from 2 to 3); the VecIndex branch, which that audit did not run, in the retest's iteration 27 with predictions frozen first ([predictions](../uplift/consolidated/iteration-27/vecindex-PAIRS.md)); [vec_index](models/vec_index/NOTES.md) `theorem_reinsert_inflates_count`, `theorem_insert_overwrites_dim`.
@@ -2989,6 +3229,8 @@ Repair proposal (checked in the model only): count only IDs not yet stored, and 
 ### BulkLoader ignores the namespace's IVG Schema
 
 Severity: Medium · Decision: Open
+
+Description: The bulk loader does not consistently use the namespace's configured schema. Loading into a custom schema can fail or leave data unreadable through the loader's own index-rebuild path.
 
 Run: Uplift 2026-11-13
 
@@ -3008,6 +3250,8 @@ Repair proposal (checked in the model only): take the schema from the namespace'
 ### The Neo4j-compatible HTTP routes return at most 1,000 rows of an answer without saying so
 
 Severity: Medium · Decision: Open
+
+Description: The Neo4j-compatible HTTP routes silently truncate results after 1,000 rows. Clients can mistake a partial response for the complete query result.
 
 Run: Uplift 2026-11-16 (retest, iteration 32)
 
@@ -3030,6 +3274,8 @@ Iteration 55 (W60, [probe](../uplift/consolidated/iteration-55/pipeline-observed
 
 Severity: Medium · Decision: Open
 
+Description: The embedding worker marks a queued item finished when its provider fails or returns no vector. The work is no longer pending, so missing embeddings can go unnoticed and are not automatically retried.
+
 Run: Uplift 2026-11-17 (continuation, iteration 36)
 
 Found by: the owner's recorded divergence for `ProcessBatch` (source reading at stage A; no register entry before this one), tested by the frozen W42 prediction Q5, which missed for the IRIS worker ([predictions](../uplift/consolidated/iteration-36/embed-queue-PAIRS.md)); [embed_queue](models/embed_queue/NOTES.md) `theorem_iris_unanswered_marked_done`, control `iris-unanswered-is-error`.
@@ -3048,6 +3294,8 @@ Repair proposal (not implemented; checked in Verus only): mark the entry `ERROR`
 ### The IRIS queue worker cannot store a default-graph vector
 
 Severity: Medium · Decision: Open
+
+Description: The IRIS embedding worker cannot save vectors for the default graph on the tested installation. Queued work cannot produce the searchable embeddings that callers requested.
 
 Run: Uplift 2026-11-17 (continuation, iteration 36)
 
@@ -3068,6 +3316,8 @@ Repair proposal (not implemented; checked in Verus only): bind the default graph
 
 Severity: Medium · Decision: Open
 
+Description: Retracting inferred relationships can also delete a relationship that a user explicitly added afterward. Recomputing inference can therefore remove a fact the user intended to keep.
+
 Run: Uplift 2026-11-17 (continuation, iteration 38)
 
 Found by: the frozen W44 prediction I4 missed ([predictions](../uplift/consolidated/iteration-38/inference-PAIRS.md)); [inference_rows](models/inference_rows/NOTES.md) `theorem_asserted_after_is_retracted`, control `create-marks-asserted`.
@@ -3086,6 +3336,8 @@ Repair proposal (not implemented; checked in Verus only): have `create_edge` cle
 ### SHACL validation treats one node ID in two graphs as one node, so an invalid node passes
 
 Severity: Medium · Decision: Open
+
+Description: SHACL validation combines nodes with the same ID across graphs. A valid node in one graph can hide an invalid node in another, or cause a violation to be attributed to the wrong graph.
 
 Run: Uplift 2026-11-17 (continuation, iteration 39)
 
@@ -3106,6 +3358,8 @@ Repair proposal (not implemented): validate each graph's context on its own (or 
 
 Severity: Medium · Decision: Open
 
+Description: RDF import discards a literal's datatype, so a numeric literal can be stored as text. Numeric filters, comparisons and sorting then give incorrect answers for the imported data.
+
 Run: Uplift 2026-11-17 (continuation, iteration 41)
 
 Found by: the frozen W47 prediction R5 missed ([predictions](../uplift/consolidated/iteration-41/rdfimport-PAIRS.md)); [rdf_import](models/rdf_import/NOTES.md) `theorem_datatype_dropped`, control `keep-datatype`.
@@ -3122,6 +3376,8 @@ Repair proposal (not implemented): store numeric and boolean literals in the typ
 ### Re-importing RDF never updates a property: a changed literal keeps the old value and is only logged
 
 Severity: Medium · Decision: Open
+
+Description: Re-importing an RDF file does not replace an existing property's value. The import can succeed while leaving stale data from the previous version of the file.
 
 Run: Uplift 2026-11-17 (continuation, iteration 41)
 
@@ -3142,6 +3398,8 @@ Repair proposal (not implemented): upsert properties (or report the rows not wri
 
 Severity: Medium · Decision: Open
 
+Description: When importing RDF containing named graphs, optional inference runs in the graph argument rather than each graph that received data. Derived relationships can appear in the wrong graph while the imported graphs receive none.
+
 Run: Uplift 2026-11-17 (continuation, iteration 41)
 
 Found by: source reading after the W47 freeze (R10, not frozen) ([predictions](../uplift/consolidated/iteration-41/rdfimport-PAIRS.md)); [rdf_import](models/rdf_import/NOTES.md) `theorem_infer_ignores_contexts`, control `infer-on-contexts`.
@@ -3158,6 +3416,8 @@ Repair proposal (not implemented): run inference on each graph the import wrote 
 ### prov_as_dict and prov_export_from_cypher fail for every edge once the default graph's temporal history is large
 
 Severity: Medium · Decision: Open
+
+Description: Some provenance-export calls fail once the default graph has a large temporal history, even when the requested relationship is unrelated. The caller has no time-window option to avoid reading that history.
 
 Run: Uplift 2026-11-17 (continuation, iteration 44)
 
@@ -3178,6 +3438,8 @@ Repair proposal (not implemented): look the edge up by its own source, predicate
 
 Severity: Medium · Decision: Open
 
+Description: RDF export can turn a failed Cypher query into an empty file and a zero-triple result. A caller cannot distinguish an execution failure from a successful query that found nothing.
+
 Run: Uplift 2026-11-17 (continuation, iteration 45)
 
 Found by: source reading after the W51 freeze (C10, not frozen) ([predictions](../uplift/consolidated/iteration-45/cyphexport-PAIRS.md)); [cypher_export](models/cypher_export/NOTES.md) `theorem_failed_query_looks_empty`, control `error-raised`.
@@ -3194,6 +3456,8 @@ Repair proposal (not implemented): raise when the query's result carries an erro
 ### Re-inserting a node into an IVF index keeps its old vector when the new one lands in another cell, and counts it twice
 
 Severity: Medium · Decision: Open
+
+Description: Updating an IVF vector can leave its old copy in a different index cell. Searches can return stale vectors, deletion can leave a copy behind, and the index size can be counted twice.
 
 Run: Uplift 2026-11-17 (continuation, iteration 46)
 
@@ -3214,6 +3478,8 @@ Repair proposal (not implemented): remove the node from every cell before insert
 
 Severity: Medium · Decision: Open
 
+Description: IVF cosine search ranks unnormalized vectors by their raw dot product. A longer vector can outrank a better-aligned vector, giving a different ranking from other cosine-search paths.
+
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: source reading of `IVFIndex.Search` while checking W53's SQL reader ([predictions](../uplift/consolidated/iteration-47/sqlprocs-PAIRS.md); not a frozen prediction); [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cosine_ranks_as_dot` (every query and vector pair) and `theorem_cosine_metric_misranks` (witness), controls `cosine-normalized` (the repaired order; the equal-length neighbor `theorem_equal_lengths_agree`, general since iteration 50, still verifies) and `cosine-takes-l2-branch` (which also fails `theorem_cosine_metric_misranks`, named since iteration 50).
@@ -3232,6 +3498,8 @@ Repair proposal (not implemented): normalize vectors and centroids at build and 
 ### The engine's fusion reads a cosine IVF index only in the process that built it, so the same call ranks differently elsewhere
 
 Severity: Medium · Decision: Open
+
+Description: Combined search uses the cosine IVF index only in the process that built it. A restart or another worker can silently switch search paths and produce a different ranking for the same request.
 
 Run: Uplift 2026-11-17 (continuation, iteration 49)
 
@@ -3252,6 +3520,8 @@ Repair proposal (not implemented): record an IVF index's graph with the index (a
 
 Severity: Medium · Decision: Open
 
+Description: The subgraph reader omits relationships among its outermost nodes and can include relationships to nodes excluded by its limit. Callers receive an incomplete or internally inconsistent subgraph.
+
 Run: Uplift 2026-11-17 (continuation, iteration 49)
 
 Found by: the source of `Graph.KG.Subgraph.SubgraphJson` while tracing bug-plt-113; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_last_hop_edges_missing`, `theorem_capped_subgraph_lists_edge_to_unlisted_node`; control `edge-recorded-after-cap-test`. Iteration 50: `theorem_capped_subgraph_lists_edge_to_unlisted_node` now holds for every node, adjacency and state at the cap ([review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m9); the repair is checked in the model by the control `edges-among-answered`, which also repairs bug-plt-113's edge loss.
@@ -3270,6 +3540,8 @@ Repair proposal (not implemented): after the walk, list every edge whose two end
 ### A list index known only at run time fails the query when it is negative, for a list read from a property or indexed by a parameter, and answers the element as text
 
 Severity: Medium · Decision: Open
+
+Description: List indexing does not correctly handle negative indexes supplied through runtime data or parameters. Valid queries can fail, and nonnegative reads from stored lists can return text instead of the original value type.
 
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
@@ -3292,6 +3564,8 @@ Iteration 55: a list parameter indexed by a parameter, `RETURN $l[$s]` with `l =
 
 Severity: Medium · Decision: Open
 
+Description: Reversing a stored or computed list can reverse its serialized text instead of its elements. The result is an incorrect value rather than the reversed list the query requested.
+
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L1 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); widened by [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 3 (slice, subscript, coalesce, and the Variable case the model mispredicted); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_stored_list_reversed_as_text`, `theorem_unknown_list_variable_answered_as_text`, neighbor `theorem_reverse_neighbors`; controls `property-to-cy-reverse`, `reverse-column-typed`.
@@ -3310,6 +3584,8 @@ Repair proposal (not implemented): send every non-literal argument to `CY_REVERS
 ### n[k] with a key from UNWIND reads the property named "k", so keys(n) then n[k] answers null for every key
 
 Severity: Medium · Decision: Open
+
+Description: A dynamic property lookup can use the variable's name instead of its value. Iterating over a node's keys can therefore return null or read a different property.
 
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
@@ -3330,6 +3606,8 @@ Repair proposal (not implemented): translate the index expression for a variable
 
 Severity: Medium · Decision: Open
 
+Description: Random-number and UUID functions return one shared value across a query's rows, and using them in CREATE can fail. Applications cannot rely on them to generate a distinct value for each new node.
+
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L12 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_rows_share_one_value` (conditional on the observed IRIS premise), control `per-row-evaluation`.
@@ -3348,6 +3626,8 @@ Repair proposal (not implemented): pass a row-dependent argument (or declare the
 ### A negative list-slice bound known only at run time counts as 0
 
 Severity: Medium · Decision: Open
+
+Description: A negative list-slice bound supplied at runtime is treated as zero. Slices calculated from stored data or parameters can silently select the wrong elements.
 
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
@@ -3368,6 +3648,8 @@ Repair proposal (not implemented): give a run-time bound the same wrap in SQL (`
 
 Severity: Medium · Decision: Open
 
+Description: A boolean obtained from a parameter or computation cannot reliably be used as a WHERE or CASE condition. A valid query can fail instead of filtering or choosing a branch.
+
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the frozen W55 prediction C4 missed for its `UNWIND` half ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_row_boolean_condition_fails` (conditional on the observed IRIS premise) with neighbor `theorem_predicate_condition_follows_rule`; controls `row-condition-compared`, `property-condition-raw`, `iris-accepts-scalar-condition`.
@@ -3386,6 +3668,8 @@ Repair proposal (not implemented): compare a bare row or parameter boolean as `=
 ### A node CREATE whose map value calls a function IVG does not work out in Python is refused
 
 Severity: Medium · Decision: Open
+
+Description: Node creation fails when a property value uses a function the Python translator does not evaluate. Valid writes that generate IDs or calculate values are refused before any data is written.
 
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
@@ -3406,6 +3690,8 @@ Repair proposal (not implemented): translate an unfolded value to SQL as `SET` d
 
 Severity: Medium · Decision: Open
 
+Description: A missing runtime list index can select the first element instead of returning null. The query produces a plausible value even though the index was not supplied.
+
 Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 6 (reviewer probe `p2`); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_null_index_reads_first_element`; controls `null-index-is-null`, `row-index-through-ivglistget`.
@@ -3424,6 +3710,8 @@ Repair proposal (not implemented): test the index for null before the lookup (`C
 ### A simple CASE over a property or a row value takes a WHEN of another type when the text matches
 
 Severity: Medium · Decision: Open
+
+Description: A simple CASE expression can match values of different types when their text looks the same. Stored or calculated data can select the wrong branch without an error.
 
 Run: Uplift 2026-11-17 (continuation, iteration 50)
 
@@ -3444,6 +3732,8 @@ Repair proposal (not implemented): translate a simple CASE whose test or WHEN ki
 
 Severity: Medium · Decision: Open
 
+Description: Creating or setting a list that includes a property read can fail with an internal Python error. The otherwise valid write is refused and nothing is stored.
+
 Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m3 (reviewer probe `p4`). No formal contract (probe and source reading only).
@@ -3462,6 +3752,8 @@ Repair proposal (not implemented): build the list in SQL from translated element
 ### percentileDisc rounds the rank down: p 0.9 over 10, 20, 30, 40 answers 30, not 40
 
 Severity: Medium · Decision: Open
+
+Description: The discrete-percentile calculation selects a rank that is too low for many inputs. High-percentile reports over small groups can understate the largest observed values without warning.
 
 Run: Uplift 2026-11-17 (continuation, iteration 53)
 
@@ -3482,6 +3774,8 @@ Repair proposal (not implemented): index `ceil(p × n) − 1` clamped to [0, n �
 
 Severity: Medium · Decision: Open
 
+Description: Grouping and distinct counts can merge a stored number with text containing the same digits. Reports undercount distinct values and disagree with RETURN DISTINCT on the same data.
+
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 frozen predictions AG1 and AG2 ([PAIRS](../uplift/consolidated/iteration-54/clauses-PAIRS.md), both missed); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_sql_group_merges_number_and_its_text` (every spelling), `theorem_sql_group_and_distinct_disagree_on_marked_text` (exactly the pairs with equal text and different storage marks); control `group-by-typed`.
@@ -3501,6 +3795,8 @@ Repair proposal (not implemented): group and count distinct by the `CY_TYPED` va
 
 Severity: Medium · Decision: Open
 
+Description: The SQL and native executors group some stored values differently. A change in query routing can alter a report's groups and counts even when the underlying data is unchanged.
+
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 follow-up (the native executor's answer beside the SQL path's for AG1's shape); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_paths_disagree_exactly_on_marked_text` (for every pair of stored values), `theorem_native_group_follows_rule`; control `native-text-key`.
@@ -3517,6 +3813,8 @@ Consequence: the same grouped query answers different groups and counts on the t
 ### Arithmetic over two property aggregates answers a rounded integer: sum(n.v) + sum(n.f) of 3 and 3.5 answers 6
 
 Severity: Medium · Decision: Open
+
+Description: Arithmetic combining aggregates over stored properties can discard fractional values. Totals, differences and ratios can be rounded to an integer without an error.
 
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
@@ -3536,6 +3834,8 @@ Repair proposal (not implemented): give an aggregate of a stored property no sta
 ### A UNION answers stored property values as their storage text: 1 as "\x01N1", 2.5 as "\x01D2.5", a list as JSON text
 
 Severity: Medium · Decision: Open
+
+Description: UNION can return internal storage text instead of decoded property values. Clients receive incorrect types, and duplicate removal can either keep equal values or merge values that should differ.
 
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
@@ -3560,6 +3860,8 @@ Iteration 59 (review 56-58 evidence): literal lists in a `UNION` also come back 
 
 Severity: Medium · Decision: Open
 
+Description: An OPTIONAL MATCH filter can fail when it combines an earlier variable's property with arithmetic or OR. A valid read is rejected with an internal SQL error.
+
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59, after the source read of the OPTIONAL MATCH WHERE placement (its prediction, from the owner [query.optional](../ontology/features/cypher.g5.md#query.optional), was written in the probe before it ran: one row per node, null where no match passes); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_outer_arith_or_refused` (conditional on the provider premise P-OUTER-ON), neighbors `theorem_opt_neighbors_follow_rule`; controls `iris-accepts-outer-on`, `opt-cond-in-where`.
@@ -3579,6 +3881,8 @@ Iteration 58 (W62 C3, held): the refusal follows negation polarity. A WHERE read
 
 Severity: Medium · Decision: Open
 
+Description: An OPTIONAL MATCH filter can discard the original row when a property is missing. The query loses rows that should remain with an unmatched optional result.
+
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59, after the source read (same probe and prediction as [bug-cyp-142](#bug-cyp-142)); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_outer_guard_drops_row`, neighbors `theorem_opt_neighbors_follow_rule`; controls `opt-guard-in-on`, `range-guarded`.
@@ -3595,6 +3899,8 @@ Consequence: rows of the outer `MATCH` disappear from an OPTIONAL MATCH report w
 ### With the driver 5.3.2 an UNWIND of a list parameter fails "Invalid number of parameters"
 
 Severity: Medium · Decision: Open
+
+Description: With IRIS driver 5.3.2, expanding a list parameter using UNWIND fails with a parameter-count error. Whether that driver version is supported remains unresolved, so the compatibility impact is conditional.
 
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
@@ -3619,6 +3925,8 @@ Governing statement: [query.conformance](../ontology/features/cypher.g5.md#query
 
 Severity: Medium · Decision: Open
 
+Description: Reading a whole node over Bolt truncates long property values and can convert lists or maps into shortened text. Clients silently receive different data from a direct read of the same property.
+
 Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: source reading after the W60 freeze ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md), post-read T1, prediction written before the probe ran); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_long_property_truncated`, neighbor `theorem_short_property_kept`; controls `no-truncation`, `truncate-at-200`.
@@ -3639,6 +3947,8 @@ Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.m
 ### Bolt identifies a node by 31 bits of Python's string hash, so two nodes can reach the driver as one, with the second node's properties in both rows
 
 Severity: Medium · Decision: Open
+
+Description: Bolt uses a short, process-dependent hash as a node's identity. Different nodes can appear as one node to a client, and the identity can change when the server restarts.
 
 Run: Uplift 2026-11-17 (continuation, iteration 55)
 
@@ -3661,6 +3971,8 @@ Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.m
 
 Severity: Medium · Decision: Open
 
+Description: Bolt derives a relationship's endpoints from nearby result columns rather than its stored direction. Clients can display or traverse the relationship backward, or receive no endpoints at all.
+
 Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: source reading after the W60 freeze (post-read T2, [predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_endpoints_follow_columns`, general `theorem_one_hop_right_iff_source_first`, `theorem_rel_alone_or_last`; controls `swap-columns`, `no-prev-node`.
@@ -3681,6 +3993,8 @@ Governing statement: [access.bolt.graph_values](../ontology/concepts/access.g5.m
 ### A slice of a list parameter by parameters answers the empty list with IRIS driver 5.4.1 (and fails with 5.3.2)
 
 Severity: Medium · Decision: Open
+
+Description: Slicing a list parameter using parameterized bounds returns an empty list with the tested 5.4.1 driver and fails with 5.3.2. Applications cannot reliably page through a supplied list this way.
 
 Run: Uplift 2026-11-17 (continuation, iteration 55)
 
@@ -3703,6 +4017,8 @@ Governing statement: [query.parameters](../ontology/features/cypher.g5.md#query.
 
 Severity: Medium · Decision: Open
 
+Description: A filter comparing a string with a stored node property can also match a number with the same spelling. Text IDs or codes can therefore select unintended numeric values.
+
 Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: frozen W60 prediction PA2 missed ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); post-read T4; [bolt_answers](models/bolt_answers/NOTES.md) `theorem_string_operand_matches_number`, general `theorem_int_operands_and_string_values_follow_rule`; controls `string-compare-typed`, `int-param-raw`.
@@ -3724,6 +4040,8 @@ Governing statement: [query.values.equality](../ontology/features/cypher.g5.md#q
 
 Severity: Medium · Decision: Open
 
+Description: The length of an unmatched optional path is reported as the pattern's length instead of null. Reports can count a path that does not exist or keep rows that should fail a path-length filter.
+
 Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: independent review round 3 (review 53-55 F2, reviewer session `c68a5c59`, probe `rv55b … len_*`); [cypher_clauses](models/cypher_clauses/NOTES.md) section I `theorem_unmatched_fixed_path_length_is_hops`, general `theorem_path_fn_departs_exactly_on_unmatched_fixed_length`, neighbor `theorem_bound_or_varlen_path_follows_rule`; controls `fixed-length-from-row`, `varlen-length-from-pattern`, `anchor-null-ignored`.
@@ -3740,6 +4058,8 @@ Consequence: a report that counts or filters on `length(p)` after an OPTIONAL MA
 ### An engine whose schema name differs only in case from the record re-declares empty vector columns unasked and loads the schema classes under its own spelling
 
 Severity: Medium · Decision: Open
+
+Description: A schema name differing only in letter case can trigger unintended schema changes. An engine can redeclare empty vector columns and leave their definitions inconsistent with the recorded configuration.
 
 Run: Uplift 2026-11-17 (continuation, iteration 56); first recorded 2026-11-13 (the audit of 2026-11-15 found it inconclusive: [review record](audits/register-20261115/bugs-review.md#bug-plt-015))
 
@@ -3759,6 +4079,8 @@ Governing statements: [install.schema.name](../ontology/concepts/install.g5.md#i
 ### While sync() rebuilds the adjacency index, traversal reads in other sessions see it purged: khop answers the seed alone, a path length answers no path, and BFS answers with blank types
 
 Severity: Medium · Decision: Open
+
+Description: Traversal readers can see an empty or partially rebuilt adjacency index while another session runs sync. They return incomplete paths and neighborhoods instead of waiting or reporting that a rebuild is in progress.
 
 Run: Uplift 2026-11-17 (continuation, iteration 57)
 
@@ -3780,6 +4102,8 @@ Iteration 59 (review 56-58 evidence): the native Cypher reader is now exercised 
 ### khop2_count_fast answers the sum of the middle nodes' out-degrees right after sync(), counting the source and repeated targets, and the walked count after any unrelated write
 
 Severity: Medium · Decision: Open
+
+Description: The fast two-hop count can count repeated targets and the starting node immediately after a rebuild. An unrelated write changes which counting path runs, so the answer can change without the neighborhood changing.
 
 Run: Uplift 2026-11-17 (continuation, iteration 57)
 
@@ -3821,6 +4145,8 @@ Affected owner: [structure.rebuilt.stamp](../ontology/features/graph-structure.g
 
 Severity: Medium · Decision: Open
 
+Description: A WITH column using coalesce can turn a stored number or boolean into text. Later calculations and client code receive the wrong type even though the displayed value may look correct.
+
 Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction D1 neighbor B (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [result_decoders](models/result_decoders/NOTES.md) `theorem_with_coalesce_number_is_text`; valid neighbor `theorem_property_reads_roundtrip`; controls `with-coalesce-typed` (the repair), `coalesce-cast-gone`.
@@ -3839,6 +4165,8 @@ Repair proposal (not implemented): treat a WITH variable bound to a typed coales
 ### A CASE column answers a stored boolean as 'true', a stored list or map as its JSON text, and, with IRIS driver 5.4.1, a stored number as its text
 
 Severity: Medium · Decision: Open
+
+Description: CASE expressions can return stored booleans, lists, maps and some numbers as text. Clients receive serialized values instead of the original property types.
 
 Run: Uplift 2026-11-17 (continuation, iteration 58)
 
@@ -3859,6 +4187,8 @@ Repair proposal (not implemented): type a CASE whose branches are all node value
 
 Severity: Medium · Decision: Open
 
+Description: The documented recovery operation for quarantined vectors fails through the normal IRIS DB-API connection. An operator cannot make those vectors searchable through that client path.
+
 Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: iteration 56 frozen pair F1 (missed: neither the placement nor a named refusal occurs); `_quarantined_row` (`_engine/schema.py:2072-2095`) returns `row[0]`, `row[1]`, `row[2]` after `cursor.close()`, which `get_embedding_identity` (1050-1053) explicitly avoids ("The IRIS driver's DataRow is a live view onto the cursor: reading it after close() raises <COMMUNICATION LINK ERROR> Cursor closed"); [install_lifecycle](models/install_lifecycle/NOTES.md) `theorem_unreadable_row_never_placed`, premise P-DATAROW-CLOSED, control `row-read-materialized`.
@@ -3877,6 +4207,8 @@ Governing statement: [search.quarantine.placement](../ontology/features/search.g
 ### Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors
 
 Severity: Low · Decision: Open
+
+Description: Bolt labels every query failure as a syntax error, including database and driver failures. Clients cannot distinguish a bad query from a transient problem that may be safe to retry.
 
 Run: Uplift 2026-11-17 (continuation, iteration 55)
 
@@ -3897,6 +4229,8 @@ Governing statement: [access.bolt.errors](../ontology/concepts/access.g5.md#acce
 
 Severity: Low · Decision: Open
 
+Description: A result containing an integer outside Bolt's supported range terminates the connection. The client loses its session instead of receiving a query-level error explaining the unsupported value.
+
 Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: post-read T5 ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_overflow_breaks_connection`, neighbors `theorem_int64_values_arrive`, `theorem_marker_is_smallest`; control `nofit-is-failure`.
@@ -3915,6 +4249,8 @@ Governing statement: [access.bolt.results](../ontology/concepts/access.g5.md#acc
 ### The Neo4j HTTP transaction route answers a whole node as three text columns, not a node
 
 Severity: Low · Decision: Open
+
+Description: The Neo4j-compatible HTTP route returns a whole node as separate text columns. Clients expecting a structured node must instead interpret the serialized pieces themselves.
 
 Run: Uplift 2026-11-17 (continuation, iteration 55)
 
@@ -3935,6 +4271,8 @@ Governing statement: [access.surfaces](../ontology/concepts/access.g5.md#access.
 
 Severity: Low · Decision: Open
 
+Description: Pagination accepts some strings, booleans and whole-number floats as counts instead of rejecting invalid types. A null count is reported as missing, making argument errors inconsistent and harder to diagnose.
+
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 (WS3 held for `-1` and 1.5; the other kinds were found after the first observation); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_non_integer_parameter_used`, neighbor `theorem_integer_and_fraction_follow_rule`; controls `page-int-only`, `page-no-negative-check`, `page-no-fraction-check`.
@@ -3951,6 +4289,8 @@ Consequence: a client that passes the page size as text or a boolean gets rows i
 ### percentileDisc over integers answers a float
 
 Severity: Low · Decision: Open
+
+Description: The discrete-percentile function returns a floating-point value even when it selects from integers. Callers that require an integer, such as a list index, can reject or misinterpret the result.
 
 Run: Uplift 2026-11-17 (continuation, iteration 56)
 
@@ -3969,6 +4309,8 @@ Consequence: a client comparing the answer with a stored integer, or using it as
 
 Severity: Low · Decision: Open
 
+Description: Invalid percentile arguments are handled inconsistently: some are converted, while null can produce an internal Python error. A caller can receive the wrong percentile or an unclear failure instead of a type error.
+
 Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: independent review round 3 (review 53-55 minor "null percentile parameter", probe `pct_param_null`, `pct_param_str`); the other kinds by the iteration-56 probe; [percentile](models/percentile/NOTES.md) `theorem_non_number_p_not_refused`, general `theorem_p_departs_exactly_on_non_numbers`; controls `null-param-refused`, `literal-null-refused`.
@@ -3985,6 +4327,8 @@ Consequence: a client passing a null or text percentile gets an untyped Python e
 ### A UNION whose branch is a whole-label count fails with SQLCODE -1
 
 Severity: Low · Decision: Open
+
+Description: A UNION branch using the whole-label count shortcut generates invalid SQL. An otherwise valid combined query fails instead of returning its counts.
 
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
@@ -4003,6 +4347,8 @@ Consequence: a valid query is refused with a raw SQL error. Workaround: add `WHE
 
 Severity: Low · Decision: Open
 
+Description: Extracting the start or end node from a relationship obtained through a path fails. The intermediate relationship representation lacks the endpoint information needed to answer the query.
+
 Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 (`PA4_rels`, after the frozen PA4 row, which asked only for `type()`); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_path_element_endpoints_fail`, neighbor `theorem_type_and_matched_endpoints_work`; controls `endpoint-reads-json`, `type-reads-alias`.
@@ -4019,6 +4365,8 @@ Consequence: a valid path query is refused with a raw SQL error; the element JSO
 ### A millisecond-class edge is counted by the seconds readers' whole buckets although its time is outside the window
 
 Severity: Low · Decision: Open
+
+Description: The seconds-based and milliseconds-based temporal stores can contribute to the same aggregate buckets. When both are used in one graph, reports can count events outside the requested time window.
 
 Run: Uplift 2026-11-17 (continuation, iteration 53)
 
@@ -4039,6 +4387,8 @@ Repair proposal (not implemented): keep the millisecond class's statistics under
 
 Severity: Low · Decision: Open
 
+Description: An aggregate query with an empty source or predicate can return zero in a quiet window but fail in a busy one. Invalid arguments can therefore produce plausible results depending on the data.
+
 Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: independent review round 3 (session c68a5c59, challenge to the round-2 m2 disposition), on the as-built observation of the iteration-53 probe (`m2_*`). Formal: [temporal_stats](models/temporal_stats/NOTES.md) `get_aggregate_keys`, `theorem_empty_key_quiet_cut_window_answers_zero` (general over every state, graph, key and window), neighbor `theorem_empty_key_raises_with_whole_bucket_or_event`, witness `theorem_empty_key_witness`; controls `empty-key-refused` (the repair) and `empty-key-never-raises`.
@@ -4057,6 +4407,8 @@ Repair proposal (not implemented): refuse an empty source or predicate in `get_t
 ### The SQL function kg_BM25 answers an empty list for k of 0 or less, while bm25_search and ivg.bm25.search refuse it
 
 Severity: Low · Decision: Open
+
+Description: The SQL BM25 function accepts a zero or negative result limit by returning an empty list. Other entry points reject that argument, so SQL callers can mistake an invalid request for a search with no matches.
 
 Run: Uplift 2026-11-17 (continuation, iteration 56)
 
@@ -4077,6 +4429,8 @@ Repair proposal (not implemented): refuse k < 1 in `SqlProcs.kgBM25` (or `Search
 
 Severity: Low · Decision: Open
 
+Description: Setup can record a newly specified schema name while the existing graph tables remain in another schema. Engines using the existing data can then be refused until an operator reconciles the configuration.
+
 Run: Uplift 2026-11-17 (continuation, iteration 56); first recorded 2026-11-13 by code reading (review round 3 R3-reader H3); the 2026-11-15 audit found it inconclusive ([review record](audits/register-20261115/bugs-review.md#bug-plt-026)).
 
 Found by: install.schema.existing metadata; iteration 56 frozen pair A3 (missed: the frozen owner reading predicted a refusal); [install_lifecycle](models/install_lifecycle/NOTES.md) `theorem_other_schema_needs_a_name` (as built), control `explicit-refused` (the FR-009 repair).
@@ -4095,6 +4449,8 @@ Governing statement: [install.schema.existing](../ontology/concepts/install.g5.m
 ### An unrecorded namespace whose IVG Schema holds this release's SQL objects admits engines
 
 Severity: Low · Decision: Open
+
+Description: An engine can accept a namespace whose setup record is missing if some SQL objects already exist. Incomplete installation steps may go unnoticed until an operation later fails.
 
 Run: Uplift 2026-11-17 (continuation, iteration 56)
 
@@ -4115,6 +4471,8 @@ Governing statements: [install.schema.not_ready](../ontology/concepts/install.g5
 
 Severity: Low · Decision: Open
 
+Description: Changing vector width can leave setup blocked when some vector tables are empty and others contain data. The expected migration guidance is not shown, leaving the operator without the documented recovery path.
+
 Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: iteration 56 frozen pair D2 (partly missed); `_refuse_width_change` (`_engine/schema.py:1564-1599`) checks every vector table: an empty one at another width refuses without `rewidth`, a populated one refuses with it; [install_lifecycle](models/install_lifecycle/NOTES.md) `col_action`, `width_refused`, `theorem_populated_never_rewidened`, `theorem_empty_other_width_needs_rewidth`.
@@ -4133,6 +4491,8 @@ Governing statement: [search.embedding.width](../ontology/features/search.g5.md#
 ### With IVG_EDGESCAN=1 every relationship property on a hop from a node named by id reads null
 
 Severity: Low · Decision: Open
+
+Description: With the optional edge-scan setting enabled, relationship properties read as null after a hop from a node selected by ID. Filters and returned values can silently change when that setting is used.
 
 Run: Uplift 2026-11-17 (continuation, iteration 53)
 
@@ -4153,6 +4513,8 @@ Repair proposal (not implemented): read `r.weight` from the scan's `w` and fall 
 
 Severity: Low · Decision: Open
 
+Description: The temporal backfill reports how many relationships it visited rather than how many rows it created. Setup can claim that existing relationships were newly repaired, and a repeat run still reports work.
+
 Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: iteration 53 Part B, frozen predictions BF1/BF2 (missed: the count), after reading `BackfillWalk`; [sql_procs](models/sql_procs/NOTES.md) `theorem_backfill_count_overstates` (for every state where one structural triple already has a row), `theorem_backfill_idempotent_same_count`, neighbor `theorem_backfill_count_exact_when_all_missing`; control `count-written-rows`.
@@ -4172,6 +4534,8 @@ Repair proposal (not implemented): count only the triples whose edge `INSERT` wr
 
 Severity: Low · Decision: Open
 
+Description: A shortest-path call with two empty endpoints returns a zero-length path through a nonexistent node. Invalid input produces a plausible success result instead of no path or an error.
+
 Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: iteration 53 Part B, after reading `DijkstraJson`'s endpoint tests (not a frozen prediction; DJ10 covered equal ids only); [sql_procs](models/sql_procs/NOTES.md) `theorem_sql_empty_endpoints_zero_path`, neighbors `theorem_dijkstra_endpoint_neighbors`; control `nul-read-as-empty`.
@@ -4190,6 +4554,8 @@ Repair proposal (not implemented): translate `$Char(0)` to "" for both endpoints
 ### shortest_path_length(a, b, ..., 'in') answers the outgoing length from a to b, not execute_shortest_path's incoming one
 
 Severity: Low · Decision: Open
+
+Description: The length-only shortest-path API ignores an incoming-direction request and measures the outgoing path. Direct callers can receive the wrong distance or be told that a valid incoming path does not exist.
 
 Run: Uplift 2026-11-17 (continuation, iteration 57)
 
@@ -4211,6 +4577,8 @@ Repair proposal (not implemented): in `shortest_path_length`, for 'in' call `Sho
 
 Severity: Low · Decision: Open
 
+Description: The breadth-first search API accepts unknown direction strings and falls back to a different traversal. A typo can return plausible but unintended neighbors instead of being rejected.
+
 Run: Uplift 2026-11-17 (continuation, iteration 57)
 
 Found by: iteration 57 W1 source read after the W61 freeze (not a frozen prediction; B5 covered the three exact directions); [traversal_strategy](models/traversal_strategy/NOTES.md) `theorem_unknown_direction_walks_both`; controls `sql-unknown-dir-as-out`, `types-ignore-case`, `bfsfast-case-insensitive`.
@@ -4230,6 +4598,8 @@ Repair proposal (not implemented): normalise once at `execute_bfs` (lowercase; o
 
 Severity: Low · Decision: Open
 
+Description: Grouping an inline list can merge booleans with numbers and lists with their text representation. Grouped counts can undercount distinct values and disagree with RETURN DISTINCT.
+
 Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction C2 (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [clause_combos](models/clause_combos/NOTES.md) `theorem_group_iff_bound_text`, `theorem_group_merges_kinds`, `theorem_group_and_distinct_disagree`, neighbors `theorem_group_neighbors_follow_rule`, `theorem_distinct_json_route_follows_rule`; controls `group-by-kind-column`, `bool-bound-as-word`.
@@ -4248,6 +4618,8 @@ Repair proposal (not implemented): add the UNWIND row's kind column to GROUP BY 
 ### WITH * drops a relationship variable: a later type(r) fails with SQLCODE -29 "Field 'STAGE1.R' not found"
 
 Severity: Low · Decision: Open
+
+Description: WITH * fails to carry a relationship variable into the next query stage. Using that relationship afterward produces an internal SQL error.
 
 Run: Uplift 2026-11-17 (continuation, iteration 58)
 
@@ -4270,6 +4642,8 @@ Governing statement (iteration 59, review 56-58 m4: moved from query.conformance
 
 Severity: Low · Decision: Open
 
+Description: A WITH clause combining * with an additional calculated column does not parse. The query is refused even though the projection is valid Cypher.
+
 Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 C8 neighbor (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)). Not modeled.
@@ -4291,6 +4665,8 @@ Governing statement (iteration 59, review 56-58 m4: moved from query.conformance
 
 Severity: Low · Decision: Open
 
+Description: A FOREACH update over a literal list cannot resolve its loop variable in SET. The intended per-element updates are refused and nothing is written.
+
 Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction C6 (partial, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)). Not modeled.
@@ -4309,6 +4685,8 @@ Repair proposal (not implemented): resolve `foreach_literals` in the SET value t
 ### A CALL { } subquery that imports an UNWIND variable fails, as does one that imports a node and has no MATCH of its own
 
 Severity: Low · Decision: Open
+
+Description: A CALL subquery cannot handle some variables imported from the outer query. Valid subqueries using an UNWIND value or a node without their own MATCH fail with an internal SQL error.
 
 Run: Uplift 2026-11-17 (continuation, iteration 59)
 
@@ -4331,6 +4709,8 @@ Governing statement: [query.with](../ontology/features/cypher.g5.md#query.with).
 
 Severity: Low · Decision: Open
 
+Description: Sorting an inline list treats booleans as numbers when both types are present. The returned order differs from the intended ordering between value types.
+
 Run: Uplift 2026-11-17 (continuation, iteration 59)
 
 Found by: independent review 56-58 item G3 ([review](../uplift/consolidated/iteration-59/REVIEW-56-58.md)). Not modeled.
@@ -4352,6 +4732,8 @@ Governing statement: [query.values.sorting](../ontology/features/cypher.g5.md#qu
 
 Severity: Low · Decision: Open
 
+Description: An unmatched optional node is returned with serialized empty labels and properties instead of null values. Clients inspecting those fields can mistake a missing match for an existing empty node.
+
 Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction D2 (partial, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [result_decoders](models/result_decoders/NOTES.md) `theorem_optional_node_labels`; control `labels-null`.
@@ -4370,6 +4752,8 @@ Repair proposal (not implemented): return NULL for those columns when the node i
 ### engine.capabilities says ^KG and ^NKG are not built on a namespace set up before it held edges, whatever sync() does, until setup runs again
 
 Severity: Low · Decision: Open
+
+Description: Capability reporting can keep saying traversal indexes are absent after data is loaded and the indexes are rebuilt. Until setup runs again, callers receive a misleading status and some algorithms use a slower path.
 
 Run: Uplift 2026-11-17 (continuation, iteration 52)
 
@@ -4396,6 +4780,8 @@ Repair proposal (not implemented): have `sync()` record both markers, or derive 
 
 Severity: Low · Decision: Open
 
+Description: The schema diagram attaches an unlabeled relationship endpoint to the first available label. The visualization can imply a relationship between labels that the data does not contain.
+
 Run: Uplift 2026-11-17 (continuation, iteration 52)
 
 Found by: reading `get_schema_visualization` after the iteration 52 W58 freeze (frozen row H7 held); [operator_reports](models/operator_reports/NOTES.md) `theorem_unlabeled_endpoint_is_first_label`; control `viz-none-distinct`.
@@ -4416,6 +4802,8 @@ Repair proposal (not implemented): number labels from 1, or give an unlabeled en
 ### The ledger line shows "0 commits · 0 rejections" when the ledger counters cannot be read, and reports no error
 
 Severity: Low · Decision: Open
+
+Description: When ledger counters cannot be read, the status line reports zero commits and zero rejections without an error. Operators can mistake inaccessible audit metrics for an absence of activity.
 
 Run: Uplift 2026-11-17 (continuation, iteration 53)
 
@@ -4439,6 +4827,8 @@ Repair proposal (not implemented): let `stats()` raise (or return a flag) when t
 
 Severity: Low · Decision: Open
 
+Description: Reading a map entry by key returns numeric and boolean values as text. Subsequent comparisons and arithmetic can therefore operate on the wrong type.
+
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L7 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)). No formal contract: probe only, open in Verus.
@@ -4456,6 +4846,8 @@ Consequence: comparisons and arithmetic on such values see strings. Low. Governi
 
 Severity: Low · Decision: Open
 
+Description: Calling head on a number fails without identifying the problem as a type error. Clients cannot reliably distinguish invalid input from another execution failure.
+
 Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L11 partly missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)). No formal contract: probe only.
@@ -4472,6 +4864,8 @@ Consequence: callers cannot tell a type error from another failure. Low. Governi
 ### coalesce over row values, literals or parameters answers numbers and booleans as text
 
 Severity: Low · Decision: Open
+
+Description: Coalesce can convert numeric and boolean inputs into text. A fallback value may look correct while later arithmetic or comparisons follow string behavior.
 
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
@@ -4492,6 +4886,8 @@ Governing statement: [query.functions.coalesce](../ontology/features/cypher.g5.m
 
 Severity: Low · Decision: Open
 
+Description: A list slice with a variable as its lower bound is rejected by the parser. Callers cannot use that normal parameterization of a slice.
+
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the W55 probe's own query `n.l[a..3]` failed to parse ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `L1_rows_scalar`); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_identifier_lower_bound_refused` with neighbor `theorem_other_lower_bounds_parse`; control `identifier-lookahead`.
@@ -4510,6 +4906,8 @@ Governing statement: [query.functions.slice](../ontology/features/cypher.g5.md#q
 ### A negative substring start answers leading characters instead of an error
 
 Severity: Low · Decision: Open
+
+Description: A negative substring start returns leading characters instead of rejecting the invalid offset. A calculation error can silently produce the wrong text.
 
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
@@ -4530,6 +4928,8 @@ Governing statement: [query.functions.strings](../ontology/features/cypher.g5.md
 
 Severity: Low · Decision: Open
 
+Description: Requesting a zero-length string segment returns null rather than an empty string. Missing-value tests and fallback expressions can then treat a valid empty result as absent data.
+
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the frozen W55 prediction S3 partly missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)). No formal contract: probe only (open in Verus).
@@ -4548,6 +4948,8 @@ Governing statement: [query.functions.strings](../ontology/features/cypher.g5.md
 ### Slicing a null list answers the empty list instead of null
 
 Severity: Low · Decision: Open
+
+Description: Slicing a missing list returns an empty list instead of null. A report can treat absent data as a real list containing no elements.
 
 Run: Uplift 2026-11-17 (continuation, iteration 50)
 
@@ -4568,6 +4970,8 @@ Repair proposal (not implemented): add the list to the null guard. Governing sta
 
 Severity: Low · Decision: Open
 
+Description: Trimming text handles tabs and line breaks differently in query results and node creation. The same expression can therefore produce different text depending on where it is used.
+
 Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m4 (reviewer probe `p4`). No formal contract (probe and source reading only).
@@ -4586,6 +4990,8 @@ Repair proposal (not implemented): trim the same whitespace set on both paths (S
 ### range() with a step known only at run time accepts a fractional step
 
 Severity: Low · Decision: Open
+
+Description: A runtime step for range can be fractional even though the operation expects integers. Invalid input produces a sequence of noninteger values instead of an argument error.
 
 Run: Uplift 2026-11-17 (continuation, iteration 50)
 
@@ -4606,6 +5012,8 @@ Repair proposal (not implemented): raise in `IVGRANGE` for a non-integer argumen
 
 Severity: Low · Decision: Open
 
+Description: Updating a relationship property from a function of its existing value is refused. The error incorrectly says that reading the property's current value is allowed, making the limitation difficult to understand.
+
 Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m10 (reviewer probe `p3`). No formal contract (probe only).
@@ -4624,6 +5032,8 @@ Repair proposal (not implemented): name the unsupported shape in the message, or
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
 Severity: Low · Decision: Open
+
+Description: A grouped OPTIONAL MATCH with no matches can return null for SUM instead of zero. Adding a grouping key can change a missing numeric total into an unexpected null value.
 
 Run: Ordinary consolidated iteration13, 2026-11-15
 
@@ -4655,6 +5065,8 @@ Iteration 58 (W62 C1 neighbor): reproduced afresh on the continuation fixture: `
 
 Severity: Low · Decision: Open
 
+Description: A stale mode setting or concurrent mode change can create parallel rows in a graph that should allow only one. Deleting one row can then remove the index entry needed to find the other.
+
 Run: Uplift 2026-11-13
 
 
@@ -4681,6 +5093,8 @@ Canonical owner and evidence: [structure.multigraph.off](../ontology/features/gr
 ### create_edge_temporal with no timestamp stores the event at time 0
 
 Severity: Low · Decision: Open
+
+Description: A temporal write without a timestamp is stored at time zero. Recent-window and latest-event queries miss an event that the caller expected to represent the present.
 
 Run: Uplift 2026-11-13
 
@@ -4712,6 +5126,8 @@ Canonical owner and evidence: [temporal.edge](../ontology/features/temporal.g5.m
 
 Severity: Low · Decision: Open
 
+Description: A cached PageRank result does not notice a newly created isolated starting node. Repeating the request can keep returning an empty answer until a relationship changes.
+
 Run: Uplift 2026-11-13
 
 
@@ -4741,6 +5157,8 @@ Canonical owner and evidence: [algorithms.cache](../ontology/features/algorithms
 
 Severity: Low · Decision: Open
 
+Description: Source and component review indicate that a failed batch can be retried from its beginning after some rows already ran. Whether the provider keeps those earlier effects remains uncertain; if it does, writes can be repeated.
+
 Run: Consolidated uplift 2026-11-14
 
 **Suspected:** the control flow is observed on the real cursor with a scripted `iris.sql`; whether IRIS raises an unsupported-path error at a row after a successful prepare is not shown. Severity is lowered one level from Medium.
@@ -4769,6 +5187,8 @@ Canonical owner and evidence: [adapters.embedded.no_data](../ontology/concepts/a
 
 Severity: Low · Decision: Open
 
+Description: Flattening node properties into result columns can make an id property and a p_id property share an output name. One stored value is lost from the returned representation.
+
 Run: Uplift improvement iteration 1, 2026-11-15
 
 
@@ -4795,6 +5215,8 @@ Canonical owner and evidence: [structure.node.read](../ontology/features/graph-s
 ### Relationship property text with a trailing line break or non-ASCII digits is read back as a number
 
 Severity: Low · Decision: Open
+
+Description: Some relationship properties stored as text are automatically read back as numbers. Trailing line breaks or non-ASCII digits can change both the returned value and its type.
 
 Run: Consolidated uplift 2026-11-14
 
@@ -4823,6 +5245,8 @@ Canonical owner and evidence: [query.values.relationship_text](../ontology/featu
 
 Severity: Low · Decision: Open
 
+Description: The burst-detection API accepts a relationship type filter but does not use it. Results can include activity from event types the caller intended to exclude.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [05.json](../../experiment/playbook-completion/findings/audit/05.json) (live `breadth-a-live-05-temporal`)
@@ -4848,6 +5272,8 @@ Canonical owner and evidence: [temporal.stats](../ontology/features/temporal.g5.
 ### InternLabelSet's canonical form is not valid JSON for some inputs
 
 Severity: Low · Decision: Open
+
+Description: The stored canonical form of an attribute set is not valid JSON for some inputs. A caller can fail to read back attributes that the interning operation accepted.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -4875,6 +5301,8 @@ Canonical owner and evidence: [temporal.edge](../ontology/features/temporal.g5.m
 
 Severity: Low · Decision: Open
 
+Description: FOREACH does not correctly iterate over a list supplied as a parameter. Updates intended for every item do not run with the expected per-item behavior.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0808`; inspected `iris_vector_graph/cypher/translator.py:3949-3967`; inspected `iris_vector_graph/cypher/translator.py:7262-7307`; live `b-08-live-f0808-rerun`)
@@ -4900,6 +5328,8 @@ Canonical owner and evidence: [query.conformance](../ontology/features/cypher.g5
 ### An unknown db, dbms or apoc procedure answers no rows
 
 Severity: Low · Decision: Open
+
+Description: An unknown procedure in a recognized procedure namespace returns no rows instead of an error. A typo can look like a successful query with an empty result.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -4929,6 +5359,8 @@ Intent qualification: empty success is reproduced. Whether an unknown procedure 
 
 Severity: Low · Decision: Open
 
+Description: Creating or merging data after expanding a list parameter through UNWIND and WITH fails. A normal parameterized bulk-write query is refused.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0822`; inspected `iris_vector_graph/cypher/translator.py:7044-7087`; live `b-08-live-f0822-rerun`)
@@ -4955,6 +5387,8 @@ Canonical owner and evidence: [query.writes](../ontology/features/cypher.g5.md#q
 
 Severity: Low · Decision: Open
 
+Description: The AQL parser treats two slashes inside a quoted string as the start of a comment. Text such as a URL can change how the rest of the query is parsed.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [08.json](../../experiment/playbook-completion/findings/audit/08.json) (live `b-08-live-f0824`; inspected `iris_vector_graph/cypher/aql/lexer.py:46-63`; live `b-08-live-f0824-rerun`)
@@ -4980,6 +5414,8 @@ Canonical owner and evidence: [query.aql](../ontology/features/cypher.g5.md#quer
 ### Native index values come back as text
 
 Severity: Low · Decision: Open
+
+Description: Saving and restoring a snapshot changes numeric temporal-event attributes into text. A restored event can look the same but behave differently in comparisons or calculations.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -5009,6 +5445,8 @@ Canonical owner and evidence: [install.snapshot.temporal](../ontology/concepts/i
 
 Severity: Low · Decision: Open
 
+Description: A range whose runtime step is zero returns an empty list instead of an argument error. Callers can mistake an invalid calculation for a valid range containing no values.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-structural.json](../../experiment/playbook-completion/findings/audit/zz-structural.json) (live `st-live-susp-range-step`; inspected `iris_src/src/Graph/KG/CypherFn.cls:255-257`; inspected `iris_vector_graph/cypher/translator.py:29055-29122`)
@@ -5034,6 +5472,8 @@ Canonical owner and evidence: [query.conformance](../ontology/features/cypher.g5
 ### A relationship property bound by a WITH before a literal-endpoint CREATE is stored as text that is not JSON
 
 Severity: Low · Decision: Open
+
+Description: A relationship property passed through WITH before CREATE can be stored in an invalid text representation. The write succeeds with a value that later readers cannot interpret as intended.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -5063,6 +5503,8 @@ Fresh audit qualification: the real stored qualifiers are invalid JSON; on this 
 
 Severity: Low · Decision: Open
 
+Description: Some component-analysis results are rejected when a real node has a name also used for result metadata. Ordinary node IDs can make the decoder mistake membership data for a summary object.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-refusals.json](../../experiment/playbook-completion/findings/audit/zz-refusals.json) (live `rx-dec-live-10`; check `rx-dec-map`; inspected `iris_vector_graph/stores/iris_sql_store.py:636`; inspected `iris_vector_graph/stores/iris_sql_store.py:662-676`; inspected `iris_vector_graph/_engine/algorithms.py:816-828`)
@@ -5091,6 +5533,8 @@ Fresh audit qualification: public SQL GraphStore execute_wcc returns an error fo
 
 Severity: Low · Decision: Open
 
+Description: The WebSocket Bolt transport counts reconstructed bytes rather than the bytes actually received. Depending on message boundaries, a valid exchange can lose later queries or responses.
+
 Run: Consolidated iteration9, 2026-11-15 · Suspected end to end (actual Python local transports)
 
 Found by: the [iteration8 remaining-work framing challenge](../uplift/consolidated/iteration-8/next-survey-remaining.md), followed by [36 actual full-session traces and two localized method-copy controls](../uplift/consolidated/iteration-9/bolt-session-probe.json). Source: `BoltSession._recv_message`, `bolt_server.py:439-459`. Formal source-transcription witnesses: [bolt_stream.rs](models/bolt_stream/bolt_stream.rs) `theorem_small_chunk_reencoding_leaves_terminator`, `theorem_small_chunk_empty_closes_before_queued_run`, and the coalesced passing witness; [limits](models/bolt_stream/NOTES.md).
@@ -5117,6 +5561,8 @@ Canonical owner and evidence: [access.bolt.framing](../ontology/concepts/access.
 
 Severity: Low · Decision: Open
 
+Description: A valid Bolt keep-alive message closes a WebSocket session. An otherwise healthy client connection can end during normal protocol traffic.
+
 Run: Consolidated iteration9, 2026-11-15 · Suspected end to end (actual Python local transports)
 
 Found by: [36 full-session local-transport traces](../uplift/consolidated/iteration-9/bolt-session-probe.json), source inspection of `BoltSession.run` (`bolt_server.py:410-412`) versus `TcpBoltSession.run` (`:946-948`), and primary protocol adjudication. [bolt_stream.rs](models/bolt_stream/bolt_stream.rs) separately proves `theorem_noop_closes_wire_without_engine` and `theorem_noop_coalesced_closes_with_queued_run` in the admitted state/wire fragment; [limits](models/bolt_stream/NOTES.md).
@@ -5140,6 +5586,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### delete_reification deletes the reifier's rows in every graph
 
 Severity: Low · Decision: Open
+
+Description: Source review suggests that deleting a reification in one graph removes the corresponding node ID from every graph. Another graph's ordinary node could be deleted if it shares that ID.
 
 Run: Uplift 2026-11-13
 
@@ -5167,6 +5615,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: The model and source indicate that a failed embedding-registry read can disable identity enforcement. A vector for the wrong model or format could be accepted instead of receiving a clear refusal.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Proved on the model; the trigger (a failing registry SELECT after a successful one within the 30 s route cache) cannot be induced through public calls.
@@ -5192,6 +5642,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### TextSearchEngine.search_documents is public, ignores graphs and very likely always fails
 
 Severity: Low · Decision: Open
+
+Description: Source review finds that the public document-search method ignores graph selection and may fail on its normal path. Callers may receive an empty answer or documents from another graph; the full runtime behavior remains unconfirmed.
 
 Run: Uplift 2026-11-13
 
@@ -5219,6 +5671,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: Source review suggests that a GraphQL GET request can execute a write. This breaks the expectation that GET is read-only; the recorded security concern was not newly reproduced.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Source reading only; severity is lowered one level from Medium.
@@ -5244,6 +5698,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### An engine whose first strict-mode check ran before the ledger classes were installed never enforces strict mode
 
 Severity: Low · Decision: Open
+
+Description: An engine can cache that ledger support is unavailable before setup completes. Source review indicates that the same long-lived engine may then skip strict-mode enforcement until it is restarted.
 
 Run: Uplift 2026-11-13
 
@@ -5271,6 +5727,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: Source review identifies an all-graphs optimization that checks node ownership but overlooks property rows in other graphs. It could attach another graph's property value to a node with the same ID.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Data-dependent; source reading only. Severity is lowered one level from Medium.
@@ -5296,6 +5754,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### USE GRAPH accepts graph names the graph keys refuse
 
 Severity: Low · Decision: Open
+
+Description: The query-level graph selector accepts names that the underlying graph-key format rejects. Source review indicates that a write could create data that later index updates cannot represent.
 
 Run: Uplift 2026-11-13
 
@@ -5323,6 +5783,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: A query that started before a property-layout change can rebuild shared compiled code for the old layout. The recorded race could make newer in-flight queries read the wrong storage locations.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Proved on the model; needs a layout recompile inside one run's window, not probed.
@@ -5348,6 +5810,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### The compiled-plan read-back after a synchronous build skips the class-name check
 
 Severity: Low · Decision: Open
+
+Description: Source review finds a missing class-name check after synchronous plan compilation. If the cache entry changes in that interval, a query could execute code belonging to another shape.
 
 Run: Uplift 2026-11-13
 
@@ -5375,6 +5839,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: Source review indicates that enabling the ledger during redaction can silently skip adoption of existing data. The ledger can appear enabled even though some writes remain unrecorded.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Source reading only; severity is lowered one level from Medium.
@@ -5400,6 +5866,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### A reifier's delete record written inside a tenant's revision is reached by neither redaction target
 
 Severity: Low · Decision: Open
+
+Description: A reification-delete record may belong to neither target used by the tenant-redaction recipe. Source review indicates that the tenant's labels and properties could remain in that history record after redaction.
 
 Run: Uplift 2026-11-13
 
@@ -5427,6 +5895,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: A redaction that initially finds nothing does not establish its normal protection marker. The recorded race could let a new target record survive a scan that reports completion.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Shown by a reviewer's scratch model witness; not probed. One `create_temporal_edge` of a temporal-only predicate into the target suffices, because it writes no row that the final step's liveness check reads (review round2-core); otherwise the trace needs a create and a delete of target content inside the run's window.
@@ -5452,6 +5922,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Under strict mode the only API delete is a ledger changeset, which leaves documents, temporal, FHIR and search-index content that redaction and verify cannot see
 
 Severity: Low · Decision: Open
+
+Description: Source review indicates that ledger deletion does not cover every content store that full erasure covers. Deleting through the ledger and then redacting may leave documents, vectors or events behind despite a clean verification result.
 
 Run: Uplift 2026-11-13
 
@@ -5479,6 +5951,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: Post-commit property writes are outside some checks used for normal ledger writes. The recorded concern is that they can make a redaction target live again and leave redaction blocked.
+
 Run: Uplift 2026-11-13
 
 **Suspected.** Source reading only; the strict-mode and mid-redaction cases were not run.
@@ -5505,6 +5979,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: Prefix-based erasure misses a property row whose node has already gone. That leftover row then prevents the tenant's redaction from completing until an operator locates and removes it.
+
 Run: Uplift 2026-11-13
 
 Found by: review round 3 R3-4 (scratch model L-d); integrated as witness W6 [witness_orphan_prop_row_blocks_prefix_redaction](results/ledger_redaction/20261114T044401Z-prove/receipt.json) in [redaction.rs](models/ledger_redaction/redaction.rs) (a `PropRow` goes with a prefix erase only when its node row exists in the same graph), with control [prefix-erase-takes-orphan-props](results/ledger_redaction/20261114T044600Z-control-prefix-erase-takes-orphan-props/receipt.json) (EXPECTED_FAIL).
@@ -5528,6 +6004,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### A BM25 index built before 4.0.0 reports the default graph, so the default graph's fusion reads another graph's documents as its own
 
 Severity: Low · Decision: Open
+
+Description: An older BM25 index can be treated as belonging to the default graph even when its documents came from another graph. Source review indicates that default-graph search could use those documents until the index is rebuilt.
 
 Run: Uplift 2026-11-13
 
@@ -5555,6 +6033,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: The recorded concern is that an all-graphs traversal can omit some graphs. Its graph-discovery assumptions have not been fully established, so complete traversal coverage remains uncertain.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 **Suspected** here: the playbook arm's disposition is `confirmed-source`, not a native reproduction; severity is one level below the mapped Low.
@@ -5580,6 +6060,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### The fused search may read an IVF index built for another graph
 
 Severity: Low · Decision: Open
+
+Description: The recorded concern is that combined search can select a vector index owned by another graph. This could produce rankings from unrelated vectors; the finding remains qualified rather than newly reproduced.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -5607,6 +6089,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: The required privilege check exists in the engine wrapper but not in the executor itself. The recorded concern is that a caller reaching the executor directly may miss a protection the specification places there.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-versions.json](../../experiment/playbook-completion/findings/audit/zz-versions.json) (live `ver-priv-r3`; live `ver-priv-r2`; live `ver-priv-create`; inspected `iris_src/src/Graph/KG/Cypher/Exec.cls:32-72`; inspected `iris_src/src/Graph/KG/Cypher/Exec.cls:832-904`; inspected `iris_vector_graph/engine.py:559-586`)
@@ -5632,6 +6116,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### khop answers a start node that exists only in a named graph
 
 Severity: Low · Decision: Open
+
+Description: A default-graph neighborhood query can return a starting node that exists only in a named graph. Even the initial node in the result can fall outside the requested graph.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -5659,6 +6145,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: The deployed embedded PageRank class looks for tables in the wrong schema and can fail against a normal installation. Source review also finds no graph restriction, so where those tables exist it can combine separate graphs.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [10.json](../../experiment/playbook-completion/findings/audit/10.json) (live `b-10-live-scope`; inspected `iris_src/src/Graph/KG/PageRankEmbedded.cls:5-30`; inspected `docs/ADMIN_GUIDE.md:346`; inspected `scripts/deploy_objectscript.py:129`)
@@ -5682,6 +6170,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### networkx-loader's --clear-existing deletes every graph's edges, labels and properties by raw SQL and leaves their nodes, temporal edges and vectors, with strict mode on
 
 Severity: Low · Decision: Open
+
+Description: The NetworkX loader's clear-existing option deletes selected stores across all graphs using raw SQL. Other stores remain, so the operation can both affect unrelated graphs and leave inconsistent data despite strict mode.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -5707,6 +6197,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: Calling native centrality class methods directly combines graphs, while their SQL wrappers refuse unsupported graph scope. Callers using the class API can receive different and broader results.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-structural.json](../../experiment/playbook-completion/findings/audit/zz-structural.json) (live `st-live-susp-nkg-merged`; inspected `iris_src/src/Graph/KG/NKGAccel.cls:208-223`; inspected `iris_src/src/Graph/KG/NKGAccelCentrality.cls:4-10`)
@@ -5731,6 +6223,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: Direct native traversal methods merge graphs when finding neighbors, paths and counts. Their answers can cross graph boundaries even though callers expect a graph-specific result.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [zz-structural.json](../../experiment/playbook-completion/findings/audit/zz-structural.json) (live `st-live-reads3-10`; control `st-control-reads3-selftest`; inspected `iris_src/src/Graph/KG/NKGAccelTraversal.cls:20-186`; inspected `iris_src/src/Graph/KG/NKGAccelTraversal.cls:366-553`; inspected `iris_src/src/Graph/KG/NKGAccel.cls:164-191`; inspected `iris_src/src/Graph/KG/NKGAccel.cls:213-223`)
@@ -5754,6 +6248,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### EraseGraph's adjacency kill can drop the adjacency of an edge committed after its row delete
 
 Severity: Low · Decision: Open
+
+Description: The recorded concurrency concern is that erasure can remove an index entry after another transaction has created a new relationship. The new row could remain stored but disappear from traversal.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -5782,6 +6278,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: The final redaction step relies on a scan performed before taking its lock. The recorded race could allow intervening changes to invalidate the scan's conclusion.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 **Suspected** here: the playbook arm's disposition is `reproduced-model`, not a native reproduction; severity is one level below the mapped Medium.
@@ -5807,6 +6305,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### Graph_KG.embedding_quarantine keeps a tenant's node ids and vectors through every erase and redaction, and the receipt does not say so
 
 Severity: Low · Decision: Open
+
+Description: Source review indicates that quarantined embeddings are outside the erase and redaction inventories. Tenant IDs and vectors could remain there without being named in the completion receipt.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -5834,6 +6334,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: The redaction audit stores an unsalted hash of the tenant's name. Someone who already has candidate names can compare them with that hash, so the record does not fully conceal which tenant was redacted.
+
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
 Found by: playbook arm, [followup.json](../../experiment/playbook-completion/findings/audit/followup.json) (check `fu-r10-target-digest`; live `fu-r01a-snapshot-copies`; inspected `iris_src/src/Graph/KG/LedgerRedact.cls:56-59`; inspected `iris_src/src/Graph/KG/LedgerRedact.cls:418-441`)
@@ -5857,6 +6359,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### The enterprise web gateway recipe lets any address manage the gateway and connects to IRIS as _SYSTEM with the stock password
 
 Severity: Low · Decision: Open
+
+Description: Source review finds that the enterprise web-gateway example permits broad management access and uses privileged default database credentials. Deploying the example unchanged could expose more access than an operator expects.
 
 Run: Playbook uplift and completion audit, 2026-11-13/14 (imported 2026-11-14)
 
@@ -5884,6 +6388,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low · Decision: Open
 
+Description: Temporal relationships expose an internal ownership marker as ordinary relationship data. Cypher results and RDF exports can therefore include extra properties or triples that callers did not create.
+
 Run: Uplift 2026-11-16 (cloud continuation, iteration 15)
 
 Found by: source-first contrast across the three edge readers, with predictions frozen before observation ([predictions](../uplift/consolidated/iteration-15/temporal-marker-PAIRS.md)); [temporal_marker](models/temporal_marker/NOTES.md) `theorem_cypher_reports_marker_key`, `theorem_rdf_marked_row_is_reified` and `theorem_rdf_report_counts`.
@@ -5902,6 +6408,8 @@ Repair proposal (not implemented, not checked): keep the edge and its weight vis
 ### A string predicate matches a node property stored as a number by its digits
 
 Severity: Low · Decision: Open
+
+Description: String prefix and substring tests also match the textual spelling of numeric node properties. A filter intended for text can select numeric values without reporting a type mismatch.
 
 Run: Uplift 2026-11-16 (cloud continuation, iteration 20)
 
@@ -5922,6 +6430,8 @@ Repair proposal (not implemented, not checked): apply the stored-number test (`_
 
 Severity: Low · Decision: Open
 
+Description: Coalesce over a relationship property returns its stored text rather than its decoded value. Numeric weights and boolean flags can reach clients as strings.
+
 Run: Uplift 2026-11-16 (cloud continuation, iteration 24)
 
 Found by: the value-function probe at the API-writer / Cypher-reader boundary, with predictions frozen first ([predictions](../uplift/consolidated/iteration-24/patterns-params-PAIRS.md)). No formal model.
@@ -5938,6 +6448,8 @@ Repair proposal (not implemented, not checked): decode a relationship property a
 ### The user guide says a from_connect engine's temporal edge writes run outside the caller's transaction; create_edge_temporal joins it
 
 Severity: Low · Decision: Open
+
+Description: The user guide describes temporal transaction behavior incorrectly for engines created with from_connect. Callers cannot reliably tell from the guide which writes a rollback will undo.
 
 Run: Uplift 2026-11-16 (retest, iteration 26)
 
@@ -5956,6 +6468,8 @@ Repair proposal (not implemented): name the calls that use `engine._iris_obj()` 
 
 Severity: Low · Decision: Open
 
+Description: Recreating a named vector index resets its reported count but leaves old vectors searchable. A caller can believe the index is empty while queries still return its previous contents.
+
 Run: Uplift 2026-11-16 (retest, iteration 27)
 
 Found by: source reading after the W32 predictions were frozen, then observation ([predictions](../uplift/consolidated/iteration-27/vecindex-PAIRS.md), V10); [vec_index](models/vec_index/NOTES.md) `theorem_recreate_zero_count_keeps_vectors`.
@@ -5972,6 +6486,8 @@ Repair proposal (not implemented): either clear the vectors and trees on create,
 ### The API reference says a vector inserted into a VecIndex is searchable only after the next vec_build
 
 Severity: Low · Decision: Open
+
+Description: The API reference says newly inserted vectors require another build before they can be searched. The recorded behavior makes them searchable sooner, so the guidance can cause unnecessary rebuilds.
 
 Run: Uplift 2026-11-16 (retest, iteration 27)
 
@@ -5990,6 +6506,8 @@ Repair proposal (not implemented): say that inserts are placed in the existing t
 
 Severity: Low · Decision: Open
 
+Description: Some property-value readers return a stored boolean as text. Their answers disagree with the normal node reader and cannot distinguish the boolean true from the string true.
+
 Run: Uplift 2026-11-16 (retest, iteration 34)
 
 Found by: the frozen W40 prediction R3 ("typed as `get_node` types them") missed ([predictions](../uplift/consolidated/iteration-34/property-readers-PAIRS.md)).
@@ -6006,6 +6524,8 @@ Repair proposal (not implemented): decode the stored boolean spelling in these t
 ### kg_GRAPH_WALK keeps one row per hop and node, dropping other edges that reach that node at the same hop
 
 Severity: Low · Decision: Open
+
+Description: The graph-walk API keeps only one relationship for each node at a given hop. Parallel relationships and alternative routes to the same node disappear from its answer.
 
 Run: Uplift 2026-11-17 (continuation, iteration 37)
 
@@ -6026,6 +6546,8 @@ Repair proposal (not implemented): key the stage by (step, target, source, type)
 
 Severity: Low · Decision: Open
 
+Description: A very large graph walk exceeds IRIS's string limit and leaves its temporary rows in persistent storage. The request fails, and repeated failures accumulate data that is not cleaned up.
+
 Run: Uplift 2026-11-17 (continuation, iteration 37)
 
 Found by: the frozen W43 prediction L1 missed ([predictions](../uplift/consolidated/iteration-37/traversal-PAIRS.md)); [walk_reader](models/walk_reader/NOTES.md) `theorem_walk_overflow_raises_and_leaves_stage`, control `walk-has-stream`.
@@ -6045,6 +6567,8 @@ Repair proposal (not implemented): read the stage through the `SORTED:` decoder 
 
 Severity: Low · Decision: Open
 
+Description: RDF inference generates fewer derived relationships than the API reference promises. Queries relying on the documented entailments can miss expected results even though the original facts remain intact.
+
 Run: Uplift 2026-11-17 (continuation, iteration 38)
 
 Found by: the frozen W44 prediction I7 missed ([predictions](../uplift/consolidated/iteration-38/inference-PAIRS.md)); source reading added I10; [inference_rows](models/inference_rows/NOTES.md) `theorem_no_subproperty_propagation`, `theorem_domain_type_not_lifted`, controls `derive-rdfs7`, `derive-lifts-domain`.
@@ -6061,6 +6585,8 @@ Repair proposal (not implemented): either derive to a fixpoint with rdfs7 and li
 ### Validating only new node IDs, as the semantic-layer guide suggests, refuses valid data whose shape checks an edge's target
 
 Severity: Low · Decision: Open
+
+Description: The guide recommends validating only newly added node IDs, but some shapes need to inspect neighboring nodes. Following that recipe can reject valid data when a relationship target falls outside the selected IDs.
 
 Run: Uplift 2026-11-17 (continuation, iteration 39)
 
@@ -6079,6 +6605,8 @@ Repair proposal (not implemented): load the listed nodes' edge targets' type tri
 
 Severity: Low · Decision: Open
 
+Description: The SQL-relationship mapping implementation looks for a foreign key on the opposite table from the one documented. Following the instructions can fail or build the wrong join.
+
 Run: Uplift 2026-11-17 (continuation, iteration 40)
 
 Found by: the frozen W46 prediction T4 missed ([predictions](../uplift/consolidated/iteration-40/sqlmap-PAIRS.md)); [sql_mapping](models/sql_mapping/NOTES.md) `theorem_fk_side_differs`, control `join-on-source-fk`.
@@ -6096,6 +6624,8 @@ Repair proposal (not implemented): read `target_fk` on the source table, or rena
 
 Severity: Low · Decision: Open
 
+Description: A Cypher query combining a mapped SQL label with an IVG relationship generates invalid SQL. Callers cannot use that otherwise natural combination of mapped and graph data.
+
 Run: Uplift 2026-11-17 (continuation, iteration 40)
 
 Found by: source-informed addition to W46 after the freeze ([second observation](../uplift/consolidated/iteration-40/sqlmap-observed2-20261117T004940Z.json)); [sql_mapping](models/sql_mapping/NOTES.md) `theorem_mapped_with_ivg_relationship_errors`, control `unmapped-rel-translated`.
@@ -6112,6 +6642,8 @@ Repair proposal (not implemented): translate a non-mapped relationship from a ma
 ### map_sql_table refuses an existing table named without a schema
 
 Severity: Low · Decision: Open
+
+Description: SQL-table mapping rejects an existing table when its name omits the schema. The error suggests the table is unavailable even though supplying the fully qualified name works.
 
 Run: Uplift 2026-11-17 (continuation, iteration 40)
 
@@ -6132,6 +6664,8 @@ Repair proposal (not implemented): check the unqualified name under `SQLUser` (o
 
 Severity: Low · Decision: Open
 
+Description: The embedding exclusion filter ignores patterns containing underscores or percent signs. Nodes the caller intended to skip can still consume embedding work and receive vectors.
+
 Run: Uplift 2026-11-17 (continuation, iteration 43)
 
 Found by: observation in W49 (E1), then source reading ([predictions](../uplift/consolidated/iteration-43/embed-nodes-PAIRS.md); E5 was not predicted with confidence); [embed_selection](models/embed_selection/NOTES.md) `theorem_special_pattern_excludes_nothing`, control `escape-honoured`.
@@ -6150,6 +6684,8 @@ Repair proposal (not implemented): add `ESCAPE '\'` to the clause. Governing sta
 ### embed_nodes in a named graph selects a node by a label that only its twin in another graph has
 
 Severity: Low · Decision: Open
+
+Description: Embedding selection can use a label belonging to the same node ID in another graph. A named-graph request can embed nodes that do not have the requested label in that graph.
 
 Run: Uplift 2026-11-17 (continuation, iteration 43)
 
@@ -6170,6 +6706,8 @@ Repair proposal (not implemented): scope the label subquery to the graph. Govern
 
 Severity: Low · Decision: Open
 
+Description: The provenance-export guide promises an empty export when a requested time window is too large. The implementation raises an exception instead, so callers following the guide may not handle the failure.
+
 Run: Uplift 2026-11-17 (continuation, iteration 44)
 
 Found by: the frozen W50 prediction P8, taken from the guide, missed ([predictions](../uplift/consolidated/iteration-44/prov-PAIRS.md)); [prov_window](models/prov_window/NOTES.md) `theorem_large_window_raises`, control `doc-matches-code`.
@@ -6186,6 +6724,8 @@ Repair proposal (not implemented): correct the guide and docstring, or read the 
 ### export_rdf_from_cypher drops a row whose value is 0, false or empty unless the columns are named s, p and o
 
 Severity: Low · Decision: Open
+
+Description: RDF export can drop rows containing zero, false or empty values when columns use nonstandard names. Renaming otherwise equivalent result columns can silently change the exported data.
 
 Run: Uplift 2026-11-17 (continuation, iteration 45)
 
@@ -6204,6 +6744,8 @@ Repair proposal (not implemented): test positional values against null, as the n
 
 Severity: Low · Decision: Open
 
+Description: IVF search accepts a query vector with the wrong width and computes scores from partial data. Mixing incompatible vector models can produce a plausible ranking instead of an error.
+
 Run: Uplift 2026-11-17 (continuation, iteration 46)
 
 Found by: the frozen W52 prediction V8 missed ([predictions](../uplift/consolidated/iteration-46/ivf-PAIRS.md)); [ivf_entries](models/ivf_entries/NOTES.md) `theorem_other_width_answered`, control `width-checked`.
@@ -6220,6 +6762,8 @@ Repair proposal (not implemented): refuse a query whose width differs from `cfg 
 ### `/vectorSearch` and `/hybridSearch` refuse a query of another width for a graph with no vectors
 
 Severity: Low · Decision: Open
+
+Description: Vector and hybrid REST searches can reject a query for its width even when the graph contains no vectors. An empty graph produces a misleading compatibility error instead of an empty result.
 
 Run: Uplift 2026-11-17 (continuation, iteration 49)
 
@@ -6240,6 +6784,8 @@ Repair proposal (not implemented): look the route up first and answer [] for an 
 
 Severity: Low · Decision: Open
 
+Description: Hybrid search replaces an explicitly supplied fusion constant of zero with the default value. Callers receive a different ranking configuration from the one they requested.
+
 Run: Uplift 2026-11-17 (continuation, iteration 49)
 
 Found by: the source of `PyOps.HybridSearch` (`c = int(c) if c else 60`, `PyOps.cls:374`) after W56 F8; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_hybrid_c_zero_becomes_60`; control `hybrid-c-kept`.
@@ -6257,6 +6803,8 @@ Repair proposal (not implemented): default only a missing `c`. Governing stateme
 
 Severity: Low
 
+Description: The schema compatibility check is silently skipped for some restricted logins and non-IRIS connections. A successful connection does not clearly tell the caller that compatibility was never checked.
+
 Run: Uplift 2026-11-13
 
 Reproduced by: **outside active reproduction scope** — defensive source and existing-evidence review only. No new security reproduction was constructed or executed. Historical runtime claims below are not fresh e2e observations.
@@ -6273,6 +6821,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 
 Severity: Low
 
+Description: The IVF SQL function derives the table used for its privilege check from the index's own stored configuration. The recorded concern is that this check may not establish access to the data the caller actually searches.
+
 Run: Uplift 2026-11-13
 
 Reproduced by: **outside active reproduction scope** — defensive source and existing-evidence review only. No new security reproduction was constructed or executed. Historical runtime claims below are not fresh e2e observations.
@@ -6288,6 +6838,8 @@ Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.
 ### The OpsReview brief's one-call redaction recipe never reaches the tenant's node records
 
 Severity: Low
+
+Description: The operations brief gives a single-call tenant-redaction recipe that misses node history stored under the default graph. An operator following that recipe can leave tenant records behind.
 
 Run: Uplift 2026-11-13
 
