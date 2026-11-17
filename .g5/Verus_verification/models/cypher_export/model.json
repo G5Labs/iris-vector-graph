@@ -1,0 +1,45 @@
+{
+  "name": "cypher_export",
+  "root": "cypher_export.rs",
+  "expected_verified": 3,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "positional-checks-null",
+      "find": "        Cols::Positional => s == Val::Other && p == Val::Other && o == Val::Other,",
+      "replace": "        Cols::Positional => s != Val::Null && p != Val::Null && o != Val::Null,",
+      "expect_fail_in": [
+        "theorem_falsy_value_depends_on_names"
+      ],
+      "classification": "decision: positional rows drop only nulls (the repair)"
+    },
+    {
+      "name": "error-raised",
+      "find": "    if query_failed { Answer::Count(0) } else { Answer::Count(distinct_triples) }",
+      "replace": "    if query_failed { Answer::Raised } else { Answer::Count(distinct_triples) }",
+      "expect_fail_in": [
+        "theorem_failed_query_looks_empty"
+      ],
+      "classification": "decision: a failed query raises (the repair)"
+    },
+    {
+      "name": "named-drops-falsy",
+      "find": "        Cols::Named => s != Val::Null && p != Val::Null && o != Val::Null,",
+      "replace": "        Cols::Named => s == Val::Other && p == Val::Other && o == Val::Other,",
+      "expect_fail_in": [
+        "theorem_falsy_value_depends_on_names"
+      ],
+      "classification": "decision: named rows drop falsy values too"
+    },
+    {
+      "name": "null-written",
+      "find": "        Cols::Named => s != Val::Null && p != Val::Null && o != Val::Null,",
+      "replace": "        Cols::Named => true,",
+      "expect_fail_in": [
+        "theorem_ordinary_and_null_rows"
+      ],
+      "classification": "decision: a null becomes an IRI"
+    }
+  ]
+}

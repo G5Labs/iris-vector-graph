@@ -1,4 +1,4 @@
-**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 44 (W50, PROV-O export). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
+**Current pointer (continuation, 2026-11-17).** RUNNING. Latest seal: iteration 45 (W51, Cypher RDF export). The retest's convergence below is reopened product-wide under `uplift-iteration.md` `d31f5890`. Next candidate: chosen from the product-wide inventory in [the continuation section](#continuation-2026-11-17).
 
 <a id="continuation-2026-11-17"></a>
 ## Continuation (2026-11-17, from `cloud-iris-continuation-start-20261117`)
@@ -16,6 +16,7 @@ Guidance: run copy `$G5_HARNESS`; `Verus/uplift-iteration.md` sha256 `d31f5890bb
 | [42](iteration-42/HANDOFF.md) | W48 one-hop retrieval operators | no finding (10 of 11); question `algorithms.op.neighbors.scope`, owner `algorithms.op.neighbors`; model `retrieval_scope`; 426 → 428 |
 | [43](iteration-43/HANDOFF.md) | W49 bulk embedding (`embed_nodes`) | Low bug-srch-105, -106 (new), owner `search.embedding.bulk`; model `embed_selection`; 428 → 433 |
 | [44](iteration-44/HANDOFF.md) | W50 PROV-O export | Medium bug-plt-110, Low bug-plt-109 (new), owner `install.export.prov`; model `prov_window`; 433 → 439 |
+| [45](iteration-45/HANDOFF.md) | W51 RDF export from Cypher, namespace prefixes | Medium bug-plt-111, Low bug-plt-112 (new), owner `install.export.rdf.cypher`; model `cypher_export`; 439 → 441 |
 
 Earlier pointer (superseded): **Current pointer (retest, 2026-11-16).** CONVERGED after iteration 35. Latest seal: the clean tip with subject `Record convergence of the retest` (its parent is the iteration-35 seal). Session: iterations 25-35 (W30-W41), 6 new findings (1 High, 1 Medium, 4 Low), 4 inherited suspicions reproduced, 8 new models, reach 279 → 375 of 4,130 (96 new, 10 strengthened, 0 lost). Cost: builder wall clock about 1 h 20 min (21:15-22:35 UTC; tokens/currency unavailable). Convergence basis: [below](#retest-convergence-2026-11-16).
 

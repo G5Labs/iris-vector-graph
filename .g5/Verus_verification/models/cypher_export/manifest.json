@@ -1,0 +1,45 @@
+{
+  "title": "cypher export",
+  "question": "RDF export from a Cypher query: null and falsy rows by column naming (bug-plt-112); a failed query exports empty (bug-plt-111)",
+  "ontology_ids": [
+    "install.export.rdf.cypher"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 3}"
+    },
+    {
+      "label": "positional-checks-null",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_falsy_value_depends_on_names\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "error-raised",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_failed_query_looks_empty\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "named-drops-falsy",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_falsy_value_depends_on_names\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "null-written",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_ordinary_and_null_rows\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

@@ -2929,6 +2929,23 @@ Consequence: on any namespace with a real temporal history these two PROV calls 
 
 Repair proposal (not implemented): look the edge up by its own source, predicate and timestamp (or read the window in chunks). Governing statement: [install.export.prov](../ontology/concepts/install.g5.md#install.export.prov).
 
+<a id="bug-plt-111"></a>
+### export_rdf_from_cypher writes an empty file and reports 0 triples when its query fails
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 45)
+
+Found by: source reading after the W51 freeze (C10, not frozen) ([predictions](../uplift/consolidated/iteration-45/cyphexport-PAIRS.md)); [cypher_export](models/cypher_export/NOTES.md) `theorem_failed_query_looks_empty`, control `error-raised`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-45/cyphexport-observed-20261117T011128Z.json) C10; [binding](results/cypher_export/20261117T011234Z-binding/receipt.json) `failed_query`). A query IRIS refuses at run time (a mapped label through an IVG relationship, [bug-cyp-109](#bug-cyp-109)) sets `result.error` when run with `execute_cypher`; `export_rdf_from_cypher` with the same query answers `{"triples": 0}`, writes an empty file and raises nothing.
+
+Expected: the user guide: "Check `result.error` (or pass `raise_on_error=True`) wherever an empty answer would be taken for 'nothing found'"; an export of nothing is that case.
+
+Consequence: a failed export is indistinguishable from a query that matched nothing; downstream tools load an empty file. Medium: silent wrong result.
+
+Repair proposal (not implemented): raise when the query's result carries an error (or run it with `raise_on_error=True`). Governing statement: [install.export.rdf.cypher](../ontology/concepts/install.g5.md#install.export.rdf.cypher).
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 
@@ -4486,6 +4503,23 @@ Expected: SEMANTIC_LAYER.md: "A window larger than that string can hold is logge
 Consequence: a caller following the guide does not expect the exception. Low: the behavior is safer than documented; the documents are wrong.
 
 Repair proposal (not implemented): correct the guide and docstring, or read the window in chunks. Governing statement: [install.export.prov](../ontology/concepts/install.g5.md#install.export.prov).
+
+<a id="bug-plt-112"></a>
+### export_rdf_from_cypher drops a row whose value is 0, false or empty unless the columns are named s, p and o
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 45)
+
+Found by: source reading after the W51 freeze (C11, not frozen) ([predictions](../uplift/consolidated/iteration-45/cyphexport-PAIRS.md)); [cypher_export](models/cypher_export/NOTES.md) `theorem_falsy_value_depends_on_names`, control `positional-checks-null`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-45/cyphexport-observed-20261117T011128Z.json) C11; [binding](results/cypher_export/20261117T011234Z-binding/receipt.json) `named_zero`, `positional_zero`). With a property `v = 0` on two nodes, `RETURN n.node_id AS s, 'v' AS p, n.v AS o` exports 2 triples, and the same query with columns `x, y, z` exports 0.
+
+Expected: SEMANTIC_LAYER.md: "Return three columns named `s`, `p` and `o` (or any three columns, read in that order)".
+
+Consequence: renaming columns silently changes which rows are exported. Low.
+
+Repair proposal (not implemented): test positional values against null, as the named path does. Governing statement: [install.export.rdf.cypher](../ontology/concepts/install.g5.md#install.export.rdf.cypher).
 
 <a id="bug-plt-022"></a>
 ### The schema check is skipped silently for logins without global access and for non-IRIS connections

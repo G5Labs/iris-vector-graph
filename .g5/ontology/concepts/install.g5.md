@@ -429,6 +429,13 @@ The PROV-O export publishes the default graph's temporal edges, one activity per
 - A single-edge lookup and the export for the nodes of a Cypher query read the default graph's whole temporal history.
 - Today a read of more edges than one IRIS string holds (about 35,000) raises an error. So the whole-history calls fail on any large history, even for one small edge ([finding](../../Verus_verification/bugs_issues.md#bug-plt-110)), and an over-large window raises rather than exporting an empty file as the guide says ([finding](../../Verus_verification/bugs_issues.md#bug-plt-109)).
 
+<a id="install.export.rdf.cypher"></a>
+[D · install.export.rdf.cypher]
+
+An export from a Cypher query writes one triple per distinct result row, its three values made into IRIs as node IDs are, numbers included. A row with a null is skipped, and a one-column row adds a type triple only for a value that is already an IRI.
+- Registered namespace prefixes are stored for the namespace, a second registration of a prefix replaces its IRI, and Turtle and JSON-LD exports declare each registered prefix their triples use.
+- Today a row whose value is 0, false or empty is skipped unless the columns are named `s`, `p` and `o` ([finding](../../Verus_verification/bugs_issues.md#bug-plt-112)), and a query that fails exports an empty file reported as 0 triples ([finding](../../Verus_verification/bugs_issues.md#bug-plt-111)).
+
 ## Metadata
 
 ### install.namespace
@@ -1032,3 +1039,14 @@ Findings: [SHACL validation treats one node ID in two graphs as one node](../../
 Recovered in iteration 44 from the semantic-layer guide and observation ([W50](../../uplift/consolidated/iteration-44/prov-PAIRS.md)).
 
 Findings: [prov_as_dict and prov_export_from_cypher fail once the history is large](../../Verus_verification/bugs_issues.md#bug-plt-110); [The guide says an over-large PROV window exports an empty file](../../Verus_verification/bugs_issues.md#bug-plt-109)
+
+### install.export.rdf.cypher
+
+- Sources: [SEMANTIC_LAYER.md From a Cypher query, Namespace prefixes](../../../docs/SEMANTIC_LAYER.md#L112-L137); [`RdfExportMixin.export_rdf_from_cypher`](../../../iris_vector_graph/_engine/rdf_export.py#L159), [`_project_row_as_rdf`](../../../iris_vector_graph/_engine/rdf_export.py#L212), [`register_namespace`](../../../iris_vector_graph/_engine/rdf_export.py#L53-L76)
+- Verus: active: [`cypher_export.rs`](../../Verus_verification/models/cypher_export/NOTES.md) `theorem_ordinary_and_null_rows`; as-built departures `theorem_falsy_value_depends_on_names`, `theorem_failed_query_looks_empty`.
+- agent
+- user-facing-behavior
+
+Recovered in iteration 45 from the semantic-layer guide and observation ([W51](../../uplift/consolidated/iteration-45/cyphexport-PAIRS.md); prefix declarations re-checked with data in the namespace, [observation 2](../../uplift/consolidated/iteration-45/cyphexport-observed2-20261117T011146Z.json)).
+
+Findings: [export_rdf_from_cypher reports 0 triples when its query fails](../../Verus_verification/bugs_issues.md#bug-plt-111); [export_rdf_from_cypher drops a row whose value is 0 unless the columns are named](../../Verus_verification/bugs_issues.md#bug-plt-112)
