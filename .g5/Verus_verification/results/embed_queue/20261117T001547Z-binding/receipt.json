@@ -1,0 +1,103 @@
+{
+  "all_sensitivities_detected": true,
+  "cases": 14,
+  "comparisons": 42,
+  "elapsed_s": 0.9,
+  "fixture": "ivg-cont-20261117-iris",
+  "inputs": {
+    ".g5/Verus_verification/models/embed_queue/binding.py": "80466e3178560de4e58f5855fa87f2e02db2fad887094329596a2f8fb909e4c9",
+    ".g5/Verus_verification/models/embed_queue/embed_queue.rs": "1b66283d03e69dbc3a3fd1957b75c02eed85f8ea386db8ad15abc94fca969ea7",
+    ".g5/Verus_verification/models/embed_queue/model.json": "b08a4d735b6b6f2fe69cf0e92e75cc80cf0a4b7de6c83feffd8b2eca64896687",
+    ".g5/uplift/consolidated/iteration-36/fixture/W42.FixtureEmbedding.cls": "444451a7e4ef5fa03a5e36257ec6c16ada171cbcafb6ab9461daa48035c9d5e7",
+    "iris_src/src/Graph/KG/EmbedQueue.cls": "37d77c7c6db4ae302e3d1138d6668fa0f100782d5aebae14aa55c50727bff5d0",
+    "iris_src/src/Graph/KG/EmbedQueueTask.cls": "5685069c1defb148be5f7c8696b6499320fea28fec73f2d68e09e072c52db3da",
+    "iris_vector_graph/_engine/embeddings.py": "38335c3ffcf9a4097516ba01f6768390470a06c1dd30006043262ce6df235739"
+  },
+  "kind": "binding",
+  "mismatches": [],
+  "model": "embed_queue",
+  "observed": {
+    "I1": [
+      "ERROR",
+      true,
+      false
+    ],
+    "I2": [
+      "DONE",
+      false,
+      false
+    ],
+    "I3": [
+      "DONE",
+      false,
+      false
+    ],
+    "I4": [
+      "DONE",
+      false,
+      false
+    ],
+    "I5": [
+      "DONE",
+      false,
+      true
+    ],
+    "I6": [
+      "DONE",
+      false,
+      false
+    ],
+    "I7": [
+      "DONE",
+      false,
+      false
+    ],
+    "I8": [
+      "ERROR",
+      true,
+      false
+    ],
+    "I9": [
+      "ERROR",
+      true,
+      false
+    ],
+    "P1": [
+      "DONE",
+      false,
+      true
+    ],
+    "P2": [
+      "ERROR",
+      true,
+      false
+    ],
+    "P3": [
+      "ERROR",
+      true,
+      false
+    ],
+    "P4": [
+      "ERROR",
+      true,
+      false
+    ],
+    "P5": [
+      "ERROR",
+      true,
+      false
+    ]
+  },
+  "pending_after": 0,
+  "port": 36317,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "run": "20261117T001546Z",
+  "scope": "Actual process_embed_queue and Graph.KG.EmbedQueue.ProcessBatch on IRIS 2026.1 (pin 3eaa79cf), one entry per case, read back through GetEntry and get_embedding. Providers are fixture substitutes (a Python callable; an %Embedding.Interface subclass); their failure, empty and vector answers are the modeled Provider cases. The task path (start_background_embedding) was observed separately in iteration-36/embed-queue-observed2-*.json. Not exercised: two workers at once; an interruption between the Python worker's two writes; free-text entries.",
+  "sensitivities_detected_cases": {
+    "iris_default_insert_ok": 1,
+    "iris_unanswered_is_error": 5,
+    "python_done_on_provider_failure": 1,
+    "python_skips_identity": 1
+  },
+  "verdict": "AGREES"
+}

@@ -502,11 +502,13 @@ State machines: [search](../../Verus_verification/models/search/manifest.json)
 - Expands: [Embedding identity](#search.embedding)
 - Children: [May two workers process the queue at the same time, and must an entry be marked done only after its vector is committed?](../../Verus_verification/open_questions.md#search.embedding.queue.processing)
 - Observed divergence: enqueueing checks the default graph's original table whatever the target graph, and the IRIS worker writes default-graph entries there whatever their model (F8 in the [stage-A findings](../../uplift/ivg-verus-initial/intent/search.md#candidate-findings)). The IRIS worker also marks an entry done when its embedding statement fails to prepare or returns no row ([ProcessBatch](../../../iris_src/src/Graph/KG/EmbedQueue.cls#L306-L330)).
+- Observed (iteration 36, [W42](../../uplift/consolidated/iteration-36/embed-queue-PAIRS.md)): the Python worker follows this rule. The IRIS worker (the task `start_background_embedding` starts) marks an entry done, with no vector and no reason, when the provider fails, answers nothing or the config is unknown. It also cannot store any default-graph vector: each such entry ends as an error naming a required `graph_id`. In a named graph it stores the provider's vector and marks the entry done.
+- Verus: active: [`embed_queue.rs`](../../Verus_verification/models/embed_queue/embed_queue.rs) `rule_ok` (this rule), `theorem_python_worker_meets_rule`, `theorem_iris_named_success_stored`; as-built departures `theorem_iris_unanswered_marked_done`, `theorem_iris_default_graph_never_stores`; reviewed repair `theorem_reviewed_iris_meets_rule`; open question `theorem_interrupted_mark_breaks_rule`.
 - agent
 - data-integrity, operations
 - test-coverage
 
-Findings: [The embedding queue checks identity against the wrong table, and its IRIS worker writes default-graph entries with no identity check](../../Verus_verification/bugs_issues.md#bug-srch-006)
+Findings: [The embedding queue checks identity against the wrong table, and its IRIS worker writes default-graph entries with no identity check](../../Verus_verification/bugs_issues.md#bug-srch-006); [The IRIS queue worker marks an entry done when the provider fails or answers nothing](../../Verus_verification/bugs_issues.md#bug-srch-103); [The IRIS queue worker cannot store a default-graph vector](../../Verus_verification/bugs_issues.md#bug-srch-104)
 
 Open questions: [May two embed queue workers run at once?](../../Verus_verification/open_questions.md#HD-0604), [May two workers process the queue at the same time, and must an entry be marked done only after its vector is committed?](../../Verus_verification/open_questions.md#search.embedding.queue.processing)
 

@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "rule: DONE no longer requires a stored vector",
+    "expect_fail_in": [
+      "theorem_iris_unanswered_marked_done",
+      "theorem_interrupted_mark_breaks_rule"
+    ],
+    "find": "    && ((o.status == Status::Done) == o.stored)\n",
+    "name": "rule-allows-done-without-vector",
+    "replace": "\n"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_iris_unanswered_marked_done",
+      "theorem_interrupted_mark_breaks_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/embed_queue/embed_queue.rs": "1b66283d03e69dbc3a3fd1957b75c02eed85f8ea386db8ad15abc94fca969ea7",
+    ".g5/Verus_verification/models/embed_queue/model.json": "b08a4d735b6b6f2fe69cf0e92e75cc80cf0a4b7de6c83feffd8b2eca64896687"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/rule-allows-done-without-vector/20261117T001507Z/models/embed_queue/embed_queue.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_interrupted_mark_breaks_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/20261117T001507Z-control-rule-allows-done-without-vector-theorem_interrupted_mark_breaks_rule.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_iris_unanswered_marked_done": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/20261117T001507Z-control-rule-allows-done-without-vector-theorem_iris_unanswered_marked_done.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/20261117T001507Z-control-rule-allows-done-without-vector.log",
+    "timed_out": false,
+    "verified": 4
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/embed_queue/20261117T001509Z-control-rule-allows-done-without-vector/logs/20261117T001507Z-control-rule-allows-done-without-vector-theorem_interrupted_mark_breaks_rule.log": "a1316bfe958db109b2087030981e0edffd6c374a48d7c6f56f095aab7304face",
+    ".g5/Verus_verification/results/embed_queue/20261117T001509Z-control-rule-allows-done-without-vector/logs/20261117T001507Z-control-rule-allows-done-without-vector-theorem_iris_unanswered_marked_done.log": "9d6a06a7746d49d37f11e2be9edba4da3e42dbb328de127658e6ca77f38dffbb",
+    ".g5/Verus_verification/results/embed_queue/20261117T001509Z-control-rule-allows-done-without-vector/logs/20261117T001507Z-control-rule-allows-done-without-vector.log": "aefacd969dfeb426de85959369c8719efd179fe9c2fb72c0a2cc5245e43accac"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

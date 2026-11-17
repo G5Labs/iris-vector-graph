@@ -1,0 +1,57 @@
+{
+  "title": "embed queue",
+  "question": "Embedding queue workers: a worked entry is DONE exactly when its vector is stored, else ERROR with a reason; the IRIS worker marks unanswered entries DONE (bug-srch-103) and stores no default-graph vector (bug-srch-104); providers are fixture substitutes",
+  "ontology_ids": [
+    "search.embedding.queue"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 6}"
+    },
+    {
+      "label": "iris-unanswered-is-error",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_iris_unanswered_marked_done\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "iris-default-insert-ok",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_iris_default_graph_never_stores\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "python-done-on-provider-failure",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_python_worker_meets_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "python-skips-identity",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_python_worker_meets_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "reviewed-keeps-done-on-no-answer",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_reviewed_iris_meets_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "rule-allows-done-without-vector",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_iris_unanswered_marked_done\", \"theorem_interrupted_mark_breaks_rule\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

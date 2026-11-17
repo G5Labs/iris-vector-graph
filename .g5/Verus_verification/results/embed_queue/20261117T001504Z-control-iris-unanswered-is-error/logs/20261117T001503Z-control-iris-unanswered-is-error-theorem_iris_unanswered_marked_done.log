@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/iris-unanswered-is-error/20261117T001503Z/models/embed_queue/embed_queue.rs:104:1
+    |
+104 | pub proof fn theorem_iris_unanswered_marked_done(e: Entry)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/iris-unanswered-is-error/20261117T001503Z/models/embed_queue/embed_queue.rs:107:13
+    |
+104 | pub proof fn theorem_iris_unanswered_marked_done(e: Entry)
+    | ---------------------------------------------------------- at the end of the function body
+...
+107 |     ensures iris_worker(e).status == Status::Done, !iris_worker(e).stored, !iris_worker(e).reason,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/iris-unanswered-is-error/20261117T001503Z/models/embed_queue/embed_queue.rs:107:76
+    |
+104 | pub proof fn theorem_iris_unanswered_marked_done(e: Entry)
+    | ---------------------------------------------------------- at the end of the function body
+...
+107 |     ensures iris_worker(e).status == Status::Done, !iris_worker(e).stored, !iris_worker(e).reason,
+    |                                                                            ^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

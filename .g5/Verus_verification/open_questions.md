@@ -5405,6 +5405,8 @@ May two workers process the queue at the same time, and must an entry be marked 
 
 Disposition: open. Working assumption: one worker at a time is assumed, so entries are not claimed. An entry is marked done before its vector is stored, and is changed to an error if storing then fails.
 
+Evidence (iteration 36, W42): the provisional answer describes the Python worker, observed to end every failure as an error. The IRIS worker's final DONE without a vector ([bug-srch-103](bugs_issues.md#bug-srch-103)) is a defect, not this question's intermediate state. Verus: [`embed_queue.rs`](models/embed_queue/embed_queue.rs) `theorem_interrupted_mark_breaks_rule` shows the owner's rule rejects the intermediate state; whether that state is acceptable is still this question. No second worker was run.
+
 ```g5-question
 {
   "schema": 1,

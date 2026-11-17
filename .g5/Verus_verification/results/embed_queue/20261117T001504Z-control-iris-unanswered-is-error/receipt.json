@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: an unanswered entry becomes an ERROR (the repair) \u2014 the as-built theorem must notice",
+    "expect_fail_in": [
+      "theorem_iris_unanswered_marked_done"
+    ],
+    "find": "        if !answered { done(false) }               // SQLCODE < 0 or no vector: the write is skipped, status DONE",
+    "name": "iris-unanswered-is-error",
+    "replace": "        if !answered { error() }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_iris_unanswered_marked_done"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/embed_queue/embed_queue.rs": "1b66283d03e69dbc3a3fd1957b75c02eed85f8ea386db8ad15abc94fca969ea7",
+    ".g5/Verus_verification/models/embed_queue/model.json": "b08a4d735b6b6f2fe69cf0e92e75cc80cf0a4b7de6c83feffd8b2eca64896687"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/iris-unanswered-is-error/20261117T001503Z/models/embed_queue/embed_queue.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_iris_unanswered_marked_done": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/20261117T001503Z-control-iris-unanswered-is-error-theorem_iris_unanswered_marked_done.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/20261117T001503Z-control-iris-unanswered-is-error.log",
+    "timed_out": false,
+    "verified": 5
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/embed_queue/20261117T001504Z-control-iris-unanswered-is-error/logs/20261117T001503Z-control-iris-unanswered-is-error-theorem_iris_unanswered_marked_done.log": "6c9d4b09247a841f3e3e8d3ba6e4623203fad14fa6f274bf3f554b5c5d505db6",
+    ".g5/Verus_verification/results/embed_queue/20261117T001504Z-control-iris-unanswered-is-error/logs/20261117T001503Z-control-iris-unanswered-is-error.log": "7b60024375ade55e2572fd8f744b17e66f0689eb8ba8bcf8c91784de5e083738"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

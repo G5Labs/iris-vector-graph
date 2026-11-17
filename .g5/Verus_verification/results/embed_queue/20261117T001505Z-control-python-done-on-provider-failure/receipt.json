@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "decision: a failed encode is marked DONE",
+    "expect_fail_in": [
+      "theorem_python_worker_meets_rule"
+    ],
+    "find": "    else if e.provider == Provider::Fail { error() }",
+    "name": "python-done-on-provider-failure",
+    "replace": "    else if e.provider == Provider::Fail { done(false) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_python_worker_meets_rule"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/embed_queue/embed_queue.rs": "1b66283d03e69dbc3a3fd1957b75c02eed85f8ea386db8ad15abc94fca969ea7",
+    ".g5/Verus_verification/models/embed_queue/model.json": "b08a4d735b6b6f2fe69cf0e92e75cc80cf0a4b7de6c83feffd8b2eca64896687"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/python-done-on-provider-failure/20261117T001505Z/models/embed_queue/embed_queue.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_python_worker_meets_rule": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/20261117T001505Z-control-python-done-on-provider-failure-theorem_python_worker_meets_rule.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/20261117T001505Z-control-python-done-on-provider-failure.log",
+    "timed_out": false,
+    "verified": 5
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/embed_queue/20261117T001505Z-control-python-done-on-provider-failure/logs/20261117T001505Z-control-python-done-on-provider-failure-theorem_python_worker_meets_rule.log": "d5cbae0bf74ca1a691a0b3b4111ae59d982524bfcc0856480833eaf830e489b8",
+    ".g5/Verus_verification/results/embed_queue/20261117T001505Z-control-python-done-on-provider-failure/logs/20261117T001505Z-control-python-done-on-provider-failure.log": "b7cc2f6e6a1a10d5fc6379a1bf53f9d2243d27d8a71ce434214745d8105bff39"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

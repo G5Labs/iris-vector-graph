@@ -1,0 +1,37 @@
+{
+  "session": "continuation 2026-11-17 (unit g5-iris-continuation-20261117)",
+  "start_tag": "cloud-iris-continuation-start-20261117",
+  "start_commit": "08ab4fff5363ee76e34d727007499252e5ef6c39",
+  "product_pin": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "harness": "$G5_HARNESS run copy (byte-identical to $HOME/.agents for the two guides)",
+  "guidance_sha256": {
+    "AGENTS.md": "f771605fa065cd777c3192ff1359ef136fa77d58abc46fcc699148c5dcd3cb7a",
+    "guidance/Verus/uplift-iteration.md": "d31f5890bbcae14699c6a37cef392ace2aeb0c0a74f2be5e2129f1ff1fecfa16",
+    "guidance/Verus/uplift-scoring.md": "7e250023ffaa55fc6c891f137ac54b8cecbc424f69add756a3e5e9d91736e233",
+    "guidance/Verus/uplift.md": "959656b52fb031116031057efdd0c1dd4a1df46ead1e33bc14877343ed7b35f7",
+    "guidance/Verus/setup_foundation.md": "5113691d48422a638b4fbad6d33f872bc9a5576697f24b1ee18240271bd636eb",
+    "guidance/TLC/setup_foundation.md": "7d7d1af71aa48b1727bfd937f201e0c9ca9dd38edd4a46670bd755878bf78c23",
+    "guidance/Verus/verification.md": "3449a886d0f83eee72c422a3b815a5582bc3e577b43ca8dfc62ca7624bfde4b2",
+    "guidance/Verus/verification-playbook.txt": "665edc91f1bc8de442c5b2b35316f967ab32182cdf3cf8295714df865e4d3f4b",
+    "guidance/uplift-intent-recovery.md": "2eff4fc891ea5a8460b5bd62f81022a53e1b4ae517e8d2e927d6c25d6bce0549",
+    "guidance/uplift-evidence.md": "63762e469d74084f5342be1a83c058c3afaa8c9590c2edd6f6a5246f47ce4c64",
+    "guidance/scripts/check_ontology.py": "e2e4adb6b0c6324dd1d9c145f0e76a6c9eb4b2f430fee6a3d1d4e5cac8fd3d54",
+    "guidance/scripts/check_findings.py": "b237dd9b006b56a75ea6e3c748e2f3856b127a16b9090743ecde507acbefb68b"
+  },
+  "guidance_changed_since_iteration_35": {"guidance/Verus/uplift-iteration.md": "a7521d0e -> d31f5890 (steps 4-5: next gap from the product-wide inventory; a probe-confirmed outcome needs a formal claim that rejects the wrong outcome or stays queued; convergence across scope needs a representative public workflow in each area that could still hold a consequential decision)"},
+  "verus": {"version": "0.2026.10.04.426d8b0", "platform": "linux_x86_64", "binary": "~/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus", "rustup": "~/.cargo/bin on PATH"},
+  "python": {"interpreter": "CPython 3.11.18 (copied from the retest run dir)", "environment": "uv 0.13.8 sync --frozen --all-extras --offline from a hardlinked copy of the retest uv cache"},
+  "run_dir": "experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117 (outside the repository)",
+  "native_fixture": {
+    "container": "ivg-cont-20261117-iris", "hostname": "ivg-cont-iris", "port": "127.0.0.1:36317",
+    "image": "containers.intersystems.com/intersystems/iris-community:2026.1",
+    "label": "g5.unit=g5-iris-continuation-20261117",
+    "password_policy": "scripts/dev/no-expire-passwords.cpf from the pin, mounted read-only as ISC_CPF_MERGE_FILE",
+    "deployed_by": "iteration-36/runtime.py (pin classes compiled; only the three %AI MCP classes skipped)"
+  },
+  "separate_from": ["ivg-retest-20261116-iris and ivg-cloud-20261116-iris (earlier sessions; not started)", "ivg-g5-verus-20261113-iris, ivg-playbook-20261113-audit-iris, ipm-* (neighboring experiments; not touched)"],
+  "start_gate": "check_consolidated PASS at the start commit; member_reach 375/4130 active bindings (matches the handoff)",
+  "private_evaluator_inputs_read": false,
+  "quarantined_inputs_opened": false,
+  "remote_publication": false
+}

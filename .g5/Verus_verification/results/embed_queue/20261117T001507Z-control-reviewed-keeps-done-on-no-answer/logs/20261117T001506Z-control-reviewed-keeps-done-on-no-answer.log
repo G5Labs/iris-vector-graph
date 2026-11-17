@@ -1,0 +1,12 @@
+verification results:: 5 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/reviewed-keeps-done-on-no-answer/20261117T001506Z/models/embed_queue/embed_queue.rs:120:13
+    |
+118 | pub proof fn theorem_reviewed_iris_meets_rule(e: Entry)
+    | ------------------------------------------------------- at the end of the function body
+119 |     requires e.own_model,
+120 |     ensures rule_ok(e, iris_worker_reviewed(e)),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

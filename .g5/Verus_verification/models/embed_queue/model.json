@@ -1,0 +1,64 @@
+{
+  "name": "embed_queue",
+  "root": "embed_queue.rs",
+  "expected_verified": 6,
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "additional_inputs": [],
+  "controls": [
+    {
+      "name": "iris-unanswered-is-error",
+      "find": "        if !answered { done(false) }               // SQLCODE < 0 or no vector: the write is skipped, status DONE",
+      "replace": "        if !answered { error() }",
+      "expect_fail_in": [
+        "theorem_iris_unanswered_marked_done"
+      ],
+      "classification": "decision: an unanswered entry becomes an ERROR (the repair) \u2014 the as-built theorem must notice"
+    },
+    {
+      "name": "iris-default-insert-ok",
+      "find": "pub open spec fn iris_insert_ok(e: Entry) -> bool { e.named_graph && e.width_ok }",
+      "replace": "pub open spec fn iris_insert_ok(e: Entry) -> bool { e.width_ok }",
+      "expect_fail_in": [
+        "theorem_iris_default_graph_never_stores"
+      ],
+      "classification": "provider premise: the default graph's name is accepted by the INSERT"
+    },
+    {
+      "name": "python-done-on-provider-failure",
+      "find": "    else if e.provider == Provider::Fail { error() }",
+      "replace": "    else if e.provider == Provider::Fail { done(false) }",
+      "expect_fail_in": [
+        "theorem_python_worker_meets_rule"
+      ],
+      "classification": "decision: a failed encode is marked DONE"
+    },
+    {
+      "name": "python-skips-identity",
+      "find": "    if !e.own_model { error() }",
+      "replace": "    if false { error() }",
+      "expect_fail_in": [
+        "theorem_python_worker_meets_rule"
+      ],
+      "classification": "decision: an entry for another model is worked"
+    },
+    {
+      "name": "reviewed-keeps-done-on-no-answer",
+      "find": "        if !answered { error() }\n        else if iris_insert_ok_reviewed(e)",
+      "replace": "        if !answered { done(false) }\n        else if iris_insert_ok_reviewed(e)",
+      "expect_fail_in": [
+        "theorem_reviewed_iris_meets_rule"
+      ],
+      "classification": "reviewed design: the repair keeps DONE without a vector"
+    },
+    {
+      "name": "rule-allows-done-without-vector",
+      "find": "    && ((o.status == Status::Done) == o.stored)\n",
+      "replace": "\n",
+      "expect_fail_in": [
+        "theorem_iris_unanswered_marked_done",
+        "theorem_interrupted_mark_breaks_rule"
+      ],
+      "classification": "rule: DONE no longer requires a stored vector"
+    }
+  ]
+}

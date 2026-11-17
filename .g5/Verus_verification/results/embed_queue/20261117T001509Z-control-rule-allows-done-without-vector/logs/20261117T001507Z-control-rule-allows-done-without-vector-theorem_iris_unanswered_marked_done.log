@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/rule-allows-done-without-vector/20261117T001507Z/models/embed_queue/embed_queue.rs:108:9
+    |
+104 | pub proof fn theorem_iris_unanswered_marked_done(e: Entry)
+    | ---------------------------------------------------------- at the end of the function body
+...
+108 |         !rule_ok(e, iris_worker(e)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

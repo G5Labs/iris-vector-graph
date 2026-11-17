@@ -1,0 +1,129 @@
+{
+  "run": "20261117T001118Z",
+  "fixture": "ivg-cont-20261117-iris",
+  "cases": {
+    "start_pending": 0,
+    "Q1_enqueue_python": {
+      "returned": 4,
+      "pending": 4
+    },
+    "Q4_enqueue_other_model": {
+      "returned": 1,
+      "pending": 5
+    },
+    "Q3_Q5_python_worker": {
+      "returned": {
+        "processed": 2,
+        "errors": 3
+      },
+      "pending": 0,
+      "entries": {
+        "w42001118:a": {
+          "reqId": "w42001118:a",
+          "status": "DONE",
+          "error": "",
+          "config": "",
+          "graph": "",
+          "node_id": "w42001118:a"
+        },
+        "w42001118:b": {
+          "reqId": "w42001118:b",
+          "status": "DONE",
+          "error": "",
+          "config": "",
+          "graph": "",
+          "node_id": "w42001118:b"
+        },
+        "w42001118:POISON": {
+          "reqId": "w42001118:POISON",
+          "status": "ERROR",
+          "error": "W42 python fixture embedder refused the text",
+          "config": "",
+          "graph": "",
+          "node_id": "w42001118:POISON"
+        },
+        "w42001118:WIDE": {
+          "reqId": "w42001118:WIDE",
+          "status": "ERROR",
+          "error": "Embedding identity conflict on kg_NodeEmbeddings (the default graph): dimension mismatch: recorded dimension 768 but this writer declares 5. The column declaration is what has to change: IRIS enforces a declared VECTOR width at INSERT (SQLCODE -104), so widening the writer alone cannot work. Migrate the column, or write to a table declared at 5.\n  recorded: model='<unknown>' mechanism='<unknown>' dimension=768 dtype='DOUBLE'\n  offered:  model='<unknown>' mechanism='<unknown>' dimension=5 dtype='",
+          "config": "",
+          "graph": "",
+          "node_id": "w42001118:WIDE"
+        },
+        "w42001118:other": {
+          "reqId": "w42001118:other",
+          "status": "ERROR",
+          "error": "Embedding identity conflict on kg_emb_fac6092a2eed2f9e (the default graph): the queue entry asks for a model this worker does not produce\n  recorded: model='w42-fixture' mechanism='iris-embedding-config' dimension=<undeclared> dtype='DOUBLE'\n  offered:  model='<unknown>' mechanism='<unknown>' dimension=<undeclared> dtype='DOUBLE'",
+          "config": "w42-fixture",
+          "graph": "",
+          "node_id": "w42001118:other"
+        }
+      },
+      "vector_width": {
+        "w42001118:a": 768,
+        "w42001118:b": 768,
+        "w42001118:POISON": null,
+        "w42001118:WIDE": null,
+        "w42001118:other": null
+      }
+    },
+    "R_enqueue_iris": {
+      "returned_cfg": 3,
+      "returned_nocfg": 1,
+      "pending": 4
+    },
+    "R_iris_worker": {
+      "returned": {
+        "processed": 3,
+        "errors": 1
+      },
+      "pending": 0,
+      "entries": {
+        "w42001118:r1": {
+          "reqId": "w42001118:r1",
+          "status": "ERROR",
+          "error": "-108 -108  'graph_id' in table 'Graph_KG.kg_NodeEmbeddings' is a required field",
+          "config": "w42-fixture",
+          "graph": "",
+          "node_id": "w42001118:r1"
+        },
+        "w42001118:rPOISON": {
+          "reqId": "w42001118:rPOISON",
+          "status": "DONE",
+          "error": "",
+          "config": "w42-fixture",
+          "graph": "",
+          "node_id": "w42001118:rPOISON"
+        },
+        "w42001118:rEMPTY": {
+          "reqId": "w42001118:rEMPTY",
+          "status": "DONE",
+          "error": "",
+          "config": "w42-fixture",
+          "graph": "",
+          "node_id": "w42001118:rEMPTY"
+        },
+        "w42001118:rnocfg": {
+          "reqId": "w42001118:rnocfg",
+          "status": "DONE",
+          "error": "",
+          "config": "",
+          "graph": "",
+          "node_id": "w42001118:rnocfg"
+        }
+      },
+      "result_len": {
+        "w42001118:r1": 0,
+        "w42001118:rPOISON": 0,
+        "w42001118:rEMPTY": 0,
+        "w42001118:rnocfg": 0
+      },
+      "vector_width": {
+        "w42001118:r1": null,
+        "w42001118:rPOISON": null,
+        "w42001118:rEMPTY": null,
+        "w42001118:rnocfg": null
+      }
+    }
+  }
+}

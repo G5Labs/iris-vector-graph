@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/runs/iris-vector-graph-g5-verus-20261113/verus/embed_queue/controls/python-done-on-provider-failure/20261117T001505Z/models/embed_queue/embed_queue.rs:92:13
+   |
+90 | pub proof fn theorem_python_worker_meets_rule(e: Entry)
+   | ------------------------------------------------------- at the end of the function body
+91 |     requires e.node_in_graph,
+92 |     ensures rule_ok(e, py_worker(e)),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

@@ -1714,6 +1714,8 @@ Consequence: a model B vector can land in model A's table (read back as A's and 
 
 Repair proposal (not implemented): resolve default-graph entries through the registry like named ones (or refuse them unless the entry's model owns `kg_NodeEmbeddings`), and check the target route at enqueue. Governing statements: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue), [search.embedding.check_on_write](../ontology/features/search.g5.md#search.embedding.check_on_write).
 
+Evidence added (iteration 36, ordinary queue workflow W42; this entry's identity question was not probed): on a fresh 4.7.0 install the IRIS worker's write of any default-graph entry is refused (`graph_id` binds as NULL; [bug-srch-104](#bug-srch-104)), so this entry's IRIS-worker consequence cannot store a vector there today; it would return with that repair. An enqueue naming a model for the default graph was accepted against an undeclared `kg_NodeEmbeddings` ([observation](../uplift/consolidated/iteration-36/embed-queue-observed-20261117T001118Z.json), Q4). Decision and severity unchanged.
+
 
 Audit: [per-ID disposition and sources](audits/register-20261115/reconciliation.json). Security/privacy/boundary-related claim: only the sealed source and existing evidence were reviewed. No vulnerability reproduction or new offensive investigation was constructed or run. Graph scoping is distinguished from the documented namespace authorization boundary.
 
@@ -2778,6 +2780,44 @@ Cause: `neo4j_tx_commit` and `neo4j_query_v2` call `_run_cypher(statement, param
 Consequence: a Neo4j HTTP client gets a silently incomplete answer for any query with more than 1,000 rows; with the query API it cannot even tell from the response. Medium: wrong (incomplete) results with a confirmed trigger on a secondary protocol; Bolt and `/api/cypher` are the documented paths.
 
 Repair proposal (not implemented): return every row on the Neo4j routes (or honour a client limit and say when the answer was cut, as `/api/cypher` could with a total). Preserve `/api/cypher`'s documented `limitRows`. Distinguishing case: 1,000 against 1,001 rows on `/tx/commit`.
+
+<a id="bug-srch-103"></a>
+### The IRIS queue worker marks an entry done when the provider fails or answers nothing
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 36)
+
+Found by: the owner's recorded divergence for `ProcessBatch` (source reading at stage A; no register entry before this one), tested by the frozen W42 prediction Q5, which missed for the IRIS worker ([predictions](../uplift/consolidated/iteration-36/embed-queue-PAIRS.md)); [embed_queue](models/embed_queue/NOTES.md) `theorem_iris_unanswered_marked_done`, control `iris-unanswered-is-error`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, through `start_background_embedding` (the Task Manager task) and through `ProcessBatch` directly ([observation 1](../uplift/consolidated/iteration-36/embed-queue-observed-20261117T001118Z.json), [observation 2](../uplift/consolidated/iteration-36/embed-queue-observed2-20261117T001204Z.json), [binding](results/embed_queue/20261117T001547Z-binding/receipt.json) cases I2-I4, I6, I7). The provider is a fixture-only `%Embedding.Interface` class. When it fails (`SQLCODE -400`) or answers nothing, or the entry names no known config (`-280`), the entry becomes `DONE` with no error, no result and no vector, and leaves the pending count. Passing neighbors: in a named graph a provider answer is stored and the entry is `DONE` (I5); the Python worker turns the same failures into `ERROR` with the reason (P2, P4).
+
+Expected: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue): "An entry whose text cannot be embedded, or whose vector cannot be stored, is marked as an error with the reason, never as done." The class's own comment (`EmbedQueue.cls:321`) says a failed write "is the entry's error, not DONE".
+
+Observed: `ProcessBatch` writes `DONE` after the `Try` whenever `%Execute` reports an `SQLCODE` other than 0 or returns an empty value (`EmbedQueue.cls:308-327`); dynamic SQL reports the provider's failure through `SQLCODE` rather than throwing, so the `Catch` never sees it.
+
+Consequence: a provider outage or a misnamed config turns queued work into finished work with nothing stored and no reason; the task stops because nothing is pending, and only a search for unembedded nodes shows the loss. Medium: silent loss of requested work; the data that exists is not changed.
+
+Repair proposal (not implemented; checked in Verus only): mark the entry `ERROR` with the `SQLCODE` message when the statement fails or answers nothing. `embed_queue.rs::theorem_reviewed_iris_meets_rule` shows the repaired worker meets the owner's rule on every modeled entry (with bug-srch-104's repair); behavior to keep: named-graph success, the refusals before the provider call. Governing statement: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue).
+
+<a id="bug-srch-104"></a>
+### The IRIS queue worker cannot store a default-graph vector
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 36)
+
+Found by: the frozen W42 prediction Q3 for the IRIS worker missed ([predictions](../uplift/consolidated/iteration-36/embed-queue-PAIRS.md)); [embed_queue](models/embed_queue/NOTES.md) `theorem_iris_default_graph_never_stores`, control `iris-default-insert-ok`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, through `start_background_embedding` and through `ProcessBatch` ([observation 1](../uplift/consolidated/iteration-36/embed-queue-observed-20261117T001118Z.json), [observation 2](../uplift/consolidated/iteration-36/embed-queue-observed2-20261117T001204Z.json), [binding](results/embed_queue/20261117T001547Z-binding/receipt.json) case I1). A default-graph node queued with a config whose provider answers a 768-wide vector ends `ERROR` with "-108 'graph_id' in table 'Graph_KG.kg_NodeEmbeddings' is a required field", and `get_embedding` finds nothing. Passing neighbors: the same provider and width in a named graph is stored (I5); the Python worker stores the default-graph vector (P1).
+
+Expected: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue) and the API reference ("Run an IRIS task that works the embedding queue now") promise that queued work is done; the default graph is a graph like any other ([graph scope](../ontology/concepts/graph-scope.g5.md)).
+
+Observed: `enqueue_for_embedding` sends the default graph as `""` (`constants.DEFAULT_GRAPH`), and `ProcessBatch` binds that `""` as the `graph_id` of its INSERT (`EmbedQueue.cls:316-320`). An empty ObjectScript host variable binds as SQL NULL, which the class itself works around in `NodeInGraph` (`COALESCE`, lines 201-206) but not here.
+
+Consequence: on a fresh 4.7.0 install the IRIS worker stores no default-graph vector at all; with bug-srch-103 the only default-graph entries it marks `DONE` are those that got no vector. It also means the IRIS-worker half of [bug-srch-006](#bug-srch-006) (a default-graph entry written to `kg_NodeEmbeddings` whatever its model) cannot store anything on such an install; on an install whose `graph_id` accepts NULL it is unexamined. The product's queue tests run without a provider and check only refusals (`tests/integration/test_embed_queue_process.py:1-5`). Medium: the IRIS worker fails all default-graph work, visibly.
+
+Repair proposal (not implemented; checked in Verus only): bind the default graph as the SQL empty string, which is what the Python store writes (observed: `graph_id` length 0, not NULL; the column is NOT NULL). Same receipt as bug-srch-103. Governing statement: [search.embedding.queue](../ontology/features/search.g5.md#search.embedding.queue).
 
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
