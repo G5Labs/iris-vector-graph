@@ -1,0 +1,811 @@
+{
+  "time": "2026-11-17T15:33:54.657076+00:00",
+  "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "fixture": "ivg-cont-20261117-iris",
+  "entry": "execute_cypher; 126 uses real FastAPI route and database in-process",
+  "native_cypher": false,
+  "cases": {
+    "111_bad": {
+      "query": "MATCH (n:Audit84153353) UNWIND [-1] AS i RETURN n.l[i]",
+      "params": {},
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONARRAYGET+1^Graph.KG.funcJSONARRAYGET.1>]",
+      "types": []
+    },
+    "111_type": {
+      "query": "MATCH (n:Audit84153353) UNWIND [0] AS i RETURN n.l[i]",
+      "params": {},
+      "rows": [
+        [
+          "1"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ]
+      ]
+    },
+    "111_control": {
+      "query": "MATCH (n:Audit84153353) RETURN n.l[-1]",
+      "params": {},
+      "rows": [
+        [
+          3
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int"
+        ]
+      ]
+    },
+    "112_bad": {
+      "query": "MATCH (n:Audit84153353) RETURN reverse(n.l)",
+      "params": {},
+      "rows": [
+        [
+          "]3 ,2 ,1["
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ]
+      ]
+    },
+    "112_control": {
+      "query": "RETURN reverse([1,2,3])",
+      "params": {},
+      "rows": [
+        [
+          [
+            3,
+            2,
+            1
+          ]
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "list"
+        ]
+      ]
+    },
+    "113_bad": {
+      "query": "MATCH (n:Audit84153353) UNWIND ['num'] AS k RETURN n[k]",
+      "params": {},
+      "rows": [
+        [
+          "gotcha"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ]
+      ]
+    },
+    "113_control": {
+      "query": "MATCH (n:Audit84153353) RETURN n['num']",
+      "params": {},
+      "rows": [
+        [
+          5
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int"
+        ]
+      ]
+    },
+    "114_bad": {
+      "query": "UNWIND [1,2,3,4,5] AS i RETURN randomUUID(), rand()",
+      "params": {},
+      "rows": [
+        [
+          "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+          0.96555
+        ],
+        [
+          "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+          0.96555
+        ],
+        [
+          "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+          0.96555
+        ],
+        [
+          "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+          0.96555
+        ],
+        [
+          "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+          0.96555
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str",
+          "float"
+        ],
+        [
+          "str",
+          "float"
+        ],
+        [
+          "str",
+          "float"
+        ],
+        [
+          "str",
+          "float"
+        ],
+        [
+          "str",
+          "float"
+        ]
+      ]
+    },
+    "114_create": {
+      "query": "CREATE (n:Audit84153353Random {u:randomUUID()})",
+      "params": {},
+      "exception": "GraphWriteError: execute_cypher failed, nothing written: <ARGUMENT ERROR> Bad argument given; Details: Unsupported argument type"
+    },
+    "114_control": {
+      "query": "RETURN randomUUID(), rand()",
+      "params": {},
+      "rows": [
+        [
+          "4BC8DADB-E29C-11F1-8929-726DDB04F98E",
+          0.799281
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str",
+          "float"
+        ]
+      ]
+    },
+    "126_index_bad": {
+      "query": "MATCH (n:Audit84153353) UNWIND [null] AS i RETURN n.l[i]",
+      "params": {},
+      "rows": [
+        [
+          "1"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ]
+      ]
+    },
+    "126_index_control": {
+      "query": "MATCH (n:Audit84153353) RETURN n.l[3]",
+      "params": {},
+      "rows": [
+        [
+          null
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "NoneType"
+        ]
+      ]
+    },
+    "115_bad": {
+      "query": "WITH {a:1, b:2.5, c:true, d:[1]} AS m UNWIND ['a','b','c','d'] AS k RETURN k, m[k]",
+      "params": {},
+      "rows": [
+        [
+          "a",
+          "1"
+        ],
+        [
+          "b",
+          "2.5"
+        ],
+        [
+          "c",
+          "1"
+        ],
+        [
+          "d",
+          "[1]"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str",
+          "str"
+        ],
+        [
+          "str",
+          "str"
+        ],
+        [
+          "str",
+          "str"
+        ],
+        [
+          "str",
+          "str"
+        ]
+      ]
+    },
+    "115_control": {
+      "query": "WITH {a:1} AS m RETURN m['missing']",
+      "params": {},
+      "rows": [
+        [
+          null
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "NoneType"
+        ]
+      ]
+    },
+    "116_bad": {
+      "query": "MATCH (n:Audit84153353) RETURN head(n.num)",
+      "params": {},
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_LIST_ELEM failed with error:  SQLCODE=-400,%msg=>]",
+      "types": []
+    },
+    "116_control": {
+      "query": "RETURN head([5])",
+      "params": {},
+      "rows": [
+        [
+          5
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int"
+        ]
+      ]
+    },
+    "122_bad": {
+      "query": "WITH [1,2,3] AS l, 1 AS a RETURN l[a..3]",
+      "params": {},
+      "exception": "CypherParseError: Cypher error at line 1, col 38: Expected IDENTIFIER, got FLOAT_LITERAL"
+    },
+    "122_control": {
+      "query": "WITH [1,2,3] AS l RETURN l[1..3]",
+      "params": {},
+      "rows": [
+        [
+          [
+            2,
+            3
+          ]
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "list"
+        ]
+      ]
+    },
+    "124_bad": {
+      "query": "RETURN left('hello',0), right('hello',0), substring('hello',2,0)",
+      "params": {},
+      "rows": [
+        [
+          null,
+          null,
+          null
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "NoneType",
+          "NoneType",
+          "NoneType"
+        ]
+      ]
+    },
+    "124_control": {
+      "query": "RETURN left('hello',1), right('hello',1), substring('hello',2,1)",
+      "params": {},
+      "rows": [
+        [
+          "h",
+          "o",
+          "l"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str",
+          "str",
+          "str"
+        ]
+      ]
+    },
+    "128_bad": {
+      "query": "MATCH (n:Audit84153353) SET n.l1 = [n.num, 1]",
+      "params": {},
+      "exception": "TypeError: Object of type PropertyReference is not JSON serializable"
+    },
+    "128_read": {
+      "query": "MATCH (n:Audit84153353) RETURN n.l1",
+      "params": {},
+      "rows": [
+        [
+          null
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "NoneType"
+        ]
+      ]
+    },
+    "128_control": {
+      "query": "MATCH (n:Audit84153353) SET n.l1 = [5, 1] RETURN n.l1",
+      "params": {},
+      "rows": [
+        [
+          [
+            5,
+            1
+          ]
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "list"
+        ]
+      ]
+    },
+    "130_bad": {
+      "query": "MATCH (n:Audit84153353) RETURN trim(n.s)",
+      "params": {},
+      "rows": [
+        [
+          "\t a \n"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ]
+      ]
+    },
+    "130_control": {
+      "query": "RETURN trim('  a  ')",
+      "params": {},
+      "rows": [
+        [
+          "a"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ]
+      ]
+    },
+    "130_create": {
+      "query": "CREATE (n:Audit84153353T {s:trim('\\t a \\n')}) RETURN n.s",
+      "params": {},
+      "rows": [
+        [
+          "a"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ]
+      ]
+    },
+    "131_bad": {
+      "query": "UNWIND [1.5] AS s RETURN range(1,3,s)",
+      "params": {},
+      "rows": [
+        [
+          [
+            1,
+            2.5
+          ]
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "list"
+        ]
+      ]
+    },
+    "131_control": {
+      "query": "UNWIND [2] AS s RETURN range(1,5,s)",
+      "params": {},
+      "rows": [
+        [
+          [
+            1,
+            3,
+            5
+          ]
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "list"
+        ]
+      ]
+    },
+    "131_literal": {
+      "query": "RETURN range(1,3,1.5)",
+      "params": {},
+      "exception": "ValueError: range() argument 2 must be an integer, got 'float'"
+    },
+    "relationship_setup": {
+      "query": "MATCH (n:Audit84153353), (b:Audit84153353B) CREATE (n)-[r:AUDIT84153353 {age:'30', v:1}]->(b)",
+      "params": {},
+      "rows": [],
+      "error": null,
+      "types": []
+    },
+    "132_bad": {
+      "query": "MATCH (n:Audit84153353)-[r:AUDIT84153353]->(b) SET r.age = toInteger(r.age)",
+      "params": {},
+      "exception": "SyntaxError: SET r.age = <value>: a relationship's value can read only its own `age`; a SET of a relationship from another property or another variable is not supported"
+    },
+    "132_control": {
+      "query": "MATCH (n:Audit84153353)-[r:AUDIT84153353]->(b) SET r.v = r.v + 1 RETURN r.v",
+      "params": {},
+      "rows": [
+        [
+          2
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int"
+        ]
+      ]
+    },
+    "150_bad": {
+      "query": "MATCH (n:Audit84153353)-[r:AUDIT84153353]->(b) WITH * RETURN type(r)",
+      "params": {},
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'STAGE1.R' not found in the applicable tables^WITH Stage1 AS ( SELECT n0 . node_id AS n , n2 . node_id AS b , e3 . s AS r_s , e3 . p AS r_p , e3 . o_id AS r_o_id , n0 . graph_id AS __g_n , n2 . graph_id AS __g_b FROM Graph_KG . nodes n0 JOIN Graph_KG . rdf_labels l1 ON l1 . s = n0 . node_id AND l1 . graph_id = n0 . graph_id AND l1 . label = :%qpar(1) JOIN Graph_KG . rdf_edges e3 ON e3 . s = n0 . node_id AND e3 . graph_id = n0 . graph_id AND e3 . p = :%qpar(2) JOIN Graph_KG . nodes n2 ON n2 . node_id = e3 . o_id AND n2 . graph_id = e3 . graph_id WHERE l1 . s IS NOT NULL ) SELECT Stage1 . r AS>]",
+      "types": []
+    },
+    "150_control": {
+      "query": "MATCH (n:Audit84153353)-[r:AUDIT84153353]->(b) WITH n, r, b RETURN type(r)",
+      "params": {},
+      "rows": [
+        [
+          "AUDIT84153353"
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ]
+      ]
+    },
+    "151_bad": {
+      "query": "MATCH (n:Audit84153353) WITH *, n.num AS v RETURN v",
+      "params": {},
+      "exception": "CypherParseError: Cypher error at line 1, col 31: Expected EOF, got ,"
+    },
+    "151_control": {
+      "query": "MATCH (n:Audit84153353) WITH n, n.num AS v RETURN v",
+      "params": {},
+      "rows": [
+        [
+          5
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int"
+        ]
+      ]
+    },
+    "152_bad": {
+      "query": "MATCH (n:Audit84153353) FOREACH (x IN [1,2] | SET n.f = x)",
+      "params": {},
+      "exception": "SyntaxError: UndefinedVariable: Variable `x` not defined"
+    },
+    "152_read": {
+      "query": "MATCH (n:Audit84153353) RETURN n.f",
+      "params": {},
+      "rows": [
+        [
+          0
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int"
+        ]
+      ]
+    },
+    "152_control": {
+      "query": "MATCH (n:Audit84153353) FOREACH (x IN [1,2] | SET n.f = 5)",
+      "params": {},
+      "rows": [],
+      "error": null,
+      "types": []
+    },
+    "152_control_read": {
+      "query": "MATCH (n:Audit84153353) RETURN n.f",
+      "params": {},
+      "rows": [
+        [
+          5
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int"
+        ]
+      ]
+    },
+    "157_bad": {
+      "query": "UNWIND [1,2] AS i CALL { WITH i RETURN i*2 AS d } RETURN i,d",
+      "params": {},
+      "rows": [],
+      "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'U0.NODE_ID' not found in the applicable tables^SELECT u0 . i AS i , lat1 . d AS d FROM ( SELECT :%qpar(1) AS i UNION ALL SELECT :%qpar(2) AS i ) u0 CROSS JOIN LATERAL ( SELECT CASE WHEN SUBSTRING ( CAST ( u0 . node_id AS>]",
+      "types": []
+    },
+    "157_control": {
+      "query": "UNWIND [1,2] AS i CALL { RETURN 5 AS d } RETURN i,d",
+      "params": {},
+      "rows": [
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          5
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int",
+          "int"
+        ],
+        [
+          "int",
+          "int"
+        ]
+      ]
+    },
+    "158_bad": {
+      "query": "UNWIND [2,'a',null,1.5,true] AS x RETURN x ORDER BY x",
+      "params": {},
+      "rows": [
+        [
+          1.5
+        ],
+        [
+          true
+        ],
+        [
+          2
+        ],
+        [
+          "a"
+        ],
+        [
+          null
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "float"
+        ],
+        [
+          "bool"
+        ],
+        [
+          "int"
+        ],
+        [
+          "str"
+        ],
+        [
+          "NoneType"
+        ]
+      ]
+    },
+    "158_control": {
+      "query": "UNWIND [2,'a',null,1.5,true] AS x WITH x ORDER BY x RETURN x",
+      "params": {},
+      "rows": [
+        [
+          "a"
+        ],
+        [
+          true
+        ],
+        [
+          1.5
+        ],
+        [
+          2
+        ],
+        [
+          null
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str"
+        ],
+        [
+          "bool"
+        ],
+        [
+          "float"
+        ],
+        [
+          "int"
+        ],
+        [
+          "NoneType"
+        ]
+      ]
+    },
+    "136_sql": {
+      "query": "MATCH (n:Audit84153353G) RETURN n.v, count(*)",
+      "params": {},
+      "rows": [
+        [
+          1,
+          2
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "int",
+          "int"
+        ]
+      ]
+    },
+    "136_native": {
+      "query": "MATCH (n:Audit84153353G) RETURN n.v, count(*)",
+      "params": {},
+      "rows": [
+        [
+          "1",
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "error": null,
+      "types": [
+        [
+          "str",
+          "int"
+        ],
+        [
+          "int",
+          "int"
+        ]
+      ]
+    },
+    "126_bad": {
+      "query": "MATCH (n:Audit84153353) RETURN n",
+      "status": 200,
+      "body": {
+        "results": [
+          {
+            "columns": [
+              "n_id",
+              "n_labels",
+              "n_props"
+            ],
+            "data": [
+              {
+                "row": [
+                  "audit84_153353_a",
+                  "[\"Audit84153353\"]",
+                  "[\"{\\\"key\\\":\\\"num\\\",\\\"value\\\":5}\",\"{\\\"key\\\":\\\"str\\\",\\\"value\\\":\\\"abc\\\"}\",\"{\\\"key\\\":\\\"s\\\",\\\"value\\\":\\\"\\\\t a \\\\n\\\"}\",\"{\\\"key\\\":\\\"f\\\",\\\"value\\\":5}\",\"{\\\"key\\\":\\\"l\\\",\\\"value\\\":[1, 2, 3]}\",\"{\\\"key\\\":\\\"k\\\",\\\"value\\\":\\\"gotcha\\\"}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"audit84_153353_a\\\"}\",\"{\\\"key\\\":\\\"l1\\\",\\\"value\\\":[5, 1]}\"]"
+                ],
+                "meta": [
+                  null,
+                  null,
+                  null
+                ]
+              }
+            ]
+          }
+        ],
+        "errors": []
+      }
+    },
+    "126_control": {
+      "query": "MATCH (n:Audit84153353) RETURN properties(n)",
+      "status": 200,
+      "body": {
+        "results": [
+          {
+            "columns": [
+              "properties(n)"
+            ],
+            "data": [
+              {
+                "row": [
+                  {
+                    "num": 5,
+                    "str": "abc",
+                    "s": "\t a \n",
+                    "f": 5,
+                    "l": [
+                      1,
+                      2,
+                      3
+                    ],
+                    "k": "gotcha",
+                    "id": "audit84_153353_a",
+                    "l1": [
+                      5,
+                      1
+                    ]
+                  }
+                ],
+                "meta": [
+                  {
+                    "id": "audit84_153353_a",
+                    "type": "node"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "errors": []
+      }
+    }
+  }
+}

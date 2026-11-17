@@ -1,0 +1,54 @@
+{
+  "model": "rebuild_reads",
+  "started": "2026-11-17T15:32:37.626477+00:00",
+  "seconds": 18.388578886166215,
+  "exit_code": 0,
+  "receipt": {
+    "all_sensitivities_detected": true,
+    "departures_during_sync": 7190,
+    "during_sync": {
+      "{\"khop\": [\"a\", \"b\", \"c\", \"s\"], \"spl\": -1}": 5,
+      "{\"khop\": [\"a\", \"b\", \"c\", \"s\"], \"spl\": 2}": 74526,
+      "{\"khop\": [\"s\"], \"spl\": -1}": 7182,
+      "{\"khop\": [\"s\"], \"spl\": 2}": 3
+    },
+    "elapsed_s": 18.3,
+    "fixture": "ivg-cont-20261117-iris",
+    "inputs": {
+      ".g5/Verus_verification/models/rebuild_reads/binding.py": "b202487d6ed2d9a39c7bae5177cc67134c109949182707295175ad196663b096",
+      ".g5/Verus_verification/models/rebuild_reads/model.json": "eee6662282789aa57204ea9f48669e7c70c01963be9f7f8007dabef830d8bd14",
+      ".g5/Verus_verification/models/rebuild_reads/rebuild_reads.rs": "ada3300ebb7a9948c29d7efbe9bbb4c32735de07081f5d5fab9252216be5b3d5",
+      "iris_src/src/Graph/KG/Adjacency.cls": "3402d4ba769813d0a2f52c8d62c29d51f7629ff6d11bb89bc752d0ce07a9729e",
+      "iris_src/src/Graph/KG/TraversalBFS.cls": "006ed0f653b3e9f6d2feb524cb01a72c149eb6eb79b2d3536043fbe706b8685e",
+      "iris_src/src/Graph/KG/TraversalBuild.cls": "435dcde64f0e299cd636f45f4b802d846e6829f297be86c80c0ecfdd7a5407b4",
+      "iris_src/src/Graph/KG/TraversalPaths.cls": "599ae64ce9065748ac91896d20fb61ecc72ec1435bd6d58a6b298db241cd2bcf",
+      "iris_vector_graph/_engine/algorithms.py": "e39a9164f19bb67f1c2b0f686a3ac5a01208c1f5c2da15f937820fe6c47853de",
+      "iris_vector_graph/_engine/schema.py": "e10b8cc75335c7426ca7e32ecd52024e02150d3dda178fbb56453cdbd29d1c51",
+      "iris_vector_graph/stores/iris_sql_store.py": "737df8a794a979d2c2e4f3af100508fd05c1907893ec2fa65f2fc440e34ff153"
+    },
+    "judgement": {
+      "agrees": true,
+      "outside_permitted": [],
+      "quiet_ok": true,
+      "seed_alone_witnessed": true
+    },
+    "kind": "binding",
+    "model": "rebuild_reads",
+    "port": 36317,
+    "prefix": "i57r_153237_",
+    "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+    "quiet": {
+      "{\"khop\": [\"a\", \"b\", \"c\", \"s\"], \"spl\": 2}": 40
+    },
+    "reads_during_sync": 81716,
+    "run": "153237",
+    "scope": "Actual engine.khop and IRISGraphStore.shortest_path_length on IRIS 2026.1 (pin 3eaa79cf), USER default graph, declared (functional) adjacency index, while a second process on its own connection runs engine.sync() repeatedly. Only the probe's three edges are interpreted; the rest of USER is rebuilt too. Arno absent.",
+    "seed_alone_reads": 7182,
+    "sensitivities_detected": {
+      "swap": true
+    },
+    "tamper_detected": true,
+    "verdict": "AGREES"
+  },
+  "receipt_source": "/home/ziniu_wu_g5labs_ai/experiments/iris-issue-reproduction-20261117/tree/.g5/Verus_verification/results/rebuild_reads/20261117T153255Z-binding/receipt.json"
+}

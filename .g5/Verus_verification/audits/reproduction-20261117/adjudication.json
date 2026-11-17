@@ -1,0 +1,4463 @@
+{
+  "scope": "84 entries added/reinstated between the frozen 192- and 276-entry registers; not 84 independent root causes.",
+  "product": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "before": "4eb9ea3024e78a8306a3be841b4e375d13d79161",
+  "after": "1a9facfbf0fd67fbfc26047caf89ddc1927fa813",
+  "source": "fc1f5c7dc3ce02206c19cbdf7bcb2f235d0c0b3f",
+  "totals": {
+    "reviewed": 84,
+    "retained": 84,
+    "removed": 0,
+    "e2e": 82,
+    "partial": 2,
+    "severity": {
+      "Medium": 40,
+      "Low": 41,
+      "High": 3
+    }
+  },
+  "unchanged_input_files_checked": 96,
+  "issues": [
+    {
+      "id": "bug-cyp-111",
+      "title": "A list index known only at run time fails the query when it is negative, for a list read from a property or indexed by a parameter, and answers the element as text",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "111_bad": {
+          "query": "MATCH (n:Audit84153353) UNWIND [-1] AS i RETURN n.l[i]",
+          "params": {},
+          "rows": [],
+          "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.JSON_ARRAYGET failed with error:  SQLCODE=-400,%msg=ERROR #5002: ObjectScript error: <RANGE>zJSONARRAYGET+1^Graph.KG.funcJSONARRAYGET.1>]",
+          "types": []
+        },
+        "111_type": {
+          "query": "MATCH (n:Audit84153353) UNWIND [0] AS i RETURN n.l[i]",
+          "params": {},
+          "rows": [
+            [
+              "1"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "111_control": {
+          "query": "MATCH (n:Audit84153353) RETURN n.l[-1]",
+          "params": {},
+          "rows": [
+            [
+              3
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int"
+            ]
+          ]
+        }
+      },
+      "assessment": "A run-time -1 index fails and index 0 returns text; the literal -1 returns integer 3.",
+      "expected": "openCypher (TCK `List1`): a negative index counts from the end, an index past either end is null, and the element keeps its type. The translator already wraps a literal negative index (4.6.0 R267) and a row index into a WITH-held literal list (R308, `CY_LIST_ELEM`).",
+      "severity_basis": "a query that indexes a stored list with a computed or unwound negative index, or any list with a negative parameter, returns nothing and an error; with a non-negative index into a stored list the value comes back as a string. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-112",
+      "title": "reverse() of a list held in a property, a slice, a subscript or a coalesce reverses its JSON text, and of a WITH column from a property answers the JSON text",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "112_bad": {
+          "query": "MATCH (n:Audit84153353) RETURN reverse(n.l)",
+          "params": {},
+          "rows": [
+            [
+              "]3 ,2 ,1["
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "112_control": {
+          "query": "RETURN reverse([1,2,3])",
+          "params": {},
+          "rows": [
+            [
+              [
+                3,
+                2,
+                1
+              ]
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "list"
+            ]
+          ]
+        }
+      },
+      "assessment": "reverse(stored list) reverses its JSON text; the literal list reverses as a list.",
+      "expected": "openCypher: `reverse()` of a list is the list in reverse order; of a string, the reversed string.",
+      "severity_basis": "wrong values for a common list operation on stored data. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-113",
+      "title": "n[k] with a key from UNWIND reads the property named \"k\", so keys(n) then n[k] answers null for every key",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "113_bad": {
+          "query": "MATCH (n:Audit84153353) UNWIND ['num'] AS k RETURN n[k]",
+          "params": {},
+          "rows": [
+            [
+              "gotcha"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "113_control": {
+          "query": "MATCH (n:Audit84153353) RETURN n['num']",
+          "params": {},
+          "rows": [
+            [
+              5
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int"
+            ]
+          ]
+        }
+      },
+      "assessment": "n[k] reads property k (gotcha), not the property named by the value num (5).",
+      "expected": "openCypher: `n[k]` is the property whose name is `k`'s value.",
+      "severity_basis": "dynamic property reads silently answer another property or null. Medium: wrong values with no error.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-114",
+      "title": "randomUUID() and rand() give one value for every row of a query, and a CREATE that uses one is refused",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "114_bad": {
+          "query": "UNWIND [1,2,3,4,5] AS i RETURN randomUUID(), rand()",
+          "params": {},
+          "rows": [
+            [
+              "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+              0.96555
+            ],
+            [
+              "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+              0.96555
+            ],
+            [
+              "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+              0.96555
+            ],
+            [
+              "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+              0.96555
+            ],
+            [
+              "4BBD65B3-E29C-11F1-8929-726DDB04F98E",
+              0.96555
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str",
+              "float"
+            ],
+            [
+              "str",
+              "float"
+            ],
+            [
+              "str",
+              "float"
+            ],
+            [
+              "str",
+              "float"
+            ],
+            [
+              "str",
+              "float"
+            ]
+          ]
+        },
+        "114_create": {
+          "query": "CREATE (n:Audit84153353Random {u:randomUUID()})",
+          "params": {},
+          "exception": "GraphWriteError: execute_cypher failed, nothing written: <ARGUMENT ERROR> Bad argument given; Details: Unsupported argument type"
+        }
+      },
+      "control_cases": {
+        "114_control": {
+          "query": "RETURN randomUUID(), rand()",
+          "params": {},
+          "rows": [
+            [
+              "4BC8DADB-E29C-11F1-8929-726DDB04F98E",
+              0.799281
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str",
+              "float"
+            ]
+          ]
+        }
+      },
+      "assessment": "Five rows receive the same UUID and random number; UUID in CREATE is refused. A scalar RETURN works.",
+      "expected": "openCypher: each call of `randomUUID()` returns a new UUID and `rand()` a new number.",
+      "severity_basis": "generated identifiers repeat across rows of a read, and cannot be generated in a `CREATE` at all. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-115",
+      "title": "A map value read by a key answers numbers and booleans as text",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "115_bad": {
+          "query": "WITH {a:1, b:2.5, c:true, d:[1]} AS m UNWIND ['a','b','c','d'] AS k RETURN k, m[k]",
+          "params": {},
+          "rows": [
+            [
+              "a",
+              "1"
+            ],
+            [
+              "b",
+              "2.5"
+            ],
+            [
+              "c",
+              "1"
+            ],
+            [
+              "d",
+              "[1]"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str",
+              "str"
+            ],
+            [
+              "str",
+              "str"
+            ],
+            [
+              "str",
+              "str"
+            ],
+            [
+              "str",
+              "str"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "115_control": {
+          "query": "WITH {a:1} AS m RETURN m['missing']",
+          "params": {},
+          "rows": [
+            [
+              null
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "NoneType"
+            ]
+          ]
+        }
+      },
+      "assessment": "Dynamic map reads return numbers, boolean and list as strings; a missing key correctly returns null.",
+      "expected": "openCypher: the map's value with its type.",
+      "severity_basis": "comparisons and arithmetic on such values see strings. Low. Governing statement: [query.functions.dynamic_access](../ontology/features/cypher.g5.md#query.functions.dynamic_access).",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-116",
+      "title": "head() of a number fails with an error that does not name TypeError",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "116_bad": {
+          "query": "MATCH (n:Audit84153353) RETURN head(n.num)",
+          "params": {},
+          "rows": [],
+          "error": "<SQL ERROR>; Details: [SQLCODE: <-149>:<SQL Function encountered an error>]\r\n[Location: <ServerLoop - Query Fetch>]\r\n[%msg: <SQL Function GRAPH_KG.CY_LIST_ELEM failed with error:  SQLCODE=-400,%msg=>]",
+          "types": []
+        }
+      },
+      "control_cases": {
+        "116_control": {
+          "query": "RETURN head([5])",
+          "params": {},
+          "rows": [
+            [
+              5
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int"
+            ]
+          ]
+        }
+      },
+      "assessment": "head(number) fails with an empty SQL helper message instead of a named type error; head([5]) works.",
+      "expected": "the 4.6.0 CHANGELOG: a type error on a row fails with IRIS's error text \"which contains the openCypher name\" (`TypeError`), so a caller can test for it with `in`.",
+      "severity_basis": "callers cannot tell a type error from another failure. Low. Governing statement: [query.functions](../ontology/features/cypher.g5.md#query.functions).",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-117",
+      "title": "A negative list-slice bound known only at run time counts as 0",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_exprs.json",
+      "defect_cases": {
+        "slice_row_-3_-1": "empty"
+      },
+      "control_cases": {
+        "slice_literal_-3_-1": [
+          2,
+          4
+        ]
+      },
+      "assessment": "Run-time negative bounds yield an empty slice where equivalent literal bounds select positions 2..4.",
+      "expected": "openCypher (TCK `List2` [6], [8]): a negative bound counts from the end; bounds are clamped to the list.",
+      "severity_basis": "a slice computed from data (`l[-k..]`, `l[..-1]` with a parameter) silently answers the wrong elements. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-118",
+      "title": "A boolean known only at run time cannot be a CASE WHEN or WHERE condition",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_exprs.json",
+      "defect_cases": {
+        "cond_RowVar_true": "prepare_fails",
+        "cond_Param_true": "prepare_fails",
+        "where_RowVar_true": "prepare_fails"
+      },
+      "control_cases": {
+        "cond_Comparison_true": [
+          "branch",
+          true
+        ],
+        "cond_Literal_true": [
+          "branch",
+          true
+        ]
+      },
+      "assessment": "A run-time boolean condition fails SQL preparation; comparing it with true works.",
+      "expected": "openCypher: any boolean expression is a condition; `CASE WHEN b` takes the branch when `b` is true.",
+      "severity_basis": "a query that branches or filters on a computed or passed-in flag fails outright. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-119",
+      "title": "A node CREATE whose map value calls a function IVG does not work out in Python is refused",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_exprs.json",
+      "defect_cases": {
+        "create_node_Size": "refused_nothing_written",
+        "create_node_Abs": "refused_nothing_written"
+      },
+      "control_cases": {
+        "set_node_Size": "written",
+        "create_node_ToUpper": "written"
+      },
+      "assessment": "CREATE refuses supported scalar functions that SET can evaluate; folded functions work.",
+      "expected": "openCypher: a `CREATE` stores each property value its map computes.",
+      "severity_basis": "a node cannot be created with a generated identifier, a size, an absolute value or a parsed number in one statement; the whole write is refused (nothing partial). Medium. bug-cyp-114 named the `randomUUID()` and `rand()` cases; this is their cause.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-120",
+      "title": "A relationship CREATE between new nodes drops every computed or parameter property value without an error",
+      "disposition": "retain",
+      "severity": "High",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_exprs.json",
+      "defect_cases": {
+        "create_rel_Call_Arith": "written_without_property",
+        "create_rel_Param": "written_without_property"
+      },
+      "control_cases": {
+        "create_rel_Lit": "written",
+        "create_rel_matched_Param": "written"
+      },
+      "assessment": "Relationship CREATE succeeds but drops computed or parameter properties; literal properties survive.",
+      "expected": "openCypher: a `CREATE` stores each property value its map computes or binds; where IVG cannot, it refuses (as it does between matched nodes).",
+      "severity_basis": "the write reports success and the property is lost; nothing tells the caller. Drivers send values as parameters, so the ordinary pattern `CREATE (a {id: $a})-[:R {since: $since}]->(b {id: $b})` loses `since`. High (silent data loss on an ordinary `CREATE` pattern).",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-121",
+      "title": "coalesce over row values, literals or parameters answers numbers and booleans as text",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_exprs.json",
+      "defect_cases": {
+        "coalesce_RowVar_ScalarLiteral": "text"
+      },
+      "control_cases": {
+        "coalesce_NodeProp_ScalarLiteral": "int"
+      },
+      "assessment": "coalesce on a row variable returns numeric text; the typed property path returns an integer.",
+      "expected": "openCypher (TCK `Conditional1`): `coalesce` returns its first non-null argument unchanged.",
+      "severity_basis": "a defaulted number or flag arrives as a string, and later comparisons or arithmetic on it follow string rules. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-122",
+      "title": "A list slice whose lower bound is a variable name does not parse",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "122_bad": {
+          "query": "WITH [1,2,3] AS l, 1 AS a RETURN l[a..3]",
+          "params": {},
+          "exception": "CypherParseError: Cypher error at line 1, col 38: Expected IDENTIFIER, got FLOAT_LITERAL"
+        }
+      },
+      "control_cases": {
+        "122_control": {
+          "query": "WITH [1,2,3] AS l RETURN l[1..3]",
+          "params": {},
+          "rows": [
+            [
+              [
+                2,
+                3
+              ]
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "list"
+            ]
+          ]
+        }
+      },
+      "assessment": "A variable immediately before the slice separator fails parsing; a literal bound succeeds through the public API.",
+      "expected": "openCypher: any expression may be a slice bound.",
+      "severity_basis": "the query is refused (fails loudly); a workaround exists (`l[(a)..3]` was not tested; `l[x[0]..3]` works). Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-123",
+      "title": "A negative substring start answers leading characters instead of an error",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_exprs.json",
+      "defect_cases": {
+        "substring_row_-1_2": [
+          "chars",
+          0,
+          1
+        ],
+        "substring_literal_-1_2": [
+          "chars",
+          0,
+          1
+        ]
+      },
+      "control_cases": {
+        "substring_row_1_2": [
+          "chars",
+          1,
+          2
+        ]
+      },
+      "assessment": "Negative substring offsets return characters rather than the documented argument error.",
+      "expected": "the Cypher 9 function reference: a negative start or length raises an error (openCypher's TCK does not pin it).",
+      "severity_basis": "a computed negative offset silently answers a different substring. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-124",
+      "title": "A zero-length left, right or substring answers null instead of the empty string",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "124_bad": {
+          "query": "RETURN left('hello',0), right('hello',0), substring('hello',2,0)",
+          "params": {},
+          "rows": [
+            [
+              null,
+              null,
+              null
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "NoneType",
+              "NoneType",
+              "NoneType"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "124_control": {
+          "query": "RETURN left('hello',1), right('hello',1), substring('hello',2,1)",
+          "params": {},
+          "rows": [
+            [
+              "h",
+              "o",
+              "l"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str",
+              "str",
+              "str"
+            ]
+          ]
+        }
+      },
+      "assessment": "Zero-length string operations return null instead of an empty string; length 1 works.",
+      "expected": "openCypher: an empty result is the empty string, not null.",
+      "severity_basis": "`IS NULL` tests and `coalesce` treat an empty prefix as missing. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-125",
+      "title": "With the driver 5.3.2 an UNWIND of a list parameter fails \"Invalid number of parameters\"",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_answers.json",
+      "defect_cases": {
+        "F_unwind_param_5.3.2": {
+          "expected": "Fail",
+          "name": "F_unwind_param_5.3.2",
+          "observed": "Fail",
+          "section": "F"
+        }
+      },
+      "control_cases": {
+        "F_unwind_with_5.3.2": {
+          "expected": [
+            1,
+            2
+          ],
+          "name": "F_unwind_with_5.3.2",
+          "observed": [
+            1,
+            2
+          ],
+          "section": "F"
+        },
+        "F_unwind_param_5.4.1": {
+          "expected": [
+            1,
+            2
+          ],
+          "name": "F_unwind_param_5.4.1",
+          "observed": [
+            1,
+            2
+          ],
+          "section": "F"
+        }
+      },
+      "assessment": "The locked 5.3.2 driver fails parameter-list UNWIND; WITH indirection and driver 5.4.1 succeed.",
+      "expected": "the README: the TCK passes on Community 2026.1 with drivers 5.4.0 and 5.4.1; `pyproject.toml` accepts `intersystems-iris>=1.0.0`. The iris-sql-quirks guide (item 6) says a `?` inside `JSON_TABLE`'s source is not a parameter.",
+      "severity_basis": "Medium: a real public read pattern fails in the product-lock driver environment. Driver 5.4.1 is a passing control. UNWIND CREATE uses another route and is not shown broken; future driver support policy remains open.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-126",
+      "title": "A null list index known only at run time answers the list's first element instead of null",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "126_index_bad": {
+          "query": "MATCH (n:Audit84153353) UNWIND [null] AS i RETURN n.l[i]",
+          "params": {},
+          "rows": [
+            [
+              "1"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "126_index_control": {
+          "query": "MATCH (n:Audit84153353) RETURN n.l[3]",
+          "params": {},
+          "rows": [
+            [
+              null
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "NoneType"
+            ]
+          ]
+        }
+      },
+      "assessment": "A null list index selects the first element; the out-of-range control correctly yields null.",
+      "expected": "openCypher (TCK `List1`): a null index gives null.",
+      "severity_basis": "a missing index silently selects the first element, so `l[m.idx]` over rows lacking `idx` returns a real-looking value. Medium: wrong value with no error.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-127",
+      "title": "A simple CASE over a property or a row value takes a WHEN of another type when the text matches",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_exprs.json",
+      "defect_cases": {
+        "simple_case_prop_str_when_num": true,
+        "simple_case_prop_num_when_str": true
+      },
+      "control_cases": {
+        "simple_case_literal_str_when_num": false,
+        "simple_case_prop_num_when_num": true
+      },
+      "assessment": "Simple CASE treats stored numeric text as equal to a number; the literal mixed-type comparison does not.",
+      "expected": "openCypher and [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality): a simple CASE takes the first WHEN equal to the test, and `'1'` does not equal 1.",
+      "severity_basis": "a branch chosen on stored or unwound data can be wrong while the equivalent generic `CASE` is right. Medium: wrong value with no error.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-128",
+      "title": "A SET or CREATE of a list literal that holds a property read fails with a raw Python TypeError and writes nothing",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "128_bad": {
+          "query": "MATCH (n:Audit84153353) SET n.l1 = [n.num, 1]",
+          "params": {},
+          "exception": "TypeError: Object of type PropertyReference is not JSON serializable"
+        },
+        "128_read": {
+          "query": "MATCH (n:Audit84153353) RETURN n.l1",
+          "params": {},
+          "rows": [
+            [
+              null
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "NoneType"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "128_control": {
+          "query": "MATCH (n:Audit84153353) SET n.l1 = [5, 1] RETURN n.l1",
+          "params": {},
+          "rows": [
+            [
+              [
+                5,
+                1
+              ]
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "list"
+            ]
+          ]
+        }
+      },
+      "assessment": "A list expression containing a property read raises Python TypeError without writing; a literal list writes and reads back.",
+      "expected": "openCypher: a list literal's elements are evaluated per row and the list is stored; where IVG cannot, a Cypher error naming the property, as the matched-relationship refusal does.",
+      "severity_basis": "an ordinary write is refused with an internal error that names no Cypher concept. Medium (refusal of a valid write; nothing partial).",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-129",
+      "title": "Slicing a null list answers the empty list instead of null",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_exprs.json",
+      "defect_cases": {
+        "null_list_slice_RowVar": "empty",
+        "null_list_slice_Param": "empty"
+      },
+      "control_cases": {
+        "null_list_slice_Literal": "empty"
+      },
+      "assessment": "A null list sliced through a row or parameter path yields an empty list; the literal-null path stays null.",
+      "expected": "openCypher: an operation on null gives null.",
+      "severity_basis": "a missing list reads as empty, so `size(n.missing[0..2])` is 0 instead of null. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-130",
+      "title": "trim() keeps tabs and line breaks in a query's result, while a node CREATE removes them",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "130_bad": {
+          "query": "MATCH (n:Audit84153353) RETURN trim(n.s)",
+          "params": {},
+          "rows": [
+            [
+              "\t a \n"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "130_control": {
+          "query": "RETURN trim('  a  ')",
+          "params": {},
+          "rows": [
+            [
+              "a"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ]
+          ]
+        },
+        "130_create": {
+          "query": "CREATE (n:Audit84153353T {s:trim('\\t a \\n')}) RETURN n.s",
+          "params": {},
+          "rows": [
+            [
+              "a"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ]
+          ]
+        }
+      },
+      "assessment": "RETURN trim keeps tabs and newlines that CREATE trim removes; trimming spaces works.",
+      "expected": "Neo4j's Cypher manual: `trim()` removes leading and trailing whitespace; the same expression gives the same value in `RETURN`, `SET` and `CREATE`.",
+      "severity_basis": "text with tabs or line breaks is compared or stored differently depending on the clause. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-131",
+      "title": "range() with a step known only at run time accepts a fractional step",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "131_bad": {
+          "query": "UNWIND [1.5] AS s RETURN range(1,3,s)",
+          "params": {},
+          "rows": [
+            [
+              [
+                1,
+                2.5
+              ]
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "list"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "131_control": {
+          "query": "UNWIND [2] AS s RETURN range(1,5,s)",
+          "params": {},
+          "rows": [
+            [
+              [
+                1,
+                3,
+                5
+              ]
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "list"
+            ]
+          ]
+        },
+        "131_literal": {
+          "query": "RETURN range(1,3,1.5)",
+          "params": {},
+          "exception": "ValueError: range() argument 2 must be an integer, got 'float'"
+        }
+      },
+      "assessment": "A fractional run-time range step is accepted while the equivalent literal is refused; an integer step works.",
+      "expected": "openCypher: `range()` takes integers; the translator already refuses a literal fractional step.",
+      "severity_basis": "a fractional run-time step yields non-integer elements instead of an error. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-132",
+      "title": "A relationship SET from a function of its own property is refused with a message that says such a read is allowed",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "132_bad": {
+          "query": "MATCH (n:Audit84153353)-[r:AUDIT84153353]->(b) SET r.age = toInteger(r.age)",
+          "params": {},
+          "exception": "SyntaxError: SET r.age = <value>: a relationship's value can read only its own `age`; a SET of a relationship from another property or another variable is not supported"
+        }
+      },
+      "control_cases": {
+        "132_control": {
+          "query": "MATCH (n:Audit84153353)-[r:AUDIT84153353]->(b) SET r.v = r.v + 1 RETURN r.v",
+          "params": {},
+          "rows": [
+            [
+              2
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int"
+            ]
+          ]
+        }
+      },
+      "assessment": "A relationship SET reading its own property through toInteger is refused with a misleading cross-property error; arithmetic on its own property works.",
+      "expected": "either the SET is stored, or the refusal names the actual limit (a function of the property is not supported).",
+      "severity_basis": "a misleading error; the stored value is unchanged. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-133",
+      "title": "With IVG_EDGESCAN=1 every relationship property on a hop from a node named by id reads null",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/sql_procs.json",
+      "defect_cases": {
+        "hop_default_1": [
+          [
+            "y",
+            null
+          ]
+        ],
+        "hop_named_1": [
+          [
+            "b",
+            1.0
+          ],
+          [
+            "d",
+            10.0
+          ]
+        ]
+      },
+      "control_cases": {
+        "hop_default_0": [
+          [
+            "y",
+            3.0
+          ]
+        ],
+        "hop_named_0": [
+          [
+            "b",
+            1.0
+          ],
+          [
+            "d",
+            10.0
+          ]
+        ]
+      },
+      "assessment": "The EDGESCAN route loses relationship properties that the normal route reads.",
+      "expected": "`IVG_EDGESCAN` chooses a plan, \"the plan before 4.3.0\" (ADMIN_GUIDE:1248, API_REFERENCE:3215), and CHANGELOG 4.3.0 reports both plans' answers equal; a plan choice must not change what a query answers ([structure.adjacency.scan](../ontology/features/graph-structure.g5.md#structure.adjacency.scan)).",
+      "severity_basis": "with the variable set, any query reading `r.weight` or another relationship property after such a hop, or filtering on one in `WHERE`, answers null or drops rows. The variable is opt-in and off by default.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-134",
+      "title": "percentileDisc rounds the rank down: p 0.9 over 10, 20, 30, 40 answers 30, not 40",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/percentile.json",
+      "defect_cases": {
+        "unwind:three:0.75": [
+          20.0,
+          25.0
+        ],
+        "unwind:four:0.9": [
+          30.0,
+          37.0
+        ]
+      },
+      "control_cases": {
+        "unwind:three:0": [
+          10.0,
+          10.0
+        ],
+        "unwind:three:1": [
+          30.0,
+          30.0
+        ]
+      },
+      "assessment": "percentileDisc uses floor(p*(n-1)) instead of nearest rank; interior percentiles choose the wrong member while endpoints work.",
+      "expected": "the owner [query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile) (\"the stored value at the nearest rank\", \"as Neo4j does\"); Neo4j's `percentileDisc` \"uses a rounding method and calculates the nearest value to the percentile\" (index ceil(p × n) − 1, so 40 at 0.9 and 30 at 0.6).",
+      "severity_basis": "the answer is never above the nearest-rank value and is one rank below it for many p (0.6 and 0.9 of four values, though not 0.4); for every p in ((n − 1)/n, 1) it is the second-largest value instead of the largest, so high percentiles (p90, p95, p99 of latencies or scores) of small groups are understated. No error is raised.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-135",
+      "title": "A grouping key and count(DISTINCT) treat a stored number and the string spelling it as one value, while RETURN DISTINCT keeps them apart",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_clauses.json",
+      "defect_cases": {
+        "A_Int1_Str1_sql_group": true,
+        "A_Int1_Str1_sql_countd": true
+      },
+      "control_cases": {
+        "A_Int1_Str1_sql_distinct": false,
+        "A_Int1_Int2_sql_group": false
+      },
+      "assessment": "Grouping and count(DISTINCT) merge integer 1 with string 1 although RETURN DISTINCT separates them.",
+      "expected": "[query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) (\"`DISTINCT` removes repeated equal values\") with [equality](../ontology/features/cypher.g5.md#query.values.equality) (\"an integer literal on a node matches only a stored number of that value: the string \"1\" ... do[es] not equal 1\"); openCypher groups and counts distinct by equivalence, so 1 and `'1'` are two groups.",
+      "severity_basis": "a report grouped by a property that holds numbers on some nodes and their spelling on others (an earlier release's Python numbers, imported text) counts them as one group under the number's type, and `count(DISTINCT)` undercounts, with no error. `RETURN DISTINCT` on the same data disagrees with both.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-136",
+      "title": "The SQL path and the native executor group the same stored values differently",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "136_sql": {
+          "query": "MATCH (n:Audit84153353G) RETURN n.v, count(*)",
+          "params": {},
+          "rows": [
+            [
+              1,
+              2
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int",
+              "int"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "136_native": {
+          "query": "MATCH (n:Audit84153353G) RETURN n.v, count(*)",
+          "params": {},
+          "rows": [
+            [
+              "1",
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str",
+              "int"
+            ],
+            [
+              "int",
+              "int"
+            ]
+          ]
+        }
+      },
+      "assessment": "The public SQL engine returns one group and the public native-enabled engine returns two for the same two stored values.",
+      "expected": "[query.native.equal-answers](../ontology/features/cypher.g5.md#query.native.equal-answers): the native executor gives the SQL path's answer. The native grouping is the one that follows openCypher here (1 and 1.0 aside; see the [open question](open_questions.md#query.aggregation.keys.numbers)).",
+      "severity_basis": "the same grouped query answers different groups and counts on the two paths, and changes answer when the planner's choice changes (an `OPTIONAL MATCH`, a parameter `LIMIT` or a native gate sends it to SQL). Repairing [bug-cyp-135](#bug-cyp-135) removes the disagreement.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-137",
+      "title": "Arithmetic over two property aggregates answers a rounded integer: sum(n.v) + sum(n.f) of 3 and 3.5 answers 6",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_clauses.json",
+      "defect_cases": {
+        "B_b13_sumv_plus_sumf": 12
+      },
+      "control_cases": {
+        "B_b13_bare_sumf": 7,
+        "B_b13_sumv_plus_half": 7
+      },
+      "assessment": "Adding property aggregates loses a fractional part through integer rounding; a bare floating sum and literal-half addition preserve it.",
+      "expected": "[query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) (\"with typed numeric inputs, it stays an integer when every contributor is an integer and a float when one is a float\") and openCypher arithmetic (3 + 3.5 = 6.5).",
+      "severity_basis": "totals, ratios and differences of aggregated stored values lose their fraction silently (financial or score reports combining two sums). No error is raised.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-138",
+      "title": "A UNION answers stored property values as their storage text: 1 as \"\\x01N1\", 2.5 as \"\\x01D2.5\", a list as JSON text",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_clauses.json",
+      "defect_cases": {
+        "C_union_stored_int": [
+          "marked_text",
+          1
+        ],
+        "C_dedup_stored_vs_literal_rows": 2
+      },
+      "control_cases": {
+        "C_single_stored_int": [
+          "number",
+          1
+        ],
+        "C_union_bools": [
+          [
+            "bool",
+            true
+          ],
+          [
+            "bool",
+            false
+          ]
+        ]
+      },
+      "assessment": "UNION exposes the stored numeric marker and keeps equal stored/literal values apart; the standalone read decodes correctly.",
+      "expected": "openCypher `UNION` returns each branch's values with their types and removes duplicate rows by equivalence (TCK Union1-3, all over literals); [query.values](../ontology/features/cypher.g5.md#query.values) (a node property read preserves its stored type).",
+      "severity_basis": "any `UNION` over stored data answers wrong-typed values, some of them control-character text, to `execute_cypher`, REST and Bolt clients; duplicate removal keeps equal values apart and merges `1` with `true`. No error is raised.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-139",
+      "title": "SKIP and LIMIT use a string, boolean or whole-float parameter as a count, and call a null parameter \"not provided\"",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_clauses.json",
+      "defect_cases": {
+        "D_str_2": [
+          "rows",
+          2
+        ],
+        "D_bool_true": [
+          "rows",
+          1
+        ],
+        "D_float_2.0": [
+          "rows",
+          2
+        ],
+        "D_null": "NotProvided"
+      },
+      "control_cases": {
+        "D_int_2": [
+          "rows",
+          2
+        ],
+        "D_float_1.5": "InvalidArgumentType"
+      },
+      "assessment": "Pagination accepts text, boolean and whole-float counts; null is reported as missing, while fractional floats are refused.",
+      "expected": "openCypher (TCK ReturnSkipLimit1-2: a floating point parameter fails with InvalidArgumentType; a negative one with NegativeIntegerArgument): `SKIP` and `LIMIT` take a non-negative integer, and a value of another type is an InvalidArgumentType.",
+      "severity_basis": "a client that passes the page size as text or a boolean gets rows instead of an error, and a null page size is reported as a missing parameter. No data is changed.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-140",
+      "title": "A UNION whose branch is a whole-label count fails with SQLCODE -1",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_clauses.json",
+      "defect_cases": {
+        "E_count_union": false,
+        "E_count_union_all": false
+      },
+      "control_cases": {
+        "E_count_alone": true,
+        "E_other_union_all": true
+      },
+      "assessment": "Whole-label count in a UNION fails while the count alone and neighboring union shape work.",
+      "expected": "openCypher allows any branch that returns the same columns (TCK Union1-3).",
+      "severity_basis": "a valid query is refused with a raw SQL error. Workaround: add `WHERE true` or a property to the branch's pattern, which skips the shortcut.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-141",
+      "title": "startNode() and endNode() of a relationship taken from relationships(p) fail with SQLCODE -29",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_clauses.json",
+      "defect_cases": {
+        "F_fixed_StartNode": false,
+        "F_fixed_EndNode": false
+      },
+      "control_cases": {
+        "F_matched_StartNode": true,
+        "F_fixed_Type": true
+      },
+      "assessment": "Endpoint functions fail on a relationship extracted from a path; matched-relationship endpoints and path-element type work.",
+      "expected": "openCypher: `startNode(r)` of any relationship value is its start node; USER_GUIDE shows path functions with comprehensions (`[n IN nodes(p) | n.name]`).",
+      "severity_basis": "a valid path query is refused with a raw SQL error; the element JSON carries no endpoints, so the repair also needs them in the element.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-142",
+      "title": "A WHERE inside OPTIONAL MATCH that combines an earlier variable's property with arithmetic or OR fails the query with SQLCODE -94",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/clause_combos.json",
+      "defect_cases": {
+        "C_earlier_arith": "Refused",
+        "C_or_with_earlier": "Refused"
+      },
+      "control_cases": {
+        "C_or_new_only": "KeptAll",
+        "C_eq_earlier": "KeptAll"
+      },
+      "assessment": "OPTIONAL WHERE with arithmetic or OR reading the earlier alias is refused; adjacent predicate shapes run.",
+      "expected": "[query.optional](../ontology/features/cypher.g5.md#query.optional): the WHERE filters the optional matches and the row stays; openCypher allows any predicate there (TCK `Match`/`OptionalMatch` scenarios use predicates on one side).",
+      "severity_basis": "a valid OPTIONAL MATCH filter fails the whole read with a raw SQL error; `execute_cypher` answers no rows with the error set. Workaround: move the test into a `WITH ... WHERE` after the OPTIONAL MATCH when dropping the null rows is intended, or compute `a.v + 1` in a `WITH` before it.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-143",
+      "title": "A comparison on an earlier variable's property inside an OPTIONAL MATCH WHERE drops the rows of nodes that lack the property",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_clauses.json",
+      "defect_cases": {
+        "H_EqProps_missing": "Dropped"
+      },
+      "control_cases": {
+        "H_EqProps_present": "KeptWithNull",
+        "H_OptOnly_missing": "KeptWithNull"
+      },
+      "assessment": "OPTIONAL WHERE drops an anchor missing the compared property instead of preserving its null optional row.",
+      "expected": "[query.optional](../ontology/features/cypher.g5.md#query.optional) and openCypher: a WHERE inside OPTIONAL MATCH never removes the row; `a3` comes back with `b` null.",
+      "severity_basis": "rows of the outer `MATCH` disappear from an OPTIONAL MATCH report whenever the node lacks a property the optional filter compares, with no error. Repair proposal (not implemented): do not add the guard while translating a WHERE that an OPTIONAL MATCH pushes into its join, or put it into the same ON. Preserve: the guard in a plain MATCH's WHERE (OPT-3 performance), the null row for nodes with the property. The control `opt-guard-in-on` checks the direction in the model only.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-144",
+      "title": "A slice of a list parameter by parameters answers the empty list with IRIS driver 5.4.1 (and fails with 5.3.2)",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_answers.json",
+      "defect_cases": {
+        "F_slice_5.4.1": {
+          "expected": [],
+          "name": "F_slice_5.4.1",
+          "observed": [],
+          "section": "F"
+        },
+        "F_slice_5.3.2": {
+          "expected": "Fail",
+          "name": "F_slice_5.3.2",
+          "observed": "Fail",
+          "section": "F"
+        }
+      },
+      "control_cases": {
+        "F_unwind_param_5.4.1": {
+          "expected": [
+            1,
+            2
+          ],
+          "name": "F_unwind_param_5.4.1",
+          "observed": [
+            1,
+            2
+          ],
+          "section": "F"
+        }
+      },
+      "assessment": "Parameter-bound slicing returns [] on 5.4.1 and fails on 5.3.2; list UNWIND works on 5.4.1.",
+      "expected": "[query.parameters](../ontology/features/cypher.g5.md#query.parameters); openCypher list slicing: `[2, 3]`.",
+      "severity_basis": "a parameterized page of a list parameter answers nothing, with no error, on the driver the TCK uses. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-145",
+      "title": "A string literal or string parameter equals a stored node number that it spells",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_answers.json",
+      "defect_cases": {
+        "G_StrLit1": {
+          "expected": [
+            "i55k_152919_a",
+            "i55k_152919_b"
+          ],
+          "name": "G_StrLit1",
+          "observed": [
+            "i55k_152919_a",
+            "i55k_152919_b"
+          ],
+          "section": "G"
+        },
+        "G_StrParam1": {
+          "expected": [
+            "i55k_152919_a",
+            "i55k_152919_b"
+          ],
+          "name": "G_StrParam1",
+          "observed": [
+            "i55k_152919_a",
+            "i55k_152919_b"
+          ],
+          "section": "G"
+        }
+      },
+      "control_cases": {
+        "G_IntLit1": {
+          "expected": [
+            "i55k_152919_a"
+          ],
+          "name": "G_IntLit1",
+          "observed": [
+            "i55k_152919_a"
+          ],
+          "section": "G"
+        },
+        "G_IntParam1": {
+          "expected": [
+            "i55k_152919_a"
+          ],
+          "name": "G_IntParam1",
+          "observed": [
+            "i55k_152919_a"
+          ],
+          "section": "G"
+        }
+      },
+      "assessment": "A string operand matches a stored number; numeric operands use the stored-type guard.",
+      "expected": "KNOWN_ISSUES (\"A property cannot tell a number from a string that spells it\", 4.7.0): a node filter reads the stored type; openCypher: a string never equals a number. [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality).",
+      "severity_basis": "a filter by a string id or code also returns nodes whose number has the same digits. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-146",
+      "title": "length(p) of a path an OPTIONAL MATCH did not bind answers the pattern's length instead of null",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/cypher_clauses.json",
+      "defect_cases": {
+        "I_fix1_unmatched_len": [
+          1
+        ],
+        "I_fix2_unmatched_len": [
+          2
+        ]
+      },
+      "control_cases": {
+        "I_fix1_matched_len": [
+          1
+        ],
+        "I_fix1_unmatched_nodes": [
+          null
+        ]
+      },
+      "assessment": "An unbound optional path has its pattern length instead of null; nodes(path) correctly returns null.",
+      "expected": "[query.optional](../ontology/features/cypher.g5.md#query.optional) (\"later expressions read them as null\") and openCypher: a path the OPTIONAL MATCH did not bind is null, and `length(null)` is null.",
+      "severity_basis": "a report that counts or filters on `length(p)` after an OPTIONAL MATCH treats rows with no path as paths of full length (for example `WHERE length(p) > 0` keeps every unmatched row, and `sum(length(p))` counts them), silently. Repair proposal (not implemented): for a path bound by an OPTIONAL MATCH, emit `CASE WHEN <the path's first edge alias> IS NULL THEN NULL ELSE h END`, as `nodes(p)` already yields null. Preserve: the constant for a path bound by a plain MATCH (always bound), the variable-length branch, the null-anchor branch. Distinguishing case: the binding's `I_fix1_unmatched_len` against `I_fix1_matched_len`; the control `fixed-length-from-row` checks the direction in the model only.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-147",
+      "title": "percentileDisc over integers answers a float",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/percentile.json",
+      "defect_cases": {
+        "kind:unwind:int": [
+          "float",
+          "float"
+        ],
+        "kind:match:int": [
+          "float",
+          "float",
+          "int"
+        ]
+      },
+      "control_cases": {
+        "kind:unwind:float": [
+          "float",
+          "float"
+        ]
+      },
+      "assessment": "percentileDisc returns float for integer contributors. The neighboring continuous percentile correctly returns float.",
+      "expected": "[query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile): `percentileDisc` answers one of the values, so it keeps their type; Neo4j answers `20` over integers (openCypher TCK `Aggregation6` compares percentileDisc results over integers as integers).",
+      "severity_basis": "a client comparing the answer with a stored integer, or using it as a list index or a `LIMIT`, gets a float. Repair proposal (not implemented): type the percentileDisc column from its argument's static type (int for an integer property), leaving percentileCont FLOAT. Preserve: percentileCont's float, the `NumberOutOfRange` refusal, null for no values; the iteration-55 text-spelling read under driver 5.4.1.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-148",
+      "title": "A percentile p that is not a number: null raises a raw Python TypeError, text and booleans are converted, a literal null answers p = 0",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/percentile.json",
+      "defect_cases": {
+        "p:param_null": "RawTypeError",
+        "p:param_numtext": [
+          "run",
+          20.0
+        ],
+        "p:lit_null": [
+          "run",
+          10.0
+        ]
+      },
+      "control_cases": {
+        "p:param_num": [
+          "run",
+          20.0
+        ],
+        "p:missing": "Undefined"
+      },
+      "assessment": "Null percentile parameters raise raw TypeError, numeric text is accepted, and literal null acts as zero; numeric inputs work.",
+      "expected": "[query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile): `p` is a number from 0 to 1; anything else fails as a Cypher argument error (openCypher does not say whether a null p fails or answers null; both readings reject a raw Python exception and the p = 0 answer).",
+      "severity_basis": "a client passing a null or text percentile gets an untyped Python exception instead of a Cypher error, or a silent answer for a different percentile. Repair proposal (not implemented): accept only an int or float (not bool) parameter and raise `InvalidArgumentType` otherwise; refuse a literal null the same way (or answer null, by the decision on intent). Preserve: numeric parameters and literals, `NumberOutOfRange` for numbers outside 0 to 1, the missing-parameter error.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-149",
+      "title": "Over a list the query holds, a grouping key and count(DISTINCT) merge 1 with true and a list with the string spelling it, while RETURN DISTINCT keeps them apart",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/clause_combos.json",
+      "defect_cases": {
+        "B_int_true_groups": 1,
+        "B_list_spelled_groups": 1,
+        "B_int_true_count_distinct": 1
+      },
+      "control_cases": {
+        "B_int_true_distinct_rows": 2,
+        "B_int_int_groups": 2
+      },
+      "assessment": "Mixed-kind lists merge distinct grouping keys while RETURN DISTINCT separates them.",
+      "expected": "[query.aggregation.keys](../ontology/features/cypher.g5.md#query.aggregation.keys) and [query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) (\"a nested list or map is different from text spelling it\"); openCypher: values of different types are never equivalent.",
+      "severity_basis": "grouped counts over lists mixing booleans with 0/1, or lists with their spellings, merge groups with no error; count(DISTINCT) undercounts and disagrees with RETURN DISTINCT. Low: such lists are uncommon; the stored-value root is the Medium bug-cyp-135.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-150",
+      "title": "WITH * drops a relationship variable: a later type(r) fails with SQLCODE -29 \"Field 'STAGE1.R' not found\"",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "150_bad": {
+          "query": "MATCH (n:Audit84153353)-[r:AUDIT84153353]->(b) WITH * RETURN type(r)",
+          "params": {},
+          "rows": [],
+          "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'STAGE1.R' not found in the applicable tables^WITH Stage1 AS ( SELECT n0 . node_id AS n , n2 . node_id AS b , e3 . s AS r_s , e3 . p AS r_p , e3 . o_id AS r_o_id , n0 . graph_id AS __g_n , n2 . graph_id AS __g_b FROM Graph_KG . nodes n0 JOIN Graph_KG . rdf_labels l1 ON l1 . s = n0 . node_id AND l1 . graph_id = n0 . graph_id AND l1 . label = :%qpar(1) JOIN Graph_KG . rdf_edges e3 ON e3 . s = n0 . node_id AND e3 . graph_id = n0 . graph_id AND e3 . p = :%qpar(2) JOIN Graph_KG . nodes n2 ON n2 . node_id = e3 . o_id AND n2 . graph_id = e3 . graph_id WHERE l1 . s IS NOT NULL ) SELECT Stage1 . r AS>]",
+          "types": []
+        }
+      },
+      "control_cases": {
+        "150_control": {
+          "query": "MATCH (n:Audit84153353)-[r:AUDIT84153353]->(b) WITH n, r, b RETURN type(r)",
+          "params": {},
+          "rows": [
+            [
+              "AUDIT84153353"
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ]
+          ]
+        }
+      },
+      "assessment": "WITH * loses the relationship variable; naming n, r, b explicitly works.",
+      "expected": "openCypher: `WITH *` projects every variable in scope unchanged.",
+      "severity_basis": "the query fails with an error naming an internal stage; no wrong answer. Workaround: list the variables.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-151",
+      "title": "WITH *, a.v AS av does not parse: \"Expected EOF, got ,\"",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "151_bad": {
+          "query": "MATCH (n:Audit84153353) WITH *, n.num AS v RETURN v",
+          "params": {},
+          "exception": "CypherParseError: Cypher error at line 1, col 31: Expected EOF, got ,"
+        }
+      },
+      "control_cases": {
+        "151_control": {
+          "query": "MATCH (n:Audit84153353) WITH n, n.num AS v RETURN v",
+          "params": {},
+          "rows": [
+            [
+              5
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int"
+            ]
+          ]
+        }
+      },
+      "assessment": "WITH *, expression fails parsing while the explicit projection works.",
+      "expected": "the openCypher grammar allows `WITH *, items`.",
+      "severity_basis": "a valid query is refused; no wrong answer.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-152",
+      "title": "FOREACH over a literal list with a SET body that reads the loop variable fails \"UndefinedVariable: x\" and writes nothing",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "152_bad": {
+          "query": "MATCH (n:Audit84153353) FOREACH (x IN [1,2] | SET n.f = x)",
+          "params": {},
+          "exception": "SyntaxError: UndefinedVariable: Variable `x` not defined"
+        },
+        "152_read": {
+          "query": "MATCH (n:Audit84153353) RETURN n.f",
+          "params": {},
+          "rows": [
+            [
+              0
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "152_control": {
+          "query": "MATCH (n:Audit84153353) FOREACH (x IN [1,2] | SET n.f = 5)",
+          "params": {},
+          "rows": [],
+          "error": null,
+          "types": []
+        },
+        "152_control_read": {
+          "query": "MATCH (n:Audit84153353) RETURN n.f",
+          "params": {},
+          "rows": [
+            [
+              5
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int"
+            ]
+          ]
+        }
+      },
+      "assessment": "FOREACH SET cannot resolve its loop variable and leaves f=0; a constant SET body writes f=5.",
+      "expected": "openCypher runs the body per element (n.f = 2); owner [query.writes](../ontology/features/cypher.g5.md#query.writes).",
+      "severity_basis": "the common \"set from each element\" FOREACH is refused and nothing is written.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-155",
+      "title": "A WITH column of coalesce() answers a stored number as its text: WITH coalesce(n.v, n.s) AS x RETURN x gives '3' for 3 and '2.5' for 2.5",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/result_decoders.json",
+      "defect_cases": {
+        "5.3.2_TX_WithCoalesce_int": {
+          "expected": [
+            "Str",
+            "3"
+          ],
+          "name": "5.3.2_TX_WithCoalesce_int",
+          "observed": [
+            "Str",
+            "3"
+          ]
+        },
+        "5.4.1_TX_WithCoalesce_int": {
+          "expected": [
+            "Str",
+            "3"
+          ],
+          "name": "5.4.1_TX_WithCoalesce_int",
+          "observed": [
+            "Str",
+            "3"
+          ]
+        }
+      },
+      "control_cases": {
+        "5.3.2_TX_Prop_int": {
+          "expected": [
+            "Int",
+            3
+          ],
+          "name": "5.3.2_TX_Prop_int",
+          "observed": [
+            "Int",
+            3
+          ]
+        },
+        "5.4.1_TX_Prop_int": {
+          "expected": [
+            "Int",
+            3
+          ],
+          "name": "5.4.1_TX_Prop_int",
+          "observed": [
+            "Int",
+            3
+          ]
+        }
+      },
+      "assessment": "WITH coalesce returns a stored number as text on both tested drivers; the direct property read keeps its type.",
+      "expected": "openCypher: coalesce returns its first non-null argument unchanged. [query.values](../ontology/features/cypher.g5.md#query.values): \"A node property read preserves its stored numeric type\".",
+      "severity_basis": "an ordinary `WITH coalesce(...)` silently returns numbers and booleans as strings on every reader and driver.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-156",
+      "title": "A CASE column answers a stored boolean as 'true', a stored list or map as its JSON text, and, with IRIS driver 5.4.1, a stored number as its text",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/result_decoders.json",
+      "defect_cases": {
+        "5.3.2_TX_RetCase_btrue": {
+          "expected": [
+            "Str",
+            "true"
+          ],
+          "name": "5.3.2_TX_RetCase_btrue",
+          "observed": [
+            "Str",
+            "true"
+          ]
+        },
+        "5.4.1_TX_RetCase_int": {
+          "expected": [
+            "Str",
+            "3"
+          ],
+          "name": "5.4.1_TX_RetCase_int",
+          "observed": [
+            "Str",
+            "3"
+          ]
+        }
+      },
+      "control_cases": {
+        "5.4.1_TX_Prop_int": {
+          "expected": [
+            "Int",
+            3
+          ],
+          "name": "5.4.1_TX_Prop_int",
+          "observed": [
+            "Int",
+            3
+          ]
+        }
+      },
+      "assessment": "CASE returns a stored boolean as text and, on 5.4.1, a number as text; the direct property reader works.",
+      "expected": "openCypher: CASE returns the chosen branch's value with its type. [query.values](../ontology/features/cypher.g5.md#query.values): `CY_TYPED` decides the type rather than the driver's column type.",
+      "severity_basis": "silently wrong types on every reader; numbers are wrong on the current IRIS driver.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-157",
+      "title": "A CALL { } subquery that imports an UNWIND variable fails, as does one that imports a node and has no MATCH of its own",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "157_bad": {
+          "query": "UNWIND [1,2] AS i CALL { WITH i RETURN i*2 AS d } RETURN i,d",
+          "params": {},
+          "rows": [],
+          "error": "<SQL ERROR>; Details: [SQLCODE: <-29>:<Field not found in the applicable tables>]\r\n[Location: <Prepare>]\r\n[%msg: < Field 'U0.NODE_ID' not found in the applicable tables^SELECT u0 . i AS i , lat1 . d AS d FROM ( SELECT :%qpar(1) AS i UNION ALL SELECT :%qpar(2) AS i ) u0 CROSS JOIN LATERAL ( SELECT CASE WHEN SUBSTRING ( CAST ( u0 . node_id AS>]",
+          "types": []
+        }
+      },
+      "control_cases": {
+        "157_control": {
+          "query": "UNWIND [1,2] AS i CALL { RETURN 5 AS d } RETURN i,d",
+          "params": {},
+          "rows": [
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              5
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "int",
+              "int"
+            ],
+            [
+              "int",
+              "int"
+            ]
+          ]
+        }
+      },
+      "assessment": "A CALL subquery importing an UNWIND variable fails with an internal SQL field error; an uncorrelated subquery succeeds.",
+      "expected": "openCypher: a `CALL { }` subquery's importing `WITH` may name any variable in scope, whatever clause bound it; the subquery runs once per incoming row ([query.with](../ontology/features/cypher.g5.md#query.with)).",
+      "severity_basis": "the query fails with an internal SQL error; no wrong answer. Workaround: move the UNWIND or the expression outside the subquery. Low: loud.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-cyp-158",
+      "title": "ORDER BY over a list the query holds sorts booleans among the numbers",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "158_bad": {
+          "query": "UNWIND [2,'a',null,1.5,true] AS x RETURN x ORDER BY x",
+          "params": {},
+          "rows": [
+            [
+              1.5
+            ],
+            [
+              true
+            ],
+            [
+              2
+            ],
+            [
+              "a"
+            ],
+            [
+              null
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "float"
+            ],
+            [
+              "bool"
+            ],
+            [
+              "int"
+            ],
+            [
+              "str"
+            ],
+            [
+              "NoneType"
+            ]
+          ]
+        }
+      },
+      "control_cases": {
+        "158_control": {
+          "query": "UNWIND [2,'a',null,1.5,true] AS x WITH x ORDER BY x RETURN x",
+          "params": {},
+          "rows": [
+            [
+              "a"
+            ],
+            [
+              true
+            ],
+            [
+              1.5
+            ],
+            [
+              2
+            ],
+            [
+              null
+            ]
+          ],
+          "error": null,
+          "types": [
+            [
+              "str"
+            ],
+            [
+              "bool"
+            ],
+            [
+              "float"
+            ],
+            [
+              "int"
+            ],
+            [
+              "NoneType"
+            ]
+          ]
+        }
+      },
+      "assessment": "RETURN ORDER BY mixes booleans with numbers and puts text later; WITH ORDER BY produces the declared type order.",
+      "expected": "[query.values.sorting](../ontology/features/cypher.g5.md#query.values.sorting): strings, then booleans, then numbers, then null last; openCypher orderability.",
+      "severity_basis": "a silent wrong order, only for a list that mixes booleans with numbers; Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-015",
+      "title": "An engine whose schema name differs only in case from the record re-declares empty vector columns unasked and loads the schema classes under its own spelling",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/install_lifecycle.json",
+      "defect_cases": {
+        "B:x_lower_setup": {
+          "ok": {
+            "compiled": true,
+            "failed_classes": [
+              "i56x.LedgerRevision",
+              "i56x.LedgerStats",
+              "i56x.SqlProcs"
+            ],
+            "how": "existing",
+            "manual": [],
+            "other_schemas": [],
+            "routines_created": 58,
+            "routines_failed": [],
+            "schema": "I56X",
+            "tables": 0,
+            "widths": null
+          }
+        },
+        "D:lower16_setup": {
+          "ok": {
+            "compiled": true,
+            "how": "existing",
+            "manual": [],
+            "other_schemas": [],
+            "routines_created": 58,
+            "schema": "I56W",
+            "tables": 0,
+            "widths": null
+          }
+        },
+        "D:after_lower": {
+          "col": {
+            "kg_EdgeEmbeddings": 16,
+            "kg_NodeEmbeddings": 8,
+            "kg_NodeEmbeddings_optimized": 16
+          },
+          "reg": {
+            "kg_EdgeEmbeddings": 8,
+            "kg_NodeEmbeddings": 8,
+            "kg_NodeEmbeddings_optimized": 8
+          }
+        }
+      },
+      "control_cases": {
+        "D:upper16_setup": {
+          "err": "conflict"
+        }
+      },
+      "assessment": "Case-only schema spelling recompiles wrong-case classes and bypasses empty-column width refusal; the original spelling refuses.",
+      "expected": "names that differ only in letter case are the same schema ([install.schema.name](../ontology/concepts/install.g5.md#install.schema.name)), so setup behaves as with the recorded spelling: an empty column at another width is refused without `rewidth=True` (4.7.0, [search.embedding.width](../ontology/features/search.g5.md#search.embedding.width)), the registry width follows the column, and an unchanged class set is not recompiled.",
+      "severity_basis": "a deployment whose configuration spells the schema in another case (`IVG_SCHEMA_PREFIX=rag` for a namespace set up as `RAG`) silently re-declares empty vector columns at its own width, the 4.7.0 hazard the refusal exists for, and leaves registry and column disagreeing, so writes to those tables are refused at either width. Every setup from it also reports three failed classes and recompiles everything. Medium: no stored vector is lost (IRIS refuses the populated ALTER), but the documented refusal is bypassed and the namespace ends inconsistent.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-026",
+      "title": "Setup records an explicitly named schema while IVG's tables sit in one other schema",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/install_lifecycle.json",
+      "defect_cases": {
+        "B:y_explicit_setup": {
+          "ok": {
+            "compiled": true,
+            "how": "explicit",
+            "manual": [],
+            "other_schemas": [
+              "I56X"
+            ],
+            "routines_created": 58,
+            "schema": "I56Y",
+            "tables": 18,
+            "widths": null
+          }
+        },
+        "B:x_call_after_explicit": {
+          "err": "mismatch"
+        }
+      },
+      "control_cases": {
+        "B:x_call": {
+          "ok": 0
+        }
+      },
+      "assessment": "Explicit setup selects another schema and makes the old engine fail. Runtime is confirmed; spec 262 and ADMIN_GUIDE disagree on whether this is allowed.",
+      "expected": "spec 262 FR-009: \"when it is another [schema], the engine MUST be refused with an error naming that schema ... and MUST record nothing\"; an explicit name settles only the several-schema case. ADMIN_GUIDE's reply table (`explicit`: \"named with `schema_prefix=` beside another schema's IVG tables\") and the error's own advice (\"to start a new IVG Schema beside it, name it explicitly\") describe the as-built path: a doc conflict, kept with the spec as the owner does.",
+      "severity_basis": "one setup call with an explicit name abandons the existing tables' schema; the application's engine for it is refused until an operator moves data by hand. Low: deliberate, documented in the guide, reversible only manually.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version.",
+      "intent_qualification": "Runtime reproduced; source documents conflict. Retained as a Low contract/documentation discrepancy, not an owner-approved product-policy decision."
+    },
+    {
+      "id": "bug-plt-113",
+      "title": "kg_PPR_GUIDED_SUBGRAPH lists almost none of the edges among its answered nodes and can answer more nodes than its cap",
+      "disposition": "retain",
+      "severity": "High",
+      "reproduction": "e2e",
+      "evidence": "evidence/retrieval_compose.json",
+      "defect_cases": {
+        "guided": {
+          "3": {
+            "edges": [
+              "a1>a2"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "s"
+            ]
+          },
+          "5": {
+            "edges": [
+              "a1>a2"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "s"
+            ]
+          },
+          "50": {
+            "edges": [
+              "a1>a2",
+              "s>a1",
+              "s>a2",
+              "s>a3",
+              "s>a4",
+              "s>a5",
+              "s>a6"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          },
+          "7": {
+            "edges": [
+              "a1>a2"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          }
+        },
+        "guided_more": {
+          "a3+a4+a5|1|5000": {
+            "edges": [],
+            "nodes": [
+              "a3",
+              "a4",
+              "a5"
+            ]
+          },
+          "s+a3+a4|1|5000": {
+            "edges": [],
+            "nodes": [
+              "a3",
+              "a4",
+              "s"
+            ]
+          },
+          "s|50|3": {
+            "edges": [
+              "a1>a2"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          },
+          "s|50|5000": {
+            "edges": [
+              "a1>a2",
+              "s>a1",
+              "s>a2",
+              "s>a3",
+              "s>a4",
+              "s>a5",
+              "s>a6"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          }
+        }
+      },
+      "control_cases": {
+        "subgraph": {
+          "c1|1|10000": {
+            "edges": [
+              "c1>c2"
+            ],
+            "nodes": [
+              "c1",
+              "c2"
+            ]
+          },
+          "c1|2|2": {
+            "edges": [
+              "c1>c2"
+            ],
+            "nodes": [
+              "c1",
+              "c2"
+            ]
+          },
+          "s+c1|1|4": {
+            "edges": [
+              "c1>c2",
+              "s>a1",
+              "s>a2"
+            ],
+            "nodes": [
+              "a1",
+              "c1",
+              "c2",
+              "s"
+            ]
+          },
+          "s|1|1": {
+            "edges": [
+              "s>a1"
+            ],
+            "nodes": [
+              "s"
+            ]
+          },
+          "s|1|10000": {
+            "edges": [
+              "s>a1",
+              "s>a2",
+              "s>a3",
+              "s>a4",
+              "s>a5",
+              "s>a6"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          },
+          "s|1|3": {
+            "edges": [
+              "s>a1",
+              "s>a2",
+              "s>a3"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "s"
+            ]
+          },
+          "s|2|10000": {
+            "edges": [
+              "a1>a2",
+              "s>a1",
+              "s>a2",
+              "s>a3",
+              "s>a4",
+              "s>a5",
+              "s>a6"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          },
+          "z|1|10000": {
+            "edges": [],
+            "nodes": []
+          }
+        }
+      },
+      "assessment": "Guided subgraphs omit edges among their returned nodes at the cap and can exceed the cap with seeds. Ordinary uncapped expansion exhibits the missing edges.",
+      "expected": "the docstring (`algorithms.py:956-957`): the subgraph of the seeds and the top nodes within `k_hops`, \"capped at `min(max_nodes, ppr_top_k)` nodes\"; the [design note](../../docs/dev/notes/enhancements/001-ppr-guided-subgraph.md) (`top_k` a \"hard node cap\"; acceptance \"`len(result.nodes) <= top_k` always\"); [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph): the edges among the answered nodes. The cap itself is intended.",
+      "severity_basis": "whenever the walk reaches at least `ppr_top_k` nodes (with the default 50, any ordinary graph), the answer is the top nodes with only the out-edges of the alphabetically first one, which may also point outside the answer; with more seeds than the cap the answer is larger than the documented cap. A retrieval caller gets a node list with its relationships missing and no sign of it. High is kept: the method's main output is wrong under its defaults, silently; the cap being intended does not change the edge loss. The over-cap node count alone would be Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-114",
+      "title": "kg_SUBGRAPH misses edges among the outermost nodes and lists an edge to a node it left out when capped",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/retrieval_compose.json",
+      "defect_cases": {
+        "subgraph": {
+          "c1|1|10000": {
+            "edges": [
+              "c1>c2"
+            ],
+            "nodes": [
+              "c1",
+              "c2"
+            ]
+          },
+          "c1|2|2": {
+            "edges": [
+              "c1>c2"
+            ],
+            "nodes": [
+              "c1",
+              "c2"
+            ]
+          },
+          "s+c1|1|4": {
+            "edges": [
+              "c1>c2",
+              "s>a1",
+              "s>a2"
+            ],
+            "nodes": [
+              "a1",
+              "c1",
+              "c2",
+              "s"
+            ]
+          },
+          "s|1|1": {
+            "edges": [
+              "s>a1"
+            ],
+            "nodes": [
+              "s"
+            ]
+          },
+          "s|1|10000": {
+            "edges": [
+              "s>a1",
+              "s>a2",
+              "s>a3",
+              "s>a4",
+              "s>a5",
+              "s>a6"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          },
+          "s|1|3": {
+            "edges": [
+              "s>a1",
+              "s>a2",
+              "s>a3"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "s"
+            ]
+          },
+          "s|2|10000": {
+            "edges": [
+              "a1>a2",
+              "s>a1",
+              "s>a2",
+              "s>a3",
+              "s>a4",
+              "s>a5",
+              "s>a6"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          },
+          "z|1|10000": {
+            "edges": [],
+            "nodes": []
+          }
+        }
+      },
+      "control_cases": {
+        "guided": {
+          "3": {
+            "edges": [
+              "a1>a2"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "s"
+            ]
+          },
+          "5": {
+            "edges": [
+              "a1>a2"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "s"
+            ]
+          },
+          "50": {
+            "edges": [
+              "a1>a2",
+              "s>a1",
+              "s>a2",
+              "s>a3",
+              "s>a4",
+              "s>a5",
+              "s>a6"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          },
+          "7": {
+            "edges": [
+              "a1>a2"
+            ],
+            "nodes": [
+              "a1",
+              "a2",
+              "a3",
+              "a4",
+              "a5",
+              "a6",
+              "s"
+            ]
+          }
+        }
+      },
+      "assessment": "One-hop subgraphs omit outer-node edges; capped results can include an edge to an omitted node. Two-hop expansion exposes the omitted outer edge.",
+      "expected": "[algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph): the nodes within `k_hops`, at most `max_nodes`, and the edges among them.",
+      "severity_basis": "callers that read the edge list (context building, `kg_PPR_GUIDED_SUBGRAPH`) miss relationships among returned nodes and can meet an edge whose end is not in the node list. Medium: visible wrong structure, no stored data changed.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-115",
+      "title": "The status report never counts vectors in routed tables, so a namespace whose vectors are all routed reads \"absent\" and not ready for vector search",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/operator_reports.json",
+      "defect_cases": {
+        "s9_routed_vectors:status": {
+          "edges": 3,
+          "kg_edge_count": 3,
+          "kg_populated": true,
+          "nkg_populated": true,
+          "node_vecs": 0,
+          "nodes": 5,
+          "pending": false,
+          "ready_bfs": true,
+          "ready_ft": false,
+          "ready_multihop": true,
+          "ready_vec": false,
+          "sync_line": "in sync",
+          "vec_state": "absent"
+        }
+      },
+      "control_cases": {
+        "s9:search_g": true,
+        "s10_legacy_vector:status": {
+          "edges": 3,
+          "kg_edge_count": 3,
+          "kg_populated": true,
+          "nkg_populated": true,
+          "node_vecs": 1,
+          "nodes": 5,
+          "pending": false,
+          "ready_bfs": true,
+          "ready_ft": false,
+          "ready_multihop": true,
+          "ready_vec": true,
+          "sync_line": "in sync",
+          "vec_state": "empty"
+        }
+      },
+      "assessment": "Routed vectors search successfully but status reports zero/absent/not-ready; legacy-table vectors are counted.",
+      "expected": "Spec 230 FR-006 and the `_embedding_row_count` docstring: \"Counting one table name reported zero for an install whose vectors are all routed — a number an operator reads as 'the embeddings are gone' while a search over the same rows answers fine.\" The owner [install.status](../ontology/concepts/install.g5.md#install.status) says the totals count each registered table of that kind.",
+      "severity_basis": "an operator reads \"the embeddings are gone\" and not ready, which is the misreport FR-006 was meant to end, while searches on those graphs answer. A deployment that routes every graph (spec 227) always reads `absent`, and a re-embed or restore decided from this report is wasted work. A probe error is never raised, so nothing says the count is partial.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-116",
+      "title": "verify_sync reports drift forever once two graphs hold the same edge; heal=True reports it healed and the next check reports drift again",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/operator_reports.json",
+      "defect_cases": {
+        "s4_shared_triple:verify": {
+          "bool": false,
+          "glob": 2,
+          "in_sync": false,
+          "pending": false,
+          "sql": 3
+        },
+        "s5_after_heal:verify": {
+          "bool": false,
+          "glob": 2,
+          "in_sync": false,
+          "pending": false,
+          "sql": 3
+        },
+        "s6_sync_again:verify": {
+          "bool": false,
+          "glob": 2,
+          "in_sync": false,
+          "pending": false,
+          "sql": 3
+        }
+      },
+      "control_cases": {
+        "s3_put_after_sync:verify": {
+          "bool": true,
+          "glob": 2,
+          "in_sync": true,
+          "pending": false,
+          "sql": 2
+        }
+      },
+      "assessment": "A cross-graph duplicate triple creates permanent reported drift despite heal and sync; a single-graph case is in sync.",
+      "expected": "the `verify_sync` docstring: \"`bool(report)` mirrors `in_sync` for `if not engine.verify_sync(): engine.sync()` usage\". After a sync on a quiet namespace the check should report in sync.",
+      "severity_basis": "the documented `if not verify_sync(): sync()` runs a full rebuild on every check once any two graphs share an edge, which is ordinary for named graphs: 422 s for LDBC SF10 per ADMIN_GUIDE. A monitor alerting on drift never clears, and the heal's own report says the opposite of the next check.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-117",
+      "title": "engine.capabilities says ^KG and ^NKG are not built on a namespace set up before it held edges, whatever sync() does, until setup runs again",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/operator_reports.json",
+      "defect_cases": {
+        "s2_sync:caps_fresh": {
+          "kg_built": false,
+          "nkg_built": false
+        }
+      },
+      "control_cases": {
+        "s15:caps_after_fresh_setup": {
+          "kg_built": true,
+          "nkg_built": true
+        }
+      },
+      "assessment": "Capabilities still say adjacency is absent after sync; another setup corrects the report.",
+      "expected": "API reference and docstring: \"What the namespace has deployed: the Graph.KG classes, `^KG`, `^NKG`.\"",
+      "severity_basis": "a report of what is built that is wrong in the common flow (set up first, load afterwards), plus a slower path for personalized PageRank in every new process until setup is re-run. Low: the answers observed were the same, and the documented re-run of setup after an upgrade clears it.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-118",
+      "title": "The schema diagram draws a relationship whose end has no label as starting or ending at the first label",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/operator_reports.json",
+      "defect_cases": {
+        "s14:viz": {
+          "BL": [
+            0,
+            3
+          ],
+          "R": [
+            0,
+            1
+          ],
+          "UNLAB": [
+            0,
+            0
+          ],
+          "labels": [
+            "A",
+            "B",
+            "D",
+            "Y"
+          ]
+        }
+      },
+      "control_cases": {
+        "s14:viz": {
+          "BL": [
+            0,
+            3
+          ],
+          "R": [
+            0,
+            1
+          ],
+          "UNLAB": [
+            0,
+            0
+          ],
+          "labels": [
+            "A",
+            "B",
+            "D",
+            "Y"
+          ]
+        }
+      },
+      "assessment": "The UNLAB relationship receives endpoint label 0, which is also label A; a normal R edge has the expected label indices.",
+      "expected": "the docstring says a predicate's ends are \"those of one edge's endpoints (0 if none)\". A diagram reader cannot tell \"none\" from the first label, because ids start at 0.",
+      "severity_basis": "Neo4j Browser-style schema views (`/schema` consumers, `db.schema.visualization`) show a relationship attached to an unrelated label. Low: documented in the docstring, and the diagram is sampled anyway.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-119",
+      "title": "A status count that fails reads as zero on /server, /metrics and the readiness flags; only the text report says \"unknown\"",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/operator_reports.json",
+      "defect_cases": {
+        "s19_i53_bnative:status": {
+          "edge_vecs": 0,
+          "edges": 0,
+          "graph_line": null,
+          "kg_populated": true,
+          "labels": 0,
+          "ledger": [
+            3,
+            0,
+            0
+          ],
+          "node_vecs": 0,
+          "nodes": 0,
+          "props": 0,
+          "ready_bfs": false,
+          "ready_edge": false,
+          "ready_ft": false,
+          "ready_multihop": false,
+          "ready_vec": false,
+          "unknown": [
+            "graph",
+            "vector_index"
+          ]
+        },
+        "s19_i53_bnative:readers": {
+          "metrics": {
+            "edges": 0,
+            "embeddings": 0,
+            "nodes": 0
+          },
+          "server": {
+            "edges": 0,
+            "embeddings": 0,
+            "kg": true,
+            "labels": 0,
+            "nodes": 0
+          }
+        }
+      },
+      "control_cases": {
+        "s18_ledger:status": {
+          "edge_vecs": 1,
+          "edges": 6,
+          "graph_line": [
+            13,
+            6
+          ],
+          "kg_populated": true,
+          "labels": 6,
+          "ledger": [
+            3,
+            3,
+            1
+          ],
+          "node_vecs": 1,
+          "nodes": 13,
+          "props": 11,
+          "ready_bfs": true,
+          "ready_edge": true,
+          "ready_ft": false,
+          "ready_multihop": true,
+          "ready_vec": true,
+          "unknown": []
+        }
+      },
+      "assessment": "A real restricted monitoring role gets unknown counts in text but zero counts and false readiness in API readers; privileged reads see the data.",
+      "expected": "ADMIN_GUIDE (`docs/ADMIN_GUIDE.md:950-958`, 4.6.0 R050): where a probe failed the report must say \"unknown\" instead of a value; before 4.6.0 \"it printed `0 nodes` and `in sync` there\", which R050 calls the defect. ADMIN_API says `/server` is \"part of `engine.status()`\" and `/metrics` is \"from `engine.status()`\"; the owner [install.status](../ontology/concepts/install.g5.md#install.status) says failed counts must not read as invented zeros. A readiness flag \"should say whether the operation it names would answer\" ([install.status.readiness](../ontology/concepts/install.g5.md#install.status.readiness)).",
+      "severity_basis": "a Prometheus alert or dashboard reading `ivg_nodes_total 0` sees an emptied graph when only the scraper's role lost a privilege, the pre-4.6.0 misreport R050 removed from the text report. An operator script that gates on `ready_for_bfs` or `ready_for_edge_search` refuses work the namespace can do. A narrow monitoring role is the normal way to give a dashboard read access.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-120",
+      "title": "The ledger line shows \"0 commits · 0 rejections\" when the ledger counters cannot be read, and reports no error",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/operator_reports.json",
+      "defect_cases": {
+        "s19_i53_bnoledger:status": {
+          "edge_vecs": 1,
+          "edges": 6,
+          "graph_line": [
+            13,
+            6
+          ],
+          "kg_populated": true,
+          "labels": 6,
+          "ledger": [
+            3,
+            0,
+            0
+          ],
+          "node_vecs": 1,
+          "nodes": 13,
+          "props": 11,
+          "ready_bfs": true,
+          "ready_edge": true,
+          "ready_ft": false,
+          "ready_multihop": true,
+          "ready_vec": true,
+          "unknown": []
+        }
+      },
+      "control_cases": {
+        "s18_ledger:status": {
+          "edge_vecs": 1,
+          "edges": 6,
+          "graph_line": [
+            13,
+            6
+          ],
+          "kg_populated": true,
+          "labels": 6,
+          "ledger": [
+            3,
+            3,
+            1
+          ],
+          "node_vecs": 1,
+          "nodes": 13,
+          "props": 11,
+          "ready_bfs": true,
+          "ready_edge": true,
+          "ready_ft": false,
+          "ready_multihop": true,
+          "ready_vec": true,
+          "unknown": []
+        },
+        "s18:ledger_stats": [
+          3,
+          3,
+          1
+        ]
+      },
+      "assessment": "A real role lacking ledger counter permission sees a valid head with zero commits/rejections and no error; privileged counters are nonzero.",
+      "expected": "`_ledger_status`'s docstring (`_engine/ledger.py:41-42`): \"a read that fails is reported to `errors` … (4.6.0 R160: both reads were silent)\", and ADMIN_GUIDE's unknown rule for the ledger (`docs/ADMIN_GUIDE.md:950-958`).",
+      "severity_basis": "an operator auditing the ledger reads no rejections where there were some, from a role that may not read the counters. Low: it needs a role split at one table, the head sequence still shows, and the ledger's own history is unaffected.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-121",
+      "title": "A node returned whole over Bolt carries each property longer than 200 characters cut to 200 characters and \"...\", and a long list or map as that cut text",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_answers.json",
+      "defect_cases": {
+        "D3_wire_s201": {
+          "expected": {
+            "kind": "str",
+            "whole": false
+          },
+          "name": "D3_wire_s201",
+          "observed": {
+            "kind": "str",
+            "whole": false
+          },
+          "section": "D3"
+        },
+        "D3_wire_lst": {
+          "expected": {
+            "kind": "str",
+            "whole": false
+          },
+          "name": "D3_wire_lst",
+          "observed": {
+            "kind": "str",
+            "whole": false
+          },
+          "section": "D3"
+        }
+      },
+      "control_cases": {
+        "D3_wire_s200": {
+          "expected": {
+            "kind": "str",
+            "whole": true
+          },
+          "name": "D3_wire_s200",
+          "observed": {
+            "kind": "str",
+            "whole": true
+          },
+          "section": "D3"
+        }
+      },
+      "assessment": "The real Bolt driver receives shortened strings/converted lists as node properties; a 200-character string survives intact.",
+      "expected": "[access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): a Node carries its stored properties (Bolt structure semantics); USER_GUIDE: a list comes back as the list \"through `execute_cypher`, REST and Bolt alike\".",
+      "severity_basis": "a driver application (or a tool such as LangChain or Neo4j Browser) that reads a node's text or list property gets a silently shortened string of another type; the same value read as `n.p` is whole. Medium: silent wrong values at a documented reader.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-122",
+      "title": "Bolt identifies a node by 31 bits of Python's string hash, so two nodes can reach the driver as one, with the second node's properties in both rows",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_answers.json",
+      "defect_cases": {
+        "D1_wire_collision": {
+          "expected": [
+            2,
+            2
+          ],
+          "name": "D1_wire_collision",
+          "observed": [
+            2,
+            2
+          ],
+          "pair": [
+            "i55k_152919_h3009",
+            "i55k_152919_h56318"
+          ],
+          "section": "D1"
+        }
+      },
+      "control_cases": {
+        "D1_wire_distinct": {
+          "expected": [
+            1,
+            2
+          ],
+          "name": "D1_wire_distinct",
+          "observed": [
+            1,
+            2
+          ],
+          "section": "D1"
+        }
+      },
+      "assessment": "Two real node IDs with a found 31-bit hash collision arrive as the same driver node with the second value in both rows; distinct hashes keep both.",
+      "expected": "[access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): each node in a result has its own identity (Bolt: a Node's id and element_id identify it within a transaction).",
+      "severity_basis": "with n nodes in one answer the chance of a merge is about n²/2³²: about 1% at 10,000 nodes. The client then shows one node's labels and properties for another and loses the first; graph views merge them. Ids also change on every server restart. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-123",
+      "title": "Bolt reports a relationship's start and end from the order of the columns around it, not from the stored direction",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_answers.json",
+      "defect_cases": {
+        "D2_wire_bra": {
+          "expected": [
+            1696227020,
+            1786650234
+          ],
+          "name": "D2_wire_bra",
+          "observed": [
+            1696227020,
+            1786650234
+          ],
+          "section": "D2",
+          "stored": [
+            1786650234,
+            1696227020
+          ]
+        },
+        "D2_wire_rev": {
+          "expected": [
+            1696227020,
+            1786650234
+          ],
+          "name": "D2_wire_rev",
+          "observed": [
+            1696227020,
+            1786650234
+          ],
+          "section": "D2",
+          "stored": [
+            1786650234,
+            1696227020
+          ]
+        }
+      },
+      "control_cases": {
+        "D2_wire_abr": {
+          "expected": [
+            1786650234,
+            1696227020
+          ],
+          "name": "D2_wire_abr",
+          "observed": [
+            1786650234,
+            1696227020
+          ],
+          "section": "D2",
+          "stored": [
+            1786650234,
+            1696227020
+          ]
+        }
+      },
+      "assessment": "Reordering RETURN columns reverses the driver's relationship endpoints relative to storage; source-first columns work.",
+      "expected": "[access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): a Relationship carries its own start and end node (Bolt structure semantics; openCypher `startNode(r)`).",
+      "severity_basis": "a driver application that walks relationships by `start_node`/`end_node`, or draws them, gets the direction wrong whenever the query names the end node first, and no endpoint otherwise. Medium.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-124",
+      "title": "Bolt reports every failed query as Neo.ClientError.Statement.SyntaxError, including IRIS errors and driver parameter errors",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_answers.json",
+      "defect_cases": {
+        "C_iris_sql": {
+          "expected": "Neo.ClientError.Statement.SyntaxError",
+          "name": "C_iris_sql",
+          "observed": "Neo.ClientError.Statement.SyntaxError",
+          "section": "C"
+        },
+        "C_driver_param": {
+          "expected": "Neo.ClientError.Statement.SyntaxError",
+          "name": "C_driver_param",
+          "observed": "Neo.ClientError.Statement.SyntaxError",
+          "section": "C"
+        }
+      },
+      "control_cases": {
+        "C_parse": {
+          "expected": "Neo.ClientError.Statement.SyntaxError",
+          "name": "C_parse",
+          "observed": "Neo.ClientError.Statement.SyntaxError",
+          "section": "C"
+        },
+        "C_read_only": {
+          "expected": "Neo.ClientError.Statement.AccessMode",
+          "name": "C_read_only",
+          "observed": "Neo.ClientError.Statement.AccessMode",
+          "section": "C"
+        }
+      },
+      "assessment": "The real Bolt listener calls provider/parameter failures SyntaxError; genuine parse errors and the read-only gate show the neighboring classifications.",
+      "expected": "[access.bolt.errors](../ontology/concepts/access.g5.md#access.bolt.errors): Neo4j status codes classify a failure by cause (a database failure is a DatabaseError or TransientError; a missing parameter is ParameterMissing).",
+      "severity_basis": "a driver's managed transaction never retries a transient database error, and a client cannot tell a bad query from a failed database. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-125",
+      "title": "An integer result past 64 bits ends the Bolt session instead of failing the query, and the engine answers it",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_answers.json",
+      "defect_cases": {
+        "B_wire_overflow": {
+          "engine_value": 9223372036854775810,
+          "expected": "Broken",
+          "name": "B_wire_overflow",
+          "observed": "Broken",
+          "section": "B"
+        }
+      },
+      "control_cases": {
+        "B_wire_9223372036854775807": {
+          "expected": "Records",
+          "name": "B_wire_9223372036854775807",
+          "observed": "Records",
+          "section": "B"
+        }
+      },
+      "assessment": "An oversized integer accepted by the engine breaks the Bolt connection instead of producing FAILURE; int64 maximum arrives.",
+      "expected": "openCypher: integer arithmetic overflows with an error; [access.bolt.results](../ontology/concepts/access.g5.md#access.bolt.results): a failed RUN or PULL is a FAILURE.",
+      "severity_basis": "the client loses its connection and any open transaction; `execute_cypher` returns an approximate number. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-126",
+      "title": "The Neo4j HTTP transaction route answers a whole node as three text columns, not a node",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/targeted-runtime.json",
+      "defect_cases": {
+        "126_bad": {
+          "query": "MATCH (n:Audit84153353) RETURN n",
+          "status": 200,
+          "body": {
+            "results": [
+              {
+                "columns": [
+                  "n_id",
+                  "n_labels",
+                  "n_props"
+                ],
+                "data": [
+                  {
+                    "row": [
+                      "audit84_153353_a",
+                      "[\"Audit84153353\"]",
+                      "[\"{\\\"key\\\":\\\"num\\\",\\\"value\\\":5}\",\"{\\\"key\\\":\\\"str\\\",\\\"value\\\":\\\"abc\\\"}\",\"{\\\"key\\\":\\\"s\\\",\\\"value\\\":\\\"\\\\t a \\\\n\\\"}\",\"{\\\"key\\\":\\\"f\\\",\\\"value\\\":5}\",\"{\\\"key\\\":\\\"l\\\",\\\"value\\\":[1, 2, 3]}\",\"{\\\"key\\\":\\\"k\\\",\\\"value\\\":\\\"gotcha\\\"}\",\"{\\\"key\\\":\\\"id\\\",\\\"value\\\":\\\"audit84_153353_a\\\"}\",\"{\\\"key\\\":\\\"l1\\\",\\\"value\\\":[5, 1]}\"]"
+                    ],
+                    "meta": [
+                      null,
+                      null,
+                      null
+                    ]
+                  }
+                ]
+              }
+            ],
+            "errors": []
+          }
+        }
+      },
+      "control_cases": {
+        "126_control": {
+          "query": "MATCH (n:Audit84153353) RETURN properties(n)",
+          "status": 200,
+          "body": {
+            "results": [
+              {
+                "columns": [
+                  "properties(n)"
+                ],
+                "data": [
+                  {
+                    "row": [
+                      {
+                        "num": 5,
+                        "str": "abc",
+                        "s": "\t a \n",
+                        "f": 5,
+                        "l": [
+                          1,
+                          2,
+                          3
+                        ],
+                        "k": "gotcha",
+                        "id": "audit84_153353_a",
+                        "l1": [
+                          5,
+                          1
+                        ]
+                      }
+                    ],
+                    "meta": [
+                      {
+                        "id": "audit84_153353_a",
+                        "type": "node"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "errors": []
+          }
+        }
+      },
+      "assessment": "The real HTTP transaction route returns one node as three text columns; properties(n) returns a property map with node metadata.",
+      "expected": "the Neo4j HTTP API answers a node as its property map with node `meta`; [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces) (each call does what the engine method does) does not settle which shape a Neo4j route owes.",
+      "severity_basis": "a Neo4j HTTP client gets three columns per node and must parse JSON text. Low.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version.",
+      "intent_qualification": "Neo4j HTTP compatibility discrepancy; the narrower current access.surfaces ontology does not itself settle node response shape."
+    },
+    {
+      "id": "bug-plt-127",
+      "title": "A Bolt rollback keeps the transaction's writes: BEGIN, COMMIT and ROLLBACK do nothing and every statement commits at once",
+      "disposition": "retain",
+      "severity": "High",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_tx.json",
+      "defect_cases": {
+        "D_tx_rollback": {
+          "expected": {
+            "count": 1,
+            "errors": []
+          },
+          "intended": 0,
+          "msgs": [
+            [
+              "Begin"
+            ],
+            [
+              "Run",
+              1,
+              false
+            ],
+            [
+              "Pull"
+            ],
+            [
+              "Rollback"
+            ]
+          ],
+          "name": "D_tx_rollback",
+          "observed": {
+            "count": 1,
+            "errors": []
+          },
+          "section": "D"
+        },
+        "D_fail_then_rollback": {
+          "expected": {
+            "count": 1,
+            "errors": [
+              "CypherSyntaxError"
+            ]
+          },
+          "intended": 0,
+          "msgs": [
+            [
+              "Begin"
+            ],
+            [
+              "Run",
+              1,
+              false
+            ],
+            [
+              "Pull"
+            ],
+            [
+              "Run",
+              1,
+              true
+            ],
+            [
+              "Pull"
+            ],
+            [
+              "Rollback"
+            ],
+            [
+              "Reset"
+            ]
+          ],
+          "name": "D_fail_then_rollback",
+          "observed": {
+            "count": 1,
+            "errors": [
+              "CypherSyntaxError"
+            ]
+          },
+          "section": "D"
+        },
+        "D_execute_write_abort": {
+          "expected": {
+            "count": 1,
+            "errors": [
+              "RuntimeError"
+            ]
+          },
+          "intended": 0,
+          "msgs": [
+            [
+              "Begin"
+            ],
+            [
+              "Run",
+              1,
+              false
+            ],
+            [
+              "Pull"
+            ],
+            [
+              "Rollback"
+            ]
+          ],
+          "name": "D_execute_write_abort",
+          "observed": {
+            "count": 1,
+            "errors": [
+              "RuntimeError"
+            ]
+          },
+          "section": "D"
+        }
+      },
+      "control_cases": {
+        "D_tx_commit": {
+          "expected": {
+            "count": 1,
+            "errors": []
+          },
+          "intended": 1,
+          "msgs": [
+            [
+              "Begin"
+            ],
+            [
+              "Run",
+              1,
+              false
+            ],
+            [
+              "Pull"
+            ],
+            [
+              "Commit"
+            ]
+          ],
+          "name": "D_tx_commit",
+          "observed": {
+            "count": 1,
+            "errors": []
+          },
+          "section": "D"
+        },
+        "R_empty_rollback": {
+          "expected": {
+            "answers": [
+              "S",
+              "S"
+            ],
+            "count": 0
+          },
+          "intended": 0,
+          "msgs": [
+            [
+              "Begin"
+            ],
+            [
+              "Rollback"
+            ]
+          ],
+          "name": "R_empty_rollback",
+          "observed": {
+            "answers": [
+              "S",
+              "S"
+            ],
+            "count": 0
+          },
+          "section": "R"
+        }
+      },
+      "assessment": "A real neo4j-driver rollback/aborted transaction leaves writes visible on another connection; commit and empty rollback are controls.",
+      "expected": "[access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions): an explicit transaction keeps its writes only if it commits; ROLLBACK, a failed statement, RESET or a closed connection must leave none of them, or the server must refuse BEGIN so the client knows each statement commits on its own (Bolt message specification: BEGIN/COMMIT/ROLLBACK; README: \"a neo4j-driver compatible server\"; the engine's own contract, USER_GUIDE: a caller's rollback removes IVG's writes). Which of the two repairs IVG adopts is the open question [access.transactions](open_questions.md#access.transactions); both make this outcome impossible.",
+      "severity_basis": "a Neo4j application that relies on a transaction to undo its work keeps partial or unwanted writes, and every signal it gets says the rollback succeeded: a unit of work that fails halfway leaves its first half, and a retry of that unit (the driver's own `execute_write` pattern, or the application's) writes it again. The damage is silent, persisted and on the driver's standard API. High: the same class as [bug-tmp-003](#bug-tmp-003) (a rolled-back write leaves effects), here for every write a Bolt transaction makes.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-133",
+      "title": "An unrecorded namespace whose IVG Schema holds this release's SQL objects admits engines",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/install_lifecycle.json",
+      "defect_cases": {
+        "A:norecord_marker_call": {
+          "ok": 0
+        }
+      },
+      "control_cases": {
+        "A:norecord_nomarker_call": {
+          "err": "unfinished"
+        }
+      },
+      "assessment": "An unrecorded namespace with SQL markers admits an engine; removing markers causes the expected refusal. Documentation and ontology disagree on the conjunction.",
+      "expected": "[install.schema.not_ready](../ontology/concepts/install.g5.md#install.schema.not_ready): an engine on a namespace with no schema record, or without the current release's SQL objects, raises one error on first access. ADMIN_GUIDE describes the as-built rule (\"no record and lacks 4.6.0's SQL objects\").",
+      "severity_basis": "an engine runs on a namespace whose last setup stopped after its DDL (grants, Arno revocation, ledger history and the record not yet done), or whose objects were partly dropped; failures surface later as SQL errors (KNOWN_ISSUES: edge writes fail where `Graph.KG.EdgeScan` is missing). Low: documented, and the next setup repairs it.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version.",
+      "intent_qualification": "Runtime reproduced; source documents conflict. Retained as a Low contract/documentation discrepancy, not an owner-approved product-policy decision."
+    },
+    {
+      "id": "bug-plt-134",
+      "title": "A populated vector table at another width beside empty ones blocks setup both ways, and the manual-migration reply never comes",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/install_lifecycle.json",
+      "defect_cases": {
+        "W:e8_setup_populated": {
+          "err": "conflict"
+        },
+        "W:e8_rewidth_populated": {
+          "err": "conflict"
+        }
+      },
+      "control_cases": {
+        "W:e16_rewidth": {
+          "ok": {
+            "compiled": false,
+            "how": "existing",
+            "manual": [],
+            "other_schemas": [],
+            "routines_created": 0,
+            "schema": "Graph_KG",
+            "tables": 0,
+            "widths": null
+          }
+        }
+      },
+      "assessment": "Both setup modes refuse a mixed-width populated/empty layout without the documented manual-migration reply; an all-empty rewidth works.",
+      "expected": "ADMIN_GUIDE §11: \"plain `initialize_schema()` names the table in `status[\"needs_manual_migration\"]`, with a matching entry in `status[\"warnings\"]`\"; the dry run's own lists predict that reply.",
+      "severity_basis": "the documented reply and warning never appear for the usual layout (node vectors stored, edge table empty); the operator gets a refusal naming the empty tables and, after `rewidth=True`, one naming the populated table. The documented remedy (delete the vectors, then `rewidth=True`) still works. Low: safe, misleading.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-135",
+      "title": "An OPTIONAL MATCH node with no match answers labels '[]' and properties '[]' at execute_cypher, /api/cypher and tx/commit",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/result_decoders.json",
+      "defect_cases": {
+        "5.3.2_TX_Opt_labels": {
+          "expected": [
+            "Str",
+            "[]"
+          ],
+          "name": "5.3.2_TX_Opt_labels",
+          "observed": [
+            "Str",
+            "[]"
+          ]
+        },
+        "5.4.1_TX_Opt_labels": {
+          "expected": [
+            "Str",
+            "[]"
+          ],
+          "name": "5.4.1_TX_Opt_labels",
+          "observed": [
+            "Str",
+            "[]"
+          ]
+        }
+      },
+      "control_cases": {
+        "5.3.2_TX_Prop_absent": {
+          "expected": [
+            "Null"
+          ],
+          "name": "5.3.2_TX_Prop_absent",
+          "observed": [
+            "Null"
+          ]
+        }
+      },
+      "assessment": "The HTTP reader exposes empty-list text for an unbound optional node; the missing scalar property correctly stays null.",
+      "expected": "[query.optional](../ontology/features/cypher.g5.md#query.optional): the pattern's new variables are null.",
+      "severity_basis": "a caller that tests `b_labels` or `b_props` instead of `b_id` sees a node with no labels where there is no match.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-plt-136",
+      "title": "A Neo4j HTTP `tx/commit` request keeps the writes of its successful statements when another statement fails, and runs the statements after the failure",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/bolt_tx.json",
+      "defect_cases": {
+        "H_fail_middle": {
+          "error_codes": [
+            "Neo.ClientError.Statement.SyntaxError"
+          ],
+          "expected": {
+            "count": 2,
+            "errors": 1,
+            "results": 2,
+            "status": 400
+          },
+          "intended": 0,
+          "msgs": [
+            [
+              "W",
+              1
+            ],
+            [
+              "B"
+            ],
+            [
+              "W",
+              1
+            ]
+          ],
+          "name": "H_fail_middle",
+          "observed": {
+            "count": 2,
+            "errors": 1,
+            "results": 2,
+            "status": 400
+          },
+          "read_only": false,
+          "section": "H"
+        },
+        "H_fail_first": {
+          "error_codes": [
+            "Neo.ClientError.Statement.SyntaxError"
+          ],
+          "expected": {
+            "count": 1,
+            "errors": 1,
+            "results": 1,
+            "status": 400
+          },
+          "intended": 0,
+          "msgs": [
+            [
+              "B"
+            ],
+            [
+              "W",
+              1
+            ]
+          ],
+          "name": "H_fail_first",
+          "observed": {
+            "count": 1,
+            "errors": 1,
+            "results": 1,
+            "status": 400
+          },
+          "read_only": false,
+          "section": "H"
+        },
+        "H_fail_last": {
+          "error_codes": [
+            "Neo.ClientError.Statement.SyntaxError"
+          ],
+          "expected": {
+            "count": 1,
+            "errors": 1,
+            "results": 1,
+            "status": 400
+          },
+          "intended": 0,
+          "msgs": [
+            [
+              "W",
+              1
+            ],
+            [
+              "B"
+            ]
+          ],
+          "name": "H_fail_last",
+          "observed": {
+            "count": 1,
+            "errors": 1,
+            "results": 1,
+            "status": 400
+          },
+          "read_only": false,
+          "section": "H"
+        }
+      },
+      "control_cases": {
+        "H_all_ok": {
+          "error_codes": [],
+          "expected": {
+            "count": 2,
+            "errors": 0,
+            "results": 2,
+            "status": 200
+          },
+          "intended": 2,
+          "msgs": [
+            [
+              "W",
+              1
+            ],
+            [
+              "W",
+              1
+            ]
+          ],
+          "name": "H_all_ok",
+          "observed": {
+            "count": 2,
+            "errors": 0,
+            "results": 2,
+            "status": 200
+          },
+          "read_only": false,
+          "section": "H"
+        },
+        "H_read_only_write": {
+          "error_codes": [
+            "Neo.ClientError.Statement.AccessMode"
+          ],
+          "expected": {
+            "count": 0,
+            "errors": 1,
+            "results": 0,
+            "status": 403
+          },
+          "intended": 0,
+          "msgs": [
+            [
+              "W",
+              1
+            ],
+            [
+              "R"
+            ]
+          ],
+          "name": "H_read_only_write",
+          "observed": {
+            "count": 0,
+            "errors": 1,
+            "results": 0,
+            "status": 403
+          },
+          "read_only": true,
+          "section": "H"
+        }
+      },
+      "assessment": "An HTTP batch with a failed statement commits successful writes and continues after failure; the read-only gate correctly prevents all writes.",
+      "expected": "[access.http_transactions](../ontology/concepts/access.g5.md#access.http_transactions): one `tx/commit` request is one transaction that keeps its writes only if every statement succeeds; a server that cannot do this must refuse a request it could commit only in part. Sources: the route's own name (`/db/neo4j/tx/commit`, Neo4j's HTTP route that opens and commits a transaction in one request); ADMIN_API's Neo4j HTTP routes and its read-only rule, which already treats the request as one unit (\"runs none of its statements\"); the same rule the product's Bolt surface owns ([access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions)), which `theorem_http_rule_is_bolt_rule` derives the batch rule from (BEGIN, the statements, COMMIT). Neo4j's HTTP API documentation is not quoted: fetching it was denied in this session, as in the review's (limitation); the rule above rests on the product's own documents and its Bolt rule. Which repair (one transaction, or refusing multi-statement requests) is the open question [access.transactions](open_questions.md#access.transactions).",
+      "severity_basis": "a client that sends a multi-statement request as one unit of work and gets 400 back cannot tell that the statements before and after the failure were committed; a retry of the request writes them again. Medium rather than High (unlike [bug-plt-127](#bug-plt-127)): the persisted partial write is the same class, but the client is told that the request failed (status 400 and an `errors` entry), so it is not silent; the departure needs a request that mixes a failing statement with writes.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-srch-109",
+      "title": "An IVF index built with metric \"cosine\" ranks by the raw dot product, so a long vector outranks a perfectly aligned one",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/ivf_entries.json",
+      "defect_cases": {
+        "cosine_ivf_search": {
+          "order": [
+            "long_off",
+            "unit_on",
+            "other"
+          ],
+          "scores": {
+            "long_off": 6.0,
+            "other": 0.0,
+            "unit_on": 1.0
+          }
+        },
+        "cosine_kg_IVF": {
+          "order": [
+            "long_off",
+            "unit_on",
+            "other"
+          ],
+          "scores": {
+            "long_off": 6.0,
+            "other": 0.0,
+            "unit_on": 1.0
+          }
+        }
+      },
+      "control_cases": {
+        "cell_cosine": {
+          "build_cell": [
+            0
+          ],
+          "cells_after": [
+            0,
+            1
+          ],
+          "indexed_delta": 1,
+          "insert_cell": 1
+        }
+      },
+      "assessment": "Both public IVF readers rank the longer nonunit vector ahead of the aligned vector under metric cosine; cell assignment is checked separately.",
+      "expected": "the metric's name and default (`ivf_build(metric=\"cosine\")`, reported back by `ivf_info`); `_IVF_METRICS` accepts \"cosine\" and \"dot\" as different choices; the route search ranks by cosine, and `VecIndex` was changed in 4.7.0 so that a cosine index scores the cosine.",
+      "severity_basis": "with stored vectors that are not unit length (`store_embedding` accepts any), a cosine IVF index returns a different top k from the route search on the same data, through both the Python and the SQL reader. Unit-length embeddings, which most providers return, are unaffected. Medium: wrong ranking under a confirmed but data-dependent trigger.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-srch-110",
+      "title": "The engine's fusion reads a cosine IVF index only in the process that built it, so the same call ranks differently elsewhere",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/retrieval_compose.json",
+      "defect_cases": {
+        "engine_fuse_building": {
+          "L": 0.021948998,
+          "n00": 0.032266458,
+          "n01": 0.031754032,
+          "n02": 0.031257631,
+          "n03": 0.030776515,
+          "n04": 0.030309989,
+          "n05": 0.029857398,
+          "n06": 0.029418127,
+          "n07": 0.028991597,
+          "n08": 0.028577261,
+          "n09": 0.028174603,
+          "n10": 0.027783137,
+          "n11": 0.027402402,
+          "n12": 0.027031963,
+          "n13": 0.026671408,
+          "n14": 0.026320346,
+          "n15": 0.025978408,
+          "n16": 0.025645241,
+          "n17": 0.025320513,
+          "n18": 0.025003907,
+          "n19": 0.024695122,
+          "n20": 0.024393872,
+          "n21": 0.024099884,
+          "n22": 0.023812899,
+          "n23": 0.023532669,
+          "n24": 0.023258959,
+          "n25": 0.022991543,
+          "n26": 0.022730208,
+          "n27": 0.022474747,
+          "n28": 0.022224966,
+          "n29": 0.021980676,
+          "n30": 0.021741699,
+          "n31": 0.021507863,
+          "n32": 0.021279004,
+          "n33": 0.021054965,
+          "n34": 0.020835594,
+          "n35": 0.020620748,
+          "n36": 0.020410288,
+          "n37": 0.020204082,
+          "n38": 0.020002,
+          "n39": 0.019803922,
+          "n40": 0.019609728,
+          "n41": 0.019419306,
+          "n42": 0.019232547,
+          "n43": 0.019049347,
+          "n44": 0.018869604,
+          "n45": 0.018693222,
+          "n46": 0.018520106,
+          "n47": 0.018350168,
+          "n48": 0.018183321,
+          "n49": 0.018019481,
+          "n50": 0.017858567,
+          "n51": 0.017700501,
+          "n52": 0.01754521,
+          "n53": 0.017392619,
+          "n54": 0.017242661,
+          "n55": 0.017095266,
+          "n56": 0.01695037,
+          "n57": 0.01680791,
+          "n58": 0.016667824,
+          "n59": 0.016530055,
+          "x": 0.021684588
+        },
+        "engine_fuse_fresh": {
+          "L": 0.01490135,
+          "n00": 0.032522475,
+          "n01": 0.032002048,
+          "n02": 0.031498016,
+          "n03": 0.031009615,
+          "n04": 0.030536131,
+          "n05": 0.030076888,
+          "n06": 0.029631255,
+          "n07": 0.029198636,
+          "n08": 0.028778468,
+          "n09": 0.028370221,
+          "n10": 0.027973396,
+          "n11": 0.027587519,
+          "n12": 0.027212144,
+          "n13": 0.026846847,
+          "n14": 0.026491228,
+          "n15": 0.026144908,
+          "n16": 0.025807526,
+          "n17": 0.025478741,
+          "n18": 0.025158228,
+          "n19": 0.024845679,
+          "n20": 0.024540801,
+          "n21": 0.024243315,
+          "n22": 0.023952955,
+          "n23": 0.023669468,
+          "n24": 0.023392613,
+          "n25": 0.02312216,
+          "n26": 0.022857889,
+          "n27": 0.022599591,
+          "n28": 0.022347066,
+          "n29": 0.022100122,
+          "n30": 0.021858576,
+          "n31": 0.021622253,
+          "n32": 0.021390986,
+          "n33": 0.021164614,
+          "n34": 0.020942982,
+          "n35": 0.020725945,
+          "n36": 0.02051336,
+          "n37": 0.020305092,
+          "n38": 0.02010101,
+          "n39": 0.01990099,
+          "n40": 0.019704912,
+          "n41": 0.019512659,
+          "n42": 0.019324122,
+          "n43": 0.019139194,
+          "n44": 0.018957772,
+          "n45": 0.018693222,
+          "n46": 0.018520106,
+          "n47": 0.018350168,
+          "n48": 0.018183321,
+          "n49": 0.018019481,
+          "n50": 0.017858567,
+          "n51": 0.017700501,
+          "n52": 0.01754521,
+          "n53": 0.017392619,
+          "n54": 0.017242661,
+          "n55": 0.017095266,
+          "n56": 0.01695037,
+          "n57": 0.01680791,
+          "n58": 0.016667824,
+          "n59": 0.016530055,
+          "x": 0.021948998
+        },
+        "choice_building": "ivf",
+        "choice_fresh": "hnsw"
+      },
+      "control_cases": {
+        "ops_fuse_fresh": {
+          "L": 0.01490135,
+          "n00": 0.032522475,
+          "n01": 0.032002048,
+          "n02": 0.031498016,
+          "n03": 0.031009615,
+          "n04": 0.030536131,
+          "n05": 0.030076888,
+          "n06": 0.029631255,
+          "n07": 0.029198636,
+          "n08": 0.028778468,
+          "n09": 0.028370221,
+          "n10": 0.027973396,
+          "n11": 0.027587519,
+          "n12": 0.027212144,
+          "n13": 0.026846847,
+          "n14": 0.026491228,
+          "n15": 0.026144908,
+          "n16": 0.025807526,
+          "n17": 0.025478741,
+          "n18": 0.025158228,
+          "n19": 0.024845679,
+          "n20": 0.024540801,
+          "n21": 0.024243315,
+          "n22": 0.023952955,
+          "n23": 0.023669468,
+          "n24": 0.023392613,
+          "n25": 0.02312216,
+          "n26": 0.022857889,
+          "n27": 0.022599591,
+          "n28": 0.022347066,
+          "n29": 0.022100122,
+          "n30": 0.021858576,
+          "n31": 0.021622253,
+          "n32": 0.021390986,
+          "n33": 0.021164614,
+          "n34": 0.020942982,
+          "n35": 0.020725945,
+          "n36": 0.02051336,
+          "n37": 0.020305092,
+          "n38": 0.02010101,
+          "n39": 0.01990099,
+          "n40": 0.019704912,
+          "n41": 0.019512659,
+          "n42": 0.019324122,
+          "n43": 0.019139194,
+          "n44": 0.018957772,
+          "n45": 0.018693222,
+          "n46": 0.018520106,
+          "n47": 0.018350168,
+          "n48": 0.018183321,
+          "n49": 0.018019481,
+          "n50": 0.017858567,
+          "n51": 0.017700501,
+          "n52": 0.01754521,
+          "n53": 0.017392619,
+          "n54": 0.017242661,
+          "n55": 0.017095266,
+          "n56": 0.01695037,
+          "n57": 0.01680791,
+          "n58": 0.016667824,
+          "n59": 0.016530055,
+          "x": 0.021948998
+        }
+      },
+      "assessment": "Building and fresh engines select different vector legs and fusion scores over the same data. The observed trigger is engine-local state, including within one process.",
+      "expected": "one answer per call and data; [search.ivf.metric](../ontology/features/search.g5.md#search.ivf.metric) (a cosine index scores the cosine).",
+      "severity_basis": "a service that builds its IVF index in one process and searches in another (or restarts) silently changes the vector leg and the fused ranking; with non-unit vectors, the building process ranks by bug-srch-109's dot product. Medium: wrong ranking, data- and process-dependent.",
+      "limits": "Building versus fresh engine instances reproduced within one process. This establishes engine-instance dependence; restart/cross-process impact follows the same cache mechanism but was not independently replayed in this audit."
+    },
+    {
+      "id": "bug-srch-111",
+      "title": "`/vectorSearch` and `/hybridSearch` refuse a query of another width for a graph with no vectors",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "partial",
+      "evidence": "evidence/retrieval_compose.json",
+      "defect_cases": {
+        "pyops_unrouted_4": "WidthRefused"
+      },
+      "control_cases": {
+        "engine_unrouted_4": "NoRows",
+        "pyops_unrouted_768": "NoRows"
+      },
+      "assessment": "Real PyOps VectorSearch rejects a non-default-width vector on an unrouted graph; the Python engine returns no results. Deployed REST dispatch was not exercised.",
+      "expected": "[search.routes.no_fallback](../ontology/features/search.g5.md#search.routes.no_fallback): an unrouted pair answers nothing, never a width error.",
+      "severity_basis": "a REST search of a graph that has no vectors yet fails with a misleading width error instead of an empty answer. Low.",
+      "limits": "Real PyOps component; HTTP deployment, dispatch, authentication and response are untested."
+    },
+    {
+      "id": "bug-srch-112",
+      "title": "`/hybridSearch` replaces a fusion constant of 0 with 60",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "partial",
+      "evidence": "evidence/retrieval_compose.json",
+      "defect_cases": {
+        "pyops_hybrid_c0": {
+          "L": 0.009345795,
+          "n00": 0.032522475,
+          "n01": 0.032002048,
+          "n02": 0.031498016,
+          "n03": 0.031009615,
+          "n04": 0.030536131,
+          "n05": 0.030076888,
+          "n06": 0.029631255,
+          "n07": 0.029198636,
+          "n08": 0.028778468,
+          "n09": 0.028370221,
+          "n10": 0.027973396,
+          "n11": 0.027587519,
+          "n12": 0.027212144,
+          "n13": 0.026846847,
+          "n14": 0.026491228,
+          "n15": 0.026144908,
+          "n16": 0.025807526,
+          "n17": 0.025478741,
+          "n18": 0.025158228,
+          "n19": 0.024845679,
+          "n20": 0.024540801,
+          "n21": 0.024243315,
+          "n22": 0.023952955,
+          "n23": 0.023669468,
+          "n24": 0.023392613,
+          "n25": 0.02312216,
+          "n26": 0.022857889,
+          "n27": 0.022599591,
+          "n28": 0.022347066,
+          "n29": 0.022100122,
+          "n30": 0.021858576,
+          "n31": 0.021622253,
+          "n32": 0.021390986,
+          "n33": 0.021164614,
+          "n34": 0.020942982,
+          "n35": 0.020725945,
+          "n36": 0.02051336,
+          "n37": 0.020305092,
+          "n38": 0.02010101,
+          "n39": 0.01990099,
+          "n40": 0.019704912,
+          "n41": 0.019512659,
+          "n42": 0.019324122,
+          "n43": 0.019139194,
+          "n44": 0.018957772,
+          "n45": 0.018693222,
+          "n46": 0.018520106,
+          "n47": 0.018350168,
+          "n48": 0.018183321,
+          "n49": 0.018019481,
+          "n50": 0.017858567,
+          "n51": 0.017700501,
+          "n52": 0.01754521,
+          "n53": 0.017392619,
+          "n54": 0.017242661,
+          "n55": 0.017095266,
+          "n56": 0.01695037,
+          "n57": 0.01680791,
+          "n58": 0.016667824,
+          "n59": 0.016530055,
+          "x": 0.016393444
+        }
+      },
+      "control_cases": {
+        "pyops_hybrid": {
+          "L": 0.009345795,
+          "n00": 0.032522475,
+          "n01": 0.032002048,
+          "n02": 0.031498016,
+          "n03": 0.031009615,
+          "n04": 0.030536131,
+          "n05": 0.030076888,
+          "n06": 0.029631255,
+          "n07": 0.029198636,
+          "n08": 0.028778468,
+          "n09": 0.028370221,
+          "n10": 0.027973396,
+          "n11": 0.027587519,
+          "n12": 0.027212144,
+          "n13": 0.026846847,
+          "n14": 0.026491228,
+          "n15": 0.026144908,
+          "n16": 0.025807526,
+          "n17": 0.025478741,
+          "n18": 0.025158228,
+          "n19": 0.024845679,
+          "n20": 0.024540801,
+          "n21": 0.024243315,
+          "n22": 0.023952955,
+          "n23": 0.023669468,
+          "n24": 0.023392613,
+          "n25": 0.02312216,
+          "n26": 0.022857889,
+          "n27": 0.022599591,
+          "n28": 0.022347066,
+          "n29": 0.022100122,
+          "n30": 0.021858576,
+          "n31": 0.021622253,
+          "n32": 0.021390986,
+          "n33": 0.021164614,
+          "n34": 0.020942982,
+          "n35": 0.020725945,
+          "n36": 0.02051336,
+          "n37": 0.020305092,
+          "n38": 0.02010101,
+          "n39": 0.01990099,
+          "n40": 0.019704912,
+          "n41": 0.019512659,
+          "n42": 0.019324122,
+          "n43": 0.019139194,
+          "n44": 0.018957772,
+          "n45": 0.018693222,
+          "n46": 0.018520106,
+          "n47": 0.018350168,
+          "n48": 0.018183321,
+          "n49": 0.018019481,
+          "n50": 0.017858567,
+          "n51": 0.017700501,
+          "n52": 0.01754521,
+          "n53": 0.017392619,
+          "n54": 0.017242661,
+          "n55": 0.017095266,
+          "n56": 0.01695037,
+          "n57": 0.01680791,
+          "n58": 0.016667824,
+          "n59": 0.016530055,
+          "x": 0.016393444
+        },
+        "sql_fuse": {
+          "d00": 0.030679157,
+          "d01": 0.029462366,
+          "d02": 0.028373016,
+          "d03": 0.027389706,
+          "d04": 0.026495726,
+          "d05": 0.025677831,
+          "d06": 0.024925373,
+          "d07": 0.014705883,
+          "d08": 0.014492755,
+          "d09": 0.014285715,
+          "d10": 0.014084508,
+          "d11": 0.01388889,
+          "d12": 0.013698631,
+          "d13": 0.013513515,
+          "d14": 0.013333334,
+          "d15": 0.013157896,
+          "d16": 0.012987014,
+          "d17": 0.012820514,
+          "d18": 0.012658229,
+          "d19": 0.012500001,
+          "d20": 0.01234568,
+          "d21": 0.012195123,
+          "d22": 0.012048194,
+          "d23": 0.011904763,
+          "d24": 0.011764707,
+          "d25": 0.011627908,
+          "d26": 0.011494254,
+          "d27": 0.011363637,
+          "d28": 0.011235956,
+          "d29": 0.011111112,
+          "dx": 0.015384616,
+          "i49_023944_d00": 0.015151516,
+          "i49_023944_d01": 0.014084508,
+          "i49_023944_d02": 0.013157896,
+          "i49_023944_d03": 0.01234568,
+          "i49_023944_d04": 0.011627908,
+          "i49_023944_d05": 0.010989012,
+          "i49_023944_d06": 0.010416668,
+          "i49_023944_dx": 0.016393444,
+          "i49b_024741_d00": 0.014925374,
+          "i49b_024741_d01": 0.01388889,
+          "i49b_024741_d02": 0.012987014,
+          "i49b_024741_d03": 0.012195123,
+          "i49b_024741_d04": 0.011494254,
+          "i49b_024741_d05": 0.010869566,
+          "i49b_024741_d06": 0.010309279,
+          "i49b_024741_dx": 0.016129033,
+          "i49b_024756_d00": 0.014705883,
+          "i49b_024756_d01": 0.013698631,
+          "i49b_024756_d02": 0.012820514,
+          "i49b_024756_d03": 0.012048194,
+          "i49b_024756_d04": 0.011363637,
+          "i49b_024756_d05": 0.010752689,
+          "i49b_024756_d06": 0.010204083,
+          "i49b_024756_dx": 0.015873017,
+          "i49b_032142_d00": 0.014492755,
+          "i49b_032142_d01": 0.013513515,
+          "i49b_032142_d02": 0.012658229,
+          "i49b_032142_d03": 0.011904763,
+          "i49b_032142_d04": 0.011235956,
+          "i49b_032142_d05": 0.010638299,
+          "i49b_032142_d06": 0.010101011,
+          "i49b_032142_dx": 0.015625001
+        }
+      },
+      "assessment": "Real PyOps HybridSearch with c=0 returns the c=60 scores. Deployed REST dispatch was not exercised.",
+      "expected": "the caller's constant (the SQL procedure and the engine accept 0 and score 1/rank).",
+      "severity_basis": "a caller asking for c = 0 silently gets c = 60. Low (an unusual value).",
+      "limits": "Real PyOps component; HTTP deployment, dispatch, authentication and response are untested."
+    },
+    {
+      "id": "bug-srch-113",
+      "title": "The SQL function kg_BM25 answers an empty list for k of 0 or less, while bm25_search and ivg.bm25.search refuse it",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/bm25_scoring.json",
+      "defect_cases": {
+        "k:sql@0": [],
+        "k:sql@-1": []
+      },
+      "control_cases": {
+        "k:py@0": "refused",
+        "k:cypher@0": "refused",
+        "k:sql@1": [
+          [
+            "f",
+            0.7303065925352654
+          ]
+        ]
+      },
+      "assessment": "The SQL reader returns [] for invalid k while Python/Cypher refuse it; positive k searches work.",
+      "expected": "the three readers apply one argument rule. The translator (`_translate_bm25_search`, translator.py 3161-3166) says the procedure validates \"the model bm25_search runs: a name and a query that are not blank, and k of 1 or more (4.6.5)\"; ADMIN_GUIDE 256 and 433 list `kg_BM25` as the SQL form of the same search.",
+      "severity_basis": "a direct SQL caller that passes 0 or a negative k (for example a computed limit) silently gets no documents, where the Python and Cypher entries report the bad argument. Low: the caller passes an invalid argument and the answer is empty, not wrong documents.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-srch-116",
+      "title": "No quarantined vector can be placed through the IRIS DB-API driver",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/install_lifecycle.json",
+      "defect_cases": {
+        "Q:place_ok": {
+          "dq": 0,
+          "dr": 0,
+          "err": "other:ProgrammingError:<COMMUNICATION LINK ERROR> Cursor closed; Details: DataRow is inaccessible and/or Cursor is closed",
+          "routes_g2": false
+        },
+        "Q:total_conserved": true
+      },
+      "control_cases": {
+        "QR:place_ok": {
+          "dq": -1,
+          "dr": 1,
+          "ok": true,
+          "routes_g2": false
+        }
+      },
+      "assessment": "A valid quarantine placement fails Cursor closed through DB-API and leaves the row quarantined. An explicitly repaired cursor-materialization control succeeds; it is not shipped behavior.",
+      "expected": "[search.quarantine.placement](../ontology/features/search.g5.md#search.quarantine.placement) and ADMIN_GUIDE §9: an operator places each quarantined vector, naming its graph; placement succeeds when the route and node fit, and refuses naming the reason otherwise.",
+      "severity_basis": "the only documented way out of quarantine does not work over the DB-API driver (the ordinary client connection), so vectors the 4.0.0 migration quarantined stay unsearchable; the error names a communication failure rather than a reason. Medium: an operator recovery path is unusable; no data is lost (the row stays). Embedded Python (irispython inside IRIS) was not tried; the unit tests use a mocked cursor.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-str-112",
+      "title": "DijkstraPath with two empty endpoints answers a zero-length path through the NUL character",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/sql_procs.json",
+      "defect_cases": {
+        "dj_empty_both": {
+          "nodes": [
+            "\u0000"
+          ],
+          "totalCost": 0.0
+        }
+      },
+      "control_cases": {
+        "dj_empty_src": {},
+        "dj_defaults": {
+          "nodes": [
+            "a",
+            "e",
+            "d"
+          ],
+          "totalCost": 2.0
+        }
+      },
+      "assessment": "The SQL entry returns a zero-cost path containing NUL for two empty endpoints; one empty endpoint correctly yields no path.",
+      "expected": "an empty source or target answers no path; \"direct native empty endpoints answer no path\" ([algorithms.op.paths.weighted](../ontology/features/algorithms.g5.md#algorithms.op.paths.weighted); the parent path-search rule says the same).",
+      "severity_basis": "a SQL caller that passes empty parameters gets a path of length 0 and cost 0 with a node id no graph holds, instead of no path.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-str-113",
+      "title": "shortest_path_length(a, b, ..., 'in') answers the outgoing length from a to b, not execute_shortest_path's incoming one",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/traversal_strategy.json",
+      "defect_cases": {
+        "sp_in_p1_p3": {
+          "esp": -1,
+          "spl": 2
+        },
+        "sp_in_p3_p1": {
+          "esp": 2,
+          "spl": -1
+        }
+      },
+      "control_cases": {
+        "sp_out_p1_p3": {
+          "esp": 2,
+          "spl": 2
+        }
+      },
+      "assessment": "The public store length method follows outgoing edges when asked for incoming direction; execute_shortest_path disagrees. No Cypher impact is claimed.",
+      "expected": "`IRISGraphStore.shortest_path_length`'s docstring: \"what execute_shortest_path's paths' length is, without them\"; [algorithms.op.paths](../ontology/features/algorithms.g5.md#algorithms.op.paths) \"The search can follow the edges, go against them, or do both\"; the working assumption \"Require IRISGraphStore.shortest_path_length to reverse 'in' as execute_shortest_path does\".",
+      "severity_basis": "a direct store caller asking the incoming distance gets the outgoing one: a false \"no path\" where an incoming path exists, and a positive length where only an outgoing path exists. Cypher is not affected: its length-only route (`query.py:3620-3626`) is taken only for 'out' and 'both'. Severity Low because the only affected entry point is the public store method (no Cypher, SQL or HTTP caller reaches it with 'in'), though the wrong answer is silent and can be positive.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-str-114",
+      "title": "execute_bfs with a direction other than exactly \"out\", \"in\" or \"both\" answers an undirected walk from the edge table (\"OUT\", \"sideways\") or a walk of the edge table instead of the adjacency index (\"outbound\", \"inbound\")",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/traversal_strategy.json",
+      "defect_cases": {
+        "os_dirtext_OUT": {
+          "fallback_calls": 1,
+          "rows": [
+            [
+              "i57a_152929_a",
+              1,
+              "R"
+            ],
+            [
+              "i57a_152929_b",
+              1,
+              "Q"
+            ],
+            [
+              "i57a_152929_c",
+              1,
+              ""
+            ],
+            [
+              "i57a_152929_d",
+              2,
+              "Q"
+            ],
+            [
+              "i57a_152929_x",
+              2,
+              "R"
+            ]
+          ],
+          "strategy": "_ObjectScriptBfsAdapter"
+        },
+        "os_dirtext_sideways": {
+          "fallback_calls": 1,
+          "rows": [
+            [
+              "i57a_152929_a",
+              1,
+              "R"
+            ],
+            [
+              "i57a_152929_b",
+              1,
+              "Q"
+            ],
+            [
+              "i57a_152929_c",
+              1,
+              "R"
+            ],
+            [
+              "i57a_152929_d",
+              2,
+              "Q"
+            ],
+            [
+              "i57a_152929_x",
+              2,
+              "R"
+            ]
+          ],
+          "strategy": "_ObjectScriptBfsAdapter"
+        }
+      },
+      "control_cases": {
+        "os_out_R_1": {
+          "fallback_calls": 0,
+          "rows": [
+            [
+              "i57a_152929_a",
+              1,
+              "R"
+            ]
+          ],
+          "strategy": "_ObjectScriptBfsAdapter"
+        }
+      },
+      "assessment": "Invalid directions reach a real fallback and answer an undirected walk instead of refusal; canonical out uses the expected traversal.",
+      "expected": "`execute_bfs`'s docstring: the rows \"walked in `direction`\"; the path routines' policy for directions ([algorithms.op.paths.direction](open_questions.md#HD-1003): refuse a direction outside {out, in, both}, as `DijkstraJson`'s `CheckDirection` does). `_select_bfs_strategy` already reads `\"outbound\"` and case-insensitively.",
+      "severity_basis": "a caller (or a protocol client passing a user-supplied direction) gets plausible rows for a direction the store does not know: an undirected neighbourhood for \"OUT\", with blank types; and \"outbound\"/\"inbound\" are answered from `rdf_edges` rather than `^KG`, so they can differ from \"out\"/\"in\" wherever the two disagree (an undeclared index, W2's domain). Low: the in-tree Cypher caller passes only out/in/both.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-str-115",
+      "title": "While sync() rebuilds the adjacency index, traversal reads in other sessions see it purged: khop answers the seed alone, a path length answers no path, and BFS answers with blank types",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/rebuild_reads.json",
+      "defect_cases": {
+        "during_sync": {
+          "{\"khop\": [\"a\", \"b\", \"c\", \"s\"], \"spl\": -1}": 5,
+          "{\"khop\": [\"a\", \"b\", \"c\", \"s\"], \"spl\": 2}": 74526,
+          "{\"khop\": [\"s\"], \"spl\": -1}": 7182,
+          "{\"khop\": [\"s\"], \"spl\": 2}": 3
+        },
+        "seed_alone_reads": 7182
+      },
+      "control_cases": {
+        "quiet": {
+          "{\"khop\": [\"a\", \"b\", \"c\", \"s\"], \"spl\": 2}": 40
+        }
+      },
+      "assessment": "During six real sync calls, concurrent readers observed the seed alone 7,182 times; 40 quiet reads saw the complete graph. No pause or provider injection forced the race.",
+      "expected": "[structure.rebuild](../ontology/features/graph-structure.g5.md#structure.rebuild) \"running it again is safe\", and with a declared index \"the adjacency never needs it\"; [structure.drift](../ontology/features/graph-structure.g5.md#structure.drift); [algorithms.op.khop](../ontology/features/algorithms.g5.md#algorithms.op.khop) \"A walk that fails raises an error rather than answer empty\". BuildKG's own comment: \"destroyed adjacency looks to every reader like a graph with no edges\". The live `^NKG` rewrite is held to \"no reader sees an empty or invented ^NKG during the rebuild\" (`tests/e2e/test_nkg_live_rewrite_e2e.py`).",
+      "severity_basis": "a silent wrong answer, not an error, for every adjacency reader in every other session for the length of a rebuild (about three seconds per `sync()` on this small fixture; proportional to the edge count): k-hop, BFS types, unweighted path lengths, and by the same mechanism degree, PPR and the native Cypher reads over `^KG` (not exercised). `sync()` is the documented step after bulk loads and erasures, and it rebuilds a declared index that needs no rebuild. Medium: silent and reachable in ordinary operation, but transient and repaired when the rebuild ends.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-str-117",
+      "title": "khop2_count_fast answers the sum of the middle nodes' out-degrees right after sync(), counting the source and repeated targets, and the walked count after any unrelated write",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/adjacency_maint.json",
+      "defect_cases": {
+        "two_hop_after_sync": [
+          3,
+          1
+        ]
+      },
+      "control_cases": {
+        "two_hop_after_write": [
+          1,
+          1
+        ]
+      },
+      "assessment": "Fast/exact two-hop counts are 3/1 after sync and 1/1 after an unrelated write, confirming the unstable overcount.",
+      "expected": "fast answers the number first reached at hop 2 (1), like exact, fresh or stale; or its documentation says\n\"an upper bound while the stats are current\".",
+      "severity_basis": "callers reading the fast count as a count over-count right after a sync and get a different value after\nany write.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-tmp-103",
+      "title": "A distinct-target count answers at least 11 for any window that holds a target, so one target reads as 11",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/temporal_stats.json",
+      "defect_cases": {
+        "distinct_d_d1_0_299": 11
+      },
+      "control_cases": {
+        "distinct_d_nobody_0_299": 0
+      },
+      "assessment": "One real target yields distinct count 11; an empty window yields 0, far outside the claimed small-cardinality error.",
+      "expected": "\"An approximate count from the HyperLogLog sketches ... (about 26% error)\" (`_engine/temporal.py:1088-1093`, `TemporalIndex.cls:628-631`, `docs/API_REFERENCE.md` `get_distinct_count`).",
+      "severity_basis": "a dashboard asking how many distinct peers a source reached reads 11 for one peer and cannot tell 1 from 10; below about 40 targets the error is far above a quarter. With 16 registers the error is also about 26% at one standard deviation for large counts, so single answers near 100 can be 30% off.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-tmp-104",
+      "title": "Two different attribute sets can intern to the same label-set hash, and resolving it returns the other set",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/temporal_stats.json",
+      "defect_cases": {
+        "labels": {
+          "fraction": {
+            "canonical": "{\"x\":.5}",
+            "hash": "dad58c850cca79af014ce92c6e490da87d0d83e3"
+          },
+          "injected": {
+            "canonical": "{\"a\":\"x\",\"b\":\"y\"}",
+            "hash": "7725e82fbf30b984d25d7b7b8d924d373aa8ca39"
+          },
+          "plain": {
+            "canonical": "{\"a\":true,\"n\":null,\"port\":1972,\"s\":\"x\"}",
+            "hash": "645ca41a6e8cc5db7ff20093fe62095d0ea43ddb"
+          },
+          "reordered": {
+            "canonical": "{\"a\":true,\"n\":null,\"port\":1972,\"s\":\"x\"}",
+            "hash": "645ca41a6e8cc5db7ff20093fe62095d0ea43ddb"
+          },
+          "two_keys": {
+            "canonical": "{\"a\":\"x\",\"b\":\"y\"}",
+            "hash": "7725e82fbf30b984d25d7b7b8d924d373aa8ca39"
+          }
+        }
+      },
+      "control_cases": {
+        "labels": {
+          "fraction": {
+            "canonical": "{\"x\":.5}",
+            "hash": "dad58c850cca79af014ce92c6e490da87d0d83e3"
+          },
+          "injected": {
+            "canonical": "{\"a\":\"x\",\"b\":\"y\"}",
+            "hash": "7725e82fbf30b984d25d7b7b8d924d373aa8ca39"
+          },
+          "plain": {
+            "canonical": "{\"a\":true,\"n\":null,\"port\":1972,\"s\":\"x\"}",
+            "hash": "645ca41a6e8cc5db7ff20093fe62095d0ea43ddb"
+          },
+          "reordered": {
+            "canonical": "{\"a\":true,\"n\":null,\"port\":1972,\"s\":\"x\"}",
+            "hash": "645ca41a6e8cc5db7ff20093fe62095d0ea43ddb"
+          },
+          "two_keys": {
+            "canonical": "{\"a\":\"x\",\"b\":\"y\"}",
+            "hash": "7725e82fbf30b984d25d7b7b8d924d373aa8ca39"
+          }
+        }
+      },
+      "assessment": "Two different flat attribute sets produce the same canonical text/hash; ordinary reordered attributes correctly share their hash.",
+      "expected": "\"Canonicalize, hash, and intern an attribute dict\" (`_engine/temporal.py:835-846`); spec 204 FR-012 (the canonical form is JSON). A canonical form identifies its set: different sets must not share it.",
+      "severity_basis": "two distinct attribute sets stored for retention share one hash, and the first one interned decides the resolved text; a caller that resolves the hash of the injected set gets the other set's attributes. Attribute values from users or upstream systems can trigger it.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-tmp-105",
+      "title": "A label set holding a nested object or list gets a new hash on every call, and different nested values can share one",
+      "disposition": "retain",
+      "severity": "Medium",
+      "reproduction": "e2e",
+      "evidence": "evidence/temporal_stats.json",
+      "defect_cases": {
+        "nested": {
+          "empty_map_1": {
+            "canonical": "{\"k\":\"16@%Library.DynamicObject\"}",
+            "hash": "d4f4bae5e19a6651c3bce0883dd38e96f75388e9",
+            "ref_is_object_reference": true
+          },
+          "empty_map_2": {
+            "canonical": "{\"k\":\"18@%Library.DynamicObject\"}",
+            "hash": "a2c588deab5afe8c2a29ca72b46ea97b74ae5f82",
+            "ref_is_object_reference": true
+          },
+          "empty_map_same_hash": false,
+          "list_1": {
+            "canonical": "{\"k\":\"16@%Library.DynamicArray\"}",
+            "hash": "b944db64a716f442019c784a80f6ece79bb42e58",
+            "ref_is_object_reference": true
+          },
+          "list_2": {
+            "canonical": "{\"k\":\"18@%Library.DynamicArray\"}",
+            "hash": "e81ad9a8f467e274d5f5a5dcc2c2f37593c9eed2",
+            "ref_is_object_reference": true
+          },
+          "list_same_hash": false,
+          "map_vs_empty_map_call1_same_hash": true,
+          "mixed_1": {
+            "canonical": "{\"a\":\"v\",\"z\":\"16@%Library.DynamicArray\"}",
+            "hash": "4f0b3fc88e70224dea67dd65ee9cc55a56153556",
+            "ref_is_object_reference": true
+          },
+          "mixed_2": {
+            "canonical": "{\"a\":\"v\",\"z\":\"18@%Library.DynamicArray\"}",
+            "hash": "103ea37b211c89eae6b715fa38c58f01c889b542",
+            "ref_is_object_reference": true
+          },
+          "mixed_same_hash": false,
+          "nested_map_1": {
+            "canonical": "{\"k\":\"16@%Library.DynamicObject\"}",
+            "hash": "d4f4bae5e19a6651c3bce0883dd38e96f75388e9",
+            "ref_is_object_reference": true
+          },
+          "nested_map_2": {
+            "canonical": "{\"k\":\"18@%Library.DynamicObject\"}",
+            "hash": "a2c588deab5afe8c2a29ca72b46ea97b74ae5f82",
+            "ref_is_object_reference": true
+          },
+          "nested_map_same_hash": false
+        }
+      },
+      "control_cases": {
+        "labels": {
+          "fraction": {
+            "canonical": "{\"x\":.5}",
+            "hash": "dad58c850cca79af014ce92c6e490da87d0d83e3"
+          },
+          "injected": {
+            "canonical": "{\"a\":\"x\",\"b\":\"y\"}",
+            "hash": "7725e82fbf30b984d25d7b7b8d924d373aa8ca39"
+          },
+          "plain": {
+            "canonical": "{\"a\":true,\"n\":null,\"port\":1972,\"s\":\"x\"}",
+            "hash": "645ca41a6e8cc5db7ff20093fe62095d0ea43ddb"
+          },
+          "reordered": {
+            "canonical": "{\"a\":true,\"n\":null,\"port\":1972,\"s\":\"x\"}",
+            "hash": "645ca41a6e8cc5db7ff20093fe62095d0ea43ddb"
+          },
+          "two_keys": {
+            "canonical": "{\"a\":\"x\",\"b\":\"y\"}",
+            "hash": "7725e82fbf30b984d25d7b7b8d924d373aa8ca39"
+          }
+        }
+      },
+      "assessment": "Repeated identical nested values get different object-reference hashes; distinct nested maps also collide. Flat canonicalization is the neighboring case.",
+      "expected": "\"Idempotent\" and \"Type fidelity\" (`TemporalIndex.cls:1336-1338`); \"Canonicalize, hash, and intern an attribute dict\" (`_engine/temporal.py:835-846`); spec 204 FR-012 (the canonical form is JSON). Equal sets share one hash; different sets get different hashes.",
+      "severity_basis": "re-interning the same attributes yields a new hash each time, so callers that compare or group by hash split one set into many; each call appends another entry to the append-only `^KG(\"labelset\")`, which no purge removes; and two different nested values can resolve to the same text, so the stored attributes are lost.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-tmp-106",
+      "title": "A millisecond-class edge is counted by the seconds readers' whole buckets although its time is outside the window",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/temporal_stats.json",
+      "defect_cases": {
+        "ms_in_sec_whole_count": 1,
+        "ms_in_sec_raw_window": 0
+      },
+      "control_cases": {
+        "ms_in_sec_cut_count": 0
+      },
+      "assessment": "A millisecond-class write contaminates a seconds whole-bucket count while the raw window is empty. This requires a direct millisecond-class writer.",
+      "expected": "aggregate and group reads answer exactly the requested window, and velocity counts whole buckets of the reader's own unit ([temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window)); the millisecond class is a \"supported\" separate unit (`TemporalIndexMS.cls:1-3`).",
+      "severity_basis": "in a graph written through both classes, whole-bucket statistics, groups, velocity and bursts mix units and disagree with the raw window. The Python engine calls only the seconds class, so this needs a direct ObjectScript caller of `TemporalIndexMS` on the same graph.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-tmp-107",
+      "title": "backfill_temporal_rows answers the temporal triples it walked, not the rows it wrote, and setup reports that as edges given rows",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/sql_procs.json",
+      "defect_cases": {
+        "bf_count_1": 3,
+        "bf_count_2": 3,
+        "bf_rows_1": [
+          [
+            "",
+            "ua",
+            "T",
+            "ub",
+            true
+          ],
+          [
+            "g",
+            "ta",
+            "T",
+            "tb",
+            true
+          ],
+          [
+            "g",
+            "tc",
+            "T",
+            "td",
+            true
+          ]
+        ],
+        "bf_rows_2": [
+          [
+            "",
+            "ua",
+            "T",
+            "ub",
+            true
+          ],
+          [
+            "g",
+            "ta",
+            "T",
+            "tb",
+            true
+          ]
+        ]
+      },
+      "control_cases": {
+        "bf_rows_0": [
+          [
+            "",
+            "ua",
+            "T",
+            "ub",
+            true
+          ],
+          [
+            "g",
+            "ta",
+            "T",
+            "tb",
+            true
+          ],
+          [
+            "g",
+            "tc",
+            "T",
+            "td",
+            true
+          ]
+        ]
+      },
+      "assessment": "A repeated backfill still reports walked edges even though row count is unchanged; the initial run establishes actual inserted rows.",
+      "expected": "ADMIN_GUIDE:413 documents setup's `temporal_rows_backfilled` as \"the temporal edges it gave rows first\"; setup stores this function's answer there (`schema.py:878-884`).",
+      "severity_basis": "an operator upgrading a namespace where most temporal edges already have rows (written with `graph=` before the index, or by an earlier backfill) is told that many edges were given rows; a re-run never reports 0. No row is written wrongly.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    },
+    {
+      "id": "bug-tmp-108",
+      "title": "An aggregate read with an empty source or predicate answers 0 when the window only cuts buckets and meets no edge",
+      "disposition": "retain",
+      "severity": "Low",
+      "reproduction": "e2e",
+      "evidence": "evidence/temporal_stats.json",
+      "defect_cases": {
+        "ek_src_quiet_count": 0,
+        "ek_src_event_count": "Raises",
+        "ek_errors": {
+          "ek_pred_event_count": "RuntimeError: <SUBSCRIPT>GetAggregate+32^Graph.KG.TemporalIndex.1 ^KG(\"tout\",\"i53t152734k\",1900000250,\"i53t_152734_ek\",\"\")",
+          "ek_src_event_count": "RuntimeError: <SUBSCRIPT>GetAggregate+32^Graph.KG.TemporalIndex.1 ^KG(\"tout\",\"i53t152734k\",1900000250,\"\")",
+          "ek_src_quiet_min": "ValueError: could not convert string to float: 'None'",
+          "ek_src_whole_count": "RuntimeError: <SUBSCRIPT>GetAggregate+13^Graph.KG.TemporalIndex.1 ^KG(\"tagg\",\"i53t152734k\",6333334,\"\")",
+          "ek_src_whole_empty_bucket": "RuntimeError: <SUBSCRIPT>GetAggregate+13^Graph.KG.TemporalIndex.1 ^KG(\"tagg\",\"i53t152734k\",6333335,\"\")"
+        }
+      },
+      "control_cases": {
+        "ek_given_quiet_count": 0,
+        "ek_given_event_count": 1
+      },
+      "assessment": "An empty source returns 0 in a quiet partial window but errors when an event is met; valid-key calls have consistent results.",
+      "expected": "an aggregate read needs a source and a predicate ([temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window)); no document promises an empty key as a wildcard (USER_GUIDE 1011-1027, the `get_temporal_aggregate` docstring), so an invalid call is refused, the same way whatever the window.",
+      "severity_basis": "a caller that passes an empty source by mistake gets a plausible 0 in quiet windows and a server error in busy ones; whether the call is valid depends on the data. Low: it needs an invalid argument, and the Python entry point does not offer an empty source as a feature.",
+      "limits": "Only the named public API, SQL entry, transport or documented setup operation on IRIS Community 2026.1 and the recorded drivers. This does not certify every route or provider version."
+    }
+  ]
+}

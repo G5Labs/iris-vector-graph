@@ -1,6 +1,6 @@
 # Bugs and issues
 
-Each entry explains a recorded problem, its impact and the evidence. Findings that still need confirmation are marked in their entries.
+Each entry explains a recorded problem, its impact and the evidence. Findings that still need confirmation are marked in their entries. The [84-entry reproduction audit](audits/reproduction-20261117/REVIEW.md) records the evidence and severity of the additions from the latest loop: 82 E2E, 2 partial, none without a runtime witness.
 
 ## Findings by severity and evidence scope
 
@@ -1149,7 +1149,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: a follow-up to W55's write pairs before the source reading (`F7_rel_fn` in [follow-up 2](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json)), isolated in [follow-up 3](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json); the plain-parameter case by [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 5; [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_inline_rel_expression_dropped` and `theorem_inline_rel_param_dropped` with neighbor `theorem_inline_rel_literal_written`; controls `rel-value-kept`, `rel-param-kept`, `rel-literal-dropped`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed3-20261117T021604Z.json) `toUpper_lit`, `size_lit`, `arith`, `toString_lit`, `uuid`, `param_fn`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F7_rel_*`; iteration 50: [fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `rel_new_param*`, [binding](results/cypher_exprs/20261117T033119Z-binding/receipt.json) `create_rel_*`, `create_rel_matched_*`, `create_node_Param`). `CREATE (:N {id: 'a'})-[:T {v: 1 + 1}]->(:N {id: 'b'})` succeeds and writes both nodes and the relationship, but the relationship has no `v`; the same holds for `toUpper('ab')`, `size('ab')`, `toString(1)`, `randomUUID()`, `toUpper($s)` and a plain parameter: `CREATE (a {id: ...})-[r {k: $k, lit: 1}]->(b {id: ...})` with `$k = 4` stores `keys(r) = ['lit']` and `r.k` null. Passing neighbors: a literal `{v: 'ab'}` and an `UNWIND` literal variable are stored; a node `CREATE` stores `$k`; between matched nodes `$k` and literals are stored, and a computed value is refused with a message naming the property (documented in KNOWN_ISSUES).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_exprs.json), cases `create_rel_Call_Arith`, `create_rel_Param`. Relationship CREATE succeeds but drops computed or parameter properties; literal properties survive. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: a `CREATE` stores each property value its map computes or binds; where IVG cannot, it refuses (as it does between matched nodes).
 
@@ -1170,7 +1170,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 49)
 
 Found by: W56 prediction P1 ([predictions](../uplift/consolidated/iteration-49/retrieval-PAIRS.md), missed), traced through `kg_PPR_GUIDED_SUBGRAPH` and `Graph.KG.Subgraph.SubgraphJson`; corrected after [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 1, which found that the iteration-49 entry treated the documented cap as the defect and proposed the wrong repair, and found the seeds-over-the-cap case. [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_filled_cap_expands_only_first_node` and `theorem_admitted_seeds_ignore_cap` (every input), witnesses `theorem_guided_subgraph_drops_edges_among_top_nodes` and `theorem_guided_seeds_exceed_cap`, neighbor `theorem_guided_uncapped_lists_all_edges`; controls `edges-among-answered`, `seeds-capped`, `expand-whole-frontier-at-cap`, `guided-cap-top-k-only` ([prove](results/retrieval_compose/20261117T032018Z-prove/receipt.json), 15 of 15 controls EXPECTED_FAIL). The iteration-49 control `guided-cap-max-nodes` encoded the wrong repair and is withdrawn (its receipts are kept).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, ObjectScript `SubgraphJson` path (no Arno reader on the fixture): iteration-50 [fixture reproduction](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) and [binding](results/retrieval_compose/20261117T032153Z-binding/receipt.json) `guided[*]`, `guided_more[*]` (AGREES 45 cases); earlier [observation](../uplift/consolidated/iteration-49/retrieval-observed3-20261117T024208Z.json) `PG_star_top3`, `PG_star_top7`, `PG_star_top50`. Default graph, star s → a1..a6 plus a1 → a2. `kg_PPR_GUIDED_SUBGRAPH([s], ppr_top_k=7)` answers all seven nodes with the single edge a1 → a2; `ppr_top_k=3` answers s, a1, a2 with only a1 → a2. Seeds s, a3, a4 with `ppr_top_k=1` answer three nodes (the cap is 1) and no edge, although s → a3 and s → a4 join them; [s] with `ppr_top_k=50` and `max_nodes=3` answers seven nodes and only a1 → a2. Passing neighbor: [s] with `ppr_top_k=50` and the default `max_nodes` answers all seven edges.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/retrieval_compose.json), cases `guided`, `guided_more`. Guided subgraphs omit edges among their returned nodes at the cap and can exceed the cap with seeds. Ordinary uncapped expansion exhibits the missing edges. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the docstring (`algorithms.py:956-957`): the subgraph of the seeds and the top nodes within `k_hops`, "capped at `min(max_nodes, ppr_top_k)` nodes"; the [design note](../../docs/dev/notes/enhancements/001-ppr-guided-subgraph.md) (`top_k` a "hard node cap"; acceptance "`len(result.nodes) <= top_k` always"); [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph): the edges among the answered nodes. The cap itself is intended.
 
@@ -1191,7 +1191,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56; promoted from F-1601, playbo
 
 Found by: playbook arm, F-1601 ([review record](audits/register-20261115/bugs-review.md#F-1601); live `c16-s1-cypher-http`), then "inconclusive, not reproduced" in the 2026-11-15 register audit; reopened by independent review 53-55 item F1 ([review](../uplift/consolidated/iteration-56/REVIEW-53-55.md), probe `rv55b … bolt_tx`, [observation](../uplift/consolidated/iteration-56/review-probes/rv55b-observed-20261117T064330Z.json)). Model: [bolt_tx](models/bolt_tx/NOTES.md) `theorem_rollback_keeps_writes`, `theorem_rollback_departs_iff_writes`, `theorem_failed_tx_keeps_earlier_writes`, `theorem_reset_or_close_keeps_writes`; neighbors `theorem_commit_agrees`, `theorem_autocommit_agrees`; controls `atomic-tx`, `begin-refused` (the two repairs), `rollback-answers-failure`, `failure-not-sticky`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) read by an independent raw Bolt 4.4 client and by the neo4j Python driver 6.4.1 ([binding](results/bolt_tx/20261117T065936Z-binding/receipt.json), AGREES 17; [cells](../uplift/consolidated/iteration-56/bolt/tx-observed-20261117T065936Z.json), prefix `i56b_065931_`). Raw client: `BEGIN, RUN CREATE, PULL, ROLLBACK` answers SUCCESS to all four and a second connection counts 1 node (2 for two CREATEs); after a failing statement, PULL and ROLLBACK are IGNORED and RESET succeeds, and the earlier CREATE stays; RESET or a closed connection inside a transaction keeps it too. Driver: `tx.rollback()`, a failure then `tx.rollback()` (the driver raises only the statement's `CypherSyntaxError`), an aborted `execute_write` (only the application's `RuntimeError`) and a session closed with an open transaction all leave the node. Passing neighbors: `tx.commit()`, a successful `execute_write` and auto-commit `session.run` keep one node, as they should; an empty transaction rolled back leaves none; a failing statement writes nothing.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_tx.json), cases `D_tx_rollback`, `D_fail_then_rollback`, `D_execute_write_abort`. A real neo4j-driver rollback/aborted transaction leaves writes visible on another connection; commit and empty rollback are controls. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions): an explicit transaction keeps its writes only if it commits; ROLLBACK, a failed statement, RESET or a closed connection must leave none of them, or the server must refuse BEGIN so the client knows each statement commits on its own (Bolt message specification: BEGIN/COMMIT/ROLLBACK; README: "a neo4j-driver compatible server"; the engine's own contract, USER_GUIDE: a caller's rollback removes IVG's writes). Which of the two repairs IVG adopts is the open question [access.transactions](open_questions.md#access.transactions); both make this outcome impossible.
 
@@ -1214,7 +1214,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 59)
 
 Found by: independent review 56-58 item G1 ([review](../uplift/consolidated/iteration-59/REVIEW-56-58.md), probe `rv58 … B`: CREATE, a failing UNION, CREATE in one request answered 400 and kept both nodes). The open question [access.transactions](open_questions.md#access.transactions) had recorded the fact in one bullet since the uplift began, without an owner or register entry. Model: [bolt_tx](models/bolt_tx/NOTES.md) HTTP section: `theorem_http_batch_keeps_writes_around_failure`, `theorem_http_batch_departs_iff`, the rule `theorem_http_rule_is_bolt_rule`; neighbors `theorem_http_all_succeed_agrees`, `theorem_http_read_only_runs_none`; witness `theorem_http_witness_failing_middle`; controls `http-batch-atomic` (the repair), `http-stop-at-failure`, `http-failure-writes`, `http-status-ok-on-error`, `http-read-only-runs-reads`, `read-only-first-only`, `rule-http-keeps-earlier`.
 
-Reproduced by: **E2E reproduced** (iteration 59) on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin: the product's FastAPI app (`iris_vector_graph.cypher_api`) in-process through `TestClient`, real engine on USER, counted by a second engine connection ([binding](results/bolt_tx/20261117T090118Z-binding/receipt.json) section H, AGREES; prefix `i56b_090113_`). CREATE, failing, CREATE: status 400, 2 results, 1 error, **2 nodes**; failing then CREATE: 1 node; CREATE then failing: 1 node; two failures among two CREATEs: 2 nodes, 2 errors. Every error carries `Neo.ClientError.Statement.SyntaxError`, whatever failed. Passing neighbors: two CREATEs commit both (200); reads around a failure write nothing; under `IVG_READ_ONLY=true` a request with one CREATE (first or last) answers 403 `Neo.ClientError.Statement.AccessMode` and runs none of its statements (0 results), as ADMIN_API says; two reads under read-only answer 200.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_tx.json), cases `H_fail_middle`, `H_fail_first`, `H_fail_last`. An HTTP batch with a failed statement commits successful writes and continues after failure; the read-only gate correctly prevents all writes. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [access.http_transactions](../ontology/concepts/access.g5.md#access.http_transactions): one `tx/commit` request is one transaction that keeps its writes only if every statement succeeds; a server that cannot do this must refuse a request it could commit only in part. Sources: the route's own name (`/db/neo4j/tx/commit`, Neo4j's HTTP route that opens and commits a transaction in one request); ADMIN_API's Neo4j HTTP routes and its read-only rule, which already treats the request as one unit ("runs none of its statements"); the same rule the product's Bolt surface owns ([access.bolt.transactions](../ontology/concepts/access.g5.md#access.bolt.transactions)), which `theorem_http_rule_is_bolt_rule` derives the batch rule from (BEGIN, the statements, COMMIT). Neo4j's HTTP API documentation is not quoted: fetching it was denied in this session, as in the review's (limitation); the rule above rests on the product's own documents and its Bolt rule. Which repair (one transaction, or refusing multi-statement requests) is the open question [access.transactions](open_questions.md#access.transactions).
 
@@ -1237,12 +1237,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 52)
 
 Found by: iteration 52 W58 frozen predictions R7 and R8 ([pairs](../uplift/consolidated/iteration-52/reports-PAIRS.md)). R8 predicted that the count includes routed rows; the probe answered 0. The registry rows were then read directly. [operator_reports](models/operator_reports/NOTES.md) `lemma_upper_never_route` and `theorem_routed_never_counted` prove it for every name and registry; `theorem_routed_only_not_ready_but_searchable` covers the reader; control `registry-keeps-case`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, in the fresh namespaces `I52` ([probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s7_routed_vectors`) and `I52B` ([binding](results/operator_reports/20261117T042408Z-binding/receipt.json) `s9_routed_vectors`, `provider:distinct_text`):
-- After `store_embeddings(..., graph="i52bg")`, the registry holds `kg_emb_b7583a473e7f1826`, and `SELECT DISTINCT table_name` answers `KG_EMB_B7583A473E7F1826`.
-- `status().tables.node_embeddings` is 0, `vector_index_state` is `absent`, `ready_for_vector_search` is False, and the report says "Vector index: absent". `/server` and `/metrics` say 0 embeddings.
-- `search_nodes_by_vector(v, graph="i52bg")` answers the node, and `embedding_count(graph="i52bg")` is 1.
-- The snapshot of the same namespace lists the routed table with its row.
-- Edge vectors (iteration 53, review round 2 item m7; the iteration-52 attempt used a wrong item key): after `store_edge_embeddings([{"s", "p", "o_id", "embedding"}], graph=g)` the registry holds `kg_eemb_…` (kind `edge`) and `DISTINCT` answers `KG_EEMB_…`. `tables.edge_embeddings` is 0 and `ready_for_edge_search` is False, while `edge_vector_search(v, graph=g)` answers the edge. One legacy edge vector then makes it 1 and True. Reproduced in `I53` ([probe](../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json) `edge_routed_status`, `edge_routed_search`) and `I53B` ([binding](results/operator_reports/20261117T045659Z-binding/receipt.json) `s17_edge_routed`, `s17:edge_search_g`, `s17_edge_legacy`); `theorem_routed_edges_never_counted`, `theorem_routed_edges_only_not_ready_but_searchable`, control `edge-registry-keeps-case`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/operator_reports.json), cases `s9_routed_vectors:status`. Routed vectors search successfully but status reports zero/absent/not-ready; legacy-table vectors are counted. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: Spec 230 FR-006 and the `_embedding_row_count` docstring: "Counting one table name reported zero for an install whose vectors are all routed — a number an operator reads as 'the embeddings are gone' while a search over the same rows answers fine." The owner [install.status](../ontology/concepts/install.g5.md#install.status) says the totals count each registered table of that kind.
 
@@ -1275,11 +1270,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 52)
 
 Found by: reading `BuildNKG` after the iteration 52 W58 freeze (the frozen rows S1-S3 did not cover two graphs); [operator_reports](models/operator_reports/NOTES.md) `theorem_shared_triple_never_in_sync`, `theorem_heal_claims_in_sync_then_drift`; neighbor `theorem_unique_triples_in_sync_after_sync`; controls `verify-counts-distinct-rows`, `nkg-per-graph`, `heal-rereads`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s4_*`, `s5_g_only_edge`; [binding](results/operator_reports/20261117T042408Z-binding/receipt.json) `s4_shared_triple` to `s6_sync_again`):
-- With `a -R-> b` in the default graph and in graph `i52bg`, `verify_sync()` answers `in_sync` False (3 SQL edges against 2 indexed edges), on the writing engine and on another engine.
-- `verify_sync(heal=True)` answers `in_sync` True and `healed` True.
-- The next `verify_sync()` answers False again, and so does the check after another explicit `sync()`.
-- Every later edge keeps the gap of one.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/operator_reports.json), cases `s4_shared_triple:verify`, `s5_after_heal:verify`, `s6_sync_again:verify`. A cross-graph duplicate triple creates permanent reported drift despite heal and sync; a single-graph case is in sync. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the `verify_sync` docstring: "`bool(report)` mirrors `in_sync` for `if not engine.verify_sync(): engine.sync()` usage". After a sync on a quiet namespace the check should report in sync.
 
@@ -1313,12 +1304,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: independent review round 2 (session `d548b72a`, item M2), source reading (`cypher_api.py:498-554`, `status.py:192-214`, `_engine/admin.py:449-476`); [operator_reports](models/operator_reports/NOTES.md) `theorem_failed_census_unknown_only_in_report`, `theorem_failed_vector_count_reads_zero`, `theorem_failed_side_counts_silent`; controls `metrics-marks-unknown`, `readiness-unknown-not-false`, `failed-count-not-zero`, `side-count-marks-unknown`.
 
-Reproduced by: **E2E reproduced** in iteration 53 on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, in the fresh namespaces `I53` ([probe](../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json) users `i53_native`, `i53_part`) and `I53B` ([binding](results/operator_reports/20261117T045659Z-binding/receipt.json) `s19_i53_bnative`, `s19_i53_bpart`). A monitoring user that may read the namespace's database and use the Native API but holds no SELECT on the IVG tables reads a namespace with 6 nodes, 2 edges and 1 node vector:
-- `status().unknown` names `graph` and `vector_index`, and the report prints "unknown (see Probe errors)" for them. This part works as documented.
-- `/metrics` prints `ivg_nodes_total 0`, `ivg_edges_total 0` and `ivg_embeddings_total 0` beside `ivg_kg_populated 1`, with no error or unknown sample. `/server` answers `nodes 0, edges 0, embeddings 0` (it lists the errors but drops `unknown`). `ivg status` prints that answer and exits 0.
-- `ready_for_bfs` and `ready_for_multihop_bfs` are False while `adjacency.kg_populated` is True and the adjacency serves traversals; `ready_for_vector_search` is False.
-- A user with SELECT on the node, edge and node-vector tables only reads `labels 0`, `props 0` and `edge_embeddings 0` (truth 2, 6 and 1). Each failure is in `errors`, but `unknown` names nothing, and `ready_for_edge_search` is False.
-- Passing neighbor: with every privilege the same moment reads the true counts, nothing unknown, and every flag True.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/operator_reports.json), cases `s19_i53_bnative:status`, `s19_i53_bnative:readers`. A real restricted monitoring role gets unknown counts in text but zero counts and false readiness in API readers; privileged reads see the data. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: ADMIN_GUIDE (`docs/ADMIN_GUIDE.md:950-958`, 4.6.0 R050): where a probe failed the report must say "unknown" instead of a value; before 4.6.0 "it printed `0 nodes` and `in sync` there", which R050 calls the defect. ADMIN_API says `/server` is "part of `engine.status()`" and `/metrics` is "from `engine.status()`"; the owner [install.status](../ontology/concepts/install.g5.md#install.status) says failed counts must not read as invented zeros. A readiness flag "should say whether the operation it names would answer" ([install.status.readiness](../ontology/concepts/install.g5.md#install.status.readiness)).
 
@@ -1339,7 +1325,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 51)
 
 Found by: iteration 51 W57 frozen prediction D1 (missed; [pairs](../uplift/consolidated/iteration-51/stats-PAIRS.md)) and the source read after the freeze; [temporal_stats](models/temporal_stats/NOTES.md) `theorem_distinct_nonempty_at_least_eleven`, `theorem_distinct_one_target_is_eleven`; controls `small-range-correction`, `no-empty-guard`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `D_d1`, `D_d3`, `D_dbig`, `A4_rbc_distinct`; [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `distinct_d_*`, `distinct_a_*`). Three edges to one target answer 11; three distinct targets answer 11, 12 or 13 depending on their names; 100 distinct targets answered 69, 91, 88 and 69 in four runs with different names; a committed single edge answers 11. Passing neighbors: a window with nothing answers 0, and a delete rebuilds the sketch (12 to 11 after deleting one of two targets).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/temporal_stats.json), cases `distinct_d_d1_0_299`. One real target yields distinct count 11; an empty window yields 0, far outside the claimed small-cardinality error. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: "An approximate count from the HyperLogLog sketches ... (about 26% error)" (`_engine/temporal.py:1088-1093`, `TemporalIndex.cls:628-631`, `docs/API_REFERENCE.md` `get_distinct_count`).
 
@@ -1360,7 +1346,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 51)
 
 Found by: iteration 51 W57 case S3 (added after reading `InternLabelSet`; not a frozen prediction); [temporal_stats](models/temporal_stats/NOTES.md) `theorem_label_sets_collide` (for all keys and values); control `escape-values`. Related: [F-0509](#F-0509) (the same missing escaping makes some canonical texts non-JSON).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-51/stats-observed-20261117T034349Z.json) `S3_quote`, `S4_fraction`; [binding](results/temporal_stats/20261117T040000Z-binding/receipt.json) `labels`). `intern_label_set({"a": 'x","b":"y'})` and `intern_label_set({"a": "x", "b": "y"})` both return `7725e82f…`, and resolving it answers `{"a":"x","b":"y"}`. `{"x": 0.5}` resolves to `{"x":.5}`, which `json.loads` refuses. Passing neighbors: the same keys in another order give one hash; an unknown hash resolves to `''`; a purge leaves interned sets.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/temporal_stats.json), cases `labels`. Two different flat attribute sets produce the same canonical text/hash; ordinary reordered attributes correctly share their hash. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: "Canonicalize, hash, and intern an attribute dict" (`_engine/temporal.py:835-846`); spec 204 FR-012 (the canonical form is JSON). A canonical form identifies its set: different sets must not share it.
 
@@ -1381,7 +1367,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: independent review round 2 (session d548b72a, review of commit 8d8d9ae4, probe p51b; item M1). Formal: [temporal_stats](models/temporal_stats/NOTES.md) `theorem_nested_value_hash_per_call`, `theorem_nested_content_ignored` (general), valid neighbor `theorem_scalar_sets_idempotent`; control `nested-serialized-as-json`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, iteration 53 ([probe](../uplift/consolidated/iteration-53/temporal/temporal-observed-20261117T044748Z.json) `M1`; [binding](results/temporal_stats/20261117T045124Z-binding/receipt.json) `nested`). `intern_label_set({"k": {"b": 1}})` twice returns two hashes, resolving to `{"k":"10@%Library.DynamicObject"}` and `{"k":"12@%Library.DynamicObject"}`; a list (`[1, 2]`) and a mixed set (`{"a": "v", "z": [1]}`) behave the same with `%Library.DynamicArray`. `{"k": {}}` and `{"k": {"b": 1}}`, each interned first in its call, share one hash. Passing neighbors: a string, number, boolean or null value interns to one hash on every call and resolves to its JSON value. Not JSON: `InternLabelSet("{not json")` throws a parsing error rather than returning `""`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/temporal_stats.json), cases `nested`. Repeated identical nested values get different object-reference hashes; distinct nested maps also collide. Flat canonicalization is the neighboring case. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: "Idempotent" and "Type fidelity" (`TemporalIndex.cls:1336-1338`); "Canonicalize, hash, and intern an attribute dict" (`_engine/temporal.py:835-846`); spec 204 FR-012 (the canonical form is JSON). Equal sets share one hash; different sets get different hashes.
 
@@ -3482,7 +3468,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: source reading of `IVFIndex.Search` while checking W53's SQL reader ([predictions](../uplift/consolidated/iteration-47/sqlprocs-PAIRS.md); not a frozen prediction); [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cosine_ranks_as_dot` (every query and vector pair) and `theorem_cosine_metric_misranks` (witness), controls `cosine-normalized` (the repaired order; the equal-length neighbor `theorem_equal_lengths_agree`, general since iteration 50, still verifies) and `cosine-takes-l2-branch` (which also fails `theorem_cosine_metric_misranks`, named since iteration 50).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/ivf-cosine-observed-20261117T014744Z.json); [binding](results/ivf_entries/20261117T014907Z-binding/receipt.json) `cosine_ivf_search`, `cosine_kg_IVF`). One graph holds `long_off` = (10,0,0,0), `unit_on` = (0.6,0.8,0,0) and `other` = (0,0,1,0); `ivf_build(..., metric="cosine")`, then the query (0.6,0.8,0,0). `ivf_search` and `SELECT kg_IVF(...)` both answer `long_off` 6.0, `unit_on` 1.0, `other` 0.0. Passing neighbor on the same vectors: the route search `search_nodes_by_vector` answers `unit_on` 1.0, `long_off` 0.6, `other` 0.0. Not exercised: `vector_search`'s IVF fallback and `kg_RRF_FUSE`'s IVF leg (the fixture supports `VECTOR_COSINE`, so the fallback is not taken).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/ivf_entries.json), cases `cosine_ivf_search`, `cosine_kg_IVF`. Both public IVF readers rank the longer nonunit vector ahead of the aligned vector under metric cosine; cell assignment is checked separately. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the metric's name and default (`ivf_build(metric="cosine")`, reported back by `ivf_info`); `_IVF_METRICS` accepts "cosine" and "dot" as different choices; the route search ranks by cosine, and `VecIndex` was changed in 4.7.0 so that a cosine index scores the cosine.
 
@@ -3493,23 +3479,23 @@ Consequence: with stored vectors that are not unit length (`store_embedding` acc
 Repair proposal (not implemented): normalize vectors and centroids at build and insert time for metric "cosine" (or divide by the stored length at search time). Preserve: "dot" and "l2"/"euclidean" scores unchanged; equal-length vectors keep their order. Writers: `ivf_build`, `AddBatch`, `Insert`; readers: `Search` (via `ivf_search`, `kg_IVF`, `ivg.ivf.search`, `vector_search`'s fallback, `kg_RRF_FUSE`). The control `cosine-normalized` checks the repaired order in the model only; the repair was not run on the product. Governing statement: [search.ivf.metric](../ontology/features/search.g5.md#search.ivf.metric).
 
 <a id="bug-srch-110"></a>
-### The engine's fusion reads a cosine IVF index only in the process that built it, so the same call ranks differently elsewhere
+### Fusion chooses a different vector leg on the engine that built a cosine IVF index and on a fresh engine
 
 Severity: Medium · Decision: Open
 
-Description: Combined search uses the cosine IVF index only in the process that built it. A restart or another worker can silently switch search paths and produce a different ranking for the same request.
+Description: Fusion retains index-selection state on the engine instance that built the IVF index. A fresh engine over the same data selects a different vector leg and can change the fused ranking, even within one process.
 
 Run: Uplift 2026-11-17 (continuation, iteration 49)
 
 Found by: W56 prediction F7 ([predictions](../uplift/consolidated/iteration-49/retrieval-PAIRS.md); held for the building engine, missed for a fresh engine and the operators) and the source of `_fusion_leg_index` / `_index_graph`; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_fused_leg_depends_on_building_engine` with neighbor `theorem_other_graph_ivf_not_read`; controls `ivf-scope-persisted`, `hnsw-before-own-ivf`, `ivf-cosine-normalized`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `leg_index_choice_*`, `F7_engine_building`, `F7_engine_fresh`, `F7_ops_fresh`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `choice_building`, `choice_fresh`, `engine_fuse_building`, `engine_fuse_fresh`, `ops_fuse_fresh`). One graph with 62 vectors including L = (10,10,0,0); `ivf_build(..., metric="cosine")` in engine e1. The same `kg_RRF_FUSE(100, 200, 200, 60, [1,0,0,0], "zeta", graph=g)` answers L 31st in e1 (it reads the IVF index, which scores L's dot product 10 first) and 62nd in a fresh engine and in `IRISGraphOperators` (they cannot tell the index's graph and read the server-side cosine search). Passing neighbor: before the IVF build, e1 answers exactly as the fresh engine does.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/retrieval_compose.json), cases `engine_fuse_building`, `engine_fuse_fresh`, `choice_building`, `choice_fresh`. Building and fresh engines select different vector legs and fusion scores over the same data. The observed trigger is engine-local state, including within one process. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: one answer per call and data; [search.ivf.metric](../ontology/features/search.g5.md#search.ivf.metric) (a cosine index scores the cosine).
 
 Observed: `ivf_build` records the index's graph only in the building engine's `_index_graph_scopes` (`vector.py:2023-2025`); `_index_graph` answers None for an IVF index in any other engine (`:164-176`), and `_fusion_leg_index` prefers an index recorded for the graph over `hnsw` (`:187-225`). The IVF leg (`ivf_search`) also ignores `graph`.
 
-Consequence: a service that builds its IVF index in one process and searches in another (or restarts) silently changes the vector leg and the fused ranking; with non-unit vectors, the building process ranks by bug-srch-109's dot product. Medium: wrong ranking, data- and process-dependent.
+Consequence: Replacing the engine instance can silently change fusion results over the same data when stored vectors are not unit length. Medium: the replay establishes engine-instance dependence within one process. A separate restart or cross-process test was not run in this audit.
 
 Repair proposal (not implemented): record an IVF index's graph with the index (as BM25 does) and choose the leg by that, and repair bug-srch-109; preserve the BM25 leg's choice and the hnsw leg's graph scope. Governing statement: [search.fusion.leg_index](../ontology/features/search.g5.md#search.fusion.leg_index).
 
@@ -3524,7 +3510,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 49)
 
 Found by: the source of `Graph.KG.Subgraph.SubgraphJson` while tracing bug-plt-113; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_last_hop_edges_missing`, `theorem_capped_subgraph_lists_edge_to_unlisted_node`; control `edge-recorded-after-cap-test`. Iteration 50: `theorem_capped_subgraph_lists_edge_to_unlisted_node` now holds for every node, adjacency and state at the cap ([review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m9); the repair is checked in the model by the control `edges-among-answered`, which also repairs bug-plt-113's edge loss.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed3-20261117T024208Z.json) `S_star_1hop`, `S_star_cap3`, `S_isolated_seed`; [follow-up](../uplift/consolidated/iteration-49/retrieval-observed2-20261117T024059Z.json) `S_cap*`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `subgraph[*]`). Star s → a1..a6 plus a1 → a2: `kg_SUBGRAPH([s], k_hops=1)` answers a1 and a2 but not the edge a1 → a2; with `max_nodes=3` it answers s, a1, a2 and the edge s → a3; a seed with no edges is not answered. Passing neighbor: `k_hops=2` lists a1 → a2.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/retrieval_compose.json), cases `subgraph`. One-hop subgraphs omit outer-node edges; capped results can include an edge to an omitted node. Two-hop expansion exposes the omitted outer edge. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [algorithms.op.subgraph](../ontology/features/algorithms.g5.md#algorithms.op.subgraph): the nodes within `k_hops`, at most `max_nodes`, and the edges among them.
 
@@ -3545,7 +3531,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L2 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); narrowed by [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 2 (a WITH-held literal list answers correctly); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_row_negative_index_fails` and `theorem_param_negative_index_fails` with neighbors `theorem_with_literal_row_index_follows_rule`, `theorem_literal_index_follows_rule`, `theorem_row_nonnegative_index_follows_rule` and `theorem_ivglistget_is_rule`; controls `row-index-through-ivglistget`, `with-literal-elem-unwrapped`, `with-literal-elem-untyped`, `literal-negative-unwrapped`, `ivglistget-no-wrap`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([iteration-47 observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `I_row_*`, `I_param_neg`, `I_with_list_neg`; iteration 50: [fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `idx_*`, [binding](results/cypher_fns/20261117T033050Z-binding/receipt.json) `index_<source>_<kind>_<i>`, 63 cases over three list sources). Over a stored `n.l = [1, 2, 3]`, `UNWIND [-1] AS i RETURN n.l[i]` (and -3, -4) fails with `-149 ... JSON_ARRAYGET ... <RANGE>`; `WITH n.l AS l UNWIND [-1] AS i RETURN l[i]` fails `<RANGE>` in `JSON_VALUE`; `n.l[$i]` fails "Incorrect number of parameters" for every value; `WITH [1, 2, 3] AS l RETURN l[$i]` with `$i = -1` fails `<RANGE>`. A non-negative run-time index into a list from a property answers text: `UNWIND [0] AS i RETURN n.l[i]` answers `'1'` where `n.l[0]` answers 1. Passing neighbors: a WITH-held literal list read by a row index follows the rule with the element's type (`WITH [1, 2, 3] AS l UNWIND [-1] AS i RETURN l[i]` answers the integer 3, review item 2); every literal index; `CypherFn_IVGLISTGET('[1,2,3]', '-1')` answers 3.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `111_bad`, `111_type`. A run-time -1 index fails and index 0 returns text; the literal -1 returns integer 3. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher (TCK `List1`): a negative index counts from the end, an index past either end is null, and the element keeps its type. The translator already wraps a literal negative index (4.6.0 R267) and a row index into a WITH-held literal list (R308, `CY_LIST_ELEM`).
 
@@ -3568,7 +3554,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L1 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); widened by [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 3 (slice, subscript, coalesce, and the Variable case the model mispredicted); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_stored_list_reversed_as_text`, `theorem_unknown_list_variable_answered_as_text`, neighbor `theorem_reverse_neighbors`; controls `property-to-cy-reverse`, `reverse-column-typed`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([iteration-47 observation](../uplift/consolidated/iteration-47/cypherfn-observed-20261117T015433Z.json) `L1_list`, `L1_empty`; iteration 50: [fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `rev_*`, [binding](results/cypher_fns/20261117T033050Z-binding/receipt.json) `reverse_*`, eleven argument forms). For a Cypher-written `n.l = [1, 2, 3]`: `reverse(n.l)` and `reverse(coalesce(n.l, []))` answer the string `']3 ,2 ,1['`; `WITH [1, 2, 3] AS l RETURN reverse(l[0..3])` answers `']3,2,1['`; `WITH [[1, 2, 3], [4]] AS l RETURN reverse(l[0])` answers `']3,2,1['`; `WITH n.l AS l RETURN reverse(l)` answers the string `'[3,2,1]'` (reversed, but as text). Passing neighbors: `reverse([1, 2, 3])`, `WITH [1, 2, 3] AS l RETURN reverse(l)`, `reverse(n.l + [])`, `reverse(tail(n.l))` and `reverse(CASE WHEN 1 = 1 THEN [1, 2, 3] END)` answer lists; `reverse(n.str)` of `'gotcha'` answers `'ahctog'`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `112_bad`. reverse(stored list) reverses its JSON text; the literal list reverses as a list. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: `reverse()` of a list is the list in reverse order; of a string, the reversed string.
 
@@ -3589,7 +3575,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L7 missed, then source reading ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_row_key_reads_variable_name`, neighbor `theorem_param_key_follows_rule`, control `row-key-by-value`; the WITH-column failure (already in this entry's evidence) gained `theorem_with_column_key_fails` and control `with-key-by-value` in iteration 50 ([review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m5; [binding](results/cypher_fns/20261117T033050Z-binding/receipt.json) `node_with_key`, [fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `key_from_with_column`).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `N_row_key`, `N_with_key`; [idiom](../uplift/consolidated/iteration-47/cypherfn-observed3-20261117T020020Z.json) `keys_idiom`; [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `node_row_key`). A node with `k: 'gotcha'`, `num: 5`: `UNWIND ['num', 'str', 'zz'] AS k RETURN k, n[k]` answers `'gotcha'` on every row; `MATCH (n) UNWIND keys(n) AS k RETURN k, n[k]` answers null for every key; `WITH n, 'str' AS k RETURN n[k]` raises "Non-integer index type for list subscript". Passing neighbor: `n[$k]` with `$k = 'num'` answers 5.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `113_bad`. n[k] reads property k (gotcha), not the property named by the value num (5). [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: `n[k]` is the property whose name is `k`'s value.
 
@@ -3610,7 +3596,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L12 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_rows_share_one_value` (conditional on the observed IRIS premise), control `per-row-evaluation`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `R_return`, `R_collect`, `R_create_*`; [CREATE neighbors](../uplift/consolidated/iteration-47/cypherfn-observed3-20261117T020020Z.json); [binding](results/cypher_fns/20261117T015955Z-binding/receipt.json) `uuid_distinct_over_5`, `rand_distinct_over_5`). `UNWIND [1, 2, 3] AS i RETURN randomUUID(), rand()` answers the same UUID and the same float on all three rows; `UNWIND range(1, 50) AS i WITH randomUUID() AS u RETURN count(DISTINCT u)` answers 1. `CREATE (:X {u: randomUUID()})`, with or without `UNWIND`, fails "nothing written: <LIST ERROR> Cannot write argument in list"; the same `UNWIND ... CREATE` with `u: 'x'` writes three nodes. Other functions inside a `CREATE` map were not checked.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `114_bad`, `114_create`. Five rows receive the same UUID and random number; UUID in CREATE is refused. A scalar RETURN works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: each call of `randomUUID()` returns a new UUID and `rand()` a new number.
 
@@ -3631,7 +3617,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the frozen W55 prediction L1 missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_row_negative_slice_departs` with neighbors `theorem_literal_slice_follows_rule` and `theorem_row_nonnegative_slice_follows_rule`; controls `row-slice-wrapped`, `literal-slice-unwrapped`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `L1_rows`, `L1_param`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F3_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `slice_row_*`, `slice_param_*`, `slice_literal_*`). Over a stored `n.l = [1, 2, 3, 4, 5]`, `UNWIND [[-3, -1]] AS ab RETURN n.l[ab[0]..ab[1]]` answers `[]` (rule `[3, 4]`), `[-3, 5]` answers the whole list (rule `[3, 4, 5]`), `[0, -1]` answers `[]` (rule `[1, 2, 3, 4]`); parameters `n.l[$a..$b]` behave the same, and so does a list the query holds (`WITH [1, 2, 3, 4, 5] AS l`). Passing neighbors: the same bounds written in the query (`n.l[-3..-1]` is `[3, 4]`), and every non-negative run-time bound.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_exprs.json), cases `slice_row_-3_-1`. Run-time negative bounds yield an empty slice where equivalent literal bounds select positions 2..4. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher (TCK `List2` [6], [8]): a negative bound counts from the end; bounds are clamped to the list.
 
@@ -3652,7 +3638,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the frozen W55 prediction C4 missed for its `UNWIND` half ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_row_boolean_condition_fails` (conditional on the observed IRIS premise) with neighbor `theorem_predicate_condition_follows_rule`; controls `row-condition-compared`, `property-condition-raw`, `iris-accepts-scalar-condition`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `C4_unwind`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F6_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `cond_*`, `where_RowVar_*`). `UNWIND [true, false] AS f RETURN CASE WHEN f THEN 'y' ELSE 'n' END`, `WITH true AS f RETURN CASE WHEN f ...`, `RETURN CASE WHEN $f ...` and `UNWIND [true, false] AS f WITH f WHERE f RETURN f` each fail at Prepare with SQLCODE -14 "A comparison operator is required here". Passing neighbors: a stored boolean property (`CASE WHEN n.flag`), a literal, `f = true`, `NOT f`, `f AND true` and the simple `CASE f WHEN true`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_exprs.json), cases `cond_RowVar_true`, `cond_Param_true`, `where_RowVar_true`. A run-time boolean condition fails SQL preparation; comparing it with true works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: any boolean expression is a condition; `CASE WHEN b` takes the branch when `b` is true.
 
@@ -3673,7 +3659,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the frozen W55 prediction W2 missed (W3 held as the owner predicted) ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); the source reading traced bug-cyp-114's `CREATE` refusal; [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_unfolded_create_value_refused` with neighbor `theorem_folded_create_value_written`; controls `create-value-translated`, `toupper-not-folded`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `W2_*`, `W3_*`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F7_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `create_node_*`, `set_node_*`). `CREATE (:X {id: 'a', v: size('ab')})` fails "execute_cypher failed, nothing written: <LIST ERROR> Cannot write argument in list: unknown list type detected", and so do `abs(-1)`, `toInteger('5')`, `substring('abc', 1)`, `replace('a', 'a', 'b')`, `randomUUID()` and `rand()`, with or without `UNWIND`; no node is written. Passing neighbors: `toUpper('ab')`, `toLower`, `trim`, `coalesce(null, 'x')`, `toString(1)`, `toInteger(2.5)`, `1 + 1` and `toUpper($s)` are stored, and `SET x.v = <each of the 15 shapes>` stores the value.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_exprs.json), cases `create_node_Size`, `create_node_Abs`. CREATE refuses supported scalar functions that SET can evaluate; folded functions work. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: a `CREATE` stores each property value its map computes.
 
@@ -3694,7 +3680,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 6 (reviewer probe `p2`); [cypher_fns](models/cypher_fns/NOTES.md) `theorem_null_index_reads_first_element`; controls `null-index-is-null`, `row-index-through-ivglistget`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `idx_null_*`; [binding](results/cypher_fns/20261117T033050Z-binding/receipt.json) `index_*_null`). `WITH [1, 2, 3] AS l UNWIND [null] AS i RETURN l[i]` answers `'1'`; so do `MATCH (n) RETURN n.l[null]`, `n.l[n.nope]`, `UNWIND [null] AS i RETURN n.l[i]`, `WITH n.l AS l UNWIND [null] AS i RETURN l[i]` and `WITH [1, 2, 3] AS l RETURN l[null]`. A null parameter index fails "Incorrect number of parameters". Passing neighbor: the literal list `[1, 2, 3][null]` answers null (folded by the translator).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `126_index_bad`. A null list index selects the first element; the out-of-range control correctly yields null. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher (TCK `List1`): a null index gives null.
 
@@ -3715,7 +3701,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) item 7 (reviewer probe `p5`); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_simple_case_coerces_across_kinds` with neighbor `theorem_simple_case_same_kind_or_literal_follows_rule`; controls `case-kinds-compared`, `case-literal-kinds-unchecked`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `case_simple_*`, `eq_prop_str_vs_int`; [binding](results/cypher_exprs/20261117T033119Z-binding/receipt.json) `simple_case_*`, nine kind pairs). With `n.s1 = '1'` and `n.i1 = 1`: `CASE n.s1 WHEN 1 THEN 'num' WHEN '1' THEN 'str' END` answers `'num'`; `UNWIND ['1'] AS s RETURN CASE s WHEN 1 ...` answers `'num'`; `CASE n.i1 WHEN '1' THEN 'str' ...` answers `'str'`. Passing neighbors: `n.s1 = 1` is false and `CASE WHEN n.s1 = 1 THEN 'num' ELSE 'other' END` answers `'other'`; `CASE '1' WHEN 1 ...` (literal test) takes the ELSE; same-type WHENs match.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_exprs.json), cases `simple_case_prop_str_when_num`, `simple_case_prop_num_when_str`. Simple CASE treats stored numeric text as equal to a number; the literal mixed-type comparison does not. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher and [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality): a simple CASE takes the first WHEN equal to the test, and `'1'` does not equal 1.
 
@@ -3736,7 +3722,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m3 (reviewer probe `p4`). No formal contract (probe and source reading only).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `set_list_from_props`; [follow-up](../uplift/consolidated/iteration-50/review-repro2-20261117T032546Z.json) `set_list_*`, `create_list_property_elem`, `after_refusal_read`). `MATCH (n) SET n.l1 = [n.a, 1]` and `MATCH (n) CREATE (:X {l: [n.a, 1]})` raise `TypeError: Object of type PropertyReference is not JSON serializable` before any SQL runs; `n.l1` stays null. Passing neighbors: `[x, 1]` from `UNWIND`, `[$x, 1]` and `[1 + 1, 1]` are stored.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `128_bad`, `128_read`. A list expression containing a property read raises Python TypeError without writing; a literal list writes and reads back. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: a list literal's elements are evaluated per row and the list is stored; where IVG cannot, a Cypher error naming the property, as the matched-relationship refusal does.
 
@@ -3757,7 +3743,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: iteration 53 W59 frozen prediction P1b ([PAIRS](../uplift/consolidated/iteration-53/bm25-percentile-PAIRS.md), a miss: nearest rank was predicted); [percentile](models/percentile/NOTES.md) `theorem_disc_top_percentile_misses_max` (for every n ≥ 2 and every p with (n − 1)/n < p < 1), `theorem_disc_never_above_rule`, witness `theorem_disc_rounds_down_p90`; control `disc-nearest-rank`. The iteration-47 checks (median, quartiles) give the same answer under both rules, so they could not see it.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-53/bm25/bm25-percentile-observed-20261117T050649Z.json) `P1b_*:sql`; [follow-up](../uplift/consolidated/iteration-53/bm25/followup-observed-20261117T050736Z.json) `unwind_lit_*`, `match_param_0.9`; [binding](results/percentile/20261117T052012Z-binding/receipt.json), 156 cases). `UNWIND [10, 20, 30, 40] AS x RETURN percentileDisc(x, 0.9)` answers 30.0 and `percentileDisc(x, 0.6)` 20.0; `percentileDisc` at 0.95 over 1 to 10 answers 9.0; a stored-value `MATCH` with `$p` = 0.9 and `Percentile_PDISC('[10,20,30,40]', 0.9)` answer the same. p 1/3 over 10, 20, 30, 40 answers 10, because the double 0.333… times 3 is just below 1. Passing neighbors: p 0, 0.25, 0.5, 0.75 and 1 agree with nearest rank; `percentileCont` interpolates correctly (0.9 gives 37.0).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/percentile.json), cases `unwind:three:0.75`, `unwind:four:0.9`. percentileDisc uses floor(p*(n-1)) instead of nearest rank; interior percentiles choose the wrong member while endpoints work. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the owner [query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile) ("the stored value at the nearest rank", "as Neo4j does"); Neo4j's `percentileDisc` "uses a rounding method and calculates the nearest value to the percentile" (index ceil(p × n) − 1, so 40 at 0.9 and 30 at 0.6).
 
@@ -3778,7 +3764,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 frozen predictions AG1 and AG2 ([PAIRS](../uplift/consolidated/iteration-54/clauses-PAIRS.md), both missed); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_sql_group_merges_number_and_its_text` (every spelling), `theorem_sql_group_and_distinct_disagree_on_marked_text` (exactly the pairs with equal text and different storage marks); control `group-by-typed`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-54/clauses-observed-20261117T053516Z.json) `AG1_api`, `AG1_twin`, `AG1_api_distinct`, `AG2_*`; [follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `G_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `A_*`, 112 cases). Over nodes written by `create_node` with `k` = 1, 1, `'1'` and 1.5, `MATCH (n:G) RETURN n.k AS k, count(*) AS c` answers `[1, 3], [1.5, 1]`; `RETURN DISTINCT n.k` answers 1, `'1'` and 1.5. The Cypher-written twin answers the same. `count(DISTINCT n.k)` over 1, `'1'`, 1.0, `'1.0'`, true, `'true'`, `'01'` answers 4 where `RETURN DISTINCT` and `collect(DISTINCT n.k)` list 6 values (true and `'true'` are one stored value, the documented collision). Over a literal list, `UNWIND [1, '1'] AS k` gives one group, one `DISTINCT` row and count 1; `UNWIND [1, true]`, `[[1], '[1]']` give one group but two `DISTINCT` rows. Passing neighbors: two integers, two strings, an integer and a list, `'1'` and `'x'`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_clauses.json), cases `A_Int1_Str1_sql_group`, `A_Int1_Str1_sql_countd`. Grouping and count(DISTINCT) merge integer 1 with string 1 although RETURN DISTINCT separates them. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) ("`DISTINCT` removes repeated equal values") with [equality](../ontology/features/cypher.g5.md#query.values.equality) ("an integer literal on a node matches only a stored number of that value: the string "1" ... do[es] not equal 1"); openCypher groups and counts distinct by equivalence, so 1 and `'1'` are two groups.
 
@@ -3799,7 +3785,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 follow-up (the native executor's answer beside the SQL path's for AG1's shape); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_paths_disagree_exactly_on_marked_text` (for every pair of stored values), `theorem_native_group_follows_rule`; control `native-text-key`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `G_api_group`, `NV_group_api`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `A_Int1_Str1_native_group`, `A_Int2_Str2_native_group`). `MATCH (n:G) RETURN n.k AS k, count(*) AS c` over 1, `'1'`, 1.0, `'1.0'`, true, `'true'`, `'01'` answers 4 groups on the SQL path (`[1, 3]`, …) and 6 on the native executor (`['1', 1]`, `[1, 1]`, `[1.0, 1]`, …). The native executor accepts this shape by default, so the answer depends on which path the planner picks.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `136_sql`. The public SQL engine returns one group and the public native-enabled engine returns two for the same two stored values. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.native.equal-answers](../ontology/features/cypher.g5.md#query.native.equal-answers): the native executor gives the SQL path's answer. The native grouping is the one that follows openCypher here (1 and 1.0 aside; see the [open question](open_questions.md#query.aggregation.keys.numbers)).
 
@@ -3818,7 +3804,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59, after the first observation (`AG4_mixed_props`, `AG7_api_sum`; not among the frozen predictions, whose sums were single aggregates); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_sum_of_property_sums_is_int_column`, `theorem_int_column_loses_any_half` (every total with a half), witness `theorem_probe_totals`; controls `prop-default-unknown`, `int-read-exact`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-54/clauses-observed-20261117T053516Z.json) `AG4_mixed_props`, `AG7_api_sum`, `AG7_twin_sum`; [follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `AR_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `B_*`). With `v` 1, 2 and `f` 2.5, 1.0 written by `create_node`, `RETURN sum(n.v) + sum(n.f)` answers 6 (6.5), in either order; over 1 and 1.5 it answers 2 (2.5) and over 1 and 0.5 answers 2 (1.5): Python's half-to-even round. `sum(r.w) + sum(r.weight)` over relationship values 1 and 2.5 answers 4, for API- and Cypher-written relationships. `min(n.f) * 2` answers the integer 2 for 2.0. Passing neighbors: `sum(n.f)` alone (3.5), `sum(n.v) + 0.5`, `count(*) + 0.5`, `avg(n.v) + 1`, `RETURN 3 + 3.5`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_clauses.json), cases `B_b13_sumv_plus_sumf`. Adding property aggregates loses a fractional part through integer rounding; a bare floating sum and literal-half addition preserve it. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) ("with typed numeric inputs, it stays an integer when every contributor is an integer and a float when one is a float") and openCypher arithmetic (3 + 3.5 = 6.5).
 
@@ -3839,7 +3825,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 frozen prediction UN2 (partial: one row held, the value did not); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_union_answers_marked_text` (every value, any other branches), `theorem_union_dedup_by_raw`, neighbors `theorem_single_query_decodes`, `theorem_all_bool_union_stays_bool`; controls `union-keeps-decoders`, `typed-read-plain`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-54/clauses-observed-20261117T053516Z.json) `UN2_*`; [follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `U_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `C_*`). `MATCH (n {name: 'a1'}) RETURN n.v AS x UNION RETURN 0 AS x` answers `'\x01N1'` for the stored integer 1 (and `UNION ALL` the same), `n.f` answers `'\x01D2.5'`, a stored boolean `'true'`, a stored list `'[1, 2]'`, a relationship's `r.w` `'1'`; without the UNION the same `RETURN n.v` answers 1. `RETURN n.v AS x UNION RETURN 1 AS x` answers two rows; `RETURN 1 AS x UNION RETURN true AS x` answers one row, 1; `UNION` of `1`, `2.5`, `true`, `[1]` answers 1, 2.5 and `'[1]'`, losing `true`. Passing neighbors: a `UNION` of literal numbers, of booleans in every branch, of strings, and row counts with Cypher-written data.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_clauses.json), cases `C_union_stored_int`, `C_dedup_stored_vs_literal_rows`. UNION exposes the stored numeric marker and keeps equal stored/literal values apart; the standalone read decodes correctly. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher `UNION` returns each branch's values with their types and removes duplicate rows by equivalence (TCK Union1-3, all over literals); [query.values](../ontology/features/cypher.g5.md#query.values) (a node property read preserves its stored type).
 
@@ -3864,7 +3850,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59, after the source read of the OPTIONAL MATCH WHERE placement (its prediction, from the owner [query.optional](../ontology/features/cypher.g5.md#query.optional), was written in the probe before it ran: one row per node, null where no match passes); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_outer_arith_or_refused` (conditional on the provider premise P-OUTER-ON), neighbors `theorem_opt_neighbors_follow_rule`; controls `iris-accepts-outer-on`, `opt-cond-in-where`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-54/optional-mixed-observed-20261117T060018Z.json) `*_opt_plus`, `*_opt_or_mixed`, `*_opt_count`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `H_OuterArith_*`, `H_OuterOrOpt_*`). `MATCH (a:L) OPTIONAL MATCH (a)-[:K]->(b) WHERE b.v = a.v + 1 RETURN a.name, b.name`, `... WHERE a.v = 1 OR b.v = 5` and the same with `RETURN count(*)` answer no rows and the result's error "SQLCODE -94 Unsupported usage of OUTER JOIN", for API- and Cypher-written data. Passing neighbors: the same condition under a plain `MATCH` and as a `WITH a, b WHERE ...` after the OPTIONAL MATCH; conditions on the optional side only; `b.v > a.v` and `b.name <> a.name`. The first run of the probe read only the rows and saw an empty answer; it is kept under `iteration-54/failed-runs/`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/clause_combos.json), cases `C_earlier_arith`, `C_or_with_earlier`. OPTIONAL WHERE with arithmetic or OR reading the earlier alias is refused; adjacent predicate shapes run. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional): the WHERE filters the optional matches and the row stays; openCypher allows any predicate there (TCK `Match`/`OptionalMatch` scenarios use predicates on one side).
 
@@ -3885,7 +3871,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59, after the source read (same probe and prediction as [bug-cyp-142](#bug-cyp-142)); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_outer_guard_drops_row`, neighbors `theorem_opt_neighbors_follow_rule`; controls `opt-guard-in-on`, `range-guarded`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-54/optional-mixed-observed-20261117T060018Z.json) `*_opt_eq_props`, `*_opt_and_split`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `H_EqProps_*`, `H_NeProps_*`, `H_OuterLitAndOpt_*`). Over `a1 {v: 1} → a2 {v: 2} → a3 {}`, `OPTIONAL MATCH (a)-[:K]->(b) WHERE b.v = a.v` answers `a1` and `a2` with null `b` and no row for `a3`; `WHERE a.v = 1 AND b.v = 2` answers `[a1, a2], [a2, null]`, again without `a3`; `b.v <> a.v` the same. API- and Cypher-written data alike. Passing neighbors: a node that has the property keeps its null row; `b.v > a.v` (the CY_CMP range) and conditions on the optional side keep every row.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_clauses.json), cases `H_EqProps_missing`. OPTIONAL WHERE drops an anchor missing the compared property instead of preserving its null optional row. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional) and openCypher: a WHERE inside OPTIONAL MATCH never removes the row; `a3` comes back with `b` null.
 
@@ -3898,19 +3884,19 @@ Consequence: rows of the outer `MATCH` disappear from an OPTIONAL MATCH report w
 
 Severity: Medium · Decision: Open
 
-Description: With IRIS driver 5.3.2, expanding a list parameter using UNWIND fails with a parameter-count error. Whether that driver version is supported remains unresolved, so the compatibility impact is conditional.
+Description: The lockfile's IRIS driver 5.3.2 cannot expand a list parameter in a read query; the same query works with 5.4.1. The supported-driver policy remains open, but the locked-environment failure is reproduced.
 
 Run: Uplift 2026-11-17 (continuation, iteration 48)
 
-Found by: the first `cypher_exprs` binding run (its `UNWIND $pairs` read answered no rows, [receipt](results/cypher_exprs/20261117T022138Z-binding/receipt.json)); a follow-up after the binding. No formal contract: potential problem, conditional on the driver.
+Found by: the first `cypher_exprs` binding run and its follow-up. The driver comparison and current formal account are [bolt_answers](models/bolt_answers/NOTES.md), `theorem_unwind_param_depends_on_driver` (provider premise P-DRV-JT). This audit independently replayed both driver environments.
 
-Reproduced by: **Partially reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin and its driver `intersystems-irispython` 5.3.2 (the fixture's venv); not run on 5.4.x. `UNWIND $xs AS a RETURN a` with `$xs = [1, 2]` answers `<PARAMETER ERROR> Invalid number of parameters`, and after a `MATCH` `<ARGUMENT ERROR> Incorrect number of parameters`; the translated SQL reads `JSON_TABLE(?, '$[*]' ...)`. Passing neighbor: `WITH $xs AS l UNWIND l AS a RETURN a` answers `[1], [2]`. Iteration 47's "Incorrect number of parameters" observations for `n.l[$i]` and `m[$k]` ([bug-cyp-111](#bug-cyp-111)) may share this premise.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `F_unwind_param_5.3.2`. The locked 5.3.2 driver fails parameter-list UNWIND; WITH indirection and driver 5.4.1 succeed. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the README: the TCK passes on Community 2026.1 with drivers 5.4.0 and 5.4.1; `pyproject.toml` accepts `intersystems-iris>=1.0.0`. The iris-sql-quirks guide (item 6) says a `?` inside `JSON_TABLE`'s source is not a parameter.
 
-Observed: a potential problem only: whether 5.4.x binds the marker is not established here, and whether 5.3.x is a supported driver is not stated.
+Observed: The fresh two-driver replay confirms that 5.3.2 fails parameter-list UNWIND and 5.4.1 binds it correctly. The product lockfile selects 5.3.2. This is a provider-dependent, reachable read-query failure, not an untested conjecture about 5.4.x.
 
-Consequence: if 5.3.x is supported, the main bulk-load pattern (`UNWIND $rows ...`) fails with it. Low until established.
+Consequence: A public parameter-list read fails in the locked environment. Medium. WITH indirection or driver 5.4.1 avoids this read failure. UNWIND CREATE follows a different route and was observed to write on both drivers; this entry does not claim that bulk writes fail.
 
 Iteration 50 triage of [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m2 ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `param_list_slice*`, `param_list_index`): `RETURN $l[$s..$e]` and `RETURN $l[$s..]` fail "Incorrect number of parameters", and `RETURN $l[$s]` "Invalid number of parameters", while `RETURN $l[1..3]` (worked out in Python, 4.6.0 R311) and `WITH $l AS l RETURN l[$s..$e]` answer `[2, 3]`. The translated slice reads `JSON_TABLE(?, ...)`, the same marker-in-`JSON_TABLE` shape as above, so this is the same premise, not a new finding. Source reading adds one fault that would remain on any driver: `_expr_slice` adds the null-guard markers to the parameter list after the slice's own markers but writes them first in the SQL (`translator.py:23778-23789`), so with a parameter list the first guard would receive the list's text. Not modeled (`cypher_exprs` has no parameter-list base).
 
@@ -3929,7 +3915,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: source reading after the W60 freeze ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md), post-read T1, prediction written before the probe ran); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_long_property_truncated`, neighbor `theorem_short_property_kept`; controls `no-truncation`, `truncate-at-200`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T1_node`, `T1_scalar`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `D3_wire_*`, `D3_unit_*`). A node with `s201` of 201 characters, `s300` of 300 and `lst` = `[0, ..., 99]`: `MATCH (n) RETURN n` over Bolt answers a Node whose `s201` is its first 200 characters plus `...`, and whose `lst` is the string `"[0, 1, 2, ..., 51, 5..."`. Passing neighbors: a 200-character value comes whole; `RETURN n.s201`, `n.lst` and `properties(n)` answer the stored values over Bolt, `execute_cypher` and HTTP.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `D3_wire_s201`, `D3_wire_lst`. The real Bolt driver receives shortened strings/converted lists as node properties; a 200-character string survives intact. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): a Node carries its stored properties (Bolt structure semantics); USER_GUIDE: a list comes back as the list "through `execute_cypher`, REST and Bolt alike".
 
@@ -3952,7 +3938,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: source reading after the W60 freeze (post-read T3, [predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_hash_collision_loses_first_node` (provider premise P-DRIVER-ID), neighbor `theorem_distinct_ids_keep_both`; controls `id-from-node-id`, `driver-no-id-cache`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T3_collide`, `collision`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `D1_wire_collision`). The probe searched node IDs in the listener's own process until two collided (`i55b_061633_h6045`, `i55b_061633_h27318` → 1939752146), created both with `n: 1` and `n: 2`, and read `MATCH (n:L) RETURN n ORDER BY n.n`: two records, both the second node (`n: 2`, its `id`), `result.graph()` one node. `execute_cypher` answers both nodes. Passing neighbor: two nodes whose ids differ arrive as themselves.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `D1_wire_collision`. Two real node IDs with a found 31-bit hash collision arrive as the same driver node with the second value in both rows; distinct hashes keep both. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): each node in a result has its own identity (Bolt: a Node's id and element_id identify it within a transaction).
 
@@ -3975,7 +3961,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: source reading after the W60 freeze (post-read T2, [predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_endpoints_follow_columns`, general `theorem_one_hop_right_iff_source_first`, `theorem_rel_alone_or_last`; controls `swap-columns`, `no-prev-node`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T2_*`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `D2_wire_*`, `D2_unit_*`). Stored `a→b`: `RETURN a, r, b` reports start a, end b (passing neighbor); `RETURN b, r, a` and `MATCH (b)<-[r]-(a) RETURN b, r, a` report start b, end a; `RETURN a, b, r` reports start b and no end; `RETURN r` alone has no endpoints.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `D2_wire_bra`, `D2_wire_rev`. Reordering RETURN columns reverses the driver's relationship endpoints relative to storage; source-first columns work. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [access.bolt.graph_values](../ontology/concepts/access.g5.md#access.bolt.graph_values): a Relationship carries its own start and end node (Bolt structure semantics; openCypher `startNode(r)`).
 
@@ -3998,7 +3984,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: frozen W60 prediction PA4 missed ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); the iteration-50 source note on [bug-cyp-125](#bug-cyp-125) (markers out of order) now observed; [bolt_answers](models/bolt_answers/NOTES.md) `theorem_param_slice_answers_empty`; controls `slice-markers-in-order`, `driver-532-binds`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, under intersystems-irispython [5.3.2](../uplift/consolidated/iteration-55/pipeline-params-5.3.2-observed-20261117T061226Z.json) and [5.4.1](../uplift/consolidated/iteration-55/pipeline-params-5.4.1-observed-20261117T061233Z.json) (an isolated venv outside the repository) ([binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `F_slice_*`). `RETURN $l[$s..$e]` with `l = [1, 2, 3, 4]`, `s = 1`, `e = 3` answers `[]` on 5.4.1 and fails "Incorrect number of parameters" on 5.3.2. Passing neighbor: `WITH $l AS l RETURN l[$s..$e]` answers `[2, 3]` on both.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `F_slice_5.4.1`, `F_slice_5.3.2`. Parameter-bound slicing returns [] on 5.4.1 and fails on 5.3.2; list UNWIND works on 5.4.1. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.parameters](../ontology/features/cypher.g5.md#query.parameters); openCypher list slicing: `[2, 3]`.
 
@@ -4021,7 +4007,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: frozen W60 prediction PA2 missed ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); post-read T4; [bolt_answers](models/bolt_answers/NOTES.md) `theorem_string_operand_matches_number`, general `theorem_int_operands_and_string_values_follow_rule`; controls `string-compare-typed`, `int-param-raw`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, on `execute_cypher`, Bolt and HTTP ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `PA2_str`; [post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T4_*`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `G_*`). Over a node with the integer `v: 1` (written by `create_node`) and one with the string `v: "1"`: `WHERE n.v = '1'` and `WHERE n.v = $x` with `$x = "1"` match both. Passing neighbors: `n.v = 1` and `n.v = $x` with `$x = 1` match only the integer.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `G_StrLit1`, `G_StrParam1`. A string operand matches a stored number; numeric operands use the stored-type guard. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: KNOWN_ISSUES ("A property cannot tell a number from a string that spells it", 4.7.0): a node filter reads the stored type; openCypher: a string never equals a number. [query.values.equality](../ontology/features/cypher.g5.md#query.values.equality).
 
@@ -4044,7 +4030,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: independent review round 3 (review 53-55 F2, reviewer session `c68a5c59`, probe `rv55b … len_*`); [cypher_clauses](models/cypher_clauses/NOTES.md) section I `theorem_unmatched_fixed_path_length_is_hops`, general `theorem_path_fn_departs_exactly_on_unmatched_fixed_length`, neighbor `theorem_bound_or_varlen_path_follows_rule`; controls `fixed-length-from-row`, `varlen-length-from-pattern`, `anchor-null-ignored`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, on an engine with the native executor off and one with it on ([probe](../uplift/consolidated/iteration-56/cypher/cypher-observed-20261117T065840Z.json) `fix1_un`, `fix2_un`; [binding](results/cypher_clauses/20261117T065639Z-binding/receipt.json) `I_fix1_unmatched_len`, `I_fix2_unmatched_len`, `I_fix1_unmatched_len_native_on`). Over `a1 → a2 → a3` written by `create_edge`, `MATCH (a {name: 'a3'}) OPTIONAL MATCH p = (a)-[:K]->(b) RETURN length(p), p IS NULL, nodes(p), relationships(p)` answers `1, true, null, null`; the two-hop pattern from `a2` answers `length(p)` = 2 with `p IS NULL` true. Passing neighbors: a bound path answers its own length (1, 2); a variable-length `OPTIONAL MATCH p = (a)-[:K*1..2]->(b)` with no match answers null and with matches 1 and 2; a null anchor (`OPTIONAL MATCH (a {name: 'none'}) OPTIONAL MATCH p = ...`) answers null; `length(null)` answers null. OPTIONAL MATCH never runs native, so both engines answer the same.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_clauses.json), cases `I_fix1_unmatched_len`, `I_fix2_unmatched_len`. An unbound optional path has its pattern length instead of null; nodes(path) correctly returns null. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional) ("later expressions read them as null") and openCypher: a path the OPTIONAL MATCH did not bind is null, and `length(null)` is null.
 
@@ -4063,7 +4049,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56); first recorded 2026-11-13 (
 
 Found by: install.schema.name metadata ("suspected divergence: the deploy rewrites class sources with the engine's spelling"); iteration 56 frozen pair A6 and the post-read source (`_vector_column_action` reads the width with `GraphSchema.get_embedding_dimension` under the engine's spelling; `rewrite_sources` renames the schema classes to it); [install_lifecycle](models/install_lifecycle/NOTES.md) `theorem_unknown_width_altered_unasked`, control `unknown-width-counted`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin (fresh namespaces; [probe](../uplift/consolidated/iteration-56/install/case_probe.py) → [observation](../uplift/consolidated/iteration-56/install/case-observed-20261117T070557Z.json); binding cases `D:*`, `B:x_lower_*`, `B:fingerprint_after_lower`, `B:x_setup_after_lower`). (1) I56SD: setup with `schema_prefix="I56W"` at width 8, one 8-wide vector stored. An engine `I56W` at width 16: setup raises `EmbeddingIdentityConflict` and nothing changes (passing neighbor). The same engine named `i56w`: the dry run lists all three vector tables under `alter` (the populated one included), and setup succeeds with no warning and no `needs_manual_migration`; afterwards `kg_EdgeEmbeddings` and `kg_NodeEmbeddings_optimized` are declared 16 while the registry still records 8 for them, and the populated `kg_NodeEmbeddings` stays 8 with its vector (IRIS refused that ALTER). (2) I56SB, record `I56X`: setup by an engine named `i56x` reports `objectscript_failed` for `i56x.LedgerRevision`, `i56x.LedgerStats`, `i56x.SqlProcs` (ERROR #5092: name conflict with `I56X.…` differing only in case), re-creates all 58 routines, and clears the deploy fingerprint; the next setup by the `I56X` engine compiles every class and re-creates 58 routines again. The projected procedure and Cypher kept answering (neighbors). Engines named in either case are accepted, as documented.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/install_lifecycle.json), cases `B:x_lower_setup`, `D:lower16_setup`, `D:after_lower`. Case-only schema spelling recompiles wrong-case classes and bypasses empty-column width refusal; the original spelling refuses. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: names that differ only in letter case are the same schema ([install.schema.name](../ontology/concepts/install.g5.md#install.schema.name)), so setup behaves as with the recorded spelling: an empty column at another width is refused without `rewidth=True` (4.7.0, [search.embedding.width](../ontology/features/search.g5.md#search.embedding.width)), the registry width follows the column, and an unchanged class set is not recompiled.
 
@@ -4084,7 +4070,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 57)
 
 Found by: accident, then on purpose: the builder's re-run of the `traversal_strategy` binding overlapped worker W2's binding, which ran `sync()` ([DISAGREES receipt](results/traversal_strategy/20261117T075247Z-binding/receipt.json), 12 cases answered by the SQL fallback with blank types); W61 workflow 3 asked about a rebuild during other work, but no frozen prediction covered reads during a rebuild. Formal: [rebuild_reads](models/rebuild_reads/NOTES.md) `theorem_reader_sees_seed_alone` (general), neighbor `theorem_quiet_reader_sees_rows`; controls `rebuild-swaps` (the repair), `refill-keeps-old`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin: [race probe](../uplift/consolidated/iteration-57/rebuild_race/race_probe.py) ([observation](../uplift/consolidated/iteration-57/rebuild_race/race-observed-20261117T075352Z.json): 897 of 15,944 reads during four `sync()` calls departed) and the [binding](results/rebuild_reads/20261117T075627Z-binding/receipt.json) (AGREES with the as-built model: 4,481 of 58,520 reads during `sync()` saw the seed alone). Default graph `s-R->a, a-Q->b, s-R->c`, declared (functional) index: quiet, `khop(s, 2)` answers s, a, b, c and `shortest_path_length(s, b)` answers 2 (every quiet read); during another process's `sync()`, `khop` answers `[s]`, the length answers -1, and `execute_bfs(s)` answers the right nodes with every type blank (its ObjectScript walk found no edge, the SQL fallback answered the nodes from the rows, and `ReachTypes` read the purged index).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/rebuild_reads.json), cases `during_sync`, `seed_alone_reads`. During six real sync calls, concurrent readers observed the seed alone 7,182 times; 40 quiet reads saw the complete graph. No pause or provider injection forced the race. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [structure.rebuild](../ontology/features/graph-structure.g5.md#structure.rebuild) "running it again is safe", and with a declared index "the adjacency never needs it"; [structure.drift](../ontology/features/graph-structure.g5.md#structure.drift); [algorithms.op.khop](../ontology/features/algorithms.g5.md#algorithms.op.khop) "A walk that fails raises an error rather than answer empty". BuildKG's own comment: "destroyed adjacency looks to every reader like a graph with no edges". The live `^NKG` rewrite is held to "no reader sees an empty or invented ^NKG during the rebuild" (`tests/e2e/test_nkg_live_rewrite_e2e.py`).
 
@@ -4114,11 +4100,7 @@ Found by: iteration 57 W61 R2 (frozen prediction expected the upper bound from t
 the method's own documentation); [adjacency_maint](models/adjacency_maint/NOTES.md) `witness_fast_overcounts` (diamond 2 vs 1; back edge 1 vs 0),
 `theorem_two_hop`; controls `fresh-ignores-stamp`, `walk-counts-source-and-first-hop`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin
-([binding](results/adjacency_maint/20261117T075252Z-binding/receipt.json) and the builder's [re-run](results/adjacency_maint/20261117T075646Z-binding/receipt.json),
-cases `two_hop_after_sync`, `two_hop_after_write`). Default graph, edges on Q57: s2→m1, s2→m2, m1→y, m1→s2, m2→y. Right
-after sync() (stamps `^IVG.BuiltFrom("deg2p"/"deg2p_exact")` = `^KG("__version")`): `khop2_count_fast(s2,"Q57")` = 3,
-`khop2_count_exact` = 1. After `create_edge(z1, R57, z2)` (unrelated): both 1.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/adjacency_maint.json), cases `two_hop_after_sync`. Fast/exact two-hop counts are 3/1 after sync and 1/1 after an unrelated write, confirming the unstable overcount. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: fast answers the number first reached at hop 2 (1), like exact, fresh or stale; or its documentation says
 "an upper bound while the stats are current".
@@ -4149,7 +4131,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction D1 neighbor B (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [result_decoders](models/result_decoders/NOTES.md) `theorem_with_coalesce_number_is_text`; valid neighbor `theorem_property_reads_roundtrip`; controls `with-coalesce-typed` (the repair), `coalesce-cast-gone`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, IRIS drivers 5.3.2 and 5.4.1, all four readers (Python `execute_cypher`, Bolt with neo4j 6.4.1, `/api/cypher`, `/db/neo4j/tx/commit`) ([5.3.2](uplift/consolidated/iteration-58/decoders/decoders-observed-5.3.2-20261117T080853Z.json), [5.4.1](uplift/consolidated/iteration-58/decoders/decoders-observed-5.4.1-20261117T080939Z.json) `D1_coalesce`; [binding](results/result_decoders/20261117T082201Z-binding/receipt.json) `*_WithCoalesce_*`). Stored `3`, `2.5`, `true` come back as `'3'`, `'2.5'`, `'true'`; `RETURN coalesce(...)` without the WITH returns them typed.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/result_decoders.json), cases `5.3.2_TX_WithCoalesce_int`, `5.4.1_TX_WithCoalesce_int`. WITH coalesce returns a stored number as text on both tested drivers; the direct property read keeps its type. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: coalesce returns its first non-null argument unchanged. [query.values](../ontology/features/cypher.g5.md#query.values): "A node property read preserves its stored numeric type".
 
@@ -4170,7 +4152,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction D1 A (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [result_decoders](models/result_decoders/NOTES.md) `theorem_case_bool_is_text`, `theorem_case_container_is_text`, `theorem_case_number_by_driver`; neighbor `theorem_strings_held_everywhere`; controls `case-typed`, `case-prop-text`, `driver-541-native`.
 
-Reproduced by: **E2E reproduced**, both drivers, all four readers plus the native-default engine (`D1_case`, `D1_case_noid`, `D1_ret_case`; [binding](results/result_decoders/20261117T082201Z-binding/receipt.json) `*_RetCase_*`, `*_WithCase_*`). Under 5.3.2: `3`, `2.5`, `'txt'`, `'true'`. Under 5.4.1: `'3'`, `'2.5'`, `'txt'`, `'true'`. A stored `[1, 2]` comes back as `'[1, 2]'`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/result_decoders.json), cases `5.3.2_TX_RetCase_btrue`, `5.4.1_TX_RetCase_int`. CASE returns a stored boolean as text and, on 5.4.1, a number as text; the direct property reader works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: CASE returns the chosen branch's value with its type. [query.values](../ontology/features/cypher.g5.md#query.values): `CY_TYPED` decides the type rather than the driver's column type.
 
@@ -4191,7 +4173,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: iteration 56 frozen pair F1 (missed: neither the placement nor a named refusal occurs); `_quarantined_row` (`_engine/schema.py:2072-2095`) returns `row[0]`, `row[1]`, `row[2]` after `cursor.close()`, which `get_embedding_identity` (1050-1053) explicitly avoids ("The IRIS driver's DataRow is a live view onto the cursor: reading it after close() raises <COMMUNICATION LINK ERROR> Cursor closed"); [install_lifecycle](models/install_lifecycle/NOTES.md) `theorem_unreadable_row_never_placed`, premise P-DATAROW-CLOSED, control `row-read-materialized`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin (namespace I56SA, intersystems-irispython 5.3.2; binding cases `Q:place_*`). Six quarantined rows (q1 and q2, widths 4 and 3, dtypes DOUBLE and FLOAT), a route (`g1`, `qm`) of width 4 and node q1 in `g1`: every `place_quarantined(q_rowid, graph=..., model_key="qm")` raises `ProgrammingError: <COMMUNICATION LINK ERROR> Cursor closed; Details: DataRow is inaccessible and/or Cursor is closed`, whatever the route, width, dtype or node; the quarantine keeps six rows and the route none. Passing neighbors: a q_rowid with no row raises the documented `ValueError`; `list_quarantine()` lists six and refuses an unknown reason. With `_quarantined_row` materializing the row first (the proposed repair, substituted in the harness only), every documented outcome holds (`QR:*`): no route, width and dtype conflicts, node not in the graph refused with the row kept; the valid row placed (quarantine −1, route +1); a second vector for the same node refused by the route's key (SQLCODE -119) with the row kept; totals conserved; no route created.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/install_lifecycle.json), cases `Q:place_ok`, `Q:total_conserved`. A valid quarantine placement fails Cursor closed through DB-API and leaves the row quarantined. An explicitly repaired cursor-materialization control succeeds; it is not shipped behavior. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [search.quarantine.placement](../ontology/features/search.g5.md#search.quarantine.placement) and ADMIN_GUIDE §9: an operator places each quarantined vector, naming its graph; placement succeeds when the route and node fit, and refuses naming the reason otherwise.
 
@@ -4212,7 +4194,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: frozen W60 prediction ER2 (the failure held; its code was not predicted); source `_handle_run`; [bolt_answers](models/bolt_answers/NOTES.md) `theorem_runtime_failure_reported_as_syntax`, neighbor `theorem_gate_codes_follow_rule`; controls `code-by-cause`, `gates-folded`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `ER2_union_count`, `PA3_*`, `PA6_missing`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `C_*`). An SQLCODE -1 failure ([bug-cyp-140](#bug-cyp-140)), a driver "Invalid number of parameters" and an undefined parameter each raise `CypherSyntaxError` with code `Neo.ClientError.Statement.SyntaxError`; `/db/neo4j/tx/commit` answers the same code. Passing neighbors: a parse error is a SyntaxError; `IVG_READ_ONLY` gives AccessMode; a wrong key gives Unauthorized.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `C_iris_sql`, `C_driver_param`. The real Bolt listener calls provider/parameter failures SyntaxError; genuine parse errors and the read-only gate show the neighboring classifications. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [access.bolt.errors](../ontology/concepts/access.g5.md#access.bolt.errors): Neo4j status codes classify a failure by cause (a database failure is a DatabaseError or TransientError; a missing parameter is ParameterMissing).
 
@@ -4233,7 +4215,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: post-read T5 ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)); [bolt_answers](models/bolt_answers/NOTES.md) `theorem_overflow_breaks_connection`, neighbors `theorem_int64_values_arrive`, `theorem_marker_is_smallest`; control `nofit-is-failure`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, the product's own TCP Bolt listener (`start_tcp_bolt_server`, real engine) and the neo4j Python driver 6.4.1 ([post-read probe](../uplift/consolidated/iteration-55/pipeline-observed2-20261117T061633Z.json) `T5_*`; [binding](results/bolt_answers/20261117T062350Z-binding/receipt.json) `B_wire_overflow`). `RETURN 9223372036854775807 + 1 AS x`: `execute_cypher` answers 9223372036854775810; over Bolt the driver raises `ServiceUnavailable` ("defunct connection"), and a raw client sees the socket closed. Passing neighbors: 2⁶³−1 and −2⁶³ arrive; the literal 9223372036854775808 is refused as IntegerOverflow on every reader.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bolt_answers.json), cases `B_wire_overflow`. An oversized integer accepted by the engine breaks the Bolt connection instead of producing FAILURE; int64 maximum arrives. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: integer arithmetic overflows with an error; [access.bolt.results](../ontology/concepts/access.g5.md#access.bolt.results): a failed RUN or PULL is a FAILURE.
 
@@ -4254,7 +4236,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 55)
 
 Found by: frozen W60 prediction RT8 (TX) missed ([predictions](../uplift/consolidated/iteration-55/pipeline-PAIRS.md)).
 
-Reproduced by: **E2E reproduced** in-process (FastAPI `TestClient`) against the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-55/pipeline-observed-20261117T061246Z.json) `RT8_node`, `RT9_*`, `RT10_rel`). `MATCH (n) RETURN n` on `POST /db/neo4j/tx/commit` answers columns `n_id`, `n_labels`, `n_props` with JSON text, as `execute_cypher` does; Bolt answers one Node. Passing neighbor: `RETURN properties(n)` answers the map with node `meta`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `126_bad`. The real HTTP transaction route returns one node as three text columns; properties(n) returns a property map with node metadata. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the Neo4j HTTP API answers a node as its property map with node `meta`; [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces) (each call does what the engine method does) does not settle which shape a Neo4j route owes.
 
@@ -4263,6 +4245,8 @@ Observed: the route returns the engine's columns unchanged; only Bolt recomposes
 Consequence: a Neo4j HTTP client gets three columns per node and must parse JSON text. Low.
 
 Governing statement: [access.surfaces](../ontology/concepts/access.g5.md#access.surfaces).
+
+Audit qualification: Neo4j HTTP compatibility discrepancy; the narrower current access.surfaces ontology does not itself settle node response shape.
 
 <a id="bug-cyp-139"></a>
 ### SKIP and LIMIT use a string, boolean or whole-float parameter as a count, and call a null parameter "not provided"
@@ -4275,7 +4259,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 (WS3 held for `-1` and 1.5; the other kinds were found after the first observation); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_non_integer_parameter_used`, neighbor `theorem_integer_and_fraction_follow_rule`; controls `page-int-only`, `page-no-negative-check`, `page-no-fraction-check`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `L_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `D_*`). `LIMIT $l` with `l` = `'2'` answers two rows, with `true` one row, with `false` none, with 2.0 two rows; `'-1'` gives NegativeIntegerArgument, `'x'` a raw Python `ValueError` ("invalid literal for int()"), and `null` "Parameter '$l' used in SKIP/LIMIT but not provided in params dict" although it was provided. `SKIP` behaves the same. Passing neighbors: integer literals and parameters, negative ones (NegativeIntegerArgument), 1.5 (InvalidArgumentType), a missing parameter.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_clauses.json), cases `D_str_2`, `D_bool_true`, `D_float_2.0`, `D_null`. Pagination accepts text, boolean and whole-float counts; null is reported as missing, while fractional floats are refused. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher (TCK ReturnSkipLimit1-2: a floating point parameter fails with InvalidArgumentType; a negative one with NegativeIntegerArgument): `SKIP` and `LIMIT` take a non-negative integer, and a value of another type is an InvalidArgumentType.
 
@@ -4294,7 +4278,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: owned as built in iteration 53 ("Today both answer a float"); registered after independent review round 3 (review 53-55 minor "percentile result type"); [percentile](models/percentile/NOTES.md) `theorem_disc_over_ints_answers_float`, neighbor `theorem_float_and_cont_kinds_follow_rule`; control `disc-keeps-input-kind`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-56/cypher/cypher-observed-20261117T065840Z.json) `pct_int`, `pct_flt`, `min_int`; [binding](results/percentile/20261117T065550Z-binding/receipt.json) `kind:unwind:int`, `kind:match:int`). `UNWIND [10, 20, 30, 40] AS x RETURN percentileDisc(x, 0.5)` answers `20.0` (a Python float), also over stored integers. Passing neighbors: `percentileCont` answers `25.0` (a float, as it should); over floats `percentileDisc` answers `1.5`; `min(x)` and `max(x)` over the same integers answer `10` and `20` as integers, on both engines.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/percentile.json), cases `kind:unwind:int`, `kind:match:int`. percentileDisc returns float for integer contributors. The neighboring continuous percentile correctly returns float. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile): `percentileDisc` answers one of the values, so it keeps their type; Neo4j answers `20` over integers (openCypher TCK `Aggregation6` compares percentileDisc results over integers as integers).
 
@@ -4313,7 +4297,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: independent review round 3 (review 53-55 minor "null percentile parameter", probe `pct_param_null`, `pct_param_str`); the other kinds by the iteration-56 probe; [percentile](models/percentile/NOTES.md) `theorem_non_number_p_not_refused`, general `theorem_p_departs_exactly_on_non_numbers`; controls `null-param-refused`, `literal-null-refused`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-56/cypher/cypher-observed-20261117T065840Z.json) `pct_p_*`, `pct_lit_null`; [binding](results/percentile/20261117T065550Z-binding/receipt.json) `p:*`). Over `UNWIND [10, 20, 30] AS x RETURN percentileDisc(x, $p)`: `$p` = null raises `TypeError: float() argument must be a string or a real number, not 'NoneType'` out of `execute_cypher` (percentileCont the same); `$p` = `'x'` raises `ValueError: could not convert string to float`; `$p` = `'0.5'` answers 20.0; `$p` = true answers 30.0 (p = 1); a literal `percentileDisc(x, null)` answers 10.0 (p = 0). Passing neighbors: `$p` = 0.5 and a literal 0.5 answer 20.0; a missing `$p` is "Undefined variable: p".
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/percentile.json), cases `p:param_null`, `p:param_numtext`, `p:lit_null`. Null percentile parameters raise raw TypeError, numeric text is accepted, and literal null acts as zero; numeric inputs work. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.functions.percentile](../ontology/features/cypher.g5.md#query.functions.percentile): `p` is a number from 0 to 1; anything else fails as a Cypher argument error (openCypher does not say whether a null p fails or answers null; both readings reject a raw Python exception and the p = 0 answer).
 
@@ -4332,7 +4316,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 follow-up (`U_count`); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_label_count_branch_fails`, neighbor `theorem_count_alone_and_other_branches_prepare`; controls `count-guard-sees-union`, `shortcut-newline-from`, `ensure-from-always`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `U_count`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `E_*`). `MATCH (n:L) RETURN count(n) AS x UNION ALL RETURN 0 AS x` and `MATCH (n:L) RETURN count(*) AS x UNION RETURN 7 AS x` fail at Prepare (`SQLCODE -1`, "`)` expected, FROM found", the statement holding `... FROM Graph_KG.rdf_labels WHERE label = ? FROM (SELECT 1) __dual`). Passing neighbors: the count alone, and a `UNION ALL` whose branch returns `n.name`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_clauses.json), cases `E_count_union`, `E_count_union_all`. Whole-label count in a UNION fails while the count alone and neighboring union shape work. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher allows any branch that returns the same columns (TCK Union1-3).
 
@@ -4351,7 +4335,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 54)
 
 Found by: iteration 54 W59 (`PA4_rels`, after the frozen PA4 row, which asked only for `type()`); [cypher_clauses](models/cypher_clauses/NOTES.md) `theorem_path_element_endpoints_fail`, neighbor `theorem_type_and_matched_endpoints_work`; controls `endpoint-reads-json`, `type-reads-alias`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-54/clauses-observed-20261117T053516Z.json) `PA4_rels`; [follow-up](../uplift/consolidated/iteration-54/clauses-observed2-20261117T053826Z.json) `R_*`; [binding](results/cypher_clauses/20261117T060402Z-binding/receipt.json) `F_*`). `MATCH p = (a)-[:K*1..2]->(c) RETURN [r IN relationships(p) | startNode(r).name]` fails at Prepare ("Field 'LC5.S' not found"), for fixed-length paths too, and so does `endNode(r)`; `type(r)`, `r.w` and `r` itself answer. `startNode(r)` of a matched relationship answers.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_clauses.json), cases `F_fixed_StartNode`, `F_fixed_EndNode`. Endpoint functions fail on a relationship extracted from a path; matched-relationship endpoints and path-element type work. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: `startNode(r)` of any relationship value is its start node; USER_GUIDE shows path functions with comprehensions (`[n IN nodes(p) | n.name]`).
 
@@ -4370,7 +4354,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: independent review round 2 (session d548b72a, probe p51; item m1). Formal: [temporal_stats](models/temporal_stats/NOTES.md) `theorem_ms_edge_in_seconds_whole_bucket` (general, with the seconds-class neighbor); control `ms-buckets-apart`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, iteration 53 ([probe](../uplift/consolidated/iteration-53/temporal/temporal-observed-20261117T044748Z.json) `m1_*`; [binding](results/temporal_stats/20261117T045124Z-binding/receipt.json) `ms_in_sec_*`). `TemporalIndexMS.InsertEdge` at (T+50)·1000 ms, then the seconds readers over [T, T+299]: `get_temporal_aggregate` count 1, sum 2.0, one `get_bucket_groups` row, `get_edge_velocity` 1, `get_distinct_count` 11; while `get_edges_in_window` and `get_bucket_group_targets` over the same window answer nothing and the cut window [T, T+298] counts 0. The converse holds: the millisecond class's whole-bucket `GetAggregate` counts a seconds edge (1; cut window 0).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/temporal_stats.json), cases `ms_in_sec_whole_count`, `ms_in_sec_raw_window`. A millisecond-class write contaminates a seconds whole-bucket count while the raw window is empty. This requires a direct millisecond-class writer. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: aggregate and group reads answer exactly the requested window, and velocity counts whole buckets of the reader's own unit ([temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window)); the millisecond class is a "supported" separate unit (`TemporalIndexMS.cls:1-3`).
 
@@ -4391,7 +4375,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: independent review round 3 (session c68a5c59, challenge to the round-2 m2 disposition), on the as-built observation of the iteration-53 probe (`m2_*`). Formal: [temporal_stats](models/temporal_stats/NOTES.md) `get_aggregate_keys`, `theorem_empty_key_quiet_cut_window_answers_zero` (general over every state, graph, key and window), neighbor `theorem_empty_key_raises_with_whole_bucket_or_event`, witness `theorem_empty_key_witness`; controls `empty-key-refused` (the repair) and `empty-key-never-raises`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, iteration 56 ([binding](results/temporal_stats/20261117T065845Z-binding/receipt.json) cases `ek_*`). One edge `ek -P-> a` at T+50 in a fresh graph (T on a 300-second bucket boundary). `get_temporal_aggregate("", "P", "count", T+100, T+200)` answers `0`; `sum` answers `0.0`; `(ek, "", count)` and `("", "", count)` answer `0`. The same empty-source read over [T+10, T+100] (the edge's timestamp in the cut part) raises `RuntimeError: <SUBSCRIPT>GetAggregate+32 ^KG("tout",g,T+50,"")`; over the whole bucket [T, T+299], and over the empty whole bucket [T+300, T+599], it raises `<SUBSCRIPT>GetAggregate+13 ^KG("tagg",g,b,"")`. Neighbor: `(ek, "P", count)` answers 1 over [T+10, T+100] and 0 over [T+100, T+200].
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/temporal_stats.json), cases `ek_src_quiet_count`, `ek_src_event_count`, `ek_errors`. An empty source returns 0 in a quiet partial window but errors when an event is met; valid-key calls have consistent results. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: an aggregate read needs a source and a predicate ([temporal.stats.window](../ontology/features/temporal.g5.md#temporal.stats.window)); no document promises an empty key as a wildcard (USER_GUIDE 1011-1027, the `get_temporal_aggregate` docstring), so an invalid call is refused, the same way whatever the window.
 
@@ -4412,7 +4396,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: independent review round 3 (session c68a5c59, minor "kg_BM25 vs bm25_search"). Formal: [bm25_scoring](models/bm25_scoring/NOTES.md) `taken`, `entry_k`, `theorem_sql_k_nonpositive_empty_others_refuse` (general over k and the ranked count); controls `sql-entry-validates-k` (the repair) and `nonpositive-k-takes-all`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, iteration 56 ([binding](results/bm25_scoring/20261117T070040Z-binding/receipt.json) cases `k:*`). Over one built index and the query `graph`: `SELECT Graph_KG.kg_BM25(name, 'graph', 0)` and `(…, -1)` answer `[]`; `bm25_search(name, 'graph', 0)` and `-1` raise a pydantic `ValidationError` (k ≥ 1); `CALL ivg.bm25.search(name, 'graph', 0)` and `-1` raise `ValueError`. Neighbor: k 1 answers the same single top document on all three.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/bm25_scoring.json), cases `k:sql@0`, `k:sql@-1`. The SQL reader returns [] for invalid k while Python/Cypher refuse it; positive k searches work. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the three readers apply one argument rule. The translator (`_translate_bm25_search`, translator.py 3161-3166) says the procedure validates "the model bm25_search runs: a name and a query that are not blank, and k of 1 or more (4.6.5)"; ADMIN_GUIDE 256 and 433 list `kg_BM25` as the SQL form of the same search.
 
@@ -4433,7 +4417,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56); first recorded 2026-11-13 b
 
 Found by: install.schema.existing metadata; iteration 56 frozen pair A3 (missed: the frozen owner reading predicted a refusal); [install_lifecycle](models/install_lifecycle/NOTES.md) `theorem_other_schema_needs_a_name` (as built), control `explicit-refused` (the FR-009 repair).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin (namespace I56SB; binding cases `B:default_*`, `B:y_explicit_dry`, `B:y_env_dry`, `B:y_explicit_setup`, `B:record_after_explicit`, `B:x_call_after_explicit`). IVG's tables in `I56X` only, the record removed. Passing neighbor: a default engine's dry run and setup raise `IVGSchemaError` naming `I56X` and record nothing. An engine with `schema_prefix="I56Y"` (or `IVG_SCHEMA_PREFIX=I56Y`): the dry run plans `explicit` with `other_schemas` `I56X`; setup records `I56Y` and creates its 18 tables, and from then on an engine for `I56X` is refused (mismatch).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/install_lifecycle.json), cases `B:y_explicit_setup`, `B:x_call_after_explicit`. Explicit setup selects another schema and makes the old engine fail. Runtime is confirmed; spec 262 and ADMIN_GUIDE disagree on whether this is allowed. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: spec 262 FR-009: "when it is another [schema], the engine MUST be refused with an error naming that schema ... and MUST record nothing"; an explicit name settles only the several-schema case. ADMIN_GUIDE's reply table (`explicit`: "named with `schema_prefix=` beside another schema's IVG tables") and the error's own advice ("to start a new IVG Schema beside it, name it explicitly") describe the as-built path: a doc conflict, kept with the spec as the owner does.
 
@@ -4442,6 +4426,8 @@ Consequence: one setup call with an explicit name abandons the existing tables' 
 Repair proposal (not implemented, not checked): refuse an explicit name when IVG's tables are in exactly one other schema (as FR-009), or amend FR-009 and the owner to the guide's reading; a decision either way.
 
 Governing statement: [install.schema.existing](../ontology/concepts/install.g5.md#install.schema.existing).
+
+Audit qualification: Runtime reproduced; source documents conflict. Retained as a Low contract/documentation discrepancy, not an owner-approved product-policy decision.
 
 <a id="bug-plt-133"></a>
 ### An unrecorded namespace whose IVG Schema holds this release's SQL objects admits engines
@@ -4454,7 +4440,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: iteration 56 frozen pair A5 (missed: the owner predicts a refusal); `check_first_access` (`schema_name.py:220-242`: with no record, the class `<package>.funcCYCMP` admits the engine; with a record, nothing is probed); [install_lifecycle](models/install_lifecycle/NOTES.md) `theorem_unrecorded_with_marker_admitted`, `theorem_record_admits_without_objects`, control `unrecorded-marker-refused`. Documented in KNOWN_ISSUES ("After an interrupted setup the engine accepts the namespace, and its edge writes fail"), with no register entry before.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin (namespace I56SA; binding cases `A:norecord_marker_call`, `A:record_nomarker_call`, `A:norecord_nomarker_call`). After a complete setup, `^IVG.Deploy("schema")` killed: a new engine's first call answers (0). With the record present and `Graph_KG.CY_CMP` dropped: a new engine answers. Passing neighbor: with both the record and the marker function gone (IVG's classes and globals still there), the first call raises "setup has not finished here"; the next setup records `inferred` and recreates the one routine.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/install_lifecycle.json), cases `A:norecord_marker_call`. An unrecorded namespace with SQL markers admits an engine; removing markers causes the expected refusal. Documentation and ontology disagree on the conjunction. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [install.schema.not_ready](../ontology/concepts/install.g5.md#install.schema.not_ready): an engine on a namespace with no schema record, or without the current release's SQL objects, raises one error on first access. ADMIN_GUIDE describes the as-built rule ("no record and lacks 4.6.0's SQL objects").
 
@@ -4463,6 +4449,8 @@ Consequence: an engine runs on a namespace whose last setup stopped after its DD
 Repair proposal (not implemented, not checked): refuse with no record regardless of the marker (the control `unrecorded-marker-refused`), keeping setup, status and legacy removal exempt; optionally probe the marker when a record exists. Distinguishing case: `A:norecord_marker_call` must then raise "setup has not finished here".
 
 Governing statements: [install.schema.not_ready](../ontology/concepts/install.g5.md#install.schema.not_ready), [install.setup.resume](../ontology/concepts/install.g5.md#install.setup.resume).
+
+Audit qualification: Runtime reproduced; source documents conflict. Retained as a Low contract/documentation discrepancy, not an owner-approved product-policy decision.
 
 <a id="bug-plt-134"></a>
 ### A populated vector table at another width beside empty ones blocks setup both ways, and the manual-migration reply never comes
@@ -4475,7 +4463,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 56)
 
 Found by: iteration 56 frozen pair D2 (partly missed); `_refuse_width_change` (`_engine/schema.py:1564-1599`) checks every vector table: an empty one at another width refuses without `rewidth`, a populated one refuses with it; [install_lifecycle](models/install_lifecycle/NOTES.md) `col_action`, `width_refused`, `theorem_populated_never_rewidened`, `theorem_empty_other_width_needs_rewidth`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin (namespace I56SA; binding cases `W:e8_dry_populated`, `W:e8_setup_populated`, `W:e8_rewidth_populated`, `W:col_after_populated`, `W:rows_after_populated`). All three vector tables declared 16, one 16-wide vector in `kg_NodeEmbeddings`, the others empty. An engine at width 8: the dry run lists `kg_NodeEmbeddings` under `needs_manual_migration` and the other two under `needs_rewidth`; `initialize_schema()` raises `EmbeddingIdentityConflict` (the empty tables); `initialize_schema(rewidth=True)` raises too (the populated one). Nothing changes; the vector stays. Passing neighbor: with all tables empty, `rewidth=True` re-declares them (`W:e16_rewidth`).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/install_lifecycle.json), cases `W:e8_setup_populated`, `W:e8_rewidth_populated`. Both setup modes refuse a mixed-width populated/empty layout without the documented manual-migration reply; an all-empty rewidth works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: ADMIN_GUIDE §11: "plain `initialize_schema()` names the table in `status["needs_manual_migration"]`, with a matching entry in `status["warnings"]`"; the dry run's own lists predict that reply.
 
@@ -4496,7 +4484,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: iteration 53 Part B, frozen prediction ME4 (partial: the edges held, the weight missed), after reading `_trp_directed_edge_join` and `_expr_propref_edge_alias`; [sql_procs](models/sql_procs/NOTES.md) `theorem_edgescan_reads_null_property` (for every edge with a stored weight), neighbor `theorem_unweighted_and_named_agree`; control `scan-exposes-weight`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json) `edgescan`; [binding](results/sql_procs/20261117T051429Z-binding/receipt.json) `hop_*`). `MATCH (a {id: 'a'})-[r:P]->(b) RETURN b.id, r.weight` answers `b 1.0`, `b 2.0`, `b2 1.0`, `d 10.0` by default and the same targets with `r.weight` null under `IVG_EDGESCAN=1`; `USE GRAPH ''` the same; `USE GRAPH 'g'` (rows plan) is unchanged. `count(r)` agrees (5 and 5).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/sql_procs.json), cases `hop_default_1`, `hop_named_1`. The EDGESCAN route loses relationship properties that the normal route reads. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: `IVG_EDGESCAN` chooses a plan, "the plan before 4.3.0" (ADMIN_GUIDE:1248, API_REFERENCE:3215), and CHANGELOG 4.3.0 reports both plans' answers equal; a plan choice must not change what a query answers ([structure.adjacency.scan](../ontology/features/graph-structure.g5.md#structure.adjacency.scan)).
 
@@ -4517,7 +4505,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: iteration 53 Part B, frozen predictions BF1/BF2 (missed: the count), after reading `BackfillWalk`; [sql_procs](models/sql_procs/NOTES.md) `theorem_backfill_count_overstates` (for every state where one structural triple already has a row), `theorem_backfill_idempotent_same_count`, neighbor `theorem_backfill_count_exact_when_all_missing`; control `count-written-rows`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json) `backfill`; [binding](results/sql_procs/20261117T051429Z-binding/receipt.json) `bf_*`). With three structural temporal triples that already had marked rows, `SELECT Graph_KG.backfill_temporal_rows()` answered 3 and wrote nothing; again 3; after one row was deleted by SQL, 3 (one row written, marked); after an explicit edge with a timestamp, 4 (nothing written, the explicit row stays unmarked). The temporal-only predicate got no row and was not counted.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/sql_procs.json), cases `bf_count_1`, `bf_count_2`, `bf_rows_1`, `bf_rows_2`. A repeated backfill still reports walked edges even though row count is unchanged; the initial run establishes actual inserted rows. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: ADMIN_GUIDE:413 documents setup's `temporal_rows_backfilled` as "the temporal edges it gave rows first"; setup stores this function's answer there (`schema.py:878-884`).
 
@@ -4538,7 +4526,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: iteration 53 Part B, after reading `DijkstraJson`'s endpoint tests (not a frozen prediction; DJ10 covered equal ids only); [sql_procs](models/sql_procs/NOTES.md) `theorem_sql_empty_endpoints_zero_path`, neighbors `theorem_dijkstra_endpoint_neighbors`; control `nul-read-as-empty`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-53/sqlprocs/sqlprocs-observed-20261117T050743Z.json) `dijkstra.empty_both`; [binding](results/sql_procs/20261117T051429Z-binding/receipt.json) `dj_empty_both`). `SELECT Graph_KG.DijkstraPath('', '', '', 9999, 10, 'out', '', 'g')` answers `{"nodes":["\u0000"],"rels":[],"costs":[],"length":0,"totalCost":0.0}`. Neighbors: `DijkstraPath('', 'd', …)` answers `{}`; the Cypher CALL with `''` raises "from parameter not supplied".
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/sql_procs.json), cases `dj_empty_both`. The SQL entry returns a zero-cost path containing NUL for two empty endpoints; one empty endpoint correctly yields no path. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: an empty source or target answers no path; "direct native empty endpoints answer no path" ([algorithms.op.paths.weighted](../ontology/features/algorithms.g5.md#algorithms.op.paths.weighted); the parent path-search rule says the same).
 
@@ -4560,7 +4548,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 57)
 Found by: iteration 57 W61 frozen prediction S2 (held: the owner working assumption of
 [algorithms.op.paths.direction](open_questions.md#HD-1003) names the gap); [traversal_strategy](models/traversal_strategy/NOTES.md) `theorem_in_length_differs`, neighbor `theorem_lengths_agree_out_both`; controls `length-in-reversed` (the repair), `esp-no-reversal`, `length-both-as-out`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([binding](results/traversal_strategy/20261117T074632Z-binding/receipt.json) `sp_in_p3_p1`, `sp_in_p1_p3`; neighbors `sp_out_p1_p3`, `sp_both_p3_p1`). On the default-graph chain p1-R->p2-R->p3: `execute_shortest_path(p3, p1, [], 5, 'in')` answers length 2 and `shortest_path_length(p3, p1, [], 5, 'in')` answers -1; the reverse pair `(p1, p3, 'in')` answers -1 and **2**. Neighbors: 'out' and 'both' answer the same length on both readers.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/traversal_strategy.json), cases `sp_in_p1_p3`, `sp_in_p3_p1`. The public store length method follows outgoing edges when asked for incoming direction; execute_shortest_path disagrees. No Cypher impact is claimed. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: `IRISGraphStore.shortest_path_length`'s docstring: "what execute_shortest_path's paths' length is, without them"; [algorithms.op.paths](../ontology/features/algorithms.g5.md#algorithms.op.paths) "The search can follow the edges, go against them, or do both"; the working assumption "Require IRISGraphStore.shortest_path_length to reverse 'in' as execute_shortest_path does".
 
@@ -4581,7 +4569,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 57)
 
 Found by: iteration 57 W1 source read after the W61 freeze (not a frozen prediction; B5 covered the three exact directions); [traversal_strategy](models/traversal_strategy/NOTES.md) `theorem_unknown_direction_walks_both`; controls `sql-unknown-dir-as-out`, `types-ignore-case`, `bfsfast-case-insensitive`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([binding](results/traversal_strategy/20261117T074632Z-binding/receipt.json) `os_dirtext_OUT`, `os_dirtext_sideways`, `os_dirtext_outbound`, `os_dirtext_inbound`; neighbors `os_out_any_2`, `os_both_any_2`). From `s` on the mix graph, hops 2: `execute_bfs(s, [], 2, "OUT", 0)` answers `a 1 R, b 1 Q, c 1 "", d 2 Q, x 2 R` — the undirected rows (`os_both_any_2`) with an empty type for `c`, reached only against an edge; `"sideways"` answers the undirected rows with no error; `"outbound"` / `"inbound"` answer the out / in rows. Each of the four calls the SQL fallback (`fallback_calls` 1); the three exact directions do not.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/traversal_strategy.json), cases `os_dirtext_OUT`, `os_dirtext_sideways`. Invalid directions reach a real fallback and answer an undirected walk instead of refusal; canonical out uses the expected traversal. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: `execute_bfs`'s docstring: the rows "walked in `direction`"; the path routines' policy for directions ([algorithms.op.paths.direction](open_questions.md#HD-1003): refuse a direction outside {out, in, both}, as `DijkstraJson`'s `CheckDirection` does). `_select_bfs_strategy` already reads `"outbound"` and case-insensitively.
 
@@ -4602,7 +4590,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction C2 (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [clause_combos](models/clause_combos/NOTES.md) `theorem_group_iff_bound_text`, `theorem_group_merges_kinds`, `theorem_group_and_distinct_disagree`, neighbors `theorem_group_neighbors_follow_rule`, `theorem_distinct_json_route_follows_rule`; controls `group-by-kind-column`, `bool-bound-as-word`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, driver 5.3.2 ([probe](uplift/consolidated/iteration-58/clauses/probe1.out); [run-time list](uplift/consolidated/iteration-58/clauses/probe2.out); [binding](results/clause_combos/20261117T082514Z-binding/receipt.json) `B_int_true_*`, `B_zero_false_*`, `B_list_spelled_*`). `UNWIND [1, true] AS x RETURN x, count(*)` answers `[[1, 2]]` and `count(DISTINCT x)` 1, while `RETURN DISTINCT x` answers `[[1], [True]]`; `[0, false]` the same; `UNWIND [[1], '[1]']` gives one group and count(DISTINCT) 1 but two DISTINCT rows; `WITH [1, true] AS l UNWIND l AS x RETURN x, count(*)` answers `[[1, 2]]`. Passing neighbors: `['true', true]` (two groups), `[1,2]`, `[2,2]`, `[true,false]`, `[1,'x']`, `[[1],1]`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/clause_combos.json), cases `B_int_true_groups`, `B_list_spelled_groups`, `B_int_true_count_distinct`. Mixed-kind lists merge distinct grouping keys while RETURN DISTINCT separates them. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.aggregation.keys](../ontology/features/cypher.g5.md#query.aggregation.keys) and [query.aggregation](../ontology/features/cypher.g5.md#query.aggregation) ("a nested list or map is different from text spelling it"); openCypher: values of different types are never equivalent.
 
@@ -4623,7 +4611,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction C8 (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)). Not modeled.
 
-Reproduced by: **E2E reproduced** on the same fixture and pin, driver 5.3.2 ([probe](uplift/consolidated/iteration-58/clauses/probe1.out), [neighbors](uplift/consolidated/iteration-58/clauses/probe2.out)). `MATCH (a:L)-[r:K]->(b) WITH * RETURN a.name, type(r), b.name` fails at Prepare with -29. Passing neighbors: the same without `WITH *`, `WITH a, r, b ... type(r)`, and `WITH * RETURN a.name, b.name`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `150_bad`. WITH * loses the relationship variable; naming n, r, b explicitly works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: `WITH *` projects every variable in scope unchanged.
 
@@ -4646,7 +4634,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 C8 neighbor (missed, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)). Not modeled.
 
-Reproduced by: **E2E reproduced** on the same fixture and pin, driver 5.3.2 ([probe](uplift/consolidated/iteration-58/clauses/probe1.out)): `MATCH (a:L) WITH *, a.v AS av RETURN av` raises `CypherParseError ... col 29: Expected EOF, got ,`; `WITH a, a.v AS av` passes.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `151_bad`. WITH *, expression fails parsing while the explicit projection works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the openCypher grammar allows `WITH *, items`.
 
@@ -4669,7 +4657,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction C6 (partial, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)). Not modeled.
 
-Reproduced by: **E2E reproduced** on the same fixture and pin, driver 5.3.2 ([probe](uplift/consolidated/iteration-58/clauses/probe1.out), [neighbor](uplift/consolidated/iteration-58/clauses/probe2.out)): `FOREACH (x IN [1,2] | SET n.f = x)` raises `SyntaxError: UndefinedVariable` and `get_node` still reads `f: 0`. Passing neighbors: `SET n.f = 5` in the body, a `CREATE (:M {v: x})` body (creates 1 and 2), and the empty list.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `152_bad`, `152_read`. FOREACH SET cannot resolve its loop variable and leaves f=0; a constant SET body writes f=5. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher runs the body per element (n.f = 2); owner [query.writes](../ontology/features/cypher.g5.md#query.writes).
 
@@ -4690,7 +4678,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 59)
 
 Found by: independent review 56-58 item G2 ([review](../uplift/consolidated/iteration-59/REVIEW-56-58.md)). Not modeled.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, both engines (native executor off and on) ([observation](../uplift/consolidated/iteration-59/review-repairs/minor-observed-20261117T090528Z.json), keys `G2_*`). `UNWIND [1,2] AS i CALL { WITH i RETURN i*2 AS d } RETURN i, d` fails at Prepare with SQLCODE -29 (`Field 'U0.NODE_ID' not found`); so does `UNWIND [..] AS k CALL { WITH k MATCH (m {id: k}) RETURN count(m) AS c } RETURN k, c`; `CALL { WITH i UNWIND range(1,i) AS j RETURN count(j) AS c }` raises `SyntaxError: Undefined variable: j`. Wider than the review: `MATCH (n:L) CALL { WITH n RETURN n.v * 2 AS d } RETURN d` fails with SQLCODE -23 (`Label 'P2' is not listed`). Passing neighbors: a subquery that imports nothing (`CALL { RETURN 5 AS d }` after UNWIND, two rows) and a MATCH-anchored import whose subquery matches from the imported node (count 0 for a node without edges; iteration 58 W62 C5).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `157_bad`. A CALL subquery importing an UNWIND variable fails with an internal SQL field error; an uncorrelated subquery succeeds. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: a `CALL { }` subquery's importing `WITH` may name any variable in scope, whatever clause bound it; the subquery runs once per incoming row ([query.with](../ontology/features/cypher.g5.md#query.with)).
 
@@ -4713,7 +4701,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 59)
 
 Found by: independent review 56-58 item G3 ([review](../uplift/consolidated/iteration-59/REVIEW-56-58.md)). Not modeled.
 
-Reproduced by: **E2E reproduced** on the same fixture and pin, both engines ([observation](../uplift/consolidated/iteration-59/review-repairs/minor-observed-20261117T090528Z.json), keys `G3_*`). `UNWIND [2,'a',null,1.5,true] AS x RETURN x ORDER BY x` answers `1.5, true, 2, 'a', null`; `[2,true,0.5,false]` answers `0.5, false, true, 2`; `DESC` reverses the first. Passing neighbors: numbers alone sort by value; the same list sorted by `WITH x ORDER BY x RETURN x` answers `'a', true, 1.5, 2, null` (iteration 58 C9 held); stored property values follow the kind-first key.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `158_bad`. RETURN ORDER BY mixes booleans with numbers and puts text later; WITH ORDER BY produces the declared type order. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.values.sorting](../ontology/features/cypher.g5.md#query.values.sorting): strings, then booleans, then numbers, then null last; openCypher orderability.
 
@@ -4736,7 +4724,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 58)
 
 Found by: iteration 58 W62 frozen prediction D2 (partial, [PAIRS](uplift/consolidated/iteration-58/w62-PAIRS.md)); [result_decoders](models/result_decoders/NOTES.md) `theorem_optional_node_labels`; control `labels-null`.
 
-Reproduced by: **E2E reproduced**, both drivers (`D2_opt`, `D2_with`; [binding](results/result_decoders/20261117T082201Z-binding/receipt.json) `*_Opt_labels`). The row is `[i, null, '[]', '[]', null]`; Bolt returns `b` as null.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/result_decoders.json), cases `5.3.2_TX_Opt_labels`, `5.4.1_TX_Opt_labels`. The HTTP reader exposes empty-list text for an unbound optional node; the missing scalar property correctly stays null. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [query.optional](../ontology/features/cypher.g5.md#query.optional): the pattern's new variables are null.
 
@@ -4757,10 +4745,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 52)
 
 Found by: iteration 52 W58 frozen prediction C1 (missed: predicted that the first engine stays stale and a fresh engine is current; both are stale) and the source read after the freeze; [operator_reports](models/operator_reports/NOTES.md) `theorem_markers_never_set_after_empty_setup`; neighbors `theorem_setup_again_sets_markers` and `theorem_setup_with_edges_sets_markers`; controls `sync-sets-markers`, `setup-marks-empty`, `engine-cache-unchanged`, `setup-skips-bootstrap`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s0` to `s2_sync`; [binding](results/operator_reports/20261117T042408Z-binding/receipt.json) `caps_fresh`, `s2:caps_e1`, `s15:*`):
-- After setup on the empty `I52B`, then edges, then `sync()`, every newly created engine reads `kg_built` False and `nkg_built` False.
-- The syncing engine reads `kg_built` True and `nkg_built` False.
-- After `initialize_schema()` runs again, from any engine, new engines read both True.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/operator_reports.json), cases `s2_sync:caps_fresh`. Capabilities still say adjacency is absent after sync; another setup corrects the report. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: API reference and docstring: "What the namespace has deployed: the Graph.KG classes, `^KG`, `^NKG`."
 
@@ -4784,9 +4769,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 52)
 
 Found by: reading `get_schema_visualization` after the iteration 52 W58 freeze (frozen row H7 held); [operator_reports](models/operator_reports/NOTES.md) `theorem_unlabeled_endpoint_is_first_label`; control `viz-none-distinct`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s16_schema_viz`; [binding](results/operator_reports/20261117T042408Z-binding/receipt.json) `s14:viz`). With labels `A, B, D, Y` (ids 0 to 3):
-- `UNLAB` between two unlabeled nodes is drawn `0 → 0`, A to A.
-- `BL` from an unlabeled node to a `Y` node is drawn `0 → 3`, A to Y.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/operator_reports.json), cases `s14:viz`. The UNLAB relationship receives endpoint label 0, which is also label A; a normal R edge has the expected label indices. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the docstring says a predicate's ends are "those of one edge's endpoints (0 if none)". A diagram reader cannot tell "none" from the first label, because ids start at 0.
 
@@ -4807,10 +4790,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 53)
 
 Found by: independent review round 2 (session `d548b72a`, item M3), source reading (`ledger/client.py:543-575`, `_engine/ledger.py:39-67`); [operator_reports](models/operator_reports/NOTES.md) `theorem_ledger_stats_failure_reads_zero`, `theorem_enable_two_commits_one_reject`; control `ledger-read-reported`.
 
-Reproduced by: **E2E reproduced** in iteration 53 on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, in `I53` ([probe](../uplift/consolidated/iteration-53/reports/failed-probe-20261117T044921Z.json) users `i53_native`, `i53_part`, `i53_noledger`) and `I53B` ([binding](results/operator_reports/20261117T045659Z-binding/receipt.json) `s18_ledger`, `s19_i53_bnoledger`). After `ledger.enable()`, two commits and one commit refused for a stale head:
-- `_SYSTEM` reads "Ledger: enabled · head seq 3 · 3 commits · 1 rejections", and `ledger.stats()` agrees.
-- A user with SELECT on every IVG table except `ledger_stats` reads "enabled · head seq 3 · 0 commits · 0 rejections"; `unknown` is empty and `errors` says nothing about the ledger. Its `engine.ledger.stats()` returns `commits_ok 0` without raising.
-- Passing neighbor: a user without the Native API resources fails the Meta read, and the report says "Ledger: unknown (see Probe errors)", as documented.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/operator_reports.json), cases `s19_i53_bnoledger:status`. A real role lacking ledger counter permission sees a valid head with zero commits/rejections and no error; privileged counters are nonzero. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: `_ledger_status`'s docstring (`_engine/ledger.py:41-42`): "a read that fails is reported to `errors` … (4.6.0 R160: both reads were silent)", and ADMIN_GUIDE's unknown rule for the ledger (`docs/ADMIN_GUIDE.md:950-958`).
 
@@ -4831,7 +4811,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L7 missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)). No formal contract: probe only, open in Verus.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `M_rows_types`, `M_literal_key`). `WITH {a: 1, b: 2.5, c: true, d: [1]} AS m UNWIND ['a', 'b', 'c', 'd'] AS k RETURN k, m[k]` answers `'1'`, `'2.5'`, `'1'`, `'[1]'`; `m['a']` answers `'1'` and `m.c` answers 1 for `true`. A missing key answers null, as expected. `WITH $m AS m RETURN m[$k]` fails "Incorrect number of parameters".
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `115_bad`. Dynamic map reads return numbers, boolean and list as strings; a missing key correctly returns null. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: the map's value with its type.
 
@@ -4850,7 +4830,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 47)
 
 Found by: the frozen W54 prediction L11 partly missed ([predictions](../uplift/consolidated/iteration-47/cypherfn-PAIRS.md)). No formal contract: probe only.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/cypherfn-observed2-20261117T015618Z.json) `T_head_number_msg`, `T_head_number_literal`). `head(n.num)` of a stored 5, `n.num[0]` and `head(n.str)` fail with `CY_LIST_ELEM failed ... %msg=` (empty); `RETURN head(5)` with `JSON_ARRAYGET failed ... %msg=`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `116_bad`. head(number) fails with an empty SQL helper message instead of a named type error; head([5]) works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the 4.6.0 CHANGELOG: a type error on a row fails with IRIS's error text "which contains the openCypher name" (`TypeError`), so a caller can test for it with `in`.
 
@@ -4869,7 +4849,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the frozen W55 prediction C3's literal neighbor missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_row_coalesce_number_as_text` with neighbor `theorem_node_coalesce_keeps_type`; controls `coalesce-always-typed`, `coalesce-needs-two-props`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `C3_*`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F5_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `coalesce_*`). `RETURN coalesce(null, 1)` answers `'1'`, `coalesce(null, 2.5, 'z')` `'2.5'`, `coalesce(null, true, 'z')` `'1'`; `UNWIND [7] AS x RETURN coalesce(x, 'z')` `'7'`; `coalesce($p, 1)` with `$p = 7` `'7'`; `coalesce(n.i, x)` with `x` from `UNWIND` `'7'`. Passing neighbors: `coalesce(n.missing, n.v, 'z')` and `coalesce(n.i, $p)` keep the stored integer.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_exprs.json), cases `coalesce_RowVar_ScalarLiteral`. coalesce on a row variable returns numeric text; the typed property path returns an integer. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher (TCK `Conditional1`): `coalesce` returns its first non-null argument unchanged.
 
@@ -4890,7 +4870,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the W55 probe's own query `n.l[a..3]` failed to parse ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `L1_rows_scalar`); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_identifier_lower_bound_refused` with neighbor `theorem_other_lower_bounds_parse`; control `identifier-lookahead`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F4_*`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `parse_*`). `WITH [1, 2, 3] AS l, 1 AS a RETURN l[a..3]` fails "CypherParseError: Expected IDENTIFIER, got FLOAT_LITERAL"; `l[a..b]`, `l[a..]` and `l[a .. 3]` fail "Expected IDENTIFIER, got .". Passing neighbors: `l[1..b]`, `l[$a..3]`, `l[x[0]..3]`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `122_bad`. A variable immediately before the slice separator fails parsing; a literal bound succeeds through the public API. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: any expression may be a slice bound.
 
@@ -4911,7 +4891,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the frozen W55 prediction S2 partly missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_negative_start_answers_prefix` with neighbor `theorem_inside_substring_follows_rule`; controls `substring-checks-start`, `substring-zero-based`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `S2_neg_*`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F1_*`, `F2_neg`; [binding](results/cypher_exprs/20261117T022154Z-binding/receipt.json) `substring_*`). `substring('hello', -1, 2)` and `substring(n.s, a, 2)` with `a = -1` from `UNWIND` answer `'h'`, `a = -3` answers `''`; `substring('hello', 1, -1)` fails SQLCODE -400 `<ILLEGAL VALUE>`, a fatal IRIS error naming no Cypher error; `left(n.s, -1)` answers null. Literal and run-time arguments behave alike here. Passing neighbors: every start and length inside the string.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_exprs.json), cases `substring_row_-1_2`, `substring_literal_-1_2`. Negative substring offsets return characters rather than the documented argument error. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the Cypher 9 function reference: a negative start or length raises an error (openCypher's TCK does not pin it).
 
@@ -4932,7 +4912,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 48)
 
 Found by: the frozen W55 prediction S3 partly missed ([predictions](../uplift/consolidated/iteration-48/cypherexpr-PAIRS.md)). No formal contract: probe only (open in Verus).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-48/cypherexpr-observed-20261117T021241Z.json) `S3_*`; [follow-up](../uplift/consolidated/iteration-48/cypherexpr-observed2-20261117T021350Z.json) `F2_*`). `left('hello', 0)`, `right('hello', 0)`, `left(n.s, 0)`, `substring('hello', 2, 0)` and `substring(n.s, 1, 0)` answer null, for literal and run-time arguments; `substring('hello', 0, 0)` answers `''`. Passing neighbors: every length of 1 or more.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `124_bad`. Zero-length string operations return null instead of an empty string; length 1 works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: an empty result is the empty string, not null.
 
@@ -4953,7 +4933,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m1 (reviewer probe `p4`); [cypher_exprs](models/cypher_exprs/NOTES.md) `theorem_null_list_slice_is_empty`; control `null-list-guard`.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `null_list_slice`, `null_list_index`; [binding](results/cypher_exprs/20261117T033119Z-binding/receipt.json) `null_list_slice_*`). `MATCH (n) RETURN n.missing[0..2]` answers `[]` for literal, row and parameter bounds. Passing neighbor: `n.missing[0]` answers null.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/cypher_exprs.json), cases `null_list_slice_RowVar`, `null_list_slice_Param`. A null list sliced through a row or parameter path yields an empty list; the literal-null path stays null. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: an operation on null gives null.
 
@@ -4974,7 +4954,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m4 (reviewer probe `p4`). No formal contract (probe and source reading only).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `trim_*`; [follow-up](../uplift/consolidated/iteration-50/review-repro2-20261117T032546Z.json) `return_trim_*`, `create_trim*`, `set_trim`). `RETURN trim('\t a \n')` answers the string unchanged (size 5), as does `trim(n.s)` and `SET n.t = trim(...)`; `rtrim('a \n')` keeps the line break while `ltrim('\t a')` answers `'a'`; `CREATE (:X {t: trim('\t a \n')})` stores `'a'`. Passing neighbor: `trim('  a  ')` answers `'a'`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `130_bad`. RETURN trim keeps tabs and newlines that CREATE trim removes; trimming spaces works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: Neo4j's Cypher manual: `trim()` removes leading and trailing whitespace; the same expression gives the same value in `RETURN`, `SET` and `CREATE`.
 
@@ -4995,7 +4975,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m6 (reviewer probe `p1`). No formal contract: `cypher_fns`'s range model covers integer steps only.
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `range_fractional_step_*`; [follow-up](../uplift/consolidated/iteration-50/review-repro2-20261117T032546Z.json) `range_*`). `UNWIND [1.5] AS s RETURN range(1, 3, s)` and `range(1, 3, $s)` with 1.5 answer `[1, 2.5]`. Passing neighbors: the literal `range(1, 3, 1.5)` is refused ("must be an integer"); a run-time step of 2 answers `[1, 3, 5]`.
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `131_bad`. A fractional run-time range step is accepted while the equivalent literal is refused; an integer step works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: openCypher: `range()` takes integers; the translator already refuses a literal fractional step.
 
@@ -5016,7 +4996,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 50)
 
 Found by: [review 47-49](../uplift/consolidated/iteration-50/REVIEW-47-49.md) m10 (reviewer probe `p3`). No formal contract (probe only).
 
-Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([fresh repro](../uplift/consolidated/iteration-50/review-repro-20261117T031150Z.json) `rel_retype*`; [follow-up](../uplift/consolidated/iteration-50/review-repro2-20261117T032546Z.json) `rel_set_*`, `rel_read`). `MATCH ()-[r]->() SET r.age = toInteger(r.age)` and `SET r.n = toString(r.n)` are refused with "a relationship's value can read only its own `age`; a SET of a relationship from another property or another variable is not supported", although the value reads only its own property. Passing neighbor: `SET r.n = r.n + 1` is stored; a relationship's stored `'30'` already reads back as 30 ([relationship text](../ontology/features/cypher.g5.md#query.values.relationship_text)).
+Reproduced by: **E2E reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/targeted-runtime.json), cases `132_bad`. A relationship SET reading its own property through toInteger is refused with a misleading cross-property error; arithmetic on its own property works. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: either the SET is stored, or the refusal names the actual limit (a function of the property is not supported).
 
@@ -6767,7 +6747,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 49)
 
 Found by: W56 prediction Y1 (held for a 768-wide query, missed for a 4-wide one) and the source of `PyOps.vectorToJson` / `getExpectedDimension`; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_unrouted_rest_search_refuses_width`; control `unrouted-no-width-check`.
 
-Reproduced by: **Partially reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `Y1_*`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `pyops_unrouted_4`, `pyops_unrouted_768`, `engine_unrouted_4`). `Graph.KG.PyOps.VectorSearch` (the `/vectorSearch` body) for a named graph with no route and a 4-wide query raises "Query embedding dimension 4 does not match expected 768"; with a 768-wide query it answers []; the engine's `kg_KNN_VEC` answers [] for the 4-wide query. The REST application itself was not deployed, so the HTTP response is the missing step.
+Reproduced by: **Partially reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/retrieval_compose.json), cases `pyops_unrouted_4`. Real PyOps VectorSearch rejects a non-default-width vector on an unrouted graph; the Python engine returns no results. Deployed REST dispatch was not exercised. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: [search.routes.no_fallback](../ontology/features/search.g5.md#search.routes.no_fallback): an unrouted pair answers nothing, never a width error.
 
@@ -6788,7 +6768,7 @@ Run: Uplift 2026-11-17 (continuation, iteration 49)
 
 Found by: the source of `PyOps.HybridSearch` (`c = int(c) if c else 60`, `PyOps.cls:374`) after W56 F8; [retrieval_compose](models/retrieval_compose/NOTES.md) `theorem_hybrid_c_zero_becomes_60`; control `hybrid-c-kept`.
 
-Reproduced by: **Partially reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-49/retrieval-observed-20261117T023944Z.json) `F8_pyops_hybrid_G_c0`; [binding](results/retrieval_compose/20261117T024807Z-binding/receipt.json) `pyops_hybrid_c0`): `HybridSearch(q, "zeta", 100, 0, g)` answers exactly the scores of `c = 60`. The REST route's own argument handling was not exercised.
+Reproduced by: **Partially reproduced** in the independent 2026-11-17 audit on unchanged product `3eaa79cf`, real IRIS 2026.1. [Fresh runtime evidence](audits/reproduction-20261117/evidence/retrieval_compose.json), cases `pyops_hybrid_c0`. Real PyOps HybridSearch with c=0 returns the c=60 scores. Deployed REST dispatch was not exercised. [Exact inputs, controls, severity and limits](audits/reproduction-20261117/adjudication.json).
 
 Expected: the caller's constant (the SQL procedure and the engine accept 0 and score 1/rank).
 
