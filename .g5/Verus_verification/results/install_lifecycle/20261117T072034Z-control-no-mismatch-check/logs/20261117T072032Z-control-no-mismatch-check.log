@@ -1,0 +1,36 @@
+verification results:: 30 verified, 2 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/no-mismatch-check/20261117T072032Z/models/install_lifecycle/install_lifecycle.rs:73:1
+   |
+73 | pub proof fn theorem_other_record_refused(ns: Ns, s: nat)
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/no-mismatch-check/20261117T072032Z/models/install_lifecycle/install_lifecycle.rs:75:13
+   |
+73 | pub proof fn theorem_other_record_refused(ns: Ns, s: nat)
+   | --------------------------------------------------------- at the end of the function body
+74 |     requires ns.record is Some, ns.record.unwrap() != s,
+75 |     ensures first_access(ns, s) == Access::Mismatch, !call_runs(ns, s, false), call_runs(ns, s, true),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/no-mismatch-check/20261117T072032Z/models/install_lifecycle/install_lifecycle.rs:75:54
+   |
+73 | pub proof fn theorem_other_record_refused(ns: Ns, s: nat)
+   | --------------------------------------------------------- at the end of the function body
+74 |     requires ns.record is Some, ns.record.unwrap() != s,
+75 |     ensures first_access(ns, s) == Access::Mismatch, !call_runs(ns, s, false), call_runs(ns, s, true),
+   |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/no-mismatch-check/20261117T072032Z/models/install_lifecycle/install_lifecycle.rs:181:13
+    |
+179 | pub proof fn theorem_deploy_refuses_other_record(record: Option<nat>, s: nat, ns: Ns)
+    | ------------------------------------------------------------------------------------- at the end of the function body
+180 |     requires ns.record == record,
+181 |     ensures deploy_admitted(record, s) <==> !(first_access(ns, s) is Mismatch),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

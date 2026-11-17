@@ -1,0 +1,17 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/default-reads-every-graph/20261117T072033Z/models/sql_procs/sql_procs.rs:241:9
+    |
+241 |           !match_edges(adj, src, pred, shard, graph).contains(a),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+250 | /     if adj.filter(f).contains(a) {
+251 | |         let i = choose|i: int| 0 <= i < adj.filter(f).len() && adj.filter(f)[i] == a;
+252 | |         adj.lemma_filter_pred(f, i);
+253 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

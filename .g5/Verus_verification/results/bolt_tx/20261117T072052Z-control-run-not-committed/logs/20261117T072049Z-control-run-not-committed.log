@@ -1,0 +1,17 @@
+verification results:: 19 verified, 1 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/run-not-committed/20261117T072049Z/models/bolt_tx/bolt_tx.rs:176:9
+    |
+176 |           exec(Design::AsBuilt, s, ms).0 == (S { store: s.store + total(ms), failed: false, tx: s.tx }),
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+...
+181 | /     if ms.len() > 0 {
+182 | |         let r = step(Design::AsBuilt, s, ms[0]);
+183 | |         assert(!r.0.failed && r.1 == Ans::Success);
+184 | |         lemma_plain_as_built(r.0, ms.drop_first());
+...   |
+189 | |     }
+    | |_____- at the end of the function body
+
+error: aborting due to 1 previous error
+

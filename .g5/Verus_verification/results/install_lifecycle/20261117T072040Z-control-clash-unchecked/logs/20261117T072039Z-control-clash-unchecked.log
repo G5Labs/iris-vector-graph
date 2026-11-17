@@ -1,0 +1,27 @@
+verification results:: 31 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/clash-unchecked/20261117T072039Z/models/install_lifecycle/install_lifecycle.rs:153:1
+    |
+153 | pub proof fn theorem_clash_refused_before_anything(i: SetupIn)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/clash-unchecked/20261117T072039Z/models/install_lifecycle/install_lifecycle.rs:155:13
+    |
+153 | pub proof fn theorem_clash_refused_before_anything(i: SetupIn)
+    | -------------------------------------------------------------- at the end of the function body
+154 |     requires i.record is None, i.clash, how(i) is Some,
+155 |     ensures setup(i) == SetupOut::Clash, record_after(i) == i.record,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/clash-unchecked/20261117T072039Z/models/install_lifecycle/install_lifecycle.rs:155:42
+    |
+153 | pub proof fn theorem_clash_refused_before_anything(i: SetupIn)
+    | -------------------------------------------------------------- at the end of the function body
+154 |     requires i.record is None, i.clash, how(i) is Some,
+155 |     ensures setup(i) == SetupOut::Clash, record_after(i) == i.record,
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

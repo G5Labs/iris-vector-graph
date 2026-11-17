@@ -1,0 +1,58 @@
+verification results:: 23 verified, 4 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T072038Z/models/sql_procs/sql_procs.rs:274:1
+    |
+274 | pub proof fn theorem_entries_gated(adj: Seq<Arc>, src: int, pred: int, graph: int, st: Bf, s2: End, d2: End)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T072038Z/models/sql_procs/sql_procs.rs:276:9
+    |
+274 | pub proof fn theorem_entries_gated(adj: Seq<Arc>, src: int, pred: int, graph: int, st: Bf, s2: End, d2: End)
+    | ------------------------------------------------------------------------------------------------------------ at the end of the function body
+275 |     ensures
+276 |         gate(false, match_edges(adj, src, pred, 0, graph)) == Ans::<Seq<Arc>>::Refused,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T072038Z/models/sql_procs/sql_procs.rs:277:9
+    |
+274 | pub proof fn theorem_entries_gated(adj: Seq<Arc>, src: int, pred: int, graph: int, st: Bf, s2: End, d2: End)
+    | ------------------------------------------------------------------------------------------------------------ at the end of the function body
+...
+277 |         gate(false, match_all(adj, src, pred, 0)) == Ans::<Seq<Arc>>::Refused,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T072038Z/models/sql_procs/sql_procs.rs:323:9
+    |
+316 | pub proof fn theorem_column_only_select_refused(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, shard: int, g: GArg)
+    | ----------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+323 |         match_edges_sql(c, sch, adj, src, pred, shard, g) == Ans::<Seq<Arc>>::Refused,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T072038Z/models/sql_procs/sql_procs.rs:355:9
+    |
+347 | pub proof fn theorem_write_names_first_missing(c: Caller, sch: int, st: Bf)
+    | --------------------------------------------------------------------------- at the end of the function body
+...
+355 |         !holds_priv(c, sch, t_nodes(), Act::I) ==> backfill_sql(insert_ok(c, sch), st) == Ans::<(Bf, nat)>::Refused,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/no-select-check/20261117T072038Z/models/sql_procs/sql_procs.rs:370:9
+    |
+367 |   pub proof fn theorem_readers_check_rdf_edges(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, g: GArg, s2: End, d2: End)
+    |   -------------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+370 | /         c.user.table.contains((t_nodes(), Act::S)) && !c.user.table.contains((t_edges(), Act::S)) ==> {
+371 | |             &&& match_edges_sql(c, sch, adj, src, pred, 0, g) == Ans::<Seq<Arc>>::Refused
+372 | |             &&& match_all_sql(c, sch, adj, src, pred, 0) == Ans::<Seq<Arc>>::Refused
+373 | |             &&& dijkstra_sql(c, sch, s2, d2, WProp::Empty, Dir::Out) == Ans::<PathAns>::Refused
+374 | |         },
+    | |_________^ failed this postcondition
+
+error: aborting due to 5 previous errors
+

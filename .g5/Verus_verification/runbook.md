@@ -676,3 +676,34 @@ general `theorem_one_hop_right_iff_source_first` → the rows for `iris_vector_g
 observation is the binding's `D2_wire_bra` and `D2_wire_rev` (start = b's id for a stored `a→b`) beside `D2_wire_abr`
 (start = a's id). Second lookup: `query.parameters` → `theorem_param_slice_answers_empty` → `cypher/translator.py::_expr_slice`
 (23778-23789); control `slice-markers-in-order`; observation `F_slice_5.4.1` (`[]`) beside `F_slice_5.3.2` (`Fail`).
+
+Iteration 56 (repairs from independent review round 3, review-53-55, then the install lifecycle;
+[handoff](../uplift/consolidated/iteration-56/HANDOFF.md), [dispositions](../uplift/consolidated/iteration-56/DISPOSITIONS.md)),
+same environment. `bolt_tx` starts the product's TCP Bolt listener in-process (as `bolt_answers`) and writes nodes in USER;
+`sql_procs` now drops and re-creates its own namespace `I56Q` with eight users (`i56q_*`, dropped after the run);
+`install_lifecycle` drops and re-creates `I56SA`-`I56SD`. All three run from `%SYS` in `ivg-cont-20261117-iris` only and
+need `docker exec` on that container.
+
+```sh
+for m in bolt_tx install_lifecycle cypher_clauses percentile aggregate_results sql_procs temporal_stats bm25_scoring; do
+  python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/$m      # PASS 20 / 32 / 29 / 30 / 75 / 27 / 64 / 35
+  python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/$m   # 7 / 20 / 28 / 7 / 12 / 21 / 20 / 13 EXPECTED_FAIL
+  (cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/$m/binding.py)  # AGREES 17 / 138 / 124 / 168 / 669 / 273 / 159 / 59
+done
+CONTROL=begin-refused python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/bolt_tx
+CONTROL=column-grant-counts python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/sql_procs
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-56/cypher/cypher_probe.py)  # F2 raw probe, fresh prefix
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after56                 # 662/4130
+python3 .g5/uplift/consolidated/iteration-56/member_delta.py $RUN_DIR/reach-before56 $RUN_DIR/reach-after56 /tmp/member-delta.json
+```
+
+Worked lookup (iteration 56): `access.bolt.transactions` → `bolt_tx.rs::theorem_rollback_keeps_writes` (general:
+`theorem_rollback_departs_iff_writes`) → the rows for `iris_vector_graph/bolt_server.py::BoltSession._dispatch` (500-510,
+decision: BEGIN, COMMIT and ROLLBACK answer SUCCESS and open or close nothing) and `::BoltSession._handle_run` (the
+statement runs with no session transaction, so it commits at once) in `crosswalk/decision-links.tsv`; in reverse, those
+keys in the recount's `bindings.json` list the claims beside the inherited `bolt_stream` and `bolt_answers` rows. The
+distinguishing controls are `atomic-tx` and `begin-refused` (the two repairs); the product observation is the binding's
+`R_rollback` (count 1 after BEGIN, CREATE, ROLLBACK, every answer SUCCESS) beside the commit and auto-commit neighbors.
+Second lookup: `access.iris_boundary` → `sql_procs.rs::theorem_column_only_select_refused` → `iris_src/src/Graph/KG/SqlPrivilege.cls::RequireSelect`
+and `::Holds`; control `column-grant-counts`; observation: user `i56q_column` refused naming `Graph_KG.rdf_edges` while
+`i56q_table` and `i56q_role` pass.

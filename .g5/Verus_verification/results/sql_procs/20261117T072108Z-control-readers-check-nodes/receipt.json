@@ -1,0 +1,69 @@
+{
+  "control": {
+    "classification": "decision: the reading entries check SELECT on nodes instead of rdf_edges",
+    "expect_fail_in": [
+      "theorem_readers_check_rdf_edges",
+      "theorem_column_only_select_refused",
+      "theorem_table_schema_role_select_pass"
+    ],
+    "find": "pub open spec fn select_ok(c: Caller, sch: int) -> bool { require(c, sch, seq![t_edges()], seq![Act::S]) == Gate::Pass }",
+    "name": "readers-check-nodes",
+    "replace": "pub open spec fn select_ok(c: Caller, sch: int) -> bool { require(c, sch, seq![t_nodes()], seq![Act::S]) == Gate::Pass }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_readers_check_rdf_edges",
+      "theorem_column_only_select_refused",
+      "theorem_table_schema_role_select_pass"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/sql_procs/model.json": "111d43dd8222f7adf2f297096b86fb269c4cf7eed5071528e506ad6ab71fca02",
+    ".g5/Verus_verification/models/sql_procs/sql_procs.rs": "86a7392c4a2b963013b473d18e566dd47f93a9f3173e3ce428a63e5bd2aaa1b4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/readers-check-nodes/20261117T072105Z/models/sql_procs/sql_procs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_column_only_select_refused": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T072105Z-control-readers-check-nodes-theorem_column_only_select_refused.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_readers_check_rdf_edges": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T072105Z-control-readers-check-nodes-theorem_readers_check_rdf_edges.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_table_schema_role_select_pass": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T072105Z-control-readers-check-nodes-theorem_table_schema_role_select_pass.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T072105Z-control-readers-check-nodes.log",
+    "timed_out": false,
+    "verified": 24
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sql_procs/20261117T072108Z-control-readers-check-nodes/logs/20261117T072105Z-control-readers-check-nodes-theorem_column_only_select_refused.log": "827c913a0ac507785c76dc4d5bffaf1574e9de31fc83867a23f2be0c11f8691b",
+    ".g5/Verus_verification/results/sql_procs/20261117T072108Z-control-readers-check-nodes/logs/20261117T072105Z-control-readers-check-nodes-theorem_readers_check_rdf_edges.log": "b67a06c813d1056ba1d1b864983283d35e79230b155ad7bdeb68e267b8cf8ae2",
+    ".g5/Verus_verification/results/sql_procs/20261117T072108Z-control-readers-check-nodes/logs/20261117T072105Z-control-readers-check-nodes-theorem_table_schema_role_select_pass.log": "b93a7e684395965a0af721e77537020f1df1dd9dc04173abb37748eef0efdd01",
+    ".g5/Verus_verification/results/sql_procs/20261117T072108Z-control-readers-check-nodes/logs/20261117T072105Z-control-readers-check-nodes.log": "2f67bada2c055884064eb1b472640f1f675def5c956327396a7ec65a63eefdd7"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

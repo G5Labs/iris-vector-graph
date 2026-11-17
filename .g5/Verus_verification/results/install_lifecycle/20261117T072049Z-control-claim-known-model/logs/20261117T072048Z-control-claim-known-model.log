@@ -1,0 +1,21 @@
+verification results:: 30 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/claim-known-model/20261117T072048Z/models/install_lifecycle/install_lifecycle.rs:295:13
+    |
+293 | pub proof fn theorem_claim_only_unknown(r: Row, o: Ident)
+    | --------------------------------------------------------- at the end of the function body
+294 |     requires o.model is Some, r.id.model is Some, r.id.model != o.model,
+295 |     ensures set_identity(Some(r), o, false) == SetOut::Refused(Conflict::Model),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/claim-known-model/20261117T072048Z/models/install_lifecycle/install_lifecycle.rs:306:13
+    |
+304 | pub proof fn theorem_same_model_kept(r: Row, o: Ident)
+    | ------------------------------------------------------ at the end of the function body
+305 |     requires r.id.model is Some, o.model == r.id.model, o.mech == r.id.mech, o.dim == r.id.dim, o.dtype == r.id.dtype,
+306 |     ensures set_identity(Some(r), o, false) == SetOut::Kept(r),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "guard: a populated (or uncounted) column at another width re-declared",
+    "expect_fail_in": [
+      "theorem_populated_never_rewidened"
+    ],
+    "find": "    else if rows != Some(0nat) { ColAction::Manual }",
+    "name": "populated-altered",
+    "replace": "    else if false { ColAction::Manual }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_populated_never_rewidened"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs": "726ffdd84cfa18425097d4206fdb955ac062375b9d0d21d0aa012e863c996169",
+    ".g5/Verus_verification/models/install_lifecycle/model.json": "bb461726fa014b5021b84c457db439a578e65b680004cf2cdcdc28f366061134"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/populated-altered/20261117T072043Z/models/install_lifecycle/install_lifecycle.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 1,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_populated_never_rewidened": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T072043Z-control-populated-altered-theorem_populated_never_rewidened.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T072043Z-control-populated-altered.log",
+    "timed_out": false,
+    "verified": 31
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/install_lifecycle/20261117T072044Z-control-populated-altered/logs/20261117T072043Z-control-populated-altered-theorem_populated_never_rewidened.log": "a8c5c63330fb7822ad03a0c7a0889677c494b580b639df20d3bd8aca0fdc540a",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T072044Z-control-populated-altered/logs/20261117T072043Z-control-populated-altered.log": "814a95edee19afbaac079d15f235022a51982214ac50fb514c51bdb273d4b91e"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

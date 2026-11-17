@@ -1,0 +1,348 @@
+{
+  "before": {
+    "revision": "fb1f806b",
+    "active": 640,
+    "union": 866
+  },
+  "after": {
+    "revision": "working tree at the iteration-56 seal",
+    "active": 662,
+    "union": 886
+  },
+  "denominator": 4130,
+  "newly_bound": [
+    {
+      "member": "iris_src/src/Graph/KG/SqlPrivilege.cls::Holds",
+      "existing_locator": false,
+      "roles": [
+        "proves sql_procs.rs::theorem_table_schema_role_select_pass: decision: the login, or else the first role in $Roles, holds the privilege on the table or its schema (CheckPrivilege type 1: premise P-CHECKPRIV, column privil",
+        "models sql_procs.rs::holds_priv: decision (same member): the role loop (any_role)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/class_deploy.py::_unchanged",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_skip_iff_same_fingerprint_and_all_compiled: decision: skip only when the marker holds this source set's fingerprint and every class is compiled"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/class_deploy.py::deploy_packaged_classes",
+      "existing_locator": true,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_deploy_refuses_other_record: entry: refuse_other_record, then the selected sources rewritten for the schema, then upload_and_compile"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/class_deploy.py::plan_packaged_classes",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_skip_iff_same_fingerprint_and_all_compiled: reader: the dry run's classes: none when unchanged, every selected class otherwise"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/class_deploy.py::upload_and_compile",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_failed_deploy_retried: decision/effect: skip, refuse a foreign schema class, or load and compile; the marker killed before the load and set only after a clean compile"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/query.py::_float_expr_value",
+      "existing_locator": false,
+      "roles": [
+        "proves percentile.rs::theorem_disc_over_ints_answers_float: reader: a FLOAT column's int, Decimal or numeric text becomes a Python float (percentileDisc over integers answers 20.0; min() beside it keeps int)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin._migrate_vector_dimensions",
+      "existing_locator": false,
+      "roles": [
+        "models install_lifecycle.rs::width_after: effect: ALTER for alter, listed for manual; then reconcile"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin._plan_vector_dimensions",
+      "existing_locator": false,
+      "roles": [
+        "models install_lifecycle.rs::col_action: reader: the dry run's lists alter / unchanged / needs_manual_migration / needs_rewidth from the action"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin._refuse_width_change",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_empty_other_width_needs_rewidth: guard: an empty column at another width without rewidth, or a populated one with it, raises before setup writes anything"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin._sync_recorded_dimension",
+      "existing_locator": false,
+      "roles": [
+        "models install_lifecycle.rs::reg_width_after: effect: the registry row's width moved to the declared width"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin._vector_column_action",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_populated_never_rewidened: decision: unchanged at the width; no declared width -> alter; another width with rows or uncounted -> manual; empty -> alter with rewidth, else rewidth",
+        "proves install_lifecycle.rs::theorem_unknown_width_altered_unasked: decision (same body): a column whose width reads as none is altered unasked (bug-plt-015)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.adopt_embedding_identities",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_adopt_never_overwrites: decision: adoption never overwrites; a new row takes the declared width, model unknown"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.enforce_embedding_identity",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_width_enforced_whatever_the_model: decision: nothing recorded passes; otherwise any conflict refuses the write"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.place_quarantined",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_placed_only_when_every_check_passes: decision: no row; route; width; dtype; node in graph; then insert and delete in one transaction",
+        "proves install_lifecycle.rs::theorem_unreadable_row_never_placed: decision (same body) as built: no existing row is ever placed over the DB-API driver; the row stays"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.reconcile_recorded_dimensions",
+      "existing_locator": false,
+      "roles": [
+        "models install_lifecycle.rs::reg_width_after: effect: every table's registry width copies its declared width (none read: left)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.set_embedding_identity",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_claim_only_unknown: decision: undeclared refused; force overwrites (forced); none -> claimed; unknown model at a compatible width claimed; else conflicts"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_validate.py::BM25SearchInput",
+      "existing_locator": false,
+      "roles": [
+        "proves bm25_scoring.rs::theorem_sql_k_nonpositive_empty_others_refuse: guard: BM25SearchInput refuses k < 1 before IRIS (bm25_search; CALL ivg.bm25.search through validate_procedure_options)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_expr_fn_path_funcs",
+      "existing_locator": false,
+      "roles": [
+        "proves cypher_clauses.rs::theorem_unmatched_fixed_path_length_is_hops: decision: length() of a fixed pattern is the constant len(pattern.relationships), whatever the row bound; nodes()/relationships() read the row (bug-cyp-146)",
+        "proves cypher_clauses.rs::theorem_bound_or_varlen_path_follows_rule: decision (same body): a null OPTIONAL anchor answers NULL; a variable-length path reads its row value; otherwise nodes()/relationships() from the row aliases"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_vlp_path_sql",
+      "existing_locator": false,
+      "roles": [
+        "proves cypher_clauses.rs::theorem_bound_or_varlen_path_follows_rule: decision: a variable-length path's length is the fixed hops plus each segment's row column l (null when the OPTIONAL MATCH bound nothing)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/embedding_identity.py::conflicts",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_width_enforced_whatever_the_model: decision: model, then mechanism (both known), then width and dtype in every cell"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/schema_name.py::_why_not_current",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_unrecorded_reason_order: decision: the reason order: an earlier release's object (not upgraded) before IVG's own classes, tables or globals (unfinished), else never set up"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/schema_name.py::check_first_access",
+      "existing_locator": true,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_other_record_refused: decision: a record naming another schema refuses; else no-record marker probe, else the reason",
+        "proves install_lifecycle.rs::theorem_unrecorded_with_marker_admitted: decision (same body): no record and this release's marker function in the schema is admitted; no record without it refused"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/schema_name.py::refuse_other_record",
+      "existing_locator": true,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_deploy_refuses_other_record: guard: the class deploy refuses a namespace recorded under another schema before loading anything"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/schema_name.py::refuse_package_clash",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_clash_refused_before_anything: guard: setup and its dry run refuse a package holding classes IVG did not create, before any DDL"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/schema_name.py::resolve_schema_name",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_arg_wins: decision: schema_prefix argument, else a non-empty IVG_SCHEMA_PREFIX, else Graph_KG; IRIS_SCHEMA_PREFIX never read"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/schema_name.py::validate_schema_name",
+      "existing_locator": false,
+      "roles": [
+        "proves install_lifecycle.rs::theorem_name_rules_refuse_before_default: decision: the name rules in order (empty, %, pattern, SQLUser), the default in any case, then IVG code packages"
+      ]
+    }
+  ],
+  "newly_reached": [
+    "iris_src/src/Graph/KG/SqlPrivilege.cls::Holds",
+    "iris_vector_graph/_engine/class_deploy.py::_unchanged",
+    "iris_vector_graph/_engine/class_deploy.py::plan_packaged_classes",
+    "iris_vector_graph/_engine/class_deploy.py::upload_and_compile",
+    "iris_vector_graph/_engine/query.py::_float_expr_value",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin._migrate_vector_dimensions",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin._plan_vector_dimensions",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin._refuse_width_change",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin._sync_recorded_dimension",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin._vector_column_action",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin.adopt_embedding_identities",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin.enforce_embedding_identity",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin.place_quarantined",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin.reconcile_recorded_dimensions",
+    "iris_vector_graph/_engine/schema.py::SchemaMixin.set_embedding_identity",
+    "iris_vector_graph/_validate.py::BM25SearchInput",
+    "iris_vector_graph/cypher/translator.py::_expr_fn_path_funcs",
+    "iris_vector_graph/cypher/translator.py::_vlp_path_sql",
+    "iris_vector_graph/embedding_identity.py::conflicts",
+    "iris_vector_graph/schema_name.py::_why_not_current",
+    "iris_vector_graph/schema_name.py::refuse_package_clash",
+    "iris_vector_graph/schema_name.py::resolve_schema_name",
+    "iris_vector_graph/schema_name.py::validate_schema_name"
+  ],
+  "existing_locator_gaining_binding": [
+    "iris_vector_graph/_engine/class_deploy.py::deploy_packaged_classes",
+    "iris_vector_graph/schema_name.py::check_first_access",
+    "iris_vector_graph/schema_name.py::refuse_other_record"
+  ],
+  "strengthened": [
+    {
+      "member": "iris_src/src/Graph/KG/BM25Index.cls::SearchCore",
+      "by": [
+        "bm25_scoring.rs::theorem_ties_by_id: decision (same body): equal 12-decimal keys answered in id order, ids ranked by IRIS subscript collation (spelled out by theorem_ties_in_subscript_order, iterat",
+        "bm25_scoring.rs::theorem_ties_in_subscript_order: decision (same body, iteration 56): equal 12-decimal keys are answered in ^||bm25sorted subscript order of the ids (numbers first by value, then character codes",
+        "bm25_scoring.rs::theorem_sql_k_nonpositive_empty_others_refuse: decision (same body, iteration 56): the walk quits when count >= k before the first document, so k <= 0 answers [] (bug-srch-113)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/EdgeScan.cls::MatchEdges",
+      "by": [
+        "sql_procs.rs::theorem_default_graph_spellings: decision (same member, iteration 56): the raw graph argument: $Char(0) (SQL '') -> \"\" (line 52), \"\" -> 0 (55-57); 0 and '0' are one subscript (provider); one gr"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlPrivilege.cls::RequireSelect",
+      "by": [
+        "sql_procs.rs::theorem_single_check_iff_holds: guard: %All passes first; otherwise each listed table must be held (Holds); the first missing is named in SQLCODE -99",
+        "sql_procs.rs::theorem_column_only_select_refused: guard (same member): column-only SELECT is refused naming rdf_edges; %All passes before any grant is read"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlPrivilege.cls::RequireWrite",
+      "by": [
+        "sql_procs.rs::theorem_write_names_first_missing: guard: %All passes first; otherwise each table in order, each action letter in order, must be held (Holds); the first missing pair is named"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::DijkstraPath",
+      "by": [
+        "sql_procs.rs::theorem_readers_check_rdf_edges: entry point: SQL DijkstraPath; RequireSelect on rdf_edges (its own decision) before Traversal.DijkstraProc unchanged"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::MatchEdges",
+      "by": [
+        "sql_procs.rs::theorem_readers_check_rdf_edges: entry point: SQL MatchEdges; RequireSelect on rdf_edges (the table checked is its own decision) before EdgeScan.MatchEdges unchanged"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::MatchEdgesAllGraphs",
+      "by": [
+        "sql_procs.rs::theorem_readers_check_rdf_edges: entry point: SQL MatchEdgesAllGraphs; RequireSelect on rdf_edges (its own decision) before EdgeScan.MatchEdgesAllGraphs unchanged"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::backfilltemporalrows",
+      "by": [
+        "sql_procs.rs::theorem_write_names_first_missing: entry point: SQL backfill_temporal_rows; RequireWrite(nodes, rdf_edges, \"i\") (tables, order and action are its own decision) before BackfillStructuralRows"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/SqlProcs.cls::kgBM25",
+      "by": [
+        "bm25_scoring.rs::entry_k: entry point: SQL kg_BM25 checks SELECT on rdf_props and passes k unchecked to SearchProc (bug-srch-113)"
+      ]
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TemporalIndex.cls::GetAggregate",
+      "by": [
+        "temporal_stats.rs::theorem_empty_key_quiet_cut_window_answers_zero: decision (same lines, iteration 56): an empty source or predicate raises <SUBSCRIPT> on a whole bucket ($Get tagg) or a met timestamp ($Order tout) and otherwis",
+        "temporal_stats.rs::theorem_empty_key_raises_with_whole_bucket_or_event: decision (same lines, iteration 56): the raise branch on a whole bucket or a met timestamp"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin._record_and_initialize",
+      "by": [
+        "install_lifecycle.rs::theorem_other_schema_needs_a_name: decision: mismatch first; how = existing / new / inferred / explicit, else refuse naming the schemas; package clash; dry run returns before any write; record wr",
+        "install_lifecycle.rs::theorem_dry_run_and_refusals_keep_record: decision (same body): the dry run and every refusal keep the record"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._dispatch",
+      "by": [
+        "bolt_tx.rs::theorem_rollback_keeps_writes: decision: BEGIN and COMMIT answer SUCCESS and open/close nothing; ROLLBACK answers SUCCESS and clears only the pending rows (bug-plt-127)",
+        "bolt_tx.rs::theorem_failed_tx_keeps_earlier_writes: decision: while FAILED only RESET is handled (GOODBYE ends); PULL and ROLLBACK after a failure are IGNORED"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._handle_reset",
+      "by": [
+        "bolt_tx.rs::theorem_reset_or_close_keeps_writes: effect: RESET clears the pending rows and the failure only; a transaction's writes stay"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/bolt_server.py::BoltSession._handle_run",
+      "by": [
+        "bolt_tx.rs::step: effect: each statement runs through engine.execute_cypher with no session transaction, so its writes commit when it finishes; a failing statement answers FAILUR"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_scalar_statistical",
+      "by": [
+        "percentile.rs::theorem_non_number_p_not_refused: decision: a $p parameter goes through Python float() at translation: None raises TypeError, other text ValueError, numeric text and booleans convert (bug-cyp-14",
+        "percentile.rs::theorem_disc_over_ints_answers_float: decision (same body): every value is CAST AS DOUBLE before PDISC/PCONT, so the answer is a double for every input kind (bug-cyp-147)"
+      ]
+    },
+    {
+      "member": "iris_vector_graph/cypher/translator.py::_translate_bm25_search",
+      "by": [
+        "bm25_scoring.rs::theorem_sql_k_nonpositive_empty_others_refuse: guard: CALL ivg.bm25.search validates name, query and k >= 1 with the model bm25_search runs, before kg_BM25 (bug-srch-113 neighbor)"
+      ]
+    }
+  ],
+  "lost_active": [
+    "iris_src/src/Graph/KG/BM25Index.cls::Build",
+    "iris_vector_graph/_engine/vector.py::VectorMixin.bm25_build",
+    "iris_vector_graph/bolt_server.py::BoltSession._do_handshake",
+    "iris_vector_graph/bolt_server.py::start_tcp_bolt_server"
+  ],
+  "lost_union": [
+    "iris_vector_graph/_engine/vector.py::VectorMixin.bm25_build",
+    "iris_vector_graph/bolt_server.py::BoltSession._do_handshake",
+    "iris_vector_graph/bolt_server.py::start_tcp_bolt_server"
+  ]
+}

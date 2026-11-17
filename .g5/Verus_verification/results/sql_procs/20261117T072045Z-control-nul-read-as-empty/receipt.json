@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "provider/input: SQL's '' reaches the body as \"\" (as $Translate($Char(0)) would make it; the bug-str-112 repair direction)",
+    "expect_fail_in": [
+      "theorem_sql_empty_endpoints_zero_path",
+      "theorem_dijkstra_endpoint_neighbors"
+    ],
+    "find": "pub open spec fn sql_end(empty: bool, id: int) -> End { if empty { End::Nul } else { End::Id(id) } }",
+    "name": "nul-read-as-empty",
+    "replace": "pub open spec fn sql_end(empty: bool, id: int) -> End { if empty { End::Missing } else { End::Id(id) } }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_sql_empty_endpoints_zero_path",
+      "theorem_dijkstra_endpoint_neighbors"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/sql_procs/model.json": "111d43dd8222f7adf2f297096b86fb269c4cf7eed5071528e506ad6ab71fca02",
+    ".g5/Verus_verification/models/sql_procs/sql_procs.rs": "86a7392c4a2b963013b473d18e566dd47f93a9f3173e3ce428a63e5bd2aaa1b4"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T072043Z/models/sql_procs/sql_procs.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_dijkstra_endpoint_neighbors": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T072043Z-control-nul-read-as-empty-theorem_dijkstra_endpoint_neighbors.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_sql_empty_endpoints_zero_path": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T072043Z-control-nul-read-as-empty-theorem_sql_empty_endpoints_zero_path.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/20261117T072043Z-control-nul-read-as-empty.log",
+    "timed_out": false,
+    "verified": 25
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/sql_procs/20261117T072045Z-control-nul-read-as-empty/logs/20261117T072043Z-control-nul-read-as-empty-theorem_dijkstra_endpoint_neighbors.log": "15eb5c1aa91c9f5d81be6110457c83a60102ac8e70d92f686749cd58fd43b43b",
+    ".g5/Verus_verification/results/sql_procs/20261117T072045Z-control-nul-read-as-empty/logs/20261117T072043Z-control-nul-read-as-empty-theorem_sql_empty_endpoints_zero_path.log": "8df97f4a45b18cf96fd4ac17de1bcea42129bdd936d8375ad3477950f76b4de0",
+    ".g5/Verus_verification/results/sql_procs/20261117T072045Z-control-nul-read-as-empty/logs/20261117T072043Z-control-nul-read-as-empty.log": "833bea00ece18578c1386824f77255297caa5dd36db811d96cd54667ef8e3fed"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

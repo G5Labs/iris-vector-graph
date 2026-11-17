@@ -1,0 +1,27 @@
+verification results:: 31 verified, 1 errors
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/width-only-with-models/20261117T072046Z/models/install_lifecycle/install_lifecycle.rs:288:1
+    |
+288 | pub proof fn theorem_width_enforced_whatever_the_model(r: Row, o: Ident)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/width-only-with-models/20261117T072046Z/models/install_lifecycle/install_lifecycle.rs:291:13
+    |
+288 | pub proof fn theorem_width_enforced_whatever_the_model(r: Row, o: Ident)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+291 |     ensures !enforce_ok(Some(r), o), conflicts(r.id, o) == Conflict::Width,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/width-only-with-models/20261117T072046Z/models/install_lifecycle/install_lifecycle.rs:291:38
+    |
+288 | pub proof fn theorem_width_enforced_whatever_the_model(r: Row, o: Ident)
+    | ------------------------------------------------------------------------ at the end of the function body
+...
+291 |     ensures !enforce_ok(Some(r), o), conflicts(r.id, o) == Conflict::Width,
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

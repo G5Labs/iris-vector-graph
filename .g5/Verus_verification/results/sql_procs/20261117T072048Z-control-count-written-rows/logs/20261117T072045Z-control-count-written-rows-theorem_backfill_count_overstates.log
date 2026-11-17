@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/count-written-rows/20261117T072045Z/models/sql_procs/sql_procs.rs:471:13
+    |
+469 | pub proof fn theorem_backfill_count_overstates(st: Bf, t: Tri)
+    | -------------------------------------------------------------- at the end of the function body
+470 |     requires structural(st).contains(t), st.rows.contains_key(t),
+471 |     ensures rows_written(st) < backfill_count(st),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

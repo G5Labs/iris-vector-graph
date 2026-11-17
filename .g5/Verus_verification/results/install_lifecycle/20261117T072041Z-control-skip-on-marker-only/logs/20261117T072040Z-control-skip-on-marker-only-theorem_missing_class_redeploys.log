@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/skip-on-marker-only/20261117T072040Z/models/install_lifecycle/install_lifecycle.rs:198:13
+    |
+196 | pub proof fn theorem_missing_class_redeploys(d: DeployIn)
+    | --------------------------------------------------------- at the end of the function body
+197 |     requires !d.all_compiled, !d.taken,
+198 |     ensures deploy(d) == DeployOut::Deployed,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

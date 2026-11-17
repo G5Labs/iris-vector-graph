@@ -1,0 +1,43 @@
+verification results:: 30 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/row-read-materialized/20261117T072054Z/models/install_lifecycle/install_lifecycle.rs:343:13
+    |
+341 | / pub proof fn theorem_placed_only_when_every_check_passes(row: bool, row_read_ok: bool, route: Option<Route>, row_dim: Option<nat>...
+342 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+343 |       ensures place(row, row_read_ok, route, row_dim, row_dtype, node_in_graph, insert_ok) == PlaceOut::Placed <==>
+    |  _____________^
+344 | |         (row && row_read_ok && route is Some && route.unwrap().dim is Some
+345 | |          && (if row_dim is Some { row_dim.unwrap() } else { 0nat }) == route.unwrap().dim.unwrap() && row_dtype == route.unwrap()...
+346 | |          && node_in_graph && insert_ok),
+    | |_______________________________________^ failed this postcondition
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/row-read-materialized/20261117T072054Z/models/install_lifecycle/install_lifecycle.rs:355:1
+    |
+355 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dty...
+356 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/row-read-materialized/20261117T072054Z/models/install_lifecycle/install_lifecycle.rs:358:13
+    |
+355 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dty...
+356 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+357 |       requires q > 0,
+358 |       ensures place(true, false, route, row_dim, row_dtype, node_in_graph, insert_ok) == PlaceOut::RowReadFails,
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/row-read-materialized/20261117T072054Z/models/install_lifecycle/install_lifecycle.rs:359:13
+    |
+355 | / pub proof fn theorem_unreadable_row_never_placed(q: nat, r: nat, routes: nat, route: Option<Route>, row_dim: Option<nat>, row_dtype:...
+356 | |         node_in_graph: bool, insert_ok: bool)
+    | |_____________________________________________- at the end of the function body
+...
+359 |               place_effect(q, r, routes, place(true, false, route, row_dim, row_dtype, node_in_graph, insert_ok)) == (q, r, routes),
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 3 previous errors
+

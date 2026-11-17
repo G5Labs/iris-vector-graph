@@ -1,0 +1,51 @@
+{
+  "control": {
+    "classification": "repair (spec FR-009, install.schema.existing; bug-plt-026): a schema named explicitly is refused when IVG's tables are in one other schema",
+    "expect_fail_in": [
+      "theorem_other_schema_needs_a_name"
+    ],
+    "find": "    else if i.explicit { Some(How::Explicit) }",
+    "name": "explicit-refused",
+    "replace": "    else if false { Some(How::Explicit) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_other_schema_needs_a_name"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs": "726ffdd84cfa18425097d4206fdb955ac062375b9d0d21d0aa012e863c996169",
+    ".g5/Verus_verification/models/install_lifecycle/model.json": "bb461726fa014b5021b84c457db439a578e65b680004cf2cdcdc28f366061134"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/explicit-refused/20261117T072037Z/models/install_lifecycle/install_lifecycle.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 3,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_other_schema_needs_a_name": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T072037Z-control-explicit-refused-theorem_other_schema_needs_a_name.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T072037Z-control-explicit-refused.log",
+    "timed_out": false,
+    "verified": 29
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/install_lifecycle/20261117T072039Z-control-explicit-refused/logs/20261117T072037Z-control-explicit-refused-theorem_other_schema_needs_a_name.log": "7e35ea3b2e0b1edab1e4985176000418ab899840d29c4314000bb1051c5b153e",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T072039Z-control-explicit-refused/logs/20261117T072037Z-control-explicit-refused.log": "3fde019ef43013ad72dd21ea66a275fa876cb7d7333ef4d80711c5901722d109"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

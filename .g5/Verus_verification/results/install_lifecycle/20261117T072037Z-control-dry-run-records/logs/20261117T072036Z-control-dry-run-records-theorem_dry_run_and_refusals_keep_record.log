@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/dry-run-records/20261117T072036Z/models/install_lifecycle/install_lifecycle.rs:124:13
+    |
+122 | pub proof fn theorem_dry_run_and_refusals_keep_record(i: SetupIn)
+    | ----------------------------------------------------------------- at the end of the function body
+123 |     requires i.dry || setup(i) is Mismatch || setup(i) is Unrecorded || setup(i) is Clash,
+124 |     ensures record_after(i) == i.record,
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

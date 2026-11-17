@@ -1,0 +1,14 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/optout-backfilled/20261117T072048Z/models/sql_procs/sql_procs.rs:457:9
+    |
+452 | pub proof fn theorem_backfill_writes_missing_only(st: Bf, t: Tri)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+457 |         st.optout.contains((t.0, t.2)) && !st.rows.contains_key(t) ==> !backfill(st).rows.contains_key(t),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 1 previous error
+

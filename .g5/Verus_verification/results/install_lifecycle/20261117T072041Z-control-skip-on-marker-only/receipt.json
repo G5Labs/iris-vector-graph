@@ -1,0 +1,60 @@
+{
+  "control": {
+    "classification": "decision: skip on the fingerprint alone (pre-R299), a class gone stays gone",
+    "expect_fail_in": [
+      "theorem_skip_iff_same_fingerprint_and_all_compiled",
+      "theorem_missing_class_redeploys"
+    ],
+    "find": "pub open spec fn unchanged(d: DeployIn) -> bool { d.marker == Some(d.fp) && d.all_compiled }",
+    "name": "skip-on-marker-only",
+    "replace": "pub open spec fn unchanged(d: DeployIn) -> bool { d.marker == Some(d.fp) }"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_skip_iff_same_fingerprint_and_all_compiled",
+      "theorem_missing_class_redeploys"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/install_lifecycle/install_lifecycle.rs": "726ffdd84cfa18425097d4206fdb955ac062375b9d0d21d0aa012e863c996169",
+    ".g5/Verus_verification/models/install_lifecycle/model.json": "bb461726fa014b5021b84c457db439a578e65b680004cf2cdcdc28f366061134"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/controls/skip-on-marker-only/20261117T072040Z/models/install_lifecycle/install_lifecycle.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 2,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_missing_class_redeploys": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T072040Z-control-skip-on-marker-only-theorem_missing_class_redeploys.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_skip_iff_same_fingerprint_and_all_compiled": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T072040Z-control-skip-on-marker-only-theorem_skip_iff_same_fingerprint_and_all_compiled.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/install_lifecycle/20261117T072040Z-control-skip-on-marker-only.log",
+    "timed_out": false,
+    "verified": 30
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/install_lifecycle/20261117T072041Z-control-skip-on-marker-only/logs/20261117T072040Z-control-skip-on-marker-only-theorem_missing_class_redeploys.log": "8428947ac77885e2ff3496e9337c44f52c428466a8567c3dde2deeecb9676460",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T072041Z-control-skip-on-marker-only/logs/20261117T072040Z-control-skip-on-marker-only-theorem_skip_iff_same_fingerprint_and_all_compiled.log": "2e0852faccc314b8c2a6b25b1e98c07dae46eb30498985d56e51327292e58ce4",
+    ".g5/Verus_verification/results/install_lifecycle/20261117T072041Z-control-skip-on-marker-only/logs/20261117T072040Z-control-skip-on-marker-only.log": "b2d6fe49784095871dc22b5ad8576bf98e7e8fd5641ad9b74a82979b85215554"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}

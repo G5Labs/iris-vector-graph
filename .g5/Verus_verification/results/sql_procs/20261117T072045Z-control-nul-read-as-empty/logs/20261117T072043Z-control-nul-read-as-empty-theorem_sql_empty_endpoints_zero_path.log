@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T072043Z/models/sql_procs/sql_procs.rs:426:1
+    |
+426 | pub proof fn theorem_sql_empty_endpoints_zero_path(wp: WProp, dir: Dir)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T072043Z/models/sql_procs/sql_procs.rs:429:9
+    |
+426 | pub proof fn theorem_sql_empty_endpoints_zero_path(wp: WProp, dir: Dir)
+    | ----------------------------------------------------------------------- at the end of the function body
+...
+429 |         dijkstra_path(true, sql_end(true, 0), sql_end(true, 0), wp, dir) == Ans::Ok(PathAns::ZeroPath(End::Nul)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/nul-read-as-empty/20261117T072043Z/models/sql_procs/sql_procs.rs:430:9
+    |
+426 | pub proof fn theorem_sql_empty_endpoints_zero_path(wp: WProp, dir: Dir)
+    | ----------------------------------------------------------------------- at the end of the function body
+...
+430 |         dijkstra_json(sql_end(true, 0), sql_end(true, 0), wp, dir) != rule_empty_endpoint(),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

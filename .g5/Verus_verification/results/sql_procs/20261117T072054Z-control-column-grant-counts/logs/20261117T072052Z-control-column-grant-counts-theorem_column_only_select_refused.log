@@ -1,0 +1,29 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/column-grant-counts/20261117T072052Z/models/sql_procs/sql_procs.rs:316:1
+    |
+316 | pub proof fn theorem_column_only_select_refused(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, shard: int, g: GArg)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/column-grant-counts/20261117T072052Z/models/sql_procs/sql_procs.rs:322:9
+    |
+316 | pub proof fn theorem_column_only_select_refused(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, shard: int, g: GArg)
+    | ----------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+322 |         require(c, sch, seq![t_edges()], seq![Act::S]) == Gate::Refused(t_edges(), Act::S),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/sql_procs/controls/column-grant-counts/20261117T072052Z/models/sql_procs/sql_procs.rs:323:9
+    |
+316 | pub proof fn theorem_column_only_select_refused(c: Caller, sch: int, adj: Seq<Arc>, src: int, pred: int, shard: int, g: GArg)
+    | ----------------------------------------------------------------------------------------------------------------------------- at the end of the function body
+...
+323 |         match_edges_sql(c, sch, adj, src, pred, shard, g) == Ans::<Seq<Arc>>::Refused,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

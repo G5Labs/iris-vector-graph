@@ -1,0 +1,31 @@
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
+note: verifying root module (selected functions)
+
+note: function body check: not all errors may have been reported; rerun with a higher value for --multiple-errors to find other potential errors in this function
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/atomic-tx/20261117T072038Z/models/bolt_tx/bolt_tx.rs:305:1
+    |
+305 | pub proof fn theorem_failed_tx_keeps_earlier_writes(s: S, inner: Seq<Msg>, v: nat)
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/atomic-tx/20261117T072038Z/models/bolt_tx/bolt_tx.rs:308:9
+    |
+305 | pub proof fn theorem_failed_tx_keeps_earlier_writes(s: S, inner: Seq<Msg>, v: nat)
+    | ---------------------------------------------------------------------------------- at the end of the function body
+...
+308 |         exec(Design::AsBuilt, s, fail_shape(inner, v)).0.store == s.store + total(inner),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/atomic-tx/20261117T072038Z/models/bolt_tx/bolt_tx.rs:310:9
+    |
+305 |   pub proof fn theorem_failed_tx_keeps_earlier_writes(s: S, inner: Seq<Msg>, v: nat)
+    |   ---------------------------------------------------------------------------------- at the end of the function body
+...
+310 | /         exec(Design::AsBuilt, s, fail_shape(inner, v)).1
+311 | |             == seq![Ans::Success] + exec(Design::AsBuilt, s, inner).1
+312 | |                + seq![Ans::Failure, Ans::Ignored, Ans::Ignored, Ans::Success],
+    | |_____________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

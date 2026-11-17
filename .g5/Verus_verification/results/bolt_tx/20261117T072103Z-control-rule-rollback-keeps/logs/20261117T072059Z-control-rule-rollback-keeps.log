@@ -1,0 +1,21 @@
+verification results:: 18 verified, 2 errors
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/rule-rollback-keeps/20261117T072059Z/models/bolt_tx/bolt_tx.rs:243:9
+    |
+238 | pub proof fn theorem_rollback_keeps_writes(s: S, inner: Seq<Msg>)
+    | ----------------------------------------------------------------- at the end of the function body
+...
+243 |         neo(c0(s), rb_shape(inner)).store == s.store,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+   --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/rule-rollback-keeps/20261117T072059Z/models/bolt_tx/bolt_tx.rs:354:9
+    |
+349 | pub proof fn theorem_refusal_matches_rule(s: S, inner: Seq<Msg>)
+    | ---------------------------------------------------------------- at the end of the function body
+...
+354 |         neo(c0(s), seq![Msg::Begin] + inner + seq![Msg::Rollback, Msg::Reset]).store == s.store,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

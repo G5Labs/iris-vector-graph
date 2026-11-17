@@ -1,0 +1,78 @@
+{
+  "control": {
+    "classification": "repair (alternative): BEGIN refused with FAILURE, as design Refuse; the client is told there is no transaction, so every as-built departure theorem and the commit neighbor change",
+    "expect_fail_in": [
+      "theorem_rollback_keeps_writes",
+      "theorem_commit_agrees",
+      "theorem_failed_tx_keeps_earlier_writes",
+      "theorem_reset_or_close_keeps_writes"
+    ],
+    "find": "                Msg::Begin => (s, Ans::Success),",
+    "name": "begin-refused",
+    "replace": "                Msg::Begin => (S { store: s.store, failed: true, tx: None }, Ans::Failure),"
+  },
+  "expected": {
+    "fail_in": [
+      "theorem_rollback_keeps_writes",
+      "theorem_commit_agrees",
+      "theorem_failed_tx_keeps_earlier_writes",
+      "theorem_reset_or_close_keeps_writes"
+    ],
+    "verdict": "EXPECTED_FAIL"
+  },
+  "inputs": {
+    ".g5/Verus_verification/models/bolt_tx/bolt_tx.rs": "e0ec949ed42f8b589a7331ebdac9c8c8f10b405bd385666e11f79231c094d815",
+    ".g5/Verus_verification/models/bolt_tx/model.json": "46049c11f83207c0ae2283460f0f84549e2835ab647ac4ee4f34ae3057b2a715"
+  },
+  "kind": "control",
+  "observed": {
+    "command": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/controls/begin-refused/20261117T072030Z/models/bolt_tx/bolt_tx.rs --crate-type=lib --num-threads 8 --triggers-mode silent",
+    "errors": 4,
+    "exit_code": 1,
+    "has_resource_limit": false,
+    "per_function": {
+      "theorem_commit_agrees": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T072030Z-control-begin-refused-theorem_commit_agrees.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_failed_tx_keeps_earlier_writes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T072030Z-control-begin-refused-theorem_failed_tx_keeps_earlier_writes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_reset_or_close_keeps_writes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T072030Z-control-begin-refused-theorem_reset_or_close_keeps_writes.log",
+        "timed_out": false,
+        "verified": 0
+      },
+      "theorem_rollback_keeps_writes": {
+        "errors": 1,
+        "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T072030Z-control-begin-refused-theorem_rollback_keeps_writes.log",
+        "timed_out": false,
+        "verified": 0
+      }
+    },
+    "raw_log": "/home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/bolt_tx/20261117T072030Z-control-begin-refused.log",
+    "timed_out": false,
+    "verified": 16
+  },
+  "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
+  "raw_log_copies": {
+    ".g5/Verus_verification/results/bolt_tx/20261117T072038Z-control-begin-refused/logs/20261117T072030Z-control-begin-refused-theorem_commit_agrees.log": "d02c8e7e76488cb51bd268a7d5e8a8b80c2fa7bb97a8d8b4bf7e55f88697eb9b",
+    ".g5/Verus_verification/results/bolt_tx/20261117T072038Z-control-begin-refused/logs/20261117T072030Z-control-begin-refused-theorem_failed_tx_keeps_earlier_writes.log": "fadeea95b52f78a3eaa5d1febd2e922736099275b73e15755a2eb56e93a4503f",
+    ".g5/Verus_verification/results/bolt_tx/20261117T072038Z-control-begin-refused/logs/20261117T072030Z-control-begin-refused-theorem_reset_or_close_keeps_writes.log": "6a4fc8c94bf4f5d9767d7551d21e8181b2d88770e673d60c2e2334aa0c228ec9",
+    ".g5/Verus_verification/results/bolt_tx/20261117T072038Z-control-begin-refused/logs/20261117T072030Z-control-begin-refused-theorem_rollback_keeps_writes.log": "1a2d11b897f1c475d48865287669fef0bf90deb7a28b9c8976c7b81b646b1a5f",
+    ".g5/Verus_verification/results/bolt_tx/20261117T072038Z-control-begin-refused/logs/20261117T072030Z-control-begin-refused.log": "12af8f43e84cbcf63e86244c6cf98958b5b1b38e326da6e13c6afe2e3a4b0e69"
+  },
+  "threads": "8",
+  "timeout_s": 1200,
+  "verdict": "EXPECTED_FAIL",
+  "verus": {
+    "bin": "/home/ziniu_wu_g5labs_ai/.local/share/g5-verification/verus-0.2026.10.04.426d8b0/verus-x86-linux/verus",
+    "version": "0.2026.10.04.426d8b0"
+  }
+}
