@@ -20,12 +20,12 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | 8 | Imports `load_networkx`, `load_obo` | _engine (admin/load) | OPEN | expected repeat of bug-str-109 class |
 | 9 | `ivg` CLI and HTTP admin routes beyond `/api/cypher` | cli.py 28/32, cypher_api.py admin_* | OPEN | |
 | 10a | Cypher expression surface with run-time values (string fns, slices, size() of stored values, CASE, list comprehension, aggregation over stored values, functions in CREATE/SET maps, PropSet) | translator.py, SqlProcs.PropSet | DONE 48 (W55) | model `cypher_exprs`; 6 owner blocks; bug-cyp-117..125 (120 High); PropSet bound. Residual: driver 5.4 check for cyp-125, other CREATE shapes, SET += maps, zero-length strings model |
-| 10 | (ASSIGNED 54) Cypher translator clause semantics on Cypher-written data (aggregation/OPTIONAL MATCH/WITH/UNWIND/CASE/list comprehension/path funcs) | translator.py 697/717, parser.py 53, ast.py 54 | OPEN | largest raw gap; prior runs leaned on TCK; needs representative workflow check before any convergence claim |
+| 10 | (PARTIAL 54: model cypher_clauses; residual OPTIONAL MATCH aggregates, UNWIND grouping, -94 boundary, UNION floats/lists, CALL{} agg, FOREACH, SET +=, WITH *, ORDER BY mixed; ~660/717 translator unbound) Cypher translator clause semantics on Cypher-written data (aggregation/OPTIONAL MATCH/WITH/UNWIND/CASE/list comprehension/path funcs) | translator.py 697/717, parser.py 53, ast.py 54 | OPEN | largest raw gap; prior runs leaned on TCK; needs representative workflow check before any convergence claim |
 | 11 | SQL store layer `stores/iris_sql_store.py` | 140/149 | OPEN | check which public workflows reach it |
 | 12 | Engine facade `engine.py` and `_engine/query.py` | 119/124, 116/124 | OPEN | largely delegates; justify shared relation or exclude |
 | 13 | Schema / schema_name / class_deploy (install & DDL) | _engine/schema.py 68/83, schema.py 53/58, schema_name.py 44/47, class_deploy 21 | OPEN | |
 | 14 | Traversal builds and BFS (`TraversalBuild` 38/38, `Traversal` 33/34, `Adjacency` 33/34, `VarLength` 15) | iris_src | OPEN | prior: "internals of modeled decisions" - re-challenge |
-| 15 | Bolt server | bolt_server.py 45/53 | OPEN | |
+| 15 | (ASSIGNED 55 with _engine/query.py pipeline) Bolt server | bolt_server.py 45/53 | OPEN | |
 | 16 | SDK / host (`sdk.py` 42/43, `host.py` 38/42) | | OPEN | |
 | 17 | Cypher `Exec.cls` / `Gen.cls` native executor internals | 55/59, 23/24 | OPEN | |
 | 18 | Ledger client/replay/changeset | 35/42, 33/43, 28/29 | OPEN | ledger family modeled; check readers |
@@ -51,6 +51,7 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | Iter | Session | Batch | Union | Active | Findings | Cost |
 |---|---|---|---|---|---|---|
 | base | - | - | 698 | 448 | - | - |
+| 54 | 9b48cf72 | W59 Cypher clauses over API data / default mode / params | 847 | 619 | new: cyp-135..138, 142, 143 M; cyp-139..141 L; question query.aggregation.keys.numbers | 37 min, $17.79, 208k out tok |
 | 53 | 3b698118 | repairs review round 2 + SqlProcs/BM25/percentiles | 833 | 603 | new: tmp-105 M, plt-119 M, cyp-134 M, tmp-106/plt-120/cyp-133/tmp-107/str-112 L; models sql_procs, bm25_scoring, percentile | 45 min, $33.94 (4 sub-workers) |
 | 52 | ff337b8c | W58 operator reports | 799 | 563 | new: plt-115 M (status misses routed vectors), plt-116 M (verify_sync drift loop), plt-117/118 L; routine_reporting claim for routed tables withdrawn | 26 min, $14.81, 159k out tok |
 | 51 | ff816019 | W57 temporal statistics readers | 777 | 537 | new: tmp-103 M (HLL floor 11), tmp-104 M (label-set hash collision); tmp-002/003/009, F-0508/0509 strengthened | 28 min, $12.73, 178k out tok |
