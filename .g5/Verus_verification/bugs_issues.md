@@ -2965,6 +2965,25 @@ Consequence: updating a node's vector leaves its old vector answering searches, 
 
 Repair proposal (not implemented): remove the node from every cell before inserting, count only new nodes, and delete every copy. Governing statement: [search.ivf](../ontology/features/search.g5.md#search.ivf).
 
+<a id="bug-srch-109"></a>
+### An IVF index built with metric "cosine" ranks by the raw dot product, so a long vector outranks a perfectly aligned one
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 47)
+
+Found by: source reading of `IVFIndex.Search` while checking W53's SQL reader ([predictions](../uplift/consolidated/iteration-47/sqlprocs-PAIRS.md); not a frozen prediction); [ivf_entries](models/ivf_entries/NOTES.md) `theorem_cosine_ranks_as_dot` (every query and vector pair) and `theorem_cosine_metric_misranks` (witness), controls `cosine-normalized` (the repaired order; the equal-length neighbor `theorem_equal_lengths_agree` still verifies) and `cosine-takes-l2-branch`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([observation](../uplift/consolidated/iteration-47/ivf-cosine-observed-20261117T014744Z.json); [binding](results/ivf_entries/20261117T014907Z-binding/receipt.json) `cosine_ivf_search`, `cosine_kg_IVF`). One graph holds `long_off` = (10,0,0,0), `unit_on` = (0.6,0.8,0,0) and `other` = (0,0,1,0); `ivf_build(..., metric="cosine")`, then the query (0.6,0.8,0,0). `ivf_search` and `SELECT kg_IVF(...)` both answer `long_off` 6.0, `unit_on` 1.0, `other` 0.0. Passing neighbor on the same vectors: the route search `search_nodes_by_vector` answers `unit_on` 1.0, `long_off` 0.6, `other` 0.0. Not exercised: `vector_search`'s IVF fallback and `kg_RRF_FUSE`'s IVF leg (the fixture supports `VECTOR_COSINE`, so the fallback is not taken).
+
+Expected: the metric's name and default (`ivf_build(metric="cosine")`, reported back by `ivf_info`); `_IVF_METRICS` accepts "cosine" and "dot" as different choices; the route search ranks by cosine, and `VecIndex` was changed in 4.7.0 so that a cosine index scores the cosine.
+
+Observed: every branch that scores under "cosine" computes `$vectorop("sum", $vectorop("v*", q, v))`, the same as "dot": centroid choice and entry scoring in `Search` (`IVFIndex.cls:75-78`, `112-115`) and the cell choice in `Insert` (`:200-201`). `ivf_build` clusters and stores the raw vectors (`vector.py:1970-2022`) and nothing divides by a length.
+
+Consequence: with stored vectors that are not unit length (`store_embedding` accepts any), a cosine IVF index returns a different top k from the route search on the same data, through both the Python and the SQL reader. Unit-length embeddings, which most providers return, are unaffected. Medium: wrong ranking under a confirmed but data-dependent trigger.
+
+Repair proposal (not implemented): normalize vectors and centroids at build and insert time for metric "cosine" (or divide by the stored length at search time). Preserve: "dot" and "l2"/"euclidean" scores unchanged; equal-length vectors keep their order. Writers: `ivf_build`, `AddBatch`, `Insert`; readers: `Search` (via `ivf_search`, `kg_IVF`, `ivg.ivf.search`, `vector_search`'s fallback, `kg_RRF_FUSE`). The control `cosine-normalized` checks the repaired order in the model only; the repair was not run on the product. Governing statement: [search.ivf.metric](../ontology/features/search.g5.md#search.ivf.metric).
+
 <a id="bug-agg-001"></a>
 ### A leading grouped OPTIONAL MATCH with no matches returns NULL for SUM instead of zero
 

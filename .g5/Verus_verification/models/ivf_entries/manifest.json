@@ -1,15 +1,16 @@
 {
   "title": "ivf entries",
-  "question": "IVF index after its build: stale copies and counts on re-insert (bug-srch-107); no query width check (bug-srch-108)",
+  "question": "IVF index after its build: stale copies and counts on re-insert (bug-srch-107); no query width check (bug-srch-108); metric cosine ranks as dot (bug-srch-109)",
   "ontology_ids": [
-    "search.ivf"
+    "search.ivf",
+    "search.ivf.metric"
   ],
   "runs": [
     {
       "label": "proof",
       "kind": "proof",
       "variant": "as-built bounded transcription",
-      "expect": "{\"errors\": 0, \"verified\": 4}"
+      "expect": "{\"errors\": 0, \"verified\": 9}"
     },
     {
       "label": "insert-replaces",
@@ -34,6 +35,18 @@
       "kind": "control",
       "variant": "as-built bounded transcription",
       "expect": "{\"fail_in\": [\"theorem_insert_then_delete\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cosine-normalized",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_cosine_ranks_as_dot\", \"theorem_cosine_metric_misranks\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "cosine-takes-l2-branch",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_cosine_ranks_as_dot\"], \"verdict\": \"EXPECTED_FAIL\"}"
     },
     {
       "label": "binding",

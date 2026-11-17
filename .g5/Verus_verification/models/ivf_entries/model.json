@@ -1,7 +1,7 @@
 {
   "name": "ivf_entries",
   "root": "ivf_entries.rs",
-  "expected_verified": 4,
+  "expected_verified": 9,
   "product_baseline": "3eaa79cf77d3e0a879b2cced634cf2729d81499e",
   "additional_inputs": [],
   "controls": [
@@ -41,6 +41,25 @@
         "theorem_insert_then_delete"
       ],
       "classification": "effect: delete leaves the entry"
+    },
+    {
+      "name": "cosine-normalized",
+      "find": "    entry_score(m, q, v1) > entry_score(m, q, v2)\n}",
+      "replace": "    match m { Metric::Cosine => cosine_above(q, v1, v2), _ => entry_score(m, q, v1) > entry_score(m, q, v2) }\n}",
+      "expect_fail_in": [
+        "theorem_cosine_ranks_as_dot",
+        "theorem_cosine_metric_misranks"
+      ],
+      "classification": "decision: under metric cosine Search orders entries by dot/|v| (the repair); theorem_equal_lengths_agree must still verify"
+    },
+    {
+      "name": "cosine-takes-l2-branch",
+      "find": "    match m { Metric::Cosine => dot(q, v), Metric::Dot => dot(q, v), Metric::L2 => -sqdist(q, v) }",
+      "replace": "    match m { Metric::Cosine => -sqdist(q, v), Metric::Dot => dot(q, v), Metric::L2 => -sqdist(q, v) }",
+      "expect_fail_in": [
+        "theorem_cosine_ranks_as_dot"
+      ],
+      "classification": "decision: the cosine branch is not the dot branch (Search's first If chooses another scorer)"
     }
   ]
 }

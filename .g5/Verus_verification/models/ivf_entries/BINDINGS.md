@@ -1,6 +1,6 @@
 # ivf entries
 
-IVF index after its build: stale copies and counts on re-insert; no query width check
+IVF index after its build: stale copies and counts on re-insert; no query width check; metric cosine ranks as dot
 
 Evidence status: active. Variant: as-built bounded transcription.
 

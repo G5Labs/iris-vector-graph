@@ -1,0 +1,22 @@
+verification results:: 7 verified, 2 errors
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/ivf_entries/controls/cosine-normalized/20261117T014834Z/models/ivf_entries/ivf_entries.rs:82:13
+   |
+80 | pub proof fn theorem_cosine_ranks_as_dot(q: Seq<int>, v1: Seq<int>, v2: Seq<int>)
+   | --------------------------------------------------------------------------------- at the end of the function body
+81 |     ensures entry_score(Metric::Cosine, q, v1) == entry_score(Metric::Dot, q, v1),
+82 |             ivf_above(Metric::Cosine, q, v1, v2) == ivf_above(Metric::Dot, q, v1, v2),
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ failed this postcondition
+
+error: postcondition not satisfied
+  --> /home/ziniu_wu_g5labs_ai/experiments/iris-uplift-continuation-20261117/runs/ivg-cont-20261117/verus/ivf_entries/controls/cosine-normalized/20261117T014834Z/models/ivf_entries/ivf_entries.rs:88:13
+   |
+87 |   pub proof fn theorem_cosine_metric_misranks()
+   |   --------------------------------------------- at the end of the function body
+88 |       ensures ({ let q = seq![3int, 4int]; let v1 = seq![10int, 0int]; let v2 = seq![3int, 4int];
+   |  _____________^
+89 | |                ivf_above(Metric::Cosine, q, v1, v2) && cosine_above(q, v2, v1) }),
+   | |_________________________________________________________________________________^ failed this postcondition
+
+error: aborting due to 2 previous errors
+

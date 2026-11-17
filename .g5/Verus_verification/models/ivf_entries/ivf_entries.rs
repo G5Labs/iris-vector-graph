@@ -47,4 +47,63 @@ pub proof fn theorem_other_width_answered(q: nat, dim: nat)
     ensures search_answers(q, dim),
 {}
 
+/// The three scoring branches of `IVFIndex.Search` (lines 75-82 for centroids, 112-119 for entries; `Insert` 200-205
+/// uses the same pair for its cell): "cosine" and "dot" take $vectorop("sum", $vectorop("v*", q, v)); anything else
+/// the negated squared distance. Nothing in Build, AddBatch, Insert or Search divides by a length.
+pub enum Metric { Cosine, Dot, L2 }
+pub open spec fn dot(a: Seq<int>, b: Seq<int>) -> int
+    decreases a.len(),
+{
+    if a.len() == 0 || b.len() == 0 { 0 } else { a[0] * b[0] + dot(a.drop_first(), b.drop_first()) }
+}
+pub open spec fn sqdist(a: Seq<int>, b: Seq<int>) -> int
+    decreases a.len(),
+{
+    if a.len() == 0 || b.len() == 0 { 0 } else { (a[0] - b[0]) * (a[0] - b[0]) + sqdist(a.drop_first(), b.drop_first()) }
+}
+pub open spec fn entry_score(m: Metric, q: Seq<int>, v: Seq<int>) -> int {
+    match m { Metric::Cosine => dot(q, v), Metric::Dot => dot(q, v), Metric::L2 => -sqdist(q, v) }
+}
+/// Search's order: a higher score is returned first (^||ivfRanked(-score, node)).
+pub open spec fn ivf_above(m: Metric, q: Seq<int>, v1: Seq<int>, v2: Seq<int>) -> bool {
+    entry_score(m, q, v1) > entry_score(m, q, v2)
+}
+/// The rule for metric "cosine" (its name; the route search and VecIndex since 4.7.0): v1 above v2 when
+/// dot1/|v1| > dot2/|v2|, decided exactly without roots as sgn(d1)·d1²·|v2|² > sgn(d2)·d2²·|v1|².
+pub open spec fn ssq(d: int) -> int { if d >= 0 { d * d } else { -(d * d) } }
+pub open spec fn cosine_above(q: Seq<int>, v1: Seq<int>, v2: Seq<int>) -> bool {
+    ssq(dot(q, v1)) * dot(v2, v2) > ssq(dot(q, v2)) * dot(v1, v1)
+}
+
+/// W53 (bug-srch-109): for every query and pair of vectors, an index built with metric "cosine" scores and orders
+/// exactly as one built with "dot".
+pub proof fn theorem_cosine_ranks_as_dot(q: Seq<int>, v1: Seq<int>, v2: Seq<int>)
+    ensures entry_score(Metric::Cosine, q, v1) == entry_score(Metric::Dot, q, v1),
+            ivf_above(Metric::Cosine, q, v1, v2) == ivf_above(Metric::Dot, q, v1, v2),
+{}
+
+/// W53 (bug-srch-109): q = (3,4), a long off-axis v1 = (10,0) and an aligned v2 = (3,4). Search returns v1 first
+/// (30 > 25) while the cosine rule puts v2 first (cosine 1 against 0.6).
+pub proof fn theorem_cosine_metric_misranks()
+    ensures ({ let q = seq![3int, 4int]; let v1 = seq![10int, 0int]; let v2 = seq![3int, 4int];
+               ivf_above(Metric::Cosine, q, v1, v2) && cosine_above(q, v2, v1) }),
+{
+    let q = seq![3int, 4int]; let v1 = seq![10int, 0int]; let v2 = seq![3int, 4int];
+    reveal_with_fuel(dot, 3);
+    assert(q.drop_first() =~= seq![4int]); assert(v1.drop_first() =~= seq![0int]); assert(v2.drop_first() =~= seq![4int]);
+    assert(q.drop_first().drop_first().len() == 0);
+    assert(dot(q, v1) == 30); assert(dot(q, v2) == 25); assert(dot(v1, v1) == 100); assert(dot(v2, v2) == 25);
+}
+
+/// Neighbor: on vectors of one length the two orders agree (q = (3,4); v1 = (3,4) and v2 = (5,0), both length 5).
+pub proof fn theorem_equal_lengths_agree()
+    ensures ({ let q = seq![3int, 4int]; let v1 = seq![3int, 4int]; let v2 = seq![5int, 0int];
+               ivf_above(Metric::Cosine, q, v1, v2) && cosine_above(q, v1, v2) }),
+{
+    let q = seq![3int, 4int]; let v1 = seq![3int, 4int]; let v2 = seq![5int, 0int];
+    reveal_with_fuel(dot, 3);
+    assert(q.drop_first() =~= seq![4int]); assert(v1.drop_first() =~= seq![4int]); assert(v2.drop_first() =~= seq![0int]);
+    assert(dot(q, v1) == 25); assert(dot(q, v2) == 15); assert(dot(v1, v1) == 25); assert(dot(v2, v2) == 25);
+}
+
 }
