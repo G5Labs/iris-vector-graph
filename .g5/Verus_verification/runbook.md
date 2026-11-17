@@ -573,3 +573,25 @@ Worked lookup (iteration 51): `temporal.stats.distinct` → `temporal_stats.rs::
 `crosswalk/decision-links.tsv`; in reverse, those keys in the recount's `bindings.json` list the claims. The
 distinguishing control is `small-range-correction`; the product observation is the binding's `distinct_d_d1_0_299`
 (11 for three edges to one target) beside `distinct_d_nobody_0_299` (0).
+
+Iteration 52 (W58, operator reports; [handoff](../uplift/consolidated/iteration-52/HANDOFF.md)), same environment. Status
+counts every graph of a namespace, so the probe uses the fresh namespace `I52`. The binding drops and re-creates `I52B`
+from `%SYS` in `ivg-cont-20261117-iris` only; it needs `docker exec` on that container.
+
+```sh
+python3 .g5/Verus_verification/run_verus.py prove .g5/Verus_verification/models/operator_reports       # PASS 34
+python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/operator_reports    # 17 EXPECTED_FAIL
+CONTROL=registry-keeps-case python3 .g5/Verus_verification/run_verus.py controls .g5/Verus_verification/models/operator_reports
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/Verus_verification/models/operator_reports/binding.py)  # AGREES 414
+(cd $RUN_DIR/pin && IVG_REPO=$OLDPWD $RUN_DIR/venv/bin/python -B $OLDPWD/.g5/uplift/consolidated/iteration-52/reports_probe.py)      # raw probe in I52
+python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after52                 # 563/4130
+```
+
+Worked lookup (iteration 52): `install.status.readiness` → `operator_reports.rs::theorem_routed_never_counted` and
+`lemma_upper_never_route` → the rows for `iris_vector_graph/_engine/admin.py::AdminMixin._embedding_tables` (line 305,
+decision: the case-sensitive route test over `SELECT DISTINCT`'s collated text) and
+`iris_vector_graph/security.py::is_routed_embedding_table` (line 58) in `crosswalk/decision-links.tsv`. In reverse,
+those keys in the recount's `bindings.json` list the claims, beside the iteration-13 `routine_reporting` rows, whose
+routed-table correspondence is withdrawn at the IRIS reader. The distinguishing control is `registry-keeps-case`. The
+product observation is the binding's `provider:distinct_text` (`KG_EMB_…` for `kg_emb_…`) beside `s9_routed_vectors`
+(`node_vecs` 0, `absent`) and `s9:search_g` (True).

@@ -1,0 +1,221 @@
+{
+  "before": {
+    "revision": "a9e96d5b^ = 6c0dd694 (iteration-51 seal plus master inventory)",
+    "active": 537
+  },
+  "after": {
+    "revision": "working tree (iteration 52 seal)",
+    "active": 563
+  },
+  "denominator": 4130,
+  "newly_reached_and_bound": [
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::Put",
+      "reason": "decision: interns into ^NKG only when the skeleton exists; edgeCount +1 only for a new merged triple (theorem_put_after_sync_counted); guard: no skeleton on a freshly set-up namespace -> first edges skip ^NKG (theorem_fresh_namespace_edges_skip_nkg)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/Adjacency.cls::RowPut",
+      "reason": "writer: each loaded row goes through the index to Put (theorem_bulk_pending_is_engine_local)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBuild.cls::BuildNKG",
+      "reason": "writer: the build under ^IVG.NKGBuild (theorem_shared_triple_never_in_sync)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBuild.cls::KGEdgeCount",
+      "reason": "reader: ^KG(\"out\") edges, every graph -> kg_populated, kg_edge_count (theorem_ready_for_bfs_iff_rows)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBuild.cls::NKGEdgeCount",
+      "reason": "reader: ^NKG(\"$meta\",\"edgeCount\") (theorem_heal_claims_in_sync_then_drift)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBuild.cls::NKGPopulated",
+      "reason": "reader: ^NKG dictionary non-empty -> nkg_populated (theorem_fresh_namespace_edges_skip_nkg)"
+    },
+    {
+      "member": "iris_src/src/Graph/KG/TraversalBuild.cls::RewritePass",
+      "reason": "writer: ^NKG rewritten merged across graphs; edgeCount = distinct (s,p,o) (theorem_shared_triple_never_in_sync)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/admin.py::AdminMixin.verify_sync",
+      "reason": "decision: rows > ^NKG edgeCount or flag -> drift; heal stamps in sync (bug-plt-116) (theorem_heal_claims_in_sync_then_drift); decision: one-directional count comparison (theorem_shared_triple_never_in_sync)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.bulk_load_session",
+      "reason": "writer: inside a caller transaction sets this engine's _nkg_dirty (theorem_bulk_pending_is_engine_local)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin._sync_kg",
+      "reason": "writer: sets the calling engine's capabilities.kg_built only (theorem_markers_never_set_after_empty_setup)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin._sync_nkg",
+      "reason": "writer: BuildNKG + Build2HopStats, flag cleared (theorem_shared_triple_never_in_sync)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.get_schema_visualization",
+      "reason": "decision: an unlabeled end gets id 0, the first label's id (bug-plt-118) (theorem_unlabeled_endpoint_is_first_label)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.sync",
+      "reason": "writer: sync() = BuildKG then BuildNKG, flag cleared (theorem_unique_triples_in_sync_after_sync)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/snapshot.py::SnapshotMixin.snapshot_info",
+      "reason": "reader: metadata tables (every graph's rows at save) (theorem_snapshot_info_matches_restore)"
+    },
+    {
+      "member": "iris_vector_graph/cypher_api.py::get_metrics",
+      "reason": "reader: /metrics gauges from status() (theorem_server_and_metrics_project_status)"
+    },
+    {
+      "member": "iris_vector_graph/cypher_api.py::get_server_info",
+      "reason": "reader: /server carries status() counts and adjacency (theorem_server_and_metrics_project_status); reader: /server counts every graph vs /stats default graph (theorem_stats_default_vs_server_every_graph)"
+    },
+    {
+      "member": "iris_vector_graph/cypher_api.py::get_stats",
+      "reason": "reader: /stats default-graph node count (theorem_stats_default_vs_server_every_graph)"
+    },
+    {
+      "member": "iris_vector_graph/engine.py::IRISGraphEngine._detect_capabilities",
+      "reason": "reader: classes then the Graph.KG.Meta markers (theorem_markers_never_set_after_empty_setup)"
+    },
+    {
+      "member": "iris_vector_graph/schema.py::GraphSchema.bootstrap_kg_global",
+      "reason": "writer: markers set only with edge rows and the marker unset (bug-plt-117) (theorem_setup_again_sets_markers)"
+    },
+    {
+      "member": "iris_vector_graph/schema.py::GraphSchema.check_objectscript_classes",
+      "reason": "reader: kg_built/nkg_built = Graph.KG.Meta IsSet markers (theorem_markers_never_set_after_empty_setup)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.ready_for_bfs",
+      "reason": "reader: ready_for_bfs = kg_populated and edges > 0 (theorem_ready_for_bfs_iff_rows)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.ready_for_full_text",
+      "reason": "reader: some BM25 index exists (theorem_full_text_follows_index)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.ready_for_multihop_bfs",
+      "reason": "reader: multi-hop readiness needs the BFS path, not ^NKG (theorem_fresh_namespace_edges_skip_nkg)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.ready_for_vector_search",
+      "reason": "reader: node-vector total above zero (theorem_routed_only_not_ready_but_searchable)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.vector_index_state",
+      "reason": "reader: absent / empty / ready from the vector total and the HNSW flag (theorem_legacy_vectors_ready)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::SyncReport.__bool__",
+      "reason": "reader: bool(report) is in_sync (the documented if-not-verify-then-sync use) (theorem_heal_claims_in_sync_then_drift)"
+    }
+  ],
+  "lost": [],
+  "strengthened": [
+    {
+      "member": "iris_vector_graph/_engine/admin.py::AdminMixin._embedding_row_count",
+      "reason": "effect: node_embeddings sums only the tables the name test kept (theorem_routed_never_counted)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/admin.py::AdminMixin._embedding_tables",
+      "reason": "decision: case-sensitive route-name test over SELECT DISTINCT's collated text (bug-plt-115) (lemma_upper_never_route)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/admin.py::AdminMixin._status_probes",
+      "reason": "probes: KGEdgeCount, NKGPopulated, pending flag, bfs_path, BM25 List (theorem_delete_status_vs_verify)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/admin.py::AdminMixin.status",
+      "reason": "composer: refusal path and pending_sync from _nkg_dirty (theorem_bulk_pending_is_engine_local)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/nodes_edges.py::NodesEdgesMixin.delete_node",
+      "reason": "writer: Eraser drops ^NKG; the engine flag is cleared (theorem_delete_status_vs_verify)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.get_node_count",
+      "reason": "reader: default-graph node count (theorem_stats_default_vs_server_every_graph)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/schema.py::SchemaMixin.initialize_schema",
+      "reason": "writer: setup replaces the cached capabilities, then bootstraps (theorem_setup_again_sets_markers)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/snapshot.py::SnapshotMixin.save_snapshot",
+      "reason": "writer: metadata tables = rows read per table (theorem_snapshot_info_matches_restore)"
+    },
+    {
+      "member": "iris_vector_graph/security.py::is_routed_embedding_table",
+      "reason": "decision: ^kg_emb_[0-9a-f]{16}$, case-sensitive (lemma_upper_never_route)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.report",
+      "reason": "reader: the sync line reads only this engine's pending flag (theorem_fresh_namespace_edges_skip_nkg)"
+    }
+  ],
+  "delegates_justified": [
+    {
+      "member": "iris_vector_graph/cli.py::status",
+      "reason": "CLI: prints /server's JSON unchanged (shared relation: the reader is get_server_info)"
+    },
+    {
+      "member": "iris_vector_graph/cli.py::schema_status",
+      "reason": "CLI: prints /schema's JSON unchanged (default-graph counts)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.fulltext_index_state",
+      "reason": "reader: same predicate as ready_for_full_text (BM25 list non-empty)"
+    }
+  ],
+  "excluded_or_unassessed": [
+    {
+      "member": "iris_vector_graph/status.py::TableCounts, AdjacencyStatus, ObjectScriptStatus, ArnoStatus, IndexInventory, LedgerStatus, SyncReport, EngineStatus (dataclass containers)",
+      "reason": "trivial: field containers; their deciding readers are bound"
+    },
+    {
+      "member": "iris_vector_graph/status.py::SyncReport.to_dict, LedgerStatus.to_dict, EngineStatus.__str__",
+      "reason": "trivial: field copies / report(internals=False)"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.ready_for_edge_search",
+      "reason": "unassessed: edge-vector write in the probe used a wrong item key"
+    },
+    {
+      "member": "iris_vector_graph/status.py::EngineStatus.acceleration_state, acceleration_label",
+      "reason": "probe only (Arno absent; label observed for not loaded and IVG_DISABLE_ARNO=1)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/ledger.py::LedgerMixin._ledger_status",
+      "reason": "probe only (never-enabled, then enabled head 1)"
+    },
+    {
+      "member": "iris_vector_graph/stores/iris_sql_store.py::IRISGraphStore.capabilities",
+      "reason": "probe only: static catalogue (HD-1703)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/admin.py::AdminMixin._show_indexes; cypher_api.py::get_indexes, get_schema; cli.py::indexes_list",
+      "reason": "probe only (/indexes NOT_BUILT -> ONLINE, BM25 row by name)"
+    },
+    {
+      "member": "iris_vector_graph/_engine/admin.py::AdminMixin._status_schema",
+      "reason": "unassessed: the refused-namespace path was not run"
+    },
+    {
+      "member": "iris_vector_graph/engine.py::IRISGraphEngine.capabilities",
+      "reason": "not registered: the property and its setter make the symbol ambiguous at the pin (check_consolidated); _detect_capabilities carries the active binding for the same reader"
+    }
+  ],
+  "counts": {
+    "newly_reached_and_bound": 26,
+    "strengthened": 10,
+    "lost": 0,
+    "overlap": 0,
+    "distinct_additions": 36,
+    "delegates": 3
+  },
+  "command": "python3 .g5/Verus_verification/tools/member_reach.py --out $RUN_DIR/reach-after52 (before: $RUN_DIR/reach-after51)"
+}

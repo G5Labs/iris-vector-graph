@@ -4845,6 +4845,8 @@ Audit: Working assumption (agent, unratified): Keep decisions.md: code support a
 
 Canonical owner: [algorithms.routing.capability-policy](#HD-1703).
 
+Iteration 52 evidence (additive): on the continuation fixture with classes deployed and no Arno library, `IRISGraphStore.capabilities()` answered every algorithm True and no `*_arno` key. Meanwhile `engine.capabilities`, the documented report of what is deployed, read `kg_built` and `nkg_built` False on a namespace set up while empty, even after `sync()` ([bug-plt-117](bugs_issues.md#bug-plt-117)). So neither capability object is a live availability report today; `status()` is ([install.status.capabilities](../ontology/concepts/install.g5.md#install.status.capabilities), [probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s17_default_arno`). The working assumption is unchanged.
+
 ```g5-question
 schema: 1
 id: algorithms.routing.capability-policy

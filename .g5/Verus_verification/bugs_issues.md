@@ -1094,6 +1094,73 @@ Consequence: whenever the walk reaches at least `ppr_top_k` nodes (with the defa
 
 Repair proposal (not implemented): keep the cap; admit seeds and top nodes only up to the cap (best PPR score first), then list every edge whose two ends are answered (the same repair as bug-plt-114's). Preserve: the cap `min(max_nodes, ppr_top_k)`, the PPR ranking and `ppr_top_k`, argument checks before any read, `k_hops`, and the uncapped answer (all seven edges when the cap exceeds the reachable nodes). Writers and readers: `SubgraphJson` (seed loop, frontier loop, edge list), `kg_SUBGRAPH` and `kg_PPR_GUIDED_SUBGRAPH` (reshape), `IRISGraphOperators.kg_PPR_GUIDED_SUBGRAPH`; the Arno reader must give the same answer. Distinguishing cases: [s] with `ppr_top_k=3` lists s → a1 and s → a2; seeds s, a3, a4 with `ppr_top_k=1` answer one node. Checked in the model only (controls `edges-among-answered` and `seeds-capped` make the departures fail while the uncapped neighbor verifies); not run on the product. Governing statement: [algorithms.op.subgraph.guided](../ontology/features/algorithms.g5.md#algorithms.op.subgraph.guided).
 
+<a id="bug-plt-115"></a>
+### The status report never counts vectors in routed tables, so a namespace whose vectors are all routed reads "absent" and not ready for vector search
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 52)
+
+Found by: iteration 52 W58 frozen predictions R7 and R8 ([pairs](../uplift/consolidated/iteration-52/reports-PAIRS.md)). R8 predicted that the count includes routed rows; the probe answered 0. The registry rows were then read directly. [operator_reports](models/operator_reports/NOTES.md) `lemma_upper_never_route` and `theorem_routed_never_counted` prove it for every name and registry; `theorem_routed_only_not_ready_but_searchable` covers the reader; control `registry-keeps-case`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin, in the fresh namespaces `I52` ([probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s7_routed_vectors`) and `I52B` ([binding](results/operator_reports/20261117T042408Z-binding/receipt.json) `s9_routed_vectors`, `provider:distinct_text`):
+- After `store_embeddings(..., graph="i52bg")`, the registry holds `kg_emb_b7583a473e7f1826`, and `SELECT DISTINCT table_name` answers `KG_EMB_B7583A473E7F1826`.
+- `status().tables.node_embeddings` is 0, `vector_index_state` is `absent`, `ready_for_vector_search` is False, and the report says "Vector index: absent". `/server` and `/metrics` say 0 embeddings.
+- `search_nodes_by_vector(v, graph="i52bg")` answers the node, and `embedding_count(graph="i52bg")` is 1.
+- The snapshot of the same namespace lists the routed table with its row.
+
+Expected: Spec 230 FR-006 and the `_embedding_row_count` docstring: "Counting one table name reported zero for an install whose vectors are all routed — a number an operator reads as 'the embeddings are gone' while a search over the same rows answers fine." The owner [install.status](../ontology/concepts/install.g5.md#install.status) says the totals count each registered table of that kind.
+
+Observed: `_embedding_tables` (`_engine/admin.py:336-354`) reads `SELECT DISTINCT table_name, COALESCE(kind, 'node')` from the registry. It keeps a row only when `is_routed_embedding_table(name)` matches `^kg_emb_[0-9a-f]{16}$` (`security.py:47`), case-sensitive. On IRIS, `DISTINCT` over the default-collation column answers the SQLUPPER form, so no routed name ever matches. This leaves out:
+- every routed node table (and, by the same test, every routed edge table: `kg_eemb_`);
+- every HNSW index on a routed table (`hnsw_built` uses the same list).
+
+The iteration-13 `routine_reporting` binding replayed this reader on local SQL, whose `DISTINCT` keeps the stored case, so it could not see this. Its correspondence for routed tables is withdrawn at the IRIS reader.
+
+Consequence: an operator reads "the embeddings are gone" and not ready, which is the misreport FR-006 was meant to end, while searches on those graphs answer. A deployment that routes every graph (spec 227) always reads `absent`, and a re-embed or restore decided from this report is wasted work. A probe error is never raised, so nothing says the count is partial.
+
+Repair proposal (not implemented): compare case-insensitively (`is_route(name.lower())`), or select without `DISTINCT` and deduplicate in Python, or use `%EXACT(table_name)`. Preserve:
+- the legacy table first;
+- a kind taken from the registry row;
+- a row with no kind read as a node route;
+- a lost table reported, with the other counts kept.
+
+Writers and readers: `store_embeddings` and `embed_nodes` (registry rows), then `_embedding_tables` → `_embedding_row_count` and `_hnsw_built` → `status()`, `report()`, `/server` and `/metrics`. Distinguishing case: routed vectors only → `node_embeddings` 1 and ready. Control `registry-keeps-case` checks the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.readiness](../ontology/concepts/install.g5.md#install.status.readiness).
+
+<a id="bug-plt-116"></a>
+### verify_sync reports drift forever once two graphs hold the same edge; heal=True reports it healed and the next check reports drift again
+
+Severity: Medium · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 52)
+
+Found by: reading `BuildNKG` after the iteration 52 W58 freeze (the frozen rows S1-S3 did not cover two graphs); [operator_reports](models/operator_reports/NOTES.md) `theorem_shared_triple_never_in_sync`, `theorem_heal_claims_in_sync_then_drift`; neighbor `theorem_unique_triples_in_sync_after_sync`; controls `verify-counts-distinct-rows`, `nkg-per-graph`, `heal-rereads`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s4_*`, `s5_g_only_edge`; [binding](results/operator_reports/20261117T042408Z-binding/receipt.json) `s4_shared_triple` to `s6_sync_again`):
+- With `a -R-> b` in the default graph and in graph `i52bg`, `verify_sync()` answers `in_sync` False (3 SQL edges against 2 indexed edges), on the writing engine and on another engine.
+- `verify_sync(heal=True)` answers `in_sync` True and `healed` True.
+- The next `verify_sync()` answers False again, and so does the check after another explicit `sync()`.
+- Every later edge keeps the gap of one.
+
+Expected: the `verify_sync` docstring: "`bool(report)` mirrors `in_sync` for `if not engine.verify_sync(): engine.sync()` usage". After a sync on a quiet namespace the check should report in sync.
+
+Observed:
+- `verify_sync` (`_engine/admin.py:813-815`) flags drift when the rows of `rdf_edges` outnumber `^NKG("$meta","edgeCount")`.
+- `BuildNKG`/`RewritePass` (`TraversalBuild.cls:250-373`) build `^NKG` with no graph dimension and count each (s, p, o) once. `Adjacency.Put` likewise counts a triple only when `^NKG` does not hold it.
+- So every row whose triple another graph also holds counts once more in SQL than in `^NKG`, permanently.
+- The heal stamps `in_sync = True` without reading again (`admin.py:839-843`).
+
+A multigraph's parallel edges should do the same; the source predicts it, but it was not run.
+
+Consequence: the documented `if not verify_sync(): sync()` runs a full rebuild on every check once any two graphs share an edge, which is ordinary for named graphs: 422 s for LDBC SF10 per ADMIN_GUIDE. A monitor alerting on drift never clears, and the heal's own report says the opposite of the next check.
+
+Repair proposal (not implemented): compare `^NKG`'s count with `SELECT COUNT(DISTINCT s, p, o_id)` (or the count `RewritePass` records), and have the heal read the counts again after its sync. Preserve:
+- the one-directional rule (`^NKG` over-counts after deletes);
+- the pending-sync flag;
+- `indeterminate` on a failed read.
+
+Writers and readers: `create_edge`, the bulk paths, `sync()`, `BuildNKG`, `Adjacency.Put`, then `verify_sync` and `SyncReport.__bool__`. Distinguishing case: a shared triple after `sync()` → in sync. Controls `verify-counts-distinct-rows` and `heal-rereads` check the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.verify_sync](../ontology/concepts/install.g5.md#install.status.verify_sync).
+
 <a id="bug-tmp-103"></a>
 ### A distinct-target count answers at least 11 for any window that holds a target, so one target reads as 11
 
@@ -3296,6 +3363,52 @@ Observed: `_translate_set_value` hands a list literal to `_constant_value` and, 
 Consequence: an ordinary write is refused with an internal error that names no Cypher concept. Medium (refusal of a valid write; nothing partial).
 
 Repair proposal (not implemented): build the list in SQL from translated elements (as `SET` translates scalars), or refuse with a `CypherError` naming the property. Preserve: constant lists and row-literal lists. Governing statement: [query.writes.computed_values](../ontology/features/cypher.g5.md#query.writes.computed_values).
+
+<a id="bug-plt-117"></a>
+### engine.capabilities says ^KG and ^NKG are not built on a namespace set up before it held edges, whatever sync() does, until setup runs again
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 52)
+
+Found by: iteration 52 W58 frozen prediction C1 (missed: predicted that the first engine stays stale and a fresh engine is current; both are stale) and the source read after the freeze; [operator_reports](models/operator_reports/NOTES.md) `theorem_markers_never_set_after_empty_setup`; neighbors `theorem_setup_again_sets_markers` and `theorem_setup_with_edges_sets_markers`; controls `sync-sets-markers`, `setup-marks-empty`, `engine-cache-unchanged`, `setup-skips-bootstrap`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s0` to `s2_sync`; [binding](results/operator_reports/20261117T042408Z-binding/receipt.json) `caps_fresh`, `s2:caps_e1`, `s15:*`):
+- After setup on the empty `I52B`, then edges, then `sync()`, every newly created engine reads `kg_built` False and `nkg_built` False.
+- The syncing engine reads `kg_built` True and `nkg_built` False.
+- After `initialize_schema()` runs again, from any engine, new engines read both True.
+
+Expected: API reference and docstring: "What the namespace has deployed: the Graph.KG classes, `^KG`, `^NKG`."
+
+Observed:
+- The flags are the `Graph.KG.Meta` markers (`schema.py:2843-2848`). Only `bootstrap_kg_global` writes them, during setup and only when `rdf_edges` has rows (`schema.py:3309-3358`).
+- `_sync_kg` sets `kg_built` in the calling engine's memory only (`_engine/schema.py:2892`). Nothing sets `nkg_built` except that bootstrap.
+- `kg_PERSONALIZED_PAGERANK` takes its `Graph.KG.PageRank.RunJson` path only when `kg_built` (`_engine/algorithms.py:342`). Every new engine, the HTTP server's included, therefore takes its other path. The scores observed were the same.
+
+Consequence: a report of what is built that is wrong in the common flow (set up first, load afterwards), plus a slower path for personalized PageRank in every new process until setup is re-run. Low: the answers observed were the same, and the documented re-run of setup after an upgrade clears it.
+
+Repair proposal (not implemented): have `sync()` record both markers, or derive `kg_built`/`nkg_built` from `KGEdgeCount`/`NKGPopulated` as `status()` does. Preserve: detection once per engine, and refusal (`ClassesUnreadable`) when the classes cannot be read. Writers and readers: `bootstrap_kg_global`, `sync()`, `_detect_capabilities`, `kg_PERSONALIZED_PAGERANK`. Distinguishing case: empty setup, load, sync → a fresh engine reads both True. Control `sync-sets-markers` checks the direction in the model only; the proposal was not run on the product. Governing statement: [install.status.capabilities](../ontology/concepts/install.g5.md#install.status.capabilities).
+
+<a id="bug-plt-118"></a>
+### The schema diagram draws a relationship whose end has no label as starting or ending at the first label
+
+Severity: Low · Decision: Open
+
+Run: Uplift 2026-11-17 (continuation, iteration 52)
+
+Found by: reading `get_schema_visualization` after the iteration 52 W58 freeze (frozen row H7 held); [operator_reports](models/operator_reports/NOTES.md) `theorem_unlabeled_endpoint_is_first_label`; control `viz-none-distinct`.
+
+Reproduced by: **E2E reproduced** on the run-isolated IRIS 2026.1 continuation fixture with the unchanged pin ([probe](../uplift/consolidated/iteration-52/reports-observed-20261117T041241Z.json) `s16_schema_viz`; [binding](results/operator_reports/20261117T042408Z-binding/receipt.json) `s14:viz`). With labels `A, B, D, Y` (ids 0 to 3):
+- `UNLAB` between two unlabeled nodes is drawn `0 → 0`, A to A.
+- `BL` from an unlabeled node to a `Y` node is drawn `0 → 3`, A to Y.
+
+Expected: the docstring says a predicate's ends are "those of one edge's endpoints (0 if none)". A diagram reader cannot tell "none" from the first label, because ids start at 0.
+
+Observed: `start_label_id = 0` and `end_label_id = 0` are kept when the sampled endpoint has no label, and `label_to_id` numbers the sorted labels from 0 (`_engine/schema.py:2804-2853`).
+
+Consequence: Neo4j Browser-style schema views (`/schema` consumers, `db.schema.visualization`) show a relationship attached to an unrelated label. Low: documented in the docstring, and the diagram is sampled anyway.
+
+Repair proposal (not implemented): number labels from 1, or give an unlabeled end its own placeholder node. Preserve: one node per label and one relationship per predicate. Control `viz-none-distinct` checks the direction in the model only. Governing statement: [install.status.diagram](../ontology/concepts/install.g5.md#install.status.diagram).
 
 <a id="bug-cyp-115"></a>
 ### A map value read by a key answers numbers and booleans as text

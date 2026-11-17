@@ -1,0 +1,130 @@
+{
+  "title": "operator reports",
+  "question": "Operator reports (W58): how setup, edge writes, sync, deletes, a bulk load in a caller transaction, routed and legacy vectors and BM25 builds change what status() and its readiness flags, the sync line, verify_sync (with heal), engine.capabilities, /server, /metrics, /stats, the schema diagram and snapshot_info report, and whether each report agrees with the operation it announces (bug-plt-115, -116, -117, -118; HD-1703)",
+  "ontology_ids": [
+    "install.status",
+    "install.status.readiness",
+    "install.status.sync",
+    "install.status.verify_sync",
+    "install.status.capabilities",
+    "install.status.readers",
+    "install.status.diagram",
+    "install.snapshot.info"
+  ],
+  "runs": [
+    {
+      "label": "proof",
+      "kind": "proof",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"errors\": 0, \"verified\": 34}"
+    },
+    {
+      "label": "registry-keeps-case",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_upper_never_route\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "verify-counts-distinct-rows",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_shared_triple_never_in_sync\", \"theorem_heal_claims_in_sync_then_drift\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "nkg-per-graph",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_shared_triple_never_in_sync\", \"theorem_heal_claims_in_sync_then_drift\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "heal-rereads",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_heal_claims_in_sync_then_drift\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "status-pending-reads-nkg",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fresh_namespace_edges_skip_nkg\", \"theorem_delete_status_vs_verify\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "setup-inits-skeleton",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fresh_namespace_edges_skip_nkg\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "put-always-interns",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fresh_namespace_edges_skip_nkg\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "multihop-needs-nkg",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_fresh_namespace_edges_skip_nkg\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "sync-sets-markers",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"lemma_markers_kept\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "setup-marks-empty",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_markers_never_set_after_empty_setup\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "engine-cache-unchanged",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_markers_never_set_after_empty_setup\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "bulk-leaves-flag",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_bulk_pending_is_engine_local\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "delete-keeps-nkg",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_delete_status_vs_verify\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "drop-keeps-index",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_full_text_follows_index\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "stats-every-graph",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_stats_default_vs_server_every_graph\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "viz-none-distinct",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_unlabeled_endpoint_is_first_label\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "setup-skips-bootstrap",
+      "kind": "control",
+      "variant": "as-built bounded transcription",
+      "expect": "{\"fail_in\": [\"theorem_setup_again_sets_markers\", \"theorem_setup_with_edges_sets_markers\"], \"verdict\": \"EXPECTED_FAIL\"}"
+    },
+    {
+      "label": "binding",
+      "kind": "binding",
+      "variant": "as-built bounded transcription",
+      "expect": null
+    }
+  ]
+}

@@ -11,6 +11,10 @@ How IVG is set up in an IRIS namespace, how the namespace keeps one IVG Schema, 
 - **Dry run**: a call that reports what setup, an upgrade step or legacy removal would do, and writes nothing.
 - **Legacy object**: a function, view or class an IVG release before 4.6.0 created in `SQLUser`, the `User` package, or with no package, plus classes IVG stopped shipping.
 - **Legacy manifest**: the fixed list of legacy objects, taken from the released versions.
+- **Integer adjacency copy**: `^NKG`, the copy of the adjacency index the graph algorithms read. It has no graph dimension: an edge held by two graphs is one entry. `engine.sync()` rebuilds it.
+- **Pending-sync flag**: one engine's own note that it wrote rows it left for `sync()` to put in the integer copy. Other engines and processes do not see it.
+- **Routed vector table**: a node-vector table made for one graph or model, named `kg_emb_` plus 16 hex digits and recorded in the embedding registry; `kg_NodeEmbeddings` is the legacy table.
+- **Readiness flag**: one of the status report's `ready_for_*` answers, which an operator reads before running the operation it names.
 
 ## The namespace and its IVG Schema
 
@@ -109,6 +113,66 @@ Status reports current row counts across every graph, while the ordinary count m
 - An install without a registry still reports its legacy embedding counts.
 - A registered table that cannot be counted is named as an error, and completed counts remain available.
 - If the graph census fails, the human report marks the graph size as unknown rather than printing an invented zero; the structured status keeps completed counts and probe errors.
+- Today on IRIS no registered table is counted: the registry read answers each name upper-cased and the name test expects lower case, so the totals are the legacy tables' rows only ([bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115)).
+
+<a id="install.status.readiness"></a>
+[I · install.status.readiness]
+
+Each readiness flag is computed from the same probe as the report's counts, over every graph, and should say whether the operation it names would answer.
+- `ready_for_bfs` is true when the adjacency index holds an edge and some edge row exists. Where the index is declared, that is exactly "some edge row exists".
+- `ready_for_multihop_bfs` adds only that the ObjectScript or Arno path is there; it does not require the integer copy. Variable-length matches answer without it.
+- `ready_for_vector_search` is true when the node-vector total is above zero; `vector_index_state` is `absent` with no vectors, `empty` with vectors and no ANN index (the report says "searched by a scan"), and `ready` with an ANN index.
+- `ready_for_full_text` is true while some BM25 index exists, and false again once the last one is dropped.
+- Today the node-vector total leaves out every routed vector table, so a namespace whose vectors are all routed reads `absent` and not ready while a search on that graph answers ([bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115)).
+
+
+<a id="install.status.sync"></a>
+[I · install.status.sync]
+
+The report's sync state and `pending_sync` show only the calling engine's pending-sync flag. They do not say whether the integer copy is built; `adjacency.nkg_populated` says that.
+- The flag is set by a `bulk_load_session` inside the caller's transaction and stays set after the caller's commit or rollback, until that engine runs `sync()`. Another engine or process reports False.
+- On a namespace set up while empty, the first edges reach the adjacency index but not the integer copy, until the first `sync()`. Meanwhile the report says "in sync" and `nkg_populated` is False.
+- A delete or erase drops the integer copy and clears the flag; the next reader of the copy rebuilds it. Meanwhile the report says "in sync" and `nkg_populated` is False.
+- After the first `sync()`, an edge write puts a new triple into the integer copy too, so it stays current without another sync.
+
+
+<a id="install.status.verify_sync"></a>
+[I · install.status.verify_sync]
+
+`verify_sync()` reports drift when the edge rows outnumber the integer copy's edge count, or when this engine's pending-sync flag is set. With `heal=True` it runs `sync()` on drift and reports the result as healed and in sync without checking again.
+- The documented use is `if not engine.verify_sync(): engine.sync()`; it is meant to report in sync after a sync on a quiet namespace.
+- Today, once two graphs hold the same source, predicate and target, the integer copy counts that edge once. Every check then reports drift, `heal=True` reports healed, and the next check reports drift again; no `sync()` clears it ([bug-plt-116](../../Verus_verification/bugs_issues.md#bug-plt-116)).
+- After a delete or erase, it reports drift until the copy is rebuilt, while the status report says "in sync" ([install.status.sync](#install.status.sync)).
+- It cannot see rows deleted without the copy following, because it only checks rows outnumbering the copy. [verify_graph](../features/graph-structure.g5.md#structure.adjacency) checks one graph both ways.
+
+
+<a id="install.status.capabilities"></a>
+[I · install.status.capabilities]
+
+`engine.capabilities` says what the namespace has deployed. Each engine reads it once, from the class dictionary and two markers that setup writes when it finds edge rows to build from.
+- `sync()` sets `kg_built` only in the engine that ran it and never sets `nkg_built` or the markers.
+- So on a namespace set up while empty, every engine created later reads `kg_built` and `nkg_built` False whatever is built, until setup runs again while edges exist. Meanwhile personalized PageRank skips its ObjectScript fast path in those engines ([bug-plt-117](../../Verus_verification/bugs_issues.md#bug-plt-117)).
+- Running setup again re-detects the capabilities and sets both markers once edges exist, from any engine.
+- Working assumption: the store's `capabilities()` is a fixed list of what the adapter implements, every algorithm True, with only the Arno entries live; it is not a report of what this namespace can run. Read availability from `engine.capabilities` and `status()` ([open question](../../Verus_verification/open_questions.md#HD-1703)).
+
+
+<a id="install.status.readers"></a>
+[I · install.status.readers]
+
+The HTTP and command-line reports read the same facts through different readers, so their counts can differ by design.
+- `GET /server` and `GET /metrics` carry `status()`'s counts and adjacency facts unchanged, so they count every graph.
+- `GET /stats` and `GET /schema` count the default graph's nodes and edges; with nodes in a named graph they answer fewer than `/server`. `/stats`'s embedding count reads the legacy table only.
+- `GET /indexes` lists the adjacency indexes as `ONLINE` or `NOT_BUILT`, and each BM25, IVF and PLAID index by name. It lists HNSW indexes only on the legacy tables.
+- `ivg status`, `ivg schema status` and `ivg indexes list` print the answers of `/server`, `/schema` and `/indexes` unchanged.
+- None of them shows the pending-sync flag; the server's engine wrote nothing of its own, so its flag is always False.
+
+
+<a id="install.status.diagram"></a>
+[I · install.status.diagram]
+
+`get_schema_visualization()` draws one node per label and one relationship per predicate, over every graph. A label's properties come from one sampled node, and a predicate's ends from the labels of one sampled edge's endpoints.
+- An endpoint without a label is given id 0, which is also the id of the first label in sorted order. Such a relationship is drawn from or to that label ([bug-plt-118](../../Verus_verification/bugs_issues.md#bug-plt-118)).
+
 
 ## Setup
 
@@ -297,6 +361,15 @@ A temporal event saved in a snapshot answers a [window read](../features/tempora
 - A refused global line can be skipped without an error or failed-row count while valid neighbors restore. This is a known failure of the required restore error report.
 - An archive naming another storage layout is refused before anything is erased. The current reader admits an archive with no layout stamp; this does not establish compatibility for arbitrary old global shapes.
 - The temporal subtrees saved are the events by time in both directions, the time buckets and their aggregates, the edge attributes, and the latest-event index.
+<a id="install.snapshot.info"></a>
+[I · install.snapshot.info]
+
+`snapshot_info(path)` reads an archive's metadata without a connection and reports what a replacing restore will load: each table's row count over every graph at save time, and the non-empty globals.
+- A replacing restore brings the status counts to those row counts.
+- Its `version` is the archive format (`"1.1"`), not the IVG release; the release that wrote the archive is the metadata's `ivg_version`.
+- A file without `metadata.json` raises `KeyError`.
+
+
 ## Bulk loading
 
 
@@ -564,7 +637,84 @@ The clarification is a recorded human answer; FR-020a names the baseline code st
 
 This owner recovers ordinary reporting intent from the primary docs and tests before the selected reporting implementation is modeled. Graph identity and the meaning of an omitted graph remain with [graph scope](graph-scope.g5.md#graph.default). Probe availability, native counters, readiness flags and other status fields are separate conditions; this count/report rule does not certify them or a transactionally consistent snapshot across separate reads. The selected producer-to-report relation has been independently replayed within the linked package's stated source and provider frame.
 
-State machines: [routine reporting](../../Verus_verification/models/routine_reporting/manifest.json)
+State machines: [routine reporting](../../Verus_verification/models/routine_reporting/manifest.json), [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
+
+Children: [readiness](#install.status.readiness), [sync state](#install.status.sync), [verify_sync](#install.status.verify_sync), [capabilities](#install.status.capabilities), [HTTP and CLI readers](#install.status.readers), [schema diagram](#install.status.diagram).
+
+Iteration 52: on IRIS the routed-table count fails ([bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115)); the routine_reporting replay ran on local SQL, whose `DISTINCT` keeps the stored case, so its correspondence for routed tables is withdrawn at the IRIS reader. [operator_reports](../../Verus_verification/models/operator_reports/NOTES.md) `theorem_routed_never_counted` models the IRIS reader.
+
+### install.status.readiness
+- Sources: [EngineStatus properties](../../../iris_vector_graph/status.py#L159-L214), [status probes](../../../iris_vector_graph/_engine/admin.py#L439-L703), [ADMIN_GUIDE status fields](../../../docs/ADMIN_GUIDE.md#L920-L960), [CHANGELOG R207](../../../CHANGELOG.md#L2252-L2253)
+- Expands: [Status reports](#install.status)
+- agent
+- user-facing-behavior, operations
+- design-verified
+- Formal: [`theorem_ready_for_bfs_iff_rows`, `theorem_fresh_namespace_edges_skip_nkg`, `theorem_routed_only_not_ready_but_searchable`, `theorem_legacy_vectors_ready`, `theorem_full_text_follows_index`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+Expected results come from ADMIN_GUIDE's field table ("the graph has edges: traversals work", "a BM25 index exists") and spec 230 FR-006 (routed vectors count). Findings: [bug-plt-115](../../Verus_verification/bugs_issues.md#bug-plt-115).
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
+
+### install.status.sync
+- Sources: [pending_sync and the report line](../../../iris_vector_graph/status.py#L216-L222), [status](../../../iris_vector_graph/_engine/admin.py#L396-L411), [Adjacency.Put](../../../iris_src/src/Graph/KG/Adjacency.cls#L80-L108), [erase clears the flag](../../../iris_vector_graph/_engine/nodes_edges.py#L1518-L1520), [USER_GUIDE caller transaction](../../../docs/USER_GUIDE.md#L276-L282), [ADMIN_GUIDE §9](../../../docs/ADMIN_GUIDE.md#L1036-L1060)
+- Expands: [Status reports](#install.status)
+- agent
+- user-facing-behavior, operations
+- design-verified
+- Formal: [`theorem_fresh_namespace_edges_skip_nkg`, `theorem_put_after_sync_counted`, `theorem_delete_status_vs_verify`, `theorem_bulk_pending_is_engine_local`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+As built; the documented field meaning ("a bulk load left ^NKG stale") holds. The report gives no sign of an unbuilt integer copy outside `nkg_populated` and the internals view; no product finding is registered for that.
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
+
+### install.status.verify_sync
+- Sources: [verify_sync](../../../iris_vector_graph/_engine/admin.py#L756-L848), [BuildNKG and RewritePass](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L250-L373), [NKGEdgeCount](../../../iris_src/src/Graph/KG/TraversalBuild.cls#L226-L229), [SyncReport](../../../iris_vector_graph/status.py#L73-L104), [verify_graph docstring](../../../iris_vector_graph/_engine/admin.py#L850-L890)
+- Expands: [Status reports](#install.status)
+- agent
+- user-facing-behavior, operations
+- design-verified
+- Formal: [`theorem_shared_triple_never_in_sync`, `theorem_unique_triples_in_sync_after_sync`, `theorem_heal_claims_in_sync_then_drift`, `theorem_delete_status_vs_verify`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+Expected result from the docstring's documented use. Findings: [bug-plt-116](../../Verus_verification/bugs_issues.md#bug-plt-116). The docstring's list of paths that set the flag (`delete_node`, `drop_graph`) is out of date: those now drop the copy instead.
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
+
+### install.status.capabilities
+- Sources: [capabilities](../../../iris_vector_graph/engine.py#L1742-L1814), [markers read](../../../iris_vector_graph/schema.py#L2782-L2850), [markers written](../../../iris_vector_graph/schema.py#L3309-L3358), [setup replaces the cache](../../../iris_vector_graph/_engine/schema.py#L2578-L2596), [sync sets kg_built](../../../iris_vector_graph/_engine/schema.py#L2887-L2895), [PageRank fast path](../../../iris_vector_graph/_engine/algorithms.py#L341-L343), [store catalogue](../../../iris_vector_graph/stores/iris_sql_store.py#L29-L52), [API reference](../../../docs/API_REFERENCE.md#L51-L57)
+- Expands: [Status reports](#install.status)
+- agent
+- architecture-decision, operations
+- uncertain
+- design-verified
+- Formal: [`theorem_markers_never_set_after_empty_setup`, `theorem_setup_again_sets_markers`, `theorem_setup_with_edges_sets_markers`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+Expected result from the API reference ("What the namespace has deployed: the Graph.KG classes, ^KG, ^NKG"). Findings: [bug-plt-117](../../Verus_verification/bugs_issues.md#bug-plt-117). The store catalogue is observed only (all True, Arno entries absent with Arno not loaded); its intent stays with [HD-1703](../../Verus_verification/open_questions.md#HD-1703).
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
+
+### install.status.readers
+- Sources: [/server, /metrics, /stats, /schema, /indexes](../../../iris_vector_graph/cypher_api.py#L469-L568), [SHOW INDEXES](../../../iris_vector_graph/_engine/admin.py#L195-L264), [count readers](../../../iris_vector_graph/_engine/schema.py#L454-L497), [embedding_count](../../../iris_vector_graph/_engine/embeddings.py#L2124-L2150), [CLI](../../../iris_vector_graph/cli.py#L187-L247), [CLI indexes](../../../iris_vector_graph/cli.py#L443-L456), [ADMIN_API](../../../docs/ADMIN_API.md#L100-L215), [CHANGELOG 4.6.0 graph scope](../../../CHANGELOG.md#L800-L806)
+- Expands: [Status reports](#install.status)
+- agent
+- user-facing-behavior, operations
+- design-verified
+- Formal: [`theorem_stats_default_vs_server_every_graph`, `theorem_server_and_metrics_project_status`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+`/indexes` and the CLI are observed by the iteration-52 probe; the CLI commands print the HTTP answer unchanged (justified delegation in the crosswalk).
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
+
+### install.status.diagram
+- Sources: [get_schema_visualization](../../../iris_vector_graph/_engine/schema.py#L2772-L2856), [API reference](../../../docs/API_REFERENCE.md#L239-L245)
+- Expands: [Status reports](#install.status)
+- agent
+- user-facing-behavior
+- design-verified
+- Formal: [`theorem_unlabeled_endpoint_is_first_label`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+The docstring says "0 if none"; that 0 is also the first label's id. Findings: [bug-plt-118](../../Verus_verification/bugs_issues.md#bug-plt-118).
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
 
 ### install.setup
 
@@ -736,7 +886,7 @@ Open questions: [May a data migration run before any setup has recorded the name
 
 - uncertain
 - Sources: [USER_GUIDE §10](../../../docs/USER_GUIDE.md); [ADMIN_GUIDE: backups and snapshots](../../../docs/ADMIN_GUIDE.md); [_engine/snapshot.py STORE_PLAN](../../../iris_vector_graph/_engine/snapshot.py); [ADR-0004](../../../docs/adr/0004-erasure-removes-content-not-history.md)
-- Children: [scope](#install.snapshot.scope), [failure](#install.snapshot.failure), [derived](#install.snapshot.derived), [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004), [routed vectors](#install.snapshot.routes), [temporal events](#install.snapshot.temporal)
+- Children: [scope](#install.snapshot.scope), [failure](#install.snapshot.failure), [derived](#install.snapshot.derived), [What should a restore do when the namespace already has a live ledger?](../../Verus_verification/open_questions.md#q-plt-004), [routed vectors](#install.snapshot.routes), [temporal events](#install.snapshot.temporal), [archive info](#install.snapshot.info)
 - agent
 - user-facing-behavior, operations
 - test-coverage
@@ -822,6 +972,18 @@ Public case J02. A hand-kept second list of exported subtrees once dropped all f
 Audit reproduction: [F-1804](../../Verus_verification/bugs_issues.md#F-1804) is e2e reproduced; [actual cases, result, neighbor and provider qualifications](../../Verus_verification/audits/register-20261115/regressions.json). This is product observation, not executable-body verification.
 
 State machines: [temporal restore](../../Verus_verification/models/temporal_restore/manifest.json)
+
+### install.snapshot.info
+- Sources: [snapshot_info](../../../iris_vector_graph/_engine/snapshot.py#L1051-L1074), [save_snapshot metadata](../../../iris_vector_graph/_engine/snapshot.py#L835-L1048), [API reference](../../../docs/API_REFERENCE.md#L2244-L2251), [ADMIN_GUIDE §8](../../../docs/ADMIN_GUIDE.md#L976-L1000)
+- Expands: [Snapshots](#install.snapshot)
+- agent
+- operations
+- design-verified
+- Formal: [`theorem_snapshot_info_matches_restore`](../../Verus_verification/models/operator_reports/operator_reports.rs)
+
+Observed (iteration 52): `version` "1.1", `metadata.ivg_version` "4.7.0", and `KeyError` for a ZIP without `metadata.json`.
+
+State machines: [operator reports](../../Verus_verification/models/operator_reports/manifest.json)
 
 ### install.bulk_load
 
