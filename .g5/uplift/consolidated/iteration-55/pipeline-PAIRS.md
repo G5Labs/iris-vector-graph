@@ -81,3 +81,20 @@ not the neo4j driver.
 ## Result
 
 Filled in after the observation (below this line only).
+
+### Post-read probe (predictions written after the deciding source was read and before `pipeline_probe2.py` ran)
+
+Source read: `bolt_server.py` (`negotiate_version`, `_node_int_id`, `PackStream`, `_handle_hello`/`_authenticate`,
+`_handle_run`, `_handle_pull`, `_recompose_graph_row`, `_parse_props_field`, `_pack_rel_from_value`) and
+`_engine/query.py` (`execute_cypher`, `_raise_if_error`, `_is_long_list_temp_error`, `_unwind_by_index_retry`,
+`_execute_parsed_sql`, `_extract_sql_row_limit`, `_apply_sql_row_limit`); the translated SQL of PA2 and PA4.
+
+| ID | Changing input | Source-derived prediction | Expected (spec/owner) |
+|---|---|---|---|
+| T1 | a node string property of 200 vs 201 vs 300 characters, a 100-element list; `RETURN n` over BOLT vs `RETURN n.p` | BOLT's Node carries the first 200 characters plus `...` for 201 and 300, the list as a truncated *string*; 200 is whole; `RETURN n.p` whole on every reader | the stored value (Bolt spec; query.values) |
+| T2 | stored `a→b`; `RETURN a, r, b` vs `RETURN b, r, a` vs `MATCH (b)<-[r]-(a) RETURN b, r, a` vs `RETURN r` | BOLT start/end follow the column order: `b, r, a` reports start = b, end = a; `RETURN r` alone reports start = end = 0 | start = a, end = b in every form |
+| T3 | two node IDs whose `hash() & 0x7FFFFFFF` collide in the server process vs two that do not | BOLT gives both nodes one id/element_id; the driver's `result.graph()` holds one node | two ids, two nodes |
+| T4 | `n.v = $x` with `$x = 1` over a stored string `'1'` vs `n.v = 1`; `n.v = '1'` (literal) over a stored integer 1 | the parameter matches the string (`p2.val = ?` compares text); the integer literal does not (typed guard); the string literal matches the integer | openCypher: a string never equals an integer |
+| T5 | `RETURN 9223372036854775807 + 1` vs `RETURN 9223372036854775807` | PY answers whatever IRIS computes; if a Python int beyond int64 reaches PULL, BOLT's `struct.pack('>q')` raises and the client sees a broken connection, not a FAILURE | openCypher: an integer overflow error |
+| T6 | var-length `RETURN b.node_id ORDER BY id LIMIT 1` vs without ORDER BY; `WITH a LIMIT 1` before the var-length MATCH | if the var-length route answers: with ORDER BY the cap is dropped (2 rows); the inner `LIMIT 1` may be read as the final cap | query.paging: at most 1 row; the inner LIMIT limits `a` only |
+| T7 | a grouping read over an `UNWIND` of a literal list longer than 511 characters vs a short one, IRIS Community 2026.1 | no `<SUBSCRIPT>` error on 2026.1, so no retry; both answer | the grouped rows |
