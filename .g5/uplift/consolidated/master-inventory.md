@@ -13,13 +13,13 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | 1 | Cypher built-in functions at run time (list/string/JSON/map/regex/percentile/type-error) | `CypherFn.cls` 17/17, `SqlProcs.CypherFnIVG*`+`JSONKEYS`+`Percentile*` ~20, translator function dispatch | DONE 47 (W54) | owner `query.functions`, model `cypher_fns`; bug-cyp-111..116; 12 SQL-only CypherFn bodies + percentiles still unbound |
 | 2 | Finish draft W53 (kg_IVF/kg_BM25 SQL readers) + IVF cosine = dot product (draft bug-srch-109) | `SqlProcs.kgIVF/kgBM25`, `IVFIndex` Build/Search | DONE 47 | bug-srch-109 (Medium); kg_IVF bound; kg_BM25 unbound (needs BM25 scoring model) |
 | 3 | SqlProcs edges/paths/txn: `MatchEdges`, `MatchEdgesAllGraphs`, `DijkstraPath`, `TxnBegin/End/Undo`, `PropSet`, `backfilltemporalrows`, `rebuildedgeindices` | SqlProcs ~10 | PARTIAL 47 | Txn_* bound; MatchEdges/DijkstraPath/PropSet/backfill/rebuild open (first missing steps in iteration-47/HANDOFF.md) |
-| 4 | Retrieval composition: `kg_VECTOR_GRAPH_SEARCH`, `kg_PPR_GUIDED_SUBGRAPH`, `kg_RERANK`, `multi_vector_search`, `kg_RRF_FUSE`, `PyOps.HybridSearch/FuseRanks/RouteVectorRows/VectorSearch/MetaPath` | operators.py 19/19, PyOps 15/15, vector.py 41 unbound | OPEN | |
+| 4 | Retrieval composition: `kg_VECTOR_GRAPH_SEARCH`, `kg_PPR_GUIDED_SUBGRAPH`, `kg_RERANK`, `multi_vector_search`, `kg_RRF_FUSE`, `PyOps.HybridSearch/FuseRanks/RouteVectorRows/VectorSearch/MetaPath` | operators.py 19/19, PyOps 15/15, vector.py 41 unbound | ASSIGNED 49 | |
 | 5 | Operator reports: `status()`/`EngineStatus.*`, `capabilities`, `get_schema_visualization`, `snapshot_info`, HTTP `get_stats/get_metrics/get_indexes/get_schema` | status.py 21/22, cypher_api.py 35/44 | OPEN | counts that guide action |
 | 6 | Temporal analytics readers (`get_edge_velocity`, `find_burst_nodes`, `get_bucket_groups`, `get_distinct_count`) | TemporalIndex.cls 41/48, _engine/temporal.py 37/45 | OPEN | owned (`temporal.stats`), known divergences, no model |
 | 7 | Embedding identity maintenance (`reconcile_recorded_dimensions`, `adopt_embedding_identities`, `list_quarantine`, `place_quarantined`, `measure_route_recall`) | embedding_identity.py 7, _engine/embeddings.py 29 | OPEN | |
 | 8 | Imports `load_networkx`, `load_obo` | _engine (admin/load) | OPEN | expected repeat of bug-str-109 class |
 | 9 | `ivg` CLI and HTTP admin routes beyond `/api/cypher` | cli.py 28/32, cypher_api.py admin_* | OPEN | |
-| 10a | Cypher expression surface with run-time values (string fns, slices, size() of stored values, CASE, list comprehension, aggregation over stored values, functions in CREATE/SET maps, PropSet) | translator.py, SqlProcs.PropSet | ASSIGNED 48 | vein produced 4 Medium in 47 |
+| 10a | Cypher expression surface with run-time values (string fns, slices, size() of stored values, CASE, list comprehension, aggregation over stored values, functions in CREATE/SET maps, PropSet) | translator.py, SqlProcs.PropSet | DONE 48 (W55) | model `cypher_exprs`; 6 owner blocks; bug-cyp-117..125 (120 High); PropSet bound. Residual: driver 5.4 check for cyp-125, other CREATE shapes, SET += maps, zero-length strings model |
 | 10 | Cypher translator clause semantics on Cypher-written data (aggregation/OPTIONAL MATCH/WITH/UNWIND/CASE/list comprehension/path funcs) | translator.py 697/717, parser.py 53, ast.py 54 | OPEN | largest raw gap; prior runs leaned on TCK; needs representative workflow check before any convergence claim |
 | 11 | SQL store layer `stores/iris_sql_store.py` | 140/149 | OPEN | check which public workflows reach it |
 | 12 | Engine facade `engine.py` and `_engine/query.py` | 119/124, 116/124 | OPEN | largely delegates; justify shared relation or exclude |
@@ -50,4 +50,5 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | Iter | Session | Batch | Union | Active | Findings | Cost |
 |---|---|---|---|---|---|---|
 | base | - | - | 698 | 448 | - | - |
+| 48 | fc80ac7b | W55 Cypher run-time expressions; PropSet | 726 | 480 | new: cyp-120 H, cyp-117/118/119 M, cyp-121..124 L, cyp-125 potential; simp-cyp-101/102 | 23 min, $10.68, 148k out tok |
 | 47 | 1364fd9f | draft W53 + IVF cosine; W54 Cypher fns; Txn_* | 710 | 463 | new: srch-109 M, cyp-111..114 M, cyp-115/116 L; F-C0841 reproduced | 22.8 min, $12.13, 145k out tok |
