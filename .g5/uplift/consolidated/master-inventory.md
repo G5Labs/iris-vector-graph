@@ -15,7 +15,7 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | 3 | SqlProcs edges/paths/txn: `MatchEdges`, `MatchEdgesAllGraphs`, `DijkstraPath`, `TxnBegin/End/Undo`, `PropSet`, `backfilltemporalrows`, `rebuildedgeindices` | SqlProcs ~10 | PARTIAL 47 | Txn_* bound; MatchEdges/DijkstraPath/PropSet/backfill/rebuild open (first missing steps in iteration-47/HANDOFF.md) |
 | 4 | Retrieval composition: `kg_VECTOR_GRAPH_SEARCH`, `kg_PPR_GUIDED_SUBGRAPH`, `kg_RERANK`, `multi_vector_search`, `kg_RRF_FUSE`, `PyOps.HybridSearch/FuseRanks/RouteVectorRows/VectorSearch/MetaPath` | operators.py 19/19, PyOps 15/15, vector.py 41 unbound | DONE 49 (W56) | model `retrieval_compose`; 6 owner blocks; bug-plt-113 H, srch-110 M, plt-114 M, srch-111/112 L; bug-srch-005 reproduced. Residual: REST deploy for srch-111/112, PyOps privilege reporting (ReadRows/ReadFailure/Lacks/NoteNoRegistry), MetaPath, bfs_vector_rerank, search_nodes_by_vector, CALL ivg.retrieve, IVF fallback in vector_search |
 | 5 | Operator reports: `status()`/`EngineStatus.*`, `capabilities`, `get_schema_visualization`, `snapshot_info`, HTTP `get_stats/get_metrics/get_indexes/get_schema` | status.py 21/22, cypher_api.py 35/44 | OPEN | counts that guide action |
-| 6 | Temporal analytics readers (`get_edge_velocity`, `find_burst_nodes`, `get_bucket_groups`, `get_distinct_count`) | TemporalIndex.cls 41/48, _engine/temporal.py 37/45 | OPEN | owned (`temporal.stats`), known divergences, no model |
+| 6 | (ASSIGNED 51) Temporal analytics readers (`get_edge_velocity`, `find_burst_nodes`, `get_bucket_groups`, `get_distinct_count`) | TemporalIndex.cls 41/48, _engine/temporal.py 37/45 | OPEN | owned (`temporal.stats`), known divergences, no model |
 | 7 | Embedding identity maintenance (`reconcile_recorded_dimensions`, `adopt_embedding_identities`, `list_quarantine`, `place_quarantined`, `measure_route_recall`) | embedding_identity.py 7, _engine/embeddings.py 29 | OPEN | |
 | 8 | Imports `load_networkx`, `load_obo` | _engine (admin/load) | OPEN | expected repeat of bug-str-109 class |
 | 9 | `ivg` CLI and HTTP admin routes beyond `/api/cypher` | cli.py 28/32, cypher_api.py admin_* | OPEN | |
@@ -38,6 +38,7 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | 25 | GQL schema (`gql/` 37) | | OPEN-low | sample API |
 
 ## Incomplete obligations (carry-forward)
+- Review round 1 residual: Arno reader for bug-plt-113/114 (needs Arno); driver 5.4.x for bug-cyp-125/m2; no Verus claim for cyp-128/130/131/132; simple CASE with parameter test; multigraph rel-CREATE with parameter; 3 premise-named active bindings (driver_accepts_ast, iris_accepts_scalar_condition, filer_writes_same_text) kept active — next reviewer to validate; iteration-50 repairs need independent validation.
 - Direct executable-body verification = 0 everywhere (bindings are transcriptions with native agreement).
 - Probe-only claims open in Verus: bug-str-102, W41 (from retest).
 - Unexplained: two-edge temporal batch window read returned one edge (W37).
@@ -50,6 +51,7 @@ Status legend: OPEN (not yet assigned), ASSIGNED (iteration n), DONE (iteration 
 | Iter | Session | Batch | Union | Active | Findings | Cost |
 |---|---|---|---|---|---|---|
 | base | - | - | 698 | 448 | - | - |
+| 50 | ac0a2d19 | repairs from review round 1 (47-49) | 749 | 505 | new: cyp-126/127 M, cyp-128 M (probe), cyp-129..132 L; plt-113 expected corrected; 1 binding reclassified locator-only | 27 min, $18.03, 177k out tok |
 | 49 | 93adbd59 | W56 composed retrieval | 747 | 503 | new: plt-113 H, srch-110 M, plt-114 M, srch-111/112 L; srch-005 reproduced | 22.8 min, $10.69, 149k out tok |
 | 48 | fc80ac7b | W55 Cypher run-time expressions; PropSet | 726 | 480 | new: cyp-120 H, cyp-117/118/119 M, cyp-121..124 L, cyp-125 potential; simp-cyp-101/102 | 23 min, $10.68, 148k out tok |
 | 47 | 1364fd9f | draft W53 + IVF cosine; W54 Cypher fns; Txn_* | 710 | 463 | new: srch-109 M, cyp-111..114 M, cyp-115/116 L; F-C0841 reproduced | 22.8 min, $12.13, 145k out tok |
